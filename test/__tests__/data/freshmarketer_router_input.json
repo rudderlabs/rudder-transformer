@@ -2,7 +2,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "ugHZRFZjdLOa66ttyyewQ",
+        "apiKey": "dummyApiKey",
         "domain": "rudderstack-476952domain3105"
       }
     },
@@ -58,7 +58,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "ugHZRFZjdLOa66ttyyewQ",
+        "apiKey": "dummyApiKey",
         "domain": "rudderstack-476952domain3105"
       }
     },
@@ -114,7 +114,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "ugHZRFZjdLOarudder",
+        "apiKey": "dummyApiKey",
         "domain": "domain-rudder"
       }
     },

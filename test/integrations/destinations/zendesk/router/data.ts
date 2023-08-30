@@ -323,7 +323,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiToken: 'yPJwcLTFSsvIkFhY23SzittHoYADJQ7eKDoxNu4x',
+                  apiToken: 'dummyApiToken',
                   createUsersAsVerified: true,
                   domain: 'rudderlabtest2',
                   email: 'rudderlabtest2@email.com',
@@ -401,7 +401,7 @@ export const data = [
               batched: false,
               destination: {
                 Config: {
-                  apiToken: 'yPJwcLTFSsvIkFhY23SzittHoYADJQ7eKDoxNu4x',
+                  apiToken: 'dummyApiToken',
                   createUsersAsVerified: true,
                   domain: 'rudderlabtest2',
                   email: 'rudderlabtest2@email.com',

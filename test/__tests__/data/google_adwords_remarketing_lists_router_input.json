@@ -29,10 +29,10 @@
         "listData": {
           "add": [
             {
-              "email": "sudip@abc.com",
-              "phone": "@09432457768",
-              "firstName": "sudip",
-              "lastName": "paul",
+              "email": "test@abc.com",
+              "phone": "@09876543210",
+              "firstName": "test",
+              "lastName": "rudderlabs",
               "country": "US",
               "postalCode": "1245"
             }
@@ -79,10 +79,10 @@
         "listData": {
           "add": [
             {
-              "email": "sudip@abc.com",
-              "phone": "@09432457768",
-              "firstName": "sudip",
-              "lastName": "paul",
+              "email": "test@abc.com",
+              "phone": "@09876543210",
+              "firstName": "test",
+              "lastName": "rudderlabs",
               "country": "US",
               "postalCode": "1245",
               "thirdPartyUserId": "useri1234"
@@ -130,10 +130,10 @@
         "listData": {
           "remove": [
             {
-              "email": "sudip@abc.com",
-              "phone": "@09432457768",
-              "firstName": "sudip",
-              "lastName": "paul",
+              "email": "test@abc.com",
+              "phone": "@09876543210",
+              "firstName": "test",
+              "lastName": "rudderlabs",
               "country": "US",
               "postalCode": "1245"
             }
@@ -180,20 +180,20 @@
         "listData": {
           "remove": [
             {
-              "email": "sudip@abc.com",
-              "phone": "@09432457768",
-              "firstName": "sudip",
-              "lastName": "paul",
+              "email": "test@abc.com",
+              "phone": "@09876543210",
+              "firstName": "test",
+              "lastName": "rudderlabs",
               "country": "US",
               "postalCode": "1245"
             }
           ],
           "add": [
             {
-              "email": "sudip@abc.com",
-              "phone": "@09432457768",
-              "firstName": "sudip",
-              "lastName": "paul",
+              "email": "test@abc.com",
+              "phone": "@09876543210",
+              "firstName": "test",
+              "lastName": "rudderlabs",
               "country": "US",
               "postalCode": "1245"
             }

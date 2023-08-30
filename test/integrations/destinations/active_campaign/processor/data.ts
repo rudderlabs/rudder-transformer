@@ -11,7 +11,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1',
+                apiKey: 'dummyApiKey',
                 apiUrl: 'https://active.campaigns.rudder.com',
                 actid: '476550467',
                 eventKey: 'f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03',
@@ -71,8 +71,7 @@ export const data = [
               endpoint: 'https://active.campaigns.rudder.com/api/3/contact/sync',
               headers: {
                 'Content-Type': 'application/json',
-                'Api-Token':
-                  'fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1',
+                'Api-Token': 'dummyApiKey',
               },
               params: {},
               body: {
@@ -115,7 +114,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1',
+                apiKey: 'dummyApiKey',
                 apiUrl: 'https://active.campaigns.rudder.com',
                 actid: '476550467',
                 eventKey: 'f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03',
@@ -175,8 +174,7 @@ export const data = [
               endpoint: 'https://active.campaigns.rudder.com/api/3/contact/sync',
               headers: {
                 'Content-Type': 'application/json',
-                'Api-Token':
-                  'fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1',
+                'Api-Token': 'dummyApiKey',
               },
               params: {},
               body: {
@@ -219,7 +217,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1',
+                apiKey: 'dummyApiKey',
                 apiUrl: 'https://active.campaigns.rudder.com',
                 actid: '476550467',
                 eventKey: 'f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03',
@@ -283,8 +281,7 @@ export const data = [
               method: 'POST',
               params: {},
               headers: {
-                'Api-Token':
-                  'fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1',
+                'Api-Token': 'dummyApiKey',
                 'Content-Type': 'application/json',
               },
               version: '1',
@@ -309,7 +306,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1',
+                apiKey: 'dummyApiKey',
                 apiUrl: 'https://active.campaigns.rudder.com',
                 actid: '476550467',
                 eventKey: 'f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03',
@@ -372,8 +369,7 @@ export const data = [
               method: 'POST',
               params: {},
               headers: {
-                'Api-Token':
-                  'fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1',
+                'Api-Token': 'dummyApiKey',
                 'Content-Type': 'application/json',
               },
               version: '1',
@@ -398,7 +394,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1',
+                apiKey: 'dummyApiKey',
                 apiUrl: 'https://active.campaigns.rudder.com',
                 actid: '476550467',
                 eventKey: 'f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03',
@@ -462,8 +458,7 @@ export const data = [
               method: 'POST',
               params: {},
               headers: {
-                'Api-Token':
-                  'fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1',
+                'Api-Token': 'dummyApiKey',
                 'Content-Type': 'application/json',
               },
               version: '1',
@@ -488,7 +483,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1',
+                apiKey: 'dummyApiKey',
                 apiUrl: 'https://active.campaigns.rudder.com',
                 actid: '476550467',
                 eventKey: 'f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03',
@@ -558,8 +553,7 @@ export const data = [
               method: 'POST',
               params: {},
               headers: {
-                'Api-Token':
-                  'fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1',
+                'Api-Token': 'dummyApiKey',
                 'Content-Type': 'application/x-www-form-urlencoded',
               },
               version: '1',
@@ -584,7 +578,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1',
+                apiKey: 'dummyApiKey',
                 apiUrl: 'https://active.campaigns.rudder.com',
                 actid: '476550467',
                 eventKey: 'f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03',
@@ -644,8 +638,7 @@ export const data = [
               method: 'POST',
               params: {},
               headers: {
-                'Api-Token':
-                  'fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1',
+                'Api-Token': 'dummyApiKey',
                 'Content-Type': 'application/x-www-form-urlencoded',
               },
               version: '1',
@@ -670,7 +663,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1',
+                apiKey: 'dummyApiKey',
                 apiUrl: 'https://active.campaigns.rudder.com',
                 actid: '476550467',
                 eventKey: 'f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03',
@@ -759,8 +752,7 @@ export const data = [
               method: 'POST',
               params: {},
               headers: {
-                'Api-Token':
-                  'fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1',
+                'Api-Token': 'dummyApiKey',
                 'Content-Type': 'application/json',
               },
               version: '1',

@@ -55,8 +55,8 @@ jobs:
           target: ${{ inputs.load_target }}
           load: true
           tags: ${{ inputs.build_tag }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          # cache-from: type=gha
+          # cache-to: type=gha,mode=max
 
       - name: Run Tests
         run: |
@@ -77,5 +77,5 @@ jobs:
           build-args: |
             version=${{ inputs.img_tag }}
             GIT_COMMIT_SHA=${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          # cache-from: type=gha
+          # cache-to: type=gha,mode=max

@@ -5829,5 +5829,89 @@
       },
       "files": {}
     }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://googleads.googleapis.com/v13/customers/7693729833/offlineUserDataJobs",
+      "headers": {
+        "Authorization": "Bearer dummy-access",
+        "Content-Type": "application/json",
+        "developer-token": "dummy-dev-token"
+      },
+      "params": {
+        "listId": "830441345",
+        "customerId": "7693729833"
+      },
+      "body": {
+        "JSON": {
+          "operations": [
+            {
+              "remove": {
+                "userIdentifiers": [
+                  {
+                    "hashedEmail": "78310d2dd727b704ff9d9c4742d01941b1217b89f45ab71d1e9bf5a010144048"
+                  },
+                  {
+                    "hashedEmail": "34a6406a076b943abfb9e97a6761e0c6b8cf049ab15b013412c57cf8370b5436"
+                  },
+                  {
+                    "hashedEmail": "8075d00e5f006b95eb090bf50f5246bc3c18c3d771fa1edf967b033b274b8d84"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://googleads.googleapis.com/v13/customers/7693729833/offlineUserDataJobs",
+      "headers": {
+        "Authorization": "Bearer dummy-access",
+        "Content-Type": "application/json",
+        "developer-token": "dummy-dev-token"
+      },
+      "params": {
+        "listId": "830441345",
+        "customerId": "7693729833"
+      },
+      "body": {
+        "JSON": {
+          "operations": [
+            {
+              "create": {
+                "userIdentifiers": [
+                  {
+                    "hashedEmail": "78310d2dd727b704ff9d9c4742d01941b1217b89f45ab71d1e9bf5a010144048"
+                  },
+                  {
+                    "hashedEmail": "34a6406a076b943abfb9e97a6761e0c6b8cf049ab15b013412c57cf8370b5436"
+                  },
+                  {
+                    "hashedEmail": "8075d00e5f006b95eb090bf50f5246bc3c18c3d771fa1edf967b033b274b8d84"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
   ]
 ]

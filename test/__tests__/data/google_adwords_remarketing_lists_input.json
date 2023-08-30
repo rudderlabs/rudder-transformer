@@ -3694,5 +3694,129 @@
       },
       "timestamp": "2020-02-02T00:23:09.544Z"
     }
+  },
+  {
+    "metadata": {
+      "secret": {
+        "access_token": "dummy-access",
+        "refresh_token": "dummy-refresh",
+        "developer_token": "dummy-dev-token"
+      }
+    },
+    "destination": {
+      "Config": {
+        "rudderAccountId": "rudder-acc-id",
+        "customerId": "7693729833",
+        "loginCustomerId": "",
+        "subAccount": false,
+        "userSchema": ["email", "phone", "addressInfo"],
+        "isHashRequired": true,
+        "typeOfList": "General"
+      }
+    },
+    "message":   {
+      "anonymousId": "24ed22ae-0681-4882-8c33-012e298e1c17",
+      "channel": "sources",
+      "context": {
+        "destinationFields": "email",
+        "externalId": [
+          {
+            "identifierType": "email",
+            "type": "GOOGLE_ADWORDS_REMARKETING_LISTS-830441345"
+          }
+        ],
+        "mappedToDestination": "true",
+        "sources": {
+          "job_id": "2UcqQB4ygGtTBAvwCWl7xz8dJgt",
+          "job_run_id": "cjmsdip7m95b7aee7tpg",
+          "task_run_id": "cjmsdip7m95b7aee7tq0",
+          "version": "master"
+        }
+      },
+      "event": "Add_Audience",
+      "messageId": "bd2d67ca-0c9a-4d3b-a2f8-35a3c3f75ba7",
+      "properties": {
+        "listData": {
+          "remove": [
+            {
+              "email": "test1@mail.com"
+            },
+            {
+              "email": "test5@xmail.com"
+            },
+            {
+              "email": "test3@mail.com"
+            }
+          ]
+        }
+      },
+      "recordId": "a071551c-87e0-48a7-aa5c-7c4144cec5cf/1/5",
+      "rudderId": "5e9ada0e-5f50-4cb8-a015-f6842a7615fd",
+      "sentAt": "2023-08-29 10:22:06.395377223 +0000 UTC",
+      "type": "audienceList",
+      "userId": "23423423"
+    }
+  },
+  {
+    "metadata": {
+      "secret": {
+        "access_token": "dummy-access",
+        "refresh_token": "dummy-refresh",
+        "developer_token": "dummy-dev-token"
+      }
+    },
+    "destination": {
+      "Config": {
+        "rudderAccountId": "rudder-acc-id",
+        "customerId": "7693729833",
+        "loginCustomerId": "",
+        "subAccount": false,
+        "userSchema": ["email", "phone", "addressInfo"],
+        "isHashRequired": true,
+        "typeOfList": "General"
+      }
+    },
+    "message":   {
+      "anonymousId": "24ed22ae-0681-4882-8c33-012e298e1c17",
+      "channel": "sources",
+      "context": {
+        "destinationFields": "email",
+        "externalId": [
+          {
+            "identifierType": "email",
+            "type": "GOOGLE_ADWORDS_REMARKETING_LISTS-830441345"
+          }
+        ],
+        "mappedToDestination": "true",
+        "sources": {
+          "job_id": "2UcqQB4ygGtTBAvwCWl7xz8dJgt",
+          "job_run_id": "cjmsdip7m95b7aee7tpg",
+          "task_run_id": "cjmsdip7m95b7aee7tq0",
+          "version": "master"
+        }
+      },
+      "event": "Add_Audience",
+      "messageId": "bd2d67ca-0c9a-4d3b-a2f8-35a3c3f75ba7",
+      "properties": {
+        "listData": {
+          "add": [
+            {
+              "email": "test1@mail.com"
+            },
+            {
+              "email": "test5@xmail.com"
+            },
+            {
+              "email": "test3@mail.com"
+            }
+          ]
+        }
+      },
+      "recordId": "a071551c-87e0-48a7-aa5c-7c4144cec5cf/1/5",
+      "rudderId": "5e9ada0e-5f50-4cb8-a015-f6842a7615fd",
+      "sentAt": "2023-08-29 10:22:06.395377223 +0000 UTC",
+      "type": "audienceList",
+      "userId": "23423423"
+    }
   }
 ]

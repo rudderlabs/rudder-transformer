@@ -29,8 +29,8 @@ env:
   DOCKERHUB_USERNAME: rudderlabs
 
 jobs:
-  build-transformer-image:
-    name: Build Transformer Docker Image
+  build-transformer-image-arm64:
+    name: Build Transformer Docker Image ARM64
     runs-on: [self-hosted, Linux, ARM64]
     steps:
       - name: Checkout
@@ -47,21 +47,70 @@ jobs:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 
-      - name: Build Docker Image
+      # - name: Build Docker Image
+      #   uses: docker/build-push-action@v4.1.1
+      #   with:
+      #     context: .
+      #     file: ${{ inputs.dockerfile }}
+      #     target: ${{ inputs.load_target }}
+      #     load: true
+      #     tags: ${{ inputs.build_tag }}
+      #     # cache-from: type=gha
+      #     # cache-to: type=gha,mode=max
+
+      # - name: Run Tests
+      #   run: |
+      #     docker run ${{ inputs.build_tag }} npm run test:js:ci        
+      #     docker run ${{ inputs.build_tag }} npm run test:ts:ci
+
+      - name: Build and Push Multi-platform Images
         uses: docker/build-push-action@v4.1.1
         with:
           context: .
           file: ${{ inputs.dockerfile }}
-          target: ${{ inputs.load_target }}
-          load: true
-          tags: ${{ inputs.build_tag }}
+          target: ${{ inputs.push_target }}
+          push: true
+          tags: ${{ inputs.push_tags }}
+          platforms: |
+            linux/arm64
+          build-args: |
+            version=${{ inputs.img_tag }}-arm64
+            GIT_COMMIT_SHA=${{ github.sha }}
           # cache-from: type=gha
           # cache-to: type=gha,mode=max
+  build-transformer-image-amd64:
+    name: Build Transformer Docker Image AMD64
+    runs-on: [self-hosted, Linux, X64]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3.5.3
+        with:
+          fetch-depth: 1
 
-      - name: Run Tests
-        run: |
-          docker run ${{ inputs.build_tag }} npm run test:js:ci        
-          docker run ${{ inputs.build_tag }} npm run test:ts:ci
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v2.9.1
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2.1.0
+        with:
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
+
+      # - name: Build Docker Image
+      #   uses: docker/build-push-action@v4.1.1
+      #   with:
+      #     context: .
+      #     file: ${{ inputs.dockerfile }}
+      #     target: ${{ inputs.load_target }}
+      #     load: true
+      #     tags: ${{ inputs.build_tag }}
+      #     # cache-from: type=gha
+      #     # cache-to: type=gha,mode=max
+
+      # - name: Run Tests
+      #   run: |
+      #     docker run ${{ inputs.build_tag }} npm run test:js:ci        
+      #     docker run ${{ inputs.build_tag }} npm run test:ts:ci
 
       - name: Build and Push Multi-platform Images
         uses: docker/build-push-action@v4.1.1
@@ -74,7 +123,28 @@ jobs:
           platforms: |
             linux/amd64
           build-args: |
-            version=${{ inputs.img_tag }}
+            version=${{ inputs.img_tag }}-amd64
             GIT_COMMIT_SHA=${{ github.sha }}
           # cache-from: type=gha
           # cache-to: type=gha,mode=max
+
+  create-manifest:
+    name: Create multi-arch manifest
+    runs-on: ubuntu-latest
+    needs: [build-transformer-image-amd64, build-transformer-image-arm64]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Create multi-arch manifest
+        run: |
+          echo '{"experimental":"enabled"}' | sudo tee /etc/docker/daemon.json
+          sudo systemctl restart docker
+          docker manifest create ${{ inputs.img_tag }} \
+          ${{ inputs.img_tag }}-amd64 \
+          ${{ inputs.img_tag }}-arm64
+          docker manifest push ${{ inputs.img_tag }}

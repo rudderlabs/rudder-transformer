@@ -70,7 +70,7 @@ jobs:
           file: ${{ inputs.dockerfile }}
           target: ${{ inputs.push_target }}
           push: true
-          tags: ${{ inputs.push_tags[0] }}-arm64
+          tags: ${{ inputs.push_tags }}-arm64
           platforms: |
             linux/arm64
           build-args: |
@@ -119,7 +119,7 @@ jobs:
           file: ${{ inputs.dockerfile }}
           target: ${{ inputs.push_target }}
           push: true
-          tags: ${{ inputs.push_tags[0] }}-amd64
+          tags: ${{ inputs.push_tags }}-amd64
           platforms: |
             linux/amd64
           build-args: |
@@ -142,7 +142,7 @@ jobs:
 
       - name: Create multi-arch manifest
         run: |
-          docker manifest create ${{ inputs.push_tags[0] }} \
-          ${{ inputs.push_tags[0] }}-amd64 \
-          ${{ inputs.push_tags[0] }}-arm64
-          docker manifest push ${{ inputs.push_tags[0] }}
+          docker manifest create ${{ inputs.push_tags }} \
+          ${{ inputs.push_tags }}-amd64 \
+          ${{ inputs.push_tags }}-arm64
+          docker manifest push ${{ inputs.push_tags }}

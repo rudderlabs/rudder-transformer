@@ -19,7 +19,7 @@
     "endpoint": "https://insights.algolia.io/1/events",
     "files": {},
     "headers": {
-      "X-Algolia-API-Key": "34d8efa09c5b048bbacc6af157f2e687",
+      "X-Algolia-API-Key": "dummyApiKey",
       "X-Algolia-Application-Id": "O2YARRI15I"
     },
     "method": "POST",
@@ -49,7 +49,7 @@
     "endpoint": "https://insights.algolia.io/1/events",
     "files": {},
     "headers": {
-      "X-Algolia-API-Key": "34d8efa09c5b048bbacc6af157f2e687",
+      "X-Algolia-API-Key": "dummyApiKey",
       "X-Algolia-Application-Id": "O2YARRI15I"
     },
     "method": "POST",
@@ -90,7 +90,7 @@
     "endpoint": "https://insights.algolia.io/1/events",
     "files": {},
     "headers": {
-      "X-Algolia-API-Key": "34d8efa09c5b048bbacc6af157f2e687",
+      "X-Algolia-API-Key": "dummyApiKey",
       "X-Algolia-Application-Id": "O2YARRI15I"
     },
     "method": "POST",

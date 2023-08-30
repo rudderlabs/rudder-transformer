@@ -4,9 +4,9 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "access_token": "dummyAccessToken",
+          "refresh_token": "dummyRefreshToken",
+          "developer_token": "dummyDeveloperToken"
         }
       },
       "destination": {
@@ -25,10 +25,10 @@
           "listData": {
             "add": [
               {
-                "email": "sudip@abc.com",
-                "phone": "@09432457768",
-                "firstName": "sudip",
-                "lastName": "paul",
+                "email": "test@abc.com",
+                "phone": "@09876543210",
+                "firstName": "test",
+                "lastName": "rudderlabs",
                 "country": "US",
                 "postalCode": "1245"
               }
@@ -52,7 +52,7 @@
         "method": "POST",
         "endpoint": "https://adsapi.snapchat.com/v1/segments/123/users",
         "headers": {
-          "Authorization": "Bearer abcd1234",
+          "Authorization": "Bearer dummyAccessToken",
           "Content-Type": "application/json"
         },
         "params": {},
@@ -61,7 +61,7 @@
             "users": [
               {
                 "schema": ["EMAIL_SHA256"],
-                "data": [["938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"]]
+                "data": [["d3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419"]]
               }
             ]
           },
@@ -78,9 +78,9 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "access_token": "dummyAccessToken",
+          "refresh_token": "dummyRefreshToken",
+          "developer_token": "dummyDeveloperToken"
         }
       },
       "destination": {
@@ -99,10 +99,10 @@
           "listData": {
             "remove": [
               {
-                "email": "938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c",
-                "phone": "@09432457768",
-                "firstName": "sudip",
-                "lastName": "paul",
+                "email": "d3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419",
+                "phone": "@09876543210",
+                "firstName": "test",
+                "lastName": "rudderlabs",
                 "country": "US",
                 "postalCode": "1245"
               }
@@ -126,7 +126,7 @@
         "method": "DELETE",
         "endpoint": "https://adsapi.snapchat.com/v1/segments/123/users",
         "headers": {
-          "Authorization": "Bearer abcd1234",
+          "Authorization": "Bearer dummyAccessToken",
           "Content-Type": "application/json"
         },
         "params": {},
@@ -136,7 +136,7 @@
               {
                 "id": "123",
                 "schema": ["EMAIL_SHA256"],
-                "data": [["938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"]]
+                "data": [["d3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419"]]
               }
             ]
           },
@@ -153,9 +153,9 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "access_token": "dummyAccessToken",
+          "refresh_token": "dummyRefreshToken",
+          "developer_token": "dummyDeveloperToken"
         }
       },
       "destination": {
@@ -174,20 +174,20 @@
           "listData": {
             "add": [
               {
-                "email": "sudip@abc.com",
-                "phone": "@09432457768",
-                "firstName": "sudip",
-                "lastName": "paul",
+                "email": "test@abc.com",
+                "phone": "@09876543210",
+                "firstName": "test",
+                "lastName": "rudderlabs",
                 "country": "US",
                 "postalCode": "1245"
               }
             ],
             "remove": [
               {
-                "email": "sudip@abc.com",
-                "phone": "@09432457768",
-                "firstName": "sudip",
-                "lastName": "paul",
+                "email": "test@abc.com",
+                "phone": "@09876543210",
+                "firstName": "test",
+                "lastName": "rudderlabs",
                 "country": "US",
                 "postalCode": "1245"
               }
@@ -211,7 +211,7 @@
         "method": "POST",
         "endpoint": "https://adsapi.snapchat.com/v1/segments/123/users",
         "headers": {
-          "Authorization": "Bearer abcd1234",
+          "Authorization": "Bearer dummyAccessToken",
           "Content-Type": "application/json"
         },
         "params": {},
@@ -220,7 +220,7 @@
             "users": [
               {
                 "schema": ["EMAIL_SHA256"],
-                "data": [["938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"]]
+                "data": [["d3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419"]]
               }
             ]
           },
@@ -236,7 +236,7 @@
         "method": "DELETE",
         "endpoint": "https://adsapi.snapchat.com/v1/segments/123/users",
         "headers": {
-          "Authorization": "Bearer abcd1234",
+          "Authorization": "Bearer dummyAccessToken",
           "Content-Type": "application/json"
         },
         "params": {},
@@ -246,7 +246,7 @@
               {
                 "id": "123",
                 "schema": ["EMAIL_SHA256"],
-                "data": [["938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"]]
+                "data": [["d3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419"]]
               }
             ]
           },
@@ -263,9 +263,9 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "access_token": "dummyAccessToken",
+          "refresh_token": "dummyRefreshToken",
+          "developer_token": "dummyDeveloperToken"
         }
       },
       "destination": {
@@ -284,18 +284,18 @@
           "listData": {
             "add": [
               {
-                "email": "sudip@abc.com",
-                "phone": "@09432457768",
-                "firstName": "sudip",
-                "lastName": "paul",
+                "email": "test@abc.com",
+                "phone": "@09876543210",
+                "firstName": "test",
+                "lastName": "rudderlabs",
                 "country": "US",
                 "postalCode": "1245"
               },
               {
-                "email": "rohith@abc.com",
-                "phone": "@09432457768",
-                "firstName": "rohith",
-                "lastName": "kaza",
+                "email": "test@rudderstack.com",
+                "phone": "@09876543210",
+                "firstName": "rudderlabs",
+                "lastName": "rudderlabs",
                 "country": "US",
                 "postalCode": "1245"
               }
@@ -319,7 +319,7 @@
         "method": "POST",
         "endpoint": "https://adsapi.snapchat.com/v1/segments/123/users",
         "headers": {
-          "Authorization": "Bearer abcd1234",
+          "Authorization": "Bearer dummyAccessToken",
           "Content-Type": "application/json"
         },
         "params": {},
@@ -329,8 +329,8 @@
               {
                 "schema": ["EMAIL_SHA256"],
                 "data": [
-                  ["938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"],
-                  ["445f6f4b062809de065cfbb4b56bfeedc550842887237e792d4ce23df9b172e0"]
+                  ["d3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419"],
+                  ["1c5e54849f5c711ce38fa60716fbbe44bff478f9ca250897b39cdfc2438cd1bd"]
                 ]
               }
             ]
@@ -348,9 +348,9 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "access_token": "dummyAccessToken",
+          "refresh_token": "dummyRefreshToken",
+          "developer_token": "dummyDeveloperToken"
         }
       },
       "destination": {
@@ -369,18 +369,18 @@
           "listData": {
             "remove": [
               {
-                "email": "sudip@abc.com",
-                "phone": "@09432457768",
-                "firstName": "sudip",
-                "lastName": "paul",
+                "email": "test@abc.com",
+                "phone": "@09876543210",
+                "firstName": "test",
+                "lastName": "rudderlabs",
                 "country": "US",
                 "postalCode": "1245"
               },
               {
-                "email": "rohith@abc.com",
-                "phone": "@09432457768",
-                "firstName": "rohith",
-                "lastName": "kaza",
+                "email": "test@rudderstack.com",
+                "phone": "@09876543210",
+                "firstName": "rudderlabs",
+                "lastName": "rudderlabs",
                 "country": "US",
                 "postalCode": "1245"
               }
@@ -404,7 +404,7 @@
         "method": "DELETE",
         "endpoint": "https://adsapi.snapchat.com/v1/segments/123/users",
         "headers": {
-          "Authorization": "Bearer abcd1234",
+          "Authorization": "Bearer dummyAccessToken",
           "Content-Type": "application/json"
         },
         "params": {},
@@ -415,8 +415,8 @@
                 "id": "123",
                 "schema": ["EMAIL_SHA256"],
                 "data": [
-                  ["938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"],
-                  ["445f6f4b062809de065cfbb4b56bfeedc550842887237e792d4ce23df9b172e0"]
+                  ["d3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419"],
+                  ["1c5e54849f5c711ce38fa60716fbbe44bff478f9ca250897b39cdfc2438cd1bd"]
                 ]
               }
             ]
@@ -434,9 +434,9 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "access_token": "dummyAccessToken",
+          "refresh_token": "dummyRefreshToken",
+          "developer_token": "dummyDeveloperToken"
         }
       },
       "destination": {
@@ -455,10 +455,10 @@
           "listData": {
             "add": [
               {
-                "email": "rohith@abc.com",
-                "phone": "@09432457768",
-                "firstName": "rohith",
-                "lastName": "kaza",
+                "email": "test@rudderstack.com",
+                "phone": "@09876543210",
+                "firstName": "rudderlabs",
+                "lastName": "rudderlabs",
                 "country": "US",
                 "postalCode": "1245"
               }
@@ -485,9 +485,9 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "access_token": "dummyAccessToken",
+          "refresh_token": "dummyRefreshToken",
+          "developer_token": "dummyDeveloperToken"
         }
       },
       "destination": {
@@ -505,10 +505,10 @@
           "listData": {
             "add": [
               {
-                "email": "rohith@abc.com",
-                "phone": "@09432457768",
-                "firstName": "rohith",
-                "lastName": "kaza",
+                "email": "test@rudderstack.com",
+                "phone": "@09876543210",
+                "firstName": "rudderlabs",
+                "lastName": "rudderlabs",
                 "country": "US",
                 "postalCode": "1245"
               }
@@ -535,9 +535,9 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "access_token": "dummyAccessToken",
+          "refresh_token": "dummyRefreshToken",
+          "developer_token": "dummyDeveloperToken"
         }
       },
       "destination": {
@@ -571,9 +571,9 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "access_token": "dummyAccessToken",
+          "refresh_token": "dummyRefreshToken",
+          "developer_token": "dummyDeveloperToken"
         }
       },
       "destination": {
@@ -610,9 +610,9 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "access_token": "dummyAccessToken",
+          "refresh_token": "dummyRefreshToken",
+          "developer_token": "dummyDeveloperToken"
         }
       },
       "destination": {
@@ -652,9 +652,9 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "access_token": "dummyAccessToken",
+          "refresh_token": "dummyRefreshToken",
+          "developer_token": "dummyDeveloperToken"
         }
       },
       "destination": {
@@ -674,16 +674,16 @@
             "remove": [
               {
                 "email": "",
-                "phone": "@09432457768",
-                "firstName": "sudip",
-                "lastName": "paul",
+                "phone": "@09876543210",
+                "firstName": "test",
+                "lastName": "rudderlabs",
                 "country": "US",
                 "postalCode": "1245"
               },
               {
-                "phone": "@09432457768",
-                "firstName": "sudip",
-                "lastName": "paul",
+                "phone": "@09876543210",
+                "firstName": "test",
+                "lastName": "rudderlabs",
                 "country": "US",
                 "postalCode": "1245"
               }
@@ -710,9 +710,9 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "access_token": "dummyAccessToken",
+          "refresh_token": "dummyRefreshToken",
+          "developer_token": "dummyDeveloperToken"
         }
       },
       "destination": {
@@ -732,16 +732,16 @@
             "remove": [
               {
                 "email": "abcd@abc.com",
-                "phone": "@09432457768",
-                "firstName": "sudip",
-                "lastName": "paul",
+                "phone": "@09876543210",
+                "firstName": "test",
+                "lastName": "rudderlabs",
                 "country": "US",
                 "postalCode": "1245"
               },
               {
-                "phone": "@09432457768",
-                "firstName": "sudip",
-                "lastName": "paul",
+                "phone": "@09876543210",
+                "firstName": "test",
+                "lastName": "rudderlabs",
                 "country": "US",
                 "postalCode": "1245"
               }
@@ -765,7 +765,7 @@
         "method": "DELETE",
         "endpoint": "https://adsapi.snapchat.com/v1/segments/123/users",
         "headers": {
-          "Authorization": "Bearer abcd1234",
+          "Authorization": "Bearer dummyAccessToken",
           "Content-Type": "application/json"
         },
         "params": {},
@@ -792,9 +792,9 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "access_token": "dummyAccessToken",
+          "refresh_token": "dummyRefreshToken",
+          "developer_token": "dummyDeveloperToken"
         }
       },
       "destination": {
@@ -813,10 +813,10 @@
           "listData": {
             "add": [
               {
-                "email": "sudip@abc.com",
-                "phone": "09432457768",
-                "firstName": "sudip",
-                "lastName": "paul",
+                "email": "test@abc.com",
+                "phone": "09876543210",
+                "firstName": "test",
+                "lastName": "rudderlabs",
                 "country": "US",
                 "postalCode": "1245"
               }
@@ -840,7 +840,7 @@
         "method": "POST",
         "endpoint": "https://adsapi.snapchat.com/v1/segments/123/users",
         "headers": {
-          "Authorization": "Bearer abcd1234",
+          "Authorization": "Bearer dummyAccessToken",
           "Content-Type": "application/json"
         },
         "params": {},
@@ -849,7 +849,7 @@
             "users": [
               {
                 "schema": ["PHONE_SHA256"],
-                "data": [["0dcd4be87427e008a16adbdc2b2c15a14accf485dd451314dcecfb902c51c686"]]
+                "data": [["7619ee8cea49187f309616e30ecf54be072259b43760f1f550a644945d5572f2"]]
               }
             ]
           },
@@ -866,9 +866,9 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "access_token": "dummyAccessToken",
+          "refresh_token": "dummyRefreshToken",
+          "developer_token": "dummyDeveloperToken"
         }
       },
       "destination": {
@@ -887,11 +887,11 @@
           "listData": {
             "add": [
               {
-                "email": "sudip@abc.com",
-                "phone": "09432457768",
+                "email": "test@abc.com",
+                "phone": "09876543210",
                 "mobileId": "1334",
-                "firstName": "sudip",
-                "lastName": "paul",
+                "firstName": "test",
+                "lastName": "rudderlabs",
                 "country": "US",
                 "postalCode": "1245"
               }
@@ -915,7 +915,7 @@
         "method": "POST",
         "endpoint": "https://adsapi.snapchat.com/v1/segments/123/users",
         "headers": {
-          "Authorization": "Bearer abcd1234",
+          "Authorization": "Bearer dummyAccessToken",
           "Content-Type": "application/json"
         },
         "params": {},

@@ -20,7 +20,7 @@
       "method": "POST",
       "params": {},
       "headers": {
-        "Authorization": "Basic b01BRU1OYjVxcGgxREFWUGZHcXJPRHFRQ0wyWU1pZUc=",
+        "Authorization": "Basic ZHVtbXlBcGlLZXk=",
         "Content-Type": "application/json"
       },
       "version": "1",
@@ -35,7 +35,7 @@
     "statusCode": 200,
     "destination": {
       "Config": {
-        "apiKey": "oMAEMNb5qph1DAVPfGqrODqQCL2YMieG",
+        "apiKey": "dummyApiKey",
         "channel": "email",
         "delay": 0,
         "eventNamesSettings": [{ "event": "" }]
@@ -58,7 +58,7 @@
       "method": "POST",
       "params": {},
       "headers": {
-        "Authorization": "Basic b01BRU1OYjVxcGgxREFWUGZHcXJPRHFRQ0wyWU1pZUc=",
+        "Authorization": "Basic ZHVtbXlBcGlLZXk=",
         "Content-Type": "application/json"
       },
       "version": "1",
@@ -73,7 +73,7 @@
     "statusCode": 200,
     "destination": {
       "Config": {
-        "apiKey": "oMAEMNb5qph1DAVPfGqrODqQCL2YMieG",
+        "apiKey": "dummyApiKey",
         "channel": "email",
         "delay": 0,
         "eventNamesSettings": [{ "event": "" }]

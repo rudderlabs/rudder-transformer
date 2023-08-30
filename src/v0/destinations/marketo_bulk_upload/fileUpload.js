@@ -5,7 +5,7 @@ const {
   getAccessToken,
   getMarketoFilePath,
   handleFileUploadResponse,
-  getFieldSchema
+  getFieldSchemaMap
 } = require('./util');
 const { isHttpStatusSuccess } = require('../../util');
 const { MARKETO_FILE_SIZE, UPLOAD_FILE } = require('./config');
@@ -25,26 +25,13 @@ const tags = require('../../util/tags');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const stats = require('../../../util/stats');
 
-const fetchFieldSchema = async (config, accessToken) => {
-  let fieldArr = [];
-  const fieldSchemaNames = [];
-  const fieldSchemaMapping = await getFieldSchema(accessToken, config.munchkinId)
-   if (
-    fieldSchemaMapping.response?.success &&
-    fieldSchemaMapping.response?.result.length > 0 &&
-    fieldSchemaMapping.response?.result[0]
-  ) {
-    fieldArr =
-      fieldSchemaMapping.response.result && Array.isArray(fieldSchemaMapping.response.result)
-        ? fieldSchemaMapping.response.result[0]?.fields
-        : [];
-    fieldArr.forEach((field) => {
-      fieldSchemaNames.push(field?.name);
-    });
-  } else {
-    throw new RetryableError('Failed to fetch Marketo Field Schema', 500, fieldSchemaMapping);
+const fetchFieldSchemaNames = async (config, accessToken) => {
+  const fieldSchemaMapping = await getFieldSchemaMap(accessToken, config.munchkinId)
+  if (Object.keys(fieldSchemaMapping)?.length > 0) {
+    const fieldSchemaNames = Object.keys(fieldSchemaMapping)
+    return { fieldSchemaNames }
   }
-  return { fieldSchemaNames };
+  throw new RetryableError('Failed to fetch Marketo Field Schema', 500, fieldSchemaMapping);
 };
 
 const getHeaderFields = (config, fieldSchemaNames) => {
@@ -242,7 +229,7 @@ const responseHandler = async (input, config) => {
     "pollURL" : <some-url-to-poll-status>,
   }
   */
-  const { fieldSchemaNames } = await fetchFieldSchema(config, accessToken);
+  const { fieldSchemaNames } = await fetchFieldSchemaNames(config, accessToken);
   if (fieldSchemaNames.length <= 0) {
     throw new ConfigurationError(
       'Could not find any field schema corresponding to your marketo account. Aborting.',

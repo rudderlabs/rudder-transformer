@@ -3,10 +3,10 @@
 const { getAccessToken } = require('./util');
 const { JOB_STATUS_ACTIVITY } = require('./config');
 const { handleHttpRequest } = require('../../../adapters/network');
-const { AbortedError, PlatformError, UnauthorizedError } = require('../../util/errorTypes');
+const { AbortedError, PlatformError } = require('../../util/errorTypes');
 const stats = require('../../../util/stats');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-const { handleFetchJobStatusResponse, getFieldSchema, checkEventStatusViaSchemaMatching } = require('./util');
+const { handleFetchJobStatusResponse, getFieldSchemaMap, checkEventStatusViaSchemaMatching } = require('./util');
 const { removeUndefinedValues } = require('../../util');
 
 const FETCH_FAILURE_JOB_STATUS_ERR_MSG = 'Could not fetch failure job status';
@@ -100,14 +100,14 @@ const responseHandler = async (event, type) => {
   }
   const startTime = Date.now();
   const data = {};
-  const fieldSchemaMapping = await getFieldSchema(accessToken, config.munchkinId)
+  const fieldSchemaMapping = await getFieldSchemaMap(accessToken, config.munchkinId)
   const unsuccessfulJobInfo = checkEventStatusViaSchemaMatching(event, fieldSchemaMapping)
 
   // create a map of job_id and data sent from server
   // {<jobId>: '<param-val1>,<param-val2>'}
   input.forEach((i) => {
     const jobId = i.metadata.job_id;
-  
+
     if (!unsuccessfulJobInfo.hasOwnProperty(jobId)) {
       // Process for jobs not in unsuccessfulJobInfo
       const response = headerArr.map((fieldName) => Object.values(i)[0][fieldName]).join(',');
@@ -122,10 +122,10 @@ const responseHandler = async (event, type) => {
         return i.message[fieldName];
       });
 
-     data[jobId] = [...new Set(filteredValues)].join(',');
-  }
+      data[jobId] = [...new Set(filteredValues)].join(',');
+    }
   });
-if (Object.keys(unsuccessfulJobInfo).length === 0 || type === 'fail' ){
+  if (Object.keys(unsuccessfulJobInfo).length === 0 || type === 'fail') {
     // match marketo response data with received data from server
     for (const element of responseArr) {
       // split response by comma but ignore commas inside double quotes
@@ -138,19 +138,19 @@ if (Object.keys(unsuccessfulJobInfo).length === 0 || type === 'fail' ){
         // joining the parameter values sent from marketo match it with received data from server
         if (val === `${elemArr.map(item => item.replace(/"/g, '')).join(',')}`) {
           // add job keys if warning/failure
-          if (!unsuccessfulJobIdsArr.includes(key)) { 
+          if (!unsuccessfulJobIdsArr.includes(key)) {
             unsuccessfulJobIdsArr.push(key);
           }
           reasons[key] = reasonMessage;
         }
       }
     }
-} else {
-  unsuccessfulJobIdsArr = Object.keys(unsuccessfulJobInfo)
-  reasons = {...unsuccessfulJobInfo}
-}
+  } else {
+    unsuccessfulJobIdsArr = Object.keys(unsuccessfulJobInfo)
+    reasons = { ...unsuccessfulJobInfo }
+  }
 
- successfulJobIdsArr = Object.keys(data).filter((x) => !unsuccessfulJobIdsArr.includes(x));
+  successfulJobIdsArr = Object.keys(data).filter((x) => !unsuccessfulJobIdsArr.includes(x));
   if (type === 'fail') {
     FailedKeys = unsuccessfulJobIdsArr.map((strJobId) => parseInt(strJobId, 10));
   } else if (type === 'warn') {

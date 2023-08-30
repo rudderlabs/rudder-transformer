@@ -150,7 +150,7 @@ const getAccessToken = async (config) =>
       }
       return accessTokenResponse.response.access_token;
     }
-    throw new AbortedError ( 'Could not retrieve authorisation token',400);
+    throw new AbortedError('Could not retrieve authorisation token', 400);
   });
 
 /**
@@ -340,39 +340,27 @@ const handleFileUploadResponse = (resp, successfulJobs, unsuccessfulJobs, reques
  * @param {string} munchkinId - The munchkin ID of the Marketo instance.
  * @returns {object} - The field schema mapping retrieved from the Marketo API.
  */
-const getFieldSchema = async (accessToken, munchkinId) => {
-    // ref: https://developers.marketo.com/rest-api/endpoint-reference/endpoint-index/#:~:text=Describe%20Lead2,leads/describe2.json
-    const { processedResponse: fieldSchemaMapping } = await handleHttpRequest(
-      'get',
-      `https://${munchkinId}.mktorest.com/rest/v1/leads/describe2.json`,
-      {
-        params: {
-          access_token: accessToken,
-        },
-      },
-      {
-        destType: 'marketo_bulk_upload',
-        feature: 'transformation',
-      },
-    );
-  
-    if (fieldSchemaMapping.response.errors) {
-      handleCommonErrorResponse(fieldSchemaMapping);
-    }
-    return fieldSchemaMapping
-}
-
-/**
- * Compares the data types of the fields in an event message with the expected data types defined in the field schema mapping.
- * Identifies any mismatched fields and returns them as a map of job IDs and the corresponding invalid fields.
- *
- * @param {object} event - An object containing an `input` array of events. Each event has a `message` object with field-value pairs and a `metadata` object with a `job_id` property.
- * @param {object} fieldSchemaMapping - An object containing the field schema mapping, which includes the expected data types for each field.
- * @returns {object} - An object containing the job IDs as keys and the corresponding invalid fields as values.
- */
-const checkEventStatusViaSchemaMatching = (event, fieldSchemaMapping) => {
+const getFieldSchemaMap = async (accessToken, munchkinId) => {
   let fieldArr = [];
   const fieldMap = {}; // map to store field name and data type
+  // ref: https://developers.marketo.com/rest-api/endpoint-reference/endpoint-index/#:~:text=Describe%20Lead2,leads/describe2.json
+  const { processedResponse: fieldSchemaMapping } = await handleHttpRequest(
+    'get',
+    `https://${munchkinId}.mktorest.com/rest/v1/leads/describe2.json`,
+    {
+      params: {
+        access_token: accessToken,
+      },
+    },
+    {
+      destType: 'marketo_bulk_upload',
+      feature: 'transformation',
+    },
+  );
+
+  if (fieldSchemaMapping.response.errors) {
+    handleCommonErrorResponse(fieldSchemaMapping);
+  }
   if (
     fieldSchemaMapping.response?.success &&
     fieldSchemaMapping.response?.result.length > 0 &&
@@ -386,7 +374,22 @@ const checkEventStatusViaSchemaMatching = (event, fieldSchemaMapping) => {
     fieldArr.forEach((field) => {
       fieldMap[field?.name] = field?.dataType;
     });
+  } else {
+    throw new RetryableError('Failed to fetch Marketo Field Schema', 500, fieldSchemaMapping);
   }
+  return fieldMap;
+}
+
+/**
+ * Compares the data types of the fields in an event message with the expected data types defined in the field schema mapping.
+ * Identifies any mismatched fields and returns them as a map of job IDs and the corresponding invalid fields.
+ *
+ * @param {object} event - An object containing an `input` array of events. Each event has a `message` object with field-value pairs and a `metadata` object with a `job_id` property.
+ * @param {object} fieldSchemaMapping - An object containing the field schema mapping, which includes the expected data types for each field.
+ * @returns {object} - An object containing the job IDs as keys and the corresponding invalid fields as values.
+ */
+const checkEventStatusViaSchemaMatching = (event, fieldMap) => {
+
   const mismatchedFields = {};
   const events = event.input;
   events.forEach((event) => {
@@ -417,6 +420,6 @@ module.exports = {
   handleFileUploadResponse,
   getMarketoFilePath,
   handleCommonErrorResponse,
-  getFieldSchema,
+  getFieldSchemaMap,
   checkEventStatusViaSchemaMatching
 };

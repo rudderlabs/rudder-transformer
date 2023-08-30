@@ -64,8 +64,7 @@ const getJobsStatus = async (event, type, accessToken) => {
  */
 const responseHandler = async (event, type) => {
   let FailedKeys = [];
-  let WarningKeys = [];
-  let unsuccessfulJobIdsArr = [];
+  const unsuccessfulJobIdsArr = [];
   let successfulJobIdsArr = [];
   let reasons = {};
 
@@ -102,60 +101,40 @@ const responseHandler = async (event, type) => {
   const data = {};
   const fieldSchemaMapping = await getFieldSchemaMap(accessToken, config.munchkinId)
   const unsuccessfulJobInfo = checkEventStatusViaSchemaMatching(event, fieldSchemaMapping)
+  const mismatchJobIdArray = Object.keys(unsuccessfulJobInfo);
+  const dataTypeMismatchKeys = mismatchJobIdArray.map((strJobId) => parseInt(strJobId, 10));
+  reasons = { ...unsuccessfulJobInfo }
 
+  const filteredEvents = input.filter(item => !dataTypeMismatchKeys.includes(item.metadata.job_id));
   // create a map of job_id and data sent from server
   // {<jobId>: '<param-val1>,<param-val2>'}
-  input.forEach((i) => {
-    const jobId = i.metadata.job_id;
-
-    if (!unsuccessfulJobInfo.hasOwnProperty(jobId)) {
-      // Process for jobs not in unsuccessfulJobInfo
-      const response = headerArr.map((fieldName) => Object.values(i)[0][fieldName]).join(',');
-      data[jobId] = response;
-    } else {
-      // otherwise, omit the failed field
-      const failedFieldName = unsuccessfulJobInfo[jobId].split(' ')[1]; // Extract failed field name
-      const filteredValues = headerArr.map((fieldName) => {
-        if (fieldName === failedFieldName || !i.message[fieldName]) {
-          return ''; // Omit the value for the failed field or if the field is missing
-        }
-        return i.message[fieldName];
-      });
-
-      data[jobId] = [...new Set(filteredValues)].join(',');
-    }
+  filteredEvents.forEach((i) => {
+    const response = headerArr.map((fieldName) => Object.values(i)[0][fieldName]).join(',');
+    data[i.metadata.job_id] = response;
   });
-  if (Object.keys(unsuccessfulJobInfo).length === 0 || type === 'fail') {
-    // match marketo response data with received data from server
-    for (const element of responseArr) {
-      // split response by comma but ignore commas inside double quotes
-      const elemArr = element.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-      // ref :
-      // https://developers.marketo.com/rest-api/bulk-import/bulk-custom-object-import/#:~:text=Now%20we%E2%80%99ll%20make%20Get%20Import%20Custom%20Object%20Failures%20endpoint%20call%20to%20get%20additional%20failure%20detail%3A
-      const reasonMessage = elemArr.pop(); // get the column named "Import Failure Reason"
-      // fetchFieldSchema
-      for (const [key, val] of Object.entries(data)) {
-        // joining the parameter values sent from marketo match it with received data from server
-        if (val === `${elemArr.map(item => item.replace(/"/g, '')).join(',')}`) {
-          // add job keys if warning/failure
-          if (!unsuccessfulJobIdsArr.includes(key)) {
-            unsuccessfulJobIdsArr.push(key);
-          }
-          reasons[key] = reasonMessage;
+
+  // match marketo response data with received data from server
+  for (const element of responseArr) {
+    // split response by comma but ignore commas inside double quotes
+    const elemArr = element.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+    // ref :
+    // https://developers.marketo.com/rest-api/bulk-import/bulk-custom-object-import/#:~:text=Now%20we%E2%80%99ll%20make%20Get%20Import%20Custom%20Object%20Failures%20endpoint%20call%20to%20get%20additional%20failure%20detail%3A
+    const reasonMessage = elemArr.pop(); // get the column named "Import Failure Reason"
+    for (const [key, val] of Object.entries(data)) {
+      // joining the parameter values sent from marketo match it with received data from server
+      if (val === `${elemArr.map(item => item.replace(/"/g, '')).join(',')}`) {
+        // add job keys if warning/failure
+        if (!unsuccessfulJobIdsArr.includes(key)) {
+          unsuccessfulJobIdsArr.push(key);
         }
+        reasons[key] = reasonMessage;
       }
     }
-  } else {
-    unsuccessfulJobIdsArr = Object.keys(unsuccessfulJobInfo)
-    reasons = { ...unsuccessfulJobInfo }
   }
 
+  FailedKeys = unsuccessfulJobIdsArr.map((strJobId) => parseInt(strJobId, 10));
   successfulJobIdsArr = Object.keys(data).filter((x) => !unsuccessfulJobIdsArr.includes(x));
-  if (type === 'fail') {
-    FailedKeys = unsuccessfulJobIdsArr.map((strJobId) => parseInt(strJobId, 10));
-  } else if (type === 'warn') {
-    WarningKeys = unsuccessfulJobIdsArr.map((strJobId) => parseInt(strJobId, 10));
-  }
+
   const SucceededKeys = successfulJobIdsArr.map((strJobId) => parseInt(strJobId, 10));
   const endTime = Date.now();
   const requestTime = endTime - startTime;
@@ -163,10 +142,8 @@ const responseHandler = async (event, type) => {
   const response = {
     statusCode: 200,
     metadata: {
-      FailedKeys,
-      FailedReasons: type === 'fail' ? reasons : undefined,
-      WarningKeys,
-      WarningReasons: type === 'warn' ? reasons : undefined,
+      FailedKeys: [...dataTypeMismatchKeys, ...FailedKeys],
+      FailedReasons: reasons,
       SucceededKeys,
     },
   };

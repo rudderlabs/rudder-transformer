@@ -31,7 +31,7 @@ const getPollStatus = async (event) => {
   const POLL_STATUS_ERR_MSG = 'Could not poll status';
 
   if (!isHttpStatusSuccess(pollStatus.status)) {
-    stats.counter(POLL_ACTIVITY, {
+    stats.counter(POLL_ACTIVITY, 1, {
       status: pollStatus.status,
       state: 'Retryable',
     });
@@ -77,10 +77,10 @@ const responseHandler = async (event) => {
       response = {
         Complete: true,
         statusCode: 200,
-        InProgress : false,
-        hasFailed : numOfRowsFailed > 0,
+        InProgress: false,
+        hasFailed: numOfRowsFailed > 0,
         FailedJobURLs: numOfRowsFailed > 0 ? '/getFailedJobs' : undefined,
-        HasWarning: numOfRowsWithWarning > 0 ,
+        HasWarning: numOfRowsWithWarning > 0,
         WarningJobURLs: numOfRowsWithWarning > 0 ? '/getWarningJobs' : undefined,
         error,
       }
@@ -88,18 +88,18 @@ const responseHandler = async (event) => {
       response = {
         Complete: false,
         statusCode: 500,
-        hasFailed : false,
-        InProgress : true,
-        HasWarning:false,
+        hasFailed: false,
+        InProgress: true,
+        HasWarning: false,
         error,
       }
     } else {
       response = {
         Complete: false,
         statusCode: 500,
-        hasFailed : false,
-        InProgress : false,
-        HasWarning:false,
+        hasFailed: false,
+        InProgress: false,
+        HasWarning: false,
         error
       }
     }

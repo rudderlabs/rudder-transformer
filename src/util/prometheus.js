@@ -886,12 +886,6 @@ class Prometheus {
         labelNames: [],
       },
       {
-        name: 'marketo_bulk_upload_create_header_time',
-        help: 'marketo_bulk_upload_create_header_time',
-        type: 'histogram',
-        labelNames: [],
-      },
-      {
         name: 'marketo_bulk_upload_create_file_time',
         help: 'marketo_bulk_upload_create_file_time',
         type: 'histogram',

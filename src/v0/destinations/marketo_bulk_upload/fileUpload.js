@@ -20,6 +20,7 @@ const {
   ConfigurationError,
   RetryableError,
   UnauthorizedError,
+  PlatformError,
 } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
@@ -151,68 +152,60 @@ const getFileData = async (inputEvents, config, headerArr) => {
 
 const getImportID = async (input, config, accessToken, csvHeader) => {
   const importId = null; // by default importId is null
-  const { readStream, successfulJobs, unsuccessfulJobs } = await getFileData(
-    input,
-    config,
-    csvHeader,
-  );
-  const FILE_UPLOAD_ERR_MSG = 'Could not upload file';
+  let readStream;
+  let successfulJobs;
+  let unsuccessfulJobs;
   try {
-    const formReq = new FormData();
-    const { munchkinId, deDuplicationField } = config;
-    // create file for multipart form
-    if (readStream) {
-      formReq.append('format', 'csv');
-      formReq.append('file', readStream, 'marketo_bulk_upload.csv');
-      formReq.append('access_token', accessToken);
-      // Upload data received from server as files to marketo
-      // DOC: https://developers.marketo.com/rest-api/bulk-import/bulk-lead-import/#import_file
-      const requestOptions = {
-        headers: {
-          ...formReq.getHeaders(),
-        },
-      };
-      if (isDefinedAndNotNullAndNotEmpty(deDuplicationField)) {
-        requestOptions.params = {
-          lookupField: deDuplicationField,
-        };
-      }
-      const startTime = Date.now();
-      const { processedResponse: resp } = await handleHttpRequest(
-        'post',
-        `https://${munchkinId}.mktorest.com/bulk/v1/leads.json`,
-        formReq,
-        requestOptions,
-        {
-          destType: 'marketo_bulk_upload',
-          feature: 'transformation',
-        },
-      );
-      const endTime = Date.now();
-      const requestTime = endTime - startTime;
-      stats.counter('marketo_bulk_upload_upload_file_succJobs', successfulJobs.length);
-      stats.counter('marketo_bulk_upload_upload_file_unsuccJobs', unsuccessfulJobs.length);
-      if (!isHttpStatusSuccess(resp.status)) {
-        throw new NetworkError('Unable to upload file', resp.status);
-      }
-      return handleFileUploadResponse(resp, successfulJobs, unsuccessfulJobs, requestTime, config);
-    }
-    return { importId, successfulJobs, unsuccessfulJobs };
+    ({ readStream, successfulJobs, unsuccessfulJobs } = await getFileData(
+      input,
+      config,
+      csvHeader,
+    ));
   } catch (err) {
-    stats.increment(UPLOAD_FILE, {
-      status: err.status || 500,
-      errorMessage: err?.message || FILE_UPLOAD_ERR_MSG,
-    });
-    const status = err.status || 500;
-    throw new NetworkError(
-      err.message || FILE_UPLOAD_ERR_MSG,
-      status,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
-      },
-      { successfulJobs, unsuccessfulJobs },
-    );
+    throw new PlatformError('Error while creating file', 500, err);
   }
+
+  const formReq = new FormData();
+  const { munchkinId, deDuplicationField } = config;
+  // create file for multipart form
+  if (readStream) {
+    formReq.append('format', 'csv');
+    formReq.append('file', readStream, 'marketo_bulk_upload.csv');
+    formReq.append('access_token', accessToken);
+    // Upload data received from server as files to marketo
+    // DOC: https://developers.marketo.com/rest-api/bulk-import/bulk-lead-import/#import_file
+    const requestOptions = {
+      headers: {
+        ...formReq.getHeaders(),
+      },
+    };
+    if (isDefinedAndNotNullAndNotEmpty(deDuplicationField)) {
+      requestOptions.params = {
+        lookupField: deDuplicationField,
+      };
+    }
+    const startTime = Date.now();
+    const { processedResponse: resp } = await handleHttpRequest(
+      'post',
+      `https://${munchkinId}.mktorest.com/bulk/v1/leads.json`,
+      formReq,
+      requestOptions,
+      {
+        destType: 'marketo_bulk_upload',
+        feature: 'transformation',
+      },
+    );
+    const endTime = Date.now();
+    const requestTime = endTime - startTime;
+    stats.counter('marketo_bulk_upload_upload_file_succJobs', successfulJobs.length);
+    stats.counter('marketo_bulk_upload_upload_file_unsuccJobs', unsuccessfulJobs.length);
+    if (!isHttpStatusSuccess(resp.status)) {
+      throw new NetworkError('Unable to upload file', resp.status);
+    }
+    return handleFileUploadResponse(resp, successfulJobs, unsuccessfulJobs, requestTime, config);
+  }
+  return { importId, successfulJobs, unsuccessfulJobs };
+
 };
 
 /**

@@ -33,7 +33,8 @@ steps:
         environmentId: .destination.Config.clientSideId, 
         cohortId: .destination.Config.audienceId, 
         cohortName: .destination.Config.audienceName, 
-        cohortUrl: .destination.Config.audienceUrl
+        cohortUrl: .destination.Config.audienceUrl,
+        contextKind: .destination.Config.audienceType
       };
       payload.listData = $.prepareIdentifiersList(.message.properties.listData, .destination.Config.identifier);
       payload;

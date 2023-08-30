@@ -65,43 +65,43 @@ const getAccessTokenCacheKey = (config) => {
  *   console.log(error);
  * }
  */
-const handleCommonErrorResponse = (resp, OpErrorMessage, OpActivity, config) => {
+const handleCommonErrorResponse = (apiCallResult, OpErrorMessage, OpActivity, config) => {
   // checking for invalid/expired token errors and evicting cache in that case
   // rudderJobMetadata contains some destination info which is being used to evict the cache
   if (
     authCache &&
-    resp.response?.errors &&
-    resp.response?.errors?.length > 0 &&
-    resp.response?.errors.some((errorObj) => errorObj.code === '601' || errorObj.code === '602')
+    apiCallResult.response?.errors &&
+    apiCallResult.response?.errors?.length > 0 &&
+    apiCallResult.response?.errors.some((errorObj) => errorObj.code === '601' || errorObj.code === '602')
   ) {
     authCache.del(getAccessTokenCacheKey(config));
   }
   if (
-    resp.response?.errors?.length > 0 &&
-    resp.response?.errors[0] &&
-    ((resp.response?.errors[0]?.code >= 1000 && resp.response?.errors[0]?.code <= 1077) ||
-      ABORTABLE_CODES.includes(resp.response?.errors[0]?.code))
+    apiCallResult.response?.errors?.length > 0 &&
+    apiCallResult.response?.errors[0] &&
+    ((apiCallResult.response?.errors[0]?.code >= 1000 && apiCallResult.response?.errors[0]?.code <= 1077) ||
+      ABORTABLE_CODES.includes(apiCallResult.response?.errors[0]?.code))
   ) {
     // for empty file the code is 1003 and that should be retried
     stats.increment(OpActivity, {
       status: 400,
       state: 'Abortable',
     });
-    throw new AbortedError(resp.response?.errors[0]?.message || OpErrorMessage, 400);
-  } else if (THROTTLED_CODES.includes(resp.response?.errors[0]?.code)) {
+    throw new AbortedError(apiCallResult.response?.errors[0]?.message || OpErrorMessage, 400);
+  } else if (THROTTLED_CODES.includes(apiCallResult.response?.errors[0]?.code)) {
     // for more than 10 concurrent uses the code is 615 and that should be retried
     stats.increment(OpActivity, {
-      status: 500,
+      status: 429,
       state: 'Retryable',
     });
-    throw new ThrottledError(resp.response?.errors[0]?.message || OpErrorMessage, 500);
+    throw new ThrottledError(apiCallResult.response?.errors[0]?.message || OpErrorMessage, 500);
   }
   // by default every thing will be retried
   stats.increment(OpActivity, {
     status: 500,
     state: 'Retryable',
   });
-  throw new RetryableError(resp.response?.errors[0]?.message || OpErrorMessage, 500);
+  throw new RetryableError(apiCallResult.response?.errors[0]?.message || OpErrorMessage, 500);
 };
 
 const getAccessTokenURL = (config) => {
@@ -115,42 +115,42 @@ const getAccessTokenURL = (config) => {
 const getAccessToken = async (config) =>
   authCache.get(getAccessTokenCacheKey(config), async () => {
     const url = getAccessTokenURL(config);
-    const { processedResponse: resp } = await handleHttpRequest('get', url, {
+    const { processedResponse: accessTokenResponse } = await handleHttpRequest('get', url, {
       destType: 'marketo_bulk_upload',
       feature: 'transformation',
     });
 
     // sample response : {response: '[ENOTFOUND] :: DNS lookup failed', status: 400}
-    if (!isHttpStatusSuccess(resp.status)) {
+    if (!isHttpStatusSuccess(accessTokenResponse.status)) {
       throw new NetworkError(
         'Could not retrieve authorisation token',
-        resp.status,
+        accessTokenResponse.status,
         {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(resp.status),
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(accessTokenResponse.status),
         },
-        resp,
+        accessTokenResponse,
       );
     }
-    if (resp.response?.success === false) {
-      handleCommonErrorResponse(resp, ACCESS_TOKEN_FETCH_ERR_MSG, FETCH_ACCESS_TOKEN, config);
+    if (accessTokenResponse.response?.success === false) {
+      handleCommonErrorResponse(accessTokenResponse, ACCESS_TOKEN_FETCH_ERR_MSG, FETCH_ACCESS_TOKEN, config);
     }
 
     // when access token is present
-    if (resp.response.access_token) {
+    if (accessTokenResponse.response.access_token) {
       /* This scenario will handle the case when we get the foloowing response
       status: 200  
       respnse: {"access_token":"<dummy-access-token>","token_type":"bearer","expires_in":0,"scope":"dummy@scope.com"}
       wherein "expires_in":0 denotes that we should refresh the accessToken but its not expired yet. 
       */
-      if (resp.response?.expires_in === 0) {
+      if (accessTokenResponse.response?.expires_in === 0) {
         throw new RetryableError(
           `Request Failed for marketo_bulk_upload, Access Token Expired (Retryable).`,
           500,
         );
       }
-      return resp.response.access_token;
+      return accessTokenResponse.response.access_token;
     }
-    return null;
+    throw new AbortedError ( 'Could not retrieve authorisation token',400);
   });
 
 /**

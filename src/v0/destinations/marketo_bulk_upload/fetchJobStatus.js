@@ -14,10 +14,6 @@ const FETCH_WARNING_JOB_STATUS_ERR_MSG = 'Could not fetch warning job status';
 
 const getJobsStatus = async (event, type, accessToken) => {
   const { config, importId } = event;
-  // If token is null
-  if (!accessToken) {
-    throw new UnauthorizedError('Authorization failed');
-  }
   const { munchkinId } = config;
   let url;
   // Get status of each lead for failed leads

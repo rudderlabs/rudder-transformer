@@ -236,10 +236,6 @@ const getImportID = async (input, config, accessToken, csvHeader) => {
  */
 const responseHandler = async (input, config) => {
   const accessToken = await getAccessToken(config);
-  // If token is null
-  if (!accessToken) {
-    throw new UnauthorizedError('Authorization failed');
-  }
   /**
   {
     "importId" : <some-id>,

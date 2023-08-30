@@ -2,17 +2,12 @@ const { removeUndefinedValues, isHttpStatusSuccess } = require('../../util');
 const { getAccessToken, handlePollResponse } = require('./util');
 const { handleHttpRequest } = require('../../../adapters/network');
 const stats = require('../../../util/stats');
-const { NetworkError, UnauthorizedError } = require('../../util/errorTypes');
+const { NetworkError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { POLL_ACTIVITY } = require('./config');
 
 const getPollStatus = async (event) => {
   const accessToken = await getAccessToken(event.config);
-
-  // If token is null
-  if (!accessToken) {
-    throw new UnauthorizedError('Authorization failed');
-  }
   const { munchkinId } = event.config;
 
   // To see the status of the import job polling is done
@@ -46,12 +41,8 @@ const getPollStatus = async (event) => {
 };
 
 const responseHandler = async (event) => {
-  let success = false;
-  let statusCode = 500;
-  let hasFailed;
-  let HasWarning;
   let error;
-  let InProgress = false;
+  let response = {};
   const pollResp = await getPollStatus(event);
   // Server expects :
   /**
@@ -72,6 +63,8 @@ const responseHandler = async (event) => {
     } // Failed Upload
     {
         "success": false,
+        "Inprogress": true,
+         statusCode: 500,
     } // Importing or Queue
 
   */
@@ -81,25 +74,36 @@ const responseHandler = async (event) => {
     // ref: https://nation.marketo.com/t5/ideas/support-error-code-in-record-level-in-lead-bulk-api/idi-p/262191
     const { status, numOfRowsFailed, numOfRowsWithWarning } = pollResp.result[0];
     if (status === 'Complete') {
-      success = true;
-      statusCode = 200;
-      hasFailed = numOfRowsFailed > 0;
-      HasWarning = numOfRowsWithWarning > 0;
+      response = {
+        Complete: true,
+        statusCode: 200,
+        InProgress : false,
+        hasFailed : numOfRowsFailed > 0,
+        FailedJobURLs: numOfRowsFailed > 0 ? '/getFailedJobs' : undefined,
+        HasWarning: numOfRowsWithWarning > 0 ,
+        WarningJobURLs: numOfRowsWithWarning > 0 ? '/getWarningJobs' : undefined,
+        error,
+      }
     } else if (status === 'Importing' || status === 'Queued') {
-      success = false;
-      InProgress = true;
+      response = {
+        Complete: false,
+        statusCode: 500,
+        hasFailed : false,
+        InProgress : true,
+        HasWarning:false,
+        error,
+      }
+    } else {
+      response = {
+        Complete: false,
+        statusCode: 500,
+        hasFailed : false,
+        InProgress : false,
+        HasWarning:false,
+        error
+      }
     }
   }
-  const response = {
-    Complete: success,
-    statusCode,
-    hasFailed,
-    InProgress,
-    FailedJobURLs: hasFailed ? '/getFailedJobs' : undefined,
-    HasWarning,
-    WarningJobURLs: HasWarning ? '/getWarningJobs' : undefined,
-    error,
-  };
   return removeUndefinedValues(response);
 };
 

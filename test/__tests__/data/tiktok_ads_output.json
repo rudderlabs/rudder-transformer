@@ -6,7 +6,7 @@
       "method": "POST",
       "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
-        "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
+        "Access-Token": "dummyAccessToken",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -66,7 +66,7 @@
       "method": "POST",
       "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
-        "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
+        "Access-Token": "dummyAccessToken",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -126,7 +126,7 @@
       "method": "POST",
       "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
-        "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
+        "Access-Token": "dummyAccessToken",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -194,7 +194,7 @@
       "method": "POST",
       "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
-        "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
+        "Access-Token": "dummyAccessToken",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -255,7 +255,7 @@
       "method": "POST",
       "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
-        "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
+        "Access-Token": "dummyAccessToken",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -360,7 +360,7 @@
       "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "files": {},
       "headers": {
-        "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
+        "Access-Token": "dummyAccessToken",
         "Content-Type": "application/json"
       },
       "method": "POST",
@@ -376,7 +376,7 @@
       "method": "POST",
       "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
-        "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
+        "Access-Token": "dummyAccessToken",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -454,7 +454,7 @@
       "method": "POST",
       "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
-        "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
+        "Access-Token": "dummyAccessToken",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -513,7 +513,7 @@
       "method": "POST",
       "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
-        "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
+        "Access-Token": "dummyAccessToken",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -573,7 +573,7 @@
       "method": "POST",
       "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
-        "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
+        "Access-Token": "dummyAccessToken",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -615,7 +615,7 @@
       "method": "POST",
       "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
-        "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
+        "Access-Token": "dummyAccessToken",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -684,7 +684,7 @@
       "method": "POST",
       "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
-        "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
+        "Access-Token": "dummyAccessToken",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -744,7 +744,7 @@
       "method": "POST",
       "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
-        "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
+        "Access-Token": "dummyAccessToken",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -804,7 +804,7 @@
       "method": "POST",
       "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
-        "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
+        "Access-Token": "dummyAccessToken",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -865,7 +865,7 @@
       "method": "POST",
       "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
-        "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
+        "Access-Token": "dummyAccessToken",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -926,7 +926,7 @@
       "method": "POST",
       "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
-        "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
+        "Access-Token": "dummyAccessToken",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -986,7 +986,7 @@
       "method": "POST",
       "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
-        "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
+        "Access-Token": "dummyAccessToken",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -1044,7 +1044,7 @@
       "method": "POST",
       "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
-        "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
+        "Access-Token": "dummyAccessToken",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -1113,7 +1113,7 @@
       "method": "POST",
       "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
-        "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
+        "Access-Token": "dummyAccessToken",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -1173,7 +1173,7 @@
       "method": "POST",
       "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
-        "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
+        "Access-Token": "dummyAccessToken",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -1233,7 +1233,7 @@
       "method": "POST",
       "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
-        "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
+        "Access-Token": "dummyAccessToken",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -1293,7 +1293,7 @@
       "method": "POST",
       "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
-        "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
+        "Access-Token": "dummyAccessToken",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -1353,7 +1353,7 @@
       "method": "POST",
       "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
-        "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
+        "Access-Token": "dummyAccessToken",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -1416,7 +1416,7 @@
       "method": "POST",
       "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
-        "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
+        "Access-Token": "dummyAccessToken",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -1480,7 +1480,7 @@
       "method": "POST",
       "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
-        "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
+        "Access-Token": "dummyAccessToken",
         "Content-Type": "application/json"
       },
       "params": {},

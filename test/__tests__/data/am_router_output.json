@@ -32,7 +32,7 @@
                   "initial_referrer": "https://docs.rudderstack.com",
                   "initial_referring_domain": "docs.rudderstack.com",
                   "anonymousId": "123456",
-                  "email": "sayan@gmail.com",
+                  "email": "test@rudderstack.com",
                   "postalCode": 712136,
                   "state": "WB",
                   "street": "",
@@ -115,7 +115,7 @@
                 "user_properties": {
                   "initial_referrer": "https://docs.rudderstack.com",
                   "initial_referring_domain": "docs.rudderstack.com",
-                  "email": "sayan@gmail.com",
+                  "email": "test@rudderstack.com",
                   "anonymousId": "12345"
                 },
                 "user_id": "12345",

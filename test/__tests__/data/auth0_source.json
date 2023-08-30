@@ -16,15 +16,15 @@
           "user_agent": "unknown",
           "details": {
             "body": {
-              "email": "bhalalamark+21@gmail.com",
+              "email": "testRudderlabs+21@gmail.com",
               "tenant": "dev-cu4jy2zgao6yx15x",
-              "password": "*****",
+              "password": "dummyPassword",
               "client_id": "vQcJNDTxsM1W72eHFonRJdzyOvawlwIt",
               "connection": "Username-Password-Authentication"
             }
           },
-          "user_id": "auth0|*****",
-          "user_name": "bhalalamark+21@gmail.com",
+          "user_id": "auth0|dummyPassword",
+          "user_name": "testRudderlabs+21@gmail.com",
           "strategy": "auth0",
           "strategy_type": "database",
           "log_id": "90020221031055712103169676686005480714681762668315934738"
@@ -46,8 +46,8 @@
               "auth": {
                 "user": {
                   "name": "rudder test",
-                  "email": "test@rudderlabs.com",
-                  "user_id": "auth0|*****"
+                  "email": "test@rudderstack.com",
+                  "user_id": "auth0|dummyPassword"
                 },
                 "strategy": "jwt",
                 "credentials": {
@@ -187,8 +187,8 @@
                 }
               },
               "body": {
-                "email": "bhalalamark+21@gmail.com",
-                "password": "*****",
+                "email": "testRudderlabs+21@gmail.com",
+                "password": "dummyPassword",
                 "connection": "Username-Password-Authentication"
               },
               "path": "/api/v2/users",
@@ -199,15 +199,15 @@
             },
             "response": {
               "body": {
-                "name": "bhalalamark+21@gmail.com",
-                "email": "bhalalamark+21@gmail.com",
+                "name": "testRudderlabs+21@gmail.com",
+                "email": "testRudderlabs+21@gmail.com",
                 "picture": "https://s.gravatar.com/avatar/0902f9d02b92aed9f0ac59aaf9475b60?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fbh.png",
-                "user_id": "auth0|*****",
-                "nickname": "bhalalamark+21",
+                "user_id": "auth0|dummyPassword",
+                "nickname": "testRudderlabs+21",
                 "created_at": "2022-10-31T05:57:06.864Z",
                 "identities": [
                   {
-                    "user_id": "auth0|*****",
+                    "user_id": "auth0|dummyPassword",
                     "isSocial": false,
                     "provider": "auth0",
                     "connection": "Username-Password-Authentication"
@@ -219,7 +219,7 @@
               "statusCode": 201
             }
           },
-          "user_id": "auth0|*****",
+          "user_id": "auth0|dummyPassword",
           "log_id": "90020221031055712103169676686007898566320991926665347090"
         }
       }
@@ -232,11 +232,11 @@
           "connection": "Username-Password-Authentication",
           "connection_id": "con_djwCjiwyID0vZy1S"
         },
-        "userId": "auth0|*****",
+        "userId": "auth0|dummyPassword",
         "context": {
           "traits": {
-            "userId": "auth0|*****",
-            "user_name": "bhalalamark+21@gmail.com"
+            "userId": "auth0|dummyPassword",
+            "user_name": "testRudderlabs+21@gmail.com"
           },
           "library": {
             "name": "unknown",
@@ -252,9 +252,9 @@
           "log_id": "90020221031055712103169676686005480714681762668315934738",
           "details": {
             "body": {
-              "email": "bhalalamark+21@gmail.com",
+              "email": "testRudderlabs+21@gmail.com",
               "tenant": "dev-cu4jy2zgao6yx15x",
-              "password": "*****",
+              "password": "dummyPassword",
               "client_id": "vQcJNDTxsM1W72eHFonRJdzyOvawlwIt",
               "connection": "Username-Password-Authentication"
             }
@@ -272,14 +272,14 @@
         "type": "track",
         "event": "Success API Operation",
         "sentAt": "2022-10-31T05:57:06.874Z",
-        "userId": "auth0|*****",
+        "userId": "auth0|dummyPassword",
         "context": {
           "library": {
             "name": "unknown",
             "version": "unknown"
           },
           "traits": {
-            "userId": "auth0|*****"
+            "userId": "auth0|dummyPassword"
           },
           "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36",
           "request_ip": "35.166.202.113",
@@ -295,8 +295,8 @@
               "auth": {
                 "user": {
                   "name": "rudder test",
-                  "email": "test@rudderlabs.com",
-                  "user_id": "auth0|*****"
+                  "email": "test@rudderstack.com",
+                  "user_id": "auth0|dummyPassword"
                 },
                 "strategy": "jwt",
                 "credentials": {
@@ -436,8 +436,8 @@
                 }
               },
               "body": {
-                "email": "bhalalamark+21@gmail.com",
-                "password": "*****",
+                "email": "testRudderlabs+21@gmail.com",
+                "password": "dummyPassword",
                 "connection": "Username-Password-Authentication"
               },
               "path": "/api/v2/users",
@@ -448,15 +448,15 @@
             },
             "response": {
               "body": {
-                "name": "bhalalamark+21@gmail.com",
-                "email": "bhalalamark+21@gmail.com",
+                "name": "testRudderlabs+21@gmail.com",
+                "email": "testRudderlabs+21@gmail.com",
                 "picture": "https://s.gravatar.com/avatar/0902f9d02b92aed9f0ac59aaf9475b60?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fbh.png",
-                "user_id": "auth0|*****",
-                "nickname": "bhalalamark+21",
+                "user_id": "auth0|dummyPassword",
+                "nickname": "testRudderlabs+21",
                 "created_at": "2022-10-31T05:57:06.864Z",
                 "identities": [
                   {
-                    "user_id": "auth0|*****",
+                    "user_id": "auth0|dummyPassword",
                     "isSocial": false,
                     "provider": "auth0",
                     "connection": "Username-Password-Authentication"
@@ -498,7 +498,7 @@
               "auth": {
                 "user": {
                   "name": "rudder test",
-                  "email": "test@rudderlabs.com",
+                  "email": "test@rudderstack.com",
                   "user_id": "google-oauth2|123456"
                 },
                 "strategy": "jwt",
@@ -553,7 +553,7 @@
               "auth": {
                 "user": {
                   "name": "rudder test",
-                  "email": "test@rudderlabs.com",
+                  "email": "test@rudderstack.com",
                   "user_id": "google-oauth2|123456"
                 },
                 "strategy": "jwt",
@@ -605,7 +605,7 @@
               "auth": {
                 "user": {
                   "name": "rudder test",
-                  "email": "test@rudderlabs.com",
+                  "email": "test@rudderstack.com",
                   "user_id": "google-oauth2|123456"
                 },
                 "strategy": "jwt",
@@ -864,7 +864,7 @@
               "auth": {
                 "user": {
                   "name": "rudder test",
-                  "email": "test@rudderlabs.com",
+                  "email": "test@rudderstack.com",
                   "user_id": "google-oauth2|123456"
                 },
                 "strategy": "jwt",

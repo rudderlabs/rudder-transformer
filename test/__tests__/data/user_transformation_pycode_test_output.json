@@ -63,7 +63,7 @@
         },
         "traits": {
           "anonymousId": "12345",
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
       },
@@ -109,7 +109,7 @@
         },
         "traits": {
           "anonymousId": "12345",
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
       },

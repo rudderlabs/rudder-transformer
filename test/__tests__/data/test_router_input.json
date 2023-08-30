@@ -168,7 +168,7 @@
     "destination": {
       "config": {
         "appKey": "0e5440c3-226b-45d0-91b5-c64da56cde16",
-        "restApiKey": "a1d4f79a-cea9-4e0e-a104-b57e37ba3b3a",
+        "restApiKey": "dummyApiKey",
         "dataCenter": "US-03",
         "useNativeSDK": {
           "web": false

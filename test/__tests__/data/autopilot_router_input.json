@@ -13,7 +13,7 @@
         }
       },
       "Config": {
-        "apiKey": "1d6583b196d34de28a3g19ahadde4b0z",
+        "apiKey": "dummyApiKey",
         "customMappings": [
           {
             "from": "0001",
@@ -92,7 +92,7 @@
         }
       },
       "Config": {
-        "apiKey": "1d6583b196d34de28a3g19ahadde4b0z",
+        "apiKey": "dummyApiKey",
         "customMappings": [
           {
             "from": "0001",

@@ -2,7 +2,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "dea8bdce17cd64e25ac31768bba574e26"
+        "apiKey": "dummyApiKey"
       },
       "ID": "stormly123"
     },
@@ -29,7 +29,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "dea8bdce17cd64e25ac31768bba574e26"
+        "apiKey": "dummyApiKey"
       },
       "ID": "stormly123"
     },

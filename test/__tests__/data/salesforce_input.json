@@ -2,9 +2,9 @@
   {
     "destination": {
       "Config": {
-        "initialAccessToken": "9f58ryaM64FZp0rg3jyDV4PB5",
-        "password": "hJCR557#uzFfD",
-        "userName": "sampathvinayak1453@gmail.com"
+        "initialAccessToken": "dummyInitialAccessToken",
+        "password": "dummyPassword1",
+        "userName": "testsalesforce1453@gmail.com"
       },
       "DestinationDefinition": {
         "DisplayName": "Salesforce",
@@ -73,9 +73,9 @@
   {
     "destination": {
       "Config": {
-        "initialAccessToken": "9f58ryaM64FZp0rg3jyDV4PB5",
-        "password": "hJCR557#uzFfD",
-        "userName": "sampathvinayak1453@gmail.com"
+        "initialAccessToken": "dummyInitialAccessToken",
+        "password": "dummyPassword1",
+        "userName": "testsalesforce1453@gmail.com"
       },
       "DestinationDefinition": {
         "DisplayName": "Salesforce",
@@ -110,7 +110,6 @@
         "screen": {
           "density": 2
         },
-
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36"
       },
       "integrations": {
@@ -145,9 +144,9 @@
   {
     "destination": {
       "Config": {
-        "initialAccessToken": "9f58ryaM64FZp0rg3jyDV4PB5",
-        "password": "hJCR557#uzFfD",
-        "userName": "sampathvinayak1453@gmail.com"
+        "initialAccessToken": "dummyInitialAccessToken",
+        "password": "dummyPassword1",
+        "userName": "testsalesforce1453@gmail.com"
       },
       "DestinationDefinition": {
         "DisplayName": "Salesforce",
@@ -182,7 +181,6 @@
         "screen": {
           "density": 2
         },
-
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36"
       },
       "integrations": {
@@ -218,9 +216,9 @@
   {
     "destination": {
       "Config": {
-        "initialAccessToken": "9f58ryaM64FZp0rg3jyDV4PB5",
-        "password": "hJCR557#uzFfD",
-        "userName": "sampathvinayak1453@gmail.com"
+        "initialAccessToken": "dummyInitialAccessToken",
+        "password": "dummyPassword1",
+        "userName": "testsalesforce1453@gmail.com"
       },
       "DestinationDefinition": {
         "DisplayName": "Salesforce",
@@ -255,7 +253,6 @@
         "screen": {
           "density": 2
         },
-
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36"
       },
       "integrations": {
@@ -291,9 +288,9 @@
   {
     "destination": {
       "Config": {
-        "initialAccessToken": "9f58ryaM64FZp0rg3jyDV4PB5",
-        "password": "hJCR557#uzFfD",
-        "userName": "sampathvinayak1453@gmail.com"
+        "initialAccessToken": "dummyInitialAccessToken",
+        "password": "dummyPassword1",
+        "userName": "testsalesforce1453@gmail.com"
       },
       "DestinationDefinition": {
         "DisplayName": "Salesforce",
@@ -328,7 +325,6 @@
         "screen": {
           "density": 2
         },
-
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36"
       },
       "integrations": {
@@ -366,9 +362,9 @@
   {
     "destination": {
       "Config": {
-        "initialAccessToken": "9f58ryaM64FZp0rg3jyDV4PB5",
-        "password": "hJCR557#uzFfD",
-        "userName": "sampathvinayak1453@gmail.com"
+        "initialAccessToken": "dummyInitialAccessToken",
+        "password": "dummyPassword1",
+        "userName": "testsalesforce1453@gmail.com"
       },
       "DestinationDefinition": {
         "DisplayName": "Salesforce",
@@ -403,7 +399,6 @@
         "screen": {
           "density": 2
         },
-
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36"
       },
       "integrations": {
@@ -439,9 +434,9 @@
   {
     "destination": {
       "Config": {
-        "initialAccessToken": "9f58ryaM64FZp0rg3jyDV4PB5",
-        "password": "hJCR557#uzFfD",
-        "userName": "sampathvinayak1453@gmail.com"
+        "initialAccessToken": "dummyInitialAccessToken",
+        "password": "dummyPassword1",
+        "userName": "testsalesforce1453@gmail.com"
       },
       "DestinationDefinition": {
         "DisplayName": "Salesforce",
@@ -514,9 +509,9 @@
   {
     "destination": {
       "Config": {
-        "initialAccessToken": "9f58ryaM64FZp0rg3jyDV4PB5",
-        "password": "hJCR557#uzFfD",
-        "userName": "sampathvinayak1453@gmail.com",
+        "initialAccessToken": "dummyInitialAccessToken",
+        "password": "dummyPassword1",
+        "userName": "testsalesforce1453@gmail.com",
         "mapProperty": false
       },
       "DestinationDefinition": {
@@ -590,8 +585,8 @@
     "destination": {
       "Config": {
         "initialAccessToken": "7fiy1FKcO9sohsxq1v6J88sg",
-        "password": "vfNx8&8%JR",
-        "userName": "utsab.c97-qvpd@force.com.test",
+        "password": "dummyPassword2",
+        "userName": "test.c97-qvpd@force.com.test",
         "sandbox": true
       },
       "DestinationDefinition": {
@@ -662,8 +657,8 @@
     "destination": {
       "Config": {
         "initialAccessToken": "7fiy1FKcO9sohsxq1v6J88sg",
-        "password": "vfNx8&8%JR",
-        "userName": "utsab.c97-qvpd@force.com.test",
+        "password": "dummyPassword2",
+        "userName": "test.c97-qvpd@force.com.test",
         "sandbox": true
       },
       "DestinationDefinition": {
@@ -730,8 +725,8 @@
     "destination": {
       "Config": {
         "initialAccessToken": "7fiy1FKcO9sohsxq1v6J88sg",
-        "password": "vfNx8&8%JR",
-        "userName": "utsab.c97-qvpd@force.com.test",
+        "password": "dummyPassword2",
+        "userName": "test.c97-qvpd@force.com.test",
         "sandbox": true
       },
       "DestinationDefinition": {

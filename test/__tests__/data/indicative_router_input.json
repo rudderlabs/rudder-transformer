@@ -120,7 +120,7 @@
       "type": "identify",
       "traits": {
         "anonymousId": "anon_id",
-        "email": "sayan@gmail.com",
+        "email": "test@rudderstack.com",
         "address": {
           "city": "kolkata",
           "country": "India",

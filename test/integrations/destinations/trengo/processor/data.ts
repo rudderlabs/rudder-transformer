@@ -556,7 +556,7 @@ export const data = [
               properties: {
                 name: 'Random_Track_call',
                 cart_value: 5000,
-                email: 'utsab@outlook.com',
+                email: 'test@outlook.com',
               },
               context: {
                 ip: '14.5.67.21',
@@ -652,7 +652,7 @@ export const data = [
               userId: 'randomUserId',
               type: 'track',
               event: 'checkedOut',
-              properties: { name: 'Random_Track_call', value: 5000, email: 'utsab@outlook.com' },
+              properties: { name: 'Random_Track_call', value: 5000, email: 'test@outlook.com' },
               context: {
                 ip: '14.5.67.21',
                 app: {
@@ -833,7 +833,7 @@ export const data = [
                 name: 'Random_Track_call',
                 value: 5000,
                 phone: '9830311521',
-                email: 'utsab@outlook.com',
+                email: 'test@outlook.com',
               },
               context: {
                 ip: '14.5.67.21',
@@ -934,7 +934,7 @@ export const data = [
                 name: 'Random_Track_call',
                 value: 5000,
                 phone: '9830311521',
-                email: 'utsab@outlook.com',
+                email: 'test@outlook.com',
               },
               context: {
                 ip: '14.5.67.21',
@@ -1031,7 +1031,7 @@ export const data = [
                 name: 'Random_Track_call',
                 value: 5000,
                 phone: '9830311521',
-                email: 'utsab@outlook.com',
+                email: 'test@outlook.com',
               },
               context: {
                 ip: '14.5.67.21',
@@ -1128,7 +1128,7 @@ export const data = [
                 name: 'Random_Track_call',
                 value: 5000,
                 phone: '9830311521',
-                email: 'utsab@outlook.com',
+                email: 'test@outlook.com',
               },
               context: {
                 ip: '14.5.67.21',
@@ -1229,7 +1229,7 @@ export const data = [
                 name: 'Random_Track_call',
                 value: 5000,
                 phone: '9830311521',
-                email: 'utsab@outlook.com',
+                email: 'test@outlook.com',
               },
               context: {
                 ip: '14.5.67.21',

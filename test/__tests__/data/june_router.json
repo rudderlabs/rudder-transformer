@@ -4,7 +4,7 @@
       {
         "destination": {
           "Config": {
-            "apiKey": "93EMyDLvfpbRxxYn"
+            "apiKey": "dummyApiKey"
           },
           "ID": "june123"
         },
@@ -31,7 +31,7 @@
       {
         "destination": {
           "Config": {
-            "apiKey": "93EMyDLvfpbRxxYn"
+            "apiKey": "dummyApiKey"
           },
           "ID": "june123"
         },
@@ -77,7 +77,7 @@
           "endpoint": "https://api.june.so/api/identify",
           "files": {},
           "headers": {
-            "Authorization": "Basic 93EMyDLvfpbRxxYn",
+            "Authorization": "Basic dummyApiKey",
             "Content-Type": "application/json"
           },
           "method": "POST",
@@ -87,7 +87,7 @@
         },
         "destination": {
           "Config": {
-            "apiKey": "93EMyDLvfpbRxxYn"
+            "apiKey": "dummyApiKey"
           },
           "ID": "june123"
         },
@@ -101,7 +101,7 @@
       {
         "destination": {
           "Config": {
-            "apiKey": "93EMyDLvfpbRxxYn"
+            "apiKey": "dummyApiKey"
           },
           "ID": "june123"
         },

@@ -6,11 +6,11 @@
         "channel": "offline",
         "context": {
           "traits": {
-            "email": "utsab.c97@gmail.com",
-            "firstName": "utsab",
+            "email": "test.c97@gmail.com",
+            "firstName": "test",
             "gender": "Male",
-            "lastName": "chowdhury",
-            "phone": "+919830311522"
+            "lastName": "Rudderlabs",
+            "phone": "+919876543210"
           }
         },
         "event": "Product Added",
@@ -183,11 +183,11 @@
         "channel": "abc",
         "context": {
           "traits": {
-            "email": "utsab.c97@gmail.com",
-            "firstName": "utsab",
+            "email": "test.c97@gmail.com",
+            "firstName": "test",
             "gender": "Male",
-            "lastName": "chowdhury",
-            "phone": "+919830311522"
+            "lastName": "Rudderlabs",
+            "phone": "+919876543210"
           }
         },
         "event": "Product Viewed",
@@ -360,11 +360,11 @@
         "channel": "offline",
         "context": {
           "traits": {
-            "email": "utsab.c97@gmail.com",
-            "firstName": "utsab",
+            "email": "test.c97@gmail.com",
+            "firstName": "test",
             "gender": "Male",
-            "lastName": "chowdhury",
-            "phone": "+919830311522"
+            "lastName": "Rudderlabs",
+            "phone": "+919876543210"
           }
         },
         "event": "Product Seen",
@@ -544,11 +544,11 @@
             "app_id": "",
             "advertiser_id": "549764492980",
             "user_data": {
-              "em": ["7e4f504f2f6ec2d363365ec866894c6e2c4c1609889f33535bbfeeec3c33a617"],
-              "ph": ["6bd20b059b192cded172dfd75d49bd91d6a4ad09b56ace298db8a067cbef310a"],
+              "em": ["b9ecbd1d999a0f17d442a08971caeea92d770dba89ac900688ecede233d652df"],
+              "ph": ["92b5072176e723878b5e06ff3ca61898e4eb74e8c46642a0f2db800b17364ab0"],
               "ge": ["62c66a7a5dd70c3146618063c344e531e6d4b59e379808443ce962b3abd63c5a"],
-              "ln": ["b0e6036f293e37324425377b579507ee4455a3bdf74447e5fd0ba1b512e739c2"],
-              "fn": ["a4371f70c2cc620598bdd98dca42c1cfb2d57da40886fc19c10491cd7f666cd7"],
+              "ln": ["dcf000c2386fb76d22cefc0d118a8511bb75999019cd373df52044bccd1bd251"],
+              "fn": ["9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"],
               "client_ip_address": "[::1]"
             },
             "custom_data": {
@@ -666,11 +666,11 @@
             "app_id": "",
             "advertiser_id": "549764492980",
             "user_data": {
-              "em": ["7e4f504f2f6ec2d363365ec866894c6e2c4c1609889f33535bbfeeec3c33a617"],
-              "ph": ["6bd20b059b192cded172dfd75d49bd91d6a4ad09b56ace298db8a067cbef310a"],
+              "em": ["b9ecbd1d999a0f17d442a08971caeea92d770dba89ac900688ecede233d652df"],
+              "ph": ["92b5072176e723878b5e06ff3ca61898e4eb74e8c46642a0f2db800b17364ab0"],
               "ge": ["62c66a7a5dd70c3146618063c344e531e6d4b59e379808443ce962b3abd63c5a"],
-              "ln": ["b0e6036f293e37324425377b579507ee4455a3bdf74447e5fd0ba1b512e739c2"],
-              "fn": ["a4371f70c2cc620598bdd98dca42c1cfb2d57da40886fc19c10491cd7f666cd7"],
+              "ln": ["dcf000c2386fb76d22cefc0d118a8511bb75999019cd373df52044bccd1bd251"],
+              "fn": ["9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"],
               "client_ip_address": "[::1]"
             },
             "custom_data": {

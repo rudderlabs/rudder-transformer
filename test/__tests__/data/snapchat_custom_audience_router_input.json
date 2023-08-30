@@ -2,9 +2,9 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234",
-        "refresh_token": "efgh5678",
-        "developer_token": "ijkl9101"
+        "access_token": "dummyAccessToken",
+        "refresh_token": "dummyRefreshToken",
+        "developer_token": "dummyDeveloperToken"
       }
     },
     "destination": {
@@ -23,10 +23,10 @@
         "listData": {
           "add": [
             {
-              "email": "sudip@abc.com",
-              "phone": "@09432457768",
-              "firstName": "sudip",
-              "lastName": "paul",
+              "email": "test@abc.com",
+              "phone": "@09876543210",
+              "firstName": "test",
+              "lastName": "rudderlabs",
               "country": "US",
               "postalCode": "1245"
             }

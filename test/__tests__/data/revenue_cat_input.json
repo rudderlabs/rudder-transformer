@@ -254,7 +254,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "a5e9abd75d99c8ad3acb4a2920ec1e2e"
+        "apiKey": "dummyApiKey"
       }
     },
     "message": {
@@ -271,7 +271,7 @@
         "discount": 1.5,
         "coupon": "ImagePro",
         "currency": "USD",
-        "fetch_token": "123asd23",
+        "fetch_token": "dummyFetchToken",
         "product_id": "123",
         "products": [
           {
@@ -301,7 +301,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "a5e9abd75d99c8ad3acb4a2920ec1e2e",
+        "apiKey": "dummyApiKey",
         "xPlatform": "stripe"
       }
     },
@@ -319,7 +319,7 @@
         "discount": 1.5,
         "coupon": "ImagePro",
         "currency": "USD",
-        "fetch_token": "123asd23",
+        "fetch_token": "dummyFetchToken",
         "product_id": "123",
         "products": [
           {
@@ -349,7 +349,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "a5e9abd75d99c8ad3acb4a2920ec1e2e",
+        "apiKey": "dummyApiKey",
         "xPlatform": "stripe"
       }
     },
@@ -367,7 +367,7 @@
         "discount": 1.5,
         "coupon": "ImagePro",
         "currency": "USD",
-        "fetch_token": "123asd23",
+        "fetch_token": "dummyFetchToken",
         "product_id": "123-sa",
         "products": [
           {
@@ -416,7 +416,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "a5e9abd75d99c8ad3acb4a2920ec1e2e",
+        "apiKey": "dummyApiKey",
         "xPlatform": "stripe"
       }
     },
@@ -434,7 +434,7 @@
         "discount": 1.5,
         "coupon": "ImagePro",
         "currency": "USD",
-        "fetch_token": "123asd23",
+        "fetch_token": "dummyFetchToken",
         "product_id": "123-sa",
         "sku": "G-32",
         "name": "Monopoly",

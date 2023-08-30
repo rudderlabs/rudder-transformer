@@ -1,6 +1,10 @@
 [
   {
-    "destination": { "Config": { "apiKey": "abcde" } },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    },
     "message": {
       "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "context": {
@@ -73,7 +77,11 @@
     }
   },
   {
-    "destination": { "Config": { "apiKey": "abcde" } },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    },
     "message": {
       "channel": "web",
       "context": {
@@ -83,12 +91,20 @@
           "namespace": "com.rudderlabs.javascript",
           "version": "1.0.0"
         },
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
         "locale": "en-US",
         "ip": "0.0.0.0",
-        "os": { "name": "", "version": "" },
-        "screen": { "density": 2 }
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
       },
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
       "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
@@ -98,7 +114,7 @@
       "type": "identify",
       "traits": {
         "anonymousId": "anon_id",
-        "email": "sayan@gmail.com",
+        "email": "test@rudderstack.com",
         "address": {
           "city": "kolkata",
           "country": "India",
@@ -107,12 +123,18 @@
           "street": ""
         }
       },
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "sentAt": "2019-10-14T09:03:22.563Z"
     }
   },
   {
-    "destination": { "Config": { "apiKey": "abcde" } },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    },
     "message": {
       "channel": "web",
       "context": {
@@ -124,7 +146,7 @@
         },
         "traits": {
           "anonymousId": "123456",
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "address": {
             "city": "kolkata",
             "country": "India",
@@ -135,12 +157,20 @@
           "ip": "0.0.0.0",
           "age": 26
         },
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
         "locale": "en-US",
         "ip": "0.0.0.0",
-        "os": { "name": "", "version": "" },
-        "screen": { "density": 2 }
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
       },
       "type": "identify",
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
@@ -148,12 +178,18 @@
       "originalTimestamp": "2019-10-14T09:03:17.562Z",
       "anonymousId": "123456",
       "userId": "123456",
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "sentAt": "2019-10-14T09:03:22.563Z"
     }
   },
   {
-    "destination": { "Config": { "apiKey": "abcde" } },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    },
     "message": {
       "channel": "web",
       "context": {
@@ -163,12 +199,23 @@
           "namespace": "com.rudderlabs.javascript",
           "version": "1.0.0"
         },
-        "traits": { "email": "sayan@gmail.com", "anonymousId": "12345" },
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "traits": {
+          "email": "test@rudderstack.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
         "locale": "en-US",
-        "os": { "name": "", "version": "" },
-        "screen": { "density": 2 }
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
       },
       "request_ip": "1.1.1.1",
       "type": "page",
@@ -184,13 +231,19 @@
         "title": "Test Page",
         "url": "www.rudderlabs.com"
       },
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "name": "ApplicationLoaded",
       "sentAt": "2019-10-14T11:15:53.296Z"
     }
   },
   {
-    "destination": { "Config": { "apiKey": "abcde" } },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    },
     "message": {
       "channel": "web",
       "context": {
@@ -200,12 +253,23 @@
           "namespace": "com.rudderlabs.javascript",
           "version": "1.0.0"
         },
-        "traits": { "email": "sayan@gmail.com", "anonymousId": "12345" },
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "traits": {
+          "email": "test@rudderstack.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
         "locale": "en-US",
-        "os": { "name": "", "version": "" },
-        "screen": { "density": 2 }
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
       },
       "request_ip": "1.1.1.1",
       "type": "page",
@@ -222,12 +286,18 @@
         "title": "Test Page",
         "url": "www.rudderlabs.com"
       },
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "sentAt": "2019-10-14T11:15:53.296Z"
     }
   },
   {
-    "destination": { "Config": { "apiKey": "abcde" } },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    },
     "message": {
       "channel": "web",
       "context": {
@@ -237,12 +307,23 @@
           "namespace": "com.rudderlabs.javascript",
           "version": "1.0.0"
         },
-        "traits": { "email": "sayan@gmail.com", "anonymousId": "12345" },
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "traits": {
+          "email": "test@rudderstack.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
         "locale": "en-US",
-        "os": { "name": "", "version": "" },
-        "screen": { "density": 2 }
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
       },
       "request_ip": "1.1.1.1",
       "type": "page",
@@ -258,12 +339,18 @@
         "title": "Test Page",
         "url": "www.rudderlabs.com"
       },
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "sentAt": "2019-10-14T11:15:53.296Z"
     }
   },
   {
-    "destination": { "Config": { "apiKey": "abcde" } },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    },
     "message": {
       "channel": "web",
       "context": {
@@ -273,12 +360,23 @@
           "namespace": "com.rudderlabs.javascript",
           "version": "1.0.0"
         },
-        "traits": { "email": "sayan@gmail.com", "anonymousId": "12345" },
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "traits": {
+          "email": "test@rudderstack.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
         "locale": "en-US",
-        "os": { "name": "", "version": "" },
-        "screen": { "density": 2 }
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
       },
       "request_ip": "1.1.1.1",
       "type": "screen",
@@ -294,13 +392,19 @@
         "title": "Test Page",
         "url": "www.rudderlabs.com"
       },
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "name": "Home",
       "sentAt": "2019-10-14T11:15:53.296Z"
     }
   },
   {
-    "destination": { "Config": { "apiKey": "abcde" } },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    },
     "message": {
       "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "context": {
@@ -374,7 +478,11 @@
     }
   },
   {
-    "destination": { "Config": { "apiKey": "abcde" } },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    },
     "message": {
       "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
       "channel": "web",
@@ -421,7 +529,11 @@
     }
   },
   {
-    "destination": { "Config": { "apiKey": "abcde" } },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    },
     "message": {
       "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
       "channel": "web",
@@ -467,7 +579,11 @@
     }
   },
   {
-    "destination": { "Config": { "apiKey": "abcde" } },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    },
     "message": {
       "channel": "web",
       "context": {
@@ -477,12 +593,20 @@
           "namespace": "com.rudderlabs.javascript",
           "version": "1.0.0"
         },
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
         "locale": "en-US",
         "ip": "0.0.0.0",
-        "os": { "name": "", "version": "" },
-        "screen": { "density": 2 }
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
       },
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
       "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
@@ -492,7 +616,7 @@
       "type": "group",
       "traits": {
         "anonymousId": "123456",
-        "email": "sayan@gmail.com",
+        "email": "test@rudderstack.com",
         "address": {
           "city": "kolkata",
           "country": "India",
@@ -501,12 +625,18 @@
           "street": ""
         }
       },
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "sentAt": "2019-10-14T09:03:22.563Z"
     }
   },
   {
-    "destination": { "Config": { "apiKey": "abcde" } },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    },
     "message": {
       "channel": "web",
       "context": {
@@ -516,12 +646,20 @@
           "namespace": "com.rudderlabs.javascript",
           "version": "1.0.0"
         },
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
         "locale": "en-US",
         "ip": "0.0.0.0",
-        "os": { "name": "", "version": "" },
-        "screen": { "density": 2 }
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
       },
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
       "originalTimestamp": "2019-10-14T09:03:17.562Z",
@@ -529,7 +667,7 @@
       "type": "identify",
       "traits": {
         "anonymousId": "test_anon_id",
-        "email": "sayan@gmail.com",
+        "email": "test@rudderstack.com",
         "address": {
           "city": "kolkata",
           "country": "India",
@@ -538,12 +676,18 @@
           "street": ""
         }
       },
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "sentAt": "2019-10-14T09:03:22.563Z"
     }
   },
   {
-    "destination": { "Config": { "apiKey": "abcde" } },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    },
     "message": {
       "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "context": {
@@ -1006,7 +1150,11 @@
     }
   },
   {
-    "destination": { "Config": { "apiKey": "abcde" } },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    },
     "message": {
       "channel": "web",
       "context": {
@@ -1016,12 +1164,23 @@
           "namespace": "com.rudderlabs.javascript",
           "version": "1.0.0"
         },
-        "traits": { "email": "sayan@gmail.com", "anonymousId": "12345" },
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "traits": {
+          "email": "test@rudderstack.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
         "locale": "en-US",
-        "os": { "name": "", "version": "" },
-        "screen": { "density": 2 },
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
         "page": {
           "path": "/tests/html/index4.html",
           "referrer": "",
@@ -1044,13 +1203,19 @@
         "title": "Test Page",
         "url": "www.rudderlabs.com"
       },
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "name": "ApplicationLoaded",
       "sentAt": "2019-10-14T11:15:53.296Z"
     }
   },
   {
-    "destination": { "Config": { "apiKey": "abcde" } },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    },
     "message": {
       "channel": "web",
       "context": {
@@ -1060,12 +1225,23 @@
           "namespace": "com.rudderlabs.javascript",
           "version": "1.0.0"
         },
-        "traits": { "email": "sayan@gmail.com", "anonymousId": "12345" },
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "traits": {
+          "email": "test@rudderstack.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
         "locale": "en-US",
-        "os": { "name": "", "version": "" },
-        "screen": { "density": 2 },
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
         "page": {
           "path": "/tests/html/index4.html",
           "referrer": "",
@@ -1081,13 +1257,19 @@
       "originalTimestamp": "2019-10-14T11:15:18.299Z",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "name": "ApplicationLoaded",
       "sentAt": "2019-10-14T11:15:53.296Z"
     }
   },
   {
-    "destination": { "Config": { "apiKey": "abcde" } },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    },
     "message": {
       "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "context": {
@@ -1167,7 +1349,11 @@
     }
   },
   {
-    "destination": { "Config": { "apiKey": "abcde" } },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    },
     "message": {
       "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "context": {
@@ -1388,7 +1574,11 @@
     }
   },
   {
-    "destination": { "Config": { "apiKey": "abcde" } },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    },
     "message": {
       "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "context": {
@@ -1449,7 +1639,11 @@
     }
   },
   {
-    "destination": { "Config": { "apiKey": "abcde" } },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    },
     "message": {
       "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
       "context": {
@@ -1523,7 +1717,11 @@
     }
   },
   {
-    "destination": { "Config": { "apiKey": "abcde" } },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    },
     "message": {
       "anonymousId": "8d872292709c6fbe",
       "channel": "mobile",

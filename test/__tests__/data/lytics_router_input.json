@@ -34,8 +34,8 @@
             "id": "abc123"
           },
           "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
-          "email": "ruchira@gmail.com",
-          "name": "Ruchira Moitra",
+          "email": "rudderTest@gmail.com",
+          "name": "Rudder Test",
           "plan": "Enterprise"
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36"
@@ -110,14 +110,14 @@
       "request_ip": "[::1]",
       "sentAt": "2020-10-16T08:10:12.783Z",
       "type": "track",
-      "userId": "ruchu123"
+      "userId": "rudder123"
     },
     "metadata": {
       "jobId": 1
     },
     "destination": {
       "Config": {
-        "apiKey": "11111122702j2a2U2K2C7H",
+        "apiKey": "dummyApiKey",
         "stream": "default"
       },
       "Enabled": true,
@@ -160,8 +160,8 @@
             "id": "abc123"
           },
           "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
-          "email": "ruchira@gmail.com",
-          "name": "Ruchira Moitra",
+          "email": "rudderTest@gmail.com",
+          "name": "Rudder Test",
           "plan": "Enterprise"
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36"
@@ -176,14 +176,14 @@
       "sentAt": "2020-10-16T08:26:14.939Z",
       "timestamp": "2020-10-16T13:56:14.944+05:30",
       "type": "identify",
-      "userId": "ruchu123"
+      "userId": "rudder123"
     },
     "metadata": {
       "jobId": 2
     },
     "destination": {
       "Config": {
-        "apiKey": "11111122702j2a2U2K2C7H",
+        "apiKey": "dummyApiKey",
         "stream": "default"
       },
       "Enabled": true,

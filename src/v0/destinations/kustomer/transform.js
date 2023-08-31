@@ -88,7 +88,7 @@ const responseBuilderSimple = async (message, category, destination) => {
 
   // Reference for base endpoint
   // https://developer.kustomer.com/kustomer-api-docs/reference/getting-started-with-kustomer-api#using-the-kustomer-api
-
+  // There are two instance choices, US: https://api.kustomerapp.com and EU: https://api.prod2.kustomerapp.com
   const BASE_ENDPOINT = destination.Config.baseEndpoint || DEFAULT_BASE_ENDPOINT;
   let targetUrl;
   let storedState = {

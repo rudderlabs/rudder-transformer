@@ -92,9 +92,9 @@ const hasMultipleResponses = (message, category, config) => {
  * @returns
  */
 const getCategoryUsingEventName = (message) => {
-  let event;
-  if (typeof message.event === 'string') {
-    event = message.event.toLowerCase();
+  let { event } = message;
+  if (typeof event === 'string') {
+    event = event.toLowerCase();
   }
 
   switch (event) {

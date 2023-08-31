@@ -18,7 +18,7 @@ const {
   InstrumentationError,
   ConfigurationError,
   TransformationError,
-} = require('../../util/errorTypes');
+} = require('rs-integration-lib');
 const {
   BATCH_CONTACT_ENDPOINT,
   MAX_BATCH_SIZE,

@@ -1,4 +1,4 @@
-const { InstrumentationError } = require('../../util/errorTypes');
+const { InstrumentationError } = require('rs-integration-lib');
 
 /**
  * Fetches the ids from the array of objects

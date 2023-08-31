@@ -10,7 +10,7 @@ const {
   getFieldValueFromMessage,
   simpleProcessRouterDest,
 } = require('../../util');
-const { InstrumentationError } = require('../../util/errorTypes');
+const { InstrumentationError } = require('rs-integration-lib');
 const { ENDPOINT } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 

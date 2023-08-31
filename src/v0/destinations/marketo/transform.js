@@ -42,7 +42,7 @@ const {
   InstrumentationError,
   ConfigurationError,
   UnauthorizedError,
-} = require('../../util/errorTypes');
+} = require('rs-integration-lib');
 
 const userIdLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
 const emailLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day

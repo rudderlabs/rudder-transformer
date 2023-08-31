@@ -6,7 +6,7 @@ const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
-const { AbortedError, RetryableError, NetworkError } = require('../../util/errorTypes');
+const { AbortedError, RetryableError, NetworkError } = require('rs-integration-lib');
 const tags = require('../../util/tags');
 
 /**

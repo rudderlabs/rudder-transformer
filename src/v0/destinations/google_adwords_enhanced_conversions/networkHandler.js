@@ -13,7 +13,7 @@ const {
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 const { BASE_ENDPOINT } = require('./config');
-const { NetworkError, NetworkInstrumentationError } = require('../../util/errorTypes');
+const { NetworkError, NetworkInstrumentationError } = require('rs-integration-lib');
 const tags = require('../../util/tags');
 /**
  * This function helps to detarmine type of error occured. According to the response

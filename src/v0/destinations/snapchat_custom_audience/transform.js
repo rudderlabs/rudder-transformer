@@ -5,7 +5,7 @@ const {
   simpleProcessRouterDest,
   isDefinedAndNotNullAndNotEmpty,
 } = require('../../util');
-const { ConfigurationError, OAuthSecretError } = require('../../util/errorTypes');
+const { ConfigurationError, OAuthSecretError } = require('rs-integration-lib');
 const { BASE_URL, schemaType } = require('./config');
 const { validatePayload, validateFields } = require('./utils');
 const { JSON_MIME_TYPE } = require('../../util/constant');

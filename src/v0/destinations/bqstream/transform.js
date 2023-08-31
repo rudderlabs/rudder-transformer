@@ -8,7 +8,7 @@ const {
   handleRtTfSingleEventError,
 } = require('../../util');
 const { MAX_ROWS_PER_REQUEST, DESTINATION } = require('./config');
-const { InstrumentationError } = require('../../util/errorTypes');
+const { InstrumentationError } = require('rs-integration-lib');
 
 const getInsertIdColValue = (properties, insertIdCol) => {
   if (

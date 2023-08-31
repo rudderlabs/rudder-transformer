@@ -10,7 +10,7 @@ const {
   TransformationError,
   InstrumentationError,
   ConfigurationError,
-} = require('../../util/errorTypes');
+} = require('rs-integration-lib');
 const { API_URL } = require('./config');
 
 const responseBuilder = (payload, endpoint, destination) => {

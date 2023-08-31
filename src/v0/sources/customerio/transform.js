@@ -8,7 +8,7 @@ const Message = require('../message');
 
 const { mappingConfig } = require('./config');
 const { isDefinedAndNotNull } = require('../../util');
-// const { TransformationError } = require("../../util/errorTypes");
+// const { TransformationError } = require("rs-integration-lib");
 
 function process(event) {
   const message = new Message(`Customer.io`);

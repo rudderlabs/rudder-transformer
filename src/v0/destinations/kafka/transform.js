@@ -6,7 +6,7 @@ const {
   getHashFromArray,
   removeUndefinedAndNullValues,
 } = require('../../util');
-// const { InstrumentationError } = require("../../util/errorTypes");
+// const { InstrumentationError } = require("rs-integration-lib");
 
 const filterConfigTopics = (message, destination) => {
   const { Config } = destination;

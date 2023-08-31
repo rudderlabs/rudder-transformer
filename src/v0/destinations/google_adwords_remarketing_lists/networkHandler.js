@@ -7,7 +7,7 @@ const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
-const { NetworkError } = require('../../util/errorTypes');
+const { NetworkError } = require('rs-integration-lib');
 const tags = require('../../util/tags');
 /**
  * This function helps to create a offlineUserDataJobs

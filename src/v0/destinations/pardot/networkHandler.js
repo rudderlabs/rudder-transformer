@@ -7,7 +7,7 @@ const {
 const { isHttpStatusSuccess } = require('../../util/index');
 const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
 const tags = require('../../util/tags');
-const { NetworkError } = require('../../util/errorTypes');
+const { NetworkError } = require('rs-integration-lib');
 
 /**
  * Example Response from pardot

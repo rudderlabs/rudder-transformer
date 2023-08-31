@@ -2,7 +2,7 @@ const { removeUndefinedValues } = require('../../util');
 const { getAccessToken, ABORTABLE_CODES, THROTTLED_CODES, POLL_ACTIVITY } = require('./util');
 const { httpGET } = require('../../../adapters/network');
 const stats = require('../../../util/stats');
-const { AbortedError, ThrottledError, RetryableError } = require('../../util/errorTypes');
+const { AbortedError, ThrottledError, RetryableError } = require('rs-integration-lib');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const getPollStatus = async (event) => {

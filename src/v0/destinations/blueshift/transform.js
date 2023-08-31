@@ -14,7 +14,7 @@ const {
   TransformationError,
   InstrumentationError,
   ConfigurationError,
-} = require('../../util/errorTypes');
+} = require('rs-integration-lib');
 
 const {
   MAPPING_CONFIG,

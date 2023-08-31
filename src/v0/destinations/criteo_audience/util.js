@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const { isDefinedAndNotNullAndNotEmpty } = require('../../util');
-const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
+const { ConfigurationError, InstrumentationError } = require('rs-integration-lib');
 const { MAX_IDENTIFIERS } = require('./config');
 
 const populateIdentifiers = (audienceList, audienceType) => {

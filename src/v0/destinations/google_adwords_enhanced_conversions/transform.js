@@ -14,7 +14,7 @@ const {
   InstrumentationError,
   ConfigurationError,
   OAuthSecretError,
-} = require('../../util/errorTypes');
+} = require('rs-integration-lib');
 
 const { trackMapping, BASE_ENDPOINT } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');

@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs');
-const { TransformationError } = require('../../util/errorTypes');
+const { TransformationError } = require('rs-integration-lib');
 
 // import mapping json using JSON.parse to preserve object key order
 const voterMapping = JSON.parse(

@@ -15,7 +15,7 @@ const {
   useRedisDatabase,
   maxTimeToIdentifyRSGeneratedCall
 } = require('./config');
-const { TransformationError } = require('../../util/errorTypes');
+const { TransformationError } = require('rs-integration-lib');
 
 
 const getDataFromRedis = async (key, metricMetadata) => {

@@ -4,7 +4,7 @@ const {
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 const { DESTINATION } = require('./config');
-const { NetworkError, ThrottledError, AbortedError } = require('../../util/errorTypes');
+const { NetworkError, ThrottledError, AbortedError } = require('rs-integration-lib');
 const { TAG_NAMES } = require('../../util/tags');
 const { HTTP_STATUS_CODES } = require('../../util/constant');
 

@@ -10,7 +10,7 @@ const {
   ConfigurationError,
   TransformationError,
   InstrumentationError,
-} = require('../../util/errorTypes');
+} = require('rs-integration-lib');
 const { trackEventPayloadBuilder } = require('./util');
 
 const responseBuilder = (payload, endpoint) => {

@@ -19,7 +19,7 @@ const {
 } = require('../../util');
 
 const { isDefinedAndNotNull } = require('../../util');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
+const { InstrumentationError, ConfigurationError } = require('rs-integration-lib');
 
 const gaDisplayName = 'Google Analytics';
 

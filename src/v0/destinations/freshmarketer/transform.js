@@ -13,7 +13,7 @@ const {
   InstrumentationError,
   NetworkInstrumentationError,
   TransformationError,
-} = require('../../util/errorTypes');
+} = require('rs-integration-lib');
 
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
 const {

@@ -9,7 +9,7 @@ const {
 } = require('../../util');
 const { EventType } = require('../../../constants');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG, ROCKERBOX_DEFINED_PROPERTIES } = require('./config');
-const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
+const { ConfigurationError, InstrumentationError } = require('rs-integration-lib');
 
 const responseBuilderSimple = (message, category, destination) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);

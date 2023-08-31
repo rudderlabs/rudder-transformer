@@ -7,7 +7,7 @@ const {
 const { DISABLE_DEST, REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
 const { isHttpStatusSuccess } = require('../../util');
 const { proxyRequest } = require('../../../adapters/network');
-const { UnhandledStatusCodeError, NetworkError, AbortedError } = require('../../util/errorTypes');
+const { UnhandledStatusCodeError, NetworkError, AbortedError } = require('rs-integration-lib');
 const tags = require('../../util/tags');
 
 const DESTINATION_NAME = 'bqstream';

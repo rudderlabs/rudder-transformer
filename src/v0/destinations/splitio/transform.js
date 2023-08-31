@@ -18,7 +18,7 @@ const {
   simpleProcessRouterDest,
   ErrorMessage,
 } = require('../../util');
-const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
+const { TransformationError, InstrumentationError } = require('rs-integration-lib');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function responseBuilderSimple(payload, category, destination) {

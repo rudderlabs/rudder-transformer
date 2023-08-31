@@ -21,7 +21,7 @@ const {
   TransformationError,
   InstrumentationError,
   NetworkInstrumentationError,
-} = require('../../util/errorTypes');
+} = require('rs-integration-lib');
 
 const { EventType } = require('../../../constants');
 const { JSON_MIME_TYPE } = require('../../util/constant');

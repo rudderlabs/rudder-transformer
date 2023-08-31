@@ -28,7 +28,7 @@ const {
   MAX_BATCH_SIZE,
   PARTNER_NAME,
 } = require('./config');
-const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
+const { ConfigurationError, InstrumentationError } = require('rs-integration-lib');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const USER_EMAIL_KEY_PATH = 'context.user.email';

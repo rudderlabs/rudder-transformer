@@ -9,7 +9,7 @@ const {
   DEFAULT_EVENT_ACTION,
 } = require('./config');
 const { constructPayload, getIntegrationsObj } = require('../../util');
-const { InstrumentationError } = require('../../util/errorTypes');
+const { InstrumentationError } = require('rs-integration-lib');
 
 /**
  * Validates the timestamp

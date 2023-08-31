@@ -14,7 +14,7 @@ const { getDestinationExternalID } = require('../../util');
 const { EventType } = require('../../../constants');
 const { mappingConfig, ConfigCategories } = require('./config');
 const { refinePayload, generatePageName, getLists } = require('./utils');
-const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
+const { TransformationError, InstrumentationError } = require('rs-integration-lib');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const UID_ERROR_MSG = 'Neither externalId nor userId is available';

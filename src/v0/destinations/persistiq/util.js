@@ -6,7 +6,7 @@ const {
   flattenMultilevelPayload,
 } = require('../../util');
 const { identifySourceKeys, fileConfigCategories, mappingConfig } = require('./config');
-const { InstrumentationError } = require('../../util/errorTypes');
+const { InstrumentationError } = require('rs-integration-lib');
 
 /**
  * Returns the remaining keys from traits

@@ -11,7 +11,7 @@ const {
   constructPayload,
 } = require('../../util');
 const { BASE_ENDPOINT, createPayloadMapping, updatePayloadMapping } = require('./config');
-const { InstrumentationError, NetworkInstrumentationError } = require('../../util/errorTypes');
+const { InstrumentationError, NetworkInstrumentationError } = require('rs-integration-lib');
 
 const CURRENCY_CODES = [
   'aed',

@@ -251,7 +251,7 @@ const processIdentifierEvent = async (event, metricMetadata) => {
   };
   return result;
 };
-const process = async (event) => {
+const process = async (event, source) => {
   const metricMetadata = {
     writeKey: event.query_parameters?.writeKey?.[0],
     source: 'SHOPIFY',

@@ -17,7 +17,7 @@ const {
   EncryptionSource,
 } = require('./config');
 
-const { InstrumentationError, OAuthSecretError } = require('../../util/errorTypes');
+const { InstrumentationError, OAuthSecretError } = require('rs-integration-lib');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const getAccessToken = ({ secret }) => {

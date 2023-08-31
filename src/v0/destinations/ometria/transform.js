@@ -1,7 +1,7 @@
 /* eslint-disable one-var */
 /* eslint-disable camelcase */
 const { EventType } = require('../../../constants');
-const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
+const { ConfigurationError, InstrumentationError } = require('rs-integration-lib');
 const {
   constructPayload,
   extractCustomFields,

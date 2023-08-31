@@ -12,7 +12,7 @@ const {
   NetworkInstrumentationError,
   AbortedError,
   RetryableError,
-} = require('../../util/errorTypes');
+} = require('rs-integration-lib');
 
 //  https://developers.criteo.com/marketing-solutions/v2021.01/docs/how-to-handle-api-errors#:~:text=the%20response%20body.-,401,-Authentication%20error
 // Following fucntion tells us if there is a particular error code in the response.

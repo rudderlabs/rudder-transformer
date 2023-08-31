@@ -9,7 +9,7 @@ const {
   isDefined,
   simpleProcessRouterDest,
 } = require('../../util');
-const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
+const { ConfigurationError, InstrumentationError } = require('rs-integration-lib');
 
 const putEventsHandler = (message, destination) => {
   const { properties, anonymousId, event, messageId, context } = message;

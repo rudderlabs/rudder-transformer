@@ -13,7 +13,7 @@ const {
   identifyUserPayloadBuilder,
 } = require('./utils');
 const { EventType } = require('../../../constants');
-const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
+const { TransformationError, InstrumentationError } = require('rs-integration-lib');
 
 const responseBuilder = (payload, endpoint, destination) => {
   if (payload) {

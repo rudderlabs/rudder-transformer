@@ -17,7 +17,7 @@ const {
 } = require('../../util');
 
 const { EventType } = require('../../../constants');
-const { ConfigurationError } = require('../../util/errorTypes');
+const { ConfigurationError } = require('rs-integration-lib');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const getPropertyParams = (message) => {

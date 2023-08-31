@@ -4,7 +4,7 @@ const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
-const { isHttpStatusSuccess, getEndpointPath } = require('../../util');
+const { isHttpStatusSuccess } = require('../../util');
 const { executeCommonValidations } = require('../../util/regulation-api');
 const { NetworkError, ConfigurationError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
@@ -25,7 +25,7 @@ const userDeletionHandler = async (userAttributes, config) => {
   }
 
   const endpoint = getEndpoint(config, '/delete/profiles.json');
-  const endpointPath = getEndpointPath(endpoint);
+  const endpointPath = '/delete/profiles';
   const headers = {
     'X-CleverTap-Account-Id': accountId,
     'X-CleverTap-Passcode': passcode,

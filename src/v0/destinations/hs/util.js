@@ -6,7 +6,6 @@ const {
 } = require('../../../adapters/utils/networkUtils');
 const {
   getFieldValueFromMessage,
-  getEndpointPath,
   constructPayload,
   isEmpty,
   getHashFromArray,
@@ -335,6 +334,7 @@ const searchContacts = async (message, destination) => {
     after: 0,
   };
 
+  const endpointPath = '/contacts/search';
   if (Config.authorizationType === 'newPrivateAppApi') {
     // Private Apps
     const requestOptions = {
@@ -343,7 +343,6 @@ const searchContacts = async (message, destination) => {
         Authorization: `Bearer ${Config.accessToken}`,
       },
     };
-    const endpointPath = getEndpointPath(IDENTIFY_CRM_SEARCH_CONTACT);
     searchContactsResponse = await httpPOST(
       IDENTIFY_CRM_SEARCH_CONTACT,
       requestData,
@@ -358,7 +357,6 @@ const searchContacts = async (message, destination) => {
   } else {
     // API Key
     const url = `${IDENTIFY_CRM_SEARCH_CONTACT}?hapikey=${Config.apiKey}`;
-    const endpointPath = getEndpointPath(url);
     searchContactsResponse = await httpPOST(url, requestData, {
       destType: 'hs',
       feature: 'transformation',
@@ -511,7 +509,7 @@ const getExistingData = async (inputs, destination) => {
 
   while (checkAfter) {
     const endpoint = IDENTIFY_CRM_SEARCH_ALL_OBJECTS.replace(':objectType', objectType);
-    const endpointPath = getEndpointPath(endpoint);
+    const endpointPath = `objects/""/search`;
 
     const url =
       Config.authorizationType === 'newPrivateAppApi'

@@ -7,7 +7,6 @@ const {
   getFieldValueFromMessage,
   defaultPostRequestConfig,
   extractCustomFields,
-  getEndpointPath,
   removeUndefinedAndNullValues,
   defaultBatchRequestConfig,
   getSuccessRespEvents,
@@ -35,7 +34,7 @@ const { client: errNotificationClient } = require('../../../util/errorNotifier')
  */
 const getIdFromNewOrExistingProfile = async (endpoint, payload, requestOptions) => {
   let profileId;
-  const endpointPath = getEndpointPath(endpoint);
+  const endpointPath = '/api/profiles';
   const { processedResponse: resp } = await handleHttpRequest(
     'post',
     endpoint,

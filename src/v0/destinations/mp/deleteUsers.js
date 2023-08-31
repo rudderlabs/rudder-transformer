@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const { handleHttpRequest } = require('../../../adapters/network');
-const { isHttpStatusSuccess, getEndpointPath } = require('../../util');
+const { isHttpStatusSuccess } = require('../../util');
 const {
   DEL_MAX_BATCH_SIZE,
   getCreateDeletionTaskEndpoint,
@@ -18,7 +18,7 @@ const deleteProfile = async (userAttributes, config) => {
     config.dataResidency === 'eu'
       ? 'https://api-eu.mixpanel.com/engage'
       : 'https://api.mixpanel.com/engage';
-  const endpointPath = getEndpointPath(endpoint);
+  const endpointPath = '/engage';
   const defaultValues = {
     $token: `${config.token}`,
     $delete: null,
@@ -79,7 +79,7 @@ const createDeletionTask = async (userAttributes, config) => {
   }
 
   const endpoint = getCreateDeletionTaskEndpoint(token);
-  const endpointPath = getEndpointPath(endpoint);
+  const endpointPath = '/api/app/data-deletions/v3.0/';
   const headers = {
     'Content-Type': JSON_MIME_TYPE,
     Authorization: `Bearer ${gdprApiToken}`,

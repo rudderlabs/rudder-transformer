@@ -202,5 +202,153 @@
     "output": {
       "error": "event is required for track call: Workflow: procWorkflow, Step: validateEventName, ChildStep: undefined, OriginalError: event is required for track call"
     }
+  },
+  {
+    "description": "Complete identify event",
+    "input": {
+      "message": {
+        "userId": "dummy-user001",
+        "channel": "web",
+        "context": {
+          "traits": {
+            "company": "Initech",
+            "address": {
+              "country": "USA",
+              "state": "CA",
+              "street": "101 dummy street"
+            },
+            "email": "dummyuser@domain.com",
+            "name": "dummy user",
+            "phone": "099-999-9999"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36"
+        },
+        "integrations": {
+          "All": true
+        },
+        "originalTimestamp": "2020-01-27T12:20:55.301Z",
+        "receivedAt": "2020-01-27T17:50:58.657+05:30",
+        "request_ip": "14.98.244.60",
+        "sentAt": "2020-01-27T12:20:56.849Z",
+        "timestamp": "2020-01-27T17:50:57.109+05:30",
+        "type": "identify"
+      },
+      "destination": {
+        "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
+        "Name": "Fullstory",
+        "DestinationDefinition": {
+          "Config": {
+            "cdkV2Enabled": true
+          }
+        },
+        "Config": {
+          "apiKey": "fullstoryAPIKey"
+        },
+        "Enabled": true,
+        "Transformations": []
+      },
+      "metadata": {
+        "sourceType": "fddf",
+        "destinationType": "fdf",
+        "k8_namespace": "fdfd"
+      }
+    },
+    "output": {
+      "body": {
+        "JSON": {
+          "properties": {
+            "company": "Initech",
+            "address": {
+              "country": "USA",
+              "state": "CA",
+              "street": "101 dummy street"
+            },
+            "email": "dummyuser@domain.com",
+            "name": "dummy user",
+            "phone": "099-999-9999"
+          },
+          "uid": "dummy-user001",
+          "email": "dummyuser@domain.com",
+          "display_name": "dummy user"
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.fullstory.com/v2/users",
+      "headers": {
+        "authorization": "Basic fullstoryAPIKey",
+        "content-type": "application/json"
+      },
+      "params": {},
+      "files": {}
+    }
+  },
+  {
+    "description": "Identify event with needed traits",
+    "input": {
+      "message": {
+        "userId": "dummy-user001",
+        "channel": "web",
+        "context": {
+          "traits": {
+            "email": "dummyuser@domain.com",
+            "name": "dummy user",
+            "phone": "099-999-9999"
+          }
+        },
+        "timestamp": "2020-01-27T17:50:57.109+05:30",
+        "type": "identify"
+      },
+      "destination": {
+        "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
+        "Name": "Fullstory",
+        "DestinationDefinition": {
+          "Config": {
+            "cdkV2Enabled": true
+          }
+        },
+        "Config": {
+          "apiKey": "fullstoryAPIKey"
+        },
+        "Enabled": true,
+        "Transformations": []
+      },
+      "metadata": {
+        "sourceType": "fddf",
+        "destinationType": "fdf",
+        "k8_namespace": "fdfd"
+      }
+    },
+    "output": {
+      "body": {
+        "JSON": {
+          "properties": {
+            "email": "dummyuser@domain.com",
+            "name": "dummy user",
+            "phone": "099-999-9999"
+          },
+          "uid": "dummy-user001",
+          "email": "dummyuser@domain.com",
+          "display_name": "dummy user"
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.fullstory.com/v2/users",
+      "headers": {
+        "authorization": "Basic fullstoryAPIKey",
+        "content-type": "application/json"
+      },
+      "params": {},
+      "files": {}
+    }
   }
 ]

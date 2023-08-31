@@ -3,7 +3,7 @@
     "message": {
       "type": "identify",
       "sentAt": "2021-01-03T17:02:53.195Z",
-      "userId": "utsabc",
+      "userId": "testc",
       "channel": "web",
       "context": {
         "os": { "name": "", "version": "" },
@@ -14,18 +14,18 @@
           "namespace": "com.rudderlabs.javascript"
         },
         "traits": {
-          "name": "Utsab Chowdhury",
-          "email": "utsab@rudderstack.com",
+          "name": "test Rudderlabs",
+          "email": "test@rudderstack.com",
           "phone": "+12345578900",
           "birthday": "2005-01-01T23:28:56.782Z",
-          "userId": "utsabc",
+          "userId": "testc",
           "address": {
             "street": "24 Dovers Lane",
             "city": "Miami",
             "state": "Florida",
             "postalCode": "1890001"
           },
-          "userName": "utsabc47",
+          "userName": "testc47",
           "company": "Rudderstack",
           "createdAt": "2015-04-17T12:37:42.146Z",
           "lastActivityAt": "2016-04-17T12:37:42.146Z",
@@ -40,15 +40,15 @@
               "verified": true,
               "userid": "100",
               "type": "twitter",
-              "username": "@utsabc",
-              "url": "http://twitter.com/utsabc"
+              "username": "@testc",
+              "url": "http://twitter.com/testc"
             },
             {
               "verified": false,
               "userid": "200",
               "type": "facebook",
-              "username": "utsabc",
-              "url": "http://facebook.com/utsabc"
+              "username": "testc",
+              "url": "http://facebook.com/testc"
             }
           ]
         },
@@ -69,7 +69,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251",
+        "apiKey": "dummyApiKey",
         "genericPage": false,
         "genericScreen": false
       }
@@ -121,7 +121,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251",
+        "apiKey": "dummyApiKey",
         "genericPage": false,
         "genericScreen": false
       }

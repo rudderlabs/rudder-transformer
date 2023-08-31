@@ -524,6 +524,12 @@ class Prometheus {
         type: 'counter',
         labelNames: ['writeKey', 'source', 'shopifyTopic'],
       },
+      {
+        name: 'outgoing_request_count',
+        help: 'Outgoing HTTP requests count',
+        type: 'counter',
+        labelNames: ['feature', 'destType', 'endpointPath', 'success', 'statusCode'],
+      },
 
       // Gauges
       {

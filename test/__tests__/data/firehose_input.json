@@ -10,7 +10,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "ruchira@rudderlabs.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -50,7 +50,7 @@
         "mapEvents": [
           {
             "from": "track",
-            "to": "ruchira-test-firehose"
+            "to": "rudderstack-test-firehose"
           }
         ]
       }
@@ -67,7 +67,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "ruchira@rudderlabs.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -107,7 +107,7 @@
         "mapEvents": [
           {
             "from": "product added",
-            "to": "ruchira-test-firehose"
+            "to": "rudderstack-test-firehose"
           }
         ]
       }
@@ -124,7 +124,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "ruchira@rudderlabs.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -164,7 +164,7 @@
         "mapEvents": [
           {
             "from": "*",
-            "to": "ruchira-test-firehose"
+            "to": "rudderstack-test-firehose"
           }
         ]
       }
@@ -181,7 +181,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "ruchira@rudderlabs.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -221,7 +221,7 @@
         "mapEvents": [
           {
             "from": "test event",
-            "to": "ruchira-test-firehose"
+            "to": "rudderstack-test-firehose"
           }
         ]
       }
@@ -238,7 +238,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "ruchira@rudderlabs.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -278,15 +278,15 @@
         "mapEvents": [
           {
             "from": "*",
-            "to": "ruchira-test-firehose"
+            "to": "rudderstack-test-firehose"
           },
           {
             "from": "track",
-            "to": "ruchira-test-firehose-1"
+            "to": "rudderstack-test-firehose-1"
           },
           {
             "from": "product added",
-            "to": "ruchira-test-firehose-2"
+            "to": "rudderstack-test-firehose-2"
           }
         ]
       }
@@ -303,7 +303,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "ruchira@rudderlabs.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -343,11 +343,11 @@
         "mapEvents": [
           {
             "from": "*",
-            "to": "ruchira-test-firehose"
+            "to": "rudderstack-test-firehose"
           },
           {
             "from": "track",
-            "to": "ruchira-test-firehose-1"
+            "to": "rudderstack-test-firehose-1"
           }
         ]
       }
@@ -362,11 +362,11 @@
         "mapEvents": [
           {
             "from": "*",
-            "to": "ruchira-test-firehose"
+            "to": "rudderstack-test-firehose"
           },
           {
             "from": "product added",
-            "to": "ruchira-test-firehose-1"
+            "to": "rudderstack-test-firehose-1"
           }
         ]
       },
@@ -395,7 +395,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "ruchira@rudderlabs.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",

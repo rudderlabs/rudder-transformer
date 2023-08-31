@@ -2,7 +2,7 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234",
+        "access_token": "dummyApiToken",
         "refresh_token": "efgh5678",
         "developer_token": "ijkl91011"
       },
@@ -92,7 +92,7 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234",
+        "access_token": "dummyApiToken",
         "refresh_token": "efgh5678",
         "developer_token": "ijkl91011"
       },
@@ -182,7 +182,7 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234",
+        "access_token": "dummyApiToken",
         "refresh_token": "efgh5678",
         "developer_token": "ijkl91011"
       },

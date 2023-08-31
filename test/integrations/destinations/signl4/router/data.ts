@@ -12,7 +12,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiKey: 't1yurrb968zk',
+                  apiKey: 'dummyApiKey',
                   s4ServiceValue: 'service',
                   s4ServiceProperty: '',
                   s4LocationValue: '67.3, 32.3',
@@ -85,7 +85,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://connect.signl4.com/webhook/t1yurrb968zk',
+                endpoint: 'https://connect.signl4.com/webhook/dummyApiKey',
                 headers: {
                   'Content-Type': 'application/json',
                 },
@@ -117,7 +117,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: 't1yurrb968zk',
+                  apiKey: 'dummyApiKey',
                   s4ServiceValue: 'service',
                   s4ServiceProperty: '',
                   s4LocationValue: '67.3, 32.3',
@@ -151,7 +151,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiKey: 'urissi44sfgs',
+                  apiKey: 'dummyApiKey',
                   s4ServiceValue: 'service',
                   s4ServiceProperty: '',
                   s4LocationValue: '67.3, 32.3',
@@ -227,7 +227,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiKey: 'urissi44sfgs',
+                  apiKey: 'dummyApiKey',
                   s4ServiceValue: 'service',
                   s4ServiceProperty: '',
                   s4LocationValue: '67.3, 32.3',

@@ -408,7 +408,7 @@
           "audienceName": "test-audienceName",
           "accessToken": "test-accessToken",
           "clientSideId": "test-clientSideId",
-          "audienceUrl": "http://abc.com",
+          "audienceUrl": "",
           "audienceType": "organization"
         }
       }
@@ -428,7 +428,6 @@
           "environmentId": "test-clientSideId",
           "cohortId": "test-audienceId",
           "cohortName": "test-audienceName",
-          "cohortUrl": "http://abc.com",
           "contextKind": "organization",
           "listData": {
             "add": [

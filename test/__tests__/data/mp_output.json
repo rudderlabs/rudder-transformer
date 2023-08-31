@@ -1307,6 +1307,6 @@
   ],
   {
     "statusCode": 400,
-    "message": "One of `previousId` or `anonymousId` is same as `userId`"
+    "message": "One of `previousId` or `anonymousId` is same as `userId`. Aborting"
   }
 ]

@@ -262,7 +262,9 @@ const processAliasEvents = (message, type, destination) => {
   }
 
   if (aliasId === message.userId) {
-    throw new InstrumentationError('One of `previousId` or `anonymousId` is same as `userId`');
+    throw new InstrumentationError(
+      'One of `previousId` or `anonymousId` is same as `userId`. Aborting',
+    );
   }
 
   const payload = {

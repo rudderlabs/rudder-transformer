@@ -1,16 +1,16 @@
-import IntegrationSourceService from '../../interfaces/SourceService';
+import { SourceService } from '../../interfaces/SourceService';
 import {
   ErrorDetailer,
   MetaTransferObject,
   RudderMessage,
   SourceTransformationResponse,
 } from '../../types/index';
-import PostTransformationServiceSource from './postTransformation';
-import FetchHandler from '../../helpers/fetchHandlers';
+import { PostTransformationSourceService } from './postTransformation';
+import { FetchHandler } from '../../helpers/fetchHandlers';
 import tags from '../../v0/util/tags';
 import stats from '../../util/stats';
 
-export default class NativeIntegrationSourceService implements IntegrationSourceService {
+export class NativeIntegrationSourceService implements SourceService {
   public getTags(): MetaTransferObject {
     const metaTO = {
       errorDetails: {
@@ -36,14 +36,14 @@ export default class NativeIntegrationSourceService implements IntegrationSource
         try {
           const respEvents: RudderMessage | RudderMessage[] | SourceTransformationResponse =
             await sourceHandler.process(sourceEvent);
-          return PostTransformationServiceSource.handleSuccessEventsSource(respEvents);
+          return PostTransformationSourceService.handleSuccessEventsSource(respEvents);
         } catch (error: any) {
           const metaTO = this.getTags();
           stats.increment('source_transform_errors', {
             sourceType,
             version,
           });
-          return PostTransformationServiceSource.handleFailureEventsSource(error, metaTO);
+          return PostTransformationSourceService.handleFailureEventsSource(error, metaTO);
         }
       }),
     );

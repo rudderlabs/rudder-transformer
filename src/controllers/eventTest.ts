@@ -1,7 +1,7 @@
 import { Context } from 'koa';
-import EventTesterService from '../services/eventTest/eventTester';
+import { EventTesterService } from '../services/eventTest/eventTester';
 
-export default class EventTestController {
+export class EventTestController {
   private static API_VERSION = '1';
 
   public static async testEvent(ctx: Context) {

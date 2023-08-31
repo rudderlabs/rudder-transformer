@@ -13,7 +13,11 @@ import { Server } from 'http';
 // To run single destination test cases
 // npm run test:ts -- component  --destination=adobe_analytics
 const command = new Command();
-command.allowUnknownOption().option('-d, --destination <string>', 'Enter Destination Name').parse();
+command
+  .allowUnknownOption()
+  .option('-d, --destination <string>', 'Enter Destination Name')
+  .option('-f, --feature <string>', 'Enter Feature (processor/router) Name', 'processor')
+  .parse();
 
 const opts = command.opts();
 
@@ -35,7 +39,7 @@ afterAll(async () => {
 });
 
 const rootDir = __dirname;
-const allTestDataFilePaths = getTestDataFilePaths(rootDir, opts.destination);
+const allTestDataFilePaths = getTestDataFilePaths(rootDir, opts.destination, opts.feature);
 const DEFAULT_VERSION = 'v0';
 
 const testRoute = async (route, tcData: TestCaseData) => {

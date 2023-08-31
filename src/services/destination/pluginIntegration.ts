@@ -1,5 +1,5 @@
-import TransformationError from 'rs-integration-lib/build/errorDefinitions/transformationError';
-import PluginAdapter from '../../helpers/pluginAdaper';
+import { TransformationError } from 'rs-integration-lib';
+import { PluginAdapter } from '../../helpers/pluginAdaper';
 import {
   DeliveryResponse,
   Destination,
@@ -15,9 +15,9 @@ import {
   UserDeletionResponse,
 } from '../../types';
 import tags from '../../v0/util/tags';
-import NativeIntegrationDestinationService from './nativeIntegration';
+import { DestinationService } from '../../interfaces/DestinationService';
 
-export default class PluginIntegrationService implements NativeIntegrationDestinationService {
+export class PluginIntegrationService implements DestinationService {
   init() {}
 
   public getName(): string {

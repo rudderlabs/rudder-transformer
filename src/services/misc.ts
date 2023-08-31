@@ -4,7 +4,7 @@ import { Context } from 'koa';
 import { DestHandlerMap } from '../constants/destinationCanonicalNames';
 import { Metadata } from '../types';
 
-export default class MiscService {
+export class MiscService {
   public static getDestHandler(dest: string, version: string) {
     if (DestHandlerMap.hasOwnProperty(dest)) {
       return require(`../${version}/destinations/${DestHandlerMap[dest]}/transform`);
@@ -32,7 +32,7 @@ export default class MiscService {
 
   public static getMetaTags(metadata: Metadata) {
     if (!metadata) {
-      return {}
+      return {};
     }
     return {
       sourceType: metadata.sourceType,

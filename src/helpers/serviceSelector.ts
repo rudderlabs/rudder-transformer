@@ -2,18 +2,18 @@ import dotenv from 'dotenv';
 import { PlatformError } from 'rs-integration-lib';
 import { ProcessorTransformationRequest, RouterTransformationRequestData } from '../types/index';
 import { INTEGRATION_SERVICE } from '../routes/utils/constants';
-import CDKV1DestinationService from '../services/destination/cdkV1Integration';
-import CDKV2DestinationService from '../services/destination/cdkV2Integration';
-import DestinationService from '../interfaces/DestinationService';
-import NativeIntegrationDestinationService from '../services/destination/nativeIntegration';
-import SourceService from '../interfaces/SourceService';
-import NativeIntegrationSourceService from '../services/source/nativeIntegration';
-import ComparatorService from '../services/comparator';
-import PluginIntegrationService from '../services/destination/pluginIntegration';
+import { CDKV1DestinationService } from '../services/destination/cdkV1Integration';
+import { CDKV2DestinationService } from '../services/destination/cdkV2Integration';
+import { DestinationService } from '../interfaces/DestinationService';
+import { NativeIntegrationDestinationService } from '../services/destination/nativeIntegration';
+import { SourceService } from '../interfaces/SourceService';
+import { NativeIntegrationSourceService } from '../services/source/nativeIntegration';
+import { ComparatorService } from '../services/comparator';
+import { PluginIntegrationService } from '../services/destination/pluginIntegration';
 
 dotenv.config();
 
-export default class ServiceSelector {
+export class ServiceSelector {
   private static serviceMap: Map<string, any> = new Map();
 
   private static services = {
@@ -21,7 +21,7 @@ export default class ServiceSelector {
     [INTEGRATION_SERVICE.CDK_V2_DEST]: CDKV2DestinationService,
     [INTEGRATION_SERVICE.NATIVE_DEST]: NativeIntegrationDestinationService,
     [INTEGRATION_SERVICE.NATIVE_SOURCE]: NativeIntegrationSourceService,
-    [INTEGRATION_SERVICE.PLUGIN_DEST]: PluginIntegrationService
+    [INTEGRATION_SERVICE.PLUGIN_DEST]: PluginIntegrationService,
   };
 
   private static isCdkDestination(destinationDefinitionConfig: Object) {
@@ -70,9 +70,8 @@ export default class ServiceSelector {
   private static getPrimaryDestinationService(
     events: ProcessorTransformationRequest[] | RouterTransformationRequestData[],
   ): DestinationService {
-
     // Plugin Service selected by some condition
-    if(process.env.PLUGIN_SERVICE !== 'false') {
+    if (process.env.PLUGIN_SERVICE !== 'false') {
       return this.fetchCachedService(INTEGRATION_SERVICE.PLUGIN_DEST);
     }
     // Legacy Services

@@ -5,9 +5,6 @@ const {
   DataValidationError,
 } = require('rudder-transformer-cdk/build/error/index');
 const stackTraceParser = require('stacktrace-parser');
-const { logger } = require('../../logger');
-const pkg = require('../../../package.json');
-
 const {
   BaseError,
   TransformationError,
@@ -23,7 +20,9 @@ const {
   UnhandledStatusCodeError,
   UnauthorizedError,
   NetworkInstrumentationError,
-} = require('../../v0/util/errorTypes');
+} = require('rs-integration-lib');
+const { logger } = require('../../logger');
+const pkg = require('../../../package.json');
 
 const {
   BUGSNAG_API_KEY: apiKey,

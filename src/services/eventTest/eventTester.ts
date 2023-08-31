@@ -1,6 +1,6 @@
 import { sendToDestination, userTransformHandler } from '../../routerUtils';
 
-export default class EventTesterService {
+export class EventTesterService {
   private static getDestHandler(version, destination) {
     return require(`../../${version}/destinations/${destination}/transform`);
   }

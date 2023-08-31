@@ -20,7 +20,7 @@ logger.info(`Interval Bytes set: ${intervalBytes}`);
 
 heap.start(intervalBytes, stackDepth);
 
-export default class ProfileService {
+export class ProfileService {
   private static async promisifiedRead(readable: any) {
     new Promise((resolve, reject) => {
       // Instructions for reading data

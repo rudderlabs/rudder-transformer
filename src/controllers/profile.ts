@@ -1,9 +1,9 @@
 import { Context } from 'koa';
-import MiscService from '../services/misc';
-import ProfileService from '../services/profile';
-import ControllerUtility from './util';
+import { MiscService } from '../services/misc';
+import { ProfileService } from '../services/profile';
+import { ControllerUtility } from './util';
 
-export default class ProfileController {
+export class ProfileController {
   /**
    * Example usage of API
    * 

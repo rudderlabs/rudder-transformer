@@ -4,7 +4,7 @@ import { getMetadata } from '../v0/util';
 import eventValidator from '../util/eventValidation';
 import stats from '../util/stats';
 
-export default class TrackingPlanservice {
+export class TrackingPlanservice {
   public static async validateTrackingPlan(events, requestSize, reqParams) {
     const requestStartTime = new Date();
     const respList: any[] = [];

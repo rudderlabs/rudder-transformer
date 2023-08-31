@@ -1,4 +1,4 @@
-import IntegrationDestinationService from '../interfaces/DestinationService';
+import { DestinationService } from '../interfaces/DestinationService';
 import {
   DeliveryResponse,
   Destination,
@@ -19,15 +19,12 @@ import { CommonUtils } from '../util/common';
 
 const NS_PER_SEC = 1e9;
 
-export default class ComparatorService implements IntegrationDestinationService {
-  secondaryService: IntegrationDestinationService;
+export class ComparatorService implements DestinationService {
+  secondaryService: DestinationService;
 
-  primaryService: IntegrationDestinationService;
+  primaryService: DestinationService;
 
-  constructor(
-    primaryService: IntegrationDestinationService,
-    secondaryService: IntegrationDestinationService,
-  ) {
+  constructor(primaryService: DestinationService, secondaryService: DestinationService) {
     this.primaryService = primaryService;
     this.secondaryService = secondaryService;
   }

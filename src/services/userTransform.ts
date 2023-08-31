@@ -8,13 +8,17 @@ import {
   UserTransformationResponse,
   UserTransformationServiceResponse,
 } from '../types/index';
-import { RespStatusError, RetryRequestError, extractStackTraceUptoLastSubstringMatch } from '../util/utils';
+import {
+  RespStatusError,
+  RetryRequestError,
+  extractStackTraceUptoLastSubstringMatch,
+} from '../util/utils';
 import { getMetadata, isNonFuncObject } from '../v0/util';
 import { SUPPORTED_FUNC_NAMES } from '../util/ivmFactory';
 import logger from '../logger';
 import stats from '../util/stats';
 
-export default class UserTransformService {
+export class UserTransformService {
   public static async transformRoutine(
     events: ProcessorTransformationRequest[],
   ): Promise<UserTransformationServiceResponse> {
@@ -175,7 +179,9 @@ export default class UserTransformService {
       response.status = 200;
     } catch (error: any) {
       response.status = 400;
-      response.body = { error: extractStackTraceUptoLastSubstringMatch(error.stack, SUPPORTED_FUNC_NAMES) };
+      response.body = {
+        error: extractStackTraceUptoLastSubstringMatch(error.stack, SUPPORTED_FUNC_NAMES),
+      };
     }
     return response;
   }

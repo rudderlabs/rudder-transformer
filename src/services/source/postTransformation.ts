@@ -1,8 +1,8 @@
 import { MetaTransferObject, RudderMessage, SourceTransformationResponse } from '../../types/index';
 import { generateErrorObject } from '../../v0/util';
-import ErrorReportingService from '../errorReporting';
+import { ErrorReportingService } from '../errorReporting';
 
-export default class PostTransformationSourceService {
+export class PostTransformationSourceService {
   public static handleFailureEventsSource(
     error: Object,
     metaTO: MetaTransferObject,

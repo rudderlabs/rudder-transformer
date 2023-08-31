@@ -1,6 +1,6 @@
-import MiscService from '../services/misc';
+import { MiscService } from '../services/misc';
 
-export default class FetchHandler {
+export class FetchHandler {
   private static sourceHandlerMap: Map<string, any> = new Map();
 
   private static destHandlerMap: Map<string, any> = new Map();

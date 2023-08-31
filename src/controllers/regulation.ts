@@ -1,13 +1,13 @@
 import { Context } from 'koa';
 import logger from '../logger';
 import { UserDeletionRequest, UserDeletionResponse } from '../types';
-import ServiceSelector from '../helpers/serviceSelector';
+import { ServiceSelector } from '../helpers/serviceSelector';
 import tags from '../v0/util/tags';
 import stats from '../util/stats';
-import PostTransformationDestinationService from '../services/destination/postTransformation';
+import { DestinationPostTransformationService } from '../services/destination/postTransformation';
 
 // TODO: refactor this class to new format
-export default class RegulationController {
+export class RegulationController {
   public static async deleteUsers(ctx: Context) {
     logger.debug(
       'Native(Process-Transform):: Requst to transformer::',
@@ -41,7 +41,7 @@ export default class RegulationController {
         'unknown',
         tags.FEATURES.USER_DELETION,
       );
-      const errResp = PostTransformationDestinationService.handleUserDeletionFailureEvents(
+      const errResp = DestinationPostTransformationService.handleUserDeletionFailureEvents(
         error,
         metaTO,
       );
@@ -50,7 +50,7 @@ export default class RegulationController {
     }
     stats.timing('dest_transform_request_latency', startTime, {
       feature: tags.FEATURES.USER_DELETION,
-      version:"v0",
+      version: 'v0',
     });
     return ctx;
   }

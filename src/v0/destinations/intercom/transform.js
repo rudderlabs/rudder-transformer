@@ -18,7 +18,7 @@ const {
   flattenJson,
 } = require('../../util');
 const { separateReservedAndRestMetadata } = require('./util');
-const { InstrumentationError } = require('../../util/errorTypes');
+const { InstrumentationError } = require('rs-integration-lib');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function getCompanyAttribute(company) {

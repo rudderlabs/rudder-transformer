@@ -10,7 +10,7 @@ const {
 } = require('../../util');
 const { ACTION_SOURCES_VALUES, CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
 
-const { InstrumentationError, TransformationError } = require('../../util/errorTypes');
+const { InstrumentationError, TransformationError } = require('rs-integration-lib');
 
 /**  format revenue according to fb standards with max two decimal places.
  * @param revenue

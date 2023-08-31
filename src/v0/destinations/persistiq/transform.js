@@ -8,7 +8,7 @@ const {
 const { configCategories } = require('./config');
 const { buildLeadPayload, getIdentifyTraits } = require('./util');
 const { EventType } = require('../../../constants');
-const { InstrumentationError } = require('../../util/errorTypes');
+const { InstrumentationError } = require('rs-integration-lib');
 
 const responseBuilder = (payload, endpoint, method, Config) => {
   const { apiKey } = Config;

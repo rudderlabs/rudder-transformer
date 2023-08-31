@@ -3,7 +3,7 @@ const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
-const { ConfigurationError, InstrumentationError, NetworkError } = require('../../util/errorTypes');
+const { ConfigurationError, InstrumentationError, NetworkError } = require('rs-integration-lib');
 const { executeCommonValidations } = require('../../util/regulation-api');
 const tags = require('../../util/tags');
 

@@ -15,7 +15,7 @@ const {
   InstrumentationError,
   ConfigurationError,
   OAuthSecretError,
-} = require('../../util/errorTypes');
+} = require('rs-integration-lib');
 const {
   offlineDataJobsMapping,
   addressInfoMapping,

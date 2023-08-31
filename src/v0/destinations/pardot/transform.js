@@ -51,7 +51,7 @@ const {
   OAuthSecretError,
   ConfigurationError,
   InstrumentationError,
-} = require('../../util/errorTypes');
+} = require('rs-integration-lib');
 
 /**
  * Get access token to be bound to the event req headers

@@ -19,7 +19,7 @@ const {
   AbortedError,
   NetworkInstrumentationError,
   NetworkError,
-} = require('../../util/errorTypes');
+} = require('rs-integration-lib');
 const tags = require('../../util/tags');
 
 const conversionCustomVariableCache = new Cache(CONVERSION_CUSTOM_VARIABLE_CACHE_TTL);

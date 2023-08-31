@@ -4,7 +4,7 @@ const {
   AbortedError,
   RetryableError,
   NetworkError,
-} = require('../../util/errorTypes');
+} = require('rs-integration-lib');
 const tags = require('../../util/tags');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 

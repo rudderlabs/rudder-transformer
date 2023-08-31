@@ -7,7 +7,7 @@ const mappingJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mappin
 
 const { removeUndefinedAndNullValues } = require('../../util');
 
-const { TransformationError } = require('../../util/errorTypes');
+const { TransformationError } = require('rs-integration-lib');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const processNormalEvent = (event) => {

@@ -5,7 +5,7 @@ const {
   defaultRequestConfig,
 } = require('../../util');
 const { EventType } = require('../../../constants');
-const { InstrumentationError } = require('../../util/errorTypes');
+const { InstrumentationError } = require('rs-integration-lib');
 
 function responseBuilderSimple(message, destination) {
   const payload = {};

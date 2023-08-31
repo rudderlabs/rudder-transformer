@@ -7,7 +7,7 @@ const {
   DISTINCT_ID_MAX_BATCH_SIZE,
 } = require('./config');
 const { executeCommonValidations } = require('../../util/regulation-api');
-const { ConfigurationError, NetworkError } = require('../../util/errorTypes');
+const { ConfigurationError, NetworkError } = require('rs-integration-lib');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');

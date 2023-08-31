@@ -15,7 +15,7 @@ const {
   simpleProcessRouterDest,
 } = require('../../util');
 const { BASE_ENDPOINT, createPayloadMapping } = require('./config');
-const { NetworkError, ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
+const { NetworkError, ConfigurationError, InstrumentationError } = require('rs-integration-lib');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');

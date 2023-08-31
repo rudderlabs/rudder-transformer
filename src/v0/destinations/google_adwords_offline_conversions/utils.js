@@ -29,7 +29,7 @@ const {
   OAuthSecretError,
   ConfigurationError,
   InstrumentationError,
-} = require('../../util/errorTypes');
+} = require('rs-integration-lib');
 
 const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
 

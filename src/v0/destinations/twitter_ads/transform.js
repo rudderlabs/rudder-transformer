@@ -15,7 +15,7 @@ const {
   BASE_URL
 } = require('./config');
 
-const { InstrumentationError, OAuthSecretError, ConfigurationError } = require('../../util/errorTypes');
+const { InstrumentationError, OAuthSecretError, ConfigurationError } = require('rs-integration-lib');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { getAuthHeaderForRequest } = require("./util");
 

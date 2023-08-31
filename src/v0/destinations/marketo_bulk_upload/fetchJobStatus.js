@@ -13,7 +13,7 @@ const {
   RetryableError,
   ThrottledError,
   PlatformError,
-} = require('../../util/errorTypes');
+} = require('rs-integration-lib');
 const stats = require('../../../util/stats');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 

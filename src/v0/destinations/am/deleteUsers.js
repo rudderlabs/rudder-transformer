@@ -6,7 +6,7 @@ const {
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 const { isHttpStatusSuccess } = require('../../util');
-const { ConfigurationError, NetworkError } = require('../../util/errorTypes');
+const { ConfigurationError, NetworkError } = require('rs-integration-lib');
 const { executeCommonValidations } = require('../../util/regulation-api');
 const { DELETE_MAX_BATCH_SIZE } = require('./config');
 const { getUserIdBatches } = require('../../util/deleteUserUtils');

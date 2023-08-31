@@ -17,7 +17,7 @@ const {
   InstrumentationError,
   ConfigurationError,
   NetworkError,
-} = require('../../util/errorTypes');
+} = require('rs-integration-lib');
 const {
   CONTACT_PROPERTY_MAP_ENDPOINT,
   IDENTIFY_CRM_SEARCH_CONTACT,

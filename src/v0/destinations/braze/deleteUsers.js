@@ -8,7 +8,7 @@ const { isHttpStatusSuccess } = require('../../util');
 const { executeCommonValidations } = require('../../util/regulation-api');
 const { DEL_MAX_BATCH_SIZE } = require('./config');
 const { getUserIdBatches } = require('../../util/deleteUserUtils');
-const { NetworkError, ConfigurationError } = require('../../util/errorTypes');
+const { NetworkError, ConfigurationError } = require('rs-integration-lib');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const userDeletionHandler = async (userAttributes, config) => {

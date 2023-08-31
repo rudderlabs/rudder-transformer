@@ -5,7 +5,7 @@ const {
 } = require('../../../adapters/utils/networkUtils');
 const { isDefinedAndNotNull, isDefined, isHttpStatusSuccess } = require('../../util');
 
-const { NetworkError } = require('../../util/errorTypes');
+const { NetworkError } = require('rs-integration-lib');
 const tags = require('../../util/tags');
 
 const responseHandler = (destinationResponse, dest) => {

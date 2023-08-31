@@ -25,7 +25,7 @@ const {
 } = require('../../util');
 const { getAccessToken, salesforceResponseHandler } = require('./utils');
 const { handleHttpRequest } = require('../../../adapters/network');
-const { InstrumentationError, NetworkInstrumentationError } = require('../../util/errorTypes');
+const { InstrumentationError, NetworkInstrumentationError } = require('rs-integration-lib');
 const logger = require('../../../logger');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 

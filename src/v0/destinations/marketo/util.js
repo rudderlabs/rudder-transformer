@@ -11,7 +11,7 @@ const {
   RetryableError,
   UnhandledStatusCodeError,
   InstrumentationError,
-} = require('../../util/errorTypes');
+} = require('rs-integration-lib');
 const tags = require('../../util/tags');
 
 /**

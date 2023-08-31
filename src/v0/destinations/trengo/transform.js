@@ -23,7 +23,7 @@ const {
   TransformationError,
   InstrumentationError,
   NetworkInstrumentationError,
-} = require('../../util/errorTypes');
+} = require('rs-integration-lib');
 const tags = require('../../util/tags');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { JSON_MIME_TYPE } = require('../../util/constant');

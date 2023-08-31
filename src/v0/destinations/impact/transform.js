@@ -21,7 +21,7 @@ const {
   ConfigurationError,
   TransformationError,
   InstrumentationError,
-} = require('../../util/errorTypes');
+} = require('rs-integration-lib');
 
 /**
  * This function takes the transformed payload, endpoint and destination Config as input and returns the prepared response.

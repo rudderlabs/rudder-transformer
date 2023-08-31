@@ -4,7 +4,7 @@ const {
   InstrumentationError,
   ConfigurationError,
   PlatformError,
-} = require('../../util/errorTypes');
+} = require('rs-integration-lib');
 const {
   getValueFromMessage,
   constructPayload,

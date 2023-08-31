@@ -1,7 +1,7 @@
 const sha256 = require('sha256');
 const Message = require('../message');
 const { mapping, formEventName } = require('./util');
-const { TransformationError } = require('../../util/errorTypes');
+const { TransformationError } = require('rs-integration-lib');
 const { generateUUID, removeUndefinedAndNullValues } = require('../../util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 

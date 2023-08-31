@@ -24,7 +24,7 @@ const {
   InstrumentationError,
   ConfigurationError,
   NetworkInstrumentationError,
-} = require('../../util/errorTypes');
+} = require('rs-integration-lib');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const identifyResponseBuilder = (message, { Config }) => {

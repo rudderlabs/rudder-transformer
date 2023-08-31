@@ -4,7 +4,7 @@ const {
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 
-const { NetworkError, InvalidAuthTokenError } = require('../../util/errorTypes');
+const { NetworkError, InvalidAuthTokenError } = require('rs-integration-lib');
 const tags = require('../../util/tags');
 
 /**

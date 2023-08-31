@@ -1,9 +1,9 @@
 import path from 'path';
 import fs from 'fs/promises';
-import { WorkflowExecutionError, WorkflowCreationError, StatusError } from 'rudder-workflow-engine';
+import { WorkflowExecutionError, WorkflowCreationError } from 'rudder-workflow-engine';
+import { PlatformError } from 'rs-integration-lib';
 import logger from '../../logger';
 import { generateErrorObject } from '../../v0/util';
-import { PlatformError } from '../../v0/util/errorTypes';
 import tags from '../../v0/util/tags';
 
 const CDK_V2_ROOT_DIR = __dirname;

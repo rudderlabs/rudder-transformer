@@ -14,7 +14,7 @@ const {
   checkEventIfUIMapped,
 } = require('./util');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG, createTaskEndPoint } = require('./config');
-const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
+const { TransformationError, InstrumentationError } = require('rs-integration-lib');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = async (payload, listId, apiToken) => {

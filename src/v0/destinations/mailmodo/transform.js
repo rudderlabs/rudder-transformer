@@ -14,7 +14,7 @@ const {
   handleRtTfSingleEventError,
 } = require('../../util');
 const { deduceAddressFields, extractCustomProperties } = require('./utils');
-const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
+const { ConfigurationError, InstrumentationError } = require('rs-integration-lib');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (responseConfgs) => {

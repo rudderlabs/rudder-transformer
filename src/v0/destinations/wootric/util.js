@@ -8,7 +8,7 @@ const { BASE_ENDPOINT, VERSION, ACCESS_TOKEN_CACHE_TTL_SECONDS } = require('./co
 const { constructPayload, isDefinedAndNotNullAndNotEmpty } = require('../../util');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
 const Cache = require('../../util/cache');
-const { InstrumentationError, NetworkError } = require('../../util/errorTypes');
+const { InstrumentationError, NetworkError } = require('rs-integration-lib');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 

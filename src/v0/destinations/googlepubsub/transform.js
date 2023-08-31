@@ -1,5 +1,5 @@
 const { simpleProcessRouterDest } = require('../../util');
-const { ConfigurationError } = require('../../util/errorTypes');
+const { ConfigurationError } = require('rs-integration-lib');
 
 const { getTopic, createAttributesMetadata } = require('./util');
 

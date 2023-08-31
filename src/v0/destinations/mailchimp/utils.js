@@ -15,7 +15,7 @@ const {
   defaultBatchRequestConfig,
   constructPayload,
 } = require('../../util');
-const { InstrumentationError, NetworkError } = require('../../util/errorTypes');
+const { InstrumentationError, NetworkError } = require('rs-integration-lib');
 const { MERGE_CONFIG, MERGE_ADDRESS, SUBSCRIPTION_STATUS, VALID_STATUSES } = require('./config');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');

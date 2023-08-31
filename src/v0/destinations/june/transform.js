@@ -10,7 +10,7 @@ const {
 const { EventType } = require('../../../constants');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
-const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
+const { TransformationError, InstrumentationError } = require('rs-integration-lib');
 
 const responseBuilder = (payload, endpoint, destination) => {
   const destPayload = payload;

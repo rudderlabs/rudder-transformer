@@ -2,7 +2,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "e8592245ee0fcf9e9997dfe538fb8b22",
+        "apiKey": "dummyApiKey",
         "accountId": "1809802",
         "campaignId": "",
         "enableUserCreation": true
@@ -47,7 +47,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "e8592245ee0fcf9e9997dfe538fb8b22",
+        "apiKey": "dummyApiKey",
         "accountId": "1809802",
         "campaignId": "915194776",
         "enableUserCreation": true

@@ -42,9 +42,9 @@
     "statusCode": 200,
     "destination": {
       "Config": {
-        "initialAccessToken": "9f58ryaM64FZp0rg3jyDV4PB5",
-        "password": "hJCR557#uzFfD",
-        "userName": "sampathvinayak1453@gmail.com"
+        "initialAccessToken": "dummyInitialAccessToken",
+        "password": "dummyPassword1",
+        "userName": "testsalesforce1453@gmail.com"
       },
       "DestinationDefinition": {
         "DisplayName": "Salesforce",
@@ -100,9 +100,9 @@
     "statusCode": 200,
     "destination": {
       "Config": {
-        "initialAccessToken": "9f58ryaM64FZp0rg3jyDV4PB5",
-        "password": "hJCR557#uzFfD",
-        "userName": "sampathvinayak1453@gmail.com"
+        "initialAccessToken": "dummyInitialAccessToken",
+        "password": "dummyPassword1",
+        "userName": "testsalesforce1453@gmail.com"
       },
       "DestinationDefinition": {
         "DisplayName": "Salesforce",
@@ -158,9 +158,9 @@
     "statusCode": 200,
     "destination": {
       "Config": {
-        "initialAccessToken": "9f58ryaM64FZp0rg3jyDV4PB5",
-        "password": "hJCR557#uzFfD",
-        "userName": "sampathvinayak1453@gmail.com"
+        "initialAccessToken": "dummyInitialAccessToken",
+        "password": "dummyPassword1",
+        "userName": "testsalesforce1453@gmail.com"
       },
       "DestinationDefinition": {
         "DisplayName": "Salesforce",
@@ -215,9 +215,9 @@
     "statusCode": 200,
     "destination": {
       "Config": {
-        "initialAccessToken": "9f58ryaM64FZp0rg3jyDV4PB5",
-        "password": "hJCR557#uzFfD",
-        "userName": "sampathvinayak1453@gmail.com"
+        "initialAccessToken": "dummyInitialAccessToken",
+        "password": "dummyPassword1",
+        "userName": "testsalesforce1453@gmail.com"
       },
       "DestinationDefinition": {
         "DisplayName": "Salesforce",

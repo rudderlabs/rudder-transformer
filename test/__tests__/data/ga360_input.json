@@ -4,7 +4,7 @@
       "channel": "web",
       "context": {
         "traits": {
-          "name": "Ruchira Moitra"
+          "name": "Rudder Test"
         },
         "app": {
           "build": "1.0.0",
@@ -28,8 +28,8 @@
         }
       },
       "properties": {
-        "plan": "ruchira plan",
-        "name": "ruchira moitra"
+        "plan": "standard plan",
+        "name": "rudder test"
       },
       "type": "identify",
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
@@ -119,7 +119,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -232,7 +232,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -342,7 +342,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -365,7 +365,7 @@
       "userId": "12345",
       "event": "order completed",
       "properties": {
-        "order_id": "ruchiraorder1",
+        "order_id": "rudderstackorder1",
         "total": 99.99,
         "shipping": 13.99,
         "tax": 20.99,
@@ -468,7 +468,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -584,7 +584,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -700,7 +700,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -816,7 +816,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -932,7 +932,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -1048,7 +1048,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -1182,7 +1182,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -1323,7 +1323,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -1439,7 +1439,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -1553,7 +1553,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -1667,7 +1667,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -1793,7 +1793,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -1919,7 +1919,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -2028,7 +2028,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -2138,7 +2138,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -2257,7 +2257,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -2360,7 +2360,7 @@
       "channel": "web",
       "context": {
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -2469,7 +2469,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -2587,7 +2587,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -2705,7 +2705,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -2823,7 +2823,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -2932,7 +2932,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -3047,7 +3047,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -3161,7 +3161,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -3383,7 +3383,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -3489,7 +3489,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -3602,7 +3602,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -3707,7 +3707,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -3730,7 +3730,7 @@
       "userId": "12345",
       "event": "Order Refunded",
       "properties": {
-        "order_id": "ruchiraorder1",
+        "order_id": "rudderstackorder1",
         "total": 99.99,
         "shipping": 13.99,
         "tax": 20.99,
@@ -3833,7 +3833,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -3856,7 +3856,7 @@
       "userId": "12345",
       "event": "Order Refunded",
       "properties": {
-        "order_id": "ruchiraorder1",
+        "order_id": "rudderstackorder1",
         "total": 99.99,
         "shipping": 13.99,
         "tax": 20.99,
@@ -3945,7 +3945,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -3968,7 +3968,7 @@
       "userId": "12345",
       "event": "Order Refunded",
       "properties": {
-        "order_id": "ruchiraorder1",
+        "order_id": "rudderstackorder1",
         "total": 99.99,
         "shipping": 13.99,
         "tax": 20.99,
@@ -4058,7 +4058,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -4081,7 +4081,7 @@
       "userId": "12345",
       "event": "Order Refunded",
       "properties": {
-        "order_id": "ruchiraorder1",
+        "order_id": "rudderstackorder1",
         "total": 99.99,
         "shipping": 13.99,
         "tax": 20.99,
@@ -4186,7 +4186,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -4209,7 +4209,7 @@
       "userId": "12345",
       "event": "Cart Shared",
       "properties": {
-        "order_id": "ruchiraorder1",
+        "order_id": "rudderstackorder1",
         "total": 99.99,
         "shipping": 13.99,
         "tax": 20.99,
@@ -4314,7 +4314,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -4337,7 +4337,7 @@
       "userId": "12345",
       "event": "Product Shared",
       "properties": {
-        "product_id": "ruchiraorder1",
+        "product_id": "rudderstackorder1",
         "total": 99.99,
         "shipping": 13.99,
         "tax": 20.99,
@@ -4427,7 +4427,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -4552,7 +4552,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -4675,7 +4675,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -4785,7 +4785,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -4808,7 +4808,7 @@
       "userId": "12345",
       "event": "Order Cancelled",
       "properties": {
-        "order_id": "ruchiraorder1",
+        "order_id": "rudderstackorder1",
         "total": 99.99,
         "shipping": 13.99,
         "tax": 20.99,
@@ -4913,7 +4913,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -4936,7 +4936,7 @@
       "userId": "12345",
       "event": "Order Cancelled",
       "properties": {
-        "order_id": "ruchiraorder1",
+        "order_id": "rudderstackorder1",
         "value": 99.99,
         "shipping": 13.99,
         "tax": 20.99,
@@ -5041,7 +5041,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -5064,7 +5064,7 @@
       "userId": "12345",
       "event": "Order Cancelled",
       "properties": {
-        "order_id": "ruchiraorder1",
+        "order_id": "rudderstackorder1",
         "revenue": 99.99,
         "shipping": 13.99,
         "tax": 20.99,
@@ -5169,7 +5169,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -5192,7 +5192,7 @@
       "userId": "12345",
       "event": "Order Cancelled",
       "properties": {
-        "order_id": "ruchiraorder1",
+        "order_id": "rudderstackorder1",
         "revenue": 99.99,
         "shipping": 13.99,
         "tax": 20.99,
@@ -5282,7 +5282,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -5305,7 +5305,7 @@
       "userId": "12345",
       "event": "Cart Viewed",
       "properties": {
-        "order_id": "ruchiraorder1",
+        "order_id": "rudderstackorder1",
         "revenue": 99.99,
         "shipping": 13.99,
         "tax": 20.99,
@@ -5404,7 +5404,7 @@
       "channel": "web",
       "context": {
         "traits": {
-          "name1": "Ruchira"
+          "name1": "Test"
         },
         "app": {
           "build": "1.0.0",
@@ -5428,8 +5428,8 @@
         }
       },
       "properties": {
-        "plan": "ruchira plan",
-        "name": "ruchira moitra"
+        "plan": "standard plan",
+        "name": "rudder test"
       },
       "type": "identify",
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
@@ -5440,7 +5440,7 @@
         "All": true
       },
       "traits": {
-        "name1": "Ruchira"
+        "name1": "Test"
       },
       "sentAt": "2019-10-14T09:03:22.563Z"
     },
@@ -5521,7 +5521,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -5629,7 +5629,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -5731,7 +5731,7 @@
       "channel": "web",
       "context": {
         "traits": {
-          "name": "Ruchira"
+          "name": "Test"
         },
         "app": {
           "build": "1.0.0",
@@ -5755,8 +5755,8 @@
         }
       },
       "properties": {
-        "plan": "ruchira plan",
-        "name": "ruchira moitra"
+        "plan": "standard plan",
+        "name": "rudder test"
       },
       "type": "identify",
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
@@ -5839,7 +5839,7 @@
       "channel": "web",
       "context": {
         "traits": {
-          "name": "Ruchira"
+          "name": "Test"
         },
         "app": {
           "build": "1.0.0",
@@ -5863,8 +5863,8 @@
         }
       },
       "properties": {
-        "plan": "ruchira plan",
-        "name": "ruchira moitra"
+        "plan": "standard plan",
+        "name": "rudder test"
       },
       "type": "identify",
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
@@ -5948,7 +5948,7 @@
       "channel": "web",
       "context": {
         "traits": {
-          "name": "Ruchira"
+          "name": "Test"
         },
         "app": {
           "build": "1.0.0",
@@ -5972,8 +5972,8 @@
         }
       },
       "properties": {
-        "plan": "ruchira plan",
-        "name": "ruchira moitra"
+        "plan": "standard plan",
+        "name": "rudder test"
       },
       "type": "identify",
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
@@ -5981,8 +5981,12 @@
       "userId": "12345",
       "integrations": {
         "All": true,
-        "GA": { "clientId": "clientId" },
-        "Google Analytics": { "clientId": "clientId" }
+        "GA": {
+          "clientId": "clientId"
+        },
+        "Google Analytics": {
+          "clientId": "clientId"
+        }
       },
       "sentAt": "2019-10-14T09:03:22.563Z"
     },
@@ -6064,7 +6068,7 @@
           }
         ],
         "traits": {
-          "name": "Ruchira"
+          "name": "Test"
         },
         "app": {
           "build": "1.0.0",
@@ -6088,8 +6092,8 @@
         }
       },
       "properties": {
-        "plan": "ruchira plan",
-        "name": "ruchira moitra"
+        "plan": "standard plan",
+        "name": "rudder test"
       },
       "type": "identify",
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",

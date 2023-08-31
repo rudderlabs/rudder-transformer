@@ -6,7 +6,7 @@
       "method": "POST",
       "endpoint": "https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/437689/conversions/batchinsert",
       "headers": {
-        "Authorization": "Bearer abcd1234",
+        "Authorization": "Bearer dummyApiToken",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -44,7 +44,7 @@
     "metadata": [
       {
         "secret": {
-          "access_token": "abcd1234",
+          "access_token": "dummyApiToken",
           "developer_token": "ijkl91011",
           "refresh_token": "efgh5678"
         },
@@ -70,7 +70,7 @@
       "method": "POST",
       "endpoint": "https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/437689/conversions/batchupdate",
       "headers": {
-        "Authorization": "Bearer abcd1234",
+        "Authorization": "Bearer dummyApiToken",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -106,7 +106,7 @@
     "metadata": [
       {
         "secret": {
-          "access_token": "abcd1234",
+          "access_token": "dummyApiToken",
           "developer_token": "ijkl91011",
           "refresh_token": "efgh5678"
         },
@@ -140,7 +140,7 @@
     "metadata": [
       {
         "secret": {
-          "access_token": "abcd1234",
+          "access_token": "dummyApiToken",
           "developer_token": "ijkl91011",
           "refresh_token": "efgh5678"
         },

@@ -7,12 +7,12 @@
     "headers": {
       "Content-Type": "application/json",
       "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
-      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOmR1bW15QXBpS2V5"
     },
     "params": {},
     "body": {
       "JSON": {
-        "customer_id": "ruchu123",
+        "customer_id": "rudder123",
         "type": "event",
         "actions": [
           {
@@ -128,14 +128,14 @@
       "JSON": {
         "type": "customer",
         "attributes": {
-          "name": "Ruchira Moitra",
+          "name": "Rudder Test",
           "plan": "Enterprise",
-          "email": "ruchira@gmail.com",
+          "email": "rudderTest@gmail.com",
           "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
           "company.id": "abc123",
           "created_time": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)"
         },
-        "customer_id": "ruchu123"
+        "customer_id": "rudder123"
       }
     },
     "type": "REST",
@@ -146,7 +146,7 @@
     "headers": {
       "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
       "Content-Type": "application/json",
-      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOmR1bW15QXBpS2V5"
     },
     "version": "1",
     "endpoint": "https://api-01.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA"
@@ -175,7 +175,7 @@
     "headers": {
       "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
       "Content-Type": "application/json",
-      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOmR1bW15QXBpS2V5"
     },
     "version": "1",
     "endpoint": "https://api-01.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA"
@@ -189,14 +189,14 @@
         "JSON": {
           "type": "customer",
           "attributes": {
-            "name": "Ruchira Moitra",
+            "name": "Rudder Test",
             "plan": "Enterprise",
-            "email": "ruchira@gmail.com",
+            "email": "rudderTest@gmail.com",
             "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
             "company.id": "abc123",
             "created_time": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)"
           },
-          "customer_id": "ruchu123"
+          "customer_id": "rudder123"
         }
       },
       "type": "REST",
@@ -207,7 +207,7 @@
       "headers": {
         "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
         "Content-Type": "application/json",
-        "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+        "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOmR1bW15QXBpS2V5"
       },
       "version": "1",
       "endpoint": "https://api-01.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA"
@@ -226,7 +226,7 @@
             "platform": "android",
             "app_version": "1.1.6"
           },
-          "customer_id": "ruchu123"
+          "customer_id": "rudder123"
         }
       },
       "type": "REST",
@@ -237,7 +237,7 @@
       "headers": {
         "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
         "Content-Type": "application/json",
-        "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+        "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOmR1bW15QXBpS2V5"
       },
       "version": "1",
       "endpoint": "https://api-01.moengage.com/v1/device/W0ZHNMPI2O4KHJ48ZILZACRA"
@@ -251,14 +251,14 @@
       "JSON": {
         "type": "customer",
         "attributes": {
-          "name": "Ruchira Moitra",
+          "name": "Rudder Test",
           "plan": "Enterprise",
-          "email": "ruchira@gmail.com",
+          "email": "rudderTest@gmail.com",
           "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
           "company.id": "abc123",
           "created_time": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)"
         },
-        "customer_id": "ruchu123"
+        "customer_id": "rudder123"
       }
     },
     "type": "REST",
@@ -269,7 +269,7 @@
     "headers": {
       "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
       "Content-Type": "application/json",
-      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOmR1bW15QXBpS2V5"
     },
     "version": "1",
     "endpoint": "https://api-02.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA"
@@ -282,14 +282,14 @@
       "JSON": {
         "type": "customer",
         "attributes": {
-          "name": "Ruchira Moitra",
+          "name": "Rudder Test",
           "plan": "Enterprise",
-          "email": "ruchira@gmail.com",
+          "email": "rudderTest@gmail.com",
           "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
           "company.id": "abc123",
           "created_time": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)"
         },
-        "customer_id": "ruchu123"
+        "customer_id": "rudder123"
       }
     },
     "type": "REST",
@@ -300,7 +300,7 @@
     "headers": {
       "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
       "Content-Type": "application/json",
-      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOmR1bW15QXBpS2V5"
     },
     "version": "1",
     "endpoint": "https://api-03.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA"
@@ -325,12 +325,12 @@
     "headers": {
       "Content-Type": "application/json",
       "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
-      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOmR1bW15QXBpS2V5"
     },
     "params": {},
     "body": {
       "JSON": {
-        "customer_id": "ruchu123",
+        "customer_id": "rudder123",
         "type": "event",
         "actions": [
           {
@@ -442,7 +442,7 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "ruchu123"
+    "userId": "rudder123"
   },
   {
     "version": "1",
@@ -452,12 +452,12 @@
     "headers": {
       "Content-Type": "application/json",
       "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
-      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOmR1bW15QXBpS2V5"
     },
     "params": {},
     "body": {
       "JSON": {
-        "customer_id": "ruchu123",
+        "customer_id": "rudder123",
         "type": "event",
         "actions": [
           {
@@ -536,14 +536,14 @@
         "JSON": {
           "type": "customer",
           "attributes": {
-            "name": "Ruchira Moitra",
+            "name": "Rudder Test",
             "plan": "Enterprise",
-            "email": "ruchira@gmail.com",
+            "email": "rudderTest@gmail.com",
             "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
             "company.id": "abc123",
             "created_time": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)"
           },
-          "customer_id": "ruchu123"
+          "customer_id": "rudder123"
         }
       },
       "type": "REST",
@@ -554,7 +554,7 @@
       "headers": {
         "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
         "Content-Type": "application/json",
-        "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+        "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOmR1bW15QXBpS2V5"
       },
       "version": "1",
       "endpoint": "https://api-01.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA"
@@ -573,7 +573,7 @@
             "platform": "iOS",
             "app_version": "1.1.6"
           },
-          "customer_id": "ruchu123"
+          "customer_id": "rudder123"
         }
       },
       "type": "REST",
@@ -584,7 +584,7 @@
       "headers": {
         "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
         "Content-Type": "application/json",
-        "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+        "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOmR1bW15QXBpS2V5"
       },
       "version": "1",
       "endpoint": "https://api-01.moengage.com/v1/device/W0ZHNMPI2O4KHJ48ZILZACRA"
@@ -598,12 +598,12 @@
     "headers": {
       "Content-Type": "application/json",
       "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
-      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOmR1bW15QXBpS2V5"
     },
     "params": {},
     "body": {
       "JSON": {
-        "customer_id": "ruchu123",
+        "customer_id": "rudder123",
         "device_id": "7e32188a4dab669f",
         "type": "event",
         "actions": [
@@ -690,12 +690,12 @@
     "headers": {
       "Content-Type": "application/json",
       "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
-      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOmR1bW15QXBpS2V5"
     },
     "params": {},
     "body": {
       "JSON": {
-        "customer_id": "ruchu123",
+        "customer_id": "rudder123",
         "device_id": "7e32188a4dab669f",
         "type": "event",
         "actions": [
@@ -799,7 +799,7 @@
     "params": {},
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOmR1bW15QXBpS2V5"
     },
     "version": "1",
     "endpoint": "https://api-01.moengage.com/v1/customer/merge?app_id=W0ZHNMPI2O4KHJ48ZILZACRA"

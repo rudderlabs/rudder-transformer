@@ -7,7 +7,7 @@
     "headers": {
       "Content-Type": "application/json",
       "Accept": "application/json",
-      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+      "Authorization": "Bearer dummyApiKey"
     },
     "params": {},
     "body": {
@@ -46,7 +46,7 @@
     "headers": {
       "Content-Type": "application/json",
       "Accept": "application/json",
-      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+      "Authorization": "Bearer dummyApiKey"
     },
     "params": {},
     "body": {
@@ -78,7 +78,7 @@
     "headers": {
       "Content-Type": "application/json",
       "Accept": "application/json",
-      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+      "Authorization": "Bearer dummyApiKey"
     },
     "params": {},
     "body": {
@@ -117,7 +117,7 @@
     "headers": {
       "Content-Type": "application/json",
       "Accept": "application/json",
-      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+      "Authorization": "Bearer dummyApiKey"
     },
     "params": {},
     "body": {
@@ -157,7 +157,7 @@
     "headers": {
       "Content-Type": "application/json",
       "Accept": "application/json",
-      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+      "Authorization": "Bearer dummyApiKey"
     },
     "params": {},
     "body": {
@@ -191,7 +191,7 @@
     "headers": {
       "Content-Type": "application/json",
       "Accept": "application/json",
-      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+      "Authorization": "Bearer dummyApiKey"
     },
     "params": {},
     "body": {
@@ -241,7 +241,7 @@
     "headers": {
       "Content-Type": "application/json",
       "Accept": "application/json",
-      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+      "Authorization": "Bearer dummyApiKey"
     },
     "params": {},
     "body": {
@@ -323,7 +323,7 @@
     "headers": {
       "Content-Type": "application/json",
       "Accept": "application/json",
-      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+      "Authorization": "Bearer dummyApiKey"
     },
     "params": {},
     "body": {
@@ -351,7 +351,7 @@
     "headers": {
       "Content-Type": "application/json",
       "Accept": "application/json",
-      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+      "Authorization": "Bearer dummyApiKey"
     },
     "params": {},
     "body": {
@@ -424,7 +424,7 @@
     "files": {},
     "headers": {
       "Accept": "application/json",
-      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256",
+      "Authorization": "Bearer dummyApiKey",
       "Content-Type": "application/json"
     },
     "method": "POST",
@@ -485,7 +485,7 @@
     "files": {},
     "headers": {
       "Accept": "application/json",
-      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256",
+      "Authorization": "Bearer dummyApiKey",
       "Content-Type": "application/json"
     },
     "method": "POST",
@@ -582,7 +582,7 @@
     "headers": {
       "Accept": "application/json",
       "Content-Type": "application/json",
-      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+      "Authorization": "Bearer dummyApiKey"
     },
     "version": "1",
     "endpoint": "https://rest.fra-01.braze.eu/users/track"
@@ -667,7 +667,7 @@
     "headers": {
       "Accept": "application/json",
       "Content-Type": "application/json",
-      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+      "Authorization": "Bearer dummyApiKey"
     },
     "version": "1",
     "endpoint": "https://rest.fra-01.braze.eu/users/track"
@@ -680,7 +680,7 @@
     "headers": {
       "Content-Type": "application/json",
       "Accept": "application/json",
-      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+      "Authorization": "Bearer dummyApiKey"
     },
     "params": {},
     "body": {
@@ -719,7 +719,7 @@
     "headers": {
       "Content-Type": "application/json",
       "Accept": "application/json",
-      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+      "Authorization": "Bearer dummyApiKey"
     },
     "params": {},
     "body": {
@@ -776,7 +776,7 @@
     "headers": {
       "Accept": "application/json",
       "Content-Type": "application/json",
-      "Authorization": "Bearer abcd="
+      "Authorization": "Bearer dummyApiKey"
     },
     "version": "1",
     "endpoint": "https://rest.iad-03.braze.com/users/merge"
@@ -797,7 +797,7 @@
     "headers": {
       "Content-Type": "application/json",
       "Accept": "application/json",
-      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+      "Authorization": "Bearer dummyApiKey"
     },
     "params": {},
     "body": {
@@ -834,7 +834,7 @@
     "headers": {
       "Content-Type": "application/json",
       "Accept": "application/json",
-      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+      "Authorization": "Bearer dummyApiKey"
     },
     "params": {},
     "body": {
@@ -895,7 +895,7 @@
     "files": {},
     "headers": {
       "Accept": "application/json",
-      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256",
+      "Authorization": "Bearer dummyApiKey",
       "Content-Type": "application/json"
     },
     "method": "POST",
@@ -923,7 +923,7 @@
     "files": {},
     "headers": {
       "Accept": "application/json",
-      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256",
+      "Authorization": "Bearer dummyApiKey",
       "Content-Type": "application/json"
     },
     "method": "POST",
@@ -939,7 +939,7 @@
     "headers": {
       "Content-Type": "application/json",
       "Accept": "application/json",
-      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+      "Authorization": "Bearer dummyApiKey"
     },
     "params": {},
     "body": {

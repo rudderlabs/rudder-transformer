@@ -53,7 +53,7 @@
             "Screen Height": 860,
             "Screen Width": 1280,
             "Email": "tonmoy@rudderstack.com",
-            "Name": "Tonmoy Malik"
+            "Name": "Tonmoy Labs"
           }
         },
         "XML": {},
@@ -107,7 +107,7 @@
       "body": {
         "JSON": {
           "values": {
-            "Name": "Tonmoy Malik",
+            "Name": "Tonmoy Labs",
             "Email": "tonmoy@rudderstack.com",
             "Locale": "en-GB",
             "App Name": "RudderLabs JavaScript SDK",

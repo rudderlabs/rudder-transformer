@@ -15,9 +15,9 @@ import logger from '../logger';
 import stats from '../util/stats';
 
 export default class UserTransformService {
-  public static async transformRoutine(
-    events: ProcessorTransformationRequest[],
-  ): Promise<UserTransformationServiceResponse> {
+
+  public static async transformRoutine(events: ProcessorTransformationRequest[]): Promise<UserTransformationServiceResponse> {
+
     const startTime = new Date();
     let retryStatus = 200;
     const groupedEvents: Object = groupBy(
@@ -63,11 +63,6 @@ export default class UserTransformService {
             error: errorMessage,
             metadata: commonMetadata,
           } as ProcessorTransformationResponse);
-          stats.counter('user_transform_errors', eventsToProcess.length, {
-            transformationVersionId,
-            type: 'NoVersionId',
-            ...metaTags,
-          });
           return transformedEvents;
         }
         const userFuncStartTime = new Date();
@@ -128,17 +123,20 @@ export default class UserTransformService {
           );
           stats.counter('user_transform_errors', eventsToProcess.length, {
             transformationVersionId,
-            type: 'UnknownError',
+            transformationId: eventsToProcess[0]?.metadata?.transformationId,
+            workspaceId: eventsToProcess[0]?.metadata?.workspaceId,
             status,
             ...metaTags,
           });
         } finally {
-          stats.timing('user_transform_function_latency', userFuncStartTime, {
+          stats.timing('user_transform_request_latency', userFuncStartTime, {
             transformationVersionId,
+            workspaceId: eventsToProcess[0]?.metadata?.workspaceId,
+            transformationId: eventsToProcess[0]?.metadata?.transformationId,
             ...metaTags,
           });
         }
-        stats.timing('user_transform_request_latency', startTime, {});
+
         stats.counter('user_transform_requests', 1, {});
         stats.histogram('user_transform_output_events', transformedEvents.length, {});
         return transformedEvents;

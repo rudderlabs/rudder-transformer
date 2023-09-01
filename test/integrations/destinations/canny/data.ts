@@ -679,7 +679,7 @@ export const data = [
                 traits: {
                   city: 'Pune',
                   name: 'First User',
-                  email: 'rohithkaza@rudderstack.com',
+                  email: 'test@rudderstack.com',
                   title: 'VP',
                   gender: 'male',
                 },
@@ -832,7 +832,7 @@ export const data = [
                 traits: {
                   city: 'Pune',
                   name: 'First User',
-                  email: 'rohithkaza@rudderstack.com',
+                  email: 'test@rudderstack.com',
                   title: 'VP',
                   gender: 'male',
                 },
@@ -923,7 +923,7 @@ export const data = [
               },
             },
             message: {
-              anonymousId: 'd6a9d06e8a464324d448003ff0467d971a55ca2950e11fc51faaec4e2850ecc6',
+              anonymousId: '1c5e54849f5c711ce38fa60716fbbe44bff478f9ca250897b39cdfc2438cd1bd',
               event: 'sample',
               integrations: { Canny: false },
               context: {
@@ -937,10 +937,10 @@ export const data = [
                 },
                 traits: {
                   created: '2022-07-15T11:16:32.648Z',
-                  email: 'rohithkaza@abc.com',
+                  email: 'test@rudderstack.com',
                   isAdmin: true,
-                  name: 'Rohith Kumar Kaza',
-                  url: 'https://rudder.canny.io/admin/users/rohith-kumar-kaza-1',
+                  name: 'Rudder Test',
+                  url: 'https://rudder.canny.io/admin/users/dummyUser',
                 },
                 externalId: [
                   {
@@ -1053,7 +1053,7 @@ export const data = [
               },
             },
             message: {
-              anonymousId: 'd6a9d06e8a464324d448003ff0467d971a55ca2950e11fc51faaec4e2850ecc6',
+              anonymousId: '1c5e54849f5c711ce38fa60716fbbe44bff478f9ca250897b39cdfc2438cd1bd',
               event: 'sample3',
               integrations: { Canny: false },
               context: {
@@ -1067,10 +1067,10 @@ export const data = [
                 },
                 traits: {
                   created: '2022-07-15T11:16:32.648Z',
-                  email: 'rohithkaza@abc.com',
+                  email: 'test@rudderstack.com',
                   isAdmin: true,
-                  name: 'Rohith Kumar Kaza',
-                  url: 'https://rudder.canny.io/admin/users/rohith-kumar-kaza-1',
+                  name: 'Rudder Test',
+                  url: 'https://rudder.canny.io/admin/users/dummyUser',
                 },
                 externalId: [
                   {
@@ -1166,7 +1166,7 @@ export const data = [
               },
             },
             message: {
-              anonymousId: 'd6a9d06e8a464324d448003ff0467d971a55ca2950e11fc51faaec4e2850ecc6',
+              anonymousId: '1c5e54849f5c711ce38fa60716fbbe44bff478f9ca250897b39cdfc2438cd1bd',
               integrations: { Canny: false },
               context: {
                 library: {
@@ -1179,10 +1179,10 @@ export const data = [
                 },
                 traits: {
                   created: '2022-07-15T11:16:32.648Z',
-                  email: 'rohithkaza@abc.com',
+                  email: 'test@rudderstack.com',
                   isAdmin: true,
-                  name: 'Rohith Kumar Kaza',
-                  url: 'https://rudder.canny.io/admin/users/rohith-kumar-kaza-1',
+                  name: 'Rudder Test',
+                  url: 'https://rudder.canny.io/admin/users/dummyUser',
                 },
                 externalId: [
                   {
@@ -1265,7 +1265,7 @@ export const data = [
               },
             },
             message: {
-              anonymousId: 'd6a9d06e8a464324d448003ff0467d971a55ca2950e11fc51faaec4e2850ecc6',
+              anonymousId: '1c5e54849f5c711ce38fa60716fbbe44bff478f9ca250897b39cdfc2438cd1bd',
               event: 'abc',
               integrations: { Canny: false },
               context: {
@@ -1279,10 +1279,10 @@ export const data = [
                 },
                 traits: {
                   created: '2022-07-15T11:16:32.648Z',
-                  email: 'rohithkaza@abc.com',
+                  email: 'test@rudderstack.com',
                   isAdmin: true,
-                  name: 'Rohith Kumar Kaza',
-                  url: 'https://rudder.canny.io/admin/users/rohith-kumar-kaza-1',
+                  name: 'Rudder Test',
+                  url: 'https://rudder.canny.io/admin/users/dummyUser',
                 },
                 externalId: [
                   {
@@ -1413,7 +1413,7 @@ export const data = [
                 traits: {
                   city: 'Pune',
                   name: 'First User',
-                  email: 'rohithkaza@rudderstack.com',
+                  email: 'test@rudderstack.com',
                   title: 'VP',
                   gender: 'male',
                 },
@@ -1524,7 +1524,7 @@ export const data = [
                 traits: {
                   city: 'Pune',
                   name: 'First User',
-                  email: 'rohithkaza@rudderstack.com',
+                  email: 'test@rudderstack.com',
                   title: 'VP',
                   gender: 'male',
                 },
@@ -1635,7 +1635,7 @@ export const data = [
                 traits: {
                   city: 'Pune',
                   name: 'First User',
-                  email: 'rohithkaza@rudderstack.com',
+                  email: 'test@rudderstack.com',
                   title: 'VP',
                   gender: 'male',
                 },
@@ -1745,7 +1745,7 @@ export const data = [
                 traits: {
                   city: 'Pune',
                   name: 'First User',
-                  email: 'rohithkaza@rudderstack.com',
+                  email: 'test@rudderstack.com',
                   title: 'VP',
                   gender: 'male',
                 },

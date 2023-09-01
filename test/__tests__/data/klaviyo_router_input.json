@@ -12,7 +12,7 @@
     "message": {
       "type": "identify",
       "sentAt": "2021-01-03T17:02:53.195Z",
-      "userId": "utsabc",
+      "userId": "test",
       "channel": "web",
       "context": {
         "os": {
@@ -26,11 +26,11 @@
           "namespace": "com.rudderlabs.javascript"
         },
         "traits": {
-          "firstName": "Utsab",
-          "lastName": "Chowdhury",
-          "email": "utsab@rudderstack.com",
+          "firstName": "Test",
+          "lastName": "Rudderlabs",
+          "email": "test@rudderstack.com",
           "phone": "+12 345 578 900",
-          "userId": "utsabc",
+          "userId": "Testc",
           "title": "Developer",
           "organization": "Rudder",
           "city": "Tokyo",
@@ -78,7 +78,7 @@
     "message": {
       "type": "identify",
       "sentAt": "2021-01-03T17:02:53.195Z",
-      "userId": "ujjwal",
+      "userId": "test",
       "channel": "web",
       "context": {
         "os": {
@@ -92,11 +92,11 @@
           "namespace": "com.rudderlabs.javascript"
         },
         "traits": {
-          "firstName": "Utsab",
-          "lastName": "Chowdhury",
-          "email": "ujjwal@rudderstack.com",
+          "firstName": "Test",
+          "lastName": "Rudderlabs",
+          "email": "test@rudderstack.com",
           "phone": "+12 345 578 900",
-          "userId": "ujjwal",
+          "userId": "test",
           "title": "Developer",
           "organization": "Rudder",
           "city": "Tokyo",
@@ -150,7 +150,7 @@
       },
       "context": {
         "traits": {
-          "email": "utsab@rudderstack.com",
+          "email": "test@rudderstack.com",
           "phone": "+12 345 678 900",
           "consent": ["email"]
         },
@@ -181,7 +181,7 @@
       },
       "context": {
         "traits": {
-          "email": "utsab@rudderstack.com",
+          "email": "test@rudderstack.com",
           "phone": "+12 345 678 900",
           "consent": "email"
         },
@@ -212,7 +212,7 @@
       },
       "context": {
         "traits": {
-          "email": "utsab@rudderstack.com",
+          "email": "test@rudderstack.com",
           "phone": "+12 345 678 900",
           "consent": "email"
         },

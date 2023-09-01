@@ -88,7 +88,7 @@ function getData(url) {
 
 function get(url, options) {
   const mockData = getData(url);
-  if (url.includes("https://api.kustomerapp.com")) {
+  if (url.includes("https://api.kustomerapp.com") || url.includes("https://api.prod2.kustomerapp.com")) {
     return new Promise((resolve, reject) => {
       resolve(kustomerGetRequestHandler(url));
     });

@@ -83,15 +83,9 @@
     "body": {
       "JSON": {
         "name": "Ano Domeni",
-        "externalId": "annodD",
+        "externalId": "58210c3db0f09110006b7953",
         "locale": "en-US",
         "birthdayAt": "2005-01-01T23:28:56.782Z",
-        "emails": [
-          {
-            "type": "home",
-            "email": "ano@rudderstack.com"
-          }
-        ],
         "phones": [
           {
             "type": "home",
@@ -550,6 +544,36 @@
     "type": "REST",
     "method": "POST",
     "endpoint": "https://api.kustomerapp.com/v1/tracking/identityEvent",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer dummyApiKey"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "identity": {
+          "externalId": "utsabc"
+        },
+        "event": {
+          "name": "Screen-Viewed",
+          "sessionId": "hsad522",
+          "meta": {
+            "hasAccount": "true",
+            "YearSelectedNum": 1801
+          }
+        }
+      },
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.prod2.kustomerapp.com/v1/tracking/identityEvent",
     "headers": {
       "Content-Type": "application/json",
       "Authorization": "Bearer dummyApiKey"

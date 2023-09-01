@@ -132,5 +132,53 @@
         "genericScreen": false
       }
     }
+  },
+  {
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.prod2.kustomerapp.com/v1/tracking/identityEvent",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer dummyApiKey"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "identity": {
+            "externalId": "user@doe"
+          },
+          "event": {
+            "name": "Tracking-Weekender",
+            "sessionId": "63nsa22",
+            "trackingId": "sahetwiac",
+            "meta": {
+              "YearServicedNum": 211,
+              "region": "strapis"
+            }
+          }
+        },
+        "XML": {},
+        "JSON_ARRAY": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "baseEndpoint": "https://api.prod2.kustomerapp.com",
+        "apiKey": "dummyApiKey",
+        "genericPage": false,
+        "genericScreen": false
+      }
+    }
   }
 ]

@@ -509,7 +509,7 @@ const getExistingData = async (inputs, destination) => {
 
   while (checkAfter) {
     const endpoint = IDENTIFY_CRM_SEARCH_ALL_OBJECTS.replace(':objectType', objectType);
-    const endpointPath = `objects/""/search`;
+    const endpointPath = `objects/:objectType/search`;
 
     const url =
       Config.authorizationType === 'newPrivateAppApi'

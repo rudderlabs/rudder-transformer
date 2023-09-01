@@ -4,6 +4,7 @@ const {
   AbortedError,
   RetryableError,
   NetworkError,
+  TransformationError,
 } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 const { isHttpStatusSuccess, generateUUID } = require('../../util');
@@ -30,6 +31,18 @@ const authCache = new Cache(AUTH_CACHE_TTL);
 
 const getMarketoFilePath = () =>
   `${__dirname}/uploadFile/${Date.now()}_marketo_bulk_upload_${generateUUID()}.csv`;
+
+// Server only aborts when status code is 400
+const hydrateStatusForServer = (statusCode, context) => {
+  const status = Number(statusCode);
+  if (Number.isNaN(status)) {
+    throw new TransformationError(`${context}: Couldn't parse status code ${statusCode}`);
+  }
+  if (status >= 400 && status <= 499) {
+    return 400;
+  }
+  return status;
+};
 
 const getAccessTokenCacheKey = (config) => {
   const { munchkinId, clientId, clientSecret } = config;
@@ -72,14 +85,17 @@ const handleCommonErrorResponse = (apiCallResult, OpErrorMessage, OpActivity, co
     authCache &&
     apiCallResult.response?.errors &&
     apiCallResult.response?.errors?.length > 0 &&
-    apiCallResult.response?.errors.some((errorObj) => errorObj.code === '601' || errorObj.code === '602')
+    apiCallResult.response?.errors.some(
+      (errorObj) => errorObj.code === '601' || errorObj.code === '602',
+    )
   ) {
     authCache.del(getAccessTokenCacheKey(config));
   }
   if (
     apiCallResult.response?.errors?.length > 0 &&
     apiCallResult.response?.errors[0] &&
-    ((apiCallResult.response?.errors[0]?.code >= 1000 && apiCallResult.response?.errors[0]?.code <= 1077) ||
+    ((apiCallResult.response?.errors[0]?.code >= 1000 &&
+      apiCallResult.response?.errors[0]?.code <= 1077) ||
       ABORTABLE_CODES.includes(apiCallResult.response?.errors[0]?.code))
   ) {
     // for empty file the code is 1003 and that should be retried
@@ -124,6 +140,7 @@ const getAccessToken = async (config) =>
     if (!isHttpStatusSuccess(accessTokenResponse.status)) {
       throw new NetworkError(
         'Could not retrieve authorisation token',
+        hydrateStatusForServer(accessTokenResponse.status, FETCH_ACCESS_TOKEN),
         accessTokenResponse.status,
         {
           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(accessTokenResponse.status),
@@ -132,7 +149,12 @@ const getAccessToken = async (config) =>
       );
     }
     if (accessTokenResponse.response?.success === false) {
-      handleCommonErrorResponse(accessTokenResponse, ACCESS_TOKEN_FETCH_ERR_MSG, FETCH_ACCESS_TOKEN, config);
+      handleCommonErrorResponse(
+        accessTokenResponse,
+        ACCESS_TOKEN_FETCH_ERR_MSG,
+        FETCH_ACCESS_TOKEN,
+        config,
+      );
     }
 
     // when access token is present
@@ -335,7 +357,7 @@ const handleFileUploadResponse = (resp, successfulJobs, unsuccessfulJobs, reques
 
 /**
  * Retrieves the field schema mapping for a given access token and munchkin ID from the Marketo API.
- * 
+ *
  * @param {string} accessToken - The access token used to authenticate the API request.
  * @param {string} munchkinId - The munchkin ID of the Marketo instance.
  * @returns {object} - The field schema mapping retrieved from the Marketo API.
@@ -378,7 +400,7 @@ const getFieldSchemaMap = async (accessToken, munchkinId) => {
     throw new RetryableError('Failed to fetch Marketo Field Schema', 500, fieldSchemaMapping);
   }
   return fieldMap;
-}
+};
 
 /**
  * Compares the data types of the fields in an event message with the expected data types defined in the field schema mapping.
@@ -389,7 +411,6 @@ const getFieldSchemaMap = async (accessToken, munchkinId) => {
  * @returns {object} - An object containing the job IDs as keys and the corresponding invalid fields as values.
  */
 const checkEventStatusViaSchemaMatching = (event, fieldMap) => {
-
   const mismatchedFields = {};
   const events = event.input;
   events.forEach((event) => {
@@ -414,12 +435,13 @@ const checkEventStatusViaSchemaMatching = (event, fieldMap) => {
 };
 
 module.exports = {
-  getAccessToken,
+  checkEventStatusViaSchemaMatching,
   handlePollResponse,
   handleFetchJobStatusResponse,
   handleFileUploadResponse,
-  getMarketoFilePath,
   handleCommonErrorResponse,
+  hydrateStatusForServer,
+  getAccessToken,
+  getMarketoFilePath,
   getFieldSchemaMap,
-  checkEventStatusViaSchemaMatching
 };

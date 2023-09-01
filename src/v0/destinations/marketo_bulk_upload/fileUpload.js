@@ -5,7 +5,7 @@ const {
   getAccessToken,
   getMarketoFilePath,
   handleFileUploadResponse,
-  getFieldSchemaMap
+  getFieldSchemaMap,
 } = require('./util');
 const { isHttpStatusSuccess } = require('../../util');
 const { MARKETO_FILE_SIZE, UPLOAD_FILE } = require('./config');
@@ -22,15 +22,13 @@ const {
   UnauthorizedError,
   PlatformError,
 } = require('../../util/errorTypes');
-const tags = require('../../util/tags');
-const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const stats = require('../../../util/stats');
 
 const fetchFieldSchemaNames = async (config, accessToken) => {
-  const fieldSchemaMapping = await getFieldSchemaMap(accessToken, config.munchkinId)
+  const fieldSchemaMapping = await getFieldSchemaMap(accessToken, config.munchkinId);
   if (Object.keys(fieldSchemaMapping)?.length > 0) {
-    const fieldSchemaNames = Object.keys(fieldSchemaMapping)
-    return { fieldSchemaNames }
+    const fieldSchemaNames = Object.keys(fieldSchemaMapping);
+    return { fieldSchemaNames };
   }
   throw new RetryableError('Failed to fetch Marketo Field Schema', 500, fieldSchemaMapping);
 };
@@ -205,7 +203,6 @@ const getImportID = async (input, config, accessToken, csvHeader) => {
     return handleFileUploadResponse(resp, successfulJobs, unsuccessfulJobs, requestTime, config);
   }
   return { importId, successfulJobs, unsuccessfulJobs };
-
 };
 
 /**

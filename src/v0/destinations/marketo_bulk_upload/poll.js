@@ -1,5 +1,5 @@
 const { removeUndefinedValues, isHttpStatusSuccess } = require('../../util');
-const { getAccessToken, handlePollResponse } = require('./util');
+const { getAccessToken, handlePollResponse, hydrateStatusForServer } = require('./util');
 const { handleHttpRequest } = require('../../../adapters/network');
 const stats = require('../../../util/stats');
 const { NetworkError } = require('../../util/errorTypes');
@@ -35,7 +35,10 @@ const getPollStatus = async (event) => {
       status: pollStatus.status,
       state: 'Retryable',
     });
-    throw new NetworkError(POLL_STATUS_ERR_MSG, pollStatus.status);
+    throw new NetworkError(
+      POLL_STATUS_ERR_MSG,
+      hydrateStatusForServer(pollStatus.status, 'During fetching poll status'),
+    );
   }
   return handlePollResponse(pollStatus, event.config);
 };
@@ -83,7 +86,7 @@ const responseHandler = async (event) => {
         HasWarning: numOfRowsWithWarning > 0,
         WarningJobURLs: numOfRowsWithWarning > 0 ? '/getWarningJobs' : undefined,
         error,
-      }
+      };
     } else if (status === 'Importing' || status === 'Queued') {
       response = {
         Complete: false,
@@ -92,7 +95,7 @@ const responseHandler = async (event) => {
         InProgress: true,
         HasWarning: false,
         error,
-      }
+      };
     } else {
       response = {
         Complete: false,
@@ -100,8 +103,8 @@ const responseHandler = async (event) => {
         hasFailed: false,
         InProgress: false,
         HasWarning: false,
-        error
-      }
+        error,
+      };
     }
   }
   return removeUndefinedValues(response);

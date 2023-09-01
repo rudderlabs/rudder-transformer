@@ -17,7 +17,7 @@ import stats from '../util/stats';
 export default class UserTransformService {
   public static async transformRoutine(
     events: ProcessorTransformationRequest[],
-    ): Promise<UserTransformationServiceResponse> {
+  ): Promise<UserTransformationServiceResponse> {
 
     const startTime = new Date();
     let retryStatus = 200;

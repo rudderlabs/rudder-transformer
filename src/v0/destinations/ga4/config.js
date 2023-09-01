@@ -19,7 +19,6 @@ const DEBUG_ENDPOINT = 'https://www.google-analytics.com/debug/mp/collect';
  */
 const ConfigCategory = {
   COMMON: { name: 'GA4CommonConfig' },
-  CAMPAIGN: { name: 'GA4CampaignDetailsConfig'},
   ITEM_LIST: { name: 'GA4ItemListConfig' },
   ITEM: { name: 'GA4ItemConfig' },
 
@@ -46,6 +45,7 @@ const ConfigCategory = {
     name: 'GA4GenerateLeadConfig',
     event: 'generate_lead',
   },
+  CAMPAIGN_DETAILS: { name: 'GA4CampaignDetailsConfig', event: 'campaign_details' },
 
   /* E-Commerce Events */
   // Ref - https://www.rudderstack.com/docs/rudderstack-api/api-specification/rudderstack-ecommerce-events-specification/

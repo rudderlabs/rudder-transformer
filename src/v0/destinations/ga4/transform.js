@@ -224,12 +224,6 @@ const responseBuilder = (message, { Config }) => {
     payload.params.session_number = integrationsObj.sessionNumber;
   }
 
-  // Add campaign parameters
-  payload.params = {
-    ...payload.params,
-    ...constructPayload(message, mappingConfig[ConfigCategory.CAMPAIGN.name]),
-  };
-
   if (payload.params) {
     payload.params = removeInvalidParams(removeUndefinedAndNullValues(payload.params));
   }

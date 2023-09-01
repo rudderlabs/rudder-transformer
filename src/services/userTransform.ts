@@ -15,8 +15,9 @@ import logger from '../logger';
 import stats from '../util/stats';
 
 export default class UserTransformService {
-
-  public static async transformRoutine(events: ProcessorTransformationRequest[]): Promise<UserTransformationServiceResponse> {
+  public static async transformRoutine(
+    events: ProcessorTransformationRequest[],
+    ): Promise<UserTransformationServiceResponse> {
 
     const startTime = new Date();
     let retryStatus = 200;

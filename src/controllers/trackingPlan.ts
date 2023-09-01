@@ -1,5 +1,5 @@
 import { Context } from 'koa';
-import TrackingPlanService from '../services/trackingPlan';
+import TrackingPlanservice from '../services/trackingPlan';
 import ControllerUtility from './util';
 
 export default class TrackingPlanController {
@@ -7,7 +7,7 @@ export default class TrackingPlanController {
     const events = ctx.request.body;
     const requestSize = Number(ctx.request.get('content-length'));
     const reqParams = ctx.request.query;
-    const response = await TrackingPlanService.validateTrackingPlan(events, requestSize, reqParams);
+    const response = await TrackingPlanservice.validateTrackingPlan(events, requestSize, reqParams);
     ctx.body = response.body;
     ControllerUtility.postProcess(ctx, response.status);
     return ctx;

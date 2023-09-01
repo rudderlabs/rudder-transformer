@@ -54,7 +54,7 @@ const setImportCredentials = (destConfig) => {
     params.projectId = projectId;
   } else {
     throw new InstrumentationError(
-      'Event timestamp is older than 5 days and no apisecret or service account credentials (i.e. username, secret and projectId) is provided in destination config',
+      'Event timestamp is older than 5 days and no API secret or service account credentials (i.e. username, secret and projectId) are provided in destination configuration',
     );
   }
   return { endpoint, headers, params };
@@ -257,12 +257,14 @@ const processAliasEvents = (message, type, destination) => {
   const aliasId = message.previousId || message.anonymousId;
   if (!aliasId) {
     throw new InstrumentationError(
-      'Either previous id or anonymous id should be present in alias payload',
+      'Either `previousId` or `anonymousId` should be present in alias payload',
     );
   }
 
   if (aliasId === message.userId) {
-    throw new InstrumentationError('One of previousId/anonymousId is same as userId');
+    throw new InstrumentationError(
+      'One of `previousId` or `anonymousId` is same as `userId`. Aborting',
+    );
   }
 
   const payload = {
@@ -327,10 +329,12 @@ const processGroupEvents = (message, type, destination) => {
       }
     });
   } else {
-    throw new ConfigurationError('Group Key Settings is not configured');
+    throw new ConfigurationError('`Group Key Settings` is not configured in destination');
   }
   if (returnValue.length === 0) {
-    throw new InstrumentationError('Group Key is not present. Aborting message');
+    throw new InstrumentationError(
+      'Group Key is not present. Please ensure that the group key is included in the payload as configured in the `Group Key Settings` in destination',
+    );
   }
   return returnValue;
 };
@@ -378,15 +382,13 @@ const processSingleMessage = async (message, destination) => {
       return processIdentifyEvents(clonedMessage, clonedMessage.type, destination);
     case EventType.ALIAS:
       if (destination.Config?.identityMergeApi === 'simplified') {
-        throw new InstrumentationError(
-          `Event type '${EventType.ALIAS}' is not supported when 'Simplified ID merge' api is selected in webapp`,
-        );
+        throw new InstrumentationError('Alias call is deprecated in `Simplified ID merge`');
       }
       return processAliasEvents(message, message.type, destination);
     case EventType.GROUP:
       return processGroupEvents(clonedMessage, clonedMessage.type, destination);
     default:
-      throw new InstrumentationError(`Event type ${clonedMessage.type} is not supported`);
+      throw new InstrumentationError(`Event type '${clonedMessage.type}' is not supported`);
   }
 };
 

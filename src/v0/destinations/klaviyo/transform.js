@@ -33,6 +33,7 @@ const {
   getSuccessRespEvents,
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
+  flattenJson,
 } = require('../../util');
 
 const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
@@ -51,7 +52,7 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
  */
 const identifyRequestHandler = async (message, category, destination) => {
   // If listId property is present try to subscribe/member user in list
-  const { privateApiKey, enforceEmailAsPrimary } = destination.Config;
+  const { privateApiKey, enforceEmailAsPrimary, flattenProperties } = destination.Config;
   const mappedToDestination = get(message, MappedToDestinationKey);
   if (mappedToDestination) {
     addExternalIdToTraits(message);
@@ -86,6 +87,10 @@ const identifyRequestHandler = async (message, category, destination) => {
       properties: removeUndefinedAndNullValues(customPropertyPayload),
     },
   };
+  // if flattenProperties is enabled from UI, flatten the user properties
+  data.attributes.properties = flattenProperties
+    ? flattenJson(data.attributes.properties, '.', 'normal', false)
+    : data.attributes.properties;
   const payload = {
     data: removeUndefinedAndNullValues(data),
   };
@@ -123,6 +128,7 @@ const identifyRequestHandler = async (message, category, destination) => {
 
 const trackRequestHandler = (message, category, destination) => {
   const payload = {};
+  const { privateApiKey, flattenProperties } = destination.Config;
   let event = get(message, 'event');
   event = event ? event.trim().toLowerCase() : event;
   let attributes = {};
@@ -190,6 +196,10 @@ const trackRequestHandler = (message, category, destination) => {
       ...populateCustomFieldsFromTraits(message),
     };
   }
+  // if flattenProperties is enabled from UI, flatten the event properties
+  attributes.properties = flattenProperties
+    ? flattenJson(attributes.properties, '.', 'normal', false)
+    : attributes.properties;
   // Map user properties to profile object
   attributes.profile = createCustomerProperties(message, destination.Config);
   if (message.timestamp) {
@@ -201,7 +211,7 @@ const trackRequestHandler = (message, category, destination) => {
   response.endpoint = `${BASE_ENDPOINT}${category.apiUrl}`;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
-    Authorization: `Klaviyo-API-Key ${destination.Config.privateApiKey}`,
+    Authorization: `Klaviyo-API-Key ${privateApiKey}`,
     'Content-Type': JSON_MIME_TYPE,
     Accept: JSON_MIME_TYPE,
     revision: '2023-02-22',

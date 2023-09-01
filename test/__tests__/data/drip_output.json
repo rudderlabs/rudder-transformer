@@ -5,7 +5,7 @@
     "method": "POST",
     "endpoint": "https://api.getdrip.com/v2/1809802/subscribers",
     "headers": {
-      "Authorization": "Basic ZTg1OTIyNDVlZTBmY2Y5ZTk5OTdkZmU1MzhmYjhiMjI=",
+      "Authorization": "Basic ZHVtbXlBcGlLZXk=",
       "Content-Type": "application/json"
     },
     "params": {},
@@ -39,7 +39,7 @@
     "method": "POST",
     "endpoint": "https://api.getdrip.com/v2/1809802/subscribers",
     "headers": {
-      "Authorization": "Basic ZTg1OTIyNDVlZTBmY2Y5ZTk5OTdkZmU1MzhmYjhiMjI=",
+      "Authorization": "Basic ZHVtbXlBcGlLZXk=",
       "Content-Type": "application/json"
     },
     "params": {},
@@ -71,7 +71,7 @@
     "method": "POST",
     "endpoint": "https://api.getdrip.com/v2/1809802/campaigns/915194776/subscribers",
     "headers": {
-      "Authorization": "Basic ZTg1OTIyNDVlZTBmY2Y5ZTk5OTdkZmU1MzhmYjhiMjI=",
+      "Authorization": "Basic ZHVtbXlBcGlLZXk=",
       "Content-Type": "application/json"
     },
     "params": {},
@@ -96,7 +96,7 @@
     "method": "POST",
     "endpoint": "https://api.getdrip.com/v2/1809802/events",
     "headers": {
-      "Authorization": "Basic ZTg1OTIyNDVlZTBmY2Y5ZTk5OTdkZmU1MzhmYjhiMjI=",
+      "Authorization": "Basic ZHVtbXlBcGlLZXk=",
       "Content-Type": "application/json"
     },
     "params": {},
@@ -128,7 +128,7 @@
     "method": "POST",
     "endpoint": "https://api.getdrip.com/v2/1809802/events",
     "headers": {
-      "Authorization": "Basic ZTg1OTIyNDVlZTBmY2Y5ZTk5OTdkZmU1MzhmYjhiMjI=",
+      "Authorization": "Basic ZHVtbXlBcGlLZXk=",
       "Content-Type": "application/json"
     },
     "params": {},
@@ -157,7 +157,7 @@
     "method": "POST",
     "endpoint": "https://api.getdrip.com/v2/1809802/events",
     "headers": {
-      "Authorization": "Basic ZTg1OTIyNDVlZTBmY2Y5ZTk5OTdkZmU1MzhmYjhiMjI=",
+      "Authorization": "Basic ZHVtbXlBcGlLZXk=",
       "Content-Type": "application/json"
     },
     "params": {},
@@ -189,7 +189,7 @@
     "method": "POST",
     "endpoint": "https://api.getdrip.com/v3/1809802/shopper_activity/order",
     "headers": {
-      "Authorization": "Basic ZTg1OTIyNDVlZTBmY2Y5ZTk5OTdkZmU1MzhmYjhiMjI=",
+      "Authorization": "Basic ZHVtbXlBcGlLZXk=",
       "Content-Type": "application/json"
     },
     "params": {},
@@ -213,7 +213,7 @@
     "method": "POST",
     "endpoint": "https://api.getdrip.com/v3/1809802/shopper_activity/order",
     "headers": {
-      "Authorization": "Basic ZTg1OTIyNDVlZTBmY2Y5ZTk5OTdkZmU1MzhmYjhiMjI=",
+      "Authorization": "Basic ZHVtbXlBcGlLZXk=",
       "Content-Type": "application/json"
     },
     "params": {},
@@ -243,7 +243,7 @@
     "method": "POST",
     "endpoint": "https://api.getdrip.com/v2/1809802/events",
     "headers": {
-      "Authorization": "Basic ZTg1OTIyNDVlZTBmY2Y5ZTk5OTdkZmU1MzhmYjhiMjI=",
+      "Authorization": "Basic ZHVtbXlBcGlLZXk=",
       "Content-Type": "application/json"
     },
     "params": {},
@@ -272,7 +272,7 @@
     "method": "POST",
     "endpoint": "https://api.getdrip.com/v2/1809802/subscribers",
     "headers": {
-      "Authorization": "Basic ZTg1OTIyNDVlZTBmY2Y5ZTk5OTdkZmU1MzhmYjhiMjI=",
+      "Authorization": "Basic ZHVtbXlBcGlLZXk=",
       "Content-Type": "application/json"
     },
     "params": {},

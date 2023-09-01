@@ -15,7 +15,7 @@
     "next-step-id": "success",
     "total-steps": "3",
     "responseId": "b9a5d224-cc5a-4e64-9800-5a3db9515fdf",
-    "recipientEmail": "sudip.paul21997@gmail.com",
+    "recipientEmail": "test.rudderlabs21997@gmail.com",
     "formId": "formosztd5",
     "recordedAt": {
       "ts": 1662695704,
@@ -26,7 +26,9 @@
     "submissionSource": "amp",
     "elementjbtz42": "Everything ",
     "element8jzo13": ["Reliable", "High Quality", "Useful"],
-    "recipientData": { "email": "sudip.paul21997@gmail.com" },
+    "recipientData": {
+      "email": "test.rudderlabs21997@gmail.com"
+    },
     "recommend": "9",
     "liking": "upvote",
     "satisfaction": "4",
@@ -127,7 +129,7 @@
     "next-step-id": "success",
     "total-steps": "3",
     "responseId": "ad20a980-4fce-44b6-887d-2236df514a76",
-    "recipientEmail": "rohithkaza@rudderstack.com",
+    "recipientEmail": "test@rudderstack.com",
     "formId": "formosztd5",
     "recordedAt": {
       "ts": 1662695887,
@@ -139,7 +141,7 @@
     "elementjbtz42": "peace",
     "element8jzo13": ["Useful"],
     "recipientData": {
-      "email": "rohithkaza@rudderstack.com",
+      "email": "test@rudderstack.com",
       "first_name": "abcda"
     },
     "recommend": "1",

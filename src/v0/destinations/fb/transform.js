@@ -103,10 +103,14 @@ function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
         break;
       case 'ud[ge]':
         if (clonedUpdatedEvent[prop] && clonedUpdatedEvent[prop] !== '') {
-          isUDSet = true;
-          clonedUpdatedEvent[prop] = sha256(
-            clonedUpdatedEvent[prop].toLowerCase() === 'female' ? 'f' : 'm',
-          );
+          if (typeof clonedUpdatedEvent[prop] !== 'string') {
+            delete clonedUpdatedEvent[prop];
+          } else {
+            isUDSet = true;
+            clonedUpdatedEvent[prop] = sha256(
+              clonedUpdatedEvent[prop].toLowerCase() === 'female' ? 'f' : 'm',
+            );
+          }
         }
         break;
       case 'ud[db]':

@@ -6,8 +6,8 @@ const userFields = [
     ph: '+1234589947',
     ge: 'male',
     db: '19960314',
-    ln: 'Ganguly',
-    fn: 'Shrouti',
+    ln: 'Rudderlabs',
+    fn: 'Test',
     ct: 'Kolkata',
     st: 'WB',
     zp: '700114',
@@ -20,10 +20,10 @@ const userFields = [
   {
     em: ['abc@gmail.com', 'def@gmail.com'],
     ph: ['+1234589947', '+1234589948'],
-    ln: ['Ganguly', 'Xu'],
+    ln: ['Rudderlabs', 'Xu'],
     db: ['19960314', '19960315'],
     ge: ['female', 'male'],
-    fn: ['Shrouti', 'Alex'],
+    fn: ['Test', 'Alex'],
     ct: ['Kolkata', 'Mumbai'],
     st: ['WB', 'MH'],
     zp: ['700114', '700115'],
@@ -39,8 +39,8 @@ const expectedOutput = [
   {
     em: ['48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08'],
     ph: ['d164bbe036663cb5c96835e9ccc6501e9a521127ea62f6359744928ba932413b'],
-    ln: ['b507b6eb07a0166a64a6c06f5c684c732116d2b9c966e1176c3d7fcc1295bcc8'],
-    fn: ['d03a692ebd9ab84a8147d666baf05673c8113fa436f92e658a25ee306f383776'],
+    ln: ['dcf000c2386fb76d22cefc0d118a8511bb75999019cd373df52044bccd1bd251'],
+    fn: ['9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08'],
     ct: ['6689106ca7922c30b2fd2c175c85bc7fc2d52cc4941bdd7bb622c6cdc6284a85'],
     st: ['3b45022ab36728cdae12e709e945bba267c50ee8a91e6e4388539a8e03a3fdcd'],
     zp: ['1a4292e00780e18d00e76fde9850aee5344e939ba593333cd5e4b4aa2cd33b0c'],
@@ -62,7 +62,7 @@ const expectedOutput = [
       '22bdde2594851294f2a6f4c34af704e68b398b03129ea9ceb58f0ffe33f6db52',
     ],
     ln: [
-      'b507b6eb07a0166a64a6c06f5c684c732116d2b9c966e1176c3d7fcc1295bcc8',
+      'dcf000c2386fb76d22cefc0d118a8511bb75999019cd373df52044bccd1bd251',
       '9c2f138690fca4890c3c4a6691610fbbbdf32091cc001f7355cfdf574baa52b9',
     ],
     db: [
@@ -74,7 +74,7 @@ const expectedOutput = [
       '0d248e82c62c9386878327d491c762a002152d42ab2c391a31c44d9f62675ddf',
     ],
     fn: [
-      'd03a692ebd9ab84a8147d666baf05673c8113fa436f92e658a25ee306f383776',
+      '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
       '4135aa9dc1b842a653dea846903ddb95bfb8c5a10c504a7fa16e10bc31d1fdf0',
     ],
     ct: [

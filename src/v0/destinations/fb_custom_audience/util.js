@@ -20,7 +20,7 @@ const { InstrumentationError, ConfigurationError } = require('../../util/errorTy
             ],
             "data": [
               [
-                "shrouti@abc.com",
+                "test@abc.com",
                 "IN"
               ]
             ]

@@ -20,6 +20,52 @@
     "properties": {
       "eventId": "01E4C4CT6YDC7Y5M7FE1GWWPQJ"
     },
+    "userId": "0200102"
+  },
+  {
+    "context": {
+      "library": {
+        "name": "unknown",
+        "version": "unknown"
+      },
+      "integration": {
+        "name": "Customer.io"
+      },
+      "traits": {
+        "email": "test@example.com"
+      }
+    },
+    "integrations": {
+      "Customer.io": false
+    },
+    "type": "track",
+    "event": "Customer Subscribed",
+    "properties": {
+      "eventId": "01E4C4CT6YDC7Y5M7FE1GWWPQJ"
+    },
+    "userId": "0200102"
+  },
+  {
+    "context": {
+      "library": {
+        "name": "unknown",
+        "version": "unknown"
+      },
+      "integration": {
+        "name": "Customer.io"
+      },
+      "traits": {
+        "email": "test@example.com"
+      }
+    },
+    "integrations": {
+      "Customer.io": false
+    },
+    "type": "track",
+    "event": "Customer Subscribed",
+    "properties": {
+      "eventId": "01E4C4CT6YDC7Y5M7FE1GWWPQJ"
+    },
     "userId": "0200102",
     "originalTimestamp": "2020-03-26T19:16:39.000Z",
     "sentAt": "2020-03-26T19:16:39.000Z"

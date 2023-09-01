@@ -25,9 +25,9 @@ const {
   VALID_ITEM_OR_PRODUCT_PROPERTIES,
 } = require('./config');
 const {
-  getItem,
-  getItemList,
+  getItemsArray,
   validateEventName,
+  removeInvalidParams,
   isReservedEventName,
   getGA4ExclusionList,
   prepareUserProperties,
@@ -119,21 +119,10 @@ const responseBuilder = (message, { Config }) => {
     payload.name = evConfigEvent;
     payload.params = constructPayload(message, mappingConfig[name]);
 
-    let mapRootLevelPropertiesToGA4ItemsArray;
-    if (itemList && item) {
-      payload.params.items = getItemList(message, itemList === 'YES');
+    const { items, mapRootLevelPropertiesToGA4ItemsArray } = getItemsArray(message, item, itemList);
 
-      if (!(payload.params.items && payload.params.items.length > 0)) {
-        mapRootLevelPropertiesToGA4ItemsArray = true;
-        payload.params.items = getItem(message, item === 'YES');
-      }
-    } else if (item) {
-      // item
-      payload.params.items = getItem(message, item === 'YES');
-      mapRootLevelPropertiesToGA4ItemsArray = true;
-    } else if (itemList) {
-      // itemList
-      payload.params.items = getItemList(message, itemList === 'YES');
+    if (items.length > 0) {
+      payload.params.items = items;
     }
 
     // excluding event + root-level properties which are already mapped
@@ -236,10 +225,13 @@ const responseBuilder = (message, { Config }) => {
   }
 
   // Add campaign parameters
-  payload.params = { ...payload.params, ...constructPayload(message, mappingConfig[ConfigCategory.CAMPAIGN.name]) }
+  payload.params = {
+    ...payload.params,
+    ...constructPayload(message, mappingConfig[ConfigCategory.CAMPAIGN.name]),
+  };
 
   if (payload.params) {
-    payload.params = removeUndefinedAndNullValues(payload.params);
+    payload.params = removeInvalidParams(removeUndefinedAndNullValues(payload.params));
   }
 
   if (isEmptyObject(payload.params)) {

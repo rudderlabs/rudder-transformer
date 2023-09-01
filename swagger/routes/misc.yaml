@@ -1,3 +1,48 @@
+/heapdump:
+  get:
+    tags:
+      - Miscellaneous
+    summary: Heap dump
+    parameters:
+      - name: format
+        in: query
+        schema:
+          type: string
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              credBucketDetails:
+                $ref: '../components/schemas/credBucketDetails.yaml'
+    responses:
+      200:
+        description: Success
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                message:
+                  type: string
+                  example: 'Generated locally with filename: '
+
+      400:
+        description: Bad Request
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  default: false
+                message:
+                  type: string
+
 /health:
   get:
     tags:

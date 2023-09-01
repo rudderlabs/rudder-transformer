@@ -1,0 +1,224 @@
+/customTransform:
+  post:
+    tags:
+      - User Transform
+    summary: Custom Transformation
+    requestBody:
+      description: Request Body
+      required: true
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '../components/schemas/processorTransformationRequest.yaml'
+    responses:
+      200:
+        description: Success
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                output:
+                  $ref: '../components/schemas/rudderMessage.yaml'
+                metadata:
+                  $ref: '../components/schemas/metadata.yaml'
+                statusCode:
+                  type: number
+                error:
+                  type: string
+                statTags:
+                  type: object
+
+/transformation/test:
+  post:
+    tags:
+      - User Transform
+    summary: Transformation Test
+    requestBody:
+      description: Request Body
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              events:
+                type: array
+                items:
+                  type: string
+                example: []
+              trRevCode:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  codeVersion:
+                    type: string
+              libraryVersionIDs:
+                type: array
+                items:
+                  type: string
+                example: []
+    responses:
+      200:
+        description: Success
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+              example: []
+
+      400:
+        description: Failure
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  type: string
+
+/transformationLibrary/test:
+  post:
+    tags:
+      - User Transform
+    summary: Transformation Test
+    requestBody:
+      description: Request Body
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+              language:
+                type: string
+                example: javascript
+                enum: [javascript, python, pythonfaas]
+    responses:
+      200:
+        description: Success
+        content:
+          application/json:
+            schema:
+              type: boolean
+              example: true
+      400:
+        description: Failure
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  type: string
+
+/transformation/sethandle:
+  post:
+    tags:
+      - User Transform
+    summary: Set transformation handler
+    requestBody:
+      description: Request Body
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              trRevCode:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  language:
+                    type: string
+                  testName:
+                    type: string
+                  versionId:
+                    type: string
+              libraryVersionIDs:
+                type: array
+                items:
+                  type: string
+                example: []
+    responses:
+      200:
+        description: Success
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+      400:
+        description: Failure
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  type: string
+
+/extractLibs:
+  post:
+    tags:
+      - User Transform
+    summary: Extract Libraries
+    requestBody:
+      description: Request Body
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+              versionId:
+                type: string
+              validateImports:
+                type: boolean
+                example: false
+              additionalLibraries:
+                type: array
+                items:
+                  type: string
+                example: []
+              language:
+                type: string
+                example: javascript
+              testMode:
+                type: boolean
+                example: false
+    responses:
+      200:
+        description: Success
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                moduleName:
+                  type: array
+                  items:
+                    type: string
+                  example: [import]
+      400:
+        description: Failure
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                error:
+                  type: string

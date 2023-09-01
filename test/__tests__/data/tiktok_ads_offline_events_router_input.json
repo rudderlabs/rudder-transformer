@@ -5,7 +5,7 @@
     },
     "destination": {
       "Config": {
-        "accessToken": "fuwheirujkvjnkrtgkf",
+        "accessToken": "dummyAccessToken",
         "hashUserProperties": true
       }
     },
@@ -42,7 +42,7 @@
     },
     "destination": {
       "Config": {
-        "accessToken": "fuwheirujkvjnkrtgkf",
+        "accessToken": "dummyAccessToken",
         "hashUserProperties": true
       }
     },
@@ -88,7 +88,7 @@
     },
     "destination": {
       "Config": {
-        "accessToken": "fuwheirujkvjnkrtgkf",
+        "accessToken": "dummyAccessToken",
         "hashUserProperties": true
       }
     },
@@ -119,7 +119,7 @@
     },
     "destination": {
       "Config": {
-        "accessToken": "fuwheirujkvjnkrtgkf",
+        "accessToken": "dummyAccessToken",
         "hashUserProperties": true
       }
     },

@@ -231,7 +231,10 @@ const createCompany = async (message, destination) => {
     },
   };
 
-  const response = await httpPOST(endpoint, payload, requestOptions);
+  const response = await httpPOST(endpoint, payload, requestOptions, {
+    destType: 'user',
+    feature: 'transformation',
+  });
   const data = processAxiosResponse(response);
   return data.response;
 };
@@ -268,7 +271,10 @@ const updateCompany = async (message, destination, company) => {
     },
   };
 
-  const response = await httpPUT(endpoint, payload, requestOptions);
+  const response = await httpPUT(endpoint, payload, requestOptions, {
+    destType: 'user',
+    feature: 'transformation',
+  });
   const data = processAxiosResponse(response);
   return data.response;
 };
@@ -291,7 +297,10 @@ const getUserByUserKey = async (apiKey, userKey, appSubdomain) => {
     },
   };
 
-  const userResponse = await httpGET(endpoint, requestOptions);
+  const userResponse = await httpGET(endpoint, requestOptions, {
+    destType: 'user',
+    feature: 'transformation',
+  });
   const processedUserResponse = processAxiosResponse(userResponse);
   if (processedUserResponse.status === 200) {
     return processedUserResponse.response;
@@ -321,7 +330,10 @@ const getUserByEmail = async (apiKey, email, appSubdomain) => {
     },
   };
 
-  const userResponse = await httpGET(endpoint, requestOptions);
+  const userResponse = await httpGET(endpoint, requestOptions, {
+    destType: 'user',
+    feature: 'transformation',
+  });
   const processedUserResponse = processAxiosResponse(userResponse);
 
   if (processedUserResponse.status === 200) {
@@ -356,7 +368,10 @@ const getUserByPhoneNumber = async (apiKey, phoneNumber, appSubdomain) => {
     },
   };
 
-  const userResponse = await httpGET(endpoint, requestOptions);
+  const userResponse = await httpGET(endpoint, requestOptions, {
+    destType: 'user',
+    feature: 'transformation',
+  });
   const processedUserResponse = processAxiosResponse(userResponse);
 
   if (processedUserResponse.status === 200) {
@@ -397,7 +412,10 @@ const getUserByCustomId = async (message, destination) => {
     },
   };
 
-  const userResponse = await httpGET(endpoint, requestOptions);
+  const userResponse = await httpGET(endpoint, requestOptions, {
+    destType: 'user',
+    feature: 'transformation',
+  });
   const processedUserResponse = processAxiosResponse(userResponse);
 
   if (processedUserResponse.status === 200) {
@@ -429,7 +447,10 @@ const getCompanyByCustomId = async (message, destination) => {
     },
   };
 
-  const response = await httpGET(endpoint, requestOptions);
+  const response = await httpGET(endpoint, requestOptions, {
+    destType: 'user',
+    feature: 'transformation',
+  });
   const processedUserResponse = processAxiosResponse(response);
   if (processedUserResponse.status === 200) {
     return processedUserResponse.response;

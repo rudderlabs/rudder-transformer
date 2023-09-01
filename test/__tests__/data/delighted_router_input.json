@@ -2,14 +2,14 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "oMAEMNb5qph1DAVPfGqrODqQCL2YMieG",
+        "apiKey": "dummyApiKey",
         "channel": "email",
         "delay": 0,
         "eventNamesSettings": [{ "event": "" }]
       }
     },
     "metadata": {
-      "jobId": 2
+      "jobId": 1
     },
     "message": {
       "channel": "web",
@@ -45,7 +45,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "oMAEMNb5qph1DAVPfGqrODqQCL2YMieG",
+        "apiKey": "dummyApiKey",
         "channel": "email",
         "delay": 0,
         "eventNamesSettings": [{ "event": "" }]

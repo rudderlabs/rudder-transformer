@@ -191,5 +191,20 @@
       },
       "status": 500
     }
+  },
+  {
+    "output": {
+      "status": 200,
+      "message": "Request for destination: salesforce Processed Successfully",
+      "destinationResponse": {
+        "response": "",
+        "status": 200,
+        "rudderJobMetadata": {
+          "destInfo": {
+            "authKey": "2HezPl1w11opbFSxnLDEgZ7kWTf"
+          }
+        }
+      }
+    }
   }
 ]

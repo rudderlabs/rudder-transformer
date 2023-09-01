@@ -1,0 +1,35 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+
+steps:
+  - name: validateInput
+    template: |
+      $.assert(.message.type, "message Type is not present. Aborting message.");
+      $.assert(.message.type in 
+        {{$.EventType.([.IDENTIFY, .TRACK, .GROUP])}}, 
+        "message type " + .message.type + " is not supported");
+  - name: preparePayload
+    template: |
+      $.context.payload = .message
+      $.context.payload.type = .message.type.toLowerCase();
+      $.context.payload.userId = .message.({{{{$.getGenericPaths("userIdOnly")}}}});
+      $.assert($.context.payload.userId, "userId is required");
+  - name: buildResponse
+    description: In batchMode we return payload directly
+    condition: $.batchMode
+    template: $.context.payload
+    else:
+      name: buildResponseForProcessTransformation
+      template: |
+        const response = $.defaultRequestConfig();
+        response.body.JSON = $.context.payload;
+        response.endpoint = "https://incoming.userlist.com/rudderstack/events";
+        response.headers = {
+          "Authorization": "Push " + .destination.Config.pushKey,
+          "Content-Type": "application/json"
+        };
+        response

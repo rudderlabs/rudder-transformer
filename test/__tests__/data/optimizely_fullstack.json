@@ -209,8 +209,16 @@
         "type": "track",
         "channel": "web",
         "event": "Product Added",
-        "properties": { "price": 999, "quantity": 1 },
-        "context": { "traits": { "firstName": "John", "age": 27 } },
+        "properties": {
+          "price": 999,
+          "quantity": 1
+        },
+        "context": {
+          "traits": {
+            "firstName": "John",
+            "age": 27
+          }
+        },
         "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
         "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
         "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
@@ -231,7 +239,7 @@
       }
     },
     "output": {
-      "error": "RudderStack will only track users associated with a userId when the trackKnownUsers setting is enabled"
+      "error": "UserId is required for event tracking when the 'Track Known Users' setting is enabled. Please include a 'userId' in your event payload"
     }
   },
   {
@@ -241,8 +249,16 @@
         "type": "track",
         "channel": "web",
         "event": "Product Added",
-        "properties": { "price": 999, "quantity": 1 },
-        "context": { "traits": { "firstName": "John", "age": 27 } },
+        "properties": {
+          "price": 999,
+          "quantity": 1
+        },
+        "context": {
+          "traits": {
+            "firstName": "John",
+            "age": 27
+          }
+        },
         "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
         "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
         "integrations": {
@@ -262,7 +278,7 @@
       }
     },
     "output": {
-      "error": "AnonymousId is required when trackKnownUsers setting is disabled"
+      "error": "AnonymousId is required when 'Track Known Users' setting is disabled"
     }
   },
   {
@@ -340,38 +356,6 @@
           "dataFileUrl": "https://cdn.optimizely.com/datafiles/abc.json",
           "accountId": "test_account_id",
           "campaignId": "test_campagin_id",
-          "experimentId": "test_experiment_id"
-        }
-      }
-    },
-    "output": {
-      "error": "No mapped event found for Product Added event. Make sure to map the event in 'RudderStack to Optimizely event mappings' setting"
-    }
-  },
-  {
-    "description": "Invalid data file url",
-    "input": {
-      "message": {
-        "type": "track",
-        "event": "Product Added",
-        "channel": "web",
-        "properties": {},
-        "context": {},
-        "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
-        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
-        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
-        "integrations": {
-          "All": true,
-          "optimizely_fullstack": {
-            "variationId": "123"
-          }
-        }
-      },
-      "destination": {
-        "Config": {
-          "dataFileUrl": "https://cdn.optimizely.com/datafiles/abc.json",
-          "accountId": "test_account_id",
-          "campaignId": "test_campagin_id",
           "experimentId": "test_experiment_id",
           "eventMapping": [
             {
@@ -383,7 +367,7 @@
       }
     },
     "output": {
-      "error": "Mapped event product_added is not present in data file. Make sure event exists in Optimizely."
+      "error": "Event 'product_added' is not present in data file. Make sure event exists in Optimizely."
     }
   },
   {
@@ -818,6 +802,78 @@
     }
   },
   {
+    "description": "Track call (Conversion event) without event mapping configured in webapp",
+    "input": {
+      "message": {
+        "type": "track",
+        "event": "Product Added",
+        "channel": "web",
+        "properties": {},
+        "context": {},
+        "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+        "timestamp": "2023-02-10T12:16:07.251Z",
+        "integrations": {
+          "All": true,
+          "optimizely_fullstack": {
+            "variationId": "123"
+          }
+        }
+      },
+      "destination": {
+        "Config": {
+          "dataFileUrl": "https://cdn.optimizely.com/datafiles/abc.json",
+          "accountId": "test_account_id",
+          "campaignId": "test_campagin_id",
+          "experimentId": "test_experiment_id"
+        }
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://logx.optimizely.com/v1/events",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "account_id": "test_account_id",
+          "anonymize_ip": false,
+          "enrich_decisions": true,
+          "client_name": "RudderStack",
+          "client_version": "1.0.0",
+          "visitors": [
+            {
+              "visitor_id": "97c46c81-3140-456d-b2a9-690d70aaca35",
+              "snapshots": [
+                {
+                  "decisions": [],
+                  "events": [
+                    {
+                      "entity_id": "test_event_id_1",
+                      "key": "Product Added",
+                      "timestamp": 1676031367251,
+                      "uuid": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+                      "tags": {}
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
     "description": "Track call: Missing Variation ID in integration object ",
     "input": {
       "message": {
@@ -1032,6 +1088,112 @@
                       "tags": {
                         "foo": "bar",
                         "category": "food"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "session_id": "1685626914716"
+            }
+          ]
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": "Track Categorized and Named Page without event mapping configured in webapp",
+    "input": {
+      "message": {
+        "type": "page",
+        "name": "home",
+        "userId": "userId123",
+        "channel": "web",
+        "context": {
+          "traits": {
+            "organization": "RudderStack",
+            "fullName": "John Doe"
+          },
+          "sessionId": 1685626914716
+        },
+        "rudderId": "5354b3f2-cb72-4355-a2b5-a298c3837c7d",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "timestamp": "2023-02-10T12:16:07.251Z",
+        "properties": {
+          "foo": "bar",
+          "category": "index"
+        },
+        "anonymousId": "856365b8-da4b-4c13-9098-84df18559446",
+        "integrations": {
+          "All": true,
+          "optimizely_fullstack": {
+            "variationId": "test_variation_id_1"
+          }
+        }
+      },
+      "destination": {
+        "Config": {
+          "dataFileUrl": "https://cdn.optimizely.com/datafiles/abc.json",
+          "accountId": "test_account_id",
+          "campaignId": "test_campaign_id",
+          "experimentId": "test_experiment_id",
+          "trackKnownUsers": true,
+          "anonymizeIp": true,
+          "trackCategorizedPages": true,
+          "trackNamedPages": true,
+          "pageMapping": [
+            {
+              "from": "",
+              "to": ""
+            }
+          ]
+        }
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://logx.optimizely.com/v1/events",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "account_id": "test_account_id",
+          "anonymize_ip": true,
+          "enrich_decisions": true,
+          "client_name": "RudderStack",
+          "client_version": "1.0.0",
+          "visitors": [
+            {
+              "visitor_id": "userId123",
+              "snapshots": [
+                {
+                  "decisions": [],
+                  "events": [
+                    {
+                      "entity_id": "test_event_id_8",
+                      "key": "Index",
+                      "timestamp": 1676031367251,
+                      "uuid": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+                      "tags": {
+                        "foo": "bar",
+                        "category": "index"
+                      }
+                    },
+                    {
+                      "entity_id": "test_event_id_7",
+                      "key": "Home",
+                      "timestamp": 1676031367251,
+                      "uuid": "generated_uuid",
+                      "tags": {
+                        "foo": "bar",
+                        "category": "index"
                       }
                     }
                   ]
@@ -1396,7 +1558,7 @@
       }
     },
     "output": {
-      "error": "No mapped event found for page call. Make sure to map the event in 'RudderStack Page Name/Category to Optimizely event mappings' setting"
+      "error": "Events [meal] are not present in the data file. Make sure events exist in Optimizely."
     }
   },
   {

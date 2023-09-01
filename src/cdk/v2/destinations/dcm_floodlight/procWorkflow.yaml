@@ -1,0 +1,119 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - name: isEmpty
+    path: ../../../../v0/util
+  - name: getIntegrationsObj
+    path: ../../../../v0/util
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+  - path: ./utils
+
+steps:
+  - name: validateInput
+    template: |
+      $.assert(.message.type, "message Type is not present. Aborting message.");
+      $.assert(.message.context.device.advertisingId, "advertisingId is required");
+      $.assert(.message.type in {{$.EventType.([.PAGE, .TRACK])}}, 
+        "message type " + .message.type + " is not supported");
+      $.assert(.message.context.userAgent, .message.type + ":: userAgent is required");
+  - name: setMessageType
+    template: |
+      $.context.messageType = .message.type.toLowerCase();
+  - name: baseDestPayload
+    template: |
+      $.context.payload = .message.({
+        src: ^.destination.Config.advertiserId,
+        cat: ^.destination.Config.activityTag,
+        type: ^.destination.Config.groupTag,
+        dc_rdid: .context.device.advertisingId,
+        ord: .properties.orderId ?? .properties.order_id,
+        qty: .properties.quantity,
+        cost: .properties.revenue,
+        dc_lat: .context.device.adTrackingEnabled
+      });
+
+      $.context.userAgent = .message.context.userAgent;
+      $.context.integrations = $.getIntegrationsObj(.message, "dcm_floodlight");
+
+  - name: prepareEventName
+    steps:
+      - name: pageEventName
+        condition: $.context.messageType === {{$.EventType.PAGE}}
+        template: |
+          const category = .message.properties.category;
+          const name = .message.name || .message.properties.name;
+          const eventNameArray = ["Viewed"];
+          category ? eventNameArray.push(category);
+          name ? eventNameArray.push(name);
+          eventNameArray.push("Page");
+          $.context.event = eventNameArray.join(" ");
+      - name: trackEventName
+        condition: $.context.messageType === {{$.EventType.TRACK}}
+        template: |
+          $.assert(.message.event, $.context.messageType + ":: event is required");
+          $.context.event = .message.event
+      - name: cleanEventName
+        template: |
+          $.context.event = $.context.event.trim().toLowerCase();
+  - name: handleIntegrationsObject
+    condition: $.context.integrations
+    template: |
+      $.context.integrations.COPPA ?
+        $.context.payload.tag_for_child_directed_treatment = $.mapFlagValue("COPPA", $.context.integrations.COPPA);
+      $.context.integrations.GDPR ?
+        $.context.payload.tfua = $.mapFlagValue("GDPR", $.context.integrations.GDPR);
+      $.context.integrations.npa ?
+        $.context.payload.npa = $.mapFlagValue("npa", $.context.integrations.npa);
+  - name: handleConversionEvents
+    template: |
+      const conversionEvent = .destination.Config.conversionEvents.find(function(conversionEvent) {
+      conversionEvent.eventName.trim().toLowerCase() === $.context.event
+      });
+      $.assert(conversionEvent, $.context.messageType + ":: Conversion event not found");
+      (!$.isEmpty(conversionEvent.floodlightActivityTag) && 
+        !$.isEmpty(conversionEvent.floodlightGroupTag)) ?
+        (
+          $.context.payload.cat = conversionEvent.floodlightActivityTag.trim();
+          $.context.payload.type = conversionEvent.floodlightGroupTag.trim();
+        );
+      $.context.payload = Object.assign(
+        $.context.payload,
+        $.transformCustomVariable(conversionEvent.customVariables || [], .message)
+      );
+      $.context.salesTag = conversionEvent.salesTag;
+      console.log("$.context.salesTag", $.context.salesTag);
+  - name: handleSalesTag
+    condition: $.context.salesTag
+    template: |
+      const products = .message.properties.products;
+      products ? (
+        $.context.payload.qty = $.sum(~r products.quantity[]);
+      )
+    else:
+      name: handleCounterTag
+      template: |
+        $.context.payload.ord = .message.messageId;
+        $.context.payload = $.context.payload.{~["qty", "cost"]};
+
+  - name: cleanPayload
+    template: |
+      $.context.payload.(
+        .dc_lat ? $.context.payload.dc_lat = $.mapFlagValue('dc_lat', .dc_lat)
+      );
+      $.context.payload = $.removeUndefinedAndNullValues($.context.payload)
+  - name: prepareEndpoint
+    template: |
+      const payloadParams = Object.entries($.context.payload).map(lambda ?0[0] + "=" + ?0[1]).join(";");
+      $.context.endpoint = $.BASE_URL + payloadParams;
+  - name: buildResponseForProcessTransformation
+    template: |
+      const response = $.defaultRequestConfig();
+      response.method = "GET";
+      response.endpoint = $.context.endpoint;
+      response.headers = {
+        "User-Agent": $.context.userAgent
+      };
+      response

@@ -8,46 +8,46 @@ const version = "v0";
 
 const transformer = require(`../../src/${version}/destinations/${integration}/transform`);
 
-const inputDataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_input.json`)
+const testDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}.json`)
 );
-const outputDataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_output.json`)
-);
+const testData = JSON.parse(testDataFile);
 
-const inputData = JSON.parse(inputDataFile);
-const expectedData = JSON.parse(outputDataFile);
-
-// Router Test Data
-const inputRouterDataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_router_input.json`)
+// Router Test files
+const routerTestDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_router.json`)
 );
-const outputRouterDataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_router_output.json`)
-);
-const inputRouterData = JSON.parse(inputRouterDataFile);
-const expectedRouterData = JSON.parse(outputRouterDataFile);
+const routerTestData = JSON.parse(routerTestDataFile);
 
-inputData.forEach((input, index) => {
-  it(`${name} Tests: payload: ${index}`, async () => {
-    try {
-      const output = transformer.process(input);
-      expect(output).toEqual(expectedData[index]);
-    } catch (error) {
-      expect(error.message).toEqual(expectedData[index].message);
-    }
-  });
+// Mocking IDENTIFY_MAX_BODY_SIZE and IDENTIFY_MAX_BATCH_SIZE variable to test batching
+jest.mock(`../../src/${version}/destinations/${integration}/config`, () => {
+  const originalConfig = jest.requireActual(`../../src/${version}/destinations/${integration}/config`);
+  return {
+    ...originalConfig,
+    IDENTIFY_MAX_BATCH_SIZE: 6,
+    IDENTIFY_MAX_BODY_SIZE_IN_BYTES: 4000
+  };
 });
 
 describe(`${name} Tests`, () => {
-  describe("Router Tests", () => {
-    // inputRouterData are object of arrays with keys `rETL` and `others` for input data of the respective sources
-    Object.keys(inputRouterData).forEach(index => {
-      it(`${name} Tests: payload: ${index}`, async () => {
-        const routerOutput = await transformer.processRouterDest(
-          inputRouterData[index]
-        );
-        expect(routerOutput).toEqual(expectedRouterData[index]);
+  describe("Processor", () => {
+    testData.forEach((dataPoint, index) => {
+      it(`${index}. ${integration} - ${dataPoint.description}`, async () => {
+        try {
+          const output = await transformer.process(dataPoint.input);
+          expect(output).toEqual(dataPoint.output);
+        } catch (error) {
+          expect(error.message).toEqual(dataPoint.output.message);
+        }
+      });
+    });
+  });
+
+  describe("Router", () => {
+    routerTestData.forEach((dataPoint, index) => {
+      it(`${index}. ${integration} - ${dataPoint.description}`, async () => {
+        const output = await transformer.processRouterDest(dataPoint.input);
+        expect(output).toEqual(dataPoint.output);
       });
     });
   });

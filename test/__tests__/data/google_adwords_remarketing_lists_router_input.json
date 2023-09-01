@@ -5,7 +5,8 @@
         "access_token": "abcd1234",
         "refresh_token": "efgh5678",
         "developer_token": "ijkl9101"
-      }
+      },
+      "jobId": 1
     },
     "destination": {
       "Config": {
@@ -28,10 +29,10 @@
         "listData": {
           "add": [
             {
-              "email": "sudip@abc.com",
-              "phone": "@09432457768",
-              "firstName": "sudip",
-              "lastName": "paul",
+              "email": "test@abc.com",
+              "phone": "@09876543210",
+              "firstName": "test",
+              "lastName": "rudderlabs",
               "country": "US",
               "postalCode": "1245"
             }
@@ -54,7 +55,8 @@
         "access_token": "abcd1234",
         "refresh_token": "efgh5678",
         "developer_token": "ijkl9101"
-      }
+      },
+      "jobId": 2
     },
     "destination": {
       "Config": {
@@ -77,10 +79,10 @@
         "listData": {
           "add": [
             {
-              "email": "sudip@abc.com",
-              "phone": "@09432457768",
-              "firstName": "sudip",
-              "lastName": "paul",
+              "email": "test@abc.com",
+              "phone": "@09876543210",
+              "firstName": "test",
+              "lastName": "rudderlabs",
               "country": "US",
               "postalCode": "1245",
               "thirdPartyUserId": "useri1234"
@@ -104,7 +106,8 @@
         "access_token": "abcd1234",
         "refresh_token": "efgh5678",
         "developer_token": "ijkl9101"
-      }
+      },
+      "jobId": 3
     },
     "destination": {
       "Config": {
@@ -127,10 +130,10 @@
         "listData": {
           "remove": [
             {
-              "email": "sudip@abc.com",
-              "phone": "@09432457768",
-              "firstName": "sudip",
-              "lastName": "paul",
+              "email": "test@abc.com",
+              "phone": "@09876543210",
+              "firstName": "test",
+              "lastName": "rudderlabs",
               "country": "US",
               "postalCode": "1245"
             }
@@ -153,7 +156,8 @@
         "access_token": "abcd1234",
         "refresh_token": "efgh5678",
         "developer_token": "ijkl9101"
-      }
+      },
+      "jobId": 4
     },
     "destination": {
       "Config": {
@@ -176,20 +180,20 @@
         "listData": {
           "remove": [
             {
-              "email": "sudip@abc.com",
-              "phone": "@09432457768",
-              "firstName": "sudip",
-              "lastName": "paul",
+              "email": "test@abc.com",
+              "phone": "@09876543210",
+              "firstName": "test",
+              "lastName": "rudderlabs",
               "country": "US",
               "postalCode": "1245"
             }
           ],
           "add": [
             {
-              "email": "sudip@abc.com",
-              "phone": "@09432457768",
-              "firstName": "sudip",
-              "lastName": "paul",
+              "email": "test@abc.com",
+              "phone": "@09876543210",
+              "firstName": "test",
+              "lastName": "rudderlabs",
               "country": "US",
               "postalCode": "1245"
             }

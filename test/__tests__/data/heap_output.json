@@ -44,7 +44,7 @@
           "variation": "A"
         },
         "app_id": "<app id>",
-        "timestamp": "2020-01-16T13:23:20.844Z"
+        "timestamp": "2020-01-16T18:53:20.866+05:30"
       },
       "XML": {},
       "JSON_ARRAY": {},
@@ -108,7 +108,7 @@
           "subject": "Welcome to My App!",
           "variation": "A"
         },
-        "timestamp": "2020-01-17T13:23:20.844Z",
+        "timestamp": "2020-01-16T18:53:20.866+05:30",
         "idempotency_key": "1234",
         "app_id": "<app id>"
       },
@@ -139,7 +139,7 @@
           "hobbies[0]": "Music",
           "hobbies[1]": "Running"
         },
-        "timestamp": "2020-01-17T13:23:20.844Z",
+        "timestamp": "2020-01-16T18:53:20.866+05:30",
         "app_id": "<app id>"
       },
       "JSON_ARRAY": {},
@@ -167,7 +167,7 @@
           "subject": "Welcome to My App!",
           "variation": "A"
         },
-        "timestamp": "2020-01-17T13:23:20.844Z",
+        "timestamp": "2020-01-16T18:53:20.866+05:30",
         "app_id": "<app id>"
       },
       "JSON_ARRAY": {},

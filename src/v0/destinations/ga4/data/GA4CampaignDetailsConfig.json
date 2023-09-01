@@ -1,0 +1,32 @@
+[
+  {
+    "destKey": "campaign_id",
+    "sourceKeys": ["context.campaign.id", "properties.campaign.id"],
+    "required": false
+  },
+  {
+    "destKey": "campaign",
+    "sourceKeys": ["context.campaign.name", "properties.campaign.name"],
+    "required": false
+  },
+  {
+    "destKey": "source",
+    "sourceKeys": ["context.campaign.source", "properties.campaign.source"],
+    "required": false
+  },
+  {
+    "destKey": "medium",
+    "sourceKeys": ["context.campaign.medium", "properties.campaign.medium"],
+    "required": false
+  },
+  {
+    "destKey": "term",
+    "sourceKeys": ["context.campaign.term", "properties.campaign.term"],
+    "required": false
+  },
+  {
+    "destKey": "content",
+    "sourceKeys": ["context.campaign.content", "properties.campaign.content"],
+    "required": false
+  }
+]

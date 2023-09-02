@@ -602,7 +602,7 @@ const eventValidationTestCases = [
         type: "Datatype-Mismatch",
         message: "must be integer",
         meta: {
-          instacePath: "/properties/revenue",
+          instancePath: "/properties/revenue",
           schemaPath: "#/properties/properties/properties/revenue/type"
         }
       }
@@ -617,7 +617,7 @@ const eventValidationTestCases = [
         type: "Unknown-Violation",
         message: "must be <= 4",
         meta: {
-          instacePath: "/properties/revenue",
+          instancePath: "/properties/revenue",
           schemaPath: "#/properties/properties/properties/revenue/then/maximum"
         }
       },
@@ -625,7 +625,7 @@ const eventValidationTestCases = [
         type: "Unknown-Violation",
         message: 'must match "then" schema',
         meta: {
-          instacePath: "/properties/revenue",
+          instancePath: "/properties/revenue",
           schemaPath: "#/properties/properties/properties/revenue/if"
         }
       }
@@ -640,7 +640,7 @@ const eventValidationTestCases = [
         type: "Datatype-Mismatch",
         message: "must be number",
         meta: {
-          instacePath: "/properties/props/0",
+          instancePath: "/properties/props/0",
           schemaPath: "#/properties/properties/properties/props/contains/type"
         }
       },
@@ -648,7 +648,7 @@ const eventValidationTestCases = [
         type: "Unknown-Violation",
         message: "must contain at least 1 and no more than 2 valid item(s)",
         meta: {
-          instacePath: "/properties/props",
+          instancePath: "/properties/props",
           schemaPath: "#/properties/properties/properties/props/contains"
         }
       }

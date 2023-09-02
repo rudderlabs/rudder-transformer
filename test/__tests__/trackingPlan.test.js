@@ -662,7 +662,7 @@ const eventValidationTestCases = [
       {
         message: "must match format \"date-time\"",
         meta: {
-          instacePath: "/properties/dateString",
+          instancePath: "/properties/dateString",
           schemaPath: "#/properties/properties/properties/dateString/format",
         },
         type: "Unknown-Violation",
@@ -697,7 +697,7 @@ const eventValidationTestCases = [
         message: "must have required property 'flairs'",
         property: "flairs",
         meta: {
-            instacePath: "/properties",
+            instancePath: "/properties",
             schemaPath: "#/properties/properties/required",
         }
       }
@@ -712,7 +712,7 @@ const eventValidationTestCases = [
         "type": "Datatype-Mismatch",
         "message": "must be string,null",
         "meta": {
-            "instacePath": "/properties/post_comment",
+            "instancePath": "/properties/post_comment",
             "schemaPath": "#/properties/properties/properties/post_comment/type"
         }
       }
@@ -728,7 +728,7 @@ const eventValidationTestCases = [
         "message": "must NOT have additional properties 'new_property'",
         "property": "new_property",
         "meta": {
-          "instacePath": "/properties",
+          "instancePath": "/properties",
           "schemaPath": "#/properties/properties/additionalProperties",
         }
       }

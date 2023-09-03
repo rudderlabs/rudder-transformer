@@ -24,6 +24,10 @@ const enrichPayload = {
         ...mappingFields.map((item) => item.sourceKeys),
       ];
 
+      if (RUDDER_ECOM_MAP[shopifyTopic].lineItems) {
+        fieldsToBeIgnored.push('line_items');
+      }
+
       Object.keys(event).forEach((key) => {
         if (!fieldsToBeIgnored.includes(key)) {
           updatedMessage.properties[`${key}`] = event[key];

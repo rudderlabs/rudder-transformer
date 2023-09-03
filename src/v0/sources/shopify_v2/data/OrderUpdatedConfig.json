@@ -50,6 +50,13 @@
     }
   },
   {
+    "sourceKeys": "total_discounts",
+    "destKey": "discount",
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
     "sourceKeys": {
       "operation": "concatenationInArray",
       "args": [

@@ -87,12 +87,7 @@ const LINE_ITEM_EXCLUSION_FIELDS = [
   'variant_title',
 ];
 
-const PROPERTIES_MAPPING_EXCLUSION_FIELDS = [
-  'line_items',
-  'customer',
-  'shipping_address',
-  'billing_address',
-];
+const PROPERTIES_MAPPING_EXCLUSION_FIELDS = ['customer', 'shipping_address', 'billing_address'];
 
 const maxTimeToIdentifyRSGeneratedCall = 10000; // in ms
 

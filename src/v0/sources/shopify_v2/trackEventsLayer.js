@@ -217,7 +217,7 @@ const trackLayer = {
       updatedEventName = 'checkout_step_viewed';
       if (event.completed_at) {
         updatedEventName = 'checkout_step_completed';
-      } else if (!event.gateway) {
+      } else if (event.gateway) {
         updatedEventName = 'payment_info_entered';
       }
     }

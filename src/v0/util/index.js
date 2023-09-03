@@ -537,6 +537,8 @@ const handleSourceKeysOperation = ({ message, operationObject }) => {
       for (const v of argValues) {
         if (_.isNumber(v)) {
           result *= v;
+        } else if (_.isString(v) && /^[+-]?(\d+(\.\d*)?|\.\d+)([Ee][+-]?\d+)?$/.test(v)) {
+          result *= parseFloat(v);
         } else {
           // if there is a non number argument simply return null
           // non numbers can't be operated arithmatically

@@ -10,6 +10,7 @@ export default class TrackingPlanservice {
     const respList: any[] = [];
     const metaTags = events[0].metadata ? getMetadata(events[0].metadata) : {};
     let ctxStatusCode = 200;
+
     for (let i = 0; i < events.length; i++) {
       const event = events[i];
       const eventStartTime = new Date();
@@ -25,7 +26,7 @@ export default class TrackingPlanservice {
             validationErrors: hv['validationErrors'],
             error: JSON.stringify(constructValidationErrors(hv['validationErrors'])),
           });
-          stats.counter('hv_violation_type', 1, {
+          stats.counter('tp_violation_type', 1, {
             violationType: hv['violationType'],
             ...metaTags,
           });
@@ -37,7 +38,7 @@ export default class TrackingPlanservice {
             validationErrors: hv['validationErrors'],
             error: JSON.stringify(constructValidationErrors(hv['validationErrors'])),
           });
-          stats.counter('hv_propagated_events', 1, {
+          stats.counter('tp_propagated_events', 1, {
             ...metaTags,
           });
         }
@@ -58,24 +59,32 @@ export default class TrackingPlanservice {
           validationErrors: [],
           error: errMessage,
         });
-        stats.counter('hv_errors', 1, {
+        stats.counter('tp_errors', 1, {
           ...metaTags,
+          workspaceId: event.metadata?.workspaceId,
+          trackingPlanId: event.metadata?.trackingPlanId,
         });
       } finally {
-        stats.timing('hv_event_latency', eventStartTime, {
+        stats.timing('tp_event_latency', eventStartTime, {
           ...metaTags,
         });
       }
-      stats.counter('hv_events_count', events.length, {
-        ...metaTags,
-      });
-      stats.histogram('hv_request_size', requestSize, {
-        ...metaTags,
-      });
-      stats.timing('hv_request_latency', requestStartTime, {
-        ...metaTags,
-      });
     }
+
+    stats.counter('tp_events_count', events.length, {
+      ...metaTags,
+    });
+
+    stats.histogram('tp_request_size', requestSize, {
+      ...metaTags,
+    });
+
+    stats.timing('tp_request_latency', requestStartTime, {
+      ...metaTags,
+      workspaceId: events[0]?.metadata?.workspaceId,
+      trackingPlanId: events[0]?.metadata?.trackingPlanId,
+    });
+
     return { body: respList, status: ctxStatusCode };
   }
 }

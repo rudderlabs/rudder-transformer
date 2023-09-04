@@ -42,22 +42,22 @@
   },
   {
     "statusCode": 400,
-    "error": "Could not upload file",
+    "error": "[Could not upload file]Error message: undefined",
     "metadata": null
   },
   {
     "statusCode": 400,
-    "error": "There are 10 imports currently being processed. Please try again later",
+    "error": "[Could not upload file]Error message: There are 10 imports currently being processed. Please try again later",
     "metadata": null
   },
   {
     "statusCode": 400,
-    "error": "Empty file",
+    "error": "[Could not upload file]Error message: Empty file",
     "metadata": null
   },
   {
     "statusCode": 400,
-    "error": "Any other error",
+    "error": "[Could not upload file]Error message: Any other error",
     "metadata": null
   }
 ]

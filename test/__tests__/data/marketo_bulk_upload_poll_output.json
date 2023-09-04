@@ -12,6 +12,6 @@
   },
   {
     "statusCode": 400,
-    "error": "Any 500 error"
+    "error": "[Could not poll status]Error message: Any 500 error"
   }
 ]

@@ -175,6 +175,18 @@ const getConversionCustomVariableHashMap = (arrays) => {
 };
 
 /**
+ * Validates custom variable
+ * @param {*} customVariables
+ * @returns
+ */
+const isValidCustomVariables = (customVariables) => {
+  if (isDefinedAndNotNullAndNotEmpty(customVariables) && customVariables.length > 0) {
+    return !!(customVariables[0].from !== '' && customVariables[0].to !== '');
+  }
+  return false;
+};
+
+/**
  * collect conversionActionId for conversionAction parameter
  * @param {*} request
  * @returns
@@ -206,7 +218,7 @@ const ProxyRequest = async (request) => {
     set(body.JSON, 'conversions.0.conversionAction', conversionActionId);
   }
   // customVariables would be undefined in case of Store Conversions
-  if (isDefinedAndNotNullAndNotEmpty(params.customVariables)) {
+  if (isValidCustomVariables(params.customVariables)) {
     // fetch all conversion custom variable in google ads
     let conversionCustomVariable = await getConversionCustomVariable(headers, params);
 

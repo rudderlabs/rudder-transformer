@@ -203,8 +203,8 @@ function setDataFromInputAndComputeColumnTypes(
     input,
     columnTypes,
     options,
-    completePrefix,
-    completeLevel,
+    completePrefix = '',
+    completeLevel = 0,
     prefix = '',
     level = 0,
 ) {

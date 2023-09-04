@@ -47,7 +47,7 @@
           "headers": {
             "Content-Type": "application/json",
             "Accept": "application/json",
-            "Authorization": "Bearer a1d4f79a-cea9-4e0e-a104-b57e37ba3b3a"
+            "Authorization": "Bearer dummyApiKey"
           },
           "params": {},
           "body": {

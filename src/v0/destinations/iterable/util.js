@@ -24,8 +24,8 @@ const { InstrumentationError, ConfigurationError } = require('../../util/errorTy
 
 /**
  * Returns preferUserId param
- * @param {*} config 
- * @returns 
+ * @param {*} config
+ * @returns
  */
 const getPreferUserId = (config) => {
   if (config.preferUserId !== undefined) {
@@ -36,8 +36,8 @@ const getPreferUserId = (config) => {
 
 /**
  * Returns mergeNestedObjects param
- * @param {*} config 
- * @returns 
+ * @param {*} config
+ * @returns
  */
 const getMergeNestedObjects = (config) => {
   if (config.mergeNestedObjects !== undefined) {
@@ -70,10 +70,10 @@ const validateMandatoryField = (payload) => {
 
 /**
  * Check for register device and register browser events
- * @param {*} message 
- * @param {*} category 
- * @param {*} config 
- * @returns 
+ * @param {*} message
+ * @param {*} category
+ * @param {*} config
+ * @returns
  */
 const hasMultipleResponses = (message, category, config) => {
   const { context } = message;
@@ -92,7 +92,10 @@ const hasMultipleResponses = (message, category, config) => {
  * @returns
  */
 const getCategoryUsingEventName = (message) => {
-  const event = message.event?.toLowerCase();
+  let { event } = message;
+  if (typeof event === 'string') {
+    event = event.toLowerCase();
+  }
 
   switch (event) {
     case 'order completed':
@@ -262,9 +265,9 @@ const purchaseEventPayloadBuilder = (message, category, config) => {
     user: {
       ...constructPayload(message, mappingConfig[ConfigCategory.IDENTIFY.name]),
       preferUserId: getPreferUserId(config),
-      mergeNestedObjects: getMergeNestedObjects(config)
-    }
-  }
+      mergeNestedObjects: getMergeNestedObjects(config),
+    },
+  };
 
   validateMandatoryField(rawPayload.user);
 
@@ -288,8 +291,8 @@ const updateCartEventPayloadBuilder = (message, config) => {
     user: {
       ...constructPayload(message, mappingConfig[ConfigCategory.IDENTIFY.name]),
       preferUserId: getPreferUserId(config),
-      mergeNestedObjects: getMergeNestedObjects(config)
-    }
+      mergeNestedObjects: getMergeNestedObjects(config),
+    },
   };
 
   validateMandatoryField(rawPayload.user);
@@ -736,7 +739,7 @@ const filterEventsAndPrepareBatchRequests = (transformedEvents) => {
 /**
  * Groups events with the same message type together in batches.
  * Each batch contains events that have the same message type and are from different users.
- * 
+ *
  * @param {Array} inputs - An array of events
  * @returns {Array} - An array of batches
  */
@@ -758,13 +761,13 @@ const batchEvents = (inputs) => {
         remainingInputsArray.push(currentInput);
         userOrderTracker[currentUser] = true;
       }
-    })
+    });
     batches.push(batch);
     currentInputsArray = remainingInputsArray;
   }
 
   return batches;
-}
+};
 
 module.exports = {
   batchEvents,

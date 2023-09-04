@@ -3,7 +3,7 @@
     {
       "destination": {
         "Config": {
-          "restApiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "restApiKey": "dummyApiKey",
           "prefixProperties": true,
           "useNativeSDK": false,
           "dataCenter": "eu-01"
@@ -19,7 +19,7 @@
         "Transformations": []
       },
       "metadata": {
-        "jobId": 2
+        "jobId": 1
       },
       "message": {
         "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
@@ -70,7 +70,7 @@
     {
       "destination": {
         "Config": {
-          "restApiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "restApiKey": "dummyApiKey",
           "prefixProperties": true,
           "useNativeSDK": false,
           "dataCenter": "us-01"
@@ -135,7 +135,7 @@
     {
       "destination": {
         "Config": {
-          "restApiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "restApiKey": "dummyApiKey",
           "prefixProperties": true,
           "useNativeSDK": false,
           "dataCenter": "us-01",
@@ -152,7 +152,7 @@
         "Transformations": []
       },
       "metadata": {
-        "jobId": 2
+        "jobId": 3
       },
       "message": {
         "anonymousId": "56yrtsdfgbgxcb-22b4-401d-aae5-1b994be9a969",
@@ -168,7 +168,7 @@
     {
       "destination": {
         "Config": {
-          "restApiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "restApiKey": "dummyApiKey",
           "prefixProperties": true,
           "useNativeSDK": false,
           "dataCenter": "us-01",
@@ -185,7 +185,7 @@
         "Transformations": []
       },
       "metadata": {
-        "jobId": 2
+        "jobId": 4
       },
       "message": {
         "anonymousId": "dfgdfgdfg-22b4-401d-aae5-1b994be9a969",
@@ -201,7 +201,7 @@
     {
       "destination": {
         "Config": {
-          "restApiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "restApiKey": "dummyApiKey",
           "prefixProperties": true,
           "useNativeSDK": false,
           "dataCenter": "us-01",
@@ -218,7 +218,7 @@
         "Transformations": []
       },
       "metadata": {
-        "jobId": 2
+        "jobId": 5
       },
       "message": {
         "type": "alias",
@@ -229,7 +229,7 @@
     {
       "destination": {
         "Config": {
-          "restApiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "restApiKey": "dummyApiKey",
           "prefixProperties": true,
           "useNativeSDK": false,
           "dataCenter": "us-01",
@@ -246,7 +246,7 @@
         "Transformations": []
       },
       "metadata": {
-        "jobId": 2
+        "jobId": 6
       },
       "message": {
         "type": "alias",
@@ -268,7 +268,7 @@
           "enableSubscriptionGroupInGroupCall": false,
           "eventFilteringOption": "disable",
           "oneTrustCookieCategories": [],
-          "restApiKey": "0066a73e-d9b3-4d1f-b17d-8cf410505e36",
+          "restApiKey": "dummyApiKey",
           "supportDedup": true,
           "trackAnonymousUser": true,
           "whitelistedEvents": []
@@ -346,7 +346,7 @@
           "enableSubscriptionGroupInGroupCall": false,
           "eventFilteringOption": "disable",
           "oneTrustCookieCategories": [],
-          "restApiKey": "0066a73e-d9b3-4d1f-b17d-8cf410505e36",
+          "restApiKey": "dummyApiKey",
           "supportDedup": true,
           "trackAnonymousUser": true,
           "whitelistedEvents": []

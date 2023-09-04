@@ -37,7 +37,6 @@ steps:
       $.assertConfig(.destination.Config.experimentId, "Experiment ID is not present. Aborting");
       $.assertConfig(!(.destination.Config.trackKnownUsers && !(.message.userId)), "UserId is required for event tracking when the 'Track Known Users' setting is enabled. Please include a 'userId' in your event payload");
       $.assertConfig(!(!.destination.Config.trackKnownUsers && !(.message.anonymousId)), "AnonymousId is required when 'Track Known Users' setting is disabled");
-      $.assertConfig(!(.destination.Config.secureEnvironment && !(.destination.Config.dataFileAccessToken)), "Data File Access Token is not present for secure environment. Aborting");
 
   - name: messageType
     template: |
@@ -60,12 +59,7 @@ steps:
     description: Fetch the data file from the data file url
     template: |
       const dataFileUrl = .destination.Config.dataFileUrl;
-      const options = .destination.Config.secureEnvironment ? {
-        headers: {
-         "Authorization": "Bearer " + .destination.Config.dataFileAccessToken
-        }
-      };
-      const rawResponse = await $.handleHttpRequest("get", dataFileUrl, options);
+      const rawResponse = await $.handleHttpRequest("get", dataFileUrl);
       const processedResponse = rawResponse.processedResponse;
       $.assertHttpResp(processedResponse, "Data File Lookup Failed");
       processedResponse.response

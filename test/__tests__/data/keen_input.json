@@ -49,7 +49,7 @@
         },
         "traits": {
           "anonymousId": "123456",
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "address": {
             "city": "kolkata",
             "country": "India",
@@ -119,7 +119,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -182,7 +182,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {

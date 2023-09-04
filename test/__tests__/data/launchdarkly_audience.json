@@ -33,8 +33,7 @@
           "audienceId": "test-audienceId",
           "audienceName": "test-audienceName",
           "accessToken": "test-accessToken",
-          "clientSideId": "test-clientSideId",
-          "audienceUrl": "http://abc.com"
+          "clientSideId": "test-clientSideId"
         }
       }
     },
@@ -62,8 +61,7 @@
           "audienceId": "test-audienceId",
           "audienceName": "test-audienceName",
           "accessToken": "test-accessToken",
-          "clientSideId": "test-clientSideId",
-          "audienceUrl": "http://abc.com"
+          "clientSideId": "test-clientSideId"
         }
       }
     },
@@ -93,8 +91,7 @@
           "audienceId": "test-audienceId",
           "audienceName": "test-audienceName",
           "accessToken": "test-accessToken",
-          "clientSideId": "test-clientSideId",
-          "audienceUrl": "http://abc.com"
+          "clientSideId": "test-clientSideId"
         }
       }
     },
@@ -130,8 +127,7 @@
           "audienceId": "test-audienceId",
           "audienceName": "test-audienceName",
           "accessToken": "test-accessToken",
-          "clientSideId": "test-clientSideId",
-          "audienceUrl": "http://abc.com"
+          "clientSideId": "test-clientSideId"
         }
       }
     },
@@ -173,8 +169,7 @@
           "audienceId": "test-audienceId",
           "audienceName": "test-audienceName",
           "accessToken": "test-accessToken",
-          "clientSideId": "test-clientSideId",
-          "audienceUrl": "http://abc.com"
+          "clientSideId": "test-clientSideId"
         }
       }
     },
@@ -193,7 +188,6 @@
           "environmentId": "test-clientSideId",
           "cohortId": "test-audienceId",
           "cohortName": "test-audienceName",
-          "cohortUrl": "http://abc.com",
           "listData": {
             "add": [
               {
@@ -250,8 +244,7 @@
           "audienceId": "test-audienceId",
           "audienceName": "test-audienceName",
           "accessToken": "test-accessToken",
-          "clientSideId": "test-clientSideId",
-          "audienceUrl": "http://abc.com"
+          "clientSideId": "test-clientSideId"
         }
       }
     },
@@ -270,7 +263,6 @@
           "environmentId": "test-clientSideId",
           "cohortId": "test-audienceId",
           "cohortName": "test-audienceName",
-          "cohortUrl": "http://abc.com",
           "listData": {
             "remove": [
               {
@@ -332,8 +324,7 @@
           "audienceId": "test-audienceId",
           "audienceName": "test-audienceName",
           "accessToken": "test-accessToken",
-          "clientSideId": "test-clientSideId",
-          "audienceUrl": "http://abc.com"
+          "clientSideId": "test-clientSideId"
         }
       }
     },
@@ -352,7 +343,6 @@
           "environmentId": "test-clientSideId",
           "cohortId": "test-audienceId",
           "cohortName": "test-audienceName",
-          "cohortUrl": "http://abc.com",
           "listData": {
             "add": [
               {
@@ -408,7 +398,6 @@
           "audienceName": "test-audienceName",
           "accessToken": "test-accessToken",
           "clientSideId": "test-clientSideId",
-          "audienceUrl": "",
           "audienceType": "organization"
         }
       }

@@ -10,7 +10,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "ruchira@rudderlabs.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -65,7 +65,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "ruchira@rudderlabs.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -120,7 +120,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "ruchira@rudderlabs.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -175,7 +175,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "ruchira@rudderlabs.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",

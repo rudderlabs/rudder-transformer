@@ -35,9 +35,8 @@ steps:
       $.assertConfig(.destination.Config.accountId, "Account ID is not present. Aborting");
       $.assertConfig(.destination.Config.campaignId, "Campaign ID is not present. Aborting");
       $.assertConfig(.destination.Config.experimentId, "Experiment ID is not present. Aborting");
-      $.assertConfig(!(.destination.Config.trackKnownUsers && !(.message.userId)), "RudderStack will only track users associated with a userId when the trackKnownUsers setting is enabled");
-      $.assertConfig(!(!.destination.Config.trackKnownUsers && !(.message.anonymousId)), "AnonymousId is required when trackKnownUsers setting is disabled");
-      $.assertConfig(!(.destination.Config.secureEnvironment && !(.destination.Config.dataFileAccessToken)), "Data File Access Token is not present for secure environment. Aborting");
+      $.assertConfig(!(.destination.Config.trackKnownUsers && !(.message.userId)), "UserId is required for event tracking when the 'Track Known Users' setting is enabled. Please include a 'userId' in your event payload");
+      $.assertConfig(!(!.destination.Config.trackKnownUsers && !(.message.anonymousId)), "AnonymousId is required when 'Track Known Users' setting is disabled");
 
   - name: messageType
     template: |
@@ -60,12 +59,7 @@ steps:
     description: Fetch the data file from the data file url
     template: |
       const dataFileUrl = .destination.Config.dataFileUrl;
-      const options = .destination.Config.secureEnvironment ? {
-        headers: {
-         "Authorization": "Bearer " + .destination.Config.dataFileAccessToken
-        }
-      };
-      const rawResponse = await $.handleHttpRequest("get", dataFileUrl, options);
+      const rawResponse = await $.handleHttpRequest("get", dataFileUrl);
       const processedResponse = rawResponse.processedResponse;
       $.assertHttpResp(processedResponse, "Data File Lookup Failed");
       processedResponse.response
@@ -172,17 +166,14 @@ steps:
         template: |
           const eventsMap = $.getHashFromArray(.destination.Config.eventMapping, 'from', 'to');
           const eventInLowerCase = .message.event.toLowerCase();
-          const mappedEvent = eventsMap[eventInLowerCase];
-          $.assert(mappedEvent, "No mapped event found for " + .message.event + 
-          " event. Make sure to map the event in 'RudderStack to Optimizely event mappings' setting");
-          mappedEvent;
+          const mappedEvent = eventsMap[eventInLowerCase] || eventInLowerCase;
 
       - name: optimizelyEvent
         description: This step retrieves the event object from the data file for the mapped event
         template: |
           const availableEvents = $.outputs.dataFile.events;
           const eventFound = availableEvents.(){.key.toLowerCase() === $.outputs.prepareTrackPayload.mappedEvent.toLowerCase()};
-          $.assert(eventFound, "Mapped event " + $.outputs.prepareTrackPayload.mappedEvent + 
+          $.assert(eventFound, "Event " + "'" + $.outputs.prepareTrackPayload.mappedEvent + "'"+ 
           " is not present in data file. Make sure event exists in Optimizely.");
           eventFound;
 
@@ -239,8 +230,8 @@ steps:
           const category = .message.properties.category.toLowerCase();
           const name = .message.name.toLowerCase();
           const mappedEvents = [];
-          .destination.Config.trackCategorizedPages && eventsMap[category] ? mappedEvents.push(eventsMap[category]);
-          .destination.Config.trackNamedPages && eventsMap[name] ? mappedEvents.push(eventsMap[name]);
+          .destination.Config.trackCategorizedPages && (eventsMap[category] || category) ? mappedEvents.push(eventsMap[category] || category);
+          .destination.Config.trackNamedPages && (eventsMap[name] || name) ? mappedEvents.push(eventsMap[name] || name);
           $.assert(mappedEvents.length > 0, "No mapped event found for " + $.outputs.messageType + 
           " call. Make sure to map the event in 'RudderStack Page Name/Category to Optimizely event mappings' setting");
           mappedEvents;
@@ -254,11 +245,10 @@ steps:
           let event = availableEvents.(){.key.toLowerCase() === mappedEvents[0].toLowerCase()} 
           event.id ? eventsFound.push(event);
 
-
           event = availableEvents.(){.key.toLowerCase() === mappedEvents[1].toLowerCase()};
           event.id ? eventsFound.push(event);
 
-          $.assert(eventsFound.length > 0, "Mapped events [" + mappedEvents.join(", ") + "] are not present in the data file. Make sure events exist in Optimizely.");
+          $.assert(eventsFound.length > 0, "Events [" + mappedEvents.join(", ") + "] are not present in the data file. Make sure events exist in Optimizely.");
           eventsFound;
 
       - name: events

@@ -7,6 +7,13 @@ steps:
     template: |
       $.assert(Array.isArray(^) && ^.length > 0, "Invalid event array")
 
+  - name: checkSendTestEventConfig
+    description: |
+      If sendTestEvent is enabled, we send test event to the destination
+      ref: https://help.pinterest.com/en/business/article/track-conversions-with-the-conversions-api
+    template: |
+        ^[0].destination.Config.sendAsTestEvent ? {"test": true} : {}
+
   - name: transform
     externalWorkflow:
       path: ./procWorkflow.yaml
@@ -54,7 +61,7 @@ steps:
           "headers": {
             "Content-Type": "application/json",
           },
-          "params": {},
+          "params": $.outputs.checkSendTestEventConfig,
           "files": {}
         },
         "metadata": ~r batch.metadata,
@@ -83,7 +90,7 @@ steps:
             "Content-Type": "application/json",
               Authorization: "Bearer " + batch.destination.Config.conversionToken,
           },
-          "params": {},
+          "params": $.outputs.checkSendTestEventConfig,
           "files": {}
         },
         "metadata": ~r batch.metadata,

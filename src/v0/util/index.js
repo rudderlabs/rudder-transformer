@@ -145,23 +145,27 @@ const removeUndefinedNullEmptyExclBoolInt = (obj) => _.pickBy(obj, isDefinedNotN
  * @returns
  */
 const removeUndefinedNullValuesAndEmptyObjectArray = (obj) => {
-  if (Array.isArray(obj)) {
-    const cleanedArray = obj
-      .map((item) => removeUndefinedNullValuesAndEmptyObjectArray(item))
-      .filter((item) => isDefinedAndNotNull(item));
-    return cleanedArray.length === 0 ? null : cleanedArray;
+  function recursive(obj) {
+    if (Array.isArray(obj)) {
+      const cleanedArray = obj
+        .map((item) => recursive(item))
+        .filter((item) => isDefinedAndNotNull(item));
+      return cleanedArray.length === 0 ? null : cleanedArray;
+    }
+    if (obj && typeof obj === 'object') {
+      const data = {};
+      Object.entries(obj).forEach(([key, value]) => {
+        const cleanedValue = recursive(value);
+        if (isDefinedAndNotNull(cleanedValue)) {
+          data[key] = cleanedValue;
+        }
+      });
+      return Object.keys(data).length === 0 ? null : data;
+    }
+    return obj;
   }
-  if (obj && typeof obj === 'object') {
-    const data = {};
-    Object.entries(obj).forEach(([key, value]) => {
-      const cleanedValue = removeUndefinedNullValuesAndEmptyObjectArray(value);
-      if (isDefinedAndNotNull(cleanedValue)) {
-        data[key] = cleanedValue;
-      }
-    });
-    return Object.keys(data).length === 0 ? null : data;
-  }
-  return obj;
+  const newObj = recursive(obj);
+  return isDefinedAndNotNull(newObj) ? newObj : {};
 };
 
 // Format the destination.Config.dynamicMap arrays to hashMap
@@ -239,7 +243,7 @@ const getValueFromPropertiesOrTraits = ({ message, key }) => {
 };
 
 // function to flatten a json
-function flattenJson(data, separator = '.', mode = 'normal') {
+function flattenJson(data, separator = '.', mode = 'normal', flattenArrays = true) {
   const result = {};
 
   // a recursive function to loop through the array of the data
@@ -248,15 +252,20 @@ function flattenJson(data, separator = '.', mode = 'normal') {
     if (Object(cur) !== cur) {
       result[prop] = cur;
     } else if (Array.isArray(cur)) {
-      for (i = 0; i < cur.length; i += 1) {
-        if (mode === 'strict') {
-          recurse(cur[i], `${prop}${separator}${i}`);
-        } else {
-          recurse(cur[i], `${prop}[${i}]`);
+      if (flattenArrays || typeof cur?.[0] === 'object') {
+        for (i = 0; i < cur.length; i += 1) {
+          if (mode === 'strict') {
+            recurse(cur[i], `${prop}${separator}${i}`);
+          } else {
+            recurse(cur[i], `${prop}[${i}]`);
+          }
         }
-      }
-      if (cur.length === 0) {
-        result[prop] = [];
+        if (cur.length === 0) {
+          result[prop] = [];
+        }
+      } else {
+        // to not flatten the array of non-object (string, booleans, numbers)
+        result[prop] = cur;
       }
     } else {
       let isEmptyFlag = true;
@@ -267,7 +276,6 @@ function flattenJson(data, separator = '.', mode = 'normal') {
       if (isEmptyFlag && prop) result[prop] = {};
     }
   }
-
   recurse(data, '');
   return result;
 }
@@ -529,6 +537,8 @@ const handleSourceKeysOperation = ({ message, operationObject }) => {
       for (const v of argValues) {
         if (_.isNumber(v)) {
           result *= v;
+        } else if (_.isString(v) && /^[+-]?(\d+(\.\d*)?|\.\d+)([Ee][+-]?\d+)?$/.test(v)) {
+          result *= parseFloat(v);
         } else {
           // if there is a non number argument simply return null
           // non numbers can't be operated arithmatically

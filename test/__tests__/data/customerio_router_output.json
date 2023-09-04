@@ -6,7 +6,7 @@
       "method": "PUT",
       "endpoint": "https://track.customer.io/api/v1/customers/123456",
       "headers": {
-        "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+        "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
       },
       "params": {},
       "body": {
@@ -33,7 +33,7 @@
     },
     "metadata": [
       {
-        "jobId": 2
+        "jobId": 1
       }
     ],
     "batched": false,
@@ -42,7 +42,7 @@
       "Config": {
         "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -53,7 +53,7 @@
       "method": "POST",
       "endpoint": "https://track.customer.io/api/v1/customers/12345/events",
       "headers": {
-        "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+        "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
       },
       "params": {},
       "body": {
@@ -88,7 +88,7 @@
       "Config": {
         "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -99,7 +99,7 @@
       "method": "POST",
       "endpoint": "https://track.customer.io/api/v2/batch",
       "headers": {
-        "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY=",
+        "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk=",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -168,7 +168,7 @@
       "Config": {
         "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   }

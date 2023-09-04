@@ -1,5 +1,27 @@
 [
   {
+    "body": {
+      "XML": {},
+      "JSON_ARRAY": {},
+      "JSON": {
+        "email": "updated_email@example.com",
+        "id": "updated-id-value"
+      },
+      "FORM": {}
+    },
+    "files": {},
+    "endpoint": "https://track.customer.io/api/v1/customers/cio_1234",
+    "userId": "cio_1234",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
+    },
+    "version": "1",
+    "params": {},
+    "type": "REST",
+    "method": "PUT",
+    "statusCode": 200
+  },
+  {
     "message": "apiKey not found in Configs"
   },
   {
@@ -25,7 +47,7 @@
     "endpoint": "https://track.customer.io/api/v1/customers/123456",
     "userId": "123456",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -34,8 +56,39 @@
     "statusCode": 200
   },
   {
-    "message": "userId not present",
+    "message": "userId or email is not present",
     "statusCode": 400
+  },
+  {
+    "body": {
+      "XML": {},
+      "JSON_ARRAY": {},
+      "JSON": {
+        "_timestamp": 1571043797,
+        "anonymous_id": "123456",
+        "city": "NY",
+        "country": "USA",
+        "dot.name": "Arnab Pal",
+        "email": "test@gmail.com",
+        "postalCode": 712136,
+        "prop1": "val1",
+        "prop2": "val2",
+        "state": "CA",
+        "street": ""
+      },
+      "FORM": {}
+    },
+    "files": {},
+    "endpoint": "https://track.customer.io/api/v1/customers/test@gmail.com",
+    "userId": "123456",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
+    },
+    "version": "1",
+    "params": {},
+    "type": "REST",
+    "method": "PUT",
+    "statusCode": 200
   },
   {
     "body": {
@@ -59,7 +112,7 @@
     "endpoint": "https://track.customer.io/api/v1/customers/12345/events",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -87,7 +140,35 @@
     "endpoint": "https://track.customer.io/api/v1/customers/12345/events",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
+    },
+    "version": "1",
+    "params": {},
+    "type": "REST",
+    "method": "POST",
+    "statusCode": 200
+  },
+  {
+    "body": {
+      "XML": {},
+      "JSON_ARRAY": {},
+      "JSON": {
+        "type": "event",
+        "data": {
+          "user_actual_id": 12345,
+          "user_actual_role": "system_admin",
+          "user_time_spent": 50000
+        },
+        "timestamp": 1571051718,
+        "name": "test track event"
+      },
+      "FORM": {}
+    },
+    "files": {},
+    "endpoint": "https://track.customer.io/api/v1/customers/test@rudderstack.com/events",
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -116,7 +197,7 @@
     "endpoint": "https://track.customer.io/api/v1/events",
     "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -145,7 +226,7 @@
     "endpoint": "https://track.customer.io/api/v1/customers/12345/devices",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -164,7 +245,7 @@
     "endpoint": "https://track.customer.io/api/v1/customers/12345/devices/abcxyz",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -183,7 +264,7 @@
     "endpoint": "https://track.customer.io/api/v1/customers/12345/devices/somel",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -192,8 +273,55 @@
     "statusCode": 200
   },
   {
-    "message": "userId or device_token not present",
+    "body": {
+      "XML": {},
+      "JSON_ARRAY": {},
+      "JSON": {},
+      "FORM": {}
+    },
+    "files": {},
+    "endpoint": "https://track.customer.io/api/v1/customers/test@rudderstack.com/devices/somel",
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
+    },
+    "version": "1",
+    "params": {},
+    "type": "REST",
+    "method": "DELETE",
+    "statusCode": 200
+  },
+  {
+    "message": "userId/email or device_token not present",
     "statusCode": 400
+  },
+  {
+    "body": {
+      "XML": {},
+      "JSON_ARRAY": {},
+      "JSON": {
+        "device": {
+          "id": "somel",
+          "last_used": 1571051718,
+          "platform": "mobile",
+          "user_actual_id": 12345,
+          "user_actual_role": "system_admin",
+          "user_time_spent": 50000
+        }
+      },
+      "FORM": {}
+    },
+    "files": {},
+    "endpoint": "https://track.customer.io/api/v1/customers/test@rudderstack.com/devices",
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
+    },
+    "version": "1",
+    "params": {},
+    "type": "REST",
+    "method": "PUT",
+    "statusCode": 200
   },
   {
     "body": {
@@ -216,7 +344,7 @@
     "endpoint": "https://track.customer.io/api/v1/events",
     "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -244,7 +372,7 @@
     "endpoint": "https://track.customer.io/api/v1/customers/12345/devices",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -272,7 +400,7 @@
     "endpoint": "https://track.customer.io/api/v1/customers/12345/events",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -300,7 +428,7 @@
     "endpoint": "https://track.customer.io/api/v1/customers/12345/events",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -328,7 +456,7 @@
     "endpoint": "https://track.customer.io/api/v1/customers/12345/devices",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -347,7 +475,7 @@
     "endpoint": "https://track.customer.io/api/v1/customers/12345/devices/sample_device_token",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -377,7 +505,7 @@
     "endpoint": "https://track-eu.customer.io/api/v1/customers/123456",
     "userId": "123456",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -407,7 +535,7 @@
     "endpoint": "https://track-eu.customer.io/api/v1/customers/12345/events",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -435,7 +563,35 @@
     "endpoint": "https://track-eu.customer.io/api/v1/customers/12345/events",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
+    },
+    "version": "1",
+    "params": {},
+    "type": "REST",
+    "method": "POST",
+    "statusCode": 200
+  },
+  {
+    "body": {
+      "XML": {},
+      "JSON_ARRAY": {},
+      "JSON": {
+        "type": "event",
+        "data": {
+          "user_actual_id": 12345,
+          "user_actual_role": "system_admin",
+          "user_time_spent": 50000
+        },
+        "timestamp": 1571051718,
+        "name": "test track event"
+      },
+      "FORM": {}
+    },
+    "files": {},
+    "endpoint": "https://track-eu.customer.io/api/v1/customers/test@rudderstack.com/events",
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -464,7 +620,7 @@
     "endpoint": "https://track-eu.customer.io/api/v1/events",
     "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -493,7 +649,7 @@
     "endpoint": "https://track-eu.customer.io/api/v1/customers/12345/devices",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -512,7 +668,7 @@
     "endpoint": "https://track-eu.customer.io/api/v1/customers/12345/devices/abcxyz",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -531,7 +687,7 @@
     "endpoint": "https://track-eu.customer.io/api/v1/customers/12345/devices/somel",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -540,8 +696,36 @@
     "statusCode": 200
   },
   {
-    "message": "userId or device_token not present",
+    "message": "userId/email or device_token not present",
     "statusCode": 400
+  },
+  {
+    "body": {
+      "XML": {},
+      "JSON_ARRAY": {},
+      "JSON": {
+        "device": {
+          "id": "somel",
+          "last_used": 1571051718,
+          "platform": "mobile",
+          "user_actual_role": "system_admin",
+          "user_actual_id": 12345,
+          "user_time_spent": 50000
+        }
+      },
+      "FORM": {}
+    },
+    "files": {},
+    "endpoint": "https://track-eu.customer.io/api/v1/customers/test@rudderstack.com/devices",
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
+    },
+    "version": "1",
+    "params": {},
+    "type": "REST",
+    "method": "PUT",
+    "statusCode": 200
   },
   {
     "body": {
@@ -564,7 +748,7 @@
     "endpoint": "https://track-eu.customer.io/api/v1/events",
     "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -592,7 +776,7 @@
     "endpoint": "https://track-eu.customer.io/api/v1/customers/12345/devices",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -620,7 +804,7 @@
     "endpoint": "https://track-eu.customer.io/api/v1/customers/12345/events",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -648,7 +832,7 @@
     "endpoint": "https://track-eu.customer.io/api/v1/customers/12345/events",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -676,7 +860,7 @@
     "endpoint": "https://track-eu.customer.io/api/v1/customers/12345/devices",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -695,7 +879,7 @@
     "endpoint": "https://track-eu.customer.io/api/v1/customers/12345/devices/sample_device_token",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -709,7 +893,7 @@
     "method": "POST",
     "endpoint": "https://track.customer.io/api/v1/events",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "params": {},
     "body": {
@@ -736,9 +920,37 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/test@rudderstack.com/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "user_actual_role": "system_admin",
+          "user_actual_id": 12345,
+          "user_time_spent": 50
+        },
+        "name": "https://www.stoodi.com.br/exershgcios/upe/2019/questao/gregorio-de-matos-poeta-baiano-que-viveu-no-seculo-xvi/",
+        "type": "event",
+        "timestamp": 1571051718
+      },
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
     "endpoint": "https://track.customer.io/api/v1/events",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "params": {},
     "body": {
@@ -765,7 +977,35 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://track.customer.io/api/v1/customers/ruchira-user-id-100/events",
+    "endpoint": "https://track.customer.io/api/v1/customers/test@rudderstack.com/events",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "data": {
+          "user_actual_role": "system_admin",
+          "user_actual_id": 12345,
+          "user_time_spent": 50000
+        },
+        "name": "Viewed https://www.stoodi.com.br/exercicios/upe/2016/questao/gregorio-de-matos-poeta-baiano-que-viveu-no-seculo-xvi/ Screen",
+        "type": "event",
+        "timestamp": 1571051718
+      },
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v1/customers/dummy-user-id-100/events",
     "headers": {
       "Authorization": "Basic YWJjOnh5eg=="
     },
@@ -782,16 +1022,16 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "ruchira-user-id-100",
+    "userId": "dummy-user-id-100",
     "statusCode": 200
   },
   {
     "version": "1",
     "type": "REST",
     "method": "PUT",
-    "endpoint": "https://track-eu.customer.io/api/v1/customers/ruchira-user-id-100",
+    "endpoint": "https://track-eu.customer.io/api/v1/customers/dummy-user-id-100",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "params": {},
     "body": {
@@ -803,14 +1043,14 @@
         "street": "",
         "email": "test@gmail.com",
         "_timestamp": 1571043797,
-        "anonymous_id": "ruchira-100-anon"
+        "anonymous_id": "dummy-100-anon"
       },
       "XML": {},
       "JSON_ARRAY": {},
       "FORM": {}
     },
     "files": {},
-    "userId": "ruchira-user-id-100",
+    "userId": "dummy-user-id-100",
     "statusCode": 200
   },
   {
@@ -1475,7 +1715,7 @@
     "endpoint": "https://track.customer.io/api/v1/customers/12345/events",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -1503,7 +1743,7 @@
     "endpoint": "https://track.customer.io/api/v1/customers/12345/events",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -1525,7 +1765,7 @@
     "endpoint": "https://track.customer.io/api/v1/customers/12345/events",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},

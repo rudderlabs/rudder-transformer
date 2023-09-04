@@ -1,6 +1,6 @@
 {
   "name": "rudder-transformer",
-  "version": "1.38.0",
+  "version": "1.39.1",
   "description": "",
   "homepage": "https://github.com/rudderlabs/rudder-transformer#readme",
   "bugs": {
@@ -115,6 +115,7 @@
     "@types/jest": "^29.5.1",
     "@types/koa": "^2.13.6",
     "@types/koa-bodyparser": "^4.3.10",
+    "@types/lodash": "^4.14.197",
     "@types/node": "^20.2.5",
     "@typescript-eslint/eslint-plugin": "^5.61.0",
     "@typescript-eslint/parser": "^5.59.2",

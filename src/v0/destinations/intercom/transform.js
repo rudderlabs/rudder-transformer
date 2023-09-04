@@ -76,12 +76,12 @@ function validateIdentify(message, payload, config) {
 
     return finalPayload;
   }
-  throw new InstrumentationError('Email or userId is mandatory');
+  throw new InstrumentationError('Either of `email` or `userId` is required for Identify call');
 }
 
 function validateTrack(payload) {
   if (!payload.user_id && !payload.email) {
-    throw new InstrumentationError('Email or userId is mandatory');
+    throw new InstrumentationError('Either of `email` or `userId` is required for Track call');
   }
   // pass only string, number, boolean properties
   if (payload.metadata) {
@@ -93,16 +93,23 @@ function validateTrack(payload) {
   return payload;
 }
 
-function checkIfEmailOrUserIdPresent(message) {
-  return !!(message.userId || message.context?.traits?.email);
-}
+const checkIfEmailOrUserIdPresent = (message, Config) => {
+  let user_id = message.userId;
+  if (Config.sendAnonymousId && !user_id) {
+    user_id = message.anonymousId;
+  }
+  return !!(user_id || message.context?.traits?.email);
+};
 
 function attachUserAndCompany(message, Config) {
   const email = message.context?.traits?.email;
-  const { userId } = message;
+  const { userId, anonymousId } = message;
   const requestBody = {};
   if (userId) {
     requestBody.user_id = userId;
+  }
+  if (Config.sendAnonymousId && !userId) {
+    requestBody.user_id = anonymousId;
   }
   if (email) {
     requestBody.email = email;
@@ -181,7 +188,7 @@ function validateAndBuildResponse(message, payload, category, destination) {
     case EventType.GROUP: {
       response.body.JSON = removeUndefinedAndNullValues(buildCustomAttributes(message, payload));
       respList.push(response);
-      if (checkIfEmailOrUserIdPresent(message)) {
+      if (checkIfEmailOrUserIdPresent(message, destination.Config)) {
         const attachUserAndCompanyResponse = attachUserAndCompany(message, destination.Config);
         attachUserAndCompanyResponse.userId = message.anonymousId;
         respList.push(attachUserAndCompanyResponse);
@@ -225,7 +232,7 @@ function processSingleMessage(message, destination) {
   } else {
     payload = constructPayload(message, MappingConfig[category.name]);
   }
-  if (sendAnonymousId && !payload.user_id) {
+  if (category !== ConfigCategory.GROUP && sendAnonymousId && !payload.user_id) {
     payload.user_id = message.anonymousId;
   }
   return validateAndBuildResponse(message, payload, category, destination);

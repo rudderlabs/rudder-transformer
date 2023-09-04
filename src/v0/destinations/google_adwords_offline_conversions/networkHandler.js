@@ -180,8 +180,14 @@ const getConversionCustomVariableHashMap = (arrays) => {
  * @returns
  */
 const isValidCustomVariables = (customVariables) => {
-  if (isDefinedAndNotNullAndNotEmpty(customVariables) && customVariables.length > 0) {
-    return !!(customVariables[0].from !== '' && customVariables[0].to !== '');
+  if (
+    isDefinedAndNotNullAndNotEmpty(customVariables) &&
+    Array.isArray(customVariables) &&
+    customVariables.length > 0
+  ) {
+    return customVariables.some(
+      (customVariable) => !!(customVariable.from !== '' && customVariable.to !== ''),
+    );
   }
   return false;
 };

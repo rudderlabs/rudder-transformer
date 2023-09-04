@@ -6,11 +6,12 @@ const { handleHttpRequest } = require('../../../adapters/network');
 const { PlatformError, RetryableError } = require('../../util/errorTypes');
 const stats = require('../../../util/stats');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-const { handleFetchJobStatusResponse, getFieldSchemaMap, checkEventStatusViaSchemaMatching } = require('./util');
+const {
+  handleFetchJobStatusResponse,
+  getFieldSchemaMap,
+  checkEventStatusViaSchemaMatching,
+} = require('./util');
 const { removeUndefinedValues } = require('../../util');
-
-const FETCH_FAILURE_JOB_STATUS_ERR_MSG = 'Could not fetch failure job status';
-const FETCH_WARNING_JOB_STATUS_ERR_MSG = 'Could not fetch warning job status';
 
 const getJobsStatus = async (event, type, accessToken) => {
   const { config, importId } = event;
@@ -38,19 +39,8 @@ const getJobsStatus = async (event, type, accessToken) => {
   const requestTime = endTime - startTime;
 
   stats.histogram('marketo_bulk_upload_fetch_job_time', requestTime);
-  try {
-    return handleFetchJobStatusResponse(resp, type, config);
-  } catch (err) {
-    stats.increment(JOB_STATUS_ACTIVITY, {
-      status: 500,
-      state: 'Retryable',
-    });
-    if (type === 'fail') {
-      throw new RetryableError(FETCH_FAILURE_JOB_STATUS_ERR_MSG, 500, resp);
-    } else {
-      throw new RetryableError(FETCH_WARNING_JOB_STATUS_ERR_MSG, 500, resp);
-    }
-  }
+
+  return handleFetchJobStatusResponse(resp, type);
 };
 
 /**
@@ -87,9 +77,11 @@ const responseHandler = async (event, type) => {
 }
    */
 
-  const responseStatus =
-    type === 'fail' ? await getJobsStatus(event, 'fail', accessToken) : await getJobsStatus(event, 'warn', accessToken);
-  const responseArr = responseStatus.toString().split('\n'); // responseArr = ['field1,field2,Import Failure Reason', 'val1,val2,reason',...]
+  const jobStatus =
+    type === 'fail'
+      ? await getJobsStatus(event, 'fail', accessToken)
+      : await getJobsStatus(event, 'warn', accessToken);
+  const jobStatusArr = jobStatus.toString().split('\n'); // responseArr = ['field1,field2,Import Failure Reason', 'val1,val2,reason',...]
   const { input, metadata } = event;
   let headerArr;
   if (metadata?.csvHeader) {
@@ -99,13 +91,15 @@ const responseHandler = async (event, type) => {
   }
   const startTime = Date.now();
   const data = {};
-  const fieldSchemaMapping = await getFieldSchemaMap(accessToken, config.munchkinId)
-  const unsuccessfulJobInfo = checkEventStatusViaSchemaMatching(event, fieldSchemaMapping)
+  const fieldSchemaMapping = await getFieldSchemaMap(accessToken, config.munchkinId);
+  const unsuccessfulJobInfo = checkEventStatusViaSchemaMatching(event, fieldSchemaMapping);
   const mismatchJobIdArray = Object.keys(unsuccessfulJobInfo);
   const dataTypeMismatchKeys = mismatchJobIdArray.map((strJobId) => parseInt(strJobId, 10));
-  reasons = { ...unsuccessfulJobInfo }
+  reasons = { ...unsuccessfulJobInfo };
 
-  const filteredEvents = input.filter(item => !dataTypeMismatchKeys.includes(item.metadata.job_id));
+  const filteredEvents = input.filter(
+    (item) => !dataTypeMismatchKeys.includes(item.metadata.job_id),
+  );
   // create a map of job_id and data sent from server
   // {<jobId>: '<param-val1>,<param-val2>'}
   filteredEvents.forEach((i) => {
@@ -114,7 +108,7 @@ const responseHandler = async (event, type) => {
   });
 
   // match marketo response data with received data from server
-  for (const element of responseArr) {
+  for (const element of jobStatusArr) {
     // split response by comma but ignore commas inside double quotes
     const elemArr = element.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
     // ref :
@@ -122,7 +116,7 @@ const responseHandler = async (event, type) => {
     const reasonMessage = elemArr.pop(); // get the column named "Import Failure Reason"
     for (const [key, val] of Object.entries(data)) {
       // joining the parameter values sent from marketo match it with received data from server
-      if (val === `${elemArr.map(item => item.replace(/"/g, '')).join(',')}`) {
+      if (val === `${elemArr.map((item) => item.replace(/"/g, '')).join(',')}`) {
         // add job keys if warning/failure
         if (!unsuccessfulJobIdsArr.includes(key)) {
           unsuccessfulJobIdsArr.push(key);

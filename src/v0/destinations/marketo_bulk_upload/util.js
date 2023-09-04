@@ -15,15 +15,13 @@ const {
   THROTTLED_CODES,
   POLL_ACTIVITY,
   UPLOAD_FILE,
-  JOB_STATUS_ACTIVITY,
   FETCH_ACCESS_TOKEN,
   POLL_STATUS_ERR_MSG,
   FILE_UPLOAD_ERR_MSG,
-  FETCH_FAILURE_JOB_STATUS_ERR_MSG,
-  FETCH_WARNING_JOB_STATUS_ERR_MSG,
   ACCESS_TOKEN_FETCH_ERR_MSG,
 } = require('./config');
 const Cache = require('../../util/cache');
+const logger = require('../../../logger');
 
 const { AUTH_CACHE_TTL } = require('../../util/constant');
 
@@ -44,7 +42,7 @@ const hydrateStatusForServer = (statusCode, context) => {
   return status;
 };
 
-const getAccessTokenCacheKey = (config) => {
+const getAccessTokenCacheKey = (config = {}) => {
   const { munchkinId, clientId, clientSecret } = config;
   return `${munchkinId}-${clientId}-${clientSecret}`;
 };
@@ -89,7 +87,18 @@ const handleCommonErrorResponse = (apiCallResult, OpErrorMessage, OpActivity, co
       (errorObj) => errorObj.code === '601' || errorObj.code === '602',
     )
   ) {
+    // Special handling for 601 and 602 error codes for access token
     authCache.del(getAccessTokenCacheKey(config));
+    if (apiCallResult.response?.errors.some((errorObj) => errorObj.code === '601')) {
+      throw new AbortedError(
+        `[${OpErrorMessage}]Error message: ${apiCallResult.response?.errors[0]?.message}`,
+      );
+    }
+    if (apiCallResult.response?.errors.some((errorObj) => errorObj.code === '602')) {
+      throw new RetryableError(
+        `[${OpErrorMessage}]Error message: ${apiCallResult.response?.errors[0]?.message}`,
+      );
+    }
   }
   if (
     apiCallResult.response?.errors?.length > 0 &&
@@ -110,14 +119,20 @@ const handleCommonErrorResponse = (apiCallResult, OpErrorMessage, OpActivity, co
       status: 429,
       state: 'Retryable',
     });
-    throw new ThrottledError(apiCallResult.response?.errors[0]?.message || OpErrorMessage, 500);
+    throw new RetryableError(
+      `[${OpErrorMessage}]Error message: ${apiCallResult.response?.errors[0]?.message}`,
+      500,
+    );
   }
   // by default every thing will be retried
   stats.increment(OpActivity, {
     status: 500,
     state: 'Retryable',
   });
-  throw new RetryableError(apiCallResult.response?.errors[0]?.message || OpErrorMessage, 500);
+  throw new RetryableError(
+    `[${OpErrorMessage}]Error message: ${apiCallResult.response?.errors[0]?.message}`,
+    500,
+  );
 };
 
 const getAccessTokenURL = (config) => {
@@ -141,7 +156,6 @@ const getAccessToken = async (config) =>
       throw new NetworkError(
         'Could not retrieve authorisation token',
         hydrateStatusForServer(accessTokenResponse.status, FETCH_ACCESS_TOKEN),
-        accessTokenResponse.status,
         {
           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(accessTokenResponse.status),
         },
@@ -234,31 +248,23 @@ const handlePollResponse = (pollStatus, config) => {
   return null;
 };
 
-const handleFetchJobStatusResponse = (resp, type, config) => {
-  if (resp.response?.errors) {
-    if (resp.response?.errors[0]?.code >= 400 && resp.response?.errors[0]?.code <= 499) {
-      stats.increment(JOB_STATUS_ACTIVITY, {
-        status: 400,
-        state: 'Abortable',
-      });
-      throw new AbortedError(resp.response.errors[0]?.message, 400, resp);
-    }
-    if (type === 'fail') {
-      handleCommonErrorResponse(
-        resp,
-        FETCH_FAILURE_JOB_STATUS_ERR_MSG,
-        JOB_STATUS_ACTIVITY,
-        config,
-      );
-    } else {
-      handleCommonErrorResponse(
-        resp,
-        FETCH_WARNING_JOB_STATUS_ERR_MSG,
-        JOB_STATUS_ACTIVITY,
-        config,
-      );
-    }
+const handleFetchJobStatusResponse = (resp, type) => {
+  const marketoResponse = resp.response;
+  const marketoReposnseStatus = resp.status;
+
+  if (!isHttpStatusSuccess(marketoReposnseStatus)) {
+    logger.info('[Network Error]:Failed during fetching job status', { marketoResponse, type });
+    throw new NetworkError(
+      'Unable to fetch job status',
+      hydrateStatusForServer(marketoReposnseStatus, 'During fetching job status'),
+    );
   }
+
+  if (marketoResponse?.success === false) {
+    logger.info('[Application Error]Failed during fetching job status', { marketoResponse, type });
+    throw new RetryableError('Failure during fetching job status', 500, resp);
+  }
+
   /*
   successful response :
   {
@@ -266,22 +272,9 @@ const handleFetchJobStatusResponse = (resp, type, config) => {
     status: 200
   }
 
-*/
-  if (isHttpStatusSuccess(resp.status)) {
-    if (resp.response?.success === false) {
-      throw new RetryableError(JSON.stringify(resp.response?.errors), 500, resp);
-    }
-    stats.increment(JOB_STATUS_ACTIVITY, {
-      status: 200,
-      state: 'Success',
-    });
-    return resp.response;
-  }
-  if (type === 'fail') {
-    throw new AbortedError(FETCH_FAILURE_JOB_STATUS_ERR_MSG, 400, resp);
-  } else {
-    throw new AbortedError(FETCH_WARNING_JOB_STATUS_ERR_MSG, 400, resp);
-  }
+  */
+
+  return marketoResponse;
 };
 
 /**
@@ -296,8 +289,6 @@ const handleFetchJobStatusResponse = (resp, type, config) => {
  * @returns {object} - An object containing the importId, successfulJobs, and unsuccessfulJobs.
  */
 const handleFileUploadResponse = (resp, successfulJobs, unsuccessfulJobs, requestTime, config) => {
-  const importId = null;
-
   /*
     For unsuccessful response
     {
@@ -312,12 +303,15 @@ const handleFileUploadResponse = (resp, successfulJobs, unsuccessfulJobs, reques
     }
    */
   if (resp.response?.errors) {
-    if (resp.response?.errors[0]?.code === '1003' || resp.response?.errors[0]?.code === '615') {
+    if (resp.response?.errors[0]?.code === '1003') {
       stats.increment(UPLOAD_FILE, {
         status: 500,
         state: 'Retryable',
       });
-      throw new RetryableError(resp.response.errors[0]?.message || FILE_UPLOAD_ERR_MSG, 500);
+      throw new RetryableError(
+        `[${FILE_UPLOAD_ERR_MSG}]:Error Message ${resp.response.errors[0]?.message}`,
+        500,
+      );
     } else {
       handleCommonErrorResponse(resp, FILE_UPLOAD_ERR_MSG, UPLOAD_FILE, config);
     }
@@ -352,7 +346,7 @@ const handleFileUploadResponse = (resp, successfulJobs, unsuccessfulJobs, reques
     return { importId, successfulJobs, unsuccessfulJobs };
   }
   // if neither successful, nor the error message is appropriate sending importId as default null
-  return { importId, successfulJobs, unsuccessfulJobs };
+  return { importId: null, successfulJobs, unsuccessfulJobs };
 };
 
 /**
@@ -381,7 +375,11 @@ const getFieldSchemaMap = async (accessToken, munchkinId) => {
   );
 
   if (fieldSchemaMapping.response.errors) {
-    handleCommonErrorResponse(fieldSchemaMapping);
+    handleCommonErrorResponse(
+      fieldSchemaMapping,
+      'Error while fetching Marketo Field Schema',
+      'FieldSchemaMapping',
+    );
   }
   if (
     fieldSchemaMapping.response?.success &&

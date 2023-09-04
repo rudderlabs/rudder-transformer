@@ -19,13 +19,14 @@ const {
   NetworkError,
   ConfigurationError,
   RetryableError,
-  PlatformError,
+  TransformationError,
 } = require('../../util/errorTypes');
+const { client } = require('../../../util/errorNotifier');
 const stats = require('../../../util/stats');
 
 const fetchFieldSchemaNames = async (config, accessToken) => {
   const fieldSchemaMapping = await getFieldSchemaMap(accessToken, config.munchkinId);
-  if (Object.keys(fieldSchemaMapping)?.length > 0) {
+  if (Object.keys(fieldSchemaMapping).length > 0) {
     const fieldSchemaNames = Object.keys(fieldSchemaMapping);
     return { fieldSchemaNames };
   }
@@ -148,7 +149,6 @@ const getFileData = async (inputEvents, config, headerArr) => {
 };
 
 const getImportID = async (input, config, accessToken, csvHeader) => {
-  const importId = null; // by default importId is null
   let readStream;
   let successfulJobs;
   let unsuccessfulJobs;
@@ -159,7 +159,14 @@ const getImportID = async (input, config, accessToken, csvHeader) => {
       csvHeader,
     ));
   } catch (err) {
-    throw new PlatformError('Error while creating file', 500, err);
+    client.notify(err, `Marketo File Upload: Error while creating file: ${err.message}`, {
+      config,
+      csvHeader,
+    });
+    throw new TransformationError(
+      `Marketo File Upload: Error while creating file: ${err.message}`,
+      500,
+    );
   }
 
   const formReq = new FormData();
@@ -197,11 +204,14 @@ const getImportID = async (input, config, accessToken, csvHeader) => {
     stats.counter('marketo_bulk_upload_upload_file_succJobs', successfulJobs.length);
     stats.counter('marketo_bulk_upload_upload_file_unsuccJobs', unsuccessfulJobs.length);
     if (!isHttpStatusSuccess(resp.status)) {
-      throw new NetworkError('Unable to upload file', hydrateStatusForServer(resp.status, 'During fetching poll status'),);
+      throw new NetworkError(
+        'Unable to upload file',
+        hydrateStatusForServer(resp.status, 'During fetching poll status'),
+      );
     }
     return handleFileUploadResponse(resp, successfulJobs, unsuccessfulJobs, requestTime, config);
   }
-  return { importId, successfulJobs, unsuccessfulJobs };
+  return { importId: null, successfulJobs, unsuccessfulJobs };
 };
 
 /**
@@ -219,11 +229,6 @@ const responseHandler = async (input, config) => {
   }
   */
   const { fieldSchemaNames } = await fetchFieldSchemaNames(config, accessToken);
-  if (fieldSchemaNames.length <= 0) {
-    throw new ConfigurationError(
-      'Could not find any field schema corresponding to your marketo account. Aborting.',
-    );
-  }
   const headerForCsv = getHeaderFields(config, fieldSchemaNames);
   if (Object.keys(headerForCsv).length === 0) {
     throw new ConfigurationError(
@@ -239,12 +244,13 @@ const responseHandler = async (input, config) => {
 
   // if upload is successful
   if (importId) {
+    const csvHeader = headerForCsv.toString();
+    const metadata = { successfulJobs, unsuccessfulJobs, csvHeader };
     const response = {
       statusCode: 200,
       importId,
+      metadata
     };
-    const csvHeader = headerForCsv.toString();
-    response.metadata = { successfulJobs, unsuccessfulJobs, csvHeader };
     return response;
   }
   // if importId is returned null
@@ -254,7 +260,7 @@ const responseHandler = async (input, config) => {
   });
   return {
     statusCode: 500,
-    FailedReason: 'No import id received',
+    FailedReason: '[Marketo File upload]: No import id received',
   };
 };
 const processFileData = async (event) => {

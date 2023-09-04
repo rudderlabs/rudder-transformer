@@ -28,15 +28,13 @@ const getPollStatus = async (event) => {
       feature: 'transformation',
     },
   );
-  const POLL_STATUS_ERR_MSG = 'Could not poll status';
-
   if (!isHttpStatusSuccess(pollStatus.status)) {
     stats.counter(POLL_ACTIVITY, 1, {
       status: pollStatus.status,
       state: 'Retryable',
     });
     throw new NetworkError(
-      POLL_STATUS_ERR_MSG,
+      'Could not poll status',
       hydrateStatusForServer(pollStatus.status, 'During fetching poll status'),
     );
   }
@@ -95,17 +93,16 @@ const responseHandler = async (event) => {
         HasWarning: false,
       };
     }
-    // if status is not complete, importing or queued then it is failed
-    return {
-      Complete: false,
-      statusCode: 500,
-      hasFailed: false,
-      InProgress: false,
-      HasWarning: false,
-      Error: message || 'Marketo Poll Status Failed'
-
-    };
-
+    if (status === 'Failed') {
+      return {
+        Complete: false,
+        statusCode: 500,
+        hasFailed: false,
+        InProgress: false,
+        HasWarning: false,
+        Error: message || 'Marketo Poll Status Failed',
+      };
+    }
   }
   // when pollResp is null
   return {
@@ -114,7 +111,7 @@ const responseHandler = async (event) => {
     hasFailed: false,
     InProgress: false,
     HasWarning: false,
-    Error: 'No poll response received from Marketo'
+    Error: 'No poll response received from Marketo',
   };
 };
 

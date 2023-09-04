@@ -221,7 +221,7 @@ const handlePollResponse = (pollStatus, config) => {
     }
   */
   if (pollStatus.response?.success) {
-    stats.counter(POLL_ACTIVITY, {
+    stats.counter(POLL_ACTIVITY, 1, {
       status: 200,
       state: 'Success',
     });

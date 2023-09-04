@@ -3,7 +3,7 @@
 const { getAccessToken } = require('./util');
 const { JOB_STATUS_ACTIVITY } = require('./config');
 const { handleHttpRequest } = require('../../../adapters/network');
-const { AbortedError, PlatformError } = require('../../util/errorTypes');
+const { PlatformError, RetryableError } = require('../../util/errorTypes');
 const stats = require('../../../util/stats');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { handleFetchJobStatusResponse, getFieldSchemaMap, checkEventStatusViaSchemaMatching } = require('./util');
@@ -46,9 +46,9 @@ const getJobsStatus = async (event, type, accessToken) => {
       state: 'Retryable',
     });
     if (type === 'fail') {
-      throw new AbortedError(FETCH_FAILURE_JOB_STATUS_ERR_MSG, 500, resp);
+      throw new RetryableError(FETCH_FAILURE_JOB_STATUS_ERR_MSG, 500, resp);
     } else {
-      throw new AbortedError(FETCH_WARNING_JOB_STATUS_ERR_MSG, 500, resp);
+      throw new RetryableError(FETCH_WARNING_JOB_STATUS_ERR_MSG, 500, resp);
     }
   }
 };

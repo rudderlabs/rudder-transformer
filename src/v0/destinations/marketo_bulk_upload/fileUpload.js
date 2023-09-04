@@ -7,7 +7,7 @@ const {
   handleFileUploadResponse,
   getFieldSchemaMap,
 } = require('./util');
-const { isHttpStatusSuccess } = require('../../util');
+const { isHttpStatusSuccess, hydrateStatusForServer } = require('../../util');
 const { MARKETO_FILE_SIZE, UPLOAD_FILE } = require('./config');
 const {
   getHashFromArray,
@@ -19,7 +19,6 @@ const {
   NetworkError,
   ConfigurationError,
   RetryableError,
-  UnauthorizedError,
   PlatformError,
 } = require('../../util/errorTypes');
 const stats = require('../../../util/stats');
@@ -198,7 +197,7 @@ const getImportID = async (input, config, accessToken, csvHeader) => {
     stats.counter('marketo_bulk_upload_upload_file_succJobs', successfulJobs.length);
     stats.counter('marketo_bulk_upload_upload_file_unsuccJobs', unsuccessfulJobs.length);
     if (!isHttpStatusSuccess(resp.status)) {
-      throw new NetworkError('Unable to upload file', resp.status);
+      throw new NetworkError('Unable to upload file', hydrateStatusForServer(resp.status, 'During fetching poll status'),);
     }
     return handleFileUploadResponse(resp, successfulJobs, unsuccessfulJobs, requestTime, config);
   }

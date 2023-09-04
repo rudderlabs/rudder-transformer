@@ -44,8 +44,6 @@ const getPollStatus = async (event) => {
 };
 
 const responseHandler = async (event) => {
-  let error;
-  let response = {};
   const pollResp = await getPollStatus(event);
   // Server expects :
   /**
@@ -75,9 +73,9 @@ const responseHandler = async (event) => {
     // As marketo lead import API or bulk API does not support record level error response we are considering
     // file level errors only.
     // ref: https://nation.marketo.com/t5/ideas/support-error-code-in-record-level-in-lead-bulk-api/idi-p/262191
-    const { status, numOfRowsFailed, numOfRowsWithWarning } = pollResp.result[0];
+    const { status, numOfRowsFailed, numOfRowsWithWarning, message } = pollResp.result[0];
     if (status === 'Complete') {
-      response = {
+      const response = {
         Complete: true,
         statusCode: 200,
         InProgress: false,
@@ -85,29 +83,39 @@ const responseHandler = async (event) => {
         FailedJobURLs: numOfRowsFailed > 0 ? '/getFailedJobs' : undefined,
         HasWarning: numOfRowsWithWarning > 0,
         WarningJobURLs: numOfRowsWithWarning > 0 ? '/getWarningJobs' : undefined,
-        error,
       };
-    } else if (status === 'Importing' || status === 'Queued') {
-      response = {
+      return removeUndefinedValues(response);
+    }
+    if (status === 'Importing' || status === 'Queued') {
+      return {
         Complete: false,
         statusCode: 500,
         hasFailed: false,
         InProgress: true,
         HasWarning: false,
-        error,
-      };
-    } else {
-      response = {
-        Complete: false,
-        statusCode: 500,
-        hasFailed: false,
-        InProgress: false,
-        HasWarning: false,
-        error,
       };
     }
+    // if status is not complete, importing or queued then it is failed
+    return {
+      Complete: false,
+      statusCode: 500,
+      hasFailed: false,
+      InProgress: false,
+      HasWarning: false,
+      Error: message || 'Marketo Poll Status Failed'
+
+    };
+
   }
-  return removeUndefinedValues(response);
+  // when pollResp is null
+  return {
+    Complete: false,
+    statusCode: 500,
+    hasFailed: false,
+    InProgress: false,
+    HasWarning: false,
+    Error: 'No poll response received from Marketo'
+  };
 };
 
 const processPolling = async (event) => {

@@ -123,7 +123,6 @@ export default class UserTransformService {
             ),
           );
           stats.counter('user_transform_errors', eventsToProcess.length, {
-            transformationVersionId,
             transformationId: eventsToProcess[0]?.metadata?.transformationId,
             workspaceId: eventsToProcess[0]?.metadata?.workspaceId,
             status,
@@ -131,7 +130,6 @@ export default class UserTransformService {
           });
         } finally {
           stats.timing('user_transform_request_latency', userFuncStartTime, {
-            transformationVersionId,
             workspaceId: eventsToProcess[0]?.metadata?.workspaceId,
             transformationId: eventsToProcess[0]?.metadata?.transformationId,
             ...metaTags,

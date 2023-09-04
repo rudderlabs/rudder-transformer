@@ -179,7 +179,7 @@
     ],
     "batched": false,
     "statusCode": 400,
-    "error": "Group Key is not present. Aborting message",
+    "error": "Group Key is not present. Please ensure that the group key is included in the payload as configured in the `Group Key Settings` in destination",
     "statTags": {
       "errorCategory": "dataValidation",
       "errorType": "instrumentation"

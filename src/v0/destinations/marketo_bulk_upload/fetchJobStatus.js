@@ -1,9 +1,8 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-prototype-builtins */
 const { getAccessToken } = require('./util');
-const { JOB_STATUS_ACTIVITY } = require('./config');
 const { handleHttpRequest } = require('../../../adapters/network');
-const { PlatformError, RetryableError } = require('../../util/errorTypes');
+const { PlatformError } = require('../../util/errorTypes');
 const stats = require('../../../util/stats');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const {

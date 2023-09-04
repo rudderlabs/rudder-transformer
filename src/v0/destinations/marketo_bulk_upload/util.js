@@ -1,6 +1,5 @@
 const { handleHttpRequest } = require('../../../adapters/network');
 const {
-  ThrottledError,
   AbortedError,
   RetryableError,
   NetworkError,

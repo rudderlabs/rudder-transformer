@@ -8,7 +8,7 @@
       },
       {
         "statusCode": 400,
-        "error": "Could not fetch warning job status"
+        "error": "Unable to fetch job status"
       }
     ]
   },
@@ -21,7 +21,7 @@
       },
       {
         "statusCode": 400,
-        "error": "Could not fetch failure job status"
+        "error": "Unable to fetch job status"
       }
     ]
   }

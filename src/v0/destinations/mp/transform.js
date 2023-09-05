@@ -130,6 +130,14 @@ const processRevenueEvents = (message, destination, revenueValue) => {
   return responseBuilderSimple(payload, message, 'revenue', destination.Config);
 };
 
+/**
+ * This function is used to process the incremental properties
+ * ref :- https://developer.mixpanel.com/reference/profile-numerical-add
+ * @param {*} message
+ * @param {*} destination
+ * @param {*} propIncrements
+ * @returns
+ */
 const processIncrementalProperties = (message, destination, propIncrements) => {
   const payload = {
     $add: {},
@@ -202,7 +210,7 @@ const processTrack = (message, destination) => {
     returnValue.push(processRevenueEvents(message, destination, revenue));
   }
 
-  if (destination.Config.propIncrements) {
+  if (Array.isArray(destination.Config.propIncrements)) {
     const propIncrements = destination.Config.propIncrements.map((item) => item.property);
     const response = processIncrementalProperties(message, destination, propIncrements);
     if (response) {

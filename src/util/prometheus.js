@@ -417,7 +417,7 @@ class Prometheus {
         name: 'marketo_bulk_upload_polling',
         help: 'marketo_bulk_upload_polling',
         type: 'counter',
-        labelNames: ['status', 'state'],
+        labelNames: ['status', 'state', 'requestTime'],
       },
       {
         name: 'marketo_fetch_token',
@@ -523,6 +523,12 @@ class Prometheus {
         help: 'invalid_shopify_event',
         type: 'counter',
         labelNames: ['writeKey', 'source', 'shopifyTopic'],
+      },
+      {
+        name: 'outgoing_request_count',
+        help: 'Outgoing HTTP requests count',
+        type: 'counter',
+        labelNames: ['feature', 'destType', 'endpointPath', 'success', 'statusCode'],
       },
 
       // Gauges
@@ -741,6 +747,12 @@ class Prometheus {
         labelNames: [],
       },
       {
+        name: 'braze_partial_failure',
+        help: 'braze_partial_failure',
+        type: 'counter',
+        labelNames: [],
+      },
+      {
         name: 'braze_deduped_users_count',
         help: 'braze deduped users count',
         type: 'counter',
@@ -763,6 +775,18 @@ class Prometheus {
         help: 'braze look-up failure count',
         type: 'counter',
         labelNames: ['http_status', 'destination_id'],
+      },
+      {
+        name: 'marketo_bulk_upload_upload_file_succJobs',
+        help: 'marketo_bulk_upload_upload_file_succJobs',
+        type: 'counter',
+        labelNames: [],
+      },
+      {
+        name: 'marketo_bulk_upload_upload_file_unsuccJobs',
+        help: 'marketo_bulk_upload_upload_file_unsuccJobs',
+        type: 'counter',
+        labelNames: [],
       },
       {
         name: 'braze_lookup_time',
@@ -849,6 +873,43 @@ class Prometheus {
         labelNames: ['processSessions'],
         buckets: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200],
       },
+      {
+        name: 'marketo_bulk_upload_create_header_time',
+        help: 'marketo_bulk_upload_create_header_time',
+        type: 'histogram',
+        labelNames: [],
+      },
+      {
+        name: 'marketo_bulk_upload_fetch_job_time',
+        help: 'marketo_bulk_upload_fetch_job_time',
+        type: 'histogram',
+        labelNames: [],
+      },
+      {
+        name: 'marketo_bulk_upload_fetch_job_create_response_time',
+        help: 'marketo_bulk_upload_fetch_job_create_response_time',
+        type: 'histogram',
+        labelNames: [],
+      },
+      {
+        name: 'marketo_bulk_upload_create_file_time',
+        help: 'marketo_bulk_upload_create_file_time',
+        type: 'histogram',
+        labelNames: [],
+      },
+      {
+        name: 'marketo_bulk_upload_upload_file_time',
+        help: 'marketo_bulk_upload_upload_file_time',
+        type: 'histogram',
+        labelNames: [],
+      },
+      {
+        name: 'marketo_bulk_upload_create_csvloop_time',
+        help: 'marketo_bulk_upload_create_csvloop_time',
+        type: 'histogram',
+        labelNames: [],
+      },
+
     ];
 
     metrics.forEach((metric) => {

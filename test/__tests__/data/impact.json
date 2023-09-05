@@ -43,7 +43,7 @@
       "destination": {
         "Config": {
           "accountSID": "dfsgertrtff3erfc34rfwf",
-          "apiKey": "fghsdfgegvcergfvfdfsag",
+          "apiKey": "dummyApiKey",
           "campaignId": "23224",
           "impactAppId": "2323",
           "eventTypeId": "56446",
@@ -97,7 +97,7 @@
       "params": {},
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded",
-        "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn"
+        "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpkdW1teUFwaUtleQ=="
       },
       "version": "1",
       "endpoint": "https://trkapi.impact.com/PageLoad"
@@ -147,7 +147,7 @@
       "destination": {
         "Config": {
           "accountSID": "dfsgertrtff3erfc34rfwf",
-          "apiKey": "fghsdfgegvcergfvfdfsag",
+          "apiKey": "dummyApiKey",
           "campaignId": "23224",
           "impactAppId": "2323",
           "eventTypeId": "56446",
@@ -218,7 +218,7 @@
       "destination": {
         "Config": {
           "accountSID": "",
-          "apiKey": "fghsdfgegvcergfvfdfsag",
+          "apiKey": "dummyApiKey",
           "campaignId": "23224",
           "impactAppId": "2323",
           "eventTypeId": "56446",
@@ -400,7 +400,7 @@
         "event": "Order Completed",
         "type": "track",
         "sentAt": "2021-01-03T17:02:53.195Z",
-        "userId": "Ujjwalab",
+        "userId": "Testab",
         "channel": "web",
         "properties": {
           "orderId": "9217374917471",
@@ -447,7 +447,7 @@
       "destination": {
         "Config": {
           "accountSID": "dfsgertrtff3erfc34rfwf",
-          "apiKey": "fghsdfgegvcergfvfdfsag",
+          "apiKey": "dummyApiKey",
           "campaignId": "23224",
           "impactAppId": "2323",
           "eventTypeId": "56446",
@@ -487,7 +487,7 @@
             "UserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
             "AppPackage": "1.0.0",
             "CampaignId": "23224",
-            "CustomerId": "Ujjwalab",
+            "CustomerId": "Testab",
             "ItemBrand1": "zara",
             "ItemPrice1": 332,
             "EventTypeId": "56446",
@@ -507,7 +507,7 @@
         "params": {},
         "headers": {
           "Content-Type": "application/x-www-form-urlencoded",
-          "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn"
+          "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpkdW1teUFwaUtleQ=="
         },
         "version": "1",
         "endpoint": "https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions"
@@ -521,7 +521,7 @@
         "event": "Product Purchased",
         "type": "track",
         "sentAt": "2021-01-03T17:02:53.195Z",
-        "userId": "Ujjwalab",
+        "userId": "Testab",
         "channel": "web",
         "properties": {
           "orderId": "9217374917471",
@@ -568,7 +568,7 @@
       "destination": {
         "Config": {
           "accountSID": "dfsgertrtff3erfc34rfwf",
-          "apiKey": "fghsdfgegvcergfvfdfsag",
+          "apiKey": "dummyApiKey",
           "campaignId": "23224",
           "impactAppId": "2323",
           "eventTypeId": "56446",
@@ -603,7 +603,7 @@
             "UserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
             "AppPackage": "1.0.0",
             "CampaignId": "23224",
-            "CustomerId": "Ujjwalab",
+            "CustomerId": "Testab",
             "ItemBrand1": "zara",
             "ItemPrice1": 332,
             "EventTypeId": "56446",
@@ -625,7 +625,7 @@
         "params": {},
         "headers": {
           "Content-Type": "application/x-www-form-urlencoded",
-          "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn"
+          "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpkdW1teUFwaUtleQ=="
         },
         "version": "1",
         "endpoint": "https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions"
@@ -639,7 +639,7 @@
         "event": "Order Completed",
         "type": "track",
         "sentAt": "2021-01-03T17:02:53.195Z",
-        "userId": "Ujjwalab",
+        "userId": "Testab",
         "channel": "web",
         "properties": {
           "orderId": "9217374917471",
@@ -686,7 +686,7 @@
       "destination": {
         "Config": {
           "accountSID": "dfsgertrtff3erfc34rfwf",
-          "apiKey": "fghsdfgegvcergfvfdfsag",
+          "apiKey": "dummyApiKey",
           "campaignId": "23224",
           "impactAppId": "2323",
           "eventTypeId": "56446",
@@ -726,7 +726,7 @@
             "UserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
             "AppPackage": "1.0.0",
             "CampaignId": "23224",
-            "CustomerId": "Ujjwalab",
+            "CustomerId": "Testab",
             "ItemBrand1": "zara",
             "ItemCategory1": "wearables",
             "ItemPrice1": 332,
@@ -747,7 +747,7 @@
         "params": {},
         "headers": {
           "Content-Type": "application/x-www-form-urlencoded",
-          "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn"
+          "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpkdW1teUFwaUtleQ=="
         },
         "version": "1",
         "endpoint": "https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions"
@@ -761,7 +761,7 @@
         "event": "Order Completed",
         "type": "track",
         "sentAt": "2021-01-03T17:02:53.195Z",
-        "userId": "Ujjwalab",
+        "userId": "Testab",
         "channel": "web",
         "properties": {
           "orderId": "9217374917471",
@@ -809,7 +809,7 @@
       "destination": {
         "Config": {
           "accountSID": "dfsgertrtff3erfc34rfwf",
-          "apiKey": "fghsdfgegvcergfvfdfsag",
+          "apiKey": "dummyApiKey",
           "campaignId": "23224",
           "impactAppId": "2323",
           "eventTypeId": "56446",
@@ -850,7 +850,7 @@
             "UserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
             "AppPackage": "1.0.0",
             "CampaignId": "23224",
-            "CustomerId": "Ujjwalab",
+            "CustomerId": "Testab",
             "ItemBrand1": "zara",
             "ItemCategory1": "wearables",
             "ItemPrice1": 332,
@@ -871,7 +871,7 @@
         "params": {},
         "headers": {
           "Content-Type": "application/x-www-form-urlencoded",
-          "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn"
+          "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpkdW1teUFwaUtleQ=="
         },
         "version": "1",
         "endpoint": "https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions"
@@ -885,7 +885,7 @@
         "event": "Order Completed",
         "type": "track",
         "sentAt": "2021-01-03T17:02:53.195Z",
-        "userId": "Ujjwalab",
+        "userId": "Testab",
         "channel": "web",
         "properties": {
           "orderId": "9217374917471",
@@ -937,7 +937,7 @@
       "destination": {
         "Config": {
           "accountSID": "dfsgertrtff3erfc34rfwf",
-          "apiKey": "fghsdfgegvcergfvfdfsag",
+          "apiKey": "dummyApiKey",
           "campaignId": "23224",
           "impactAppId": "2323",
           "eventTypeId": "56446",
@@ -981,7 +981,7 @@
             "UserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
             "AppPackage": "1.0.0",
             "CampaignId": "23224",
-            "CustomerId": "Ujjwalab",
+            "CustomerId": "Testab",
             "ItemBrand1": "zara",
             "ItemPrice1": 332,
             "DeviceOsVer": "9",
@@ -1003,7 +1003,7 @@
         "params": {},
         "headers": {
           "Content-Type": "application/x-www-form-urlencoded",
-          "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn"
+          "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpkdW1teUFwaUtleQ=="
         },
         "version": "1",
         "endpoint": "https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions"
@@ -1017,7 +1017,7 @@
         "event": "Order Completed",
         "type": "track",
         "sentAt": "2021-01-03T17:02:53.195Z",
-        "userId": "Ujjwalab",
+        "userId": "Testab",
         "channel": "web",
         "properties": {
           "orderId": "9217374917471",
@@ -1069,7 +1069,7 @@
       "destination": {
         "Config": {
           "accountSID": "dfsgertrtff3erfc34rfwf",
-          "apiKey": "fghsdfgegvcergfvfdfsag",
+          "apiKey": "dummyApiKey",
           "campaignId": "23224",
           "impactAppId": "2323",
           "eventTypeId": "56446",
@@ -1113,7 +1113,7 @@
             "UserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
             "AppPackage": "1.0.0",
             "CampaignId": "23224",
-            "CustomerId": "Ujjwalab",
+            "CustomerId": "Testab",
             "ItemBrand1": "zara",
             "ItemPrice1": 332,
             "DeviceOsVer": "15.2",
@@ -1135,7 +1135,7 @@
         "params": {},
         "headers": {
           "Content-Type": "application/x-www-form-urlencoded",
-          "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn"
+          "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpkdW1teUFwaUtleQ=="
         },
         "version": "1",
         "endpoint": "https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions"
@@ -1186,7 +1186,7 @@
       "destination": {
         "Config": {
           "accountSID": "dfsgertrtff3erfc34rfwf",
-          "apiKey": "fghsdfgegvcergfvfdfsag",
+          "apiKey": "dummyApiKey",
           "campaignId": "23224",
           "impactAppId": "2323",
           "eventTypeId": "56446",
@@ -1240,7 +1240,7 @@
       "params": {},
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded",
-        "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn"
+        "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpkdW1teUFwaUtleQ=="
       },
       "version": "1",
       "endpoint": "https://trkapi.impact.com/PageLoad"
@@ -1290,7 +1290,7 @@
       "destination": {
         "Config": {
           "accountSID": "dfsgertrtff3erfc34rfwf",
-          "apiKey": "fghsdfgegvcergfvfdfsag",
+          "apiKey": "dummyApiKey",
           "campaignId": "23224",
           "impactAppId": "2323",
           "eventTypeId": "56446",
@@ -1344,7 +1344,7 @@
       "params": {},
       "headers": {
         "Content-Type": "application/x-www-form-urlencoded",
-        "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn"
+        "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpkdW1teUFwaUtleQ=="
       },
       "version": "1",
       "endpoint": "https://trkapi.impact.com/PageLoad"
@@ -1357,7 +1357,7 @@
         "event": "Order Completed",
         "type": "group",
         "sentAt": "2021-01-03T17:02:53.195Z",
-        "userId": "Ujjwalab",
+        "userId": "Testab",
         "channel": "web",
         "properties": {
           "orderId": "9217374917471",
@@ -1404,7 +1404,7 @@
       "destination": {
         "Config": {
           "accountSID": "dfsgertrtff3erfc34rfwf",
-          "apiKey": "fghsdfgegvcergfvfdfsag",
+          "apiKey": "dummyApiKey",
           "campaignId": "23224",
           "impactAppId": "2323",
           "eventTypeId": "56446",
@@ -1440,7 +1440,7 @@
         "event": "Order Completed",
         "type": "",
         "sentAt": "2021-01-03T17:02:53.195Z",
-        "userId": "Ujjwalab",
+        "userId": "Testab",
         "channel": "web",
         "properties": {
           "orderId": "9217374917471",
@@ -1487,7 +1487,7 @@
       "destination": {
         "Config": {
           "accountSID": "dfsgertrtff3erfc34rfwf",
-          "apiKey": "fghsdfgegvcergfvfdfsag",
+          "apiKey": "dummyApiKey",
           "campaignId": "23224",
           "impactAppId": "2323",
           "eventTypeId": "56446",
@@ -1523,7 +1523,7 @@
         "event": "Order Completed",
         "type": "track",
         "sentAt": "2021-01-03T17:02:53.195Z",
-        "userId": "Ujjwalab",
+        "userId": "Testab",
         "channel": "web",
         "properties": {
           "orderId": "9217374917471",
@@ -1566,7 +1566,7 @@
       "destination": {
         "Config": {
           "accountSID": "dfsgertrtff3erfc34rfwf",
-          "apiKey": "fghsdfgegvcergfvfdfsag",
+          "apiKey": "dummyApiKey",
           "campaignId": "23224",
           "impactAppId": "2323",
           "eventTypeId": "56446",
@@ -1606,7 +1606,7 @@
             "UserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
             "AppPackage": "1.0.0",
             "CampaignId": "23224",
-            "CustomerId": "Ujjwalab",
+            "CustomerId": "Testab",
             "ItemBrand1": "zara",
             "ItemPrice1": 332,
             "EventTypeId": "56446",
@@ -1628,7 +1628,7 @@
         "params": {},
         "headers": {
           "Content-Type": "application/x-www-form-urlencoded",
-          "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn"
+          "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpkdW1teUFwaUtleQ=="
         },
         "version": "1",
         "endpoint": "https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions"
@@ -1642,7 +1642,7 @@
         "event": "Product Ordered",
         "type": "track",
         "sentAt": "2021-01-03T17:02:53.195Z",
-        "userId": "Ujjwalab",
+        "userId": "Testab",
         "channel": "web",
         "properties": {
           "orderId": "9217374917471",
@@ -1694,7 +1694,7 @@
       "destination": {
         "Config": {
           "accountSID": "dfsgertrtff3erfc34rfwf",
-          "apiKey": "fghsdfgegvcergfvfdfsag",
+          "apiKey": "dummyApiKey",
           "campaignId": "23224",
           "impactAppId": "2323",
           "eventTypeId": "56446",
@@ -1737,7 +1737,7 @@
             "UserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
             "AppPackage": "1.0.0",
             "CampaignId": "23224",
-            "CustomerId": "Ujjwalab",
+            "CustomerId": "Testab",
             "ItemBrand1": "zara",
             "ItemPrice1": 332,
             "DeviceOsVer": "15.2",
@@ -1759,7 +1759,7 @@
         "params": {},
         "headers": {
           "Content-Type": "application/x-www-form-urlencoded",
-          "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn"
+          "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpkdW1teUFwaUtleQ=="
         },
         "version": "1",
         "endpoint": "https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions"
@@ -1782,7 +1782,7 @@
             "UserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
             "AppPackage": "1.0.0",
             "CampaignId": "23224",
-            "CustomerId": "Ujjwalab",
+            "CustomerId": "Testab",
             "ItemBrand1": "zara",
             "ItemPrice1": 332,
             "DeviceOsVer": "15.2",
@@ -1804,7 +1804,7 @@
         "params": {},
         "headers": {
           "Content-Type": "application/x-www-form-urlencoded",
-          "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn"
+          "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpkdW1teUFwaUtleQ=="
         },
         "version": "1",
         "endpoint": "https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions"

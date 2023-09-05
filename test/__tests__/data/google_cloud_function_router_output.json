@@ -4,7 +4,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://us-central1-big-query-integration-poc.cloudfunctions.net/rohitv1",
+      "endpoint": "https://us-central1-big-query-integration-poc.cloudfunctions.net/rudderv1",
       "headers": {
         "content-type": "application/json",
         "ApiKey": "Basic YXBpS2V5OnJhbmRvbUFQSQ=="
@@ -28,7 +28,7 @@
         "triggerType": "Http",
         "apiKeyId": "randomAPI",
         "enableBatchInput": true,
-        "googleCloudFunctionUrl": "https://us-central1-big-query-integration-poc.cloudfunctions.net/rohitv1",
+        "googleCloudFunctionUrl": "https://us-central1-big-query-integration-poc.cloudfunctions.net/rudderv1",
         "maxBatchSize": "2"
       }
     }

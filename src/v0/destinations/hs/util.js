@@ -334,6 +334,7 @@ const searchContacts = async (message, destination) => {
     after: 0,
   };
 
+  const endpointPath = '/contacts/search';
   if (Config.authorizationType === 'newPrivateAppApi') {
     // Private Apps
     const requestOptions = {
@@ -349,6 +350,7 @@ const searchContacts = async (message, destination) => {
       {
         destType: 'hs',
         feature: 'transformation',
+        endpointPath,
       },
     );
     searchContactsResponse = processAxiosResponse(searchContactsResponse);
@@ -358,6 +360,7 @@ const searchContacts = async (message, destination) => {
     searchContactsResponse = await httpPOST(url, requestData, {
       destType: 'hs',
       feature: 'transformation',
+      endpointPath,
     });
     searchContactsResponse = processAxiosResponse(searchContactsResponse);
   }
@@ -506,6 +509,7 @@ const getExistingData = async (inputs, destination) => {
 
   while (checkAfter) {
     const endpoint = IDENTIFY_CRM_SEARCH_ALL_OBJECTS.replace(':objectType', objectType);
+    const endpointPath = `objects/:objectType/search`;
 
     const url =
       Config.authorizationType === 'newPrivateAppApi'
@@ -516,10 +520,12 @@ const getExistingData = async (inputs, destination) => {
         ? await httpPOST(url, requestData, requestOptions, {
             destType: 'hs',
             feature: 'transformation',
+            endpointPath,
           })
         : await httpPOST(url, requestData, {
             destType: 'hs',
             feature: 'transformation',
+            endpointPath,
           });
     searchResponse = processAxiosResponse(searchResponse);
 

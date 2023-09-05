@@ -4,7 +4,7 @@
     "input": {
       "destination": {
         "Config": {
-          "accessToken": "fuwheirujkvjnkrtgkf",
+          "accessToken": "dummyAccessToken",
           "hashUserProperties": true
         }
       },
@@ -23,7 +23,7 @@
     "input": {
       "destination": {
         "Config": {
-          "accessToken": "fuwheirujkvjnkrtgkf",
+          "accessToken": "dummyAccessToken",
           "hashUserProperties": false
         }
       },
@@ -61,7 +61,7 @@
         "method": "POST",
         "endpoint": "https://business-api.tiktok.com/open_api/v1.3/offline/track/",
         "headers": {
-          "Access-Token": "fuwheirujkvjnkrtgkf",
+          "Access-Token": "dummyAccessToken",
           "Content-Type": "application/json"
         },
         "params": {},
@@ -111,7 +111,7 @@
     "input": {
       "destination": {
         "Config": {
-          "accessToken": "fuwheirujkvjnkrtgkf",
+          "accessToken": "dummyAccessToken",
           "hashUserProperties": true
         }
       },
@@ -140,7 +140,7 @@
         "method": "POST",
         "endpoint": "https://business-api.tiktok.com/open_api/v1.3/offline/track/",
         "headers": {
-          "Access-Token": "fuwheirujkvjnkrtgkf",
+          "Access-Token": "dummyAccessToken",
           "Content-Type": "application/json"
         },
         "params": {},
@@ -176,7 +176,7 @@
     "input": {
       "destination": {
         "Config": {
-          "accessToken": "fuwheirujkvjnkrtgkf",
+          "accessToken": "dummyAccessToken",
           "hashUserProperties": true,
           "eventsToStandard": [
             {
@@ -211,7 +211,7 @@
         "method": "POST",
         "endpoint": "https://business-api.tiktok.com/open_api/v1.3/offline/track/",
         "headers": {
-          "Access-Token": "fuwheirujkvjnkrtgkf",
+          "Access-Token": "dummyAccessToken",
           "Content-Type": "application/json"
         },
         "params": {},
@@ -265,7 +265,7 @@
     "input": {
       "destination": {
         "Config": {
-          "accessToken": "fuwheirujkvjnkrtgkf",
+          "accessToken": "dummyAccessToken",
           "hashUserProperties": true
         }
       },
@@ -312,7 +312,7 @@
         "method": "POST",
         "endpoint": "https://business-api.tiktok.com/open_api/v1.3/offline/track/",
         "headers": {
-          "Access-Token": "fuwheirujkvjnkrtgkf",
+          "Access-Token": "dummyAccessToken",
           "Content-Type": "application/json"
         },
         "params": {},
@@ -367,7 +367,7 @@
     "input": {
       "destination": {
         "Config": {
-          "accessToken": "fuwheirujkvjnkrtgkf",
+          "accessToken": "dummyAccessToken",
           "hashUserProperties": true,
           "eventsToStandard": [
             {
@@ -456,7 +456,7 @@
         "event_set_id": "7211223771099742210",
         "files": {},
         "headers": {
-          "Access-Token": "fuwheirujkvjnkrtgkf",
+          "Access-Token": "dummyAccessToken",
           "Content-Type": "application/json"
         },
         "method": "POST",

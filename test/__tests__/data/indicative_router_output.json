@@ -65,7 +65,7 @@
     ],
     "metadata": [
       {
-        "jobId": 2
+        "jobId": 1
       }
     ],
     "batched": false,
@@ -92,7 +92,7 @@
           "JSON": {
             "uniqueId": "123456",
             "properties": {
-              "email": "sayan@gmail.com",
+              "email": "test@rudderstack.com",
               "address.city": "kolkata",
               "address.country": "India",
               "address.postalCode": 712136,

@@ -1,0 +1,46 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+    exportAll: true
+  - path: ./config
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+  - path: ./utils
+
+steps:
+  - name: validateInput
+    template: |
+      let messageType = .message.type;
+      $.assert(messageType, "message Type is not present. Aborting message.");
+      $.assert(.message.type.toLowerCase() ==='identify' || .message.type.toLowerCase() ==='track', "Event type " + .message.type.toLowerCase() + " is not supported. Aborting message.");
+      $.assert(.message.traits || .message.properties, "Message traits/properties not present. Aborting message.");
+
+  - name: prepareCommonResponse
+    description: |
+      Populate traits
+    template: |
+      const identifierKey = .message.context.externalId[0].identifierType
+      let data = .message.traits || .message.properties
+      data = $.stringifyValues(data)
+      data[identifierKey] = .message.userId
+      data
+  - name: prepareResponse
+    description: |
+      Populate traits
+    template: |
+      let eventType = (.message.context.externalId[0].type.split('-')[1].toString() === "contacts") ? 'identify' : 'track';
+      {
+        identifierFieldName: .message.context.externalId[0].identifierType,
+        data: $.outputs.prepareCommonResponse,
+        customObjectId: .message.context.externalId[0].type.split('-')[1].toString(),
+        type: eventType
+      }
+  - name: buildResponseForProcessTransformation
+    description: build response
+    template: |
+      const response = $.defaultRequestConfig();
+      response.body.JSON = $.outputs.prepareResponse
+      response

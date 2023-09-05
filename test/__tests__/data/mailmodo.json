@@ -4,7 +4,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "FXLkLUEhGJyvmY4"
+          "apiKey": "dummyApiKey"
         }
       },
       "message": {
@@ -73,7 +73,7 @@
       "method": "POST",
       "endpoint": "https://api.mailmodo.com/api/v1/addEvent",
       "headers": {
-        "mmApiKey": "FXLkLUEhGJyvmY4",
+        "mmApiKey": "dummyApiKey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -239,7 +239,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "FXLkLUEhGJyvmY4",
+          "apiKey": "dummyApiKey",
           "listName": "abcdef"
         }
       },
@@ -276,7 +276,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "FXLkLUEhGJyvmY4",
+          "apiKey": "dummyApiKey",
           "listName": ""
         }
       },
@@ -310,7 +310,7 @@
       "method": "POST",
       "endpoint": "https://api.mailmodo.com/api/v1/addToList/batch",
       "headers": {
-        "mmApiKey": "FXLkLUEhGJyvmY4",
+        "mmApiKey": "dummyApiKey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -335,7 +335,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "FXLkLUEhGJyvmY4",
+          "apiKey": "dummyApiKey",
           "listName": "abcdef"
         }
       },
@@ -369,7 +369,7 @@
       "method": "POST",
       "endpoint": "https://api.mailmodo.com/api/v1/addToList/batch",
       "headers": {
-        "mmApiKey": "FXLkLUEhGJyvmY4",
+        "mmApiKey": "dummyApiKey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -394,7 +394,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "FXLkLUEhGJyvmY4",
+          "apiKey": "dummyApiKey",
           "listName": "abcdef"
         }
       },
@@ -431,7 +431,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "FXLkLUEhGJyvmY4",
+          "apiKey": "dummyApiKey",
           "listName": "abcdef"
         }
       },
@@ -450,9 +450,9 @@
         },
         "traits": {
           "email": "testabc2@abcd.com",
-          "name": "Rohith Kumar Kaza",
-          "firstName": "Rohith",
-          "lastName": "Kaza",
+          "name": "Rudder Test",
+          "firstName": "Test",
+          "lastName": "Rudderlabs",
           "age": 21,
           "phone": "9876543210",
           "address": {
@@ -470,7 +470,7 @@
       "method": "POST",
       "endpoint": "https://api.mailmodo.com/api/v1/addToList/batch",
       "headers": {
-        "mmApiKey": "FXLkLUEhGJyvmY4",
+        "mmApiKey": "dummyApiKey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -482,9 +482,9 @@
               "email": "testabc2@abcd.com",
               "data": {
                 "age": 21,
-                "first_name": "Rohith",
-                "last_name": "Kaza",
-                "name": "Rohith Kumar Kaza",
+                "first_name": "Test",
+                "last_name": "Rudderlabs",
+                "name": "Rudder Test",
                 "phone": "9876543210",
                 "trait1": "new-val",
                 "city": "Vijayawada",
@@ -506,7 +506,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "FXLkLUEhGJyvmY4",
+          "apiKey": "dummyApiKey",
           "listName": "abcdef"
         }
       },
@@ -525,9 +525,9 @@
         },
         "traits": {
           "email": "testabc2@abcd.com",
-          "name": "Rohith Kumar Kaza",
-          "firstName": "Rohith",
-          "lastName": "Kaza",
+          "name": "Rudder Test",
+          "firstName": "Test",
+          "lastName": "Rudderlabs",
           "age": 21,
           "phone": "9876543210",
           "address": "welcome to home"
@@ -541,7 +541,7 @@
       "method": "POST",
       "endpoint": "https://api.mailmodo.com/api/v1/addToList/batch",
       "headers": {
-        "mmApiKey": "FXLkLUEhGJyvmY4",
+        "mmApiKey": "dummyApiKey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -553,9 +553,9 @@
               "email": "testabc2@abcd.com",
               "data": {
                 "age": 21,
-                "first_name": "Rohith",
-                "last_name": "Kaza",
-                "name": "Rohith Kumar Kaza",
+                "first_name": "Test",
+                "last_name": "Rudderlabs",
+                "name": "Rudder Test",
                 "phone": "9876543210",
                 "trait1": "new-val",
                 "address1": "welcome to home"

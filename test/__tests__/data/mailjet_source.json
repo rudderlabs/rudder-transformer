@@ -6,7 +6,7 @@
       "time": 1664443614,
       "MessageID": 94857068804950690,
       "Message_GUID": "54d6cdec-f659-4547-8926-13d9c4126b82",
-      "email": "bhalalamark@gmail.com",
+      "email": "test@rudderstack.com",
       "mj_campaign_id": 108760,
       "mj_contact_id": 399962859,
       "customcampaign": "mj.nl=58424",
@@ -19,14 +19,28 @@
     "output": {
       "Message": {
         "context": {
-          "library": { "name": "unknown", "version": "unknown" },
-          "integration": { "name": "MailJet" },
-          "traits": { "email": "bhalalamark@gmail.com" },
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "MailJet"
+          },
+          "traits": {
+            "email": "test@rudderstack.com"
+          },
           "ip": "66.249.84.231",
           "userAgent": "Mozilla/5.0 (Windows NT 5.1; rv:11.0) Gecko Firefox/11.0 (via ggpht.com GoogleImageProxy)",
-          "externalId": [{ "type": "mailjetContactId", "id": 399962859 }]
+          "externalId": [
+            {
+              "type": "mailjetContactId",
+              "id": 399962859
+            }
+          ]
         },
-        "integrations": { "MailJet": false },
+        "integrations": {
+          "MailJet": false
+        },
         "type": "track",
         "event": "open",
         "properties": {
@@ -36,7 +50,7 @@
           "Payload": ""
         },
         "originalTimestamp": "2022-09-29T09:26:54.000Z",
-        "userId": "9c51bf2b379a4c773b1eaa9732405b86"
+        "userId": "5b6a3426dba2cb24e4f0aeec43bee9d7"
       }
     }
   },
@@ -47,7 +61,7 @@
       "time": 1664444171,
       "MessageID": 55169098999352350,
       "Message_GUID": "447d7eab-3335-4aba-9a51-09454bc14b81",
-      "email": "anant@mailjet.com",
+      "email": "test@rudderstack.com",
       "mj_campaign_id": 108892,
       "mj_contact_id": 373142816,
       "customcampaign": "mj.nl=58486",
@@ -59,12 +73,26 @@
     "output": {
       "Message": {
         "context": {
-          "library": { "name": "unknown", "version": "unknown" },
-          "integration": { "name": "MailJet" },
-          "traits": { "email": "anant@mailjet.com" },
-          "externalId": [{ "type": "mailjetContactId", "id": 373142816 }]
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "MailJet"
+          },
+          "traits": {
+            "email": "test@rudderstack.com"
+          },
+          "externalId": [
+            {
+              "type": "mailjetContactId",
+              "id": 373142816
+            }
+          ]
         },
-        "integrations": { "MailJet": false },
+        "integrations": {
+          "MailJet": false
+        },
         "type": "track",
         "event": "bounce",
         "properties": {
@@ -72,7 +100,7 @@
           "mj_campaign_id": 108892
         },
         "originalTimestamp": "2022-09-29T09:36:11.000Z",
-        "userId": "40551363d7812758a04abd72a8cab645"
+        "userId": "5b6a3426dba2cb24e4f0aeec43bee9d7"
       }
     }
   },
@@ -83,7 +111,7 @@
       "time": 1664444171,
       "MessageID": 92886743924596480,
       "Message_GUID": "0230c73a-2b77-4aea-8ef2-ed15d0edc5fd",
-      "email": "rohitkhatta710@gmail.com",
+      "email": "test@rudderstack.com",
       "mj_campaign_id": 108892,
       "mj_contact_id": 372651182,
       "customcampaign": "mj.nl=58486",
@@ -92,12 +120,26 @@
     "output": {
       "Message": {
         "context": {
-          "library": { "name": "unknown", "version": "unknown" },
-          "integration": { "name": "MailJet" },
-          "traits": { "email": "rohitkhatta710@gmail.com" },
-          "externalId": [{ "type": "mailjetContactId", "id": 372651182 }]
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "MailJet"
+          },
+          "traits": {
+            "email": "test@rudderstack.com"
+          },
+          "externalId": [
+            {
+              "type": "mailjetContactId",
+              "id": 372651182
+            }
+          ]
         },
-        "integrations": { "MailJet": false },
+        "integrations": {
+          "MailJet": false
+        },
         "type": "track",
         "event": "sent",
         "properties": {
@@ -105,7 +147,7 @@
           "mj_campaign_id": 108892
         },
         "originalTimestamp": "2022-09-29T09:36:11.000Z",
-        "userId": "3c7c40c09c1cfacf36cc8065e1dfb86d"
+        "userId": "5b6a3426dba2cb24e4f0aeec43bee9d7"
       }
     }
   },
@@ -116,7 +158,7 @@
       "time": 1664444170,
       "MessageID": 56013522696710744,
       "Message_GUID": "dbe4f0a3-4a5a-4784-a724-a9794d3c0444",
-      "email": "gaurav@mailjet.com",
+      "email": "test@rudderstack.com",
       "mj_campaign_id": 108892,
       "mj_contact_id": 373142182,
       "customcampaign": "mj.nl=58486",
@@ -128,12 +170,26 @@
     "output": {
       "Message": {
         "context": {
-          "library": { "name": "unknown", "version": "unknown" },
-          "integration": { "name": "MailJet" },
-          "traits": { "email": "gaurav@mailjet.com" },
-          "externalId": [{ "type": "mailjetContactId", "id": 373142182 }]
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "MailJet"
+          },
+          "traits": {
+            "email": "test@rudderstack.com"
+          },
+          "externalId": [
+            {
+              "type": "mailjetContactId",
+              "id": 373142182
+            }
+          ]
         },
-        "integrations": { "MailJet": false },
+        "integrations": {
+          "MailJet": false
+        },
         "type": "track",
         "event": "bounce",
         "properties": {
@@ -141,7 +197,7 @@
           "mj_campaign_id": 108892
         },
         "originalTimestamp": "2022-09-29T09:36:10.000Z",
-        "userId": "13f24125295a86d4dcc765a28664e910"
+        "userId": "5b6a3426dba2cb24e4f0aeec43bee9d7"
       }
     }
   }

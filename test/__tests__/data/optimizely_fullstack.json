@@ -27,39 +27,6 @@
     }
   },
   {
-    "description": "Missing Data File Access Token for Secure Environment",
-    "input": {
-      "message": {
-        "type": "identify",
-        "channel": "web",
-        "properties": {},
-        "context": {},
-        "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
-        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
-        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
-        "integrations": {
-          "All": true,
-          "optimizely_fullstack": {
-            "variationId": "123"
-          }
-        }
-      },
-      "destination": {
-        "Config": {
-          "accountId": "test_account_id",
-          "campaignId": "test_campaign_id",
-          "experimentId": "test_experiment_id",
-          "dataFileUrl": "https://cdn.optimizely.com/datafiles/abc.json",
-          "secureEnvironment": true,
-          "dataFileAccessToken": ""
-        }
-      }
-    },
-    "output": {
-      "error": "Data File Access Token is not present for secure environment. Aborting"
-    }
-  },
-  {
     "description": "Identify call: Missing Variation ID in integration object",
     "input": {
       "message": {

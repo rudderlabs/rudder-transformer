@@ -35,7 +35,7 @@ steps:
         cohortName: .destination.Config.audienceName, 
         contextKind: .destination.Config.audienceType
       };
-      payload.listData = $.prepareIdentifiersList(.message.properties.listData, .destination.Config.identifier);
+      payload.listData = $.prepareIdentifiersList(.message.properties.listData);
       payload;
 
   - name: buildResponseForProcessTransformation

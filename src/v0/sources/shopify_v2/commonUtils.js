@@ -68,14 +68,23 @@ const getLineItems = (cartEvent) => {
   if (cartEvent?.line_items?.length > 0) {
     const { line_items } = cartEvent;
     line_items.forEach((element) => {
-      lineItems[element.id] = element.quantity;
+      lineItems[element.id] = {
+        quantity: element?.quantity,
+        variant_id: element?.variant_id,
+        key: element?.key,
+        price: element?.price,
+        product_id: element?.product_id,
+        sku: element?.sku,
+        title: element?.title,
+        vendor: element?.vendor,
+      };
     });
     return lineItems;
   }
   return 'EMPTY';
 };
 
-const getHashLineItems = (cart) => {
+const getLineItemsToStore = (cart) => {
   const lineItems = getLineItems(cart);
   if (lineItems === 'EMPTY') {
     return lineItems;
@@ -110,7 +119,7 @@ module.exports = {
   getCartToken,
   getShopifyTopic,
   extractEmailFromPayload,
-  getHashLineItems,
+  getLineItemsToStore,
   getDataFromRedis,
   getLineItems,
   getUnhashedLineItems,

@@ -1,4 +1,5 @@
 const get = require('get-value');
+const { default: axios } = require('axios');
 const {
   RUDDER_ECOM_MAP,
   NO_OPERATION_SUCCESS,
@@ -10,12 +11,18 @@ const {
   lineItemsMappingJSON,
   LINE_ITEM_EXCLUSION_FIELDS,
 } = require('./config');
+const { RedisDB } = require('../../../util/redis/redisConnector');
+const logger = require('../../../logger');
 const { idResolutionLayer } = require('./identityResolutionLayer');
 const { enrichPayload } = require('./enrichmentLayer');
 const Message = require('../message');
 const { EventType } = require('../../../constants');
 const stats = require('../../../util/stats');
-const { extractEmailFromPayload } = require('./commonUtils');
+const {
+  extractEmailFromPayload,
+  getUnhashedLineItems,
+  getLineItemsToStore,
+} = require('./commonUtils');
 const {
   removeUndefinedAndNullValues,
   constructPayload,
@@ -78,7 +85,7 @@ const trackLayer = {
    * @param {*} shopifyTopic
    * @returns
    */
-  trackPayloadBuilder(event, shopifyTopic) {
+  nonEcomPayloadBuilder(event, shopifyTopic) {
     const message = new Message(INTEGRATION);
     message.setEventType(EventType.TRACK);
     message.setEventName(SHOPIFY_NON_ECOM_TRACK_MAP[shopifyTopic]);
@@ -107,168 +114,188 @@ const trackLayer = {
   },
 
   /**
-   * It checks if the event is valid or not based on previous cartItems
-   * @param {*} inputEvent
-   * @returns true if event is valid else false
-   */
-  // isValidCartEvent(newCartItems, prevCartItems) {
-  //   return !(prevCartItems === newCartItems);
-  // },
-
-  // async updateCartItemsInRedis(cartToken, newCartItemsHash, metricMetadata) {
-  //   const value = ['itemsHash', newCartItemsHash];
-  //   try {
-  //     stats.increment('shopify_redis_calls', {
-  //       type: 'set',
-  //       field: 'itemsHash',
-  //       ...metricMetadata,
-  //     });
-  //     await RedisDB.setVal(`${cartToken}`, value);
-  //   } catch (e) {
-  //     logger.debug(`{{SHOPIFY::}} itemsHash set call Failed due redis error ${e}`);
-  //     stats.increment('shopify_redis_failures', {
-  //       type: 'set',
-  //       ...metricMetadata,
-  //     });
-  //   }
-  // },
-
-  // /**
-  //  * This function checks for duplicate cart update event by checking the lineItems hash of previous cart update event
-  //  * and comapre it with the received lineItems hash.
-  //  * Also if redis is down or there is no lineItems hash for the given cartToken we be default take it as a valid cart update event
-  //  * @param {*} inputEvent
-  //  * @param {*} metricMetadata
-  //  * @returns boolean
-  //  */
-  // async checkAndUpdateCartItems(inputEvent, redisData, metricMetadata) {
-  //   const cartToken = inputEvent.token || inputEvent.id;
-  //   const itemsHash = redisData?.itemsHash;
-  //   if (itemsHash) {
-  //     const newCartItemsHash = getHashLineItems(inputEvent);
-  //     const isCartValid = this.isValidCartEvent(newCartItemsHash, itemsHash);
-  //     if (!isCartValid) {
-  //       return false;
-  //     }
-  //     await this.updateCartItemsInRedis(cartToken, newCartItemsHash, metricMetadata);
-  //   } else {
-  //     const { created_at, updated_at } = inputEvent;
-  //     const timeDifference = Date.parse(updated_at) - Date.parse(created_at);
-  //     const isTimeWithinThreshold = timeDifference < maxTimeToIdentifyRSGeneratedCall;
-  //     const isLineItemsEmpty = inputEvent?.line_items?.length === 0;
-
-  //     if (isTimeWithinThreshold && isLineItemsEmpty) {
-  //       return false;
-  //     }
-  //   }
-  //   return true;
-  // },
-
-  /**
-   * This function will update the cart state in redis
-   * @param {*} updatedCartState
-   * @param {*} cart_token
-   */
-  // async updateCartState(updatedCartState, cart_token) {
-  //   await RedisDB.setVal(`${cart_token}`, updatedCartState);
-  // },
-  /**
-   * This function return the updated event name for carts_update event based on previous cart state
-   * And updates the state of cart in redis as well
-   * @param {*} event
-   * @param {*} redisData
-   */
-  // checkForProductAddedOrRemovedAndUpdate(event, redisData) {
-  //   const { productsListInfo } = redisData;
-  //   /*
-  //   productsListInfo = {
-  //     `productId+variantId` : quantity
-  //   }
-  //   */
-  //   let productsListInfoFromInput;
-  //   event?.line_items.forEach(product => {
-  //     const key = `${product.productId} + ${product.variantId}`;
-  //     const valFromPayload = product.quantity;
-  //     const prevVal = productsListInfo?.[key];
-  //     if (prevVal > valFromPayload) { }
-  //   })
-  // },
-
-  /**
-   * This function handles the event from shopify side which is mapped to rudder ecom event based upon the contents of payload.
+   * This function maps the checkout update event from shopify side to rudder ecom event name based upon the contents of payload.
    * @param {*} event
    * @param {*} eventName
-   * @param {*} redisData
+   * @param {*} dbData
    * @returns the updated name of the payload
    */
-  getUpdatedEventName(event, eventName, redisData) {
+  getUpdatedEventNameForCheckoutUpateEvent(event) {
     let updatedEventName;
-
-    // if (eventName === 'carts_update') {
-    //   return NO_OPERATION_SUCCESS
-    //   // this.checkForProductAddedOrRemovedAndUpdate(event, redisData);
-    //   // return 'carts_update';
-    // }
-    /* This function will check for cart_update if its is due Product Added or Product Removed and
-      for checkout_update which step is completed or started
-    */
-
-    if (eventName === 'checkouts_update') {
-      updatedEventName = 'checkout_step_viewed';
-      if (event.completed_at) {
-        updatedEventName = 'checkout_step_completed';
-      } else if (event.gateway) {
-        updatedEventName = 'payment_info_entered';
-      }
+    updatedEventName = 'checkout_step_viewed';
+    if (event.completed_at) {
+      updatedEventName = 'checkout_step_completed';
+    } else if (!event.gateway) {
+      updatedEventName = 'payment_info_entered';
     }
     return updatedEventName;
   },
 
-  async processTrackEvent(event, eventName, redisData, metricMetadata) {
+  /**
+   * This function maps the customer data (including anonymousId and sessionId),if available
+   * @param {*} payload
+   * @param {*} event
+   * @param {*} dbData
+   * @param {*} eventName
+   * @returns updated Payload
+   */
+  mapCustomerDetails(payload, event, dbData, eventName) {
+    let updatedPayload = payload;
+    if (!get(payload, 'traits.email')) {
+      const email = extractEmailFromPayload(event);
+      if (email) {
+        updatedPayload.setProperty('traits.email', email);
+      }
+    }
+    // Map Customer details if present customer,ship_Add,bill,userId
+    if (event.customer) {
+      updatedPayload.setPropertiesV2(event.customer, MAPPING_CATEGORIES[EventType.IDENTIFY]);
+    }
+    if (event.shipping_address) {
+      updatedPayload.setProperty('traits.shippingAddress', event.shipping_address);
+    }
+    if (event.billing_address) {
+      updatedPayload.setProperty('traits.billingAddress', event.billing_address);
+    }
+    if (!payload.userId && event.user_id) {
+      updatedPayload.setProperty('userId', event.user_id);
+    }
+    updatedPayload = idResolutionLayer.resolveId(updatedPayload, dbData, eventName);
+    return updatedPayload;
+  },
+
+  /**
+   * This function generates the updated product event
+   * @param {*} product
+   * @param {*} updatedQuantity
+   * @param {*} cart_token
+   * @returns
+   */
+  getUpdatedProductProperties(product, cart_token, updatedQuantity = null) {
+    const updatedCartProperties = product;
+    if (updatedQuantity) {
+      updatedCartProperties.quantity = updatedQuantity;
+    }
+    return { id: cart_token, properties: updatedCartProperties };
+  },
+
+  async generateProductAddedAndRemovedEvents(event, dbData, metricMetadata) {
+    const events = [];
+    let prevLineItems = dbData?.itemsHash;
+    // if no prev cart is found we trigger product added event for every line_item present
+    if (!prevLineItems) {
+      event?.line_items.forEach((product) => {
+        const productEvent = {
+          id: event?.id || event?.token,
+          product_properties: product,
+        };
+        events.push(this.ecomPayloadBuilder(productEvent, 'product_added'));
+      });
+      return events;
+    }
+    prevLineItems = getUnhashedLineItems(prevLineItems);
+    // This will compare current cartSate with previous cartState
+    event?.line_items.forEach((product) => {
+      const key = product.id;
+      const currentQuantity = product.quantity;
+      const prevQuantity = prevLineItems?.[key]?.quantity;
+      if (prevQuantity) {
+        delete prevLineItems[key];
+      }
+      if (currentQuantity !== prevQuantity) {
+        const updatedQuantity = Math.abs(currentQuantity - prevQuantity);
+        const updatedProduct = this.getUpdatedProductProperties(
+          product,
+          event?.id || event?.token,
+          updatedQuantity,
+        );
+        // TODO: map extra properties from axios call
+
+        // This means either this Product is Added or Removed
+        if (currentQuantity > prevQuantity) {
+          events.push(this.ecomPayloadBuilder(updatedProduct, 'product_added'));
+        } else {
+          events.push(this.ecomPayloadBuilder(updatedProduct, 'product_removed'));
+        }
+      }
+    });
+    // We also want to see what prevLineItems are not present in the currentCart to trigger Product Removed Event for them
+    prevLineItems.forEach((product) => {
+      const updatedProduct = this.getUpdatedProductProperties(product, event?.id || event?.token);
+      events.push(this.ecomPayloadBuilder(updatedProduct, 'product_removed'));
+    });
+    if (events.length > 0) {
+      await this.updateCartState(getLineItemsToStore(event), event.id || event.token, metricMetadata);
+    }
+    return events;
+  },
+
+  /**
+   * This function sets the updated cart stae in redis in the form 
+   * newCartItemsHash = [{
+      id: "some_id",
+      quantity: 2,
+      variant_id: "vairnat_id",
+      key: 'some:key',
+      price: '30.00',
+      product_id: 1234,
+      sku: '40',
+      title: 'Product Title',
+      vendor: 'example',
+    }]
+   * @param {*} updatedCartState
+   * @param {*} cart_token
+   * @param {*} metricMetadata
+   */
+  async updateCartState(updatedCartState, cart_token, metricMetadata) {
+    if (cart_token) {
+      try {
+        stats.increment('shopify_redis_calls', {
+          type: 'set',
+          field: 'itemsHash',
+          ...metricMetadata,
+        });
+        await RedisDB.setVal(`${cart_token}`, ['itemsHash', updatedCartState]);
+      } catch (e) {
+        logger.debug(`{{SHOPIFY::}} cartToken map set call Failed due redis error ${e}`);
+        stats.increment('shopify_redis_failures', {
+          type: 'set',
+          ...metricMetadata,
+        });
+      }
+    }
+  },
+
+  async processTrackEvent(event, eventName, dbData, metricMetadata) {
     let updatedEventName = eventName;
     let payload;
-    if (SHOPIFY_TO_RUDDER_ECOM_EVENTS_MAP.includes(eventName)) {
-      if (eventName === 'carts_update') {
-        return NO_OPERATION_SUCCESS;
-        // const isValidEvent = await this.checkAndUpdateCartItems(event, redisData, metricMetadata);
-        // if (!isValidEvent) {
-        //   return NO_OPERATION_SUCCESS;
-        // }
-      }
-      updatedEventName = this.getUpdatedEventName(event, eventName, redisData);
+    if (SHOPIFY_TO_RUDDER_ECOM_EVENTS_MAP.CART_UPDATED === eventName) {
+      let productAddedOrRemovedEvents = await this.generateProductAddedAndRemovedEvents(
+        event,
+        dbData,
+        metricMetadata,
+      );
+      if (productAddedOrRemovedEvents.length === 0) return [NO_OPERATION_SUCCESS];
+      productAddedOrRemovedEvents = productAddedOrRemovedEvents.map((productEvent) =>
+        this.mapCustomerDetails(productEvent, event, dbData, eventName),
+      );
+      return productAddedOrRemovedEvents;
+    }
+    if (SHOPIFY_TO_RUDDER_ECOM_EVENTS_MAP.CHECKOUTS_UPDATE === eventName) {
+      updatedEventName = this.getUpdatedEventNameForCheckoutUpateEvent(event);
     }
     if (Object.keys(RUDDER_ECOM_MAP).includes(updatedEventName)) {
       payload = this.ecomPayloadBuilder(event, updatedEventName);
     } else if (Object.keys(SHOPIFY_NON_ECOM_TRACK_MAP).includes(updatedEventName)) {
-      payload = this.trackPayloadBuilder(event, updatedEventName);
+      payload = this.nonEcomPayloadBuilder(event, updatedEventName);
     } else {
       stats.increment('invalid_shopify_event', {
         event: eventName,
         ...metricMetadata,
       });
-      return NO_OPERATION_SUCCESS;
+      return [NO_OPERATION_SUCCESS];
     }
-    if (!get(payload, 'traits.email')) {
-      const email = extractEmailFromPayload(event);
-      if (email) {
-        payload.setProperty('traits.email', email);
-      }
-    }
-    // Map Customer details if present customer,ship_Add,bill,userId
-    if (event.customer) {
-      payload.setPropertiesV2(event.customer, MAPPING_CATEGORIES[EventType.IDENTIFY]);
-    }
-    if (event.shipping_address) {
-      payload.setProperty('traits.shippingAddress', event.shipping_address);
-    }
-    if (event.billing_address) {
-      payload.setProperty('traits.billingAddress', event.billing_address);
-    }
-    if (!payload.userId && event.user_id) {
-      payload.setProperty('userId', event.user_id);
-    }
-    payload = idResolutionLayer.resolveId(payload, redisData, eventName);
-    return payload;
+    return [this.mapCustomerDetails(payload, event, dbData, eventName)];
   },
 };
 module.exports = { trackLayer };

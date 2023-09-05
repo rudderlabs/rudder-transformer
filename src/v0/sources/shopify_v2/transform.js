@@ -14,50 +14,55 @@ const { IDENTIFY_TOPICS, INTEGRATION } = require('./config');
 
 const processEvent = async (inputEvent, metricMetadata) => {
   let message;
-  let redisData = null;
+  let dbData = null;
   const shopifyEvent = _.cloneDeep(inputEvent);
   const shopifyTopic = getShopifyTopic(shopifyEvent);
   delete shopifyEvent.query_parameters;
   if (IDENTIFY_TOPICS.includes(shopifyTopic)) {
-    message = identifyLayer.identifyPayloadBuilder(shopifyEvent);
+    message = [identifyLayer.identifyPayloadBuilder(shopifyEvent)];
   } else {
     const cartToken = getCartToken(shopifyEvent, shopifyTopic);
     if (isDefinedAndNotNull(cartToken)) {
-      redisData = await getDataFromRedis(cartToken, metricMetadata);
+      dbData = await getDataFromRedis(cartToken, metricMetadata);
     }
     message = await trackLayer.processTrackEvent(
       shopifyEvent,
       shopifyTopic,
-      redisData,
+      dbData,
       metricMetadata,
     );
   }
-  // check for if message is NO_OPERATION_SUCCESS Payload
-  if (message.outputToSource) {
-    return message;
-  }
-  if (message.userId) {
-    message.userId = String(message.userId);
-  }
-  if (!get(message, 'traits.email')) {
-    const email = extractEmailFromPayload(shopifyEvent);
-    if (email) {
-      message.setProperty('traits.email', email);
+  message.map((event) => {
+    // check for if message is NO_OPERATION_SUCCESS Payload
+    if (event.outputToSource) {
+      return event;
     }
-  }
-  message.setProperty(`integrations.${INTEGRATION}`, true);
-  message.setProperty('context.library', {
-    name: 'RudderStack Shopify Cloud',
-    version: '1.0.0',
+    if (event.userId) {
+      // eslint-disable-next-line no-param-reassign
+      event.userId = String(event.userId);
+    }
+    if (!get(event, 'traits.email')) {
+      const email = extractEmailFromPayload(shopifyEvent);
+      if (email) {
+        event.setProperty('traits.email', email);
+      }
+    }
+    event.setProperty(`integrations.${INTEGRATION}`, true);
+    event.setProperty('context.library', {
+      name: 'RudderStack Shopify Cloud',
+      version: '1.0.0',
+    });
+    event.setProperty('context.topic', shopifyTopic);
+    // attaching cart, checkout and order tokens in context object
+    event.setProperty(`context.cart_token`, shopifyEvent.cart_token);
+    event.setProperty(`context.checkout_token`, shopifyEvent.checkout_token);
+    if (shopifyTopic === 'orders_updated') {
+      event.setProperty(`context.order_token`, shopifyEvent.token);
+    }
+    // eslint-disable-next-line no-param-reassign
+    event = removeUndefinedAndNullValues(event);
+    return event;
   });
-  message.setProperty('context.topic', shopifyTopic);
-  // attaching cart, checkout and order tokens in context object
-  message.setProperty(`context.cart_token`, shopifyEvent.cart_token);
-  message.setProperty(`context.checkout_token`, shopifyEvent.checkout_token);
-  if (shopifyTopic === 'orders_updated') {
-    message.setProperty(`context.order_token`, shopifyEvent.token);
-  }
-  message = removeUndefinedAndNullValues(message);
   return message;
 };
 
@@ -67,7 +72,7 @@ const process = async (event) => {
     source: 'SHOPIFY',
   };
   if (identifierEventLayer.isIdentifierEvent(event)) {
-    return identifierEventLayer.processIdentifierEvent(event, metricMetadata);
+    return [await identifierEventLayer.processIdentifierEvent(event, metricMetadata)];
   }
   const response = await processEvent(event, metricMetadata);
   return response;

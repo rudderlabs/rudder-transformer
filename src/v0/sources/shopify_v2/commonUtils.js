@@ -1,5 +1,4 @@
 /* eslint-disable camelcase */
-const sha256 = require('sha256');
 const stats = require('../../../util/stats');
 const { flattenJson } = require('../../util');
 const { RedisDB } = require('../../../util/redis/redisConnector');
@@ -20,13 +19,13 @@ const getDataFromRedis = async (key, metricMetadata) => {
       field: 'all',
       ...metricMetadata,
     });
-    const redisData = await RedisDB.getVal(key);
-    if (redisData === null) {
+    const dbData = await RedisDB.getVal(key);
+    if (dbData === null) {
       stats.increment('shopify_redis_no_val', {
         ...metricMetadata,
       });
     }
-    return redisData;
+    return dbData;
   } catch (e) {
     logger.debug(`{{SHOPIFY::}} Get call Failed due redis error ${e}`);
     stats.increment('shopify_redis_failures', {
@@ -59,11 +58,38 @@ const getShopifyTopic = (event) => {
   return topic[0];
 };
 
-const getHashLineItems = (cart) => {
-  if (cart?.line_items?.length > 0) {
-    return sha256(JSON.stringify(cart.line_items));
+/**
+ * This function generates the lineItems containing id and quantity only for a cart event
+ * @param {*} cartEvent
+ * returns lineItems Object with { line_items.$.id: line_items.$.quantiy}
+ */
+const getLineItems = (cartEvent) => {
+  const lineItems = {};
+  if (cartEvent?.line_items?.length > 0) {
+    const { line_items } = cartEvent;
+    line_items.forEach((element) => {
+      lineItems[element.id] = element.quantity;
+    });
+    return lineItems;
   }
   return 'EMPTY';
+};
+
+const getHashLineItems = (cart) => {
+  const lineItems = getLineItems(cart);
+  if (lineItems === 'EMPTY') {
+    return lineItems;
+  }
+  return JSON.stringify(lineItems);
+  // return msgpack.encode(lineItems);
+};
+
+const getUnhashedLineItems = (lineItems) => {
+  if (lineItems === 'EMPTY') {
+    return {};
+  }
+  return JSON.parse(lineItems);
+  // return msgpack.decode(lineItems);
 };
 
 const extractEmailFromPayload = (event) => {
@@ -86,4 +112,6 @@ module.exports = {
   extractEmailFromPayload,
   getHashLineItems,
   getDataFromRedis,
+  getLineItems,
+  getUnhashedLineItems,
 };

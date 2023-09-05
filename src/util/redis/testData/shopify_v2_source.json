@@ -17,13 +17,15 @@
         "line_items": []
       }
     },
-    "output": {
-      "outputToSource": {
-        "body": "T0s=",
-        "contentType": "text/plain"
-      },
-      "statusCode": 200
-    }
+    "output": [
+      {
+        "outputToSource": {
+          "body": "T0s=",
+          "contentType": "text/plain"
+        },
+        "statusCode": 200
+      }
+    ]
   },
   {
     "description": "Track Call -> sessionId Stitching failed due redis error ",
@@ -39,32 +41,34 @@
       "updated_at": "2023-02-10T12:16:07.251Z",
       "created_at": "2023-02-10T12:05:04.402Z"
     },
-    "output": {
-      "context": {
-        "cart_token": "shopifyGetSessionId",
-        "library": {
-          "name": "RudderStack Shopify Cloud",
-          "version": "1.0.0"
+    "output": [
+      {
+        "context": {
+          "cart_token": "shopifyGetSessionId",
+          "library": {
+            "name": "RudderStack Shopify Cloud",
+            "version": "1.0.0"
+          },
+          "integration": {
+            "name": "SHOPIFY"
+          },
+          "topic": "checkouts_delete"
         },
-        "integration": {
-          "name": "SHOPIFY"
+        "event": "Checkout Deleted",
+        "integrations": {
+          "SHOPIFY": true
         },
-        "topic": "checkouts_delete"
-      },
-      "event": "Checkout Deleted",
-      "integrations": {
-        "SHOPIFY": true
-      },
-      "type": "track",
-      "properties": {
-        "created_at": "2023-02-10T12:05:04.402Z",
-        "cart_token": "shopifyGetSessionId",
-        "note": null,
-        "products": [],
-        "updated_at": "2023-02-10T12:16:07.251Z"
-      },
-      "anonymousId": "97e170ef-d44a-50d7-ad1b-90b079372902"
-    }
+        "type": "track",
+        "properties": {
+          "created_at": "2023-02-10T12:05:04.402Z",
+          "cart_token": "shopifyGetSessionId",
+          "note": null,
+          "products": [],
+          "updated_at": "2023-02-10T12:16:07.251Z"
+        },
+        "anonymousId": "97e170ef-d44a-50d7-ad1b-90b079372902"
+      }
+    ]
   },
   {
     "description": "Track Call -> anonymousId Stitching failed due redis error ",
@@ -80,32 +84,34 @@
       "updated_at": "2023-02-10T12:16:07.251Z",
       "created_at": "2023-02-10T12:05:04.402Z"
     },
-    "output": {
-      "context": {
-        "cart_token": "shopifyGetAnonymousId",
-        "library": {
-          "name": "RudderStack Shopify Cloud",
-          "version": "1.0.0"
+    "output": [
+      {
+        "context": {
+          "cart_token": "shopifyGetAnonymousId",
+          "library": {
+            "name": "RudderStack Shopify Cloud",
+            "version": "1.0.0"
+          },
+          "integration": {
+            "name": "SHOPIFY"
+          },
+          "topic": "checkouts_delete"
         },
-        "integration": {
-          "name": "SHOPIFY"
+        "event": "Checkout Deleted",
+        "integrations": {
+          "SHOPIFY": true
         },
-        "topic": "checkouts_delete"
-      },
-      "event": "Checkout Deleted",
-      "integrations": {
-        "SHOPIFY": true
-      },
-      "type": "track",
-      "properties": {
-        "created_at": "2023-02-10T12:05:04.402Z",
-        "cart_token": "shopifyGetAnonymousId",
-        "note": null,
-        "products": [],
-        "updated_at": "2023-02-10T12:16:07.251Z"
-      },
-      "anonymousId": "19c48fe8-9676-50c1-9ba0-789e4bbb0364"
-    }
+        "type": "track",
+        "properties": {
+          "created_at": "2023-02-10T12:05:04.402Z",
+          "cart_token": "shopifyGetAnonymousId",
+          "note": null,
+          "products": [],
+          "updated_at": "2023-02-10T12:16:07.251Z"
+        },
+        "anonymousId": "19c48fe8-9676-50c1-9ba0-789e4bbb0364"
+      }
+    ]
   },
   {
     "description": "Track Call -> orders_delete with invalid cartToken",
@@ -121,31 +127,33 @@
       "updated_at": "2023-02-10T12:16:07.251Z",
       "created_at": "2023-02-10T12:05:04.402Z"
     },
-    "output": {
-      "context": {
-        "library": {
-          "name": "RudderStack Shopify Cloud",
-          "version": "1.0.0"
+    "output": [
+      {
+        "context": {
+          "library": {
+            "name": "RudderStack Shopify Cloud",
+            "version": "1.0.0"
+          },
+          "integration": {
+            "name": "SHOPIFY"
+          },
+          "topic": "orders_delete"
         },
-        "integration": {
-          "name": "SHOPIFY"
+        "event": "Order Deleted",
+        "integrations": {
+          "SHOPIFY": true
         },
-        "topic": "orders_delete"
-      },
-      "event": "Order Deleted",
-      "integrations": {
-        "SHOPIFY": true
-      },
-      "type": "track",
-      "userId": "shopify-admin",
-      "properties": {
-        "created_at": "2023-02-10T12:05:04.402Z",
-        "id": "shopify_test3",
-        "note": null,
-        "products": [],
-        "updated_at": "2023-02-10T12:16:07.251Z"
+        "type": "track",
+        "userId": "shopify-admin",
+        "properties": {
+          "created_at": "2023-02-10T12:05:04.402Z",
+          "id": "shopify_test3",
+          "note": null,
+          "products": [],
+          "updated_at": "2023-02-10T12:16:07.251Z"
+        }
       }
-    }
+    ]
   },
   {
     "description": "Track Call -> checkouts_delete with invalid cartToken",
@@ -161,31 +169,33 @@
       "updated_at": "2023-02-10T12:16:07.251Z",
       "created_at": "2023-02-10T12:05:04.402Z"
     },
-    "output": {
-      "context": {
-        "library": {
-          "name": "RudderStack Shopify Cloud",
-          "version": "1.0.0"
+    "output": [
+      {
+        "context": {
+          "library": {
+            "name": "RudderStack Shopify Cloud",
+            "version": "1.0.0"
+          },
+          "integration": {
+            "name": "SHOPIFY"
+          },
+          "topic": "checkouts_delete"
         },
-        "integration": {
-          "name": "SHOPIFY"
+        "event": "Checkout Deleted",
+        "integrations": {
+          "SHOPIFY": true
         },
-        "topic": "checkouts_delete"
-      },
-      "event": "Checkout Deleted",
-      "integrations": {
-        "SHOPIFY": true
-      },
-      "type": "track",
-      "properties": {
-        "created_at": "2023-02-10T12:05:04.402Z",
-        "id": "shopify_test3",
-        "note": null,
-        "products": [],
-        "updated_at": "2023-02-10T12:16:07.251Z"
-      },
-      "anonymousId": "generated_uuid"
-    }
+        "type": "track",
+        "properties": {
+          "created_at": "2023-02-10T12:05:04.402Z",
+          "id": "shopify_test3",
+          "note": null,
+          "products": [],
+          "updated_at": "2023-02-10T12:16:07.251Z"
+        },
+        "anonymousId": "generated_uuid"
+      }
+    ]
   },
   {
     "description": "Track Call -> orders_updated with empty line_items",
@@ -222,55 +232,57 @@
       "updated_at": "2023-02-10T12:16:07.251Z",
       "created_at": "2023-02-10T12:05:04.402Z"
     },
-    "output": {
-      "context": {
-        "cart_token": null,
-        "checkout_token": "checkout token",
-        "library": {
-          "name": "RudderStack Shopify Cloud",
-          "version": "1.0.0"
+    "output": [
+      {
+        "context": {
+          "cart_token": null,
+          "checkout_token": "checkout token",
+          "library": {
+            "name": "RudderStack Shopify Cloud",
+            "version": "1.0.0"
+          },
+          "integration": {
+            "name": "SHOPIFY"
+          },
+          "topic": "orders_updated"
         },
-        "integration": {
-          "name": "SHOPIFY"
+        "event": "Order Updated",
+        "integrations": {
+          "SHOPIFY": true
         },
-        "topic": "orders_updated"
-      },
-      "event": "Order Updated",
-      "integrations": {
-        "SHOPIFY": true
-      },
-      "type": "track",
-      "properties": {
-        "checkout_id": "36601802719507",
-        "checkout_token": "checkout token",
-        "note": null,
-        "cart_token": null,
-        "note_attributes": [
-          {
-            "name": "random",
-            "value": "RANDOM_VAL"
-          }
-        ],
-        "client_details": {
-          "accept_language": null,
-          "browser_height": null,
-          "browser_ip": "122.161.73.113",
-          "user_agent": "Mozilla/5.0 User Agent"
+        "type": "track",
+        "properties": {
+          "checkout_id": "36601802719507",
+          "checkout_token": "checkout token",
+          "note": null,
+          "cart_token": null,
+          "note_attributes": [
+            {
+              "name": "random",
+              "value": "RANDOM_VAL"
+            }
+          ],
+          "client_details": {
+            "accept_language": null,
+            "browser_height": null,
+            "browser_ip": "122.161.73.113",
+            "user_agent": "Mozilla/5.0 User Agent"
+          },
+          "order_id": "shopify_test2",
+          "created_at": "2023-02-10T12:05:04.402Z",
+          "products": [],
+          "updated_at": "2023-02-10T12:16:07.251Z"
         },
-        "order_id": "shopify_test2",
-        "created_at": "2023-02-10T12:05:04.402Z",
-        "products": [],
-        "updated_at": "2023-02-10T12:16:07.251Z"
-      },
-      "traits": {
-        "shippingAddress": "abc",
-        "billingAddress": "abc",
-        "firstName": "Test",
-        "lastName": "Person"
-      },
-      "timestamp": "2023-02-10T12:16:07.251Z",
-      "anonymousId": "generated_uuid"
-    }
+        "traits": {
+          "shippingAddress": "abc",
+          "billingAddress": "abc",
+          "firstName": "Test",
+          "lastName": "Person"
+        },
+        "timestamp": "2023-02-10T12:16:07.251Z",
+        "anonymousId": "generated_uuid"
+      }
+    ]
   },
   {
     "description": "Track Call -> fullfillments_create",
@@ -346,89 +358,91 @@
       "name": "#1001.1",
       "shopify-admin_graphql_api_id": "gid://shopify/Fulfillment/4655820210451"
     },
-    "output": {
-      "userId": "shopify-admin",
-      "context": {
-        "library": {
-          "name": "RudderStack Shopify Cloud",
-          "version": "1.0.0"
+    "output": [
+      {
+        "userId": "shopify-admin",
+        "context": {
+          "library": {
+            "name": "RudderStack Shopify Cloud",
+            "version": "1.0.0"
+          },
+          "integration": {
+            "name": "SHOPIFY"
+          },
+          "topic": "fulfillments_create"
         },
-        "integration": {
-          "name": "SHOPIFY"
+        "event": "Fulfillments Create",
+        "integrations": {
+          "SHOPIFY": true
         },
-        "topic": "fulfillments_create"
-      },
-      "event": "Fulfillments Create",
-      "integrations": {
-        "SHOPIFY": true
-      },
-      "type": "track",
-      "properties": {
-        "shopify-admin_graphql_api_id": "gid://shopify/Fulfillment/4655820210451",
-        "created_at": "2023-02-10T07:44:06-05:00",
-        "destination": null,
-        "location_id": 77735330067,
-        "name": "#1001.1",
-        "order_id": "random",
-        "origin_address": null,
-        "products": [
-          {
-            "shopify-admin_graphql_api_id": "gid://shopify/LineItem/13729348059411",
-            "quantity": 1,
-            "product_exists": true,
-            "name": "bitter cloud",
-            "product_id": "8100634689811",
-            "properties": [],
-            "requires_shipping": true,
-            "tax_lines": [],
-            "variant_id": "variantId",
-            "variant_name": "bitter cloud",
-            "variant_inventory_management": null,
-            "price": 9.54,
-            "taxable": true,
-            "total_discount": "0.00",
-            "brand": "testAnant",
-            "fulfillable_quantity": 0,
-            "fulfillment_service": "manual",
-            "fulfillment_status": "fulfilled",
-            "gift_card": false,
-            "grams": 0,
-            "discount_allocations": [],
-            "duties": [],
-            "price_set": {
-              "shop_money": {
-                "amount": "9.54",
-                "currency_code": "GBP"
+        "type": "track",
+        "properties": {
+          "shopify-admin_graphql_api_id": "gid://shopify/Fulfillment/4655820210451",
+          "created_at": "2023-02-10T07:44:06-05:00",
+          "destination": null,
+          "location_id": 77735330067,
+          "name": "#1001.1",
+          "order_id": "random",
+          "origin_address": null,
+          "products": [
+            {
+              "shopify-admin_graphql_api_id": "gid://shopify/LineItem/13729348059411",
+              "quantity": 1,
+              "product_exists": true,
+              "name": "bitter cloud",
+              "product_id": "8100634689811",
+              "properties": [],
+              "requires_shipping": true,
+              "tax_lines": [],
+              "variant_id": "variantId",
+              "variant_name": "bitter cloud",
+              "variant_inventory_management": null,
+              "price": 9.54,
+              "taxable": true,
+              "total_discount": "0.00",
+              "brand": "testAnant",
+              "fulfillable_quantity": 0,
+              "fulfillment_service": "manual",
+              "fulfillment_status": "fulfilled",
+              "gift_card": false,
+              "grams": 0,
+              "discount_allocations": [],
+              "duties": [],
+              "price_set": {
+                "shop_money": {
+                  "amount": "9.54",
+                  "currency_code": "GBP"
+                },
+                "presentment_money": {
+                  "amount": "9.54",
+                  "currency_code": "GBP"
+                }
               },
-              "presentment_money": {
-                "amount": "9.54",
-                "currency_code": "GBP"
-              }
-            },
-            "total_discount_set": {
-              "shop_money": {
-                "amount": "0.00",
-                "currency_code": "GBP"
-              },
-              "presentment_money": {
-                "amount": "0.00",
-                "currency_code": "GBP"
+              "total_discount_set": {
+                "shop_money": {
+                  "amount": "0.00",
+                  "currency_code": "GBP"
+                },
+                "presentment_money": {
+                  "amount": "0.00",
+                  "currency_code": "GBP"
+                }
               }
             }
-          }
-        ],
-        "receipt": {},
-        "service": "manual",
-        "shipment_status": null,
-        "status": "success",
-        "tracking_company": null,
-        "tracking_number": null,
-        "tracking_numbers": [],
-        "tracking_url": null,
-        "tracking_urls": [],
-        "updated_at": "2023-02-10T07:44:06-05:00"
+          ],
+          "receipt": {},
+          "service": "manual",
+          "shipment_status": null,
+          "status": "success",
+          "tracking_company": null,
+          "tracking_number": null,
+          "tracking_numbers": [],
+          "tracking_url": null,
+          "tracking_urls": [],
+          "updated_at": "2023-02-10T07:44:06-05:00"
+        }
       }
-    }
+    ]
   },
   {
     "description": "Track Call -> checkouts_update-> Payment Info Entered ",
@@ -446,37 +460,39 @@
       "updated_at": "2023-02-10T12:16:07.251Z",
       "created_at": "2023-02-10T12:05:04.402Z"
     },
-    "output": {
-      "userId": "rudder01",
-      "anonymousId": "anon_shopify_test2",
-      "context": {
-        "sessionId": "session_id_2",
-        "cart_token": "shopify_test2",
-        "library": {
-          "name": "RudderStack Shopify Cloud",
-          "version": "1.0.0"
+    "output": [
+      {
+        "userId": "rudder01",
+        "anonymousId": "anon_shopify_test2",
+        "context": {
+          "sessionId": "session_id_2",
+          "cart_token": "shopify_test2",
+          "library": {
+            "name": "RudderStack Shopify Cloud",
+            "version": "1.0.0"
+          },
+          "integration": {
+            "name": "SHOPIFY"
+          },
+          "topic": "checkouts_update"
         },
-        "integration": {
-          "name": "SHOPIFY"
+        "event": "Payment Info Entered",
+        "integrations": {
+          "SHOPIFY": true
         },
-        "topic": "checkouts_update"
-      },
-      "event": "Payment Info Entered",
-      "integrations": {
-        "SHOPIFY": true
-      },
-      "type": "track",
-      "properties": {
-        "checkout_id": "shopify_test2",
-        "created_at": "2023-02-10T12:05:04.402Z",
-        "cart_token": "shopify_test2",
-        "note": null,
-        "user_id": "rudder01",
-        "token": "shopify_test2",
-        "updated_at": "2023-02-10T12:16:07.251Z"
-      },
-      "timestamp": "2023-02-10T12:16:07.251Z"
-    }
+        "type": "track",
+        "properties": {
+          "checkout_id": "shopify_test2",
+          "created_at": "2023-02-10T12:05:04.402Z",
+          "cart_token": "shopify_test2",
+          "note": null,
+          "user_id": "rudder01",
+          "token": "shopify_test2",
+          "updated_at": "2023-02-10T12:16:07.251Z"
+        },
+        "timestamp": "2023-02-10T12:16:07.251Z"
+      }
+    ]
   },
   {
     "description": "Track Call -> checkouts_update with rudderAnonymousId inside note_attributes",
@@ -498,120 +514,51 @@
         ]
       },
       "cart_token": null,
-      "line_items": [
-        {
-          "id": 44323300999443,
-          "properties": null,
-          "quantity": 1,
-          "variant_id": 44323300999443,
-          "key": "44323300999443:ky",
-          "discounted_price": "30.00",
-          "discounts": [],
-          "gift_card": false,
-          "grams": 0,
-          "line_price": "30.00",
-          "original_line_price": "30.00",
-          "original_price": "30.00",
-          "price": "30.00",
-          "product_id": 8100575674643,
-          "sku": "",
-          "taxable": true,
-          "title": "Shirt 2 - LARGE",
-          "total_discount": "0.00",
-          "vendor": "testAnant",
-          "discounted_price_set": {
-            "shop_money": {
-              "amount": "30.0",
-              "currency_code": "GBP"
-            },
-            "presentment_money": {
-              "amount": "30.0",
-              "currency_code": "GBP"
-            }
-          },
-          "line_price_set": {
-            "shop_money": {
-              "amount": "30.0",
-              "currency_code": "GBP"
-            },
-            "presentment_money": {
-              "amount": "30.0",
-              "currency_code": "GBP"
-            }
-          },
-          "original_line_price_set": {
-            "shop_money": {
-              "amount": "30.0",
-              "currency_code": "GBP"
-            },
-            "presentment_money": {
-              "amount": "30.0",
-              "currency_code": "GBP"
-            }
-          },
-          "price_set": {
-            "shop_money": {
-              "amount": "30.0",
-              "currency_code": "GBP"
-            },
-            "presentment_money": {
-              "amount": "30.0",
-              "currency_code": "GBP"
-            }
-          },
-          "total_discount_set": {
-            "shop_money": {
-              "amount": "0.0",
-              "currency_code": "GBP"
-            },
-            "presentment_money": {
-              "amount": "0.0",
-              "currency_code": "GBP"
-            }
-          }
-        }
-      ],
+      "line_items": [],
       "note": null,
       "updated_at": "2023-02-10T12:16:07.251Z",
       "created_at": "2023-02-10T12:05:04.402Z"
     },
-    "output": {
-      "context": {
-        "cart_token": null,
-        "library": {
-          "name": "RudderStack Shopify Cloud",
-          "version": "1.0.0"
-        },
-        "integration": {
-          "name": "SHOPIFY"
-        },
-        "topic": "checkouts_update"
-      },
-      "event": "Payment Info Entered",
-      "integrations": {
-        "SHOPIFY": true
-      },
-      "type": "track",
-      "properties": {
-        "cart_token": null,
-        "note": null,
-        "checkout_id": "shopify_test2",
-        "note_attributes": [
-          {
-            "name": "rudderAnonymousId",
-            "value": "RUDDER_ANON_ID"
+    "output": [
+      {
+        "context": {
+          "cart_token": null,
+          "library": {
+            "name": "RudderStack Shopify Cloud",
+            "version": "1.0.0"
           },
-          {
-            "name": "rudderUpdatedAt",
-            "value": "RUDDER_UPDTD_AT"
-          }
-        ],
-        "created_at": "2023-02-10T12:05:04.402Z",
-        "updated_at": "2023-02-10T12:16:07.251Z"
-      },
-      "timestamp": "2023-02-10T12:16:07.251Z",
-      "anonymousId": "RUDDER_ANON_ID"
-    }
+          "integration": {
+            "name": "SHOPIFY"
+          },
+          "topic": "checkouts_update"
+        },
+        "event": "Payment Info Entered",
+        "integrations": {
+          "SHOPIFY": true
+        },
+        "type": "track",
+        "properties": {
+          "cart_token": null,
+          "note": null,
+          "checkout_id": "shopify_test2",
+          "note_attributes": [
+            {
+              "name": "rudderAnonymousId",
+              "value": "RUDDER_ANON_ID"
+            },
+            {
+              "name": "rudderUpdatedAt",
+              "value": "RUDDER_UPDTD_AT"
+            }
+          ],
+          "line_items": [],
+          "created_at": "2023-02-10T12:05:04.402Z",
+          "updated_at": "2023-02-10T12:16:07.251Z"
+        },
+        "timestamp": "2023-02-10T12:16:07.251Z",
+        "anonymousId": "RUDDER_ANON_ID"
+      }
+    ]
   },
   {
     "description": "Track Call -> orders_updated with no mapping for cartToken",
@@ -628,34 +575,36 @@
       "updated_at": "2023-02-10T12:16:07.251Z",
       "created_at": "2023-02-10T12:05:04.402Z"
     },
-    "output": {
-      "anonymousId": "7cab9977-557d-5771-93e0-f62e95e1f5f9",
-      "context": {
-        "cart_token": "shopify_test4",
-        "integration": {
-          "name": "SHOPIFY"
+    "output": [
+      {
+        "anonymousId": "7cab9977-557d-5771-93e0-f62e95e1f5f9",
+        "context": {
+          "cart_token": "shopify_test4",
+          "integration": {
+            "name": "SHOPIFY"
+          },
+          "library": {
+            "name": "RudderStack Shopify Cloud",
+            "version": "1.0.0"
+          },
+          "topic": "orders_updated"
         },
-        "library": {
-          "name": "RudderStack Shopify Cloud",
-          "version": "1.0.0"
+        "event": "Order Updated",
+        "integrations": {
+          "SHOPIFY": true
         },
-        "topic": "orders_updated"
-      },
-      "event": "Order Updated",
-      "integrations": {
-        "SHOPIFY": true
-      },
-      "properties": {
-        "created_at": "2023-02-10T12:05:04.402Z",
-        "order_id": "order_id",
-        "note": null,
-        "products": [],
-        "cart_token": "shopify_test4",
-        "updated_at": "2023-02-10T12:16:07.251Z"
-      },
-      "timestamp": "2023-02-10T12:16:07.251Z",
-      "type": "track"
-    }
+        "properties": {
+          "created_at": "2023-02-10T12:05:04.402Z",
+          "order_id": "order_id",
+          "note": null,
+          "products": [],
+          "cart_token": "shopify_test4",
+          "updated_at": "2023-02-10T12:16:07.251Z"
+        },
+        "timestamp": "2023-02-10T12:16:07.251Z",
+        "type": "track"
+      }
+    ]
   },
   {
     "description": "Rudder Identifier Event",
@@ -675,13 +624,15 @@
         "line_items": []
       }
     },
-    "output": {
-      "outputToSource": {
-        "body": "T0s=",
-        "contentType": "text/plain"
-      },
-      "statusCode": 200
-    }
+    "output": [
+      {
+        "outputToSource": {
+          "body": "T0s=",
+          "contentType": "text/plain"
+        },
+        "statusCode": 200
+      }
+    ]
   },
   {
     "description": "Rudder Session Identifier Event",
@@ -701,12 +652,14 @@
         "line_items": []
       }
     },
-    "output": {
-      "outputToSource": {
-        "body": "T0s=",
-        "contentType": "text/plain"
-      },
-      "statusCode": 200
-    }
+    "output": [
+      {
+        "outputToSource": {
+          "body": "T0s=",
+          "contentType": "text/plain"
+        },
+        "statusCode": 200
+      }
+    ]
   }
 ]

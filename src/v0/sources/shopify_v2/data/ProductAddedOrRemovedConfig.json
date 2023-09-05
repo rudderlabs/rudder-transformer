@@ -1,0 +1,56 @@
+[
+    {
+      "sourceKeys": "id",
+      "destKey": "cart_id",
+      "metadata": {
+        "type": "toString"
+      }
+    },
+    {
+      "sourceKeys": "product_properties.product_id",
+      "destKey": "product_id",
+      "metadata": {
+        "type": "toString"
+      }
+    },
+    {
+        "sourceKeys": "product_properties.sku",
+        "destKey": "sku",
+        "metadata": {
+          "type": "toString"
+        }
+      },
+      {
+        "sourceKeys": "product_properties.title",
+        "destKey": "name",
+        "metadata": {
+          "type": "toString"
+        }
+      },
+      {
+        "sourceKeys": "product_properties.vendor",
+        "destKey": "brand",
+        "metadata": {
+          "type": "toString"
+        }
+      },
+      {
+        "sourceKeys": "product_properties.variant_name",
+        "destKey": "variant",
+        "metadata": {
+          "type": "toString"
+        }
+      },
+      {
+        "sourceKeys": "product_properties.price",
+        "destKey": "price",
+        "metadata": {
+          "type": "toNumber"
+        }
+      },
+      {
+        "sourceKeys": "product_properties.quantity",
+        "destKey": "quantity"
+      }
+  ]
+  

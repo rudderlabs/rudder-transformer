@@ -7,12 +7,12 @@ describe(' Test Cases -> set AnonymousId and sessionId without using Redis', () 
         cart_token: '123',
       },
     };
-    const redisData = {};
+    const dbData = {};
     const expectedOutput = {
       anonymousId: 'b9b6607d-6974-594f-8e99-ac3de71c4d89',
       sessionId: undefined,
     };
-    const output = idResolutionLayer.getAnonymousIdAndSessionId(input, 'order_updated', redisData);
+    const output = idResolutionLayer.getAnonymousIdAndSessionId(input, 'order_updated', dbData);
     expect(output).toEqual(expectedOutput);
   });
 
@@ -21,11 +21,11 @@ describe(' Test Cases -> set AnonymousId and sessionId without using Redis', () 
       event: 'Customer Enabled',
       properties: {},
     };
-    const redisData = {};
+    const dbData = {};
     const output = idResolutionLayer.getAnonymousIdAndSessionId(
       input,
       'customer_enabled',
-      redisData,
+      dbData,
     );
     expect(output).toEqual(output); // since it will be random
   });
@@ -37,9 +37,9 @@ describe(' Test Cases -> set AnonymousId and sessionId without using Redis', () 
         order_id: 'Order_ID',
       },
     };
-    const redisData = {};
+    const dbData = {};
     const expectedOutput = { anonymousId: undefined, sessionId: undefined };
-    const output = idResolutionLayer.getAnonymousIdAndSessionId(input, 'order_deleted', redisData);
+    const output = idResolutionLayer.getAnonymousIdAndSessionId(input, 'order_deleted', dbData);
     expect(output).toEqual(expectedOutput);
   });
 
@@ -64,12 +64,12 @@ describe(' Test Cases -> set AnonymousId and sessionId without using Redis', () 
         ],
       },
     };
-    const redisData = {};
+    const dbData = {};
     const expectedOutput = { anonymousId: 'RUDDER_ANONYMOUSID', sessionId: 'RUDDER_SESSIONID' };
     const output = idResolutionLayer.getAnonymousIdAndSessionId(
       input,
       'checkout_created',
-      redisData,
+      dbData,
     );
     expect(output).toEqual(expectedOutput);
   });
@@ -89,27 +89,27 @@ describe('set AnonymousId and sesssionId with Redis Data Test Cases', () => {
         ],
       },
     };
-    const redisData = { anonymousId: 'anon_shopify_test2', sessionId: 'session_id_2' };
+    const dbData = { anonymousId: 'anon_shopify_test2', sessionId: 'session_id_2' };
     const expectedOutput = { anonymousId: 'anon_shopify_test2', sessionId: 'session_id_2' }; // fetched succesfully from redis
 
-    const output = idResolutionLayer.getAnonymousIdAndSessionId(input, 'order_paid', redisData);
+    const output = idResolutionLayer.getAnonymousIdAndSessionId(input, 'order_paid', dbData);
     expect(output).toEqual(expectedOutput);
   });
 
-  it('No mapping not present in DB for given cartToken. Hence no redisData', async () => {
+  it('No mapping not present in DB for given cartToken. Hence no dbData', async () => {
     const input = {
       event: 'Order Updated',
       properties: {
         cart_token: 'unstored_id',
       },
     };
-    const redisData = {};
+    const dbData = {};
     const expectedOutput = {
       anonymousId: '281a3e25-e603-5870-9cda-281c22940970',
       sessionId: undefined,
     };
 
-    const output = idResolutionLayer.getAnonymousIdAndSessionId(input, 'order_updated', redisData);
+    const output = idResolutionLayer.getAnonymousIdAndSessionId(input, 'order_updated', dbData);
     expect(output).toEqual(expectedOutput);
   });
 

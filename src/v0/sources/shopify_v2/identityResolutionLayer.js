@@ -20,7 +20,7 @@ const idResolutionLayer = {
   /**
    * This function retrieves anonymousId and sessionId in folowing steps:
    * 1. Checks for `rudderAnonymousId`and `rudderSessionId in `note_atrributes`
-   * 2. Checks in redisData
+   * 2. Checks in dbData
    * 3. This means we don't have `anonymousId` and hence events CAN NOT be stitched and we check for cartToken
    *    a. if cartToken is available we return its hash value
    *    b. else we check if the event is an SHOPIFY_ADMIN_ONLY_EVENT
@@ -31,7 +31,7 @@ const idResolutionLayer = {
    * @param {*} metricMetadata
    * @returns
    */
-  getAnonymousIdAndSessionId(message, shopifyTopic, redisData = null) {
+  getAnonymousIdAndSessionId(message, shopifyTopic, dbData = null) {
     let anonymousId;
     let sessionId;
     const noteAttributes = message.properties?.note_attributes;
@@ -55,8 +55,8 @@ const idResolutionLayer = {
         sessionId,
       };
     }
-    anonymousId = anonymousId || redisData?.anonymousId;
-    sessionId = sessionId || redisData?.sessionId;
+    anonymousId = anonymousId || dbData?.anonymousId;
+    sessionId = sessionId || dbData?.sessionId;
     if (!isDefinedAndNotNull(anonymousId)) {
       /* anonymousId or sessionId not found from db as well
             Hash the id and use it as anonymousId (limiting 256 -> 36 chars) and sessionId is not sent as its not required field
@@ -66,12 +66,12 @@ const idResolutionLayer = {
     return { anonymousId, sessionId };
   },
 
-  resolveId(message, redisData, shopifyTopic) {
+  resolveId(message, dbData, shopifyTopic) {
     const updatedMessage = message;
     const { anonymousId, sessionId } = this.getAnonymousIdAndSessionId(
       message,
       shopifyTopic,
-      redisData,
+      dbData,
     );
     if (isDefinedAndNotNull(anonymousId)) {
       updatedMessage.setProperty('anonymousId', anonymousId);

@@ -31,16 +31,28 @@ const RUDDER_ECOM_MAP = {
   },
   payment_info_entered: { event: 'Payment Info Entered', name: 'PaymentInfoEnteredConfig' },
   orders_updated: { event: 'Order Updated', name: 'OrderUpdatedConfig', lineItems: true },
-  // carts_update: { event: 'Cart Updated', name: 'CartsUpdatedConfig' }, // This will split into Product Added and Product Removed,
   orders_paid: { event: 'Order Completed', name: 'OrderCompletedConfig', lineItems: true },
   orders_cancelled: {
     event: 'Order Cancelled',
     name: 'OrderCancelledConfig',
     lineItems: true,
   },
+  product_added: {
+    event: 'Product Added',
+    name: 'ProductAddedOrRemovedConfig',
+    lineItems: true,
+  },
+  product_removed: {
+    event: 'Product Removed',
+    name: 'ProductAddedOrRemovedConfig',
+    lineItems: true,
+  },
 };
 
-const SHOPIFY_TO_RUDDER_ECOM_EVENTS_MAP = ['carts_update', 'checkouts_update'];
+const SHOPIFY_TO_RUDDER_ECOM_EVENTS_MAP = {
+  CART_UPDATED: 'carts_update',
+  CHECKOUTS_UPDATE: 'checkouts_update',
+};
 
 const SHOPIFY_ADMIN_ONLY_EVENTS = ['Order Deleted', 'Fulfillments Create', 'Fulfillments Update'];
 

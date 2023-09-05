@@ -1,5 +1,4 @@
 const get = require('get-value');
-const { default: axios } = require('axios');
 const {
   RUDDER_ECOM_MAP,
   NO_OPERATION_SUCCESS,
@@ -207,7 +206,7 @@ const trackLayer = {
           event?.id || event?.token,
           updatedQuantity,
         );
-        // TODO: map extra properties from axios call
+        // TODO1: map extra properties from axios call
 
         // This means either this Product is Added or Removed
         if (!prevQuantity || currentQuantity > prevQuantity) {

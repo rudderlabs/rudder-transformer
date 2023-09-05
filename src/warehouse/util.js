@@ -59,7 +59,7 @@ const keysFromJsonPaths = (jsonPaths) => {
   const jsonPathKeys = {};
   const jsonLegacyPathKeys = {};
 
-  const supportedEventPrefixes = ['track.', 'identify.', 'page.', 'screen.', 'alias.', 'group.'];
+  const supportedEventPrefixes = ['track.', 'identify.', 'page.', 'screen.', 'alias.', 'group.', 'extract.'];
 
   jsonPaths.forEach((jsonPath) => {
     const trimmedJSONPath = jsonPath.trim();

@@ -1068,6 +1068,9 @@ describe("Integration options", () => {
       {
         eventType: "tracks",
       },
+      {
+        eventType: "extract",
+      },
     ];
 
     for (const testCase of testCases) {

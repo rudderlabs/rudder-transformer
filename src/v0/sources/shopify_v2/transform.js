@@ -32,7 +32,7 @@ const processEvent = async (inputEvent, metricMetadata) => {
       metricMetadata,
     );
   }
-  message.map((event) => {
+  message.forEach((event) => {
     // check for if message is NO_OPERATION_SUCCESS Payload
     if (event.outputToSource) {
       return event;

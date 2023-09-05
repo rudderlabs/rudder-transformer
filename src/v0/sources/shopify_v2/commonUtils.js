@@ -7,7 +7,7 @@ const { TransformationError } = require('../../util/errorTypes');
 
 const getCartToken = (message, shopifyTopic) => {
   if (shopifyTopic === 'carts_update') {
-    return message.id || message.token || message.properties?.id || message.properties?.token;
+    return message.id || message.token || message.properties?.cart_id;
   }
   return message.cart_token || message.properties?.cart_token || null;
 };
@@ -121,6 +121,5 @@ module.exports = {
   extractEmailFromPayload,
   getLineItemsToStore,
   getDataFromRedis,
-  getLineItems,
   getUnhashedLineItems,
 };

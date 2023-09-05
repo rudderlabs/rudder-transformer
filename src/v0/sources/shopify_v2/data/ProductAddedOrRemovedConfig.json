@@ -1,55 +1,55 @@
 [
     {
-      "sourceKeys": "id",
+      "sourceKeys": "cart_id",
       "destKey": "cart_id",
       "metadata": {
         "type": "toString"
       }
     },
     {
-      "sourceKeys": "product_properties.product_id",
+      "sourceKeys": "product_id",
       "destKey": "product_id",
       "metadata": {
         "type": "toString"
       }
     },
     {
-        "sourceKeys": "product_properties.sku",
+        "sourceKeys": "sku",
         "destKey": "sku",
         "metadata": {
           "type": "toString"
         }
       },
       {
-        "sourceKeys": "product_properties.title",
+        "sourceKeys": "title",
         "destKey": "name",
         "metadata": {
           "type": "toString"
         }
       },
       {
-        "sourceKeys": "product_properties.vendor",
+        "sourceKeys": "vendor",
         "destKey": "brand",
         "metadata": {
           "type": "toString"
         }
       },
       {
-        "sourceKeys": "product_properties.variant_name",
+        "sourceKeys": "variant_name",
         "destKey": "variant",
         "metadata": {
           "type": "toString"
         }
       },
       {
-        "sourceKeys": "product_properties.price",
+        "sourceKeys": "price",
         "destKey": "price",
         "metadata": {
           "type": "toNumber"
         }
       },
       {
-        "sourceKeys": "product_properties.quantity",
+        "sourceKeys": "quantity",
         "destKey": "quantity"
       }
   ]

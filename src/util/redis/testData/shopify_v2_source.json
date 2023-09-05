@@ -1,17 +1,275 @@
 [
   {
+    "description": "Track Call -> Product Added Event with prev cart state",
+    "input": {
+      "query_parameters": {
+        "topic": [
+          "carts_update"
+        ]
+      },
+      "id": "shopify_v2_test5",
+      "line_items": [
+        {
+          "id": 123,
+          "properties": null,
+          "quantity": 5,
+          "variant_id": 456,
+          "key": "some:key",
+          "discounted_price": "30.00",
+          "discounts": [],
+          "gift_card": false,
+          "grams": 0,
+          "line_price": "60.00",
+          "original_line_price": "60.00",
+          "original_price": "30.00",
+          "price": "30.00",
+          "product_id": 987,
+          "sku": "",
+          "taxable": true,
+          "title": "Shirt 2 - LARGE",
+          "total_discount": "0.00",
+          "vendor": "testAnant"
+        },
+        {
+          "id": 1234,
+          "properties": null,
+          "quantity": 2,
+          "variant_id": 4556,
+          "key": "some:key",
+          "discounted_price": "20.00",
+          "discounts": [],
+          "gift_card": false,
+          "grams": 0,
+          "line_price": "20.00",
+          "original_line_price": "60.00",
+          "original_price": "20.00",
+          "price": "30.00",
+          "product_id": 987,
+          "sku": "1212",
+          "taxable": true,
+          "title": "Shirt 3 - LARGE",
+          "total_discount": "0.00",
+          "vendor": "testAnant"
+        }
+      ],
+      "note": null,
+      "updated_at": "2023-02-10T12:05:07.251Z",
+      "created_at": "2023-02-10T12:04:04.402Z"
+    },
+    "output": [
+      {
+        "context": {
+          "library": {
+            "name": "RudderStack Shopify Cloud",
+            "version": "1.0.0"
+          },
+          "integration": {
+            "name": "SHOPIFY"
+          },
+          "sessionId": "session_id_5",
+          "topic": "carts_update"
+        },
+        "integrations": {
+          "SHOPIFY": true
+        },
+        "type": "track",
+        "event": "Product Added",
+        "properties": {
+          "cart_id": "shopify_v2_test5",
+          "product_id": "987",
+          "name": "Shirt 2 - LARGE",
+          "brand": "testAnant",
+          "price": 30,
+          "quantity": 3,
+          "id": 123,
+          "properties": null,
+          "variant_id": 456,
+          "key": "some:key",
+          "discounted_price": "30.00",
+          "discounts": [],
+          "gift_card": false,
+          "grams": 0,
+          "line_price": "60.00",
+          "original_line_price": "60.00",
+          "original_price": "30.00",
+          "taxable": true,
+          "total_discount": "0.00"
+        },
+        "anonymousId": "anon_id_5"
+      },
+      {
+        "context": {
+          "library": {
+            "name": "RudderStack Shopify Cloud",
+            "version": "1.0.0"
+          },
+          "integration": {
+            "name": "SHOPIFY"
+          },
+          "sessionId": "session_id_5",
+          "topic": "carts_update"
+        },
+        "integrations": {
+          "SHOPIFY": true
+        },
+        "type": "track",
+        "event": "Product Added",
+        "properties": {
+          "cart_id": "shopify_v2_test5",
+          "product_id": "987",
+          "name": "Shirt 3 - LARGE",
+          "brand": "testAnant",
+          "price": 30,
+          "quantity": 2,
+          "sku": "1212",
+          "id": 1234,
+          "properties": null,
+          "variant_id": 4556,
+          "key": "some:key",
+          "discounted_price": "20.00",
+          "discounts": [],
+          "gift_card": false,
+          "grams": 0,
+          "line_price": "20.00",
+          "original_line_price": "60.00",
+          "original_price": "20.00",
+          "taxable": true,
+          "total_discount": "0.00"
+        },
+        "anonymousId": "anon_id_5"
+      }
+    ]
+  },
+  {
+    "description": "Track Call -> Product Removed Event with prev cart state",
+    "input": {
+      "query_parameters": {
+        "topic": [
+          "carts_update"
+        ]
+      },
+      "id": "shopify_v2_test5",
+      "line_items": [],
+      "note": null,
+      "updated_at": "2023-02-10T12:05:07.251Z",
+      "created_at": "2023-02-10T12:04:04.402Z"
+    },
+    "output": [
+      {
+        "context": {
+          "library": {
+            "name": "RudderStack Shopify Cloud",
+            "version": "1.0.0"
+          },
+          "integration": {
+            "name": "SHOPIFY"
+          },
+          "sessionId": "session_id_5",
+          "topic": "carts_update"
+        },
+        "integrations": {
+          "SHOPIFY": true
+        },
+        "type": "track",
+        "event": "Product Removed",
+        "properties": {
+          "id": "123",
+          "cart_id": "shopify_v2_test5",
+          "product_id": "987",
+          "name": "Shirt 2 - LARGE",
+          "brand": "testAnant",
+          "price": 30,
+          "quantity": 2,
+          "variant_id": 456,
+          "key": "some:key"
+        },
+        "anonymousId": "anon_id_5"
+      }
+    ]
+  },
+  {
+    "description": "Track Call -> Duplicate Cart Event with prev cart state",
+    "input": {
+      "query_parameters": {
+        "topic": [
+          "carts_update"
+        ]
+      },
+      "id": "shopify_v2_test5",
+      "line_items": [
+        {
+          "id": 123,
+          "properties": null,
+          "quantity": 2,
+          "variant_id": 456,
+          "key": "some:key",
+          "discounted_price": "30.00",
+          "discounts": [],
+          "gift_card": false,
+          "grams": 0,
+          "line_price": "60.00",
+          "original_line_price": "60.00",
+          "original_price": "30.00",
+          "price": "30.00",
+          "product_id": 987,
+          "sku": "",
+          "taxable": true,
+          "title": "Shirt 2 - LARGE",
+          "total_discount": "0.00",
+          "vendor": "testAnant"
+        }
+      ],
+      "note": null,
+      "updated_at": "2023-02-10T12:05:07.251Z",
+      "created_at": "2023-02-10T12:04:04.402Z"
+    },
+    "output": [
+      {
+        "outputToSource": {
+          "body": "T0s=",
+          "contentType": "text/plain"
+        },
+        "statusCode": 200
+      }
+    ]
+  },
+  {
+    "description": "Track Call -> Duplicate Cart Event with prev cart state and no lineItems",
+    "input": {
+      "query_parameters": {
+        "topic": [
+          "carts_update"
+        ]
+      },
+      "id": "shopify_v2_test_cart",
+      "line_items": [],
+      "note": null,
+      "updated_at": "2023-02-10T12:05:07.251Z",
+      "created_at": "2023-02-10T12:04:04.402Z"
+    },
+    "output": [
+      {
+        "outputToSource": {
+          "body": "T0s=",
+          "contentType": "text/plain"
+        },
+        "statusCode": 200
+      }
+    ]
+  },
+  {
     "description": "Rudder Session Identifier Event redis map set fail",
     "input": {
       "event": "rudderSessionIdentifier",
       "sessionId": "session_id",
-      "cartToken": "shopify_test_set_map_fail",
+      "cartToken": "shopify_v2_test_set_map_fail",
       "query_parameters": {
         "writeKey": [
           "Shopify Write Key"
         ]
       },
       "cart": {
-        "token": "shopify_test_set_map_fail",
+        "token": "shopify_v2_test_set_map_fail",
         "id": "id",
         "updated_at": "2023-02-10T07:44:06-05:00",
         "line_items": []
@@ -116,7 +374,7 @@
   {
     "description": "Track Call -> orders_delete with invalid cartToken",
     "input": {
-      "id": "shopify_test3",
+      "id": "shopify_v2_test3",
       "query_parameters": {
         "topic": [
           "orders_delete"
@@ -147,7 +405,7 @@
         "userId": "shopify-admin",
         "properties": {
           "created_at": "2023-02-10T12:05:04.402Z",
-          "id": "shopify_test3",
+          "id": "shopify_v2_test3",
           "note": null,
           "products": [],
           "updated_at": "2023-02-10T12:16:07.251Z"
@@ -158,7 +416,7 @@
   {
     "description": "Track Call -> checkouts_delete with invalid cartToken",
     "input": {
-      "id": "shopify_test3",
+      "id": "shopify_v2_test3",
       "query_parameters": {
         "topic": [
           "checkouts_delete"
@@ -188,7 +446,7 @@
         "type": "track",
         "properties": {
           "created_at": "2023-02-10T12:05:04.402Z",
-          "id": "shopify_test3",
+          "id": "shopify_v2_test3",
           "note": null,
           "products": [],
           "updated_at": "2023-02-10T12:16:07.251Z"
@@ -206,7 +464,7 @@
           "value": "RANDOM_VAL"
         }
       ],
-      "id": "shopify_test2",
+      "id": "shopify_v2_test2",
       "query_parameters": {
         "topic": [
           "orders_updated"
@@ -268,7 +526,7 @@
             "browser_ip": "122.161.73.113",
             "user_agent": "Mozilla/5.0 User Agent"
           },
-          "order_id": "shopify_test2",
+          "order_id": "shopify_v2_test2",
           "created_at": "2023-02-10T12:05:04.402Z",
           "products": [],
           "updated_at": "2023-02-10T12:16:07.251Z"
@@ -447,15 +705,15 @@
   {
     "description": "Track Call -> checkouts_update-> Payment Info Entered ",
     "input": {
-      "id": "shopify_test2",
+      "id": "shopify_v2_test2",
       "user_id": "rudder01",
       "query_parameters": {
         "topic": [
           "checkouts_update"
         ]
       },
-      "token": "shopify_test2",
-      "cart_token": "shopify_test2",
+      "token": "shopify_v2_test2",
+      "cart_token": "shopify_v2_test2",
       "note": null,
       "updated_at": "2023-02-10T12:16:07.251Z",
       "created_at": "2023-02-10T12:05:04.402Z"
@@ -463,10 +721,10 @@
     "output": [
       {
         "userId": "rudder01",
-        "anonymousId": "anon_shopify_test2",
+        "anonymousId": "anon_shopify_v2_test2",
         "context": {
           "sessionId": "session_id_2",
-          "cart_token": "shopify_test2",
+          "cart_token": "shopify_v2_test2",
           "library": {
             "name": "RudderStack Shopify Cloud",
             "version": "1.0.0"
@@ -482,12 +740,12 @@
         },
         "type": "track",
         "properties": {
-          "checkout_id": "shopify_test2",
+          "checkout_id": "shopify_v2_test2",
           "created_at": "2023-02-10T12:05:04.402Z",
-          "cart_token": "shopify_test2",
+          "cart_token": "shopify_v2_test2",
           "note": null,
           "user_id": "rudder01",
-          "token": "shopify_test2",
+          "token": "shopify_v2_test2",
           "updated_at": "2023-02-10T12:16:07.251Z"
         },
         "timestamp": "2023-02-10T12:16:07.251Z"
@@ -507,7 +765,7 @@
           "value": "RUDDER_UPDTD_AT"
         }
       ],
-      "id": "shopify_test2",
+      "id": "shopify_v2_test2",
       "query_parameters": {
         "topic": [
           "checkouts_update"
@@ -540,7 +798,7 @@
         "properties": {
           "cart_token": null,
           "note": null,
-          "checkout_id": "shopify_test2",
+          "checkout_id": "shopify_v2_test2",
           "note_attributes": [
             {
               "name": "rudderAnonymousId",
@@ -569,7 +827,7 @@
           "orders_updated"
         ]
       },
-      "cart_token": "shopify_test4",
+      "cart_token": "shopify_v2_test4",
       "line_items": [],
       "note": null,
       "updated_at": "2023-02-10T12:16:07.251Z",
@@ -577,9 +835,9 @@
     },
     "output": [
       {
-        "anonymousId": "7cab9977-557d-5771-93e0-f62e95e1f5f9",
+        "anonymousId": "7a24d975-7508-58f2-aa20-413adcd4f4ed",
         "context": {
-          "cart_token": "shopify_test4",
+          "cart_token": "shopify_v2_test4",
           "integration": {
             "name": "SHOPIFY"
           },
@@ -598,7 +856,7 @@
           "order_id": "order_id",
           "note": null,
           "products": [],
-          "cart_token": "shopify_test4",
+          "cart_token": "shopify_v2_test4",
           "updated_at": "2023-02-10T12:16:07.251Z"
         },
         "timestamp": "2023-02-10T12:16:07.251Z",
@@ -611,7 +869,7 @@
     "input": {
       "event": "rudderIdentifier",
       "anonymousId": "b9993cc5-9e60-4e69-be0e-4e38c228314b",
-      "cartToken": "shopify_test1",
+      "cartToken": "shopify_v2_test1",
       "query_parameters": {
         "writeKey": [
           "Shopify Write Key"
@@ -639,7 +897,7 @@
     "input": {
       "event": "rudderSessionIdentifier",
       "sessionId": "b9993cc5-9e60-4e69-be0e-4e38c228314b",
-      "cartToken": "shopify_test1",
+      "cartToken": "shopify_v2_test1",
       "query_parameters": {
         "writeKey": [
           "Shopify Write Key"

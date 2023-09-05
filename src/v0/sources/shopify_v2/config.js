@@ -40,12 +40,10 @@ const RUDDER_ECOM_MAP = {
   product_added: {
     event: 'Product Added',
     name: 'ProductAddedOrRemovedConfig',
-    lineItems: true,
   },
   product_removed: {
     event: 'Product Removed',
     name: 'ProductAddedOrRemovedConfig',
-    lineItems: true,
   },
 };
 

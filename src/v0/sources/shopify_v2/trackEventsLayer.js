@@ -165,7 +165,7 @@ const trackLayer = {
   },
 
   /**
-   * This function generates the updated product event
+   * This function generates the updated product properties
    * @param {*} product
    * @param {*} updatedQuantity
    * @param {*} cart_token
@@ -176,20 +176,18 @@ const trackLayer = {
     if (updatedQuantity) {
       updatedCartProperties.quantity = updatedQuantity;
     }
-    return { id: cart_token, properties: updatedCartProperties };
+    updatedCartProperties.cart_id = cart_token;
+    return updatedCartProperties;
   },
 
   async generateProductAddedAndRemovedEvents(event, dbData, metricMetadata) {
     const events = [];
-    let prevLineItems = dbData?.itemsHash;
+    let prevLineItems = dbData?.lineItems;
     // if no prev cart is found we trigger product added event for every line_item present
     if (!prevLineItems) {
       event?.line_items.forEach((product) => {
-        const productEvent = {
-          id: event?.id || event?.token,
-          product_properties: product,
-        };
-        events.push(this.ecomPayloadBuilder(productEvent, 'product_added'));
+        const updatedProduct = this.getUpdatedProductProperties(product, event?.id || event?.token);
+        events.push(this.ecomPayloadBuilder(updatedProduct, 'product_added'));
       });
       return events;
     }
@@ -212,7 +210,7 @@ const trackLayer = {
         // TODO: map extra properties from axios call
 
         // This means either this Product is Added or Removed
-        if (currentQuantity > prevQuantity) {
+        if (!prevQuantity || currentQuantity > prevQuantity) {
           events.push(this.ecomPayloadBuilder(updatedProduct, 'product_added'));
         } else {
           events.push(this.ecomPayloadBuilder(updatedProduct, 'product_removed'));
@@ -220,12 +218,18 @@ const trackLayer = {
       }
     });
     // We also want to see what prevLineItems are not present in the currentCart to trigger Product Removed Event for them
-    prevLineItems.forEach((product) => {
+    Object.keys(prevLineItems).forEach((lineItemID) => {
+      const product = prevLineItems[lineItemID];
       const updatedProduct = this.getUpdatedProductProperties(product, event?.id || event?.token);
+      updatedProduct.id = lineItemID;
       events.push(this.ecomPayloadBuilder(updatedProduct, 'product_removed'));
     });
     if (events.length > 0) {
-      await this.updateCartState(getLineItemsToStore(event), event.id || event.token, metricMetadata);
+      await this.updateCartState(
+        getLineItemsToStore(event),
+        event.id || event.token,
+        metricMetadata,
+      );
     }
     return events;
   },
@@ -252,10 +256,10 @@ const trackLayer = {
       try {
         stats.increment('shopify_redis_calls', {
           type: 'set',
-          field: 'itemsHash',
+          field: 'lineItems',
           ...metricMetadata,
         });
-        await RedisDB.setVal(`${cart_token}`, ['itemsHash', updatedCartState]);
+        await RedisDB.setVal(`${cart_token}`, ['lineItems', updatedCartState]);
       } catch (e) {
         logger.debug(`{{SHOPIFY::}} cartToken map set call Failed due redis error ${e}`);
         stats.increment('shopify_redis_failures', {
@@ -269,6 +273,9 @@ const trackLayer = {
   async processTrackEvent(event, eventName, dbData, metricMetadata) {
     let updatedEventName = eventName;
     let payload;
+    /* if event is cart update then we do the build the payload for Product Added and/or
+     * Product Removed events and return the array from the same block
+     */
     if (SHOPIFY_TO_RUDDER_ECOM_EVENTS_MAP.CART_UPDATED === eventName) {
       let productAddedOrRemovedEvents = await this.generateProductAddedAndRemovedEvents(
         event,
@@ -281,6 +288,7 @@ const trackLayer = {
       );
       return productAddedOrRemovedEvents;
     }
+    // if event is checkout updated we get the updated event name
     if (SHOPIFY_TO_RUDDER_ECOM_EVENTS_MAP.CHECKOUTS_UPDATE === eventName) {
       updatedEventName = this.getUpdatedEventNameForCheckoutUpateEvent(event);
     }

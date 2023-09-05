@@ -1,0 +1,38 @@
+{
+  "shopify_v2_test1": {
+    "anonymousId": "anon_shopify_v2_test1",
+    "lineItems": "EMPTY"
+  },
+  "shopify_v2_test3": {
+    "anonymousId": "anon_shopify_v2_test1",
+    "sessionId": "session_id_1",
+    "lineItems": "EMPTY"
+  },
+  "shopify_v2_test2": {
+    "anonymousId": "anon_shopify_v2_test2",
+    "sessionId": "session_id_2",
+    "lineItems": "EMPTY"
+  },
+  "shopify_v2_test_cart": {
+    "anonymousId": "anon_shopify_v2_test1",
+    "lineItems": "EMPTY"
+  },
+  "shopify_v2_test_duplicate_cart": {
+    "anonymousId": "anon_shopify_v2_test1",
+    "lineItems": "{\"123\":{\"quantity\":2,\"variant_id\":456,\"key\":\"some:key\",\"price\":\"30.00\",\"product_id\":987,\"sku\":\"\",\"title\":\"Shirt 2 - LARGE\",\"vendor\":\"testAnant\"}}"
+  },
+  "shopify_v2_test_set_item_fail": {
+    "anonymousId": "anon_shopify_v2_test_set_fail"
+  },
+  "shopify_v2_test_only_anon_id": {
+    "anonymousId": "anon_shopify_v2_test_only_anon_id"
+  },
+  "shopify_v2_test_set_redis_error": {
+    "lineItems": "EMPTY"
+  },
+  "shopify_v2_test5": {
+    "anonymousId": "anon_id_5",
+    "sessionId": "session_id_5",
+    "lineItems": "{\"123\":{\"quantity\":2,\"variant_id\":456,\"key\":\"some:key\",\"price\":\"30.00\",\"product_id\":987,\"sku\":\"\",\"title\":\"Shirt 2 - LARGE\",\"vendor\":\"testAnant\"}}"
+  }
+}

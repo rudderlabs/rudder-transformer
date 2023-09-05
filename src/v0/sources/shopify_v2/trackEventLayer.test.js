@@ -154,4 +154,427 @@ describe('Track Event Layer Tests', () => {
       ).toEqual(expectedOutput);
     });
   });
+
+  describe('generateProductAddedAndRemovedEvents() unit test cases', () => {
+    it('Product Added event with no prev_cart', async () => {
+      const input = {
+        id: 'cart_id',
+        line_items: [
+          {
+            id: 123456,
+            properties: null,
+            quantity: 5,
+            variant_id: 123456,
+            key: '123456:7891112',
+            discounted_price: '30.00',
+            discounts: [],
+            gift_card: false,
+            grams: 0,
+            line_price: '60.00',
+            original_line_price: '60.00',
+            original_price: '30.00',
+            price: '30.00',
+            product_id: 9876543,
+            sku: '',
+            taxable: true,
+            title: 'Shirt 2 - LARGE',
+            total_discount: '0.00',
+            vendor: 'example',
+            discounted_price_set: {
+              shop_money: {
+                amount: '30.0',
+                currency_code: 'GBP',
+              },
+              presentment_money: {
+                amount: '30.0',
+                currency_code: 'GBP',
+              },
+            },
+            line_price_set: {
+              shop_money: {
+                amount: '60.0',
+                currency_code: 'GBP',
+              },
+              presentment_money: {
+                amount: '60.0',
+                currency_code: 'GBP',
+              },
+            },
+            original_line_price_set: {
+              shop_money: {
+                amount: '60.0',
+                currency_code: 'GBP',
+              },
+              presentment_money: {
+                amount: '60.0',
+                currency_code: 'GBP',
+              },
+            },
+            price_set: {
+              shop_money: {
+                amount: '30.0',
+                currency_code: 'GBP',
+              },
+              presentment_money: {
+                amount: '30.0',
+                currency_code: 'GBP',
+              },
+            },
+            total_discount_set: {
+              shop_money: {
+                amount: '0.0',
+                currency_code: 'GBP',
+              },
+              presentment_money: {
+                amount: '0.0',
+                currency_code: 'GBP',
+              },
+            },
+          },
+        ],
+        note: null,
+        updated_at: '2023-02-10T12:05:07.251Z',
+        created_at: '2023-02-10T12:04:04.402Z',
+      };
+      const expectedOutput = [
+        {
+          context: {
+            integration: {
+              name: 'SHOPIFY',
+            },
+            library: {
+              name: 'unknown',
+              version: 'unknown',
+            },
+          },
+          integrations: {
+            SHOPIFY: false,
+          },
+          type: 'track',
+          event: 'Product Added',
+          properties: {
+            cart_id: 'cart_id',
+            variant_id: 123456,
+            product_id: '9876543',
+            name: 'Shirt 2 - LARGE',
+            brand: 'example',
+            price: 30,
+            quantity: 5,
+            id: 123456,
+            properties: null,
+            key: '123456:7891112',
+            discounted_price: '30.00',
+            discounts: [],
+            gift_card: false,
+            grams: 0,
+            line_price: '60.00',
+            original_line_price: '60.00',
+            original_price: '30.00',
+            taxable: true,
+            total_discount: '0.00',
+            discounted_price_set: {
+              shop_money: {
+                amount: '30.0',
+                currency_code: 'GBP',
+              },
+              presentment_money: {
+                amount: '30.0',
+                currency_code: 'GBP',
+              },
+            },
+            line_price_set: {
+              shop_money: {
+                amount: '60.0',
+                currency_code: 'GBP',
+              },
+              presentment_money: {
+                amount: '60.0',
+                currency_code: 'GBP',
+              },
+            },
+            original_line_price_set: {
+              shop_money: {
+                amount: '60.0',
+                currency_code: 'GBP',
+              },
+              presentment_money: {
+                amount: '60.0',
+                currency_code: 'GBP',
+              },
+            },
+            price_set: {
+              shop_money: {
+                amount: '30.0',
+                currency_code: 'GBP',
+              },
+              presentment_money: {
+                amount: '30.0',
+                currency_code: 'GBP',
+              },
+            },
+            total_discount_set: {
+              shop_money: {
+                amount: '0.0',
+                currency_code: 'GBP',
+              },
+              presentment_money: {
+                amount: '0.0',
+                currency_code: 'GBP',
+              },
+            },
+          },
+        },
+      ];
+      expect(await trackLayer.generateProductAddedAndRemovedEvents(input, {})).toEqual(
+        expectedOutput,
+      );
+    });
+
+    it('Multiple Product Added event with no prev_cart', async () => {
+      const input = {
+        id: 'cart_id',
+        line_items: [
+          {
+            id: 123456,
+            properties: null,
+            quantity: 5,
+            variant_id: 123456,
+            key: '123456:7891112',
+            discounted_price: '30.00',
+            discounts: [],
+            gift_card: false,
+            grams: 0,
+            line_price: '60.00',
+            original_line_price: '60.00',
+            original_price: '30.00',
+            price: '30.00',
+            product_id: 9876543,
+            sku: '',
+            taxable: true,
+            title: 'Shirt 2 - LARGE',
+            total_discount: '0.00',
+            vendor: 'example',
+          },
+          {
+            id: 'id2',
+            properties: null,
+            quantity: 5,
+            variant_id: 'variant_id',
+            key: 'some:key',
+            discounted_price: '30.00',
+            discounts: [],
+            gift_card: false,
+            grams: 0,
+            line_price: '60.00',
+            original_line_price: '60.00',
+            original_price: '30.00',
+            price: '30.00',
+            product_id: 9876543,
+            sku: '',
+            taxable: true,
+            title: 'Shirt 2 - LARGE',
+            total_discount: '0.00',
+            vendor: 'example',
+          },
+        ],
+        note: null,
+        updated_at: '2023-02-10T12:05:07.251Z',
+        created_at: '2023-02-10T12:04:04.402Z',
+      };
+      const expectedOutput = [
+        {
+          context: {
+            integration: {
+              name: 'SHOPIFY',
+            },
+            library: {
+              name: 'unknown',
+              version: 'unknown',
+            },
+          },
+          integrations: {
+            SHOPIFY: false,
+          },
+          type: 'track',
+          event: 'Product Added',
+          properties: {
+            cart_id: 'cart_id',
+            variant_id: 123456,
+            product_id: '9876543',
+            name: 'Shirt 2 - LARGE',
+            brand: 'example',
+            price: 30,
+            quantity: 5,
+            id: 123456,
+            properties: null,
+            key: '123456:7891112',
+            discounted_price: '30.00',
+            discounts: [],
+            gift_card: false,
+            grams: 0,
+            line_price: '60.00',
+            original_line_price: '60.00',
+            original_price: '30.00',
+            taxable: true,
+            total_discount: '0.00',
+          },
+        },
+        {
+          context: {
+            integration: {
+              name: 'SHOPIFY',
+            },
+            library: {
+              name: 'unknown',
+              version: 'unknown',
+            },
+          },
+          integrations: {
+            SHOPIFY: false,
+          },
+          type: 'track',
+          event: 'Product Added',
+          properties: {
+            cart_id: 'cart_id',
+            variant_id: 'variant_id',
+            product_id: '9876543',
+            name: 'Shirt 2 - LARGE',
+            brand: 'example',
+            price: 30,
+            quantity: 5,
+            id: 'id2',
+            properties: null,
+            key: 'some:key',
+            discounted_price: '30.00',
+            discounts: [],
+            gift_card: false,
+            grams: 0,
+            line_price: '60.00',
+            original_line_price: '60.00',
+            original_price: '30.00',
+            taxable: true,
+            total_discount: '0.00',
+          },
+        },
+      ];
+      expect(await trackLayer.generateProductAddedAndRemovedEvents(input, {})).toEqual(
+        expectedOutput,
+      );
+    });
+
+    it('Multiple Product Removed event with lesser quantity and no quantity', async () => {
+      const dbData = {
+        lineItems: JSON.stringify({
+          123456: {
+            quantity: 7,
+            variant_id: 123456,
+            price: '30.00',
+            product_id: 9876543,
+            sku: '',
+            title: 'Shirt 2 - LARGE',
+            vendor: 'example',
+          },
+          2: {
+            quantity: 2,
+            variant_id: 321,
+            price: '10.00',
+            product_id: 3476,
+            sku: '',
+            title: 'Shirt 2 - Medium',
+            vendor: 'example',
+          },
+        }),
+      };
+      const input = {
+        id: 'cart_id',
+        line_items: [
+          {
+            id: "123456",
+            properties: null,
+            quantity: 5,
+            variant_id: 123456,
+            price: '30.00',
+            product_id: 9876543,
+            sku: '',
+            title: 'Shirt 2 - LARGE',
+            vendor: 'example',
+          },
+        ],
+        note: null,
+        updated_at: '2023-02-10T12:05:07.251Z',
+        created_at: '2023-02-10T12:04:04.402Z',
+      };
+      const expectedOutput = [
+        {
+          context: {
+            integration: {
+              name: 'SHOPIFY',
+            },
+            library: {
+              name: 'unknown',
+              version: 'unknown',
+            },
+          },
+          integrations: {
+            SHOPIFY: false,
+          },
+          type: 'track',
+          event: 'Product Removed',
+          properties: {
+            cart_id: 'cart_id',
+            variant_id: 123456,
+            product_id: '9876543',
+            name: 'Shirt 2 - LARGE',
+            brand: 'example',
+            properties: null,
+            price: 30,
+            quantity: 2,
+            id: "123456",
+          },
+        },
+        {
+          context: {
+            integration: {
+              name: 'SHOPIFY',
+            },
+            library: {
+              name: 'unknown',
+              version: 'unknown',
+            },
+          },
+          integrations: {
+            SHOPIFY: false,
+          },
+          type: 'track',
+          event: 'Product Removed',
+          properties: {
+            id: "2",
+            cart_id: 'cart_id',
+            variant_id: 321,
+            product_id: '3476',
+            name: 'Shirt 2 - Medium',
+            brand: 'example',
+            price: 10,
+            quantity: 2,
+          },
+        },
+      ];
+      expect(await trackLayer.generateProductAddedAndRemovedEvents(input, dbData, {})).toEqual(
+        expectedOutput,
+      );
+    });
+
+    it('Checkout Step Completed event', () => {
+      const shopifyTopic = 'checkout_step_completed';
+      const expectedOutput = {
+        checkout_id: '1234',
+        shipping_method: 'Standard',
+        payment_method: 'cash',
+      };
+
+      expect(
+        trackLayer.createPropertiesForEcomEvent(checkoutsUpdateWebhook[shopifyTopic], shopifyTopic),
+      ).toEqual(expectedOutput);
+    });
+  });
 });

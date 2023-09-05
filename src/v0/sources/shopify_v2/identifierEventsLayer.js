@@ -1,6 +1,6 @@
 const { identifierEvents, NO_OPERATION_SUCCESS } = require('./config');
 const stats = require('../../../util/stats');
-const { getHashLineItems } = require('./commonUtils');
+const { getLineItemsToStore } = require('./commonUtils');
 const { RedisDB } = require('../../../util/redis/redisConnector');
 const logger = require('../../../logger');
 
@@ -14,11 +14,11 @@ const identifierEventLayer = {
     let field;
     if (event.event === 'rudderIdentifier') {
       field = 'anonymousId';
-      const lineItemshash = getHashLineItems(event.cart);
-      value = ['anonymousId', event.anonymousId, 'itemsHash', lineItemshash];
+      const lineItemshash = getLineItemsToStore(event.cart);
+      value = ['anonymousId', event.anonymousId, 'lineItems', lineItemshash];
       stats.increment('shopify_redis_calls', {
         type: 'set',
-        field: 'itemsHash',
+        field: 'lineItems',
         ...metricMetadata,
       });
       /* cart_token: {

@@ -34,15 +34,16 @@ function assertConfig(val, message) {
   }
 }
 
-function assertHttpResp(response, message) {
-  if (!isHttpStatusSuccess(response.status)) {
+function assertHttpResp(processedResponse, message) {
+  if (!isHttpStatusSuccess(processedResponse.status)) {
+    console.log('processedResponse', JSON.stringify(processedResponse));
     throw new NetworkError(
       message,
-      message.status,
+      processedResponse.status,
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(response.status),
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedResponse.status),
       },
-      response,
+      processedResponse.response,
     );
   }
 }

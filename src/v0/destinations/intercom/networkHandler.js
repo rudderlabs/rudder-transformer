@@ -1,6 +1,5 @@
 const { proxyRequest, prepareProxyRequest } = require('../../../adapters/network');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
-const { isHttpStatusSuccess } = require('../../util');
 
 const { RetryableError } = require('../../util/errorTypes');
 

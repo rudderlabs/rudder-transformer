@@ -36,7 +36,6 @@ function assertConfig(val, message) {
 
 function assertHttpResp(processedResponse, message) {
   if (!isHttpStatusSuccess(processedResponse.status)) {
-    console.log('processedResponse', JSON.stringify(processedResponse));
     throw new NetworkError(
       message,
       processedResponse.status,

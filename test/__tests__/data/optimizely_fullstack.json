@@ -296,7 +296,7 @@
       }
     },
     "output": {
-      "error": "Data File Lookup Failed"
+      "error": "Data File Lookup Failed due to {\"code\":\"document_not_found\",\"message\":\"document_not_found\"}"
     }
   },
   {

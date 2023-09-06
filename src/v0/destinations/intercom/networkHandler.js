@@ -6,7 +6,7 @@ const { RetryableError } = require('../../util/errorTypes');
 
 const errorResponseHandler = (destinationResponse, dest) => {
   const { status } = destinationResponse;
-  if (status === 408 && !isHttpStatusSuccess(status)) {
+  if (status === 408) {
     throw new RetryableError(
       `[Intercom Response Handler] Request failed for destination ${dest} with status: ${status}`,
       500,

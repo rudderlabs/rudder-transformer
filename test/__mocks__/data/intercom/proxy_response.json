@@ -1,0 +1,10 @@
+{
+  "https://api.intercom.io/users/test1": {
+    "data": {
+      "type": "error.list",
+      "request_id": "000on04msi4jpk7d3u60",
+      "errors": [{ "code": "not_found", "message": "User Not Found" }]
+    },
+    "status": 408
+  }
+}

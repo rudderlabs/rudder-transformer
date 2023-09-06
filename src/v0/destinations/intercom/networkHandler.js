@@ -14,8 +14,8 @@ const errorResponseHandler = (destinationResponse, dest) => {
   }
 };
 
-const destResponseHandler = (destinationResponse) => {
-  errorResponseHandler(destinationResponse);
+const destResponseHandler = (destinationResponse, dest) => {
+  errorResponseHandler(destinationResponse, dest);
   return {
     destinationResponse: destinationResponse.response,
     message: 'Request Processed Successfully',

@@ -1,9 +1,10 @@
-const { removeUndefinedValues } = require('../../util');
-const { getAccessToken, ABORTABLE_CODES, THROTTLED_CODES, POLL_ACTIVITY } = require('./util');
-const { httpGET } = require('../../../adapters/network');
+const { removeUndefinedValues, isHttpStatusSuccess } = require('../../util');
+const { getAccessToken, handlePollResponse, hydrateStatusForServer } = require('./util');
+const { handleHttpRequest } = require('../../../adapters/network');
 const stats = require('../../../util/stats');
-const { AbortedError, ThrottledError, RetryableError } = require('../../util/errorTypes');
+const { NetworkError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { POLL_ACTIVITY } = require('./config');
 
 const getPollStatus = async (event) => {
   const accessToken = await getAccessToken(event.config);
@@ -18,106 +19,41 @@ const getPollStatus = async (event) => {
     },
   };
   const pollUrl = `https://${munchkinId}.mktorest.com/bulk/v1/leads/batch/${event.importId}.json`;
-  const startTime = Date.now();
-  const pollStatus = await httpGET(pollUrl, requestOptions, {
-    destType: 'marketo_bulk_upload',
-    feature: 'transformation',
-  });
-  const endTime = Date.now();
-  const requestTime = endTime - startTime;
-  const POLL_STATUS_ERR_MSG = 'Could not poll status';
-  if (pollStatus.success) {
-    if (pollStatus.response && pollStatus.response.data.success) {
-      stats.increment(POLL_ACTIVITY, {
-        requestTime,
-        status: 200,
-        state: 'Success',
-      });
-      return pollStatus.response;
-    }
-    // DOC: https://developers.marketo.com/rest-api/error-codes/
-    if (pollStatus.response && pollStatus.response.data) {
-      // Abortable jobs
-      // Errors from polling come as
-      /**
-       * {
-    "requestId": "e42b#14272d07d78",
-    "success": false,
-    "errors": [
-        {
-            "code": "601",
-            "message": "Unauthorized"
-        }
-    ]
-}
-       */
-      if (
-        pollStatus.response.data.errors[0] &&
-        ((pollStatus.response.data.errors[0].code >= 1000 &&
-          pollStatus.response.data.errors[0].code <= 1077) ||
-          ABORTABLE_CODES.includes(pollStatus.response.data.errors[0].code))
-      ) {
-        stats.increment(POLL_ACTIVITY, {
-          requestTime,
-          status: 400,
-          state: 'Abortable',
-        });
-        throw new AbortedError(
-          pollStatus.response.data.errors[0].message || POLL_STATUS_ERR_MSG,
-          400,
-          pollStatus,
-        );
-      } else if (THROTTLED_CODES.includes(pollStatus.response.data.errors[0].code)) {
-        stats.increment(POLL_ACTIVITY, {
-          requestTime,
-          status: 500,
-          state: 'Retryable',
-        });
-        throw new ThrottledError(
-          pollStatus.response.data.errors[0].message || POLL_STATUS_ERR_MSG,
-          pollStatus,
-        );
-      }
-      stats.increment(POLL_ACTIVITY, {
-        requestTime,
-        status: 500,
-        state: 'Retryable',
-      });
-      throw new RetryableError(
-        pollStatus.response.response.statusText || 'Error during polling status',
-        500,
-        pollStatus,
-      );
-    }
+  const { processedResponse: pollStatus } = await handleHttpRequest(
+    'get',
+    pollUrl,
+    requestOptions,
+    {
+      destType: 'marketo_bulk_upload',
+      feature: 'transformation',
+    },
+  );
+  if (!isHttpStatusSuccess(pollStatus.status)) {
+    stats.counter(POLL_ACTIVITY, 1, {
+      status: pollStatus.status,
+      state: 'Retryable',
+    });
+    throw new NetworkError(
+      'Could not poll status',
+      hydrateStatusForServer(pollStatus.status, 'During fetching poll status'),
+    );
   }
-  stats.increment(POLL_ACTIVITY, {
-    requestTime,
-    status: 400,
-    state: 'Abortable',
-  });
-  throw new AbortedError(POLL_STATUS_ERR_MSG, 400, pollStatus);
+  return handlePollResponse(pollStatus, event.config);
 };
 
 const responseHandler = async (event) => {
   const pollResp = await getPollStatus(event);
-  let pollSuccess;
-  let success;
-  let statusCode;
-  let hasFailed;
-  let failedJobsURL;
-  let hasWarnings;
-  let warningJobsURL;
-  let errorResponse;
   // Server expects :
   /**
   *
   * {
-    "success": true,
+    "Complete": true,
     "statusCode": 200,
     "hasFailed": true,
-    "failedJobsURL": "<some-url>", // transformer URL
-    "hasWarnings": false,
-    "warningJobsURL": "<some-url>", // transformer URL
+    "InProgress": false,
+    "FailedJobURLs": "<some-url>", // transformer URL
+    "HasWarning": false,
+    "WarningJobURLs": "<some-url>", // transformer URL
     } // Succesful Upload
     {
         "success": false,
@@ -126,41 +62,57 @@ const responseHandler = async (event) => {
     } // Failed Upload
     {
         "success": false,
+        "Inprogress": true,
+         statusCode: 500,
     } // Importing or Queue
 
   */
-  if (pollResp && pollResp.data) {
-    pollSuccess = pollResp.data.success;
-    if (pollSuccess) {
-      const { status, numOfRowsFailed, numOfRowsWithWarning } = pollResp.data.result[0];
-      if (status === 'Complete') {
-        success = true;
-        statusCode = 200;
-        hasFailed = numOfRowsFailed > 0;
-        failedJobsURL = '/getFailedJobs';
-        warningJobsURL = '/getWarningJobs';
-        hasWarnings = numOfRowsWithWarning > 0;
-      } else if (status === 'Importing' || status === 'Queued') {
-        success = false;
-      }
-    } else {
-      success = false;
-      statusCode = 400;
-      errorResponse = pollResp.data.errors
-        ? pollResp.data.errors[0].message
-        : 'Error in importing jobs';
+  if (pollResp) {
+    // As marketo lead import API or bulk API does not support record level error response we are considering
+    // file level errors only.
+    // ref: https://nation.marketo.com/t5/ideas/support-error-code-in-record-level-in-lead-bulk-api/idi-p/262191
+    const { status, numOfRowsFailed, numOfRowsWithWarning, message } = pollResp.result[0];
+    if (status === 'Complete') {
+      const response = {
+        Complete: true,
+        statusCode: 200,
+        InProgress: false,
+        hasFailed: numOfRowsFailed > 0,
+        FailedJobURLs: numOfRowsFailed > 0 ? '/getFailedJobs' : undefined,
+        HasWarning: numOfRowsWithWarning > 0,
+        WarningJobURLs: numOfRowsWithWarning > 0 ? '/getWarningJobs' : undefined,
+      };
+      return removeUndefinedValues(response);
+    }
+    if (status === 'Importing' || status === 'Queued') {
+      return {
+        Complete: false,
+        statusCode: 500,
+        hasFailed: false,
+        InProgress: true,
+        HasWarning: false,
+      };
+    }
+    if (status === 'Failed') {
+      return {
+        Complete: false,
+        statusCode: 500,
+        hasFailed: false,
+        InProgress: false,
+        HasWarning: false,
+        Error: message || 'Marketo Poll Status Failed',
+      };
     }
   }
-  const response = {
-    success,
-    statusCode,
-    hasFailed,
-    failedJobsURL,
-    hasWarnings,
-    warningJobsURL,
-    errorResponse,
+  // when pollResp is null
+  return {
+    Complete: false,
+    statusCode: 500,
+    hasFailed: false,
+    InProgress: false,
+    HasWarning: false,
+    Error: 'No poll response received from Marketo',
   };
-  return removeUndefinedValues(response);
 };
 
 const processPolling = async (event) => {

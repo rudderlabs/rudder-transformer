@@ -3,7 +3,7 @@ const ACTION_TYPES = ['add', 'remove'];
 const IDENTIFIER_KEY = 'identifier';
 // ref:- https://docs.launchdarkly.com/guides/integrations/build-synced-segments?q=othercapabilities#manifest-details
 // ref:- https://docs.launchdarkly.com/home/segments#targeting-users-in-segments
-const ENDPOINT = 'https://app.launchdarkly.com/api/v2/segment-target/rudderstack';
+const ENDPOINT = 'https://app.launchdarkly.com/api/v2/segment-targets/rudderstack';
 
 module.exports = {
   SUPPORTED_EVENT_TYPE,

@@ -7,7 +7,12 @@
         "response": {
           "type": "error.list",
           "request_id": "000on04msi4jpk7d3u60",
-          "errors": [{ "code": "not_found", "message": "User Not Found" }]
+          "errors": [
+            {
+              "code": "Request Timeout",
+              "message": "The server would not wait any longer for the client"
+            }
+          ]
         },
         "status": 408
       },

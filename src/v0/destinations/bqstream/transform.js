@@ -9,6 +9,7 @@ const {
 } = require('../../util');
 const { MAX_ROWS_PER_REQUEST, DESTINATION } = require('./config');
 const { InstrumentationError } = require('../../util/errorTypes');
+const { getGroupedEvents } = require('./util');
 
 const getInsertIdColValue = (properties, insertIdCol) => {
   if (
@@ -102,38 +103,49 @@ const processRouterDest = (inputs) => {
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
-
-  const eventsChunk = []; // temporary variable to divide payload into chunks
-  const errorRespList = [];
-
-  inputs.forEach((event) => {
-    try {
-      if (event.message.statusCode) {
-        // already transformed event
-        eventsChunk.push(event);
-      } else {
-        // if not transformed
-        let response = process(event);
-        response = Array.isArray(response) ? response : [response];
-        response.forEach((res) => {
-          eventsChunk.push({
-            message: res,
-            metadata: event.metadata,
-            destination: event.destination,
-          });
+  const groupedEvents = getGroupedEvents(inputs);
+  // eslint-disable-next-line sonarjs/no-unused-collection
+  const finalResp = [];
+   console.log('groupedEvents', JSON.stringify(groupedEvents));
+   groupedEvents.forEach((eventList) => {
+    if (eventList.length > 0) {
+      eventList.forEach((ev) => {
+        const eventsChunk = []; // temporary variable to divide payload into chunks
+        const errorRespList = [];
+        ev.forEach((event) => {
+          try {
+            if (event.message.statusCode) {
+              // already transformed event
+              eventsChunk.push(event);
+            } else {
+              // if not transformed
+              let response = process(event);
+              response = Array.isArray(response) ? response : [response];
+              response.forEach((res) => {
+                eventsChunk.push({
+                  message: res,
+                  metadata: event.metadata,
+                  destination: event.destination,
+                });
+              });
+            }
+          } catch (error) {
+            const errRespEvent = handleRtTfSingleEventError(event, error, DESTINATION);
+            errorRespList.push(errRespEvent);
+          }
         });
-      }
-    } catch (error) {
-      const errRespEvent = handleRtTfSingleEventError(event, error, DESTINATION);
-      errorRespList.push(errRespEvent);
+        let batchedResponseList = [];
+        if (eventsChunk.length > 0) {
+            batchedResponseList = batchEvents(eventsChunk);
+            }
+        finalResp.push([...batchedResponseList, ...errorRespList]);
+      });
     }
-  });
-
-  let batchedResponseList = [];
-  if (eventsChunk.length > 0) {
-    batchedResponseList = batchEvents(eventsChunk);
-  }
-  return [...batchedResponseList, ...errorRespList];
+   
+  
+ });
+  const allBatchedEvents =_.sortBy(finalResp.flat(), ['metadata.job_id']);
+  return allBatchedEvents;
 };
 
 module.exports = { process, processRouterDest };

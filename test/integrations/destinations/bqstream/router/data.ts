@@ -73,6 +73,7 @@ export const data = [
               },
               metadata: {
                 jobId: 1,
+                userId: 'user12345',
               },
               destination: {
                 Config: {
@@ -153,6 +154,7 @@ export const data = [
               },
               metadata: {
                 jobId: 2,
+                userId: 'user12345',
               },
               destination: {
                 Config: {
@@ -203,9 +205,11 @@ export const data = [
               metadata: [
                 {
                   jobId: 1,
+                  userId: 'user12345',
                 },
                 {
                   jobId: 2,
+                  userId: 'user12345',
                 },
               ],
               batched: true,

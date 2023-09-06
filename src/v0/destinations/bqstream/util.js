@@ -1,4 +1,5 @@
 /* eslint-disable no-param-reassign */
+const _ = require('lodash');
 const getValue = require('get-value');
 const {
   getDynamicErrorType,
@@ -143,4 +144,67 @@ function networkHandler() {
   this.processAxiosResponse = processAxiosResponse;
 }
 
-module.exports = { networkHandler };
+function splitArray(arr, delimiter) {
+  const result = [];
+  let subarray = [];
+
+  for (const item of arr) {
+    if (item === delimiter) {
+      if (subarray.length > 0) {
+        result.push([...subarray]);
+      }
+      subarray = [];
+    } else {
+      subarray.push(item);
+    }
+  }
+
+  if (subarray.length > 0) {
+    result.push([...subarray]);
+  }
+
+  return result;
+}
+
+const filterAndSplitEvents = (eachEventTypeArray) => {
+  const delimiter = 'track';
+  let delimiterArray = [];
+  const resultArray = []
+  for (const item of eachEventTypeArray) {
+    if (item.message.type === delimiter) {
+      delimiterArray.push(item);
+    } else {
+      if(delimiterArray.length > 0) {
+        resultArray.push(delimiterArray);
+        delimiterArray = [];
+      }
+      resultArray.push([item]);
+     }
+  }
+   // Push any remaining delimiterArray
+  if (delimiterArray.length > 0) {
+    resultArray.push(delimiterArray);
+  }
+  return resultArray;
+}; 
+
+
+/**
+ * Groups and orders events based on userId and job_id.
+ * 
+ * @param {Array} inputs - An array of objects representing events, where each object has a `metadata` property containing `userId` and `job_id`.
+ * @returns {Array} - An array of events grouped by `userId` and ordered by `job_id`. Each element in the array represents a group of events with the same `userId`.
+ */
+const getGroupedEvents = (inputs) => {
+  const typeBasedOrderedEvents = [];
+  const userIdEventMap = _.groupBy(inputs, 'metadata.userId');
+  const eventGroupedByUserId = Object.values(userIdEventMap);
+  eventGroupedByUserId.forEach((eachUserJourney) => {
+    const eachEventTypeArray = filterAndSplitEvents(eachUserJourney);
+    typeBasedOrderedEvents.push(eachEventTypeArray);
+  });
+  const flattenedArray = typeBasedOrderedEvents.flat();
+  return flattenedArray; // u1 : [identify, track], u2: [identify, track]
+}
+
+module.exports = { networkHandler, getGroupedEvents };

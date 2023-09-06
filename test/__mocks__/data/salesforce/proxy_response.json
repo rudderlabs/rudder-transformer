@@ -69,7 +69,7 @@
       "status": 503
     }
   },
-  "https://rudderstack.my.salesforce.com/services/data/v50.0/parameterizedSearch/?q=external_id&sobject=object_name&in=External_ID__c&object_name.fields=id,External_ID__c": {
+  "https://rudderstack.my.salesforce.com/services/data/v50.0/parameterizedSearch/?q=123&sobject=object_name&in=External_ID__c&object_name.fields=id,External_ID__c": {
     "response": {
       "searchRecords": [
         {

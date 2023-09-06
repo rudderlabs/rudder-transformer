@@ -61,8 +61,8 @@ steps:
       const dataFileUrl = .destination.Config.dataFileUrl;
       const rawResponse = await $.handleHttpRequest("get", dataFileUrl);
       const processedResponse = rawResponse.processedResponse;
-      $.assertHttpResp(processedResponse, "Data File Lookup Failed");
-      processedResponse.response
+      $.assertHttpResp(processedResponse, "Data File Lookup Failed due to " + JSON.stringify(processedResponse.response));
+      processedResponse.response;
 
   - name: validateDateFileForTrackPageAndScreen
     condition: $.outputs.messageType in [ {{$.EventType.TRACK}}, {{$.EventType.PAGE}}, {{$.EventType.SCREEN}}]

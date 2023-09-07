@@ -16,6 +16,7 @@ const {
   defaultRequestConfig,
   getFieldValueFromMessage,
   simpleProcessRouterDest,
+  isDefinedAndNotNull,
 } = require('../../util');
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
@@ -42,17 +43,11 @@ const buildResponse = (payloadJSON, message, destination, channelWebhook = null)
 };
 
 const processIdentify = (message, destination) => {
-  // debug(JSON.stringify(destination));
   const identifyTemplateConfig = destination.Config.identifyTemplate;
   const traitsList = getWhiteListedTraits(destination);
   const defaultIdentifyTemplate = 'Identified {{name}}';
   logger.debug('defaulTraitsList:: ', traitsList);
   const uName = getName(message);
-
-  // required traitlist ??
-  /* if (!traitsList || traitsList.length == 0) {
-    throw Error("traits list in config not present");
-  } */
 
   const template = Handlebars.compile(
     (identifyTemplateConfig
@@ -95,15 +90,14 @@ const processIdentify = (message, destination) => {
   return buildResponse({ text: resultText }, message, destination);
 };
 
-function getChannelForEventName(eventChannelConfig, eventName) {
-  let channelWebhookToReturn;
-  eventChannelConfig.forEach((channelConfig) => {
-    const configEventName = channelConfig.eventName
-      ? channelConfig.eventName.trim().length > 0
-        ? channelConfig.eventName
-        : undefined
-      : undefined;
-    if (configEventName && channelConfig?.eventChannelWebhook) {
+const getChannelForEventName = (eventChannelConfig, eventName) => {
+  for (const channelConfig of eventChannelConfig) {
+    const configEventName =
+      channelConfig?.eventName?.trim().length > 0 ? channelConfig.eventName : null;
+    const channelWebhook =
+      channelConfig?.eventChannelWebhook?.length > 0 ? channelConfig.eventChannelWebhook : null;
+
+    if (configEventName && isDefinedAndNotNull(channelWebhook)) {
       if (channelConfig.eventRegex) {
         logger.debug('regex: ', `${configEventName} trying to match with ${eventName}`);
         logger.debug(
@@ -114,23 +108,17 @@ function getChannelForEventName(eventChannelConfig, eventName) {
         );
         if (
           eventName.match(new RegExp(configEventName, 'g')) &&
-          eventName.match(new RegExp(configEventName, 'g')).length > 0 &&
-          !channelWebhookToReturn
+          eventName.match(new RegExp(configEventName, 'g')).length > 0
         ) {
-          channelWebhookToReturn = channelConfig.eventChannelWebhook;
+          return channelWebhook;
         }
-      } else if (
-        channelConfig[eventName] === eventName &&
-        channelConfig?.eventChannelWebhook &&
-        !channelWebhookToReturn
-      ) {
-        channelWebhookToReturn = channelConfig.eventChannelWebhook;
+      } else if (channelConfig.eventName === eventName) {
+        return channelWebhook;
       }
     }
-    return channelWebhookToReturn;
-  });
-  return channelWebhookToReturn;
-}
+  }
+  return null;
+};
 
 function buildtemplateList(templateListForThisEvent, eventTemplateConfig, eventName) {
   eventTemplateConfig.forEach((templateConfig) => {

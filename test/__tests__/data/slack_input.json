@@ -243,6 +243,11 @@
             "eventChannelWebhook": "https://hooks.slack.com/services/id1/id2/demo",
             "eventName": "is",
             "eventRegex": true
+          },
+          {
+            "eventChannelWebhook": "https://hooks.slack.com/services/id1/id2/example+1",
+            "eventName": "is",
+            "eventRegex": true
           }
         ],
         "eventTemplateSettings": [
@@ -356,6 +361,11 @@
         "eventChannelSettings": [
           {
             "eventChannelWebhook": "https://hooks.slack.com/services/id1/id2/example",
+            "eventName": "is",
+            "eventRegex": true
+          },
+          {
+            "eventChannelWebhook": "https://hooks.slack.com/services/id1/id2/example+1",
             "eventName": "is",
             "eventRegex": true
           }

@@ -22,8 +22,8 @@ const { InstrumentationError, ConfigurationError } = require('../../util/errorTy
 // build the response to be sent to backend, url encoded header is required as slack accepts payload in this format
 // add the username and image for Rudder
 // image currently served from prod CDN
-const buildResponse = (payloadJSON, message, destination) => {
-  const endpoint = destination.Config.webhookUrl;
+const buildResponse = (payloadJSON, message, destination, channelWebhook = null) => {
+  const endpoint = channelWebhook || destination.Config.webhookUrl;
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
   response.method = defaultPostRequestConfig.requestMethod;
@@ -95,19 +95,15 @@ const processIdentify = (message, destination) => {
   return buildResponse({ text: resultText }, message, destination);
 };
 
-function buildChannelList(channelListToSendThisEvent, eventChannelConfig, eventName) {
+function getChannelForEventName(eventChannelConfig, eventName) {
+  let channelWebhookToReturn;
   eventChannelConfig.forEach((channelConfig) => {
     const configEventName = channelConfig.eventName
       ? channelConfig.eventName.trim().length > 0
         ? channelConfig.eventName
         : undefined
       : undefined;
-    const configEventChannel = channelConfig.eventChannel
-      ? channelConfig.eventChannel.trim().length > 0
-        ? channelConfig.eventChannel
-        : undefined
-      : undefined;
-    if (configEventName && configEventChannel) {
+    if (configEventName && channelConfig?.eventChannelWebhook) {
       if (channelConfig.eventRegex) {
         logger.debug('regex: ', `${configEventName} trying to match with ${eventName}`);
         logger.debug(
@@ -118,15 +114,22 @@ function buildChannelList(channelListToSendThisEvent, eventChannelConfig, eventN
         );
         if (
           eventName.match(new RegExp(configEventName, 'g')) &&
-          eventName.match(new RegExp(configEventName, 'g')).length > 0
+          eventName.match(new RegExp(configEventName, 'g')).length > 0 &&
+          !channelWebhookToReturn
         ) {
-          channelListToSendThisEvent.add(configEventChannel);
+          channelWebhookToReturn = channelConfig.eventChannelWebhook;
         }
-      } else if (configEventName === eventName) {
-        channelListToSendThisEvent.add(configEventChannel);
+      } else if (
+        channelConfig[eventName] === eventName &&
+        channelConfig?.eventChannelWebhook &&
+        !channelWebhookToReturn
+      ) {
+        channelWebhookToReturn = channelConfig.eventChannelWebhook;
       }
     }
+    return channelWebhookToReturn;
   });
+  return channelWebhookToReturn;
 }
 
 function buildtemplateList(templateListForThisEvent, eventTemplateConfig, eventName) {
@@ -165,18 +168,17 @@ const processTrack = (message, destination) => {
     throw new InstrumentationError('Event name is required');
   }
   const eventName = message.event;
-  const channelListToSendThisEvent = new Set();
   const templateListForThisEvent = new Set();
   const traitsList = getWhiteListedTraits(destination);
 
-  // Add global context to regex always
-  // build the channel list and templatelist for the event, pick the first in case of multiple
-  // using set to filter out
-  // document this behaviour
+  /* Add global context to regex always
+   * build the channel list and template list for the event, pick the first in case of multiple
+   * using set to filter out
+   * document this behaviour
+   */
 
   // building channel list
-  buildChannelList(channelListToSendThisEvent, eventChannelConfig, eventName);
-  const channelListArray = Array.from(channelListToSendThisEvent);
+  const channelWebhook = getChannelForEventName(eventChannelConfig, eventName);
 
   // building templatelist
   buildtemplateList(templateListForThisEvent, eventTemplateConfig, eventName);
@@ -187,7 +189,7 @@ const processTrack = (message, destination) => {
     templateListArray,
     templateListArray.length > 0 ? templateListArray[0] : undefined,
   );
-  logger.debug('channelListToSendThisEvent: ', channelListArray);
+  logger.debug('channelWebhook: ', channelWebhook);
 
   // track event default handlebar expression
   const defaultTemplate = '{{name}} did {{event}}';
@@ -220,8 +222,8 @@ const processTrack = (message, destination) => {
     throw new ConfigurationError(`Something is wrong with the event template: '${template}'`);
   }
 
-  if (channelListArray && channelListArray.length > 0) {
-    return buildResponse({ channel: channelListArray[0], text: resultText }, message, destination);
+  if (channelWebhook) {
+    return buildResponse({ text: resultText }, message, destination, channelWebhook);
   }
   return buildResponse({ text: resultText }, message, destination);
 };

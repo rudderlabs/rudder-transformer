@@ -56,6 +56,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -119,6 +120,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -186,6 +188,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -249,6 +252,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -316,6 +320,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -379,6 +384,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -448,6 +454,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -509,6 +516,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -570,6 +578,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -631,6 +640,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -696,6 +706,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -757,6 +768,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -818,6 +830,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -879,6 +892,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -949,6 +963,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -1010,6 +1025,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string-2',
@@ -1074,6 +1090,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -1138,6 +1155,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -1204,6 +1222,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -1265,6 +1284,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string-2',
@@ -1329,6 +1349,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -1393,6 +1414,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',

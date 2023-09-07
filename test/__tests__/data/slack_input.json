@@ -7,17 +7,18 @@
         "ID": "1ZQUiJVMlmF7lfsdfXg7KXQnlLV",
         "Name": "SLACK",
         "DisplayName": "Slack",
-        "Config": { "excludeKeys": [], "includeKeys": [] }
+        "Config": {
+          "excludeKeys": [],
+          "includeKeys": []
+        }
       },
       "Config": {
         "eventChannelSettings": [
           {
-            "eventChannel": "#slack_integration",
+            "eventChannelWebhook": "https://hooks.slack.com/services/example/test/demo",
             "eventName": "is",
             "eventRegex": true
-          },
-          { "eventChannel": "", "eventName": "", "eventRegex": false },
-          { "eventChannel": "", "eventName": "", "eventRegex": false }
+          }
         ],
         "eventTemplateSettings": [
           {
@@ -25,11 +26,22 @@
             "eventRegex": true,
             "eventTemplate": "{{name}} performed {{event}} with {{properties.key1}} {{properties.key2}}"
           },
-          { "eventName": "", "eventRegex": false, "eventTemplate": "" }
+          {
+            "eventName": "",
+            "eventRegex": false,
+            "eventTemplate": ""
+          }
         ],
         "identifyTemplate": "identified {{name}} with {{traits}}",
         "webhookUrl": "https://hooks.slack.com/services/THZM86VSS/BV9HZ2UN6/demo",
-        "whitelistedTraitsSettings": [{ "trait": "hiji" }, { "trait": "" }]
+        "whitelistedTraitsSettings": [
+          {
+            "trait": "hiji"
+          },
+          {
+            "trait": ""
+          }
+        ]
       },
       "Enabled": true,
       "Transformations": [],
@@ -50,7 +62,10 @@
           "version": "1.1.1-rc.1"
         },
         "locale": "en-US",
-        "os": { "name": "", "version": "" },
+        "os": {
+          "name": "",
+          "version": ""
+        },
         "page": {
           "path": "/tests/html/script-test.html",
           "referrer": "http://localhost:1111/tests/html/",
@@ -58,7 +73,9 @@
           "title": "",
           "url": "http://localhost:1111/tests/html/script-test.html"
         },
-        "screen": { "density": 1.7999999523162842 },
+        "screen": {
+          "density": 1.7999999523162842
+        },
         "traits": {
           "country": "India",
           "email": "name@domain.com",
@@ -67,7 +84,9 @@
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
       },
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "messageId": "9ecc0183-89ed-48bd-87eb-b2d8e1ca6780",
       "originalTimestamp": "2020-03-23T03:46:30.916Z",
       "properties": {
@@ -101,17 +120,18 @@
         "ID": "1ZQUiJVMlmF7lfsdfXg7KXQnlLV",
         "Name": "SLACK",
         "DisplayName": "Slack",
-        "Config": { "excludeKeys": [], "includeKeys": [] }
+        "Config": {
+          "excludeKeys": [],
+          "includeKeys": []
+        }
       },
       "Config": {
         "eventChannelSettings": [
           {
-            "eventChannel": "#slack_integration",
+            "eventChannelWebhook": "https://hooks.slack.com/services/id1/id2/example",
             "eventName": "is",
             "eventRegex": true
-          },
-          { "eventChannel": "", "eventName": "", "eventRegex": false },
-          { "eventChannel": "", "eventName": "", "eventRegex": false }
+          }
         ],
         "eventTemplateSettings": [
           {
@@ -119,11 +139,22 @@
             "eventRegex": true,
             "eventTemplate": "{{name}} performed {{event}} with {{properties.key1}} {{properties.key2}}"
           },
-          { "eventName": "", "eventRegex": false, "eventTemplate": "" }
+          {
+            "eventName": "",
+            "eventRegex": false,
+            "eventTemplate": ""
+          }
         ],
         "identifyTemplate": "identified {{name}} with {{traits}}",
         "webhookUrl": "https://hooks.slack.com/services/THZM86VSS/BV9HZ2UN6/demo",
-        "whitelistedTraitsSettings": [{ "trait": "hiji" }, { "trait": "" }]
+        "whitelistedTraitsSettings": [
+          {
+            "trait": "hiji"
+          },
+          {
+            "trait": ""
+          }
+        ]
       },
       "Enabled": true,
       "Transformations": [],
@@ -144,7 +175,10 @@
           "version": "1.1.1-rc.1"
         },
         "locale": "en-US",
-        "os": { "name": "", "version": "" },
+        "os": {
+          "name": "",
+          "version": ""
+        },
         "page": {
           "path": "",
           "referrer": "",
@@ -152,7 +186,9 @@
           "title": "",
           "url": ""
         },
-        "screen": { "density": 1.7999999523162842 },
+        "screen": {
+          "density": 1.7999999523162842
+        },
         "traits": {
           "country": "India",
           "email": "name@domain.com",
@@ -167,7 +203,9 @@
         "hiji": "hulala-1",
         "name": "my-name-1"
       },
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "messageId": "4aaecff2-a513-4bbf-9824-c471f4ac9777",
       "originalTimestamp": "2020-03-23T03:41:46.122Z",
       "receivedAt": "2020-03-23T09:11:46.244+05:30",
@@ -194,17 +232,18 @@
         "ID": "1ZQUiJVMlmF7lfsdfXg7KXQnlLV",
         "Name": "SLACK",
         "DisplayName": "Slack",
-        "Config": { "excludeKeys": [], "includeKeys": [] }
+        "Config": {
+          "excludeKeys": [],
+          "includeKeys": []
+        }
       },
       "Config": {
         "eventChannelSettings": [
           {
-            "eventChannel": "#slack_integration",
+            "eventChannelWebhook": "https://hooks.slack.com/services/id1/id2/demo",
             "eventName": "is",
             "eventRegex": true
-          },
-          { "eventChannel": "", "eventName": "", "eventRegex": false },
-          { "eventChannel": "", "eventName": "", "eventRegex": false }
+          }
         ],
         "eventTemplateSettings": [
           {
@@ -212,11 +251,22 @@
             "eventRegex": true,
             "eventTemplate": "{{name}} performed {{event}} with {{properties.key1}} {{properties.key2}} and traits {{traitsList.hiji}}"
           },
-          { "eventName": "", "eventRegex": false, "eventTemplate": "" }
+          {
+            "eventName": "",
+            "eventRegex": false,
+            "eventTemplate": ""
+          }
         ],
         "identifyTemplate": "identified {{name}} with {{traits}}",
         "webhookUrl": "https://hooks.slack.com/services/THZM86VSS/BV9HZ2UN6/demo",
-        "whitelistedTraitsSettings": [{ "trait": "hiji" }, { "trait": "" }]
+        "whitelistedTraitsSettings": [
+          {
+            "trait": "hiji"
+          },
+          {
+            "trait": ""
+          }
+        ]
       },
       "Enabled": true,
       "Transformations": [],
@@ -238,7 +288,10 @@
           "version": "1.1.1-rc.1"
         },
         "locale": "en-US",
-        "os": { "name": "", "version": "" },
+        "os": {
+          "name": "",
+          "version": ""
+        },
         "page": {
           "path": "/tests/html/script-test.html",
           "referrer": "http://localhost:1111/tests/html/",
@@ -246,7 +299,9 @@
           "title": "",
           "url": "http://localhost:1111/tests/html/script-test.html"
         },
-        "screen": { "density": 1.7999999523162842 },
+        "screen": {
+          "density": 1.7999999523162842
+        },
         "traits": {
           "country": "India",
           "email": "name@domain.com",
@@ -256,7 +311,9 @@
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
       },
       "event": "test_isent1",
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "messageId": "78102118-56ac-4c5a-a495-8cd7c8f71cc2",
       "originalTimestamp": "2020-03-23T03:46:30.921Z",
       "properties": {
@@ -290,17 +347,18 @@
         "ID": "1ZQUiJVMlmF7lfsdfXg7KXQnlLV",
         "Name": "SLACK",
         "DisplayName": "Slack",
-        "Config": { "excludeKeys": [], "includeKeys": [] }
+        "Config": {
+          "excludeKeys": [],
+          "includeKeys": []
+        }
       },
       "Config": {
         "eventChannelSettings": [
           {
-            "eventChannel": "#slack_integration",
+            "eventChannelWebhook": "https://hooks.slack.com/services/id1/id2/example",
             "eventName": "is",
             "eventRegex": true
-          },
-          { "eventChannel": "", "eventName": "", "eventRegex": false },
-          { "eventChannel": "", "eventName": "", "eventRegex": false }
+          }
         ],
         "eventTemplateSettings": [
           {
@@ -308,11 +366,22 @@
             "eventRegex": true,
             "eventTemplate": "{{name}} performed {{event}} with {{properties.key1}} {{properties.key2}}"
           },
-          { "eventName": "", "eventRegex": false, "eventTemplate": "" }
+          {
+            "eventName": "",
+            "eventRegex": false,
+            "eventTemplate": ""
+          }
         ],
         "identifyTemplate": "identified {{name}} with {{traits}}",
         "webhookUrl": "https://hooks.slack.com/services/THZM86VSS/BV9HZ2UN6/demo",
-        "whitelistedTraitsSettings": [{ "trait": "hiji" }, { "trait": "" }]
+        "whitelistedTraitsSettings": [
+          {
+            "trait": "hiji"
+          },
+          {
+            "trait": ""
+          }
+        ]
       },
       "Enabled": true,
       "Transformations": [],
@@ -334,7 +403,10 @@
           "version": "1.1.1-rc.1"
         },
         "locale": "en-US",
-        "os": { "name": "", "version": "" },
+        "os": {
+          "name": "",
+          "version": ""
+        },
         "page": {
           "path": "/tests/html/script-test.html",
           "referrer": "http://localhost:1111/tests/html/",
@@ -342,7 +414,9 @@
           "title": "",
           "url": "http://localhost:1111/tests/html/script-test.html"
         },
-        "screen": { "density": 1.7999999523162842 },
+        "screen": {
+          "density": 1.7999999523162842
+        },
         "traits": {
           "country": "India",
           "email": "name@domain.com",
@@ -352,7 +426,9 @@
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
       },
       "event": "test_eventing_testis",
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "messageId": "8b8d5937-09bc-49dc-a35e-8cd6370575f8",
       "originalTimestamp": "2020-03-23T03:46:30.922Z",
       "properties": {
@@ -394,19 +470,9 @@
       "Config": {
         "eventChannelSettings": [
           {
-            "eventChannel": "#slack_integration",
+            "eventChannelWebhook": "https://hooks.slack.com/services/example/test/demo",
             "eventName": "is",
             "eventRegex": true
-          },
-          {
-            "eventChannel": "",
-            "eventName": "",
-            "eventRegex": false
-          },
-          {
-            "eventChannel": "",
-            "eventName": "",
-            "eventRegex": false
           }
         ],
         "eventTemplateSettings": [
@@ -510,17 +576,18 @@
         "ID": "1ZQUiJVMlmF7lfsdfXg7KXQnlLV",
         "Name": "SLACK",
         "DisplayName": "Slack",
-        "Config": { "excludeKeys": [], "includeKeys": [] }
+        "Config": {
+          "excludeKeys": [],
+          "includeKeys": []
+        }
       },
       "Config": {
         "eventChannelSettings": [
           {
-            "eventChannel": "#slack_integration",
+            "eventChannelWebhook": "https://hooks.slack.com/services/example/test/demo",
             "eventName": "is",
             "eventRegex": true
-          },
-          { "eventChannel": "", "eventName": "", "eventRegex": false },
-          { "eventChannel": "", "eventName": "", "eventRegex": false }
+          }
         ],
         "eventTemplateSettings": [
           {
@@ -528,11 +595,22 @@
             "eventRegex": true,
             "eventTemplate": "{{name}} performed {{event}} with {{properties.key1}} {{properties.key2}}"
           },
-          { "eventName": "", "eventRegex": false, "eventTemplate": "" }
+          {
+            "eventName": "",
+            "eventRegex": false,
+            "eventTemplate": ""
+          }
         ],
         "identifyTemplate": "identified {{name}} with {{traits}}",
         "webhookUrl": "https://hooks.slack.com/services/THZM86VSS/BV9HZ2UN6/demo",
-        "whitelistedTraitsSettings": [{ "trait": "hiji" }, { "trait": "" }]
+        "whitelistedTraitsSettings": [
+          {
+            "trait": "hiji"
+          },
+          {
+            "trait": ""
+          }
+        ]
       },
       "Enabled": true,
       "Transformations": [],
@@ -554,7 +632,10 @@
           "version": "1.1.1-rc.1"
         },
         "locale": "en-US",
-        "os": { "name": "", "version": "" },
+        "os": {
+          "name": "",
+          "version": ""
+        },
         "page": {
           "path": "/tests/html/script-test.html",
           "referrer": "http://localhost:1111/tests/html/",
@@ -562,7 +643,9 @@
           "title": "",
           "url": "http://localhost:1111/tests/html/script-test.html"
         },
-        "screen": { "density": 1.7999999523162842 },
+        "screen": {
+          "density": 1.7999999523162842
+        },
         "traits": {
           "country": "India",
           "email": "name@domain.com",
@@ -571,7 +654,9 @@
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
       },
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "messageId": "8b8d5937-09bc-49dc-a35e-8cd6370575f8",
       "originalTimestamp": "2020-03-23T03:46:30.922Z",
       "properties": {
@@ -605,17 +690,18 @@
         "ID": "1ZQUiJVMlmF7lfsdfXg7KXQnlLV",
         "Name": "SLACK",
         "DisplayName": "Slack",
-        "Config": { "excludeKeys": [], "includeKeys": [] }
+        "Config": {
+          "excludeKeys": [],
+          "includeKeys": []
+        }
       },
       "Config": {
         "eventChannelSettings": [
           {
-            "eventChannel": "#slack_integration",
+            "eventChannelWebhook": "https://hooks.slack.com/services/example/test/demo",
             "eventName": "is",
             "eventRegex": true
-          },
-          { "eventChannel": "", "eventName": "", "eventRegex": false },
-          { "eventChannel": "", "eventName": "", "eventRegex": false }
+          }
         ],
         "eventTemplateSettings": [
           {
@@ -623,11 +709,22 @@
             "eventRegex": true,
             "eventTemplate": "{{name}} performed {{event}} with {{properties. key1}} {{properties.key2}} and traits {{traitsList.hiji}}"
           },
-          { "eventName": "", "eventRegex": false, "eventTemplate": "" }
+          {
+            "eventName": "",
+            "eventRegex": false,
+            "eventTemplate": ""
+          }
         ],
         "identifyTemplate": "identified {{name}} with {{traits}}",
         "webhookUrl": "https://hooks.slack.com/services/THZM86VSS/BV9HZ2UN6/demo",
-        "whitelistedTraitsSettings": [{ "trait": "hiji" }, { "trait": "" }]
+        "whitelistedTraitsSettings": [
+          {
+            "trait": "hiji"
+          },
+          {
+            "trait": ""
+          }
+        ]
       },
       "Enabled": true,
       "Transformations": [],
@@ -649,7 +746,10 @@
           "version": "1.1.1-rc.1"
         },
         "locale": "en-US",
-        "os": { "name": "", "version": "" },
+        "os": {
+          "name": "",
+          "version": ""
+        },
         "page": {
           "path": "/tests/html/script-test.html",
           "referrer": "http://localhost:1111/tests/html/",
@@ -657,7 +757,9 @@
           "title": "",
           "url": "http://localhost:1111/tests/html/script-test.html"
         },
-        "screen": { "density": 1.7999999523162842 },
+        "screen": {
+          "density": 1.7999999523162842
+        },
         "traits": {
           "country": "India",
           "email": "name@domain.com",
@@ -667,7 +769,9 @@
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
       },
       "event": "test_isent1",
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "messageId": "78102118-56ac-4c5a-a495-8cd7c8f71cc2",
       "originalTimestamp": "2020-03-23T03:46:30.921Z",
       "properties": {

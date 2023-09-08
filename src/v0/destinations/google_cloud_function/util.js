@@ -9,7 +9,7 @@ const validateDestinationConfig = ({ Config }) => {
   if (!Config.googleCloudFunctionUrl) {
     throw new ConfigurationError('[GCF]:: Url not found. Aborting');
   }
-  if (Config.requireAutnetication && !Config.credentials) {
+  if (Config.requireAuthentication && !Config.credentials) {
     throw new ConfigurationError(
       '[GCF]:: Service Account credentials are required if your function required authentication. Aborting',
     );

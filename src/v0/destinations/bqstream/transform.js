@@ -106,13 +106,11 @@ const processRouterDest = (inputs) => {
   const groupedEvents = getGroupedEvents(inputs);
   // eslint-disable-next-line sonarjs/no-unused-collection
   const finalResp = [];
-   console.log('groupedEvents', JSON.stringify(groupedEvents));
    groupedEvents.forEach((eventList) => {
+    let eventsChunk = []; // temporary variable to divide payload into chunks
+    let errorRespList = [];
     if (eventList.length > 0) {
-      eventList.forEach((ev) => {
-        const eventsChunk = []; // temporary variable to divide payload into chunks
-        const errorRespList = [];
-        ev.forEach((event) => {
+      eventList.forEach((event) => {
           try {
             if (event.message.statusCode) {
               // already transformed event
@@ -131,18 +129,25 @@ const processRouterDest = (inputs) => {
             }
           } catch (error) {
             const errRespEvent = handleRtTfSingleEventError(event, error, DESTINATION);
+            // divide the successful payloads till now into batches
+            let batchedResponseList = [];
+            if (eventsChunk.length > 0) {
+              batchedResponseList = batchEvents(eventsChunk);
+              }
+            // clear up the temporary variable
+            eventsChunk = [];
             errorRespList.push(errRespEvent);
+            finalResp.push([...batchedResponseList, ...errorRespList]);
+            // putting it back as an empty array
+            errorRespList = [];
           }
-        });
-        let batchedResponseList = [];
+      });
+      let batchedResponseList = [];
         if (eventsChunk.length > 0) {
             batchedResponseList = batchEvents(eventsChunk);
-            }
-        finalResp.push([...batchedResponseList, ...errorRespList]);
-      });
+            finalResp.push([...batchedResponseList]);
+            }   
     }
-   
-  
  });
   const allBatchedEvents =_.sortBy(finalResp.flat(), ['metadata.job_id']);
   return allBatchedEvents;

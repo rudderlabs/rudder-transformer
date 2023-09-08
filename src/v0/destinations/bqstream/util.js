@@ -144,33 +144,18 @@ function networkHandler() {
   this.processAxiosResponse = processAxiosResponse;
 }
 
-function splitArray(arr, delimiter) {
-  const result = [];
-  let subarray = [];
-
-  for (const item of arr) {
-    if (item === delimiter) {
-      if (subarray.length > 0) {
-        result.push([...subarray]);
-      }
-      subarray = [];
-    } else {
-      subarray.push(item);
-    }
-  }
-
-  if (subarray.length > 0) {
-    result.push([...subarray]);
-  }
-
-  return result;
-}
-
-const filterAndSplitEvents = (eachEventTypeArray) => {
+/**
+ * Splits an array of events into subarrays of track event lists. 
+ * If any other event type is encountered, it is kept as a separate subarray.
+ * 
+ * @param {Array} eachUserJourney - An array of events. eg. [track, track,identify,identify,track, track]
+ * @returns {Array} - An array of subarrays. eg [[track, track],[identify],[identify],[track, track]]
+ */
+const filterAndSplitEvents = (eachUserJourney) => {
   const delimiter = 'track';
   let delimiterArray = [];
   const resultArray = []
-  for (const item of eachEventTypeArray) {
+  for (const item of eachUserJourney) {
     if (item.message.type === delimiter) {
       delimiterArray.push(item);
     } else {
@@ -185,15 +170,16 @@ const filterAndSplitEvents = (eachEventTypeArray) => {
   if (delimiterArray.length > 0) {
     resultArray.push(delimiterArray);
   }
-  return resultArray;
-}; 
+  return resultArray.flat();
+};
 
 
 /**
- * Groups and orders events based on userId and job_id.
+ * Groups the input events based on the `userId` property and filters and splits the events based on a delimiter.
  * 
- * @param {Array} inputs - An array of objects representing events, where each object has a `metadata` property containing `userId` and `job_id`.
- * @returns {Array} - An array of events grouped by `userId` and ordered by `job_id`. Each element in the array represents a group of events with the same `userId`.
+ * @param {Array} inputs - An array of objects representing events with `metadata.userId` and `message.type` properties.
+ * @returns {Array} An array of arrays containing the grouped and filtered events. 
+ * Each inner array represents a user journey and contains the filtered events.
  */
 const getGroupedEvents = (inputs) => {
   const typeBasedOrderedEvents = [];
@@ -203,8 +189,7 @@ const getGroupedEvents = (inputs) => {
     const eachEventTypeArray = filterAndSplitEvents(eachUserJourney);
     typeBasedOrderedEvents.push(eachEventTypeArray);
   });
-  const flattenedArray = typeBasedOrderedEvents.flat();
-  return flattenedArray; // u1 : [identify, track], u2: [identify, track]
+  return typeBasedOrderedEvents;
 }
 
 module.exports = { networkHandler, getGroupedEvents };

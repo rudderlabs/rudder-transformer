@@ -26,7 +26,6 @@ const {
 const { getAccessToken, salesforceResponseHandler } = require('./utils');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { InstrumentationError, NetworkInstrumentationError } = require('../../util/errorTypes');
-const logger = require('../../../logger');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 // Basic response builder
@@ -125,7 +124,7 @@ async function getSaleforceIdForRecord(
     );
   }
   const searchRecord = processedsfSearchResponse.response?.searchRecords?.find(
-    (rec) => rec[identifierType] === identifierValue,
+    (rec) => typeof identifierValue !== 'undefined' && rec[identifierType] === `${identifierValue}`,
   );
 
   return searchRecord?.Id;

@@ -145,51 +145,16 @@ function networkHandler() {
 }
 
 /**
- * Splits an array of events into subarrays of track event lists. 
- * If any other event type is encountered, it is kept as a separate subarray.
- * 
- * @param {Array} eachUserJourney - An array of events. eg. [track, track,identify,identify,track, track]
- * @returns {Array} - An array of subarrays. eg [[track, track],[identify],[identify],[track, track]]
- */
-const filterAndSplitEvents = (eachUserJourney) => {
-  const delimiter = 'track';
-  let delimiterArray = [];
-  const resultArray = []
-  for (const item of eachUserJourney) {
-    if (item.message.type === delimiter) {
-      delimiterArray.push(item);
-    } else {
-      if(delimiterArray.length > 0) {
-        resultArray.push(delimiterArray);
-        delimiterArray = [];
-      }
-      resultArray.push([item]);
-     }
-  }
-   // Push any remaining delimiterArray
-  if (delimiterArray.length > 0) {
-    resultArray.push(delimiterArray);
-  }
-  return resultArray.flat();
-};
-
-
-/**
- * Groups the input events based on the `userId` property and filters and splits the events based on a delimiter.
- * 
- * @param {Array} inputs - An array of objects representing events with `metadata.userId` and `message.type` properties.
- * @returns {Array} An array of arrays containing the grouped and filtered events. 
- * Each inner array represents a user journey and contains the filtered events.
+ * Groups the input events based on the `userId` property
+ *
+ * @param {Array} inputs - An array of objects representing events with `metadata.userId` property.
+ * @returns {Array} An array of arrays containing the grouped events.
+ * Each inner array represents a user journey.
  */
 const getGroupedEvents = (inputs) => {
-  const typeBasedOrderedEvents = [];
   const userIdEventMap = _.groupBy(inputs, 'metadata.userId');
   const eventGroupedByUserId = Object.values(userIdEventMap);
-  eventGroupedByUserId.forEach((eachUserJourney) => {
-    const eachEventTypeArray = filterAndSplitEvents(eachUserJourney);
-    typeBasedOrderedEvents.push(eachEventTypeArray);
-  });
-  return typeBasedOrderedEvents;
-}
+  return eventGroupedByUserId;
+};
 
 module.exports = { networkHandler, getGroupedEvents };

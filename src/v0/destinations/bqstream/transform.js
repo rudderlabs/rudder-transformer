@@ -104,53 +104,51 @@ const processRouterDest = (inputs) => {
     return errorRespEvents;
   }
   const groupedEvents = getGroupedEvents(inputs);
-  // eslint-disable-next-line sonarjs/no-unused-collection
   const finalResp = [];
-   groupedEvents.forEach((eventList) => {
+  groupedEvents.forEach((eventList) => {
     let eventsChunk = []; // temporary variable to divide payload into chunks
     let errorRespList = [];
     if (eventList.length > 0) {
       eventList.forEach((event) => {
-          try {
-            if (event.message.statusCode) {
-              // already transformed event
-              eventsChunk.push(event);
-            } else {
-              // if not transformed
-              let response = process(event);
-              response = Array.isArray(response) ? response : [response];
-              response.forEach((res) => {
-                eventsChunk.push({
-                  message: res,
-                  metadata: event.metadata,
-                  destination: event.destination,
-                });
+        try {
+          if (event.message.statusCode) {
+            // already transformed event
+            eventsChunk.push(event);
+          } else {
+            // if not transformed
+            let response = process(event);
+            response = Array.isArray(response) ? response : [response];
+            response.forEach((res) => {
+              eventsChunk.push({
+                message: res,
+                metadata: event.metadata,
+                destination: event.destination,
               });
-            }
-          } catch (error) {
-            const errRespEvent = handleRtTfSingleEventError(event, error, DESTINATION);
-            // divide the successful payloads till now into batches
-            let batchedResponseList = [];
-            if (eventsChunk.length > 0) {
-              batchedResponseList = batchEvents(eventsChunk);
-              }
-            // clear up the temporary variable
-            eventsChunk = [];
-            errorRespList.push(errRespEvent);
-            finalResp.push([...batchedResponseList, ...errorRespList]);
-            // putting it back as an empty array
-            errorRespList = [];
+            });
           }
+        } catch (error) {
+          const errRespEvent = handleRtTfSingleEventError(event, error, DESTINATION);
+          // divide the successful payloads till now into batches
+          let batchedResponseList = [];
+          if (eventsChunk.length > 0) {
+            batchedResponseList = batchEvents(eventsChunk);
+          }
+          // clear up the temporary variable
+          eventsChunk = [];
+          errorRespList.push(errRespEvent);
+          finalResp.push([...batchedResponseList, ...errorRespList]);
+          // putting it back as an empty array
+          errorRespList = [];
+        }
       });
       let batchedResponseList = [];
-        if (eventsChunk.length > 0) {
-            batchedResponseList = batchEvents(eventsChunk);
-            finalResp.push([...batchedResponseList]);
-            }   
+      if (eventsChunk.length > 0) {
+        batchedResponseList = batchEvents(eventsChunk);
+        finalResp.push([...batchedResponseList]);
+      }
     }
- });
-  const allBatchedEvents =_.sortBy(finalResp.flat(), ['metadata.job_id']);
-  return allBatchedEvents;
+  });
+  return finalResp.flat();
 };
 
 module.exports = { process, processRouterDest };

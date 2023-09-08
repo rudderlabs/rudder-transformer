@@ -138,10 +138,6 @@ const trackRequestHandler = (message, category, destination) => {
     attributes.metric = { name: eventName };
     const categ = CONFIG_CATEGORIES[eventMap];
     attributes.properties = constructPayload(message.properties, MAPPING_CONFIG[categ.name]);
-    attributes.properties = {
-      ...attributes.properties,
-      ...populateCustomFieldsFromTraits(message),
-    };
 
     // products mapping using Items.json
     // mapping properties.items to payload.properties.items and using properties.products as a fallback to properties.items
@@ -191,17 +187,16 @@ const trackRequestHandler = (message, category, destination) => {
     if (value) {
       attributes.value = value;
     }
-    attributes.properties = {
-      ...attributes.properties,
-      ...populateCustomFieldsFromTraits(message),
-    };
   }
   // if flattenProperties is enabled from UI, flatten the event properties
   attributes.properties = flattenProperties
     ? flattenJson(attributes.properties, '.', 'normal', false)
     : attributes.properties;
   // Map user properties to profile object
-  attributes.profile = createCustomerProperties(message, destination.Config);
+  attributes.profile = {
+    ...createCustomerProperties(message, destination.Config),
+    ...flattenJson(populateCustomFieldsFromTraits(message)),
+  };
   if (message.timestamp) {
     attributes.time = message.timestamp;
   }

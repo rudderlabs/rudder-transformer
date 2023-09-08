@@ -1,8 +1,4 @@
-const { defaultBatchRequestConfig } = require('../../util');
-const { JSON_MIME_TYPE } = require('../../util/constant');
 const { ConfigurationError } = require('../../util/errorTypes');
-
-const { TRIGGERTYPE } = require('./config');
 
 /**
  * validate destination config

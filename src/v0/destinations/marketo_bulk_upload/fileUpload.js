@@ -6,8 +6,9 @@ const {
   getMarketoFilePath,
   handleFileUploadResponse,
   getFieldSchemaMap,
+  hydrateStatusForServer,
 } = require('./util');
-const { isHttpStatusSuccess, hydrateStatusForServer } = require('../../util');
+const { isHttpStatusSuccess } = require('../../util');
 const { MARKETO_FILE_SIZE, UPLOAD_FILE } = require('./config');
 const {
   getHashFromArray,
@@ -249,7 +250,7 @@ const responseHandler = async (input, config) => {
     const response = {
       statusCode: 200,
       importId,
-      metadata
+      metadata,
     };
     return response;
   }

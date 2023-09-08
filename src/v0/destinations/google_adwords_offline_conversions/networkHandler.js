@@ -270,9 +270,9 @@ const responseHandler = (destinationResponse) => {
     if (partialFailureError && partialFailureError.code !== 0) {
       throw new NetworkError(
         `[Google Ads Offline Conversions]:: partialFailureError - ${partialFailureError?.message}`,
-        status,
+        400,
         {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(400),
         },
         partialFailureError,
       );

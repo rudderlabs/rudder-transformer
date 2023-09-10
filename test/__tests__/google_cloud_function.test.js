@@ -41,9 +41,11 @@ describe(`${name} Tests`, () => {
   });
 
   describe("Router Tests", () => {
-    it("Payload", async () => {
-      const routerOutput = await transformer.processRouterDest(inputRouterData);
-      expect(routerOutput).toEqual(expectedRouterData);
+    inputRouterData.forEach((input, index) => {
+      it(`${index}. ${integration}`, async () => {
+        const routerOutput = await transformer.processRouterDest(input);
+        expect(routerOutput).toEqual(expectedRouterData[index]);
+      });
     });
   });
 });

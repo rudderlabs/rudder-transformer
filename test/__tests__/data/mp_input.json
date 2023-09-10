@@ -596,7 +596,12 @@
         "apiKey": "dummyApiKey",
         "token": "dummyApiKey",
         "prefixProperties": true,
-        "useNativeSDK": false
+        "useNativeSDK": false,
+        "propIncrements": [
+          {
+            "property": ""
+          }
+        ]
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",

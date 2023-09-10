@@ -58,7 +58,7 @@
       "XML": {},
       "JSON_ARRAY": {},
       "FORM": {
-        "payload": "{\"text\":\"my-name performed test_isent1 with test_val1 test_val2 and traits hulala\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        "payload": "{\"text\":\"my-name performed test_isent1 with test_val1 test_val2 and traits hulala\"}"
       }
     },
     "files": {},
@@ -79,7 +79,7 @@
       "XML": {},
       "JSON_ARRAY": {},
       "FORM": {
-        "payload": "{\"text\":\"my-name performed test_eventing_testis with test_val1 test_val2\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        "payload": "{\"text\":\"my-name performed test_eventing_testis with test_val1 test_val2\"}"
       }
     },
     "files": {},
@@ -100,7 +100,7 @@
       "XML": {},
       "JSON_ARRAY": {},
       "FORM": {
-        "payload": "{\"text\":\"my-name did test_eventing_test\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        "payload": "{\"text\":\"my-name did test_eventing_test\"}"
       }
     },
     "files": {},

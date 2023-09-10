@@ -23,19 +23,31 @@ const { InstrumentationError, ConfigurationError } = require('../../util/errorTy
 // build the response to be sent to backend, url encoded header is required as slack accepts payload in this format
 // add the username and image for Rudder
 // image currently served from prod CDN
-const buildResponse = (payloadJSON, message, destination, channelWebhook = null) => {
+const buildResponse = (
+  payloadJSON,
+  message,
+  destination,
+  channelWebhook = null,
+  sendAppNameAndIcon = true,
+) => {
   const endpoint = channelWebhook || destination.Config.webhookUrl;
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
   response.userId = message.userId ? message.userId : message.anonymousId;
+  const payload =
+    sendAppNameAndIcon === true
+      ? JSON.stringify({
+          ...payloadJSON,
+          username: SLACK_USER_NAME,
+          icon_url: SLACK_RUDDER_IMAGE_URL,
+        })
+      : JSON.stringify({
+          ...payloadJSON,
+        });
   response.body.FORM = {
-    payload: JSON.stringify({
-      ...payloadJSON,
-      username: SLACK_USER_NAME,
-      icon_url: SLACK_RUDDER_IMAGE_URL,
-    }),
+    payload,
   };
   response.statusCode = 200;
   logger.debug(response);
@@ -234,7 +246,7 @@ const processTrack = (message, destination) => {
     throw new ConfigurationError(`Something is wrong with the event template: '${template}'`);
   }
   if (incomingWebhooksType === 'modern' && channelWebhook) {
-    return buildResponse({ text: resultText }, message, destination, channelWebhook);
+    return buildResponse({ text: resultText }, message, destination, channelWebhook, false);
   }
   if (channelName) {
     return buildResponse(

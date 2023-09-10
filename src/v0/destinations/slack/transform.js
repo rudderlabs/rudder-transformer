@@ -51,7 +51,7 @@ const processIdentify = (message, destination) => {
 
   const template = Handlebars.compile(
     (identifyTemplateConfig
-      ? identifyTemplateConfig.trim().length === 0
+      ? identifyTemplateConfig.trim()?.length === 0
         ? undefined
         : identifyTemplateConfig
       : undefined) ||
@@ -64,7 +64,7 @@ const processIdentify = (message, destination) => {
   logger.debug(
     'identifyTemplateConfig: ',
     (identifyTemplateConfig
-      ? identifyTemplateConfig.trim().length === 0
+      ? identifyTemplateConfig.trim()?.length === 0
         ? undefined
         : identifyTemplateConfig
       : undefined) ||
@@ -90,13 +90,12 @@ const processIdentify = (message, destination) => {
   return buildResponse({ text: resultText }, message, destination);
 };
 
-const isEventNameMatchesRegex = (eventName, regex) =>
-  eventName.match() && eventName.match(regex).length > 0;
+const isEventNameMatchesRegex = (eventName, regex) => eventName.match(regex)?.length > 0;
 
 const getChannelForEventName = (eventChannelSettings, eventName) => {
   for (const channelConfig of eventChannelSettings) {
     const configEventName =
-      channelConfig?.eventName?.trim().length > 0 ? channelConfig.eventName : null;
+      channelConfig?.eventName?.trim()?.length > 0 ? channelConfig.eventName : null;
     const channelWebhook =
       channelConfig?.eventChannelWebhook?.length > 0 ? channelConfig.eventChannelWebhook : null;
 
@@ -122,9 +121,9 @@ const getChannelForEventName = (eventChannelSettings, eventName) => {
 const getChannelNameForEvent = (eventChannelSettings, eventName) => {
   for (const channelConfig of eventChannelSettings) {
     const configEventName =
-      channelConfig?.eventName?.trim().length > 0 ? channelConfig.eventName : null;
+      channelConfig?.eventName?.trim()?.length > 0 ? channelConfig.eventName : null;
     const configEventChannel =
-      channelConfig?.eventChannel?.trim().length > 0 ? channelConfig.eventChannel : null;
+      channelConfig?.eventChannel?.trim()?.length > 0 ? channelConfig.eventChannel : null;
     if (configEventName && configEventChannel) {
       if (channelConfig.eventRegex) {
         logger.debug('regex: ', `${configEventName} trying to match with ${eventName}`);
@@ -147,13 +146,10 @@ const getChannelNameForEvent = (eventChannelSettings, eventName) => {
 
 const buildtemplateList = (templateListForThisEvent, eventTemplateSettings, eventName) => {
   eventTemplateSettings.forEach((templateConfig) => {
-    const configEventName = templateConfig.eventName
-      ? templateConfig.eventName.trim().length > 0
-        ? templateConfig.eventName
-        : undefined
-      : undefined;
+    const configEventName =
+      templateConfig?.eventName?.trim()?.length > 0 ? templateConfig.eventName : undefined;
     const configEventTemplate = templateConfig.eventTemplate
-      ? templateConfig.eventTemplate.trim().length > 0
+      ? templateConfig.eventTemplate.trim()?.length > 0
         ? templateConfig.eventTemplate
         : undefined
       : undefined;
@@ -237,16 +233,16 @@ const processTrack = (message, destination) => {
   } catch (err) {
     throw new ConfigurationError(`Something is wrong with the event template: '${template}'`);
   }
-  if (incomingWebhooksType === 'legacy' && channelName) {
+  if (incomingWebhooksType === 'modern' && channelWebhook) {
+    return buildResponse({ text: resultText }, message, destination, channelWebhook);
+  }
+  if (channelName) {
     return buildResponse(
       { channel: channelName, text: resultText },
       message,
       destination,
       channelWebhook,
     );
-  }
-  if (incomingWebhooksType === 'modern' && channelWebhook) {
-    return buildResponse({ text: resultText }, message, destination, channelWebhook);
   }
   return buildResponse({ text: resultText }, message, destination);
 };

@@ -4,9 +4,7 @@
     "input": {
       "id": "shopify_test3",
       "query_parameters": {
-        "topic": [
-          "carts_create"
-        ]
+        "topic": ["carts_create"]
       },
       "token": "shopify_test3",
       "line_items": [],
@@ -35,12 +33,8 @@
     "description": "Invalid topic",
     "input": {
       "query_parameters": {
-        "signature": [
-          "rudderstack"
-        ],
-        "writeKey": [
-          "sample-write-key"
-        ]
+        "signature": ["rudderstack"],
+        "writeKey": ["sample-write-key"]
       }
     },
     "output": {
@@ -52,12 +46,8 @@
     "input": {
       "query_parameters": {
         "topic": [],
-        "signature": [
-          "rudderstack"
-        ],
-        "writeKey": [
-          "sample-write-key"
-        ]
+        "signature": ["rudderstack"],
+        "writeKey": ["sample-write-key"]
       }
     },
     "output": {
@@ -68,15 +58,9 @@
     "description": "Unsupported Event Type",
     "input": {
       "query_parameters": {
-        "topic": [
-          "random_event"
-        ],
-        "signature": [
-          "rudderstack"
-        ],
-        "writeKey": [
-          "sample-write-key"
-        ]
+        "topic": ["random_event"],
+        "signature": ["rudderstack"],
+        "writeKey": ["sample-write-key"]
       }
     },
     "output": [
@@ -93,15 +77,9 @@
     "description": "Identify Call for customers create event",
     "input": {
       "query_parameters": {
-        "topic": [
-          "customers_create"
-        ],
-        "signature": [
-          "rudderstack"
-        ],
-        "writeKey": [
-          "sample-write-key"
-        ]
+        "topic": ["customers_create"],
+        "signature": ["rudderstack"],
+        "writeKey": ["sample-write-key"]
       },
       "id": 5747017285820,
       "accepts_marketing": false,
@@ -263,15 +241,9 @@
     "description": "Unsupported checkout event",
     "input": {
       "query_parameters": {
-        "topic": [
-          "checkout_delete"
-        ],
-        "writeKey": [
-          "sample-write-key"
-        ],
-        "signature": [
-          "rudderstack"
-        ]
+        "topic": ["checkout_delete"],
+        "writeKey": ["sample-write-key"],
+        "signature": ["rudderstack"]
       },
       "admin_graphql_api_id": "gid://shopify/Fulfillment/4124667937024",
       "created_at": "2022-01-05T18:13:02+05:30",
@@ -299,13 +271,9 @@
       "status": "success",
       "tracking_company": "Amazon Logistics UK",
       "tracking_number": "Sample001test",
-      "tracking_numbers": [
-        "Sample001test"
-      ],
+      "tracking_numbers": ["Sample001test"],
       "tracking_url": "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530",
-      "tracking_urls": [
-        "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530"
-      ],
+      "tracking_urls": ["https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530"],
       "updated_at": "2022-01-05T18:16:48+05:30"
     },
     "output": [
@@ -322,15 +290,9 @@
     "description": "Track Call -> Fullfillments updated event",
     "input": {
       "query_parameters": {
-        "topic": [
-          "fulfillments_update"
-        ],
-        "writeKey": [
-          "sample-write-key"
-        ],
-        "signature": [
-          "rudderstack"
-        ]
+        "topic": ["fulfillments_update"],
+        "writeKey": ["sample-write-key"],
+        "signature": ["rudderstack"]
       },
       "shipping_address": {
         "address1": "11 Rani Sankari Lane Patuapara Bhowanipore"
@@ -429,13 +391,9 @@
       "status": "success",
       "tracking_company": "Amazon Logistics UK",
       "tracking_number": "Sample001test",
-      "tracking_numbers": [
-        "Sample001test"
-      ],
+      "tracking_numbers": ["Sample001test"],
       "tracking_url": "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530",
-      "tracking_urls": [
-        "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530"
-      ],
+      "tracking_urls": ["https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530"],
       "updated_at": "2022-01-05T18:16:48+05:30"
     },
     "output": [
@@ -472,9 +430,7 @@
           "status": "success",
           "tracking_company": "Amazon Logistics UK",
           "tracking_number": "Sample001test",
-          "tracking_numbers": [
-            "Sample001test"
-          ],
+          "tracking_numbers": ["Sample001test"],
           "tracking_url": "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530",
           "tracking_urls": [
             "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530"
@@ -485,7 +441,7 @@
               "product_id": "7510929801472",
               "sku": "15",
               "name": "p1",
-              "price": 5000.00,
+              "price": 5000.0,
               "brand": "rudderstack-store",
               "quantity": 1,
               "admin_graphql_api_id": "gid://shopify/LineItem/11896203149568",
@@ -566,6 +522,3817 @@
           },
           "email": "test_person@email.com"
         }
+      }
+    ]
+  },
+  {
+    "description": "Track Call -> Checkout Started event",
+    "input": {
+      "query_parameters": {
+        "topic": ["checkouts_create"],
+        "writeKey": ["sample-write-key"],
+        "signature": ["rudderstack"]
+      },
+      "id": 36784183345427,
+      "token": "test_token",
+      "cart_token": "test_cart_token",
+      "email": null,
+      "gateway": null,
+      "buyer_accepts_marketing": false,
+      "buyer_accepts_sms_marketing": false,
+      "sms_marketing_phone": null,
+      "created_at": "2023-06-26T11:42:27+00:00",
+      "updated_at": "2023-06-26T07:42:28-04:00",
+      "landing_site": "/password",
+      "note": null,
+      "note_attributes": [
+        {
+          "name": "random",
+          "value": "RANDOM_VAL"
+        }
+      ],
+      "referring_site": "",
+      "shipping_lines": [],
+      "taxes_included": true,
+      "total_weight": 0,
+      "currency": "GBP",
+      "completed_at": null,
+      "phone": null,
+      "customer_locale": "en-GB",
+      "line_items": [
+        {
+          "key": "44323300999443",
+          "fulfillment_service": "manual",
+          "gift_card": false,
+          "grams": 0,
+          "presentment_title": "Shirt 2",
+          "presentment_variant_title": "LARGE",
+          "product_id": 8100575674643,
+          "quantity": 2,
+          "requires_shipping": true,
+          "sku": "",
+          "tax_lines": [],
+          "taxable": true,
+          "title": "Shirt 2",
+          "variant_id": 44323300999443,
+          "variant_title": "LARGE",
+          "variant_price": "30.00",
+          "vendor": "test_vendor",
+          "unit_price_measurement": {
+            "measured_type": null,
+            "quantity_value": null,
+            "quantity_unit": null,
+            "reference_value": null,
+            "reference_unit": null
+          },
+          "compare_at_price": "35.00",
+          "line_price": "60.00",
+          "price": "30.00",
+          "applied_discounts": [],
+          "destination_location_id": null,
+          "user_id": null,
+          "rank": null,
+          "origin_location_id": null,
+          "properties": null
+        }
+      ],
+      "name": "#36784183345427",
+      "abandoned_checkout_url": "https://example-checkout-url",
+      "discount_codes": [],
+      "tax_lines": [],
+      "presentment_currency": "GBP",
+      "source_name": "web",
+      "total_line_items_price": "60.00",
+      "total_tax": "0.00",
+      "total_discounts": "0.00",
+      "subtotal_price": "60.00",
+      "total_price": "60.00",
+      "total_duties": "0.00",
+      "device_id": null,
+      "user_id": null,
+      "location_id": null,
+      "source_identifier": null,
+      "source_url": null,
+      "source": null,
+      "closed_at": null
+    },
+    "output": [
+      {
+        "context": {
+          "library": {
+            "name": "RudderStack Shopify Cloud",
+            "version": "1.0.0"
+          },
+          "integration": {
+            "name": "SHOPIFY"
+          },
+          "topic": "checkouts_create",
+          "cart_token": "test_cart_token"
+        },
+        "integrations": {
+          "SHOPIFY": true
+        },
+        "type": "track",
+        "event": "Checkout Started",
+        "properties": {
+          "checkout_id": "36784183345427",
+          "value": 60,
+          "revenue": 60,
+          "tax": 0,
+          "discount": 0,
+          "currency": "GBP",
+          "products": [
+            {
+              "product_id": "8100575674643",
+              "name": "Shirt 2",
+              "price": 30,
+              "brand": "test_vendor",
+              "quantity": 2,
+              "variant": "LARGE",
+              "key": "44323300999443",
+              "fulfillment_service": "manual",
+              "gift_card": false,
+              "grams": 0,
+              "presentment_title": "Shirt 2",
+              "presentment_variant_title": "LARGE",
+              "requires_shipping": true,
+              "tax_lines": [],
+              "taxable": true,
+              "variant_id": 44323300999443,
+              "variant_price": "30.00",
+              "unit_price_measurement": {
+                "measured_type": null,
+                "quantity_value": null,
+                "quantity_unit": null,
+                "reference_value": null,
+                "reference_unit": null
+              },
+              "compare_at_price": "35.00",
+              "line_price": "60.00",
+              "applied_discounts": [],
+              "destination_location_id": null,
+              "user_id": null,
+              "rank": null,
+              "origin_location_id": null,
+              "properties": null
+            }
+          ],
+          "token": "test_token",
+          "cart_token": "test_cart_token",
+          "email": null,
+          "gateway": null,
+          "buyer_accepts_marketing": false,
+          "buyer_accepts_sms_marketing": false,
+          "sms_marketing_phone": null,
+          "created_at": "2023-06-26T11:42:27+00:00",
+          "updated_at": "2023-06-26T07:42:28-04:00",
+          "landing_site": "/password",
+          "note": null,
+          "note_attributes": [
+            {
+              "name": "random",
+              "value": "RANDOM_VAL"
+            }
+          ],
+          "referring_site": "",
+          "shipping_lines": [],
+          "taxes_included": true,
+          "total_weight": 0,
+          "completed_at": null,
+          "phone": null,
+          "customer_locale": "en-GB",
+          "name": "#36784183345427",
+          "abandoned_checkout_url": "https://example-checkout-url",
+          "discount_codes": [],
+          "tax_lines": [],
+          "presentment_currency": "GBP",
+          "source_name": "web",
+          "total_line_items_price": "60.00",
+          "total_duties": "0.00",
+          "device_id": null,
+          "user_id": null,
+          "location_id": null,
+          "source_identifier": null,
+          "source_url": null,
+          "source": null,
+          "closed_at": null
+        },
+        "timestamp": "2023-06-26T11:42:28.000Z",
+        "anonymousId": "48a01d71-7c79-5301-9401-a7fc80e1ae88"
+      }
+    ]
+  },
+  {
+    "description": "Track Call -> Checkout Step Viewed event",
+    "input": {
+      "query_parameters": {
+        "topic": ["checkouts_update"],
+        "writeKey": ["sample-write-key"],
+        "signature": ["rudderstack"]
+      },
+      "id": 36816304308499,
+      "token": "test_token",
+      "cart_token": "test_cart_token",
+      "email": null,
+      "gateway": null,
+      "buyer_accepts_marketing": false,
+      "buyer_accepts_sms_marketing": false,
+      "sms_marketing_phone": null,
+      "created_at": "2023-07-04T06:12:29+00:00",
+      "updated_at": "2023-07-04T02:12:51-04:00",
+      "landing_site": "/password",
+      "note": "",
+      "note_attributes": [
+        {
+          "name": "random",
+          "value": "RANDOM_VAL"
+        }
+      ],
+      "referring_site": "",
+      "shipping_lines": [],
+      "taxes_included": true,
+      "total_weight": 0,
+      "currency": "GBP",
+      "completed_at": null,
+      "phone": null,
+      "customer_locale": "en-GB",
+      "line_items": [
+        {
+          "key": "44323300999443",
+          "fulfillment_service": "manual",
+          "gift_card": false,
+          "grams": 0,
+          "presentment_title": "Shirt 2",
+          "presentment_variant_title": "LARGE",
+          "product_id": 8100575674643,
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "",
+          "tax_lines": [],
+          "taxable": true,
+          "title": "Shirt 2",
+          "variant_id": 44323300999443,
+          "variant_title": "LARGE",
+          "variant_price": "30.00",
+          "vendor": "test_vendor",
+          "unit_price_measurement": {
+            "measured_type": null,
+            "quantity_value": null,
+            "quantity_unit": null,
+            "reference_value": null,
+            "reference_unit": null
+          },
+          "compare_at_price": "35.00",
+          "line_price": "30.00",
+          "price": "30.00",
+          "applied_discounts": [],
+          "destination_location_id": null,
+          "user_id": null,
+          "rank": null,
+          "origin_location_id": null,
+          "properties": null
+        }
+      ],
+      "name": "#36816304308499",
+      "abandoned_checkout_url": "https://example-checkout-url",
+      "discount_codes": [],
+      "tax_lines": [],
+      "presentment_currency": "GBP",
+      "source_name": "web",
+      "total_line_items_price": "30.00",
+      "total_tax": "0.00",
+      "total_discounts": "0.00",
+      "subtotal_price": "30.00",
+      "total_price": "30.00",
+      "total_duties": "0.00",
+      "device_id": null,
+      "user_id": null,
+      "location_id": null,
+      "source_identifier": null,
+      "source_url": null,
+      "source": null,
+      "closed_at": null
+    },
+    "output": [
+      {
+        "context": {
+          "library": {
+            "name": "RudderStack Shopify Cloud",
+            "version": "1.0.0"
+          },
+          "integration": {
+            "name": "SHOPIFY"
+          },
+          "topic": "checkouts_update",
+          "cart_token": "test_cart_token"
+        },
+        "integrations": {
+          "SHOPIFY": true
+        },
+        "type": "track",
+        "event": "Checkout Step Viewed",
+        "properties": {
+          "checkout_id": "36816304308499",
+          "token": "test_token",
+          "cart_token": "test_cart_token",
+          "email": null,
+          "gateway": null,
+          "buyer_accepts_marketing": false,
+          "buyer_accepts_sms_marketing": false,
+          "sms_marketing_phone": null,
+          "created_at": "2023-07-04T06:12:29+00:00",
+          "updated_at": "2023-07-04T02:12:51-04:00",
+          "landing_site": "/password",
+          "note": "",
+          "note_attributes": [
+            {
+              "name": "random",
+              "value": "RANDOM_VAL"
+            }
+          ],
+          "referring_site": "",
+          "shipping_lines": [],
+          "taxes_included": true,
+          "total_weight": 0,
+          "currency": "GBP",
+          "completed_at": null,
+          "phone": null,
+          "customer_locale": "en-GB",
+          "line_items": [
+            {
+              "key": "44323300999443",
+              "fulfillment_service": "manual",
+              "gift_card": false,
+              "grams": 0,
+              "presentment_title": "Shirt 2",
+              "presentment_variant_title": "LARGE",
+              "product_id": 8100575674643,
+              "quantity": 1,
+              "requires_shipping": true,
+              "sku": "",
+              "tax_lines": [],
+              "taxable": true,
+              "title": "Shirt 2",
+              "variant_id": 44323300999443,
+              "variant_title": "LARGE",
+              "variant_price": "30.00",
+              "vendor": "test_vendor",
+              "unit_price_measurement": {
+                "measured_type": null,
+                "quantity_value": null,
+                "quantity_unit": null,
+                "reference_value": null,
+                "reference_unit": null
+              },
+              "compare_at_price": "35.00",
+              "line_price": "30.00",
+              "price": "30.00",
+              "applied_discounts": [],
+              "destination_location_id": null,
+              "user_id": null,
+              "rank": null,
+              "origin_location_id": null,
+              "properties": null
+            }
+          ],
+          "name": "#36816304308499",
+          "abandoned_checkout_url": "https://example-checkout-url",
+          "discount_codes": [],
+          "tax_lines": [],
+          "presentment_currency": "GBP",
+          "source_name": "web",
+          "total_line_items_price": "30.00",
+          "total_tax": "0.00",
+          "total_discounts": "0.00",
+          "subtotal_price": "30.00",
+          "total_price": "30.00",
+          "total_duties": "0.00",
+          "device_id": null,
+          "user_id": null,
+          "location_id": null,
+          "source_identifier": null,
+          "source_url": null,
+          "source": null,
+          "closed_at": null
+        },
+        "timestamp": "2023-07-04T06:12:51.000Z",
+        "anonymousId": "48a01d71-7c79-5301-9401-a7fc80e1ae88"
+      }
+    ]
+  },
+  {
+    "description": "Track Call -> Checkout Step Completed event",
+    "input": {
+      "query_parameters": {
+        "topic": ["checkouts_update"],
+        "writeKey": ["sample-write-key"],
+        "signature": ["rudderstack"]
+      },
+      "id": 36800494043411,
+      "name": "#36800494043411",
+      "token": "test_token",
+      "cart_token": "test_cart_token",
+      "email": null,
+      "phone": "+919834383894",
+      "customer_locale": "en-GB",
+      "gateway": "bogus",
+      "buyer_accepts_marketing": false,
+      "buyer_accepts_sms_marketing": false,
+      "sms_marketing_phone": null,
+      "created_at": "2023-06-28T11:06:13+00:00",
+      "updated_at": "2023-06-28T07:08:14-04:00",
+      "completed_at": "2023-06-28T11:08:14+00:00",
+      "landing_site": "/password",
+      "note": null,
+      "note_attributes": [
+        {
+          "name": "random",
+          "value": "RANDOM_VAL"
+        }
+      ],
+      "referring_site": "",
+      "taxes_included": true,
+      "total_weight": 0,
+      "currency": "GBP",
+      "presentment_currency": "GBP",
+      "line_items": [
+        {
+          "key": "44323300999443",
+          "fulfillment_service": "manual",
+          "gift_card": false,
+          "grams": 0,
+          "presentment_title": "Shirt 2",
+          "presentment_variant_title": "LARGE",
+          "product_id": 8100575674643,
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "",
+          "tax_lines": [],
+          "taxable": true,
+          "title": "Shirt 2",
+          "variant_id": 44323300999443,
+          "variant_title": "LARGE",
+          "variant_price": "30.00",
+          "vendor": "test_vendor",
+          "unit_price_measurement": {
+            "measured_type": null,
+            "quantity_value": null,
+            "quantity_unit": null,
+            "reference_value": null,
+            "reference_unit": null
+          },
+          "compare_at_price": "35.00",
+          "line_price": "30.00",
+          "price": "30.00",
+          "applied_discounts": [],
+          "destination_location_id": null,
+          "user_id": null,
+          "rank": null,
+          "origin_location_id": null,
+          "properties": null
+        }
+      ],
+      "tax_lines": [],
+      "shipping_lines": [
+        {
+          "code": "Standard",
+          "price": "5.99",
+          "original_shop_price": "5.99",
+          "original_shop_markup": "0.00",
+          "source": "shopify",
+          "title": "Standard",
+          "presentment_title": "Standard",
+          "phone": null,
+          "tax_lines": [],
+          "custom_tax_lines": null,
+          "markup": "0.00",
+          "carrier_identifier": null,
+          "carrier_service_id": null,
+          "api_client_id": "580111",
+          "delivery_option_group": {
+            "token": "f4cb9c3f91b37ab6edfce339defa9307",
+            "type": "one_time_purchase"
+          },
+          "delivery_expectation_range": [172800, 345600],
+          "delivery_expectation_type": "shipping",
+          "id": null,
+          "requested_fulfillment_service_id": null,
+          "delivery_category": null,
+          "validation_context": null,
+          "applied_discounts": []
+        }
+      ],
+      "shipping_address": {
+        "first_name": "John",
+        "address1": "Upminster",
+        "phone": null,
+        "city": "London",
+        "zip": "PO16 7GZ",
+        "province": "England",
+        "country": "United Kingdom",
+        "last_name": "Doe",
+        "address2": "434",
+        "company": null,
+        "latitude": null,
+        "longitude": null,
+        "name": "John Doe",
+        "country_code": "GB",
+        "province_code": "ENG"
+      },
+      "billing_address": {
+        "first_name": "John",
+        "address1": "Upminster",
+        "phone": null,
+        "city": "London",
+        "zip": "PO16 7GZ",
+        "province": "England",
+        "country": "United Kingdom",
+        "last_name": "Doe",
+        "address2": "434",
+        "company": null,
+        "latitude": null,
+        "longitude": null,
+        "name": "John Doe",
+        "country_code": "GB",
+        "province_code": "ENG"
+      },
+      "discount_codes": [],
+      "abandoned_checkout_url": "https://example-checkout-url",
+      "source_name": "web",
+      "total_line_items_price": "30.00",
+      "total_tax": "0.00",
+      "total_discounts": "0.00",
+      "subtotal_price": "35.99",
+      "total_price": "35.99",
+      "total_duties": "0.00",
+      "device_id": null,
+      "user_id": null,
+      "location_id": null,
+      "source_identifier": null,
+      "source_url": null,
+      "source": null,
+      "closed_at": null,
+      "customer": {
+        "id": 7005059186963,
+        "email": null,
+        "accepts_marketing": false,
+        "created_at": null,
+        "updated_at": null,
+        "first_name": "John",
+        "last_name": "Doe",
+        "orders_count": 0,
+        "state": "disabled",
+        "total_spent": "0.00",
+        "last_order_id": null,
+        "note": null,
+        "verified_email": true,
+        "multipass_identifier": null,
+        "tax_exempt": false,
+        "phone": "+919834383894",
+        "tags": "",
+        "currency": "GBP",
+        "accepts_marketing_updated_at": null,
+        "admin_graphql_api_id": "gid://shopify/Customer/7005059186963",
+        "default_address": {
+          "id": null,
+          "customer_id": 7005059186963,
+          "first_name": null,
+          "last_name": null,
+          "company": null,
+          "address1": null,
+          "address2": null,
+          "city": null,
+          "province": null,
+          "country": null,
+          "zip": null,
+          "phone": null,
+          "name": " ",
+          "province_code": null,
+          "country_code": null,
+          "country_name": null,
+          "default": true
+        },
+        "last_order_name": null,
+        "marketing_opt_in_level": null
+      }
+    },
+    "output": [
+      {
+        "context": {
+          "library": {
+            "name": "RudderStack Shopify Cloud",
+            "version": "1.0.0"
+          },
+          "integration": {
+            "name": "SHOPIFY"
+          },
+          "topic": "checkouts_update",
+          "cart_token": "test_cart_token"
+        },
+        "integrations": {
+          "SHOPIFY": true
+        },
+        "type": "track",
+        "event": "Checkout Step Completed",
+        "properties": {
+          "checkout_id": "36800494043411",
+          "shipping_method": "Standard",
+          "payment_method": "bogus",
+          "name": "#36800494043411",
+          "token": "test_token",
+          "cart_token": "test_cart_token",
+          "email": null,
+          "phone": "+919834383894",
+          "customer_locale": "en-GB",
+          "buyer_accepts_marketing": false,
+          "buyer_accepts_sms_marketing": false,
+          "sms_marketing_phone": null,
+          "created_at": "2023-06-28T11:06:13+00:00",
+          "updated_at": "2023-06-28T07:08:14-04:00",
+          "completed_at": "2023-06-28T11:08:14+00:00",
+          "landing_site": "/password",
+          "note": null,
+          "note_attributes": [
+            {
+              "name": "random",
+              "value": "RANDOM_VAL"
+            }
+          ],
+          "referring_site": "",
+          "taxes_included": true,
+          "total_weight": 0,
+          "currency": "GBP",
+          "presentment_currency": "GBP",
+          "line_items": [
+            {
+              "key": "44323300999443",
+              "fulfillment_service": "manual",
+              "gift_card": false,
+              "grams": 0,
+              "presentment_title": "Shirt 2",
+              "presentment_variant_title": "LARGE",
+              "product_id": 8100575674643,
+              "quantity": 1,
+              "requires_shipping": true,
+              "sku": "",
+              "tax_lines": [],
+              "taxable": true,
+              "title": "Shirt 2",
+              "variant_id": 44323300999443,
+              "variant_title": "LARGE",
+              "variant_price": "30.00",
+              "vendor": "test_vendor",
+              "unit_price_measurement": {
+                "measured_type": null,
+                "quantity_value": null,
+                "quantity_unit": null,
+                "reference_value": null,
+                "reference_unit": null
+              },
+              "compare_at_price": "35.00",
+              "line_price": "30.00",
+              "price": "30.00",
+              "applied_discounts": [],
+              "destination_location_id": null,
+              "user_id": null,
+              "rank": null,
+              "origin_location_id": null,
+              "properties": null
+            }
+          ],
+          "tax_lines": [],
+          "shipping_lines": [
+            {
+              "code": "Standard",
+              "price": "5.99",
+              "original_shop_price": "5.99",
+              "original_shop_markup": "0.00",
+              "source": "shopify",
+              "title": "Standard",
+              "presentment_title": "Standard",
+              "phone": null,
+              "tax_lines": [],
+              "custom_tax_lines": null,
+              "markup": "0.00",
+              "carrier_identifier": null,
+              "carrier_service_id": null,
+              "api_client_id": "580111",
+              "delivery_option_group": {
+                "token": "f4cb9c3f91b37ab6edfce339defa9307",
+                "type": "one_time_purchase"
+              },
+              "delivery_expectation_range": [172800, 345600],
+              "delivery_expectation_type": "shipping",
+              "id": null,
+              "requested_fulfillment_service_id": null,
+              "delivery_category": null,
+              "validation_context": null,
+              "applied_discounts": []
+            }
+          ],
+          "discount_codes": [],
+          "abandoned_checkout_url": "https://example-checkout-url",
+          "source_name": "web",
+          "total_line_items_price": "30.00",
+          "total_tax": "0.00",
+          "total_discounts": "0.00",
+          "subtotal_price": "35.99",
+          "total_price": "35.99",
+          "total_duties": "0.00",
+          "device_id": null,
+          "user_id": null,
+          "location_id": null,
+          "source_identifier": null,
+          "source_url": null,
+          "source": null,
+          "closed_at": null
+        },
+        "timestamp": "2023-06-28T11:08:14.000Z",
+        "userId": "7005059186963",
+        "traits": {
+          "firstName": "John",
+          "lastName": "Doe",
+          "phone": "+919834383894",
+          "address": {
+            "id": null,
+            "customer_id": 7005059186963,
+            "first_name": null,
+            "last_name": null,
+            "company": null,
+            "address1": null,
+            "address2": null,
+            "city": null,
+            "province": null,
+            "country": null,
+            "zip": null,
+            "phone": null,
+            "name": " ",
+            "province_code": null,
+            "country_code": null,
+            "country_name": null,
+            "default": true
+          },
+          "acceptsMarketing": false,
+          "orderCount": 0,
+          "state": "disabled",
+          "totalSpent": "0.00",
+          "verifiedEmail": true,
+          "taxExempt": false,
+          "tags": "",
+          "currency": "GBP",
+          "adminGraphqlApiId": "gid://shopify/Customer/7005059186963",
+          "shippingAddress": {
+            "first_name": "John",
+            "address1": "Upminster",
+            "phone": null,
+            "city": "London",
+            "zip": "PO16 7GZ",
+            "province": "England",
+            "country": "United Kingdom",
+            "last_name": "Doe",
+            "address2": "434",
+            "company": null,
+            "latitude": null,
+            "longitude": null,
+            "name": "John Doe",
+            "country_code": "GB",
+            "province_code": "ENG"
+          },
+          "billingAddress": {
+            "first_name": "John",
+            "address1": "Upminster",
+            "phone": null,
+            "city": "London",
+            "zip": "PO16 7GZ",
+            "province": "England",
+            "country": "United Kingdom",
+            "last_name": "Doe",
+            "address2": "434",
+            "company": null,
+            "latitude": null,
+            "longitude": null,
+            "name": "John Doe",
+            "country_code": "GB",
+            "province_code": "ENG"
+          }
+        },
+        "anonymousId": "48a01d71-7c79-5301-9401-a7fc80e1ae88"
+      }
+    ]
+  },
+  {
+    "description": "Track Call -> Payment Info Entered",
+    "input": {
+      "query_parameters": {
+        "topic": ["checkouts_update"],
+        "writeKey": ["sample-write-key"],
+        "signature": ["rudderstack"]
+      },
+      "id": 36800770375955,
+      "token": "test_token",
+      "cart_token": "test_cart_token",
+      "email": null,
+      "gateway": "bogus",
+      "buyer_accepts_marketing": false,
+      "buyer_accepts_sms_marketing": false,
+      "sms_marketing_phone": null,
+      "created_at": "2023-06-28T12:46:40+00:00",
+      "updated_at": "2023-06-28T09:27:52-04:00",
+      "landing_site": "/password",
+      "note": null,
+      "note_attributes": [
+        {
+          "name": "random",
+          "value": "RANDOM_VAL"
+        }
+      ],
+      "referring_site": "",
+      "shipping_lines": [
+        {
+          "code": "Standard",
+          "price": "5.99",
+          "original_shop_price": "5.99",
+          "original_shop_markup": "0.00",
+          "source": "shopify",
+          "title": "Standard",
+          "presentment_title": "Standard",
+          "phone": null,
+          "tax_lines": [],
+          "custom_tax_lines": null,
+          "markup": "0.00",
+          "carrier_identifier": null,
+          "carrier_service_id": null,
+          "api_client_id": "580111",
+          "delivery_option_group": {
+            "token": "f1c7bdd30fc7f11305592099bfea5b50",
+            "type": "one_time_purchase"
+          },
+          "delivery_expectation_range": [172800, 345600],
+          "delivery_expectation_type": "shipping",
+          "id": null,
+          "requested_fulfillment_service_id": null,
+          "delivery_category": null,
+          "validation_context": null,
+          "applied_discounts": []
+        }
+      ],
+      "taxes_included": true,
+      "total_weight": 0,
+      "currency": "GBP",
+      "completed_at": null,
+      "phone": "+919999999999",
+      "customer_locale": "en-GB",
+      "line_items": [
+        {
+          "key": "44323300999443",
+          "fulfillment_service": "manual",
+          "gift_card": false,
+          "grams": 0,
+          "presentment_title": "Shirt 2",
+          "presentment_variant_title": "LARGE",
+          "product_id": 8100575674643,
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "",
+          "tax_lines": [],
+          "taxable": true,
+          "title": "Shirt 2",
+          "variant_id": 44323300999443,
+          "variant_title": "LARGE",
+          "variant_price": "30.00",
+          "vendor": "test_vendor",
+          "unit_price_measurement": {
+            "measured_type": null,
+            "quantity_value": null,
+            "quantity_unit": null,
+            "reference_value": null,
+            "reference_unit": null
+          },
+          "compare_at_price": "35.00",
+          "line_price": "30.00",
+          "price": "30.00",
+          "applied_discounts": [],
+          "destination_location_id": null,
+          "user_id": null,
+          "rank": null,
+          "origin_location_id": null,
+          "properties": null
+        }
+      ],
+      "name": "#36800770375955",
+      "abandoned_checkout_url": "https://example-checkout-url",
+      "discount_codes": [],
+      "tax_lines": [],
+      "presentment_currency": "GBP",
+      "source_name": "web",
+      "total_line_items_price": "30.00",
+      "total_tax": "0.00",
+      "total_discounts": "0.00",
+      "subtotal_price": "30.00",
+      "total_price": "35.99",
+      "total_duties": "0.00",
+      "device_id": null,
+      "user_id": null,
+      "location_id": null,
+      "source_identifier": null,
+      "source_url": null,
+      "source": null,
+      "closed_at": null,
+      "shipping_address": {
+        "first_name": "John",
+        "address1": "London Bridge",
+        "phone": null,
+        "city": "London",
+        "zip": "EC4R 9HA",
+        "province": "England",
+        "country": "United Kingdom",
+        "last_name": "Doe",
+        "address2": null,
+        "company": null,
+        "latitude": null,
+        "longitude": null,
+        "name": "John Doe",
+        "country_code": "GB",
+        "province_code": "ENG"
+      },
+      "billing_address": {
+        "first_name": "John",
+        "address1": "London Bridge",
+        "phone": null,
+        "city": "London",
+        "zip": "EC4R 9HA",
+        "province": "England",
+        "country": "United Kingdom",
+        "last_name": "Doe",
+        "address2": null,
+        "company": null,
+        "latitude": null,
+        "longitude": null,
+        "name": "John Doe",
+        "country_code": "GB",
+        "province_code": "ENG"
+      },
+      "customer": {
+        "id": 7005105389843,
+        "email": null,
+        "accepts_marketing": false,
+        "created_at": null,
+        "updated_at": null,
+        "first_name": "John",
+        "last_name": "Doe",
+        "orders_count": 0,
+        "state": "disabled",
+        "total_spent": "0.00",
+        "last_order_id": null,
+        "note": null,
+        "verified_email": true,
+        "multipass_identifier": null,
+        "tax_exempt": false,
+        "phone": "+919999999999",
+        "tags": "",
+        "currency": "GBP",
+        "accepts_marketing_updated_at": null,
+        "admin_graphql_api_id": "gid://shopify/Customer/7005105389843",
+        "default_address": {
+          "id": null,
+          "customer_id": 7005105389843,
+          "first_name": "John",
+          "last_name": "Doe",
+          "company": null,
+          "address1": "London Bridge",
+          "address2": null,
+          "city": "London",
+          "province": "England",
+          "country": "United Kingdom",
+          "zip": "EC4R 9HA",
+          "phone": null,
+          "name": "John Doe",
+          "province_code": "ENG",
+          "country_code": "GB",
+          "country_name": "United Kingdom",
+          "default": true
+        },
+        "last_order_name": null,
+        "marketing_opt_in_level": null
+      }
+    },
+    "output": [
+      {
+        "context": {
+          "library": {
+            "name": "RudderStack Shopify Cloud",
+            "version": "1.0.0"
+          },
+          "integration": {
+            "name": "SHOPIFY"
+          },
+          "topic": "checkouts_update",
+          "cart_token": "test_cart_token"
+        },
+        "integrations": {
+          "SHOPIFY": true
+        },
+        "type": "track",
+        "event": "Payment Info Entered",
+        "properties": {
+          "checkout_id": "36800770375955",
+          "shipping_method": "Standard",
+          "payment_method": "bogus",
+          "token": "test_token",
+          "cart_token": "test_cart_token",
+          "email": null,
+          "buyer_accepts_marketing": false,
+          "buyer_accepts_sms_marketing": false,
+          "sms_marketing_phone": null,
+          "created_at": "2023-06-28T12:46:40+00:00",
+          "updated_at": "2023-06-28T09:27:52-04:00",
+          "landing_site": "/password",
+          "note": null,
+          "note_attributes": [
+            {
+              "name": "random",
+              "value": "RANDOM_VAL"
+            }
+          ],
+          "referring_site": "",
+          "shipping_lines": [
+            {
+              "code": "Standard",
+              "price": "5.99",
+              "original_shop_price": "5.99",
+              "original_shop_markup": "0.00",
+              "source": "shopify",
+              "title": "Standard",
+              "presentment_title": "Standard",
+              "phone": null,
+              "tax_lines": [],
+              "custom_tax_lines": null,
+              "markup": "0.00",
+              "carrier_identifier": null,
+              "carrier_service_id": null,
+              "api_client_id": "580111",
+              "delivery_option_group": {
+                "token": "f1c7bdd30fc7f11305592099bfea5b50",
+                "type": "one_time_purchase"
+              },
+              "delivery_expectation_range": [172800, 345600],
+              "delivery_expectation_type": "shipping",
+              "id": null,
+              "requested_fulfillment_service_id": null,
+              "delivery_category": null,
+              "validation_context": null,
+              "applied_discounts": []
+            }
+          ],
+          "taxes_included": true,
+          "total_weight": 0,
+          "currency": "GBP",
+          "completed_at": null,
+          "phone": "+919999999999",
+          "customer_locale": "en-GB",
+          "line_items": [
+            {
+              "key": "44323300999443",
+              "fulfillment_service": "manual",
+              "gift_card": false,
+              "grams": 0,
+              "presentment_title": "Shirt 2",
+              "presentment_variant_title": "LARGE",
+              "product_id": 8100575674643,
+              "quantity": 1,
+              "requires_shipping": true,
+              "sku": "",
+              "tax_lines": [],
+              "taxable": true,
+              "title": "Shirt 2",
+              "variant_id": 44323300999443,
+              "variant_title": "LARGE",
+              "variant_price": "30.00",
+              "vendor": "test_vendor",
+              "unit_price_measurement": {
+                "measured_type": null,
+                "quantity_value": null,
+                "quantity_unit": null,
+                "reference_value": null,
+                "reference_unit": null
+              },
+              "compare_at_price": "35.00",
+              "line_price": "30.00",
+              "price": "30.00",
+              "applied_discounts": [],
+              "destination_location_id": null,
+              "user_id": null,
+              "rank": null,
+              "origin_location_id": null,
+              "properties": null
+            }
+          ],
+          "name": "#36800770375955",
+          "abandoned_checkout_url": "https://example-checkout-url",
+          "discount_codes": [],
+          "tax_lines": [],
+          "presentment_currency": "GBP",
+          "source_name": "web",
+          "total_line_items_price": "30.00",
+          "total_tax": "0.00",
+          "total_discounts": "0.00",
+          "subtotal_price": "30.00",
+          "total_price": "35.99",
+          "total_duties": "0.00",
+          "device_id": null,
+          "user_id": null,
+          "location_id": null,
+          "source_identifier": null,
+          "source_url": null,
+          "source": null,
+          "closed_at": null
+        },
+        "timestamp": "2023-06-28T13:27:52.000Z",
+        "userId": "7005105389843",
+        "traits": {
+          "firstName": "John",
+          "lastName": "Doe",
+          "phone": "+919999999999",
+          "address": {
+            "id": null,
+            "customer_id": 7005105389843,
+            "first_name": "John",
+            "last_name": "Doe",
+            "company": null,
+            "address1": "London Bridge",
+            "address2": null,
+            "city": "London",
+            "province": "England",
+            "country": "United Kingdom",
+            "zip": "EC4R 9HA",
+            "phone": null,
+            "name": "John Doe",
+            "province_code": "ENG",
+            "country_code": "GB",
+            "country_name": "United Kingdom",
+            "default": true
+          },
+          "acceptsMarketing": false,
+          "orderCount": 0,
+          "state": "disabled",
+          "totalSpent": "0.00",
+          "verifiedEmail": true,
+          "taxExempt": false,
+          "tags": "",
+          "currency": "GBP",
+          "adminGraphqlApiId": "gid://shopify/Customer/7005105389843",
+          "shippingAddress": {
+            "first_name": "John",
+            "address1": "London Bridge",
+            "phone": null,
+            "city": "London",
+            "zip": "EC4R 9HA",
+            "province": "England",
+            "country": "United Kingdom",
+            "last_name": "Doe",
+            "address2": null,
+            "company": null,
+            "latitude": null,
+            "longitude": null,
+            "name": "John Doe",
+            "country_code": "GB",
+            "province_code": "ENG"
+          },
+          "billingAddress": {
+            "first_name": "John",
+            "address1": "London Bridge",
+            "phone": null,
+            "city": "London",
+            "zip": "EC4R 9HA",
+            "province": "England",
+            "country": "United Kingdom",
+            "last_name": "Doe",
+            "address2": null,
+            "company": null,
+            "latitude": null,
+            "longitude": null,
+            "name": "John Doe",
+            "country_code": "GB",
+            "province_code": "ENG"
+          }
+        },
+        "anonymousId": "48a01d71-7c79-5301-9401-a7fc80e1ae88"
+      }
+    ]
+  },
+  {
+    "description": "Track Call -> Order Completed event",
+    "input": {
+      "query_parameters": {
+        "topic": ["orders_paid"],
+        "writeKey": ["sample-write-key"],
+        "signature": ["rudderstack"]
+      },
+      "id": 5400647729427,
+      "admin_graphql_api_id": "gid://shopify/Order/5400647729427",
+      "app_id": 580111,
+      "browser_ip": "171.61.11.169",
+      "buyer_accepts_marketing": false,
+      "cancel_reason": null,
+      "cancelled_at": null,
+      "cart_token": "test_cart_token",
+      "checkout_id": 36812558926099,
+      "checkout_token": "test_checkout_token",
+      "client_details": {
+        "accept_language": "en-GB",
+        "browser_height": null,
+        "browser_ip": "171.61.11.169",
+        "browser_width": null,
+        "session_hash": null,
+        "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
+      },
+      "closed_at": null,
+      "confirmed": true,
+      "contact_email": null,
+      "created_at": "2023-07-02T11:07:37-04:00",
+      "currency": "GBP",
+      "current_subtotal_price": "30.00",
+      "current_subtotal_price_set": {
+        "shop_money": {
+          "amount": "30.00",
+          "currency_code": "GBP"
+        },
+        "presentment_money": {
+          "amount": "30.00",
+          "currency_code": "GBP"
+        }
+      },
+      "current_total_discounts": "0.00",
+      "current_total_discounts_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "GBP"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "GBP"
+        }
+      },
+      "current_total_duties_set": null,
+      "current_total_price": "30.00",
+      "current_total_price_set": {
+        "shop_money": {
+          "amount": "30.00",
+          "currency_code": "GBP"
+        },
+        "presentment_money": {
+          "amount": "30.00",
+          "currency_code": "GBP"
+        }
+      },
+      "current_total_tax": "0.00",
+      "current_total_tax_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "GBP"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "GBP"
+        }
+      },
+      "customer_locale": "en-GB",
+      "device_id": null,
+      "discount_codes": [],
+      "email": "",
+      "estimated_taxes": false,
+      "financial_status": "paid",
+      "fulfillment_status": null,
+      "gateway": "bogus",
+      "landing_site": "/password",
+      "landing_site_ref": null,
+      "location_id": null,
+      "name": "#1053",
+      "note": null,
+      "note_attributes": [],
+      "number": 53,
+      "order_number": 1053,
+      "order_status_url": "https://example-order-url",
+      "original_total_duties_set": null,
+      "payment_gateway_names": ["bogus"],
+      "phone": "+919999999999",
+      "presentment_currency": "GBP",
+      "processed_at": "2023-07-02T11:07:34-04:00",
+      "processing_method": "direct",
+      "reference": "0d7ef59a6e8419b1ec7e5fe60c165a7a",
+      "referring_site": "",
+      "source_identifier": "0d7ef59a6e8419b1ec7e5fe60c165a7a",
+      "source_name": "web",
+      "source_url": null,
+      "subtotal_price": "30.00",
+      "subtotal_price_set": {
+        "shop_money": {
+          "amount": "30.00",
+          "currency_code": "GBP"
+        },
+        "presentment_money": {
+          "amount": "30.00",
+          "currency_code": "GBP"
+        }
+      },
+      "tags": "",
+      "tax_lines": [],
+      "taxes_included": true,
+      "test": true,
+      "token": "test_token",
+      "total_discounts": "0.00",
+      "total_discounts_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "GBP"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "GBP"
+        }
+      },
+      "total_line_items_price": "30.00",
+      "total_line_items_price_set": {
+        "shop_money": {
+          "amount": "30.00",
+          "currency_code": "GBP"
+        },
+        "presentment_money": {
+          "amount": "30.00",
+          "currency_code": "GBP"
+        }
+      },
+      "total_outstanding": "0.00",
+      "total_price": "30.00",
+      "total_price_set": {
+        "shop_money": {
+          "amount": "30.00",
+          "currency_code": "GBP"
+        },
+        "presentment_money": {
+          "amount": "30.00",
+          "currency_code": "GBP"
+        }
+      },
+      "total_price_usd": "37.68",
+      "total_shipping_price_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "GBP"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "GBP"
+        }
+      },
+      "total_tax": "0.00",
+      "total_tax_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "GBP"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "GBP"
+        }
+      },
+      "total_tip_received": "0.00",
+      "total_weight": 0,
+      "updated_at": "2023-07-02T11:07:38-04:00",
+      "user_id": null,
+      "billing_address": {
+        "first_name": "John",
+        "address1": "abc",
+        "phone": null,
+        "city": "London",
+        "zip": "PO31 8EF",
+        "province": "England",
+        "country": "United Kingdom",
+        "last_name": "Doe",
+        "address2": "Unit 34 Knightsbridge House",
+        "company": null,
+        "latitude": 50.76175989999999,
+        "longitude": -1.3211169,
+        "name": "John Doe",
+        "country_code": "GB",
+        "province_code": "ENG"
+      },
+      "customer": {
+        "id": 7005105389843,
+        "email": null,
+        "accepts_marketing": false,
+        "created_at": "2023-06-28T08:27:42-04:00",
+        "updated_at": "2023-07-02T11:07:37-04:00",
+        "first_name": "John",
+        "last_name": "Doe",
+        "orders_count": 0,
+        "state": "disabled",
+        "total_spent": "0.00",
+        "last_order_id": null,
+        "note": null,
+        "verified_email": true,
+        "multipass_identifier": null,
+        "tax_exempt": false,
+        "phone": "+919999999999",
+        "email_marketing_consent": null,
+        "sms_marketing_consent": {
+          "state": "not_subscribed",
+          "opt_in_level": "single_opt_in",
+          "consent_updated_at": null,
+          "consent_collected_from": "SHOPIFY"
+        },
+        "tags": "",
+        "currency": "GBP",
+        "last_order_name": null,
+        "accepts_marketing_updated_at": "2023-07-02T11:07:37-04:00",
+        "marketing_opt_in_level": null,
+        "tax_exemptions": [],
+        "admin_graphql_api_id": "gid://shopify/Customer/7005105389843",
+        "default_address": {
+          "id": 9250144026899,
+          "customer_id": 7005105389843,
+          "first_name": "John",
+          "last_name": "Doe",
+          "company": null,
+          "address1": "abc",
+          "address2": "Unit 34 Knightsbridge House",
+          "city": "London",
+          "province": "England",
+          "country": "United Kingdom",
+          "zip": "PO31 8EF",
+          "phone": null,
+          "name": "John Doe",
+          "province_code": "ENG",
+          "country_code": "GB",
+          "country_name": "United Kingdom",
+          "default": true
+        }
+      },
+      "discount_applications": [],
+      "fulfillments": [],
+      "line_items": [
+        {
+          "id": 13986389164307,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13986389164307",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "Shirt 2 - LARGE",
+          "origin_location": {
+            "id": 3768255512851,
+            "country_code": "GB",
+            "province_code": "",
+            "name": "Shop location",
+            "address1": "",
+            "address2": "",
+            "city": "",
+            "zip": ""
+          },
+          "price": "30.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "30.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "30.00",
+              "currency_code": "GBP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8100575674643,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "",
+          "taxable": true,
+          "title": "Shirt 2",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            }
+          },
+          "variant_id": 44323300999443,
+          "variant_inventory_management": "shopify",
+          "variant_title": "LARGE",
+          "vendor": "test_vendor",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        }
+      ],
+      "payment_details": {
+        "credit_card_bin": "1",
+        "avs_result_code": null,
+        "cvv_result_code": null,
+        "credit_card_number": "•••• •••• •••• 1",
+        "credit_card_company": "Bogus",
+        "buyer_action_info": null
+      },
+      "payment_terms": null,
+      "refunds": [],
+      "shipping_address": {
+        "first_name": "John",
+        "address1": "abc",
+        "phone": null,
+        "city": "London",
+        "zip": "PO31 8EF",
+        "province": "England",
+        "country": "United Kingdom",
+        "last_name": "Doe",
+        "address2": "Unit 34 Knightsbridge House",
+        "company": null,
+        "latitude": 50.76175989999999,
+        "longitude": -1.3211169,
+        "name": "John Doe",
+        "country_code": "GB",
+        "province_code": "ENG"
+      },
+      "shipping_lines": [
+        {
+          "id": 4407897456915,
+          "carrier_identifier": "650f1a14fa979ec5c74d063e968411d4",
+          "code": "Standard",
+          "delivery_category": null,
+          "discounted_price": "0.00",
+          "discounted_price_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            }
+          },
+          "phone": null,
+          "price": "0.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            }
+          },
+          "requested_fulfillment_service_id": null,
+          "source": "shopify",
+          "title": "Standard",
+          "tax_lines": [],
+          "discount_allocations": []
+        }
+      ]
+    },
+    "output": [
+      {
+        "context": {
+          "library": {
+            "name": "RudderStack Shopify Cloud",
+            "version": "1.0.0"
+          },
+          "integration": {
+            "name": "SHOPIFY"
+          },
+          "topic": "orders_paid",
+          "cart_token": "test_cart_token",
+          "checkout_token": "test_checkout_token"
+        },
+        "integrations": {
+          "SHOPIFY": true
+        },
+        "type": "track",
+        "event": "Order Completed",
+        "properties": {
+          "checkout_id": "36812558926099",
+          "order_id": "5400647729427",
+          "subtotal": 30,
+          "total": 30,
+          "discount": 0,
+          "shipping": 0,
+          "tax": 0,
+          "currency": "GBP",
+          "products": [
+            {
+              "product_id": "8100575674643",
+              "variant_name": "Shirt 2 - LARGE",
+              "name": "Shirt 2",
+              "price": 30,
+              "brand": "test_vendor",
+              "quantity": 1,
+              "variant": "LARGE",
+              "id": 13986389164307,
+              "admin_graphql_api_id": "gid://shopify/LineItem/13986389164307",
+              "fulfillable_quantity": 1,
+              "fulfillment_service": "manual",
+              "fulfillment_status": null,
+              "gift_card": false,
+              "grams": 0,
+              "origin_location": {
+                "id": 3768255512851,
+                "country_code": "GB",
+                "province_code": "",
+                "name": "Shop location",
+                "address1": "",
+                "address2": "",
+                "city": "",
+                "zip": ""
+              },
+              "price_set": {
+                "shop_money": {
+                  "amount": "30.00",
+                  "currency_code": "GBP"
+                },
+                "presentment_money": {
+                  "amount": "30.00",
+                  "currency_code": "GBP"
+                }
+              },
+              "product_exists": true,
+              "properties": [],
+              "requires_shipping": true,
+              "taxable": true,
+              "total_discount": "0.00",
+              "total_discount_set": {
+                "shop_money": {
+                  "amount": "0.00",
+                  "currency_code": "GBP"
+                },
+                "presentment_money": {
+                  "amount": "0.00",
+                  "currency_code": "GBP"
+                }
+              },
+              "variant_id": 44323300999443,
+              "variant_inventory_management": "shopify",
+              "tax_lines": [],
+              "duties": [],
+              "discount_allocations": []
+            }
+          ],
+          "admin_graphql_api_id": "gid://shopify/Order/5400647729427",
+          "app_id": 580111,
+          "browser_ip": "171.61.11.169",
+          "buyer_accepts_marketing": false,
+          "cancel_reason": null,
+          "cancelled_at": null,
+          "cart_token": "test_cart_token",
+          "checkout_token": "test_checkout_token",
+          "client_details": {
+            "accept_language": "en-GB",
+            "browser_height": null,
+            "browser_ip": "171.61.11.169",
+            "browser_width": null,
+            "session_hash": null,
+            "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
+          },
+          "closed_at": null,
+          "confirmed": true,
+          "contact_email": null,
+          "created_at": "2023-07-02T11:07:37-04:00",
+          "current_subtotal_price": "30.00",
+          "current_subtotal_price_set": {
+            "shop_money": {
+              "amount": "30.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "30.00",
+              "currency_code": "GBP"
+            }
+          },
+          "current_total_discounts": "0.00",
+          "current_total_discounts_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            }
+          },
+          "current_total_duties_set": null,
+          "current_total_price": "30.00",
+          "current_total_price_set": {
+            "shop_money": {
+              "amount": "30.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "30.00",
+              "currency_code": "GBP"
+            }
+          },
+          "current_total_tax": "0.00",
+          "current_total_tax_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            }
+          },
+          "customer_locale": "en-GB",
+          "device_id": null,
+          "discount_codes": [],
+          "email": "",
+          "estimated_taxes": false,
+          "financial_status": "paid",
+          "fulfillment_status": null,
+          "gateway": "bogus",
+          "landing_site": "/password",
+          "landing_site_ref": null,
+          "location_id": null,
+          "name": "#1053",
+          "note": null,
+          "note_attributes": [],
+          "number": 53,
+          "order_number": 1053,
+          "order_status_url": "https://example-order-url",
+          "original_total_duties_set": null,
+          "payment_gateway_names": ["bogus"],
+          "phone": "+919999999999",
+          "presentment_currency": "GBP",
+          "processed_at": "2023-07-02T11:07:34-04:00",
+          "processing_method": "direct",
+          "reference": "0d7ef59a6e8419b1ec7e5fe60c165a7a",
+          "referring_site": "",
+          "source_identifier": "0d7ef59a6e8419b1ec7e5fe60c165a7a",
+          "source_name": "web",
+          "source_url": null,
+          "subtotal_price_set": {
+            "shop_money": {
+              "amount": "30.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "30.00",
+              "currency_code": "GBP"
+            }
+          },
+          "tags": "",
+          "tax_lines": [],
+          "taxes_included": true,
+          "test": true,
+          "token": "test_token",
+          "total_discounts_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            }
+          },
+          "total_line_items_price": "30.00",
+          "total_line_items_price_set": {
+            "shop_money": {
+              "amount": "30.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "30.00",
+              "currency_code": "GBP"
+            }
+          },
+          "total_outstanding": "0.00",
+          "total_price_set": {
+            "shop_money": {
+              "amount": "30.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "30.00",
+              "currency_code": "GBP"
+            }
+          },
+          "total_price_usd": "37.68",
+          "total_shipping_price_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            }
+          },
+          "total_tax_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            }
+          },
+          "total_tip_received": "0.00",
+          "total_weight": 0,
+          "updated_at": "2023-07-02T11:07:38-04:00",
+          "user_id": null,
+          "discount_applications": [],
+          "fulfillments": [],
+          "payment_details": {
+            "credit_card_bin": "1",
+            "avs_result_code": null,
+            "cvv_result_code": null,
+            "credit_card_number": "•••• •••• •••• 1",
+            "credit_card_company": "Bogus",
+            "buyer_action_info": null
+          },
+          "payment_terms": null,
+          "refunds": [],
+          "shipping_lines": [
+            {
+              "id": 4407897456915,
+              "carrier_identifier": "650f1a14fa979ec5c74d063e968411d4",
+              "code": "Standard",
+              "delivery_category": null,
+              "discounted_price": "0.00",
+              "discounted_price_set": {
+                "shop_money": {
+                  "amount": "0.00",
+                  "currency_code": "GBP"
+                },
+                "presentment_money": {
+                  "amount": "0.00",
+                  "currency_code": "GBP"
+                }
+              },
+              "phone": null,
+              "price": "0.00",
+              "price_set": {
+                "shop_money": {
+                  "amount": "0.00",
+                  "currency_code": "GBP"
+                },
+                "presentment_money": {
+                  "amount": "0.00",
+                  "currency_code": "GBP"
+                }
+              },
+              "requested_fulfillment_service_id": null,
+              "source": "shopify",
+              "title": "Standard",
+              "tax_lines": [],
+              "discount_allocations": []
+            }
+          ]
+        },
+        "timestamp": "2023-07-02T15:07:38.000Z",
+        "userId": "7005105389843",
+        "traits": {
+          "firstName": "John",
+          "lastName": "Doe",
+          "phone": "+919999999999",
+          "address": {
+            "id": 9250144026899,
+            "customer_id": 7005105389843,
+            "first_name": "John",
+            "last_name": "Doe",
+            "company": null,
+            "address1": "abc",
+            "address2": "Unit 34 Knightsbridge House",
+            "city": "London",
+            "province": "England",
+            "country": "United Kingdom",
+            "zip": "PO31 8EF",
+            "phone": null,
+            "name": "John Doe",
+            "province_code": "ENG",
+            "country_code": "GB",
+            "country_name": "United Kingdom",
+            "default": true
+          },
+          "acceptsMarketing": false,
+          "orderCount": 0,
+          "state": "disabled",
+          "totalSpent": "0.00",
+          "verifiedEmail": true,
+          "taxExempt": false,
+          "tags": "",
+          "currency": "GBP",
+          "taxExemptions": [],
+          "smsMarketingConsent": {
+            "state": "not_subscribed",
+            "opt_in_level": "single_opt_in",
+            "consent_updated_at": null,
+            "consent_collected_from": "SHOPIFY"
+          },
+          "adminGraphqlApiId": "gid://shopify/Customer/7005105389843",
+          "acceptsMarketingUpdatedAt": "2023-07-02T11:07:37-04:00",
+          "shippingAddress": {
+            "first_name": "John",
+            "address1": "abc",
+            "phone": null,
+            "city": "London",
+            "zip": "PO31 8EF",
+            "province": "England",
+            "country": "United Kingdom",
+            "last_name": "Doe",
+            "address2": "Unit 34 Knightsbridge House",
+            "company": null,
+            "latitude": 50.76175989999999,
+            "longitude": -1.3211169,
+            "name": "John Doe",
+            "country_code": "GB",
+            "province_code": "ENG"
+          },
+          "billingAddress": {
+            "first_name": "John",
+            "address1": "abc",
+            "phone": null,
+            "city": "London",
+            "zip": "PO31 8EF",
+            "province": "England",
+            "country": "United Kingdom",
+            "last_name": "Doe",
+            "address2": "Unit 34 Knightsbridge House",
+            "company": null,
+            "latitude": 50.76175989999999,
+            "longitude": -1.3211169,
+            "name": "John Doe",
+            "country_code": "GB",
+            "province_code": "ENG"
+          }
+        },
+        "anonymousId": "48a01d71-7c79-5301-9401-a7fc80e1ae88"
+      }
+    ]
+  },
+  {
+    "description": "Track Call -> Order Updated event",
+    "input": {
+      "query_parameters": {
+        "topic": ["orders_updated"],
+        "writeKey": ["sample-write-key"],
+        "signature": ["rudderstack"]
+      },
+      "id": 5400647729427,
+      "admin_graphql_api_id": "gid://shopify/Order/5400647729427",
+      "app_id": 580111,
+      "browser_ip": "171.61.11.169",
+      "buyer_accepts_marketing": false,
+      "cancel_reason": null,
+      "cancelled_at": null,
+      "cart_token": "test_cart_token",
+      "checkout_id": 36812558926099,
+      "checkout_token": "test_checkout_token",
+      "client_details": {
+        "accept_language": "en-GB",
+        "browser_height": null,
+        "browser_ip": "171.61.11.169",
+        "browser_width": null,
+        "session_hash": null,
+        "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
+      },
+      "closed_at": null,
+      "confirmed": true,
+      "contact_email": null,
+      "created_at": "2023-07-02T11:07:37-04:00",
+      "currency": "GBP",
+      "current_subtotal_price": "30.00",
+      "current_subtotal_price_set": {
+        "shop_money": {
+          "amount": "30.00",
+          "currency_code": "GBP"
+        },
+        "presentment_money": {
+          "amount": "30.00",
+          "currency_code": "GBP"
+        }
+      },
+      "current_total_discounts": "0.00",
+      "current_total_discounts_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "GBP"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "GBP"
+        }
+      },
+      "current_total_duties_set": null,
+      "current_total_price": "30.00",
+      "current_total_price_set": {
+        "shop_money": {
+          "amount": "30.00",
+          "currency_code": "GBP"
+        },
+        "presentment_money": {
+          "amount": "30.00",
+          "currency_code": "GBP"
+        }
+      },
+      "current_total_tax": "0.00",
+      "current_total_tax_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "GBP"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "GBP"
+        }
+      },
+      "customer_locale": "en-GB",
+      "device_id": null,
+      "discount_codes": [],
+      "email": "",
+      "estimated_taxes": false,
+      "financial_status": "paid",
+      "fulfillment_status": null,
+      "gateway": "bogus",
+      "landing_site": "/password",
+      "landing_site_ref": null,
+      "location_id": null,
+      "name": "#1053",
+      "note": null,
+      "note_attributes": [],
+      "number": 53,
+      "order_number": 1053,
+      "order_status_url": "https://example-order-url",
+      "original_total_duties_set": null,
+      "payment_gateway_names": ["bogus"],
+      "phone": "+919999999999",
+      "presentment_currency": "GBP",
+      "processed_at": "2023-07-02T11:07:34-04:00",
+      "processing_method": "direct",
+      "reference": "0d7ef59a6e8419b1ec7e5fe60c165a7a",
+      "referring_site": "",
+      "source_identifier": "0d7ef59a6e8419b1ec7e5fe60c165a7a",
+      "source_name": "web",
+      "source_url": null,
+      "subtotal_price": "30.00",
+      "subtotal_price_set": {
+        "shop_money": {
+          "amount": "30.00",
+          "currency_code": "GBP"
+        },
+        "presentment_money": {
+          "amount": "30.00",
+          "currency_code": "GBP"
+        }
+      },
+      "tags": "",
+      "tax_lines": [],
+      "taxes_included": true,
+      "test": true,
+      "token": "test_token",
+      "total_discounts": "0.00",
+      "total_discounts_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "GBP"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "GBP"
+        }
+      },
+      "total_line_items_price": "30.00",
+      "total_line_items_price_set": {
+        "shop_money": {
+          "amount": "30.00",
+          "currency_code": "GBP"
+        },
+        "presentment_money": {
+          "amount": "30.00",
+          "currency_code": "GBP"
+        }
+      },
+      "total_outstanding": "0.00",
+      "total_price": "30.00",
+      "total_price_set": {
+        "shop_money": {
+          "amount": "30.00",
+          "currency_code": "GBP"
+        },
+        "presentment_money": {
+          "amount": "30.00",
+          "currency_code": "GBP"
+        }
+      },
+      "total_price_usd": "37.68",
+      "total_shipping_price_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "GBP"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "GBP"
+        }
+      },
+      "total_tax": "0.00",
+      "total_tax_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "GBP"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "GBP"
+        }
+      },
+      "total_tip_received": "0.00",
+      "total_weight": 0,
+      "updated_at": "2023-07-02T11:07:38-04:00",
+      "user_id": null,
+      "billing_address": {
+        "first_name": "John",
+        "address1": "abc",
+        "phone": null,
+        "city": "London",
+        "zip": "PO31 8EF",
+        "province": "England",
+        "country": "United Kingdom",
+        "last_name": "Doe",
+        "address2": "Unit 34 Knightsbridge House",
+        "company": null,
+        "latitude": 50.76175989999999,
+        "longitude": -1.3211169,
+        "name": "John Doe",
+        "country_code": "GB",
+        "province_code": "ENG"
+      },
+      "customer": {
+        "id": 7005105389843,
+        "email": null,
+        "accepts_marketing": false,
+        "created_at": "2023-06-28T08:27:42-04:00",
+        "updated_at": "2023-07-02T11:07:37-04:00",
+        "first_name": "John",
+        "last_name": "Doe",
+        "orders_count": 0,
+        "state": "disabled",
+        "total_spent": "0.00",
+        "last_order_id": null,
+        "note": null,
+        "verified_email": true,
+        "multipass_identifier": null,
+        "tax_exempt": false,
+        "phone": "+919999999999",
+        "email_marketing_consent": null,
+        "sms_marketing_consent": {
+          "state": "not_subscribed",
+          "opt_in_level": "single_opt_in",
+          "consent_updated_at": null,
+          "consent_collected_from": "SHOPIFY"
+        },
+        "tags": "",
+        "currency": "GBP",
+        "last_order_name": null,
+        "accepts_marketing_updated_at": "2023-07-02T11:07:37-04:00",
+        "marketing_opt_in_level": null,
+        "tax_exemptions": [],
+        "admin_graphql_api_id": "gid://shopify/Customer/7005105389843",
+        "default_address": {
+          "id": 9250144026899,
+          "customer_id": 7005105389843,
+          "first_name": "John",
+          "last_name": "Doe",
+          "company": null,
+          "address1": "abc",
+          "address2": "Unit 34 Knightsbridge House",
+          "city": "London",
+          "province": "England",
+          "country": "United Kingdom",
+          "zip": "PO31 8EF",
+          "phone": null,
+          "name": "John Doe",
+          "province_code": "ENG",
+          "country_code": "GB",
+          "country_name": "United Kingdom",
+          "default": true
+        }
+      },
+      "discount_applications": [],
+      "fulfillments": [],
+      "line_items": [
+        {
+          "id": 13986389164307,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13986389164307",
+          "fulfillable_quantity": 1,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "Shirt 2 - LARGE",
+          "origin_location": {
+            "id": 3768255512851,
+            "country_code": "GB",
+            "province_code": "",
+            "name": "Shop location",
+            "address1": "",
+            "address2": "",
+            "city": "",
+            "zip": ""
+          },
+          "price": "30.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "30.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "30.00",
+              "currency_code": "GBP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8100575674643,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "",
+          "taxable": true,
+          "title": "Shirt 2",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            }
+          },
+          "variant_id": 44323300999443,
+          "variant_inventory_management": "shopify",
+          "variant_title": "LARGE",
+          "vendor": "test_vendor",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        }
+      ],
+      "payment_details": {
+        "credit_card_bin": "1",
+        "avs_result_code": null,
+        "cvv_result_code": null,
+        "credit_card_number": "•••• •••• •••• 1",
+        "credit_card_company": "Bogus",
+        "buyer_action_info": null
+      },
+      "payment_terms": null,
+      "refunds": [],
+      "shipping_address": {
+        "first_name": "John",
+        "address1": "abc",
+        "phone": null,
+        "city": "London",
+        "zip": "PO31 8EF",
+        "province": "England",
+        "country": "United Kingdom",
+        "last_name": "Doe",
+        "address2": "Unit 34 Knightsbridge House",
+        "company": null,
+        "latitude": 50.76175989999999,
+        "longitude": -1.3211169,
+        "name": "John Doe",
+        "country_code": "GB",
+        "province_code": "ENG"
+      },
+      "shipping_lines": [
+        {
+          "id": 4407897456915,
+          "carrier_identifier": "650f1a14fa979ec5c74d063e968411d4",
+          "code": "Standard",
+          "delivery_category": null,
+          "discounted_price": "0.00",
+          "discounted_price_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            }
+          },
+          "phone": null,
+          "price": "0.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            }
+          },
+          "requested_fulfillment_service_id": null,
+          "source": "shopify",
+          "title": "Standard",
+          "tax_lines": [],
+          "discount_allocations": []
+        }
+      ]
+    },
+    "output": [
+      {
+        "context": {
+          "library": {
+            "name": "RudderStack Shopify Cloud",
+            "version": "1.0.0"
+          },
+          "integration": {
+            "name": "SHOPIFY"
+          },
+          "topic": "orders_updated",
+          "cart_token": "test_cart_token",
+          "checkout_token": "test_checkout_token",
+          "order_token": "test_token"
+        },
+        "integrations": {
+          "SHOPIFY": true
+        },
+        "type": "track",
+        "event": "Order Updated",
+        "properties": {
+          "checkout_id": "36812558926099",
+          "order_id": "5400647729427",
+          "total": 30,
+          "revenue": 30,
+          "shipping": 0,
+          "tax": 0,
+          "discount": 0,
+          "currency": "GBP",
+          "products": [
+            {
+              "product_id": "8100575674643",
+              "variant_name": "Shirt 2 - LARGE",
+              "name": "Shirt 2",
+              "price": 30,
+              "brand": "test_vendor",
+              "quantity": 1,
+              "variant": "LARGE",
+              "id": 13986389164307,
+              "admin_graphql_api_id": "gid://shopify/LineItem/13986389164307",
+              "fulfillable_quantity": 1,
+              "fulfillment_service": "manual",
+              "fulfillment_status": null,
+              "gift_card": false,
+              "grams": 0,
+              "origin_location": {
+                "id": 3768255512851,
+                "country_code": "GB",
+                "province_code": "",
+                "name": "Shop location",
+                "address1": "",
+                "address2": "",
+                "city": "",
+                "zip": ""
+              },
+              "price_set": {
+                "shop_money": {
+                  "amount": "30.00",
+                  "currency_code": "GBP"
+                },
+                "presentment_money": {
+                  "amount": "30.00",
+                  "currency_code": "GBP"
+                }
+              },
+              "product_exists": true,
+              "properties": [],
+              "requires_shipping": true,
+              "taxable": true,
+              "total_discount": "0.00",
+              "total_discount_set": {
+                "shop_money": {
+                  "amount": "0.00",
+                  "currency_code": "GBP"
+                },
+                "presentment_money": {
+                  "amount": "0.00",
+                  "currency_code": "GBP"
+                }
+              },
+              "variant_id": 44323300999443,
+              "variant_inventory_management": "shopify",
+              "tax_lines": [],
+              "duties": [],
+              "discount_allocations": []
+            }
+          ],
+          "admin_graphql_api_id": "gid://shopify/Order/5400647729427",
+          "app_id": 580111,
+          "browser_ip": "171.61.11.169",
+          "buyer_accepts_marketing": false,
+          "cancel_reason": null,
+          "cancelled_at": null,
+          "cart_token": "test_cart_token",
+          "checkout_token": "test_checkout_token",
+          "client_details": {
+            "accept_language": "en-GB",
+            "browser_height": null,
+            "browser_ip": "171.61.11.169",
+            "browser_width": null,
+            "session_hash": null,
+            "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
+          },
+          "closed_at": null,
+          "confirmed": true,
+          "contact_email": null,
+          "created_at": "2023-07-02T11:07:37-04:00",
+          "current_subtotal_price": "30.00",
+          "current_subtotal_price_set": {
+            "shop_money": {
+              "amount": "30.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "30.00",
+              "currency_code": "GBP"
+            }
+          },
+          "current_total_discounts": "0.00",
+          "current_total_discounts_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            }
+          },
+          "current_total_duties_set": null,
+          "current_total_price": "30.00",
+          "current_total_price_set": {
+            "shop_money": {
+              "amount": "30.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "30.00",
+              "currency_code": "GBP"
+            }
+          },
+          "current_total_tax": "0.00",
+          "current_total_tax_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            }
+          },
+          "customer_locale": "en-GB",
+          "device_id": null,
+          "discount_codes": [],
+          "email": "",
+          "estimated_taxes": false,
+          "financial_status": "paid",
+          "fulfillment_status": null,
+          "gateway": "bogus",
+          "landing_site": "/password",
+          "landing_site_ref": null,
+          "location_id": null,
+          "name": "#1053",
+          "note": null,
+          "note_attributes": [],
+          "number": 53,
+          "order_number": 1053,
+          "order_status_url": "https://example-order-url",
+          "original_total_duties_set": null,
+          "payment_gateway_names": ["bogus"],
+          "phone": "+919999999999",
+          "presentment_currency": "GBP",
+          "processed_at": "2023-07-02T11:07:34-04:00",
+          "processing_method": "direct",
+          "reference": "0d7ef59a6e8419b1ec7e5fe60c165a7a",
+          "referring_site": "",
+          "source_identifier": "0d7ef59a6e8419b1ec7e5fe60c165a7a",
+          "source_name": "web",
+          "source_url": null,
+          "subtotal_price_set": {
+            "shop_money": {
+              "amount": "30.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "30.00",
+              "currency_code": "GBP"
+            }
+          },
+          "tags": "",
+          "tax_lines": [],
+          "taxes_included": true,
+          "test": true,
+          "token": "test_token",
+          "total_discounts_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            }
+          },
+          "total_line_items_price": "30.00",
+          "total_line_items_price_set": {
+            "shop_money": {
+              "amount": "30.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "30.00",
+              "currency_code": "GBP"
+            }
+          },
+          "total_outstanding": "0.00",
+          "total_price_set": {
+            "shop_money": {
+              "amount": "30.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "30.00",
+              "currency_code": "GBP"
+            }
+          },
+          "total_price_usd": "37.68",
+          "total_shipping_price_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            }
+          },
+          "total_tax_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            }
+          },
+          "total_tip_received": "0.00",
+          "total_weight": 0,
+          "updated_at": "2023-07-02T11:07:38-04:00",
+          "user_id": null,
+          "discount_applications": [],
+          "fulfillments": [],
+          "payment_details": {
+            "credit_card_bin": "1",
+            "avs_result_code": null,
+            "cvv_result_code": null,
+            "credit_card_number": "•••• •••• •••• 1",
+            "credit_card_company": "Bogus",
+            "buyer_action_info": null
+          },
+          "payment_terms": null,
+          "refunds": [],
+          "shipping_lines": [
+            {
+              "id": 4407897456915,
+              "carrier_identifier": "650f1a14fa979ec5c74d063e968411d4",
+              "code": "Standard",
+              "delivery_category": null,
+              "discounted_price": "0.00",
+              "discounted_price_set": {
+                "shop_money": {
+                  "amount": "0.00",
+                  "currency_code": "GBP"
+                },
+                "presentment_money": {
+                  "amount": "0.00",
+                  "currency_code": "GBP"
+                }
+              },
+              "phone": null,
+              "price": "0.00",
+              "price_set": {
+                "shop_money": {
+                  "amount": "0.00",
+                  "currency_code": "GBP"
+                },
+                "presentment_money": {
+                  "amount": "0.00",
+                  "currency_code": "GBP"
+                }
+              },
+              "requested_fulfillment_service_id": null,
+              "source": "shopify",
+              "title": "Standard",
+              "tax_lines": [],
+              "discount_allocations": []
+            }
+          ]
+        },
+        "timestamp": "2023-07-02T15:07:38.000Z",
+        "userId": "7005105389843",
+        "traits": {
+          "firstName": "John",
+          "lastName": "Doe",
+          "phone": "+919999999999",
+          "address": {
+            "id": 9250144026899,
+            "customer_id": 7005105389843,
+            "first_name": "John",
+            "last_name": "Doe",
+            "company": null,
+            "address1": "abc",
+            "address2": "Unit 34 Knightsbridge House",
+            "city": "London",
+            "province": "England",
+            "country": "United Kingdom",
+            "zip": "PO31 8EF",
+            "phone": null,
+            "name": "John Doe",
+            "province_code": "ENG",
+            "country_code": "GB",
+            "country_name": "United Kingdom",
+            "default": true
+          },
+          "acceptsMarketing": false,
+          "orderCount": 0,
+          "state": "disabled",
+          "totalSpent": "0.00",
+          "verifiedEmail": true,
+          "taxExempt": false,
+          "tags": "",
+          "currency": "GBP",
+          "taxExemptions": [],
+          "smsMarketingConsent": {
+            "state": "not_subscribed",
+            "opt_in_level": "single_opt_in",
+            "consent_updated_at": null,
+            "consent_collected_from": "SHOPIFY"
+          },
+          "adminGraphqlApiId": "gid://shopify/Customer/7005105389843",
+          "acceptsMarketingUpdatedAt": "2023-07-02T11:07:37-04:00",
+          "shippingAddress": {
+            "first_name": "John",
+            "address1": "abc",
+            "phone": null,
+            "city": "London",
+            "zip": "PO31 8EF",
+            "province": "England",
+            "country": "United Kingdom",
+            "last_name": "Doe",
+            "address2": "Unit 34 Knightsbridge House",
+            "company": null,
+            "latitude": 50.76175989999999,
+            "longitude": -1.3211169,
+            "name": "John Doe",
+            "country_code": "GB",
+            "province_code": "ENG"
+          },
+          "billingAddress": {
+            "first_name": "John",
+            "address1": "abc",
+            "phone": null,
+            "city": "London",
+            "zip": "PO31 8EF",
+            "province": "England",
+            "country": "United Kingdom",
+            "last_name": "Doe",
+            "address2": "Unit 34 Knightsbridge House",
+            "company": null,
+            "latitude": 50.76175989999999,
+            "longitude": -1.3211169,
+            "name": "John Doe",
+            "country_code": "GB",
+            "province_code": "ENG"
+          }
+        },
+        "anonymousId": "48a01d71-7c79-5301-9401-a7fc80e1ae88"
+      }
+    ]
+  },
+  {
+    "description": "Track Call -> Order Cancelled event",
+    "input": {
+      "query_parameters": {
+        "topic": ["orders_cancelled"],
+        "writeKey": ["sample-write-key"],
+        "signature": ["rudderstack"]
+      },
+      "id": 5389487866131,
+      "admin_graphql_api_id": "gid://shopify/Order/5389487866131",
+      "app_id": 580111,
+      "browser_ip": "122.161.69.251",
+      "buyer_accepts_marketing": false,
+      "cancel_reason": "customer",
+      "cancelled_at": "2023-06-25T00:39:53-04:00",
+      "cart_token": "test_cart_token",
+      "checkout_id": 36773145608467,
+      "checkout_token": "test_checkout_token",
+      "client_details": {
+        "accept_language": "en-GB",
+        "browser_height": null,
+        "browser_ip": "122.161.69.251",
+        "browser_width": null,
+        "session_hash": null,
+        "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
+      },
+      "closed_at": "2023-06-25T00:39:53-04:00",
+      "confirmed": true,
+      "contact_email": "test@example.com",
+      "created_at": "2023-06-19T09:49:07-04:00",
+      "currency": "GBP",
+      "current_subtotal_price": "0.00",
+      "current_subtotal_price_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "GBP"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "GBP"
+        }
+      },
+      "current_total_discounts": "0.00",
+      "current_total_discounts_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "GBP"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "GBP"
+        }
+      },
+      "current_total_duties_set": null,
+      "current_total_price": "0.00",
+      "current_total_price_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "GBP"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "GBP"
+        }
+      },
+      "current_total_tax": "0.00",
+      "current_total_tax_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "GBP"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "GBP"
+        }
+      },
+      "customer_locale": "en-GB",
+      "device_id": null,
+      "discount_codes": [],
+      "email": "test@example.com",
+      "estimated_taxes": false,
+      "financial_status": "refunded",
+      "fulfillment_status": null,
+      "gateway": "bogus",
+      "landing_site": "/password",
+      "landing_site_ref": null,
+      "location_id": null,
+      "name": "#1035",
+      "note": "random",
+      "note_attributes": [
+        {
+          "name": "random",
+          "value": "RANDOM_VAL"
+        }
+      ],
+      "number": 35,
+      "order_number": 1035,
+      "order_status_url": "https://example-order-url",
+      "original_total_duties_set": null,
+      "payment_gateway_names": ["bogus"],
+      "phone": null,
+      "presentment_currency": "GBP",
+      "processed_at": "2023-06-19T09:49:05-04:00",
+      "processing_method": "direct",
+      "reference": "8d3a7927bc8ca1f2597f48f28bcfb270",
+      "referring_site": "",
+      "source_identifier": "8d3a7927bc8ca1f2597f48f28bcfb270",
+      "source_name": "web",
+      "source_url": null,
+      "subtotal_price": "30.00",
+      "subtotal_price_set": {
+        "shop_money": {
+          "amount": "30.00",
+          "currency_code": "GBP"
+        },
+        "presentment_money": {
+          "amount": "30.00",
+          "currency_code": "GBP"
+        }
+      },
+      "tags": "",
+      "tax_lines": [],
+      "taxes_included": true,
+      "test": true,
+      "token": "test_token",
+      "total_discounts": "0.00",
+      "total_discounts_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "GBP"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "GBP"
+        }
+      },
+      "total_line_items_price": "30.00",
+      "total_line_items_price_set": {
+        "shop_money": {
+          "amount": "30.00",
+          "currency_code": "GBP"
+        },
+        "presentment_money": {
+          "amount": "30.00",
+          "currency_code": "GBP"
+        }
+      },
+      "total_outstanding": "0.00",
+      "total_price": "35.99",
+      "total_price_set": {
+        "shop_money": {
+          "amount": "35.99",
+          "currency_code": "GBP"
+        },
+        "presentment_money": {
+          "amount": "35.99",
+          "currency_code": "GBP"
+        }
+      },
+      "total_price_usd": "45.20",
+      "total_shipping_price_set": {
+        "shop_money": {
+          "amount": "5.99",
+          "currency_code": "GBP"
+        },
+        "presentment_money": {
+          "amount": "5.99",
+          "currency_code": "GBP"
+        }
+      },
+      "total_tax": "0.00",
+      "total_tax_set": {
+        "shop_money": {
+          "amount": "0.00",
+          "currency_code": "GBP"
+        },
+        "presentment_money": {
+          "amount": "0.00",
+          "currency_code": "GBP"
+        }
+      },
+      "total_tip_received": "0.00",
+      "total_weight": 0,
+      "updated_at": "2023-06-25T00:39:53-04:00",
+      "user_id": null,
+      "billing_address": {
+        "first_name": null,
+        "address1": "2ff",
+        "phone": null,
+        "city": "ny",
+        "zip": "PO16 7GZ",
+        "province": "England",
+        "country": "United Kingdom",
+        "last_name": "Person",
+        "address2": null,
+        "company": null,
+        "latitude": null,
+        "longitude": null,
+        "name": "Person",
+        "country_code": "GB",
+        "province_code": "ENG"
+      },
+      "customer": {
+        "id": 6783286247699,
+        "email": "test@example.com",
+        "accepts_marketing": true,
+        "created_at": "2023-02-22T03:19:20-05:00",
+        "updated_at": "2023-06-19T09:51:30-04:00",
+        "first_name": null,
+        "last_name": "Person",
+        "orders_count": 0,
+        "state": "disabled",
+        "total_spent": "0.00",
+        "last_order_id": null,
+        "note": null,
+        "verified_email": true,
+        "multipass_identifier": null,
+        "tax_exempt": false,
+        "phone": null,
+        "email_marketing_consent": {
+          "state": "subscribed",
+          "opt_in_level": "single_opt_in",
+          "consent_updated_at": "2023-05-26T07:11:41-04:00"
+        },
+        "sms_marketing_consent": null,
+        "tags": "newsletter",
+        "currency": "GBP",
+        "last_order_name": null,
+        "accepts_marketing_updated_at": "2023-05-26T07:11:41-04:00",
+        "marketing_opt_in_level": "single_opt_in",
+        "tax_exemptions": [],
+        "admin_graphql_api_id": "gid://shopify/Customer/6783286247699",
+        "default_address": {
+          "id": 9236307083539,
+          "customer_id": 6783286247699,
+          "first_name": null,
+          "last_name": "Person",
+          "company": null,
+          "address1": "2ff",
+          "address2": null,
+          "city": "ny",
+          "province": "England",
+          "country": "United Kingdom",
+          "zip": "PO16 7GZ",
+          "phone": null,
+          "name": "Person",
+          "province_code": "ENG",
+          "country_code": "GB",
+          "country_name": "United Kingdom",
+          "default": true
+        }
+      },
+      "discount_applications": [],
+      "fulfillments": [],
+      "line_items": [
+        {
+          "id": 13964814876947,
+          "admin_graphql_api_id": "gid://shopify/LineItem/13964814876947",
+          "fulfillable_quantity": 0,
+          "fulfillment_service": "manual",
+          "fulfillment_status": null,
+          "gift_card": false,
+          "grams": 0,
+          "name": "Shirt 2 - LARGE",
+          "origin_location": {
+            "id": 3768255512851,
+            "country_code": "GB",
+            "province_code": "",
+            "name": "Shop location",
+            "address1": "",
+            "address2": "",
+            "city": "",
+            "zip": ""
+          },
+          "price": "30.00",
+          "price_set": {
+            "shop_money": {
+              "amount": "30.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "30.00",
+              "currency_code": "GBP"
+            }
+          },
+          "product_exists": true,
+          "product_id": 8100575674643,
+          "properties": [],
+          "quantity": 1,
+          "requires_shipping": true,
+          "sku": "",
+          "taxable": true,
+          "title": "Shirt 2",
+          "total_discount": "0.00",
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            }
+          },
+          "variant_id": 44323300999443,
+          "variant_inventory_management": "shopify",
+          "variant_title": "LARGE",
+          "vendor": "test_vendor",
+          "tax_lines": [],
+          "duties": [],
+          "discount_allocations": []
+        }
+      ],
+      "payment_details": {
+        "credit_card_bin": "1",
+        "avs_result_code": null,
+        "cvv_result_code": null,
+        "credit_card_number": "•••• •••• •••• 1",
+        "credit_card_company": "Bogus",
+        "buyer_action_info": null
+      },
+      "payment_terms": null,
+      "refunds": [
+        {
+          "id": 951216668947,
+          "admin_graphql_api_id": "gid://shopify/Refund/951216668947",
+          "created_at": "2023-06-25T00:39:52-04:00",
+          "note": null,
+          "order_id": 5389487866131,
+          "processed_at": "2023-06-25T00:39:52-04:00",
+          "restock": true,
+          "total_duties_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            }
+          },
+          "user_id": 91710980371,
+          "order_adjustments": [
+            {
+              "id": 283769766163,
+              "amount": "-5.99",
+              "amount_set": {
+                "shop_money": {
+                  "amount": "-5.99",
+                  "currency_code": "GBP"
+                },
+                "presentment_money": {
+                  "amount": "-5.99",
+                  "currency_code": "GBP"
+                }
+              },
+              "kind": "shipping_refund",
+              "order_id": 5389487866131,
+              "reason": "Shipping refund",
+              "refund_id": 951216668947,
+              "tax_amount": "0.00",
+              "tax_amount_set": {
+                "shop_money": {
+                  "amount": "0.00",
+                  "currency_code": "GBP"
+                },
+                "presentment_money": {
+                  "amount": "0.00",
+                  "currency_code": "GBP"
+                }
+              }
+            }
+          ],
+          "transactions": [
+            {
+              "id": 6584521589011,
+              "admin_graphql_api_id": "gid://shopify/OrderTransaction/6584521589011",
+              "amount": "35.99",
+              "authorization": null,
+              "created_at": "2023-06-25T00:39:52-04:00",
+              "currency": "GBP",
+              "device_id": null,
+              "error_code": null,
+              "gateway": "bogus",
+              "kind": "refund",
+              "location_id": null,
+              "message": "Bogus Gateway: Forced success",
+              "order_id": 5389487866131,
+              "parent_id": 6578419695891,
+              "processed_at": "2023-06-25T00:39:52-04:00",
+              "receipt": {
+                "paid_amount": "35.99"
+              },
+              "source_name": "1830279",
+              "status": "success",
+              "test": true,
+              "user_id": null,
+              "payment_details": {
+                "credit_card_bin": "1",
+                "avs_result_code": null,
+                "cvv_result_code": null,
+                "credit_card_number": "•••• •••• •••• 1",
+                "credit_card_company": "Bogus",
+                "buyer_action_info": null
+              }
+            }
+          ],
+          "refund_line_items": [
+            {
+              "id": 559899410707,
+              "line_item_id": 13964814876947,
+              "location_id": 77735330067,
+              "quantity": 1,
+              "restock_type": "cancel",
+              "subtotal": 30,
+              "subtotal_set": {
+                "shop_money": {
+                  "amount": "30.00",
+                  "currency_code": "GBP"
+                },
+                "presentment_money": {
+                  "amount": "30.00",
+                  "currency_code": "GBP"
+                }
+              },
+              "total_tax": 0,
+              "total_tax_set": {
+                "shop_money": {
+                  "amount": "0.00",
+                  "currency_code": "GBP"
+                },
+                "presentment_money": {
+                  "amount": "0.00",
+                  "currency_code": "GBP"
+                }
+              },
+              "line_item": {
+                "id": 13964814876947,
+                "admin_graphql_api_id": "gid://shopify/LineItem/13964814876947",
+                "fulfillable_quantity": 0,
+                "fulfillment_service": "manual",
+                "fulfillment_status": null,
+                "gift_card": false,
+                "grams": 0,
+                "name": "Shirt 2 - LARGE",
+                "origin_location": {
+                  "id": 3768255512851,
+                  "country_code": "GB",
+                  "province_code": "",
+                  "name": "Shop location",
+                  "address1": "",
+                  "address2": "",
+                  "city": "",
+                  "zip": ""
+                },
+                "price": "30.00",
+                "price_set": {
+                  "shop_money": {
+                    "amount": "30.00",
+                    "currency_code": "GBP"
+                  },
+                  "presentment_money": {
+                    "amount": "30.00",
+                    "currency_code": "GBP"
+                  }
+                },
+                "product_exists": true,
+                "product_id": 8100575674643,
+                "properties": [],
+                "quantity": 1,
+                "requires_shipping": true,
+                "sku": "",
+                "taxable": true,
+                "title": "Shirt 2",
+                "total_discount": "0.00",
+                "total_discount_set": {
+                  "shop_money": {
+                    "amount": "0.00",
+                    "currency_code": "GBP"
+                  },
+                  "presentment_money": {
+                    "amount": "0.00",
+                    "currency_code": "GBP"
+                  }
+                },
+                "variant_id": 44323300999443,
+                "variant_inventory_management": "shopify",
+                "variant_title": "LARGE",
+                "vendor": "test_vendor",
+                "tax_lines": [],
+                "duties": [],
+                "discount_allocations": []
+              }
+            }
+          ],
+          "duties": []
+        }
+      ],
+      "shipping_address": {
+        "first_name": null,
+        "address1": "2ff",
+        "phone": null,
+        "city": "ny",
+        "zip": "PO16 7GZ",
+        "province": "England",
+        "country": "United Kingdom",
+        "last_name": "Person",
+        "address2": null,
+        "company": null,
+        "latitude": null,
+        "longitude": null,
+        "name": "Person",
+        "country_code": "GB",
+        "province_code": "ENG"
+      },
+      "shipping_lines": [
+        {
+          "id": 4400118104339,
+          "carrier_identifier": "650f1a14fa979ec5c74d063e968411d4",
+          "code": "Standard",
+          "delivery_category": null,
+          "discounted_price": "5.99",
+          "discounted_price_set": {
+            "shop_money": {
+              "amount": "5.99",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "5.99",
+              "currency_code": "GBP"
+            }
+          },
+          "phone": null,
+          "price": "5.99",
+          "price_set": {
+            "shop_money": {
+              "amount": "5.99",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "5.99",
+              "currency_code": "GBP"
+            }
+          },
+          "requested_fulfillment_service_id": null,
+          "source": "shopify",
+          "title": "Standard",
+          "tax_lines": [],
+          "discount_allocations": []
+        }
+      ]
+    },
+    "output": [
+      {
+        "context": {
+          "library": {
+            "name": "RudderStack Shopify Cloud",
+            "version": "1.0.0"
+          },
+          "integration": {
+            "name": "SHOPIFY"
+          },
+          "topic": "orders_cancelled",
+          "cart_token": "test_cart_token",
+          "checkout_token": "test_checkout_token"
+        },
+        "integrations": {
+          "SHOPIFY": true
+        },
+        "type": "track",
+        "event": "Order Cancelled",
+        "properties": {
+          "checkout_id": "36773145608467",
+          "order_id": "5389487866131",
+          "total": 35.99,
+          "revenue": 30,
+          "shipping": 5.99,
+          "tax": 0,
+          "discount": 0,
+          "currency": "GBP",
+          "products": [
+            {
+              "product_id": "8100575674643",
+              "variant_name": "Shirt 2 - LARGE",
+              "name": "Shirt 2",
+              "price": 30,
+              "brand": "test_vendor",
+              "quantity": 1,
+              "variant": "LARGE",
+              "id": 13964814876947,
+              "admin_graphql_api_id": "gid://shopify/LineItem/13964814876947",
+              "fulfillable_quantity": 0,
+              "fulfillment_service": "manual",
+              "fulfillment_status": null,
+              "gift_card": false,
+              "grams": 0,
+              "origin_location": {
+                "id": 3768255512851,
+                "country_code": "GB",
+                "province_code": "",
+                "name": "Shop location",
+                "address1": "",
+                "address2": "",
+                "city": "",
+                "zip": ""
+              },
+              "price_set": {
+                "shop_money": {
+                  "amount": "30.00",
+                  "currency_code": "GBP"
+                },
+                "presentment_money": {
+                  "amount": "30.00",
+                  "currency_code": "GBP"
+                }
+              },
+              "product_exists": true,
+              "properties": [],
+              "requires_shipping": true,
+              "taxable": true,
+              "total_discount": "0.00",
+              "total_discount_set": {
+                "shop_money": {
+                  "amount": "0.00",
+                  "currency_code": "GBP"
+                },
+                "presentment_money": {
+                  "amount": "0.00",
+                  "currency_code": "GBP"
+                }
+              },
+              "variant_id": 44323300999443,
+              "variant_inventory_management": "shopify",
+              "tax_lines": [],
+              "duties": [],
+              "discount_allocations": []
+            }
+          ],
+          "admin_graphql_api_id": "gid://shopify/Order/5389487866131",
+          "app_id": 580111,
+          "browser_ip": "122.161.69.251",
+          "buyer_accepts_marketing": false,
+          "cancel_reason": "customer",
+          "cancelled_at": "2023-06-25T00:39:53-04:00",
+          "cart_token": "test_cart_token",
+          "checkout_token": "test_checkout_token",
+          "client_details": {
+            "accept_language": "en-GB",
+            "browser_height": null,
+            "browser_ip": "122.161.69.251",
+            "browser_width": null,
+            "session_hash": null,
+            "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
+          },
+          "closed_at": "2023-06-25T00:39:53-04:00",
+          "confirmed": true,
+          "contact_email": "test@example.com",
+          "created_at": "2023-06-19T09:49:07-04:00",
+          "current_subtotal_price": "0.00",
+          "current_subtotal_price_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            }
+          },
+          "current_total_discounts": "0.00",
+          "current_total_discounts_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            }
+          },
+          "current_total_duties_set": null,
+          "current_total_price": "0.00",
+          "current_total_price_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            }
+          },
+          "current_total_tax": "0.00",
+          "current_total_tax_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            }
+          },
+          "customer_locale": "en-GB",
+          "device_id": null,
+          "discount_codes": [],
+          "email": "test@example.com",
+          "estimated_taxes": false,
+          "financial_status": "refunded",
+          "fulfillment_status": null,
+          "gateway": "bogus",
+          "landing_site": "/password",
+          "landing_site_ref": null,
+          "location_id": null,
+          "name": "#1035",
+          "note": "random",
+          "note_attributes": [
+            {
+              "name": "random",
+              "value": "RANDOM_VAL"
+            }
+          ],
+          "number": 35,
+          "order_number": 1035,
+          "order_status_url": "https://example-order-url",
+          "original_total_duties_set": null,
+          "payment_gateway_names": ["bogus"],
+          "phone": null,
+          "presentment_currency": "GBP",
+          "processed_at": "2023-06-19T09:49:05-04:00",
+          "processing_method": "direct",
+          "reference": "8d3a7927bc8ca1f2597f48f28bcfb270",
+          "referring_site": "",
+          "source_identifier": "8d3a7927bc8ca1f2597f48f28bcfb270",
+          "source_name": "web",
+          "source_url": null,
+          "subtotal_price_set": {
+            "shop_money": {
+              "amount": "30.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "30.00",
+              "currency_code": "GBP"
+            }
+          },
+          "tags": "",
+          "tax_lines": [],
+          "taxes_included": true,
+          "test": true,
+          "token": "test_token",
+          "total_discounts_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            }
+          },
+          "total_line_items_price": "30.00",
+          "total_line_items_price_set": {
+            "shop_money": {
+              "amount": "30.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "30.00",
+              "currency_code": "GBP"
+            }
+          },
+          "total_outstanding": "0.00",
+          "total_price_set": {
+            "shop_money": {
+              "amount": "35.99",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "35.99",
+              "currency_code": "GBP"
+            }
+          },
+          "total_price_usd": "45.20",
+          "total_shipping_price_set": {
+            "shop_money": {
+              "amount": "5.99",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "5.99",
+              "currency_code": "GBP"
+            }
+          },
+          "total_tax_set": {
+            "shop_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "0.00",
+              "currency_code": "GBP"
+            }
+          },
+          "total_tip_received": "0.00",
+          "total_weight": 0,
+          "updated_at": "2023-06-25T00:39:53-04:00",
+          "user_id": null,
+          "discount_applications": [],
+          "fulfillments": [],
+          "payment_details": {
+            "credit_card_bin": "1",
+            "avs_result_code": null,
+            "cvv_result_code": null,
+            "credit_card_number": "•••• •••• •••• 1",
+            "credit_card_company": "Bogus",
+            "buyer_action_info": null
+          },
+          "payment_terms": null,
+          "refunds": [
+            {
+              "id": 951216668947,
+              "admin_graphql_api_id": "gid://shopify/Refund/951216668947",
+              "created_at": "2023-06-25T00:39:52-04:00",
+              "note": null,
+              "order_id": 5389487866131,
+              "processed_at": "2023-06-25T00:39:52-04:00",
+              "restock": true,
+              "total_duties_set": {
+                "shop_money": {
+                  "amount": "0.00",
+                  "currency_code": "GBP"
+                },
+                "presentment_money": {
+                  "amount": "0.00",
+                  "currency_code": "GBP"
+                }
+              },
+              "user_id": 91710980371,
+              "order_adjustments": [
+                {
+                  "id": 283769766163,
+                  "amount": "-5.99",
+                  "amount_set": {
+                    "shop_money": {
+                      "amount": "-5.99",
+                      "currency_code": "GBP"
+                    },
+                    "presentment_money": {
+                      "amount": "-5.99",
+                      "currency_code": "GBP"
+                    }
+                  },
+                  "kind": "shipping_refund",
+                  "order_id": 5389487866131,
+                  "reason": "Shipping refund",
+                  "refund_id": 951216668947,
+                  "tax_amount": "0.00",
+                  "tax_amount_set": {
+                    "shop_money": {
+                      "amount": "0.00",
+                      "currency_code": "GBP"
+                    },
+                    "presentment_money": {
+                      "amount": "0.00",
+                      "currency_code": "GBP"
+                    }
+                  }
+                }
+              ],
+              "transactions": [
+                {
+                  "id": 6584521589011,
+                  "admin_graphql_api_id": "gid://shopify/OrderTransaction/6584521589011",
+                  "amount": "35.99",
+                  "authorization": null,
+                  "created_at": "2023-06-25T00:39:52-04:00",
+                  "currency": "GBP",
+                  "device_id": null,
+                  "error_code": null,
+                  "gateway": "bogus",
+                  "kind": "refund",
+                  "location_id": null,
+                  "message": "Bogus Gateway: Forced success",
+                  "order_id": 5389487866131,
+                  "parent_id": 6578419695891,
+                  "processed_at": "2023-06-25T00:39:52-04:00",
+                  "receipt": {
+                    "paid_amount": "35.99"
+                  },
+                  "source_name": "1830279",
+                  "status": "success",
+                  "test": true,
+                  "user_id": null,
+                  "payment_details": {
+                    "credit_card_bin": "1",
+                    "avs_result_code": null,
+                    "cvv_result_code": null,
+                    "credit_card_number": "•••• •••• •••• 1",
+                    "credit_card_company": "Bogus",
+                    "buyer_action_info": null
+                  }
+                }
+              ],
+              "refund_line_items": [
+                {
+                  "id": 559899410707,
+                  "line_item_id": 13964814876947,
+                  "location_id": 77735330067,
+                  "quantity": 1,
+                  "restock_type": "cancel",
+                  "subtotal": 30,
+                  "subtotal_set": {
+                    "shop_money": {
+                      "amount": "30.00",
+                      "currency_code": "GBP"
+                    },
+                    "presentment_money": {
+                      "amount": "30.00",
+                      "currency_code": "GBP"
+                    }
+                  },
+                  "total_tax": 0,
+                  "total_tax_set": {
+                    "shop_money": {
+                      "amount": "0.00",
+                      "currency_code": "GBP"
+                    },
+                    "presentment_money": {
+                      "amount": "0.00",
+                      "currency_code": "GBP"
+                    }
+                  },
+                  "line_item": {
+                    "id": 13964814876947,
+                    "admin_graphql_api_id": "gid://shopify/LineItem/13964814876947",
+                    "fulfillable_quantity": 0,
+                    "fulfillment_service": "manual",
+                    "fulfillment_status": null,
+                    "gift_card": false,
+                    "grams": 0,
+                    "name": "Shirt 2 - LARGE",
+                    "origin_location": {
+                      "id": 3768255512851,
+                      "country_code": "GB",
+                      "province_code": "",
+                      "name": "Shop location",
+                      "address1": "",
+                      "address2": "",
+                      "city": "",
+                      "zip": ""
+                    },
+                    "price": "30.00",
+                    "price_set": {
+                      "shop_money": {
+                        "amount": "30.00",
+                        "currency_code": "GBP"
+                      },
+                      "presentment_money": {
+                        "amount": "30.00",
+                        "currency_code": "GBP"
+                      }
+                    },
+                    "product_exists": true,
+                    "product_id": 8100575674643,
+                    "properties": [],
+                    "quantity": 1,
+                    "requires_shipping": true,
+                    "sku": "",
+                    "taxable": true,
+                    "title": "Shirt 2",
+                    "total_discount": "0.00",
+                    "total_discount_set": {
+                      "shop_money": {
+                        "amount": "0.00",
+                        "currency_code": "GBP"
+                      },
+                      "presentment_money": {
+                        "amount": "0.00",
+                        "currency_code": "GBP"
+                      }
+                    },
+                    "variant_id": 44323300999443,
+                    "variant_inventory_management": "shopify",
+                    "variant_title": "LARGE",
+                    "vendor": "test_vendor",
+                    "tax_lines": [],
+                    "duties": [],
+                    "discount_allocations": []
+                  }
+                }
+              ],
+              "duties": []
+            }
+          ],
+          "shipping_lines": [
+            {
+              "id": 4400118104339,
+              "carrier_identifier": "650f1a14fa979ec5c74d063e968411d4",
+              "code": "Standard",
+              "delivery_category": null,
+              "discounted_price": "5.99",
+              "discounted_price_set": {
+                "shop_money": {
+                  "amount": "5.99",
+                  "currency_code": "GBP"
+                },
+                "presentment_money": {
+                  "amount": "5.99",
+                  "currency_code": "GBP"
+                }
+              },
+              "phone": null,
+              "price": "5.99",
+              "price_set": {
+                "shop_money": {
+                  "amount": "5.99",
+                  "currency_code": "GBP"
+                },
+                "presentment_money": {
+                  "amount": "5.99",
+                  "currency_code": "GBP"
+                }
+              },
+              "requested_fulfillment_service_id": null,
+              "source": "shopify",
+              "title": "Standard",
+              "tax_lines": [],
+              "discount_allocations": []
+            }
+          ]
+        },
+        "timestamp": "2023-06-25T04:39:53.000Z",
+        "traits": {
+          "email": "test@example.com",
+          "lastName": "Person",
+          "address": {
+            "id": 9236307083539,
+            "customer_id": 6783286247699,
+            "first_name": null,
+            "last_name": "Person",
+            "company": null,
+            "address1": "2ff",
+            "address2": null,
+            "city": "ny",
+            "province": "England",
+            "country": "United Kingdom",
+            "zip": "PO16 7GZ",
+            "phone": null,
+            "name": "Person",
+            "province_code": "ENG",
+            "country_code": "GB",
+            "country_name": "United Kingdom",
+            "default": true
+          },
+          "acceptsMarketing": true,
+          "orderCount": 0,
+          "state": "disabled",
+          "totalSpent": "0.00",
+          "verifiedEmail": true,
+          "taxExempt": false,
+          "tags": "newsletter",
+          "currency": "GBP",
+          "marketingOptInLevel": "single_opt_in",
+          "taxExemptions": [],
+          "adminGraphqlApiId": "gid://shopify/Customer/6783286247699",
+          "acceptsMarketingUpdatedAt": "2023-05-26T07:11:41-04:00",
+          "shippingAddress": {
+            "first_name": null,
+            "address1": "2ff",
+            "phone": null,
+            "city": "ny",
+            "zip": "PO16 7GZ",
+            "province": "England",
+            "country": "United Kingdom",
+            "last_name": "Person",
+            "address2": null,
+            "company": null,
+            "latitude": null,
+            "longitude": null,
+            "name": "Person",
+            "country_code": "GB",
+            "province_code": "ENG"
+          },
+          "billingAddress": {
+            "first_name": null,
+            "address1": "2ff",
+            "phone": null,
+            "city": "ny",
+            "zip": "PO16 7GZ",
+            "province": "England",
+            "country": "United Kingdom",
+            "last_name": "Person",
+            "address2": null,
+            "company": null,
+            "latitude": null,
+            "longitude": null,
+            "name": "Person",
+            "country_code": "GB",
+            "province_code": "ENG"
+          }
+        },
+        "userId": "6783286247699",
+        "anonymousId": "48a01d71-7c79-5301-9401-a7fc80e1ae88"
       }
     ]
   }

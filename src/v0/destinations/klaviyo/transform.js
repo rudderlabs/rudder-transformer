@@ -196,8 +196,13 @@ const trackRequestHandler = (message, category, destination) => {
   // Map user properties to profile object
   attributes.profile = {
     ...createCustomerProperties(message, destination.Config),
-    ...flattenJson(populateCustomFieldsFromTraits(message)),
+    ...populateCustomFieldsFromTraits(message),
   };
+
+  attributes.profile = flattenProperties
+    ? flattenJson(attributes.profile, '.', 'normal', false)
+    : attributes.profile;
+
   if (message.timestamp) {
     attributes.time = message.timestamp;
   }

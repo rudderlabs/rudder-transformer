@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.41.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.40.2...v1.41.0) (2023-09-11)
+
+
+### Features
+
+* add support for updating profile properties through track call ([#2581](https://github.com/rudderlabs/rudder-transformer/issues/2581)) ([f0f20d6](https://github.com/rudderlabs/rudder-transformer/commit/f0f20d654ec5ee8eb078ce7f5610a4666d73fd8c))
+* **INT-580:** messageId to event_id mapping support ([#2570](https://github.com/rudderlabs/rudder-transformer/issues/2570)) ([b38843b](https://github.com/rudderlabs/rudder-transformer/commit/b38843bce9bc02d73dceedc6f751f402251fd23a))
+* **tiktok_ads:** messageId to event_id mapping support ([72f87bf](https://github.com/rudderlabs/rudder-transformer/commit/72f87bfa381ed7a5b74fb5907f932b78d0257ab9))
+
+
+### Bug Fixes
+
+* **bugsnag:** alerts ([266514b](https://github.com/rudderlabs/rudder-transformer/commit/266514bd56c150d6c88c1db0733a1da0a4367c02))
+* **bugsnag:** alerts ([#2580](https://github.com/rudderlabs/rudder-transformer/issues/2580)) ([9e9eeac](https://github.com/rudderlabs/rudder-transformer/commit/9e9eeacdf79cf8175f87f302242542060f668db8))
+* json paths for non tracks events for warehouse ([#2571](https://github.com/rudderlabs/rudder-transformer/issues/2571)) ([e455368](https://github.com/rudderlabs/rudder-transformer/commit/e45536805cf9545b73f4d5bf1be5fad1565ab075))
+
 ### [1.40.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.40.1...v1.40.2) (2023-09-06)
 
 

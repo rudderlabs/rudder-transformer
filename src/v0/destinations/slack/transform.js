@@ -180,12 +180,20 @@ const buildtemplateList = (templateListForThisEvent, eventTemplateSettings, even
 const processTrack = (message, destination) => {
   // logger.debug(JSON.stringify(destination));
   const { Config } = destination;
-  const { eventChannelSettings, eventTemplateSettings, incomingWebhooksType } = Config;
+  const { eventChannelSettings, eventTemplateSettings, incomingWebhooksType, blacklistedEvents } =
+    Config;
+  const eventName = message.event;
 
-  if (!message.event) {
+  if (!eventName) {
     throw new InstrumentationError('Event name is required');
   }
-  const eventName = message.event;
+  if (blacklistedEvents?.length > 0) {
+    const blackListedEvents = blacklistedEvents.map((item) => item.eventName);
+    if (blackListedEvents.includes(eventName)) {
+      throw new ConfigurationError('Event is blacklisted. Please check configuration.');
+    }
+  }
+
   const templateListForThisEvent = new Set();
   const traitsList = getWhiteListedTraits(destination);
 

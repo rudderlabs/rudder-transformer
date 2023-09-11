@@ -153,6 +153,11 @@
           {
             "trait": ""
           }
+        ],
+        "blacklistedEvents": [
+          {
+            "eventName": "black_event"
+          }
         ]
       },
       "Enabled": true,
@@ -384,6 +389,11 @@
           {
             "trait": ""
           }
+        ],
+        "blacklistedEvents": [
+          {
+            "eventName": "black_event"
+          }
         ]
       },
       "Enabled": true,
@@ -506,6 +516,11 @@
           },
           {
             "trait": ""
+          }
+        ],
+        "blacklistedEvents": [
+          {
+            "eventName": "black_event"
           }
         ]
       },
@@ -630,6 +645,11 @@
           {
             "trait": ""
           }
+        ],
+        "blacklistedEvents": [
+          {
+            "eventName": "black_event"
+          }
         ]
       },
       "Enabled": true,
@@ -750,6 +770,11 @@
           },
           {
             "trait": ""
+          }
+        ],
+        "blacklistedEvents": [
+          {
+            "eventName": "black_event"
           }
         ]
       },
@@ -872,6 +897,11 @@
           },
           {
             "trait": ""
+          }
+        ],
+        "blacklistedEvents": [
+          {
+            "eventName": "black_event"
           }
         ]
       },
@@ -1286,6 +1316,99 @@
       "destinationType": "SLACK",
       "jobId": 128,
       "messageId": "78102118-56ac-4c5a-a495-8cd7c8f71cc2",
+      "sourceId": "1YhwKyDcKstudlGxkeN5p2wgsrp"
+    }
+  },
+  {
+    "destination": {
+      "ID": "1ZQVSU9SXNg6KYgZALaqjAO3PIL",
+      "Name": "test-slack",
+      "DestinationDefinition": {
+        "ID": "1ZQUiJVMlmF7lfsdfXg7KXQnlLV",
+        "Name": "SLACK",
+        "DisplayName": "Slack",
+        "Config": {
+          "excludeKeys": [],
+          "includeKeys": []
+        }
+      },
+      "Config": {
+        "incomingWebhooksType": "legacy",
+        "eventChannelSettings": [
+          {
+            "eventChannelWebhook": "https://hooks.slack.com/services/id1/id2/example",
+            "eventName": "is",
+            "eventRegex": true
+          },
+          {
+            "eventChannelWebhook": "https://hooks.slack.com/services/id1/id2/example+1",
+            "eventChannel": "example-of-legacy",
+            "eventName": "is",
+            "eventRegex": true
+          }
+        ],
+        "eventTemplateSettings": [
+          {
+            "eventName": "is",
+            "eventRegex": true,
+            "eventTemplate": "{{name}} performed {{event}} with {{properties.key1}} {{properties.key2}}"
+          },
+          {
+            "eventName": "",
+            "eventRegex": false,
+            "eventTemplate": ""
+          }
+        ],
+        "identifyTemplate": "identified {{name}} with {{traits}}",
+        "webhookUrl": "https://hooks.slack.com/services/THZM86VSS/BV9HZ2UN6/demo",
+        "whitelistedTraitsSettings": [
+          {
+            "trait": "hiji"
+          },
+          {
+            "trait": ""
+          }
+        ],
+        "blacklistedEvents": [
+          {
+            "eventName": "black_event"
+          }
+        ]
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    },
+    "message": {
+      "anonymousId": "00000000000000000000000000",
+      "channel": "web",
+      "context": {},
+      "event": "black_event",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "8b8d5937-09bc-49dc-a35e-8cd6370575f8",
+      "originalTimestamp": "2020-03-23T03:46:30.922Z",
+      "properties": {
+        "currency": "USD",
+        "key1": "test_val1",
+        "key2": "test_val2",
+        "revenue": 30,
+        "user_actual_id": 12345
+      },
+      "receivedAt": "2020-03-23T09:16:31.064+05:30",
+      "request_ip": "[::1]:52054",
+      "sentAt": "2020-03-23T03:46:30.923Z",
+      "timestamp": "2020-03-23T09:16:31.063+05:30",
+      "type": "track",
+      "userId": "12345"
+    },
+    "metadata": {
+      "anonymousId": "00000000000000000000000000",
+      "destinationId": "1ZQVSU9SXNg6KYgZALaqjAO3PIL",
+      "destinationType": "SLACK",
+      "jobId": 129,
+      "messageId": "8b8d5937-09bc-49dc-a35e-8cd6370575f8",
       "sourceId": "1YhwKyDcKstudlGxkeN5p2wgsrp"
     }
   }

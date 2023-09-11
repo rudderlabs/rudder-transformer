@@ -6,7 +6,7 @@ const {
   processAxiosResponse,
 } = require('../../../adapters/utils/networkUtils');
 const { DISABLE_DEST, REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
-const { isHttpStatusSuccess } = require('../../util');
+const { isHttpStatusSuccess, isDefinedAndNotNull } = require('../../util');
 const { proxyRequest } = require('../../../adapters/network');
 const { UnhandledStatusCodeError, NetworkError, AbortedError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
@@ -151,10 +151,90 @@ function networkHandler() {
  * @returns {Array} An array of arrays containing the grouped events.
  * Each inner array represents a user journey.
  */
-const getGroupedEvents = (inputs) => {
+const generateUserJourneys = (inputs) => {
   const userIdEventMap = _.groupBy(inputs, 'metadata.userId');
   const eventGroupedByUserId = Object.values(userIdEventMap);
   return eventGroupedByUserId;
 };
 
-module.exports = { networkHandler, getGroupedEvents };
+/**
+ * Filters and splits an array of events based on whether they have an error or not.
+ * Returns an array of arrays, where inner arrays represent either a chunk of successful events or 
+ * an array of single error event. It maintains the order of events strictly.
+ *
+ * @param {Array} sortedEvents - An array of events to be filtered and split.
+ * @returns {Array} - An array of arrays where each inner array represents a chunk of successful events followed by an error event.
+ */
+const filterAndSplitEvents = (sortedEvents) => {
+  let successfulEventsChunk = [];
+  const resultArray = []
+  for (const item of sortedEvents) {
+    // if error is present, then push the previous successfulEventsChunk 
+    // and then push the error event
+    if (isDefinedAndNotNull(item.error)) {
+      if(successfulEventsChunk.length > 0) {
+        resultArray.push(successfulEventsChunk);
+        successfulEventsChunk = [];
+      }
+      resultArray.push([item]);
+    } else {
+      // if error is not present, then push the event to successfulEventsChunk
+      successfulEventsChunk.push(item);
+     }
+  }
+   // Push the last successfulEventsChunk to resultArray
+  if (successfulEventsChunk.length > 0) {
+    resultArray.push(successfulEventsChunk);
+  }
+  return resultArray;
+};
+
+
+const convertMetadataToArray = (eventList ) => {
+  const processedEvents = eventList.map((event) => ({
+    ...event,
+    metadata: Array.isArray(event.metadata) ? event.metadata : [event.metadata],
+  }));
+  return processedEvents;
+}
+
+  /**
+   * Takes in two arrays, eachUserSuccessEventslist and eachUserErrorEventsList, and returns an ordered array of events.
+   * If there are no error events, it returns the array of transformed events.
+   * If there are no successful responses, it returns the error events.
+   * If there are both successful and erroneous events, it orders them based on the jobId property of the events' metadata array.
+   * considering error responses are built with @handleRtTfSingleEventError
+   *
+   * @param {Array} eachUserSuccessEventslist - An array of events representing successful responses for a user.
+   * @param {Array} eachUserErrorEventsList - An array of events representing error responses for a user.
+   * @returns {Array} - An ordered array of events.
+   *
+   * @example
+   * const eachUserSuccessEventslist = [{track, jobId: 1}, {track, jobId: 2}, {track, jobId: 5}];
+   * const eachUserErrorEventsList = [{identify, jobId: 3}, {identify, jobId: 4}];
+   * Output: [[{track, jobId: 1}, {track, jobId: 2}],[{identify, jobId: 3}],[{identify, jobId: 4}], {track, jobId: 5}]]
+   */
+  const HandleEventOrdering = (eachUserSuccessEventslist, eachUserErrorEventsList) => {
+    // Convert 'metadata' to an array if it's not already
+    const processedSuccessfulEvents = convertMetadataToArray(eachUserSuccessEventslist);
+    const processedErrorEvents = convertMetadataToArray(eachUserErrorEventsList);
+
+    // if there are no error events, then return the batched response
+    if (eachUserErrorEventsList.length === 0) {
+      return [processedSuccessfulEvents];
+    }
+    // if there are no batched response, then return the error events
+    if (eachUserSuccessEventslist.length === 0) {
+      return [processedErrorEvents];
+    }
+
+    // if there are both batched response and error events, then order them
+    const combinedTransformedEventList = [...processedSuccessfulEvents, ...processedErrorEvents].flat();
+    
+    const sortedEvents = _.sortBy(combinedTransformedEventList, (event) => event.metadata[0].jobId);
+    const finalResp = filterAndSplitEvents(sortedEvents);
+
+    return finalResp;
+  }
+
+module.exports = { networkHandler, generateUserJourneys, HandleEventOrdering  };

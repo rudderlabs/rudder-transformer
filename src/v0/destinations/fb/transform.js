@@ -83,7 +83,11 @@ function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
       case 'ud[ln]':
       case 'ud[st]':
       case 'ud[cn]':
-        if (clonedUpdatedEvent[prop] && clonedUpdatedEvent[prop] !== '') {
+        if (
+          clonedUpdatedEvent[prop] &&
+          typeof clonedUpdatedEvent[prop] === 'string' &&
+          clonedUpdatedEvent[prop] !== ''
+        ) {
           isUDSet = true;
           clonedUpdatedEvent[prop] = sha256(clonedUpdatedEvent[prop].toLowerCase());
         }
@@ -105,8 +109,7 @@ function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
         if (clonedUpdatedEvent[prop] && clonedUpdatedEvent[prop] !== '') {
           if (typeof clonedUpdatedEvent[prop] !== 'string') {
             delete clonedUpdatedEvent[prop];
-          }
-          else {
+          } else {
             isUDSet = true;
             clonedUpdatedEvent[prop] = sha256(
               clonedUpdatedEvent[prop].toLowerCase() === 'female' ? 'f' : 'm',
@@ -167,7 +170,8 @@ function getCorrectedTypedValue(pathToKey, value, originalPath) {
   }
 
   throw new InstrumentationError(
-    `${typeof originalPath === 'object' ? JSON.stringify(originalPath) : originalPath
+    `${
+      typeof originalPath === 'object' ? JSON.stringify(originalPath) : originalPath
     } is not of valid type`,
   );
 }

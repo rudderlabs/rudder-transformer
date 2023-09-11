@@ -96,7 +96,7 @@ const profileUpdateResponseBuilder = (payload, profileId, category, privateApiKe
 
 /**
  * This function is used for creating response for subscribing users to a particular list.
- * DOCS: https://www.klaviyo.com/docs/api/v2/lists
+ * DOCS: https://developers.klaviyo.com/en/v2023-02-22/reference/subscribe_profiles
  */
 const subscribeUserToList = (message, traitsInfo, destination) => {
   // listId from message properties are preferred over Config listId

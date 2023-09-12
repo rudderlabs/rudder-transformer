@@ -103,46 +103,45 @@ const processRouterDest = (inputs) => {
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
-  // const userJourneyArrays = generateUserJourneys(inputs);
   const finalResp = [];
-    const eachUserSuccessEventslist = []; // temporary variable to divide payload into chunks
-    const eachUserErrorEventsList = [];
-      inputs.forEach((event) => {
-        try {
-          if (event.message.statusCode) {
-            // already transformed event
-            eachUserSuccessEventslist.push(event);
-          } else {
-            // if not transformed
-            let response = process(event);
-            response = Array.isArray(response) ? response : [response];
-            response.forEach((res) => {
-              eachUserSuccessEventslist.push({
-                message: res,
-                metadata: event.metadata,
-                destination: event.destination,
-              });
-            });
-          }
-        } catch (error) {
-          const eachUserErrorEvent = handleRtTfSingleEventError(event, error, DESTINATION);
-          eachUserErrorEventsList.push(eachUserErrorEvent);
-        }
-      });
-
-      const orderedEventsList = HandleEventOrdering(eachUserSuccessEventslist, eachUserErrorEventsList)
-        // divide the successful payloads into batches
-        let eachUserBatchedResponse = [];
-        orderedEventsList.forEach((eventList) => {
-          // no error event list will have more than one items in the list
-          if (eventList[0].error) {
-            finalResp.push([...eventList]);
-          } else {
-            // batch the successful events
-            eachUserBatchedResponse = batchEachUserSuccessEvents(eventList);
-            finalResp.push([...eachUserBatchedResponse]);
-          }
+  const eachUserSuccessEventslist = []; // temporary variable to divide payload into chunks
+  const eachUserErrorEventsList = [];
+  inputs.forEach((event) => {
+    try {
+      if (event.message.statusCode) {
+        // already transformed event
+        eachUserSuccessEventslist.push(event);
+      } else {
+        // if not transformed
+        let response = process(event);
+        response = Array.isArray(response) ? response : [response];
+        response.forEach((res) => {
+          eachUserSuccessEventslist.push({
+            message: res,
+            metadata: event.metadata,
+            destination: event.destination,
+          });
         });
+      }
+    } catch (error) {
+      const eachUserErrorEvent = handleRtTfSingleEventError(event, error, DESTINATION);
+      eachUserErrorEventsList.push(eachUserErrorEvent);
+    }
+  });
+
+  const orderedEventsList = HandleEventOrdering(eachUserSuccessEventslist, eachUserErrorEventsList)
+  // divide the successful payloads into batches
+  let eachUserBatchedResponse = [];
+  orderedEventsList.forEach((eventList) => {
+    // no error event list will have more than one items in the list
+    if (eventList[0].error) {
+      finalResp.push([...eventList]);
+    } else {
+      // batch the successful events
+      eachUserBatchedResponse = batchEachUserSuccessEvents(eventList);
+      finalResp.push([...eachUserBatchedResponse]);
+    }
+  });
 
   return finalResp.flat();
 };

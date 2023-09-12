@@ -523,7 +523,7 @@ export const data = [
                     productId: 20,
                     productName: 'Product-20',
                   },
-                  
+
                 ],
                 tableId: 'gc_table',
               },

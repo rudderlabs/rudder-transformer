@@ -103,13 +103,11 @@ const processRouterDest = (inputs) => {
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
-  const userJourneyArrays = generateUserJourneys(inputs);
+  // const userJourneyArrays = generateUserJourneys(inputs);
   const finalResp = [];
-  userJourneyArrays.forEach((eachUserJourney) => {
     const eachUserSuccessEventslist = []; // temporary variable to divide payload into chunks
     const eachUserErrorEventsList = [];
-    if (eachUserJourney.length > 0) {
-      eachUserJourney.forEach((event) => {
+      inputs.forEach((event) => {
         try {
           if (event.message.statusCode) {
             // already transformed event
@@ -131,21 +129,21 @@ const processRouterDest = (inputs) => {
           eachUserErrorEventsList.push(eachUserErrorEvent);
         }
       });
+
       const orderedEventsList = HandleEventOrdering(eachUserSuccessEventslist, eachUserErrorEventsList)
-      // divide the successful payloads into batches
-      let eachUserBatchedResponse = [];
-      orderedEventsList.forEach((eventList) => {
-        // no error event list will have more than one items in the list
-        if (eventList[0].error) {
-          finalResp.push([...eventList]);
-        } else {
-          // batch the successful events
-          eachUserBatchedResponse = batchEachUserSuccessEvents(eventList);
-          finalResp.push([...eachUserBatchedResponse]);
-        }
-      });
-    }
-  });
+        // divide the successful payloads into batches
+        let eachUserBatchedResponse = [];
+        orderedEventsList.forEach((eventList) => {
+          // no error event list will have more than one items in the list
+          if (eventList[0].error) {
+            finalResp.push([...eventList]);
+          } else {
+            // batch the successful events
+            eachUserBatchedResponse = batchEachUserSuccessEvents(eventList);
+            finalResp.push([...eachUserBatchedResponse]);
+          }
+        });
+
   return finalResp.flat();
 };
 

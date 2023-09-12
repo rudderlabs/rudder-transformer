@@ -3,7 +3,7 @@ const Ajv2019 = require('ajv/dist/2019');
 const Ajv = require('ajv-draft-04');
 const draft7MetaSchema = require('ajv/dist/refs/json-schema-draft-07.json');
 const draft6MetaSchema = require('ajv/dist/refs/json-schema-draft-06.json');
-const addFormats = require("ajv-formats");
+const addFormats = require('ajv-formats');
 
 const NodeCache = require('node-cache');
 const hash = require('object-hash');
@@ -11,7 +11,7 @@ const logger = require('../logger');
 const trackingPlan = require('./trackingPlan');
 
 const eventSchemaCache = new NodeCache();
-const ajv19Cache = new NodeCache({ useClones: false });
+const ajv19Cache = new NodeCache({ useClones: false, stdTTL: 60 * 60 * 24 * 1 });
 const ajv4Cache = new NodeCache({ useClones: false });
 const { isEmptyObject } = require('../v0/util');
 
@@ -191,7 +191,7 @@ async function validate(event) {
       return [];
     }
 
-    const validationErrors = validateEvent.errors.map((error) => {
+    const validationErrors = validateEvent.errors.map(error => {
       let rudderValidationError;
       switch (error.keyword) {
         case 'required':
@@ -283,7 +283,7 @@ async function handleValidation(event) {
       };
     }
 
-    const violationsByType = new Set(validationErrors.map((err) => err.type));
+    const violationsByType = new Set(validationErrors.map(err => err.type));
     // eslint-disable-next-line no-restricted-syntax
     for (const [key, val] of Object.entries(mergedTpConfig)) {
       // To have compatibility for config-backend, spread-sheet plugin and postman collection

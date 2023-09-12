@@ -7,7 +7,8 @@ const {
   isObject,
   isBlank,
   isValidJsonPathKey,
-  getKeysFromJsonPaths,
+  isValidLegacyJsonPathKey,
+  keysFromJsonPaths,
   validTimestamp,
   getVersionedUtils,
   isRudderSourcesEvent,
@@ -195,45 +196,51 @@ function setDataFromColumnMappingAndComputeColumnTypes(
   columnTypes = {context_library_name: 'string', context_library_version: 'string'}
 
 */
-
 function setDataFromInputAndComputeColumnTypes(
-  utils,
-  eventType,
-  output,
-  input,
-  columnTypes,
-  options,
-  prefix = '',
-  level = 0,
+    utils,
+    eventType,
+    output,
+    input,
+    columnTypes,
+    options,
+    completePrefix = '',
+    completeLevel = 0,
+    prefix = '',
+    level = 0,
 ) {
   if (!input || !isObject(input)) return;
   Object.keys(input).forEach((key) => {
-    if (isValidJsonPathKey(eventType, `${prefix + key}`, input[key], level, options.jsonKeys)) {
+    const isValidLegacyJSONPath = isValidLegacyJsonPathKey(eventType, `${prefix + key}`, level, options.jsonLegacyPathKeys);
+    const isValidJSONPath = isValidJsonPathKey(`${completePrefix + key}`, completeLevel, options.jsonPathKeys);
+
+    if (isValidJSONPath || isValidLegacyJSONPath) {
       if (isBlank(input[key])) {
         return;
       }
 
       const val = JSON.stringify(input[key]);
       appendColumnNameAndType(
-        utils,
-        eventType,
-        `${prefix + key}`,
-        val,
-        output,
-        columnTypes,
-        options,
-        true,
+          utils,
+          eventType,
+          `${prefix + key}`,
+          val,
+          output,
+          columnTypes,
+          options,
+          true,
       );
     } else if (isObject(input[key]) && (options.sourceCategory !== 'cloud' || level < 3)) {
       setDataFromInputAndComputeColumnTypes(
-        utils,
-        eventType,
-        output,
-        input[key],
-        columnTypes,
-        options,
-        `${prefix + key}_`,
-        level + 1,
+          utils,
+          eventType,
+          output,
+          input[key],
+          columnTypes,
+          options,
+          `${completePrefix + key}_`,
+          completeLevel + 1,
+          `${prefix + key}_`,
+          level + 1,
       );
     } else {
       let val = input[key];
@@ -245,13 +252,13 @@ function setDataFromInputAndComputeColumnTypes(
         val = JSON.stringify(val);
       }
       appendColumnNameAndType(
-        utils,
-        eventType,
-        `${prefix + key}`,
-        val,
-        output,
-        columnTypes,
-        options,
+          utils,
+          eventType,
+          `${prefix + key}`,
+          val,
+          output,
+          columnTypes,
+          options,
       );
     }
   });
@@ -316,12 +323,15 @@ function storeRudderEvent(utils, message, output, columnTypes, options) {
 function addJsonKeysToOptions(options) {
   // Add json key paths from integration options and destination config
   const jsonPaths = Array.isArray(options.integrationOptions?.jsonPaths)
-    ? options.integrationOptions.jsonPaths
-    : [];
+      ? options.integrationOptions.jsonPaths
+      : [];
   if (options.destJsonPaths) {
     jsonPaths.push(...options.destJsonPaths.split(','));
   }
-  options.jsonKeys = getKeysFromJsonPaths(jsonPaths);
+
+  const keys = keysFromJsonPaths(jsonPaths);
+  options.jsonPathKeys = keys.jsonPathKeys;
+  options.jsonLegacyPathKeys = keys.jsonLegacyPathKeys;
 }
 
 /*
@@ -583,6 +593,8 @@ function processWarehouseMessage(message, options) {
         message.context,
         commonColumnTypes,
         options,
+        `${eventType + '_context_'}`,
+          2,
         'context_',
       );
 
@@ -605,6 +617,8 @@ function processWarehouseMessage(message, options) {
         message.properties,
         eventTableColumnTypes,
         options,
+        `${eventType + '_properties_'}`,
+          2,
       );
       setDataFromColumnMappingAndComputeColumnTypes(
         utils,
@@ -658,6 +672,8 @@ function processWarehouseMessage(message, options) {
         message.context,
         commonColumnTypes,
         options,
+        `${eventType + '_context_'}`,
+          2,
         'context_',
       );
       setDataFromColumnMappingAndComputeColumnTypes(
@@ -732,6 +748,8 @@ function processWarehouseMessage(message, options) {
         message.properties,
         eventTableColumnTypes,
         options,
+        `${eventType + '_properties_'}`,
+          2,
       );
       setDataFromInputAndComputeColumnTypes(
         utils,
@@ -740,6 +758,8 @@ function processWarehouseMessage(message, options) {
         message.userProperties,
         eventTableColumnTypes,
         options,
+        `${eventType + '_userProperties_'}`,
+          2,
       );
       setDataFromColumnMappingAndComputeColumnTypes(
         utils,
@@ -794,6 +814,8 @@ function processWarehouseMessage(message, options) {
         message.userProperties,
         commonColumnTypes,
         options,
+        `${eventType + '_userProperties_'}`,
+          2,
       );
       setDataFromInputAndComputeColumnTypes(
         utils,
@@ -802,6 +824,8 @@ function processWarehouseMessage(message, options) {
         message.context ? message.context.traits : {},
         commonColumnTypes,
         options,
+        `${eventType + '_context_traits_'}`,
+          3,
       );
       setDataFromInputAndComputeColumnTypes(
         utils,
@@ -810,6 +834,8 @@ function processWarehouseMessage(message, options) {
         message.traits,
         commonColumnTypes,
         options,
+        `${eventType + '_traits_'}`,
+          2,
         '',
       );
 
@@ -821,6 +847,8 @@ function processWarehouseMessage(message, options) {
         message.context,
         commonColumnTypes,
         options,
+        `${eventType + '_context_'}`,
+          2,
         'context_',
       );
 
@@ -925,6 +953,8 @@ function processWarehouseMessage(message, options) {
         message.properties,
         columnTypes,
         options,
+        `${eventType + '_properties_'}`,
+          2,
       );
       // set rudder properties after user set properties to prevent overwriting
       setDataFromInputAndComputeColumnTypes(
@@ -934,6 +964,8 @@ function processWarehouseMessage(message, options) {
         message.context,
         columnTypes,
         options,
+        `${eventType + '_context_'}`,
+          2,
         'context_',
       );
       setDataFromColumnMappingAndComputeColumnTypes(
@@ -992,6 +1024,8 @@ function processWarehouseMessage(message, options) {
         message.traits,
         columnTypes,
         options,
+        `${eventType + '_traits_'}`,
+          2,
       );
       setDataFromInputAndComputeColumnTypes(
         utils,
@@ -1000,6 +1034,8 @@ function processWarehouseMessage(message, options) {
         message.context,
         columnTypes,
         options,
+        `${eventType + '_context_'}`,
+          2,
         'context_',
       );
       setDataFromColumnMappingAndComputeColumnTypes(
@@ -1046,6 +1082,8 @@ function processWarehouseMessage(message, options) {
         message.traits,
         columnTypes,
         options,
+        `${eventType + '_traits_'}`,
+          2,
       );
       setDataFromInputAndComputeColumnTypes(
         utils,
@@ -1054,6 +1092,8 @@ function processWarehouseMessage(message, options) {
         message.context,
         columnTypes,
         options,
+        `${eventType + '_context_'}`,
+          2,
         'context_',
       );
       setDataFromColumnMappingAndComputeColumnTypes(

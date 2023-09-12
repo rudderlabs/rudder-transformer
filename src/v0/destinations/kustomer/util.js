@@ -3,7 +3,7 @@ const _ = require('lodash');
 const set = require('set-value');
 const get = require('get-value');
 const myAxios = require('../../../util/myAxios');
-const { BASE_ENDPOINT } = require('./config');
+const { DEFAULT_BASE_ENDPOINT } = require('./config');
 const { getType, isDefinedAndNotNull, isObject } = require('../../util');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { NetworkError, AbortedError } = require('../../util/errorTypes');
@@ -104,7 +104,7 @@ const handleResponse = (response) => {
       if (data && data.data && data.data.id) {
         return {
           userExists: true,
-          targetUrl: `${BASE_ENDPOINT}/v1/customers/${data.data.id}?replace=false`,
+          targetUrl: `${DEFAULT_BASE_ENDPOINT}/v1/customers/${data.data.id}?replace=false`,
         };
       }
       throw new NetworkError(

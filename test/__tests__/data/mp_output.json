@@ -283,7 +283,7 @@
   ],
   {
     "statusCode": 400,
-    "message": "Group Key Settings is not configured"
+    "message": "`Group Key Settings` is not configured in destination"
   },
   [
     {
@@ -799,7 +799,7 @@
   ],
   {
     "statusCode": 400,
-    "message": "Event timestamp is older than 5 days and no apisecret or service account credentials (i.e. username, secret and projectId) is provided in destination config"
+    "message": "Event timestamp is older than 5 days and no API secret or service account credentials (i.e. username, secret and projectId) are provided in destination configuration"
   },
   {
     "statusCode": 400,
@@ -832,11 +832,11 @@
   ],
   {
     "statusCode": 400,
-    "message": "Either previous id or anonymous id should be present in alias payload"
+    "message": "Either `previousId` or `anonymousId` should be present in alias payload"
   },
   {
     "statusCode": 400,
-    "message": "Event type test is not supported"
+    "message": "Event type 'test' is not supported"
   },
   [
     {
@@ -1076,7 +1076,7 @@
   ],
   {
     "statusCode": 400,
-    "message": "Event type 'alias' is not supported when 'Simplified ID merge' api is selected in webapp"
+    "message": "Alias call is deprecated in `Simplified ID merge`"
   },
   [
     {
@@ -1174,7 +1174,7 @@
   ],
   {
     "statusCode": 400,
-    "message": "Group Key is not present. Aborting message"
+    "message": "Group Key is not present. Please ensure that the group key is included in the payload as configured in the `Group Key Settings` in destination"
   },
   [
     {
@@ -1307,6 +1307,6 @@
   ],
   {
     "statusCode": 400,
-    "message": "One of previousId/anonymousId is same as userId"
+    "message": "One of `previousId` or `anonymousId` is same as `userId`. Aborting"
   }
 ]

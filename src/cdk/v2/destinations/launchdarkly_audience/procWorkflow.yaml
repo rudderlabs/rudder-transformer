@@ -27,7 +27,14 @@ steps:
       $.assert($.containsAll(Object.keys(.message.properties.listData), $.ACTION_TYPES), "Unsupported action type. Aborting message.")
       $.assert(Object.keys(.message.properties.listData).length > 0, "`listData` is empty. Aborting message.")
 
-  - name: preparePayload
+  - name: batchIdentifiersList
+    description: batch identifiers list
+    template: |
+      const batchedList = $.batchIdentifiersList(.message.properties.listData);
+      $.assert(batchedList.length > 0, "`listData` is empty. Aborting message.");
+      batchedList;
+
+  - name: prepareBasePayload
     template: |
       const payload = {
         environmentId: .destination.Config.clientSideId, 
@@ -35,17 +42,26 @@ steps:
         cohortName: .destination.Config.audienceName, 
         contextKind: .destination.Config.audienceType
       };
-      payload.listData = $.prepareIdentifiersList(.message.properties.listData);
-      payload;
+      $.removeUndefinedNullEmptyExclBoolInt(payload);
 
   - name: buildResponseForProcessTransformation
-    description: build response
+    description: build multiplexed response depending upon batch size
     template: |
-      const response = $.defaultRequestConfig();
-      response.body.JSON = $.removeUndefinedNullEmptyExclBoolInt($.outputs.preparePayload);
-      response.endpoint = $.ENDPOINT;
-      response.headers = {
-          "Authorization": .destination.Config.accessToken,
+      $.outputs.batchIdentifiersList.().({
+        "body": {
+          "JSON": {...$.outputs.prepareBasePayload, listData: .},
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": {{$.ENDPOINT}},
+        "headers": {
+          "Authorization": ^.destination.Config.accessToken,
           "Content-Type": "application/json"
-        };
-      response;
+        },
+        "params": {},
+        "files": {}
+      })[]

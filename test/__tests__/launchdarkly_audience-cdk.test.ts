@@ -12,6 +12,16 @@ const testDataFile = fs.readFileSync(path.resolve(__dirname, `./data/${integrati
 });
 const testData = JSON.parse(testDataFile);
 
+jest.mock(`../../src/cdk/v2/destinations/launchdarkly_audience/config`, () => {
+  const originalConfig = jest.requireActual(
+    `../../src/cdk/v2/destinations/launchdarkly_audience/config`,
+  );
+  return {
+    ...originalConfig,
+    MAX_IDENTIFIERS: 2,
+  };
+});
+
 describe(`${destName} Tests`, () => {
   describe('Processor Tests', () => {
     testData.forEach((dataPoint, index) => {

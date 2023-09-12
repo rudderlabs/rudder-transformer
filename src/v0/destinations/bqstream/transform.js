@@ -136,7 +136,7 @@ const processRouterDest = (inputs) => {
       let eachUserBatchedResponse = [];
       orderedEventsList.forEach((eventList) => {
         // no error event list will have more than one items in the list
-        if(eventList[0].error) {
+        if (eventList[0].error) {
           finalResp.push([...eventList]);
         } else {
           // batch the successful events

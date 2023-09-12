@@ -12,7 +12,10 @@ const {
   isDefinedAndNotNullAndNotEmpty,
   isDefinedAndNotNull,
 } = require('../../util');
-const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
+const {
+  REFRESH_TOKEN,
+  AUTH_STATUS_INACTIVE,
+} = require('../../../adapters/networkhandler/authConstants');
 const {
   SEARCH_STREAM,
   CONVERSION_ACTION_ID_CACHE_TTL,
@@ -57,9 +60,9 @@ const getAccessToken = ({ secret }) => {
 };
 
 /**
- * This function helps to determine the type of error occured. We set the authErrorCategory
+ * This function helps to determine the type of error occurred. We set the authErrorCategory
  * as per the destination response that is received and take the decision whether
- * to refresh the access_token or disable the destination.
+ * to refresh the access_token or de-activate authStatus.
  * @param {*} status
  * @returns
  */
@@ -67,6 +70,10 @@ const getAuthErrCategory = (status) => {
   if (status === 401) {
     // UNAUTHORIZED
     return REFRESH_TOKEN;
+  }
+  if (status === 403) {
+    // ACCESS_DENIED
+    return AUTH_STATUS_INACTIVE;
   }
   return '';
 };
@@ -398,4 +405,5 @@ module.exports = {
   buildAndGetAddress,
   getClickConversionPayloadAndEndpoint,
   getExisitingUserIdentifier,
+  getAuthErrCategory,
 };

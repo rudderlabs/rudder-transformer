@@ -2,7 +2,10 @@ const { get, set } = require('lodash');
 const sha256 = require('sha256');
 const { prepareProxyRequest, handleHttpRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util/index');
-const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
+const {
+  REFRESH_TOKEN,
+  AUTH_STATUS_INACTIVE,
+} = require('../../../adapters/networkhandler/authConstants');
 const { CONVERSION_ACTION_ID_CACHE_TTL } = require('./config');
 const Cache = require('../../util/cache');
 
@@ -25,6 +28,7 @@ const tags = require('../../util/tags');
  */
 const getAuthErrCategory = (code, response) => {
   if (code === 401 && !get(response, 'error.details')) return REFRESH_TOKEN;
+  if (code === 403 && !get(response, 'error.details')) return AUTH_STATUS_INACTIVE;
   return '';
 };
 

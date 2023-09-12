@@ -1,7 +1,10 @@
 const { removeUndefinedValues } = require('../../util');
 const { prepareProxyRequest, getPayloadData, httpSend } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util/index');
-const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
+const {
+  REFRESH_TOKEN,
+  AUTH_STATUS_INACTIVE,
+} = require('../../../adapters/networkhandler/authConstants');
 const tags = require('../../util/tags');
 const {
   getDynamicErrorType,
@@ -42,6 +45,9 @@ const getAuthErrCategory = (code, response) => {
   let authErrCategory = '';
   if (code === 401) {
     authErrCategory = !response.error?.details ? REFRESH_TOKEN : '';
+  }
+  if (code === 403) {
+    authErrCategory = !response.error?.details ? AUTH_STATUS_INACTIVE : '';
   }
   return authErrCategory;
 };

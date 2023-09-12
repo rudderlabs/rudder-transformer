@@ -1,6 +1,9 @@
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util/index');
-const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
+const {
+  REFRESH_TOKEN,
+  AUTH_STATUS_INACTIVE,
+} = require('../../../adapters/networkhandler/authConstants');
 
 const {
   processAxiosResponse,
@@ -19,6 +22,9 @@ const tags = require('../../util/tags');
 const getAuthErrCategory = (code) => {
   if (code === 401) {
     return REFRESH_TOKEN;
+  }
+  if (code === 403) {
+    return AUTH_STATUS_INACTIVE;
   }
   return '';
 };

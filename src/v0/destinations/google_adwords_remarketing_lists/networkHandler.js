@@ -1,7 +1,10 @@
 const { httpSend, prepareProxyRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util/index');
 
-const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
+const {
+  REFRESH_TOKEN,
+  AUTH_STATUS_INACTIVE,
+} = require('../../../adapters/networkhandler/authConstants');
 
 const {
   processAxiosResponse,
@@ -127,6 +130,7 @@ const gaAudienceProxyRequest = async (request) => {
  */
 const getAuthErrCategory = (code, response) => {
   if (code === 401 && !response.error.details) return REFRESH_TOKEN;
+  if (code === 403 && !response.error.details) return AUTH_STATUS_INACTIVE;
   return '';
 };
 

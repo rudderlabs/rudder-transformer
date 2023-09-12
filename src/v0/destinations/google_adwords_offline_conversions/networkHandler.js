@@ -2,13 +2,12 @@ const set = require('set-value');
 const get = require('get-value');
 const sha256 = require('sha256');
 const { prepareProxyRequest, httpSend, httpPOST } = require('../../../adapters/network');
-const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
 const {
   isHttpStatusSuccess,
   getHashFromArray,
   isDefinedAndNotNullAndNotEmpty,
 } = require('../../util');
-const { getConversionActionId } = require('./utils');
+const { getConversionActionId, getAuthErrCategory } = require('./utils');
 const Cache = require('../../util/cache');
 const { CONVERSION_CUSTOM_VARIABLE_CACHE_TTL, SEARCH_STREAM } = require('./config');
 const {
@@ -23,21 +22,6 @@ const {
 const tags = require('../../util/tags');
 
 const conversionCustomVariableCache = new Cache(CONVERSION_CUSTOM_VARIABLE_CACHE_TTL);
-
-/**
- * This function helps to determine the type of error occurred. We set the authErrorCategory
- * as per the destination response that is received and take the decision whether
- * to refresh the access_token or disable the destination.
- * @param {*} status
- * @returns
- */
-const getAuthErrCategory = (status) => {
-  if (status === 401) {
-    // UNAUTHORIZED
-    return REFRESH_TOKEN;
-  }
-  return '';
-};
 
 const createJob = async (endpoint, headers, payload) => {
   const endPoint = `${endpoint}:create`;

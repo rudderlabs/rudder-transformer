@@ -21,7 +21,7 @@ const prepareIdentifiersList = (listData) => {
       .filter((member) => member.hasOwnProperty(IDENTIFIER_KEY) && member[IDENTIFIER_KEY])
       .map((member) => ({ id: member[IDENTIFIER_KEY] }));
   ACTION_TYPES.forEach((action) => {
-    list[action] = listData[action] ? processList(listData[action]) : [];
+    list[action] = listData?.[action] ? processList(listData[action]) : [];
   });
   return list;
 };
@@ -84,4 +84,4 @@ const batchIdentifiersList = (listData) => {
   return groupedData;
 };
 
-module.exports = { batchIdentifiersList };
+module.exports = { prepareIdentifiersList, batchIdentifiersList };

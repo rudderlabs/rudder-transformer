@@ -1,31 +1,18 @@
-const stats = require('./util/stats');
 const Pyroscope = require('@pyroscope/nodejs');
+const stats = require('./util/stats');
+const logger = require('./logger');
 
 Pyroscope.init({
   appName: 'rudder-transformer',
 });
-
-function pyroscopeMiddleware(ctx, next) {
-  Pyroscope.startHeapCollecting();
-  return (ctx, next) => {
-    if (ctx.method === 'GET' && ctx.path === '/debug/pprof/profile') {
-      return handlerCpu(ctx).then(() => next());
-    }
-    if (ctx.method === 'GET' && ctx.path === '/debug/pprof/heap') {
-      return handlerHeap(ctx).then(() => next());
-    }
-    next();
-  };
-}
 
 async function handlerCpu(ctx) {
   try {
     const p = await Pyroscope.collectCpu(Number(ctx.query.seconds));
     ctx.body = p;
     ctx.status = 200;
-  }
-  catch (e) {
-    console.log(e);
+  } catch (e) {
+    logger.error(e);
     ctx.status = 500;
   }
 }
@@ -35,15 +22,27 @@ async function handlerHeap(ctx) {
     const p = await Pyroscope.collectHeap();
     ctx.body = p;
     ctx.status = 200;
-  }
-  catch (e) {
-    console.log(e);
+  } catch (e) {
+    logger.error(e);
     ctx.status = 500;
   }
 }
 
+function pyroscopeMiddleware() {
+  Pyroscope.startHeapCollecting();
+  return (ctx, next) => {
+    if (ctx.method === 'GET' && ctx.path === '/debug/pprof/profile') {
+      return handlerCpu(ctx).then(() => next());
+    }
+    if (ctx.method === 'GET' && ctx.path === '/debug/pprof/heap') {
+      return handlerHeap(ctx).then(() => next());
+    }
+    return next();
+  };
+}
+
 function addPyroscopeMiddleware(app) {
-  app.use(pyroscopeMiddleware())
+  app.use(pyroscopeMiddleware());
 }
 
 function durationMiddleware() {

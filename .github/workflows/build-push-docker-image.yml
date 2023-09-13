@@ -47,21 +47,21 @@ jobs:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 
-      # - name: Build Docker Image
-      #   uses: docker/build-push-action@v4.1.1
-      #   with:
-      #     context: .
-      #     file: ${{ inputs.dockerfile }}
-      #     target: ${{ inputs.load_target }}
-      #     load: true
-      #     tags: ${{ inputs.build_tag }}
-      #     # cache-from: type=gha
-      #     # cache-to: type=gha,mode=max
+      - name: Build Docker Image
+        uses: docker/build-push-action@v4.1.1
+        with:
+          context: .
+          file: ${{ inputs.dockerfile }}
+          target: ${{ inputs.load_target }}
+          load: true
+          tags: ${{ inputs.build_tag }}
+          # cache-from: type=gha
+          # cache-to: type=gha,mode=max
 
-      # - name: Run Tests
-      #   run: |
-      #     docker run ${{ inputs.build_tag }} npm run test:js:ci        
-      #     docker run ${{ inputs.build_tag }} npm run test:ts:ci
+      - name: Run Tests
+        run: |
+          docker run ${{ inputs.build_tag }} npm run test:js:ci
+          docker run ${{ inputs.build_tag }} npm run test:ts:ci
 
       - name: Build and Push Multi-platform Images
         uses: docker/build-push-action@v4.1.1
@@ -78,6 +78,7 @@ jobs:
             GIT_COMMIT_SHA=${{ github.sha }}
           # cache-from: type=gha
           # cache-to: type=gha,mode=max
+
   build-transformer-image-amd64:
     name: Build Transformer Docker Image AMD64
     runs-on: [self-hosted, Linux, X64]
@@ -96,21 +97,21 @@ jobs:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 
-      # - name: Build Docker Image
-      #   uses: docker/build-push-action@v4.1.1
-      #   with:
-      #     context: .
-      #     file: ${{ inputs.dockerfile }}
-      #     target: ${{ inputs.load_target }}
-      #     load: true
-      #     tags: ${{ inputs.build_tag }}
-      #     # cache-from: type=gha
-      #     # cache-to: type=gha,mode=max
+      - name: Build Docker Image
+        uses: docker/build-push-action@v4.1.1
+        with:
+          context: .
+          file: ${{ inputs.dockerfile }}
+          target: ${{ inputs.load_target }}
+          load: true
+          tags: ${{ inputs.build_tag }}
+          # cache-from: type=gha
+          # cache-to: type=gha,mode=max
 
-      # - name: Run Tests
-      #   run: |
-      #     docker run ${{ inputs.build_tag }} npm run test:js:ci        
-      #     docker run ${{ inputs.build_tag }} npm run test:ts:ci
+      - name: Run Tests
+        run: |
+          docker run ${{ inputs.build_tag }} npm run test:js:ci
+          docker run ${{ inputs.build_tag }} npm run test:ts:ci
 
       - name: Build and Push Multi-platform Images
         uses: docker/build-push-action@v4.1.1

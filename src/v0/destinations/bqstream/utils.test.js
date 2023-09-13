@@ -1,13 +1,13 @@
-const { HandleEventOrdering } = require('./util')
+const { getRearrangedEvents } = require('./util')
 
-describe('HandleEventOrdering', () => {
+describe('getRearrangedEvents', () => {
 
   // Tests that the function returns an array of transformed events when there are no error events
   it('should return an array of transformed events when there are no error events', () => {
     const eachUserSuccessEventslist = [{ message: { type: "track" }, metadata: { jobId: 1 } }, { message: { type: "track" }, metadata: { jobId: 3 } }, { message: { type: "track" }, metadata: { jobId: 5 } }];
     const eachUserErrorEventsList = [];
     const expected = [[{ "message": { "type": "track" }, "metadata": [{ "jobId": 1 }] }, { "message": { "type": "track" }, "metadata": [{ "jobId": 3 }] }, { "message": { "type": "track" }, "metadata": [{ "jobId": 5 }] }]];
-    const result = HandleEventOrdering(eachUserSuccessEventslist, eachUserErrorEventsList);
+    const result = getRearrangedEvents(eachUserSuccessEventslist, eachUserErrorEventsList);
     expect(result).toEqual(expected);
   });
 
@@ -16,7 +16,7 @@ describe('HandleEventOrdering', () => {
     const eachUserSuccessEventslist = [];
     const eachUserErrorEventsList = [];
     const expected = [[]];
-    const result = HandleEventOrdering(eachUserSuccessEventslist, eachUserErrorEventsList);
+    const result = getRearrangedEvents(eachUserSuccessEventslist, eachUserErrorEventsList);
     expect(result).toEqual(expected);
   });
 
@@ -24,8 +24,9 @@ describe('HandleEventOrdering', () => {
   it('should return an array with only error events when all events are erroneous', () => {
     const eachUserSuccessEventslist = [];
     const eachUserErrorEventsList = [{ batched: false, destination: {}, error: 'Message Type not supported: identify', metadata: [{ jobId: 3, userId: 'user12345' }] }, { batched: false, destination: {}, error: 'Message Type not supported: identify', metadata: [{ jobId: 4, userId: 'user12345' }] }];
-    const expected = [[{ batched: false, destination: {}, error: 'Message Type not supported: identify', metadata: [{ jobId: 3, userId: 'user12345' }] }, { batched: false, destination: {}, error: 'Message Type not supported: identify', metadata: [{ jobId: 4, userId: 'user12345' }] }]];
-    const result = HandleEventOrdering(eachUserSuccessEventslist, eachUserErrorEventsList);
+    const expected =  [[{"batched":false,"destination":{},"error":"Message Type not supported: identify","metadata":[{"jobId":3,"userId":"user12345"},{"jobId":4,"userId":"user12345"}]}]];
+    const result = getRearrangedEvents(eachUserSuccessEventslist, eachUserErrorEventsList);
+    console.log(JSON.stringify(result))
     expect(result).toEqual(expected);
   });
 
@@ -33,8 +34,8 @@ describe('HandleEventOrdering', () => {
   it('should return an ordered array of events with both successful and erroneous events', () => {
     const eachUserSuccessEventslist = [{ batched: false, destination: {}, error: 'Message Type not supported: identify', metadata: [{ jobId: 3, userId: 'user12345' }] }, { batched: false, destination: {}, error: 'Message Type not supported: identify', metadata: [{ jobId: 4, userId: 'user12345' }] }];
     const eachUserErrorEventsList = [{ message: { type: "track" }, metadata: { jobId: 1 } }, { message: { type: "track" }, metadata: { jobId: 2 } }, { message: { type: "track" }, metadata: { jobId: 5 } }];
-    const expected = [[{ "message": { "type": "track" }, "metadata": [{ "jobId": 1 }] }, { "message": { "type": "track" }, "metadata": [{ "jobId": 2 }] }], [{ "batched": false, "destination": {}, "error": "Message Type not supported: identify", "metadata": [{ "jobId": 3, "userId": "user12345" }] }], [{ "batched": false, "destination": {}, "error": "Message Type not supported: identify", "metadata": [{ "jobId": 4, "userId": "user12345" }] }], [{ "message": { "type": "track" }, "metadata": [{ "jobId": 5 }] }]];
-    const result = HandleEventOrdering(eachUserSuccessEventslist, eachUserErrorEventsList);
+    const expected =  [[{"message":{"type":"track"},"metadata":[{"jobId":1}]},{"message":{"type":"track"},"metadata":[{"jobId":2}]}],[{"batched":false,"destination":{},"error":"Message Type not supported: identify","metadata":[{"jobId":3,"userId":"user12345"},{"jobId":4,"userId":"user12345"}]}],[{"message":{"type":"track"},"metadata":[{"jobId":5}]}]];
+    const result = getRearrangedEvents(eachUserSuccessEventslist, eachUserErrorEventsList);
     expect(result).toEqual(expected);
-  });
+  }); 
 });

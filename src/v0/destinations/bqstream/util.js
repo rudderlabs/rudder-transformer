@@ -145,17 +145,25 @@ function networkHandler() {
 }
 
 /**
- * Groups the input events based on the `userId` property
- *
- * @param {Array} inputs - An array of objects representing events with `metadata.userId` property.
- * @returns {Array} An array of arrays containing the grouped events.
- * Each inner array represents a user journey.
+ * Optimizes the error response by merging the metadata of the same error type and adding it to the result array.
+ * 
+ * @param {Object} item - An object representing an error event with properties like `error`, `jobId`, and `metadata`.
+ * @param {Map} errorMap - A Map object to store the error events and their metadata.
+ * @param {Array} resultArray - An array to store the optimized error response.
+ * @returns {void}
  */
-const generateUserJourneys = (inputs) => {
-  const userIdEventMap = _.groupBy(inputs, 'metadata.userId');
-  const eventGroupedByUserId = Object.values(userIdEventMap);
-  return eventGroupedByUserId;
-};
+const optimizeErrorResponse = (item, errorMap, resultArray) => {
+  const currentError = item.error;
+  if (errorMap.has(currentError)) {
+    // If the error already exists in the map, merge the metadata
+    const existingErrDetails = errorMap.get(currentError);
+    existingErrDetails.metadata.push(...item.metadata);
+  } else {
+    // Otherwise, add it to the map
+    errorMap.set(currentError, { ...item });
+    resultArray.push([errorMap.get(currentError)]);
+  }
+}
 
 /**
  * Filters and splits an array of events based on whether they have an error or not.
@@ -165,9 +173,10 @@ const generateUserJourneys = (inputs) => {
  * @param {Array} sortedEvents - An array of events to be filtered and split.
  * @returns {Array} - An array of arrays where each inner array represents a chunk of successful events followed by an error event.
  */
-const filterAndSplitEvents = (sortedEvents) => {
+const restoreEventOrder = (sortedEvents) => {
   let successfulEventsChunk = [];
   const resultArray = []
+  const errorMap = new Map();
   for (const item of sortedEvents) {
     // if error is present, then push the previous successfulEventsChunk 
     // and then push the error event
@@ -176,10 +185,12 @@ const filterAndSplitEvents = (sortedEvents) => {
         resultArray.push(successfulEventsChunk);
         successfulEventsChunk = [];
       }
-      resultArray.push([item]);
+      optimizeErrorResponse(item, errorMap, resultArray);  
     } else {
       // if error is not present, then push the event to successfulEventsChunk
       successfulEventsChunk.push(item);
+      errorMap.clear();
+
     }
   }
   // Push the last successfulEventsChunk to resultArray
@@ -214,7 +225,7 @@ const convertMetadataToArray = (eventList) => {
  * const eachUserErrorEventsList = [{identify, jobId: 3}, {identify, jobId: 4}];
  * Output: [[{track, jobId: 1}, {track, jobId: 2}],[{identify, jobId: 3}],[{identify, jobId: 4}], {track, jobId: 5}]]
  */
-const HandleEventOrdering = (eachUserSuccessEventslist, eachUserErrorEventsList) => {
+const getRearrangedEvents = (eachUserSuccessEventslist, eachUserErrorEventsList) => {
   // Convert 'metadata' to an array if it's not already
   const processedSuccessfulEvents = convertMetadataToArray(eachUserSuccessEventslist);
   const processedErrorEvents = convertMetadataToArray(eachUserErrorEventsList);
@@ -225,16 +236,21 @@ const HandleEventOrdering = (eachUserSuccessEventslist, eachUserErrorEventsList)
   }
   // if there are no batched response, then return the error events
   if (eachUserSuccessEventslist.length === 0) {
-    return [processedErrorEvents];
+    const resultArray = []
+    const errorMap = new Map();
+    processedErrorEvents.forEach((item) => {
+      optimizeErrorResponse(item, errorMap, resultArray);
+    });
+    return resultArray;
   }
 
   // if there are both batched response and error events, then order them
   const combinedTransformedEventList = [...processedSuccessfulEvents, ...processedErrorEvents].flat();
 
   const sortedEvents = _.sortBy(combinedTransformedEventList, (event) => event.metadata[0].jobId);
-  const finalResp = filterAndSplitEvents(sortedEvents);
+  const finalResp = restoreEventOrder(sortedEvents);
 
   return finalResp;
 }
 
-module.exports = { networkHandler, generateUserJourneys, HandleEventOrdering };
+module.exports = { networkHandler, getRearrangedEvents };

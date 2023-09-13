@@ -9,7 +9,7 @@ const {
 } = require('../../util');
 const { MAX_ROWS_PER_REQUEST, DESTINATION } = require('./config');
 const { InstrumentationError } = require('../../util/errorTypes');
-const { generateUserJourneys, HandleEventOrdering } = require('./util');
+const { getRearrangedEvents } = require('./util');
 
 const getInsertIdColValue = (properties, insertIdCol) => {
   if (
@@ -129,7 +129,7 @@ const processRouterDest = (inputs) => {
     }
   });
 
-  const orderedEventsList = HandleEventOrdering(eachUserSuccessEventslist, eachUserErrorEventsList)
+  const orderedEventsList = getRearrangedEvents(eachUserSuccessEventslist, eachUserErrorEventsList);
   // divide the successful payloads into batches
   let eachUserBatchedResponse = [];
   orderedEventsList.forEach((eventList) => {

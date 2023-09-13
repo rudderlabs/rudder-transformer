@@ -1,6 +1,6 @@
 export const data = [
   {
-    name: 'dicord',
+    Name: 'dicord',
     description: 'Discord batch events',
     feature: 'router',
     module: 'destination',
@@ -18,14 +18,14 @@ export const data = [
                 channel: 'web',
                 context: {
                   os: {
-                    name: '',
+                    Name: '',
                     version: '',
                   },
                   app: {
-                    name: 'RudderLabs JavaScript SDK',
+                    Name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
                     version: '1.1.18',
-                    namespace: 'com.rudderlabs.javascript',
+                    Namespace: 'com.rudderlabs.javascript',
                   },
                   page: {
                     url: 'http://127.0.0.1:5500/index.html',
@@ -48,7 +48,7 @@ export const data = [
                   },
                   traits: {},
                   library: {
-                    name: 'RudderLabs JavaScript SDK',
+                    Name: 'RudderLabs JavaScript SDK',
                     version: '1.1.18',
                   },
                   campaign: {},
@@ -99,14 +99,14 @@ export const data = [
                 channel: 'web',
                 context: {
                   os: {
-                    name: '',
+                    Name: '',
                     version: '',
                   },
                   app: {
-                    name: 'RudderLabs JavaScript SDK',
+                    Name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
                     version: '1.1.18',
-                    namespace: 'com.rudderlabs.javascript',
+                    Namespace: 'com.rudderlabs.javascript',
                   },
                   page: {
                     url: 'http://127.0.0.1:5500/index.html',
@@ -129,7 +129,7 @@ export const data = [
                   },
                   traits: {},
                   library: {
-                    name: 'RudderLabs JavaScript SDK',
+                    Name: 'RudderLabs JavaScript SDK',
                     version: '1.1.18',
                   },
                   campaign: {},
@@ -180,14 +180,14 @@ export const data = [
                 channel: 'web',
                 context: {
                   os: {
-                    name: '',
+                    Name: '',
                     version: '',
                   },
                   app: {
-                    name: 'RudderLabs JavaScript SDK',
+                    Name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
                     version: '1.1.18',
-                    namespace: 'com.rudderlabs.javascript',
+                    Namespace: 'com.rudderlabs.javascript',
                   },
                   page: {
                     url: 'http://127.0.0.1:5500/index.html',
@@ -210,7 +210,7 @@ export const data = [
                   },
                   traits: {},
                   library: {
-                    name: 'RudderLabs JavaScript SDK',
+                    Name: 'RudderLabs JavaScript SDK',
                     version: '1.1.18',
                   },
                   campaign: {},
@@ -261,14 +261,14 @@ export const data = [
                 channel: 'web',
                 context: {
                   os: {
-                    name: '',
+                    Name: '',
                     version: '',
                   },
                   app: {
-                    name: 'RudderLabs JavaScript SDK',
+                    Name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
                     version: '1.1.18',
-                    namespace: 'com.rudderlabs.javascript',
+                    Namespace: 'com.rudderlabs.javascript',
                   },
                   page: {
                     url: 'http://127.0.0.1:5500/index.html',
@@ -291,7 +291,7 @@ export const data = [
                   },
                   traits: {},
                   library: {
-                    name: 'RudderLabs JavaScript SDK',
+                    Name: 'RudderLabs JavaScript SDK',
                     version: '1.1.18',
                   },
                   campaign: {},
@@ -342,14 +342,14 @@ export const data = [
                 channel: 'web',
                 context: {
                   os: {
-                    name: '',
+                    Name: '',
                     version: '',
                   },
                   app: {
-                    name: 'RudderLabs JavaScript SDK',
+                    Name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
                     version: '1.1.18',
-                    namespace: 'com.rudderlabs.javascript',
+                    Namespace: 'com.rudderlabs.javascript',
                   },
                   page: {
                     url: 'http://127.0.0.1:5500/index.html',
@@ -372,7 +372,7 @@ export const data = [
                   },
                   traits: {},
                   library: {
-                    name: 'RudderLabs JavaScript SDK',
+                    Name: 'RudderLabs JavaScript SDK',
                     version: '1.1.18',
                   },
                   campaign: {},
@@ -398,6 +398,239 @@ export const data = [
               metadata: {
                 jobId: 6,
                 userId: 'user124',
+              },
+              destination: {
+                Config: {
+                  rudderAccountId: '1z8LpaSAuFR9TPWL6fECZfjmRa-',
+                  projectId: 'gc-project-id',
+                  datasetId: 'gc_dataset',
+                  tableId: 'gc_table',
+                  insertId: 'productId',
+                  eventDelivery: true,
+                  eventDeliveryTS: 1636965406397,
+                },
+                Enabled: true,
+                ID: '1WXjIHpu7ETXgjfiGPW3kCUgZFR',
+                Name: 'bqstream test',
+              },
+            },
+            {
+              message: {
+                type: 'track',
+                event: 'insert product',
+                sentAt: '2021-09-08T11:10:45.466Z',
+                userId: 'user12345',
+                channel: 'web',
+                context: {
+                  os: {
+                    Name: '',
+                    version: '',
+                  },
+                  app: {
+                    Name: 'RudderLabs JavaScript SDK',
+                    build: '1.0.0',
+                    version: '1.1.18',
+                    Namespace: 'com.rudderlabs.javascript',
+                  },
+                  page: {
+                    url: 'http://127.0.0.1:5500/index.html',
+                    path: '/index.html',
+                    title: 'Document',
+                    search: '',
+                    tab_url: 'http://127.0.0.1:5500/index.html',
+                    referrer: '$direct',
+                    initial_referrer: '$direct',
+                    referring_domain: '',
+                    initial_referring_domain: '',
+                  },
+                  locale: 'en-GB',
+                  screen: {
+                    width: 1536,
+                    height: 960,
+                    density: 2,
+                    innerWidth: 1536,
+                    innerHeight: 776,
+                  },
+                  traits: {},
+                  library: {
+                    Name: 'RudderLabs JavaScript SDK',
+                    version: '1.1.18',
+                  },
+                  campaign: {},
+                  userAgent:
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36',
+                },
+                rudderId: 'fa2994a5-2a81-45fd-9919-fcf5596ad380',
+                messageId: 'e2d1a383-d9a2-4e03-a9dc-131d153c4d95',
+                timestamp: '2021-11-15T14:06:42.497+05:30',
+                receivedAt: '2021-11-15T14:06:42.497+05:30',
+                request_ip: '[::1]',
+                anonymousId: 'd8b2ed61-7fa5-4ef8-bd92-6a506157c0cf',
+                integrations: {
+                  All: true,
+                },
+                originalTimestamp: '2021-09-08T11:10:45.466Z',
+              },
+              metadata: {
+                jobId: 6,
+                userId: 'user124',
+              },
+              destination: {
+                Config: {
+                  rudderAccountId: '1z8LpaSAuFR9TPWL6fECZfjmRa-',
+                  projectId: 'gc-project-id',
+                  datasetId: 'gc_dataset',
+                  tableId: 'gc_table',
+                  insertId: 'productId',
+                  eventDelivery: true,
+                  eventDeliveryTS: 1636965406397,
+                },
+                Enabled: true,
+                ID: '1WXjIHpu7ETXgjfiGPW3kCUgZFR',
+                Name: 'bqstream test',
+              },
+            },
+            {
+              message: {
+                type: 'track',
+                event: 'insert product',
+                sentAt: '2021-09-08T11:10:45.466Z',
+                userId: 'user12345',
+                channel: 'web',
+                context: {
+                  os: {
+                    Name: '',
+                    version: '',
+                  },
+                  app: {
+                    Name: 'RudderLabs JavaScript SDK',
+                    build: '1.0.0',
+                    version: '1.1.18',
+                    Namespace: 'com.rudderlabs.javascript',
+                  },
+                  page: {
+                    url: 'http://127.0.0.1:5500/index.html',
+                    path: '/index.html',
+                    title: 'Document',
+                    search: '',
+                    tab_url: 'http://127.0.0.1:5500/index.html',
+                    referrer: '$direct',
+                    initial_referrer: '$direct',
+                    referring_domain: '',
+                    initial_referring_domain: '',
+                  },
+                  locale: 'en-GB',
+                  screen: {
+                    width: 1536,
+                    height: 960,
+                    density: 2,
+                    innerWidth: 1536,
+                    innerHeight: 776,
+                  },
+                  traits: {},
+                  library: {
+                    Name: 'RudderLabs JavaScript SDK',
+                    version: '1.1.18',
+                  },
+                  campaign: {},
+                  userAgent:
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36',
+                },
+                rudderId: 'fa2994a5-2a81-45fd-9919-fcf5596ad380',
+                messageId: 'e2d1a383-d9a2-4e03-a9dc-131d153c4d95',
+                timestamp: '2021-11-15T14:06:42.497+05:30',
+                receivedAt: '2021-11-15T14:06:42.497+05:30',
+                request_ip: '[::1]',
+                anonymousId: 'd8b2ed61-7fa5-4ef8-bd92-6a506157c0cf',
+                integrations: {
+                  All: true,
+                },
+                originalTimestamp: '2021-09-08T11:10:45.466Z',
+              },
+              metadata: {
+                jobId: 7,
+                userId: 'user125',
+              },
+              destination: {
+                Config: {
+                  rudderAccountId: '1z8LpaSAuFR9TPWL6fECZfjmRa-',
+                  projectId: 'gc-project-id',
+                  datasetId: 'gc_dataset',
+                  tableId: 'gc_table',
+                  insertId: 'productId',
+                  eventDelivery: true,
+                  eventDeliveryTS: 1636965406397,
+                },
+                Enabled: true,
+                ID: '1WXjIHpu7ETXgjfiGPW3kCUgZFR',
+                Name: 'bqstream test',
+              },
+            },
+            {
+              message: {
+                type: 'identify',
+                event: 'insert product',
+                sentAt: '2021-09-08T11:10:45.466Z',
+                userId: 'user12345',
+                channel: 'web',
+                context: {
+                  os: {
+                    Name: '',
+                    version: '',
+                  },
+                  app: {
+                    Name: 'RudderLabs JavaScript SDK',
+                    build: '1.0.0',
+                    version: '1.1.18',
+                    Namespace: 'com.rudderlabs.javascript',
+                  },
+                  page: {
+                    url: 'http://127.0.0.1:5500/index.html',
+                    path: '/index.html',
+                    title: 'Document',
+                    search: '',
+                    tab_url: 'http://127.0.0.1:5500/index.html',
+                    referrer: '$direct',
+                    initial_referrer: '$direct',
+                    referring_domain: '',
+                    initial_referring_domain: '',
+                  },
+                  locale: 'en-GB',
+                  screen: {
+                    width: 1536,
+                    height: 960,
+                    density: 2,
+                    innerWidth: 1536,
+                    innerHeight: 776,
+                  },
+                  traits: {},
+                  library: {
+                    Name: 'RudderLabs JavaScript SDK',
+                    version: '1.1.18',
+                  },
+                  campaign: {},
+                  userAgent:
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36',
+                },
+                rudderId: 'fa2994a5-2a81-45fd-9919-fcf5596ad380',
+                messageId: 'e2d1a383-d9a2-4e03-a9dc-131d153c4d95',
+                timestamp: '2021-11-15T14:06:42.497+05:30',
+                traits: {
+                  count: 20,
+                  productId: 20,
+                  productName: 'Product-20',
+                },
+                receivedAt: '2021-11-15T14:06:42.497+05:30',
+                request_ip: '[::1]',
+                anonymousId: 'd8b2ed61-7fa5-4ef8-bd92-6a506157c0cf',
+                integrations: {
+                  All: true,
+                },
+                originalTimestamp: '2021-09-08T11:10:45.466Z',
+              },
+              metadata: {
+                jobId: 8,
+                userId: 'user125',
               },
               destination: {
                 Config: {
@@ -552,6 +785,76 @@ export const data = [
                 },
               ],
               statusCode: 200,
+            },
+            {
+              batched: false,
+              destination: {
+                Config: {
+                  datasetId: "gc_dataset",
+                  eventDelivery: true,
+                  eventDeliveryTS: 1636965406397,
+                  insertId: "productId",
+                  projectId: "gc-project-id",
+                  rudderAccountId: "1z8LpaSAuFR9TPWL6fECZfjmRa-",
+                  tableId: "gc_table",
+                },
+                Enabled: true,
+                ID: "1WXjIHpu7ETXgjfiGPW3kCUgZFR",
+                Name: "bqstream test",
+              },
+              error: "Invalid payload for the destination",
+              metadata: [
+                {
+                  jobId: 6,
+                  userId: "user124",
+                },
+                {
+                  jobId: 7,
+                  userId: "user125",
+                },
+              ],
+              statTags: {
+                destType: "BQSTREAM",
+                errorCategory: "dataValidation",
+                errorType: "instrumentation",
+                feature: "router",
+                implementation: "native",
+                module: "destination",
+              },
+              statusCode: 400,
+            },
+            {
+              batched: false,
+              destination: {
+                Config: {
+                  datasetId: "gc_dataset",
+                  eventDelivery: true,
+                  eventDeliveryTS: 1636965406397,
+                  insertId: "productId",
+                  projectId: "gc-project-id",
+                  rudderAccountId: "1z8LpaSAuFR9TPWL6fECZfjmRa-",
+                  tableId: "gc_table",
+                },
+                Enabled: true,
+                ID: "1WXjIHpu7ETXgjfiGPW3kCUgZFR",
+                Name: "bqstream test",
+              },
+              error: "Message Type not supported: identify",
+              metadata: [
+                {
+                  jobId: 8,
+                  userId: "user125",
+                },
+              ],
+              statTags: {
+                destType: "BQSTREAM",
+                errorCategory: "dataValidation",
+                errorType: "instrumentation",
+                feature: "router",
+                implementation: "native",
+                module: "destination",
+              },
+              statusCode: 400,
             },
           ],
         },

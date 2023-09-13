@@ -7,13 +7,15 @@ const {
   createPropertiesForEcomEvent,
   getProductsListFromLineItems,
   extractEmailFromPayload,
-  getAnonymousId,
+  getAnonymousIdAndSessionId,
   checkAndUpdateCartItems,
   getHashLineItems,
+  getDataFromRedis,
 } = require('./util');
 const { RedisDB } = require('../../../util/redis/redisConnector');
 const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../util');
 const Message = require('../message');
+const logger = require('../../../logger');
 const { EventType } = require('../../../constants');
 const {
   INTEGERATION,
@@ -77,7 +79,6 @@ const ecomPayloadBuilder = (event, shopifyTopic) => {
   if (!message.userId && event.user_id) {
     message.setProperty('userId', event.user_id);
   }
-
   return message;
 };
 
@@ -126,6 +127,7 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
 const processEvent = async (inputEvent, metricMetadata) => {
   let message;
   const event = lodash.cloneDeep(inputEvent);
+  let redisData;
   const shopifyTopic = getShopifyTopic(event);
   delete event.query_parameters;
   switch (shopifyTopic) {
@@ -141,7 +143,8 @@ const processEvent = async (inputEvent, metricMetadata) => {
       break;
     case 'carts_update':
       if (useRedisDatabase) {
-        const isValidEvent = await checkAndUpdateCartItems(inputEvent, metricMetadata);
+        redisData = await getDataFromRedis(event.id || event.token);
+        const isValidEvent = await checkAndUpdateCartItems(inputEvent, redisData, metricMetadata);
         if (!isValidEvent) {
           return NO_OPERATION_SUCCESS;
         }
@@ -170,11 +173,14 @@ const processEvent = async (inputEvent, metricMetadata) => {
     }
   }
   if (message.type !== EventType.IDENTIFY) {
-    const anonymousId = await getAnonymousId(message, metricMetadata);
+    const { anonymousId, sessionId } = await getAnonymousIdAndSessionId(message, metricMetadata, redisData);
     if (isDefinedAndNotNull(anonymousId)) {
       message.setProperty('anonymousId', anonymousId);
     } else if (!message.userId) {
       message.setProperty('userId', 'shopify-admin');
+    }
+    if (isDefinedAndNotNull(sessionId)) {
+      message.setProperty('context.sessionId', sessionId);
     }
   }
   message.setProperty(`integrations.${INTEGERATION}`, true);
@@ -192,25 +198,50 @@ const processEvent = async (inputEvent, metricMetadata) => {
   message = removeUndefinedAndNullValues(message);
   return message;
 };
-
-const isIdentifierEvent = (event) => event?.event === 'rudderIdentifier';
-
+const isIdentifierEvent = (event) => ['rudderIdentifier', 'rudderSessionIdentifier'].includes(event?.event);
 const processIdentifierEvent = async (event, metricMetadata) => {
   if (useRedisDatabase) {
-    const lineItemshash = getHashLineItems(event.cart);
-    const value = ['anonymousId', event.anonymousId, 'itemsHash', lineItemshash];
+    let value;
+    let field;
+    if (event.event === 'rudderIdentifier') {
+      field = 'anonymousId';
+      const lineItemshash = getHashLineItems(event.cart);
+      value = ['anonymousId', event.anonymousId, 'itemsHash', lineItemshash];
+      stats.increment('shopify_redis_calls', {
+        type: 'set',
+        field: 'itemsHash',
+        ...metricMetadata,
+      });
+      /* cart_token: {
+           anonymousId: 'anon_id1',
+           lineItemshash: '0943gh34pg'
+          }
+      */
+    } else {
+      field = 'sessionId';
+      value = ['sessionId', event.sessionId];
+      /* cart_token: {
+          anonymousId:'anon_id1',
+          lineItemshash:'90fg348fg83497u',
+          sessionId: 'session_id1'
+         }
+       */
+    }
     try {
+      stats.increment('shopify_redis_calls', {
+        type: 'set',
+        field,
+        ...metricMetadata,
+      });
       await RedisDB.setVal(`${event.cartToken}`, value);
     } catch (e) {
+      logger.debug(`{{SHOPIFY::}} cartToken map set call Failed due redis error ${e}`);
       stats.increment('shopify_redis_failures', {
         type: 'set',
         ...metricMetadata,
       });
     }
-    stats.increment('shopify_redis_calls', {
-      type: 'set',
-      ...metricMetadata,
-    });
+
   }
   const result = {
     outputToSource: {

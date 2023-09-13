@@ -22,9 +22,10 @@ const userDeletionHandler = async (userAttributes, config) => {
   // Endpoints different for different data centers.
   // DOC: https://www.braze.com/docs/user_guide/administrative/access_braze/braze_instances/
   let endPoint;
+  const endpointPath = '/users/delete'; // TODO: to handle for destinations dynamically by extracting from endpoint
   const dataCenterArr = dataCenter.trim().split('-');
   if (dataCenterArr[0].toLowerCase() === 'eu') {
-    endPoint = 'https://rest.fra-01.braze.eu//users/delete';
+    endPoint = 'https://rest.fra-01.braze.eu/users/delete';
   } else {
     endPoint = `https://rest.iad-${dataCenterArr[1]}.braze.com/users/delete`;
   }
@@ -41,7 +42,11 @@ const userDeletionHandler = async (userAttributes, config) => {
         },
       };
 
-      const resp = await httpPOST(endPoint, data, requestOptions);
+      const resp = await httpPOST(endPoint, data, requestOptions, {
+        destType: 'braze',
+        feature: 'deleteUsers',
+        endpointPath,
+      });
       const handledDelResponse = processAxiosResponse(resp);
       if (!isHttpStatusSuccess(handledDelResponse.status) && handledDelResponse.status !== 404) {
         throw new NetworkError(

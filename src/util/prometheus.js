@@ -214,26 +214,26 @@ class Prometheus {
         ],
       },
       {
-        name: 'hv_violation_type',
-        help: 'hv_violation_type',
+        name: 'tp_violation_type',
+        help: 'tp_violation_type',
         type: 'counter',
         labelNames: ['violationType', 'sourceType', 'destinationType', 'k8_namespace'],
       },
       {
-        name: 'hv_propagated_events',
-        help: 'hv_propagated_events',
+        name: 'tp_propagated_events',
+        help: 'tp_propagated_events',
         type: 'counter',
         labelNames: ['sourceType', 'destinationType', 'k8_namespace'],
       },
       {
-        name: 'hv_errors',
-        help: 'hv_errors',
+        name: 'tp_errors',
+        help: 'tp_errors',
         type: 'counter',
-        labelNames: ['sourceType', 'destinationType', 'k8_namespace'],
+        labelNames: ['sourceType', 'destinationType', 'k8_namespace', 'workspaceId', 'transformationId'],
       },
       {
-        name: 'hv_events_count',
-        help: 'hv_events_count',
+        name: 'tp_events_count',
+        help: 'tp_events_count',
         type: 'counter',
         labelNames: ['sourceType', 'destinationType', 'k8_namespace'],
       },
@@ -253,7 +253,14 @@ class Prometheus {
         name: 'user_transform_errors',
         help: 'user_transform_errors',
         type: 'counter',
-        labelNames: ['l1', 'l2'],
+        labelNames: [
+          'workspaceId',
+          'transformationId',
+          'status',
+          'sourceType',
+          'destinationType',
+          'k8_namespace',
+        ],
       },
       {
         name: 'c2',
@@ -417,7 +424,7 @@ class Prometheus {
         name: 'marketo_bulk_upload_polling',
         help: 'marketo_bulk_upload_polling',
         type: 'counter',
-        labelNames: ['status', 'state'],
+        labelNames: ['status', 'state', 'requestTime'],
       },
       {
         name: 'marketo_fetch_token',
@@ -484,19 +491,13 @@ class Prometheus {
         name: 'shopify_redis_calls',
         help: 'shopify_redis_calls',
         type: 'counter',
-        labelNames: ['type', 'writeKey', 'source'],
-      },
-      {
-        name: 'shopify_redis_success',
-        help: 'shopify_redis_success',
-        type: 'counter',
-        labelNames: ['field', 'event', 'writeKey', 'source'],
+        labelNames: ['type', 'writeKey', 'source', 'field'],
       },
       {
         name: 'shopify_redis_no_val',
         help: 'shopify_redis_no_val',
         type: 'counter',
-        labelNames: ['event', 'writeKey', 'source'],
+        labelNames: ['writeKey', 'source'],
       },
       {
         name: 'events_to_process',
@@ -530,6 +531,12 @@ class Prometheus {
         type: 'counter',
         labelNames: ['writeKey', 'source', 'shopifyTopic'],
       },
+      {
+        name: 'outgoing_request_count',
+        help: 'Outgoing HTTP requests count',
+        type: 'counter',
+        labelNames: ['feature', 'destType', 'endpointPath', 'success', 'statusCode'],
+      },
 
       // Gauges
       {
@@ -547,22 +554,28 @@ class Prometheus {
 
       // Histograms
       {
+        name: 'outgoing_request_latency',
+        help: 'Outgoing HTTP requests duration in seconds',
+        type: 'histogram',
+        labelNames: ['feature', 'destType', 'endpointPath'],
+      },
+      {
         name: 'http_request_duration',
-        help: 'Summary of HTTP requests duration in seconds',
+        help: 'Incoming HTTP requests duration in seconds',
         type: 'histogram',
         labelNames: ['method', 'route', 'code'],
       },
       {
-        name: 'hv_request_size',
-        help: 'hv_request_size',
+        name: 'tp_request_size',
+        help: 'tp_request_size',
         type: 'histogram',
         labelNames: ['sourceType', 'destinationType', 'k8_namespace'],
       },
       {
-        name: 'hv_request_latency',
-        help: 'hv_request_latency',
+        name: 'tp_request_latency',
+        help: 'tp_request_latency',
         type: 'histogram',
-        labelNames: ['sourceType', 'destinationType', 'k8_namespace'],
+        labelNames: ['sourceType', 'destinationType', 'k8_namespace', 'workspaceId', 'transformationId'],
       },
       {
         name: 'cdk_events_latency',
@@ -571,8 +584,8 @@ class Prometheus {
         labelNames: ['destination', 'sourceType', 'destinationType', 'k8_namespace'],
       },
       {
-        name: 'hv_event_latency',
-        help: 'hv_event_latency',
+        name: 'tp_event_latency',
+        help: 'tp_event_latency',
         type: 'histogram',
         labelNames: ['sourceType', 'destinationType', 'k8_namespace'],
       },
@@ -580,13 +593,26 @@ class Prometheus {
         name: 'dest_transform_request_latency',
         help: 'dest_transform_request_latency',
         type: 'histogram',
-        labelNames: ['destination', 'version', 'sourceType', 'destinationType', 'k8_namespace'],
+        labelNames: [
+          'destination',
+          'version',
+          'sourceType',
+          'destinationType',
+          'k8_namespace',
+          'feature',
+        ],
       },
       {
         name: 'user_transform_request_latency',
         help: 'user_transform_request_latency',
         type: 'histogram',
-        labelNames: ['processSessions'],
+        labelNames: [
+          'workspaceId',
+          'transformationId',
+          'sourceType',
+          'destinationType',
+          'k8_namespace',
+        ],
       },
       {
         name: 'user_transform_function_latency',
@@ -657,7 +683,7 @@ class Prometheus {
         name: 'fetch_dns_resolve_time',
         help: 'fetch_dns_resolve_time',
         type: 'histogram',
-        labelNames: ['transformerVersionId'],
+        labelNames: ['transformerVersionId', 'error'],
       },
       {
         name: 'geo_call_duration',
@@ -734,6 +760,12 @@ class Prometheus {
         labelNames: [],
       },
       {
+        name: 'braze_partial_failure',
+        help: 'braze_partial_failure',
+        type: 'counter',
+        labelNames: [],
+      },
+      {
         name: 'braze_deduped_users_count',
         help: 'braze deduped users count',
         type: 'counter',
@@ -756,6 +788,18 @@ class Prometheus {
         help: 'braze look-up failure count',
         type: 'counter',
         labelNames: ['http_status', 'destination_id'],
+      },
+      {
+        name: 'marketo_bulk_upload_upload_file_succJobs',
+        help: 'marketo_bulk_upload_upload_file_succJobs',
+        type: 'counter',
+        labelNames: [],
+      },
+      {
+        name: 'marketo_bulk_upload_upload_file_unsuccJobs',
+        help: 'marketo_bulk_upload_upload_file_unsuccJobs',
+        type: 'counter',
+        labelNames: [],
       },
       {
         name: 'braze_lookup_time',
@@ -842,6 +886,43 @@ class Prometheus {
         labelNames: ['processSessions'],
         buckets: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200],
       },
+      {
+        name: 'marketo_bulk_upload_create_header_time',
+        help: 'marketo_bulk_upload_create_header_time',
+        type: 'histogram',
+        labelNames: [],
+      },
+      {
+        name: 'marketo_bulk_upload_fetch_job_time',
+        help: 'marketo_bulk_upload_fetch_job_time',
+        type: 'histogram',
+        labelNames: [],
+      },
+      {
+        name: 'marketo_bulk_upload_fetch_job_create_response_time',
+        help: 'marketo_bulk_upload_fetch_job_create_response_time',
+        type: 'histogram',
+        labelNames: [],
+      },
+      {
+        name: 'marketo_bulk_upload_create_file_time',
+        help: 'marketo_bulk_upload_create_file_time',
+        type: 'histogram',
+        labelNames: [],
+      },
+      {
+        name: 'marketo_bulk_upload_upload_file_time',
+        help: 'marketo_bulk_upload_upload_file_time',
+        type: 'histogram',
+        labelNames: [],
+      },
+      {
+        name: 'marketo_bulk_upload_create_csvloop_time',
+        help: 'marketo_bulk_upload_create_csvloop_time',
+        type: 'histogram',
+        labelNames: [],
+      },
+
     ];
 
     metrics.forEach((metric) => {

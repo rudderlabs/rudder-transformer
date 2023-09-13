@@ -14,7 +14,7 @@
             "id": "user001",
             "email": "user001@tech.com",
             "data": {},
-            "auth_token": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
+            "auth_token": "testAuthToken"
           },
           "JSON_ARRAY": {},
           "XML": {},
@@ -25,7 +25,7 @@
     ],
     "destination": {
       "Config": {
-        "authToken": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
+        "authToken": "testAuthToken"
       }
     },
     "metadata": [
@@ -50,7 +50,7 @@
             "id": "b4ffheww8eisndbdjgdewifewfgerwibderv",
             "email": "user002@tech.com",
             "data": {},
-            "auth_token": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
+            "auth_token": "testAuthToken"
           },
           "JSON_ARRAY": {},
           "XML": {},
@@ -61,12 +61,12 @@
     ],
     "destination": {
       "Config": {
-        "authToken": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
+        "authToken": "testAuthToken"
       }
     },
     "metadata": [
       {
-        "jobId": 1
+        "jobId": 2
       }
     ],
     "statusCode": 200
@@ -89,7 +89,7 @@
               "address": "Caravela Beach Goa",
               "homwTown": "Mawsynram"
             },
-            "auth_token": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
+            "auth_token": "testAuthToken"
           },
           "JSON_ARRAY": {},
           "XML": {},
@@ -106,7 +106,7 @@
         "params": {},
         "body": {
           "JSON": {
-            "auth_token": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF",
+            "auth_token": "testAuthToken",
             "id": "fprediruser001",
             "add": ["a", "b"]
           },
@@ -119,12 +119,12 @@
     ],
     "destination": {
       "Config": {
-        "authToken": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
+        "authToken": "testAuthToken"
       }
     },
     "metadata": [
       {
-        "jobId": 1
+        "jobId": 3
       }
     ],
     "statusCode": 200
@@ -151,7 +151,7 @@
               "gamesPlayed": 4,
               "email": "eventIdn02@sample.com"
             },
-            "auth_token": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
+            "auth_token": "testAuthToken"
           },
           "JSON_ARRAY": {},
           "XML": {},
@@ -162,12 +162,12 @@
     ],
     "destination": {
       "Config": {
-        "authToken": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
+        "authToken": "testAuthToken"
       }
     },
     "metadata": [
       {
-        "jobId": 1
+        "jobId": 4
       }
     ],
     "statusCode": 200

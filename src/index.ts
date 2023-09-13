@@ -7,7 +7,7 @@ import cluster from './util/cluster';
 import { router } from './legacy/router';
 import { testRouter } from './testRouter';
 import { metricsRouter } from './routes/metricsRouter';
-import { addStatMiddleware, addRequestSizeMiddleware } from './middleware';
+import { addStatMiddleware, addRequestSizeMiddleware, addPyroscopeMiddleware } from './middleware';
 import { logProcessInfo } from './util/utils';
 import { applicationRoutes, addSwaggerRoutes } from './routes';
 import { RedisDB } from './util/redis/redisConnector';
@@ -30,7 +30,7 @@ app.use(
     jsonLimit: '200mb',
   }),
 );
-
+addPyroscopeMiddleware(app);
 addRequestSizeMiddleware(app);
 addSwaggerRoutes(app);
 

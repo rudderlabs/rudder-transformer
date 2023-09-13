@@ -6,18 +6,20 @@ const http = require('http');
 const https = require('https');
 const axios = require('axios');
 const log = require('../logger');
+const stats = require('../util/stats');
 const { removeUndefinedValues } = require('../v0/util');
 const { processAxiosResponse } = require('./utils/networkUtils');
 
 const MAX_CONTENT_LENGTH = parseInt(process.env.MAX_CONTENT_LENGTH, 10) || 100000000;
 const MAX_BODY_LENGTH = parseInt(process.env.MAX_BODY_LENGTH, 10) || 100000000;
+const REQUEST_TIMEOUT_IN_MS = parseInt(process.env.REQUEST_TIMEOUT_IN_MS, 10) || 1000 * 60;
 // (httpsAgent, httpsAgent) ,these are deployment specific configs not request specific
 const networkClientConfigs = {
   // `method` is the request method to be used when making the request
   method: 'get',
 
   // `timeout` specifies the number of milliseconds before the request times out. If the request takes longer than `timeout`, the request will be aborted.
-  timeout: 1000 * 60,
+  timeout: REQUEST_TIMEOUT_IN_MS,
 
   // `withCredentials` indicates whether or not cross-site Access-Control requests should be made using credentials
   withCredentials: false,
@@ -41,25 +43,54 @@ const networkClientConfigs = {
   httpsAgent: new https.Agent({ keepAlive: true }),
 };
 
-/**
- * sends an http request with underlying client, expects request options
- * @param {*} options
- * @returns
- */
-const httpSend = async (options) => {
-  let clientResponse;
-  // here the options argument K-Vs will take priority over requestOptions
+const fireHTTPStats = (clientResponse, startTime, statTags) => {
+  const destType = statTags.destType ? statTags.destType : '';
+  const feature = statTags.feature ? statTags.feature : '';
+  const endpointPath = statTags.endpointPath ? statTags.endpointPath : '';
+  const statusCode = clientResponse.success ? clientResponse.response.status : '';
+  stats.timing('outgoing_request_latency', startTime, {
+    feature,
+    destType,
+    endpointPath,
+  });
+  stats.counter('outgoing_request_count', 1, {
+    feature,
+    destType,
+    endpointPath,
+    success: clientResponse.success,
+    statusCode,
+  });
+};
+
+const enhanceRequestOptions = (options) => {
   const requestOptions = {
     ...networkClientConfigs,
     ...options,
     maxContentLength: MAX_CONTENT_LENGTH,
     maxBodyLength: MAX_BODY_LENGTH,
   };
+
+  return requestOptions;
+};
+
+/**
+ * sends an http request with underlying client, expects request options
+ * @param {*} options
+ * @returns
+ */
+const httpSend = async (options, statTags = {}) => {
+  let clientResponse;
+  // here the options argument K-Vs will take priority over the default options
+  const requestOptions = enhanceRequestOptions(options);
+
+  const startTime = new Date();
   try {
     const response = await axios(requestOptions);
     clientResponse = { success: true, response };
   } catch (err) {
     clientResponse = { success: false, response: err };
+  } finally {
+    fireHTTPStats(clientResponse, startTime, statTags);
   }
   return clientResponse;
 };
@@ -72,13 +103,19 @@ const httpSend = async (options) => {
  *
  * handles http GET requests returns promise as a response throws error in case of non 2XX statuses
  */
-const httpGET = async (url, options) => {
+const httpGET = async (url, options, statTags = {}) => {
   let clientResponse;
+  // here the options argument K-Vs will take priority over the default options
+  const requestOptions = enhanceRequestOptions(options);
+
+  const startTime = new Date();
   try {
-    const response = await axios.get(url, options);
+    const response = await axios.get(url, requestOptions);
     clientResponse = { success: true, response };
   } catch (err) {
     clientResponse = { success: false, response: err };
+  } finally {
+    fireHTTPStats(clientResponse, startTime, statTags);
   }
   return clientResponse;
 };
@@ -91,13 +128,19 @@ const httpGET = async (url, options) => {
  *
  * handles http DELETE requests returns promise as a response throws error in case of non 2XX statuses
  */
-const httpDELETE = async (url, options) => {
+const httpDELETE = async (url, options, statTags = {}) => {
   let clientResponse;
+  // here the options argument K-Vs will take priority over the default options
+  const requestOptions = enhanceRequestOptions(options);
+
+  const startTime = new Date();
   try {
-    const response = await axios.delete(url, options);
+    const response = await axios.delete(url, requestOptions);
     clientResponse = { success: true, response };
   } catch (err) {
     clientResponse = { success: false, response: err };
+  } finally {
+    fireHTTPStats(clientResponse, startTime, statTags);
   }
   return clientResponse;
 };
@@ -111,13 +154,19 @@ const httpDELETE = async (url, options) => {
  *
  * handles http POST requests returns promise as a response throws error in case of non 2XX statuses
  */
-const httpPOST = async (url, data, options) => {
+const httpPOST = async (url, data, options, statTags = {}) => {
   let clientResponse;
+  // here the options argument K-Vs will take priority over the default options
+  const requestOptions = enhanceRequestOptions(options);
+
+  const startTime = new Date();
   try {
-    const response = await axios.post(url, data, options);
+    const response = await axios.post(url, data, requestOptions);
     clientResponse = { success: true, response };
   } catch (err) {
     clientResponse = { success: false, response: err };
+  } finally {
+    fireHTTPStats(clientResponse, startTime, statTags);
   }
   return clientResponse;
 };
@@ -131,13 +180,19 @@ const httpPOST = async (url, data, options) => {
  *
  * handles http PUT requests returns promise as a response throws error in case of non 2XX statuses
  */
-const httpPUT = async (url, data, options) => {
+const httpPUT = async (url, data, options, statTags = {}) => {
   let clientResponse;
+  // here the options argument K-Vs will take priority over the default options
+  const requestOptions = enhanceRequestOptions(options);
+
+  const startTime = new Date();
   try {
-    const response = await axios.put(url, data, options);
+    const response = await axios.put(url, data, requestOptions);
     clientResponse = { success: true, response };
   } catch (err) {
     clientResponse = { success: false, response: err };
+  } finally {
+    fireHTTPStats(clientResponse, startTime, statTags);
   }
   return clientResponse;
 };
@@ -151,13 +206,19 @@ const httpPUT = async (url, data, options) => {
  *
  * handles http PATCH requests returns promise as a response throws error in case of non 2XX statuses
  */
-const httpPATCH = async (url, data, options) => {
+const httpPATCH = async (url, data, options, statTags = {}) => {
   let clientResponse;
+  // here the options argument K-Vs will take priority over the default options
+  const requestOptions = enhanceRequestOptions(options);
+
+  const startTime = new Date();
   try {
-    const response = await axios.patch(url, data, options);
+    const response = await axios.patch(url, data, requestOptions);
     clientResponse = { success: true, response };
   } catch (err) {
     clientResponse = { success: false, response: err };
+  } finally {
+    fireHTTPStats(clientResponse, startTime, statTags);
   }
   return clientResponse;
 };
@@ -251,7 +312,7 @@ const prepareProxyRequest = (request) => {
  * @param {*} request
  * @returns
  */
-const proxyRequest = async (request) => {
+const proxyRequest = async (request, destType) => {
   const { endpoint, data, method, params, headers } = prepareProxyRequest(request);
   const requestOptions = {
     url: endpoint,
@@ -260,7 +321,7 @@ const proxyRequest = async (request) => {
     headers,
     method,
   };
-  const response = await httpSend(requestOptions);
+  const response = await httpSend(requestOptions, { feature: 'proxy', destType });
   return response;
 };
 

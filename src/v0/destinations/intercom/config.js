@@ -41,9 +41,13 @@ const ReservedTraitsProperties = [
 
 const ReservedCompanyProperties = ['id', 'name', 'industry'];
 
+// ref:- https://developers.intercom.com/intercom-api-reference/v1.4/reference/event-metadata-types
+const MetadataTypes = { richLink: ['url', 'value'], monetaryAmount: ['amount', 'currency'] };
+
 module.exports = {
   ConfigCategory,
   MappingConfig,
   ReservedCompanyProperties,
   ReservedTraitsProperties,
+  MetadataTypes,
 };

@@ -1,0 +1,11 @@
+title: User Transformation Input
+type: object
+properties:
+  VersionID:
+    type: string
+  ID:
+    type: string
+  Name:
+    type: string
+  Config:
+    type: object

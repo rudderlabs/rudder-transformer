@@ -1,0 +1,80 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - name: isAppleFamily
+    path: ../../../../v0/util
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+  - path: ../../bindings/jsontemplate
+  - path: ./config.js
+
+
+steps:
+  - name: validateInput
+    template: |
+      $.assert(.message.type, "message Type is not present. Aborting message.");
+      $.assert(.message.type in {{$.EventType.([.SCREEN, .TRACK])}}, 
+        "message type " + .message.type + " is not supported");
+  - name: setMessageType
+    template: |
+      $.context.messageType = .message.type.toLowerCase();
+  - name: baseDestPayload
+    template: |
+      const isAppleOS = $.isAppleFamily(.message.context.os.name);
+      const isAndroidOS = .message.context.os.name.toLowerCase() === 'android';
+      const deviceId = .message.context.device.id ?? .message.anonymousId ?? "";
+      $.context.payload = .message.({
+        data: {
+          event_data: .properties ?? {},
+          usertime: $.toMilliseconds({{{{$.getGenericPaths("timestamp")}}}}),
+          app_version: .context.app.build,
+          origination_ip: .context.ip ?? .request_ip,
+          app_name: .context.app.name,
+          app_short_string: .context.app.version,
+          locale: .context.locale,
+          os_version: .context.os.version,
+          screen_dpi: .context.screen.density,
+          app_tracking_transparency: {
+            att: .context.device.attTrackingStatus === 3,
+          },
+          device_ver: .context.device.model && .context.os.version 
+              ? [.context.device.model, .context.os.name, .context.os.version].join("-")
+              : "",
+          device_ids: {
+            idfa: isAppleOS
+              ? .context.device.advertisingId ?? ""
+              : "",
+            idfv: isAppleOS ? deviceId : "",
+            adid: isAndroidOS 
+              ? .context.device.advertisingId ?? ""
+              : "",
+            android_id: isAndroidOS ? deviceId : "",
+          },
+          device_ua: .context.userAgent ?? "",
+          currency: .properties.currency ?? "USD"
+        },
+        kochava_device_id: deviceId,
+        kochava_app_id: ^.destination.Config.apiKey,
+        action: .rudderAction ?? "event"
+      });
+  - name: screenEventName
+    condition: $.context.messageType === {{$.EventType.SCREEN}}
+    template: |
+      const name = .message.properties.name;
+      const eventNameArray = ["screen view"];
+      name ? eventNameArray.push(name);
+      $.context.payload.data.event_name = eventNameArray.join(" ");
+  - name: trackEventName
+    condition: $.context.messageType === {{$.EventType.TRACK}} && .message.event
+    template: |
+      const eventName = .message.event.toLowerCase();
+      $.context.payload.data.event_name = $.eventNameMapping[eventName] ?? eventName;
+  - name: buildResponseForProcessTransformation
+    template: |
+      const response = $.defaultRequestConfig();
+      response.body.JSON = $.removeUndefinedAndNullValues($.context.payload);
+      response.endpoint = "https://control.kochava.com/track/json";
+      response.userId = .message.anonymousId;
+      response

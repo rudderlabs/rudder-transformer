@@ -35,7 +35,10 @@ const userDeletionHandler = async (userAttributes, config) => {
           Accept: JSON_MIME_TYPE,
         },
       };
-      const resp = await httpPOST(url, data, requestOptions);
+      const resp = await httpPOST(url, data, requestOptions, {
+        destType: 'intercom',
+        feature: 'deleteUsers',
+      });
       const handledDelResponse = processAxiosResponse(resp);
       if (!isHttpStatusSuccess(handledDelResponse.status) && handledDelResponse.status !== 404) {
         throw new NetworkError(

@@ -6,7 +6,7 @@
       "context": {
         "locale": "en-GB",
         "traits": {
-          "email": "alex13@gmail.com",
+          "email": "a@gmail.com",
           "phone": "+16405273911",
           "customIdentifiers": [
             {
@@ -26,7 +26,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "d1cwZXF1eVZicnpPeGJ6M0JOTXFxTVN2QkdpWTJ3NENp",
+        "apiKey": "dummyApiKey",
         "signUpSourceId": "241654"
       }
     }
@@ -42,7 +42,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "test@rudderlabs.com",
+          "email": "test@rudderstack.com",
           "phone": "+16465053911"
         },
         "library": {
@@ -97,7 +97,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "t1yurrb968zk",
+        "apiKey": "dummyApiKey",
         "signUpSourceId": "240654"
       }
     }
@@ -134,7 +134,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "d1cwZXF1eVZicnpPeGJ6M0JOTXFxTVN2QkdpWTJ3NENp",
+        "apiKey": "dummyApiKey",
         "signUpSourceId": "241654"
       }
     }
@@ -150,7 +150,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "test@rudderlabs.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -213,7 +213,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "t1yurrb968zk",
+        "apiKey": "dummyApiKey",
         "signUpSourceId": "240654"
       }
     }
@@ -229,7 +229,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "test@rudderlabs.com",
+          "email": "test@rudderstack.com",
           "phone": "+16465053911"
         },
         "library": {
@@ -292,7 +292,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "t1yurrb968zk",
+        "apiKey": "dummyApiKey",
         "signUpSourceId": "240654"
       }
     }
@@ -308,7 +308,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "test@rudderlabs.com",
+          "email": "test@rudderstack.com",
           "phone": "+16465053911"
         },
         "library": {
@@ -372,7 +372,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "t1yurrb968zk",
+        "apiKey": "dummyApiKey",
         "signUpSourceId": "240654"
       }
     }
@@ -388,7 +388,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "test@rudderlabs.com",
+          "email": "test@rudderstack.com",
           "phone": "+16465053911"
         },
         "library": {
@@ -452,7 +452,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "t1yurrb968zk",
+        "apiKey": "dummyApiKey",
         "signUpSourceId": "240654"
       }
     }
@@ -468,7 +468,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "test@rudderlabs.com",
+          "email": "test@rudderstack.com",
           "phone": "+16465053911"
         },
         "library": {
@@ -522,7 +522,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "t1yurrb968zk",
+        "apiKey": "dummyApiKey",
         "signUpSourceId": "240654"
       }
     }
@@ -538,7 +538,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "test@rudderlabs.com",
+          "email": "test@rudderstack.com",
           "phone": "+16465053911"
         },
         "library": {
@@ -601,7 +601,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "t1yurrb968zk",
+        "apiKey": "dummyApiKey",
         "signUpSourceId": "240654"
       }
     }
@@ -639,7 +639,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "d1cwZXF1eVZicnpPeGJ6M0JOTXFxTVN2QkdpWTJ3NENp",
+        "apiKey": "dummyApiKey",
         "signUpSourceId": "241654"
       }
     }
@@ -716,7 +716,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "t1yurrb968zk",
+        "apiKey": "dummyApiKey",
         "signUpSourceId": "240654"
       }
     }
@@ -732,7 +732,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "test@rudderlabs.com",
+          "email": "test@rudderstack.com",
           "phone": "+16465053911"
         },
         "library": {
@@ -795,7 +795,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "t1yurrb968zk",
+        "apiKey": "dummyApiKey",
         "signUpSourceId": "240654"
       }
     }
@@ -811,7 +811,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "test@rudderlabs.com",
+          "email": "test@rudderstack.com",
           "phone": "+16465053911"
         },
         "library": {
@@ -874,7 +874,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "t1yurrb968zk",
+        "apiKey": "dummyApiKey",
         "signUpSourceId": "240654"
       }
     }
@@ -890,7 +890,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "test@rudderlabs.com",
+          "email": "test@rudderstack.com",
           "phone": "+16465053911"
         },
         "library": {
@@ -954,7 +954,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "t1yurrb968zk",
+        "apiKey": "dummyApiKey",
         "signUpSourceId": "240654"
       }
     }
@@ -991,7 +991,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "d1cwZXF1eVZicnpPeGJ6M0JOTXFxTVN2QkdpWTJ3NENp",
+        "apiKey": "dummyApiKey",
         "signUpSourceId": "241654"
       }
     }
@@ -1054,7 +1054,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "t1yurrb968zk",
+        "apiKey": "dummyApiKey",
         "signUpSourceId": "240654"
       }
     }

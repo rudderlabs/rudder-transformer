@@ -31,6 +31,30 @@ describe(`${name} Tests`, () => {
     });
   });
 
+  describe('Processor Step Tests', () => {
+    const inputDataFile = fs.readFileSync(
+      path.resolve(__dirname, `./data/${integration}_input.json`),
+      { encoding: 'utf8' },
+    );
+    const outputDataFile = fs.readFileSync(
+      path.resolve(__dirname, `./data/${integration}_output.json`),
+      { encoding: 'utf8' },
+    );
+    const inputData = JSON.parse(inputDataFile);
+    const expectedData = JSON.parse(outputDataFile);
+    inputData.forEach((input, index) => {
+      it(`${name} - payload: ${index}`, async () => {
+        const expected = expectedData[index];
+        try {
+          const output = await processCdkV2Workflow(integration, input, tags.FEATURES.PROCESSOR);
+          expect(output).toEqual(expected);
+        } catch (error: any) {
+          expect(error.message).toEqual(expected.error);
+        }
+      });
+    });
+  });
+
   describe('Router Tests', () => {
     // Router Test Data
     const inputRouterDataFile = fs.readFileSync(

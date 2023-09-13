@@ -6,16 +6,19 @@ const {
   CustomAttributeOperationUtil,
   processDeduplication,
   processBatch,
+  addAppId,
+  setExternalIdOrAliasObject,
+  getPurchaseObjs,
+  setExternalId,
+  setAliasObjectWithAnonId,
 } = require('./util');
 const tags = require('../../util/tags');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 const {
   adduserIdFromExternalId,
   defaultRequestConfig,
-  getDestinationExternalID,
   getFieldValueFromMessage,
   removeUndefinedValues,
-  isDefinedAndNotNull,
   isHttpStatusSuccess,
   simpleProcessRouterDestSync,
   simpleProcessRouterDest,
@@ -73,40 +76,11 @@ function buildResponse(message, destination, properties, endpoint) {
   };
 }
 
-function setAliasObjectWithAnonId(payload, message) {
-  if (message.anonymousId) {
-    payload.user_alias = {
-      alias_name: message.anonymousId,
-      alias_label: 'rudder_id',
-    };
-  }
-  return payload;
-}
-
-function setExternalId(payload, message) {
-  const externalId = getDestinationExternalID(message, 'brazeExternalId') || message.userId;
-  if (externalId) {
-    payload.external_id = externalId;
-  }
-  return payload;
-}
-
-function setExternalIdOrAliasObject(payload, message) {
-  const userId = getFieldValueFromMessage(message, 'userIdOnly');
-  if (userId || getDestinationExternalID(message, 'brazeExternalId')) {
-    return setExternalId(payload, message);
-  }
-
-  // eslint-disable-next-line no-underscore-dangle
-  payload._update_existing_only = false;
-  return setAliasObjectWithAnonId(payload, message);
-}
-
 function getIdentifyPayload(message) {
   let payload = {};
   payload = setAliasObjectWithAnonId(payload, message);
   payload = setExternalId(payload, message);
-  return { aliases_to_identify: [payload] };
+  return { aliases_to_identify: [payload], merge_behavior: "merge" };
 }
 
 function populateCustomAttributesWithOperation(
@@ -232,6 +206,10 @@ async function processIdentify(message, destination) {
         Authorization: `Bearer ${destination.Config.restApiKey}`,
       },
     },
+    {
+      destType: 'braze',
+      feature: 'transformation',
+    },
   );
   if (!isHttpStatusSuccess(brazeIdentifyResp.status)) {
     throw new NetworkError(
@@ -291,52 +269,6 @@ function addMandatoryEventProperties(payload, message) {
   return payload;
 }
 
-function addMandatoryPurchaseProperties(productId, price, currencyCode, quantity, timestamp) {
-  if (currencyCode) {
-    return {
-      product_id: productId,
-      price,
-      currency: currencyCode,
-      quantity,
-      time: timestamp,
-    };
-  }
-  return null;
-}
-
-function getPurchaseObjs(message) {
-  const { products, currency } = message.properties;
-  const currencyCode = currency;
-
-  const purchaseObjs = [];
-
-  if (Array.isArray(products)) {
-    // we have to make a separate call to appboy for each product
-    products.forEach((product) => {
-      const productId = product.product_id || product.sku;
-      const { price, quantity, currency: prodCur } = product;
-      if (productId && isDefinedAndNotNull(price) && quantity) {
-        if (Number.isNaN(price) || Number.isNaN(quantity)) {
-          return;
-        }
-        let purchaseObj = addMandatoryPurchaseProperties(
-          productId,
-          price,
-          currencyCode || prodCur,
-          quantity,
-          message.timestamp,
-        );
-        if (purchaseObj) {
-          purchaseObj = setExternalIdOrAliasObject(purchaseObj, message);
-          purchaseObjs.push(purchaseObj);
-        }
-      }
-    });
-  }
-
-  return purchaseObjs.length === 0 ? null : purchaseObjs;
-}
-
 function processTrackEvent(messageType, message, destination, mappingJson, processParams) {
   const eventName = message.event;
 
@@ -373,25 +305,22 @@ function processTrackEvent(messageType, message, destination, mappingJson, proce
   ) {
     const purchaseObjs = getPurchaseObjs(message);
 
-    if (purchaseObjs) {
-      // del used properties
-      delete properties.products;
-      delete properties.currency;
+    // del used properties
+    delete properties.products;
+    delete properties.currency;
 
-      const payload = { properties };
-      setExternalIdOrAliasObject(payload, message);
-      return buildResponse(
-        message,
-        destination,
-        {
-          attributes: [attributePayload],
-          purchases: purchaseObjs,
-          partner: BRAZE_PARTNER_NAME,
-        },
-        getTrackEndPoint(getEndpointFromConfig(destination)),
-      );
-    }
-    throw new InstrumentationError('Invalid Order Completed event');
+    const payload = { properties };
+    setExternalIdOrAliasObject(payload, message);
+    return buildResponse(
+      message,
+      destination,
+      {
+        attributes: [attributePayload],
+        purchases: purchaseObjs,
+        partner: BRAZE_PARTNER_NAME,
+      },
+      getTrackEndPoint(getEndpointFromConfig(destination)),
+    );
   }
   properties = handleReservedProperties(properties);
   let payload = {};
@@ -401,6 +330,7 @@ function processTrackEvent(messageType, message, destination, mappingJson, proce
   payload.properties = properties;
 
   payload = setExternalIdOrAliasObject(payload, message);
+  payload = addAppId(payload, message);
   if (payload) {
     requestJson.events = [payload];
   }
@@ -453,7 +383,7 @@ function processGroup(message, destination) {
     const response = defaultRequestConfig();
     response.endpoint = getSubscriptionGroupEndPoint(getEndpointFromConfig(destination));
     response.body.JSON = removeUndefinedValues({
-      subscription_groups
+      subscription_groups,
     });
     return {
       ...response,

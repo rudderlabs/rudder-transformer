@@ -1,0 +1,37 @@
+title: RudderMessage schema
+type: object
+properties:
+  userId:
+    type: string
+  anonymousId:
+    type: string
+  type:
+    type: string
+    enum: ['identify', 'track', 'page', 'screen', 'group', 'alias', 'audiencelist']
+  channel:
+    type: string
+  context:
+    type: object
+  originalTimestamp:
+    type: string
+    format: date-time
+    pattern: yyyy-MM-ddTHH:mm:ss.SSSZ
+  sentAt:
+    type: string
+    format: date-time
+    pattern: yyyy-MM-ddTHH:mm:ss.SSSZ
+  timestamp:
+    type: string
+    format: date-time
+    pattern: yyyy-MM-ddTHH:mm:ss.SSSZ
+  event:
+    type: string
+  integrations:
+    type: object
+    example: { 'All': true }
+  messageId:
+    type: string
+  properties:
+    type: object
+  traits:
+    type: object

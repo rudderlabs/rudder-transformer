@@ -8,6 +8,9 @@ const {
   isAppleFamily,
   getBrowserInfo,
   toUnixTimestamp,
+  batchMultiplexedEvents,
+  getSuccessRespEvents,
+  defaultBatchRequestConfig,
 } = require('../../util');
 const {
   ConfigCategory,
@@ -16,6 +19,7 @@ const {
   mappingConfig,
 } = require('./config');
 const { InstrumentationError } = require('../../util/errorTypes');
+const { CommonUtils } = require('../../../util/common');
 
 const mPIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 const mPProfileAndroidConfigJson = mappingConfig[ConfigCategory.PROFILE_ANDROID.name];
@@ -167,6 +171,102 @@ const removeDuplicateMetadata = (mergedBatches) => {
 };
 
 /**
+ * Groups events with the same message type together in batches.
+ * Each batch contains events that have the same message type and are from different users.
+ * @param {*} inputs - An array of events
+ * @returns {*} - An array of batches
+ */
+const groupEventsByType = (inputs) => {
+  const batches = [];
+  let currentInputsArray = inputs;
+  while (currentInputsArray.length > 0) {
+    const remainingInputsArray = [];
+    const userOrderTracker = {};
+    const event = currentInputsArray.shift();
+    const messageType = event.message.type;
+    const batch = [event];
+    currentInputsArray.forEach((currentInput) => {
+      const currentMessageType = currentInput.message.type;
+      const currentUser = currentInput.metadata.userId;
+      if (currentMessageType === messageType && !userOrderTracker[currentUser]) {
+        batch.push(currentInput);
+      } else {
+        remainingInputsArray.push(currentInput);
+        userOrderTracker[currentUser] = true;
+      }
+    });
+    batches.push(batch);
+    currentInputsArray = remainingInputsArray;
+  }
+
+  return batches;
+};
+
+/**
+ * Group events with the same endpoint together in batches
+ * @param {*} events - An array of events
+ * @returns
+ */
+const groupEventsByEndpoint = (events) => {
+  const engageEvents = [];
+  const groupsEvents = [];
+  const trackEvents = [];
+  const importEvents = [];
+  const batchErrorRespList = [];
+  events.forEach((result) => {
+    if (result.message) {
+      const { destination, metadata } = result;
+      let { message } = result;
+      message = CommonUtils.toArray(message);
+      message.forEach((msg) => {
+        // eslint-disable-next-line default-case
+        switch (true) {
+          case msg.endpoint.includes('engage'):
+            engageEvents.push({ message: msg, destination, metadata });
+            break;
+          case msg.endpoint.includes('groups'):
+            groupsEvents.push({ message: msg, destination, metadata });
+            break;
+          case msg.endpoint.includes('track'):
+            trackEvents.push({ message: msg, destination, metadata });
+            break;
+          case msg.endpoint.includes('import'):
+            importEvents.push({ message: msg, destination, metadata });
+            break;
+        }
+      });
+    } else if (result.error) {
+      batchErrorRespList.push(result);
+    }
+  });
+  return {
+    engageEvents,
+    groupsEvents,
+    trackEvents,
+    importEvents,
+    batchErrorRespList,
+  };
+};
+
+const generateBatchedPayloadForArray = (events) => {
+  const { batchedRequest } = defaultBatchRequestConfig();
+  const batchResponseList = events.flatMap((event) => JSON.parse(event.body.JSON_ARRAY.batch));
+  batchedRequest.body.JSON_ARRAY = { batch: JSON.stringify(batchResponseList) };
+  batchedRequest.endpoint = events[0].endpoint;
+  batchedRequest.headers = events[0].headers;
+  batchedRequest.params = events[0].params;
+  return batchedRequest;
+};
+
+const batchEvents = (successRespList, maxBatchSize) => {
+  const batchedEvents = batchMultiplexedEvents(successRespList, maxBatchSize);
+  return batchedEvents.map((batch) => {
+    const batchedRequest = generateBatchedPayloadForArray(batch.events);
+    return getSuccessRespEvents(batchedRequest, batch.metadata, batch.destination, true);
+  });
+};
+
+/**
  * Combines batched requests with the same JobIds.
  * @param {*} inputBatches The array of batched request objects.
  * @returns  The combined batched requests with merged JobIds.
@@ -221,5 +321,8 @@ const combineBatchRequestsWithSameJobIds = (inputBatches) => {
 module.exports = {
   createIdentifyResponse,
   isImportAuthCredentialsAvailable,
+  groupEventsByType,
+  groupEventsByEndpoint,
+  batchEvents,
   combineBatchRequestsWithSameJobIds,
 };

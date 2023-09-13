@@ -716,7 +716,7 @@
   },
   {
     "statusCode": 400,
-    "error": "'temp event' event name not found"
+    "error": "Event name 'temp event' mappings are not configured in the destination"
   },
   {
     "statusCode": 400,

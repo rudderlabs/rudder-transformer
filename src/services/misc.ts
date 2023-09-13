@@ -31,6 +31,9 @@ export default class MiscService {
   }
 
   public static getMetaTags(metadata: Metadata) {
+    if (!metadata) {
+      return {}
+    }
     return {
       sourceType: metadata.sourceType,
       destinationType: metadata.destinationType,

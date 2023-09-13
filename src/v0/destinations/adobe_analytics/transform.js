@@ -34,6 +34,8 @@ const {
 const responseBuilderSimple = async (message, destinationConfig, basicPayload) => {
   let payload = constructPayload(message, commonConfig);
   const { event, context, properties } = message;
+  // set default value of properties.overridePageView to false if not provided
+  properties.overridePageView = properties.overridePageView ?? false;
   const { overrideEvars, overrideHiers, overrideLists, overrideCustomProperties } = properties;
   // handle contextData
   payload = handleContextData(payload, destinationConfig, message);
@@ -46,7 +48,7 @@ const responseBuilderSimple = async (message, destinationConfig, basicPayload) =
   }
 
   // handle fallbackVisitorId
-  const { noFallbackVisitorId } = destinationConfig;
+  const { noFallbackVisitorId, trackPageName } = destinationConfig;
   // 'AdobeFallbackVisitorId' should be the type of external id in the payload i.e "AdobeFallbackVisitorId": "value"
   if (!noFallbackVisitorId) {
     const fallbackVisitorId = getDestinationExternalID(message, 'AdobeFallbackVisitorId');
@@ -58,14 +60,16 @@ const responseBuilderSimple = async (message, destinationConfig, basicPayload) =
   // handle link values
   // default linktype to 'o', linkName to event name, linkURL to ctx.page.url if not passed in integrations object
   const adobeIntegrationsObject = getIntegrationsObj(message, 'adobe_analytics');
-  payload.linkType = adobeIntegrationsObject?.linkType || 'o';
-  payload.linkName = adobeIntegrationsObject?.linkName || event;
-  // setting linkname to page view for page calls
-  if (message.type === 'page') {
-    payload.linkName = 'page view';
+  if (!properties?.overridePageView) {
+    payload.linkType = adobeIntegrationsObject?.linkType || 'o';
+    payload.linkName = adobeIntegrationsObject?.linkName || event;
+    // setting linkname to page view for page calls
+    if (message.type === 'page') {
+      payload.linkName = 'page view';
+    }
+    payload.linkURL =
+      adobeIntegrationsObject?.linkURL || context?.page?.url || 'No linkURL provided';
   }
-  payload.linkURL = adobeIntegrationsObject?.linkURL || context?.page?.url || 'No linkURL provided';
-
   // handle hier
   if (overrideHiers) {
     Object.assign(payload, overrideHiers);
@@ -82,22 +86,23 @@ const responseBuilderSimple = async (message, destinationConfig, basicPayload) =
 
   // handle pageName, pageUrl
   const contextPageUrl = context?.page?.url;
-  const { trackPageName } = destinationConfig;
-  const propertiesPageUrl = properties?.pageUrl;
-  const pageUrl = contextPageUrl || propertiesPageUrl;
-  if (isDefinedAndNotNullAndNotEmpty(pageUrl)) {
-    payload.pageUrl = pageUrl;
-  }
-  if (trackPageName) {
-    // better handling possible here, both error and implementation wise
-    const contextPageName = context?.page?.name;
-    const propertiesPageName = properties?.pageName;
-    const pageName = propertiesPageName || contextPageName;
-    if (isDefinedAndNotNullAndNotEmpty(pageName)) {
-      payload.pageName = pageName;
-    } else {
-      // pageName is defaulted to URL.
-      payload.pageName = pageUrl;
+  if (properties?.overridePageView) {
+    const propertiesPageUrl = properties?.pageUrl;
+    const pageUrl = contextPageUrl || propertiesPageUrl;
+    if (isDefinedAndNotNullAndNotEmpty(pageUrl)) {
+      payload.pageUrl = pageUrl;
+    }
+    if (trackPageName) {
+      // better handling possible here, both error and implementation wise
+      const contextPageName = context?.page?.name;
+      const propertiesPageName = properties?.pageName;
+      const pageName = propertiesPageName || contextPageName;
+      if (isDefinedAndNotNullAndNotEmpty(pageName)) {
+        payload.pageName = pageName;
+      } else {
+        // pageName is defaulted to URL.
+        payload.pageName = pageUrl;
+      }
     }
   }
 
@@ -336,7 +341,7 @@ const handleTrack = (message, destinationConfig) => {
   let payload = null;
   // handle ecommerce events separately
   // generic events should go to the default
-  const event = rawEvent?.toLowerCase();
+  const event = typeof rawEvent === 'string' ? rawEvent.toLowerCase() : rawEvent;
   switch (event) {
     case 'product viewed':
     case 'product list viewed':
@@ -367,10 +372,16 @@ const handleTrack = (message, destinationConfig) => {
       payload = processTrackEvent(message, 'scOpen', destinationConfig);
       break;
     default:
-      if (destinationConfig.rudderEventsToAdobeEvents[event.toLowerCase()]) {
+      if (destinationConfig.rudderEventsToAdobeEvents[event]) {
         payload = processTrackEvent(
           message,
-          destinationConfig.rudderEventsToAdobeEvents[event.toLowerCase()].trim(),
+          destinationConfig.rudderEventsToAdobeEvents[event]?.trim(),
+          destinationConfig,
+        );
+      } else if (message?.properties?.overrideEventName) {
+        payload = processTrackEvent(
+          message,
+          message?.properties?.overrideEventName,
           destinationConfig,
         );
       } else {

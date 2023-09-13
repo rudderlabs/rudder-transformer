@@ -63,6 +63,16 @@
         "id": "test_event_id_6",
         "experimentIds": ["test_experiment_id"],
         "key": "Viewed Main screen"
+      },
+      {
+        "id": "test_event_id_7",
+        "experimentIds": ["test_experiment_id"],
+        "key": "Home"
+      },
+      {
+        "id": "test_event_id_8",
+        "experimentIds": ["test_experiment_id"],
+        "key": "Index"
       }
     ],
     "anonymizeIP": true,

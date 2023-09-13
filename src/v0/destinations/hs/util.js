@@ -97,12 +97,22 @@ const getProperties = async (destination) => {
         Authorization: `Bearer ${Config.accessToken}`,
       },
     };
-    hubspotPropertyMapResponse = await httpGET(CONTACT_PROPERTY_MAP_ENDPOINT, requestOptions);
+    hubspotPropertyMapResponse = await httpGET(CONTACT_PROPERTY_MAP_ENDPOINT, requestOptions, {
+      destType: 'hs',
+      feature: 'transformation',
+    });
     hubspotPropertyMapResponse = processAxiosResponse(hubspotPropertyMapResponse);
   } else {
     // API Key (hapikey)
     const url = `${CONTACT_PROPERTY_MAP_ENDPOINT}?hapikey=${Config.apiKey}`;
-    hubspotPropertyMapResponse = await httpGET(url);
+    hubspotPropertyMapResponse = await httpGET(
+      url,
+      {},
+      {
+        destType: 'hs',
+        feature: 'transformation',
+      },
+    );
     hubspotPropertyMapResponse = processAxiosResponse(hubspotPropertyMapResponse);
   }
 
@@ -324,6 +334,7 @@ const searchContacts = async (message, destination) => {
     after: 0,
   };
 
+  const endpointPath = '/contacts/search';
   if (Config.authorizationType === 'newPrivateAppApi') {
     // Private Apps
     const requestOptions = {
@@ -336,12 +347,21 @@ const searchContacts = async (message, destination) => {
       IDENTIFY_CRM_SEARCH_CONTACT,
       requestData,
       requestOptions,
+      {
+        destType: 'hs',
+        feature: 'transformation',
+        endpointPath,
+      },
     );
     searchContactsResponse = processAxiosResponse(searchContactsResponse);
   } else {
     // API Key
     const url = `${IDENTIFY_CRM_SEARCH_CONTACT}?hapikey=${Config.apiKey}`;
-    searchContactsResponse = await httpPOST(url, requestData);
+    searchContactsResponse = await httpPOST(url, requestData, {
+      destType: 'hs',
+      feature: 'transformation',
+      endpointPath,
+    });
     searchContactsResponse = processAxiosResponse(searchContactsResponse);
   }
 
@@ -409,7 +429,9 @@ const getEventAndPropertiesFromConfig = (message, destination, payload) => {
   });
 
   if (!hubspotEventFound) {
-    throw new ConfigurationError(`'${event}' event name not found`);
+    throw new ConfigurationError(
+      `Event name '${event}' mappings are not configured in the destination`,
+    );
   }
 
   // 2. fetch event properties from webapp config
@@ -489,6 +511,7 @@ const getExistingData = async (inputs, destination) => {
 
   while (checkAfter) {
     const endpoint = IDENTIFY_CRM_SEARCH_ALL_OBJECTS.replace(':objectType', objectType);
+    const endpointPath = `objects/:objectType/search`;
 
     const url =
       Config.authorizationType === 'newPrivateAppApi'
@@ -496,8 +519,16 @@ const getExistingData = async (inputs, destination) => {
         : `${endpoint}?hapikey=${Config.apiKey}`;
     searchResponse =
       Config.authorizationType === 'newPrivateAppApi'
-        ? await httpPOST(url, requestData, requestOptions)
-        : await httpPOST(url, requestData);
+        ? await httpPOST(url, requestData, requestOptions, {
+            destType: 'hs',
+            feature: 'transformation',
+            endpointPath,
+          })
+        : await httpPOST(url, requestData, {
+            destType: 'hs',
+            feature: 'transformation',
+            endpointPath,
+          });
     searchResponse = processAxiosResponse(searchResponse);
 
     if (searchResponse.status !== 200) {

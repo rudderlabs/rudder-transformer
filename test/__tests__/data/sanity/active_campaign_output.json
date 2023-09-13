@@ -6,7 +6,7 @@
     "endpoint": "https://active.campaigns.rudder.com/api/3/contact/sync",
     "headers": {
       "Content-Type": "application/json",
-      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      "Api-Token": "dummyApiToken"
     },
     "params": {},
     "body": {
@@ -17,7 +17,7 @@
           "firstName": null,
           "lastName": null
         },
-        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+        "apiKey": "dummyApiKey"
       },
       "XML": {},
       "JSON_ARRAY": {},
@@ -32,7 +32,7 @@
     "endpoint": "https://active.campaigns.rudder.com/api/3/contact/sync",
     "headers": {
       "Content-Type": "application/json",
-      "Api-Token": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+      "Api-Token": "dummyApiToken"
     },
     "params": {},
     "body": {
@@ -43,7 +43,7 @@
           "firstName": "Sajal",
           "lastName": "Mohanta"
         },
-        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1"
+        "apiKey": "dummyApiKey"
       },
       "XML": {},
       "JSON_ARRAY": {},

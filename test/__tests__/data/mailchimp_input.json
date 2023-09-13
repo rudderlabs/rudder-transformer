@@ -9,7 +9,7 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "apikey",
+        "apiKey": "dummyApiKey",
         "audienceId": "aud111",
         "datacenterId": "usXX",
         "enableMergeFields": true
@@ -77,7 +77,7 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "apikey",
+        "apiKey": "dummyApiKey",
         "audienceId": "aud111",
         "datacenterId": "usXX",
         "enableMergeFields": true
@@ -133,14 +133,14 @@
   {
     "destination": {
       "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
-      "Name": "Titli Ganguly",
+      "Name": "Titli Test",
       "DestinationDefinition": {
         "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn",
         "Name": "MC",
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "apikey-usYY",
+        "apiKey": "apiKey-dummyApiKey",
         "audienceId": "aud111",
         "datacenterId": "usXX"
       },
@@ -150,7 +150,7 @@
     "message": {
       "type": "identify",
       "sentAt": "2021-05-18T06:58:57.186Z",
-      "userId": "pravesh.choudhary@yara.com",
+      "userId": "test.rudderlabs@yara.com",
       "channel": "web",
       "context": {
         "os": {
@@ -181,8 +181,8 @@
           "density": 2
         },
         "traits": {
-          "name": "Pravesh Choudhary",
-          "email": "pravesh.choudhary@yara.com",
+          "name": "test rudderlabs",
+          "email": "test.rudderlabs@yara.com",
           "userId": "1sWVaQTxoVwjvShC0295E6OqMaP",
           "first_login": false,
           "workspaceId": "1jWrHYPjNGSHbvKwzow0ZFPIQll",
@@ -210,14 +210,14 @@
   {
     "destination": {
       "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
-      "Name": "Titli Ganguly",
+      "Name": "Titli Test",
       "DestinationDefinition": {
         "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn",
         "Name": "MC",
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "apikey",
+        "apiKey": "dummyApiKey",
         "audienceId": "aud111",
         "datacenterId": "usXX"
       },
@@ -296,7 +296,7 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "apikey",
+        "apiKey": "dummyApiKey",
         "audienceId": "aud111",
         "datacenterId": "usXX"
       },
@@ -366,7 +366,7 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "apikey",
+        "apiKey": "dummyApiKey",
         "audienceId": "aud111",
         "datacenterId": "usXX"
       },
@@ -413,7 +413,7 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "apikey",
+        "apiKey": "dummyApiKey",
         "audienceId": "aud111",
         "datacenterId": "usXX"
       },
@@ -470,7 +470,7 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "apikey",
+        "apiKey": "dummyApiKey",
         "audienceId": "aud112",
         "datacenterId": "usXX"
       },
@@ -529,7 +529,7 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "apikey",
+        "apiKey": "dummyApiKey",
         "audienceId": "aud111",
         "datacenterId": "usXX"
       },
@@ -588,7 +588,7 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "apikey",
+        "apiKey": "dummyApiKey",
         "audienceId": "aud111",
         "datacenterId": "usXX"
       },
@@ -681,10 +681,10 @@
           "density": 2
         },
         "traits": {
-          "anonymousId": "rohithkaza",
-          "email": "rohithkaza-test@initech.com",
-          "firstName": "Rohith",
-          "lastName": "Kaza"
+          "anonymousId": "test-rudderlabs",
+          "email": "test-rudderlabs-test@initech.com",
+          "firstName": "Test",
+          "lastName": "Rudderlabs"
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36"
       },
@@ -712,7 +712,7 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "apikey",
+        "apiKey": "dummyApiKey",
         "datacenterId": "usXX"
       },
       "Enabled": true,
@@ -742,10 +742,10 @@
           "density": 2
         },
         "traits": {
-          "anonymousId": "rohithkaza",
-          "email": "rohithkaza-test@initech.com",
-          "firstName": "Rohith",
-          "lastName": "Kaza"
+          "anonymousId": "test-rudderlabs",
+          "email": "test-rudderlabs-test@initech.com",
+          "firstName": "Test",
+          "lastName": "Rudderlabs"
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36"
       },
@@ -773,7 +773,7 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "apikey",
+        "apiKey": "dummyApiKey",
         "audienceId": "aud111",
         "datacenterId": ""
       },
@@ -804,10 +804,10 @@
           "density": 2
         },
         "traits": {
-          "anonymousId": "rohithkaza",
-          "email": "rohithkaza-test@initech.com",
-          "firstName": "Rohith",
-          "lastName": "Kaza"
+          "anonymousId": "test-rudderlabs",
+          "email": "test-rudderlabs-test@initech.com",
+          "firstName": "Test",
+          "lastName": "Rudderlabs"
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36"
       },
@@ -835,7 +835,7 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "apikey",
+        "apiKey": "dummyApiKey",
         "audienceId": "aud111",
         "datacenterId": "usXX"
       },
@@ -866,10 +866,10 @@
           "density": 2
         },
         "traits": {
-          "anonymousId": "rohithkaza",
-          "email": "rohithkaza-test@initech.com",
-          "firstName": "Rohith",
-          "lastName": "Kaza"
+          "anonymousId": "test-rudderlabs",
+          "email": "test-rudderlabs-test@initech.com",
+          "firstName": "Test",
+          "lastName": "Rudderlabs"
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36"
       },
@@ -897,7 +897,7 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "apikey",
+        "apiKey": "dummyApiKey",
         "audienceId": "aud111",
         "datacenterId": "usXX"
       },
@@ -938,7 +938,7 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "apikey",
+        "apiKey": "dummyApiKey",
         "audienceId": "aud111",
         "datacenterId": "usXX"
       },
@@ -980,7 +980,7 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "apikey",
+        "apiKey": "dummyApiKey",
         "audienceId": "aud111",
         "datacenterId": "usXX"
       },
@@ -1016,7 +1016,7 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "apikey",
+        "apiKey": "dummyApiKey",
         "audienceId": "aud111",
         "datacenterId": "usXX"
       },
@@ -1057,7 +1057,7 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "apikey",
+        "apiKey": "dummyApiKey",
         "audienceId": "aud111",
         "datacenterId": "usXX"
       },
@@ -1094,7 +1094,7 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "apikey",
+        "apiKey": "dummyApiKey",
         "audienceId": "aud111",
         "datacenterId": "usXX"
       },
@@ -1147,7 +1147,7 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "apikey",
+        "apiKey": "dummyApiKey",
         "audienceId": "aud111",
         "datacenterId": "usXX"
       },
@@ -1200,7 +1200,7 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "apikey",
+        "apiKey": "dummyApiKey",
         "audienceId": "aud111",
         "datacenterId": "usXX"
       },
@@ -1253,7 +1253,7 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "apikey",
+        "apiKey": "dummyApiKey",
         "audienceId": "aud111",
         "datacenterId": "usXX"
       },

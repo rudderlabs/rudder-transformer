@@ -5,7 +5,7 @@
     "method": "POST",
     "endpoint": "https://api2.autopilothq.com/v1/contact",
     "headers": {
-      "autopilotapikey": "1d6583b196d34de28a3g19ahadde4b0z",
+      "autopilotapikey": "dummyApiKey",
       "Content-Type": "application/json",
       "Accept": "application/json"
     },
@@ -33,7 +33,7 @@
     "method": "POST",
     "endpoint": "https://api2.autopilothq.com/v1/trigger/00XX/contact/testmp@rudderstack.com",
     "headers": {
-      "autopilotapikey": "1d6583b196d34de28a3g19ahadde4b0z",
+      "autopilotapikey": "dummyApiKey",
       "Content-Type": "application/json",
       "Accept": "application/json"
     },
@@ -74,7 +74,7 @@
     "method": "POST",
     "endpoint": "https://api2.autopilothq.com/v1/contact",
     "headers": {
-      "autopilotapikey": "1d6583b196d34de28a3g19ahadde4b0z",
+      "autopilotapikey": "dummyApiKey",
       "Content-Type": "application/json",
       "Accept": "application/json"
     },
@@ -103,6 +103,6 @@
   },
   {
     "statusCode": 400,
-    "error": "message type tals is not supported"
+    "error": "message type Tals is not supported"
   }
 ]

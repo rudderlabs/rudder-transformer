@@ -41,6 +41,18 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey) => {
         `${DESTINATION} Request Failed - due to "REQUEST_LIMIT_EXCEEDED", (Throttled) ${sourceMessage}`,
         destResponse,
       );
+    } else if (
+      status === 400 &&
+      matchErrorCode('CANNOT_INSERT_UPDATE_ACTIVATE_ENTITY') &&
+      response.message.includes('UNABLE_TO_LOCK_ROW')
+    ) {
+      // handling the error case where the record is locked by another background job
+      // this is a retryable error
+      throw new RetryableError(
+        `${DESTINATION} Request Failed - "Row locked due to another background running on the same object", (Retryable) ${sourceMessage}`,
+        500,
+        destResponse,
+      );
     } else if (status === 503 || status === 500) {
       // The salesforce server is unavailable to handle the request. Typically this occurs if the server is down
       // for maintenance or is currently overloaded.
@@ -94,7 +106,16 @@ const getAccessToken = async (destination) => {
     )}&client_id=${destination.Config.consumerKey}&client_secret=${
       destination.Config.consumerSecret
     }&grant_type=password`;
-    const { httpResponse, processedResponse } = await handleHttpRequest('post', authUrl, {});
+    const { httpResponse, processedResponse } = await handleHttpRequest(
+      'post',
+      authUrl,
+      {},
+      {},
+      {
+        destType: 'salesforce',
+        feature: 'transformation',
+      },
+    );
     // If the request fails, throwing error.
     if (!httpResponse.success) {
       salesforceResponseHandler(

@@ -21,6 +21,7 @@ const {
   aliasResponseBuilder,
   groupResponseBuilder,
   defaultResponseBuilder,
+  validateConfigFields,
 } = require('./util');
 const { InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
@@ -82,7 +83,8 @@ function responseBuilder(message, evType, evName, destination, messageType) {
 }
 
 function processSingleMessage(message, destination) {
-  const messageType = message.type.toLowerCase();
+  validateConfigFields(destination);
+  const messageType = message.type?.toLowerCase();
   let evType;
   let evName;
   switch (messageType) {
@@ -95,7 +97,7 @@ function processSingleMessage(message, destination) {
       break;
     case EventType.SCREEN:
       evType = 'event';
-      evName = `Viewed ${message.event || message.properties.name} Screen`;
+      evName = `Viewed ${message.event || message.properties?.name} Screen`;
       break;
     case EventType.TRACK:
       evType = 'event';

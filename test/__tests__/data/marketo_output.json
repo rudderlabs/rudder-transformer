@@ -125,6 +125,10 @@
     "error": "Request Failed for marketo, Access Token Expired (Retryable).During fetching auth token"
   },
   {
+    "statusCode": 500,
+    "error": "Request Failed for marketo, Access Token Expired (Retryable).During fetching auth token"
+  },
+  {
     "statusCode": 400,
     "error": "Invalid traits value for Marketo"
   },
@@ -171,6 +175,28 @@
       },
       "XML": {},
       "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://marketo_acct_id_success.mktorest.com/rest/v1/leads.json",
+    "headers": {
+      "Authorization": "Bearer access_token_success",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "action": "createOrUpdate",
+        "input": [{ "id": 4, "userId": "dummyMail@dummyDomain.com" }],
+        "lookupField": "id"
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
       "FORM": {}
     },
     "files": {}

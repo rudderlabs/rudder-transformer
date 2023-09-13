@@ -20,15 +20,15 @@
                 "create": {
                   "userIdentifiers": [
                     {
-                      "hashedEmail": "938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"
+                      "hashedEmail": "d3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419"
                     },
                     {
-                      "hashedPhoneNumber": "3c98400cbfaf690bf3601f538def8ff16f3b3bcd075b028fa28aa44ca09fec22"
+                      "hashedPhoneNumber": "8846dcb6ab2d73a0e67dbd569fa17cec2d9d391e5b05d1dd42919bc21ae82c45"
                     },
                     {
                       "addressInfo": {
-                        "hashedFirstName": "a512ebb75e941411945c9a18bca4ecc315830e0b5cff8a525472c86c1f540844",
-                        "hashedLastName": "0357513deb903a056e74a7e475247fc1ffe31d8be4c1d4a31f58dd47ae484100",
+                        "hashedFirstName": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+                        "hashedLastName": "dcf000c2386fb76d22cefc0d118a8511bb75999019cd373df52044bccd1bd251",
                         "countryCode": "US",
                         "postalCode": "1245"
                       }
@@ -51,7 +51,8 @@
           "access_token": "abcd1234",
           "refresh_token": "efgh5678",
           "developer_token": "ijkl9101"
-        }
+        },
+        "jobId": 1
       }
     ],
     "batched": false,
@@ -110,7 +111,8 @@
           "access_token": "abcd1234",
           "refresh_token": "efgh5678",
           "developer_token": "ijkl9101"
-        }
+        },
+        "jobId": 2
       }
     ],
     "batched": false,
@@ -149,15 +151,15 @@
                 "remove": {
                   "userIdentifiers": [
                     {
-                      "hashedEmail": "938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"
+                      "hashedEmail": "d3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419"
                     },
                     {
-                      "hashedPhoneNumber": "3c98400cbfaf690bf3601f538def8ff16f3b3bcd075b028fa28aa44ca09fec22"
+                      "hashedPhoneNumber": "8846dcb6ab2d73a0e67dbd569fa17cec2d9d391e5b05d1dd42919bc21ae82c45"
                     },
                     {
                       "addressInfo": {
-                        "hashedFirstName": "a512ebb75e941411945c9a18bca4ecc315830e0b5cff8a525472c86c1f540844",
-                        "hashedLastName": "0357513deb903a056e74a7e475247fc1ffe31d8be4c1d4a31f58dd47ae484100",
+                        "hashedFirstName": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+                        "hashedLastName": "dcf000c2386fb76d22cefc0d118a8511bb75999019cd373df52044bccd1bd251",
                         "countryCode": "US",
                         "postalCode": "1245"
                       }
@@ -180,7 +182,8 @@
           "access_token": "abcd1234",
           "refresh_token": "efgh5678",
           "developer_token": "ijkl9101"
-        }
+        },
+        "jobId": 3
       }
     ],
     "batched": false,
@@ -219,15 +222,15 @@
                 "remove": {
                   "userIdentifiers": [
                     {
-                      "hashedEmail": "938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"
+                      "hashedEmail": "d3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419"
                     },
                     {
-                      "hashedPhoneNumber": "3c98400cbfaf690bf3601f538def8ff16f3b3bcd075b028fa28aa44ca09fec22"
+                      "hashedPhoneNumber": "8846dcb6ab2d73a0e67dbd569fa17cec2d9d391e5b05d1dd42919bc21ae82c45"
                     },
                     {
                       "addressInfo": {
-                        "hashedFirstName": "a512ebb75e941411945c9a18bca4ecc315830e0b5cff8a525472c86c1f540844",
-                        "hashedLastName": "0357513deb903a056e74a7e475247fc1ffe31d8be4c1d4a31f58dd47ae484100",
+                        "hashedFirstName": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+                        "hashedLastName": "dcf000c2386fb76d22cefc0d118a8511bb75999019cd373df52044bccd1bd251",
                         "countryCode": "US",
                         "postalCode": "1245"
                       }
@@ -262,15 +265,15 @@
                 "create": {
                   "userIdentifiers": [
                     {
-                      "hashedEmail": "938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"
+                      "hashedEmail": "d3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419"
                     },
                     {
-                      "hashedPhoneNumber": "3c98400cbfaf690bf3601f538def8ff16f3b3bcd075b028fa28aa44ca09fec22"
+                      "hashedPhoneNumber": "8846dcb6ab2d73a0e67dbd569fa17cec2d9d391e5b05d1dd42919bc21ae82c45"
                     },
                     {
                       "addressInfo": {
-                        "hashedFirstName": "a512ebb75e941411945c9a18bca4ecc315830e0b5cff8a525472c86c1f540844",
-                        "hashedLastName": "0357513deb903a056e74a7e475247fc1ffe31d8be4c1d4a31f58dd47ae484100",
+                        "hashedFirstName": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
+                        "hashedLastName": "dcf000c2386fb76d22cefc0d118a8511bb75999019cd373df52044bccd1bd251",
                         "countryCode": "US",
                         "postalCode": "1245"
                       }
@@ -293,7 +296,8 @@
           "access_token": "abcd1234",
           "refresh_token": "efgh5678",
           "developer_token": "ijkl9101"
-        }
+        },
+        "jobId": 4
       }
     ],
     "batched": false,

@@ -1,5 +1,6 @@
 const get = require('get-value');
 const {
+  isEmpty,
   constructPayload,
   flattenJson,
   isEmptyObject,
@@ -145,31 +146,34 @@ const GA4_ITEM_EXCLUSION = [
   'item_id',
   'itemId',
   'product_id',
-
   'item_name',
   'itemName',
   'name',
-
   'coupon',
-
   'item_category',
   'itemCategory',
   'category',
-
   'item_brand',
   'itemBrand',
   'brand',
-
   'item_variant',
   'itemVariant',
   'variant',
-
   'price',
   'quantity',
-
   'index',
   'position',
 ];
+
+/**
+ * Remove arrays and objects from transformed payload 
+ * @param {*} params 
+ * @returns 
+ */
+const removeInvalidParams = (params) =>
+  Object.fromEntries(
+    Object.entries(params).filter(([key, value]) => key === 'items' || (typeof value !== 'object' && !isEmpty(value))),
+  );
 
 /**
  * get product list properties for a event.
@@ -177,7 +181,6 @@ const GA4_ITEM_EXCLUSION = [
  * @returns
  */
 const getItemList = (message, isItemsRequired = false) => {
-  let items;
   const products = get(message, 'properties.products');
   if ((isItemsRequired && !products) || (isItemsRequired && products && products.length === 0)) {
     throw new InstrumentationError(`Products is an required field for '${message.event}' event`);
@@ -187,8 +190,8 @@ const getItemList = (message, isItemsRequired = false) => {
     throw new InstrumentationError('Invalid type. Expected Array of products');
   }
 
+  const items = [];
   if (Array.isArray(products)) {
-    items = [];
     products.forEach((item, index) => {
       let element = constructPayload(item, mappingConfig[ConfigCategory.ITEM_LIST.name]);
       if (!isDefinedAndNotNull(element.item_id) && !isDefinedAndNotNull(element.item_name)) {
@@ -196,15 +199,14 @@ const getItemList = (message, isItemsRequired = false) => {
       }
 
       // take additional parameters apart from mapped one
-      let itemProperties = {};
-      itemProperties = extractCustomFields(
+      let itemProperties = extractCustomFields(
         message,
-        itemProperties,
+        {},
         [`properties.products.${index}`],
         GA4_ITEM_EXCLUSION,
       );
       if (!isEmptyObject(itemProperties)) {
-        itemProperties = flattenJson(itemProperties, '_', 'strict');
+        itemProperties = removeInvalidParams(flattenJson(itemProperties, '_', 'strict'));
         element = { ...element, ...itemProperties };
       }
 
@@ -220,7 +222,6 @@ const getItemList = (message, isItemsRequired = false) => {
  * @returns
  */
 const getItem = (message, isItemsRequired) => {
-  let items;
   const properties = get(message, 'properties');
   if (!properties && isItemsRequired) {
     throw new InstrumentationError(
@@ -228,18 +229,47 @@ const getItem = (message, isItemsRequired) => {
     );
   }
 
+  const items = [];
   if (properties) {
-    items = [];
-    const product = constructPayload(properties, mappingConfig[ConfigCategory.ITEM.name]);
+    const product = removeInvalidParams(
+      constructPayload(properties, mappingConfig[ConfigCategory.ITEM.name]),
+    );
     if (!isDefinedAndNotNull(product.item_id) && !isDefinedAndNotNull(product.item_name)) {
       throw new InstrumentationError('One of product_id or name is required');
     }
-
     items.push(product);
   }
   return items;
 };
 
+/**
+ * Returns items array for ga4 event payload
+ * @param {*} message 
+ * @param {*} item 
+ * @param {*} itemList 
+ * @returns 
+ */
+const getItemsArray = (message, item, itemList) => {
+  let items = [];
+  let mapRootLevelPropertiesToGA4ItemsArray = false;
+  if (itemList && item) {
+    items = getItemList(message, itemList === 'YES');
+
+    if (!(items && items.length > 0)) {
+      mapRootLevelPropertiesToGA4ItemsArray = true;
+      items = getItem(message, item === 'YES');
+    }
+  } else if (item) {
+    // item
+    items = getItem(message, item === 'YES');
+    mapRootLevelPropertiesToGA4ItemsArray = true;
+  } else if (itemList) {
+    // itemList
+    items = getItemList(message, itemList === 'YES');
+  }
+
+  return { items, mapRootLevelPropertiesToGA4ItemsArray };
+}
 /**
  * get exclusion list for a particular event
  * ga4ExclusionList contains the sourceKeys that are already mapped
@@ -318,7 +348,7 @@ const validateEventName = (event) => {
 
   if (!isEventNameValid(event)) {
     throw new InstrumentationError(
-      'Event name should only contain letters, numbers, and underscores and event name must start with a letter',
+      'Event name must start with a letter and can only contain letters, numbers, and underscores',
     );
   }
 };
@@ -391,7 +421,9 @@ const prepareUserProperties = (message) => {
 module.exports = {
   getItem,
   getItemList,
+  getItemsArray,
   validateEventName,
+  removeInvalidParams,
   isReservedEventName,
   getGA4ExclusionList,
   prepareUserProperties,

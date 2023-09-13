@@ -1,0 +1,13 @@
+metadata:
+  - jobId: 1
+batched: false
+statusCode: 400
+error: Both userId and deviceId cannot be undefined
+statTags:
+  errorCategory: dataValidation
+  errorType: instrumentation
+destination:
+  ID: 'a'
+  url: 'a'
+  Config:
+    residencyServer: 'EU'

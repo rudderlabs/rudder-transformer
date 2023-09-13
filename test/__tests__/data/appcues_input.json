@@ -683,16 +683,24 @@
         "traits": {
           "name": "Shehan Study",
           "category": "SampleIdentify",
-          "email": "chandra+r@rudderlabs.com",
+          "email": "test@rudderstack.com",
           "plan": "Open source",
           "logins": 5,
           "createdAt": 1599264000
         },
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.1.5" },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.5"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
         "locale": "en-US",
-        "os": { "name": "", "version": "" },
-        "screen": { "density": 0.8999999761581421 },
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 0.8999999761581421
+        },
         "campaign": {
           "source": "google",
           "medium": "medium",
@@ -714,11 +722,19 @@
       "originalTimestamp": "2020-10-20T07:54:58.983Z",
       "anonymousId": "my-anonymous-id-new",
       "userId": "sampleusrRudder3",
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "groupId": "Sample_groupId23",
       "traits": {
-        "KEY_3": { "CHILD_KEY_92": "value_95", "CHILD_KEY_102": "value_103" },
-        "KEY_2": { "CHILD_KEY_92": "value_95", "CHILD_KEY_102": "value_103" },
+        "KEY_3": {
+          "CHILD_KEY_92": "value_95",
+          "CHILD_KEY_102": "value_103"
+        },
+        "KEY_2": {
+          "CHILD_KEY_92": "value_95",
+          "CHILD_KEY_102": "value_103"
+        },
         "name_trait": "Company",
         "value_trait": "Comapny-ABC"
       },

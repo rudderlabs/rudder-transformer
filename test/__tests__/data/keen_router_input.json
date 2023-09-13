@@ -10,7 +10,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -50,7 +50,7 @@
       "sentAt": "2019-10-14T11:15:53.296Z"
     },
     "metadata": {
-      "jobId": 2
+      "jobId": 1
     },
     "destination": {
       "Config": {
@@ -74,7 +74,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {

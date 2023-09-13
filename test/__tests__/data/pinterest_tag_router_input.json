@@ -15,8 +15,8 @@
             "phone": "+1234589947",
             "ge": "male",
             "db": "19950715",
-            "lastname": "Ganguly",
-            "firstName": "Shrouti",
+            "lastname": "Rudderlabs",
+            "firstName": "Test",
             "address": {
               "city": "Kolkata",
               "state": "WB",
@@ -83,6 +83,7 @@
         "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
         "Name": "PINTEREST_TAG",
         "Config": {
+          "sendAsTestEvent": false,
           "tagId": "123456789",
           "advertiserId": "429047995",
           "appId": "429047995",
@@ -136,8 +137,8 @@
             "phone": "+1234589947",
             "ge": "male",
             "db": "19950715",
-            "lastname": "Ganguly",
-            "firstName": "Shrouti",
+            "lastname": "Rudderlabs",
+            "firstName": "Test",
             "address": {
               "city": "Kolkata",
               "state": "WB",
@@ -203,6 +204,7 @@
         "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
         "Name": "PINTEREST_TAG",
         "Config": {
+          "sendAsTestEvent": false,
           "tagId": "123456789",
           "advertiserId": "429047995",
           "appId": "429047995",
@@ -256,8 +258,8 @@
             "phone": "+1234589947",
             "ge": "male",
             "db": "19950715",
-            "lastname": "Ganguly",
-            "firstName": "Shrouti",
+            "lastname": "Rudderlabs",
+            "firstName": "Test",
             "address": {
               "city": "Kolkata",
               "state": "WB",
@@ -304,6 +306,7 @@
         "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
         "Name": "PINTEREST_TAG",
         "Config": {
+          "sendAsTestEvent": false,
           "tagId": "123456789",
           "advertiserId": "429047995",
           "appId": "429047995",
@@ -357,8 +360,8 @@
             "phone": "+1234589947",
             "ge": "male",
             "db": "19950715",
-            "lastname": "Ganguly",
-            "firstName": "Shrouti",
+            "lastname": "Rudderlabs",
+            "firstName": "Test",
             "address": {
               "city": "Kolkata",
               "state": "WB",
@@ -424,6 +427,7 @@
         "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
         "Name": "PINTEREST_TAG",
         "Config": {
+          "sendAsTestEvent": false,
           "tagId": "123456789",
           "advertiserId": "429047995",
           "appId": "429047995",
@@ -477,8 +481,8 @@
             "phone": "+1234589947",
             "ge": "male",
             "db": "19950715",
-            "lastname": "Ganguly",
-            "firstName": "Shrouti",
+            "lastname": "Rudderlabs",
+            "firstName": "Test",
             "address": {
               "city": "Kolkata",
               "state": "WB",
@@ -544,6 +548,7 @@
         "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
         "Name": "PINTEREST_TAG",
         "Config": {
+          "sendAsTestEvent": false,
           "tagId": "123456789",
           "advertiserId": "429047995",
           "appId": "429047995",
@@ -597,8 +602,8 @@
             "phone": "+1234589947",
             "ge": "male",
             "db": "19950715",
-            "lastname": "Ganguly",
-            "firstName": "Shrouti",
+            "lastname": "Rudderlabs",
+            "firstName": "Test",
             "address": {
               "city": "Kolkata",
               "state": "WB",
@@ -664,6 +669,7 @@
         "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
         "Name": "PINTEREST_TAG",
         "Config": {
+          "sendAsTestEvent": false,
           "tagId": "123456789",
           "advertiserId": "429047995",
           "appId": "429047995",
@@ -764,6 +770,7 @@
         "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
         "Name": "PINTEREST_TAG",
         "Config": {
+          "sendAsTestEvent": false,
           "tagId": "123456789",
           "advertiserId": "429047995",
           "appId": "429047995",
@@ -819,8 +826,8 @@
             "phone": "+1234589947",
             "ge": "male",
             "db": "19950715",
-            "lastname": "Ganguly",
-            "firstName": "Shrouti",
+            "lastname": "Rudderlabs",
+            "firstName": "Test",
             "address": {
               "city": "Kolkata",
               "state": "WB",
@@ -887,6 +894,7 @@
         "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
         "Name": "PINTEREST_TAG",
         "Config": {
+          "sendAsTestEvent": false,
           "tagId": "123456789",
           "apiVersion": "newApi",
           "adAccountId": "accountId123",
@@ -942,8 +950,8 @@
             "phone": "+1234589947",
             "ge": "male",
             "db": "19950715",
-            "lastname": "Ganguly",
-            "firstName": "Shrouti",
+            "lastname": "Rudderlabs",
+            "firstName": "Test",
             "address": {
               "city": "Kolkata",
               "state": "WB",
@@ -1009,6 +1017,7 @@
         "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
         "Name": "PINTEREST_TAG",
         "Config": {
+          "sendAsTestEvent": false,
           "tagId": "123456789",
           "apiVersion": "newApi",
           "adAccountId": "accountId123",
@@ -1064,8 +1073,8 @@
             "phone": "+1234589947",
             "ge": "male",
             "db": "19950715",
-            "lastname": "Ganguly",
-            "firstName": "Shrouti",
+            "lastname": "Rudderlabs",
+            "firstName": "Test",
             "address": {
               "city": "Kolkata",
               "state": "WB",
@@ -1131,6 +1140,7 @@
         "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
         "Name": "PINTEREST_TAG",
         "Config": {
+          "sendAsTestEvent": false,
           "tagId": "123456789",
           "apiVersion": "newApi",
           "adAccountId": "accountId123",

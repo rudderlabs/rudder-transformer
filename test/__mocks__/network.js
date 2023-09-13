@@ -15,15 +15,16 @@ const urlDirectoryMap = {
   "bigquery.googleapis.com": "bqstream",
   "pi.pardot.com": "pardot",
   "googleads.googleapis.com": "google_adwords_remarketing_lists",
-  "graph.facebook.com/v16.0/12345678912345": "facebook_pixel",
-  "graph.facebook.com/v16.0/RudderFbApp": "fb",
+  "graph.facebook.com/v17.0/12345678912345": "facebook_pixel",
+  "graph.facebook.com/v17.0/RudderFbApp": "fb",
   "api.wootric.com": "wootric",
   "api.mautic.com": "mautic",
   "adsapi.snapchat.com": "snapchat_custom_audience",
   "api.clevertap.com": "clevertap",
   "marketo_acct_id_success.mktorest.com": "marketo_static_list",
   "api.criteo.com": "criteo_audience",
-  "business-api.tiktok.com": "tiktok_ads"
+  "business-api.tiktok.com": "tiktok_ads",
+  "api.intercom.io": "intercom"
 };
 
 function getData(arg) {

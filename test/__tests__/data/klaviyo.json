@@ -11,7 +11,7 @@
       "message": {
         "type": "identify",
         "sentAt": "2021-01-03T17:02:53.195Z",
-        "userId": "utsabc",
+        "userId": "user@1",
         "channel": "web",
         "context": {
           "os": {
@@ -25,11 +25,11 @@
             "namespace": "com.rudderlabs.javascript"
           },
           "traits": {
-            "firstName": "Utsab",
-            "lastName": "Chowdhury",
-            "email": "utsab@rudderstack.com",
+            "firstName": "Test",
+            "lastName": "Rudderlabs",
+            "email": "test@rudderstack.com",
             "phone": "+12 345 578 900",
-            "userId": "utsabc",
+            "userId": "user@1",
             "title": "Developer",
             "organization": "Rudder",
             "city": "Tokyo",
@@ -82,10 +82,10 @@
             "data": {
               "type": "profile",
               "attributes": {
-                "external_id": "utsabc",
-                "email": "utsab@rudderstack.com",
-                "first_name": "Utsab",
-                "last_name": "Chowdhury",
+                "external_id": "user@1",
+                "email": "test@rudderstack.com",
+                "first_name": "Test",
+                "last_name": "Rudderlabs",
                 "phone_number": "+12 345 578 900",
                 "title": "Developer",
                 "organization": "Rudder",
@@ -129,7 +129,7 @@
                 "list_id": "XUepkK",
                 "subscriptions": [
                   {
-                    "email": "utsab@rudderstack.com",
+                    "email": "test@rudderstack.com",
                     "phone_number": "+12 345 578 900",
                     "channels": {
                       "email": ["MARKETING"],
@@ -149,18 +149,19 @@
     ]
   },
   {
-    "description": "Profile updation call listId is not provided for subscribing the user",
+    "description": "Identify call for with flattenProperties enabled",
     "input": {
       "destination": {
         "Config": {
           "publicApiKey": "WJqij9",
-          "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d"
+          "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d",
+          "flattenProperties": true
         }
       },
       "message": {
         "type": "identify",
         "sentAt": "2021-01-03T17:02:53.195Z",
-        "userId": "utsabc",
+        "userId": "user@1",
         "channel": "web",
         "context": {
           "os": {
@@ -174,11 +175,239 @@
             "namespace": "com.rudderlabs.javascript"
           },
           "traits": {
-            "firstName": "Utsab",
-            "lastName": "Chowdhury",
-            "email": "utsab@rudderstack.com",
+            "firstName": "Test",
+            "lastName": "Rudderlabs",
+            "email": "test@rudderstack.com",
             "phone": "+12 345 578 900",
-            "userId": "utsabc",
+            "userId": "user@1",
+            "title": "Developer",
+            "organization": "Rudder",
+            "city": "Tokyo",
+            "region": "Kanto",
+            "country": "JP",
+            "zip": "100-0001",
+            "Flagged": false,
+            "Residence": "Shibuya",
+            "friend": {
+              "names": {
+                "first": "Alice",
+                "last": "Smith"
+              },
+              "age": 25
+            },
+            "properties": {
+              "listId": "XUepkK",
+              "subscribe": true,
+              "consent": ["email", "sms"]
+            }
+          },
+          "locale": "en-US",
+          "screen": {
+            "density": 2
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.1.11"
+          },
+          "campaign": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0"
+        },
+        "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+        "integrations": {
+          "All": true
+        },
+        "originalTimestamp": "2021-01-03T17:02:53.193Z"
+      }
+    },
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "PATCH",
+        "endpoint": "https://a.klaviyo.com/api/profiles/01GW3PHVY0MTCDGS0A1612HARX",
+        "headers": {
+          "Accept": "application/json",
+          "Authorization": "Klaviyo-API-Key pk_b68c7b5163d98807fcb57e6f921216629d",
+          "Content-Type": "application/json",
+          "revision": "2023-02-22"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "data": {
+              "type": "profile",
+              "attributes": {
+                "external_id": "user@1",
+                "email": "test@rudderstack.com",
+                "first_name": "Test",
+                "last_name": "Rudderlabs",
+                "phone_number": "+12 345 578 900",
+                "title": "Developer",
+                "organization": "Rudder",
+                "location": {
+                  "city": "Tokyo",
+                  "region": "Kanto",
+                  "country": "JP",
+                  "zip": "100-0001"
+                },
+                "properties": {
+                  "Flagged": false,
+                  "Residence": "Shibuya",
+                  "friend.age": 25,
+                  "friend.names.first": "Alice",
+                  "friend.names.last": "Smith"
+                }
+              },
+              "id": "01GW3PHVY0MTCDGS0A1612HARX"
+            }
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      },
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs",
+        "headers": {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": "Klaviyo-API-Key pk_b68c7b5163d98807fcb57e6f921216629d",
+          "revision": "2023-02-22"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "data": {
+              "type": "profile-subscription-bulk-create-job",
+              "attributes": {
+                "list_id": "XUepkK",
+                "subscriptions": [
+                  {
+                    "email": "test@rudderstack.com",
+                    "phone_number": "+12 345 578 900",
+                    "channels": {
+                      "email": ["MARKETING"],
+                      "sms": ["MARKETING"]
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ]
+  },
+  {
+    "description": "Profile updation call and subcribe user",
+    "input": {
+      "destination": {
+        "Config": {
+          "publicApiKey": "WJqij9",
+          "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d"
+        }
+      },
+      "message": {
+        "type": "identify",
+        "sentAt": "2021-01-03T17:02:53.195Z",
+        "userId": "user@1",
+        "channel": "web",
+        "context": {
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "app": {
+            "name": "RudderLabs JavaScript SDK",
+            "build": "1.0.0",
+            "version": "1.1.11",
+            "namespace": "com.rudderlabs.javascript"
+          },
+          "traits": {
+            "firstName": "Test",
+            "lastName": "Rudderlabs",
+            "email": "test3@rudderstack.com",
+            "phone": "+12 345 578 900",
+            "userId": "user@1",
+            "title": "Developer",
+            "organization": "Rudder",
+            "city": "Tokyo",
+            "region": "Kanto",
+            "country": "JP",
+            "zip": "100-0001",
+            "Flagged": false,
+            "Residence": "Shibuya",
+            "properties": {
+              "listId": "XUepkK",
+              "subscribe": true,
+              "consent": ["email", "sms"]
+            }
+          },
+          "locale": "en-US",
+          "screen": {
+            "density": 2
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.1.11"
+          },
+          "campaign": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0"
+        },
+        "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+        "integrations": {
+          "All": true
+        },
+        "originalTimestamp": "2021-01-03T17:02:53.193Z"
+      }
+    },
+    "output": {
+      "error": "Failed to create user due to {}"
+    }
+  },
+  {
+    "description": "Profile updation call listId is not provided for subscribing the user",
+    "input": {
+      "destination": {
+        "Config": {
+          "publicApiKey": "WJqij9",
+          "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d"
+        }
+      },
+      "message": {
+        "type": "identify",
+        "sentAt": "2021-01-03T17:02:53.195Z",
+        "userId": "user@1",
+        "channel": "web",
+        "context": {
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "app": {
+            "name": "RudderLabs JavaScript SDK",
+            "build": "1.0.0",
+            "version": "1.1.11",
+            "namespace": "com.rudderlabs.javascript"
+          },
+          "traits": {
+            "firstName": "Test",
+            "lastName": "Rudderlabs",
+            "email": "test@rudderstack.com",
+            "phone": "+12 345 578 900",
+            "userId": "user@1",
             "title": "Developer",
             "organization": "Rudder",
             "city": "Tokyo",
@@ -229,10 +458,10 @@
           "data": {
             "type": "profile",
             "attributes": {
-              "external_id": "utsabc",
-              "email": "utsab@rudderstack.com",
-              "first_name": "Utsab",
-              "last_name": "Chowdhury",
+              "external_id": "user@1",
+              "email": "test@rudderstack.com",
+              "first_name": "Test",
+              "last_name": "Rudderlabs",
               "phone_number": "+12 345 578 900",
               "title": "Developer",
               "organization": "Rudder",
@@ -270,7 +499,7 @@
       "message": {
         "type": "identify",
         "sentAt": "2021-01-03T17:02:53.195Z",
-        "userId": "utsabc",
+        "userId": "user@1",
         "channel": "web",
         "context": {
           "os": {
@@ -284,11 +513,11 @@
             "namespace": "com.rudderlabs.javascript"
           },
           "traits": {
-            "firstName": "Utsab",
-            "lastName": "Chowdhury",
-            "email": "utsab@rudderstack.com",
+            "firstName": "Test",
+            "lastName": "Rudderlabs",
+            "email": "test@rudderstack.com",
             "phone": "+12 345 578 900",
-            "userId": "utsabc",
+            "userId": "user@1",
             "title": "Developer",
             "organization": "Rudder",
             "city": "Tokyo",
@@ -341,9 +570,9 @@
             "data": {
               "type": "profile",
               "attributes": {
-                "email": "utsab@rudderstack.com",
-                "first_name": "Utsab",
-                "last_name": "Chowdhury",
+                "email": "test@rudderstack.com",
+                "first_name": "Test",
+                "last_name": "Rudderlabs",
                 "phone_number": "+12 345 578 900",
                 "title": "Developer",
                 "organization": "Rudder",
@@ -356,7 +585,7 @@
                 "properties": {
                   "Flagged": false,
                   "Residence": "Shibuya",
-                  "_id": "utsabc"
+                  "_id": "user@1"
                 }
               },
               "id": "01GW3PHVY0MTCDGS0A1612HARX"
@@ -388,7 +617,7 @@
                 "list_id": "XUepkK",
                 "subscriptions": [
                   {
-                    "email": "utsab@rudderstack.com",
+                    "email": "test@rudderstack.com",
                     "phone_number": "+12 345 578 900",
                     "channels": {
                       "email": ["MARKETING"],
@@ -420,7 +649,7 @@
       "message": {
         "type": "identify",
         "sentAt": "2021-01-03T17:02:53.195Z",
-        "userId": "utsabc",
+        "userId": "user@1",
         "channel": "web",
         "context": {
           "os": {
@@ -434,9 +663,9 @@
             "namespace": "com.rudderlabs.javascript"
           },
           "traits": {
-            "firstName": "Utsab",
-            "lastName": "Chowdhury",
-            "userId": "utsabc",
+            "firstName": "Test",
+            "lastName": "Rudderlabs",
+            "userId": "user@1",
             "title": "Developer",
             "organization": "Rudder",
             "city": "Tokyo",
@@ -476,7 +705,7 @@
     }
   },
   {
-    "description": "Track event call",
+    "description": "Screen event call",
     "input": {
       "destination": {
         "Config": {
@@ -515,9 +744,9 @@
             "density": 440
           },
           "traits": {
-            "id": "utsabc",
+            "id": "user@1",
             "age": "22",
-            "email": "utsab@rudderstack.com",
+            "email": "test@rudderstack.com",
             "phone": "9112340375",
             "anonymousId": "9c6bd77ea9da3e68"
           },
@@ -571,13 +800,136 @@
               "properties": {
                 "PreviouslyVicePresident": true,
                 "YearElected": 1801,
-                "VicePresidents": ["Aaron Burr", "George Clinton"],
-                "age": "22"
+                "VicePresidents": ["Aaron Burr", "George Clinton"]
               },
               "profile": {
-                "$email": "utsab@rudderstack.com",
+                "$email": "test@rudderstack.com",
                 "$phone_number": "9112340375",
-                "$id": "sajal12"
+                "$id": "sajal12",
+                "age": "22"
+              }
+            }
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": "Track event call with flatten properties enabled",
+    "input": {
+      "destination": {
+        "Config": {
+          "publicApiKey": "WJqij9",
+          "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d",
+          "flattenProperties": true
+        }
+      },
+      "message": {
+        "type": "track",
+        "event": "TestEven001",
+        "sentAt": "2021-01-25T16:12:02.048Z",
+        "userId": "sajal12",
+        "channel": "mobile",
+        "context": {
+          "os": {
+            "name": "Android",
+            "version": "10"
+          },
+          "app": {
+            "name": "KlaviyoTest",
+            "build": "1",
+            "version": "1.0",
+            "namespace": "com.rudderstack.android.rudderstack.sampleAndroidApp"
+          },
+          "device": {
+            "id": "9c6bd77ea9da3e68",
+            "name": "raphaelin",
+            "type": "android",
+            "model": "Redmi K20 Pro",
+            "manufacturer": "Xiaomi"
+          },
+          "locale": "en-IN",
+          "screen": {
+            "width": 1080,
+            "height": 2210,
+            "density": 440
+          },
+          "traits": {
+            "id": "user@1",
+            "age": "22",
+            "email": "test@rudderstack.com",
+            "phone": "9112340375",
+            "anonymousId": "9c6bd77ea9da3e68",
+            "plan_details": {
+              "plan_type": "gold",
+              "duration": "3 months"
+            }
+          },
+          "library": {
+            "name": "com.rudderstack.android.sdk.core",
+            "version": "1.0.2"
+          },
+          "network": {
+            "wifi": true,
+            "carrier": "airtel",
+            "cellular": true,
+            "bluetooth": false
+          },
+          "timezone": "Asia/Kolkata",
+          "userAgent": "Dalvik/2.1.0 (Linux; U; Android 10; Redmi K20 Pro MIUI/V12.0.4.0.QFKINXM)"
+        },
+        "rudderId": "b7b24f86-f7bf-46d8-b2b4-ccafc080239c",
+        "messageId": "1611588776408-ee5a3212-fbf9-4cbb-bbad-3ed0f7c6a2ce",
+        "properties": {
+          "vicePresdentInfo": {
+            "PreviouslVicePresident": true,
+            "YearElected": 1801,
+            "VicePresidents": ["AaronBurr", "GeorgeClinton"]
+          }
+        },
+        "anonymousId": "9c6bd77ea9da3e68",
+        "integrations": {
+          "All": true
+        },
+        "originalTimestamp": "2021-01-25T15:32:56.409Z"
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://a.klaviyo.com/api/events",
+      "headers": {
+        "Accept": "application/json",
+        "Authorization": "Klaviyo-API-Key pk_b68c7b5163d98807fcb57e6f921216629d",
+        "Content-Type": "application/json",
+        "revision": "2023-02-22"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "data": {
+            "type": "event",
+            "attributes": {
+              "metric": {
+                "name": "TestEven001"
+              },
+              "properties": {
+                "vicePresdentInfo.PreviouslVicePresident": true,
+                "vicePresdentInfo.VicePresidents": ["AaronBurr", "GeorgeClinton"],
+                "vicePresdentInfo.YearElected": 1801
+              },
+              "profile": {
+                "$email": "test@rudderstack.com",
+                "$phone_number": "9112340375",
+                "$id": "sajal12",
+                "age": "22",
+                "plan_details.plan_type": "gold",
+                "plan_details.duration": "3 months"
               }
             }
           }
@@ -629,10 +981,10 @@
             "density": 440
           },
           "traits": {
-            "id": "utsabc",
+            "id": "user@1",
             "age": "22",
-            "name": "Utsab",
-            "email": "utsab@rudderstack.com",
+            "name": "Test",
+            "email": "test@rudderstack.com",
             "phone": "9112340375",
             "anonymousId": "9c6bd77ea9da3e68",
             "description": "Sample description"
@@ -688,15 +1040,15 @@
               "properties": {
                 "PreviouslyVicePresident": true,
                 "YearElected": 1801,
-                "age": "22",
-                "VicePresidents": ["Aaron Burr", "George Clinton"],
-                "description": "Sample description",
-                "name": "Utsab"
+                "VicePresidents": ["Aaron Burr", "George Clinton"]
               },
               "profile": {
-                "$email": "utsab@rudderstack.com",
+                "$email": "test@rudderstack.com",
                 "$phone_number": "9112340375",
-                "$id": "sajal12"
+                "$id": "sajal12",
+                "age": "22",
+                "name": "Test",
+                "description": "Sample description"
               },
               "value": 3000
             }
@@ -750,9 +1102,9 @@
             "density": 440
           },
           "traits": {
-            "id": "utsabc",
+            "id": "user@1",
             "age": "22",
-            "email": "utsab@rudderstack.com",
+            "email": "test@rudderstack.com",
             "phone": "9112340375",
             "anonymousId": "9c6bd77ea9da3e68"
           },
@@ -806,12 +1158,12 @@
               "properties": {
                 "PreviouslyVicePresident": true,
                 "YearElected": 1801,
-                "VicePresidents": ["Aaron Burr", "George Clinton"],
-                "age": "22"
+                "VicePresidents": ["Aaron Burr", "George Clinton"]
               },
               "profile": {
-                "$email": "utsab@rudderstack.com",
+                "$email": "test@rudderstack.com",
                 "$phone_number": "9112340375",
+                "age": "22",
                 "_id": "sajal12"
               }
             }
@@ -865,7 +1217,7 @@
             "density": 440
           },
           "traits": {
-            "id": "utsabc",
+            "id": "user@1",
             "age": "22",
             "anonymousId": "9c6bd77ea9da3e68"
           },
@@ -918,7 +1270,7 @@
         },
         "context": {
           "traits": {
-            "email": "utsab@rudderstack.com",
+            "email": "test@rudderstack.com",
             "phone": "+12 345 678 900",
             "consent": ["email"]
           },
@@ -951,7 +1303,7 @@
                 "list_id": "XUepkK",
                 "subscriptions": [
                   {
-                    "email": "utsab@rudderstack.com",
+                    "email": "test@rudderstack.com",
                     "phone_number": "+12 345 678 900"
                   }
                 ]
@@ -984,7 +1336,7 @@
         },
         "context": {
           "traits": {
-            "email": "utsab@rudderstack.com",
+            "email": "test@rudderstack.com",
             "phone": "+12 345 678 900",
             "consent": "email"
           },
@@ -1018,7 +1370,7 @@
         },
         "context": {
           "traits": {
-            "email": "utsab@rudderstack.com",
+            "email": "test@rudderstack.com",
             "phone": "+12 345 678 900",
             "consent": "email"
           },
@@ -1074,10 +1426,10 @@
             "density": 440
           },
           "traits": {
-            "id": "utsabc",
+            "id": "user@1",
             "age": "22",
-            "name": "Utsab",
-            "email": "utsab@rudderstack.com",
+            "name": "Test",
+            "email": "test@rudderstack.com",
             "phone": "9112340375",
             "anonymousId": "9c6bd77ea9da3e68",
             "description": "Sample description"
@@ -1135,9 +1487,12 @@
                 "name": "Viewed Product"
               },
               "profile": {
-                "$email": "utsab@rudderstack.com",
+                "$email": "test@rudderstack.com",
                 "$phone_number": "9112340375",
-                "$id": "sajal12"
+                "$id": "sajal12",
+                "age": "22",
+                "name": "Test",
+                "description": "Sample description"
               },
               "properties": {
                 "ProductName": "test product",
@@ -1147,9 +1502,162 @@
                 "URL": "http://www.example.com/path/to/product",
                 "Brand": "Not for Kids",
                 "Price": 9.9,
-                "Categories": ["Fiction", "Children"],
+                "Categories": ["Fiction", "Children"]
+              }
+            }
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": "Track call with Ecom events (Checkout Started) with enabled flattenProperties",
+    "input": {
+      "destination": {
+        "Config": {
+          "publicApiKey": "WJqij9",
+          "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d",
+          "flattenProperties": true
+        }
+      },
+      "message": {
+        "type": "track",
+        "event": "checkout started",
+        "sentAt": "2021-01-25T16:12:02.048Z",
+        "userId": "sajal12",
+        "channel": "mobile",
+        "context": {
+          "os": {
+            "name": "Android",
+            "version": "10"
+          },
+          "app": {
+            "name": "KlaviyoTest",
+            "build": "1",
+            "version": "1.0",
+            "namespace": "com.rudderstack.android.rudderstack.sampleAndroidApp"
+          },
+          "device": {
+            "id": "9c6bd77ea9da3e68",
+            "name": "raphaelin",
+            "type": "android",
+            "model": "Redmi K20 Pro",
+            "manufacturer": "Xiaomi"
+          },
+          "locale": "en-IN",
+          "screen": {
+            "width": 1080,
+            "height": 2210,
+            "density": 440
+          },
+          "traits": {
+            "id": "user@1",
+            "age": "22",
+            "name": "Test",
+            "email": "test@rudderstack.com",
+            "phone": "9112340375",
+            "anonymousId": "9c6bd77ea9da3e68",
+            "description": "Sample description"
+          },
+          "library": {
+            "name": "com.rudderstack.android.sdk.core",
+            "version": "1.0.2"
+          },
+          "network": {
+            "wifi": true,
+            "carrier": "airtel",
+            "cellular": true,
+            "bluetooth": false
+          },
+          "timezone": "Asia/Kolkata",
+          "userAgent": "Dalvik/2.1.0 (Linux; U; Android 10; Redmi K20 Pro MIUI/V12.0.4.0.QFKINXM)"
+        },
+        "rudderId": "b7b24f86-f7bf-46d8-b2b4-ccafc080239c",
+        "messageId": "1611588776408-ee5a3212-fbf9-4cbb-bbad-3ed0f7c6a2ce",
+        "properties": {
+          "order_id": "1234",
+          "affiliation": "Apple Store",
+          "value": 20,
+          "revenue": 15.0,
+          "shipping": 4,
+          "tax": 1,
+          "discount": 1.5,
+          "coupon": "ImagePro",
+          "currency": "USD",
+          "products": [
+            {
+              "product_id": "123",
+              "sku": "G-32",
+              "name": "Monopoly",
+              "price": 14,
+              "quantity": 1,
+              "category": "Games",
+              "url": "https://www.website.com/product/path",
+              "image_url": "https://www.website.com/product/path.jpg"
+            },
+            {
+              "product_id": "345",
+              "sku": "F-32",
+              "name": "UNO",
+              "price": 3.45,
+              "quantity": 2,
+              "category": "Games"
+            }
+          ]
+        },
+        "anonymousId": "9c6bd77ea9da3e68",
+        "integrations": {
+          "All": true
+        },
+        "originalTimestamp": "2021-01-25T15:32:56.409Z"
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://a.klaviyo.com/api/events",
+      "headers": {
+        "Authorization": "Klaviyo-API-Key pk_b68c7b5163d98807fcb57e6f921216629d",
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "revision": "2023-02-22"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "data": {
+            "type": "event",
+            "attributes": {
+              "metric": {
+                "name": "Started Checkout"
+              },
+              "properties": {
+                "$event_id": "1234",
+                "$value": 20,
+                "items[0].ProductID": "123",
+                "items[0].SKU": "G-32",
+                "items[0].ProductName": "Monopoly",
+                "items[0].Quantity": 1,
+                "items[0].ItemPrice": 14,
+                "items[0].ProductURL": "https://www.website.com/product/path",
+                "items[0].ImageURL": "https://www.website.com/product/path.jpg",
+                "items[1].ProductID": "345",
+                "items[1].SKU": "F-32",
+                "items[1].ProductName": "UNO",
+                "items[1].Quantity": 2,
+                "items[1].ItemPrice": 3.45
+              },
+              "profile": {
+                "$email": "test@rudderstack.com",
+                "$phone_number": "9112340375",
+                "$id": "sajal12",
                 "age": "22",
-                "name": "Utsab",
+                "name": "Test",
                 "description": "Sample description"
               }
             }
@@ -1202,10 +1710,10 @@
             "density": 440
           },
           "traits": {
-            "id": "utsabc",
+            "id": "user@1",
             "age": "22",
-            "name": "Utsab",
-            "email": "utsab@rudderstack.com",
+            "name": "Test",
+            "email": "test@rudderstack.com",
             "phone": "9112340375",
             "anonymousId": "9c6bd77ea9da3e68",
             "description": "Sample description"
@@ -1276,18 +1784,18 @@
                 "name": "Added to Cart"
               },
               "profile": {
-                "$email": "utsab@rudderstack.com",
+                "$email": "test@rudderstack.com",
                 "$phone_number": "9112340375",
-                "$id": "sajal12"
+                "$id": "sajal12",
+                "age": "22",
+                "name": "Test",
+                "description": "Sample description"
               },
               "properties": {
                 "$value": 12.12,
                 "AddedItemCategories": ["Fiction3", "Children3"],
                 "ItemNames": ["book1", "book2"],
                 "CheckoutURL": "http://www.heythere.com",
-                "age": "22",
-                "name": "Utsab",
-                "description": "Sample description",
                 "items": [
                   {
                     "ProductID": "b1pid",

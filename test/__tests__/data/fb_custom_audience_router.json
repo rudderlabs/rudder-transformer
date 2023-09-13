@@ -12,11 +12,11 @@
             "listData": {
               "add": [
                 {
-                  "EMAIL": "shrouti@abc.com",
+                  "EMAIL": "test@abc.com",
                   "DOBM": "2",
                   "DOBD": "13",
                   "DOBY": "2013",
-                  "PHONE": "@09432457768",
+                  "PHONE": "@09876543210",
                   "GEN": "f",
                   "FI": "Ms.",
                   "MADID": "ABC",
@@ -27,11 +27,11 @@
               ],
               "remove": [
                 {
-                  "EMAIL": "shrouti@abc.com",
+                  "EMAIL": "test@abc.com",
                   "DOBM": "2",
                   "DOBD": "13",
                   "DOBY": "2013",
-                  "PHONE": "@09432457768",
+                  "PHONE": "@09876543210",
                   "GEN": "f",
                   "FI": "Ms.",
                   "MADID": "ABC",
@@ -92,11 +92,11 @@
             "listData": {
               "add": [
                 {
-                  "EMAIL": "shrouti@abc.com",
+                  "EMAIL": "test@abc.com",
                   "DOBM": "2",
                   "DOBD": "13",
                   "DOBY": "2013",
-                  "PHONE": "@09432457768",
+                  "PHONE": "@09876543210",
                   "GEN": "f",
                   "FI": "Ms.",
                   "MADID": "ABC",
@@ -107,11 +107,11 @@
               ],
               "remove": [
                 {
-                  "EMAIL": "shrouti@abc.com",
+                  "EMAIL": "test@abc.com",
                   "DOBM": "2",
                   "DOBD": "13",
                   "DOBY": "2013",
-                  "PHONE": "@09432457768",
+                  "PHONE": "@09876543210",
                   "GEN": "f",
                   "FI": "Ms.",
                   "MADID": "ABC",
@@ -174,7 +174,7 @@
             "version": "1",
             "type": "REST",
             "method": "DELETE",
-            "endpoint": "https://graph.facebook.com/v16.0/aud1/users",
+            "endpoint": "https://graph.facebook.com/v17.0/aud1/users",
             "headers": {},
             "params": {
               "access_token": "ABC",
@@ -199,11 +199,11 @@
                 ],
                 "data": [
                   [
-                    "shrouti@abc.com",
+                    "test@abc.com",
                     "2",
                     "13",
                     "2013",
-                    "@09432457768",
+                    "@09876543210",
                     "f",
                     "Ms.",
                     "ABC",
@@ -226,7 +226,7 @@
             "version": "1",
             "type": "REST",
             "method": "POST",
-            "endpoint": "https://graph.facebook.com/v16.0/aud1/users",
+            "endpoint": "https://graph.facebook.com/v17.0/aud1/users",
             "headers": {},
             "params": {
               "access_token": "ABC",
@@ -251,11 +251,11 @@
                 ],
                 "data": [
                   [
-                    "shrouti@abc.com",
+                    "test@abc.com",
                     "2",
                     "13",
                     "2013",
-                    "@09432457768",
+                    "@09876543210",
                     "f",
                     "Ms.",
                     "ABC",
@@ -317,7 +317,7 @@
             "version": "1",
             "type": "REST",
             "method": "DELETE",
-            "endpoint": "https://graph.facebook.com/v16.0/aud1/users",
+            "endpoint": "https://graph.facebook.com/v17.0/aud1/users",
             "headers": {},
             "params": {
               "access_token": "ABC",
@@ -341,11 +341,11 @@
                 ],
                 "data": [
                   [
-                    "shrouti@abc.com",
+                    "test@abc.com",
                     "2",
                     "13",
                     "2013",
-                    "@09432457768",
+                    "@09876543210",
                     "f",
                     "Ms.",
                     "ABC",
@@ -368,7 +368,7 @@
             "version": "1",
             "type": "REST",
             "method": "POST",
-            "endpoint": "https://graph.facebook.com/v16.0/aud1/users",
+            "endpoint": "https://graph.facebook.com/v17.0/aud1/users",
             "headers": {},
             "params": {
               "access_token": "ABC",
@@ -392,11 +392,11 @@
                 ],
                 "data": [
                   [
-                    "shrouti@abc.com",
+                    "test@abc.com",
                     "2",
                     "13",
                     "2013",
-                    "@09432457768",
+                    "@09876543210",
                     "f",
                     "Ms.",
                     "ABC",

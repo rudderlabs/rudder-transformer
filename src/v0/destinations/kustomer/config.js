@@ -1,6 +1,6 @@
 const { getMappingConfig } = require('../../util');
 
-const BASE_ENDPOINT = 'https://api.kustomerapp.com';
+const DEFAULT_BASE_ENDPOINT = 'https://api.kustomerapp.com';
 
 const CONFIG_CATEGORIES = {
   IDENTIFY: { name: 'KustomerIdentify' },
@@ -12,7 +12,7 @@ const CONFIG_CATEGORIES = {
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
 module.exports = {
-  BASE_ENDPOINT,
+  DEFAULT_BASE_ENDPOINT,
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
 };

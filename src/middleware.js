@@ -28,15 +28,17 @@ async function handlerHeap(ctx) {
   }
 }
 
-function pyroscopeMiddleware(ctx, next) {
+function pyroscopeMiddleware() {
   Pyroscope.startHeapCollecting();
-  if (ctx.method === 'GET' && ctx.path === '/debug/pprof/profile') {
-    return handlerCpu(ctx).then(() => next());
-  }
-  if (ctx.method === 'GET' && ctx.path === '/debug/pprof/heap') {
-    return handlerHeap(ctx).then(() => next());
-  }
-  return next();
+  return (ctx, next) => {
+    if (ctx.method === 'GET' && ctx.path === '/debug/pprof/profile') {
+      return handlerCpu(ctx).then(() => next());
+    }
+    if (ctx.method === 'GET' && ctx.path === '/debug/pprof/heap') {
+      return handlerHeap(ctx).then(() => next());
+    }
+    return next();
+  };
 }
 
 function addPyroscopeMiddleware(app) {

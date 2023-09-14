@@ -65,7 +65,7 @@ export const fileUpload = async (ctx) => {
     errNotificationClient.notify(error, 'File Upload', {
       ...response,
       ...getCommonMetadata(ctx),
-      ...getReqMetadataFileUpload(),
+      ...getReqMetadata(ctx),
     });
   }
   ctx.body = response;

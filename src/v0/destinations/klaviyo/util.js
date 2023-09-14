@@ -90,7 +90,7 @@ const profileUpdateResponseBuilder = (payload, profileId, category, privateApiKe
     Accept: JSON_MIME_TYPE,
     revision: '2023-02-22',
   };
-  identifyResponse.body.JSON = removeUndefinedAndNullValues(payload);
+  identifyResponse.body.JSON = removeUndefinedAndNullValues({ ...payload, action: 'suppress' });
   return identifyResponse;
 };
 
@@ -236,7 +236,7 @@ const generateBatchedPaylaodForArray = (events) => {
  * @param {*} subscribeResponseList
  * @returns
  */
-const groupSubsribeResponsesUsingListId = (subscribeResponseList) => {
+const groupSubscribeResponsesUsingListId = (subscribeResponseList) => {
   const subscribeEventGroups = _.groupBy(
     subscribeResponseList,
     (event) => event.message.body.JSON.data.attributes.list_id,
@@ -264,26 +264,17 @@ const getBatchedResponseList = (subscribeEventGroups) => {
 };
 
 const batchSubscribeEvents = (subscribeRespList) => {
-  const identifyResponseList = [];
   subscribeRespList.forEach((event) => {
     const processedEvent = event;
-    if (processedEvent.message.length === 2) {
-      // the array will contain one update profile reponse and one subscribe reponse
-      identifyResponseList.push({ message: event.message[0], metadata: event.metadata, destination: event.destination });
-      [processedEvent.message] = event.message.slice(1);
-    } else {
-      // for group events (it will contain only subscribe response)
-      [processedEvent.message] = event.message.slice(0);
-    }
+    // for group and identify events (it will contain only subscribe response)
+    [processedEvent.message] = event.message.slice(0);
   });
 
-  const subscribeEventGroups = groupSubsribeResponsesUsingListId(subscribeRespList);
+  const subscribeEventGroups = groupSubscribeResponsesUsingListId(subscribeRespList);
 
   const batchedResponseList = getBatchedResponseList(subscribeEventGroups);
 
-  return {
-    batchedResponseList, identifyResponseList
-  };
+  return batchedResponseList;
 };
 
 module.exports = {

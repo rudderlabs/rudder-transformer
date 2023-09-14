@@ -115,9 +115,9 @@ const identifyRequestHandler = async (message, category, destination) => {
     traitsInfo?.properties?.subscribe &&
     (traitsInfo.properties?.listId || destination.Config?.listId)
   ) {
-    responseArray.push(subscribeUserToList(message, traitsInfo, destination));
-    return responseArray;
+    return [subscribeUserToList(message, traitsInfo, destination)];
   }
+
   return responseArray[0];
 };
 
@@ -329,20 +329,18 @@ const processRouterDest = async (inputs, reqMetadata) => {
       }
     }),
   );
-  let batchedSubscribeResponseList = [];
+  const batchedSubscribeResponseList = [];
   if (subscribeRespList.length > 0) {
-    const { batchedResponseList, identifyResponseList } = batchSubscribeEvents(subscribeRespList);
-    const identifyEventsList = identifyResponseList.map((resp) => {
-      const response = getSuccessRespEvents(resp.message, [resp.metadata], resp.destination);
-      return {
-        ...response,
-        action: 'suppress'
-      }
-  })
-    batchedSubscribeResponseList = [...batchedResponseList, ...identifyEventsList]
+    const batchedResponseList = batchSubscribeEvents(subscribeRespList);
+    batchedSubscribeResponseList.push(...batchedResponseList);
   }
   const nonSubscribeSuccessList = nonSubscribeRespList.map((resp) =>
-    getSuccessRespEvents(resp.message, [resp.metadata], resp.destination),
+    resp.message.body.JSON?.action
+      ? {
+          ...getSuccessRespEvents(resp.message, [resp.metadata], resp.destination),
+          action: resp.message.body.JSON.action,
+        }
+      : getSuccessRespEvents(resp.message, [resp.metadata], resp.destination),
   );
   batchResponseList = [...batchedSubscribeResponseList, ...nonSubscribeSuccessList];
 

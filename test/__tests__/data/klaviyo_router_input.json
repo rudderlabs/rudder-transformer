@@ -40,8 +40,6 @@
           "Flagged": false,
           "Residence": "Shibuya",
           "properties": {
-            "listId": "XUepkK",
-            "subscribe": true,
             "consent": ["email", "sms"]
           }
         },

@@ -177,7 +177,7 @@
       "secret": null
     },
     "statusCode": 400,
-    "error": "Empty/Invalid access token",
+    "error": "OAuth - access token not found",
     "statTags": {
       "destination": "google_adwords_enhanced_conversions",
       "stage": "transform",

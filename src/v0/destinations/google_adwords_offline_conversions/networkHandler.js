@@ -6,8 +6,9 @@ const {
   isHttpStatusSuccess,
   getHashFromArray,
   isDefinedAndNotNullAndNotEmpty,
+  getAuthErrCategoryFromStCode,
 } = require('../../util');
-const { getConversionActionId, getAuthErrCategory } = require('./utils');
+const { getConversionActionId } = require('./utils');
 const Cache = require('../../util/cache');
 const { CONVERSION_CUSTOM_VARIABLE_CACHE_TTL, SEARCH_STREAM } = require('./config');
 const {
@@ -41,7 +42,7 @@ const createJob = async (endpoint, headers, payload) => {
       `[Google Ads Offline Conversions]:: ${response?.error?.message} during google_ads_offline_store_conversions Job Creation`,
       status,
       response,
-      getAuthErrCategory(status),
+      getAuthErrCategoryFromStCode(status),
     );
   }
   return response.resourceName.split('/')[3];
@@ -64,7 +65,7 @@ const addConversionToJob = async (endpoint, headers, jobId, payload) => {
       `[Google Ads Offline Conversions]:: ${addConversionToJobResponse.response?.error?.message} during google_ads_offline_store_conversions Add Conversion`,
       addConversionToJobResponse.status,
       addConversionToJobResponse.response,
-      getAuthErrCategory(get(addConversionToJobResponse, 'status')),
+      getAuthErrCategoryFromStCode(get(addConversionToJobResponse, 'status')),
     );
   }
   return true;
@@ -115,7 +116,7 @@ const getConversionCustomVariable = async (headers, params) => {
           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(searchStreamResponse.status),
         },
         searchStreamResponse?.response || searchStreamResponse,
-        getAuthErrCategory(searchStreamResponse.status),
+        getAuthErrCategoryFromStCode(searchStreamResponse.status),
       );
     }
     const conversionCustomVariable = get(searchStreamResponse, 'response.0.results');
@@ -276,7 +277,7 @@ const responseHandler = (destinationResponse) => {
     `[Google Ads Offline Conversions]:: ${response?.error?.message} during google_ads_offline_conversions response transformation`,
     status,
     response,
-    getAuthErrCategory(status),
+    getAuthErrCategoryFromStCode(status),
   );
 };
 

@@ -376,7 +376,7 @@
     ],
     "batched": false,
     "statusCode": 500,
-    "error": "Empty/Invalid access token",
+    "error": "OAuth - access token not found",
     "statTags": {
       "errorCategory": "platform",
       "errorType": "oAuthSecret"

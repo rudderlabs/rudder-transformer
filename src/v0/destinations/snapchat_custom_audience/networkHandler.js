@@ -1,4 +1,4 @@
-const { removeUndefinedValues } = require('../../util');
+const { removeUndefinedValues, getAuthErrCategoryFromErrDetailsAndStCode } = require('../../util');
 const { prepareProxyRequest, getPayloadData, httpSend } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util/index');
 const {
@@ -33,6 +33,23 @@ const prepareProxyReq = (request) => {
   });
 };
 
+const scAudienceProxyRequest = async (request) => {
+  const { endpoint, data, method, params, headers } = prepareProxyReq(request);
+
+  const requestOptions = {
+    url: endpoint,
+    data,
+    params,
+    headers,
+    method,
+  };
+  const response = await httpSend(requestOptions, {
+    feature: 'proxy',
+    destType: 'snapchat_custom_audience',
+  });
+  return response;
+};
+
 /**
  * This function helps to determine type of error occurred. According to the response
  * we set authErrorCategory to take decision if we need to refresh the access_token
@@ -52,26 +69,10 @@ const getAuthErrCategory = (code, response) => {
   return authErrCategory;
 };
 
-const scAudienceProxyRequest = async (request) => {
-  const { endpoint, data, method, params, headers } = prepareProxyReq(request);
-
-  const requestOptions = {
-    url: endpoint,
-    data,
-    params,
-    headers,
-    method,
-  };
-  const response = await httpSend(requestOptions, {
-    feature: 'proxy',
-    destType: 'snapchat_custom_audience',
-  });
-  return response;
-};
-
 const scaAudienceRespHandler = (destResponse, stageMsg) => {
   const { status, response } = destResponse;
-  const authErrCategory = getAuthErrCategory(status, response);
+  const authErrCategory = getAuthErrCategoryFromErrDetailsAndStCode(status, response);
+  // const authErrCategory = getAuthErrCategory(status, response);
 
   if (authErrCategory === REFRESH_TOKEN) {
     throw new RetryableError(

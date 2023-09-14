@@ -50,29 +50,9 @@ const scAudienceProxyRequest = async (request) => {
   return response;
 };
 
-/**
- * This function helps to determine type of error occurred. According to the response
- * we set authErrorCategory to take decision if we need to refresh the access_token
- * or need to disable the destination.
- * @param {*} code
- * @param {*} response
- * @returns
- */
-const getAuthErrCategory = (code, response) => {
-  let authErrCategory = '';
-  if (code === 401) {
-    authErrCategory = !response.error?.details ? REFRESH_TOKEN : '';
-  }
-  if (code === 403) {
-    authErrCategory = !response.error?.details ? AUTH_STATUS_INACTIVE : '';
-  }
-  return authErrCategory;
-};
-
 const scaAudienceRespHandler = (destResponse, stageMsg) => {
   const { status, response } = destResponse;
   const authErrCategory = getAuthErrCategoryFromErrDetailsAndStCode(status, response);
-  // const authErrCategory = getAuthErrCategory(status, response);
 
   if (authErrCategory === REFRESH_TOKEN) {
     throw new RetryableError(

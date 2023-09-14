@@ -40,6 +40,7 @@ const { sendgridGetRequestHandler } = require("./sendgrid.mock");
 const { sendinblueGetRequestHandler } = require("./sendinblue.mock");
 const { courierGetRequestHandler } = require("./courier.mock");
 const { brazePostRequestHandler } = require("./braze.mock");
+const { intercomPostRequestHandler } = require("./intercom.mock");
 const {optimizelyFullStackGetRequestHandler} = require("./optimizely_fullstack.mock");
 
 const urlDirectoryMap = {
@@ -249,6 +250,11 @@ function post(url, payload) {
   }
   if (url.includes("https://api.custify.com")) {
     return Promise.resolve(custifyPostRequestHandler(url));
+  }
+  if (url.includes("intercom.io")) {
+    return new Promise((resolve, reject) => {
+      resolve(intercomPostRequestHandler(url, payload));
+    });
   }
   return new Promise((resolve, reject) => {
     if (mockData) {

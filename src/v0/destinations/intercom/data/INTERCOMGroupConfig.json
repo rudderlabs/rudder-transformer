@@ -49,5 +49,13 @@
       "type": "toNumber"
     },
     "required": false
+  },
+  {
+    "destKey": "custom_attributes",
+    "sourceKeys": [
+      "traits",
+      "context.traits"
+    ],
+    "required": false
   }
 ]

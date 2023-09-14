@@ -1,251 +1,133 @@
-const md5 = require('md5');
-const get = require('get-value');
-const { EventType, MappedToDestinationKey } = require('../../../constants');
+const { EventType } = require('../../../constants');
+const { ConfigCategory, ReservedUserAttributes, ReservedCompanyAttributes } = require('./config');
 const {
-  ConfigCategory,
-  MappingConfig,
-  ReservedTraitsProperties,
-  ReservedCompanyProperties,
-} = require('./config');
-const {
-  constructPayload,
-  removeUndefinedAndNullValues,
-  defaultRequestConfig,
-  defaultPostRequestConfig,
-  getFieldValueFromMessage,
-  addExternalIdToTraits,
-  simpleProcessRouterDest,
   flattenJson,
+  isDefinedAndNotNull,
+  defaultRequestConfig,
+  getFieldValueFromMessage,
+  removeUndefinedAndNullValues,
 } = require('../../util');
-const { separateReservedAndRestMetadata } = require('./util');
+const {
+  getHeaders,
+  getPayload,
+  validateTrack,
+  fetchContactId,
+  getBaseEndpoint,
+  validateIdentify,
+  getCustomAttributes,
+  createOrUpdateCompany,
+  separateReservedAndRestMetadata,
+} = require('./util');
 const { InstrumentationError } = require('../../util/errorTypes');
-const { JSON_MIME_TYPE } = require('../../util/constant');
 
-function getCompanyAttribute(company) {
-  const companiesList = [];
-  if (company.name || company.id) {
-    const customAttributes = {};
-    Object.keys(company).forEach((key) => {
-      // the key is not in ReservedCompanyProperties
-      if (!ReservedCompanyProperties.includes(key)) {
-        const val = company[key];
-        if (val !== Object(val)) {
-          customAttributes[key] = val;
-        } else {
-          customAttributes[key] = JSON.stringify(val);
-        }
-      }
-    });
+const responseBuilder = (payload, endpoint, requestMethod, destination) => {
+  const response = defaultRequestConfig();
+  response.method = requestMethod;
+  response.endpoint = endpoint;
+  response.headers = getHeaders(destination);
+  response.body.JSON = removeUndefinedAndNullValues(payload);
+  return response;
+};
 
-    companiesList.push({
-      company_id: company.id || md5(company.name),
-      custom_attributes: removeUndefinedAndNullValues(customAttributes),
-      name: company.name,
-      industry: company.industry,
-    });
-  }
-  return companiesList;
-}
+const identifyResponseBuilder = async (message, destination) => {
+  const payload = getPayload(message, ConfigCategory.IDENTIFY);
+  validateIdentify(payload);
 
-function validateIdentify(message, payload, config) {
-  const finalPayload = payload;
-
-  finalPayload.update_last_request_at =
-    config.updateLastRequestAt !== undefined ? config.updateLastRequestAt : true;
-  if (payload.user_id || payload.email) {
-    if (payload.name === undefined || payload.name === '') {
-      const firstName = getFieldValueFromMessage(message, 'firstName');
-      const lastName = getFieldValueFromMessage(message, 'lastName');
-      if (firstName && lastName) {
-        finalPayload.name = `${firstName} ${lastName}`;
-      } else {
-        finalPayload.name = firstName || lastName;
-      }
+  if (payload.name === undefined || payload.name === '') {
+    const firstName = getFieldValueFromMessage(message, 'firstName');
+    const lastName = getFieldValueFromMessage(message, 'lastName');
+    if (firstName && lastName) {
+      payload.name = `${firstName} ${lastName}`;
+    } else {
+      payload.name = firstName || lastName;
     }
-
-    if (get(finalPayload, 'custom_attributes.company')) {
-      finalPayload.companies = getCompanyAttribute(finalPayload.custom_attributes.company);
-    }
-
-    if (finalPayload.custom_attributes) {
-      ReservedTraitsProperties.forEach((trait) => {
-        delete finalPayload.custom_attributes[trait];
-      });
-      finalPayload.custom_attributes = flattenJson(finalPayload.custom_attributes);
-    }
-
-    return finalPayload;
   }
-  throw new InstrumentationError('Either of `email` or `userId` is required for Identify call');
-}
 
-function validateTrack(payload) {
-  if (!payload.user_id && !payload.email) {
-    throw new InstrumentationError('Either of `email` or `userId` is required for Track call');
+  payload.custom_attributes = getCustomAttributes(payload, ReservedUserAttributes);
+
+  let endpoint;
+  let requestMethod;
+  const contactId = await fetchContactId(message, destination);
+  
+  const baseEndPoint = getBaseEndpoint(destination);
+  if (contactId) {
+    requestMethod = 'PUT';
+    endpoint = `${baseEndPoint}/${ConfigCategory.IDENTIFY.endpoint}/${contactId}`;
+  } else {
+    requestMethod = 'POST';
+    endpoint = `${baseEndPoint}/${ConfigCategory.IDENTIFY.endpoint}`;
   }
+
+  const { sendAnonymousId } = destination.Config;
+
+  if (!payload.external_id && sendAnonymousId && message.anonymousId) {
+    payload.external_id = message.anonymousId;
+  }
+
+  return responseBuilder(payload, endpoint, requestMethod, destination);
+};
+
+const trackResponseBuilder = (message, destination) => {
+  let payload = getPayload(message, ConfigCategory.TRACK);
+  validateTrack(payload);
+
   // pass only string, number, boolean properties
   if (payload.metadata) {
     // reserved metadata contains JSON objects that does not requires flattening
     const { reservedMetadata, restMetadata } = separateReservedAndRestMetadata(payload.metadata);
-    return { ...payload, metadata: { ...reservedMetadata, ...flattenJson(restMetadata) } };
+    payload =  { ...payload, metadata: { ...reservedMetadata, ...flattenJson(restMetadata) } };
   }
 
-  return payload;
-}
+  const { endpoint } = ConfigCategory.TRACK;
 
-const checkIfEmailOrUserIdPresent = (message, Config) => {
-  let user_id = message.userId;
-  if (Config.sendAnonymousId && !user_id) {
-    user_id = message.anonymousId;
-  }
-  return !!(user_id || message.context?.traits?.email);
-};
-
-function attachUserAndCompany(message, Config) {
-  const email = message.context?.traits?.email;
-  const { userId, anonymousId } = message;
-  const requestBody = {};
-  if (userId) {
-    requestBody.user_id = userId;
-  }
-  if (Config.sendAnonymousId && !userId) {
-    requestBody.user_id = anonymousId;
-  }
-  if (email) {
-    requestBody.email = email;
-  }
-  const companyObj = {
-    company_id: message.groupId,
-  };
-  if (message.traits?.name) {
-    companyObj.name = message.traits.name;
-  }
-  requestBody.companies = [companyObj];
-  const response = defaultRequestConfig();
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.endpoint = ConfigCategory.IDENTIFY.endpoint;
-  response.headers = {
-    'Content-Type': JSON_MIME_TYPE,
-    Authorization: `Bearer ${Config.apiKey}`,
-    Accept: JSON_MIME_TYPE,
-    'Intercom-Version': '1.4',
-  };
-  response.body.JSON = requestBody;
-  return response;
-}
-
-function buildCustomAttributes(message, payload) {
-  const finalPayload = payload;
-  const { traits } = message;
-  const customAttributes = {};
-  const companyReservedKeys = [
-    'remoteCreatedAt',
-    'monthlySpend',
-    'industry',
-    'website',
-    'size',
-    'plan',
-    'name',
-  ];
-
-  if (traits) {
-    Object.keys(traits).forEach((key) => {
-      if (!companyReservedKeys.includes(key) && key !== 'userId') {
-        customAttributes[key] = traits[key];
-      }
-    });
-  }
-
-  if (Object.keys(customAttributes).length > 0) {
-    finalPayload.custom_attributes = flattenJson(customAttributes);
-  }
-
-  return finalPayload;
-}
-
-function validateAndBuildResponse(message, payload, category, destination) {
-  const respList = [];
-  const response = defaultRequestConfig();
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.endpoint = category.endpoint;
-  response.headers = {
-    'Content-Type': JSON_MIME_TYPE,
-    Authorization: `Bearer ${destination.Config.apiKey}`,
-    Accept: JSON_MIME_TYPE,
-    'Intercom-Version': '1.4',
-  };
-  response.userId = message.anonymousId;
-  const messageType = message.type.toLowerCase();
-  switch (messageType) {
-    case EventType.IDENTIFY:
-      response.body.JSON = removeUndefinedAndNullValues(
-        validateIdentify(message, payload, destination.Config),
-      );
-      break;
-    case EventType.TRACK:
-      response.body.JSON = removeUndefinedAndNullValues(validateTrack(payload));
-      break;
-    case EventType.GROUP: {
-      response.body.JSON = removeUndefinedAndNullValues(buildCustomAttributes(message, payload));
-      respList.push(response);
-      if (checkIfEmailOrUserIdPresent(message, destination.Config)) {
-        const attachUserAndCompanyResponse = attachUserAndCompany(message, destination.Config);
-        attachUserAndCompanyResponse.userId = message.anonymousId;
-        respList.push(attachUserAndCompanyResponse);
-      }
-      break;
-    }
-    default:
-      throw new InstrumentationError(`Message type ${messageType} not supported`);
-  }
-
-  return messageType === EventType.GROUP ? respList : response;
-}
-
-function processSingleMessage(message, destination) {
-  if (!message.type) {
-    throw new InstrumentationError('Message Type is not present. Aborting message.');
-  }
   const { sendAnonymousId } = destination.Config;
-  const messageType = message.type.toLowerCase();
-  let category;
-
-  switch (messageType) {
-    case EventType.IDENTIFY:
-      category = ConfigCategory.IDENTIFY;
-      break;
-    case EventType.TRACK:
-      category = ConfigCategory.TRACK;
-      break;
-    case EventType.GROUP:
-      category = ConfigCategory.GROUP;
-      break;
-    default:
-      throw new InstrumentationError(`Message type ${messageType} not supported`);
-  }
-
-  // build the response and return
-  let payload;
-  if (get(message, MappedToDestinationKey)) {
-    addExternalIdToTraits(message);
-    payload = getFieldValueFromMessage(message, 'traits');
-  } else {
-    payload = constructPayload(message, MappingConfig[category.name]);
-  }
-  if (category !== ConfigCategory.GROUP && sendAnonymousId && !payload.user_id) {
+  if (!payload.user_id && sendAnonymousId && message.anonymousId) {
     payload.user_id = message.anonymousId;
   }
-  return validateAndBuildResponse(message, payload, category, destination);
-}
 
-function process(event) {
-  const response = processSingleMessage(event.message, event.destination);
-  return response;
-}
-
-const processRouterDest = async (inputs, reqMetadata) => {
-  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
-  return respList;
+  return responseBuilder(payload, endpoint, 'POST', destination);
 };
 
-module.exports = { process, processRouterDest };
+const groupResponseBuilder = async (message, destination) => {
+  const payload = getPayload(message, ConfigCategory.GROUP);
+  payload.custom_attributes = getCustomAttributes(payload, ReservedCompanyAttributes);
+  const companyId = await createOrUpdateCompany(payload, destination);
+  const contactId = await fetchContactId(message, destination);
+
+  if (isDefinedAndNotNull(companyId) && isDefinedAndNotNull(contactId)) {
+    let { endpoint } = ConfigCategory.GROUP;
+    endpoint = endpoint.replace('{id}', contactId);
+    return responseBuilder({ id: companyId }, endpoint, 'POST', destination);
+  }
+  throw new InstrumentationError("Can't attach user with company");
+};
+
+const processSingleMessage = async (message, destination) => {
+  if (!message.type) {
+    throw new InstrumentationError('Message Type is not present. Aborting message');
+  }
+
+  const messageType = message.type.toLowerCase();
+  let response;
+  switch (messageType) {
+    case EventType.IDENTIFY:
+      response = await identifyResponseBuilder(message, destination);
+      break;
+    case EventType.TRACK:
+      response = trackResponseBuilder(message, destination);
+      break;
+    case EventType.GROUP:
+      response = await groupResponseBuilder(message, destination);
+      break;
+    default:
+      throw new InstrumentationError(`Message type ${messageType} not supported`);
+  }
+  return response;
+};
+
+const process = async (event) => {
+  const response = await processSingleMessage(event.message, event.destination);
+  return response;
+};
+
+module.exports = { process };

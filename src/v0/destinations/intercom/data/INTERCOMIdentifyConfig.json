@@ -1,28 +1,43 @@
 [
   {
-    "destKey": "user_id",
+    "destKey": "role",
+    "sourceKeys": [
+      "traits.role",
+      "context.traits.role"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "external_id",
     "sourceKeys": [
       "userId",
       "traits.userId",
-      "traits.id",
-      "context.traits.userId",
-      "context.traits.id"
+      "context.traits.userId"
     ],
     "required": false
   },
   {
     "destKey": "email",
-    "sourceKeys": ["traits.email", "context.traits.email"],
+    "sourceKeys": "email",
+    "sourceFromGenericMap": true,
     "required": false
   },
   {
     "destKey": "phone",
-    "sourceKeys": ["traits.phone", "context.traits.phone"],
+    "sourceKeys": "phone",
+    "sourceFromGenericMap": true,
     "required": false
   },
   {
     "destKey": "name",
-    "sourceKeys": ["traits.name", "context.traits.name"],
+    "sourceKeys": "name",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "avatar",
+    "sourceKeys": "avatar",
+    "sourceFromGenericMap": true,
     "required": false
   },
   {
@@ -34,8 +49,28 @@
     }
   },
   {
-    "destKey": "last_seen_user_agent",
-    "sourceKeys": "context.userAgent",
+    "destKey": "last_seen_at",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": false,
+    "metadata": {
+      "type": "secondTimestamp"
+    }
+  },
+  {
+    "destKey": "owner_id",
+    "sourceKeys": ["traits.ownerId", "context.traits.ownerId"],
+    "required": false,
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "destKey": "unsubscribed_from_emails",
+    "sourceKeys": [
+      "traits.unsubscribedFromEmails",
+      "context.traits.unsubscribedFromEmails"
+    ],
     "required": false
   },
   {

@@ -1,27 +1,11 @@
 [
   {
-    "destKey": "user_id",
-    "sourceKeys": [
-      "userId",
-      "traits.userId",
-      "traits.id",
-      "context.traits.userId",
-      "context.traits.id"
-    ],
-    "required": false
-  },
-  {
-    "destKey": "email",
-    "sourceKeys": ["traits.email", "context.traits.email"],
-    "required": false
-  },
-  {
     "destKey": "event_name",
     "sourceKeys": "event",
     "required": true
   },
   {
-    "destKey": "created",
+    "destKey": "created_at",
     "sourceKeys": "timestamp",
     "sourceFromGenericMap": true,
     "required": true,
@@ -30,7 +14,32 @@
     }
   },
   {
+    "destKey": "user_id",
+    "sourceKeys": [
+      "userId",
+      "traits.userId",
+      "context.traits.userId"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "id",
+    "sourceKeys": [
+      "traits.id",
+      "properties.id",
+      "context.traits.id"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "email",
+    "sourceKeys": "email",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
     "destKey": "metadata",
-    "sourceKeys": "properties"
+    "sourceKeys": "properties",
+    "required": false
   }
 ]

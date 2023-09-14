@@ -132,6 +132,7 @@ const DestCanonicalNames = {
     'TWITTER_ADS',
   ],
   BRAZE: ['BRAZE', 'Braze', 'braze'],
+  INTERCOM: ['INTERCOM', 'intercom','Intercom'],
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

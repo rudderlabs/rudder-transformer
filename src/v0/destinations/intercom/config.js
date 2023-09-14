@@ -1,53 +1,74 @@
 const { getMappingConfig } = require('../../util');
 
 const BASE_ENDPOINT = 'https://api.intercom.io';
+const BASE_EU_ENDPOINT = 'https://api.eu.intercom.io';
+const BASE_AU_ENDPOINT = 'https://api.au.intercom.io';
 
-// track events | Track
-const TRACK_ENDPOINT = `${BASE_ENDPOINT}/events`;
-// Create, Update a user with a company | Identify
-const IDENTIFY_ENDPOINT = `${BASE_ENDPOINT}/users`;
-// create, update, delete a company | Group
-const GROUP_ENDPOINT = `${BASE_ENDPOINT}/companies`;
+const SEARCH_CONTACT_ENDPOINT = 'contacts/search';
+const CREATE_OR_UPDATE_COMPANY_ENDPOINT = 'companies';
 
 const ConfigCategory = {
   TRACK: {
-    endpoint: TRACK_ENDPOINT,
+    endpoint: 'events',
     name: 'INTERCOMTrackConfig',
   },
   IDENTIFY: {
-    endpoint: IDENTIFY_ENDPOINT,
-    name: 'INTERCOMIdentifyConfig',
+    endpoint: 'contacts',
+    name: 'INTERCOMIdentifyConfig'
   },
   GROUP: {
-    endpoint: GROUP_ENDPOINT,
+    endpoint: 'contacts/{id}/companies',
     name: 'INTERCOMGroupConfig',
   },
 };
 
 const MappingConfig = getMappingConfig(ConfigCategory, __dirname);
 
-const ReservedTraitsProperties = [
+const ReservedUserAttributes = [
   'userId',
+  'role',
   'email',
   'phone',
   'name',
-  'createdAt',
-  'firstName',
-  'lastName',
-  'firstname',
-  'lastname',
+  'avatar',
   'company',
+  'ownerId',
+  'lastName',
+  'lastname',
+  'firstName',
+  'firstname',
+  'last_seen_at',
+  'signed_up_at',
+  'unsubscribedFromEmails'
 ];
 
-const ReservedCompanyProperties = ['id', 'name', 'industry'];
+const ReservedCompanyAttributes = [
+  'tags',
+  'size',
+  'plan',
+  'name',
+  'userId',
+  'website',
+  'industry',
+  'segments',
+  'userCount',
+  'createdAt',
+  'sessionCount',
+  'monthlySpend',
+  'remoteCreatedAt',
+];
 
-// ref:- https://developers.intercom.com/intercom-api-reference/v1.4/reference/event-metadata-types
 const MetadataTypes = { richLink: ['url', 'value'], monetaryAmount: ['amount', 'currency'] };
 
 module.exports = {
-  ConfigCategory,
-  MappingConfig,
-  ReservedCompanyProperties,
-  ReservedTraitsProperties,
+  BASE_ENDPOINT,
   MetadataTypes,
+  MappingConfig,
+  ConfigCategory,
+  BASE_EU_ENDPOINT,
+  BASE_AU_ENDPOINT,
+  ReservedUserAttributes,
+  SEARCH_CONTACT_ENDPOINT,
+  ReservedCompanyAttributes,
+  CREATE_OR_UPDATE_COMPANY_ENDPOINT,
 };

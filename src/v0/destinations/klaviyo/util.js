@@ -244,7 +244,7 @@ const groupSubsribeResponsesUsingListId = (subscribeResponseList) => {
   return subscribeEventGroups;
 };
 
-const getBatchedResponseList = (subscribeEventGroups, identifyResponseList) => {
+const getBatchedResponseList = (subscribeEventGroups) => {
   let batchedResponseList = [];
   Object.keys(subscribeEventGroups).forEach((listId) => {
     // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
@@ -260,9 +260,6 @@ const getBatchedResponseList = (subscribeEventGroups, identifyResponseList) => {
     });
     batchedResponseList = [...batchedResponseList, ...batchedResponse];
   });
-  identifyResponseList.forEach((response) => {
-    batchedResponseList[0].batchedRequest.push(response);
-  });
   return batchedResponseList;
 };
 
@@ -272,7 +269,7 @@ const batchSubscribeEvents = (subscribeRespList) => {
     const processedEvent = event;
     if (processedEvent.message.length === 2) {
       // the array will contain one update profile reponse and one subscribe reponse
-      identifyResponseList.push(event.message[0]);
+      identifyResponseList.push({ message: event.message[0], metadata: event.metadata, destination: event.destination });
       [processedEvent.message] = event.message.slice(1);
     } else {
       // for group events (it will contain only subscribe response)
@@ -282,9 +279,11 @@ const batchSubscribeEvents = (subscribeRespList) => {
 
   const subscribeEventGroups = groupSubsribeResponsesUsingListId(subscribeRespList);
 
-  const batchedResponseList = getBatchedResponseList(subscribeEventGroups, identifyResponseList);
+  const batchedResponseList = getBatchedResponseList(subscribeEventGroups);
 
-  return batchedResponseList;
+  return {
+    batchedResponseList, identifyResponseList
+  };
 };
 
 module.exports = {

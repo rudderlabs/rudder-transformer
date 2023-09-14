@@ -28,108 +28,28 @@
                     "email": "test@rudderstack.com",
                     "phone_number": "+12 345 578 900",
                     "channels": {
-                      "email": ["MARKETING"],
-                      "sms": ["MARKETING"]
+                      "email": [
+                        "MARKETING"
+                      ],
+                      "sms": [
+                        "MARKETING"
+                      ]
                     }
                   },
                   {
                     "email": "test@rudderstack.com",
                     "phone_number": "+12 345 578 900",
                     "channels": {
-                      "email": ["MARKETING"],
-                      "sms": ["MARKETING"]
+                      "email": [
+                        "MARKETING"
+                      ],
+                      "sms": [
+                        "MARKETING"
+                      ]
                     }
                   }
                 ]
               }
-            }
-          },
-          "JSON_ARRAY": {},
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
-      },
-      {
-        "version": "1",
-        "type": "REST",
-        "method": "PATCH",
-        "endpoint": "https://a.klaviyo.com/api/profiles/01GW3PHVY0MTCDGS0A1612HARX",
-        "headers": {
-          "Accept": "application/json",
-          "Authorization": "Klaviyo-API-Key pk_b68c7b5163d98807fcb57e6f921216629d",
-          "Content-Type": "application/json",
-          "revision": "2023-02-22"
-        },
-        "params": {},
-        "body": {
-          "JSON": {
-            "data": {
-              "type": "profile",
-              "attributes": {
-                "external_id": "test",
-                "email": "test@rudderstack.com",
-                "first_name": "Test",
-                "last_name": "Rudderlabs",
-                "phone_number": "+12 345 578 900",
-                "title": "Developer",
-                "organization": "Rudder",
-                "location": {
-                  "city": "Tokyo",
-                  "region": "Kanto",
-                  "country": "JP",
-                  "zip": "100-0001"
-                },
-                "properties": {
-                  "Flagged": false,
-                  "Residence": "Shibuya"
-                }
-              },
-              "id": "01GW3PHVY0MTCDGS0A1612HARX"
-            }
-          },
-          "JSON_ARRAY": {},
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
-      },
-      {
-        "version": "1",
-        "type": "REST",
-        "method": "PATCH",
-        "endpoint": "https://a.klaviyo.com/api/profiles/01GW3PHVY0MTCDGS0A1612HARX",
-        "headers": {
-          "Accept": "application/json",
-          "Authorization": "Klaviyo-API-Key pk_b68c7b5163d98807fcb57e6f921216629d",
-          "Content-Type": "application/json",
-          "revision": "2023-02-22"
-        },
-        "params": {},
-        "body": {
-          "JSON": {
-            "data": {
-              "type": "profile",
-              "attributes": {
-                "email": "test@rudderstack.com",
-                "external_id": "test",
-                "first_name": "Test",
-                "last_name": "Rudderlabs",
-                "phone_number": "+12 345 578 900",
-                "title": "Developer",
-                "organization": "Rudder",
-                "location": {
-                  "city": "Tokyo",
-                  "region": "Kanto",
-                  "country": "JP",
-                  "zip": "100-0001"
-                },
-                "properties": {
-                  "Flagged": false,
-                  "Residence": "Shibuya"
-                }
-              },
-              "id": "01GW3PHVY0MTCDGS0A1612HARX"
             }
           },
           "JSON_ARRAY": {},
@@ -151,6 +71,126 @@
       }
     ],
     "batched": true,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "publicApiKey": "WJqij9",
+        "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d"
+      }
+    }
+  },
+  {
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "PATCH",
+      "endpoint": "https://a.klaviyo.com/api/profiles/01GW3PHVY0MTCDGS0A1612HARX",
+      "headers": {
+        "Accept": "application/json",
+        "Authorization": "Klaviyo-API-Key pk_b68c7b5163d98807fcb57e6f921216629d",
+        "Content-Type": "application/json",
+        "revision": "2023-02-22"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "data": {
+            "type": "profile",
+            "attributes": {
+              "external_id": "test",
+              "email": "test@rudderstack.com",
+              "first_name": "Test",
+              "last_name": "Rudderlabs",
+              "phone_number": "+12 345 578 900",
+              "title": "Developer",
+              "organization": "Rudder",
+              "location": {
+                "city": "Tokyo",
+                "region": "Kanto",
+                "country": "JP",
+                "zip": "100-0001"
+              },
+              "properties": {
+                "Flagged": false,
+                "Residence": "Shibuya"
+              }
+            },
+            "id": "01GW3PHVY0MTCDGS0A1612HARX"
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    "metadata": [
+      {
+        "jobId": 1
+      }
+    ],
+    "batched": false,
+    "action": "suppress",
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "publicApiKey": "WJqij9",
+        "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d"
+      }
+    }
+  },
+  {
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "PATCH",
+      "endpoint": "https://a.klaviyo.com/api/profiles/01GW3PHVY0MTCDGS0A1612HARX",
+      "headers": {
+        "Accept": "application/json",
+        "Authorization": "Klaviyo-API-Key pk_b68c7b5163d98807fcb57e6f921216629d",
+        "Content-Type": "application/json",
+        "revision": "2023-02-22"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "data": {
+            "type": "profile",
+            "attributes": {
+              "email": "test@rudderstack.com",
+              "external_id": "test",
+              "first_name": "Test",
+              "last_name": "Rudderlabs",
+              "phone_number": "+12 345 578 900",
+              "title": "Developer",
+              "organization": "Rudder",
+              "location": {
+                "city": "Tokyo",
+                "region": "Kanto",
+                "country": "JP",
+                "zip": "100-0001"
+              },
+              "properties": {
+                "Flagged": false,
+                "Residence": "Shibuya"
+              }
+            },
+            "id": "01GW3PHVY0MTCDGS0A1612HARX"
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
+    "action": "suppress",
+    "batched": false,
     "statusCode": 200,
     "destination": {
       "Config": {

@@ -239,6 +239,7 @@ function processTrackWithUserAttributes(message, destination, mappingJson, proce
       } else {
         throw new InstrumentationError(
           '[Braze Deduplication]: Duplicate user detected, the user is dropped',
+          'filtered'
         );
       }
     }

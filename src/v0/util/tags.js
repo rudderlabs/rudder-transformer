@@ -13,6 +13,7 @@ const TAG_NAMES = {
   DESTINATION_ID: 'destinationId',
   WORKSPACE_ID: 'workspaceId',
   SOURCE_ID: 'sourceId',
+  ACTION: 'action'
 };
 
 const MODULES = {
@@ -51,6 +52,7 @@ const ERROR_TYPES = {
   OAUTH_SECRET: 'oAuthSecret',
   UNSUPPORTED: 'unsupported',
   REDIS: 'redis',
+  FILTERED: 'filtered'
 };
 
 const METADATA = {

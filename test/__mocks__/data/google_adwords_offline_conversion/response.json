@@ -1,17 +1,17 @@
 {
-  "https://googleads.googleapis.com/v13/customers/11122233331/offlineUserDataJobs:create": {
+  "https://googleads.googleapis.com/v14/customers/11122233331/offlineUserDataJobs:create": {
     "data": {
       "resourceName": "customers/111-222-3333/offlineUserDataJobs/OFFLINE_USER_DATA_JOB_ID_FOR_ADD_FAILURE"
     },
     "status": 200
   },
-  "https://googleads.googleapis.com/v13/customers/1112223333/offlineUserDataJobs:create": {
+  "https://googleads.googleapis.com/v14/customers/1112223333/offlineUserDataJobs:create": {
     "data": {
       "resourceName": "customers/111-222-3333/offlineUserDataJobs/OFFLINE_USER_DATA_JOB_ID"
     },
     "status": 200
   },
-  "https://googleads.googleapis.com/v13/customers/customerid/offlineUserDataJobs:create": {
+  "https://googleads.googleapis.com/v14/customers/customerid/offlineUserDataJobs:create": {
     "status": 401,
     "data": {
       "error": {
@@ -21,11 +21,11 @@
       }
     }
   },
-  "https://googleads.googleapis.com/v13/customers/1112223333/offlineUserDataJobs/OFFLINE_USER_DATA_JOB_ID:addOperations": {
+  "https://googleads.googleapis.com/v14/customers/1112223333/offlineUserDataJobs/OFFLINE_USER_DATA_JOB_ID:addOperations": {
     "status": 200,
     "data": {}
   },
-  "https://googleads.googleapis.com/v13/customers/11122233331/offlineUserDataJobs/OFFLINE_USER_DATA_JOB_ID_FOR_ADD_FAILURE:addOperations": {
+  "https://googleads.googleapis.com/v14/customers/11122233331/offlineUserDataJobs/OFFLINE_USER_DATA_JOB_ID_FOR_ADD_FAILURE:addOperations": {
     "status": 400,
     "data": {
       "error": {
@@ -34,7 +34,7 @@
         "status": "INVALID_ARGUMENT",
         "details": [
           {
-            "@type": "type.googleapis.com/google.ads.googleads.v13.errors.GoogleAdsFailure",
+            "@type": "type.googleapis.com/google.ads.googleads.v14.errors.GoogleAdsFailure",
             "errors": [
               {
                 "errorCode": {
@@ -67,13 +67,13 @@
       }
     }
   },
-  "https://googleads.googleapis.com/v13/customers/1112223333/offlineUserDataJobs/OFFLINE_USER_DATA_JOB_ID:run": {
+  "https://googleads.googleapis.com/v14/customers/1112223333/offlineUserDataJobs/OFFLINE_USER_DATA_JOB_ID:run": {
     "status": 200,
     "data": {
       "name": "customers/111-222-3333/operations/abcd="
     }
   },
-  "https://googleads.googleapis.com/v13/customers/customerid/offlineUserDataJobs/OFFLINE_USER_DATA_JOB_ID_ADD_FAILURE:addOperations": {
+  "https://googleads.googleapis.com/v14/customers/customerid/offlineUserDataJobs/OFFLINE_USER_DATA_JOB_ID_ADD_FAILURE:addOperations": {
     "status": 400,
     "data": {
       "error": {
@@ -82,7 +82,7 @@
         "status": "INVALID_ARGUMENT",
         "details": [
           {
-            "@type": "type.googleapis.com/google.ads.googleads.v13.errors.GoogleAdsFailure",
+            "@type": "type.googleapis.com/google.ads.googleads.v14.errors.GoogleAdsFailure",
             "errors": [
               {
                 "errorCode": {

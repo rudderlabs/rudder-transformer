@@ -5,7 +5,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v13/customers/11122233331/offlineUserDataJobs",
+        "endpoint": "https://googleads.googleapis.com/v14/customers/11122233331/offlineUserDataJobs",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -75,7 +75,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v13/customers/1112223333/offlineUserDataJobs",
+        "endpoint": "https://googleads.googleapis.com/v14/customers/1112223333/offlineUserDataJobs",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -145,7 +145,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v13/customers/customerid/offlineUserDataJobs",
+        "endpoint": "https://googleads.googleapis.com/v14/customers/customerid/offlineUserDataJobs",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -215,7 +215,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v13/customers/1234567890:uploadClickConversions",
+        "endpoint": "https://googleads.googleapis.com/v14/customers/1234567890:uploadClickConversions",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -320,7 +320,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v13/customers/1234567891:uploadClickConversions",
+        "endpoint": "https://googleads.googleapis.com/v14/customers/1234567891:uploadClickConversions",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -425,7 +425,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v13/customers/1234567891:uploadClickConversions",
+        "endpoint": "https://googleads.googleapis.com/v14/customers/1234567891:uploadClickConversions",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",

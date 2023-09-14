@@ -1,3 +1,6 @@
+import { CatchErr, FixMe } from '../util/types';
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
 type ProcessorTransformationOutput = {
   version: string;
   type: string;
@@ -59,14 +62,14 @@ type DestinationDefinition = {
   ID: string;
   Name: string;
   DisplayName: string;
-  Config: object;
+  Config: FixMe;
 };
 
 type Destination = {
   ID: string;
   Name: string;
   DestinationDefinition: DestinationDefinition;
-  Config: object;
+  Config: FixMe;
   Enabled: boolean;
   WorkspaceID: string;
   Transformations: UserTransformationInput[];
@@ -121,7 +124,7 @@ type SourceTransformationOutput = {
 
 type SourceTransformationResponse = {
   output: SourceTransformationOutput;
-  error: object;
+  error: CatchErr;
   statusCode: number;
   outputToSource: object;
   statTags: object;
@@ -187,7 +190,7 @@ type MetaTransferObject = {
 type UserTransformationResponse = {
   transformedEvent: RudderMessage;
   metadata: Metadata;
-  error: object;
+  error: CatchErr;
 };
 
 type UserTransformationServiceResponse = {
@@ -196,7 +199,7 @@ type UserTransformationServiceResponse = {
 };
 
 type UserDeletionRequest = {
-  userAttributes: any[];
+  userAttributes: FixMe[];
   config: object;
   destType: string;
   jobId: string;
@@ -206,7 +209,7 @@ type UserDeletionResponse = {
   statusCode: number;
   error?: string;
   status?: string;
-  authErrorCategory: any;
+  authErrorCategory: FixMe;
   statTags: object;
 };
 

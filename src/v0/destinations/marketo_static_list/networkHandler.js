@@ -25,6 +25,7 @@ const responseHandler = (destinationResponse, destType) => {
   };
 };
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 class networkHandler {
   constructor() {
     this.responseHandler = responseHandler;

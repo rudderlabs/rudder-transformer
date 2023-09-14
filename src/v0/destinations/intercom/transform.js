@@ -51,7 +51,7 @@ function validateIdentify(message, payload, config) {
   const finalPayload = payload;
 
   finalPayload.update_last_request_at =
-      config.updateLastRequestAt !== undefined ? config.updateLastRequestAt : true;
+    config.updateLastRequestAt !== undefined ? config.updateLastRequestAt : true;
   if (payload.user_id || payload.email) {
     if (payload.name === undefined || payload.name === '') {
       const firstName = getFieldValueFromMessage(message, 'firstName');
@@ -94,16 +94,17 @@ function validateTrack(payload) {
 }
 
 const checkIfEmailOrUserIdPresent = (message, Config) => {
-  let user_id = message.userId;
-  if (Config.sendAnonymousId && !user_id) {
-    user_id = message.anonymousId;
+  const { context, anonymousId } = message;
+  let { userId } = message;
+  if (Config.sendAnonymousId && !userId) {
+    userId = anonymousId;
   }
-  return !!(user_id || message.context?.traits?.email);
+  return !!(userId || context.traits?.email);
 };
 
 function attachUserAndCompany(message, Config) {
   const email = message.context?.traits?.email;
-  const { userId, anonymousId } = message;
+  const { userId, anonymousId, traits, groupId } = message;
   const requestBody = {};
   if (userId) {
     requestBody.user_id = userId;
@@ -115,10 +116,10 @@ function attachUserAndCompany(message, Config) {
     requestBody.email = email;
   }
   const companyObj = {
-    company_id: message.groupId,
+    company_id: groupId,
   };
-  if (message.traits?.name) {
-    companyObj.name = message.traits.name;
+  if (traits?.name) {
+    companyObj.name = traits.name;
   }
   requestBody.companies = [companyObj];
   const response = defaultRequestConfig();
@@ -179,7 +180,7 @@ function validateAndBuildResponse(message, payload, category, destination) {
   switch (messageType) {
     case EventType.IDENTIFY:
       response.body.JSON = removeUndefinedAndNullValues(
-          validateIdentify(message, payload, destination.Config),
+        validateIdentify(message, payload, destination.Config),
       );
       break;
     case EventType.TRACK:

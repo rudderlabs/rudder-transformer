@@ -7,6 +7,8 @@ import v8 from 'v8';
 import pprof, { heap } from '@datadog/pprof';
 import { promisify } from 'util';
 import logger from '../logger';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { CatchErr } from '../util/types';
 
 // The average number of bytes between samples.
 // 512*1024 = 524288
@@ -102,7 +104,7 @@ export default class ProfileService {
         logger.info('Before pipeline');
         try {
           await writeFileProm(fileName, snapshotReadableStream);
-        } catch (error: any) {
+        } catch (error: CatchErr) {
           logger.error('Error occurred:', error);
           throw new Error(error);
         }
@@ -126,7 +128,7 @@ export default class ProfileService {
           credBucketDetails.sendTo ? credBucketDetails.sendTo : 'locally'
         } with filename: ${fileName}`,
       };
-    } catch (error: any) {
+    } catch (error: CatchErr) {
       logger.error(error);
       return {
         success: false,

@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import groupBy from 'lodash/groupBy';
-import cloneDeep from 'lodash/cloneDeep'
+import cloneDeep from 'lodash/cloneDeep';
 import IntegrationDestinationService from '../../interfaces/DestinationService';
 import {
   DeliveryResponse,
@@ -49,7 +50,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
     events: ProcessorTransformationRequest[],
     destinationType: string,
     version: string,
-    _requestMetadata: object,
+    _requestMetadata: NonNullable<unknown>,
   ): Promise<ProcessorTransformationResponse[]> {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
     const respList: ProcessorTransformationResponse[][] = await Promise.all(
@@ -87,14 +88,14 @@ export default class NativeIntegrationDestinationService implements IntegrationD
     events: RouterTransformationRequestData[],
     destinationType: string,
     version: string,
-    _requestMetadata: object,
+    _requestMetadata: NonNullable<unknown>,
   ): Promise<RouterTransformationResponse[]> {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
-    const allDestEvents: object = groupBy(
+    const allDestEvents: NonNullable<unknown> = groupBy(
       events,
       (ev: RouterTransformationRequestData) => ev.destination?.ID,
     );
-    const groupedEvents: RouterTransformationRequestData[][] = object.values(allDestEvents);
+    const groupedEvents: RouterTransformationRequestData[][] = Object.values(allDestEvents);
     const response: RouterTransformationResponse[][] = await Promise.all(
       groupedEvents.map(async (destInputArray: RouterTransformationRequestData[]) => {
         const metaTO = this.getTags(
@@ -131,17 +132,17 @@ export default class NativeIntegrationDestinationService implements IntegrationD
     events: RouterTransformationRequestData[],
     destinationType: string,
     version: any,
-    _requestMetadata: object,
+    _requestMetadata: NonNullable<unknown>,
   ): RouterTransformationResponse[] {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
     if (!destHandler.batch) {
       throw new Error(`${destinationType} does not implement batch`);
     }
-    const allDestEvents: object = groupBy(
+    const allDestEvents: NonNullable<unknown> = groupBy(
       events,
       (ev: RouterTransformationRequestData) => ev.destination?.ID,
     );
-    const groupedEvents: RouterTransformationRequestData[][] = object.values(allDestEvents);
+    const groupedEvents: RouterTransformationRequestData[][] = Object.values(allDestEvents);
     const response = groupedEvents.map((destEvents) => {
       try {
         const destBatchedRequests: RouterTransformationResponse[] = destHandler.batch(destEvents);
@@ -167,7 +168,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
   public async deliver(
     destinationRequest: ProcessorTransformationOutput,
     destinationType: string,
-    _requestMetadata: object,
+    _requestMetadata: NonNullable<unknown>,
   ): Promise<DeliveryResponse> {
     try {
       const networkHandler = networkHandlerFactory.getNetworkHandler(destinationType);

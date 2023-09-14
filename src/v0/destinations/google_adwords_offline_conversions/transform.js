@@ -139,11 +139,12 @@ const process = async (event) => {
 
 const getEventChunks = (event, storeSalesEvents, clickCallEvents) => {
   const { message, metadata, destination } = event;
-  message.forEach((msg) => {
-    if (msg.body.JSON?.isStoreConversion) {
-      storeSalesEvents.push({ msg, metadata, destination });
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  message.forEach((message) => {
+    if (message.body.JSON?.isStoreConversion) {
+      storeSalesEvents.push({ message, metadata, destination });
     } else {
-      clickCallEvents.push(getSuccessRespEvents(msg, [metadata], destination));
+      clickCallEvents.push(getSuccessRespEvents(message, [metadata], destination));
     }
   });
   return { storeSalesEvents, clickCallEvents };

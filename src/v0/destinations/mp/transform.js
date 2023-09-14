@@ -434,6 +434,7 @@ const processSingleMessage = async (message, destination) => {
 const process = async (event) => processSingleMessage(event.message, event.destination);
 
 const processEvents = async (inputs, reqMetadata) =>
+  // eslint-disable-next-line @typescript-eslint/return-await
   await Promise.all(
     inputs.map(async (event) => {
       try {

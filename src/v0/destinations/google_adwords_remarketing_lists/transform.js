@@ -1,6 +1,6 @@
 const sha256 = require('sha256');
-const logger = require('../../../logger');
 const get = require('get-value');
+const logger = require('../../../logger');
 const {
   isDefinedAndNotNullAndNotEmpty,
   returnArrayOfSubarrays,
@@ -77,7 +77,10 @@ const responseBuilder = (metadata, body, { Config }, message) => {
   let operationAudienceId = Config.audienceId || Config.listId;
   const mappedToDestination = get(message, MappedToDestinationKey);
   if (!operationAudienceId && mappedToDestination) {
-    const { objectType } = getDestinationExternalIDInfoForRetl(message, 'GOOGLE_ADWORDS_REMARKETING_LISTS');
+    const { objectType } = getDestinationExternalIDInfoForRetl(
+      message,
+      'GOOGLE_ADWORDS_REMARKETING_LISTS',
+    );
     operationAudienceId = objectType;
   }
   if (!isDefinedAndNotNullAndNotEmpty(operationAudienceId)) {

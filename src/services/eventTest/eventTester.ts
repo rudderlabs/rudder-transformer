@@ -1,4 +1,5 @@
 import { sendToDestination, userTransformHandler } from '../../routerUtils';
+import { FixMe } from '../../util/types';
 
 export default class EventTesterService {
   private static getDestHandler(version, destination) {
@@ -10,7 +11,7 @@ export default class EventTesterService {
     function capitalize(s) {
       return s === 'id' ? s.toUpperCase() : s.charAt(0).toUpperCase() + s.slice(1);
     }
-    const transformedObj = {};
+    let transformedObj: FixMe;
     const { destinationDefinition } = dest;
     Object.keys(dest).forEach((key) => {
       transformedObj[capitalize(key)] = dest[key];
@@ -53,7 +54,7 @@ export default class EventTesterService {
           libraries,
         };
 
-        let response = {};
+        let response: FixMe;
         let errorFound = false;
 
         if (stage.user_transform) {
@@ -120,8 +121,8 @@ export default class EventTesterService {
         if (stage.dest_transform && stage.send_to_destination) {
           // send event to destination only after transformation
           if (!errorFound) {
-            const destResponses: any[] = [];
-            const destResponseStatuses: any[] = [];
+            const destResponses: FixMe[] = [];
+            const destResponseStatuses: FixMe[] = [];
 
             const transformedPayloads = response.dest_transformed_payload;
             // eslint-disable-next-line no-restricted-syntax
@@ -134,10 +135,10 @@ export default class EventTesterService {
               if (parsedResponse.headers) {
                 contentType = parsedResponse.headers['content-type'];
                 if (this.isSupportedContentType(contentType)) {
-                  responsePayload = parsedResponse.responsePayload;
+                  responsePayload = parsedResponse.response;
                 }
               } else if (parsedResponse.networkFailure) {
-                responsePayload = parsedResponse.responsePayload;
+                responsePayload = parsedResponse.response;
               }
 
               destResponses.push(responsePayload);

@@ -70,8 +70,8 @@ const constructPayloadItem = (message, category, destination) => {
     case 'catalogs':
       rawPayload = constructPayload(message, mappingConfig[category.name]);
       rawPayload.catalogId = getDestinationExternalIDInfoForRetl(
-          message,
-          'ITERABLE',
+        message,
+        'ITERABLE',
       ).destinationExternalId;
       break;
     default:
@@ -91,7 +91,7 @@ const constructPayloadItem = (message, category, destination) => {
 const responseBuilder = (message, category, destination) => {
   const response = defaultRequestConfig();
   response.endpoint =
-      category.action === 'catalogs' ? getCatalogEndpoint(category, message) : category.endpoint;
+    category.action === 'catalogs' ? getCatalogEndpoint(category, message) : category.endpoint;
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = constructPayloadItem(message, category, destination);
   response.headers = {
@@ -127,8 +127,8 @@ const getCategory = (messageType, message) => {
   switch (eventType) {
     case EventType.IDENTIFY:
       if (
-          get(message, MappedToDestinationKey) &&
-          getDestinationExternalIDInfoForRetl(message, 'ITERABLE').objectType !== 'users'
+        get(message, MappedToDestinationKey) &&
+        getDestinationExternalIDInfoForRetl(message, 'ITERABLE').objectType !== 'users'
       ) {
         return ConfigCategory.CATALOG;
       }
@@ -169,70 +169,70 @@ const processRouterDest = async (inputs, reqMetadata) => {
 
   const batchedEvents = batchEvents(inputs);
   const response = await Promise.all(
-      batchedEvents.map(async (listOfEvents) => {
-        let transformedPayloads = await Promise.all(
-            listOfEvents.map(async (event) => {
-              try {
-                if (event.message.statusCode) {
-                  // already transformed event
-                  return {
-                    message: event.message,
-                    metadata: event.metadata,
-                    destination: event.destination,
-                  };
-                }
+    batchedEvents.map(async (listOfEvents) => {
+      let transformedPayloads = await Promise.all(
+        listOfEvents.map(async (event) => {
+          try {
+            if (event.message.statusCode) {
+              // already transformed event
+              return {
+                message: event.message,
+                metadata: event.metadata,
+                destination: event.destination,
+              };
+            }
 
-                /**
-                 * If not transformed
-                 *
-                 * responses = [e1_batched_event, e1_non_batched_event] or {e2}
-                 *
-                 * transformedPayloads =
-                 * [
-                 *   {
-                 *     message: e1_batched_message,
-                 *     metadata: m1,
-                 *     destination: {}
-                 *   },
-                 *   {
-                 *     message: e1_non_batched_message,
-                 *     metadata: m1,
-                 *     destination: {}
-                 *    }
-                 * ]
-                 *
-                 * or
-                 *
-                 * transformedPayloads =
-                 * [
-                 *   {
-                 *     message: e2_message,
-                 *     metadata: m2,
-                 *     destination: {}
-                 *   }
-                 * ]
-                 */
+            /**
+             * If not transformed
+             *
+             * responses = [e1_batched_event, e1_non_batched_event] or {e2}
+             *
+             * transformedPayloads =
+             * [
+             *   {
+             *     message: e1_batched_message,
+             *     metadata: m1,
+             *     destination: {}
+             *   },
+             *   {
+             *     message: e1_non_batched_message,
+             *     metadata: m1,
+             *     destination: {}
+             *    }
+             * ]
+             *
+             * or
+             *
+             * transformedPayloads =
+             * [
+             *   {
+             *     message: e2_message,
+             *     metadata: m2,
+             *     destination: {}
+             *   }
+             * ]
+             */
 
-                const responses = process(event);
-                const transformedPayloads = Array.isArray(responses) ? responses : [responses];
-                return transformedPayloads.map((response) => ({
-                  message: response,
-                  metadata: event.metadata,
-                  destination: event.destination,
-                }));
-              } catch (error) {
-                return handleRtTfSingleEventError(event, error, reqMetadata);
-              }
-            }),
-        );
+            const responsesFn = process(event);
+            const transformedPayloadsArr = Array.isArray(responsesFn) ? responsesFn : [responsesFn];
+            return transformedPayloadsArr.map((res) => ({
+              message: res,
+              metadata: event.metadata,
+              destination: event.destination,
+            }));
+          } catch (error) {
+            return handleRtTfSingleEventError(event, error, reqMetadata);
+          }
+        }),
+      );
 
-        /**
-         * Before flat map : transformedPayloads = [{e1}, {e2}, [{e3}, {e4}, {e5}], {e6}]
-         * After flat map : transformedPayloads = [{e1}, {e2}, {e3}, {e4}, {e5}, {e6}]
-         */
-        transformedPayloads = lodash.flatMap(transformedPayloads);
-        return filterEventsAndPrepareBatchRequests(transformedPayloads);
-      }),
+      /**
+       * Before flat map : transformedPayloads = [{e1}, {e2}, [{e3}, {e4}, {e5}], {e6}]
+       * After flat map : transformedPayloads = [{e1}, {e2}, {e3}, {e4}, {e5}, {e6}]
+       */
+      transformedPayloads = lodash.flatMap(transformedPayloads);
+      return filterEventsAndPrepareBatchRequests(transformedPayloads);
+    }),
   );
 
   // Flatten the response array containing batched events from multiple groups

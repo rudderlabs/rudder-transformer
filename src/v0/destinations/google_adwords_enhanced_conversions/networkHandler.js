@@ -140,7 +140,7 @@ const responseHandler = (destinationResponse) => {
     getAuthErrCategory(status, response),
   );
 };
-// eslint-disable-next-line func-names
+// eslint-disable-next-line func-names, @typescript-eslint/naming-convention
 class networkHandler {
   constructor() {
     this.proxy = ProxyRequest;

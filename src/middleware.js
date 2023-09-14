@@ -1,35 +1,35 @@
-const Pyroscope = require('@pyroscope/nodejs');
-const stats = require('./util/stats');
-const logger = require('./logger');
+import { init, collectCpu, collectHeap, startHeapCollecting } from '@pyroscope/nodejs';
+import { timing, histogram } from './util/stats';
+import { error } from './logger';
 
-Pyroscope.init({
+init({
   appName: 'rudder-transformer',
 });
 
 async function handlerCpu(ctx) {
   try {
-    const p = await Pyroscope.collectCpu(Number(ctx.query.seconds));
+    const p = await collectCpu(Number(ctx.query.seconds));
     ctx.body = p;
     ctx.status = 200;
   } catch (e) {
-    logger.error(e);
+    error(e);
     ctx.status = 500;
   }
 }
 
 async function handlerHeap(ctx) {
   try {
-    const p = await Pyroscope.collectHeap();
+    const p = await collectHeap();
     ctx.body = p;
     ctx.status = 200;
   } catch (e) {
-    logger.error(e);
+    error(e);
     ctx.status = 500;
   }
 }
 
 function pyroscopeMiddleware() {
-  Pyroscope.startHeapCollecting();
+  startHeapCollecting();
   return (ctx, next) => {
     if (ctx.method === 'GET' && ctx.path === '/debug/pprof/profile') {
       return handlerCpu(ctx).then(() => next());
@@ -56,7 +56,7 @@ function durationMiddleware() {
       code: ctx.status,
       route: ctx.request.url,
     };
-    stats.timing('http_request_duration', startTime, labels);
+    timing('http_request_duration', startTime, labels);
   };
 }
 
@@ -71,11 +71,11 @@ function requestSizeMiddleware() {
     };
 
     const inputLength = ctx.request?.body ? Buffer.byteLength(JSON.stringify(ctx.request.body)) : 0;
-    stats.histogram('http_request_size', inputLength, labels);
+    histogram('http_request_size', inputLength, labels);
     const outputLength = ctx.response?.body
       ? Buffer.byteLength(JSON.stringify(ctx.response.body))
       : 0;
-    stats.histogram('http_response_size', outputLength, labels);
+    histogram('http_response_size', outputLength, labels);
   };
 }
 
@@ -87,7 +87,7 @@ function addRequestSizeMiddleware(app) {
   app.use(requestSizeMiddleware());
 }
 
-module.exports = {
+export default {
   addStatMiddleware,
   addRequestSizeMiddleware,
   addPyroscopeMiddleware,

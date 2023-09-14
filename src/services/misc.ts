@@ -21,6 +21,7 @@ export default class MiscService {
     return require(`../${version}/destinations/${dest}/deleteUsers`);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public static getRequestMetadata(ctx: Context) {
     // TODO: Parse information such as
     // cluster, namespace, etc information
@@ -33,7 +34,7 @@ export default class MiscService {
 
   public static getMetaTags(metadata: Metadata) {
     if (!metadata) {
-      return {}
+      return {};
     }
     return {
       sourceType: metadata.sourceType,

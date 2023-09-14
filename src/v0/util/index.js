@@ -40,7 +40,8 @@ const isDefinedAndNotNullAndNotEmpty = (x) => isDefined(x) && isNotNull(x) && is
 const removeUndefinedValues = (obj) => lodash.pickBy(obj, isDefined);
 const removeNullValues = (obj) => lodash.pickBy(obj, isNotNull);
 const removeUndefinedAndNullValues = (obj) => lodash.pickBy(obj, isDefinedAndNotNull);
-const removeUndefinedAndNullAndEmptyValues = (obj) => lodash.pickBy(obj, isDefinedAndNotNullAndNotEmpty);
+const removeUndefinedAndNullAndEmptyValues = (obj) =>
+  lodash.pickBy(obj, isDefinedAndNotNullAndNotEmpty);
 const isBlank = (value) => lodash.isEmpty(lodash.toString(value));
 const flattenMap = (collection) => lodash.flatMap(collection, (x) => x);
 // ========================================================================
@@ -145,6 +146,7 @@ const removeUndefinedNullEmptyExclBoolInt = (obj) => lodash.pickBy(obj, isDefine
  * @returns
  */
 const removeUndefinedNullValuesAndEmptyObjectArray = (obj) => {
+  // eslint-disable-next-line @typescript-eslint/no-shadow
   function recursive(obj) {
     if (Array.isArray(obj)) {
       const cleanedArray = obj
@@ -537,7 +539,7 @@ const handleSourceKeysOperation = ({ message, operationObject }) => {
       for (const v of argValues) {
         if (lodash.isNumber(v)) {
           result *= v;
-        } else if (_.isString(v) && /^[+-]?(\d+(\.\d*)?|\.\d+)([Ee][+-]?\d+)?$/.test(v)) {
+        } else if (lodash.isString(v) && /^[+-]?(\d+(\.\d*)?|\.\d+)([Ee][+-]?\d+)?$/.test(v)) {
           result *= parseFloat(v);
         } else {
           // if there is a non number argument simply return null

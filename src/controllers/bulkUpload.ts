@@ -1,6 +1,7 @@
-/* eslint-disable global-require, import/no-dynamic-require */
+/* eslint-disable global-require, import/no-dynamic-require, @typescript-eslint/no-unused-vars */
 import { client as errNotificationClient } from '../util/errorNotifier';
 import logger from '../logger';
+import { CatchErr } from '../util/types';
 // TODO: To be refactored and redisgned
 
 const getDestFileUploadHandler = (version, dest) =>
@@ -19,7 +20,7 @@ const getCommonMetadata = (ctx) =>
     cluster: 'Unknown',
   });
 
-const getReqMetadata = () => {
+const getReqMetadata = (ctx) => {
   try {
     const reqBody = ctx.request.body;
     return { destType: reqBody?.destType, importId: reqBody?.importId };
@@ -55,7 +56,7 @@ export const fileUpload = async (ctx) => {
   let response;
   try {
     response = await destFileUploadHandler.processFileData(ctx.request.body);
-  } catch (error: any) {
+  } catch (error: CatchErr) {
     response = {
       statusCode: error.response ? error.response.status : 400,
       error: error.message || ERROR_MESSAGE_PROCESSOR_STRING,
@@ -91,7 +92,7 @@ export const pollStatus = async (ctx) => {
   }
   try {
     response = await destFileUploadHandler.processPolling(ctx.request.body);
-  } catch (error: any) {
+  } catch (error: CatchErr) {
     response = {
       statusCode: error.response?.status || 400,
       error: error.message || ERROR_MESSAGE_PROCESSOR_STRING,
@@ -99,7 +100,7 @@ export const pollStatus = async (ctx) => {
     errNotificationClient.notify(error, 'Poll Status', {
       ...response,
       ...getCommonMetadata(ctx),
-      ...getReqMetadata(),
+      ...getReqMetadata(ctx),
     });
   }
   ctx.body = response;
@@ -127,7 +128,7 @@ export const getWarnJobStatus = async (ctx) => {
   let response;
   try {
     response = await destFileUploadHandler.processJobStatus(ctx.request.body, 'warn');
-  } catch (error: any) {
+  } catch (error: CatchErr) {
     response = {
       statusCode: error.response ? error.response.status : 400,
       error: error.message || ERROR_MESSAGE_PROCESSOR_STRING,
@@ -135,7 +136,7 @@ export const getWarnJobStatus = async (ctx) => {
     errNotificationClient.notify(error, 'Job Status', {
       ...response,
       ...getCommonMetadata(ctx),
-      ...getReqMetadata(),
+      ...getReqMetadata(ctx),
     });
   }
   ctx.body = response;
@@ -163,7 +164,7 @@ export const getFailedJobStatus = async (ctx) => {
   let response;
   try {
     response = await destFileUploadHandler.processJobStatus(ctx.request.body, 'fail');
-  } catch (error: any) {
+  } catch (error: CatchErr) {
     response = {
       statusCode: error.response ? error.response.status : 400,
       error: error.message || ERROR_MESSAGE_PROCESSOR_STRING,
@@ -171,7 +172,7 @@ export const getFailedJobStatus = async (ctx) => {
     errNotificationClient.notify(error, 'Job Status', {
       ...response,
       ...getCommonMetadata(ctx),
-      ...getReqMetadata(),
+      ...getReqMetadata(ctx),
     });
   }
   ctx.body = response;

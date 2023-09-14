@@ -63,7 +63,7 @@ export default class ComparatorService implements IntegrationDestinationService 
   }
 
   private getTestThreshold(destination: Destination) {
-    return destination.DestinationDefinition?.Config.camparisonTestThreshold || 0;
+    return destination.DestinationDefinition?.Config?.camparisonTestThreshold || 0;
   }
 
   private getComparisonLogs(
@@ -85,10 +85,10 @@ export default class ComparatorService implements IntegrationDestinationService 
     // eslint-disable-next-line no-restricted-syntax
     for (const [index, element] of primaryResplist.entries()) {
       const objectDiff = CommonUtils.objectDiff(element, secondaryResplist[index]);
-      if (object.keys(objectDiff).length > 0) {
+      if (Object.keys(objectDiff).length > 0) {
         logger.error(
           `[LIVE_COMPARE_TEST] failed for destinationId=${destinationId}, destType=${destination}, feature=${feature}, diff_keys=${JSON.stringify(
-            object.keys(objectDiff),
+            Object.keys(objectDiff),
           )}`,
         );
 
@@ -134,7 +134,7 @@ export default class ComparatorService implements IntegrationDestinationService 
     // eslint-disable-next-line no-restricted-syntax
     for (const [index, element] of primaryResplist.entries()) {
       const objectDiff = CommonUtils.objectDiff(element, secondaryResplist[index]);
-      if (object.keys(objectDiff).length > 0) {
+      if (Object.keys(objectDiff).length > 0) {
         stats.counter('compare_test_failed_count', 1, {
           destinationId,
           destination,
@@ -159,7 +159,7 @@ export default class ComparatorService implements IntegrationDestinationService 
     secondaryServiceCallback: any,
     destinationType: string,
     version: string,
-    requestMetadata: object,
+    requestMetadata: NonNullable<unknown>,
     feature: string,
     destinationId: string,
   ): Promise<void> {
@@ -197,7 +197,7 @@ export default class ComparatorService implements IntegrationDestinationService 
     events: ProcessorTransformationRequest[],
     destinationType: string,
     version: string,
-    requestMetadata: object,
+    requestMetadata: NonNullable<unknown>,
   ): Promise<ProcessorTransformationResponse[]> {
     const destinationId = events[0].destination.ID;
     const primaryStartTime = process.hrtime();
@@ -255,7 +255,7 @@ export default class ComparatorService implements IntegrationDestinationService 
     events: RouterTransformationRequestData[],
     destinationType: string,
     version: string,
-    requestMetadata: object,
+    requestMetadata: NonNullable<unknown>,
   ): Promise<RouterTransformationResponse[]> {
     const destinationId = events[0].destination.ID;
     const primaryStartTime = process.hrtime();
@@ -313,7 +313,7 @@ export default class ComparatorService implements IntegrationDestinationService 
     events: RouterTransformationRequestData[],
     destinationType: string,
     version: string,
-    requestMetadata: object,
+    requestMetadata: NonNullable<unknown>,
   ): RouterTransformationResponse[] {
     const destinationId = events[0].destination.ID;
     const primaryStartTime = process.hrtime();
@@ -370,7 +370,7 @@ export default class ComparatorService implements IntegrationDestinationService 
   public async deliver(
     event: ProcessorTransformationOutput,
     destinationType: string,
-    requestMetadata: object,
+    requestMetadata: NonNullable<unknown>,
   ): Promise<DeliveryResponse> {
     const primaryResplist = await this.primaryService.deliver(
       event,

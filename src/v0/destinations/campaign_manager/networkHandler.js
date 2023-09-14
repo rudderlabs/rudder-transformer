@@ -1,9 +1,5 @@
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../util/index');
-const {
-  REFRESH_TOKEN,
-  AUTH_STATUS_INACTIVE,
-} = require('../../../adapters/networkhandler/authConstants');
 
 const {
   processAxiosResponse,

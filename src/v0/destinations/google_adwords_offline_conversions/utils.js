@@ -27,7 +27,6 @@ const { processAxiosResponse } = require('../../../adapters/utils/networkUtils')
 const Cache = require('../../util/cache');
 const {
   AbortedError,
-  OAuthSecretError,
   ConfigurationError,
   InstrumentationError,
 } = require('../../util/errorTypes');

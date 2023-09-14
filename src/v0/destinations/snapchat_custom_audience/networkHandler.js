@@ -3,7 +3,6 @@ const { prepareProxyRequest, getPayloadData, httpSend } = require('../../../adap
 const { isHttpStatusSuccess } = require('../../util/index');
 const {
   REFRESH_TOKEN,
-  AUTH_STATUS_INACTIVE,
 } = require('../../../adapters/networkhandler/authConstants');
 const tags = require('../../util/tags');
 const {

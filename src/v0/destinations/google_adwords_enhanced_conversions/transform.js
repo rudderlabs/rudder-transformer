@@ -14,7 +14,6 @@ const {
 const {
   InstrumentationError,
   ConfigurationError,
-  OAuthSecretError,
 } = require('../../util/errorTypes');
 
 const { trackMapping, BASE_ENDPOINT } = require('./config');

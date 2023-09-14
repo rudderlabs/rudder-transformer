@@ -49,7 +49,6 @@ const {
 } = require('../../util');
 const { CONFIG_CATEGORIES } = require('./config');
 const {
-  OAuthSecretError,
   ConfigurationError,
   InstrumentationError,
 } = require('../../util/errorTypes');

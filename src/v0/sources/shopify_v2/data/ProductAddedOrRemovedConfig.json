@@ -1,56 +1,59 @@
 [
-    {
-      "sourceKeys": "cart_id",
-      "destKey": "cart_id",
-      "metadata": {
-        "type": "toString"
-      }
-    },
-    {
-      "sourceKeys": "product_id",
-      "destKey": "product_id",
-      "metadata": {
-        "type": "toString"
-      }
-    },
-    {
-        "sourceKeys": "sku",
-        "destKey": "sku",
-        "metadata": {
-          "type": "toString"
-        }
-      },
-      {
-        "sourceKeys": "title",
-        "destKey": "name",
-        "metadata": {
-          "type": "toString"
-        }
-      },
-      {
-        "sourceKeys": "vendor",
-        "destKey": "brand",
-        "metadata": {
-          "type": "toString"
-        }
-      },
-      {
-        "sourceKeys": "variant_name",
-        "destKey": "variant",
-        "metadata": {
-          "type": "toString"
-        }
-      },
-      {
-        "sourceKeys": "price",
-        "destKey": "price",
-        "metadata": {
-          "type": "toNumber"
-        }
-      },
-      {
-        "sourceKeys": "quantity",
-        "destKey": "quantity"
-      }
-  ]
-  
+  {
+    "sourceKeys": "cart_id",
+    "destKey": "cart_id",
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
+    "sourceKeys": "product_id",
+    "destKey": "product_id",
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
+    "sourceKeys": "sku",
+    "destKey": "sku",
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
+    "sourceKeys": "title",
+    "destKey": "name",
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
+    "sourceKeys": "vendor",
+    "destKey": "brand",
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
+    "sourceKeys": "variant_title",
+    "destKey": "variant"
+  },
+  {
+    "sourceKeys": "name",
+    "destKey": "variant_name",
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
+    "sourceKeys": "price",
+    "destKey": "price",
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "sourceKeys": "quantity",
+    "destKey": "quantity"
+  }
+]

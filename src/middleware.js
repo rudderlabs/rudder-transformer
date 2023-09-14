@@ -87,8 +87,4 @@ function addRequestSizeMiddleware(app) {
   app.use(requestSizeMiddleware());
 }
 
-export default {
-  addStatMiddleware,
-  addRequestSizeMiddleware,
-  addPyroscopeMiddleware,
-};
+export { addStatMiddleware, addRequestSizeMiddleware, addPyroscopeMiddleware };

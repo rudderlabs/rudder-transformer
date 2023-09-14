@@ -102,7 +102,7 @@ const RedisDB = {
    * @param {*} isValJson set to false if value is not a json object
    *
    */
-  async setVal(key, value, expiryTimeInSec = process.env.redisDefaultExpiryTime || 60 * 60) {
+  async setVal(key, value, expiryTimeInSec = process.env.REDIS_EXPIRY_TIME || 60 * 60) {
     try {
       await this.checkAndConnectConnection(); // check if redis is connected and if not, connect
       if (typeof value === 'object') {

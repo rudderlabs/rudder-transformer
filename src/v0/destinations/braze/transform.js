@@ -23,7 +23,7 @@ const {
   simpleProcessRouterDestSync,
   simpleProcessRouterDest,
 } = require('../../util');
-const { InstrumentationError, NetworkError } = require('../../util/errorTypes');
+const { InstrumentationError, NetworkError, FilteredEventsError } = require('../../util/errorTypes');
 const {
   ConfigCategory,
   mappingConfig,
@@ -237,7 +237,7 @@ function processTrackWithUserAttributes(message, destination, mappingJson, proce
       if (dedupedAttributePayload) {
         requestJson.attributes = [dedupedAttributePayload];
       } else {
-        throw new InstrumentationError(
+        throw new FilteredEventsError(
           '[Braze Deduplication]: Duplicate user detected, the user is dropped',
           'filtered'
         );

@@ -62,7 +62,7 @@ const blockLocalhostRequests = (url) => {
       throw new Error('blocked host requests are not allowed');
     }
   } catch (error) {
-    throw new Error(`invalid url ${url} :: ${error.message}`);
+    throw new Error(`invalid url, ${error.message}`);
   }
 };
 

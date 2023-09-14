@@ -1,48 +1,19 @@
-import { init, collectCpu, collectHeap, startHeapCollecting } from '@pyroscope/nodejs';
-import { timing, histogram } from './util/stats';
-import { error } from './logger';
+const Pyroscope = require('@pyroscope/nodejs');
+const stats = require('./util/stats');
 
-init({
-  appName: 'rudder-transformer',
-});
-
-async function handlerCpu(ctx) {
-  try {
-    const p = await collectCpu(Number(ctx.query.seconds));
-    ctx.body = p;
-    ctx.status = 200;
-  } catch (e) {
-    error(e);
-    ctx.status = 500;
-  }
+function initPyroscope() {
+  Pyroscope.init({
+    appName: 'rudder-transformer',
+  });
+  Pyroscope.startHeapCollecting();
 }
 
-async function handlerHeap(ctx) {
-  try {
-    const p = await collectHeap();
-    ctx.body = p;
-    ctx.status = 200;
-  } catch (e) {
-    error(e);
-    ctx.status = 500;
-  }
+function getCPUProfile(seconds) {
+  return Pyroscope.collectCpu(seconds);
 }
 
-function pyroscopeMiddleware() {
-  startHeapCollecting();
-  return (ctx, next) => {
-    if (ctx.method === 'GET' && ctx.path === '/debug/pprof/profile') {
-      return handlerCpu(ctx).then(() => next());
-    }
-    if (ctx.method === 'GET' && ctx.path === '/debug/pprof/heap') {
-      return handlerHeap(ctx).then(() => next());
-    }
-    return next();
-  };
-}
-
-function addPyroscopeMiddleware(app) {
-  app.use(pyroscopeMiddleware());
+function getHeapProfile() {
+  return Pyroscope.collectHeap();
 }
 
 function durationMiddleware() {
@@ -56,7 +27,7 @@ function durationMiddleware() {
       code: ctx.status,
       route: ctx.request.url,
     };
-    timing('http_request_duration', startTime, labels);
+    stats.timing('http_request_duration', startTime, labels);
   };
 }
 
@@ -71,11 +42,11 @@ function requestSizeMiddleware() {
     };
 
     const inputLength = ctx.request?.body ? Buffer.byteLength(JSON.stringify(ctx.request.body)) : 0;
-    histogram('http_request_size', inputLength, labels);
+    stats.histogram('http_request_size', inputLength, labels);
     const outputLength = ctx.response?.body
       ? Buffer.byteLength(JSON.stringify(ctx.response.body))
       : 0;
-    histogram('http_response_size', outputLength, labels);
+    stats.histogram('http_response_size', outputLength, labels);
   };
 }
 
@@ -87,4 +58,10 @@ function addRequestSizeMiddleware(app) {
   app.use(requestSizeMiddleware());
 }
 
-export { addStatMiddleware, addRequestSizeMiddleware, addPyroscopeMiddleware };
+module.exports = {
+  addStatMiddleware,
+  addRequestSizeMiddleware,
+  getHeapProfile,
+  getCPUProfile,
+  initPyroscope,
+};

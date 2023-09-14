@@ -3,7 +3,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://googleads.googleapis.com/v13/customers/1234567890:uploadConversionAdjustments",
+    "endpoint": "https://googleads.googleapis.com/v14/customers/1234567890:uploadConversionAdjustments",
     "headers": {
       "Authorization": "Bearer abcd1234",
       "Content-Type": "application/json",
@@ -56,7 +56,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://googleads.googleapis.com/v13/customers/1234567899:uploadConversionAdjustments",
+    "endpoint": "https://googleads.googleapis.com/v14/customers/1234567899:uploadConversionAdjustments",
     "headers": {
       "Authorization": "Bearer abcd1234",
       "Content-Type": "application/json",
@@ -109,7 +109,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://googleads.googleapis.com/v13/customers/1234567891:uploadConversionAdjustments",
+    "endpoint": "https://googleads.googleapis.com/v14/customers/1234567891:uploadConversionAdjustments",
     "headers": {
       "Authorization": "Bearer abcd1234",
       "Content-Type": "application/json",

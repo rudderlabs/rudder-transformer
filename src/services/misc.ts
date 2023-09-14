@@ -4,6 +4,7 @@ import path from 'path';
 import { Context } from 'koa';
 import { DestHandlerMap } from '../constants/destinationCanonicalNames';
 import { Metadata } from '../types';
+import { getCPUProfile, getHeapProfile } from '../middleware';
 
 export default class MiscService {
   public static getDestHandler(dest: string, version: string) {
@@ -63,5 +64,13 @@ export default class MiscService {
   public static getFetaures() {
     const obj = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../features.json'), 'utf8'));
     return JSON.stringify(obj);
+  }
+
+  public static async getCPUProfile(seconds: number) {
+    return getCPUProfile(seconds);
+  }
+
+  public static async getHeapProfile() {
+    return getHeapProfile();
   }
 }

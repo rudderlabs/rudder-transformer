@@ -1,48 +1,19 @@
 const Pyroscope = require('@pyroscope/nodejs');
 const stats = require('./util/stats');
-const logger = require('./logger');
 
-Pyroscope.init({
-  appName: 'rudder-transformer',
-});
-
-async function handlerCpu(ctx) {
-  try {
-    const p = await Pyroscope.collectCpu(Number(ctx.query.seconds));
-    ctx.body = p;
-    ctx.status = 200;
-  } catch (e) {
-    logger.error(e);
-    ctx.status = 500;
-  }
-}
-
-async function handlerHeap(ctx) {
-  try {
-    const p = await Pyroscope.collectHeap();
-    ctx.body = p;
-    ctx.status = 200;
-  } catch (e) {
-    logger.error(e);
-    ctx.status = 500;
-  }
-}
-
-function pyroscopeMiddleware() {
+function initPyroscope() {
+  Pyroscope.init({
+    appName: 'rudder-transformer',
+  });
   Pyroscope.startHeapCollecting();
-  return (ctx, next) => {
-    if (ctx.method === 'GET' && ctx.path === '/debug/pprof/profile') {
-      return handlerCpu(ctx).then(() => next());
-    }
-    if (ctx.method === 'GET' && ctx.path === '/debug/pprof/heap') {
-      return handlerHeap(ctx).then(() => next());
-    }
-    return next();
-  };
 }
 
-function addPyroscopeMiddleware(app) {
-  app.use(pyroscopeMiddleware());
+function getCPUProfile(seconds) {
+  return Pyroscope.collectCpu(seconds);
+}
+
+function getHeapProfile() {
+  return Pyroscope.collectHeap();
 }
 
 function durationMiddleware() {
@@ -90,5 +61,7 @@ function addRequestSizeMiddleware(app) {
 module.exports = {
   addStatMiddleware,
   addRequestSizeMiddleware,
-  addPyroscopeMiddleware,
+  getHeapProfile,
+  getCPUProfile,
+  initPyroscope,
 };

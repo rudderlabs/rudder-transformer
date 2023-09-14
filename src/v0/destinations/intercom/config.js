@@ -37,8 +37,9 @@ const ReservedUserAttributes = [
   'lastname',
   'firstName',
   'firstname',
-  'last_seen_at',
-  'signed_up_at',
+  'createdAt',
+  'timestamp',
+  'originalTimestamp',
   'unsubscribedFromEmails'
 ];
 

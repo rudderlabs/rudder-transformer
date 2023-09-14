@@ -1,4 +1,5 @@
 const get = require('get-value');
+const cloneDeep = require('lodash/cloneDeep');
 const {
   BASE_ENDPOINT,
   MappingConfig,
@@ -82,8 +83,9 @@ const getBaseEndpoint = (destination) => {
  * @param {*} ReservedAttributes 
  * @returns 
  */
-const getCustomAttributes = (payload, ReservedAttributes) => {
-  let customAttributes = payload.custom_attributes || {};
+const filterCustomAttributes = (payload, ReservedAttributes) => {
+  const { custom_attributes } = payload;
+  let customAttributes = cloneDeep(custom_attributes) || {};
   if (customAttributes) {
     ReservedAttributes.forEach((trait) => {
       delete customAttributes[trait];
@@ -223,7 +225,7 @@ module.exports = {
   fetchContactId,
   getBaseEndpoint,
   validateIdentify,
-  getCustomAttributes,
   createOrUpdateCompany,
+  filterCustomAttributes,
   separateReservedAndRestMetadata,
 };

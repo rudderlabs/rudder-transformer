@@ -14,8 +14,8 @@ const {
   fetchContactId,
   getBaseEndpoint,
   validateIdentify,
-  getCustomAttributes,
   createOrUpdateCompany,
+  filterCustomAttributes,
   separateReservedAndRestMetadata,
 } = require('./util');
 const { InstrumentationError } = require('../../util/errorTypes');
@@ -43,7 +43,7 @@ const identifyResponseBuilder = async (message, destination) => {
     }
   }
 
-  payload.custom_attributes = getCustomAttributes(payload, ReservedUserAttributes);
+  payload.custom_attributes = filterCustomAttributes(payload, ReservedUserAttributes);
 
   let endpoint;
   let requestMethod;
@@ -75,7 +75,7 @@ const trackResponseBuilder = (message, destination) => {
   if (payload.metadata) {
     // reserved metadata contains JSON objects that does not requires flattening
     const { reservedMetadata, restMetadata } = separateReservedAndRestMetadata(payload.metadata);
-    payload =  { ...payload, metadata: { ...reservedMetadata, ...flattenJson(restMetadata) } };
+    payload = { ...payload, metadata: { ...reservedMetadata, ...flattenJson(restMetadata) } };
   }
 
   const { endpoint } = ConfigCategory.TRACK;
@@ -90,7 +90,7 @@ const trackResponseBuilder = (message, destination) => {
 
 const groupResponseBuilder = async (message, destination) => {
   const payload = getPayload(message, ConfigCategory.GROUP);
-  payload.custom_attributes = getCustomAttributes(payload, ReservedCompanyAttributes);
+  payload.custom_attributes = filterCustomAttributes(payload, ReservedCompanyAttributes);
   const companyId = await createOrUpdateCompany(payload, destination);
   const contactId = await fetchContactId(message, destination);
 
@@ -126,7 +126,8 @@ const processSingleMessage = async (message, destination) => {
 };
 
 const process = async (event) => {
-  const response = await processSingleMessage(event.message, event.destination);
+  const { message, destination } = event;
+  const response = await processSingleMessage(message, destination);
   return response;
 };
 

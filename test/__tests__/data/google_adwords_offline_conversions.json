@@ -159,7 +159,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v13/customers/9625812972:uploadClickConversions",
+        "endpoint": "https://googleads.googleapis.com/v14/customers/9625812972:uploadClickConversions",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -418,7 +418,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v13/customers/9625812972:uploadClickConversions",
+        "endpoint": "https://googleads.googleapis.com/v14/customers/9625812972:uploadClickConversions",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -677,7 +677,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v13/customers/9625812972:uploadClickConversions",
+        "endpoint": "https://googleads.googleapis.com/v14/customers/9625812972:uploadClickConversions",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -936,7 +936,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v13/customers/9625812972:uploadCallConversions",
+        "endpoint": "https://googleads.googleapis.com/v14/customers/9625812972:uploadCallConversions",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -1796,7 +1796,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v13/customers/9625812972:uploadClickConversions",
+        "endpoint": "https://googleads.googleapis.com/v14/customers/9625812972:uploadClickConversions",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -1896,7 +1896,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v13/customers/9625812972:uploadCallConversions",
+        "endpoint": "https://googleads.googleapis.com/v14/customers/9625812972:uploadCallConversions",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -2090,7 +2090,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v13/customers/9625812972:uploadClickConversions",
+        "endpoint": "https://googleads.googleapis.com/v14/customers/9625812972:uploadClickConversions",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -2257,7 +2257,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v13/customers/9625812972:uploadCallConversions",
+        "endpoint": "https://googleads.googleapis.com/v14/customers/9625812972:uploadCallConversions",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -2461,7 +2461,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v13/customers/9625812972:uploadCallConversions",
+        "endpoint": "https://googleads.googleapis.com/v14/customers/9625812972:uploadCallConversions",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -2651,7 +2651,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v13/customers/9625812972:uploadClickConversions",
+        "endpoint": "https://googleads.googleapis.com/v14/customers/9625812972:uploadClickConversions",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -3077,7 +3077,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v13/customers/9625812972:uploadClickConversions",
+        "endpoint": "https://googleads.googleapis.com/v14/customers/9625812972:uploadClickConversions",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -3383,7 +3383,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v13/customers/9625812972:uploadClickConversions",
+        "endpoint": "https://googleads.googleapis.com/v14/customers/9625812972:uploadClickConversions",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -3544,7 +3544,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v13/customers/1112223333/offlineUserDataJobs",
+        "endpoint": "https://googleads.googleapis.com/v14/customers/1112223333/offlineUserDataJobs",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -3827,7 +3827,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v13/customers/1112223333/offlineUserDataJobs",
+        "endpoint": "https://googleads.googleapis.com/v14/customers/1112223333/offlineUserDataJobs",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -3993,7 +3993,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v13/customers/1112223333/offlineUserDataJobs",
+        "endpoint": "https://googleads.googleapis.com/v14/customers/1112223333/offlineUserDataJobs",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -4163,7 +4163,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v13/customers/1112223333/offlineUserDataJobs",
+        "endpoint": "https://googleads.googleapis.com/v14/customers/1112223333/offlineUserDataJobs",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -4294,7 +4294,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v13/customers/1112223333/offlineUserDataJobs",
+        "endpoint": "https://googleads.googleapis.com/v14/customers/1112223333/offlineUserDataJobs",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -4421,7 +4421,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v13/customers/1112223333/offlineUserDataJobs",
+        "endpoint": "https://googleads.googleapis.com/v14/customers/1112223333/offlineUserDataJobs",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -4546,7 +4546,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v13/customers/1112223333/offlineUserDataJobs",
+        "endpoint": "https://googleads.googleapis.com/v14/customers/1112223333/offlineUserDataJobs",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",

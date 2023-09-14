@@ -26,7 +26,6 @@ describe('getRearrangedEvents', () => {
     const eachUserErrorEventsList = [{ batched: false, destination: {}, error: 'Message Type not supported: identify', metadata: [{ jobId: 3, userId: 'user12345' }] }, { batched: false, destination: {}, error: 'Message Type not supported: identify', metadata: [{ jobId: 4, userId: 'user12345' }] }];
     const expected =  [[{"batched":false,"destination":{},"error":"Message Type not supported: identify","metadata":[{"jobId":3,"userId":"user12345"},{"jobId":4,"userId":"user12345"}]}]];
     const result = getRearrangedEvents(eachUserSuccessEventslist, eachUserErrorEventsList);
-    console.log(JSON.stringify(result))
     expect(result).toEqual(expected);
   });
 

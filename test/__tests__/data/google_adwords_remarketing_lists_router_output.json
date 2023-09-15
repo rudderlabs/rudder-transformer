@@ -5,7 +5,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v13/customers/7693729833/offlineUserDataJobs",
+        "endpoint": "https://googleads.googleapis.com/v14/customers/7693729833/offlineUserDataJobs",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -76,7 +76,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v13/customers/7693729833/offlineUserDataJobs",
+        "endpoint": "https://googleads.googleapis.com/v14/customers/7693729833/offlineUserDataJobs",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -136,7 +136,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v13/customers/7693729833/offlineUserDataJobs",
+        "endpoint": "https://googleads.googleapis.com/v14/customers/7693729833/offlineUserDataJobs",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -207,7 +207,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v13/customers/7693729833/offlineUserDataJobs",
+        "endpoint": "https://googleads.googleapis.com/v14/customers/7693729833/offlineUserDataJobs",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -250,7 +250,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v13/customers/7693729833/offlineUserDataJobs",
+        "endpoint": "https://googleads.googleapis.com/v14/customers/7693729833/offlineUserDataJobs",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",

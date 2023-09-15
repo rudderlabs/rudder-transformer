@@ -37,8 +37,8 @@ const staticLookup = (transformerVersionId) => async (hostname, _, cb) => {
   }
 
   for (const ip of ips) {
-    if (ip.includes(LOCALHOST_IP)) {
-      cb(null, `cannot use ${LOCALHOST_IP} as IP address`, RECORD_TYPE_A);
+    if (ip.startsWith('127.')) {
+      cb(null, `cannot use ${ip} as IP address`, RECORD_TYPE_A);
       return;
     }
   }
@@ -55,7 +55,7 @@ const blockLocalhostRequests = (url) => {
   try {
     const parseUrl = new URL(url);
     const { hostname } = parseUrl;
-    if (LOCAL_HOST_NAMES_LIST.includes(hostname)) {
+    if (LOCAL_HOST_NAMES_LIST.includes(hostname) || hostname.startsWith('127.')) {
       throw new Error('localhost requests are not allowed');
     }
     if (BLOCK_HOST_NAMES_LIST.includes(hostname)) {

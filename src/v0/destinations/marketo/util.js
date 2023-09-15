@@ -139,9 +139,9 @@ const nestedResponseHandler = (marketoResponse, sourceMessage) => {
         if (!filteredErrorCode) {
           return;
         }
-        if (MARKETO_THROTTLED_CODES.includes(filteredErrorCode.code)) {
+        if (MARKETO_THROTTLED_CODES.includes(filteredErrorCode)) {
           statusCode = 429;
-        } else if (MARKETO_RETRYABLE_CODES.includes(filteredErrorCode.code)) {
+        } else if (MARKETO_RETRYABLE_CODES.includes(filteredErrorCode)) {
           statusCode = 500;
         }
       }

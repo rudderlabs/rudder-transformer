@@ -21,7 +21,7 @@ describe(`${name} Tests`, () => {
           const output = await transformer.process(dataPoint.input);
           expect(output).toEqual(dataPoint.output);
         } catch (error) {
-          expect(error.message).toEqual(dataPoint.output.message);
+          expect(error.message).toEqual(dataPoint.output.error);
         }
       });
     });

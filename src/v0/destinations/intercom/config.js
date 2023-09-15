@@ -14,7 +14,7 @@ const ConfigCategory = {
   },
   IDENTIFY: {
     endpoint: 'contacts',
-    name: 'INTERCOMIdentifyConfig'
+    name: 'INTERCOMIdentifyConfig',
   },
   GROUP: {
     endpoint: 'contacts/{id}/companies',
@@ -40,7 +40,7 @@ const ReservedUserAttributes = [
   'createdAt',
   'timestamp',
   'originalTimestamp',
-  'unsubscribedFromEmails'
+  'unsubscribedFromEmails',
 ];
 
 const ReservedCompanyAttributes = [
@@ -48,6 +48,7 @@ const ReservedCompanyAttributes = [
   'size',
   'plan',
   'name',
+  'email',
   'userId',
   'website',
   'industry',

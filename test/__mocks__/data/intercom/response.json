@@ -1,36 +1,57 @@
 {
-    "https://api.intercom.io/contacts/search": {
-        "type": "list",
-        "data": [
-            {
-                "type": "contact",
-                "id": "contact_id_1",
-                "workspace_id": "work@1",
-                "external_id": "user@1",
-                "role": "user",
-                "email": "test@rudderlabs.com",
-                "name": "joe bloggs",
-                "social_profiles": {
-                    "type": "list",
-                    "data": []
-                },
-                "has_hard_bounced": false,
-                "marked_email_as_spam": false,
-                "unsubscribed_from_emails": false,
-                "created_at": 1694510222,
-                "updated_at": 1694678038,
-                "location": {
-                    "type": "location",
-                    "country": "IND"
-                }
-            }
-        ],
-        "total_count": 1,
-        "pages": {
-            "type": "pages",
-            "page": 1,
-            "per_page": 50,
-            "total_pages": 1
+  "https://api.intercom.io/contacts/search": {
+    "type": "list",
+    "data": [
+      {
+        "type": "contact",
+        "id": "contact_id_2",
+        "workspace_id": "workspace@2",
+        "external_id": "user@2",
+        "role": "user",
+        "email": "test@rudderlabs.com",
+        "name": "joe bloggs",
+        "social_profiles": {
+          "type": "list",
+          "data": []
+        },
+        "has_hard_bounced": false,
+        "marked_email_as_spam": false,
+        "unsubscribed_from_emails": false,
+        "created_at": 1694510222,
+        "updated_at": 1694678038,
+        "location": {
+          "type": "location",
+          "country": "IND"
         }
+      }
+    ],
+    "total_count": 1,
+    "pages": {
+      "type": "pages",
+      "page": 1,
+      "per_page": 50,
+      "total_pages": 1
     }
+  },
+  "https://api.intercom.io/companies": {
+    "type": "company",
+    "company_id": "group@1",
+    "id": "company@1",
+    "app_id": "app-1",
+    "name": "rudderstack",
+    "remote_created_at": 1683017572,
+    "created_at": 1694677006,
+    "updated_at": 1694757808,
+    "monthly_spend": 2131231,
+    "session_count": 0,
+    "user_count": 2,
+    "size": 50,
+    "industry": "IT",
+    "plan": "basic",
+    "custom_attributes": {
+      "employees": 450,
+      "email": "test@test.com",
+      "key1": "val1"
+    }
+  }
 }

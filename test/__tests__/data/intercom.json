@@ -1,1 +1,569 @@
-[]
+[
+  {
+    "description": "No Message type",
+    "input": {
+      "message": {
+        "channel": "web",
+        "context": {
+          "traits": {
+            "age": 23,
+            "email": "adc@test.com",
+            "firstname": "Test",
+            "birthday": "2022-05-13T12:51:01.470Z"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36"
+        },
+        "event": "Product Searched",
+        "originalTimestamp": "2020-09-22T14:42:44.724Z",
+        "timestamp": "2022-09-22T20:12:44.757+05:30",
+        "userId": "user@1"
+      },
+      "destination": {
+        "Config": {
+          "apiKey": "ABC..."
+        }
+      },
+      "metadata": {
+        "secret": {
+          "access_token": "ABC"
+        }
+      }
+    },
+    "output": {
+      "error": "Message Type is not present. Aborting message"
+    }
+  },
+  {
+    "description": "Unsupported Event type",
+    "input": {
+      "message": {
+        "channel": "web",
+        "context": {
+          "traits": {
+            "age": 23,
+            "email": "adc@test.com",
+            "firstname": "Test",
+            "birthday": "2022-05-13T12:51:01.470Z"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36"
+        },
+        "event": "Product Searched",
+        "type": "page",
+        "originalTimestamp": "2020-09-22T14:42:44.724Z",
+        "timestamp": "2022-09-22T20:12:44.757+05:30",
+        "userId": "user@1"
+      },
+      "destination": {
+        "Config": {
+          "apiKey": "ABC..."
+        }
+      }
+    },
+    "output": {
+      "error": "Message type page not supported"
+    }
+  },
+  {
+    "description": "Required parameters are not present",
+    "input": {
+      "message": {
+        "channel": "web",
+        "context": {
+          "traits": {
+            "age": 23,
+            "firstname": "Test",
+            "birthday": "2022-05-13T12:51:01.470Z"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36"
+        },
+        "event": "Product Searched",
+        "type": "identify",
+        "originalTimestamp": "2023-09-24T14:42:44.724Z",
+        "timestamp": "2023-09-22T20:14:44.757+05:30",
+        "anonymousId": "26508834-c290-4354-9303-11c9b339a58a"
+      },
+      "destination": {
+        "Config": {
+          "apiKey": "ABC..."
+        }
+      }
+    },
+    "output": {
+      "error": "Either of `email` or `userId` is required for an Identify call"
+    }
+  },
+  {
+    "description": "Create user",
+    "input": {
+      "message": {
+        "channel": "web",
+        "context": {
+          "device": {
+            "id": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
+            "manufacturer": "Apple",
+            "model": "iPhone",
+            "name": "iPod touch (7th generation)",
+            "type": "iOS"
+          },
+          "library": {
+            "name": "test-ios-library",
+            "version": "1.0.7"
+          },
+          "locale": "en-US",
+          "network": {
+            "bluetooth": false,
+            "carrier": "unavailable",
+            "cellular": false,
+            "wifi": true
+          },
+          "os": {
+            "name": "iOS",
+            "version": "14.0"
+          },
+          "screen": {
+            "density": 2,
+            "height": 320,
+            "width": 568
+          },
+          "traits": {
+            "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
+            "name": "Dummy User",
+            "firstName": "Dummy",
+            "lastName": "User",
+            "createdAt": "2020-09-30T19:11:00.337Z",
+            "userId": "user@1",
+            "email": "test@intercom.com",
+            "phone": "123456789",
+            "address": {
+              "city": "Kolkata",
+              "state": "West Bengal"
+            },
+            "originalArray": [
+              {
+                "nested_field": "nested value",
+                "tags": ["tag_1", "tag_2", "tag_3"]
+              }
+            ]
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36"
+        },
+        "integrations": {
+          "INTERCOM": {
+            "lookup": "email"
+          }
+        },
+        "type": "identify",
+        "originalTimestamp": "2023-09-24T14:42:44.724Z",
+        "timestamp": "2023-09-22T20:14:44.757+05:30",
+        "anonymousId": "26508834-c290-4354-9303-11c9b339a58a",
+        "userId": "user@1"
+      },
+      "destination": {
+        "Config": {
+          "apiKey": "dummyApiKey",
+          "apiServer": "standard"
+        }
+      }
+    },
+    "output": {
+      "body": {
+        "FORM": {},
+        "JSON": {
+          "custom_attributes": {
+            "address.city": "Kolkata",
+            "address.state": "West Bengal",
+            "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
+            "originalArray[0].nested_field": "nested value",
+            "originalArray[0].tags[0]": "tag_1",
+            "originalArray[0].tags[1]": "tag_2",
+            "originalArray[0].tags[2]": "tag_3"
+          },
+          "email": "test@intercom.com",
+          "external_id": "user@1",
+          "last_seen_at": 1695393884,
+          "name": "Dummy User",
+          "phone": "123456789",
+          "signed_up_at": 1601493060
+        },
+        "JSON_ARRAY": {},
+        "XML": {}
+      },
+      "endpoint": "https://api.intercom.io/contacts",
+      "files": {},
+      "headers": {
+        "Accept": "application/json",
+        "Authorization": "Bearer dummyApiKey",
+        "Content-Type": "application/json",
+        "Intercom-Version": "2.10"
+      },
+      "method": "POST",
+      "params": {},
+      "type": "REST",
+      "version": "1"
+    }
+  },
+  {
+    "description": "Update user",
+    "input": {
+      "message": {
+        "channel": "web",
+        "context": {
+          "device": {
+            "id": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
+            "manufacturer": "Apple",
+            "model": "iPhone",
+            "name": "iPod touch (7th generation)",
+            "type": "iOS"
+          },
+          "library": {
+            "name": "test-ios-library",
+            "version": "1.0.7"
+          },
+          "locale": "en-US",
+          "network": {
+            "bluetooth": false,
+            "carrier": "unavailable",
+            "cellular": false,
+            "wifi": true
+          },
+          "os": {
+            "name": "iOS",
+            "version": "14.0"
+          },
+          "screen": {
+            "density": 2,
+            "height": 320,
+            "width": 568
+          },
+          "traits": {
+            "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
+            "firstName": "Test",
+            "lastName": "User",
+            "createdAt": "2020-09-30T19:11:00.337Z",
+            "email": "test@rudderlabs.com",
+            "phone": "123456789",
+            "address": {
+              "city": "Kolkata",
+              "state": "West Bengal"
+            },
+            "originalArray": [
+              {
+                "nested_field": "nested value",
+                "tags": ["tag_1", "tag_2", "tag_3"]
+              }
+            ]
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36"
+        },
+        "integrations": {
+          "INTERCOM": {
+            "lookup": "email"
+          }
+        },
+        "type": "identify",
+        "originalTimestamp": "2023-09-24T14:42:44.724Z",
+        "timestamp": "2023-09-22T20:14:44.757+05:30",
+        "anonymousId": "26508834-c290-4354-9303-11c9b339a58a"
+      },
+      "destination": {
+        "Config": {
+          "apiKey": "dummyApiKey",
+          "apiServer": "standard",
+          "sendAnonymousId": true
+        }
+      }
+    },
+    "output": {
+      "body": {
+        "FORM": {},
+        "JSON": {
+          "custom_attributes": {
+            "address.city": "Kolkata",
+            "address.state": "West Bengal",
+            "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
+            "originalArray[0].nested_field": "nested value",
+            "originalArray[0].tags[0]": "tag_1",
+            "originalArray[0].tags[1]": "tag_2",
+            "originalArray[0].tags[2]": "tag_3"
+          },
+          "email": "test@rudderlabs.com",
+          "external_id": "26508834-c290-4354-9303-11c9b339a58a",
+          "last_seen_at": 1695393884,
+          "name": "Test User",
+          "phone": "123456789",
+          "signed_up_at": 1601493060
+        },
+        "JSON_ARRAY": {},
+        "XML": {}
+      },
+      "endpoint": "https://api.intercom.io/contacts/contact_id_2",
+      "files": {},
+      "headers": {
+        "Accept": "application/json",
+        "Authorization": "Bearer dummyApiKey",
+        "Content-Type": "application/json",
+        "Intercom-Version": "2.10"
+      },
+      "method": "PUT",
+      "params": {},
+      "type": "REST",
+      "version": "1"
+    }
+  },
+  {
+    "description": "Missing required parameters",
+    "input": {
+      "message": {
+        "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
+        "channel": "mobile",
+        "context": {
+          "app": {
+            "build": "1.0",
+            "name": "Test_Example",
+            "namespace": "com.example.testapp",
+            "version": "1.0"
+          },
+          "device": {
+            "id": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
+            "manufacturer": "Apple",
+            "model": "iPhone",
+            "name": "iPod touch (7th generation)",
+            "type": "iOS"
+          },
+          "library": {
+            "name": "test-ios-library",
+            "version": "1.0.7"
+          },
+          "locale": "en-US",
+          "network": {
+            "bluetooth": false,
+            "carrier": "unavailable",
+            "cellular": false,
+            "wifi": true
+          },
+          "os": {
+            "name": "iOS",
+            "version": "14.0"
+          },
+          "screen": {
+            "density": 2,
+            "height": 320,
+            "width": 568
+          },
+          "timezone": "Asia/Kolkata",
+          "traits": {
+            "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
+            "name": "Test Name",
+            "firstName": "Test",
+            "lastName": "Name",
+            "createdAt": "2020-09-30T19:11:00.337Z",
+            "phone": "123456789",
+            "key1": "value1"
+          },
+          "userAgent": "unknown"
+        },
+        "properties": {
+          "revenue": {
+            "amount": 1232,
+            "currency": "inr",
+            "test": 123
+          },
+          "price": {
+            "amount": 3000,
+            "currency": "USD"
+          }
+        },
+        "event": "User Sign Up",
+        "integrations": {
+          "All": true
+        },
+        "messageId": "1601493060-39010c49-e6e4-4626-a75c-0dbf1925c9e8",
+        "originalTimestamp": "2023-09-22T20:14:44.757+05:30",
+        "timestamp": "2023-09-22T20:14:44.757+05:30",
+        "type": "track"
+      },
+      "destination": {
+        "Config": {
+          "apiKey": "dummyApiKey",
+          "apiServer": "eu",
+          "sendAnonymousId": true
+        }
+      }
+    },
+    "output": {
+      "error": "Either of `email` or `userId` is required for Track call"
+    }
+  },
+  {
+    "description": "User Sign up event",
+    "input": {
+      "message": {
+        "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
+        "channel": "mobile",
+        "context": {
+          "app": {
+            "build": "1.0",
+            "name": "Test_Example",
+            "namespace": "com.example.testapp",
+            "version": "1.0"
+          },
+          "device": {
+            "id": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
+            "manufacturer": "Apple",
+            "model": "iPhone",
+            "name": "iPod touch (7th generation)",
+            "type": "iOS"
+          },
+          "library": {
+            "name": "test-ios-library",
+            "version": "1.0.7"
+          },
+          "locale": "en-US",
+          "network": {
+            "bluetooth": false,
+            "carrier": "unavailable",
+            "cellular": false,
+            "wifi": true
+          },
+          "os": {
+            "name": "iOS",
+            "version": "14.0"
+          },
+          "screen": {
+            "density": 2,
+            "height": 320,
+            "width": 568
+          },
+          "timezone": "Asia/Kolkata",
+          "traits": {
+            "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
+            "name": "Test Name",
+            "firstName": "Test",
+            "lastName": "Name",
+            "createdAt": "2020-09-30T19:11:00.337Z",
+            "phone": "123456789",
+            "key1": "value1"
+          },
+          "userAgent": "unknown"
+        },
+        "properties": {
+          "revenue": {
+            "amount": 1232,
+            "currency": "inr",
+            "test": 123
+          },
+          "price": {
+            "amount": 3000,
+            "currency": "USD"
+          }
+        },
+        "event": "User Sign Up",
+        "integrations": {
+          "All": true
+        },
+        "messageId": "1601493060-39010c49-e6e4-4626-a75c-0dbf1925c9e8",
+        "originalTimestamp": "2023-09-22T20:14:44.757+05:30",
+        "timestamp": "2023-09-22T20:14:44.757+05:30",
+        "userId": "user@3",
+        "type": "track"
+      },
+      "destination": {
+        "Config": {
+          "apiKey": "dummyApiKey",
+          "apiServer": "au",
+          "sendAnonymousId": true
+        }
+      }
+    },
+    "output": {
+      "body": {
+        "FORM": {},
+        "JSON": {
+          "created_at": 1695393884,
+          "event_name": "User Sign Up",
+          "metadata": {
+            "price": {
+              "amount": 3000,
+              "currency": "USD"
+            },
+            "revenue": {
+              "amount": 1232,
+              "currency": "inr",
+              "test": 123
+            }
+          },
+          "user_id": "user@3"
+        },
+        "JSON_ARRAY": {},
+        "XML": {}
+      },
+      "endpoint": "https://api.au.intercom.io/events",
+      "files": {},
+      "headers": {
+        "Accept": "application/json",
+        "Authorization": "Bearer dummyApiKey",
+        "Content-Type": "application/json",
+        "Intercom-Version": "2.10"
+      },
+      "method": "POST",
+      "params": {},
+      "type": "REST",
+      "version": "1"
+    }
+  },
+  {
+    "description": "Attach user with company",
+    "input": {
+      "message": {
+        "groupId": "rudderstack@1",
+        "traits": {
+          "employees": 450,
+          "plan": "basic",
+          "userId": "sdfrsdfsdfsf",
+          "email": "test@rudderlabs.com",
+          "name": "rudderstack",
+          "size": "50",
+          "industry": "IT",
+          "monthlySpend": "2131231",
+          "remoteCreatedAt": "1683017572",
+          "key1": "val1"
+        },
+        "anonymousId": "anon@1",
+        "integrations": {
+          "All": true
+        },
+        "type": "group",
+        "userId": "sdfrsdfsdfsf"
+      },
+      "destination": {
+        "Config": {
+          "apiKey": "dummyApiKey",
+          "apiServer": "standard",
+          "sendAnonymousId": true
+        }
+      }
+    },
+    "output": {
+      "body": {
+        "FORM": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "JSON": {
+          "id": "company@1"
+        }
+      },
+      "endpoint": "https://api.intercom.io/contacts/contact_id_2/companies",
+      "files": {},
+      "headers": {
+        "Accept": "application/json",
+        "Authorization": "Bearer dummyApiKey",
+        "Content-Type": "application/json",
+        "Intercom-Version": "2.10"
+      },
+      "method": "POST",
+      "params": {},
+      "type": "REST",
+      "version": "1"
+    }
+  }
+]

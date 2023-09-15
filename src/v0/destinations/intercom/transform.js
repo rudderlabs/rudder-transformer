@@ -12,13 +12,14 @@ const {
   getPayload,
   validateTrack,
   fetchContactId,
+  getLookUpField,
   getBaseEndpoint,
   validateIdentify,
   createOrUpdateCompany,
   filterCustomAttributes,
   separateReservedAndRestMetadata,
 } = require('./util');
-const { InstrumentationError } = require('../../util/errorTypes');
+const { InstrumentationError, NetworkError } = require('../../util/errorTypes');
 
 const responseBuilder = (payload, endpoint, requestMethod, destination) => {
   const response = defaultRequestConfig();
@@ -47,8 +48,9 @@ const identifyResponseBuilder = async (message, destination) => {
 
   let endpoint;
   let requestMethod;
-  const contactId = await fetchContactId(message, destination);
-  
+  const lookupField = getLookUpField(message);
+  const contactId = await fetchContactId(message, destination, lookupField);
+
   const baseEndPoint = getBaseEndpoint(destination);
   if (contactId) {
     requestMethod = 'PUT';
@@ -78,7 +80,8 @@ const trackResponseBuilder = (message, destination) => {
     payload = { ...payload, metadata: { ...reservedMetadata, ...flattenJson(restMetadata) } };
   }
 
-  const { endpoint } = ConfigCategory.TRACK;
+  const baseEndPoint = getBaseEndpoint(destination);
+  const endpoint = `${baseEndPoint}/${ConfigCategory.TRACK.endpoint}`;
 
   const { sendAnonymousId } = destination.Config;
   if (!payload.user_id && sendAnonymousId && message.anonymousId) {
@@ -92,13 +95,20 @@ const groupResponseBuilder = async (message, destination) => {
   const payload = getPayload(message, ConfigCategory.GROUP);
   payload.custom_attributes = filterCustomAttributes(payload, ReservedCompanyAttributes);
   const companyId = await createOrUpdateCompany(payload, destination);
-  const contactId = await fetchContactId(message, destination);
+  const lookupField = getLookUpField(message);
+  const contactId = await fetchContactId(message, destination, lookupField);
+
+  if (!isDefinedAndNotNull(contactId)) {
+    throw new NetworkError(`Can't find any user with given lookupField : ${lookupField}`);
+  }
 
   if (isDefinedAndNotNull(companyId) && isDefinedAndNotNull(contactId)) {
-    let { endpoint } = ConfigCategory.GROUP;
+    const baseEndPoint = getBaseEndpoint(destination);
+    let endpoint = `${baseEndPoint}/${ConfigCategory.GROUP.endpoint}`;
     endpoint = endpoint.replace('{id}', contactId);
     return responseBuilder({ id: companyId }, endpoint, 'POST', destination);
   }
+
   throw new InstrumentationError("Can't attach user with company");
 };
 

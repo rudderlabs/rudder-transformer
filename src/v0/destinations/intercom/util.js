@@ -31,17 +31,19 @@ const { InstrumentationError, NetworkError } = require('../../util/errorTypes');
 
 /**
  * Validated identify call payload
- * @param {*} payload 
+ * @param {*} payload
  */
 const validateIdentify = (payload) => {
   if (!payload.email && !payload.external_id) {
-    throw new InstrumentationError('Either of `email` or `userId` is required for Identify call');
+    throw new InstrumentationError(
+      'Either of `email` or `userId` is required for an Identify call',
+    );
   }
 };
 
 /**
  * Validates track call payload
- * @param {*} payload 
+ * @param {*} payload
  */
 const validateTrack = (payload) => {
   if (!payload.user_id && !payload.email) {
@@ -51,20 +53,20 @@ const validateTrack = (payload) => {
 
 /**
  * Returns headers
- * @param {*} destination 
- * @returns 
+ * @param {*} destination
+ * @returns
  */
 const getHeaders = (destination) => ({
   'Content-Type': JSON_MIME_TYPE,
   Authorization: `Bearer ${destination.Config.apiKey}`,
   Accept: JSON_MIME_TYPE,
-  'Intercom-Version': '2.9',
+  'Intercom-Version': '2.10',
 });
 
 /**
  * Returns base endpoint
- * @param {*} destination 
- * @returns 
+ * @param {*} destination
+ * @returns
  */
 const getBaseEndpoint = (destination) => {
   const { apiServer } = destination.Config;
@@ -79,9 +81,9 @@ const getBaseEndpoint = (destination) => {
 
 /**
  * Returns custom attributes for identify and group calls
- * @param {*} payload 
- * @param {*} ReservedAttributes 
- * @returns 
+ * @param {*} payload
+ * @param {*} ReservedAttributes
+ * @returns
  */
 const filterCustomAttributes = (payload, ReservedAttributes) => {
   const { custom_attributes } = payload;
@@ -99,9 +101,9 @@ const filterCustomAttributes = (payload, ReservedAttributes) => {
 
 /**
  * Returns transformed payload
- * @param {*} message 
- * @param {*} category 
- * @returns 
+ * @param {*} message
+ * @param {*} category
+ * @returns
  */
 const getPayload = (message, category) => {
   let payload;
@@ -115,17 +117,27 @@ const getPayload = (message, category) => {
 };
 
 /**
- * Returns contact id based on lookup
- * @param {*} message 
- * @param {*} destination 
- * @returns 
+ * Returns lookupField
+ * @param {*} message
+ * @returns
  */
-const fetchContactId = async (message, destination) => {
+const getLookUpField = (message) => {
   const integrationsObj = getIntegrationsObj(message, 'INTERCOM');
   let lookupField = 'email';
   if (integrationsObj && integrationsObj.lookup && isDefinedAndNotNull(integrationsObj.lookup)) {
     lookupField = integrationsObj.lookup;
   }
+  return lookupField;
+};
+
+/**
+ * Returns contact id based on lookup
+ * @param {*} message
+ * @param {*} destination
+ * @param {*} lookupField
+ * @returns
+ */
+const fetchContactId = async (message, destination, lookupField) => {
   const lookupFieldValue = getFieldValueFromMessage(message, lookupField);
   const data = JSON.stringify({
     query: {
@@ -142,7 +154,7 @@ const fetchContactId = async (message, destination) => {
 
   const headers = getHeaders(destination);
   const baseEndPoint = getBaseEndpoint(destination);
-  const endpoint = `${baseEndPoint}/${SEARCH_CONTACT_ENDPOINT}`
+  const endpoint = `${baseEndPoint}/${SEARCH_CONTACT_ENDPOINT}`;
   const response = await httpPOST(endpoint, data, {
     headers,
     destType: 'intercom',
@@ -151,7 +163,9 @@ const fetchContactId = async (message, destination) => {
 
   const processedUserResponse = processAxiosResponse(response);
   if (isHttpStatusSuccess(processedUserResponse.status)) {
-    return processedUserResponse.response?.data[0]?.id;
+    return processedUserResponse.response?.data.length > 0
+      ? processedUserResponse.response?.data[0]?.id
+      : null;
   }
 
   return null;
@@ -159,16 +173,16 @@ const fetchContactId = async (message, destination) => {
 
 /**
  * Function to create or update company
- * @param {*} payload 
- * @param {*} destination 
- * @returns 
+ * @param {*} payload
+ * @param {*} destination
+ * @returns
  */
 const createOrUpdateCompany = async (payload, destination) => {
   const headers = getHeaders(destination);
-  const finalPayload = removeUndefinedAndNullValues(payload);
+  const finalPayload = JSON.stringify(removeUndefinedAndNullValues(payload));
 
   const baseEndPoint = getBaseEndpoint(destination);
-  const endpoint = `${baseEndPoint}/${CREATE_OR_UPDATE_COMPANY_ENDPOINT}`
+  const endpoint = `${baseEndPoint}/${CREATE_OR_UPDATE_COMPANY_ENDPOINT}`;
   const response = await httpPOST(endpoint, finalPayload, {
     headers,
     destType: 'intercom',
@@ -223,6 +237,7 @@ module.exports = {
   getPayload,
   validateTrack,
   fetchContactId,
+  getLookUpField,
   getBaseEndpoint,
   validateIdentify,
   createOrUpdateCompany,

@@ -10,19 +10,22 @@ const getData = url => {
 };
 
 const intercomPostRequestHandler = (url, payload) => {
+    const requestPayload = JSON.parse(payload);
     const mockData = getData(url);
-    switch (url) {
-        case "https://api.intercom.io/contacts/search":
-            //resolve with status 201 and response data contains value for contact created
-            return { data: mockData, status: 200 };
-        default:
-            return new Promise((resolve, reject) => {
-                if (mockData) {
-                    resolve({ data: mockData, status: 200 });
-                } else {
-                    resolve({ error: "Request failed" });
-                }
-            });
+    if (requestPayload.query?.value[0]?.value === 'test@intercom.com') {
+        return { data: { data: [], total_count: 0 }, status: 200 };
+    } else if (requestPayload.query?.value[0]?.value === 'test@rudderlabs.com') {
+        return { data: mockData, status: 200 };
+    } else if (requestPayload?.company_id === 'rudderstack@1') {
+        return { data: mockData, status: 200 };
+    } else {
+        return new Promise((resolve, reject) => {
+            if (mockData) {
+                resolve({ data: mockData, status: 200 });
+            } else {
+                resolve({ error: "Request failed" });
+            }
+        });
     }
 };
 

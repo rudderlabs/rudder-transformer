@@ -13,7 +13,7 @@ const resolver = new Resolver();
 const BLOCK_HOST_NAMES = process.env.BLOCK_HOST_NAMES || '';
 const BLOCK_HOST_NAMES_LIST = BLOCK_HOST_NAMES.split(',');
 const LOCAL_HOST_NAMES_LIST = ['localhost', '127.0.0.1', '[::]', '[::1]'];
-const LOCALHOST_IP = '127.0.0.1';
+const LOCALHOST_OCTET = '127.';
 const RECORD_TYPE_A = 4; // ipv4
 
 const staticLookup = (transformerVersionId) => async (hostname, _, cb) => {
@@ -37,7 +37,7 @@ const staticLookup = (transformerVersionId) => async (hostname, _, cb) => {
   }
 
   for (const ip of ips) {
-    if (ip.startsWith('127.')) {
+    if (ip.startsWith(LOCALHOST_OCTET)) {
       cb(null, `cannot use ${ip} as IP address`, RECORD_TYPE_A);
       return;
     }
@@ -55,7 +55,7 @@ const blockLocalhostRequests = (url) => {
   try {
     const parseUrl = new URL(url);
     const { hostname } = parseUrl;
-    if (LOCAL_HOST_NAMES_LIST.includes(hostname) || hostname.startsWith('127.')) {
+    if (LOCAL_HOST_NAMES_LIST.includes(hostname) || hostname.startsWith(LOCALHOST_OCTET)) {
       throw new Error('localhost requests are not allowed');
     }
     if (BLOCK_HOST_NAMES_LIST.includes(hostname)) {

@@ -1,26 +1,6 @@
 [
   {
     "type": "REST",
-    "endpoint": "https://marketo_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=110&id=111&id=112",
-    "method": "POST",
-    "userId": "",
-    "headers": {
-      "Authorization": "Bearer Incorrect_token",
-      "Content-Type": "application/json"
-    },
-    "body": {
-      "FORM": {},
-      "JSON": {},
-      "JSON_ARRAY": {},
-      "XML": {}
-    },
-    "files": {},
-    "params": {
-      "destination": "marketo_static_list"
-    }
-  },
-  {
-    "type": "REST",
     "endpoint": "https://marketo_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=1&id=2&id=3",
     "method": "POST",
     "userId": "",

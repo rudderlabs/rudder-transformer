@@ -11,8 +11,9 @@ const {
   getFieldValueFromMessage,
   isDefinedAndNotNullAndNotEmpty,
   isDefinedAndNotNull,
+  getAuthErrCategoryFromStCode,
+  getAccessToken,
 } = require('../../util');
-const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
 const {
   SEARCH_STREAM,
   CONVERSION_ACTION_ID_CACHE_TTL,
@@ -26,7 +27,6 @@ const { processAxiosResponse } = require('../../../adapters/utils/networkUtils')
 const Cache = require('../../util/cache');
 const {
   AbortedError,
-  OAuthSecretError,
   ConfigurationError,
   InstrumentationError,
 } = require('../../util/errorTypes');
@@ -41,34 +41,6 @@ const validateDestinationConfig = ({ Config }) => {
   if (!Config.customerId) {
     throw new ConfigurationError('Customer ID not found. Aborting');
   }
-};
-
-/**
- * for OAuth destination
- * get access_token from metadata.secret{ ... }
- * @param {*} param0
- * @returns
- */
-const getAccessToken = ({ secret }) => {
-  if (!secret) {
-    throw new OAuthSecretError('OAuth - access token not found');
-  }
-  return secret.access_token;
-};
-
-/**
- * This function helps to determine the type of error occured. We set the authErrorCategory
- * as per the destination response that is received and take the decision whether
- * to refresh the access_token or disable the destination.
- * @param {*} status
- * @returns
- */
-const getAuthErrCategory = (status) => {
-  if (status === 401) {
-    // UNAUTHORIZED
-    return REFRESH_TOKEN;
-  }
-  return '';
 };
 
 /**
@@ -100,7 +72,7 @@ const getConversionActionId = async (headers, params) => {
         )} during google_ads_offline_conversions response transformation`,
         searchStreamResponse.status,
         searchStreamResponse.response,
-        getAuthErrCategory(get(searchStreamResponse, 'status')),
+        getAuthErrCategoryFromStCode(get(searchStreamResponse, 'status')),
       );
     }
     const conversionAction = get(
@@ -194,7 +166,7 @@ const requestBuilder = (
   }
   response.body.JSON = payload;
   response.headers = {
-    Authorization: `Bearer ${getAccessToken(metadata)}`,
+    Authorization: `Bearer ${getAccessToken(metadata, 'access_token')}`,
     'Content-Type': 'application/json',
     'developer-token': get(metadata, 'secret.developer_token'),
   };
@@ -390,7 +362,6 @@ const getClickConversionPayloadAndEndpoint = (message, Config, filteredCustomerI
 module.exports = {
   validateDestinationConfig,
   generateItemListFromProducts,
-  getAccessToken,
   getConversionActionId,
   removeHashToSha256TypeFromMappingJson,
   getStoreConversionPayload,

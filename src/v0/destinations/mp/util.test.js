@@ -1,7 +1,4 @@
-const {
-  combineBatchRequestsWithSameJobIds,
-  combineBatchRequestsWithSameJobIds2,
-} = require('./util');
+const { combineBatchRequestsWithSameJobIds } = require('./util');
 
 const destinationMock = {
   Config: {

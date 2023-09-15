@@ -1,6 +1,6 @@
 const { getMappingConfig } = require('../../util');
 
-const BASE_ENDPOINT = 'https://googleads.googleapis.com/v13/customers';
+const BASE_ENDPOINT = 'https://googleads.googleapis.com/v14/customers';
 const CONFIG_CATEGORIES = {
   AUDIENCE_LIST: { type: 'audienceList', name: 'offlineDataJobs' },
   ADDRESSINFO: { type: 'addressInfo', name: 'addressInfo' },

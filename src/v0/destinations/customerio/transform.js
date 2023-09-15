@@ -116,7 +116,7 @@ function processSingleMessage(message, destination) {
   const response = responseBuilder(message, evType, evName, destination, messageType);
 
   // replace default domain with EU data center domainc for EU based account
-  if (destination.Config.datacenterEU) {
+  if (destination.Config?.datacenter === 'EU' || destination.Config?.datacenterEU) {
     response.endpoint = response.endpoint.replace('track.customer.io', 'track-eu.customer.io');
   }
 

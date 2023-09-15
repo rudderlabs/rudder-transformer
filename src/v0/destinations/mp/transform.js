@@ -130,6 +130,37 @@ const processRevenueEvents = (message, destination, revenueValue) => {
   return responseBuilderSimple(payload, message, 'revenue', destination.Config);
 };
 
+/**
+ * This function is used to process the incremental properties
+ * ref :- https://developer.mixpanel.com/reference/profile-numerical-add
+ * @param {*} message
+ * @param {*} destination
+ * @param {*} propIncrements
+ * @returns
+ */
+const processIncrementalProperties = (message, destination, propIncrements) => {
+  const payload = {
+    $add: {},
+    $token: destination.Config.token,
+    $distinct_id: message.userId || message.anonymousId,
+  };
+
+  if (destination?.Config.identityMergeApi === 'simplified') {
+    payload.$distinct_id = message.userId || `$device:${message.anonymousId}`;
+  }
+
+  Object.keys(message.properties).forEach((prop) => {
+    const value = message.properties[prop];
+    if (value && propIncrements.includes(prop)) {
+      payload.$add[prop] = value;
+    }
+  });
+
+  return Object.keys(payload.$add).length > 0
+    ? responseBuilderSimple(payload, message, 'incremental_properties', destination.Config)
+    : null;
+};
+
 const getEventValueForTrackEvent = (message, destination) => {
   const mappedProperties = constructPayload(message, mPEventPropertiesConfigJson);
   // This is to conform with SDKs sending timestamp component with messageId
@@ -177,6 +208,14 @@ const processTrack = (message, destination) => {
 
   if (revenue) {
     returnValue.push(processRevenueEvents(message, destination, revenue));
+  }
+
+  if (Array.isArray(destination.Config.propIncrements)) {
+    const propIncrements = destination.Config.propIncrements.map((item) => item.property);
+    const response = processIncrementalProperties(message, destination, propIncrements);
+    if (response) {
+      returnValue.push(response);
+    }
   }
   returnValue.push(getEventValueForTrackEvent(message, destination));
   return returnValue;

@@ -19,6 +19,8 @@ const tags = require('../../util/tags');
  * https://developers.marketo.com/rest-api/error-codes/
  */
 
+const ERROR_CODE_TO_PASS = ['1015'];
+
 const MARKETO_RETRYABLE_CODES = ['601', '602', '604', '611'];
 const MARKETO_ABORTABLE_CODES = [
   '600',
@@ -34,29 +36,28 @@ const MARKETO_ABORTABLE_CODES = [
 ];
 const MARKETO_THROTTLED_CODES = ['502', '606', '607', '608', '615'];
 
-const RECORD_LEVEL_ABORTBALE_ERRORS = [
-  '1001',
-  '1002',
-  '1003',
-  '1004',
-  '1005',
-  '1006',
-  '1007',
-  '1008',
-  '1011',
-  '1013',
-  '1014',
-  '1015',
-  '1016',
-  '1017',
-  '1018',
-  '1021',
-  '1026',
-  '1027',
-  '1028',
-  '1036',
-  '1049',
-];
+// Keeping here for reference const RECORD_LEVEL_ABORTBALE_ERRORS = [
+//   '1001',
+//   '1002',
+//   '1003',
+//   '1004',
+//   '1005',
+//   '1006',
+//   '1007',
+//   '1008',
+//   '1011',
+//   '1013',
+//   '1014',
+//   '1016',
+//   '1017',
+//   '1018',
+//   '1021',
+//   '1026',
+//   '1027',
+//   '1028',
+//   '1036',
+//   '1049',
+// ];
 
 const { DESTINATION } = require('./config');
 const logger = require('../../../logger');
@@ -86,7 +87,7 @@ const marketoApplicationErrorHandler = (marketoResponse, sourceMessage, destinat
 };
 /**
  * this function checks the status of individual responses and throws error if any
- * response ststus does not match the expected status
+ * response status does not match the expected status
  * doc1: https://developers.marketo.com/rest-api/lead-database/custom-objects/#create_and_update
  * doc2: https://developers.marketo.com/rest-api/lead-database/#create_and_update
  * Structure of marketoResponse: {
@@ -122,17 +123,27 @@ const marketoApplicationErrorHandler = (marketoResponse, sourceMessage, destinat
 const nestedResponseHandler = (marketoResponse, sourceMessage) => {
   const checkStatus = (res) => {
     const { status } = res;
-    if (status && status !== 'updated' && status !== 'created' && status !== 'added') {
+    const allowedStatus = ['updated', 'added', 'removed', 'created'];
+    if (
+      status &&
+      !allowedStatus.includes(status)
+      // we need to check the case where the id are not in list
+    ) {
       const { reasons } = res;
       let statusCode = 400;
-      if (reasons && RECORD_LEVEL_ABORTBALE_ERRORS.includes(reasons[0].code)) {
-        statusCode = 400;
-      } else if (reasons && MARKETO_ABORTABLE_CODES.includes(reasons[0].code)) {
-        statusCode = 400;
-      } else if (reasons && MARKETO_THROTTLED_CODES.includes(reasons[0].code)) {
-        statusCode = 429;
-      } else if (reasons && MARKETO_RETRYABLE_CODES.includes(reasons[0].code)) {
-        statusCode = 500;
+      if (reasons) {
+        const errorCodesFromDest = reasons.map((reason) => reason.code);
+        const filteredErrorCode = errorCodesFromDest.find(
+          (errorCode) => !ERROR_CODE_TO_PASS.includes(errorCode),
+        );
+        if (!filteredErrorCode) {
+          return;
+        }
+        if (MARKETO_THROTTLED_CODES.includes(filteredErrorCode.code)) {
+          statusCode = 429;
+        } else if (MARKETO_RETRYABLE_CODES.includes(filteredErrorCode.code)) {
+          statusCode = 500;
+        }
       }
       throw new InstrumentationError(
         `Request failed during: ${sourceMessage}, error: ${JSON.stringify(reasons)}`,

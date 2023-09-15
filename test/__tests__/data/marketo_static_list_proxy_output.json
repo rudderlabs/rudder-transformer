@@ -1,6 +1,39 @@
 [
   {
     "output": {
+      "message": "Request Processed Successfully",
+      "destinationResponse": {
+        "response": {
+          "requestId": "b6d1#18a8d2c10e7",
+          "result": [
+            {
+              "id": 110,
+              "status": "skipped",
+              "reasons": [
+                {
+                  "code": "1015",
+                  "message": "Lead not in list"
+                }
+              ]
+            },
+            {
+              "id": 111,
+              "status": "removed"
+            },
+            {
+              "id": 112,
+              "status": "removed"
+            }
+          ],
+          "success": true
+        },
+        "status": 200
+      },
+      "status": 200
+    }
+  },
+  {
+    "output": {
       "status": 500,
       "message": "Request Failed for Marketo Static List, Access token invalid (Retryable).during Marketo Static List Response Handling",
       "destinationResponse": {
@@ -72,21 +105,25 @@
   },
   {
     "output": {
-      "destinationResponse": "",
-      "message": "Request failed during: during Marketo Static List Response Handling, error: [{\"code\":\"1004\",\"message\":\"Lead not found\"}]",
-      "statTags": {
-        "destType": "MARKETO_STATIC_LIST",
-        "errorCategory": "dataValidation",
-        "destinationId": "Non-determininable",
-        "workspaceId": "Non-determininable",
-        "errorType": "instrumentation",
-        "feature": "dataDelivery",
-        "implementation": "native",
-        "destinationId": "Non-determininable",
-        "workspaceId": "Non-determininable",
-        "module": "destination"
-      },
-      "status": 400
+      "status": 200,
+      "message": "Request Processed Successfully",
+      "destinationResponse": {
+        "response": {
+          "requestId": "12d3c#1846057dce2",
+          "result": {
+            "id": 5,
+            "status": "skipped",
+            "reasons": [
+              {
+                "code": "1015",
+                "message": "Lead not in list"
+              }
+            ]
+          },
+          "success": true
+        },
+        "status": 200
+      }
     }
   }
 ]

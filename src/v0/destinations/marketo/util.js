@@ -146,7 +146,9 @@ const nestedResponseHandler = (marketoResponse, sourceMessage) => {
         }
       }
       throw new InstrumentationError(
-        `Request failed during: ${sourceMessage}, error: ${JSON.stringify(reasons)}`,
+        `Request failed during: ${sourceMessage}, error: ${
+          JSON.stringify(reasons) || 'Reason(s) not Found'
+        }`,
         statusCode,
         {
           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(statusCode),

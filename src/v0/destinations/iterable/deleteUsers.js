@@ -39,14 +39,25 @@ const userDeletionHandler = async (userAttributes, config) => {
       });
       const handledDelResponse = processAxiosResponse(resp);
       if (!isHttpStatusSuccess(handledDelResponse.status) && handledDelResponse.status !== 404) {
-        failedUserDeletions.push(uId);
+        if (handledDelResponse.status !== 400) {
+          throw new NetworkError(
+            `User deletion request failed : ${handledDelResponse.response.msg}`,
+            handledDelResponse.status,
+            {
+              [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(handledDelResponse.status),
+            },
+            handledDelResponse,
+          );
+        } else {
+          failedUserDeletions.push({ userId: uId, Reason: handledDelResponse.response.msg });
+        }
       }
     }),
   );
 
   if (failedUserDeletions.length > 0) {
     throw new NetworkError(
-      `User deletion request failed for userIds : ${failedUserDeletions}`,
+      `User deletion request failed for userIds : ${JSON.stringify(failedUserDeletions)}`,
       400,
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(400),

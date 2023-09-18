@@ -1,10 +1,11 @@
 /* eslint-disable no-param-reassign */
+const _ = require('lodash')
 const getValue = require('get-value');
 const {
   getDynamicErrorType,
   processAxiosResponse,
 } = require('../../../adapters/utils/networkUtils');
-const { isHttpStatusSuccess } = require('../../util');
+const { isHttpStatusSuccess, isDefinedAndNotNull } = require('../../util');
 const {
   REFRESH_TOKEN,
   AUTH_STATUS_INACTIVE,
@@ -176,23 +177,61 @@ const convertMetadataToArray = (eventList) => {
 };
 
 /**
+ * Filters and splits an array of events based on whether they have an error or not.
+ * Returns an array of arrays, where inner arrays represent either a chunk of successful events or
+ * an array of single error event. It maintains the order of events strictly.
+ *
+ * @param {Array} sortedEvents - An array of events to be filtered and split.
+ * @returns {Array} - An array of arrays where each inner array represents a chunk of successful events followed by an error event.
+ */
+const restoreEventOrder = (sortedEvents) => {
+  let successfulEventsChunk = [];
+  const resultArray = [];
+  const errorMap = new Map();
+  for (const item of sortedEvents) {
+    // if error is present, then push the previous successfulEventsChunk
+    // and then push the error event
+    if (isDefinedAndNotNull(item.error)) {
+      if (successfulEventsChunk.length > 0) {
+        resultArray.push(successfulEventsChunk);
+        successfulEventsChunk = [];
+      }
+      optimizeErrorResponse(item, errorMap, resultArray);
+    } else {
+      // if error is not present, then push the event to successfulEventsChunk
+      successfulEventsChunk.push(item);
+      errorMap.clear();
+    }
+  }
+  // Push the last successfulEventsChunk to resultArray
+  if (successfulEventsChunk.length > 0) {
+    resultArray.push(successfulEventsChunk);
+  }
+  return resultArray;
+};
+
+/**
  * Rearranges the events based on their success or error status.
  * If there are no successful events, it groups error events with the same error and their metadata.
  * If there are successful events, it returns the batched response of successful events.
  *
- * @param {Array} eachUserSuccessEventslist - An array of objects representing successful events.
+ * @param {Array} successEventList - An array of objects representing successful events.
  * Each object should have an `id` and `metadata` property.
- * @param {Array} eachUserErrorEventsList - An array of objects representing error events.
+ * @param {Array} errorEventList - An array of objects representing error events.
  * Each object should have an `id`, `metadata`, and `error` property.
  * @returns {Array} - An array of rearranged events.
  */
-const getRearrangedEvents = (eachUserSuccessEventslist, eachUserErrorEventsList) => {
+const getRearrangedEvents = (successEventList, errorEventList) => {
   // Convert 'metadata' to an array if it's not already
-  const processedSuccessfulEvents = convertMetadataToArray(eachUserSuccessEventslist);
-  const processedErrorEvents = convertMetadataToArray(eachUserErrorEventsList);
+  const processedSuccessfulEvents = convertMetadataToArray(successEventList);
+  const processedErrorEvents = convertMetadataToArray(errorEventList);
 
+  // if there are no error events, then return the batched response
+  if (errorEventList.length === 0) {
+    return [processedSuccessfulEvents];
+  }
   // if there are no batched response, then return the error events
-  if (eachUserSuccessEventslist.length === 0) {
+  if (successEventList.length === 0) {
     const resultArray = [];
     const errorMap = new Map();
     processedErrorEvents.forEach((item) => {
@@ -200,8 +239,16 @@ const getRearrangedEvents = (eachUserSuccessEventslist, eachUserErrorEventsList)
     });
     return resultArray;
   }
-  // if there are no error events, then return the batched response
-  return [processedSuccessfulEvents];
+
+  // if there are both batched response and error events, then order them
+  const combinedTransformedEventList = [
+    ...processedSuccessfulEvents,
+    ...processedErrorEvents,
+  ].flat();
+
+  const finalResp = restoreEventOrder(combinedTransformedEventList);
+
+  return finalResp;
 };
 
 module.exports = { networkHandler, getRearrangedEvents };

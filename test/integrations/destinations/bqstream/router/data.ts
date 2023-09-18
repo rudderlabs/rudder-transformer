@@ -381,14 +381,14 @@ export const data = [
                 ID: '1WXjIHpu7ETXgjfiGPW3kCUgZFR',
                 Name: 'bqstream test',
               },
-              error: 'Message Type not supported: identify',
+              error: 'Invalid payload for the destination',
               metadata: [
                 {
-                  jobId: 3,
-                  userId: 'user12345',
+                  jobId: 7,
+                  userId: 'user124',
                 },
                 {
-                  jobId: 9,
+                  jobId: 8,
                   userId: 'user125',
                 },
               ],
@@ -402,6 +402,43 @@ export const data = [
               },
               statusCode: 400,
             },
+            {
+              batched: false,
+              destination: {
+                Config: {
+                  datasetId: 'gc_dataset',
+                  eventDelivery: true,
+                  eventDeliveryTS: 1636965406397,
+                  insertId: 'productId',
+                  projectId: 'gc-project-id',
+                  rudderAccountId: '1z8LpaSAuFR9TPWL6fECZfjmRa-',
+                  tableId: 'gc_table',
+                },
+                ID: '1WXjIHpu7ETXgjfiGPW3kCUgZFR',
+                Name: 'bqstream test',
+              },
+
+              error: "Message Type not supported: identify",
+              metadata: [
+                {
+                  jobId: 3,
+                  userId: "user12345"
+                },
+                {
+                  jobId: 9,
+                  userId: "user125"
+                }
+              ],
+              statTags: {
+                destType: "BQSTREAM",
+                errorCategory: "dataValidation",
+                errorType: "instrumentation",
+                feature: "router",
+                implementation: "native",
+                module: "destination"
+              },
+              statusCode: 400
+            }
           ],
         },
       },

@@ -46,11 +46,7 @@ function getCategoryAndName(rudderEventName) {
     let requiredCategory = null;
     // eslint-disable-next-line array-callback-return
     Object.keys(category.name).find((branchKey) => {
-      if (
-        typeof branchKey === 'string' &&
-        typeof rudderEventName === 'string' &&
-        branchKey.toLowerCase() === rudderEventName.toLowerCase()
-      ) {
+      if (branchKey.toLowerCase() === rudderEventName.toLowerCase()) {
         requiredName = category.name[branchKey];
         requiredCategory = category;
       }

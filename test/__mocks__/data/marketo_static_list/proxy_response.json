@@ -1,31 +1,4 @@
 {
-  "https://marketo_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=110&id=111&id=112": {
-    "data": {
-      "requestId": "b6d1#18a8d2c10e7",
-      "result": [
-        {
-          "id": 110,
-          "status": "skipped",
-          "reasons": [
-            {
-              "code": "1015",
-              "message": "Lead not in list"
-            }
-          ]
-        },
-        {
-          "id": 111,
-          "status": "removed"
-        },
-        {
-          "id": 112,
-          "status": "removed"
-        }
-      ],
-      "success": true
-    },
-    "status": 200
-  },
   "https://marketo_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=1&id=2&id=3": {
     "data": {
       "requestId": "68d8#1846058ee27",
@@ -87,11 +60,12 @@
         "status": "skipped",
         "reasons": [
           {
-            "code": "1015",
-            "message": "Lead not in list"
+            "code": "1004",
+            "message": "Lead not found"
           }
         ]
       },
+
       "success": true
     },
     "status": 200

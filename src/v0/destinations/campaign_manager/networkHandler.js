@@ -1,5 +1,6 @@
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
-const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../util/index');
+const { isHttpStatusSuccess } = require('../../util/index');
+const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
 
 const {
   processAxiosResponse,
@@ -7,6 +8,20 @@ const {
 } = require('../../../adapters/utils/networkUtils');
 const { AbortedError, RetryableError, NetworkError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
+
+/**
+ * This function helps to detarmine type of error occured. According to the response
+ * we set authErrorCategory to take decision if we need to refresh the access_token
+ * or need to disable the destination.
+ * @param {*} code
+ * @returns
+ */
+const getAuthErrCategory = (code) => {
+  if (code === 401) {
+    return REFRESH_TOKEN;
+  }
+  return '';
+};
 
 function checkIfFailuresAreRetryable(response) {
   try {
@@ -58,7 +73,7 @@ const responseHandler = (destinationResponse) => {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },
     destinationResponse,
-    getAuthErrCategoryFromStCode(status),
+    getAuthErrCategory(status),
   );
 };
 

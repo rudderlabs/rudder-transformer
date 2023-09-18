@@ -4,7 +4,8 @@ jest.mock("dns", () => {
     promises: {
       Resolver: function() {
         return {
-          resolve4: mockResolver,
+          resolve: mockResolver,
+          setServers: () => {},
         };
       }
     }
@@ -120,7 +121,7 @@ describe("User transformation fetch tests", () => {
       }
       `
     };
-    const errMsg = "invalid url, localhost requests are not allowed";
+    const errMsg = "localhost requests are not allowed";
     
     const output = await userTransformHandler(inputData, versionId, [], trRevCode, true);
     
@@ -277,7 +278,7 @@ describe("User transformation fetch tests", () => {
         }
       `
     };
-    const errMsg = "invalid url, localhost requests are not allowed";
+    const errMsg = "localhost requests are not allowed";
     
     const output = await userTransformHandler(inputData, versionId, [], trRevCode, true);
     

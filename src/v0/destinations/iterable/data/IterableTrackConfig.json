@@ -22,11 +22,6 @@
     "required": false
   },
   {
-    "destKey": "id",
-    "sourceKeys": ["properties.id", "properties.event_id"],
-    "required": false
-  },
-  {
     "destKey": "eventName",
     "sourceKeys": "event",
     "required": false

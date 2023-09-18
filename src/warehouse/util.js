@@ -15,69 +15,26 @@ const isObject = (value) => {
   return value != null && (type === 'object' || type === 'function') && !Array.isArray(value);
 };
 
-const isValidJsonPathKey = (key, level, jsonKeys = {}) => {
-  return jsonKeys[key] === level;
-};
-const isValidLegacyJsonPathKey = (eventType, key, level, jsonKeys = {}) => {
+const isValidJsonPathKey = (eventType, key, val, level, jsonKeys = {}) => {
   return eventType === 'track' && jsonKeys[key] === level;
 };
 
 const isBlank = (value) => {
   return _.isEmpty(_.toString(value));
 };
-
 /*
-This function takes in an array of json paths and returns an object with keys as the json path and value as the position of the key in the json path
-Example:
-Input:
-[
-  "a",
-  "b.c"
-]
-Output:
-{
-  "a": 0,
-  "b_c": 1
-}
-
-Input:
-[
-  "track.context.a",
-  "track.properties.b",
-  "pages.properties.c.d",
-  "groups.traits.e.f"
-]
-Output:
-{
-  "track_context_a": 2,
-  "track_properties_b": 2,
-  "pages_properties_c_d": 3,
-  "groups_traits_e_f": 3
-}
+ * input => ["a", "b.c"]
+ * output => { "a": 0, "b_c": 1}
  */
-const keysFromJsonPaths = (jsonPaths) => {
-  const jsonPathKeys = {};
-  const jsonLegacyPathKeys = {};
-
-  const supportedEventPrefixes = ['track.', 'identify.', 'page.', 'screen.', 'alias.', 'group.', 'extract.'];
-
+const getKeysFromJsonPaths = (jsonPaths) => {
+  const jsonKeys = {};
   jsonPaths.forEach((jsonPath) => {
-    const trimmedJSONPath = jsonPath.trim();
-    if (!trimmedJSONPath) {
-      return;
+    if (jsonPath.trim()) {
+      const paths = jsonPath.trim().split('.');
+      jsonKeys[paths.join('_')] = paths.length - 1;
     }
-
-    const paths = trimmedJSONPath.split('.');
-    const key = paths.join('_');
-    const pos = paths.length - 1;
-
-    if (supportedEventPrefixes.some(prefix => trimmedJSONPath.startsWith(prefix))) {
-      jsonPathKeys[key] = pos;
-      return;
-    }
-    jsonLegacyPathKeys[key] = pos;
   });
-  return {jsonPathKeys, jsonLegacyPathKeys};
+  return jsonKeys;
 };
 
 // https://www.myintervals.com/blog/2009/05/20/iso-8601-date-validation-that-doesnt-suck/
@@ -141,8 +98,7 @@ module.exports = {
   isObject,
   isBlank,
   isValidJsonPathKey,
-  isValidLegacyJsonPathKey,
-  keysFromJsonPaths,
+  getKeysFromJsonPaths,
   timestampRegex,
   validTimestamp,
   getVersionedUtils,

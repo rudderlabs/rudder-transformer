@@ -1946,8 +1946,9 @@ const groupEventsByType = (inputs) => {
   }
 
   return batches;
+};
 
-/**  
+/**
  * This function helps to detarmine type of error occured. According to the response
  * we set authErrorCategory to take decision if we need to refresh the access_token
  * or need to de-activate authStatus for the destination.

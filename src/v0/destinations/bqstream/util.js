@@ -5,10 +5,7 @@ const {
   getDynamicErrorType,
   processAxiosResponse,
 } = require('../../../adapters/utils/networkUtils');
-const {
-  REFRESH_TOKEN,
-  AUTH_STATUS_INACTIVE,
-} = require('../../../adapters/networkhandler/authConstants');
+const { DISABLE_DEST, REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
 const { isHttpStatusSuccess, isDefinedAndNotNull } = require('../../util');
 const { proxyRequest } = require('../../../adapters/network');
 const { UnhandledStatusCodeError, NetworkError, AbortedError } = require('../../util/errorTypes');
@@ -28,7 +25,7 @@ const trimBqStreamResponse = (response) => ({
  * Obtains the Destination OAuth Error Category based on the error code obtained from destination
  *
  * - If an error code is such that the user will not be allowed inside the destination,
- * such error codes fall under AUTH_STATUS_INACTIVE
+ * such error codes fall under DISABLE_DESTINATION
  * - If an error code is such that upon refresh we can get a new token which can be used to send event,
  * such error codes fall under REFRESH_TOKEN category
  * - If an error code doesn't fall under both categories, we can return an empty string
@@ -38,7 +35,7 @@ const trimBqStreamResponse = (response) => ({
 const getDestAuthCategory = (errorCategory) => {
   switch (errorCategory) {
     case 'PERMISSION_DENIED':
-      return AUTH_STATUS_INACTIVE;
+      return DISABLE_DEST;
     case 'UNAUTHENTICATED':
       return REFRESH_TOKEN;
     default:
@@ -92,7 +89,7 @@ const getStatusAndCategory = (dresponse, status) => {
  * Retryable -> 5[0-9][02-9], 401(UNAUTHENTICATED)
  * "Special Cases":
  * status=200, resp.insertErrors.length > 0  === Failure
- * 403 => AccessDenied -> AUTH_STATUS_INACTIVE, other 403 => Just abort
+ * 403 => AccessDenied -> DISABLE_DEST, other 403 => Just abort
  *
  */
 const processResponse = ({ dresponse, status } = {}) => {
@@ -149,7 +146,7 @@ function networkHandler() {
 
 /**
  * Optimizes the error response by merging the metadata of the same error type and adding it to the result array.
- *
+ * 
  * @param {Object} item - An object representing an error event with properties like `error`, `jobId`, and `metadata`.
  * @param {Map} errorMap - A Map object to store the error events and their metadata.
  * @param {Array} resultArray - An array to store the optimized error response.
@@ -166,11 +163,11 @@ const optimizeErrorResponse = (item, errorMap, resultArray) => {
     errorMap.set(currentError, { ...item });
     resultArray.push([errorMap.get(currentError)]);
   }
-};
+}
 
 /**
  * Filters and splits an array of events based on whether they have an error or not.
- * Returns an array of arrays, where inner arrays represent either a chunk of successful events or
+ * Returns an array of arrays, where inner arrays represent either a chunk of successful events or 
  * an array of single error event. It maintains the order of events strictly.
  *
  * @param {Array} sortedEvents - An array of events to be filtered and split.
@@ -178,21 +175,22 @@ const optimizeErrorResponse = (item, errorMap, resultArray) => {
  */
 const restoreEventOrder = (sortedEvents) => {
   let successfulEventsChunk = [];
-  const resultArray = [];
+  const resultArray = []
   const errorMap = new Map();
   for (const item of sortedEvents) {
-    // if error is present, then push the previous successfulEventsChunk
+    // if error is present, then push the previous successfulEventsChunk 
     // and then push the error event
     if (isDefinedAndNotNull(item.error)) {
       if (successfulEventsChunk.length > 0) {
         resultArray.push(successfulEventsChunk);
         successfulEventsChunk = [];
       }
-      optimizeErrorResponse(item, errorMap, resultArray);
+      optimizeErrorResponse(item, errorMap, resultArray);  
     } else {
       // if error is not present, then push the event to successfulEventsChunk
       successfulEventsChunk.push(item);
       errorMap.clear();
+
     }
   }
   // Push the last successfulEventsChunk to resultArray
@@ -202,13 +200,14 @@ const restoreEventOrder = (sortedEvents) => {
   return resultArray;
 };
 
+
 const convertMetadataToArray = (eventList) => {
   const processedEvents = eventList.map((event) => ({
     ...event,
     metadata: Array.isArray(event.metadata) ? event.metadata : [event.metadata],
   }));
   return processedEvents;
-};
+}
 
 /**
  * Takes in two arrays, eachUserSuccessEventslist and eachUserErrorEventsList, and returns an ordered array of events.
@@ -237,7 +236,7 @@ const getRearrangedEvents = (eachUserSuccessEventslist, eachUserErrorEventsList)
   }
   // if there are no batched response, then return the error events
   if (eachUserSuccessEventslist.length === 0) {
-    const resultArray = [];
+    const resultArray = []
     const errorMap = new Map();
     processedErrorEvents.forEach((item) => {
       optimizeErrorResponse(item, errorMap, resultArray);
@@ -246,15 +245,12 @@ const getRearrangedEvents = (eachUserSuccessEventslist, eachUserErrorEventsList)
   }
 
   // if there are both batched response and error events, then order them
-  const combinedTransformedEventList = [
-    ...processedSuccessfulEvents,
-    ...processedErrorEvents,
-  ].flat();
+  const combinedTransformedEventList = [...processedSuccessfulEvents, ...processedErrorEvents].flat();
 
   const sortedEvents = _.sortBy(combinedTransformedEventList, (event) => event.metadata[0].jobId);
   const finalResp = restoreEventOrder(sortedEvents);
 
   return finalResp;
-};
+}
 
 module.exports = { networkHandler, getRearrangedEvents };

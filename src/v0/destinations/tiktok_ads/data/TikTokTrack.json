@@ -1,7 +1,7 @@
 [
   {
     "destKey": "event_id",
-    "sourceKeys": ["properties.eventId", "properties.event_id", "messageId"],
+    "sourceKeys": "properties.eventId",
     "required": false
   },
   {

@@ -705,7 +705,7 @@
     }
   },
   {
-    "description": "Screen event call",
+    "description": "Track event call",
     "input": {
       "destination": {
         "Config": {
@@ -800,13 +800,13 @@
               "properties": {
                 "PreviouslyVicePresident": true,
                 "YearElected": 1801,
-                "VicePresidents": ["Aaron Burr", "George Clinton"]
+                "VicePresidents": ["Aaron Burr", "George Clinton"],
+                "age": "22"
               },
               "profile": {
                 "$email": "test@rudderstack.com",
                 "$phone_number": "9112340375",
-                "$id": "sajal12",
-                "age": "22"
+                "$id": "sajal12"
               }
             }
           }
@@ -863,11 +863,7 @@
             "age": "22",
             "email": "test@rudderstack.com",
             "phone": "9112340375",
-            "anonymousId": "9c6bd77ea9da3e68",
-            "plan_details": {
-              "plan_type": "gold",
-              "duration": "3 months"
-            }
+            "anonymousId": "9c6bd77ea9da3e68"
           },
           "library": {
             "name": "com.rudderstack.android.sdk.core",
@@ -921,15 +917,13 @@
               "properties": {
                 "vicePresdentInfo.PreviouslVicePresident": true,
                 "vicePresdentInfo.VicePresidents": ["AaronBurr", "GeorgeClinton"],
-                "vicePresdentInfo.YearElected": 1801
+                "vicePresdentInfo.YearElected": 1801,
+                "age": "22"
               },
               "profile": {
                 "$email": "test@rudderstack.com",
                 "$phone_number": "9112340375",
-                "$id": "sajal12",
-                "age": "22",
-                "plan_details.plan_type": "gold",
-                "plan_details.duration": "3 months"
+                "$id": "sajal12"
               }
             }
           }
@@ -1040,15 +1034,15 @@
               "properties": {
                 "PreviouslyVicePresident": true,
                 "YearElected": 1801,
-                "VicePresidents": ["Aaron Burr", "George Clinton"]
+                "age": "22",
+                "VicePresidents": ["Aaron Burr", "George Clinton"],
+                "description": "Sample description",
+                "name": "Test"
               },
               "profile": {
                 "$email": "test@rudderstack.com",
                 "$phone_number": "9112340375",
-                "$id": "sajal12",
-                "age": "22",
-                "name": "Test",
-                "description": "Sample description"
+                "$id": "sajal12"
               },
               "value": 3000
             }
@@ -1158,12 +1152,12 @@
               "properties": {
                 "PreviouslyVicePresident": true,
                 "YearElected": 1801,
-                "VicePresidents": ["Aaron Burr", "George Clinton"]
+                "VicePresidents": ["Aaron Burr", "George Clinton"],
+                "age": "22"
               },
               "profile": {
                 "$email": "test@rudderstack.com",
                 "$phone_number": "9112340375",
-                "age": "22",
                 "_id": "sajal12"
               }
             }
@@ -1489,10 +1483,7 @@
               "profile": {
                 "$email": "test@rudderstack.com",
                 "$phone_number": "9112340375",
-                "$id": "sajal12",
-                "age": "22",
-                "name": "Test",
-                "description": "Sample description"
+                "$id": "sajal12"
               },
               "properties": {
                 "ProductName": "test product",
@@ -1502,7 +1493,10 @@
                 "URL": "http://www.example.com/path/to/product",
                 "Brand": "Not for Kids",
                 "Price": 9.9,
-                "Categories": ["Fiction", "Children"]
+                "Categories": ["Fiction", "Children"],
+                "age": "22",
+                "name": "Test",
+                "description": "Sample description"
               }
             }
           }
@@ -1639,6 +1633,9 @@
               "properties": {
                 "$event_id": "1234",
                 "$value": 20,
+                "age": "22",
+                "name": "Test",
+                "description": "Sample description",
                 "items[0].ProductID": "123",
                 "items[0].SKU": "G-32",
                 "items[0].ProductName": "Monopoly",
@@ -1655,10 +1652,7 @@
               "profile": {
                 "$email": "test@rudderstack.com",
                 "$phone_number": "9112340375",
-                "$id": "sajal12",
-                "age": "22",
-                "name": "Test",
-                "description": "Sample description"
+                "$id": "sajal12"
               }
             }
           }
@@ -1786,16 +1780,16 @@
               "profile": {
                 "$email": "test@rudderstack.com",
                 "$phone_number": "9112340375",
-                "$id": "sajal12",
-                "age": "22",
-                "name": "Test",
-                "description": "Sample description"
+                "$id": "sajal12"
               },
               "properties": {
                 "$value": 12.12,
                 "AddedItemCategories": ["Fiction3", "Children3"],
                 "ItemNames": ["book1", "book2"],
                 "CheckoutURL": "http://www.heythere.com",
+                "age": "22",
+                "name": "Test",
+                "description": "Sample description",
                 "items": [
                   {
                     "ProductID": "b1pid",

@@ -1,8 +1,7 @@
 const { httpSend, prepareProxyRequest } = require('../../../adapters/network');
-const {
-  isHttpStatusSuccess,
-  getAuthErrCategoryFromErrDetailsAndStCode,
-} = require('../../util/index');
+const { isHttpStatusSuccess } = require('../../util/index');
+
+const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
 
 const {
   processAxiosResponse,
@@ -118,6 +117,19 @@ const gaAudienceProxyRequest = async (request) => {
   return thirdResponse;
 };
 
+/**
+ * This function helps to detarmine type of error occured. According to the response
+ * we set authErrorCategory to take decision if we need to refresh the access_token
+ * or need to disable the destination.
+ * @param {*} code
+ * @param {*} response
+ * @returns
+ */
+const getAuthErrCategory = (code, response) => {
+  if (code === 401 && !response.error.details) return REFRESH_TOKEN;
+  return '';
+};
+
 const gaAudienceRespHandler = (destResponse, stageMsg) => {
   const { status, response } = destResponse;
   // const respAttributes = response["@attributes"] || null;
@@ -130,7 +142,7 @@ const gaAudienceRespHandler = (destResponse, stageMsg) => {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },
     response,
-    getAuthErrCategoryFromErrDetailsAndStCode(status, response),
+    getAuthErrCategory(status, response),
   );
 };
 

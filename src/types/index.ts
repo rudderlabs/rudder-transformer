@@ -48,6 +48,7 @@ type Metadata = {
   eventType: string;
   sourceDefinitionId: string;
   destinationDefinitionId: string;
+  transformationId: string;
 };
 
 type UserTransformationInput = {

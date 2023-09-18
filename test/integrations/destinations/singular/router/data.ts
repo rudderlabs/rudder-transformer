@@ -12,7 +12,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiKey: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
+                  apiKey: 'dummyApiKey',
                   sessionEventList: [
                     {
                       sessionEventName: 'mysessionevent',
@@ -50,7 +50,7 @@ export const data = [
                     attStatus: 'true',
                     id: 'fc8d449516de0dfb',
                     adTrackingEnabled: 'true',
-                    token: 'bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1',
+                    token: 'testDeviceToken',
                   },
                   library: {
                     name: 'com.rudderstack.android.sdk.core',
@@ -99,7 +99,7 @@ export const data = [
                   discount: 1.5,
                   coupon: 'ImagePro',
                   currency: 'USD',
-                  fetch_token: '123asd23',
+                  fetch_token: 'dummyFetchToken',
                   product_id: '123',
                   products: [
                     {
@@ -160,7 +160,7 @@ export const data = [
                   n: 'RudderAndroidClient',
                   utime: 1630511211,
                   cn: 'Android',
-                  fcm: 'bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1',
+                  fcm: 'testDeviceToken',
                   bd: '1',
                   install: 'SM-G935F',
                   aifa: '8ecd7512-2864-440c-93f3-a3cabe62525b',
@@ -169,7 +169,7 @@ export const data = [
                   update_time: 1630511211,
                   ua: 'Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)',
                   c: 'wifi',
-                  a: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
+                  a: 'dummyApiKey',
                 },
                 body: {
                   JSON: {},
@@ -188,7 +188,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
+                  apiKey: 'dummyApiKey',
                   sessionEventList: [
                     {
                       sessionEventName: 'mysessionevent',
@@ -221,7 +221,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiKey: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
+                  apiKey: 'dummyApiKey',
                   sessionEventList: [
                     {
                       sessionEventName: 'mysessionevent',
@@ -259,7 +259,7 @@ export const data = [
                     attStatus: 'true',
                     id: 'fc8d449516de0dfb',
                     adTrackingEnabled: 'true',
-                    token: 'bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1',
+                    token: 'testDeviceToken',
                   },
                   library: {
                     name: 'com.rudderstack.android.sdk.core',
@@ -308,7 +308,7 @@ export const data = [
                   discount: 1.5,
                   coupon: 'ImagePro',
                   currency: 'USD',
-                  fetch_token: '123asd23',
+                  fetch_token: 'dummyFetchToken',
                   product_id: '123',
                   products: [
                     {
@@ -369,7 +369,7 @@ export const data = [
                   n: 'RudderAndroidClient',
                   utime: 1630511211,
                   cn: 'Android',
-                  fcm: 'bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1',
+                  fcm: 'testDeviceToken',
                   bd: '1',
                   install: 'SM-G935F',
                   aifa: '8ecd7512-2864-440c-93f3-a3cabe62525b',
@@ -378,7 +378,7 @@ export const data = [
                   update_time: 1630511211,
                   ua: 'Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)',
                   c: 'wifi',
-                  a: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
+                  a: 'dummyApiKey',
                 },
                 body: {
                   JSON: {},
@@ -397,7 +397,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
+                  apiKey: 'dummyApiKey',
                   sessionEventList: [
                     {
                       sessionEventName: 'mysessionevent',
@@ -430,7 +430,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiKey: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
+                  apiKey: 'dummyApiKey',
                   sessionEventList: [
                     {
                       sessionEventName: 'mysessionevent',
@@ -468,7 +468,7 @@ export const data = [
                     attStatus: 'true',
                     id: 'fc8d449516de0dfb',
                     adTrackingEnabled: 'true',
-                    token: 'bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1',
+                    token: 'testDeviceToken',
                   },
                   library: {
                     name: 'com.rudderstack.android.sdk.core',
@@ -517,7 +517,7 @@ export const data = [
                   discount: 1.5,
                   coupon: 'ImagePro',
                   currency: 'USD',
-                  fetch_token: '123asd23',
+                  fetch_token: 'dummyFetchToken',
                   product_id: '123',
                   products: [
                     {
@@ -578,7 +578,7 @@ export const data = [
                   n: 'RudderAndroidClient',
                   utime: 1630511211,
                   cn: 'Android',
-                  fcm: 'bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1',
+                  fcm: 'testDeviceToken',
                   bd: '1',
                   install: 'SM-G935F',
                   aifa: '8ecd7512-2864-440c-93f3-a3cabe62525b',
@@ -587,7 +587,7 @@ export const data = [
                   update_time: 1630511211,
                   ua: 'Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)',
                   c: 'wifi',
-                  a: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
+                  a: 'dummyApiKey',
                 },
                 body: {
                   JSON: {},
@@ -606,7 +606,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
+                  apiKey: 'dummyApiKey',
                   sessionEventList: [
                     {
                       sessionEventName: 'mysessionevent',
@@ -704,7 +704,7 @@ export const data = [
                 secretConfig: {},
                 Config: {
                   apiKey: 'apiKey',
-                  apiSecret: 'apiSecreth9h3984bnsdfkh98kjiu4h',
+                  apiSecret: 'dummyApiSecret',
                   sessionEventList: [
                     {
                       sessionEventName: 'test_event',
@@ -815,7 +815,7 @@ export const data = [
                 messageId: 'b9e9534b-b3b7-4bdb-8d59-062e1fbf4e2b',
                 oauthAccessToken: '',
                 messageIds: null,
-                rudderId: '67895e15-d37f-49d6-9017-e8d29264e31f<<>>yolanda.rivera2@yahoo.com',
+                rudderId: '67895e15-d37f-49d6-9017-e8d29264e31f<<>>y@y.com',
                 receivedAt: '2022-05-02T07:20:13.809Z',
                 eventName: '',
                 eventType: 'track',
@@ -889,7 +889,7 @@ export const data = [
                   messageId: 'b9e9534b-b3b7-4bdb-8d59-062e1fbf4e2b',
                   oauthAccessToken: '',
                   messageIds: null,
-                  rudderId: '67895e15-d37f-49d6-9017-e8d29264e31f<<>>yolanda.rivera2@yahoo.com',
+                  rudderId: '67895e15-d37f-49d6-9017-e8d29264e31f<<>>y@y.com',
                   receivedAt: '2022-05-02T07:20:13.809Z',
                   eventName: '',
                   eventType: 'track',
@@ -903,7 +903,7 @@ export const data = [
                 secretConfig: {},
                 Config: {
                   apiKey: 'apiKey',
-                  apiSecret: 'apiSecreth9h3984bnsdfkh98kjiu4h',
+                  apiSecret: 'dummyApiSecret',
                   sessionEventList: [
                     {
                       sessionEventName: 'test_event',

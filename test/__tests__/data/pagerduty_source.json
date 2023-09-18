@@ -10,8 +10,8 @@
         "agent": {
           "html_url": "https://rudderlabs-com.pagerduty.com/users/PXZZD2E",
           "id": "PXZZD2E",
-          "self": "https://api.pagerduty.com/users/PXZZD2E",
-          "summary": "mihir patel",
+          "self": "https://api.pagerduty.com/users/user@1",
+          "summary": "rudder test",
           "type": "user_reference"
         },
         "client": {
@@ -39,8 +39,8 @@
             {
               "html_url": "https://rudderlabs-com.pagerduty.com/users/PXZZD2E",
               "id": "PXZZD2E",
-              "self": "https://api.pagerduty.com/users/PXZZD2E",
-              "summary": "mihir patel",
+              "self": "https://api.pagerduty.com/users/user@1",
+              "summary": "rudder test",
               "type": "user_reference"
             }
           ],
@@ -72,9 +72,9 @@
       "context": {
         "traits": {
           "id": "PXZZD2E",
-          "self": "https://api.pagerduty.com/users/PXZZD2E",
+          "self": "https://api.pagerduty.com/users/user@1",
           "type": "user_reference",
-          "summary": "mihir patel",
+          "summary": "rudder test",
           "html_url": "https://rudderlabs-com.pagerduty.com/users/PXZZD2E"
         },
         "library": {
@@ -114,9 +114,9 @@
           "assignees": [
             {
               "id": "PXZZD2E",
-              "self": "https://api.pagerduty.com/users/PXZZD2E",
+              "self": "https://api.pagerduty.com/users/user@1",
               "type": "user_reference",
-              "summary": "mihir patel",
+              "summary": "rudder test",
               "html_url": "https://rudderlabs-com.pagerduty.com/users/PXZZD2E"
             }
           ],
@@ -155,8 +155,8 @@
         "agent": {
           "html_url": "https://rudderlabs-com.pagerduty.com/users/PXZZD2E",
           "id": "PXZZD2E",
-          "self": "https://api.pagerduty.com/users/PXZZD2E",
-          "summary": "mihir patel",
+          "self": "https://api.pagerduty.com/users/user@1",
+          "summary": "rudder test",
           "type": "user_reference"
         },
         "client": null,
@@ -181,8 +181,8 @@
             {
               "html_url": "https://rudderlabs-com.pagerduty.com/users/PXZZD2E",
               "id": "PXZZD2E",
-              "self": "https://api.pagerduty.com/users/PXZZD2E",
-              "summary": "mihir patel",
+              "self": "https://api.pagerduty.com/users/user@1",
+              "summary": "rudder test",
               "type": "user_reference"
             }
           ],
@@ -214,9 +214,9 @@
       "context": {
         "traits": {
           "id": "PXZZD2E",
-          "self": "https://api.pagerduty.com/users/PXZZD2E",
+          "self": "https://api.pagerduty.com/users/user@1",
           "type": "user_reference",
-          "summary": "mihir patel",
+          "summary": "rudder test",
           "html_url": "https://rudderlabs-com.pagerduty.com/users/PXZZD2E"
         },
         "library": {
@@ -256,9 +256,9 @@
           "assignees": [
             {
               "id": "PXZZD2E",
-              "self": "https://api.pagerduty.com/users/PXZZD2E",
+              "self": "https://api.pagerduty.com/users/user@1",
               "type": "user_reference",
-              "summary": "mihir patel",
+              "summary": "rudder test",
               "html_url": "https://rudderlabs-com.pagerduty.com/users/PXZZD2E"
             }
           ],
@@ -293,8 +293,8 @@
         "agent": {
           "html_url": "https://rudderlabs-com.pagerduty.com/users/PXZZD2E",
           "id": "PXZZD2E",
-          "self": "https://api.pagerduty.com/users/PXZZD2E",
-          "summary": "mihir patel",
+          "self": "https://api.pagerduty.com/users/user@1",
+          "summary": "rudder test",
           "type": "user_reference"
         },
         "client": null,
@@ -309,8 +309,8 @@
           "user": {
             "html_url": "https://rudderlabs-com.pagerduty.com/users/PXZZD2E",
             "id": "PXZZD2E",
-            "self": "https://api.pagerduty.com/users/PXZZD2E",
-            "summary": "mihir patel",
+            "self": "https://api.pagerduty.com/users/user@1",
+            "summary": "rudder test",
             "type": "user_reference"
           },
           "escalation_policy": null,
@@ -327,9 +327,9 @@
       "context": {
         "traits": {
           "id": "PXZZD2E",
-          "self": "https://api.pagerduty.com/users/PXZZD2E",
+          "self": "https://api.pagerduty.com/users/user@1",
           "type": "user_reference",
-          "summary": "mihir patel",
+          "summary": "rudder test",
           "html_url": "https://rudderlabs-com.pagerduty.com/users/PXZZD2E"
         },
         "library": {
@@ -346,9 +346,9 @@
           "type": "incident_responder",
           "user": {
             "id": "PXZZD2E",
-            "self": "https://api.pagerduty.com/users/PXZZD2E",
+            "self": "https://api.pagerduty.com/users/user@1",
             "type": "user_reference",
-            "summary": "mihir patel",
+            "summary": "rudder test",
             "html_url": "https://rudderlabs-com.pagerduty.com/users/PXZZD2E"
           },
           "state": "pending",
@@ -381,8 +381,8 @@
         "agent": {
           "html_url": "https://rudderlabs-com.pagerduty.com/users/PXZZD2E",
           "id": "PXZZD2E",
-          "self": "https://api.pagerduty.com/users/PXZZD2E",
-          "summary": "mihir patel",
+          "self": "https://api.pagerduty.com/users/user@1",
+          "summary": "rudder test",
           "type": "user_reference"
         },
         "client": null,
@@ -407,8 +407,8 @@
             {
               "html_url": "https://rudderlabs-com.pagerduty.com/users/PXZZD2E",
               "id": "PXZZD2E",
-              "self": "https://api.pagerduty.com/users/PXZZD2E",
-              "summary": "mihir patel",
+              "self": "https://api.pagerduty.com/users/user@1",
+              "summary": "rudder test",
               "type": "user_reference"
             }
           ],
@@ -440,9 +440,9 @@
       "context": {
         "traits": {
           "id": "PXZZD2E",
-          "self": "https://api.pagerduty.com/users/PXZZD2E",
+          "self": "https://api.pagerduty.com/users/user@1",
           "type": "user_reference",
-          "summary": "mihir patel",
+          "summary": "rudder test",
           "html_url": "https://rudderlabs-com.pagerduty.com/users/PXZZD2E"
         },
         "library": {
@@ -482,9 +482,9 @@
           "assignees": [
             {
               "id": "PXZZD2E",
-              "self": "https://api.pagerduty.com/users/PXZZD2E",
+              "self": "https://api.pagerduty.com/users/user@1",
               "type": "user_reference",
-              "summary": "mihir patel",
+              "summary": "rudder test",
               "html_url": "https://rudderlabs-com.pagerduty.com/users/PXZZD2E"
             }
           ],
@@ -519,8 +519,8 @@
         "agent": {
           "html_url": "https://rudderlabs-com.pagerduty.com/users/PXZZD2E",
           "id": "PXZZD2E",
-          "self": "https://api.pagerduty.com/users/PXZZD2E",
-          "summary": "mihir patel",
+          "self": "https://api.pagerduty.com/users/user@1",
+          "summary": "rudder test",
           "type": "user_reference"
         },
         "client": null,
@@ -573,9 +573,9 @@
       "context": {
         "traits": {
           "id": "PXZZD2E",
-          "self": "https://api.pagerduty.com/users/PXZZD2E",
+          "self": "https://api.pagerduty.com/users/user@1",
           "type": "user_reference",
-          "summary": "mihir patel",
+          "summary": "rudder test",
           "html_url": "https://rudderlabs-com.pagerduty.com/users/PXZZD2E"
         },
         "library": {

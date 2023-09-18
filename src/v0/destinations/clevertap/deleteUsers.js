@@ -25,6 +25,7 @@ const userDeletionHandler = async (userAttributes, config) => {
   }
 
   const endpoint = getEndpoint(config, '/delete/profiles.json');
+  const endpointPath = '/delete/profiles';
   const headers = {
     'X-CleverTap-Account-Id': accountId,
     'X-CleverTap-Passcode': passcode,
@@ -51,6 +52,7 @@ const userDeletionHandler = async (userAttributes, config) => {
       {
         destType: 'clevertap',
         feature: 'deleteUsers',
+        endpointPath,
       },
     );
     const handledDelResponse = processAxiosResponse(deletionResponse);

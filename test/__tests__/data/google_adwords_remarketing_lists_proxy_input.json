@@ -3,7 +3,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://googleads.googleapis.com/v13/customers/7693729833/offlineUserDataJobs",
+    "endpoint": "https://googleads.googleapis.com/v14/customers/7693729833/offlineUserDataJobs",
     "headers": {
       "Authorization": "Bearer dummy-access",
       "Content-Type": "application/json",
@@ -25,13 +25,13 @@
                   "hashedEmail": "85cc9fefa1eff1baab55d10df0cecff2acb25344867a5d0f96e1b1c5e2f10f05"
                 },
                 {
-                  "hashedPhoneNumber": "3c98400cbfaf690bf3601f538def8ff16f3b3bcd075b028fa28aa44ca09fec22"
+                  "hashedPhoneNumber": "8846dcb6ab2d73a0e67dbd569fa17cec2d9d391e5b05d1dd42919bc21ae82c45"
                 },
                 {
                   "hashedEmail": "85cc9fefa1eff1baab55d10df0cecff2acb25344867a5d0f96e1b1c5e2f10f05"
                 },
                 {
-                  "hashedPhoneNumber": "3c98400cbfaf690bf3601f538def8ff16f3b3bcd075b028fa28aa44ca09fec22"
+                  "hashedPhoneNumber": "8846dcb6ab2d73a0e67dbd569fa17cec2d9d391e5b05d1dd42919bc21ae82c45"
                 },
                 {
                   "addressInfo": {
@@ -53,7 +53,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://googleads.googleapis.com/v13/customers/7693729834/offlineUserDataJobs",
+    "endpoint": "https://googleads.googleapis.com/v14/customers/7693729834/offlineUserDataJobs",
     "headers": {
       "Authorization": "Bearer dummy-access",
       "Content-Type": "application/json",
@@ -89,7 +89,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://googleads.googleapis.com/v13/customers/7693729833/offlineUserDataJobs",
+    "endpoint": "https://googleads.googleapis.com/v14/customers/7693729833/offlineUserDataJobs",
     "headers": {
       "Authorization": "Bearer dummy-access",
       "Content-Type": "application/json",
@@ -111,13 +111,13 @@
                   "hashedEmail": "85cc9fefa1eff1baab55d10df0cecff2acb25344867a5d0f96e1b1c5e2f10f05"
                 },
                 {
-                  "hashedPhoneNumber": "3c98400cbfaf690bf3601f538def8ff16f3b3bcd075b028fa28aa44ca09fec22"
+                  "hashedPhoneNumber": "8846dcb6ab2d73a0e67dbd569fa17cec2d9d391e5b05d1dd42919bc21ae82c45"
                 },
                 {
                   "hashedEmail": "85cc9fefa1eff1baab55d10df0cecff2acb25344867a5d0f96e1b1c5e2f10f05"
                 },
                 {
-                  "hashedPhoneNumber": "3c98400cbfaf690bf3601f538def8ff16f3b3bcd075b028fa28aa44ca09fec22"
+                  "hashedPhoneNumber": "8846dcb6ab2d73a0e67dbd569fa17cec2d9d391e5b05d1dd42919bc21ae82c45"
                 },
                 {
                   "addressInfo": {

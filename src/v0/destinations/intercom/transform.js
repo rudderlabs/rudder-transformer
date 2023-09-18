@@ -76,12 +76,12 @@ function validateIdentify(message, payload, config) {
 
     return finalPayload;
   }
-  throw new InstrumentationError('Email or userId is mandatory');
+  throw new InstrumentationError('Either of `email` or `userId` is required for Identify call');
 }
 
 function validateTrack(payload) {
   if (!payload.user_id && !payload.email) {
-    throw new InstrumentationError('Email or userId is mandatory');
+    throw new InstrumentationError('Either of `email` or `userId` is required for Track call');
   }
   // pass only string, number, boolean properties
   if (payload.metadata) {

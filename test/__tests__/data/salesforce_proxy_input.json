@@ -233,7 +233,7 @@
   {
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://rudderstack.my.salesforce.com/services/data/v50.0/parameterizedSearch/?q=external_id&sobject=object_name&in=External_ID__c&object_name.fields=id,External_ID__c",
+    "endpoint": "https://rudderstack.my.salesforce.com/services/data/v50.0/parameterizedSearch/?q=123&sobject=object_name&in=External_ID__c&object_name.fields=id,External_ID__c",
     "headers": {
       "Content-Type": "application/json",
       "Authorization": "Bearer token"
@@ -241,7 +241,7 @@
     "body": {
       "JSON": {
         "Planning_Categories__c": "pc",
-        "External_ID__c": "external_id"
+        "External_ID__c": 123
       },
       "JSON_ARRAY": {},
       "XML": {},

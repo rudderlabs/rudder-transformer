@@ -42,9 +42,10 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
 /**
  * Main Identify request handler func
  * The function is used to create/update new users and also for adding/subscribing
- * members to the list depending on conditons.If listId is there member is added to that list &
- * if subscribe is true member is subscribed to that list else not.
- * DOCS: https://www.klaviyo.com/docs/http-api
+ * users to the list.
+ * DOCS: 1. https://developers.klaviyo.com/en/v2023-02-22/reference/create_profile
+ *       2. https://developers.klaviyo.com/en/v2023-02-22/reference/update_profile
+ *       3. https://developers.klaviyo.com/en/v2023-02-22/reference/subscribe_profiles
  * @param {*} message
  * @param {*} category
  * @param {*} destination
@@ -123,7 +124,7 @@ const identifyRequestHandler = async (message, category, destination) => {
 // ----------------------
 // Main handler func for track request/screen request
 // User info needs to be mapped to a track event (mandatory)
-// DOCS: https://www.klaviyo.com/docs/http-api
+// DOCS: https://developers.klaviyo.com/en/v2023-02-22/reference/create_event
 // ----------------------
 
 const trackRequestHandler = (message, category, destination) => {
@@ -138,10 +139,6 @@ const trackRequestHandler = (message, category, destination) => {
     attributes.metric = { name: eventName };
     const categ = CONFIG_CATEGORIES[eventMap];
     attributes.properties = constructPayload(message.properties, MAPPING_CONFIG[categ.name]);
-    attributes.properties = {
-      ...attributes.properties,
-      ...populateCustomFieldsFromTraits(message),
-    };
 
     // products mapping using Items.json
     // mapping properties.items to payload.properties.items and using properties.products as a fallback to properties.items
@@ -191,17 +188,21 @@ const trackRequestHandler = (message, category, destination) => {
     if (value) {
       attributes.value = value;
     }
-    attributes.properties = {
-      ...attributes.properties,
-      ...populateCustomFieldsFromTraits(message),
-    };
   }
   // if flattenProperties is enabled from UI, flatten the event properties
   attributes.properties = flattenProperties
     ? flattenJson(attributes.properties, '.', 'normal', false)
     : attributes.properties;
   // Map user properties to profile object
-  attributes.profile = createCustomerProperties(message, destination.Config);
+  attributes.profile = {
+    ...createCustomerProperties(message, destination.Config),
+    ...populateCustomFieldsFromTraits(message),
+  };
+
+  attributes.profile = flattenProperties
+    ? flattenJson(attributes.profile, '.', 'normal', false)
+    : attributes.profile;
+
   if (message.timestamp) {
     attributes.time = message.timestamp;
   }
@@ -222,9 +223,9 @@ const trackRequestHandler = (message, category, destination) => {
 
 // ----------------------
 // Main handlerfunc for group request
-// we will map user to list (subscribe and/or member)
+// we will add/subscribe users to the list
 // based on property sent
-// DOCS: https://www.klaviyo.com/docs/api/v2/lists
+// DOCS: https://developers.klaviyo.com/en/v2023-02-22/reference/subscribe_profiles
 // ----------------------
 const groupRequestHandler = (message, category, destination) => {
   if (!message.groupId) {

@@ -14,7 +14,7 @@
             "devKey": "ef1d42390426e3f7c90ac78272e74344",
             "appleAppId": "123456789",
             "androidAppId": "AnAID",
-            "apiToken": "c81aaf36-8323-4bb6-b5a8-06b310e34f3c"
+            "apiToken": "dummyApiToken"
           }
         }
       ]
@@ -35,7 +35,7 @@
             "devKey": "ef1d42390426e3f7c90ac78272e74344",
             "appleAppId": "123456789",
             "androidAppId": "AnAID",
-            "apiToken": "c81aaf36-8323-4bb6-b5a8-06b310e34f3c",
+            "apiToken": "dummyApiToken",
             "statusCallbackUrls": "https://examplecontroller.com/opengdpr_callbacks"
           }
         }
@@ -59,7 +59,7 @@
           ],
           "config": {
             "devKey": "ef1d42390426e3f7c90ac78272e74344",
-            "apiToken": "c81aaf36-8323-4bb6-b5a8-06b310e34f3c"
+            "apiToken": "dummyApiToken"
           }
         }
       ]
@@ -84,7 +84,7 @@
             "devKey": "ef1d42390426e3f7c90ac78272e74344",
             "appleAppId": "123456789",
             "statusCallbackUrls": "https://examplecontroller.com/opengdpr_callbacks,https://examplecontroller.com/opengdpr_callbacks,https://examplecontroller.com/opengdpr_callbacks,https://examplecontroller.com/opengdpr_callbacks",
-            "apiToken": "c81aaf36-8323-4bb6-b5a8-06b310e34f3c"
+            "apiToken": "dummyApiToken"
           }
         }
       ]
@@ -112,7 +112,7 @@
             "groupValueTrait": "age",
             "trackProductsOnce": false,
             "trackRevenuePerProduct": false,
-            "apiToken": "c81aaf36-8323-4bb6-b5a8-06b310e34f3c"
+            "apiToken": "dummyApiToken"
           }
         }
       ]
@@ -140,7 +140,7 @@
             "groupValueTrait": "age",
             "trackProductsOnce": false,
             "trackRevenuePerProduct": false,
-            "apiToken": "c81aaf36-8323-4bb6-b5a8-06b310e34f3c"
+            "apiToken": "dummyApiToken"
           }
         }
       ]
@@ -168,7 +168,7 @@
             "groupValueTrait": "age",
             "trackProductsOnce": false,
             "trackRevenuePerProduct": false,
-            "apiToken": "c81aaf36-8323-4bb6-b5a8-06b310e34f3c"
+            "apiToken": "dummyApiToken"
           }
         }
       ]

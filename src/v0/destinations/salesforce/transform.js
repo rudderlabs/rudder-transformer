@@ -1,5 +1,6 @@
 const get = require('get-value');
 const cloneDeep = require('lodash/cloneDeep');
+const { InstrumentationError, NetworkInstrumentationError } = require('rs-integration-lib');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 const {
   SF_API_VERSION,
@@ -25,7 +26,6 @@ const {
 } = require('../../util');
 const { getAccessToken, salesforceResponseHandler } = require('./utils');
 const { handleHttpRequest } = require('../../../adapters/network');
-const { InstrumentationError, NetworkInstrumentationError } = require('rs-integration-lib');
 const logger = require('../../../logger');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -125,7 +125,7 @@ async function getSaleforceIdForRecord(
     );
   }
   const searchRecord = processedsfSearchResponse.response?.searchRecords?.find(
-    (rec) => rec[identifierType] === identifierValue,
+    (rec) => typeof identifierValue !== 'undefined' && rec[identifierType] === `${identifierValue}`,
   );
 
   return searchRecord?.Id;

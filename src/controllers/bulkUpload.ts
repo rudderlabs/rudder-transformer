@@ -44,7 +44,7 @@ export const fileUpload = async (ctx) => {
     response = await destFileUploadHandler.processFileData(ctx.request.body);
   } catch (error: any) {
     response = {
-      statusCode: error.response ? error.response.status : 400,
+      statusCode: error?.response?.status || error?.status || 400,
       error: error.message || 'Error occurred while processing payload.',
       metadata: error.response ? error.response.metadata : null,
     };
@@ -89,7 +89,7 @@ export const pollStatus = async (ctx) => {
     response = await destFileUploadHandler.processPolling(ctx.request.body);
   } catch (error: any) {
     response = {
-      statusCode: error.response?.status || 400,
+      statusCode: error.response?.status || error?.status || 400,
       error: error.message || 'Error occurred while processing payload.',
     };
     errNotificationClient.notify(error, 'Poll Status', {

@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 const get = require('get-value');
 const { EventType } = require('../../../constants');
-const { CONFIG_CATEGORIES, MAPPING_CONFIG, BASE_ENDPOINT } = require('./config');
+const { CONFIG_CATEGORIES, MAPPING_CONFIG, DEFAULT_BASE_ENDPOINT } = require('./config');
 const {
   defaultRequestConfig,
   getFieldValueFromMessage,
@@ -85,6 +85,11 @@ const constructKustomerPayload = (message, category, email) => {
 // type of events.
 const responseBuilderSimple = async (message, category, destination) => {
   let payload = {};
+
+  // Reference for base endpoint
+  // https://developer.kustomer.com/kustomer-api-docs/reference/getting-started-with-kustomer-api#using-the-kustomer-api
+  // There are two instance choices, US: https://api.kustomerapp.com and EU: https://api.prod2.kustomerapp.com
+  const BASE_ENDPOINT = destination.Config.baseEndpoint || DEFAULT_BASE_ENDPOINT;
   let targetUrl;
   let storedState = {
     userExists: false,

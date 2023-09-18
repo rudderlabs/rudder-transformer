@@ -5,7 +5,7 @@
         "triggerType": "Http",
         "apiKeyId": "randomAPI",
         "enableBatchInput": true,
-        "googleCloudFunctionUrl": "https://us-central1-big-query-integration-poc.cloudfunctions.net/rohitv1",
+        "googleCloudFunctionUrl": "https://us-central1-big-query-integration-poc.cloudfunctions.net/rudderv1",
         "maxBatchSize": "2"
       }
     },
@@ -117,7 +117,7 @@
         "triggerType": "Http",
         "apiKeyId": "randomAPI",
         "enableBatchInput": true,
-        "googleCloudFunctionUrl": "https://us-central1-big-query-integration-poc.cloudfunctions.net/rohitv1",
+        "googleCloudFunctionUrl": "https://us-central1-big-query-integration-poc.cloudfunctions.net/rudderv1",
         "maxBatchSize": "2"
       }
     },

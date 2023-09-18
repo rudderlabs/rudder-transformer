@@ -51,7 +51,7 @@ jobs:
     uses: ./.github/workflows/build-push-docker-image.yml
     with:
       build_tag: rudderstack/develop-rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }}
-      push_tags: rudderstack/develop-rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }},rudderlabs/develop-rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }}
+      push_tags: rudderstack/develop-rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }}
       img_tag: ${{ needs.generate-tag-names.outputs.tag_name }}
       dockerfile: Dockerfile
       load_target: development
@@ -67,7 +67,7 @@ jobs:
     uses: ./.github/workflows/build-push-docker-image.yml
     with:
       build_tag: rudderstack/develop-rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name_ut }}
-      push_tags: rudderstack/develop-rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name_ut }},rudderlabs/develop-rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name_ut }}
+      push_tags: rudderstack/develop-rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name_ut }}
       img_tag: ${{ needs.generate-tag-names.outputs.tag_name_ut }}
       dockerfile: Dockerfile-ut-func
       load_target: development

@@ -341,7 +341,7 @@ const handleTrack = (message, destinationConfig) => {
   let payload = null;
   // handle ecommerce events separately
   // generic events should go to the default
-  const event = rawEvent?.toLowerCase();
+  const event = typeof rawEvent === 'string' ? rawEvent.toLowerCase() : rawEvent;
   switch (event) {
     case 'product viewed':
     case 'product list viewed':
@@ -372,10 +372,10 @@ const handleTrack = (message, destinationConfig) => {
       payload = processTrackEvent(message, 'scOpen', destinationConfig);
       break;
     default:
-      if (destinationConfig.rudderEventsToAdobeEvents[event.toLowerCase()]) {
+      if (destinationConfig.rudderEventsToAdobeEvents[event]) {
         payload = processTrackEvent(
           message,
-          destinationConfig.rudderEventsToAdobeEvents[event.toLowerCase()].trim(),
+          destinationConfig.rudderEventsToAdobeEvents[event]?.trim(),
           destinationConfig,
         );
       } else if (message?.properties?.overrideEventName) {

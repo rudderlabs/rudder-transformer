@@ -1,3 +1,4 @@
+const { InstrumentationError } = require('rs-integration-lib');
 const { EventType } = require('../../../constants');
 
 const {
@@ -7,6 +8,7 @@ const {
   removeUndefinedAndNullValues,
   isDefinedAndNotNull,
   simpleProcessRouterDest,
+  getAccessToken,
 } = require('../../util');
 
 const {
@@ -17,15 +19,7 @@ const {
   EncryptionSource,
 } = require('./config');
 
-const { InstrumentationError, OAuthSecretError } = require('rs-integration-lib');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-
-const getAccessToken = ({ secret }) => {
-  if (!secret) {
-    throw new OAuthSecretError('[CAMPAIGN MANAGER (DCM)]:: OAuth - access token not found');
-  }
-  return secret.access_token;
-};
 
 function isEmptyObject(obj) {
   return Object.keys(obj).length === 0 && obj.constructor === Object;
@@ -36,7 +30,7 @@ function buildResponse(requestJson, metadata, endpointUrl, requestType, encrypti
   const response = defaultRequestConfig();
   response.endpoint = endpointUrl;
   response.headers = {
-    Authorization: `Bearer ${getAccessToken(metadata)}`,
+    Authorization: `Bearer ${getAccessToken(metadata, 'access_token')}`,
     'Content-Type': JSON_MIME_TYPE,
   };
   response.method = defaultPostRequestConfig.requestMethod;

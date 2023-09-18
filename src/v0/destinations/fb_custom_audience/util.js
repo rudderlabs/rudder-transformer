@@ -20,7 +20,7 @@ const { InstrumentationError, ConfigurationError } = require('rs-integration-lib
             ],
             "data": [
               [
-                "shrouti@abc.com",
+                "test@abc.com",
                 "IN"
               ]
             ]

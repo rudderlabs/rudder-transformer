@@ -9,7 +9,7 @@
           "messageId": "9ad41366-8060-4c9f-b181-f6bea67d5469",
           "originalTimestamp": "2022-09-27T11:13:03.777Z",
           "traits": {
-            "ruchira": "donaldbaker@ellis.com",
+            "rudderstack": "donaldbaker@ellis.com",
             "new_field2": "GB"
           },
           "channel": "sources",
@@ -26,7 +26,7 @@
             "externalId": [
               {
                 "id": "Tiffany",
-                "type": "ITERABLE-test-ruchira",
+                "type": "ITERABLE-test-rudderstack",
                 "identifierType": "itemId"
               }
             ]
@@ -38,11 +38,11 @@
           "request_ip": "10.1.86.248"
         },
         "metadata": {
-          "jobId": 2
+          "jobId": 1
         },
         "destination": {
           "Config": {
-            "apiKey": "583af2f8-15ba-49c0-8511-76383e7de07e",
+            "apiKey": "dummyApiKey",
             "hubID": "22066036"
           },
           "Enabled": true
@@ -55,7 +55,7 @@
           "messageId": "9ad41366-8060-4c9f-b181-f6bea67d5469",
           "originalTimestamp": "2022-09-27T11:13:03.777Z",
           "traits": {
-            "ruchira": "abc@ellis.com",
+            "rudderstack": "abc@ellis.com",
             "new_field2": "GB1"
           },
           "channel": "sources",
@@ -72,7 +72,7 @@
             "externalId": [
               {
                 "id": "ABC",
-                "type": "ITERABLE-test-ruchira",
+                "type": "ITERABLE-test-rudderstack",
                 "identifierType": "itemId"
               }
             ]
@@ -88,7 +88,7 @@
         },
         "destination": {
           "Config": {
-            "apiKey": "583af2f8-15ba-49c0-8511-76383e7de07e",
+            "apiKey": "dummyApiKey",
             "hubID": "22066036"
           },
           "Enabled": true
@@ -101,21 +101,21 @@
           "version": "1",
           "type": "REST",
           "method": "POST",
-          "endpoint": "https://api.iterable.com/api/catalogs/test-ruchira/items",
+          "endpoint": "https://api.iterable.com/api/catalogs/test-rudderstack/items",
           "headers": {
             "Content-Type": "application/json",
-            "api_key": "583af2f8-15ba-49c0-8511-76383e7de07e"
+            "api_key": "dummyApiKey"
           },
           "params": {},
           "body": {
             "JSON": {
               "documents": {
                 "Tiffany": {
-                  "ruchira": "donaldbaker@ellis.com",
+                  "rudderstack": "donaldbaker@ellis.com",
                   "new_field2": "GB"
                 },
                 "ABC": {
-                  "ruchira": "abc@ellis.com",
+                  "rudderstack": "abc@ellis.com",
                   "new_field2": "GB1"
                 }
               },
@@ -129,7 +129,7 @@
         },
         "metadata": [
           {
-            "jobId": 2
+            "jobId": 1
           },
           {
             "jobId": 2
@@ -139,7 +139,7 @@
         "statusCode": 200,
         "destination": {
           "Config": {
-            "apiKey": "583af2f8-15ba-49c0-8511-76383e7de07e",
+            "apiKey": "dummyApiKey",
             "hubID": "22066036"
           },
           "Enabled": true
@@ -186,7 +186,7 @@
         },
         "destination": {
           "Config": {
-            "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+            "apiKey": "dummyApiKey",
             "mapToSingleEvent": false,
             "trackAllPages": true,
             "trackCategorisedPages": false,
@@ -224,7 +224,7 @@
         },
         "destination": {
           "Config": {
-            "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+            "apiKey": "dummyApiKey",
             "mapToSingleEvent": false,
             "trackAllPages": true,
             "trackCategorisedPages": false,
@@ -269,7 +269,7 @@
         },
         "destination": {
           "Config": {
-            "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+            "apiKey": "dummyApiKey",
             "mapToSingleEvent": false,
             "trackAllPages": true,
             "trackCategorisedPages": false,
@@ -307,7 +307,7 @@
         },
         "destination": {
           "Config": {
-            "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+            "apiKey": "dummyApiKey",
             "mapToSingleEvent": false,
             "trackAllPages": true,
             "trackCategorisedPages": false,
@@ -345,7 +345,7 @@
         },
         "destination": {
           "Config": {
-            "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+            "apiKey": "dummyApiKey",
             "mapToSingleEvent": false,
             "trackAllPages": true,
             "trackCategorisedPages": false,
@@ -383,7 +383,7 @@
         },
         "destination": {
           "Config": {
-            "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+            "apiKey": "dummyApiKey",
             "mapToSingleEvent": false,
             "trackAllPages": true,
             "trackCategorisedPages": false,
@@ -428,7 +428,7 @@
         },
         "destination": {
           "Config": {
-            "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+            "apiKey": "dummyApiKey",
             "mapToSingleEvent": false,
             "trackAllPages": true,
             "trackCategorisedPages": false,
@@ -466,7 +466,7 @@
         },
         "destination": {
           "Config": {
-            "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+            "apiKey": "dummyApiKey",
             "mapToSingleEvent": false,
             "trackAllPages": true,
             "trackCategorisedPages": false,
@@ -511,7 +511,7 @@
         },
         "destination": {
           "Config": {
-            "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+            "apiKey": "dummyApiKey",
             "mapToSingleEvent": false,
             "trackAllPages": true,
             "trackCategorisedPages": false,
@@ -556,7 +556,7 @@
         },
         "destination": {
           "Config": {
-            "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+            "apiKey": "dummyApiKey",
             "mapToSingleEvent": false,
             "trackAllPages": true,
             "trackCategorisedPages": false,
@@ -594,7 +594,7 @@
         },
         "destination": {
           "Config": {
-            "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+            "apiKey": "dummyApiKey",
             "mapToSingleEvent": false,
             "trackAllPages": true,
             "trackCategorisedPages": false,
@@ -639,7 +639,7 @@
         },
         "destination": {
           "Config": {
-            "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+            "apiKey": "dummyApiKey",
             "mapToSingleEvent": false,
             "trackAllPages": true,
             "trackCategorisedPages": false,
@@ -684,7 +684,7 @@
         },
         "destination": {
           "Config": {
-            "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+            "apiKey": "dummyApiKey",
             "mapToSingleEvent": false,
             "trackAllPages": true,
             "trackCategorisedPages": false,
@@ -729,7 +729,7 @@
         },
         "destination": {
           "Config": {
-            "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+            "apiKey": "dummyApiKey",
             "mapToSingleEvent": false,
             "trackAllPages": true,
             "trackCategorisedPages": false,
@@ -774,7 +774,7 @@
         },
         "destination": {
           "Config": {
-            "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+            "apiKey": "dummyApiKey",
             "mapToSingleEvent": false,
             "trackAllPages": true,
             "trackCategorisedPages": false,
@@ -793,7 +793,7 @@
           "endpoint": "https://api.iterable.com/api/users/bulkUpdate",
           "headers": {
             "Content-Type": "application/json",
-            "api_key": "62d12498c37c4fd8a1a546c2d35c2f60"
+            "api_key": "dummyApiKey"
           },
           "params": {},
           "body": {
@@ -909,7 +909,7 @@
         "statusCode": 200,
         "destination": {
           "Config": {
-            "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+            "apiKey": "dummyApiKey",
             "mapToSingleEvent": false,
             "trackAllPages": true,
             "trackCategorisedPages": false,
@@ -926,7 +926,7 @@
           "endpoint": "https://api.iterable.com/api/events/trackBulk",
           "headers": {
             "Content-Type": "application/json",
-            "api_key": "62d12498c37c4fd8a1a546c2d35c2f60"
+            "api_key": "dummyApiKey"
           },
           "params": {},
           "body": {
@@ -1030,7 +1030,7 @@
         "statusCode": 200,
         "destination": {
           "Config": {
-            "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+            "apiKey": "dummyApiKey",
             "mapToSingleEvent": false,
             "trackAllPages": true,
             "trackCategorisedPages": false,
@@ -1047,7 +1047,7 @@
           "endpoint": "https://api.iterable.com/api/users/bulkUpdate",
           "headers": {
             "Content-Type": "application/json",
-            "api_key": "62d12498c37c4fd8a1a546c2d35c2f60"
+            "api_key": "dummyApiKey"
           },
           "params": {},
           "body": {
@@ -1115,7 +1115,7 @@
         "statusCode": 200,
         "destination": {
           "Config": {
-            "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+            "apiKey": "dummyApiKey",
             "mapToSingleEvent": false,
             "trackAllPages": true,
             "trackCategorisedPages": false,

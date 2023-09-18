@@ -32,7 +32,7 @@ const RedisDB = {
           log.error(`Redis is down at ${this.host}:${this.port}`);
           return false; // stop retrying
         },
-        tls: {}
+        tls: {},
       });
       this.client.on('ready', () => {
         log.info(`Connected to redis at ${this.host}:${this.port}`);
@@ -102,7 +102,7 @@ const RedisDB = {
    * @param {*} isValJson set to false if value is not a json object
    *
    */
-  async setVal(key, value, expiryTimeInSec = 60 * 60) {
+  async setVal(key, value, expiryTimeInSec = process.env.REDIS_EXPIRY_TIME_IN_SEC || 3600) {
     try {
       await this.checkAndConnectConnection(); // check if redis is connected and if not, connect
       if (typeof value === 'object') {

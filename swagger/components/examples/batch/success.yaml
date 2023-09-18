@@ -22,7 +22,7 @@ batchedRequest:
             plan: 'Open source'
             term: 'keyword'
             test: 'other value'
-            email: 'chandra+r@rudderlabs.com'
+            email: 'test@rudderstack.com'
             logins: 5
             medium: 'medium'
             source: 'google'

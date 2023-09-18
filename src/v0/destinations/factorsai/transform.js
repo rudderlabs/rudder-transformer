@@ -44,6 +44,7 @@ function processTrack(message, factorsAIApiKey) {
 // process Page Call
 function processPageAndGroup(message, factorsAIApiKey, category) {
   const requestJson = constructPayload(message, mappingConfig[category]);
+  requestJson.type = message.type;
   return buildResponse(requestJson, factorsAIApiKey);
 }
 

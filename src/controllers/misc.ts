@@ -25,4 +25,22 @@ export default class MiscController {
     ctx.status = 200;
     return ctx;
   }
+
+  public static async getCPUProfile(ctx: Context) {
+    const { seconds } = ctx.query;
+    let secondsData = 10;
+    // if seconds is not null and is not array then parseInt
+    if (seconds && !Array.isArray(seconds)) {
+      secondsData = parseInt(seconds, 10);
+    }
+    ctx.body = await MiscService.getCPUProfile(secondsData);
+    ctx.status = 200;
+    return ctx;
+  }
+
+  public static async getHeapProfile(ctx: Context) {
+    ctx.body = await MiscService.getHeapProfile();
+    ctx.status = 200;
+    return ctx;
+  }
 }

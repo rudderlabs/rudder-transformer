@@ -1,0 +1,10 @@
+[
+  {
+    "sourceKeys": "event.triggerTime",
+    "destKeys": ["timestamp", "originalTimestamp"]
+  },
+  {
+    "sourceKeys": "event",
+    "destKeys": "properties"
+  }
+]

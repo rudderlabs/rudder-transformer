@@ -1,0 +1,18 @@
+[
+  {
+    "sourceKeys": "remote_id",
+    "destKeys": "userId"
+  },
+  {
+    "sourceKeys": "account.remote_id",
+    "destKeys": "groupId"
+  },
+  {
+    "sourceKeys": "response.received_at",
+    "destKeys": "originalTimestamp"
+  },
+  {
+    "sourceKeys": "account.attributes",
+    "destKeys": "traits"
+  }
+]

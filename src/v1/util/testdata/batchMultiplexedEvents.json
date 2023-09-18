@@ -1,0 +1,503 @@
+[
+  {
+    "description": "Batching the below multiplexed events with maxBatchSize as 3",
+    "input": [
+      [
+        {
+          "message": [
+            {
+              "anonymousId": "random1",
+              "channel": "web",
+              "traits": {
+                "anonymousId": "random1",
+                "email": "random1@gmail.com",
+                "appId": "testAppId"
+              }
+            },
+            {
+              "anonymousId": "random2",
+              "channel": "web",
+              "traits": {
+                "anonymousId": "random2",
+                "email": "random2@gmail.com",
+                "appId": "testAppId"
+              }
+            }
+          ],
+          "metadata": {
+            "jobId": 1
+          },
+          "destination": {
+            "Config": {
+              "appId": "testAppId"
+            }
+          }
+        },
+        {
+          "message": [
+            {
+              "anonymousId": "random3",
+              "channel": "web",
+              "traits": {
+                "anonymousId": "random3",
+                "email": "random3@gmail.com",
+                "appId": "testAppId"
+              }
+            },
+            {
+              "anonymousId": "random4",
+              "channel": "web",
+              "traits": {
+                "anonymousId": "random4",
+                "email": "random4@gmail.com",
+                "appId": "testAppId"
+              }
+            }
+          ],
+          "metadata": {
+            "jobId": 2
+          },
+          "destination": {
+            "Config": {
+              "appId": "testAppId"
+            }
+          }
+        },
+        {
+          "message": [
+            {
+              "anonymousId": "random5",
+              "channel": "web",
+              "traits": {
+                "anonymousId": "random5",
+                "email": "random5@gmail.com",
+                "appId": "testAppId"
+              }
+            }
+          ],
+          "metadata": {
+            "jobId": 3
+          },
+          "destination": {
+            "Config": {
+              "appId": "testAppId"
+            }
+          }
+        },
+        {
+          "message": [
+            {
+              "anonymousId": "random6",
+              "channel": "web",
+              "traits": {
+                "anonymousId": "random6",
+                "email": "random6@gmail.com",
+                "appId": "testAppId"
+              }
+            }
+          ],
+          "metadata": {
+            "jobId": 4
+          },
+          "destination": {
+            "Config": {
+              "appId": "testAppId"
+            }
+          }
+        },
+        {
+          "message": [
+            {
+              "anonymousId": "random7",
+              "channel": "web",
+              "traits": {
+                "anonymousId": "random7",
+                "email": "random7@gmail.com",
+                "appId": "testAppId"
+              }
+            }
+          ],
+          "metadata": {
+            "jobId": 5
+          },
+          "destination": {
+            "Config": {
+              "appId": "testAppId"
+            }
+          }
+        },
+        {
+          "message": [
+            {
+              "anonymousId": "random8",
+              "channel": "web",
+              "traits": {
+                "anonymousId": "random8",
+                "email": "random8@gmail.com",
+                "appId": "testAppId"
+              }
+            }
+          ],
+          "metadata": {
+            "jobId": 6
+          },
+          "destination": {
+            "Config": {
+              "appId": "testAppId"
+            }
+          }
+        }
+      ],
+      3
+    ],
+    "output": [
+      {
+        "events": [
+          {
+            "anonymousId": "random1",
+            "channel": "web",
+            "traits": {
+              "anonymousId": "random1",
+              "email": "random1@gmail.com",
+              "appId": "testAppId"
+            }
+          },
+          {
+            "anonymousId": "random2",
+            "channel": "web",
+            "traits": {
+              "anonymousId": "random2",
+              "email": "random2@gmail.com",
+              "appId": "testAppId"
+            }
+          }
+        ],
+        "metadata": [
+          {
+            "jobId": 1
+          }
+        ],
+        "destination": {
+          "Config": {
+            "appId": "testAppId"
+          }
+        }
+      },
+      {
+        "events": [
+          {
+            "anonymousId": "random3",
+            "channel": "web",
+            "traits": {
+              "anonymousId": "random3",
+              "email": "random3@gmail.com",
+              "appId": "testAppId"
+            }
+          },
+          {
+            "anonymousId": "random4",
+            "channel": "web",
+            "traits": {
+              "anonymousId": "random4",
+              "email": "random4@gmail.com",
+              "appId": "testAppId"
+            }
+          },
+          {
+            "anonymousId": "random5",
+            "channel": "web",
+            "traits": {
+              "anonymousId": "random5",
+              "email": "random5@gmail.com",
+              "appId": "testAppId"
+            }
+          }
+        ],
+        "metadata": [
+          {
+            "jobId": 2
+          },
+          {
+            "jobId": 3
+          }
+        ],
+        "destination": {
+          "Config": {
+            "appId": "testAppId"
+          }
+        }
+      },
+      {
+        "events": [
+          {
+            "anonymousId": "random6",
+            "channel": "web",
+            "traits": {
+              "anonymousId": "random6",
+              "email": "random6@gmail.com",
+              "appId": "testAppId"
+            }
+          },
+          {
+            "anonymousId": "random7",
+            "channel": "web",
+            "traits": {
+              "anonymousId": "random7",
+              "email": "random7@gmail.com",
+              "appId": "testAppId"
+            }
+          },
+          {
+            "anonymousId": "random8",
+            "channel": "web",
+            "traits": {
+              "anonymousId": "random8",
+              "email": "random8@gmail.com",
+              "appId": "testAppId"
+            }
+          }
+        ],
+        "metadata": [
+          {
+            "jobId": 4
+          },
+          {
+            "jobId": 5
+          },
+          {
+            "jobId": 6
+          }
+        ],
+        "destination": {
+          "Config": {
+            "appId": "testAppId"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "description": "Batching the below multiplexed events with large maxBatchSize",
+    "input": [
+      [
+        {
+          "message": [
+            {
+              "anonymousId": "anonymousId1",
+              "channel": "web",
+              "traits": {
+                "anonymousId": "anonymousId1",
+                "email": "email1@gmail.com"
+              }
+            },
+            {
+              "anonymousId": "anonymousId2",
+              "channel": "web",
+              "traits": {
+                "anonymousId": "anonymousId2",
+                "email": "email2@gmail.com"
+              }
+            }
+          ],
+          "metadata": {
+            "jobId": 1
+          },
+          "destination": {
+            "Config": {
+              "configKey": "configValue"
+            }
+          }
+        },
+        {
+          "message": [
+            {
+              "anonymousId": "anonymousId3",
+              "channel": "web",
+              "traits": {
+                "anonymousId": "anonymousId3",
+                "email": "email3@gmail.com"
+              }
+            },
+            {
+              "anonymousId": "anonymousId4",
+              "channel": "web",
+              "traits": {
+                "anonymousId": "anonymousId4",
+                "email": "email4@gmail.com"
+              }
+            },
+            {
+              "anonymousId": "anonymousId5",
+              "channel": "web",
+              "traits": {
+                "anonymousId": "anonymousId5",
+                "email": "email5@gmail.com"
+              }
+            }
+          ],
+          "metadata": {
+            "jobId": 2
+          },
+          "destination": {
+            "Config": {
+              "configKey": "configValue"
+            }
+          }
+        },
+        {
+          "message": [
+            {
+              "anonymousId": "anonymousId6",
+              "channel": "web",
+              "traits": {
+                "anonymousId": "anonymousId6",
+                "email": "email6@gmail.com"
+              }
+            }
+          ],
+          "metadata": {
+            "jobId": 3
+          },
+          "destination": {
+            "Config": {
+              "configKey": "configValue"
+            }
+          }
+        },
+        {
+          "message": [
+            {
+              "anonymousId": "anonymousId7",
+              "channel": "web",
+              "traits": {
+                "anonymousId": "anonymousId7",
+                "email": "email7@gmail.com"
+              }
+            }
+          ],
+          "metadata": {
+            "jobId": 4
+          },
+          "destination": {
+            "Config": {
+              "configKey": "configValue"
+            }
+          }
+        },
+        {
+          "message": [
+            {
+              "anonymousId": "anonymousId8",
+              "channel": "web",
+              "traits": {
+                "anonymousId": "anonymousId8",
+                "email": "email8@gmail.com"
+              }
+            }
+          ],
+          "metadata": {
+            "jobId": 5
+          },
+          "destination": {
+            "Config": {
+              "configKey": "configValue"
+            }
+          }
+        }
+      ],
+      10
+    ],
+    "output": [
+      {
+        "events": [
+          {
+            "anonymousId": "anonymousId1",
+            "channel": "web",
+            "traits": {
+              "anonymousId": "anonymousId1",
+              "email": "email1@gmail.com"
+            }
+          },
+          {
+            "anonymousId": "anonymousId2",
+            "channel": "web",
+            "traits": {
+              "anonymousId": "anonymousId2",
+              "email": "email2@gmail.com"
+            }
+          },
+          {
+            "anonymousId": "anonymousId3",
+            "channel": "web",
+            "traits": {
+              "anonymousId": "anonymousId3",
+              "email": "email3@gmail.com"
+            }
+          },
+          {
+            "anonymousId": "anonymousId4",
+            "channel": "web",
+            "traits": {
+              "anonymousId": "anonymousId4",
+              "email": "email4@gmail.com"
+            }
+          },
+          {
+            "anonymousId": "anonymousId5",
+            "channel": "web",
+            "traits": {
+              "anonymousId": "anonymousId5",
+              "email": "email5@gmail.com"
+            }
+          },
+          {
+            "anonymousId": "anonymousId6",
+            "channel": "web",
+            "traits": {
+              "anonymousId": "anonymousId6",
+              "email": "email6@gmail.com"
+            }
+          },
+          {
+            "anonymousId": "anonymousId7",
+            "channel": "web",
+            "traits": {
+              "anonymousId": "anonymousId7",
+              "email": "email7@gmail.com"
+            }
+          },
+          {
+            "anonymousId": "anonymousId8",
+            "channel": "web",
+            "traits": {
+              "anonymousId": "anonymousId8",
+              "email": "email8@gmail.com"
+            }
+          }
+        ],
+        "metadata": [
+          {
+            "jobId": 1
+          },
+          {
+            "jobId": 2
+          },
+          {
+            "jobId": 3
+          },
+          {
+            "jobId": 4
+          },
+          {
+            "jobId": 5
+          }
+        ],
+        "destination": {
+          "Config": {
+            "configKey": "configValue"
+          }
+        }
+      }
+    ]
+  }
+]

@@ -10,6 +10,7 @@ import FetchHandler from '../../helpers/fetchHandlers';
 import tags from '../../v0/util/tags';
 import stats from '../../util/stats';
 
+
 export default class NativeIntegrationSourceService implements IntegrationSourceService {
   public getTags(): MetaTransferObject {
     const metaTO = {

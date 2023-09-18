@@ -1,0 +1,66 @@
+[
+  {
+    "sourceKeys": "event_id",
+    "destKeys": "properties.eventId"
+  },
+  {
+    "sourceKeys": "event_time",
+    "destKeys": "originalTimestamp"
+  },
+  {
+    "sourceKeys": "reward_id",
+    "destKeys": "properties.rewardId"
+  },
+  {
+    "sourceKeys": "reward_supplier_name",
+    "destKeys": "properties.rewardSupplierName"
+  },
+  {
+    "sourceKeys": "reward_supplier_id",
+    "destKeys": "properties.rewardSupplierId"
+  },
+  {
+    "sourceKeys": "partner_reward_supplier_id",
+    "destKeys": "properties.partnerRewardSupplierId"
+  },
+  {
+    "sourceKeys": "reward_supplier_type",
+    "destKeys": "properties.partnerRewardSupplierType"
+  },
+  {
+    "sourceKeys": "person_id",
+    "destKeys": ["properties.personId"]
+  },
+  {
+    "sourceKeys": "partner_user_id",
+    "destKeys": ["properties.partnerUserId", "userId", "context.traits.userId"]
+  },
+  {
+    "sourceKeys": "face_value",
+    "destKeys": "properties.faceValue"
+  },
+  {
+    "sourceKeys": "face_value_type",
+    "destKeys": "properties.faceValueType"
+  },
+  {
+    "sourceKeys": "message",
+    "destKeys": "properties.message"
+  },
+  {
+    "sourceKeys": "partner_reward_id",
+    "destKeys": "properties.partnerRewardId"
+  },
+  {
+    "sourceKeys": "email",
+    "destKeys": "properties.email"
+  },
+  {
+    "sourceKeys": "data",
+    "destKeys": "properties.data"
+  },
+  {
+    "sourceKeys": "schema_version",
+    "destKeys": "properties.schemaVersion"
+  }
+]

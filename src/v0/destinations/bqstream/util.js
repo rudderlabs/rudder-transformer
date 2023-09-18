@@ -1,11 +1,10 @@
 /* eslint-disable no-param-reassign */
-const _ = require('lodash');
 const getValue = require('get-value');
 const {
   getDynamicErrorType,
   processAxiosResponse,
 } = require('../../../adapters/utils/networkUtils');
-const { isHttpStatusSuccess, isDefinedAndNotNull } = require('../../util');
+const { isHttpStatusSuccess } = require('../../util');
 const {
   REFRESH_TOKEN,
   AUTH_STATUS_INACTIVE,
@@ -147,32 +146,6 @@ function networkHandler() {
   this.processAxiosResponse = processAxiosResponse;
 }
 
-const batchEvents = (inputs) => {
-  const batches = [];
-  let currentInputsArray = inputs;
-  while (currentInputsArray.length > 0) {
-    const remainingInputsArray = [];
-    const userOrderTracker = {};
-    const event = currentInputsArray.shift();
-    const messageType = event.message.type;
-    const batch = [event];
-    currentInputsArray.forEach((currentInput) => {
-      const currentMessageType = currentInput.message.type;
-      const currentUser = currentInput.metadata.userId;
-      if (currentMessageType === messageType && !userOrderTracker[currentUser]) {
-        batch.push(currentInput);
-      } else {
-        remainingInputsArray.push(currentInput);
-        userOrderTracker[currentUser] = true;
-      }
-    });
-    batches.push(batch);
-    currentInputsArray = remainingInputsArray;
-  }
-
-  return batches;
-};
-
 /**
  * Optimizes the error response by merging the metadata of the same error type and adding it to the result array.
  *
@@ -231,4 +204,4 @@ const getRearrangedEvents = (eachUserSuccessEventslist, eachUserErrorEventsList)
   return [processedSuccessfulEvents];
 };
 
-module.exports = { networkHandler, getRearrangedEvents, batchEvents };
+module.exports = { networkHandler, getRearrangedEvents };

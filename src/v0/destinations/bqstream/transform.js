@@ -6,10 +6,11 @@ const {
   getSuccessRespEvents,
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
+  groupEventsByType,
 } = require('../../util');
 const { MAX_ROWS_PER_REQUEST, DESTINATION } = require('./config');
 const { InstrumentationError } = require('../../util/errorTypes');
-const { getRearrangedEvents, batchEvents } = require('./util');
+const { getRearrangedEvents } = require('./util');
 
 const getInsertIdColValue = (properties, insertIdCol) => {
   if (
@@ -106,7 +107,7 @@ const processRouterDest = (inputs) => {
   }
   const finalResp = [];
   let eachTypeBatchedResponse = [];
-  const batchedEvents = batchEvents(inputs);
+  const batchedEvents = groupEventsByType(inputs);
 
   batchedEvents.forEach((listOfEvents) => {
     const eachTypeSuccessEventList = []; // temporary variable to divide payload into chunks

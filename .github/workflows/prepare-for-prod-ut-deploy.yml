@@ -3,12 +3,12 @@ name: Prepare for Production Environment Deployment
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
     types:
       - closed
     branches:
-      - main
+      - master
 
 jobs:
   report-coverage:
@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Generate Tag Names
     # Only merged pull requests from release candidate branches must trigger
-    if: ((startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/')) && github.event.pull_request.merged == true)
+    if: ((startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/') || startsWith(github.event.pull_request.head.ref, 'master')) && github.event.pull_request.merged == true)
     outputs:
       tag_name_ut: ${{ steps.gen_tag_names.outputs.tag_name_ut }}
     steps:
@@ -45,18 +45,20 @@ jobs:
   build-user-transformer-image:
     name: Build User Transformer Docker Image - Prod
     # Only merged pull requests from release candidate branches must trigger
-    if: ((startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/')) && github.event.pull_request.merged == true)
+    if: ((startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/') || startsWith(github.event.pull_request.head.ref, 'master')) && github.event.pull_request.merged == true)
     needs: [generate-tag-names]
     uses: ./.github/workflows/build-push-docker-image.yml
     with:
-      build_tag: rudderstack/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name_ut }}
-      push_tags: rudderstack/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name_ut }},rudderstack/rudder-transformer:ut-latest,rudderlabs/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name_ut }},rudderlabs/rudder-transformer:ut-latest
+      build_tag: dockeronce.azurecr.io/kubernetes/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name_ut }}
+      push_tags: dockeronce.azurecr.io/kubernetes/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name_ut }},dockeronce.azurecr.io/kubernetes/rudder-transformer:ut-latest
       img_tag: ${{ needs.generate-tag-names.outputs.tag_name_ut }}
       dockerfile: Dockerfile-ut-func
       load_target: development
       push_target: production
     secrets:
       DOCKERHUB_PROD_TOKEN: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 
   create-pull-request:
     name: Update Helm Charts For Production and Create Pull Request

@@ -4,32 +4,12 @@ const {
   removeUndefinedAndNullValues,
   simpleProcessRouterDest,
   isDefinedAndNotNullAndNotEmpty,
+  getAccessToken,
 } = require('../../util');
-const { ConfigurationError, OAuthSecretError } = require('../../util/errorTypes');
+const { ConfigurationError } = require('../../util/errorTypes');
 const { BASE_URL, schemaType } = require('./config');
 const { validatePayload, validateFields } = require('./utils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-
-/**
- * Get access token to be bound to the event req headers
- *
- * Note:
- * This method needs to be implemented particular to the destination
- * As the schema that we'd get in `metadata.secret` can be different
- * for different destinations
- *
- * @param {Object} metadata
- * @returns
- */
-const getAccessToken = (metadata) => {
-  // OAuth for this destination
-  const { secret } = metadata;
-  // we would need to verify if secret is present and also if the access token field is present in secret
-  if (!secret || !secret.access_token) {
-    throw new OAuthSecretError('Empty/Invalid access token');
-  }
-  return secret.access_token;
-};
 
 const generateResponse = (groupedData, schema, segmentId, metadata, type) => {
   const payload = { users: [] };
@@ -43,7 +23,7 @@ const generateResponse = (groupedData, schema, segmentId, metadata, type) => {
 
   response.endpoint = `${BASE_URL}/segments/${segmentId}/users`;
   response.body.JSON = removeUndefinedAndNullValues(payload);
-  const accessToken = getAccessToken(metadata);
+  const accessToken = getAccessToken(metadata, 'access_token');
   response.headers = {
     Authorization: `Bearer ${accessToken}`,
     'Content-Type': JSON_MIME_TYPE,

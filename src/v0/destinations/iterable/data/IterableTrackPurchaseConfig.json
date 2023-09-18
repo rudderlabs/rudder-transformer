@@ -6,7 +6,12 @@
   },
   {
     "destKey": "id",
-    "sourceKeys": "properties.orderId",
+    "sourceKeys": [
+      "properties.order_id",
+      "properties.orderId",
+      "properties.id",
+      "properties.event_id"
+    ],
     "required": false
   },
   {

@@ -349,5 +349,9 @@
       "FORM": {}
     },
     "files": {}
+  },
+  {
+    "statusCode": 400,
+    "error": "os name is required along with the respective appId eg. (os->android & Android App Id is required) or (os->ios & Apple App Id is required)"
   }
 ]

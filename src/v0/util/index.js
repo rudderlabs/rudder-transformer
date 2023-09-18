@@ -15,6 +15,7 @@ const get = require('get-value');
 const uaParser = require('ua-parser-js');
 const moment = require('moment-timezone');
 const sha256 = require('sha256');
+const crypto = require('crypto');
 const logger = require('../../logger');
 const stats = require('../../util/stats');
 const { DestCanonicalNames, DestHandlerMap } = require('../../constants/destinationCanonicalNames');
@@ -26,6 +27,7 @@ const {
   OAuthSecretError,
 } = require('./errorTypes');
 const { client: errNotificationClient } = require('../../util/errorNotifier');
+const { HTTP_STATUS_CODES } = require('./constant');
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -45,7 +47,13 @@ const flattenMap = (collection) => _.flatMap(collection, (x) => x);
 // GENERIC UTLITY
 // ========================================================================
 
-const getEventTime = (message) => new Date(message.timestamp).toISOString();
+const getEventTime = (message) => {
+  try {
+    return new Date(message.timestamp).toISOString();
+  } catch (err) {
+    return new Date(message.originalTimestamp).toISOString();
+  }
+};
 
 const base64Convertor = (string) => Buffer.from(string).toString('base64');
 
@@ -90,6 +98,11 @@ const formatValue = (value) => {
   return Math.round(value);
 };
 
+const isObject = (value) => {
+  const type = typeof value;
+  return value != null && (type === 'object' || type === 'function') && !Array.isArray(value);
+};
+
 function isEmpty(input) {
   return _.isEmpty(_.toString(input).trim());
 }
@@ -125,6 +138,35 @@ const isDefinedNotNullNotEmpty = (value) =>
   );
 
 const removeUndefinedNullEmptyExclBoolInt = (obj) => _.pickBy(obj, isDefinedNotNullNotEmpty);
+
+/**
+ * Recursively removes undefined, null, empty objects, and empty arrays from the given object at all levels.
+ * @param {*} obj
+ * @returns
+ */
+const removeUndefinedNullValuesAndEmptyObjectArray = (obj) => {
+  function recursive(obj) {
+    if (Array.isArray(obj)) {
+      const cleanedArray = obj
+        .map((item) => recursive(item))
+        .filter((item) => isDefinedAndNotNull(item));
+      return cleanedArray.length === 0 ? null : cleanedArray;
+    }
+    if (obj && typeof obj === 'object') {
+      const data = {};
+      Object.entries(obj).forEach(([key, value]) => {
+        const cleanedValue = recursive(value);
+        if (isDefinedAndNotNull(cleanedValue)) {
+          data[key] = cleanedValue;
+        }
+      });
+      return Object.keys(data).length === 0 ? null : data;
+    }
+    return obj;
+  }
+  const newObj = recursive(obj);
+  return isDefinedAndNotNull(newObj) ? newObj : {};
+};
 
 // Format the destination.Config.dynamicMap arrays to hashMap
 const getHashFromArray = (arrays, fromKey = 'from', toKey = 'to', isLowerCase = true) => {
@@ -201,7 +243,7 @@ const getValueFromPropertiesOrTraits = ({ message, key }) => {
 };
 
 // function to flatten a json
-function flattenJson(data, separator = '.', mode = 'normal') {
+function flattenJson(data, separator = '.', mode = 'normal', flattenArrays = true) {
   const result = {};
 
   // a recursive function to loop through the array of the data
@@ -210,15 +252,20 @@ function flattenJson(data, separator = '.', mode = 'normal') {
     if (Object(cur) !== cur) {
       result[prop] = cur;
     } else if (Array.isArray(cur)) {
-      for (i = 0; i < cur.length; i += 1) {
-        if (mode === 'strict') {
-          recurse(cur[i], `${prop}${separator}${i}`);
-        } else {
-          recurse(cur[i], `${prop}[${i}]`);
+      if (flattenArrays || typeof cur?.[0] === 'object') {
+        for (i = 0; i < cur.length; i += 1) {
+          if (mode === 'strict') {
+            recurse(cur[i], `${prop}${separator}${i}`);
+          } else {
+            recurse(cur[i], `${prop}[${i}]`);
+          }
         }
-      }
-      if (cur.length === 0) {
-        result[prop] = [];
+        if (cur.length === 0) {
+          result[prop] = [];
+        }
+      } else {
+        // to not flatten the array of non-object (string, booleans, numbers)
+        result[prop] = cur;
       }
     } else {
       let isEmptyFlag = true;
@@ -229,7 +276,6 @@ function flattenJson(data, separator = '.', mode = 'normal') {
       if (isEmptyFlag && prop) result[prop] = {};
     }
   }
-
   recurse(data, '');
   return result;
 }
@@ -570,6 +616,238 @@ const getFieldValueFromMessage = (message, sourceKey) => {
   return null;
 };
 
+function checkTimestamp(validateTimestamp, formattedVal) {
+  const {
+    allowedPastTimeDifference,
+    allowedPastTimeUnit, // seconds, minutes, hours
+    allowedFutureTimeDifference,
+    allowedFutureTimeUnit, // seconds, minutes, hours
+  } = validateTimestamp;
+
+  let pastTimeDifference;
+  let futureTimeDifference;
+
+  const currentTime = moment.unix(moment().format('X'));
+  const time = moment.unix(moment(formattedVal).format('X'));
+
+  switch (allowedPastTimeUnit) {
+    case 'seconds':
+      pastTimeDifference = Math.ceil(moment.duration(currentTime.diff(time)).asSeconds());
+      break;
+    case 'minutes':
+      pastTimeDifference = Math.ceil(moment.duration(currentTime.diff(time)).asMinutes());
+      break;
+    case 'hours':
+      pastTimeDifference = Math.ceil(moment.duration(currentTime.diff(time)).asHours());
+      break;
+    default:
+      break;
+  }
+
+  if (pastTimeDifference > allowedPastTimeDifference) {
+    throw new InstrumentationError(
+      `Allowed timestamp is [${allowedPastTimeDifference} ${allowedPastTimeUnit}] into the past`,
+    );
+  }
+
+  if (pastTimeDifference <= 0) {
+    switch (allowedFutureTimeUnit) {
+      case 'seconds':
+        futureTimeDifference = Math.ceil(moment.duration(time.diff(currentTime)).asSeconds());
+        break;
+      case 'minutes':
+        futureTimeDifference = Math.ceil(moment.duration(time.diff(currentTime)).asMinutes());
+        break;
+      case 'hours':
+        futureTimeDifference = Math.ceil(moment.duration(time.diff(currentTime)).asHours());
+        break;
+      default:
+        break;
+    }
+
+    if (futureTimeDifference > allowedFutureTimeDifference) {
+      throw new InstrumentationError(
+        `Allowed timestamp is [${allowedFutureTimeDifference} ${allowedFutureTimeUnit}] into the future`,
+      );
+    }
+  }
+}
+
+// handle type and format
+function formatValues(formattedVal, formattingType, typeFormat, integrationsObj) {
+  let curFormattedVal = formattedVal;
+
+  const formattingFunctions = {
+    timestamp: () => {
+      curFormattedVal = formatTimeStamp(formattedVal, typeFormat);
+    },
+    secondTimestamp: () => {
+      if (!moment(formattedVal, 'x', true).isValid()) {
+        curFormattedVal = Math.floor(formatTimeStamp(formattedVal, typeFormat) / 1000);
+      }
+    },
+    microSecondTimestamp: () => {
+      curFormattedVal = moment.unix(moment(formattedVal).format('X'));
+      curFormattedVal =
+        curFormattedVal.toDate().getTime() * 1000 + curFormattedVal.toDate().getMilliseconds();
+    },
+    flatJson: () => {
+      curFormattedVal = flattenJson(formattedVal);
+    },
+    encodeURIComponent: () => {
+      curFormattedVal = encodeURIComponent(formattedVal);
+    },
+    jsonStringify: () => {
+      curFormattedVal = JSON.stringify(formattedVal);
+    },
+    jsonStringifyOnFlatten: () => {
+      curFormattedVal = JSON.stringify(flattenJson(formattedVal));
+    },
+    dobInMMDD: () => {
+      curFormattedVal = String(formattedVal).slice(5);
+      curFormattedVal = curFormattedVal.replace('-', '/');
+    },
+    jsonStringifyOnObject: () => {
+      if (typeof formattedVal !== 'string') {
+        curFormattedVal = JSON.stringify(formattedVal);
+      }
+    },
+    numberForRevenue: () => {
+      if (
+        (typeof formattedVal === 'string' || formattedVal instanceof String) &&
+        formattedVal.charAt(0) === '$'
+      ) {
+        curFormattedVal = formattedVal.substring(1);
+      }
+      curFormattedVal = Number.parseFloat(Number(curFormattedVal || 0).toFixed(2));
+      if (Number.isNaN(curFormattedVal)) {
+        throw new InstrumentationError('Revenue is not in the correct format');
+      }
+    },
+    toString: () => {
+      curFormattedVal = String(formattedVal);
+    },
+    toNumber: () => {
+      curFormattedVal = Number(formattedVal);
+    },
+    toFloat: () => {
+      curFormattedVal = parseFloat(formattedVal);
+    },
+    toInt: () => {
+      curFormattedVal = parseInt(formattedVal, 10);
+    },
+    toLower: () => {
+      curFormattedVal = formattedVal.toString().toLowerCase();
+    },
+    hashToSha256: () => {
+      curFormattedVal =
+        integrationsObj && integrationsObj.hashed
+          ? String(formattedVal)
+          : hashToSha256(String(formattedVal));
+    },
+    getFbGenderVal: () => {
+      curFormattedVal = getFbGenderVal(formattedVal);
+    },
+    getOffsetInSec: () => {
+      curFormattedVal = getOffsetInSec(formattedVal);
+    },
+    domainUrl: () => {
+      curFormattedVal = formattedVal.replace('https://', '').replace('http://', '');
+    },
+    domainUrlV2: () => {
+      const url = isValidUrl(formattedVal);
+      if (!url) {
+        throw new InstrumentationError(`Invalid URL: ${formattedVal}`);
+      }
+      curFormattedVal = url.hostname.replace('www.', '');
+    },
+    IsBoolean: () => {
+      curFormattedVal = true;
+      if (!(typeof formattedVal === 'boolean')) {
+        logger.debug('Boolean value missing, so dropping it');
+        curFormattedVal = false;
+      }
+    },
+    trim: () => {
+      if (typeof formattedVal === 'string') {
+        curFormattedVal = formattedVal.trim();
+      }
+    },
+  };
+
+  if (formattingType in formattingFunctions) {
+    const formattingFunction = formattingFunctions[formattingType];
+    formattingFunction();
+  }
+
+  return curFormattedVal;
+}
+
+function handleExcludes(value, excludes, formattedVal) {
+  if (typeof value === 'object') {
+    // exclude the fields from the formattedVal
+    excludes.forEach((key) => {
+      // eslint-disable-next-line no-param-reassign
+      delete formattedVal[key];
+    });
+  } else {
+    logger.warn("excludes doesn't work with non-object data type. Ignoring excludes");
+  }
+}
+
+function handleTemplate(template, value) {
+  const hTemplate = Handlebars.compile(template.trim());
+  const formattedVal = hTemplate({ value }).trim();
+  return formattedVal;
+}
+
+function handleMultikeyMap(multikeyMap, strictMultiMap, formattedVal, destKey) {
+  // sourceVal is expected to be an array
+  // if value is present in sourceVal, returns the destVal
+  // else returns the original value
+  // Expected multikeyMap value:
+  // "multikeyMap": [
+  //   {
+  //     "sourceVal": ["m", "M", "Male", "male"],
+  //     "destVal": "M"
+  //   },
+  //   {
+  //     "sourceVal": ["f", "F", "Female", "female"],
+  //     "destVal": "F"
+  //   }
+  // ]
+  let curFormattedVal = formattedVal;
+  const finalKeyMap = multikeyMap || strictMultiMap;
+  let foundVal = false;
+  if (Array.isArray(finalKeyMap)) {
+    finalKeyMap.some((map) => {
+      if (!map.sourceVal || !isDefinedAndNotNull(map.destVal) || !Array.isArray(map.sourceVal)) {
+        logger.warn('multikeyMap skipped: sourceVal and destVal must be of valid type');
+        foundVal = true;
+        return true;
+      }
+
+      if (map.sourceVal.includes(formattedVal)) {
+        curFormattedVal = map.destVal;
+        foundVal = true;
+        return true;
+      }
+
+      return false;
+    });
+  } else {
+    logger.warn('multikeyMap skipped: multikeyMap must be an array');
+  }
+  if (!foundVal) {
+    if (strictMultiMap) {
+      throw new InstrumentationError(`Invalid entry for key ${destKey}`);
+    } else {
+      curFormattedVal = undefined;
+    }
+  }
+  return curFormattedVal;
+}
+
 // format the value as per the metadata values
 // Expected metadata keys are: (according to precedence)
 // - - type, typeFormat: expected data type and its format
@@ -581,7 +859,7 @@ const handleMetadataForValue = (value, metadata, destKey, integrationsObj = null
     return value;
   }
 
-  // get infor from metadata
+  // get information from metadata
   const {
     type,
     typeFormat,
@@ -605,237 +883,32 @@ const handleMetadataForValue = (value, metadata, destKey, integrationsObj = null
    * validate allowed time difference
    */
   if (validateTimestamp) {
-    const {
-      allowedPastTimeDifference,
-      allowedPastTimeUnit, // seconds, minutes, hours
-      allowedFutureTimeDifference,
-      allowedFutureTimeUnit, // seconds, minutes, hours
-    } = validateTimestamp;
-
-    let pastTimeDifference;
-    let futureTimeDifference;
-
-    const currentTime = moment.unix(moment().format('X'));
-    const time = moment.unix(moment(formattedVal).format('X'));
-
-    switch (allowedPastTimeUnit) {
-      case 'seconds':
-        pastTimeDifference = Math.ceil(moment.duration(currentTime.diff(time)).asSeconds());
-        break;
-      case 'minutes':
-        pastTimeDifference = Math.ceil(moment.duration(currentTime.diff(time)).asMinutes());
-        break;
-      case 'hours':
-        pastTimeDifference = Math.ceil(moment.duration(currentTime.diff(time)).asHours());
-        break;
-      default:
-        break;
-    }
-
-    if (pastTimeDifference > allowedPastTimeDifference) {
-      throw new InstrumentationError(
-        `Allowed timestamp is [${allowedPastTimeDifference} ${allowedPastTimeUnit}] into the past`,
-      );
-    }
-
-    if (pastTimeDifference <= 0) {
-      switch (allowedFutureTimeUnit) {
-        case 'seconds':
-          futureTimeDifference = Math.ceil(moment.duration(time.diff(currentTime)).asSeconds());
-          break;
-        case 'minutes':
-          futureTimeDifference = Math.ceil(moment.duration(time.diff(currentTime)).asMinutes());
-          break;
-        case 'hours':
-          futureTimeDifference = Math.ceil(moment.duration(time.diff(currentTime)).asHours());
-          break;
-        default:
-          break;
-      }
-
-      if (futureTimeDifference > allowedFutureTimeDifference) {
-        throw new InstrumentationError(
-          `Allowed timestamp is [${allowedFutureTimeDifference} ${allowedFutureTimeUnit}] into the future`,
-        );
-      }
-    }
+    checkTimestamp(validateTimestamp, formattedVal);
   }
 
-  // handle type and format
-  function formatValues(formatingType) {
-    switch (formatingType) {
-      case 'timestamp':
-        formattedVal = formatTimeStamp(formattedVal, typeFormat);
-        break;
-      case 'secondTimestamp':
-        if (!moment(formattedVal, 'x', true).isValid()) {
-          formattedVal = Math.floor(formatTimeStamp(formattedVal, typeFormat) / 1000);
-        }
-        break;
-      case 'microSecondTimestamp':
-        formattedVal = moment.unix(moment(formattedVal).format('X'));
-        formattedVal =
-          formattedVal.toDate().getTime() * 1000 + formattedVal.toDate().getMilliseconds();
-        break;
-      case 'flatJson':
-        formattedVal = flattenJson(formattedVal);
-        break;
-      case 'encodeURIComponent':
-        formattedVal = encodeURIComponent(JSON.stringify(formattedVal));
-        break;
-      case 'jsonStringify':
-        formattedVal = JSON.stringify(formattedVal);
-        break;
-      case 'jsonStringifyOnFlatten':
-        formattedVal = JSON.stringify(flattenJson(formattedVal));
-        break;
-      case 'dobInMMDD':
-        formattedVal = String(formattedVal).slice(5);
-        formattedVal = formattedVal.replace('-', '/');
-        break;
-      case 'jsonStringifyOnObject':
-        // if already a string, will not stringify
-        // calling stringify on string will add escape characters
-        if (typeof formattedVal !== 'string') {
-          formattedVal = JSON.stringify(formattedVal);
-        }
-        break;
-      case 'numberForRevenue':
-        if (
-          (typeof formattedVal === 'string' || formattedVal instanceof String) &&
-          formattedVal.charAt(0) === '$'
-        ) {
-          formattedVal = formattedVal.substring(1);
-        }
-        formattedVal = Number.parseFloat(Number(formattedVal || 0).toFixed(2));
-        if (Number.isNaN(formattedVal)) {
-          throw new InstrumentationError('Revenue is not in the correct format');
-        }
-        break;
-      case 'toString':
-        formattedVal = String(formattedVal);
-        break;
-      case 'toNumber':
-        formattedVal = Number(formattedVal);
-        break;
-      case 'toFloat':
-        formattedVal = parseFloat(formattedVal);
-        break;
-      case 'toInt':
-        formattedVal = parseInt(formattedVal, 10);
-        break;
-      case 'toLower':
-        formattedVal = formattedVal.toString().toLowerCase();
-        break;
-      case 'hashToSha256':
-        formattedVal =
-          integrationsObj && integrationsObj.hashed
-            ? String(formattedVal)
-            : hashToSha256(String(formattedVal));
-        break;
-      case 'getFbGenderVal':
-        formattedVal = getFbGenderVal(formattedVal);
-        break;
-      case 'getOffsetInSec':
-        formattedVal = getOffsetInSec(formattedVal);
-        break;
-      case 'domainUrl':
-        formattedVal = formattedVal.replace('https://', '').replace('http://', '');
-        break;
-      case 'domainUrlV2': {
-        const url = isValidUrl(formattedVal);
-        if (!url) {
-          throw new InstrumentationError(`Invalid URL: ${formattedVal}`);
-        }
-        formattedVal = url.hostname.replace('www.', '');
-        break;
-      }
-      case 'IsBoolean':
-        if (!(typeof formattedVal === 'boolean')) {
-          logger.debug('Boolean value missing, so dropping it');
-        }
-        break;
-      case 'trim':
-        if (typeof formattedVal === 'string') {
-          formattedVal = formattedVal.trim();
-        }
-        break;
-      default:
-        break;
-    }
-  }
   if (type) {
     if (Array.isArray(type)) {
       type.forEach((eachType) => {
-        formatValues(eachType);
+        formattedVal = formatValues(formattedVal, eachType, typeFormat, integrationsObj);
       });
     } else {
-      formatValues(type);
+      formattedVal = formatValues(formattedVal, type, typeFormat, integrationsObj);
     }
   }
 
   // handle template
   if (template) {
-    const hTemplate = Handlebars.compile(template.trim());
-    formattedVal = hTemplate({ value }).trim();
+    formattedVal = handleTemplate(template, value);
   }
 
   // handle excludes
   if (excludes) {
-    if (typeof value === 'object') {
-      // exlude the fields from the formattedVal
-      excludes.forEach((key) => {
-        delete formattedVal[key];
-      });
-    } else {
-      logger.warn("exludes doesn't work with non-object data type. Ignoring exludes");
-    }
+    handleExcludes(value, excludes, formattedVal);
   }
 
   // handle multikeyMap
-  // sourceVal is expected to be an array
-  // if value is present in sourceVal, returns the destVal
-  // else returns the original value
-  // Expected multikeyMap value:
-  // "multikeyMap": [
-  //   {
-  //     "sourceVal": ["m", "M", "Male", "male"],
-  //     "destVal": "M"
-  //   },
-  //   {
-  //     "sourceVal": ["f", "F", "Female", "female"],
-  //     "destVal": "F"
-  //   }
-  // ]
   if (multikeyMap || strictMultiMap) {
-    const finalKeyMap = multikeyMap || strictMultiMap;
-    let foundVal = false;
-    if (Array.isArray(finalKeyMap)) {
-      finalKeyMap.some((map) => {
-        if (!map.sourceVal || !isDefinedAndNotNull(map.destVal) || !Array.isArray(map.sourceVal)) {
-          logger.warn('multikeyMap skipped: sourceVal and destVal must be of valid type');
-          foundVal = true;
-          return true;
-        }
-
-        if (map.sourceVal.includes(formattedVal)) {
-          formattedVal = map.destVal;
-          foundVal = true;
-          return true;
-        }
-
-        return false;
-      });
-    } else {
-      logger.warn('multikeyMap skipped: multikeyMap must be an array');
-    }
-    if (!foundVal) {
-      if (strictMultiMap) {
-        throw new InstrumentationError(`Invalid entry for key ${destKey}`);
-      } else {
-        formattedVal = undefined;
-      }
-    }
+    formattedVal = handleMultikeyMap(multikeyMap, strictMultiMap, formattedVal, destKey);
   }
 
   if (allowedKeyCheck) {
@@ -973,22 +1046,16 @@ const constructPayload = (message, mappingJson, destinationName = null) => {
 //   }
 // }
 // to get destination specific external id passed in context.
-function getDestinationExternalID(message, type) {
-  let externalIdArray = null;
-  let destinationExternalId = null;
-  if (message.context && message.context.externalId) {
-    externalIdArray = message.context.externalId;
-  }
-
+const getDestinationExternalID = (message, type) => {
+  const { context } = message;
+  const externalIdArray = context?.externalId || [];
+  let externalIdObj;
   if (Array.isArray(externalIdArray)) {
-    externalIdArray.forEach((extIdObj) => {
-      if (extIdObj.type === type) {
-        destinationExternalId = extIdObj.id;
-      }
-    });
+    externalIdObj = externalIdArray.find((extIdObj) => extIdObj?.type === type);
   }
+  const destinationExternalId = externalIdObj ? externalIdObj.id : null;
   return destinationExternalId;
-}
+};
 
 // Get id, identifierType and object type from externalId for rETL
 // type will be of the form: <DESTINATION-NAME>-<object>
@@ -1014,12 +1081,19 @@ const getDestinationExternalIDInfoForRetl = (message, destination) => {
 };
 
 const getDestinationExternalIDObjectForRetl = (message, destination) => {
+  const { externalId } = message.context || {};
   let externalIdArray = [];
-  if (message.context && message.context.externalId) {
-    externalIdArray = message.context.externalId;
+
+  if (externalId) {
+    if (Array.isArray(externalId)) {
+      externalIdArray = externalId;
+    } else if (isObject(externalId) && !isEmptyObject(externalId)) {
+      externalIdArray = [externalId];
+    }
   }
+
   let obj;
-  if (externalIdArray) {
+  if (externalIdArray.length > 0) {
     // some stops the execution when the element is found
     externalIdArray.some((extIdObj) => {
       const { type } = extIdObj;
@@ -1031,11 +1105,6 @@ const getDestinationExternalIDObjectForRetl = (message, destination) => {
     });
   }
   return obj;
-};
-
-const isObject = (value) => {
-  const type = typeof value;
-  return value != null && (type === 'object' || type === 'function') && !Array.isArray(value);
 };
 
 const isNonFuncObject = (value) => {
@@ -1211,9 +1280,11 @@ function deleteObjectProperty(object, pathToObject) {
     return;
   }
   if (typeof pathToObject === 'string') {
+    // eslint-disable-next-line no-param-reassign
     pathToObject = pathToObject.split('.');
   }
   for (i = 0; i < pathToObject.length - 1; i += 1) {
+    // eslint-disable-next-line no-param-reassign
     object = object[pathToObject[i]];
 
     if (typeof object === 'undefined') {
@@ -1221,6 +1292,7 @@ function deleteObjectProperty(object, pathToObject) {
     }
   }
 
+  // eslint-disable-next-line no-param-reassign
   delete object[pathToObject.pop()];
 }
 
@@ -1238,7 +1310,7 @@ function toTitleCase(payload) {
       .replace(/(\d)([a-z])/gi, '$1 $2')
       .trim()
       .replace(/(_)/g, ` `)
-      .replace(/(^\w)|(\s+\w)/g, (match) => match.toUpperCase());
+      .replace(/(?:^|\s)(\w)/g, (match) => match.toUpperCase());
     newPayload[newKey] = value;
   });
   return newPayload;
@@ -1294,6 +1366,7 @@ function addExternalIdToTraits(message) {
 const adduserIdFromExternalId = (message) => {
   const externalId = get(message, 'context.externalId.0.id');
   if (externalId) {
+    // eslint-disable-next-line no-param-reassign
     message.userId = externalId;
   }
 };
@@ -1317,11 +1390,11 @@ const errorStatusCodeKeys = ['response.status', 'code', 'status'];
  * @param {Number} defaultStatusCode default status code that has to be set
  * @returns {Number}
  */
-const getErrorStatusCode = (error, defaultStatusCode = 400) => {
+const getErrorStatusCode = (error, defaultStatusCode = HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR) => {
   try {
     let defaultStCode = defaultStatusCode;
     if (!_.isNumber(defaultStatusCode)) {
-      defaultStCode = 400;
+      defaultStCode = HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR;
     }
     const errStCode = errorStatusCodeKeys
       .map((statusKey) => get(error, statusKey))
@@ -1336,10 +1409,20 @@ const getErrorStatusCode = (error, defaultStatusCode = 400) => {
 /**
  * Used for generating error response with stats from native and built errors
  */
-function generateErrorObject(error, defTags = {}) {
+function generateErrorObject(error, defTags = {}, shouldEnrichErrorMessage = false) {
   let errObject = error;
+  let errorMessage = error.message;
+  if (shouldEnrichErrorMessage) {
+    if (error.destinationResponse) {
+      errorMessage = JSON.stringify({
+        message: error.message,
+        destinationResponse: error.destinationResponse,
+      });
+    }
+    errObject.message = errorMessage;
+  }
   if (!(error instanceof BaseError)) {
-    errObject = new TransformationError(error.message, getErrorStatusCode(error));
+    errObject = new TransformationError(errorMessage, getErrorStatusCode(error));
   }
 
   // Add higher level default tags
@@ -1373,18 +1456,11 @@ function isHttpStatusRetryable(status) {
  * @returns
  */
 function generateUUID() {
-  // Public Domain/MIT
-  let d = new Date().getTime();
-  if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
-    d += performance.now(); // use high-precision timer if available
-  }
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-    // eslint-disable-next-line no-bitwise
-    const r = (d + Math.random() * 16) % 16 | 0;
-    d = Math.floor(d / 16);
-    // eslint-disable-next-line no-bitwise
-    return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
-  });
+  return crypto.randomUUID({
+    disableEntropyCache: true,
+  }); /* using disableEntropyCache as true to not cache the generated uuids. 
+  For more Info https://nodejs.org/api/crypto.html#cryptorandomuuidoptions:~:text=options%20%3CObject%3E-,disableEntropyCache,-%3Cboolean%3E%20By
+  */
 }
 
 const isOAuthDestination = (destination) => {
@@ -1460,7 +1536,7 @@ function getValidDynamicFormConfig(
       (element[keyRight] || element[keyRight] === ''),
   );
   if (res.length < attributeArray.length) {
-    stats.increment('dest_transform_invalid_dynamicConfig_count', 1, {
+    stats.increment('dest_transform_invalid_dynamicConfig_count', {
       destinationType,
       destinationId,
     });
@@ -1519,6 +1595,11 @@ const handleRtTfSingleEventError = (input, error, reqMetadata) => {
 
   const resp = getErrorRespEvents([input.metadata], errObj.status, errObj.message, errObj.statTags);
 
+  // Add support for refreshing for OAuth destinations
+  if (error?.authErrorCategory) {
+    resp.authErrorCategory = error.authErrorCategory;
+  }
+
   errNotificationClient.notify(error, 'Router Transformation (event level)', {
     ...resp,
     ...reqMetadata,
@@ -1540,7 +1621,7 @@ const handleRtTfSingleEventError = (input, error, reqMetadata) => {
  * @param {Function} singleTfFunc - single event transformation function, we'd recommend this to be an async function(always)
  * @returns
  */
-const simpleProcessRouterDest = async (inputs, singleTfFunc, reqMetadata) => {
+const simpleProcessRouterDest = async (inputs, singleTfFunc, reqMetadata, processParams) => {
   const errorRespEvents = checkInvalidRtTfEvents(inputs);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
@@ -1552,7 +1633,7 @@ const simpleProcessRouterDest = async (inputs, singleTfFunc, reqMetadata) => {
         let resp = input.message;
         // transform if not already done
         if (!input.message.statusCode) {
-          resp = await singleTfFunc(input);
+          resp = await singleTfFunc(input, processParams);
         }
 
         return getSuccessRespEvents(resp, [input.metadata], input.destination);
@@ -1561,6 +1642,38 @@ const simpleProcessRouterDest = async (inputs, singleTfFunc, reqMetadata) => {
       }
     }),
   );
+  return respList;
+};
+/**
+ * This is the sync version of simpleProcessRouterDest
+ *
+ * @param {*} inputs
+ * @param {*} singleTfFunc
+ * @param {*} reqMetadata
+ * @param {*} processParams
+ * @returns
+ */
+const simpleProcessRouterDestSync = async (inputs, singleTfFunc, reqMetadata, processParams) => {
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
+  }
+  const respList = [];
+  // eslint-disable-next-line no-restricted-syntax
+  for (const input of inputs) {
+    try {
+      let resp = input.message;
+      // transform if not already done
+      if (!input.message.statusCode) {
+        // eslint-disable-next-line no-await-in-loop
+        resp = await singleTfFunc(input, processParams);
+      }
+      respList.push(getSuccessRespEvents(resp, [input.metadata], input.destination));
+    } catch (error) {
+      respList.push(handleRtTfSingleEventError(input, error, reqMetadata));
+    }
+  }
+
   return respList;
 };
 
@@ -1669,12 +1782,7 @@ const validatePhoneWithCountryCode = (phone) => {
  * @param {*} Config
  * @returns
  */
-const isHybridModeEnabled = (Config) => {
-  if (isDefinedAndNotNull(Config.useNativeSDK) && isDefinedAndNotNull(Config.useNativeSDKToSend)) {
-    return Config.useNativeSDK && !Config.useNativeSDKToSend;
-  }
-  return false;
-};
+const isHybridModeEnabled = (Config) => Config.connectionMode === 'hybrid';
 
 /**
  * Get event type from the Rudder message object
@@ -1720,9 +1828,86 @@ const getAccessToken = (metadata, accessTokenKey) => {
   const { secret } = metadata;
   // we would need to verify if secret is present and also if the access token field is present in secret
   if (!secret || !secret[accessTokenKey]) {
-    throw new OAuthSecretError("Empty/Invalid access token");
+    throw new OAuthSecretError('Empty/Invalid access token');
   }
   return secret[accessTokenKey];
+};
+
+/**
+ * This function takes an array of transformed events and groups them into batches based on the maximum batch size provided.
+ *
+ * @param { Array<{ message: *[], metadata: *, destination: * }> } transformedEventsList
+ *  - An array of objects representing transformed events to be batched.
+ * @param { Number } maxBatchSize An integer representing the maximum size of each batch of events.
+ *
+ * @returns { Array<{ events: *[], metadata: *[], destination: * }> }
+ *  - A list of objects where each object contains a batch of events, its corresponding metadata, and destination.
+ *
+ * @example
+ *  const transformedEventsList = [
+ *    {
+ *      message: [{ userId: 1 }, { userId: 2 }],
+ *      metadata: { jobId: 1 },
+ *      destination: { name: 'dest' }
+ *    },
+ *    {
+ *      message: [{ userId: 3 }, { userId: 4 }],
+ *      metadata: { jobId: 2 },
+ *      destination: { name: 'dest' }
+ *    },
+ *    {
+ *      message: [{ userId: 5 }],
+ *      metadata: { jobId: 3 },
+ *      destination: { name: 'dest' }
+ *    }
+ *  ];
+ *  const maxBatchSize = 3;
+ *
+ *  batchMultiplexedEvents(transformedEventsList, maxBatchSize)
+ *  returns [
+ *    {
+ *      events: [{ userId: 1 }, { userId: 2 }, { userId: 5 }],
+ *      metadata: [{ jobId: 1 }, { jobId: 3 }],
+ *      destination: { name: 'dest' },
+ *    },
+ *    {
+ *      events: [{ userId: 3 }, { userId: 4 }],
+ *      metadata: [{ jobId: 2 }],
+ *      destination: { name: 'dest' },
+ *    }
+ *  ]
+ */
+const batchMultiplexedEvents = (transformedEventsList, maxBatchSize) => {
+  const batchedEvents = [];
+
+  if (Array.isArray(transformedEventsList)) {
+    transformedEventsList.forEach((transformedInput) => {
+      let transformedMessage = Array.isArray(transformedInput.message)
+        ? transformedInput.message
+        : [transformedInput.message];
+      let eventsNotBatched = true;
+      if (batchedEvents.length > 0) {
+        const batch = batchedEvents[batchedEvents.length - 1];
+        if (batch.events.length + transformedMessage.length <= maxBatchSize) {
+          batch.events.push(...transformedMessage);
+          batch.metadata.push(transformedInput.metadata);
+          eventsNotBatched = false;
+        }
+      }
+      if (batchedEvents.length === 0 || eventsNotBatched) {
+        if (transformedMessage.length > maxBatchSize) {
+          transformedMessage = _.chunk(transformedMessage, maxBatchSize);
+        }
+        batchedEvents.push({
+          events: transformedMessage,
+          metadata: [transformedInput.metadata],
+          destination: transformedInput.destination,
+        });
+      }
+    });
+  }
+
+  return batchedEvents;
 };
 
 // ========================================================================
@@ -1734,6 +1919,7 @@ module.exports = {
   addExternalIdToTraits,
   adduserIdFromExternalId,
   base64Convertor,
+  batchMultiplexedEvents,
   checkEmptyStringInarray,
   checkSubsetOfArray,
   constructPayload,
@@ -1802,6 +1988,7 @@ module.exports = {
   removeUndefinedAndNullAndEmptyValues,
   removeUndefinedAndNullValues,
   removeUndefinedNullEmptyExclBoolInt,
+  removeUndefinedNullValuesAndEmptyObjectArray,
   removeUndefinedValues,
   returnArrayOfSubarrays,
   stripTrailingSlash,
@@ -1810,6 +1997,7 @@ module.exports = {
   updatePayload,
   checkInvalidRtTfEvents,
   simpleProcessRouterDest,
+  simpleProcessRouterDestSync,
   handleRtTfSingleEventError,
   getErrorStatusCode,
   getDestAuthCacheInstance,
@@ -1820,5 +2008,6 @@ module.exports = {
   isHybridModeEnabled,
   getEventType,
   checkAndCorrectUserId,
-  getAccessToken
+  getAccessToken,
+  formatValues,
 };

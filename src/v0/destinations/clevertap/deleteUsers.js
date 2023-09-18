@@ -9,6 +9,7 @@ const { executeCommonValidations } = require('../../util/regulation-api');
 const { NetworkError, ConfigurationError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 const { getUserIdBatches } = require('../../util/deleteUserUtils');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
  * This function will help to delete the users one by one from the userAttributes array.
@@ -27,7 +28,7 @@ const userDeletionHandler = async (userAttributes, config) => {
   const headers = {
     'X-CleverTap-Account-Id': accountId,
     'X-CleverTap-Passcode': passcode,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   // userIdBatches = [[u1,u2,u3,...batchSize],[u1,u2,u3,...batchSize]...]
   // ref : https://developer.clevertap.com/docs/disassociate-api
@@ -46,6 +47,10 @@ const userDeletionHandler = async (userAttributes, config) => {
       },
       {
         headers,
+      },
+      {
+        destType: 'clevertap',
+        feature: 'deleteUsers',
       },
     );
     const handledDelResponse = processAxiosResponse(deletionResponse);
@@ -67,10 +72,10 @@ const userDeletionHandler = async (userAttributes, config) => {
   };
 };
 
-const processDeleteUsers = (event) => {
+const processDeleteUsers = async (event) => {
   const { userAttributes, config } = event;
   executeCommonValidations(userAttributes);
-  const resp = userDeletionHandler(userAttributes, config);
+  const resp = await userDeletionHandler(userAttributes, config);
   return resp;
 };
 module.exports = { processDeleteUsers };

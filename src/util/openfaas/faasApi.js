@@ -7,7 +7,8 @@ const parseAxiosError = (error) => {
   if (error.response) {
     const status = error.response.status || 400;
     const errorData = error.response?.data;
-    const message = (errorData && (errorData.message || errorData)) || error.message;
+    const message =
+      (errorData && (errorData.message || errorData.error || errorData)) || error.message;
     return new RespStatusError(message, status);
   }
   if (error.request) {
@@ -52,6 +53,17 @@ const invokeFunction = async (functionName, payload) =>
       .catch((err) => reject(parseAxiosError(err)));
   });
 
+const checkFunctionHealth = async (functionName) =>
+  new Promise((resolve, reject) => {
+    const url = `${OPENFAAS_GATEWAY_URL}/function/${functionName}`;
+    axios
+      .get(url, {
+        headers: { 'X-REQUEST-TYPE': 'HEALTH-CHECK' },
+      })
+      .then((resp) => resolve(resp))
+      .catch((err) => reject(parseAxiosError(err)));
+  });
+
 const deployFunction = async (payload) =>
   new Promise((resolve, reject) => {
     const url = `${OPENFAAS_GATEWAY_URL}/system/functions`;
@@ -61,22 +73,11 @@ const deployFunction = async (payload) =>
       .catch((err) => reject(parseAxiosError(err)));
   });
 
-const checkFunctionHealth = async (functionName) =>
-  new Promise((resolve, reject) => {
-    const url = `${OPENFAAS_GATEWAY_URL}/function/${functionName}`;
-    axios
-      .get(url, {
-        headers: { "X-REQUEST-TYPE": "HEALTH-CHECK"}
-      })
-      .then((resp) => resolve(resp))
-      .catch((err) => reject(parseAxiosError(err)));
-  });
-
 module.exports = {
   deleteFunction,
   deployFunction,
   getFunction,
   getFunctionList,
   invokeFunction,
-  checkFunctionHealth
+  checkFunctionHealth,
 };

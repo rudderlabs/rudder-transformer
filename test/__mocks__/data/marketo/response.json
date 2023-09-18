@@ -5,6 +5,12 @@
     "scope": "integrations@rudderstack.com",
     "token_type": "bearer"
   },
+  "https://marketo_acct_id_token_failure.mktorest.com/identity/oauth/token": {
+    "access_token": "access_token_expired",
+    "expires_in": 0,
+    "scope": "integrations@rudderstack.com",
+    "token_type": "bearer"
+  },
   "https://marketo_acct_id_success.mktorest.com/rest/v1/leads.json": {
     "requestId": "7ab2#17672a46a99",
     "result": [

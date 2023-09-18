@@ -6,7 +6,7 @@
   },
   {
     "destKey": "timestamp",
-    "sourceKeys": ["properties.timestamp", "originalTimestamp"],
+    "sourceKeys": ["properties.timestamp", "timestamp", "originalTimestamp"],
     "required": true
   },
   {

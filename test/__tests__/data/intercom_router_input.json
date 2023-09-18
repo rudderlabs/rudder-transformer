@@ -68,7 +68,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+        "apiKey": "intercomApiKey",
         "appId": "9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0",
         "collectContext": false
       }
@@ -141,7 +141,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+        "apiKey": "intercomApiKey",
         "appId": "9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0",
         "collectContext": false
       }

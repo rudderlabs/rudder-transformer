@@ -1,7 +1,7 @@
 const { getMappingConfig } = require('../../util');
 
-const TRACK_ENDPOINT = 'https://business-api.tiktok.com/open_api/v1.2/pixel/track/';
-const BATCH_ENDPOINT = 'https://business-api.tiktok.com/open_api/v1.2/pixel/batch/';
+const TRACK_ENDPOINT = 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/';
+const BATCH_ENDPOINT = 'https://business-api.tiktok.com/open_api/v1.3/pixel/batch/';
 const MAX_BATCH_SIZE = 50;
 
 const ConfigCategory = {
@@ -39,4 +39,5 @@ module.exports = {
   PARTNER_NAME,
   trackMapping: mappingConfig[ConfigCategory.TRACK.name],
   eventNameMapping,
+  DESTINATION: 'TIKTOK_ADS',
 };

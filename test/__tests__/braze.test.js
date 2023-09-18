@@ -17,10 +17,10 @@ const inputData = JSON.parse(inputDataFile);
 const expectedData = JSON.parse(outputDataFile);
 
 inputData.forEach((input, index) => {
-  it(`${name} Tests: payload - ${index}`, () => {
+  it(`${name} Tests: payload - ${index}`, async () => {
     let output, expected;
     try {
-      output = transformer.process(input);
+      output = await transformer.process(input);
       expected = expectedData[index];
     } catch (error) {
       output = error.message;
@@ -40,31 +40,16 @@ const inputRouterData = JSON.parse(inputRouterDataFile);
 const expectedRouterData = JSON.parse(outputRouterDataFile);
 
 describe(`${name} Tests`, () => {
-  describe("Router Tests", () => {
+  describe("Simple Router Tests", () => {
     it("Payload", async () => {
-      const routerOutput = await transformer.processRouterDest(inputRouterData);
-      expect(routerOutput).toEqual(expectedRouterData);
+      const routerOutput = await transformer.processRouterDest(inputRouterData.simpleRouterRequests);
+      expect(routerOutput).toEqual(expectedRouterData.simpleRouterResponse);
     });
   });
-});
-
-const batchInputDataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_batch_input.json`)
-);
-const batchOutputDataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_batch_output.json`)
-);
-
-const batchInputData = JSON.parse(batchInputDataFile);
-const batchExpectedData = JSON.parse(batchOutputDataFile);
-
-batchInputData.forEach((input, index) => {
-  test(`${name} Batching ${index}`, () => {
-    const output = transformer.batch(input);
-    expect(Array.isArray(output)).toEqual(true);
-    expect(output.length).toEqual(batchExpectedData[index].length);
-    output.forEach((input, indexInner) => {
-      expect(output[indexInner]).toEqual(batchExpectedData[index][indexInner]);
+  describe("Dedupenabled Router Tests", () => {
+    it("Payload", async () => {
+      const routerOutput = await transformer.processRouterDest(inputRouterData.dedupEnabledRouterRequests);
+      expect(routerOutput).toEqual(expectedRouterData.dedupEnabledRouterResponse);
     });
   });
 });

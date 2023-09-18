@@ -27,6 +27,7 @@ const name = "User Transformations";
 
 const util = require("util");
 const fs = require("fs");
+const crypto = require('crypto');
 const path = require("path");
 const {
   userTransformHandler,
@@ -54,7 +55,7 @@ const responseInit = url => {
   };
 };
 
-const pyTrRevCode = versionId => {
+const pyTrRevCode = (versionId, imports=[]) => {
   return {
     codeVersion: "1",
     language: "pythonfaas",
@@ -64,12 +65,32 @@ const pyTrRevCode = versionId => {
         return event
     `,
     workspaceId: "workspaceId",
-    versionId
+    versionId,
+    imports
   };
 };
 
-const pyfaasFuncName = (workspaceId, versionId) => {
-  return `fn-${workspaceId}-${versionId}`.toLowerCase().substring(0, 63);
+const pyLibCode = (name, versionId) => {
+  return {
+    code: `
+      def add(a, b):
+        return a + b
+    `,
+    language: "pythonfaas",
+    name,
+    handleName: _.camelCase(name),
+    workspaceId: "workspaceId",
+    versionId
+  }
+}
+
+const pyfaasFuncName = (workspaceId, versionId, libraryVersionIds=[]) => {
+  const ids = [workspaceId, versionId].concat(libraryVersionIds.sort());
+  const hash = crypto.createHash('md5').update(`${ids}`).digest('hex');
+
+  return `fn-${workspaceId}-${hash}`
+    .substring(0, 63)
+    .toLowerCase();
 };
 
 const getfetchResponse = (resp, url) =>
@@ -77,6 +98,8 @@ const getfetchResponse = (resp, url) =>
     typeof resp === "object" ? JSON.stringify(resp) : resp,
     responseInit(url)
   );
+
+let importNameLibraryVersionIdsMap;
 
 describe("User transformation", () => {
   beforeEach(() => {
@@ -148,6 +171,72 @@ describe("User transformation", () => {
     );
 
     expect(output).toEqual(expectedData);
+  });
+
+  it(`Simple ${name} Test with Secrets for codeVerion 0`, async () => {
+    const versionId = randomID();
+
+    const inputData = require(`./data/${integration}_input.json`);
+    const secrets = {
+      dummy_key: "value",
+    }
+
+    const respBody = {
+      codeVersion: "0",
+      name,
+      secrets: secrets,
+      code: `
+        function transform(events) {
+          const filteredEvents = events.map(event => {
+            event.dummy_key = rsSecrets("dummy_key");
+            return event;
+          });
+            return filteredEvents;
+          }
+          `
+    };
+    fetch.mockResolvedValue({
+      status: 200,
+      json: jest.fn().mockResolvedValue(respBody)
+    });
+
+    const output = await userTransformHandler(inputData, versionId, []);
+    expect(fetch).toHaveBeenCalledWith(
+      `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+    );
+    expect(output[0].transformedEvent.dummy_key).toEqual(secrets.dummy_key);
+  });
+
+  it(`Simple ${name} Test with Secrets for codeVerion 1`, async () => {
+    const versionId = randomID();
+
+    const inputData = require(`./data/${integration}_input.json`);
+    const secrets = {
+      dummy_key: "value",
+    }
+
+    const respBody = {
+      versionId: versionId,
+      codeVersion: "1",
+      name,
+      secrets: secrets,
+      code: `
+        export function transformEvent(event, metadata) {
+            event.dummy_key = rsSecrets("dummy_key");
+            return event;
+          }
+          `
+    };
+    fetch.mockResolvedValue({
+      status: 200,
+      json: jest.fn().mockResolvedValue(respBody)
+    });
+
+    const output = await userTransformHandler(inputData, versionId, []);
+    expect(fetch).toHaveBeenCalledWith(
+      `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+    );
+    expect(output[0].transformedEvent.dummy_key).toEqual(secrets.dummy_key);
   });
 
   it(`Simple async ${name} FetchV2 Test for V0 transformation`, async () => {
@@ -1161,6 +1250,135 @@ describe("Rudder library tests", () => {
   });
 });
 
+// tests for geolocation function
+describe("Geolocation function", () => {
+  const OLD_ENV = process.env;
+  beforeEach(() => {
+    jest.resetModules();
+    process.env = { ...OLD_ENV };
+    process.env.GEOLOCATION_URL = "https://dummyUrl.com";
+  });
+  afterAll(() => {
+    process.env = OLD_ENV; // restore old env
+  });
+
+  const respBodyV1 = {
+    code: `
+      export async function transformEvent(event, metadata) {
+        try {
+          event.context.geo = await geolocation(event.request_ip);
+        } catch (err) {
+          event.context.geoerror = err.message;
+        }
+        return event;
+      }`,
+    name: "geotest",
+    codeVersion: "1"
+  };
+  const geoResp = {
+    country: "US",
+    region: "CA",
+    city: "San Francisco",
+  };
+
+  it("Should throw error if GEOLOCATION_URL is not set", async () => {
+    process.env.GEOLOCATION_URL = undefined;
+    const versionId = randomID();
+    const inputData = require(`./data/${integration}_input.json`);
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+    when(fetch)
+      .calledWith(transformerUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue({ ...respBodyV1, versionId })
+      });
+
+    const output = await userTransformHandler(inputData, versionId, []);
+    expect(output[0].transformedEvent.context.geoerror).toBe("geolocation is not available right now");
+  });
+
+  it("Should throw error when geo request fails with invalid arg", async () => {
+    const versionId = randomID();
+    const inputData = require(`./data/${integration}_input.json`);
+    inputData.forEach((input) => { input.message.request_ip = "invalid"; });
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+    when(fetch)
+      .calledWith(transformerUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue({ ...respBodyV1, versionId })
+      });
+    when(fetch)
+      .calledWith("https://dummyUrl.com/geoip/invalid", { timeout: 1000 })
+      .mockResolvedValue({ status: 400 });
+
+    const output = await userTransformHandler(inputData, versionId, []);
+    expect(output[0].transformedEvent.context.geoerror).toBe("request to fetch geolocation failed with status code: 400");
+  });
+
+  it("Should enrich context when geo request succeedes", async () => {
+    const versionId = randomID();
+    const inputData = require(`./data/${integration}_input.json`);
+    inputData.forEach((input) => { input.message.request_ip = "1.1.1.1"; });
+
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+    when(fetch)
+      .calledWith(transformerUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue({ ...respBodyV1, versionId })
+      });
+    when(fetch)
+      .calledWith("https://dummyUrl.com/geoip/1.1.1.1", { timeout: 1000 })
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(geoResp)
+      });
+
+    const output = await userTransformHandler(inputData, versionId, []);
+    expect(output[0].transformedEvent.context.geo).toEqual(geoResp);
+  });
+
+  it("Should enrich context when geo request succeedes - V0 transformation", async () => {
+    const versionId = randomID();
+    const inputData = require(`./data/${integration}_input.json`);
+    inputData.forEach((input) => { input.message.request_ip = "1.1.1.1"; });
+
+    const respBody = {
+      code: `
+        async function transform(events, metadata) {
+          await Promise.all(events.map(async (event) => {
+            try {
+              event.context.geo = await geolocation(event.request_ip);
+            } catch (err) {
+              event.context.geoerror = err.message;
+            }
+          }));
+          return events;
+        }`,
+      name: "geotest",
+      codeVersion: "0"
+    };
+
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+    when(fetch)
+      .calledWith(transformerUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue({ ...respBody, versionId })
+      });
+    when(fetch)
+      .calledWith("https://dummyUrl.com/geoip/1.1.1.1", { timeout: 1000 })
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(geoResp)
+      });
+
+    const output = await userTransformHandler(inputData, versionId, []);
+    expect(output[0].transformedEvent.context.geo).toEqual(geoResp);
+  });
+});
+
 // Running tests for python transformations with openfaas mocks
 describe("Python transformations", () => {
   beforeEach(() => {
@@ -1168,15 +1386,7 @@ describe("Python transformations", () => {
   });
   afterAll(() => {});
 
-  it("Setting up function with testWithPublish as false", async () => {
-    const trRevCode = pyTrRevCode();
-    const expectedData = { success: true };
-
-    const output = await setupUserTransformHandler(trRevCode, [], false);
-    expect(output).toEqual(expectedData);
-  });
-
-  it("Setting up function with testWithPublish as true - creates faas function", async () => {
+  it("Setting up function - creates faas function", async () => {
     const trRevCode = pyTrRevCode("123");
     const funcName = pyfaasFuncName(trRevCode.workspaceId, trRevCode.versionId);
 
@@ -1185,7 +1395,7 @@ describe("Python transformations", () => {
     axios.post.mockResolvedValue({});
     axios.get.mockResolvedValue({});
 
-    const output = await setupUserTransformHandler(trRevCode, [], true);
+    const output = await setupUserTransformHandler([], trRevCode);
     expect(output).toEqual(expectedData);
     expect(axios.post).toHaveBeenCalledTimes(1);
     expect(axios.post).toHaveBeenCalledWith(
@@ -1194,42 +1404,62 @@ describe("Python transformations", () => {
     );
     expect(axios.get).toHaveBeenCalledTimes(1);
     expect(axios.get).toHaveBeenCalledWith(
-      `${OPENFAAS_GATEWAY_URL}/system/function/${funcName}`
+      `${OPENFAAS_GATEWAY_URL}/function/${funcName}`,
+      {"headers": {"X-REQUEST-TYPE": "HEALTH-CHECK"}}
     );
   });
 
-  it("Setting up function with testWithPublish as true - returns cached function if exists", async () => {
+  it("Setting up function - returns cached function if exists", async () => {
     const trRevCode = pyTrRevCode("123");
     const funcName = pyfaasFuncName(trRevCode.workspaceId, trRevCode.versionId);
 
     const expectedData = { success: true, publishedVersion: funcName };
 
-    const output = await setupUserTransformHandler(trRevCode, [], true);
+    const output = await setupUserTransformHandler([], trRevCode);
     expect(output).toEqual(expectedData);
     expect(axios.post).toHaveBeenCalledTimes(0);
     expect(axios.get).toHaveBeenCalledTimes(0);
   });
 
-  it("Setting up function with testWithPublish as true - retry request", async () => {
+  it("Setting up function - retry request on faas function deployement exists", async () => {
     const trRevCode = pyTrRevCode(randomID());
 
     axios.post.mockRejectedValue({
-      response: { status: 500, data: "already exists" }
+      response: { status: 500, data: 'unable create Deployment: deployments.apps "fn-ast" already exists' }
     });
 
     await expect(async () => {
-      await setupUserTransformHandler(trRevCode, [], true);
+      await setupUserTransformHandler([], trRevCode);
     }).rejects.toThrow(RetryRequestError);
 
     // function gets cached on already exists error
     const funcName = pyfaasFuncName(trRevCode.workspaceId, trRevCode.versionId);
     const expectedData = { success: true, publishedVersion: funcName };
 
-    const output = await setupUserTransformHandler(trRevCode, [], true);
+    const output = await setupUserTransformHandler([], trRevCode);
     expect(output).toEqual(expectedData);
   });
 
-  it("Setting up function with testWithPublish as true - bad request", async () => {
+  it("Setting up function - retry request on faas function service exists", async () => {
+    const trRevCode = pyTrRevCode(randomID());
+
+    axios.post.mockRejectedValue({
+      response: { status: 400, data: 'failed create Service: services "fn-function" already exists' }
+    });
+
+    await expect(async () => {
+      await setupUserTransformHandler([], trRevCode);
+    }).rejects.toThrow(RetryRequestError);
+
+    // function gets cached on already exists error
+    const funcName = pyfaasFuncName(trRevCode.workspaceId, trRevCode.versionId);
+    const expectedData = { success: true, publishedVersion: funcName };
+
+    const output = await setupUserTransformHandler([], trRevCode);
+    expect(output).toEqual(expectedData);
+  });
+
+  it("Setting up function - bad request", async () => {
     const trRevCode = pyTrRevCode(randomID());
 
     axios.post.mockRejectedValue({
@@ -1237,11 +1467,11 @@ describe("Python transformations", () => {
     });
 
     await expect(async () => {
-      await setupUserTransformHandler(trRevCode, [], true);
+      await setupUserTransformHandler([], trRevCode);
     }).rejects.toThrow(RespStatusError);
   });
 
-  it("Setting up function with testWithPublish as true - bad request", async () => {
+  it("Setting up function - bad request", async () => {
     const trRevCode = pyTrRevCode(randomID());
 
     axios.post.mockRejectedValue({
@@ -1249,7 +1479,7 @@ describe("Python transformations", () => {
     });
 
     await expect(async () => {
-      await setupUserTransformHandler(trRevCode, [], true);
+      await setupUserTransformHandler([], trRevCode);
     }).rejects.toThrow(RetryRequestError);
   });
 
@@ -1276,6 +1506,93 @@ describe("Python transformations", () => {
     );
     expect(output).toEqual(outputData);
 
+    expect(axios.post).toHaveBeenCalledTimes(2);
+    expect(axios.get).toHaveBeenCalledTimes(2);
+    expect(axios.delete).toHaveBeenCalledTimes(1);
+  });
+
+  it("Test transformation with user library imports - create, invoke & delete faas function", async () => {
+    importNameLibraryVersionIdsMap = {
+      mathlib: randomID(),
+      constants: randomID(),
+      strlib: randomID()
+    }
+    const trRevCode = pyTrRevCode(randomID(), Object.keys(importNameLibraryVersionIdsMap));
+    const inputData = require(`./data/${integration}_input.json`);
+    const respData = require(`./data/${integration}_output.json`);
+    const outputData = require(`./data/${integration}_pycode_test_output.json`);
+
+    for(const pyImport of Object.keys(importNameLibraryVersionIdsMap)) {
+      const versionId = importNameLibraryVersionIdsMap[pyImport];
+      const respBody = pyLibCode(pyImport, versionId);
+      const libUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${versionId}`;
+      when(fetch)
+        .calledWith(libUrl)
+        .mockResolvedValue({
+          status: 200,
+          json: jest.fn().mockResolvedValue(respBody)
+        });
+    }
+
+    axios.get.mockResolvedValue({}); // get function
+    axios.post
+      .mockResolvedValueOnce({}) // create function
+      .mockResolvedValueOnce({
+        data: { transformedEvents: respData, logs: [] } // invoke function
+      });
+    axios.delete.mockResolvedValue({}); // delete function
+
+    const output = await userTransformHandler(
+      inputData,
+      trRevCode.versionId,
+      Object.values(importNameLibraryVersionIdsMap),
+      trRevCode,
+      true
+    );
+    expect(output).toEqual(outputData);
+    
+    expect(fetch).toHaveBeenCalledTimes(3);
+    expect(axios.post).toHaveBeenCalledTimes(2);
+    expect(axios.get).toHaveBeenCalledTimes(2);
+    expect(axios.delete).toHaveBeenCalledTimes(1);
+  });
+
+  it("Test transformation with cached user library imports - create, invoke & delete faas function", async () => {
+    const trRevCode = pyTrRevCode(randomID(), Object.keys(importNameLibraryVersionIdsMap));
+    const inputData = require(`./data/${integration}_input.json`);
+    const respData = require(`./data/${integration}_output.json`);
+    const outputData = require(`./data/${integration}_pycode_test_output.json`);
+
+    for(const pyImport of Object.keys(importNameLibraryVersionIdsMap)) {
+      const versionId = importNameLibraryVersionIdsMap[pyImport];
+      const respBody = pyLibCode(pyImport, versionId);
+      const libUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${versionId}`;
+      when(fetch)
+        .calledWith(libUrl)
+        .mockResolvedValue({
+          status: 200,
+          json: jest.fn().mockResolvedValue(respBody)
+        });
+    }
+
+    axios.get.mockResolvedValue({}); // get function
+    axios.post
+      .mockResolvedValueOnce({}) // create function
+      .mockResolvedValueOnce({
+        data: { transformedEvents: respData, logs: [] } // invoke function
+      });
+    axios.delete.mockResolvedValue({}); // delete function
+
+    const output = await userTransformHandler(
+      inputData,
+      trRevCode.versionId,
+      Object.values(importNameLibraryVersionIdsMap),
+      trRevCode,
+      true
+    );
+    expect(output).toEqual(outputData);
+    
+    expect(fetch).toHaveBeenCalledTimes(0);
     expect(axios.post).toHaveBeenCalledTimes(2);
     expect(axios.get).toHaveBeenCalledTimes(2);
     expect(axios.delete).toHaveBeenCalledTimes(1);
@@ -1329,7 +1646,7 @@ describe("Python transformations", () => {
         response: { status: 404, data: `error finding function ${funcName}` } // invoke function not found
       })
       .mockResolvedValueOnce({}); // create function
-    axios.get.mockResolvedValue({}); // get function
+    axios.get.mockResolvedValue({}); // awaitFunctionReadiness()
 
     await expect(async () => {
       await userTransformHandler(inputData, versionId, []);
@@ -1347,7 +1664,8 @@ describe("Python transformations", () => {
 
     expect(axios.get).toHaveBeenCalledTimes(1);
     expect(axios.get).toHaveBeenCalledWith(
-      `${OPENFAAS_GATEWAY_URL}/system/function/${funcName}`
+      `${OPENFAAS_GATEWAY_URL}/function/${funcName}`,
+      {"headers": {"X-REQUEST-TYPE": "HEALTH-CHECK"}}
     );
   });
 

@@ -44,7 +44,20 @@
         "martin": 21.565000000000001,
         "trafficTypeName": "user",
         "eventTypeId": "page_load end to end",
-        "timestamp": 1513357833000
+        "timestamp": 1513357833000,
+        "address": {
+          "city": "San Francisco",
+          "state": "CA",
+          "country": "USA"
+        },
+        "key1": {
+          "a": "a"
+        },
+        "key2": [1, 2, 3],
+        "key3": {
+          "key4": {}
+        },
+        "key5": null
       },
       "userId": "user123",
       "messageId": "c73198a8-41d8-4426-9fd9-de167194d5f3",
@@ -86,7 +99,22 @@
         "martin": 21.565,
         "vertical": "restaurant",
         "GMV": true,
-        "abc": "new-val"
+        "abc": "new-val",
+        "property1": {
+          "property2": 1,
+          "property3": "test",
+          "property4": {
+            "subProp1": {
+              "a": "a",
+              "b": "b"
+            },
+            "subProp2": ["a", "b"],
+            "subProp3": {
+              "prop": {}
+            }
+          }
+        },
+        "properties5": null
       },
       "receivedAt": "2021-03-01T22:55:54.806Z",
       "rudderId": "6886eb9e-215d-4f61-a651-4b8ef18aaea3",

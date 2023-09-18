@@ -1,7 +1,11 @@
 [
   [
     {
-      "metadata": [{ "jobId": 3 }],
+      "metadata": [
+        {
+          "jobId": 3
+        }
+      ],
       "batched": false,
       "statusCode": 400,
       "error": "Missing required value from \"properties.index\"",
@@ -59,7 +63,14 @@
         },
         "files": {}
       },
-      "metadata": [{ "jobId": 1 }, { "jobId": 2 }],
+      "metadata": [
+        {
+          "jobId": 1
+        },
+        {
+          "jobId": 2
+        }
+      ],
       "batched": true,
       "statusCode": 200,
       "destination": {
@@ -98,8 +109,14 @@
           "apiKey": "apiKey",
           "applicationId": "appId",
           "eventTypeSettings": [
-            { "from": "product clicked", "to": "click" },
-            { "from": "product list viewed", "to": "view" }
+            {
+              "from": "product clicked",
+              "to": "click"
+            },
+            {
+              "from": "product list viewed",
+              "to": "view"
+            }
           ]
         },
         "Enabled": true,
@@ -115,5 +132,157 @@
   {
     "message": "Invalid event array",
     "statusCode": 400
-  }
+  },
+  [
+    {
+      "batched": true,
+      "batchedRequest": {
+        "body": {
+          "FORM": {},
+          "JSON": {
+            "events": [
+              {
+                "eventName": "product list viewed",
+                "eventType": "view",
+                "index": "ecm_stg_product",
+                "objectIDs": [
+                  "1367585787601",
+                  "1367585788656",
+                  "1367585790735",
+                  "1367585782036",
+                  "1367585782285",
+                  "1367585790111",
+                  "1367585783304",
+                  "1367585791531",
+                  "1367585788307",
+                  "1367585789457",
+                  "1367585800344",
+                  "1367585787467",
+                  "1367585783058",
+                  "1367585783494",
+                  "1367585787042",
+                  "1367585793228",
+                  "1367585783124",
+                  "1367585788366",
+                  "1367585788996"
+                ],
+                "queryID": "eafb6ef1081263626abce46671147dc0",
+                "userToken": "anonymous"
+              }
+            ]
+          },
+          "JSON_ARRAY": {},
+          "XML": {}
+        },
+        "endpoint": "https://insights.algolia.io/1/events",
+        "files": {},
+        "headers": {
+          "X-Algolia-API-Key": "apiKey",
+          "X-Algolia-Application-Id": "appId"
+        },
+        "method": "POST",
+        "params": {},
+        "type": "REST",
+        "version": "1"
+      },
+      "destination": {
+        "Config": {
+          "apiKey": "apiKey",
+          "applicationId": "appId",
+          "eventDelivery": false,
+          "eventDeliveryTS": 1687213909459,
+          "eventTypeSettings": [
+            {
+              "from": "productClicked",
+              "to": "click"
+            },
+            {
+              "from": "product list filtered",
+              "to": "click"
+            },
+            {
+              "from": "Product List Viewed",
+              "to": "view"
+            },
+            {
+              "from": "Order Completed",
+              "to": "conversion"
+            },
+            {
+              "from": "Product Added",
+              "to": "click"
+            }
+          ],
+          "oneTrustCookieCategories": []
+        },
+        "DestinationDefinition": {
+          "Config": {
+            "cdkV2Enabled": true,
+            "destConfig": {
+              "defaultConfig": [
+                "apiKey",
+                "applicationId",
+                "eventTypeSettings",
+                "oneTrustCookieCategories"
+              ]
+            },
+            "excludeKeys": [],
+            "includeKeys": ["oneTrustCookieCategories"],
+            "saveDestinationResponse": true,
+            "secretKeys": ["apiKey", "applicationId"],
+            "supportedMessageTypes": ["track"],
+            "supportedSourceTypes": [
+              "android",
+              "ios",
+              "web",
+              "unity",
+              "amp",
+              "cloud",
+              "reactnative",
+              "flutter",
+              "cordova",
+              "warehouse"
+            ],
+            "transformAt": "router",
+            "transformAtV1": "router"
+          },
+          "category": null,
+          "configSchema": {},
+          "createdAt": "2021-09-08T13:04:58.041Z",
+          "displayName": "Algolia",
+          "id": "1xrHTzX8VrnvL6FTGOrBBgT687S",
+          "name": "ALGOLIA",
+          "options": null,
+          "responseRules": {},
+          "updatedAt": "2023-06-13T13:18:08.335Z"
+        },
+        "createdAt": "2023-05-26T14:18:01.205Z",
+        "deleted": false,
+        "enabled": true,
+        "id": "destId",
+        "isConnectionEnabled": true,
+        "isProcessorEnabled": true,
+        "liveEventsConfig": {
+          "eventDelivery": false,
+          "eventDeliveryTS": 1687213909459
+        },
+        "name": "my_algolia",
+        "revisionId": "revisionId1",
+        "secretConfig": {},
+        "secretVersion": 7,
+        "transformations": [],
+        "updatedAt": "2023-06-19T22:31:49.460Z",
+        "workspaceId": "wspId"
+      },
+      "metadata": [
+        {
+          "sourceId": "srcId",
+          "workspaceId": "wspId",
+          "destinationId": "destId",
+          "jobId": 12
+        }
+      ],
+      "statusCode": 200
+    }
+  ]
 ]

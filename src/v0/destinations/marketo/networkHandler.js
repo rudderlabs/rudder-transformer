@@ -24,12 +24,12 @@ const responseHandler = (destinationResponse, destType) => {
   };
 };
 
-const networkHandler = function () {
+function networkHandler() {
   this.responseHandler = responseHandler;
   this.proxy = proxyRequest;
   this.prepareProxy = prepareProxyRequest;
   this.processAxiosResponse = processAxiosResponse;
-};
+}
 
 module.exports = {
   networkHandler,

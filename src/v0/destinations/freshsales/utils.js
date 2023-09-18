@@ -17,6 +17,15 @@ const {
 } = require('../../util/errorTypes');
 const { CONFIG_CATEGORIES, LIFECYCLE_STAGE_ENDPOINT } = require('./config');
 const tags = require('../../util/tags');
+const { JSON_MIME_TYPE } = require('../../util/constant');
+
+const getHeaders = (apiKey) => {
+  const headers = {
+    Authorization: `Token token=${apiKey}`,
+    'Content-Type': JSON_MIME_TYPE,
+  };
+  return headers;
+};
 
 /*
  * This functions is used for getting Account details.
@@ -28,17 +37,17 @@ const tags = require('../../util/tags');
  */
 const createUpdateAccount = async (payload, Config) => {
   const requestOptions = {
-    headers: {
-      Authorization: `Token token=${Config.apiKey}`,
-      'Content-Type': 'application/json',
-    },
+    headers: getHeaders(Config.apiKey),
   };
   const payloadBody = {
     unique_identifier: { name: payload.name },
     sales_account: payload,
   };
   const endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.GROUP.baseUrlAccount}`;
-  let accountResponse = await httpPOST(endPoint, payloadBody, requestOptions);
+  let accountResponse = await httpPOST(endPoint, payloadBody, requestOptions, {
+    destType: 'freshsales',
+    feature: 'transformation',
+  });
   accountResponse = processAxiosResponse(accountResponse);
   if (accountResponse.status !== 200 && accountResponse.status !== 201) {
     const errMessage = accountResponse.response.errors?.message || '';
@@ -67,10 +76,7 @@ const createUpdateAccount = async (payload, Config) => {
  */
 const getUserAccountDetails = async (payload, userEmail, Config) => {
   const requestOptions = {
-    headers: {
-      Authorization: `Token token=${Config.apiKey}`,
-      'Content-Type': 'application/json',
-    },
+    headers: getHeaders(Config.apiKey),
   };
   const userPayload = {
     unique_identifier: {
@@ -81,7 +87,10 @@ const getUserAccountDetails = async (payload, userEmail, Config) => {
     },
   };
   const endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.baseUrl}?include=sales_accounts`;
-  let userSalesAccountResponse = await httpPOST(endPoint, userPayload, requestOptions);
+  let userSalesAccountResponse = await httpPOST(endPoint, userPayload, requestOptions, {
+    destType: 'freshsales',
+    feature: 'transformation',
+  });
   userSalesAccountResponse = processAxiosResponse(userSalesAccountResponse);
   if (userSalesAccountResponse.status !== 200 && userSalesAccountResponse.status !== 201) {
     const errMessage = userSalesAccountResponse.response.errors?.message || '';
@@ -122,10 +131,7 @@ const getUserAccountDetails = async (payload, userEmail, Config) => {
  */
 const getContactsDetails = async (userEmail, Config) => {
   const requestOptions = {
-    headers: {
-      Authorization: `Token token=${Config.apiKey}`,
-      'Content-Type': 'application/json',
-    },
+    headers: getHeaders(Config.apiKey),
   };
   const userPayload = {
     unique_identifier: {
@@ -136,7 +142,10 @@ const getContactsDetails = async (userEmail, Config) => {
     },
   };
   const endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.baseUrl}`;
-  let userResponse = await httpPOST(endPoint, userPayload, requestOptions);
+  let userResponse = await httpPOST(endPoint, userPayload, requestOptions, {
+    destType: 'freshsales',
+    feature: 'transformation',
+  });
   userResponse = processAxiosResponse(userResponse);
   if (userResponse.status !== 200 && userResponse.status !== 201) {
     const errMessage = userResponse.response.errors?.message || '';
@@ -185,10 +194,7 @@ const responseBuilderWithContactDetails = async (email, Config, payload, salesAc
  */
 const UpdateContactWithSalesActivity = async (payload, message, Config) => {
   const requestOptions = {
-    headers: {
-      Authorization: `Token token=${Config.apiKey}`,
-      'Content-Type': 'application/json',
-    },
+    headers: getHeaders(Config.apiKey),
   };
   if (!payload.sales_activity_name && !payload.sales_activity_type_id) {
     throw new InstrumentationError(
@@ -226,7 +232,10 @@ const UpdateContactWithSalesActivity = async (payload, message, Config) => {
   }
   // with sales activity name
   const endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.SALES_ACTIVITY.baseUrlListAll}`;
-  let salesActivityResponse = await httpGET(endPoint, requestOptions);
+  let salesActivityResponse = await httpGET(endPoint, requestOptions, {
+    destType: 'freshsales',
+    feature: 'transformation',
+  });
   salesActivityResponse = processAxiosResponse(salesActivityResponse);
   if (salesActivityResponse.status !== 200) {
     const errMessage = salesActivityResponse.response.errors?.message || '';
@@ -279,10 +288,7 @@ const UpdateContactWithSalesActivity = async (payload, message, Config) => {
  */
 const UpdateContactWithLifeCycleStage = async (message, Config) => {
   const requestOptions = {
-    headers: {
-      Authorization: `Token token=${Config.apiKey}`,
-      'Content-Type': 'application/json',
-    },
+    headers: getHeaders(Config.apiKey),
   };
   const emails = getFieldValueFromMessage(message, 'email');
   if (!emails) {
@@ -305,7 +311,10 @@ const UpdateContactWithLifeCycleStage = async (message, Config) => {
     return response;
   }
   const endPoint = `https://${Config.domain}${LIFECYCLE_STAGE_ENDPOINT}`;
-  let lifeCycleStagesResponse = await httpGET(endPoint, requestOptions);
+  let lifeCycleStagesResponse = await httpGET(endPoint, requestOptions, {
+    destType: 'freshsales',
+    feature: 'transformation',
+  });
   lifeCycleStagesResponse = processAxiosResponse(lifeCycleStagesResponse);
   if (lifeCycleStagesResponse.status !== 200) {
     const errMessage = lifeCycleStagesResponse.response.errors?.message || '';
@@ -356,10 +365,7 @@ const updateAccountWOContact = (payload, Config) => {
     unique_identifier: { name: payload.name },
     sales_account: payload,
   };
-  response.headers = {
-    Authorization: `Token token=${Config.apiKey}`,
-    'Content-Type': 'application/json',
-  };
+  response.headers = getHeaders(Config.apiKey);
   return response;
 };
 
@@ -379,4 +385,5 @@ module.exports = {
   UpdateContactWithSalesActivity,
   UpdateContactWithLifeCycleStage,
   updateAccountWOContact,
+  getHeaders,
 };

@@ -70,24 +70,21 @@
                 "shipping": 4,
                 "value": 31.98
               },
+              "platform": "web",
               "app_version": "1.1.6",
               "current_time": "2020-10-16T13:40:12.791+05:30",
               "user_timezone_offset": 32400
             }
           ]
         },
-        "XML": {},
         "JSON_ARRAY": {},
+        "XML": {},
         "FORM": {}
       },
       "files": {},
       "userId": "4eb021e9-a2af-4926-ae82-fe996d12f3c5"
     },
-    "metadata": [
-      {
-        "jobId": 2
-      }
-    ],
+    "metadata": [{ "jobId": 2 }],
     "batched": false,
     "statusCode": 200,
     "destination": {
@@ -98,9 +95,7 @@
         "Name": "MOENGAGE",
         "DisplayName": "MoEngage",
         "Config": {
-          "destConfig": {
-            "defaultConfig": ["apiId", "apiKey", "region"]
-          },
+          "destConfig": { "defaultConfig": ["apiId", "apiKey", "region"] },
           "excludeKeys": [],
           "includeKeys": [],
           "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"]
@@ -120,41 +115,37 @@
   },
   {
     "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api-01.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA",
+      "headers": {
+        "Content-Type": "application/json",
+        "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+        "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+      },
+      "params": {},
       "body": {
-        "XML": {},
-        "JSON_ARRAY": {},
-        "FORM": {},
         "JSON": {
+          "customer_id": "ruchu123",
           "type": "customer",
           "attributes": {
             "name": "Ruchira Moitra",
-            "plan": "Enterprise",
             "email": "ruchira@gmail.com",
-            "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
+            "created_time": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
             "company.id": "abc123",
-            "created_time": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)"
-          },
-          "customer_id": "ruchu123"
-        }
+            "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
+            "plan": "Enterprise"
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
       },
-      "type": "REST",
       "files": {},
-      "method": "POST",
-      "params": {},
-      "userId": "4eb021e9-a2af-4926-ae82-fe996d12f3c5",
-      "headers": {
-        "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "Content-Type": "application/json",
-        "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
-      },
-      "version": "1",
-      "endpoint": "https://api-01.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA"
+      "userId": "4eb021e9-a2af-4926-ae82-fe996d12f3c5"
     },
-    "metadata": [
-      {
-        "jobId": 2
-      }
-    ],
+    "metadata": [{ "jobId": 2 }],
     "batched": false,
     "statusCode": 200,
     "destination": {
@@ -165,9 +156,7 @@
         "Name": "MOENGAGE",
         "DisplayName": "MoEngage",
         "Config": {
-          "destConfig": {
-            "defaultConfig": ["apiId", "apiKey", "region"]
-          },
+          "destConfig": { "defaultConfig": ["apiId", "apiKey", "region"] },
           "excludeKeys": [],
           "includeKeys": [],
           "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"]

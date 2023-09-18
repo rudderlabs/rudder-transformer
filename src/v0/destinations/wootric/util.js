@@ -10,6 +10,7 @@ const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
 const Cache = require('../../util/cache');
 const { InstrumentationError, NetworkError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL_SECONDS);
 
@@ -32,7 +33,7 @@ const getAccessToken = async (destination) => {
     const request = {
       header: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        Accept: 'application/json',
+        Accept: JSON_MIME_TYPE,
       },
       url: `${BASE_ENDPOINT}/oauth/token?account_token=${accountToken}`,
       data: qs.stringify({
@@ -42,7 +43,10 @@ const getAccessToken = async (destination) => {
       }),
       method: 'POST',
     };
-    const wootricAuthResponse = await httpPOST(request.url, request.data, request.header);
+    const wootricAuthResponse = await httpPOST(request.url, request.data, request.header, {
+      destType: 'wootric',
+      feature: 'transformation',
+    });
     const processedAuthResponse = processAxiosResponse(wootricAuthResponse);
     // If the request fails, throwing error.
     if (processedAuthResponse.status !== 200) {
@@ -86,12 +90,15 @@ const retrieveUserDetails = async (endUserId, externalId, accessToken) => {
 
   const requestOptions = {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Bearer ${accessToken}`,
     },
   };
 
-  const userResponse = await httpGET(endpoint, requestOptions);
+  const userResponse = await httpGET(endpoint, requestOptions, {
+    destType: 'wootric',
+    feature: 'transformation',
+  });
   const processedUserResponse = processAxiosResponse(userResponse);
 
   if (processedUserResponse.status === 200) {

@@ -3,6 +3,7 @@ const Message = require('../message');
 const { mapping, formEventName } = require('./util');
 const { TransformationError } = require('../../util/errorTypes');
 const { generateUUID, removeUndefinedAndNullValues } = require('../../util');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function processNormalEvent(mondayPayload) {
   const message = new Message(`MONDAY`);
@@ -49,7 +50,7 @@ function processChallengeEvent(event) {
   return {
     outputToSource: {
       body: Buffer.from(JSON.stringify(event)).toString('base64'),
-      contentType: 'application/json',
+      contentType: JSON_MIME_TYPE,
     },
     statusCode: 200,
   };

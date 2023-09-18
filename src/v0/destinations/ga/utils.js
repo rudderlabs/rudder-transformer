@@ -38,6 +38,39 @@ const validatePayloadSize = (finalPayload) => {
   }
 };
 
+const setContextualFields = (payload, message, params) => {
+  const rawPayload = { ...payload };
+  const { campaign, userAgent, locale, app, screen } = message.context || {};
+  rawPayload.ua = params.ua || userAgent;
+  rawPayload.ul = params.ul || locale;
+
+  rawPayload.an = params.an || app?.name;
+  rawPayload.av = params.av || app?.version;
+  rawPayload.aiid = params.aiid || app?.namespace;
+
+  rawPayload.cn = params.cn || campaign?.name;
+  rawPayload.cs = params.cs || campaign?.source;
+  rawPayload.cm = params.cm || campaign?.medium;
+  rawPayload.cc = params.cc || campaign?.content;
+  rawPayload.ck = params.ck || campaign?.term;
+  rawPayload.ci = campaign?.campaignId;
+
+  if (screen) {
+    const { width, height } = screen;
+    if (width && height) {
+      rawPayload.sr = `${width}x${height}`;
+    }
+
+    const { innerWidth, innerHeight } = screen;
+    if (innerWidth && innerHeight) {
+      rawPayload.vp = `${innerWidth}x${innerHeight}`;
+    }
+  }
+
+  return rawPayload;
+};
+
 module.exports = {
   validatePayloadSize,
+  setContextualFields,
 };

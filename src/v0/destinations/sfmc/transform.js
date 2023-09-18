@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-const axios = require('axios');
+const myAxios = require('../../../util/myAxios');
 const { EventType } = require('../../../constants');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG, ENDPOINTS } = require('./config');
 const {
@@ -21,12 +21,15 @@ const {
 } = require('../../../adapters/utils/networkUtils');
 const { NetworkError, ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
+const { JSON_MIME_TYPE } = require('../../util/constant');
+
+const CONTACT_KEY_KEY = 'Contact Key';
 
 // DOC: https://developer.salesforce.com/docs/atlas.en-us.mc-app-development.meta/mc-app-development/access-token-s2s.htm
 
 const getToken = async (clientId, clientSecret, subdomain) => {
   try {
-    const resp = await axios.post(
+    const resp = await myAxios.post(
       `https://${subdomain}.${ENDPOINTS.GET_TOKEN}`,
       {
         grant_type: 'client_credentials',
@@ -34,8 +37,9 @@ const getToken = async (clientId, clientSecret, subdomain) => {
         client_secret: clientSecret,
       },
       {
-        'Content-Type': 'application/json',
+        'Content-Type': JSON_MIME_TYPE,
       },
+      { destType: 'sfmc', feature: 'transformation' },
     );
     if (resp && resp.data) {
       return resp.data.access_token;
@@ -79,7 +83,7 @@ const responseBuilderForIdentifyContacts = (message, subdomain, authToken) => {
   }
   response.body.JSON = { attributeSets: [], contactKey };
   response.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     Authorization: `Bearer ${authToken}`,
   };
   return response;
@@ -107,7 +111,7 @@ const responseBuilderForInsertData = (
   const response = defaultRequestConfig();
   response.method = defaultPutRequestConfig.requestMethod;
   response.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     Authorization: `Bearer ${authToken}`,
   };
   // multiple primary keys can be set by the user as comma separated.
@@ -125,13 +129,13 @@ const responseBuilderForInsertData = (
     type === 'identify' ||
     (type === 'track' &&
       primaryKeyArray.length === 1 &&
-      primaryKeyArray.includes('Contact Key') &&
+      primaryKeyArray.includes(CONTACT_KEY_KEY) &&
       !uuid)
   ) {
     response.endpoint = `https://${subdomain}.${ENDPOINTS.INSERT_CONTACTS}${externalKey}/rows/Contact Key:${contactKey}`;
     response.body.JSON = {
       values: {
-        'Contact Key': contactKey,
+        [CONTACT_KEY_KEY]: contactKey,
         ...payload,
       },
     };
@@ -151,7 +155,7 @@ const responseBuilderForInsertData = (
     primaryKeyArray.forEach((key, index) => {
       const keyTrimmed = key.trim();
       let payloadValue = payload[keyTrimmed];
-      if (keyTrimmed === 'Contact Key') {
+      if (keyTrimmed === CONTACT_KEY_KEY) {
         // if one of the multiple primary key is "Contact Key"
         payloadValue = contactKey;
       }
@@ -224,7 +228,7 @@ const responseBuilderSimple = async (message, category, destination) => {
       category,
       authToken,
       'track',
-      hashMapPrimaryKey[message.event.toLowerCase()] || 'Contact Key',
+      hashMapPrimaryKey[message.event.toLowerCase()] || CONTACT_KEY_KEY,
       hashMapUUID[message.event.toLowerCase()],
     );
   }

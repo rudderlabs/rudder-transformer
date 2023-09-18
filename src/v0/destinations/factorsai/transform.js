@@ -8,6 +8,7 @@ const {
   defaultPostRequestConfig,
   simpleProcessRouterDest,
 } = require('../../util');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 const { InstrumentationError } = require('../../util/errorTypes');
 
 const { ConfigCategories, mappingConfig, BASE_URL } = require('./config');
@@ -18,7 +19,7 @@ function buildResponse(payload, factorsAIApiKey) {
   const apiKey = Buffer.from(`${factorsAIApiKey}:`).toString('base64');
   response.endpoint = BASE_URL;
   response.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     Authorization: `Basic ${apiKey}`,
   };
   response.method = defaultPostRequestConfig.requestMethod;
@@ -40,6 +41,12 @@ function processTrack(message, factorsAIApiKey) {
   return buildResponse(requestJson, factorsAIApiKey);
 }
 
+// process Page Call
+function processPageAndGroup(message, factorsAIApiKey, category) {
+  const requestJson = constructPayload(message, mappingConfig[category]);
+  return buildResponse(requestJson, factorsAIApiKey);
+}
+
 function process(event) {
   const { message, destination } = event;
   const { factorsAIApiKey } = destination.Config;
@@ -55,6 +62,10 @@ function process(event) {
       return processIdentify(message, factorsAIApiKey);
     case EventType.TRACK:
       return processTrack(message, factorsAIApiKey);
+    case EventType.PAGE:
+      return processPageAndGroup(message, factorsAIApiKey, ConfigCategories.PAGE.name);
+    case EventType.GROUP:
+      return processPageAndGroup(message, factorsAIApiKey, ConfigCategories.GROUP.name);
     default:
       throw new InstrumentationError(`Message type ${messageType} is not supported`);
   }

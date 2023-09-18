@@ -28,4 +28,7 @@ const errorHandler = (err, message) => {
   }
 };
 
-module.exports = { errorHandler };
+const offsetLimitVarPath = 'response.data.meta.total';
+const eventDataVarPath = 'properties.eventData';
+
+module.exports = { errorHandler, offsetLimitVarPath, eventDataVarPath };

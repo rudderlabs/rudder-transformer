@@ -1,5 +1,6 @@
 const get = require('get-value');
 const {
+  isEmpty,
   constructPayload,
   flattenJson,
   isEmptyObject,
@@ -70,12 +71,7 @@ const removeReservedParameterPrefixNames = (parameter) => {
   }
 
   Object.keys(parameter).forEach((key) => {
-    const valFound = reservedPrefixesNames.some((prefix) => {
-      if (key.toLowerCase().startsWith(prefix)) {
-        return true;
-      }
-      return false;
-    });
+    const valFound = reservedPrefixesNames.some((prefix) => key.toLowerCase().startsWith(prefix));
 
     // reject if found
     if (valFound) {
@@ -97,34 +93,6 @@ const GA4_RESERVED_USER_PROPERTY_EXCLUSION = [
   'user_id',
   'first_open_after_install',
 ];
-
-/**
- * user property names cannot start with reserved prefixes
- * Ref - https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference?client_type=gtag#reserved_user_property_names
- * @param {*} userProperties
- */
-const removeReservedUserPropertyPrefixNames = (userProperties) => {
-  const reservedPrefixesNames = ['google_', 'ga_', 'firebase_'];
-
-  if (!userProperties) {
-    return;
-  }
-
-  Object.keys(userProperties).forEach((key) => {
-    const valFound = reservedPrefixesNames.some((prefix) => {
-      if (key.toLowerCase().startsWith(prefix)) {
-        return true;
-      }
-      return false;
-    });
-
-    // reject if found
-    if (valFound) {
-      // eslint-disable-next-line no-param-reassign
-      delete userProperties[key];
-    }
-  });
-};
 
 /* For custom events */
 /**
@@ -160,43 +128,52 @@ const isReservedWebCustomPrefixName = (event) => {
   const reservedPrefixesNames = ['_', 'firebase_', 'ga_', 'google_', 'gtag.'];
 
   // As soon as a single true is returned, .some() will itself return true and stop
-  return reservedPrefixesNames.some((prefix) => {
-    if (event.toLowerCase().startsWith(prefix)) {
-      return true;
-    }
-    return false;
-  });
+  return reservedPrefixesNames.some((prefix) => event.toLowerCase().startsWith(prefix));
+};
+
+/**
+ * Validation for event name should only contain letters, numbers, and underscores and events name must start with a letter
+ * Ref - https://support.google.com/analytics/answer/13316687?hl=en&ref_topic=13367860&sjid=16827682213264631791-NA
+ * @param {*} eventName
+ * @returns
+ */
+const isEventNameValid = (eventName) => {
+  const pattern = /^[A-Za-z]\w*$/;
+  return pattern.test(eventName);
 };
 
 const GA4_ITEM_EXCLUSION = [
   'item_id',
   'itemId',
   'product_id',
-
   'item_name',
   'itemName',
   'name',
-
   'coupon',
-
   'item_category',
   'itemCategory',
   'category',
-
   'item_brand',
   'itemBrand',
   'brand',
-
   'item_variant',
   'itemVariant',
   'variant',
-
   'price',
   'quantity',
-
   'index',
   'position',
 ];
+
+/**
+ * Remove arrays and objects from transformed payload 
+ * @param {*} params 
+ * @returns 
+ */
+const removeInvalidParams = (params) =>
+  Object.fromEntries(
+    Object.entries(params).filter(([key, value]) => key === 'items' || (typeof value !== 'object' && !isEmpty(value))),
+  );
 
 /**
  * get product list properties for a event.
@@ -204,7 +181,6 @@ const GA4_ITEM_EXCLUSION = [
  * @returns
  */
 const getItemList = (message, isItemsRequired = false) => {
-  let items;
   const products = get(message, 'properties.products');
   if ((isItemsRequired && !products) || (isItemsRequired && products && products.length === 0)) {
     throw new InstrumentationError(`Products is an required field for '${message.event}' event`);
@@ -214,8 +190,8 @@ const getItemList = (message, isItemsRequired = false) => {
     throw new InstrumentationError('Invalid type. Expected Array of products');
   }
 
-  if (products) {
-    items = [];
+  const items = [];
+  if (Array.isArray(products)) {
     products.forEach((item, index) => {
       let element = constructPayload(item, mappingConfig[ConfigCategory.ITEM_LIST.name]);
       if (!isDefinedAndNotNull(element.item_id) && !isDefinedAndNotNull(element.item_name)) {
@@ -223,15 +199,14 @@ const getItemList = (message, isItemsRequired = false) => {
       }
 
       // take additional parameters apart from mapped one
-      let itemProperties = {};
-      itemProperties = extractCustomFields(
+      let itemProperties = extractCustomFields(
         message,
-        itemProperties,
+        {},
         [`properties.products.${index}`],
         GA4_ITEM_EXCLUSION,
       );
       if (!isEmptyObject(itemProperties)) {
-        itemProperties = flattenJson(itemProperties, '_', 'strict');
+        itemProperties = removeInvalidParams(flattenJson(itemProperties, '_', 'strict'));
         element = { ...element, ...itemProperties };
       }
 
@@ -247,7 +222,6 @@ const getItemList = (message, isItemsRequired = false) => {
  * @returns
  */
 const getItem = (message, isItemsRequired) => {
-  let items;
   const properties = get(message, 'properties');
   if (!properties && isItemsRequired) {
     throw new InstrumentationError(
@@ -255,18 +229,47 @@ const getItem = (message, isItemsRequired) => {
     );
   }
 
+  const items = [];
   if (properties) {
-    items = [];
-    const product = constructPayload(properties, mappingConfig[ConfigCategory.ITEM.name]);
+    const product = removeInvalidParams(
+      constructPayload(properties, mappingConfig[ConfigCategory.ITEM.name]),
+    );
     if (!isDefinedAndNotNull(product.item_id) && !isDefinedAndNotNull(product.item_name)) {
       throw new InstrumentationError('One of product_id or name is required');
     }
-
     items.push(product);
   }
   return items;
 };
 
+/**
+ * Returns items array for ga4 event payload
+ * @param {*} message 
+ * @param {*} item 
+ * @param {*} itemList 
+ * @returns 
+ */
+const getItemsArray = (message, item, itemList) => {
+  let items = [];
+  let mapRootLevelPropertiesToGA4ItemsArray = false;
+  if (itemList && item) {
+    items = getItemList(message, itemList === 'YES');
+
+    if (!(items && items.length > 0)) {
+      mapRootLevelPropertiesToGA4ItemsArray = true;
+      items = getItem(message, item === 'YES');
+    }
+  } else if (item) {
+    // item
+    items = getItem(message, item === 'YES');
+    mapRootLevelPropertiesToGA4ItemsArray = true;
+  } else if (itemList) {
+    // itemList
+    items = getItemList(message, itemList === 'YES');
+  }
+
+  return { items, mapRootLevelPropertiesToGA4ItemsArray };
+}
 /**
  * get exclusion list for a particular event
  * ga4ExclusionList contains the sourceKeys that are already mapped
@@ -323,17 +326,112 @@ const getGA4CustomParameters = (message, keys, exclusionFields, payload) => {
   return payload.params;
 };
 
+/**
+ * Validation for event name
+ * Ref - https://support.google.com/analytics/answer/13316687?hl=en&ref_topic=13367860&sjid=16827682213264631791-NA
+ * @param {*} event
+ */
+const validateEventName = (event) => {
+  /**
+   * Event name should not use reserved prefixes and event names
+   * Event names are case sensitive
+   * Event name must start with alphabetic characters only
+   */
+
+  if (isReservedWebCustomEventName(event)) {
+    throw new InstrumentationError('Reserved custom event names are not allowed');
+  }
+
+  if (isReservedWebCustomPrefixName(event)) {
+    throw new InstrumentationError('Reserved custom prefix names are not allowed');
+  }
+
+  if (!isEventNameValid(event)) {
+    throw new InstrumentationError(
+      'Event name must start with a letter and can only contain letters, numbers, and underscores',
+    );
+  }
+};
+
+/**
+ * Function to verify user_property value type
+ * @param {*} value
+ * @returns
+ */
+const isValidValueType = (value) => {
+  if (typeof value === 'string') {
+    return value.trim() !== '' && value.trim().length <= 36;
+  }
+
+  if (typeof value === 'number') {
+    return value.toString().length <= 36;
+  }
+
+  return typeof value === 'boolean';
+};
+
+/**
+ * Function to validate user_property name and it's value
+ * user_property name should start with alphabetic characters
+ * user_property name length should not more then 24 characters
+ * user_property name should not start with reserved prefixes
+ * user_property value should not null and empty
+ * user_property value type should either string, number or boolean
+ * user_property value length should not more then 36 characters
+ * Ref - https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference?client_type=gtag#reserved_parameter_names
+ * @param {*} name
+ * @returns
+ */
+const isValidUserProperty = (key, value) => {
+  const pattern = /^[A-Za-z]\w{0,23}$/;
+  const reservedPrefixesNames = ['google_', 'ga_', 'firebase_'];
+
+  const isValidKey =
+    pattern.test(key) &&
+    !reservedPrefixesNames.some((prefix) => key.toLowerCase().startsWith(prefix));
+
+  const isValidValue = isDefinedAndNotNull(value) && isValidValueType(value);
+
+  return isValidKey && isValidValue;
+};
+
+/**
+ * Function to validate and prepare user_properties
+ * @param {*} message
+ */
+const prepareUserProperties = (message) => {
+  const userProperties = extractCustomFields(
+    message,
+    {},
+    ['properties.user_properties', 'context.traits'],
+    GA4_RESERVED_USER_PROPERTY_EXCLUSION,
+  );
+
+  const validatedUserProperties = Object.entries(userProperties)
+    .filter(([key, value]) => isValidUserProperty(key, value))
+    .reduce((acc, [key, value]) => {
+      const userProperties = acc;
+      userProperties[key] = { value };
+      return userProperties;
+    }, {});
+
+  return validatedUserProperties;
+};
+
 module.exports = {
+  getItem,
+  getItemList,
+  getItemsArray,
+  validateEventName,
+  removeInvalidParams,
   isReservedEventName,
-  GA4_RESERVED_PARAMETER_EXCLUSION,
+  getGA4ExclusionList,
+  prepareUserProperties,
+  getGA4CustomParameters,
   GA4_PARAMETERS_EXCLUSION,
-  removeReservedParameterPrefixNames,
-  GA4_RESERVED_USER_PROPERTY_EXCLUSION,
-  removeReservedUserPropertyPrefixNames,
   isReservedWebCustomEventName,
   isReservedWebCustomPrefixName,
-  getItemList,
-  getItem,
-  getGA4ExclusionList,
-  getGA4CustomParameters,
+  GA4_RESERVED_PARAMETER_EXCLUSION,
+  removeReservedParameterPrefixNames,
+  GA4_RESERVED_USER_PROPERTY_EXCLUSION,
 };

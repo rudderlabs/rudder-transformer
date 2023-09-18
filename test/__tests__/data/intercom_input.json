@@ -47,7 +47,24 @@
           "userId": "test_user_id_1",
           "email": "test_1@test.com",
           "phone": "9876543210",
-          "key1": "value1"
+          "key1": "value1",
+          "address": {
+            "city": "Kolkata",
+            "state": "West Bengal"
+          },
+          "originalArray": [
+            {
+              "nested_field": "nested value",
+              "tags": ["tag_1", "tag_2", "tag_3"]
+            },
+            {
+              "nested_field": "nested value",
+              "tags": ["tag_1"]
+            },
+            {
+              "nested_field": "nested value"
+            }
+          ]
         },
         "userAgent": "unknown"
       },
@@ -65,7 +82,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+        "apiKey": "intercomApiKey",
         "appId": "9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0",
         "collectContext": false
       }
@@ -135,7 +152,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+        "apiKey": "intercomApiKey",
         "appId": "9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0",
         "collectContext": false
       }
@@ -204,7 +221,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+        "apiKey": "intercomApiKey",
         "appId": "9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0",
         "collectContext": false
       }
@@ -273,7 +290,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+        "apiKey": "intercomApiKey",
         "appId": "9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0",
         "collectContext": false
       }
@@ -341,7 +358,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+        "apiKey": "intercomApiKey",
         "appId": "9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0",
         "collectContext": false
       }
@@ -397,7 +414,11 @@
             "name": "Test Comp",
             "id": "company_id",
             "industry": "test industry",
-            "key1": "value1"
+            "key1": "value1",
+            "key2": {
+              "a": "a"
+            },
+            "key3": [1, 2, 3]
           }
         },
         "userAgent": "unknown"
@@ -416,7 +437,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+        "apiKey": "intercomApiKey",
         "appId": "9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0",
         "collectContext": false
       }
@@ -472,7 +493,11 @@
             "name": "Test Comp",
             "industry": "test industry",
             "key1": "value1",
-            "key2": null
+            "key2": null,
+            "key3": ["value1", "value2"],
+            "key4": {
+              "foo": "bar"
+            }
           }
         },
         "userAgent": "unknown"
@@ -491,9 +516,10 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+        "apiKey": "intercomApiKey",
         "appId": "9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0",
-        "collectContext": false
+        "collectContext": false,
+        "updateLastRequestAt": false
       }
     }
   },
@@ -565,7 +591,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+        "apiKey": "intercomApiKey",
         "appId": "9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0",
         "collectContext": false
       }
@@ -631,12 +657,28 @@
         "property5": {
           "property1": 1,
           "property2": "test",
-          "property3": true,
-          "property4": "test",
-          "property5": true,
-          "property6": true
+          "property3": {
+            "subProp1": {
+              "a": "a",
+              "b": "b"
+            },
+            "subProp2": ["a", "b"]
+          }
         },
-        "property6": null
+        "properties6": null,
+        "revenue": {
+          "amount": 1232,
+          "currency": "inr",
+          "test": 123
+        },
+        "price": {
+          "amount": 3000,
+          "currency": "USD"
+        },
+        "article": {
+          "url": "https://example.org/ab1de.html",
+          "value": "the dude abides"
+        }
       },
       "event": "Test Event 2",
       "integrations": {
@@ -652,7 +694,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+        "apiKey": "intercomApiKey",
         "appId": "9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0",
         "collectContext": false
       }
@@ -723,7 +765,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+        "apiKey": "intercomApiKey",
         "appId": "9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0",
         "collectContext": false
       }
@@ -793,7 +835,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+        "apiKey": "intercomApiKey",
         "appId": "9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0",
         "collectContext": false
       }
@@ -870,7 +912,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+        "apiKey": "intercomApiKey",
         "appId": "9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0",
         "collectContext": false
       }
@@ -940,7 +982,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+        "apiKey": "intercomApiKey",
         "appId": "9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0",
         "collectContext": false,
         "sendAnonymousId": true
@@ -1011,10 +1053,179 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+        "apiKey": "intercomApiKey",
         "appId": "9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0",
         "collectContext": false,
         "sendAnonymousId": false
+      }
+    }
+  },
+  {
+    "message": {
+      "groupId": "test_company_id_wdasda",
+      "traits": {
+        "employees": 450,
+        "plan": "basic",
+        "userId": "sdfrsdfsdfsf",
+        "email": "test@test.com",
+        "name": "rudderUpdate",
+        "size": "50",
+        "industry": "IT",
+        "monthlySpend": "2131231",
+        "remoteCreatedAt": "1683017572",
+        "key1": "val1"
+      },
+      "anonymousId": "sdfrsdfsdfsf",
+      "integrations": {
+        "All": true
+      },
+      "type": "group",
+      "userId": "sdfrsdfsdfsf"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcd=",
+        "appId": "asdasdasd",
+        "collectContext": false
+      }
+    }
+  },
+  {
+    "message": {
+      "groupId": "test_company_id",
+      "traits": {
+        "plan": "basic",
+        "name": "rudderUpdate",
+        "size": 50,
+        "industry": "IT",
+        "monthlySpend": "2131231",
+        "email": "comanyemail@abc.com"
+      },
+      "anonymousId": "12312312",
+      "context": {
+        "app": {
+          "build": "1.0",
+          "name": "Test_Example",
+          "namespace": "com.example.testapp",
+          "version": "1.0"
+        },
+        "device": {
+          "id": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
+          "manufacturer": "Apple",
+          "model": "iPhone",
+          "name": "iPod touch (7th generation)",
+          "type": "iOS"
+        },
+        "library": {
+          "name": "test-ios-library",
+          "version": "1.0.7"
+        },
+        "locale": "en-US",
+        "network": {
+          "bluetooth": false,
+          "carrier": "unavailable",
+          "cellular": false,
+          "wifi": true
+        },
+        "os": {
+          "name": "iOS",
+          "version": "14.0"
+        },
+        "screen": {
+          "density": 2,
+          "height": 320,
+          "width": 568
+        },
+        "timezone": "Asia/Kolkata",
+        "userAgent": "unknown"
+      },
+      "integrations": {
+        "All": true
+      },
+      "messageId": "1601493060-39010c49-e6e4-4626-a75c-0dbf1925c9e8",
+      "type": "group"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcd=",
+        "appId": "asdasdasd",
+        "collectContext": false
+      }
+    }
+  },
+  {
+    "message": {
+      "groupId": "test_company_id_wdasda",
+      "context": {
+        "traits": {
+          "email": "testUser@test.com"
+        }
+      },
+      "traits": {
+        "employees": 450,
+        "plan": "basic",
+        "email": "test@test.com",
+        "name": "rudderUpdate",
+        "size": "50",
+        "industry": "IT",
+        "website": "url",
+        "monthlySpend": "2131231",
+        "remoteCreatedAt": "1683017572",
+        "key1": "val1"
+      },
+      "anonymousId": "sdfrsdfsdfsf",
+      "integrations": {
+        "All": true
+      },
+      "type": "group",
+      "userId": "sdfrsdfsdfsf"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcd=",
+        "appId": "asdasdasd",
+        "collectContext": false
+      }
+    }
+  },
+  {
+    "message": {
+      "groupId": "test_company_id_wdasda",
+      "context": {
+        "traits": {
+          "email": "testUser@test.com"
+        }
+      },
+      "traits": {
+        "employees": 450,
+        "plan": "basic",
+        "email": "test@test.com",
+        "name": "rudderUpdate",
+        "size": "50",
+        "industry": "IT",
+        "website": "url",
+        "monthlySpend": "2131231",
+        "remoteCreatedAt": "1683017572",
+        "key1": "val1",
+        "key2": {
+          "a": "a",
+          "b": "b"
+        },
+        "key3": [1, 2, 3],
+        "key4": null
+      },
+      "anonymousId": "anonId",
+      "integrations": {
+        "All": true
+      },
+      "type": "group"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcd=",
+        "appId": "asdasdasd",
+        "collectContext": false,
+        "sendAnonymousId": true
       }
     }
   }

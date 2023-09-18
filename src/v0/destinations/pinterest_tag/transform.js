@@ -1,14 +1,15 @@
-const _ = require('lodash');
 const { get } = require('lodash');
-const { defaultPostRequestConfig, handleRtTfSingleEventError } = require('../../util');
 const { EventType } = require('../../../constants');
 const {
   defaultRequestConfig,
+  defaultPostRequestConfig,
   getSuccessRespEvents,
   getErrorRespEvents,
   constructPayload,
   defaultBatchRequestConfig,
   removeUndefinedAndNullValues,
+  batchMultiplexedEvents,
+  handleRtTfSingleEventError,
 } = require('../../util');
 const {
   processUserPayload,
@@ -17,22 +18,41 @@ const {
   postProcessEcomFields,
   checkUserPayloadValidity,
   processHashedUserPayload,
+  validateInput,
 } = require('./utils');
 
-const { ENDPOINT, MAX_BATCH_SIZE, USER_CONFIGS } = require('./config');
-const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
+const {
+  ENDPOINT,
+  MAX_BATCH_SIZE,
+  USER_CONFIGS,
+  getV5EventsEndpoint,
+  API_VERSION,
+} = require('./config');
+const { InstrumentationError } = require('../../util/errorTypes');
 
-const responseBuilderSimple = (finalPayload) => {
+const responseBuilderSimple = (finalPayload, { Config }) => {
+  const { apiVersion = API_VERSION.v3, adAccountId, conversionToken, sendAsTestEvent } = Config;
   const response = defaultRequestConfig();
   response.endpoint = ENDPOINT;
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = removeUndefinedAndNullValues(finalPayload);
-  return {
-    ...response,
-    headers: {
+
+  response.headers = { 'Content-Type': 'application/json' };
+
+  if (apiVersion === API_VERSION.v5) {
+    response.endpoint = getV5EventsEndpoint(adAccountId);
+    response.headers = {
       'Content-Type': 'application/json',
-    },
-  };
+      Authorization: `Bearer ${conversionToken}`,
+    };
+  }
+  if (sendAsTestEvent) {
+    response.params = {
+      test: true,
+    };
+  }
+
+  return response;
 };
 
 /**
@@ -50,12 +70,18 @@ const responseBuilderSimple = (finalPayload) => {
  */
 const commonFieldResponseBuilder = (message, { Config }, messageType, eventName) => {
   let processedUserPayload;
-  const { appId, advertiserId, deduplicationKey, sendingUnHashedData } = Config;
+  const { appId, advertiserId, deduplicationKey, sendingUnHashedData, sendExternalId, apiVersion } =
+    Config;
   // ref: https://s.pinimg.com/ct/docs/conversions_api/dist/v3.html
   const processedCommonPayload = processCommonPayload(message);
 
   processedCommonPayload.event_id = get(message, `${deduplicationKey}`) || message.messageId;
   const userPayload = constructPayload(message, USER_CONFIGS, 'pinterest');
+
+  if (!sendExternalId) {
+    delete userPayload.external_id;
+  }
+
   const isValidUserPayload = checkUserPayloadValidity(userPayload);
   if (isValidUserPayload === false) {
     throw new InstrumentationError(
@@ -82,10 +108,14 @@ const commonFieldResponseBuilder = (message, { Config }, messageType, eventName)
     user_data: processedUserPayload,
   };
 
+  if (apiVersion === API_VERSION.v5) {
+    delete response.advertiser_id;
+  }
+
   if (messageType === EventType.TRACK) {
     response = postProcessEcomFields(message, response);
   }
-  // return responseBuilderSimple(response);
+
   return response;
 };
 
@@ -96,13 +126,7 @@ const process = (event) => {
   const { message, destination } = event;
   const messageType = message.type?.toLowerCase();
 
-  if (!destination.Config?.advertiserId) {
-    throw new ConfigurationError('Advertiser Id not found. Aborting');
-  }
-
-  if (!message.type) {
-    throw new InstrumentationError('Event type is required');
-  }
+  validateInput(message, destination);
 
   switch (messageType) {
     case EventType.PAGE:
@@ -119,58 +143,32 @@ const process = (event) => {
   }
 
   toSendEvents.forEach((sendEvent) => {
-    respList.push(responseBuilderSimple(sendEvent));
+    respList.push(responseBuilderSimple(sendEvent, destination));
   });
   return respList;
 };
 
-const generateBatchedPaylaodForArray = (events) => {
-  let batchEventResponse = defaultBatchRequestConfig();
-  const batchResponseList = [];
-  const metadata = [];
-  // extracting destination from the first event in a batch
-  const { destination } = events[0];
-  // Batch event into dest batch structure
-  events.forEach((event) => {
-    batchResponseList.push(event.message.body.JSON);
-    metadata.push(event.metadata);
-  });
+const generateBatchedPayloadForArray = (events) => {
+  const { batchedRequest } = defaultBatchRequestConfig();
+  const batchResponseList = events.map((event) => event.body.JSON);
+  batchedRequest.body.JSON = { data: batchResponseList };
+  batchedRequest.endpoint = events[0].endpoint;
+  batchedRequest.headers = events[0].headers;
 
-  batchEventResponse.batchedRequest.body.JSON = {
-    data: batchResponseList,
-  };
-
-  batchEventResponse.batchedRequest.endpoint = 'https://ct.pinterest.com/events/v3';
-
-  batchEventResponse.batchedRequest.headers = {
-    'Content-Type': 'application/json',
-  };
-
-  batchEventResponse = {
-    ...batchEventResponse,
-    metadata,
-    destination,
-  };
-  return batchEventResponse;
+  return batchedRequest;
 };
 
 const batchEvents = (successRespList) => {
-  const batchedResponseList = [];
-
-  // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
-  const eventChunks = _.chunk(successRespList, MAX_BATCH_SIZE);
-  eventChunks.forEach((chunk) => {
-    const batchEventResponse = generateBatchedPaylaodForArray(chunk);
-    batchedResponseList.push(
-      getSuccessRespEvents(
-        batchEventResponse.batchedRequest,
-        batchEventResponse.metadata,
-        batchEventResponse.destination,
-        true,
-      ),
+  const batchResponseList = [];
+  const batchedEvents = batchMultiplexedEvents(successRespList, MAX_BATCH_SIZE);
+  batchedEvents.forEach((batch) => {
+    const batchedRequest = generateBatchedPayloadForArray(batch.events);
+    batchResponseList.push(
+      getSuccessRespEvents(batchedRequest, batch.metadata, batch.destination, true),
     );
   });
-  return batchedResponseList;
+
+  return batchResponseList;
 };
 
 const processRouterDest = (inputs, reqMetadata) => {
@@ -178,48 +176,28 @@ const processRouterDest = (inputs, reqMetadata) => {
     const respEvents = getErrorRespEvents(null, 400, 'Invalid event array');
     return [respEvents];
   }
-  const { destination } = inputs[0];
 
-  const processedEvents = inputs.map((event) => {
+  const successRespList = [];
+  const batchErrorRespList = [];
+  inputs.forEach((input) => {
     try {
-      if (event.message.statusCode) {
-        // already transformed event
-        return {
-          output: [
-            {
-              message: event.message,
-              metadata: event.metadata,
-              destination,
-            },
-          ],
-        };
+      let resp = input.message;
+      // transform if not already done
+      if (!input.message.statusCode) {
+        resp = process(input);
       }
-      // if not transformed
-      const transformedMessageArray = process(event);
-      const transformedEvents = transformedMessageArray.map((singleResponse) => ({
-        message: singleResponse,
-        metadata: event.metadata,
-        destination,
-      }));
-      return {
-        output: transformedEvents,
-      };
-    } catch (error) {
-      const resp = handleRtTfSingleEventError(event, error, reqMetadata);
 
-      return {
-        error: resp,
-      };
+      successRespList.push({
+        message: Array.isArray(resp) ? resp : [resp],
+        metadata: input.metadata,
+        destination: input.destination,
+      });
+    } catch (error) {
+      batchErrorRespList.push(handleRtTfSingleEventError(input, error, reqMetadata));
     }
   });
 
   let batchResponseList = [];
-  const successRespList = processedEvents
-    .filter((resp) => resp.output)
-    .flatMap((resp) => resp.output);
-  const batchErrorRespList = processedEvents
-    .filter((resp) => resp.error)
-    .flatMap((resp) => resp.error);
   if (successRespList.length > 0) {
     batchResponseList = batchEvents(successRespList);
   }

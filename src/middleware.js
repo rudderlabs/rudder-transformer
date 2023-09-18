@@ -1,42 +1,48 @@
-const prometheusClient = require('prom-client');
-// const gcStats = require("prometheus-gc-stats");
-
-const prometheusRegistry = new prometheusClient.Registry();
-prometheusClient.collectDefaultMetrics({ register: prometheusRegistry });
-
-// const startGcStats = gcStats(prometheusRegistry); // gcStats() would have the same effect in this case
-// startGcStats();
+const stats = require('./util/stats');
 
 function durationMiddleware() {
-  const httpRequestDurationSummary = new prometheusClient.Summary({
-    name: 'http_request_duration_summary_seconds',
-    help: 'Summary of HTTP requests duration in seconds',
-    labelNames: ['method', 'route', 'code'],
-    percentiles: [0.01, 0.1, 0.9, 0.99],
-  });
-
-  prometheusRegistry.registerMetric(httpRequestDurationSummary);
-
   return async (ctx, next) => {
-    const end = httpRequestDurationSummary.startTimer();
+    const startTime = new Date();
+
     await next();
 
     const labels = {
       method: ctx.method,
       code: ctx.status,
-      // eslint-disable-next-line no-underscore-dangle
-      route: ctx._matchedRoute,
+      route: ctx.request.url,
     };
-    end(labels);
+    stats.timing('http_request_duration', startTime, labels);
   };
 }
 
-function addPrometheusMiddleware(app) {
+function requestSizeMiddleware() {
+  return async (ctx, next) => {
+    await next();
+
+    const labels = {
+      method: ctx.method,
+      code: ctx.status,
+      route: ctx.request.url,
+    };
+
+    const inputLength = ctx.request?.body ? Buffer.byteLength(JSON.stringify(ctx.request.body)) : 0;
+    stats.histogram('http_request_size', inputLength, labels);
+    const outputLength = ctx.response?.body
+      ? Buffer.byteLength(JSON.stringify(ctx.response.body))
+      : 0;
+    stats.histogram('http_response_size', outputLength, labels);
+  };
+}
+
+function addStatMiddleware(app) {
   app.use(durationMiddleware());
 }
 
+function addRequestSizeMiddleware(app) {
+  app.use(requestSizeMiddleware());
+}
+
 module.exports = {
-  addPrometheusMiddleware,
-  durationMiddleware,
-  prometheusRegistry,
+  addStatMiddleware,
+  addRequestSizeMiddleware,
 };

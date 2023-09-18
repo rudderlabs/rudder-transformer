@@ -208,42 +208,36 @@ const groupEventsByType = (inputs) => {
  * @returns
  */
 const groupEventsByEndpoint = (events) => {
-  const engageEvents = [];
-  const groupsEvents = [];
-  const trackEvents = [];
-  const importEvents = [];
+  const eventMap = {
+    engage: [],
+    groups: [],
+    track: [],
+    import: [],
+  };
   const batchErrorRespList = [];
+
   events.forEach((result) => {
     if (result.message) {
       const { destination, metadata } = result;
-      let { message } = result;
-      message = CommonUtils.toArray(message);
+      const message = CommonUtils.toArray(result.message);
+
       message.forEach((msg) => {
-        // eslint-disable-next-line default-case
-        switch (true) {
-          case msg.endpoint.includes('engage'):
-            engageEvents.push({ message: msg, destination, metadata });
-            break;
-          case msg.endpoint.includes('groups'):
-            groupsEvents.push({ message: msg, destination, metadata });
-            break;
-          case msg.endpoint.includes('track'):
-            trackEvents.push({ message: msg, destination, metadata });
-            break;
-          case msg.endpoint.includes('import'):
-            importEvents.push({ message: msg, destination, metadata });
-            break;
+        const endpoint = Object.keys(eventMap).find((key) => msg.endpoint.includes(key));
+
+        if (endpoint) {
+          eventMap[endpoint].push({ message: msg, destination, metadata });
         }
       });
     } else if (result.error) {
       batchErrorRespList.push(result);
     }
   });
+
   return {
-    engageEvents,
-    groupsEvents,
-    trackEvents,
-    importEvents,
+    engageEvents: eventMap.engage,
+    groupsEvents: eventMap.groups,
+    trackEvents: eventMap.track,
+    importEvents: eventMap.import,
     batchErrorRespList,
   };
 };

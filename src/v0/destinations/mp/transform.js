@@ -15,6 +15,7 @@ const {
   getFieldValueFromMessage,
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
+  groupEventsByType,
 } = require('../../util');
 const {
   ConfigCategory,
@@ -30,7 +31,6 @@ const {
   createIdentifyResponse,
   isImportAuthCredentialsAvailable,
   combineBatchRequestsWithSameJobIds,
-  groupEventsByType,
   groupEventsByEndpoint,
   batchEvents,
 } = require('./util');

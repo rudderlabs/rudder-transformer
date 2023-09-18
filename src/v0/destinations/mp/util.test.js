@@ -26,38 +26,6 @@ const destinationMock = {
 const maxBatchSizeMock = 2;
 
 describe('Mixpanel utils test', () => {
-  describe('Unit test cases for groupEventsByType', () => {
-    it('should return an empty array when given an empty events array', () => {
-      const inputs = [];
-      const expectedOutput = [];
-
-      expect(groupEventsByType(inputs)).toEqual(expectedOutput);
-    });
-
-    it('should group multiple events with the different message type and different users together in a batch', () => {
-      const inputs = [
-        { message: { type: 'identify', userId: 'user1' }, metadata: { jobId: '1' } },
-        { message: { type: 'identify', userId: 'user2' }, metadata: { jobId: '2' } },
-        { message: { type: 'track', userId: 'user1' }, metadata: { jobId: '3' } },
-        { message: { type: 'identify', userId: 'user1' }, metadata: { jobId: '4' } },
-        { message: { type: 'identify', userId: 'user2' }, metadata: { jobId: '5' } },
-      ];
-      const expectedOutput = [
-        [
-          { message: { type: 'identify', userId: 'user1' }, metadata: { jobId: '1' } },
-          { message: { type: 'identify', userId: 'user2' }, metadata: { jobId: '2' } },
-        ],
-        [{ message: { type: 'track', userId: 'user1' }, metadata: { jobId: '3' } }],
-        [
-          { message: { type: 'identify', userId: 'user1' }, metadata: { jobId: '4' } },
-          { message: { type: 'identify', userId: 'user2' }, metadata: { jobId: '5' } },
-        ],
-      ];
-
-      expect(groupEventsByType(inputs)).toEqual(expectedOutput);
-    });
-  });
-
   describe('Unit test cases for groupEventsByEndpoint', () => {
     it('should return an object with empty arrays for all properties when the events array is empty', () => {
       const events = [];

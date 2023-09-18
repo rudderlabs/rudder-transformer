@@ -1,0 +1,112 @@
+[
+  {
+    "description": "Should return an empty array when given an empty events array",
+    "input": [[]],
+    "output": []
+  },
+  {
+    "description": "Should group multiple events with the different message type and different users together in a batch",
+    "input": [
+      [
+        {
+          "message": {
+            "type": "identify",
+            "userId": "user1"
+          },
+          "metadata": {
+            "jobId": "1"
+          }
+        },
+        {
+          "message": {
+            "type": "identify",
+            "userId": "user2"
+          },
+          "metadata": {
+            "jobId": "2"
+          }
+        },
+        {
+          "message": {
+            "type": "track",
+            "userId": "user1"
+          },
+          "metadata": {
+            "jobId": "3"
+          }
+        },
+        {
+          "message": {
+            "type": "identify",
+            "userId": "user1"
+          },
+          "metadata": {
+            "jobId": "4"
+          }
+        },
+        {
+          "message": {
+            "type": "identify",
+            "userId": "user2"
+          },
+          "metadata": {
+            "jobId": "5"
+          }
+        }
+      ]
+    ],
+    "output": [
+      [
+        {
+          "message": {
+            "type": "identify",
+            "userId": "user1"
+          },
+          "metadata": {
+            "jobId": "1"
+          }
+        },
+        {
+          "message": {
+            "type": "identify",
+            "userId": "user2"
+          },
+          "metadata": {
+            "jobId": "2"
+          }
+        }
+      ],
+      [
+        {
+          "message": {
+            "type": "track",
+            "userId": "user1"
+          },
+          "metadata": {
+            "jobId": "3"
+          }
+        }
+      ],
+      [
+        {
+          "message": {
+            "type": "identify",
+            "userId": "user1"
+          },
+          "metadata": {
+            "jobId": "4"
+          }
+        },
+        {
+          "message": {
+            "type": "identify",
+            "userId": "user2"
+          },
+          "metadata": {
+            "jobId": "5"
+          }
+        }
+      ]
+    ]
+  }
+]

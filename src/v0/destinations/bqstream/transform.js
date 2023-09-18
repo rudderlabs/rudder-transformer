@@ -9,6 +9,7 @@ const {
 } = require('../../util');
 const { MAX_ROWS_PER_REQUEST, DESTINATION } = require('./config');
 const { InstrumentationError } = require('../../util/errorTypes');
+const { getRearrangedEvents } = require('./util');
 
 const getInsertIdColValue = (properties, insertIdCol) => {
   if (
@@ -50,7 +51,7 @@ const process = (event) => {
   };
 };
 
-const batchEvents = (eventsChunk) => {
+const batchEachUserSuccessEvents = (eventsChunk) => {
   const batchedResponseList = [];
 
   // arrayChunks = [[e1,e2, ..batchSize], [e1,e2, ..batchSize], ...]
@@ -68,7 +69,7 @@ const batchEvents = (eventsChunk) => {
     chunk.forEach((ev) => {
       // Pixel code must be added above "batch": [..]
       batchResponseList.push(ev.message.properties);
-      metadata.push(ev.metadata);
+      metadata.push(ev.metadata[0]);
     });
 
     batchEventResponse.batchedRequest = {
@@ -102,21 +103,20 @@ const processRouterDest = (inputs) => {
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
-
-  const eventsChunk = []; // temporary variable to divide payload into chunks
-  const errorRespList = [];
-
+  const finalResp = [];
+  const eachUserSuccessEventslist = []; // temporary variable to divide payload into chunks
+  const eachUserErrorEventsList = [];
   inputs.forEach((event) => {
     try {
       if (event.message.statusCode) {
         // already transformed event
-        eventsChunk.push(event);
+        eachUserSuccessEventslist.push(event);
       } else {
         // if not transformed
         let response = process(event);
         response = Array.isArray(response) ? response : [response];
         response.forEach((res) => {
-          eventsChunk.push({
+          eachUserSuccessEventslist.push({
             message: res,
             metadata: event.metadata,
             destination: event.destination,
@@ -124,16 +124,26 @@ const processRouterDest = (inputs) => {
         });
       }
     } catch (error) {
-      const errRespEvent = handleRtTfSingleEventError(event, error, DESTINATION);
-      errorRespList.push(errRespEvent);
+      const eachUserErrorEvent = handleRtTfSingleEventError(event, error, DESTINATION);
+      eachUserErrorEventsList.push(eachUserErrorEvent);
     }
   });
 
-  let batchedResponseList = [];
-  if (eventsChunk.length > 0) {
-    batchedResponseList = batchEvents(eventsChunk);
-  }
-  return [...batchedResponseList, ...errorRespList];
+  const orderedEventsList = getRearrangedEvents(eachUserSuccessEventslist, eachUserErrorEventsList);
+  // divide the successful payloads into batches
+  let eachUserBatchedResponse = [];
+  orderedEventsList.forEach((eventList) => {
+    // no error event list will have more than one items in the list
+    if (eventList[0].error) {
+      finalResp.push([...eventList]);
+    } else {
+      // batch the successful events
+      eachUserBatchedResponse = batchEachUserSuccessEvents(eventList);
+      finalResp.push([...eachUserBatchedResponse]);
+    }
+  });
+
+  return finalResp.flat();
 };
 
 module.exports = { process, processRouterDest };

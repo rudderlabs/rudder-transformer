@@ -24,7 +24,7 @@ describe('getRearrangedEvents', () => {
   it('should return an empty array when both input arrays are empty', () => {
     const eachUserSuccessEventslist = [];
     const eachUserErrorEventsList = [];
-    const expected = [[]];
+    const expected = [];
     const result = getRearrangedEvents(eachUserSuccessEventslist, eachUserErrorEventsList);
     expect(result).toEqual(expected);
   });
@@ -58,49 +58,6 @@ describe('getRearrangedEvents', () => {
           ],
         },
       ],
-    ];
-    const result = getRearrangedEvents(eachUserSuccessEventslist, eachUserErrorEventsList);
-    expect(result).toEqual(expected);
-  });
-
-  // Tests that the function returns an ordered array of events with both successful and erroneous events, ordered based on the jobId property of the events' metadata array
-  it('should return an ordered array of events with both successful and erroneous events', () => {
-    const eachUserSuccessEventslist = [
-      {
-        batched: false,
-        destination: {},
-        error: 'Message Type not supported: identify',
-        metadata: [{ jobId: 3, userId: 'user12345' }],
-      },
-      {
-        batched: false,
-        destination: {},
-        error: 'Message Type not supported: identify',
-        metadata: [{ jobId: 4, userId: 'user12345' }],
-      },
-    ];
-    const eachUserErrorEventsList = [
-      { message: { type: 'track' }, metadata: { jobId: 1 } },
-      { message: { type: 'track' }, metadata: { jobId: 2 } },
-      { message: { type: 'track' }, metadata: { jobId: 5 } },
-    ];
-    const expected = [
-      [
-        { message: { type: 'track' }, metadata: [{ jobId: 1 }] },
-        { message: { type: 'track' }, metadata: [{ jobId: 2 }] },
-      ],
-      [
-        {
-          batched: false,
-          destination: {},
-          error: 'Message Type not supported: identify',
-          metadata: [
-            { jobId: 3, userId: 'user12345' },
-            { jobId: 4, userId: 'user12345' },
-          ],
-        },
-      ],
-      [{ message: { type: 'track' }, metadata: [{ jobId: 5 }] }],
     ];
     const result = getRearrangedEvents(eachUserSuccessEventslist, eachUserErrorEventsList);
     expect(result).toEqual(expected);

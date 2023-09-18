@@ -301,24 +301,50 @@ export const data = [
         body: {
           output: [
             {
+              batched: true,
               batchedRequest: {
                 datasetId: 'gc_dataset',
                 projectId: 'gc-project-id',
                 properties: [
                   {
                     count: 10,
+                    insertId: '10',
                     productId: 10,
                     productName: 'Product-10',
-                    insertId: '10',
                   },
                   {
                     count: 20,
+                    insertId: '20',
                     productId: 20,
                     productName: 'Product-20',
+                  },
+                  {
+                    count: 20,
                     insertId: '20',
+                    productId: 20,
+                    productName: 'Product-20',
+                  },
+                  {
+                    count: 20,
+                    insertId: '20',
+                    productId: 20,
+                    productName: 'Product-20',
                   },
                 ],
                 tableId: 'gc_table',
+              },
+              destination: {
+                Config: {
+                  datasetId: 'gc_dataset',
+                  eventDelivery: true,
+                  eventDeliveryTS: 1636965406397,
+                  insertId: 'productId',
+                  projectId: 'gc-project-id',
+                  rudderAccountId: '1z8LpaSAuFR9TPWL6fECZfjmRa-',
+                  tableId: 'gc_table',
+                },
+                ID: '1WXjIHpu7ETXgjfiGPW3kCUgZFR',
+                Name: 'bqstream test',
               },
               metadata: [
                 {
@@ -329,93 +355,6 @@ export const data = [
                   jobId: 2,
                   userId: 'user12345',
                 },
-              ],
-              batched: true,
-              statusCode: 200,
-              destination: {
-                Config: {
-                  rudderAccountId: '1z8LpaSAuFR9TPWL6fECZfjmRa-',
-                  projectId: 'gc-project-id',
-                  datasetId: 'gc_dataset',
-                  tableId: 'gc_table',
-                  insertId: 'productId',
-                  eventDelivery: true,
-                  eventDeliveryTS: 1636965406397,
-                },
-
-                ID: '1WXjIHpu7ETXgjfiGPW3kCUgZFR',
-                Name: 'bqstream test',
-              },
-            },
-            {
-              batched: false,
-              destination: {
-                Config: {
-                  datasetId: 'gc_dataset',
-                  eventDelivery: true,
-                  eventDeliveryTS: 1636965406397,
-                  insertId: 'productId',
-                  projectId: 'gc-project-id',
-                  rudderAccountId: '1z8LpaSAuFR9TPWL6fECZfjmRa-',
-                  tableId: 'gc_table',
-                },
-
-                ID: '1WXjIHpu7ETXgjfiGPW3kCUgZFR',
-                Name: 'bqstream test',
-              },
-              error: 'Message Type not supported: identify',
-              metadata: [
-                {
-                  jobId: 3,
-                  userId: 'user12345',
-                },
-              ],
-              statTags: {
-                destType: 'BQSTREAM',
-                errorCategory: 'dataValidation',
-                errorType: 'instrumentation',
-                feature: 'router',
-                implementation: 'native',
-                module: 'destination',
-              },
-              statusCode: 400,
-            },
-            {
-              batched: true,
-              batchedRequest: {
-                datasetId: 'gc_dataset',
-                projectId: 'gc-project-id',
-                properties: [
-                  {
-                    count: 20,
-                    insertId: '20',
-                    productId: 20,
-                    productName: 'Product-20',
-                  },
-                  {
-                    count: 20,
-                    insertId: '20',
-                    productId: 20,
-                    productName: 'Product-20',
-                  },
-                ],
-                tableId: 'gc_table',
-              },
-              destination: {
-                Config: {
-                  datasetId: 'gc_dataset',
-                  eventDelivery: true,
-                  eventDeliveryTS: 1636965406397,
-                  insertId: 'productId',
-                  projectId: 'gc-project-id',
-                  rudderAccountId: '1z8LpaSAuFR9TPWL6fECZfjmRa-',
-                  tableId: 'gc_table',
-                },
-
-                ID: '1WXjIHpu7ETXgjfiGPW3kCUgZFR',
-                Name: 'bqstream test',
-              },
-              metadata: [
                 {
                   jobId: 5,
                   userId: 'user123',
@@ -439,49 +378,15 @@ export const data = [
                   rudderAccountId: '1z8LpaSAuFR9TPWL6fECZfjmRa-',
                   tableId: 'gc_table',
                 },
-
-                ID: '1WXjIHpu7ETXgjfiGPW3kCUgZFR',
-                Name: 'bqstream test',
-              },
-              error: 'Invalid payload for the destination',
-              metadata: [
-                {
-                  jobId: 7,
-                  userId: 'user124',
-                },
-                {
-                  jobId: 8,
-                  userId: 'user125',
-                },
-              ],
-              statTags: {
-                destType: 'BQSTREAM',
-                errorCategory: 'dataValidation',
-                errorType: 'instrumentation',
-                feature: 'router',
-                implementation: 'native',
-                module: 'destination',
-              },
-              statusCode: 400,
-            },
-            {
-              batched: false,
-              destination: {
-                Config: {
-                  datasetId: 'gc_dataset',
-                  eventDelivery: true,
-                  eventDeliveryTS: 1636965406397,
-                  insertId: 'productId',
-                  projectId: 'gc-project-id',
-                  rudderAccountId: '1z8LpaSAuFR9TPWL6fECZfjmRa-',
-                  tableId: 'gc_table',
-                },
-
                 ID: '1WXjIHpu7ETXgjfiGPW3kCUgZFR',
                 Name: 'bqstream test',
               },
               error: 'Message Type not supported: identify',
               metadata: [
+                {
+                  jobId: 3,
+                  userId: 'user12345',
+                },
                 {
                   jobId: 9,
                   userId: 'user125',

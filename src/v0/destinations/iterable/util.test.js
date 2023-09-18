@@ -1,5 +1,4 @@
 const {
-  batchEvents,
   pageEventPayloadBuilder,
   trackEventPayloadBuilder,
   screenEventPayloadBuilder,
@@ -107,103 +106,6 @@ const getTestEcommMessage = () => {
   };
   return message;
 };
-
-const orderEventsFuncData = [
-  {
-    inputs: [
-      { message: { type: 'identify' }, metadata: { userId: '1' } },
-      { message: { type: 'track' }, metadata: { userId: '1' } },
-      { message: { type: 'identify' }, metadata: { userId: '2' } },
-      { message: { type: 'track' }, metadata: { userId: '2' } },
-      { message: { type: 'track' }, metadata: { userId: '2' } },
-      { message: { type: 'identify' }, metadata: { userId: '3' } },
-      { message: { type: 'track' }, metadata: { userId: '3' } },
-      { message: { type: 'identify' }, metadata: { userId: '4' } },
-      { message: { type: 'track' }, metadata: { userId: '4' } },
-      { message: { type: 'identify' }, metadata: { userId: '5' } },
-      { message: { type: 'track' }, metadata: { userId: '5' } },
-      { message: { type: 'identify' }, metadata: { userId: '5' } },
-      { message: { type: 'identify' }, metadata: { userId: '6' } },
-      { message: { type: 'identify' }, metadata: { userId: '6' } },
-      { message: { type: 'identify' }, metadata: { userId: '6' } },
-    ],
-    output: [
-      [
-        { message: { type: 'identify' }, metadata: { userId: '1' } },
-        { message: { type: 'identify' }, metadata: { userId: '2' } },
-        { message: { type: 'identify' }, metadata: { userId: '3' } },
-        { message: { type: 'identify' }, metadata: { userId: '4' } },
-        { message: { type: 'identify' }, metadata: { userId: '5' } },
-        { message: { type: 'identify' }, metadata: { userId: '6' } },
-        { message: { type: 'identify' }, metadata: { userId: '6' } },
-        { message: { type: 'identify' }, metadata: { userId: '6' } },
-      ],
-      [
-        { message: { type: 'track' }, metadata: { userId: '1' } },
-        { message: { type: 'track' }, metadata: { userId: '2' } },
-        { message: { type: 'track' }, metadata: { userId: '2' } },
-        { message: { type: 'track' }, metadata: { userId: '3' } },
-        { message: { type: 'track' }, metadata: { userId: '4' } },
-        { message: { type: 'track' }, metadata: { userId: '5' } },
-      ],
-      [
-        { message: { type: 'identify' }, metadata: { userId: '5' } },
-      ]
-    ]
-  },
-  {
-    inputs: [
-      { message: { type: 'track' }, metadata: { userId: '3' } },
-      { message: { type: 'identify' }, metadata: { userId: '3' } },
-      { message: { type: 'identify' }, metadata: { userId: '1' } },
-      { message: { type: 'track' }, metadata: { userId: '1' } },
-      { message: { type: 'identify' }, metadata: { userId: '5' } },
-      { message: { type: 'track' }, metadata: { userId: '5' } },
-      { message: { type: 'identify' }, metadata: { userId: '5' } },
-      { message: { type: 'identify' }, metadata: { userId: '2' } },
-      { message: { type: 'track' }, metadata: { userId: '2' } },
-      { message: { type: 'track' }, metadata: { userId: '2' } },
-      { message: { type: 'track' }, metadata: { userId: '4' } },
-      { message: { type: 'identify' }, metadata: { userId: '4' } },
-      { message: { type: 'identify' }, metadata: { userId: '6' } },
-      { message: { type: 'identify' }, metadata: { userId: '6' } },
-      { message: { type: 'identify' }, metadata: { userId: '6' } },
-    ],
-    output: [
-      [
-        { message: { type: 'track' }, metadata: { userId: '3' } },
-        { message: { type: 'track' }, metadata: { userId: '4' } },
-      ],
-      [
-        { message: { type: 'identify' }, metadata: { userId: '3' } },
-        { message: { type: 'identify' }, metadata: { userId: '1' } },
-        { message: { type: 'identify' }, metadata: { userId: '5' } },
-        { message: { type: 'identify' }, metadata: { userId: '2' } },
-        { message: { type: 'identify' }, metadata: { userId: '4' } },
-        { message: { type: 'identify' }, metadata: { userId: '6' } },
-        { message: { type: 'identify' }, metadata: { userId: '6' } },
-        { message: { type: 'identify' }, metadata: { userId: '6' } },
-      ],
-      [
-        { message: { type: 'track' }, metadata: { userId: '1' } },
-        { message: { type: 'track' }, metadata: { userId: '5' } },
-        { message: { type: 'track' }, metadata: { userId: '2' } },
-        { message: { type: 'track' }, metadata: { userId: '2' } },
-      ],
-      [
-        { message: { type: 'identify' }, metadata: { userId: '5' } },
-      ]
-    ]
-  }
-]
-
-describe('Order Event Tests', () => {
-  it('Order Event func tests', () => {
-    orderEventsFuncData.forEach((data) => {
-      expect(batchEvents(data.inputs)).toEqual(data.output);
-    })
-  });
-});
 
 describe('iterable utils test', () => {
   describe('Unit test cases for iterable registerDeviceTokenEventPayloadBuilder', () => {

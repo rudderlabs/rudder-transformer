@@ -1,0 +1,624 @@
+[
+  {
+    "description": "Should return an empty array when given an empty events array",
+    "input": [[]],
+    "output": []
+  },
+  {
+    "description": "Should group multiple events with the different message type and different users together in a batch: Scenario 1",
+    "input": [
+      [
+        {
+          "message": {
+            "type": "identify",
+            "userId": "user1"
+          },
+          "metadata": {
+            "jobId": "1"
+          }
+        },
+        {
+          "message": {
+            "type": "identify",
+            "userId": "user2"
+          },
+          "metadata": {
+            "jobId": "2"
+          }
+        },
+        {
+          "message": {
+            "type": "track",
+            "userId": "user1"
+          },
+          "metadata": {
+            "jobId": "3"
+          }
+        },
+        {
+          "message": {
+            "type": "identify",
+            "userId": "user1"
+          },
+          "metadata": {
+            "jobId": "4"
+          }
+        },
+        {
+          "message": {
+            "type": "identify",
+            "userId": "user2"
+          },
+          "metadata": {
+            "jobId": "5"
+          }
+        }
+      ]
+    ],
+    "output": [
+      [
+        {
+          "message": {
+            "type": "identify",
+            "userId": "user1"
+          },
+          "metadata": {
+            "jobId": "1"
+          }
+        },
+        {
+          "message": {
+            "type": "identify",
+            "userId": "user2"
+          },
+          "metadata": {
+            "jobId": "2"
+          }
+        }
+      ],
+      [
+        {
+          "message": {
+            "type": "track",
+            "userId": "user1"
+          },
+          "metadata": {
+            "jobId": "3"
+          }
+        }
+      ],
+      [
+        {
+          "message": {
+            "type": "identify",
+            "userId": "user1"
+          },
+          "metadata": {
+            "jobId": "4"
+          }
+        },
+        {
+          "message": {
+            "type": "identify",
+            "userId": "user2"
+          },
+          "metadata": {
+            "jobId": "5"
+          }
+        }
+      ]
+    ]
+  },
+  {
+    "description": "Should group multiple events with the different message type and different users together in a batch: Scenario 2",
+    "input": [
+      [
+        {
+          "message": {
+            "type": "identify"
+          },
+          "metadata": {
+            "userId": "1"
+          }
+        },
+        {
+          "message": {
+            "type": "track"
+          },
+          "metadata": {
+            "userId": "1"
+          }
+        },
+        {
+          "message": {
+            "type": "identify"
+          },
+          "metadata": {
+            "userId": "2"
+          }
+        },
+        {
+          "message": {
+            "type": "track"
+          },
+          "metadata": {
+            "userId": "2"
+          }
+        },
+        {
+          "message": {
+            "type": "track"
+          },
+          "metadata": {
+            "userId": "2"
+          }
+        },
+        {
+          "message": {
+            "type": "identify"
+          },
+          "metadata": {
+            "userId": "3"
+          }
+        },
+        {
+          "message": {
+            "type": "track"
+          },
+          "metadata": {
+            "userId": "3"
+          }
+        },
+        {
+          "message": {
+            "type": "identify"
+          },
+          "metadata": {
+            "userId": "4"
+          }
+        },
+        {
+          "message": {
+            "type": "track"
+          },
+          "metadata": {
+            "userId": "4"
+          }
+        },
+        {
+          "message": {
+            "type": "identify"
+          },
+          "metadata": {
+            "userId": "5"
+          }
+        },
+        {
+          "message": {
+            "type": "track"
+          },
+          "metadata": {
+            "userId": "5"
+          }
+        },
+        {
+          "message": {
+            "type": "identify"
+          },
+          "metadata": {
+            "userId": "5"
+          }
+        },
+        {
+          "message": {
+            "type": "identify"
+          },
+          "metadata": {
+            "userId": "6"
+          }
+        },
+        {
+          "message": {
+            "type": "identify"
+          },
+          "metadata": {
+            "userId": "6"
+          }
+        },
+        {
+          "message": {
+            "type": "identify"
+          },
+          "metadata": {
+            "userId": "6"
+          }
+        }
+      ]
+    ],
+    "output": [
+      [
+        {
+          "message": {
+            "type": "identify"
+          },
+          "metadata": {
+            "userId": "1"
+          }
+        },
+        {
+          "message": {
+            "type": "identify"
+          },
+          "metadata": {
+            "userId": "2"
+          }
+        },
+        {
+          "message": {
+            "type": "identify"
+          },
+          "metadata": {
+            "userId": "3"
+          }
+        },
+        {
+          "message": {
+            "type": "identify"
+          },
+          "metadata": {
+            "userId": "4"
+          }
+        },
+        {
+          "message": {
+            "type": "identify"
+          },
+          "metadata": {
+            "userId": "5"
+          }
+        },
+        {
+          "message": {
+            "type": "identify"
+          },
+          "metadata": {
+            "userId": "6"
+          }
+        },
+        {
+          "message": {
+            "type": "identify"
+          },
+          "metadata": {
+            "userId": "6"
+          }
+        },
+        {
+          "message": {
+            "type": "identify"
+          },
+          "metadata": {
+            "userId": "6"
+          }
+        }
+      ],
+      [
+        {
+          "message": {
+            "type": "track"
+          },
+          "metadata": {
+            "userId": "1"
+          }
+        },
+        {
+          "message": {
+            "type": "track"
+          },
+          "metadata": {
+            "userId": "2"
+          }
+        },
+        {
+          "message": {
+            "type": "track"
+          },
+          "metadata": {
+            "userId": "2"
+          }
+        },
+        {
+          "message": {
+            "type": "track"
+          },
+          "metadata": {
+            "userId": "3"
+          }
+        },
+        {
+          "message": {
+            "type": "track"
+          },
+          "metadata": {
+            "userId": "4"
+          }
+        },
+        {
+          "message": {
+            "type": "track"
+          },
+          "metadata": {
+            "userId": "5"
+          }
+        }
+      ],
+      [
+        {
+          "message": {
+            "type": "identify"
+          },
+          "metadata": {
+            "userId": "5"
+          }
+        }
+      ]
+    ]
+  },
+  {
+    "description": "Should group multiple events with the different message type and different users together in a batch: Scenario 3",
+    "input": [
+      [
+        {
+          "message": {
+            "type": "track"
+          },
+          "metadata": {
+            "userId": "3"
+          }
+        },
+        {
+          "message": {
+            "type": "identify"
+          },
+          "metadata": {
+            "userId": "3"
+          }
+        },
+        {
+          "message": {
+            "type": "identify"
+          },
+          "metadata": {
+            "userId": "1"
+          }
+        },
+        {
+          "message": {
+            "type": "track"
+          },
+          "metadata": {
+            "userId": "1"
+          }
+        },
+        {
+          "message": {
+            "type": "identify"
+          },
+          "metadata": {
+            "userId": "5"
+          }
+        },
+        {
+          "message": {
+            "type": "track"
+          },
+          "metadata": {
+            "userId": "5"
+          }
+        },
+        {
+          "message": {
+            "type": "identify"
+          },
+          "metadata": {
+            "userId": "5"
+          }
+        },
+        {
+          "message": {
+            "type": "identify"
+          },
+          "metadata": {
+            "userId": "2"
+          }
+        },
+        {
+          "message": {
+            "type": "track"
+          },
+          "metadata": {
+            "userId": "2"
+          }
+        },
+        {
+          "message": {
+            "type": "track"
+          },
+          "metadata": {
+            "userId": "2"
+          }
+        },
+        {
+          "message": {
+            "type": "track"
+          },
+          "metadata": {
+            "userId": "4"
+          }
+        },
+        {
+          "message": {
+            "type": "identify"
+          },
+          "metadata": {
+            "userId": "4"
+          }
+        },
+        {
+          "message": {
+            "type": "identify"
+          },
+          "metadata": {
+            "userId": "6"
+          }
+        },
+        {
+          "message": {
+            "type": "identify"
+          },
+          "metadata": {
+            "userId": "6"
+          }
+        },
+        {
+          "message": {
+            "type": "identify"
+          },
+          "metadata": {
+            "userId": "6"
+          }
+        }
+      ]
+    ],
+    "output": [
+      [
+        {
+          "message": {
+            "type": "track"
+          },
+          "metadata": {
+            "userId": "3"
+          }
+        },
+        {
+          "message": {
+            "type": "track"
+          },
+          "metadata": {
+            "userId": "4"
+          }
+        }
+      ],
+      [
+        {
+          "message": {
+            "type": "identify"
+          },
+          "metadata": {
+            "userId": "3"
+          }
+        },
+        {
+          "message": {
+            "type": "identify"
+          },
+          "metadata": {
+            "userId": "1"
+          }
+        },
+        {
+          "message": {
+            "type": "identify"
+          },
+          "metadata": {
+            "userId": "5"
+          }
+        },
+        {
+          "message": {
+            "type": "identify"
+          },
+          "metadata": {
+            "userId": "2"
+          }
+        },
+        {
+          "message": {
+            "type": "identify"
+          },
+          "metadata": {
+            "userId": "4"
+          }
+        },
+        {
+          "message": {
+            "type": "identify"
+          },
+          "metadata": {
+            "userId": "6"
+          }
+        },
+        {
+          "message": {
+            "type": "identify"
+          },
+          "metadata": {
+            "userId": "6"
+          }
+        },
+        {
+          "message": {
+            "type": "identify"
+          },
+          "metadata": {
+            "userId": "6"
+          }
+        }
+      ],
+      [
+        {
+          "message": {
+            "type": "track"
+          },
+          "metadata": {
+            "userId": "1"
+          }
+        },
+        {
+          "message": {
+            "type": "track"
+          },
+          "metadata": {
+            "userId": "5"
+          }
+        },
+        {
+          "message": {
+            "type": "track"
+          },
+          "metadata": {
+            "userId": "2"
+          }
+        },
+        {
+          "message": {
+            "type": "track"
+          },
+          "metadata": {
+            "userId": "2"
+          }
+        }
+      ],
+      [
+        {
+          "message": {
+            "type": "identify"
+          },
+          "metadata": {
+            "userId": "5"
+          }
+        }
+      ]
+    ]
+  }
+]

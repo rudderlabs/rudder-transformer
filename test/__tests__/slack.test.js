@@ -29,7 +29,7 @@ const inputRouterData = JSON.parse(inputRouterDataFile);
 const expectedRouterData = JSON.parse(outputRouterDataFile);
 
 inputData.forEach((input, index) => {
-  test(`${name} Tests - payload: %{index}`, () => {
+  test(`${name} Tests - payload: ${index}`, () => {
     try {
       const output = transformer.process(input);
       expect(output).toEqual([expectedData[index]]);

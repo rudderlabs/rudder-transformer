@@ -5,8 +5,11 @@ const {
   getDynamicErrorType,
   processAxiosResponse,
 } = require('../../../adapters/utils/networkUtils');
-const { DISABLE_DEST, REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
 const { isHttpStatusSuccess, isDefinedAndNotNull } = require('../../util');
+const {
+  REFRESH_TOKEN,
+  AUTH_STATUS_INACTIVE,
+} = require('../../../adapters/networkhandler/authConstants');
 const { proxyRequest } = require('../../../adapters/network');
 const { UnhandledStatusCodeError, NetworkError, AbortedError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
@@ -25,7 +28,7 @@ const trimBqStreamResponse = (response) => ({
  * Obtains the Destination OAuth Error Category based on the error code obtained from destination
  *
  * - If an error code is such that the user will not be allowed inside the destination,
- * such error codes fall under DISABLE_DESTINATION
+ * such error codes fall under AUTH_STATUS_INACTIVE
  * - If an error code is such that upon refresh we can get a new token which can be used to send event,
  * such error codes fall under REFRESH_TOKEN category
  * - If an error code doesn't fall under both categories, we can return an empty string
@@ -35,7 +38,7 @@ const trimBqStreamResponse = (response) => ({
 const getDestAuthCategory = (errorCategory) => {
   switch (errorCategory) {
     case 'PERMISSION_DENIED':
-      return DISABLE_DEST;
+      return AUTH_STATUS_INACTIVE;
     case 'UNAUTHENTICATED':
       return REFRESH_TOKEN;
     default:
@@ -89,7 +92,7 @@ const getStatusAndCategory = (dresponse, status) => {
  * Retryable -> 5[0-9][02-9], 401(UNAUTHENTICATED)
  * "Special Cases":
  * status=200, resp.insertErrors.length > 0  === Failure
- * 403 => AccessDenied -> DISABLE_DEST, other 403 => Just abort
+ * 403 => AccessDenied -> AUTH_STATUS_INACTIVE, other 403 => Just abort
  *
  */
 const processResponse = ({ dresponse, status } = {}) => {

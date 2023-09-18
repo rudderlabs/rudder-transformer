@@ -2,7 +2,7 @@
 /* eslint-disable  no-empty */
 const get = require('get-value');
 const { EventType } = require('../../../constants');
-const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
+const { CONFIG_CATEGORIES, MAPPING_CONFIG, getHeader } = require('./config');
 const {
   defaultRequestConfig,
   constructPayload,
@@ -20,6 +20,9 @@ const {
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 
+const TOTAL_RECORDS_KEY = 'response.data.meta.total';
+const EVENT_DATA_KEY = 'properties.eventData';
+
 // The Final data is both application/url-encoded FORM and POST JSON depending on type of event
 // Creating a switch case for final request building
 const responseBuilderSimple = (payload, category, destination) => {
@@ -30,10 +33,7 @@ const responseBuilderSimple = (payload, category, destination) => {
       case 'ACPage':
         response.endpoint = `${destination.Config.apiUrl}${category.endPoint}`;
         response.method = defaultPostRequestConfig.requestMethod;
-        response.headers = {
-          'Content-Type': 'application/json',
-          'Api-Token': destination.Config.apiKey,
-        };
+        response.headers = getHeader(destination);
         response.body.JSON = payload;
         break;
       case 'ACScreen':
@@ -61,12 +61,12 @@ const syncContact = async (contactPayload, category, destination) => {
     contact: contactPayload,
   };
   const requestOptions = {
-    headers: {
-      'Content-Type': 'application/json',
-      'Api-Token': destination.Config.apiKey,
-    },
+    headers: getHeader(destination),
   };
-  const res = await httpPOST(endpoint, requestData, requestOptions);
+  const res = await httpPOST(endpoint, requestData, requestOptions, {
+    destType: 'active_campaign',
+    feature: 'transformation',
+  });
   if (res.success === false) {
     errorHandler(res.response, 'Failed to create new contact');
   }
@@ -92,10 +92,10 @@ const customTagProcessor = async (message, category, destination, contactId) => 
   let requestOptions;
   let requestData;
   // Here we extract the tags which are to be mapped to the created contact from the message
-  const msgTags = get(message.context.traits, 'tags') || get(message.traits, 'tags');
+  const msgTags = get(message?.context?.traits, 'tags') || get(message?.traits, 'tags');
 
   // If no tags are sent in message return the contact from the method
-  if (!msgTags && !Array.isArray(msgTags)) {
+  if (!msgTags || !Array.isArray(msgTags)) {
     return;
   }
 
@@ -104,12 +104,12 @@ const customTagProcessor = async (message, category, destination, contactId) => 
   // Ref - https://developers.activecampaign.com/reference/retrieve-all-tags
   endpoint = `${destination.Config.apiUrl}${`${category.tagEndPoint}?limit=100`}`;
   requestOptions = {
-    headers: {
-      'Content-Type': 'application/json',
-      'Api-Token': destination.Config.apiKey,
-    },
+    headers: getHeader(destination),
   };
-  res = await httpGET(endpoint, requestOptions);
+  res = await httpGET(endpoint, requestOptions, {
+    destType: 'active_campaign',
+    feature: 'transformation',
+  });
   if (res.success === false) {
     errorHandler(res.response, 'Failed to fetch already created tags');
   }
@@ -127,19 +127,17 @@ const customTagProcessor = async (message, category, destination, contactId) => 
     // We are retrieving 100 tags which is the maximum limit, in each iteration, until all tags are retrieved.
     // Ref - https://developers.activecampaign.com/reference/pagination
     const promises = [];
-    if (parseInt(get(res, 'response.data.meta.total'), 10) > 100) {
-      const limit = Math.floor(parseInt(get(res, 'response.data.meta.total'), 10) / 100);
+    if (parseInt(get(res, TOTAL_RECORDS_KEY), 10) > 100) {
+      const limit = Math.floor(parseInt(get(res, TOTAL_RECORDS_KEY), 10) / 100);
       for (let i = 0; i < limit; i += 1) {
-        endpoint = `${destination.Config.apiUrl}${category.tagEndPoint}?limit=100&offset=${
-          100 * (i + 1)
-        }`;
+        endpoint = `${destination.Config.apiUrl}${category.tagEndPoint}?limit=100&offset=${100 * (i + 1)}`;
         requestOptions = {
-          headers: {
-            'Content-Type': 'application/json',
-            'Api-Token': destination.Config.apiKey,
-          },
+          headers: getHeader(destination),
         };
-        const resp = httpGET(endpoint, requestOptions);
+        const resp = httpGET(endpoint, requestOptions, {
+          destType: 'active_campaign',
+          feature: 'transformation',
+        });
         promises.push(resp);
       }
       const results = await Promise.all(promises);
@@ -155,12 +153,11 @@ const customTagProcessor = async (message, category, destination, contactId) => 
     // Step - 2
     // Check if tags already present then we push it to tagIds
     // the ones which are not stored we push it to tagsToBeCreated
-    msgTags.map((tag) => {
+    msgTags.forEach((tag) => {
       if (!storedTags[tag]) tagsToBeCreated.push(tag);
       else tagIds.push(storedTags[tag]);
     });
   }
-
   // Step - 3
   // Create tags if required - from tagsToBeCreated
   // Ref - https://developers.activecampaign.com/reference/create-a-new-tag
@@ -176,12 +173,12 @@ const customTagProcessor = async (message, category, destination, contactId) => 
           },
         };
         requestOptions = {
-          headers: {
-            'Content-Type': 'application/json',
-            'Api-Token': destination.Config.apiKey,
-          },
+          headers: getHeader(destination),
         };
-        res = await httpPOST(endpoint, requestData, requestOptions);
+        res = await httpPOST(endpoint, requestData, requestOptions, {
+          destType: 'active_campaign',
+          feature: 'transformation',
+        });
         if (res.success === false) {
           errorHandler(res.response, 'Failed to create new tag');
           // For each tags successfully created the response id is pushed to tagIds
@@ -204,12 +201,12 @@ const customTagProcessor = async (message, category, destination, contactId) => 
         },
       };
       requestOptions = {
-        headers: {
-          'Content-Type': 'application/json',
-          'Api-Token': destination.Config.apiKey,
-        },
+        headers: getHeader(destination),
       };
-      res = httpPOST(endpoint, requestData, requestOptions);
+      res = httpPOST(endpoint, requestData, requestOptions, {
+        destType: 'active_campaign',
+        feature: 'transformation',
+      });
       return res;
     }),
   );
@@ -223,7 +220,7 @@ const customFieldProcessor = async (message, category, destination) => {
   const responseStaging = [];
   // Step - 1
   // Extract the custom field info from the message
-  const fieldInfo = get(message.context.traits, 'fieldInfo') || get(message.traits, 'fieldInfo');
+  const fieldInfo = get(message?.context?.traits, 'fieldInfo') || get(message.traits, 'fieldInfo');
 
   // If no field info is passed return from method with empty array
   if (!fieldInfo) {
@@ -239,25 +236,29 @@ const customFieldProcessor = async (message, category, destination) => {
       'Api-Token': destination.Config.apiKey,
     },
   };
-  const res = await httpGET(endpoint, requestOptions);
+  const res = await httpGET(endpoint, requestOptions, {
+    destType: 'active_campaign',
+    feature: 'transformation',
+  });
   if (res.success === false) {
     errorHandler(res.response, 'Failed to get existing field data');
   }
   responseStaging.push(res.response.status === 200 ? res.response.data.fields : []);
 
   const promises = [];
-  const limit = Math.floor(parseInt(get(res, 'response.data.meta.total'), 10) / 100);
-  if (parseInt(get(res, 'response.data.meta.total'), 10) > 100) {
+  const limit = Math.floor(parseInt(get(res, TOTAL_RECORDS_KEY), 10) / 100);
+  if (parseInt(get(res, TOTAL_RECORDS_KEY), 10) > 100) {
     for (let i = 0; i < limit; i += 1) {
-      endpoint = `${destination.Config.apiUrl}${category.fieldEndPoint}?limit=100&offset=${
-        100 * (i + 1)
-      }`;
+      endpoint = `${destination.Config.apiUrl}${category.fieldEndPoint}?limit=100&offset=${100 * (i + 1)}`;
       const requestOpt = {
         headers: {
           'Api-Token': destination.Config.apiKey,
         },
       };
-      const resp = httpGET(endpoint, requestOpt);
+      const resp = httpGET(endpoint, requestOpt, {
+        destType: 'active_campaign',
+        feature: 'transformation',
+      });
       promises.push(resp);
     }
     const results = await Promise.all(promises);
@@ -317,7 +318,7 @@ const customFieldProcessor = async (message, category, destination) => {
 
 const customListProcessor = async (message, category, destination, contactId) => {
   // Here we extract the list info from the message
-  const listInfo = get(message.context.traits, 'lists')
+  const listInfo = get(message?.context?.traits, 'lists')
     ? get(message.context.traits, 'lists')
     : get(message.traits, 'lists');
   if (!listInfo) {
@@ -347,12 +348,12 @@ const customListProcessor = async (message, category, destination, contactId) =>
         },
       };
       const requestOptions = {
-        headers: {
-          'Content-Type': 'application/json',
-          'Api-Token': destination.Config.apiKey,
-        },
+        headers: getHeader(destination),
       };
-      const res = httpPOST(endpoint, requestData, requestOptions);
+      const res = httpPOST(endpoint, requestData, requestOptions, {
+        destType: 'active_campaign',
+        feature: 'transformation',
+      });
       promises.push(res);
     }
   });
@@ -404,12 +405,12 @@ const screenRequestHandler = async (message, category, destination) => {
   let res;
   let endpoint = `${destination.Config.apiUrl}${category.getEventEndPoint}`;
   const requestOptions = {
-    headers: {
-      'Content-Type': 'application/json',
-      'Api-Token': destination.Config.apiKey,
-    },
+    headers: getHeader(destination),
   };
-  res = await httpGET(endpoint, requestOptions);
+  res = await httpGET(endpoint, requestOptions, {
+    destType: 'active_campaign',
+    feature: 'transformation',
+  });
   if (res.success === false) {
     errorHandler(res.response, 'Failed to retrieve events');
   }
@@ -425,14 +426,11 @@ const screenRequestHandler = async (message, category, destination) => {
     );
   }
 
-  const storedEventsArr = res.response.data.eventTrackingEvents;
-  const storedEvents = [];
-  storedEventsArr.map((ev) => {
-    storedEvents.push(ev.name);
-  });
+  const storedEventsArr = res.response?.data?.eventTrackingEvents;
+  const events = Array.isArray(storedEventsArr) ? storedEventsArr.map((ev) => ev.name) : [];
   // Check if the source event is already present if not we make a create request
   // Ref - https://developers.activecampaign.com/reference/create-a-new-event-name-only
-  if (!storedEvents.includes(message.event)) {
+  if (!events.includes(message.event)) {
     // Create the event
     endpoint = `${destination.Config.apiUrl}${category.getEventEndPoint}`;
     const requestData = {
@@ -441,12 +439,12 @@ const screenRequestHandler = async (message, category, destination) => {
       },
     };
     const requestOpt = {
-      headers: {
-        'Content-Type': 'application/json',
-        'Api-Token': destination.Config.apiKey,
-      },
+      headers: getHeader(destination),
     };
-    res = await httpPOST(endpoint, requestData, requestOpt);
+    res = await httpPOST(endpoint, requestData, requestOpt, {
+      destType: 'active_campaign',
+      feature: 'transformation',
+    });
     if (res.success === false) {
       errorHandler(res.response, 'Failed to create event');
     }
@@ -469,8 +467,8 @@ const screenRequestHandler = async (message, category, destination) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   payload.actid = destination.Config.actid;
   payload.key = destination.Config.eventKey;
-  if (get(message, 'properties.eventData')) {
-    payload.eventdata = get(message, 'properties.eventData');
+  if (get(message, EVENT_DATA_KEY)) {
+    payload.eventdata = get(message, EVENT_DATA_KEY);
   }
   payload.visit = `{"email":"${get(message, 'context.traits.email')}"}`;
   return responseBuilderSimple(payload, category, destination);
@@ -486,7 +484,10 @@ const trackRequestHandler = async (message, category, destination) => {
       'Api-Token': destination.Config.apiKey,
     },
   };
-  let res = await httpGET(endpoint, requestOptions);
+  let res = await httpGET(endpoint, requestOptions, {
+    destType: 'active_campaign',
+    feature: 'transformation',
+  });
 
   if (res.success === false) {
     errorHandler(res.response, 'Failed to retrieve events');
@@ -503,14 +504,11 @@ const trackRequestHandler = async (message, category, destination) => {
     );
   }
 
-  const storedEventsArr = res.response.data.eventTrackingEvents;
-  const storedEvents = [];
-  storedEventsArr.map((ev) => {
-    storedEvents.push(ev.name);
-  });
+  const storedEventsArr = res.response?.data?.eventTrackingEvents;
+  const events = Array.isArray(storedEventsArr) ? storedEventsArr.map((ev) => ev.name) : [];
   // Check if the source event is already present if not we make a create request
   // Ref - https://developers.activecampaign.com/reference/create-a-new-event-name-only
-  if (!storedEvents.includes(message.event)) {
+  if (!events.includes(message.event)) {
     // Create the event
     endpoint = `${destination.Config.apiUrl}${category.getEventEndPoint}`;
     const requestData = {
@@ -519,12 +517,12 @@ const trackRequestHandler = async (message, category, destination) => {
       },
     };
     const requestOpt = {
-      headers: {
-        'Content-Type': 'application/json',
-        'Api-Token': destination.Config.apiKey,
-      },
+      headers: getHeader(destination),
     };
-    res = await httpPOST(endpoint, requestData, requestOpt);
+    res = await httpPOST(endpoint, requestData, requestOpt, {
+      destType: 'active_campaign',
+      feature: 'transformation',
+    });
     if (res.response?.status !== 201) {
       throw new NetworkError(
         'Unable to create event. Aborting',
@@ -544,8 +542,8 @@ const trackRequestHandler = async (message, category, destination) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   payload.actid = destination.Config.actid;
   payload.key = destination.Config.eventKey;
-  if (get(message, 'properties.eventData')) {
-    payload.eventdata = get(message, 'properties.eventData');
+  if (get(message, EVENT_DATA_KEY)) {
+    payload.eventdata = get(message, EVENT_DATA_KEY);
   }
   payload.visit = `{"email":"${get(message, 'context.traits.email')}"}`;
 

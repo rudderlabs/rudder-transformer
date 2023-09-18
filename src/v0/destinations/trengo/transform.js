@@ -1,8 +1,8 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-prototype-builtins */
 const Handlebars = require('handlebars');
-const axios = require('axios');
 const get = require('get-value');
+const myAxios = require('../../../util/myAxios');
 const { EventType } = require('../../../constants');
 const { EndPoints, BASE_URL } = require('./config');
 const {
@@ -26,6 +26,7 @@ const {
 } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
  *
@@ -82,11 +83,15 @@ const validate = (email, phone, channelIdentifier) => {
 const lookupContact = async (term, destination) => {
   let res;
   try {
-    res = await axios.get(`${BASE_URL}/contacts?page=1&term=${term}`, {
-      headers: {
-        Authorization: `Bearer ${destination.Config.apiToken}`,
+    res = await myAxios.get(
+      `${BASE_URL}/contacts?page=1&term=${term}`,
+      {
+        headers: {
+          Authorization: `Bearer ${destination.Config.apiToken}`,
+        },
       },
-    });
+      { destType: 'trengo', feature: 'transformation' },
+    );
   } catch (err) {
     // check if exists err.response && err.response.status else 500
     const status = err.response?.status || 400;
@@ -339,8 +344,8 @@ const responseBuilderSimple = async (message, messageType, destination) => {
     }
 
     response.headers = {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
+      Accept: JSON_MIME_TYPE,
       Authorization: `Bearer ${apiToken}`,
     };
     response.body.JSON = trengoPayload.payload;

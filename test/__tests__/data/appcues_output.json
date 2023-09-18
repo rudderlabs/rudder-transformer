@@ -121,7 +121,7 @@
         "request_id": "75a9e08b-955a-4dc7-8a39-3f6fba9d7497",
         "profile_update": {
           "_appcuesId": "86086",
-          "_updatedAt": "2021-01-04T08:43:05.783Z",
+          "_updatedAt": "2021-01-04T14:13:05.799+05:30",
           "_userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
           "_currentPageUrl": "http://localhost:4321/rudder-sdk-js/tests/html/script-test.html",
           "_lastBrowserLanguage": "en-GB",
@@ -166,7 +166,7 @@
         "request_id": "397fdf96-daee-46c8-ac38-5d717cd8cabd",
         "profile_update": {
           "_appcuesId": "86086",
-          "_updatedAt": "2021-01-04T08:43:05.784Z",
+          "_updatedAt": "2021-01-04T14:13:05.801+05:30",
           "_userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
           "_currentPageUrl": "https://pagecall.com/testing",
           "_lastBrowserLanguage": "en-GB",
@@ -199,7 +199,7 @@
         "profile_update": {
           "userId": "sampleId",
           "_lastBrowserLanguage": "en-GB",
-          "_updatedAt": "2021-01-04T08:43:05.784Z",
+          "_updatedAt": "2021-01-04T14:13:05.801+05:30",
           "_userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
           "_currentPageTitle": "properties title",
           "_currentPageUrl": "https://pagecall.com/properties_url",
@@ -246,7 +246,7 @@
         "profile_update": {
           "userId": "sampleId",
           "_lastBrowserLanguage": "en-GB",
-          "_updatedAt": "2021-01-04T08:43:05.784Z",
+          "_updatedAt": "2021-01-04T14:13:05.801+05:30",
           "_userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36",
           "_currentPageTitle": "context title",
           "_currentPageUrl": "https://pagecall.com/context_url",

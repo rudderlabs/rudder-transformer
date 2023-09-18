@@ -5,8 +5,9 @@ const {
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 const { isHttpStatusSuccess } = require('../../util');
-const { NetworkError, ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
+const { NetworkError, ConfigurationError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
+const { executeCommonValidations } = require('../../util/regulation-api');
 
 /**
  * This drops the user if userId is not available and converts the ids's into list of strings
@@ -46,9 +47,6 @@ const getUserIdChunks = (userAttributes, maxUrlLength) => {
  */
 const userDeletionHandler = async (userAttributes, config) => {
   const { apiKey } = config;
-  if (!Array.isArray(userAttributes)) {
-    throw new InstrumentationError('userAttributes is not an array');
-  }
 
   if (!apiKey) {
     throw new ConfigurationError('apiKey is required for deleting user');
@@ -64,7 +62,7 @@ const userDeletionHandler = async (userAttributes, config) => {
   /**
    * There is no Id per batch limit mentioned or found through trial and error method
    * But we have a limit of the url length that is not specified in the doc but found through trial and error method
-   * which on excceding the limit throws following error 
+   * which on excceding the limit throws following error
    * <html>
     <head>
       <title>414 Request-URI Too Large</title>
@@ -84,7 +82,10 @@ const userDeletionHandler = async (userAttributes, config) => {
   await Promise.all(
     batchEndpoints.map(async (batchEndpoint) => {
       endpoint = batchEndpoint;
-      const deletionResponse = await httpDELETE(endpoint, requestOptions);
+      const deletionResponse = await httpDELETE(endpoint, requestOptions, {
+        destType: 'sendgrid',
+        feature: 'deleteUsers',
+      });
       const handledDelResponse = processAxiosResponse(deletionResponse);
 
       if (!isHttpStatusSuccess(handledDelResponse.status)) {
@@ -106,9 +107,10 @@ const userDeletionHandler = async (userAttributes, config) => {
   };
 };
 
-const processDeleteUsers = (event) => {
+const processDeleteUsers = async (event) => {
   const { userAttributes, config } = event;
-  const resp = userDeletionHandler(userAttributes, config);
+  executeCommonValidations(userAttributes);
+  const resp = await userDeletionHandler(userAttributes, config);
   return resp;
 };
 module.exports = { processDeleteUsers };

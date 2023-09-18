@@ -82,7 +82,11 @@
             "address.country": "India",
             "address.postalCode": 712136,
             "address.state": "WB",
-            "address.street": ""
+            "address.street": "",
+            "browser": "Chrome",
+            "browser_version": "77.0.3865.90",
+            "device": "Macintosh",
+            "os": "Mac OS"
           },
           "apiKey": "abcde"
         },
@@ -139,7 +143,11 @@
             "address.state": "WB",
             "address.street": "",
             "ip": "0.0.0.0",
-            "age": 26
+            "age": 26,
+            "browser": "Chrome",
+            "browser_version": "77.0.3865.90",
+            "device": "Macintosh",
+            "os": "Mac OS"
           },
           "apiKey": "abcde"
         },
@@ -194,7 +202,11 @@
             "referrer": "Rudder",
             "search": "abc",
             "title": "Test Page",
-            "url": "www.rudderlabs.com"
+            "url": "www.rudderlabs.com",
+            "browser": "Chrome",
+            "browser_version": "77.0.3865.90",
+            "device": "Macintosh",
+            "os": "Mac OS"
           },
           "eventTime": 1571051718299,
           "apiKey": "abcde"
@@ -228,7 +240,11 @@
             "referrer": "Rudder",
             "search": "abc",
             "title": "Test Page",
-            "url": "www.rudderlabs.com"
+            "url": "www.rudderlabs.com",
+            "browser": "Chrome",
+            "browser_version": "77.0.3865.90",
+            "device": "Macintosh",
+            "os": "Mac OS"
           },
           "eventTime": 1571051718299,
           "apiKey": "abcde"
@@ -261,7 +277,11 @@
             "referrer": "Rudder",
             "search": "abc",
             "title": "Test Page",
-            "url": "www.rudderlabs.com"
+            "url": "www.rudderlabs.com",
+            "browser": "Chrome",
+            "browser_version": "77.0.3865.90",
+            "device": "Macintosh",
+            "os": "Mac OS"
           },
           "eventTime": 1571051718299,
           "apiKey": "abcde"
@@ -294,7 +314,11 @@
             "referrer": "Rudder",
             "search": "abc",
             "title": "Test Page",
-            "url": "www.rudderlabs.com"
+            "url": "www.rudderlabs.com",
+            "browser": "Chrome",
+            "browser_version": "77.0.3865.90",
+            "device": "Macintosh",
+            "os": "Mac OS"
           },
           "eventTime": 1571051718299,
           "apiKey": "abcde"
@@ -423,7 +447,11 @@
             "address.country": "India",
             "address.postalCode": 712136,
             "address.state": "WB",
-            "address.street": ""
+            "address.street": "",
+            "browser": "Chrome",
+            "browser_version": "77.0.3865.90",
+            "device": "Macintosh",
+            "os": "Mac OS"
           },
           "apiKey": "abcde"
         },
@@ -575,7 +603,11 @@
             "searchResponse.facets_stats.VrmYear.max": 2017,
             "searchResponse.facets_stats.VrmYear.min": 2009,
             "searchResponse.facets_stats.VrmYear.sum": 26171,
-            "searchResponse.timeoutCounts": false
+            "searchResponse.timeoutCounts": false,
+            "browser": "Chrome",
+            "browser_version": "80.0.3987.163",
+            "device": "Macintosh",
+            "os": "Mac OS"
           }
         },
         "XML": {},
@@ -628,7 +660,11 @@
             "referrer": "Rudder",
             "search": "abc",
             "title": "Test Page",
-            "url": "www.rudderlabs.com"
+            "url": "www.rudderlabs.com",
+            "browser": "Chrome",
+            "browser_version": "77.0.3865.90",
+            "device": "Macintosh",
+            "os": "Mac OS"
           },
           "eventTime": 1571051718299,
           "apiKey": "abcde"
@@ -661,7 +697,11 @@
             "referrer": "",
             "search": "abc",
             "title": "Test Page",
-            "url": "http://localhost/tests/html/index4.html"
+            "url": "http://localhost/tests/html/index4.html",
+            "browser": "Chrome",
+            "browser_version": "77.0.3865.90",
+            "device": "Macintosh",
+            "os": "Mac OS"
           },
           "eventTime": 1571051718299,
           "apiKey": "abcde"
@@ -920,6 +960,41 @@
       },
       "files": {},
       "userId": "test_user_id"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sample_user_id",
+          "eventName": "Product Clicked",
+          "properties": {
+            "revenue": "30",
+            "currency": "USD",
+            "quantity": "5",
+            "test_key_2.test_child_key_1": "test_child_value_1",
+            "price": "58.0",
+            "device": "Android 9",
+            "os": "Android"
+          },
+          "eventTime": 1590431830917,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "JSON_ARRAY": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sample_user_id"
     }
   ]
 ]

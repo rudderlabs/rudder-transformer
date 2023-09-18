@@ -18,12 +18,21 @@ const {
   removeUndefinedAndNullValues,
   toUnixTimestamp,
   isAppleFamily,
-  simpleProcessRouterDest,
+  handleRtTfSingleEventError,
+  batchMultiplexedEvents,
+  getSuccessRespEvents,
+  checkInvalidRtTfEvents,
 } = require('../../util');
+const { generateClevertapBatchedPayload } = require('./utils');
+
 const { InstrumentationError, TransformationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
+
+const TIMESTAMP_KEY_PATH = 'context.traits.ts';
+const MAX_BATCH_SIZE = 1000;
 
 /*
-Following behaviour is expected when "enableObjectIdMapping" is enabled
+Following behavior is expected when "enableObjectIdMapping" is enabled
 
 For Identify Events
 ---------------RudderStack-----------------             ------------Clevertap-------------
@@ -43,7 +52,7 @@ false					              true						          identity (value = userId)
 // wraps to default request config
 const responseWrapper = (payload, destination) => {
   const response = defaultRequestConfig();
-  // If the acount belongs to specific regional server,
+  // If the account belongs to specific regional server,
   // we need to modify the url endpoint based on dest config.
   // Source: https://developer.clevertap.com/docs/idc
   response.endpoint = getEndpoint(destination.Config);
@@ -51,14 +60,14 @@ const responseWrapper = (payload, destination) => {
   response.headers = {
     'X-CleverTap-Account-Id': destination.Config.accountId,
     'X-CleverTap-Passcode': destination.Config.passcode,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   response.body.JSON = payload;
   return response;
 };
 
 /**
- * Expected behaviours:                            
+ * Expected behaviors:                            
     payload = {                                       "finalPayload": {
       "device": {                                          "device": "{\"browser\":{\"name\":\"Chrome121\",\"version\":\"106.0.0.0\"},\"os\":{\"version\":\"10.15.7\"}}",
         "browser": {                                       "name": "macOS",
@@ -79,7 +88,7 @@ const responseWrapper = (payload, destination) => {
  * @returns
  * return the final payload after converting to the relevant data-types.
  */
-const convertObjectAndArrayToString = (payload) => {
+const convertObjectAndArrayToString = (payload, event) => {
   const finalPayload = {};
   if (payload) {
     Object.keys(payload).forEach((key) => {
@@ -89,6 +98,15 @@ const convertObjectAndArrayToString = (payload) => {
         finalPayload[key] = payload[key];
       }
     });
+    if (event === 'Charged' && finalPayload.Items) {
+      finalPayload.Items = JSON.parse(finalPayload.Items);
+      if (
+        !Array.isArray(finalPayload.Items) ||
+        (Array.isArray(finalPayload.Items) && typeof finalPayload.Items[0] !== 'object')
+      ) {
+        throw new InstrumentationError('Products property value must be an array of objects');
+      }
+    }
   }
   return finalPayload;
 };
@@ -100,7 +118,7 @@ const mapIdentifyPayloadWithObjectId = (message, profile) => {
   const payload = {
     type: 'profile',
     profileData: profile,
-    ts: get(message, 'traits.ts') || get(message, 'context.traits.ts'),
+    ts: get(message, 'traits.ts') || get(message, TIMESTAMP_KEY_PATH),
   };
 
   // If timestamp is not in unix format
@@ -108,7 +126,7 @@ const mapIdentifyPayloadWithObjectId = (message, profile) => {
     payload.ts = toUnixTimestamp(payload.ts);
   }
 
-  // If anonymousId is present prioritising to set it as objectId
+  // If anonymousId is present prioritizing to set it as objectId
   if (anonymousId) {
     payload.objectId = anonymousId;
     // If userId is present we set it as identity inside profiledData
@@ -131,7 +149,7 @@ const mapIdentifyPayload = (message, profile) => {
       {
         type: 'profile',
         profileData: profile,
-        ts: get(message, 'traits.ts') || get(message, 'context.traits.ts'),
+        ts: get(message, 'traits.ts') || get(message, TIMESTAMP_KEY_PATH),
         identity: getFieldValueFromMessage(message, 'userId'),
       },
     ],
@@ -150,7 +168,7 @@ const mapAliasPayload = (message) => {
       {
         type: 'profile',
         profileData: { identity: message.userId },
-        ts: get(message, 'traits.ts') || get(message, 'context.traits.ts'),
+        ts: get(message, 'traits.ts') || get(message, TIMESTAMP_KEY_PATH),
         identity: message.previousId,
       },
     ],
@@ -175,7 +193,7 @@ const mapTrackPayloadWithObjectId = (message, eventPayload) => {
     eventPayload.identity = userId;
   } else {
     // Flow should not reach here fail safety
-    throw InstrumentationError('Unable to process without anonymousId or userId');
+    throw new InstrumentationError('Unable to process without anonymousId or userId');
   }
   return eventPayload;
 };
@@ -208,6 +226,17 @@ const getClevertapProfile = (message, category) => {
     CLEVERTAP_DEFAULT_EXCLUSION,
   );
   profile = convertObjectAndArrayToString(profile);
+
+  // Add additional properties being passed inside overrideFields in traits or contextual traits
+  // to be added to the profile object, to be sent into Clevertap profileData
+  if (message.traits?.overrideFields) {
+    const { overrideFields } = message.traits;
+    Object.assign(profile, overrideFields);
+  } else if (message.context.traits?.overrideFields) {
+    const { overrideFields } = message.context.traits;
+    Object.assign(profile, overrideFields);
+  }
+
   return removeUndefinedAndNullValues(profile);
 };
 
@@ -292,7 +321,10 @@ const responseBuilderSimple = (message, category, destination) => {
     eventPayload.type = 'event';
     // stringify the evtData if it's an Object or array.
     if (eventPayload.evtData) {
-      eventPayload.evtData = convertObjectAndArrayToString(eventPayload.evtData);
+      eventPayload.evtData = convertObjectAndArrayToString(
+        eventPayload.evtData,
+        eventPayload.evtName,
+      );
     }
 
     // setting identification for tracking payload here based on destination config
@@ -351,9 +383,48 @@ const processEvent = (message, destination) => {
 
 const process = (event) => processEvent(event.message, event.destination);
 
-const processRouterDest = async (inputs, reqMetadata) => {
-  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
-  return respList;
+const processRouterDest = (inputs, reqMetadata) => {
+  // const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
+  // return respList;
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
+  }
+
+  const eventsChunk = [];
+  const errorRespList = [];
+  // const { destination } = inputs[0];
+
+  inputs.forEach((event) => {
+    try {
+      let resp = event.message;
+      if (!event?.message?.statusCode) {
+        // already transformed event
+        resp = process(event);
+      }
+      eventsChunk.push({
+        message: Array.isArray(resp) ? [...resp] : resp,
+        metadata: event.metadata,
+        destination: event.destination,
+      });
+    } catch (error) {
+      const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
+      errorRespList.push(errRespEvent);
+    }
+  });
+
+  const batchResponseList = [];
+  if (eventsChunk.length > 0) {
+    const batchedEvents = batchMultiplexedEvents(eventsChunk, MAX_BATCH_SIZE);
+    batchedEvents.forEach((batch) => {
+      const batchedRequest = generateClevertapBatchedPayload(batch.events, batch.destination);
+      batchResponseList.push(
+        getSuccessRespEvents(batchedRequest, batch.metadata, batch.destination, reqMetadata),
+      );
+    });
+  }
+
+  return [...batchResponseList, ...errorRespList];
 };
 
 module.exports = { process, processRouterDest };

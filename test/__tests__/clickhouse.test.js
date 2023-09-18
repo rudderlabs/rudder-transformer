@@ -115,7 +115,7 @@ var testCases = [
 ];
 
 describe("ClickHouse data types testing", () => {
-  options = {};
+  let options = {};
   options.getDataTypeOverride = getDataTypeOverride;
   testCases.forEach(testCase => {
     it(`should return data type ${testCase.type} for this input data ${testCase.data} everytime`, () => {

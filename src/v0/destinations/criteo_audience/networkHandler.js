@@ -1,22 +1,25 @@
-const {
-  prepareProxyRequest,
-  proxyRequest
-} = require("../../../adapters/network");
-const { isHttpStatusSuccess } = require("../../util/index");
-const {
-  REFRESH_TOKEN
-} = require("../../../adapters/networkhandler/authConstants");
-const tags = require("../../util/tags");
+const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
+const { isHttpStatusSuccess } = require('../../util/index');
+const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
+const tags = require('../../util/tags');
 const {
   getDynamicErrorType,
-  processAxiosResponse
-} = require("../../../adapters/utils/networkUtils");
-const { NetworkError, ThrottledError, NetworkInstrumentationError, AbortedError, RetryableError } = require("../../util/errorTypes");
+  processAxiosResponse,
+} = require('../../../adapters/utils/networkUtils');
+const {
+  NetworkError,
+  ThrottledError,
+  NetworkInstrumentationError,
+  AbortedError,
+  RetryableError,
+} = require('../../util/errorTypes');
 
 //  https://developers.criteo.com/marketing-solutions/v2021.01/docs/how-to-handle-api-errors#:~:text=the%20response%20body.-,401,-Authentication%20error
 // Following fucntion tells us if there is a particular error code in the response.
 const matchErrorCode = (errorCode, response) =>
-  response && Array.isArray(response?.errors) && response.errors.some((resp) => resp?.code === errorCode);
+  response &&
+  Array.isArray(response?.errors) &&
+  response.errors.some((resp) => resp?.code === errorCode);
 
 const criteoAudienceRespHandler = (destResponse, stageMsg) => {
   const { status, response } = destResponse;
@@ -28,10 +31,10 @@ const criteoAudienceRespHandler = (destResponse, stageMsg) => {
       `${response?.errors[0]?.title} ${stageMsg}`,
       status,
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
       },
       response,
-      REFRESH_TOKEN
+      REFRESH_TOKEN,
     );
   } else if (status === 404 && matchErrorCode('audience-invalid', response)) {
     // to handle the case when audience-id is invalid
@@ -47,37 +50,34 @@ const criteoAudienceRespHandler = (destResponse, stageMsg) => {
     );
   } else if (status === 503 || status === 500) {
     // see if its 500 internal error or 503 service unavailable
-    throw new RetryableError(
-      `Request Failed: ${stageMsg} (Retryable)`,
-      500,
-      destResponse,
-    );
+    throw new RetryableError(`Request Failed: ${stageMsg} (Retryable)`, 500, destResponse);
   }
   // else throw the error
   const errorMessage = response?.errors;
   throw new AbortedError(
-    `Request Failed: ${stageMsg} with status "${status}" due to "${errorMessage? JSON.stringify(errorMessage[0]) : JSON.stringify(response)
+    `Request Failed: ${stageMsg} with status "${status}" due to "${
+      errorMessage ? JSON.stringify(errorMessage[0]) : JSON.stringify(response)
     }", (Aborted) `,
     400,
     destResponse,
   );
 };
 
-const responseHandler = destinationResponse => {
+const responseHandler = (destinationResponse) => {
   const message = `Request Processed Successfully`;
   const { status } = destinationResponse;
   if (!isHttpStatusSuccess(status)) {
     // if error, successfully return status, message and original destination response
     criteoAudienceRespHandler(
       destinationResponse,
-      "during criteo_audience response transformation"
+      'during criteo_audience response transformation',
     );
   }
   // Mostly any error will not have a status of 2xx
   return {
     status,
     message,
-    destinationResponse
+    destinationResponse,
   };
 };
 

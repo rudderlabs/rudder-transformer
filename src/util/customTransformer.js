@@ -1,17 +1,30 @@
 const ivm = require('isolated-vm');
+const { compileUserLibrary } = require('../util/ivmFactory');
 const fetch = require('node-fetch');
 const { getTransformationCode } = require('./customTransforrmationsStore');
-const stats = require('./stats');
+const { getTransformationCodeV1 } = require('./customTransforrmationsStore-v1');
 const { UserTransformHandlerFactory } = require('./customTransformerFactory');
 const { parserForImport } = require('./parser');
+const stats = require('./stats');
+const { fetchWithDnsWrapper } = require('./utils');
 
-async function runUserTransform(events, code, eventsMetadata, versionId, testMode = false) {
+const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
+const GEOLOCATION_TIMEOUT_IN_MS = parseInt(process.env.GEOLOCATION_TIMEOUT_IN_MS || '1000', 10);
+
+async function runUserTransform(
+  events,
+  code,
+  secrets,
+  eventsMetadata,
+  versionId,
+  testMode = false,
+) {
   const tags = {
     transformerVersionId: versionId,
-    version: 0,
+    identifier: 'v0',
   };
   // TODO: Decide on the right value for memory limit
-  const isolate = new ivm.Isolate({ memoryLimit: 128 });
+  const isolate = new ivm.Isolate({ memoryLimit: ISOLATE_VM_MEMORY });
   const context = await isolate.createContext();
   const logs = [];
   const jail = context.global;
@@ -27,7 +40,7 @@ async function runUserTransform(events, code, eventsMetadata, versionId, testMod
     new ivm.Reference(async (resolve, ...args) => {
       try {
         const fetchStartTime = new Date();
-        const res = await fetch(...args);
+        const res = await fetchWithDnsWrapper(versionId, ...args);
         const data = await res.json();
         stats.timing('fetch_call_duration', fetchStartTime, { versionId });
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
@@ -42,7 +55,7 @@ async function runUserTransform(events, code, eventsMetadata, versionId, testMod
     new ivm.Reference(async (resolve, reject, ...args) => {
       try {
         const fetchStartTime = new Date();
-        const res = await fetch(...args);
+        const res = await fetchWithDnsWrapper(versionId, ...args);
         const headersContent = {};
         res.headers.forEach((value, header) => {
           headersContent[header] = value;
@@ -66,6 +79,37 @@ async function runUserTransform(events, code, eventsMetadata, versionId, testMod
       }
     }),
   );
+
+  await jail.set(
+    '_geolocation',
+    new ivm.Reference(async (resolve, reject, ...args) => {
+      try {
+        const geoStartTime = new Date();
+        if (args.length < 1) {
+          throw new Error('ip address is required');
+        }
+        if (!process.env.GEOLOCATION_URL) throw new Error('geolocation is not available right now');
+
+        const res = await fetch(`${process.env.GEOLOCATION_URL}/geoip/${args[0]}`, {
+          timeout: GEOLOCATION_TIMEOUT_IN_MS,
+        });
+        if (res.status !== 200) {
+          throw new Error(`request to fetch geolocation failed with status code: ${res.status}`);
+        }
+        const geoData = await res.json();
+        stats.timing('geo_call_duration', geoStartTime, { versionId });
+        resolve.applyIgnored(undefined, [new ivm.ExternalCopy(geoData).copyInto()]);
+      } catch (error) {
+        const err = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
+        reject.applyIgnored(undefined, [new ivm.ExternalCopy(err).copyInto()]);
+      }
+    }),
+  );
+
+  await jail.set('_rsSecrets', function (...args) {
+    if (args.length == 0 || !secrets || !secrets[args[0]]) return 'ERROR';
+    return secrets[args[0]];
+  });
 
   jail.setSync('log', function (...args) {
     if (testMode) {
@@ -121,6 +165,26 @@ async function runUserTransform(events, code, eventsMetadata, versionId, testMod
         });
       };
 
+      let geolocation = _geolocation;
+      delete _geolocation;
+      global.geolocation = function(...args) {
+        return new Promise((resolve, reject) => {
+          geolocation.applyIgnored(undefined, [
+            new ivm.Reference(resolve),
+            new ivm.Reference(reject),
+            ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
+          ]);
+        });
+      };
+
+      let rsSecrets = _rsSecrets;
+      delete _rsSecrets;
+      global.rsSecrets = function(...args) {
+        return rsSecrets([
+          ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
+        ]);
+      };
+
         return new ivm.Reference(function forwardMainPromise(
           fnRef,
           resolve,
@@ -151,7 +215,7 @@ async function runUserTransform(events, code, eventsMetadata, versionId, testMod
   await customScript.run(context);
   const fnRef = await jail.get('transform', { reference: true });
   // stat
-  stats.counter('events_into_vm', events.length, tags);
+  stats.counter('events_to_process', events.length, tags);
   // TODO : check if we can resolve this
   // eslint-disable-next-line no-async-promise-executor
   const executionPromise = new Promise(async (resolve, reject) => {
@@ -169,6 +233,7 @@ async function runUserTransform(events, code, eventsMetadata, versionId, testMod
     }
   });
   let result;
+  const invokeTime = new Date();
   try {
     const timeoutPromise = new Promise((resolve) => {
       const wait = setTimeout(() => {
@@ -180,6 +245,7 @@ async function runUserTransform(events, code, eventsMetadata, versionId, testMod
     if (result === 'Timedout') {
       throw new Error('Timed out');
     }
+    stats.timing('run_time', invokeTime, tags);
   } catch (error) {
     throw error;
   } finally {
@@ -224,6 +290,10 @@ async function userTransformHandler(
           libraryVersionIDs,
         );
 
+        if (result.error) {
+          throw new Error(result.error);
+        }
+
         userTransformedEvents = result.transformedEvents;
         if (testMode) {
           userTransformedEvents = {
@@ -240,6 +310,7 @@ async function userTransformHandler(
         result = await runUserTransform(
           eventMessages,
           res.code,
+          res.secrets || {},
           eventsMetadata,
           versionId,
           testMode,
@@ -258,22 +329,48 @@ async function userTransformHandler(
   return events;
 }
 
-async function setupUserTransformHandler(
-  trRevCode = {},
-  libraryVersionIDs,
-  testWithPublish = false,
-) {
-  const resp = await UserTransformHandlerFactory(trRevCode).setUserTransform(testWithPublish);
+async function setupUserTransformHandler(libraryVersionIDs, trRevCode = {}) {
+  const resp = await UserTransformHandlerFactory(trRevCode).setUserTransform(libraryVersionIDs);
   return resp;
 }
 
-// param 'validateImports' supported for python/pythonfaas.
-async function extractLibraries(code, validateImports, language = "javascript") {
-  return parserForImport(code, validateImports, language);
+async function validateCode(code, language) {
+  if (language === 'javascript') {
+    return compileUserLibrary(code);
+  }
+  if (language === 'python' || language === 'pythonfaas') {
+    return parserForImport(code, true, [], language);
+  }
+
+  throw new Error('Unsupported language');
+}
+
+async function extractLibraries(
+  code,
+  versionId,
+  validateImports,
+  additionalLibs,
+  language = 'javascript',
+  testMode = false,
+) {
+  if (language === 'javascript') return parserForImport(code);
+
+  let transformation;
+
+  if (versionId && !testMode) {
+    transformation = await getTransformationCodeV1(versionId);
+  }
+
+  if (!transformation?.imports) {
+    return parserForImport(code || transformation?.code, validateImports, additionalLibs, language);
+  }
+
+  return transformation.imports;
 }
 
 module.exports = {
   userTransformHandler,
   setupUserTransformHandler,
-  extractLibraries
+  validateCode,
+  extractLibraries,
 };

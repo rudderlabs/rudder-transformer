@@ -18,7 +18,8 @@
     "destKey": "data"
   },
   {
-    "sourceKeys": "originalTimestamp",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
     "destKey": "extras.check_id",
     "metadata": {
       "type": "microSecondTimestamp"

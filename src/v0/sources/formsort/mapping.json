@@ -1,0 +1,26 @@
+[
+  {
+    "sourceKeys": "responder_uuid",
+    "destKeys": "userId"
+  },
+  {
+    "sourceKeys": "created_at",
+    "destKeys": "originalTimestamp"
+  },
+  {
+    "sourceKeys": "answers",
+    "destKeys": "properties"
+  },
+  {
+    "sourceKeys": "flow_label",
+    "destKeys": "context.page.title"
+  },
+  {
+    "sourceKeys": "variant_label",
+    "destKeys": "context.variantLabel"
+  },
+  {
+    "sourceKeys": "variant_uuid",
+    "destKeys": "context.variantUuid"
+  }
+]

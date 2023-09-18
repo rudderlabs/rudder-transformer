@@ -1,28 +1,26 @@
-const sha256 = require('sha256');
-const { get, set, cloneDeep } = require('lodash');
+const { set, get } = require('lodash');
 const moment = require('moment');
 const { EventType } = require('../../../constants');
 const {
   getHashFromArrayWithDuplicate,
   constructPayload,
   removeHyphens,
-  defaultRequestConfig,
-  defaultPostRequestConfig,
-  simpleProcessRouterDest,
   getHashFromArray,
-  getFieldValueFromMessage,
+  handleRtTfSingleEventError,
+  defaultBatchRequestConfig,
+  getSuccessRespEvents,
+  checkInvalidRtTfEvents,
 } = require('../../util');
-
 const {
-  CLICK_CONVERSION,
   CALL_CONVERSION,
-  trackClickConversionsMapping,
   trackCallConversionsMapping,
+  STORE_CONVERSION_CONFIG,
 } = require('./config');
 const {
   validateDestinationConfig,
-  getAccessToken,
-  removeHashToSha256TypeFromMappingJson,
+  getStoreConversionPayload,
+  requestBuilder,
+  getClickConversionPayloadAndEndpoint,
 } = require('./utils');
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
@@ -37,132 +35,44 @@ const { InstrumentationError, ConfigurationError } = require('../../util/errorTy
  * @returns
  */
 const getConversions = (message, metadata, { Config }, event, conversionType) => {
-  let payload;
+  let payload = {};
   let endpoint;
-  const filteredCustomerId = removeHyphens(Config.customerId);
-  const {
-    hashUserIdentifier,
-    defaultUserIdentifier,
-    UserIdentifierSource,
-    conversionEnvironment,
-    customVariables,
-    subAccount,
-    loginCustomerId,
-  } = Config;
-  const { properties, originalTimestamp } = message;
+  const { customerId } = Config;
+  const { properties, timestamp, originalTimestamp } = message;
 
+  const filteredCustomerId = removeHyphens(customerId);
   if (conversionType === 'click') {
-    // click conversions
-    let updatedClickMapping = cloneDeep(trackClickConversionsMapping);
-
-    if (hashUserIdentifier === false) {
-      updatedClickMapping = removeHashToSha256TypeFromMappingJson(updatedClickMapping);
-    }
-
-    payload = constructPayload(message, updatedClickMapping);
-
-    // either of email or phone should be passed
-    // defaultUserIdentifier depends on the webapp configuration
-    // Ref - https://developers.google.com/google-ads/api/rest/reference/rest/v11/customers/uploadClickConversions#ClickConversion
-
-    let email;
-    let phone;
-    if (defaultUserIdentifier === 'email') {
-      email = getFieldValueFromMessage(message, 'email');
-      if (email) {
-        email = hashUserIdentifier ? sha256(email).toString() : email;
-        set(payload, 'conversions[0].userIdentifiers[0].hashedEmail', email);
-      }
-    } else {
-      phone = getFieldValueFromMessage(message, 'phone');
-      if (phone) {
-        phone = hashUserIdentifier ? sha256(phone).toString() : phone;
-        set(payload, 'conversions[0].userIdentifiers[0].hashedPhoneNumber', phone);
-      }
-    }
-
-    endpoint = CLICK_CONVERSION.replace(':customerId', filteredCustomerId);
-
-    const products = get(message, 'properties.products');
-    const itemList = [];
-    if (products && products.length > 0 && Array.isArray(products)) {
-      // products is a list of items
-      products.forEach((product) => {
-        if (Object.keys(product).length > 0) {
-          itemList.push({
-            productId: product.product_id,
-            quantity: parseInt(product.quantity, 10),
-            unitPrice: Number(product.price),
-          });
-        }
-      });
-
-      set(payload, 'conversions[0].cartData.items', itemList);
-    }
-
-    // userIdentifierSource
-    // if userIdentifierSource doesn't exist in properties
-    // then it is taken from the webapp config
-    if (!properties.userIdentifierSource && UserIdentifierSource !== 'none') {
-      set(payload, 'conversions[0].userIdentifiers[0].userIdentifierSource', UserIdentifierSource);
-
-      // one of email or phone must be provided
-      if (!email && !phone) {
-        throw new InstrumentationError(`Either of email or phone is required for user identifier`);
-      }
-    }
-
-    // conversionEnvironment
-    // if conversionEnvironment doesn't exist in properties
-    // then it is taken from the webapp config
-    if (!properties.conversionEnvironment && conversionEnvironment !== 'none') {
-      set(payload, 'conversions[0].conversionEnvironment', conversionEnvironment);
-    }
+    // click conversion
+    const convertedPayload = getClickConversionPayloadAndEndpoint(
+      message,
+      Config,
+      filteredCustomerId,
+    );
+    payload = convertedPayload.payload;
+    endpoint = convertedPayload.endpoint;
+  } else if (conversionType === 'store') {
+    payload = getStoreConversionPayload(message, Config, filteredCustomerId);
+    endpoint = STORE_CONVERSION_CONFIG.replace(':customerId', filteredCustomerId);
   } else {
     // call conversions
-
     payload = constructPayload(message, trackCallConversionsMapping);
     endpoint = CALL_CONVERSION.replace(':customerId', filteredCustomerId);
   }
 
-  // transform originalTimestamp to conversionDateTime format (yyyy-mm-dd hh:mm:ss+|-hh:mm)
-  // e.g 2019-10-14T11:15:18.299Z -> 2019-10-14 16:10:29+0530
-  if (!properties.conversionDateTime && originalTimestamp) {
-    const timestamp = originalTimestamp;
-    const conversionDateTime = moment(timestamp)
-      .utcOffset(moment(timestamp).utcOffset())
-      .format('YYYY-MM-DD HH:mm:ssZ');
-    set(payload, 'conversions[0].conversionDateTime', conversionDateTime);
-  }
-
-  payload.partialFailure = true;
-
-  const response = defaultRequestConfig();
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.endpoint = endpoint;
-  response.params = {
-    event,
-    customerId: filteredCustomerId,
-    customVariables,
-    properties,
-  };
-  response.body.JSON = payload;
-  response.headers = {
-    Authorization: `Bearer ${getAccessToken(metadata)}`,
-    'Content-Type': 'application/json',
-    'developer-token': get(metadata, 'secret.developer_token'),
-  };
-
-  if (subAccount) {
-    if (loginCustomerId) {
-      const filteredLoginCustomerId = removeHyphens(loginCustomerId);
-      response.headers['login-customer-id'] = filteredLoginCustomerId;
-    } else {
-      throw new ConfigurationError(`loginCustomerId is required as subAccount is enabled`);
+  if (conversionType !== 'store') {
+    // transform originalTimestamp to conversionDateTime format (yyyy-mm-dd hh:mm:ss+|-hh:mm)
+    // e.g 2019-10-14T11:15:18.299Z -> 2019-10-14 16:10:29+0530
+    // eslint-disable-next-line unicorn/consistent-destructuring
+    if (!properties.conversionDateTime && (timestamp || originalTimestamp)) {
+      const conversionTimestamp = timestamp || originalTimestamp;
+      const conversionDateTime = moment(conversionTimestamp)
+        .utcOffset(moment(conversionTimestamp).utcOffset())
+        .format('YYYY-MM-DD HH:mm:ssZ');
+      set(payload, 'conversions[0].conversionDateTime', conversionDateTime);
     }
+    payload.partialFailure = true;
   }
-
-  return response;
+  return requestBuilder(payload, endpoint, Config, metadata, event, filteredCustomerId, properties);
 };
 
 /**
@@ -192,8 +102,8 @@ const trackResponseBuilder = (message, metadata, destination) => {
   if (!eventsToConversionsNamesMapping[event] || !eventsToOfflineConversionsTypeMapping[event]) {
     throw new ConfigurationError(`Event name '${event}' is not valid`);
   }
-
-  eventsToOfflineConversionsTypeMapping[event].forEach((conversionType) => {
+  const conversionTypes = Array.from(eventsToOfflineConversionsTypeMapping[event]);
+  conversionTypes.forEach((conversionType) => {
     responseList.push(
       getConversions(
         message,
@@ -204,7 +114,6 @@ const trackResponseBuilder = (message, metadata, destination) => {
       ),
     );
   });
-
   return responseList;
 };
 
@@ -228,9 +137,98 @@ const process = async (event) => {
   return response;
 };
 
+const getEventChunks = (event, storeSalesEvents, clickCallEvents) => {
+  const { message, metadata, destination } = event;
+  message.forEach((message) => {
+    if (message.body.JSON?.isStoreConversion) {
+      storeSalesEvents.push({ message, metadata, destination });
+    } else {
+      clickCallEvents.push(getSuccessRespEvents(message, [metadata], destination));
+    }
+  });
+  return { storeSalesEvents, clickCallEvents };
+};
+
+const batchEvents = (storeSalesEvents) => {
+  const batchEventResponse = defaultBatchRequestConfig();
+  batchEventResponse.metadatas = [];
+  set(batchEventResponse, 'batchedRequest.body.JSON', storeSalesEvents[0].message.body.JSON);
+  set(batchEventResponse, 'batchedRequest.body.JSON.addConversionPayload.operations', [
+    get(storeSalesEvents[0], 'message.body.JSON.addConversionPayload.operations'),
+  ]);
+  batchEventResponse.metadatas.push(storeSalesEvents[0].metadata);
+  const { params, headers, endpoint } = storeSalesEvents[0].message;
+  batchEventResponse.batchedRequest.params = params;
+  batchEventResponse.batchedRequest.headers = headers;
+  batchEventResponse.batchedRequest.endpoint = endpoint;
+  storeSalesEvents.forEach((storeSalesEvent, index) => {
+    // we are discarding the first event as it is already added
+    if (index === 0) {
+      return;
+    }
+    batchEventResponse.batchedRequest?.body?.JSON['addConversionPayload']?.operations?.push(
+      storeSalesEvent.message?.body?.JSON?.addConversionPayload?.operations,
+    );
+    batchEventResponse.metadatas.push(storeSalesEvent.metadata);
+    batchEventResponse.destination = storeSalesEvent.destination;
+  });
+
+  return [
+    getSuccessRespEvents(
+      batchEventResponse.batchedRequest,
+      batchEventResponse.metadatas,
+      batchEventResponse.destination,
+      true,
+    ),
+  ];
+};
+
 const processRouterDest = async (inputs, reqMetadata) => {
-  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
-  return respList;
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
+  }
+
+  const storeSalesEvents = []; // list containing store sales events in batched format
+  const clickCallEvents = []; // list containing click and call events in batched format
+  const errorRespList = [];
+  await Promise.all(
+    inputs.map(async (event) => {
+      try {
+        if (event.message.statusCode) {
+          // already transformed event
+          getEventChunks(event, storeSalesEvents, clickCallEvents);
+        } else {
+          // if not transformed
+          getEventChunks(
+            {
+              message: await process(event),
+              metadata: event.metadata,
+              destination: event.destination,
+            },
+            storeSalesEvents,
+            clickCallEvents,
+          );
+        }
+      } catch (error) {
+        const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
+        errorRespList.push(errRespEvent);
+      }
+    }),
+  );
+  let storeSalesEventsBatchedResponseList = [];
+
+  if (storeSalesEvents.length > 0) {
+    storeSalesEventsBatchedResponseList = batchEvents(storeSalesEvents);
+  }
+
+  let batchedResponseList = [];
+  // appending all kinds of batches
+  batchedResponseList = batchedResponseList
+    .concat(storeSalesEventsBatchedResponseList)
+    .concat(clickCallEvents)
+    .concat(errorRespList);
+  return batchedResponseList;
 };
 
 module.exports = { process, processRouterDest };

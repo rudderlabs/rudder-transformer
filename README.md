@@ -1,11 +1,9 @@
-[![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest)
-[![jest](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest)
-[![codecov](https://codecov.io/gh/rudderlabs/rudder-transformer/branch/master/graph/badge.svg)](https://codecov.io/gh/rudderlabs/rudder-transformer)
+[![codecov](https://codecov.io/gh/rudderlabs/rudder-transformer/branch/develop/graph/badge.svg?token=G24OON85SB)](https://codecov.io/gh/rudderlabs/rudder-transformer)
 
 # RudderStack Transformer
 
 RudderStack Transformer is a service which transforms the RudderStack events to destination-specific singular events. This feature is released under
-under the [MIT license](https://github.com/rudderlabs/rudder-transformer/blob/master/LICENSE.md).
+under the [MIT license](https://github.com/rudderlabs/rudder-transformer/blob/main/LICENSE.md).
 
 ## Transformer Setup
 
@@ -23,8 +21,9 @@ On Mac, if you don't have `make` and `g++`, you would have to install `Xcode Com
 On Linux, install the required dependencies `python`, `make` and `g++` and follow these steps:
 
 1. Clone this repository
-2. Run `npm run setup`
-3. Start the server with `npm start`
+2. Setup the repository with `npm run setup`
+3. Build the service with `npm run build:clean`
+4. Start the server with `npm start`
 
 ## Transformer without User Functions
 
@@ -44,8 +43,9 @@ On Mac, if you don't have `make` and `g++`, you would have to install `Xcode Com
 On Linux, install the required dependencies `python`, `make` and `g++` and follow these steps:
 
 1. Clone this repository
-2. Run `npm run setup`
-3. Start the server with `ENABLE_FUNCTIONS=false npm start`
+2. Setup the repository with `npm run setup`
+3. Build the service with `npm run build:clean`
+4. Start the server with `npm start`
 
 ### How to run the E2E tests locally
 

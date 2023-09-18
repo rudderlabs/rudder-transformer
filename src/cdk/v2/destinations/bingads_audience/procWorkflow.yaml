@@ -1,0 +1,53 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+    exportAll: true
+  - path: ./config
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+
+steps:
+  - name: validateInput
+    template: |
+      let messageType = .message.type;
+      $.assert(.message.type, "message Type is not present. Aborting message.");
+      $.assert(.message.type.toLowerCase() ==='audiencelist', "Event type " + .message.type.toLowerCase() + " is not supported. Aborting message.");
+      $.assert(.message.properties, "Message properties is not present. Aborting message.");
+      $.assert(.message.properties.listData, "listData is not present inside properties. Aborting message.");
+      $.assert($.containsAll(Object.keys(.message.properties.listData), ["add", "remove", "update"]), "unsupported action type. Aborting message.")
+
+  - name: prepareIdentifiersList
+    description: |
+      Populate list of identifiers to be updated
+    template: |
+      const hashEmails = function(emails) {
+        const hashEmail = ^.destination.Config.hashEmail;
+        emails.({
+            "hashedEmail" :  hashEmail ? $.SHA256(.email) : .email,
+            "email": .email
+        })[]
+      };
+      const actionMap = {
+          add: "Add",
+          remove: "Remove",
+          update: "Replace"
+      };
+      const listData = .message.properties.listData
+      Object.keys(listData).map(function(action) {
+          {
+              list: hashEmails(listData[action]),
+              action: actionMap[action]
+          }
+      })[]
+
+  - name: buildResponseForProcessTransformation
+    description: build response
+    template: |
+      $.outputs.prepareIdentifiersList@payload.(
+        const response = $.defaultRequestConfig();
+        response.body.JSON = payload;
+        response
+      )

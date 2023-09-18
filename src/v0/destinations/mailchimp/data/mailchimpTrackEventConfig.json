@@ -2,6 +2,9 @@
   {
     "destKey": "name",
     "sourceKeys": "event",
+    "metadata": {
+      "type": "toString"
+    },
     "required": true
   },
   {

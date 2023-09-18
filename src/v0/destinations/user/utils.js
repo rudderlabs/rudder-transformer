@@ -20,6 +20,9 @@ const {
   identifySourceKeys,
 } = require('./config');
 const { InstrumentationError, NetworkInstrumentationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
+
+const ACCEPT_HEADER_VAL = '*/*;version=2';
 
 /**
  * Returns updated User.com url
@@ -222,13 +225,16 @@ const createCompany = async (message, destination) => {
 
   const requestOptions = {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Token ${apiKey}`,
-      Accept: '*/*;version=2',
+      Accept: ACCEPT_HEADER_VAL,
     },
   };
 
-  const response = await httpPOST(endpoint, payload, requestOptions);
+  const response = await httpPOST(endpoint, payload, requestOptions, {
+    destType: 'user',
+    feature: 'transformation',
+  });
   const data = processAxiosResponse(response);
   return data.response;
 };
@@ -259,13 +265,16 @@ const updateCompany = async (message, destination, company) => {
 
   const requestOptions = {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Token ${apiKey}`,
-      Accept: '*/*;version=2',
+      Accept: ACCEPT_HEADER_VAL,
     },
   };
 
-  const response = await httpPUT(endpoint, payload, requestOptions);
+  const response = await httpPUT(endpoint, payload, requestOptions, {
+    destType: 'user',
+    feature: 'transformation',
+  });
   const data = processAxiosResponse(response);
   return data.response;
 };
@@ -282,13 +291,16 @@ const getUserByUserKey = async (apiKey, userKey, appSubdomain) => {
   const endpoint = prepareUrl(`${BASE_ENDPOINT}/users/search/?key=${userKey}`, appSubdomain);
   const requestOptions = {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Token ${apiKey}`,
-      Accept: '*/*;version=2',
+      Accept: ACCEPT_HEADER_VAL,
     },
   };
 
-  const userResponse = await httpGET(endpoint, requestOptions);
+  const userResponse = await httpGET(endpoint, requestOptions, {
+    destType: 'user',
+    feature: 'transformation',
+  });
   const processedUserResponse = processAxiosResponse(userResponse);
   if (processedUserResponse.status === 200) {
     return processedUserResponse.response;
@@ -312,13 +324,16 @@ const getUserByEmail = async (apiKey, email, appSubdomain) => {
   const endpoint = prepareUrl(`${BASE_ENDPOINT}/users/search/?email=${email}`, appSubdomain);
   const requestOptions = {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Token ${apiKey}`,
-      Accept: '*/*;version=2',
+      Accept: ACCEPT_HEADER_VAL,
     },
   };
 
-  const userResponse = await httpGET(endpoint, requestOptions);
+  const userResponse = await httpGET(endpoint, requestOptions, {
+    destType: 'user',
+    feature: 'transformation',
+  });
   const processedUserResponse = processAxiosResponse(userResponse);
 
   if (processedUserResponse.status === 200) {
@@ -347,13 +362,16 @@ const getUserByPhoneNumber = async (apiKey, phoneNumber, appSubdomain) => {
   );
   const requestOptions = {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Token ${apiKey}`,
-      Accept: '*/*;version=2',
+      Accept: ACCEPT_HEADER_VAL,
     },
   };
 
-  const userResponse = await httpGET(endpoint, requestOptions);
+  const userResponse = await httpGET(endpoint, requestOptions, {
+    destType: 'user',
+    feature: 'transformation',
+  });
   const processedUserResponse = processAxiosResponse(userResponse);
 
   if (processedUserResponse.status === 200) {
@@ -388,13 +406,16 @@ const getUserByCustomId = async (message, destination) => {
 
   const requestOptions = {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Token ${apiKey}`,
-      Accept: '*/*;version=2',
+      Accept: ACCEPT_HEADER_VAL,
     },
   };
 
-  const userResponse = await httpGET(endpoint, requestOptions);
+  const userResponse = await httpGET(endpoint, requestOptions, {
+    destType: 'user',
+    feature: 'transformation',
+  });
   const processedUserResponse = processAxiosResponse(userResponse);
 
   if (processedUserResponse.status === 200) {
@@ -420,13 +441,16 @@ const getCompanyByCustomId = async (message, destination) => {
 
   const requestOptions = {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Token ${apiKey}`,
-      Accept: '*/*;version=2',
+      Accept: ACCEPT_HEADER_VAL,
     },
   };
 
-  const response = await httpGET(endpoint, requestOptions);
+  const response = await httpGET(endpoint, requestOptions, {
+    destType: 'user',
+    feature: 'transformation',
+  });
   const processedUserResponse = processAxiosResponse(response);
   if (processedUserResponse.status === 200) {
     return processedUserResponse.response;

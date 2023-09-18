@@ -5,6 +5,7 @@ const { InstrumentationError, OAuthSecretError } = require('../../util/errorType
 const { executeCommonValidations } = require('../../util/regulation-api');
 const { GA_USER_DELETION_ENDPOINT } = require('./config');
 const { gaResponseHandler } = require('./networkHandler');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
  * Prepare the delete users request
@@ -47,8 +48,8 @@ const prepareDeleteRequest = (userAttributes, config, rudderDestInfo) => {
     }
     const headers = {
       Authorization: `Bearer ${secret?.access_token}`,
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
+      Accept: JSON_MIME_TYPE,
+      'Content-Type': JSON_MIME_TYPE,
     };
     return {
       body: reqBody,
@@ -70,9 +71,17 @@ const userDeletionHandler = async (userAttributes, config, rudderDestInfo) => {
   const userDeleteRequests = prepareDeleteRequest(userAttributes, config, rudderDestInfo);
   await Promise.all(
     userDeleteRequests.map(async (userDeleteRequest) => {
-      const response = await httpPOST(GA_USER_DELETION_ENDPOINT, userDeleteRequest.body, {
-        headers: userDeleteRequest.headers,
-      });
+      const response = await httpPOST(
+        GA_USER_DELETION_ENDPOINT,
+        userDeleteRequest.body,
+        {
+          headers: userDeleteRequest.headers,
+        },
+        {
+          destType: 'ga',
+          feature: 'deleteUsers',
+        },
+      );
       // process the response to know about refreshing scenario
       return gaResponseHandler(response);
     }),

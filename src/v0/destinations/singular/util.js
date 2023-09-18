@@ -87,14 +87,15 @@ const isSessionEvent = (Config, eventName) => {
  */
 const platformWisePayloadGenerator = (message, sessionEvent) => {
   let eventAttributes;
-  let platform = getValueFromMessage(message, 'context.os.name');
+  const clonedMessage = { ...message };
+  let platform = getValueFromMessage(clonedMessage, 'context.os.name');
   const typeOfEvent = sessionEvent ? 'SESSION' : 'EVENT';
   if (!platform) {
     throw new InstrumentationError('Platform name is missing from context.os.name');
   }
   // checking if the os is one of ios, ipados, watchos, tvos
   if (typeof platform === 'string' && isAppleFamily(platform.toLowerCase())) {
-    message.context.os.name = 'iOS';
+    clonedMessage.context.os.name = 'iOS';
     platform = 'iOS';
   }
   platform = platform.toLowerCase();
@@ -103,7 +104,7 @@ const platformWisePayloadGenerator = (message, sessionEvent) => {
   }
 
   const payload = constructPayload(
-    message,
+    clonedMessage,
     MAPPING_CONFIG[CONFIG_CATEGORIES[`${typeOfEvent}_${SUPPORTED_PLATFORM[platform]}`].name],
   );
 
@@ -113,21 +114,24 @@ const platformWisePayloadGenerator = (message, sessionEvent) => {
   if (sessionEvent) {
     // context.device.adTrackingEnabled = true implies Singular's do not track (dnt)
     // to be 0 and vice-versa.
-    const adTrackingEnabled = getValueFromMessage(message, 'context.device.adTrackingEnabled');
+    const adTrackingEnabled = getValueFromMessage(
+      clonedMessage,
+      'context.device.adTrackingEnabled',
+    );
     if (adTrackingEnabled === true) {
       payload.dnt = 0;
     } else {
       payload.dnt = 1;
     }
     // by default, the value of openuri and install_source should be "", i.e empty string if nothing is passed
-    payload.openuri = message.properties.url || '';
+    payload.openuri = clonedMessage.properties.url || '';
     if (platform === 'android' || platform === 'Android') {
-      payload.install_source = message.properties.referring_application || '';
+      payload.install_source = clonedMessage.properties.referring_application || '';
     }
   } else {
     // Custom Attribues is not supported by session events
     eventAttributes = extractExtraFields(
-      message,
+      clonedMessage,
       exclusionList[`${SUPPORTED_PLATFORM[platform]}_${typeOfEvent}_EXCLUSION_LIST`],
     );
     eventAttributes = removeUndefinedAndNullValues(eventAttributes);
@@ -140,7 +144,7 @@ const platformWisePayloadGenerator = (message, sessionEvent) => {
   }
 
   // Singular maps Connection Type to either wifi or carrier
-  if (message.context?.network?.wifi) {
+  if (clonedMessage.context?.network?.wifi) {
     payload.c = 'wifi';
   } else {
     payload.c = 'carrier';

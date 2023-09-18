@@ -1,4 +1,11 @@
-const { InstrumentationError, ConfigurationError } = require('../../../v0/util/errorTypes');
+const {
+  InstrumentationError,
+  ConfigurationError,
+  NetworkError,
+} = require('../../../v0/util/errorTypes');
+const { isHttpStatusSuccess } = require('../../../v0/util');
+const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
+const tags = require('../../../v0/util/tags');
 
 const SUPPORTED_EVENT_TYPES = ['track', 'page', 'screen', 'group', 'identify', 'alias'];
 
@@ -12,9 +19,7 @@ function isValidEventType(event) {
   if (!eventType || typeof eventType !== 'string') return false;
 
   const sanitizedEventType = eventType.trim().toLowerCase();
-  if (!SUPPORTED_EVENT_TYPES.includes(sanitizedEventType)) return false;
-
-  return true;
+  return SUPPORTED_EVENT_TYPES.includes(sanitizedEventType);
 }
 
 function assert(val, message) {
@@ -29,8 +34,22 @@ function assertConfig(val, message) {
   }
 }
 
+function assertHttpResp(response, message) {
+  if (!isHttpStatusSuccess(response.status)) {
+    throw new NetworkError(
+      message,
+      message.status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(response.status),
+      },
+      response,
+    );
+  }
+}
+
 module.exports = {
   isValidEventType,
   assert,
   assertConfig,
+  assertHttpResp,
 };

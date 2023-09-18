@@ -21,7 +21,7 @@
   },
   {
     "destKey": "id",
-    "sourceKeys": ["userId","anonymousId"],
+    "sourceKeys": ["userId", "anonymousId"],
     "required": true
   },
   {

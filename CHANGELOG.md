@@ -26,6 +26,7 @@ All notable changes to this project will be documented in this file. See [standa
 * **iterable:** updated mappings ([#2602](https://github.com/rudderlabs/rudder-transformer/issues/2602)) ([23bb1f6](https://github.com/rudderlabs/rudder-transformer/commit/23bb1f64168f0e0a2ded4cbce8c99ef807fef9ad))
 * pyroscope endpoints ([#2613](https://github.com/rudderlabs/rudder-transformer/issues/2613)) ([7d268f0](https://github.com/rudderlabs/rudder-transformer/commit/7d268f046f92d86f48ced06c586b0d098a913113))
 * remove hashing on twclid for twitter ads ([#2605](https://github.com/rudderlabs/rudder-transformer/issues/2605)) ([6c984a4](https://github.com/rudderlabs/rudder-transformer/commit/6c984a4821124e1054be1c81a9bf110c36311f13))
+* seperate build steps for ruddestack and rudderlabs repo ([#2625](https://github.com/rudderlabs/rudder-transformer/issues/2625)) ([fcafacd](https://github.com/rudderlabs/rudder-transformer/commit/fcafacd10be7f1c9c001a6a805b4cb9daafd4413))
 * **transformation:** block ipv6 requests in user transformer ([#2618](https://github.com/rudderlabs/rudder-transformer/issues/2618)) ([fd81211](https://github.com/rudderlabs/rudder-transformer/commit/fd8121108594d6ca032c36c7b8d47d26c1b389e0))
 
 ### [1.41.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.41.0...v1.41.1) (2023-09-14)

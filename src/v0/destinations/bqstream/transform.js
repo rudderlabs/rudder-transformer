@@ -100,18 +100,18 @@ const batchEachUserSuccessEvents = (eventsChunk) => {
 };
 
 const processRouterDest = (inputs) => {
-  let orderedEventsList;
   const errorRespEvents = checkInvalidRtTfEvents(inputs, DESTINATION);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
   const finalResp = [];
-  let eachTypeBatchedResponse = [];
+
   const batchedEvents = groupEventsByType(inputs);
 
   batchedEvents.forEach((listOfEvents) => {
     const eachTypeSuccessEventList = []; // temporary variable to divide payload into chunks
     const eachTypeErrorEventsList = [];
+
     listOfEvents.forEach((event) => {
       try {
         if (event.message.statusCode) {
@@ -119,9 +119,10 @@ const processRouterDest = (inputs) => {
           eachTypeSuccessEventList.push(event);
         } else {
           // if not transformed
-          let response = process(event);
-          response = Array.isArray(response) ? response : [response];
-          response.forEach((res) => {
+          const response = process(event);
+          const transformedEvents = Array.isArray(response) ? response : [response];
+
+          transformedEvents.forEach((res) => {
             eachTypeSuccessEventList.push({
               message: res,
               metadata: event.metadata,
@@ -134,14 +135,19 @@ const processRouterDest = (inputs) => {
         eachTypeErrorEventsList.push(eachUserErrorEvent);
       }
     });
-    orderedEventsList = getRearrangedEvents(eachTypeSuccessEventList, eachTypeErrorEventsList);
+
+    const orderedEventsList = getRearrangedEvents(
+      eachTypeSuccessEventList,
+      eachTypeErrorEventsList,
+    );
+
     orderedEventsList.forEach((eventList) => {
       // no error event list will have more than one items in the list
       if (eventList[0].error) {
         finalResp.push([...eventList]);
       } else {
         // batch the successful events
-        eachTypeBatchedResponse = batchEachUserSuccessEvents(eventList);
+        const eachTypeBatchedResponse = batchEachUserSuccessEvents(eventList);
         finalResp.push([...eachTypeBatchedResponse]);
       }
     });

@@ -1,6 +1,10 @@
 import path from 'path';
 import fs from 'fs/promises';
-import { WorkflowExecutionError, WorkflowCreationError, StatusError } from 'rudder-workflow-engine';
+import {
+  WorkflowExecutionError,
+  WorkflowCreationError,
+  StatusError,
+} from '@rudderstack/workflow-engine';
 import logger from '../../logger';
 import { generateErrorObject } from '../../v0/util';
 import { PlatformError } from '../../v0/util/errorTypes';

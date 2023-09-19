@@ -999,7 +999,7 @@ export const data = [
               ],
               batched: false,
               statusCode: 500,
-              error: 'Empty/Invalid access token',
+              error: 'OAuth - access token not found',
               statTags: {
                 destType: 'PARDOT',
                 feature: 'router',

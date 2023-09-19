@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.41.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.41.0...v1.41.1) (2023-09-14)
+
+
+### Bug Fixes
+
+* **redis:** add destination_id in the key ([55629d6](https://github.com/rudderlabs/rudder-transformer/commit/55629d6d871d275de601a11ec223e0c283641d7b))
+
 ## [1.41.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.40.2...v1.41.0) (2023-09-11)
 
 

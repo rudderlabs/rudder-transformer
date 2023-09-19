@@ -15,7 +15,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -87,7 +87,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628"
       }
     }
@@ -158,7 +158,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -227,7 +227,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -298,7 +298,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -353,7 +353,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -406,7 +406,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -459,7 +459,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -511,7 +511,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -580,7 +580,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -649,7 +649,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -709,7 +709,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -768,7 +768,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -826,7 +826,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -885,7 +885,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -943,7 +943,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -1003,7 +1003,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -1062,7 +1062,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -1121,7 +1121,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -1181,7 +1181,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -1241,7 +1241,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -1312,7 +1312,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": true,
+        "datacenter": "EU",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -1367,7 +1367,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": true,
+        "datacenter": "EU",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -1420,7 +1420,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": true,
+        "datacenter": "EU",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -1473,7 +1473,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": true,
+        "datacenter": "EU",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -1525,7 +1525,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": true,
+        "datacenter": "EU",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -1594,7 +1594,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": true,
+        "datacenter": "EU",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -1663,7 +1663,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": true,
+        "datacenter": "EU",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -1723,7 +1723,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": true,
+        "datacenter": "EU",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -1781,7 +1781,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": true,
+        "datacenter": "EU",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -1840,7 +1840,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": true,
+        "datacenter": "EU",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -1898,7 +1898,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": true,
+        "datacenter": "EU",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -1958,7 +1958,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": true,
+        "datacenter": "EU",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -2017,7 +2017,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": true,
+        "datacenter": "EU",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -2076,7 +2076,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": true,
+        "datacenter": "EU",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -2136,7 +2136,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": true,
+        "datacenter": "EU",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -2196,7 +2196,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": true,
+        "datacenter": "EU",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -2247,7 +2247,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -2299,7 +2299,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -2350,7 +2350,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -2402,7 +2402,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -2467,7 +2467,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "abc",
         "apiKey": "xyz"
       }
@@ -2533,7 +2533,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": true,
+        "datacenter": "EU",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -2584,11 +2584,21 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU"],
-            "web": ["useNativeSDK"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU"
+            ],
+            "web": [
+              "useNativeSDK"
+            ]
           },
           "excludeKeys": [],
-          "includeKeys": ["apiKey", "siteID", "datacenterEU"],
+          "includeKeys": [
+            "apiKey",
+            "siteID",
+            "datacenterEU"
+          ],
           "saveDestinationResponse": true,
           "secretKeys": [],
           "supportedSourceTypes": [
@@ -2608,7 +2618,7 @@
       },
       "Config": {
         "apiKey": "a292d85ac36de15fc219",
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "eead090ab9e2e35004dc"
       },
       "Enabled": true,
@@ -2664,11 +2674,21 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU"],
-            "web": ["useNativeSDK"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU"
+            ],
+            "web": [
+              "useNativeSDK"
+            ]
           },
           "excludeKeys": [],
-          "includeKeys": ["apiKey", "siteID", "datacenterEU"],
+          "includeKeys": [
+            "apiKey",
+            "siteID",
+            "datacenterEU"
+          ],
           "saveDestinationResponse": true,
           "secretKeys": [],
           "supportedSourceTypes": [
@@ -2688,7 +2708,7 @@
       },
       "Config": {
         "apiKey": "a292d85ac36de15fc219",
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "eead090ab9e2e35004dc"
       },
       "Enabled": true,
@@ -2784,8 +2804,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -2797,7 +2826,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -2818,7 +2852,7 @@
       },
       "Config": {
         "apiKey": "DESAU SAI",
-        "datacenterEU": false,
+        "datacenter": "US",
         "deviceTokenEventName": "device_token_registered",
         "siteID": "DESU SAI"
       },
@@ -2911,8 +2945,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -2924,7 +2967,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -2945,7 +2993,7 @@
       },
       "Config": {
         "apiKey": "DESAU SAI",
-        "datacenterEU": false,
+        "datacenter": "US",
         "deviceTokenEventName": "device_token_registered",
         "siteID": "DESU SAI"
       },
@@ -3037,8 +3085,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -3050,7 +3107,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -3071,7 +3133,7 @@
       },
       "Config": {
         "apiKey": "DESAU SAI",
-        "datacenterEU": false,
+        "datacenter": "US",
         "deviceTokenEventName": "device_token_registered",
         "siteID": "DESU SAI"
       },
@@ -3163,8 +3225,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -3176,7 +3247,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -3197,7 +3273,7 @@
       },
       "Config": {
         "apiKey": "DESAU SAI",
-        "datacenterEU": false,
+        "datacenter": "US",
         "deviceTokenEventName": "device_token_registered",
         "siteID": "DESU SAI"
       },
@@ -3286,8 +3362,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -3299,7 +3384,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -3320,7 +3410,7 @@
       },
       "Config": {
         "apiKey": "DESAU SAI",
-        "datacenterEU": false,
+        "datacenter": "US",
         "deviceTokenEventName": "device_token_registered",
         "siteID": "DESU SAI"
       },
@@ -3413,8 +3503,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -3426,7 +3525,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -3447,7 +3551,7 @@
       },
       "Config": {
         "apiKey": "DESAU SAI",
-        "datacenterEU": false,
+        "datacenter": "US",
         "deviceTokenEventName": "device_token_registered",
         "siteID": "DESU SAI"
       },
@@ -3540,8 +3644,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -3553,7 +3666,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -3574,7 +3692,7 @@
       },
       "Config": {
         "apiKey": "DESAU SAI",
-        "datacenterEU": false,
+        "datacenter": "US",
         "deviceTokenEventName": "device_token_registered",
         "siteID": "DESU SAI"
       },
@@ -3667,8 +3785,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -3680,7 +3807,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -3701,7 +3833,7 @@
       },
       "Config": {
         "apiKey": "DESAU SAI",
-        "datacenterEU": false,
+        "datacenter": "US",
         "deviceTokenEventName": "device_token_registered",
         "siteID": "DESU SAI"
       },
@@ -3793,8 +3925,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -3806,7 +3947,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -3827,7 +3973,7 @@
       },
       "Config": {
         "apiKey": "DESAU SAI",
-        "datacenterEU": false,
+        "datacenter": "US",
         "deviceTokenEventName": "device_token_registered",
         "siteID": "DESU SAI"
       },
@@ -3916,8 +4062,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -3929,7 +4084,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -3950,7 +4110,7 @@
       },
       "Config": {
         "apiKey": "DESAU SAI",
-        "datacenterEU": false,
+        "datacenter": "US",
         "deviceTokenEventName": "device_token_registered",
         "siteID": "DESU SAI"
       },
@@ -4043,8 +4203,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -4056,7 +4225,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -4077,7 +4251,7 @@
       },
       "Config": {
         "apiKey": "DESAU SAI",
-        "datacenterEU": false,
+        "datacenter": "US",
         "deviceTokenEventName": "device_token_registered",
         "siteID": "DESU SAI"
       },
@@ -4134,8 +4308,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -4147,7 +4330,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -4168,7 +4356,7 @@
       },
       "Config": {
         "apiKey": "ef32c3f60fb98f39ef35",
-        "datacenterEU": false,
+        "datacenter": "US",
         "deviceTokenEventName": "device_token_registered",
         "siteID": "c0efdbd20b9fbe24a7e2"
       },
@@ -4225,8 +4413,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -4238,7 +4435,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -4259,7 +4461,7 @@
       },
       "Config": {
         "apiKey": "ef32c3f60fb98f39ef35",
-        "datacenterEU": false,
+        "datacenter": "US",
         "deviceTokenEventName": "device_token_registered",
         "siteID": "c0efdbd20b9fbe24a7e2"
       },
@@ -4319,8 +4521,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -4332,7 +4543,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -4353,7 +4569,7 @@
       },
       "Config": {
         "apiKey": "ef32c3f60fb98f39ef35",
-        "datacenterEU": false,
+        "datacenter": "US",
         "deviceTokenEventName": "device_token_registered",
         "siteID": "c0efdbd20b9fbe24a7e2"
       },
@@ -4413,8 +4629,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -4426,7 +4651,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -4447,7 +4677,7 @@
       },
       "Config": {
         "apiKey": "ef32c3f60fb98f39ef35",
-        "datacenterEU": false,
+        "datacenter": "US",
         "deviceTokenEventName": "device_token_registered",
         "siteID": "c0efdbd20b9fbe24a7e2"
       },
@@ -4508,8 +4738,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -4521,7 +4760,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -4542,7 +4786,7 @@
       },
       "Config": {
         "apiKey": "ef32c3f60fb98f39ef35",
-        "datacenterEU": false,
+        "datacenter": "US",
         "deviceTokenEventName": "device_token_registered",
         "siteID": "c0efdbd20b9fbe24a7e2"
       },
@@ -4603,8 +4847,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -4616,7 +4869,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -4637,7 +4895,7 @@
       },
       "Config": {
         "apiKey": "ef32c3f60fb98f39ef35",
-        "datacenterEU": false,
+        "datacenter": "US",
         "deviceTokenEventName": "device_token_registered",
         "siteID": "c0efdbd20b9fbe24a7e2"
       },
@@ -4698,8 +4956,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -4711,7 +4978,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -4732,7 +5004,7 @@
       },
       "Config": {
         "apiKey": "ef32c3f60fb98f39ef35",
-        "datacenterEU": true,
+        "datacenter": "EU",
         "deviceTokenEventName": "device_token_registered",
         "siteID": "c0efdbd20b9fbe24a7e2"
       },
@@ -4789,7 +5061,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -4842,7 +5114,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }
@@ -4889,7 +5161,7 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
         "apiKey": "dummyApiKey"
       }

@@ -176,36 +176,21 @@ const convertMetadataToArray = (eventList) => {
   return processedEvents;
 };
 
+
 /**
- * Filters and splits an array of events based on whether they have an error or not.
- * Returns an array of arrays, where inner arrays represent either a chunk of successful events or
- * an array of single error event. It maintains the order of events strictly.
- *
- * @param {Array} sortedEvents - An array of events to be filtered and split.
- * @returns {Array} - An array of arrays where each inner array represents a chunk of successful events followed by an error event.
+ * Formats a list of error events into a composite response.
+ * 
+ * @param {Array} errorEvents - A list of error events, where each event can have an `error` property and a `metadata` array.
+ * @returns {Array} The formatted composite response, where each element is an array containing the error details.
  */
-const restoreEventOrder = (sortedEvents) => {
-  let successfulEventsChunk = [];
+const formatCompositeResponse = (errorEvents) => {
   const resultArray = [];
   const errorMap = new Map();
-  for (const item of sortedEvents) {
-    // if error is present, then push the previous successfulEventsChunk
-    // and then push the error event
+
+  for (const item of errorEvents) {
     if (isDefinedAndNotNull(item.error)) {
-      if (successfulEventsChunk.length > 0) {
-        resultArray.push(successfulEventsChunk);
-        successfulEventsChunk = [];
-      }
       optimizeErrorResponse(item, errorMap, resultArray);
-    } else {
-      // if error is not present, then push the event to successfulEventsChunk
-      successfulEventsChunk.push(item);
-      errorMap.clear();
-    }
-  }
-  // Push the last successfulEventsChunk to resultArray
-  if (successfulEventsChunk.length > 0) {
-    resultArray.push(successfulEventsChunk);
+    } 
   }
   return resultArray;
 };
@@ -242,13 +227,10 @@ const getRearrangedEvents = (successEventList, errorEventList) => {
 
   // if there are both batched response and error events, then order them
   const combinedTransformedEventList = [
-    ...processedSuccessfulEvents,
-    ...processedErrorEvents,
-  ].flat();
-
-  const finalResp = restoreEventOrder(combinedTransformedEventList);
-
-  return finalResp;
+    [...processedSuccessfulEvents],
+    ...formatCompositeResponse(processedErrorEvents)
+  ]
+  return combinedTransformedEventList;
 };
 
 module.exports = { networkHandler, getRearrangedEvents };

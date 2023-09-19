@@ -1,4 +1,5 @@
 import groupBy from 'lodash/groupBy';
+import cloneDeep from 'lodash/cloneDeep';
 import IntegrationDestinationService from '../../interfaces/DestinationService';
 import {
   DeliveryResponse,
@@ -104,7 +105,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
         );
         try {
           const doRouterTransformationResponse: RouterTransformationResponse[] =
-            await destHandler.processRouterDest(destInputArray);
+            await destHandler.processRouterDest(cloneDeep(destInputArray));
           metaTO.metadata = destInputArray[0].metadata;
           return DestinationPostTransformationService.handleRouterTransformSuccessEvents(
             doRouterTransformationResponse,
@@ -170,7 +171,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
   ): Promise<DeliveryResponse> {
     try {
       const networkHandler = networkHandlerFactory.getNetworkHandler(destinationType);
-      const rawProxyResponse = await networkHandler.proxy(destinationRequest);
+      const rawProxyResponse = await networkHandler.proxy(destinationRequest, destinationType);
       const processedProxyResponse = networkHandler.processAxiosResponse(rawProxyResponse);
       return networkHandler.responseHandler(
         {

@@ -1626,7 +1626,7 @@ export const data = [
                   attStatus: true,
                   id: 'fc8d449516de0dfb',
                   adTrackingEnabled: true,
-                  token: 'bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1',
+                  token: 'testDeviceToken',
                 },
                 library: { name: 'com.rudderstack.android.sdk.core', version: '0.1.4' },
                 locale: 'en-US',

@@ -72,8 +72,10 @@ const stringifyJSON = (json, whiteListedTraits) => {
   return output;
 };
 
-// build default identify template
-// if whitelisted traits are present build on it else build the entire traits object
+/* build default identify template
+ * if whitelisted traits are present build on it
+ * else build the entire traits object
+ */
 const buildDefaultTraitTemplate = (traitsList, traits, template) => {
   let generatedStringFromTemplate = template;
   // build template with whitelisted traits

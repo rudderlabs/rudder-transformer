@@ -51,7 +51,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: '34d8efa09c5b048bbacc6af157f2e687',
+                apiKey: 'dummyApiKey',
                 appKey: 'O2YARRI15I',
                 dataCenter: false,
               },
@@ -75,7 +75,7 @@ export const data = [
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
                 'X-UA-Appkey': 'O2YARRI15I',
-                Authorization: 'Bearer 34d8efa09c5b048bbacc6af157f2e687',
+                Authorization: 'Bearer dummyApiKey',
               },
               params: {},
               body: {
@@ -162,7 +162,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: '34d8efa09c5b048bbacc6af157f2e687',
+                apiKey: 'dummyApiKey',
                 appKey: 'O2YARRI15I',
                 dataCenter: false,
               },
@@ -243,7 +243,7 @@ export const data = [
               sentAt: '2019-10-14T09:03:22.563Z',
             },
             destination: {
-              Config: { apiKey: '34d8efa09c5b048bbacc6af157f2e687', dataCenter: false },
+              Config: { apiKey: 'dummyApiKey', dataCenter: false },
             },
           },
         ],
@@ -322,7 +322,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: '34d8efa09c5b048bbacc6af157f2e687',
+                apiKey: 'dummyApiKey',
                 appKey: 'O2YARRI15I',
                 dataCenter: true,
               },
@@ -346,7 +346,7 @@ export const data = [
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
                 'X-UA-Appkey': 'O2YARRI15I',
-                Authorization: 'Bearer 34d8efa09c5b048bbacc6af157f2e687',
+                Authorization: 'Bearer dummyApiKey',
               },
               params: {},
               body: {
@@ -425,7 +425,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: '34d8efa09c5b048bbacc6af157f2e687',
+                apiKey: 'dummyApiKey',
                 appKey: 'O2YARRI15I',
                 dataCenter: false,
               },
@@ -448,7 +448,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
-                Authorization: 'Bearer 34d8efa09c5b048bbacc6af157f2e687',
+                Authorization: 'Bearer dummyApiKey',
               },
               params: {},
               body: {
@@ -549,7 +549,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: '34d8efa09c5b048bbacc6af157f2e687',
+                apiKey: 'dummyApiKey',
                 appKey: 'O2YARRI15I',
                 dataCenter: false,
               },
@@ -572,7 +572,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
-                Authorization: 'Bearer 34d8efa09c5b048bbacc6af157f2e687',
+                Authorization: 'Bearer dummyApiKey',
               },
               params: {},
               body: {
@@ -640,7 +640,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: '34d8efa09c5b048bbacc6af157f2e687',
+                apiKey: 'dummyApiKey',
                 appKey: 'O2YARRI15I',
                 dataCenter: false,
               },
@@ -663,7 +663,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
-                Authorization: 'Bearer 34d8efa09c5b048bbacc6af157f2e687',
+                Authorization: 'Bearer dummyApiKey',
               },
               params: {},
               body: {
@@ -690,7 +690,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
-                Authorization: 'Bearer 34d8efa09c5b048bbacc6af157f2e687',
+                Authorization: 'Bearer dummyApiKey',
               },
               params: {},
               body: {
@@ -806,7 +806,7 @@ export const data = [
               version: '1',
             },
             destination: {
-              Config: { apiKey: '34d8efa09c5b048bbacc6af157f2e687', dataCenter: true },
+              Config: { apiKey: 'dummyApiKey', dataCenter: true },
             },
           },
         ],
@@ -826,7 +826,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
-                Authorization: 'Bearer 34d8efa09c5b048bbacc6af157f2e687',
+                Authorization: 'Bearer dummyApiKey',
               },
               params: {},
               body: {
@@ -853,7 +853,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
-                Authorization: 'Bearer 34d8efa09c5b048bbacc6af157f2e687',
+                Authorization: 'Bearer dummyApiKey',
               },
               params: {},
               body: {
@@ -954,7 +954,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: '34d8efa09c5b048bbacc6af157f2e687',
+                apiKey: 'dummyApiKey',
                 appKey: 'O2YARRI15I',
                 appSecret: 'fhf',
                 dataCenter: true,
@@ -1027,7 +1027,7 @@ export const data = [
               version: '1',
             },
             destination: {
-              Config: { apiKey: '34d8efa09c5b048bbacc6af157f2e687', dataCenter: false },
+              Config: { apiKey: 'dummyApiKey', dataCenter: false },
             },
           },
         ],
@@ -1047,7 +1047,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
-                Authorization: 'Bearer 34d8efa09c5b048bbacc6af157f2e687',
+                Authorization: 'Bearer dummyApiKey',
               },
               params: {},
               body: {
@@ -1147,7 +1147,7 @@ export const data = [
               version: '1',
             },
             destination: {
-              Config: { apiKey: '34d8efa09c5b048bbacc6af157f2e687', dataCenter: false },
+              Config: { apiKey: 'dummyApiKey', dataCenter: false },
             },
           },
         ],
@@ -1167,7 +1167,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
-                Authorization: 'Bearer 34d8efa09c5b048bbacc6af157f2e687',
+                Authorization: 'Bearer dummyApiKey',
               },
               params: {},
               body: {
@@ -1234,7 +1234,7 @@ export const data = [
               version: '1',
             },
             destination: {
-              Config: { apiKey: '34d8efa09c5b048bbacc6af157f2e687', dataCenter: false },
+              Config: { apiKey: 'dummyApiKey', dataCenter: false },
             },
           },
         ],
@@ -1254,7 +1254,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
-                Authorization: 'Bearer 34d8efa09c5b048bbacc6af157f2e687',
+                Authorization: 'Bearer dummyApiKey',
               },
               params: {},
               body: {
@@ -1281,7 +1281,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
-                Authorization: 'Bearer 34d8efa09c5b048bbacc6af157f2e687',
+                Authorization: 'Bearer dummyApiKey',
               },
               params: {},
               body: {
@@ -1397,7 +1397,7 @@ export const data = [
               version: '1',
             },
             destination: {
-              Config: { apiKey: '34d8efa09c5b048bbacc6af157f2e687', dataCenter: true },
+              Config: { apiKey: 'dummyApiKey', dataCenter: true },
             },
           },
         ],
@@ -1417,7 +1417,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
-                Authorization: 'Bearer 34d8efa09c5b048bbacc6af157f2e687',
+                Authorization: 'Bearer dummyApiKey',
               },
               params: {},
               body: {
@@ -1444,7 +1444,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
-                Authorization: 'Bearer 34d8efa09c5b048bbacc6af157f2e687',
+                Authorization: 'Bearer dummyApiKey',
               },
               params: {},
               body: {
@@ -1545,7 +1545,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: '34d8efa09c5b048bbacc6af157f2e687',
+                apiKey: 'dummyApiKey',
                 appKey: 'O2YARRI15I',
                 appSecret: 'fhf',
                 dataCenter: true,
@@ -1621,7 +1621,7 @@ export const data = [
               version: '1',
             },
             destination: {
-              Config: { apiKey: '34d8efa09c5b048bbacc6af157f2e687', dataCenter: false },
+              Config: { apiKey: 'dummyApiKey', dataCenter: false },
             },
           },
         ],
@@ -1641,7 +1641,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
-                Authorization: 'Bearer 34d8efa09c5b048bbacc6af157f2e687',
+                Authorization: 'Bearer dummyApiKey',
               },
               params: {},
               body: {
@@ -1668,7 +1668,7 @@ export const data = [
               headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
-                Authorization: 'Bearer 34d8efa09c5b048bbacc6af157f2e687',
+                Authorization: 'Bearer dummyApiKey',
               },
               params: {},
               body: {
@@ -1751,7 +1751,7 @@ export const data = [
           {
             destination: {
               ID: '1Tdi0lpXwSVwXG1lcdP2pXHKrJ6',
-              Name: 'Titli Ganguly',
+              Name: 'Titli Test',
               DestinationDefinition: {
                 ID: '1SujZGrVEPqYmpUJcV4vSl9tfxn',
                 Name: 'MC',
@@ -1887,7 +1887,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: '34d8efa09c5b048bbacc6af157f2e687',
+                apiKey: 'dummyApiKey',
                 appKey: 'ffdf',
                 appSecret: 'fhf',
                 dataCenter: false,
@@ -1912,7 +1912,7 @@ export const data = [
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
                 'X-UA-Appkey': 'ffdf',
-                Authorization: 'Bearer 34d8efa09c5b048bbacc6af157f2e687',
+                Authorization: 'Bearer dummyApiKey',
               },
               params: {},
               body: {
@@ -1975,7 +1975,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: '34d8efa09c5b048bbacc6af157f2e687',
+                apiKey: 'dummyApiKey',
                 appKey: 'ffdf',
                 dataCenter: false,
               },
@@ -1999,7 +1999,7 @@ export const data = [
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
                 'X-UA-Appkey': 'ffdf',
-                Authorization: 'Bearer 34d8efa09c5b048bbacc6af157f2e687',
+                Authorization: 'Bearer dummyApiKey',
               },
               params: {},
               body: {
@@ -2062,7 +2062,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: '34d8efa09c5b048bbacc6af157f2e687',
+                apiKey: 'dummyApiKey',
                 appKey: 'ffdf',
                 dataCenter: false,
               },
@@ -2086,7 +2086,7 @@ export const data = [
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
                 'X-UA-Appkey': 'ffdf',
-                Authorization: 'Bearer 34d8efa09c5b048bbacc6af157f2e687',
+                Authorization: 'Bearer dummyApiKey',
               },
               params: {},
               body: {
@@ -2267,7 +2267,7 @@ export const data = [
               sentAt: '2019-10-14T09:03:22.563Z',
             },
             destination: {
-              Config: { appKey: '34d8efa09c5b048bbacc6af157f2e687', dataCenter: false },
+              Config: { appKey: 'dummyApiKey', dataCenter: false },
             },
           },
         ],
@@ -2333,7 +2333,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: '34d8efa09c5b048bbacc6af157f2e687',
+                apiKey: 'dummyApiKey',
                 appKey: 'ffdf',
                 dataCenter: false,
               },
@@ -2357,7 +2357,7 @@ export const data = [
                 'Content-Type': 'application/json',
                 Accept: 'application/vnd.urbanairship+json; version=3',
                 'X-UA-Appkey': 'ffdf',
-                Authorization: 'Bearer 34d8efa09c5b048bbacc6af157f2e687',
+                Authorization: 'Bearer dummyApiKey',
               },
               params: {},
               body: {

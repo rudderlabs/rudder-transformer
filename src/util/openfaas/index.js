@@ -92,8 +92,18 @@ const isFunctionDeployed = (functionName) => {
 
 const setFunctionInCache = (functionName) => {
   const funcList = functionListCache.get(FUNC_LIST_KEY) || [];
-  funcList.push(functionName);
-  functionListCache.set(FUNC_LIST_KEY, funcList);
+  if (funcList.includes(functionName)) return;
+  const funcListSet = new Set(funcList);
+  funcListSet.add(functionName);
+  functionListCache.set(FUNC_LIST_KEY, Array.from(funcListSet));
+};
+
+const removeFunctionFromCache = (functionName) => {
+  const funcList = functionListCache.get(FUNC_LIST_KEY) || [];
+  if (!funcList.includes(functionName)) return;
+  const funcListSet = new Set(funcList);
+  funcListSet.delete(functionName);
+  functionListCache.set(FUNC_LIST_KEY, Array.from(funcListSet));
 };
 
 const invalidateFnCache = () => {
@@ -150,7 +160,10 @@ const deployFaasFunction = async (functionName, code, versionId, libraryVersionI
     logger.error(`[Faas] Error while deploying ${functionName}: ${error.message}`);
     // To handle concurrent create requests,
     // throw retry error if deployment or service already exists so that request can be retried
-    if ((error.statusCode === 500 || error.statusCode === 400) && error.message.includes('already exists')) {
+    if (
+      (error.statusCode === 500 || error.statusCode === 400) &&
+      error.message.includes('already exists')
+    ) {
       setFunctionInCache(functionName);
       throw new RetryRequestError(`${functionName} already exists`);
     }
@@ -199,6 +212,7 @@ const executeFaasFunction = async (
       error.statusCode === 404 &&
       error.message.includes(`error finding function ${functionName}`)
     ) {
+      removeFunctionFromCache(functionName);
       await setupFaasFunction(functionName, null, versionId, libraryVersionIDs, testMode);
       throw new RetryRequestError(`${functionName} not found`);
     }

@@ -19,7 +19,7 @@
         "event": "create an item",
         "type": "track",
         "sentAt": "2021-01-03T17:02:53.195Z",
-        "userId": "ujjwal27",
+        "userId": "user@27",
         "channel": "web",
         "properties": {
           "name": "Task 1"
@@ -92,7 +92,7 @@
         "event": "create an item",
         "type": "track",
         "sentAt": "2021-01-03T17:02:53.195Z",
-        "userId": "ujjwal27",
+        "userId": "user@27",
         "channel": "web",
         "properties": {
           "name": "Task 1"
@@ -166,7 +166,7 @@
         "event": "create an item",
         "type": "identify",
         "sentAt": "2021-01-03T17:02:53.195Z",
-        "userId": "ujjwal27",
+        "userId": "user@27",
         "channel": "web",
         "properties": {
           "name": "Task 1"
@@ -223,7 +223,7 @@
         "event": "create an item",
         "type": "",
         "sentAt": "2021-01-03T17:02:53.195Z",
-        "userId": "ujjwal27",
+        "userId": "user@27",
         "channel": "web",
         "properties": {
           "name": "Task 1"
@@ -280,7 +280,7 @@
         "event": "create an item",
         "type": "track",
         "sentAt": "2021-01-03T17:02:53.195Z",
-        "userId": "ujjwal27",
+        "userId": "user@27",
         "channel": "web",
         "properties": {
           "name": "Task 1"
@@ -337,7 +337,7 @@
         "event": "create an item",
         "type": "track",
         "sentAt": "2021-01-03T17:02:53.195Z",
-        "userId": "ujjwal27",
+        "userId": "user@27",
         "channel": "web",
         "properties": {
           "name": "Task 1"
@@ -394,7 +394,7 @@
         "event": "",
         "type": "track",
         "sentAt": "2021-01-03T17:02:53.195Z",
-        "userId": "ujjwal27",
+        "userId": "user@27",
         "channel": "web",
         "properties": {
           "name": "Task 1"
@@ -460,7 +460,7 @@
         "event": "create an item",
         "type": "track",
         "sentAt": "2021-01-03T17:02:53.195Z",
-        "userId": "ujjwal27",
+        "userId": "user@27",
         "channel": "web",
         "properties": {
           "name": "Task 1",
@@ -546,7 +546,7 @@
         "event": "create an item",
         "type": "track",
         "sentAt": "2021-01-03T17:02:53.195Z",
-        "userId": "ujjwal27",
+        "userId": "user@27",
         "channel": "web",
         "properties": {
           "name": "Task 1",
@@ -632,7 +632,7 @@
         "event": "create an item",
         "type": "track",
         "sentAt": "2021-01-03T17:02:53.195Z",
-        "userId": "ujjwal27",
+        "userId": "user@27",
         "channel": "web",
         "properties": {
           "name": "Task 1",
@@ -701,7 +701,7 @@
         "event": "create an item",
         "type": "track",
         "sentAt": "2021-01-03T17:02:53.195Z",
-        "userId": "ujjwal27",
+        "userId": "user@27",
         "channel": "web",
         "properties": {
           "name": "",
@@ -810,7 +810,7 @@
         "event": "create an item",
         "type": "track",
         "sentAt": "2021-01-03T17:02:53.195Z",
-        "userId": "ujjwal27",
+        "userId": "user@27",
         "channel": "web",
         "properties": {
           "name": "Task 1",
@@ -911,7 +911,7 @@
         "event": "create an item",
         "type": "track",
         "sentAt": "2021-01-03T17:02:53.195Z",
-        "userId": "ujjwal27",
+        "userId": "user@27",
         "channel": "web",
         "properties": {
           "name": "",
@@ -980,7 +980,7 @@
         "event": "create an item",
         "type": "track",
         "sentAt": "2021-01-03T17:02:53.195Z",
-        "userId": "ujjwal27",
+        "userId": "user@27",
         "channel": "web",
         "properties": {
           "name": "Task 1",

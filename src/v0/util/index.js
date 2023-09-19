@@ -28,6 +28,10 @@ const {
 } = require('./errorTypes');
 const { client: errNotificationClient } = require('../../util/errorNotifier');
 const { HTTP_STATUS_CODES } = require('./constant');
+const {
+  REFRESH_TOKEN,
+  AUTH_STATUS_INACTIVE,
+} = require('../../adapters/networkhandler/authConstants');
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -139,6 +143,35 @@ const isDefinedNotNullNotEmpty = (value) =>
 
 const removeUndefinedNullEmptyExclBoolInt = (obj) => _.pickBy(obj, isDefinedNotNullNotEmpty);
 
+/**
+ * Recursively removes undefined, null, empty objects, and empty arrays from the given object at all levels.
+ * @param {*} obj
+ * @returns
+ */
+const removeUndefinedNullValuesAndEmptyObjectArray = (obj) => {
+  function recursive(obj) {
+    if (Array.isArray(obj)) {
+      const cleanedArray = obj
+        .map((item) => recursive(item))
+        .filter((item) => isDefinedAndNotNull(item));
+      return cleanedArray.length === 0 ? null : cleanedArray;
+    }
+    if (obj && typeof obj === 'object') {
+      const data = {};
+      Object.entries(obj).forEach(([key, value]) => {
+        const cleanedValue = recursive(value);
+        if (isDefinedAndNotNull(cleanedValue)) {
+          data[key] = cleanedValue;
+        }
+      });
+      return Object.keys(data).length === 0 ? null : data;
+    }
+    return obj;
+  }
+  const newObj = recursive(obj);
+  return isDefinedAndNotNull(newObj) ? newObj : {};
+};
+
 // Format the destination.Config.dynamicMap arrays to hashMap
 const getHashFromArray = (arrays, fromKey = 'from', toKey = 'to', isLowerCase = true) => {
   const hashMap = {};
@@ -214,7 +247,7 @@ const getValueFromPropertiesOrTraits = ({ message, key }) => {
 };
 
 // function to flatten a json
-function flattenJson(data, separator = '.', mode = 'normal') {
+function flattenJson(data, separator = '.', mode = 'normal', flattenArrays = true) {
   const result = {};
 
   // a recursive function to loop through the array of the data
@@ -223,15 +256,20 @@ function flattenJson(data, separator = '.', mode = 'normal') {
     if (Object(cur) !== cur) {
       result[prop] = cur;
     } else if (Array.isArray(cur)) {
-      for (i = 0; i < cur.length; i += 1) {
-        if (mode === 'strict') {
-          recurse(cur[i], `${prop}${separator}${i}`);
-        } else {
-          recurse(cur[i], `${prop}[${i}]`);
+      if (flattenArrays || typeof cur?.[0] === 'object') {
+        for (i = 0; i < cur.length; i += 1) {
+          if (mode === 'strict') {
+            recurse(cur[i], `${prop}${separator}${i}`);
+          } else {
+            recurse(cur[i], `${prop}[${i}]`);
+          }
         }
-      }
-      if (cur.length === 0) {
-        result[prop] = [];
+        if (cur.length === 0) {
+          result[prop] = [];
+        }
+      } else {
+        // to not flatten the array of non-object (string, booleans, numbers)
+        result[prop] = cur;
       }
     } else {
       let isEmptyFlag = true;
@@ -242,7 +280,6 @@ function flattenJson(data, separator = '.', mode = 'normal') {
       if (isEmptyFlag && prop) result[prop] = {};
     }
   }
-
   recurse(data, '');
   return result;
 }
@@ -504,6 +541,8 @@ const handleSourceKeysOperation = ({ message, operationObject }) => {
       for (const v of argValues) {
         if (_.isNumber(v)) {
           result *= v;
+        } else if (_.isString(v) && /^[+-]?(\d+(\.\d*)?|\.\d+)([Ee][+-]?\d+)?$/.test(v)) {
+          result *= parseFloat(v);
         } else {
           // if there is a non number argument simply return null
           // non numbers can't be operated arithmatically
@@ -1013,22 +1052,16 @@ const constructPayload = (message, mappingJson, destinationName = null) => {
 //   }
 // }
 // to get destination specific external id passed in context.
-function getDestinationExternalID(message, type) {
-  let externalIdArray = null;
-  let destinationExternalId = null;
-  if (message.context && message.context.externalId) {
-    externalIdArray = message.context.externalId;
-  }
-
+const getDestinationExternalID = (message, type) => {
+  const { context } = message;
+  const externalIdArray = context?.externalId || [];
+  let externalIdObj;
   if (Array.isArray(externalIdArray)) {
-    externalIdArray.forEach((extIdObj) => {
-      if (extIdObj.type === type) {
-        destinationExternalId = extIdObj.id;
-      }
-    });
+    externalIdObj = externalIdArray.find((extIdObj) => extIdObj?.type === type);
   }
+  const destinationExternalId = externalIdObj ? externalIdObj.id : null;
   return destinationExternalId;
-}
+};
 
 // Get id, identifierType and object type from externalId for rETL
 // type will be of the form: <DESTINATION-NAME>-<object>
@@ -1282,7 +1315,8 @@ function toTitleCase(payload) {
       .replace(/([a-z])(\d)/gi, '$1 $2')
       .replace(/(\d)([a-z])/gi, '$1 $2')
       .trim()
-      .replace(/(_)/g, ` `).replace(/(?:^|\s)(\w)/g, (match) => match.toUpperCase());
+      .replace(/(_)/g, ` `)
+      .replace(/(?:^|\s)(\w)/g, (match) => match.toUpperCase());
     newPayload[newKey] = value;
   });
   return newPayload;
@@ -1428,7 +1462,9 @@ function isHttpStatusRetryable(status) {
  * @returns
  */
 function generateUUID() {
-  return crypto.randomUUID({ disableEntropyCache: true }); /* using disableEntropyCache as true to not cache the generated uuids. 
+  return crypto.randomUUID({
+    disableEntropyCache: true,
+  }); /* using disableEntropyCache as true to not cache the generated uuids. 
   For more Info https://nodejs.org/api/crypto.html#cryptorandomuuidoptions:~:text=options%20%3CObject%3E-,disableEntropyCache,-%3Cboolean%3E%20By
   */
 }
@@ -1797,8 +1833,8 @@ const getAccessToken = (metadata, accessTokenKey) => {
   // OAuth for this destination
   const { secret } = metadata;
   // we would need to verify if secret is present and also if the access token field is present in secret
-  if (!secret || !secret[accessTokenKey]) {
-    throw new OAuthSecretError('Empty/Invalid access token');
+  if (!secret?.[accessTokenKey]) {
+    throw new OAuthSecretError('OAuth - access token not found');
   }
   return secret[accessTokenKey];
 };
@@ -1880,6 +1916,83 @@ const batchMultiplexedEvents = (transformedEventsList, maxBatchSize) => {
   return batchedEvents;
 };
 
+/**
+ * Groups events with the same message type together in batches.
+ * Each batch contains events that have the same message type and are from different users.
+ * @param {*} inputs - An array of events
+ * @returns {*} - An array of batches
+ */
+const groupEventsByType = (inputs) => {
+  const batches = [];
+  let currentInputsArray = inputs;
+  while (currentInputsArray.length > 0) {
+    const remainingInputsArray = [];
+    const userOrderTracker = {};
+    const event = currentInputsArray.shift();
+    const messageType = event.message.type;
+    const batch = [event];
+    currentInputsArray.forEach((currentInput) => {
+      const currentMessageType = currentInput.message.type;
+      const currentUser = currentInput.metadata.userId;
+      if (currentMessageType === messageType && !userOrderTracker[currentUser]) {
+        batch.push(currentInput);
+      } else {
+        remainingInputsArray.push(currentInput);
+        userOrderTracker[currentUser] = true;
+      }
+    });
+    batches.push(batch);
+    currentInputsArray = remainingInputsArray;
+  }
+
+  return batches;
+};
+
+/**
+ * This function helps to detarmine type of error occured. According to the response
+ * we set authErrorCategory to take decision if we need to refresh the access_token
+ * or need to de-activate authStatus for the destination.
+ *
+ * **Scenarios**:
+ * - statusCode=401, response.error.details !== "" -> REFRESH_TOKEN
+ * - statusCode=403, response.error.details !== "" -> AUTH_STATUS_INACTIVE
+ *
+ * @param {*} code
+ * @param {*} response
+ * @returns
+ */
+const getAuthErrCategoryFromErrDetailsAndStCode = (code, response) => {
+  if (code === 401 && (!get(response, 'error.details') || typeof response === 'string'))
+    return REFRESH_TOKEN;
+  if (code === 403 && (!get(response, 'error.details') || typeof response === 'string'))
+    return AUTH_STATUS_INACTIVE;
+  return '';
+};
+
+/**
+ * This function helps to determine the type of error occurred. We set the authErrorCategory
+ * as per the destination response that is received and take the decision whether
+ * to refresh the access_token or de-activate authStatus.
+ *
+ * **Scenarios**:
+ * - statusCode=401 -> REFRESH_TOKEN
+ * - statusCode=403 -> AUTH_STATUS_INACTIVE
+ *
+ * @param {*} status
+ * @returns
+ */
+const getAuthErrCategoryFromStCode = (status) => {
+  if (status === 401) {
+    // UNAUTHORIZED
+    return REFRESH_TOKEN;
+  }
+  if (status === 403) {
+    // ACCESS_DENIED
+    return AUTH_STATUS_INACTIVE;
+  }
+  return '';
+};
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -1958,6 +2071,7 @@ module.exports = {
   removeUndefinedAndNullAndEmptyValues,
   removeUndefinedAndNullValues,
   removeUndefinedNullEmptyExclBoolInt,
+  removeUndefinedNullValuesAndEmptyObjectArray,
   removeUndefinedValues,
   returnArrayOfSubarrays,
   stripTrailingSlash,
@@ -1979,4 +2093,7 @@ module.exports = {
   checkAndCorrectUserId,
   getAccessToken,
   formatValues,
+  groupEventsByType,
+  getAuthErrCategoryFromErrDetailsAndStCode,
+  getAuthErrCategoryFromStCode,
 };

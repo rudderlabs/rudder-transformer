@@ -8,7 +8,11 @@ import {
   UserTransformationResponse,
   UserTransformationServiceResponse,
 } from '../types/index';
-import { RespStatusError, RetryRequestError, extractStackTraceUptoLastSubstringMatch } from '../util/utils';
+import {
+  RespStatusError,
+  RetryRequestError,
+  extractStackTraceUptoLastSubstringMatch,
+} from '../util/utils';
 import { getMetadata, isNonFuncObject } from '../v0/util';
 import { SUPPORTED_FUNC_NAMES } from '../util/ivmFactory';
 import logger from '../logger';
@@ -63,11 +67,6 @@ export default class UserTransformService {
             error: errorMessage,
             metadata: commonMetadata,
           } as ProcessorTransformationResponse);
-          stats.counter('user_transform_errors', eventsToProcess.length, {
-            transformationVersionId,
-            type: 'NoVersionId',
-            ...metaTags,
-          });
           return transformedEvents;
         }
         const userFuncStartTime = new Date();
@@ -127,18 +126,19 @@ export default class UserTransformService {
             ),
           );
           stats.counter('user_transform_errors', eventsToProcess.length, {
-            transformationVersionId,
-            type: 'UnknownError',
+            transformationId: eventsToProcess[0]?.metadata?.transformationId,
+            workspaceId: eventsToProcess[0]?.metadata?.workspaceId,
             status,
             ...metaTags,
           });
         } finally {
-          stats.timing('user_transform_function_latency', userFuncStartTime, {
-            transformationVersionId,
+          stats.timing('user_transform_request_latency', userFuncStartTime, {
+            workspaceId: eventsToProcess[0]?.metadata?.workspaceId,
+            transformationId: eventsToProcess[0]?.metadata?.transformationId,
             ...metaTags,
           });
         }
-        stats.timing('user_transform_request_latency', startTime, {});
+
         stats.counter('user_transform_requests', 1, {});
         stats.histogram('user_transform_output_events', transformedEvents.length, {});
         return transformedEvents;
@@ -175,7 +175,9 @@ export default class UserTransformService {
       response.status = 200;
     } catch (error: any) {
       response.status = 400;
-      response.body = { error: extractStackTraceUptoLastSubstringMatch(error.stack, SUPPORTED_FUNC_NAMES) };
+      response.body = {
+        error: extractStackTraceUptoLastSubstringMatch(error.stack, SUPPORTED_FUNC_NAMES),
+      };
     }
     return response;
   }

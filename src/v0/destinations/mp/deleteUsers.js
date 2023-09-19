@@ -18,6 +18,7 @@ const deleteProfile = async (userAttributes, config) => {
     config.dataResidency === 'eu'
       ? 'https://api-eu.mixpanel.com/engage'
       : 'https://api.mixpanel.com/engage';
+  const endpointPath = '/engage';
   const defaultValues = {
     $token: `${config.token}`,
     $delete: null,
@@ -47,6 +48,7 @@ const deleteProfile = async (userAttributes, config) => {
         {
           destType: 'mp',
           feature: 'deleteUsers',
+          endpointPath,
         },
       );
       if (!isHttpStatusSuccess(handledDelResponse.status)) {
@@ -77,6 +79,7 @@ const createDeletionTask = async (userAttributes, config) => {
   }
 
   const endpoint = getCreateDeletionTaskEndpoint(token);
+  const endpointPath = '/api/app/data-deletions/v3.0/';
   const headers = {
     'Content-Type': JSON_MIME_TYPE,
     Authorization: `Bearer ${gdprApiToken}`,
@@ -100,6 +103,7 @@ const createDeletionTask = async (userAttributes, config) => {
         {
           destType: 'mp',
           feature: 'deleteUsers',
+          endpointPath,
         },
       );
       if (!isHttpStatusSuccess(handledDelResponse.status)) {

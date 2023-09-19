@@ -1,0 +1,359 @@
+[
+  {
+    "description": "identify payload pass",
+    "input": {
+      "message": {
+        "type": "identify",
+        "traits": {
+          "C_FirstName": "Test User",
+          "C_patient_id1": 1,
+          "C_MobilePhone": "+008822773355",
+          "C_City": "Scranton",
+          "C_date_of_birth_1life1": "22/12/01"
+        },
+        "userId": "testUser1234@keeptesting.com",
+        "context": {
+          "sources": {
+            "job_id": "2RVkqlV1adBiIpj33kWlQzchMP1/Syncher",
+            "version": "v1.28.0",
+            "job_run_id": "cja699onfuet3te5obc0",
+            "task_run_id": "cja699onfuet3te5obcg"
+          },
+          "externalId": [
+            {
+              "id": "testUser1234@keeptesting.com",
+              "type": "ELOQUA-contacts",
+              "identifierType": "C_EmailAddress"
+            }
+          ],
+          "mappedToDestination": "true"
+        },
+        "recordId": "1",
+        "rudderId": "3606d3c7-8741-4245-a254-450e137d3866",
+        "messageId": "40def17a-1b6a-4d2d-a851-2a8d96f913bd"
+      },
+      "destination": {
+        "Config": {
+          "customerAccountId": "89236978",
+          "customerId": "78678678",
+          "audienceId": "564567",
+          "hashEmail": false
+        }
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "",
+      "headers": {},
+      "params": {},
+      "body": {
+        "JSON": {
+          "identifierFieldName": "C_EmailAddress",
+          "data": {
+            "C_FirstName": "Test User",
+            "C_patient_id1": "1",
+            "C_MobilePhone": "+008822773355",
+            "C_City": "Scranton",
+            "C_date_of_birth_1life1": "22/12/01",
+            "C_EmailAddress": "testUser1234@keeptesting.com"
+          },
+          "customObjectId": "contacts",
+          "type": "identify"
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": "type not correect",
+    "input": {
+      "message": {
+        "type": "audiencelist",
+        "traits": {
+          "C_FirstName": "Test User",
+          "C_patient_id1": 1,
+          "C_MobilePhone": "+008822773355",
+          "C_City": "Scranton",
+          "C_date_of_birth_1life1": "22/12/01"
+        },
+        "userId": "testUser1234@keeptesting.com",
+        "context": {
+          "sources": {
+            "job_id": "2RVkqlV1adBiIpj33kWlQzchMP1/Syncher",
+            "version": "v1.28.0",
+            "job_run_id": "cja699onfuet3te5obc0",
+            "task_run_id": "cja699onfuet3te5obcg"
+          },
+          "externalId": [
+            {
+              "id": "testUser1234@keeptesting.com",
+              "type": "ELOQUA-contacts",
+              "identifierType": "C_EmailAddress"
+            }
+          ],
+          "mappedToDestination": "true"
+        },
+        "recordId": "1",
+        "rudderId": "3606d3c7-8741-4245-a254-450e137d3866",
+        "messageId": "40def17a-1b6a-4d2d-a851-2a8d96f913bd"
+      },
+      "destination": {
+        "Config": {
+          "customerAccountId": "89236978",
+          "customerId": "78678678",
+          "audienceId": "564567",
+          "hashEmail": false
+        }
+      }
+    },
+    "output": {
+      "error": "Event type audiencelist is not supported. Aborting message."
+    }
+  },
+  {
+    "description": "traits not present",
+    "input": {
+      "message": {
+        "type": "identify",
+        "userId": "testUser1234@keeptesting.com",
+        "context": {
+          "sources": {
+            "job_id": "2RVkqlV1adBiIpj33kWlQzchMP1/Syncher",
+            "version": "v1.28.0",
+            "job_run_id": "cja699onfuet3te5obc0",
+            "task_run_id": "cja699onfuet3te5obcg"
+          },
+          "externalId": [
+            {
+              "id": "testUser1234@keeptesting.com",
+              "type": "ELOQUA-contacts",
+              "identifierType": "C_EmailAddress"
+            }
+          ],
+          "mappedToDestination": "true"
+        },
+        "recordId": "1",
+        "rudderId": "3606d3c7-8741-4245-a254-450e137d3866",
+        "messageId": "40def17a-1b6a-4d2d-a851-2a8d96f913bd"
+      },
+      "destination": {
+        "Config": {
+          "customerAccountId": "89236978",
+          "customerId": "78678678",
+          "audienceId": "564567",
+          "hashEmail": false
+        }
+      }
+    },
+    "output": {
+      "error": "Message traits/properties not present. Aborting message."
+    }
+  },
+  {
+    "description": "identify payload pass",
+    "input": {
+      "message": {
+        "type": "identify",
+        "traits": {
+          "C_FirstName": "Test User",
+          "C_patient_id1": 1,
+          "C_MobilePhone": "+008822773355",
+          "C_City": "Scranton",
+          "C_date_of_birth_1life1": "22/12/01"
+        },
+        "userId": "testUser1234@keeptesting.com",
+        "context": {
+          "sources": {
+            "job_id": "2RVkqlV1adBiIpj33kWlQzchMP1/Syncher",
+            "version": "v1.28.0",
+            "job_run_id": "cja699onfuet3te5obc0",
+            "task_run_id": "cja699onfuet3te5obcg"
+          },
+          "externalId": [
+            {
+              "id": "testUser1234@keeptesting.com",
+              "type": "ELOQUA-contacts",
+              "identifierType": "C_EmailAddress"
+            }
+          ],
+          "mappedToDestination": "true"
+        },
+        "recordId": "1",
+        "rudderId": "3606d3c7-8741-4245-a254-450e137d3866",
+        "messageId": "40def17a-1b6a-4d2d-a851-2a8d96f913bd"
+      },
+      "destination": {
+        "Config": {
+          "customerAccountId": "89236978",
+          "customerId": "78678678",
+          "audienceId": "564567",
+          "hashEmail": false
+        }
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "",
+      "headers": {},
+      "params": {},
+      "body": {
+        "JSON": {
+          "identifierFieldName": "C_EmailAddress",
+          "data": {
+            "C_FirstName": "Test User",
+            "C_patient_id1": "1",
+            "C_MobilePhone": "+008822773355",
+            "C_City": "Scranton",
+            "C_date_of_birth_1life1": "22/12/01",
+            "C_EmailAddress": "testUser1234@keeptesting.com"
+          },
+          "customObjectId": "contacts",
+          "type": "identify"
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": "track payload pass",
+    "input": {
+      "message": {
+        "type": "track",
+        "properties": {
+          "key11": "Test User",
+          "key21": 1,
+          "contactID11": "+008822773355"
+        },
+        "userId": "testUser1234@keeptesting.com",
+        "channel": "sources",
+        "context": {
+          "sources": {
+            "job_id": "2RVkqlV1adBiIpj33kWlQzchMP1/Syncher",
+            "version": "v1.28.0",
+            "job_run_id": "cja699onfuet3te5obc0",
+            "task_run_id": "cja699onfuet3te5obcg"
+          },
+          "externalId": [
+            {
+              "id": "testUser1234@keeptesting.com",
+              "type": "ELOQUA-172",
+              "identifierType": "contactID1"
+            }
+          ],
+          "mappedToDestination": "true"
+        },
+        "recordId": "1",
+        "rudderId": "3606d3c7-8741-4245-a254-450e137d3866",
+        "messageId": "40def17a-1b6a-4d2d-a851-2a8d96f913bd"
+      },
+      "destination": {
+        "Config": {
+          "customerId": "78678678",
+          "audienceId": "564567",
+          "hashEmail": false
+        }
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "",
+      "headers": {},
+      "params": {},
+      "body": {
+        "JSON": {
+          "identifierFieldName": "contactID1",
+          "data": {
+            "key11": "Test User",
+            "key21": "1",
+            "contactID11": "+008822773355",
+            "contactID1": "testUser1234@keeptesting.com"
+          },
+          "customObjectId": "172",
+          "type": "track"
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": "track payload pass",
+    "input": {
+      "message": {
+        "type": "track",
+        "properties": {
+          "key11": "Test User",
+          "key21": 1,
+          "contactID11": "+008822773355"
+        },
+        "userId": "testUser1234@keeptesting.com",
+        "channel": "sources",
+        "context": {
+          "sources": {
+            "job_id": "2RVkqlV1adBiIpj33kWlQzchMP1/Syncher",
+            "version": "v1.28.0",
+            "job_run_id": "cja699onfuet3te5obc0",
+            "task_run_id": "cja699onfuet3te5obcg"
+          },
+          "externalId": [
+            {
+              "id": "testUser1234@keeptesting.com",
+              "type": "ELOQUA-1800",
+              "identifierType": "contactID112"
+            }
+          ],
+          "mappedToDestination": "true"
+        },
+        "recordId": "1",
+        "rudderId": "3606d3c7-8741-4245-a254-450e137d3866",
+        "messageId": "40def17a-1b6a-4d2d-a851-2a8d96f913bd"
+      },
+      "destination": {
+        "Config": {
+          "customerId": "78678678",
+          "audienceId": "564567",
+          "hashEmail": false
+        }
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "",
+      "headers": {},
+      "params": {},
+      "body": {
+        "JSON": {
+          "identifierFieldName": "contactID112",
+          "data": {
+            "key11": "Test User",
+            "key21": "1",
+            "contactID11": "+008822773355",
+            "contactID112": "testUser1234@keeptesting.com"
+          },
+          "customObjectId": "1800",
+          "type": "track"
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  }
+]

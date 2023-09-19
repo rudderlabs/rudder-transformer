@@ -18,8 +18,9 @@
     type: flatJson
 
 - destKey: timestamp
-  sourceKeys: timestamp
-  sourceFromGenericMap: true
+  sourceKeys:
+    - timestamp
+    - originalTimestamp
   required: false
 
 - destKey: idempotency_key

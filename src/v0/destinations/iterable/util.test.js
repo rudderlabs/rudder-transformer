@@ -1,12 +1,12 @@
 const {
-  identifyDeviceAction,
-  identifyBrowserAction,
-  identifyAction,
-  pageAction,
-  screenAction,
-  trackAction,
-  trackPurchaseAction,
-  updateCartAction,
+  pageEventPayloadBuilder,
+  trackEventPayloadBuilder,
+  screenEventPayloadBuilder,
+  purchaseEventPayloadBuilder,
+  updateCartEventPayloadBuilder,
+  updateUserEventPayloadBuilder,
+  registerDeviceTokenEventPayloadBuilder,
+  registerBrowserTokenEventPayloadBuilder,
 } = require('./util');
 
 const { ConfigCategory } = require('./config');
@@ -108,7 +108,7 @@ const getTestEcommMessage = () => {
 };
 
 describe('iterable utils test', () => {
-  describe('Unit test cases for iterable identifyDeviceAction', () => {
+  describe('Unit test cases for iterable registerDeviceTokenEventPayloadBuilder', () => {
     it('for no device type', async () => {
       let expectedOutput = {
         device: {
@@ -126,7 +126,9 @@ describe('iterable utils test', () => {
         preferUserId: true,
         userId: 'anonId',
       };
-      expect(identifyDeviceAction(getTestMessage(), getTestConfig())).toEqual(expectedOutput);
+      expect(registerDeviceTokenEventPayloadBuilder(getTestMessage(), getTestConfig())).toEqual(
+        expectedOutput,
+      );
     });
     it('For apple family device type', async () => {
       const fittingPayload = { ...getTestMessage() };
@@ -147,7 +149,9 @@ describe('iterable utils test', () => {
         preferUserId: true,
         userId: 'anonId',
       };
-      expect(identifyDeviceAction(fittingPayload, getTestConfig())).toEqual(expectedOutput);
+      expect(registerDeviceTokenEventPayloadBuilder(fittingPayload, getTestConfig())).toEqual(
+        expectedOutput,
+      );
     });
 
     it('For non apple family device type', async () => {
@@ -169,16 +173,18 @@ describe('iterable utils test', () => {
         preferUserId: true,
         userId: 'anonId',
       };
-      expect(identifyDeviceAction(fittingPayload, getTestConfig())).toEqual(expectedOutput);
+      expect(registerDeviceTokenEventPayloadBuilder(fittingPayload, getTestConfig())).toEqual(
+        expectedOutput,
+      );
     });
   });
-  describe('Unit test cases for iterable identifyBrowserAction', () => {
+  describe('Unit test cases for iterable registerBrowserTokenEventPayloadBuilder', () => {
     it('flow check', async () => {
       let expectedOutput = { browserToken: 5678, email: 'abc@test.com', userId: 'anonId' };
-      expect(identifyBrowserAction(getTestMessage())).toEqual(expectedOutput);
+      expect(registerBrowserTokenEventPayloadBuilder(getTestMessage())).toEqual(expectedOutput);
     });
   });
-  describe('Unit test cases for iterable identifyAction', () => {
+  describe('Unit test cases for iterable updateUserEventPayloadBuilder', () => {
     it('flow check without externalId', async () => {
       let expectedOutput = {
         dataFields: {
@@ -193,9 +199,9 @@ describe('iterable utils test', () => {
         preferUserId: true,
         userId: 'anonId',
       };
-      expect(identifyAction(getTestMessage(), ConfigCategory.IDENTIFY, getTestConfig())).toEqual(
-        expectedOutput,
-      );
+      expect(
+        updateUserEventPayloadBuilder(getTestMessage(), ConfigCategory.IDENTIFY, getTestConfig()),
+      ).toEqual(expectedOutput);
     });
 
     it('flow check with externalId', async () => {
@@ -215,12 +221,12 @@ describe('iterable utils test', () => {
         preferUserId: true,
         userId: 'anonId',
       };
-      expect(identifyAction(fittingPayload, ConfigCategory.IDENTIFY, getTestConfig())).toEqual(
-        expectedOutput,
-      );
+      expect(
+        updateUserEventPayloadBuilder(fittingPayload, ConfigCategory.IDENTIFY, getTestConfig()),
+      ).toEqual(expectedOutput);
     });
   });
-  describe('Unit test cases for iterbale pageAction', () => {
+  describe('Unit test cases for iterbale pageEventPayloadBuilder', () => {
     it('For trackAllPages', async () => {
       let destination = {
         Config: {
@@ -247,9 +253,13 @@ describe('iterable utils test', () => {
         templateId: 1234,
         userId: 'anonId',
       };
-      expect(pageAction(getTestMessage(), destination, ConfigCategory.PAGE)).toEqual(
-        expectedOutput,
-      );
+      expect(
+        pageEventPayloadBuilder(
+          { ...getTestMessage(), type: 'page' },
+          destination,
+          ConfigCategory.PAGE,
+        ),
+      ).toEqual(expectedOutput);
     });
 
     it('For trackCategorisedPages', async () => {
@@ -278,9 +288,13 @@ describe('iterable utils test', () => {
         templateId: 1234,
         userId: 'anonId',
       };
-      expect(pageAction(getTestMessage(), destination, ConfigCategory.PAGE)).toEqual(
-        expectedOutput,
-      );
+      expect(
+        pageEventPayloadBuilder(
+          { ...getTestMessage(), type: 'page' },
+          destination,
+          ConfigCategory.PAGE,
+        ),
+      ).toEqual(expectedOutput);
     });
 
     it('For trackNamedPages', async () => {
@@ -309,20 +323,23 @@ describe('iterable utils test', () => {
         templateId: 1234,
         userId: 'anonId',
       };
-      expect(pageAction(getTestMessage(), destination, ConfigCategory.PAGE)).toEqual(
-        expectedOutput,
-      );
+      expect(
+        pageEventPayloadBuilder(
+          { ...getTestMessage(), type: 'page' },
+          destination,
+          ConfigCategory.PAGE,
+        ),
+      ).toEqual(expectedOutput);
     });
 
     it('For mapToSingleEvent', async () => {
       let destination = {
         Config: {
           apiKey: '12345',
-          mapToSingleEvent: false,
+          mapToSingleEvent: true,
           trackAllPages: false,
           trackCategorisedPages: false,
           trackNamedPages: true,
-          mapToSingleEvent: true,
         },
         Enabled: true,
       };
@@ -341,9 +358,13 @@ describe('iterable utils test', () => {
         templateId: 1234,
         userId: 'anonId',
       };
-      expect(pageAction(getTestMessage(), destination, ConfigCategory.PAGE)).toEqual(
-        expectedOutput,
-      );
+      expect(
+        pageEventPayloadBuilder(
+          { ...getTestMessage(), type: 'page' },
+          destination,
+          ConfigCategory.PAGE,
+        ),
+      ).toEqual(expectedOutput);
     });
 
     it('For non-mapToSingleEvent', async () => {
@@ -354,7 +375,6 @@ describe('iterable utils test', () => {
           trackAllPages: false,
           trackCategorisedPages: false,
           trackNamedPages: true,
-          mapToSingleEvent: false,
         },
         Enabled: true,
       };
@@ -373,12 +393,16 @@ describe('iterable utils test', () => {
         templateId: 1234,
         userId: 'anonId',
       };
-      expect(pageAction(getTestMessage(), destination, ConfigCategory.PAGE)).toEqual(
-        expectedOutput,
-      );
+      expect(
+        pageEventPayloadBuilder(
+          { ...getTestMessage(), type: 'page' },
+          destination,
+          ConfigCategory.PAGE,
+        ),
+      ).toEqual(expectedOutput);
     });
   });
-  describe('Unit test cases for iterbale screenAction', () => {
+  describe('Unit test cases for iterbale screenEventPayloadBuilder', () => {
     it('For trackAllPages', async () => {
       let destination = {
         Config: {
@@ -405,9 +429,13 @@ describe('iterable utils test', () => {
         templateId: 1234,
         userId: 'anonId',
       };
-      expect(screenAction(getTestMessage(), destination, ConfigCategory.SCREEN)).toEqual(
-        expectedOutput,
-      );
+      expect(
+        screenEventPayloadBuilder(
+          { ...getTestMessage(), type: 'screen' },
+          destination,
+          ConfigCategory.SCREEN,
+        ),
+      ).toEqual(expectedOutput);
     });
 
     it('For trackCategorisedPages', async () => {
@@ -436,9 +464,13 @@ describe('iterable utils test', () => {
         templateId: 1234,
         userId: 'anonId',
       };
-      expect(screenAction(getTestMessage(), destination, ConfigCategory.SCREEN)).toEqual(
-        expectedOutput,
-      );
+      expect(
+        screenEventPayloadBuilder(
+          { ...getTestMessage(), type: 'screen' },
+          destination,
+          ConfigCategory.SCREEN,
+        ),
+      ).toEqual(expectedOutput);
     });
 
     it('For trackNamedPages', async () => {
@@ -467,20 +499,23 @@ describe('iterable utils test', () => {
         templateId: 1234,
         userId: 'anonId',
       };
-      expect(screenAction(getTestMessage(), destination, ConfigCategory.SCREEN)).toEqual(
-        expectedOutput,
-      );
+      expect(
+        screenEventPayloadBuilder(
+          { ...getTestMessage(), type: 'screen' },
+          destination,
+          ConfigCategory.SCREEN,
+        ),
+      ).toEqual(expectedOutput);
     });
 
     it('For mapToSingleEvent', async () => {
       let destination = {
         Config: {
           apiKey: '12345',
-          mapToSingleEvent: false,
+          mapToSingleEvent: true,
           trackAllPages: false,
           trackCategorisedPages: false,
           trackNamedPages: true,
-          mapToSingleEvent: true,
         },
         Enabled: true,
       };
@@ -499,9 +534,13 @@ describe('iterable utils test', () => {
         templateId: 1234,
         userId: 'anonId',
       };
-      expect(screenAction(getTestMessage(), destination, ConfigCategory.SCREEN)).toEqual(
-        expectedOutput,
-      );
+      expect(
+        screenEventPayloadBuilder(
+          { ...getTestMessage(), type: 'screen' },
+          destination,
+          ConfigCategory.SCREEN,
+        ),
+      ).toEqual(expectedOutput);
     });
 
     it('For non-mapToSingleEvent', async () => {
@@ -512,7 +551,6 @@ describe('iterable utils test', () => {
           trackAllPages: false,
           trackCategorisedPages: false,
           trackNamedPages: true,
-          mapToSingleEvent: false,
         },
         Enabled: true,
       };
@@ -531,12 +569,16 @@ describe('iterable utils test', () => {
         templateId: 1234,
         userId: 'anonId',
       };
-      expect(screenAction(getTestMessage(), destination, ConfigCategory.SCREEN)).toEqual(
-        expectedOutput,
-      );
+      expect(
+        screenEventPayloadBuilder(
+          { ...getTestMessage(), type: 'screen' },
+          destination,
+          ConfigCategory.SCREEN,
+        ),
+      ).toEqual(expectedOutput);
     });
   });
-  describe('Unit test cases for iterable trackAction', () => {
+  describe('Unit test cases for iterable trackEventPayloadBuilder', () => {
     it('flow check', async () => {
       let expectedOutput = {
         campaignId: 5678,
@@ -553,10 +595,12 @@ describe('iterable utils test', () => {
         templateId: 1234,
         userId: 'anonId',
       };
-      expect(trackAction(getTestMessage(), ConfigCategory.TRACK)).toEqual(expectedOutput);
+      expect(trackEventPayloadBuilder(getTestMessage(), ConfigCategory.TRACK)).toEqual(
+        expectedOutput,
+      );
     });
   });
-  describe('Unit test cases for iterable trackPurchaseAction', () => {
+  describe('Unit test cases for iterable purchaseEventPayloadBuilder', () => {
     it('flow check without product array', async () => {
       let expectedOutput = {
         campaignId: 1111,
@@ -600,7 +644,11 @@ describe('iterable utils test', () => {
         },
       };
       expect(
-        trackPurchaseAction(getTestEcommMessage(), ConfigCategory.TRACK_PURCHASE, getTestConfig()),
+        purchaseEventPayloadBuilder(
+          getTestEcommMessage(),
+          ConfigCategory.TRACK_PURCHASE,
+          getTestConfig(),
+        ),
       ).toEqual(expectedOutput);
     });
 
@@ -670,11 +718,11 @@ describe('iterable utils test', () => {
         },
       };
       expect(
-        trackPurchaseAction(fittingPayload, ConfigCategory.TRACK_PURCHASE, getTestConfig()),
+        purchaseEventPayloadBuilder(fittingPayload, ConfigCategory.TRACK_PURCHASE, getTestConfig()),
       ).toEqual(expectedOutput);
     });
   });
-  describe('Unit test cases for iterable updateCartAction', () => {
+  describe('Unit test cases for iterable updateCartEventPayloadBuilder', () => {
     it('flow check without product array', async () => {
       let expectedOutput = {
         items: [
@@ -702,9 +750,9 @@ describe('iterable utils test', () => {
           userId: 'userId',
         },
       };
-      expect(updateCartAction(getTestEcommMessage(), ConfigCategory.UPDATE_CART)).toEqual(
-        expectedOutput,
-      );
+      expect(
+        updateCartEventPayloadBuilder(getTestEcommMessage(), ConfigCategory.UPDATE_CART),
+      ).toEqual(expectedOutput);
     });
 
     it('flow check with product array', async () => {
@@ -746,7 +794,9 @@ describe('iterable utils test', () => {
           userId: 'userId',
         },
       };
-      expect(updateCartAction(fittingPayload, ConfigCategory.UPDATE_CART)).toEqual(expectedOutput);
+      expect(updateCartEventPayloadBuilder(fittingPayload, ConfigCategory.UPDATE_CART)).toEqual(
+        expectedOutput,
+      );
     });
   });
 });

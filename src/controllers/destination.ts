@@ -41,7 +41,9 @@ export default class DestinationController {
         ctx,
       ) as ProcessorTransformationRequest[];
       const timestampCorrectEvents = ControllerUtility.handleTimestampInEvents(events);
-      events = DynamicConfigParser.process(timestampCorrectEvents);
+      events = DynamicConfigParser.process(
+        timestampCorrectEvents,
+      ) as ProcessorTransformationRequest[];
       resplist = await integrationService.doProcessorTransformation(
         events,
         destination,
@@ -194,7 +196,7 @@ export default class DestinationController {
     stats.timing('dest_transform_request_latency', startTime, {
       destination,
       feature: tags.FEATURES.BATCH,
-      version:"v0",
+      version: 'v0',
     });
     return ctx;
   }

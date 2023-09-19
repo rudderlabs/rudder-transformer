@@ -15,7 +15,7 @@
     "message": {
       "type": "identify",
       "sentAt": "2021-01-03T17:02:53.195Z",
-      "userId": "ujjwal27",
+      "userId": "user@27",
       "channel": "web",
       "context": {
         "os": {
@@ -31,9 +31,9 @@
         "traits": {
           "brand": "John Players",
           "price": "15000",
-          "firstName": "Ujjwal",
-          "email": "ujjwal@rudderstack.com",
-          "userId": "ujjwal27"
+          "firstName": "Test",
+          "email": "test@rudderstack.com",
+          "userId": "user@27"
         },
         "locale": "en-US",
         "device": {
@@ -81,7 +81,7 @@
       "event": "add_to_Cart",
       "type": "track",
       "sentAt": "2021-01-03T17:02:53.195Z",
-      "userId": "ujjwal27",
+      "userId": "user@27",
       "channel": "web",
       "properties": {
         "brand": "Zara",

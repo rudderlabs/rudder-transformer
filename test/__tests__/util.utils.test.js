@@ -11,7 +11,7 @@ describe('constructValidationErrors', () => {
       type: 'Datatype-Mismatch',
       message: 'must be number',
       meta: {
-        instacePath: '/properties/price',
+        instancePath: '/properties/price',
         schemaPath: '#/properties/properties/properties/price/type',
       },
     },
@@ -19,7 +19,7 @@ describe('constructValidationErrors', () => {
       type: 'Datatype-Mismatch',
       message: 'must be string',
       meta: {
-        instacePath: '/properties/product_id',
+        instancePath: '/properties/product_id',
         schemaPath: '#/properties/properties/properties/product_id/type',
       },
     },
@@ -28,7 +28,7 @@ describe('constructValidationErrors', () => {
       message: 'must NOT have additional properties : sku_id',
       property: 'sku_id',
       meta: {
-        instacePath: '/properties',
+        instancePath: '/properties',
         schemaPath: '#/properties/properties/additionalProperties',
       },
     },
@@ -37,7 +37,7 @@ describe('constructValidationErrors', () => {
       message: "must have required property 'product_id'",
       property: 'product_id',
       meta: {
-        instacePath: '/properties',
+        instancePath: '/properties',
         schemaPath: '#/properties/properties/required',
       },
     },

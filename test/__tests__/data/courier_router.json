@@ -7,15 +7,23 @@
           "channel": "web",
           "event": "Product Added",
           "userId": "test123",
-          "properties": { "price": 999, "quantity": 1 },
-          "context": { "traits": { "firstName": "John", "age": 27 } },
+          "properties": {
+            "price": 999,
+            "quantity": 1
+          },
+          "context": {
+            "traits": {
+              "firstName": "John",
+              "age": 27
+            }
+          },
           "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
           "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
           "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35"
         },
         "destination": {
           "Config": {
-            "apiKey": "test-api-key"
+            "apiKey": "dummyApiKey"
           }
         },
         "metadata": {
@@ -57,7 +65,7 @@
           "method": "POST",
           "endpoint": "https://api.courier.com/inbound/rudderstack",
           "headers": {
-            "Authorization": "Bearer test-api-key",
+            "Authorization": "Bearer dummyApiKey",
             "Content-Type": "application/json"
           },
           "params": {},
@@ -67,8 +75,16 @@
               "channel": "web",
               "event": "Product Added",
               "userId": "test123",
-              "properties": { "price": 999, "quantity": 1 },
-              "context": { "traits": { "firstName": "John", "age": 27 } },
+              "properties": {
+                "price": 999,
+                "quantity": 1
+              },
+              "context": {
+                "traits": {
+                  "firstName": "John",
+                  "age": 27
+                }
+              },
               "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
               "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
               "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35"
@@ -81,7 +97,7 @@
         },
         "destination": {
           "Config": {
-            "apiKey": "test-api-key"
+            "apiKey": "dummyApiKey"
           }
         },
         "metadata": [

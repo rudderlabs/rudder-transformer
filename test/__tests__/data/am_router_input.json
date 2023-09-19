@@ -11,7 +11,7 @@
         },
         "traits": {
           "anonymousId": "123456",
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "address": {
             "city": "kolkata",
             "country": "India",
@@ -59,7 +59,7 @@
       "sentAt": "2019-10-14T09:03:22.563Z"
     },
     "metadata": {
-      "jobId": 2
+      "jobId": 1
     },
     "destination": {
       "Config": {
@@ -80,7 +80,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {

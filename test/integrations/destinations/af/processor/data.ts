@@ -352,7 +352,7 @@ export const data = [
                   namespace: 'com.rudderlabs.javascript',
                   version: '1.0.0',
                 },
-                traits: { email: 'sayan@gmail.com' },
+                traits: { email: 'test@rudderstack.com' },
                 library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                 userAgent:
                   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',

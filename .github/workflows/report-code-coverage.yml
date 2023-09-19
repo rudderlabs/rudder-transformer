@@ -15,12 +15,12 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.5.2
+        uses: actions/checkout@v3.5.3
         with:
           fetch-depth: 1
 
       - name: Setup Node
-        uses: actions/setup-node@v3.6.0
+        uses: actions/setup-node@v3.7.0
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -42,7 +42,7 @@ jobs:
         uses: codecov/codecov-action@v3.1.4
         with:
           directory: ./reports/coverage
-      
+
       - name: Upload TS Coverage Reports to Codecov
         uses: codecov/codecov-action@v3.1.4
         with:
@@ -57,7 +57,7 @@ jobs:
 
       - name: SonarCloud Scan
         if: always()
-        uses: SonarSource/sonarcloud-github-action@v1.8
+        uses: SonarSource/sonarcloud-github-action@v2.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

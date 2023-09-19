@@ -107,7 +107,21 @@ const responseHandler = (destinationResponse) => {
   const message = 'Request Processed Successfully';
   const { status } = destinationResponse;
   if (isHttpStatusSuccess(status)) {
-    // Mostly any error will not have a status of 2xx
+    // for google ads enhance conversions the partialFailureError returns with status 200
+    const { partialFailureError } = destinationResponse.response;
+    // non-zero code signifies partialFailure
+    // Ref - https://github.com/googleapis/googleapis/blob/master/google/rpc/code.proto
+    if (partialFailureError && partialFailureError.code !== 0) {
+      throw new NetworkError(
+        `[Google Ads Offline Conversions]:: partialFailureError - ${partialFailureError?.message}`,
+        400,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(400),
+        },
+        partialFailureError,
+      );
+    }
+
     return {
       status,
       message,
@@ -127,7 +141,7 @@ const responseHandler = (destinationResponse) => {
     getAuthErrCategoryFromErrDetailsAndStCode(status, response),
   );
 };
-// eslint-disable-next-line func-names
+
 class networkHandler {
   constructor() {
     this.proxy = ProxyRequest;
@@ -136,4 +150,5 @@ class networkHandler {
     this.prepareProxy = prepareProxyRequest;
   }
 }
+
 module.exports = { networkHandler };

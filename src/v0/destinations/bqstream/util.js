@@ -1,5 +1,4 @@
 /* eslint-disable no-param-reassign */
-const _ = require('lodash')
 const getValue = require('get-value');
 const {
   getDynamicErrorType,

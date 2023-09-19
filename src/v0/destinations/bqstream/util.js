@@ -217,12 +217,7 @@ const getRearrangedEvents = (successEventList, errorEventList) => {
   }
   // if there are no batched response, then return the error events
   if (successEventList.length === 0) {
-    const resultArray = [];
-    const errorMap = new Map();
-    processedErrorEvents.forEach((item) => {
-      optimizeErrorResponse(item, errorMap, resultArray);
-    });
-    return resultArray;
+    return formatCompositeResponse(processedErrorEvents)
   }
 
   // if there are both batched response and error events, then order them

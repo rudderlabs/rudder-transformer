@@ -99,6 +99,36 @@ const batchEachUserSuccessEvents = (eventsChunk) => {
   return batchedResponseList;
 };
 
+const processEachTypedEventList = (
+  typedEventList,
+  eachTypeSuccessEventList,
+  eachTypeErrorEventsList,
+) => {
+  typedEventList.forEach((event) => {
+    try {
+      if (event.message.statusCode) {
+        // already transformed event
+        eachTypeSuccessEventList.push(event);
+      } else {
+        // if not transformed
+        const response = process(event);
+        const transformedEvents = Array.isArray(response) ? response : [response];
+
+        transformedEvents.forEach((res) => {
+          eachTypeSuccessEventList.push({
+            message: res,
+            metadata: event.metadata,
+            destination: event.destination,
+          });
+        });
+      }
+    } catch (error) {
+      const eachUserErrorEvent = handleRtTfSingleEventError(event, error, DESTINATION);
+      eachTypeErrorEventsList.push(eachUserErrorEvent);
+    }
+  });
+};
+
 const processRouterDest = (inputs) => {
   const errorRespEvents = checkInvalidRtTfEvents(inputs, DESTINATION);
   if (errorRespEvents.length > 0) {
@@ -108,33 +138,10 @@ const processRouterDest = (inputs) => {
 
   const batchedEvents = groupEventsByType(inputs);
 
-  batchedEvents.forEach((listOfEvents) => {
-    const eachTypeSuccessEventList = []; // temporary variable to divide payload into chunks
-    const eachTypeErrorEventsList = [];
-
-    listOfEvents.forEach((event) => {
-      try {
-        if (event.message.statusCode) {
-          // already transformed event
-          eachTypeSuccessEventList.push(event);
-        } else {
-          // if not transformed
-          const response = process(event);
-          const transformedEvents = Array.isArray(response) ? response : [response];
-
-          transformedEvents.forEach((res) => {
-            eachTypeSuccessEventList.push({
-              message: res,
-              metadata: event.metadata,
-              destination: event.destination,
-            });
-          });
-        }
-      } catch (error) {
-        const eachUserErrorEvent = handleRtTfSingleEventError(event, error, DESTINATION);
-        eachTypeErrorEventsList.push(eachUserErrorEvent);
-      }
-    });
+  batchedEvents.forEach((typedEventList) => {
+    const eachTypeSuccessEventList = []; // list of events that are transformed successfully
+    const eachTypeErrorEventsList = []; // list of events that are errored out
+    processEachTypedEventList(typedEventList, eachTypeSuccessEventList, eachTypeErrorEventsList);
 
     const orderedEventsList = getRearrangedEvents(
       eachTypeSuccessEventList,

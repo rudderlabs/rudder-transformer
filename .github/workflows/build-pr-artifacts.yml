@@ -8,7 +8,7 @@ on:
       - synchronize
 
 env:
-  type: ut
+  type:
 
 
 jobs:

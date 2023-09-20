@@ -429,7 +429,9 @@ const getEventAndPropertiesFromConfig = (message, destination, payload) => {
   });
 
   if (!hubspotEventFound) {
-    throw new ConfigurationError(`'${event}' event name not found`);
+    throw new ConfigurationError(
+      `Event name '${event}' mappings are not configured in the destination`,
+    );
   }
 
   // 2. fetch event properties from webapp config

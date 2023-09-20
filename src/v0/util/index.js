@@ -28,6 +28,10 @@ const {
 } = require('./errorTypes');
 const { client: errNotificationClient } = require('../../util/errorNotifier');
 const { HTTP_STATUS_CODES } = require('./constant');
+const {
+  REFRESH_TOKEN,
+  AUTH_STATUS_INACTIVE,
+} = require('../../adapters/networkhandler/authConstants');
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -1829,8 +1833,8 @@ const getAccessToken = (metadata, accessTokenKey) => {
   // OAuth for this destination
   const { secret } = metadata;
   // we would need to verify if secret is present and also if the access token field is present in secret
-  if (!secret || !secret[accessTokenKey]) {
-    throw new OAuthSecretError('Empty/Invalid access token');
+  if (!secret?.[accessTokenKey]) {
+    throw new OAuthSecretError('OAuth - access token not found');
   }
   return secret[accessTokenKey];
 };
@@ -1910,6 +1914,51 @@ const batchMultiplexedEvents = (transformedEventsList, maxBatchSize) => {
   }
 
   return batchedEvents;
+};
+
+/**
+ * This function helps to detarmine type of error occured. According to the response
+ * we set authErrorCategory to take decision if we need to refresh the access_token
+ * or need to de-activate authStatus for the destination.
+ *
+ * **Scenarios**:
+ * - statusCode=401, response.error.details !== "" -> REFRESH_TOKEN
+ * - statusCode=403, response.error.details !== "" -> AUTH_STATUS_INACTIVE
+ *
+ * @param {*} code
+ * @param {*} response
+ * @returns
+ */
+const getAuthErrCategoryFromErrDetailsAndStCode = (code, response) => {
+  if (code === 401 && (!get(response, 'error.details') || typeof response === 'string'))
+    return REFRESH_TOKEN;
+  if (code === 403 && (!get(response, 'error.details') || typeof response === 'string'))
+    return AUTH_STATUS_INACTIVE;
+  return '';
+};
+
+/**
+ * This function helps to determine the type of error occurred. We set the authErrorCategory
+ * as per the destination response that is received and take the decision whether
+ * to refresh the access_token or de-activate authStatus.
+ *
+ * **Scenarios**:
+ * - statusCode=401 -> REFRESH_TOKEN
+ * - statusCode=403 -> AUTH_STATUS_INACTIVE
+ *
+ * @param {*} status
+ * @returns
+ */
+const getAuthErrCategoryFromStCode = (status) => {
+  if (status === 401) {
+    // UNAUTHORIZED
+    return REFRESH_TOKEN;
+  }
+  if (status === 403) {
+    // ACCESS_DENIED
+    return AUTH_STATUS_INACTIVE;
+  }
+  return '';
 };
 
 // ========================================================================
@@ -2012,4 +2061,6 @@ module.exports = {
   checkAndCorrectUserId,
   getAccessToken,
   formatValues,
+  getAuthErrCategoryFromErrDetailsAndStCode,
+  getAuthErrCategoryFromStCode,
 };

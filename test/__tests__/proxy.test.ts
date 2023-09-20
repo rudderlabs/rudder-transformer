@@ -48,6 +48,7 @@ const destinations = [
   'marketo_static_list',
   'criteo_audience',
   'tiktok_ads',
+  'intercom'
 ];
 
 // start of generic tests

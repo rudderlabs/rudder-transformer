@@ -4,7 +4,7 @@ import {
   TemplateType,
   ExecutionBindings,
   StepOutput,
-} from 'rudder-workflow-engine';
+} from '@rudderstack/workflow-engine';
 
 import tags from '../../v0/util/tags';
 

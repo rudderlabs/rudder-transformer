@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.42.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.41.1...v1.42.0) (2023-09-18)
+
+
+### Features
+
+* added profiling endpoints to fetch profiles ([#2540](https://github.com/rudderlabs/rudder-transformer/issues/2540)) ([e537364](https://github.com/rudderlabs/rudder-transformer/commit/e537364841729f738e75bfbf859abad745f1f78f))
+* google ads v14 upgrade ([#2578](https://github.com/rudderlabs/rudder-transformer/issues/2578)) ([f44a951](https://github.com/rudderlabs/rudder-transformer/commit/f44a951fc2a23135e3d0950d7a29421ca939de1a))
+* introduce de-activation of authStatus for access_denied or inva… ([#2598](https://github.com/rudderlabs/rudder-transformer/issues/2598)) ([3b1fef6](https://github.com/rudderlabs/rudder-transformer/commit/3b1fef63c7aee376dd67c6b3235095f311d673fb))
+* **mixpanel:** add incremental properties support ([#2550](https://github.com/rudderlabs/rudder-transformer/issues/2550)) ([e98ea84](https://github.com/rudderlabs/rudder-transformer/commit/e98ea84265ee37bfc6d3e99104af7bb4a3d78007))
+* onboard fullstory cloud mode ([#2536](https://github.com/rudderlabs/rudder-transformer/issues/2536)) ([dfd6117](https://github.com/rudderlabs/rudder-transformer/commit/dfd6117fbba521941876bc9681858d4a6d32b0bf))
+* onboard intercom to transformer proxy ([#2548](https://github.com/rudderlabs/rudder-transformer/issues/2548)) ([ed27a11](https://github.com/rudderlabs/rudder-transformer/commit/ed27a11799ded0e9f7f77401ddc58061a5908b37))
+* onboard launchdarkly audience ([#2529](https://github.com/rudderlabs/rudder-transformer/issues/2529)) ([082e1d1](https://github.com/rudderlabs/rudder-transformer/commit/082e1d190f4df152cd7dc3141cc33b406720215f))
+
+
+### Bug Fixes
+
+* **INT-339:** marketo response handler to handle static list removed and skipped statuses ([#2606](https://github.com/rudderlabs/rudder-transformer/issues/2606)) ([e3fed49](https://github.com/rudderlabs/rudder-transformer/commit/e3fed49d2725a6c60409db00cfda2a997da78e71))
+* **INT-339:** marketo response handler to handle static list removed and skipped statuses ([#2620](https://github.com/rudderlabs/rudder-transformer/issues/2620)) ([87d8216](https://github.com/rudderlabs/rudder-transformer/commit/87d82165089b706da1213cb3859f0f6d73f917db))
+* **INT-523:** replaced flag with dropdown for datacenter selection ([#2575](https://github.com/rudderlabs/rudder-transformer/issues/2575)) ([735d5d1](https://github.com/rudderlabs/rudder-transformer/commit/735d5d1e4f1d84edaed488642eefe8d41bf6f20a))
+* **INT-568:** slack send event to event specific channel based on channel webhook  ([#2563](https://github.com/rudderlabs/rudder-transformer/issues/2563)) ([0f3b39e](https://github.com/rudderlabs/rudder-transformer/commit/0f3b39e64f50cec54a5fcd59e0da298092ca0f22))
+* **INT-591:** added support of id parameter for update events ([#2595](https://github.com/rudderlabs/rudder-transformer/issues/2595)) ([a2a9c37](https://github.com/rudderlabs/rudder-transformer/commit/a2a9c374517826738ba9677511c6247316fc836e))
+* **iterable:** updated mappings ([#2602](https://github.com/rudderlabs/rudder-transformer/issues/2602)) ([23bb1f6](https://github.com/rudderlabs/rudder-transformer/commit/23bb1f64168f0e0a2ded4cbce8c99ef807fef9ad))
+* pyroscope endpoints ([#2613](https://github.com/rudderlabs/rudder-transformer/issues/2613)) ([7d268f0](https://github.com/rudderlabs/rudder-transformer/commit/7d268f046f92d86f48ced06c586b0d098a913113))
+* remove hashing on twclid for twitter ads ([#2605](https://github.com/rudderlabs/rudder-transformer/issues/2605)) ([6c984a4](https://github.com/rudderlabs/rudder-transformer/commit/6c984a4821124e1054be1c81a9bf110c36311f13))
+* seperate build steps for ruddestack and rudderlabs repo ([#2625](https://github.com/rudderlabs/rudder-transformer/issues/2625)) ([fcafacd](https://github.com/rudderlabs/rudder-transformer/commit/fcafacd10be7f1c9c001a6a805b4cb9daafd4413))
+* **transformation:** block ipv6 requests in user transformer ([#2618](https://github.com/rudderlabs/rudder-transformer/issues/2618)) ([fd81211](https://github.com/rudderlabs/rudder-transformer/commit/fd8121108594d6ca032c36c7b8d47d26c1b389e0))
+
 ### [1.41.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.41.0...v1.41.1) (2023-09-14)
 
 

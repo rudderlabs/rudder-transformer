@@ -1,10 +1,11 @@
 const integration = "shopify";
 const name = "Shopify";
+const version = 'v0'
 
 const fs = require("fs");
 const path = require("path");
 
-const transformer = require(`../../src/v0/sources/${integration}/transform`);
+const transformer = require(`../../src/v1/sources/${integration}.${version}/transform`);
 
 
 // Processor Test Data

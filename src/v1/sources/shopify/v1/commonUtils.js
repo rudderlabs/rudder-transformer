@@ -1,9 +1,9 @@
 /* eslint-disable camelcase */
-const stats = require('../../../util/stats');
-const { flattenJson } = require('../../util');
-const { RedisDB } = require('../../../util/redis/redisConnector');
-const logger = require('../../../logger');
-const { TransformationError } = require('../../util/errorTypes');
+const stats = require('../../../../util/stats');
+const { flattenJson } = require('../../../../v0/util');
+const { RedisDB } = require('../../../../util/redis/redisConnector');
+const logger = require('../../../../logger');
+const { TransformationError } = require('../../../../v0/util/errorTypes');
 
 const getCartToken = (message, shopifyTopic) => {
   if (shopifyTopic === 'carts_update') {

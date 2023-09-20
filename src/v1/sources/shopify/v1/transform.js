@@ -9,7 +9,7 @@ const {
 const { identifyLayer } = require('./identifyEventsLayer');
 const { trackLayer } = require('./trackEventsLayer');
 const { identifierEventLayer } = require('./identifierEventsLayer');
-const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../util');
+const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../../../v0/util');
 const { IDENTIFY_TOPICS, INTEGRATION } = require('./config');
 
 const processEvent = async (inputEvent, metricMetadata) => {

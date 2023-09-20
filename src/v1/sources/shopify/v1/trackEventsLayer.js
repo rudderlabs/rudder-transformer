@@ -10,13 +10,13 @@ const {
   lineItemsMappingJSON,
   LINE_ITEM_EXCLUSION_FIELDS,
 } = require('./config');
-const { RedisDB } = require('../../../util/redis/redisConnector');
-const logger = require('../../../logger');
+const { RedisDB } = require('../../../../util/redis/redisConnector');
+const logger = require('../../../../logger');
 const { idResolutionLayer } = require('./identityResolutionLayer');
 const { enrichPayload } = require('./enrichmentLayer');
-const Message = require('../message');
-const { EventType } = require('../../../constants');
-const stats = require('../../../util/stats');
+const Message = require('../../../../v0/sources/message');
+const { EventType } = require('../../../../constants');
+const stats = require('../../../../util/stats');
 const {
   extractEmailFromPayload,
   getUnhashedLineItems,
@@ -26,7 +26,7 @@ const {
   removeUndefinedAndNullValues,
   constructPayload,
   extractCustomFields,
-} = require('../../util');
+} = require('../../../../v0/util');
 
 const trackLayer = {
   getProductsListFromLineItems(lineItems) {

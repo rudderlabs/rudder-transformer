@@ -1,7 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const { RUDDER_ECOM_MAP, PROPERTIES_MAPPING_EXCLUSION_FIELDS } = require('./config');
-const logger = require('../../../logger');
+const logger = require('../../../../logger');
 
 const enrichPayload = {
   /**

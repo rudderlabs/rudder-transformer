@@ -10,6 +10,7 @@ const {
   ThrottledError,
   RetryableError,
   UnhandledStatusCodeError,
+  InstrumentationError,
 } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 
@@ -32,6 +33,31 @@ const MARKETO_ABORTABLE_CODES = [
   '1001',
 ];
 const MARKETO_THROTTLED_CODES = ['502', '606', '607', '608', '615'];
+
+const RECORD_LEVEL_ABORTBALE_ERRORS = [
+  '1001',
+  '1002',
+  '1003',
+  '1004',
+  '1005',
+  '1006',
+  '1007',
+  '1008',
+  '1011',
+  '1013',
+  '1014',
+  '1015',
+  '1016',
+  '1017',
+  '1018',
+  '1021',
+  '1026',
+  '1027',
+  '1028',
+  '1036',
+  '1049',
+];
+
 const { DESTINATION } = require('./config');
 const logger = require('../../../logger');
 
@@ -58,6 +84,75 @@ const marketoApplicationErrorHandler = (marketoResponse, sourceMessage, destinat
     );
   }
 };
+/**
+ * this function checks the status of individual responses and throws error if any
+ * response ststus does not match the expected status
+ * doc1: https://developers.marketo.com/rest-api/lead-database/custom-objects/#create_and_update
+ * doc2: https://developers.marketo.com/rest-api/lead-database/#create_and_update
+ * Structure of marketoResponse: {
+    "requestId":"e42b#14272d07d78",
+    "success":true,
+    "result":[
+        {
+          "seq":0,
+          "status": "updated",
+          "marketoGUID":"dff23271-f996-47d7-984f-f2676861b5fb"
+        },
+        {
+          "seq":1,
+          "status": "created",
+          "marketoGUID":"cff23271-f996-47d7-984f-f2676861b5fb"
+        },
+        {
+          "seq":2,
+          "status": "skipped"
+          "reasons":[
+              {
+                "code":"1004",
+                "message":"Lead not found"
+              }
+          ]
+        }
+    ]
+  }
+ *
+ * @param {*} marketoResponse
+ * @param {*} sourceMessage
+ */
+const nestedResponseHandler = (marketoResponse, sourceMessage) => {
+  const checkStatus = (res) => {
+    const { status } = res;
+    if (status && status !== 'updated' && status !== 'created' && status !== 'added') {
+      const { reasons } = res;
+      let statusCode = 400;
+      if (reasons && RECORD_LEVEL_ABORTBALE_ERRORS.includes(reasons[0].code)) {
+        statusCode = 400;
+      } else if (reasons && MARKETO_ABORTABLE_CODES.includes(reasons[0].code)) {
+        statusCode = 400;
+      } else if (reasons && MARKETO_THROTTLED_CODES.includes(reasons[0].code)) {
+        statusCode = 429;
+      } else if (reasons && MARKETO_RETRYABLE_CODES.includes(reasons[0].code)) {
+        statusCode = 500;
+      }
+      throw new InstrumentationError(
+        `Request failed during: ${sourceMessage}, error: ${JSON.stringify(reasons)}`,
+        statusCode,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(statusCode),
+        },
+        marketoResponse,
+      );
+    }
+  };
+  const { result } = marketoResponse;
+  if (Array.isArray(result)) {
+    result.forEach((resultElement) => {
+      checkStatus(resultElement);
+    });
+  } else {
+    checkStatus(result);
+  }
+};
 
 const marketoResponseHandler = (
   destResponse,
@@ -80,11 +175,24 @@ const marketoResponseHandler = (
   }
   if (isHttpStatusSuccess(status)) {
     // for authentication requests
-    if (response && response.access_token && response.expires_in) {
+    if (response && response.access_token) {
+        /* This scenario will handle the case when we get the foloowing response
+    status: 200  
+    respnse: {"access_token":"86e6c440-1c2e-4a67-8b0d-53496bfaa510:sj","token_type":"bearer","expires_in":0,"scope":"CDP@cvent.com"}
+    wherein "expires_in":0 denotes that we should refresh the accessToken but its not expired yet. 
+    */
+      if(response.expires_in === 0) {
+      throw new RetryableError(
+        `Request Failed for ${destination}, Access Token Expired (Retryable).${sourceMessage}`,
+        500,
+        response,
+      );
+      }
       return response;
     }
     // marketo application level success
     if (response && response.success) {
+      nestedResponseHandler(response, sourceMessage);
       return response;
     }
     // marketo application level failure
@@ -123,7 +231,10 @@ const marketoResponseHandler = (
  * @returns { response, status }
  */
 const sendGetRequest = async (url, options) => {
-  const clientResponse = await httpGET(url, options);
+  const clientResponse = await httpGET(url, options, {
+    destType: 'marketo',
+    feature: 'transformation',
+  });
   const processedResponse = processAxiosResponse(clientResponse);
   return processedResponse;
 };
@@ -135,7 +246,10 @@ const sendGetRequest = async (url, options) => {
  * @returns { response, status }
  */
 const sendPostRequest = async (url, data, options) => {
-  const clientResponse = await httpPOST(url, data, options);
+  const clientResponse = await httpPOST(url, data, options, {
+    destType: 'marketo',
+    feature: 'transformation',
+  });
   const processedResponse = processAxiosResponse(clientResponse);
   return processedResponse;
 };

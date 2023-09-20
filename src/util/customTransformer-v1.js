@@ -1,9 +1,9 @@
 const ivm = require('isolated-vm');
-const stats = require('./stats');
 
 const { getFactory } = require('./ivmFactory');
 const { getMetadata } = require('../v0/util');
 const logger = require('../logger');
+const stats = require('./stats');
 
 const userTransformTimeout = parseInt(process.env.USER_TRANSFORM_TIMEOUT || '600000', 10);
 
@@ -62,7 +62,7 @@ async function userTransformHandlerV1(
     const metaTags = events.length && events[0].metadata ? getMetadata(events[0].metadata) : {};
     const tags = {
       transformerVersionId: userTransformation.versionId,
-      version: 1,
+      identifier: 'v1',
       ...metaTags,
     };
 
@@ -71,16 +71,18 @@ async function userTransformHandlerV1(
       userTransformation.code,
       libraryVersionIds,
       userTransformation.versionId,
+      userTransformation.secrets || {},
       testMode,
     );
     const isolatevm = await isolatevmFactory.create();
     logger.debug(`Isolate VM created... `);
 
     // Transform the event...
-    stats.counter('events_into_vm', events.length, tags);
+    stats.counter('events_to_process', events.length, tags);
     const isolateStartWallTime = calculateMsFromIvmTime(isolatevm.isolateStartWallTime);
     const isolateStartCPUTime = calculateMsFromIvmTime(isolatevm.isolateStartCPUTime);
 
+    const invokeTime = new Date();
     let transformedEvents;
     // Destroy isolatevm in case of execution errors
     try {
@@ -91,10 +93,13 @@ async function userTransformHandlerV1(
       throw err;
     }
     const { logs } = isolatevm;
+    stats.timing('run_time', invokeTime, tags);
     const isolateEndWallTime = calculateMsFromIvmTime(isolatevm.isolate.wallTime);
     const isolateEndCPUTime = calculateMsFromIvmTime(isolatevm.isolate.cpuTime);
-    stats.timing('isolate_wall_time', isolateEndWallTime - isolateStartWallTime, tags);
-    stats.timing('isolate_cpu_time', isolateEndCPUTime - isolateStartCPUTime, tags);
+
+    //TODO: fix "Value is not a valid number: NaN" error and uncomment
+    //stats.timing('isolate_wall_time', isolateEndWallTime - isolateStartWallTime, tags);
+    //stats.timing('isolate_cpu_time', isolateEndCPUTime - isolateStartCPUTime, tags);
 
     // Destroy the isolated vm resources created
     logger.debug(`Isolate VM being destroyed... `);

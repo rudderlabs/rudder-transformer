@@ -8,7 +8,9 @@ const {
   defaultPostRequestConfig,
   simpleProcessRouterDest,
 } = require('../../util');
+const { getUAInfo } = require('./utils');
 const { InstrumentationError, TransformationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const handleProperties = (properties) => {
   const result = {};
@@ -101,6 +103,11 @@ const handleProperties = (properties) => {
 
 const responseBuilderSimple = (message, category, destination) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  // Passing user agent info for identify, track, screen and page calls
+  if (category.name !== CONFIG_CATEGORIES.ALIAS.name) {
+    payload.properties = { ...payload.properties, ...getUAInfo(message) };
+  }
+
   if (payload) {
     if (payload.properties) {
       // keeping this properties handling logic here
@@ -113,7 +120,7 @@ const responseBuilderSimple = (message, category, destination) => {
     response.method = defaultPostRequestConfig.requestMethod;
     response.headers = {
       'Indicative-Client': 'RudderStack',
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
     };
     response.userId = getFieldValueFromMessage(message, 'userId');
     response.body.JSON = responseBody;

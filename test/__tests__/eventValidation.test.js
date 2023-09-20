@@ -4,7 +4,8 @@ const fetch = require("node-fetch", () => jest.fn());
 const {
   isEventTypeSupported,
   handleValidation,
-  violationTypes
+  violationTypes,
+  handleValidationErrors
 } = require("../../src/util/eventValidation");
 
 const trackingPlan = {
@@ -122,17 +123,116 @@ const eventTypesTestCases = [
   },
   {
     eventType: "page",
-    output: false
+    output: true
   },
   {
     eventType: "screen",
-    output: false
+    output: true
   },
   {
     eventType: "alias",
     output: false
   }
 ];
+
+const validationErrorsTestCases = [
+  {
+    test: "single violation with drop setting",
+    metadata: {
+      mergedTpConfig: {
+        allowUnplannedEvents: "true",
+        unplannedProperties: "forward",
+        anyOtherViolation: "drop",
+        sendViolatedEventsTo: "procErrors",
+      },
+    },
+    validationErrors: [ { type: "Required-Missing" } ],
+    output: true
+  },
+  {
+    test: "single violation with drop setting",
+    metadata: {
+      mergedTpConfig: {
+        allowUnplannedEvents: "true",
+        unplannedProperties: "forward",
+        anyOtherViolation: "forward",
+        sendViolatedEventsTo: "procErrors",
+      },
+    },
+    validationErrors: [ { type: "Datatype-Mismatch" } ],
+    output: false
+  },
+  {
+    test: "multiple violations with drop setting in one of them",
+    metadata: {
+      mergedTpConfig: {
+        allowUnplannedEvents: "false",
+        unplannedProperties: "forward",
+        anyOtherViolation: "forward",
+        sendViolatedEventsTo: "procErrors",
+      },
+    },
+    validationErrors: [
+      { type: "Datatype-Mismatch" },
+      { type: "Unplanned-Event" },
+      { type: "Additional-Properties" }
+    ],
+    output: true
+  },
+  {
+    test: "multiple violations with drop setting in one of them",
+    metadata: {
+      mergedTpConfig: {
+        allowUnplannedEvents: "true",
+        unplannedProperties: "drop",
+        anyOtherViolation: "forward",
+        sendViolatedEventsTo: "procErrors",
+      },
+    },
+    validationErrors: [
+      { type: "Datatype-Mismatch" },
+      { type: "Unplanned-Event" },
+      { type: "Additional-Properties" }
+    ],
+    output: true
+  },
+  {
+    test: "multiple violations with forward setting for all",
+    metadata: {
+      mergedTpConfig: {
+        allowUnplannedEvents: "true",
+        unplannedProperties: "forward",
+        anyOtherViolation: "forward",
+        sendViolatedEventsTo: "procErrors",
+      },
+    },
+    validationErrors: [
+      { type: "Datatype-Mismatch" },
+      { type: "Unplanned-Event" },
+      { type: "Additional-Properties" }
+    ],
+    output: false
+  },
+  {
+    test: "multiple violations with drop setting in one of them and duplicate violation",
+    metadata: {
+      mergedTpConfig: {
+        allowUnplannedEvents: "true",
+        unplannedProperties: "drop",
+        anyOtherViolation: "forward",
+        sendViolatedEventsTo: "procErrors",
+      },
+    },
+    validationErrors: [
+      { type: "Datatype-Mismatch" },
+      { type: "Additional-Properties" },
+      { type: "Datatype-Mismatch" },
+      { type: "Required-missing" },
+    ],
+    output: true
+  }
+];
+
 const eventValidationTestCases = [
   {
     testCase: "Empty Source TP Config",
@@ -1111,6 +1211,156 @@ const eventValidationTestCases = [
       dropEvent: false,
       violationType: "None"
     }
+  },
+  {
+    testCase: "allowUnplannedEvents set to value other than true/false",
+    event: {
+      metadata: {
+        trackingPlanId: "dummy_tracking_plan_id",
+        trackingPlanVersion: "dummy_version",
+        workspaceId: "dummy_workspace_id",
+        mergedTpConfig: {
+          allowUnplannedEvents: "unknown",
+          ajvOptions: {}
+        },
+        sourceTpConfig
+      },
+      message: {
+        type: "track",
+        userId: "user-demo",
+        event: "Product clicked",
+        properties: {
+          name: "Rubik's Cube",
+          revenue: 4.99,
+          prop_integer: 2,
+          prop_float: 2.3,
+          email: "demo@rudderstack.com",
+          mobile: "999888777666"
+        },
+        context: {
+          ip: "14.5.67.21"
+        },
+        timestamp: "2020-02-02T00:23:09.544Z"
+      }
+    },
+    trackingPlan,
+    output: {
+      dropEvent: false,
+      violationType: "None"
+    }
+  },
+  {
+    testCase: "unplannedProperties set to value other than forward/drop",
+    event: {
+      metadata: {
+        trackingPlanId: "dummy_tracking_plan_id",
+        trackingPlanVersion: "dummy_version",
+        workspaceId: "dummy_workspace_id",
+        mergedTpConfig: {
+          unplannedProperties: "unknown",
+          ajvOptions: {}
+        },
+        sourceTpConfig
+      },
+      message: {
+        type: "track",
+        userId: "user-demo",
+        event: "Product clicked",
+        properties: {
+          name: "Rubik's Cube",
+          revenue: 4.99,
+          prop_integer: 2,
+          prop_float: 2.3,
+          email: "demo@rudderstack.com",
+          mobile: "999888777666"
+        },
+        context: {
+          ip: "14.5.67.21"
+        },
+        timestamp: "2020-02-02T00:23:09.544Z"
+      }
+    },
+    trackingPlan,
+    output: {
+      dropEvent: false,
+      violationType: "None"
+    }
+  },
+  {
+    testCase: "anyOtherViolation set to value other than forward/drop",
+    event: {
+      metadata: {
+        trackingPlanId: "dummy_tracking_plan_id",
+        trackingPlanVersion: "dummy_version",
+        workspaceId: "dummy_workspace_id",
+        mergedTpConfig: {
+          anyOtherViolation: "unknown",
+          ajvOptions: {}
+        },
+        sourceTpConfig
+      },
+      message: {
+        type: "track",
+        userId: "user-demo",
+        event: "Product clicked",
+        properties: {
+          name: "Rubik's Cube",
+          revenue: 4.99,
+          prop_integer: 2,
+          prop_float: 2.3,
+          email: "demo@rudderstack.com",
+          mobile: "999888777666"
+        },
+        context: {
+          ip: "14.5.67.21"
+        },
+        timestamp: "2020-02-02T00:23:09.544Z"
+      }
+    },
+    trackingPlan,
+    output: {
+      dropEvent: false,
+      violationType: "None"
+    }
+  },
+  {
+    testCase: "sendViolatedEventsTo set to value other than procerrors",
+    event: {
+      metadata: {
+        trackingPlanId: "dummy_tracking_plan_id",
+        trackingPlanVersion: "dummy_version",
+        workspaceId: "dummy_workspace_id",
+        destinationId: "dummy_destination_id",
+        destinationType: "dummy_destination_type",
+        mergedTpConfig: {
+          sendViolatedEventsTo: "unknown",
+          ajvOptions: {}
+        },
+        sourceTpConfig
+      },
+      message: {
+        type: "track",
+        userId: "user-demo",
+        event: "Product clicked",
+        properties: {
+          name: "Rubik's Cube",
+          revenue: 4.99,
+          prop_integer: 2,
+          prop_float: 2.3,
+          email: "demo@rudderstack.com",
+          mobile: "999888777666"
+        },
+        context: {
+          ip: "14.5.67.21"
+        },
+        timestamp: "2020-02-02T00:23:09.544Z"
+      }
+    },
+    trackingPlan,
+    output: {
+      dropEvent: false,
+      violationType: "None"
+    }
   }
 ];
 
@@ -1135,6 +1385,15 @@ describe("Handle validation", () => {
       );
       expect(dropEvent).toEqual(testCase.output.dropEvent);
       expect(violationType).toEqual(testCase.output.violationType);
+    });
+  });
+});
+
+describe("HandleValidationErrors", () => {
+  validationErrorsTestCases.forEach(testCase => {
+    it(`should return dropEvent ${testCase.output} for ${testCase.test}`, () => {
+      const { dropEvent } = handleValidationErrors(testCase.validationErrors, testCase.metadata, false, 'None');
+      expect(dropEvent).toEqual(testCase.output);
     });
   });
 });

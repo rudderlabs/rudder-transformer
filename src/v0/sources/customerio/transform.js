@@ -1,9 +1,13 @@
 const path = require('path');
 const fs = require('fs');
+const moment = require('moment');
 // import mapping json using JSON.parse to preserve object key order
 const mapping = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mapping.json'), 'utf-8'));
+const { get } = require('lodash');
 const Message = require('../message');
+
 const { mappingConfig } = require('./config');
+const { isDefinedAndNotNull } = require('../../util');
 // const { TransformationError } = require("../../util/errorTypes");
 
 function process(event) {
@@ -14,7 +18,8 @@ function process(event) {
   const eventType = 'track';
   message.setEventType(eventType);
 
-  let eventName = mappingConfig[event.object_type.toLowerCase()][event.metric];
+  const eventObjectType = event.object_type?.toLowerCase() || '';
+  let eventName = get(mappingConfig, `${eventObjectType}.${event.metric}`);
   if (!eventName) {
     // throw new TransformationError("Metric not supported");
     eventName = 'Unknown Event';
@@ -23,11 +28,13 @@ function process(event) {
 
   message.setProperties(event, mapping);
 
-  if (event.timestamp) {
-    const ts = new Date(event.timestamp * 1000).toISOString();
-    message.setProperty('originalTimestamp', ts);
-    message.setProperty('sentAt', ts);
+  const { timestamp } = event;
+  if (isDefinedAndNotNull(timestamp) && moment(timestamp).isValid()) {
+    const validTimestamp = new Date(timestamp * 1000).toISOString();
+    message.setProperty('originalTimestamp', validTimestamp);
+    message.setProperty('sentAt', validTimestamp);
   }
+
 
   // when customer.io does not pass an associated userId, set the email address as anonymousId
   if (

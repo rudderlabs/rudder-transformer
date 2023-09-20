@@ -1,0 +1,50 @@
+batchedRequest:
+  body:
+    XML: {}
+    JSON_ARRAY: {}
+    FORM: {}
+    JSON:
+      events:
+        - ip: 0.0.0.0
+          time: 1603132665557
+          os_name: ''
+          user_id: '123'
+          app_name: 'RudderLabs JavaScript SDK'
+          language: 'en-US'
+          device_id: 'my-anonymous-id-new'
+          library: 'rudderstack'
+          event_type: '$identify'
+          os_version: ''
+          session_id: -1
+          app_version: '1.1.5'
+          user_properties:
+            name: 'some campaign'
+            plan: 'Open source'
+            term: 'keyword'
+            test: 'other value'
+            email: 'chandra+r@rudderlabs.com'
+            logins: 5
+            medium: 'medium'
+            source: 'google'
+            content: 'some content'
+            category: 'SampleIdentify'
+            createdAt: 1599264000
+      api_key: 'apiKey123'
+      options:
+        min_id_length: 1
+  type: 'REST'
+  files: {}
+  method: 'POST'
+  params: {}
+  userId: 'my-anonymous-id-new'
+  headers:
+    Content-Type: 'application/json'
+  version: '1'
+  endpoint: 'https://api.eu.amplitude.com/2/httpapi'
+metadata:
+  - job_id: 1
+destination:
+  ID: 'a'
+  url: 'a'
+  Config:
+    residencyServer: 'EU'

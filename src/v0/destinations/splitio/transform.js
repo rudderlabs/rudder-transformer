@@ -7,6 +7,7 @@ const {
 const { EventType } = require('../../../constants');
 const {
   removeUndefinedAndNullValues,
+  removeUndefinedNullValuesAndEmptyObjectArray,
   defaultPostRequestConfig,
   defaultRequestConfig,
   constructPayload,
@@ -18,6 +19,7 @@ const {
   ErrorMessage,
 } = require('../../util');
 const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function responseBuilderSimple(payload, category, destination) {
   if (payload) {
@@ -26,7 +28,7 @@ function responseBuilderSimple(payload, category, destination) {
     response.endpoint = category.endPoint;
     response.method = defaultPostRequestConfig.requestMethod;
     response.headers = {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Bearer ${destination.Config.apiKey}`,
     };
     response.body.JSON = removeUndefinedAndNullValues(responseBody);
@@ -39,7 +41,7 @@ function responseBuilderSimple(payload, category, destination) {
 function populateOutputProperty(inputObject) {
   const outputProperty = {};
   Object.keys(inputObject).forEach((key) => {
-    if (!KEY_CHECK_LIST.includes(key) && !Array.isArray(inputObject[key])) {
+    if (!KEY_CHECK_LIST.includes(key)) {
       outputProperty[key] = inputObject[key];
     }
   });
@@ -92,7 +94,9 @@ function prepareResponse(message, destination, category) {
     outputPayload.environmentName = environment;
   }
   outputPayload.trafficTypeName = trafficType;
-  outputPayload.properties = flattenJson(bufferProperty);
+  outputPayload.properties = removeUndefinedNullValuesAndEmptyObjectArray(
+    flattenJson(bufferProperty),
+  );
 
   return outputPayload;
 }

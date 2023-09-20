@@ -100,12 +100,10 @@ const process = (event) => {
   const messageType = message.type.toLowerCase();
 
   let response;
-  switch (messageType) {
-    case EventType.TRACK:
-      response = trackResponseBuilder(message, destination);
-      break;
-    default:
-      throw new InstrumentationError(`message type ${messageType} not supported`);
+  if (messageType === EventType.TRACK) {
+    response = trackResponseBuilder(message, destination);
+  } else {
+    throw new InstrumentationError(`message type ${messageType} not supported`);
   }
   return response;
 };
@@ -124,7 +122,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
 
     // using the first destination Config in chunk for
     // transforming the events in one chunk into a batch
-    chunk.forEach(async (input) => {
+    chunk.forEach((input) => {
       const { destination, metadata } = input;
       try {
         set(input, 'destination', destination);

@@ -131,5 +131,103 @@
         "apiKey": "19f0f734e3bb87a44596"
       }
     }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.0-beta.2"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.0-beta.2"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
+      },
+      "groupId": "group@1",
+      "integrations": {
+        "All": true
+      },
+      "traits": {
+        "domainNames": "rudderstack.com",
+        "email": "help@rudderstack.com",
+        "name": "rudderstack",
+        "action": "identify"
+      },
+      "type": "group",
+      "userId": "user@1"
+    },
+    "metadata": {
+      "jobId": 3
+    },
+    "destination": {
+      "Config": {
+        "datacenterEU": false,
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "19f0f734e3bb87a44596"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.0-beta.2"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.0-beta.2"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
+      },
+      "groupId": "group@1",
+      "integrations": {
+        "All": true
+      },
+      "traits": {
+        "domainNames": "rudderstack.com",
+        "email": "help@rudderstack.com",
+        "name": "rudderstack",
+        "action": "delete"
+      },
+      "type": "group",
+      "userId": "user@1"
+    },
+    "metadata": {
+      "jobId": 4
+    },
+    "destination": {
+      "Config": {
+        "datacenterEU": false,
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "19f0f734e3bb87a44596"
+      }
+    }
   }
 ]

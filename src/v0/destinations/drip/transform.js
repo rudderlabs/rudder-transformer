@@ -36,6 +36,7 @@ const {
   ConfigurationError,
   NetworkInstrumentationError,
 } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const identifyResponseBuilder = async (message, { Config }) => {
   const id = getDestinationExternalID(message, 'dripId');
@@ -80,6 +81,24 @@ const identifyResponseBuilder = async (message, { Config }) => {
       ['traits', 'context.traits'],
       IDENTIFY_EXCLUSION_FIELDS,
     );
+
+    /* 
+      Validations for custom_fields object keys 
+      Validation 1 : keys name should only contain letters, numbers and underscores
+      Validation 2 : the length of the keys value should not be more then 910 characters in case of array and objects and should not be more then 1000 characters for rest of the data types 
+    */
+    const keys = Object.keys(customFields);
+    const regex = /^\w+$/;
+    keys.forEach((key) => {
+      if (
+        !regex.test(key) ||
+        (typeof customFields[key] === 'object' && JSON.stringify(customFields[key]).length > 910) ||
+        customFields[key].toString().length > 1000
+      ) {
+        delete customFields[key];
+      }
+    });
+
     if (!isEmptyObject(customFields)) {
       payload.custom_fields = customFields;
     }
@@ -93,7 +112,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
   const response = defaultRequestConfig();
   response.headers = {
     Authorization: `Basic ${basicAuth}`,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   response.method = defaultPostRequestConfig.requestMethod;
   const campaignId = getDestinationExternalID(message, 'dripCampaignId') || Config.campaignId;
@@ -171,7 +190,7 @@ const trackResponseBuilder = async (message, { Config }) => {
     const response = defaultRequestConfig();
     response.headers = {
       Authorization: `Basic ${basicAuth}`,
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
     };
     response.method = defaultPostRequestConfig.requestMethod;
     response.endpoint = `${ENDPOINT}/v3/${Config.accountId}/shopper_activity/order`;
@@ -211,7 +230,7 @@ const trackResponseBuilder = async (message, { Config }) => {
   const response = defaultRequestConfig();
   response.headers = {
     Authorization: `Basic ${basicAuth}`,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = `${ENDPOINT}/v2/${Config.accountId}/events`;

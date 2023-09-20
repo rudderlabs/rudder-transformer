@@ -137,10 +137,10 @@ const responseHandler = (respTransformPayload) => {
   };
 };
 
-const networkHandler = function () {
+function networkHandler() {
   this.responseHandler = responseHandler;
   this.proxy = proxyRequest;
   this.processAxiosResponse = processAxiosResponse;
-};
+}
 
 module.exports = { networkHandler };

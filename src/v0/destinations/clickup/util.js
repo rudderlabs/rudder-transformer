@@ -11,6 +11,7 @@ const {
 const { getCustomFieldsEndPoint } = require('./config');
 const { NetworkError, InstrumentationError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
  * Validates priority
@@ -55,7 +56,7 @@ const validateEmail = (email) => {
  * @param {*} url
  */
 const validateUrl = (url) => {
-  const regex = /^(http(s)?:\/\/)[\w.-]+(?:\.[\w.-]+)+[\w!#$&'()*+,./:;=?@[\]~-]+$/;
+  const regex = /^(https?:\/\/)[\w.-]+(?:\.[\w.-]+)+[\w!#$&'()*+,/:;=?@[\]~-]+$/;
   if (!regex.test(url)) {
     throw new InstrumentationError('The provided url is invalid');
   }
@@ -209,11 +210,14 @@ const retrieveCustomFields = async (listId, apiToken) => {
   const endpoint = getCustomFieldsEndPoint(listId);
   const requestOptions = {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: apiToken,
     },
   };
-  const customFieldsResponse = await httpGET(endpoint, requestOptions);
+  const customFieldsResponse = await httpGET(endpoint, requestOptions, {
+    destType: 'clickup',
+    feature: 'transformation',
+  });
   const processedCustomFieldsResponse = processAxiosResponse(customFieldsResponse);
 
   if (processedCustomFieldsResponse.status !== 200) {

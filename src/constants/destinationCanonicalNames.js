@@ -3,7 +3,14 @@ const DestHandlerMap = {
 };
 
 const DestCanonicalNames = {
-  fb_pixel: ['fb_pixel', 'fb pixel', 'FacebookPixel', 'Facebook Pixel', 'FB Pixel'],
+  fb_pixel: [
+    'fb_pixel',
+    'fb pixel',
+    'FacebookPixel',
+    'Facebook Pixel',
+    'FB Pixel',
+    'Facebook_Pixel',
+  ],
   ometria: ['Ometria', 'ometria', 'OMETRIA'],
   sendgrid: ['sendgrid', 'Sendgrid', 'SENDGRID'],
   dcm_floodlight: [
@@ -87,14 +94,24 @@ const DestCanonicalNames = {
   ga4: ['GA4', 'ga4', 'Ga4', 'Google Analytics 4', 'googleAnalytics4'],
   pipedream: ['Pipedream', 'PipeDream', 'pipedream', 'PIPEDREAM'],
   pagerduty: ['pagerduty', 'PAGERDUTY', 'PagerDuty', 'Pagerduty', 'pagerDuty'],
+  adobe_analytics: [
+    'adobe_analytics',
+    'ADOBE_ANALYTICS',
+    'adobe analytics',
+    'adobeAnalytics',
+    'Adobe Analytics',
+    'adobeanalytics',
+    'ADOBE ANALYTICS',
+    'ADOBEANALYTICS',
+  ],
   criteo_audience: [
-    "criteo audience",
-    "criteoAudience",
-    "Criteo Audience",
-    "criteoaudience",
-    "CRITEO AUDIENCE",
-    "CRITEO_AUDIENCE",
-    "CRITEOAUDIENCE"
+    'criteo audience',
+    'criteoAudience',
+    'Criteo Audience',
+    'criteoaudience',
+    'CRITEO AUDIENCE',
+    'CRITEO_AUDIENCE',
+    'CRITEOAUDIENCE',
   ],
   optimizely_fullstack: [
     'Optimizely Fullstack',
@@ -104,6 +121,17 @@ const DestCanonicalNames = {
     'Optimizely_Fullstack',
     'optimizely_fullstack',
   ],
+  vitally: ['vitally', 'Vitally', 'VITALLY'],
+  courier: ['Courier', 'courier', 'COURIER'],
+  TWITTER_ADS: [
+    'twitter ads',
+    'twitter Manager',
+    'TWITTER ADS',
+    'twitterADS',
+    'twitter_ads',
+    'TWITTER_ADS',
+  ],
+  BRAZE: ['BRAZE', 'Braze', 'braze'],
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

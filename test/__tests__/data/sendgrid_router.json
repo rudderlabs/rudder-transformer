@@ -5,7 +5,7 @@
       {
         "destination": {
           "Config": {
-            "apiKey": "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",
+            "apiKey": "apikey",
             "eventNamesSettings": [{ "event": "testing" }, { "event": "clicked" }],
             "subject": "A sample subject",
             "replyToEmail": "ankit@rudderstack.com",
@@ -111,7 +111,7 @@
           "method": "POST",
           "params": {},
           "headers": {
-            "Authorization": "Bearer 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",
+            "Authorization": "Bearer apikey",
             "Content-Type": "application/json"
           },
           "version": "1",
@@ -126,7 +126,7 @@
         "statusCode": 200,
         "destination": {
           "Config": {
-            "apiKey": "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",
+            "apiKey": "apikey",
             "eventNamesSettings": [{ "event": "testing" }, { "event": "clicked" }],
             "subject": "A sample subject",
             "replyToEmail": "ankit@rudderstack.com",

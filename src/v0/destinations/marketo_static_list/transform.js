@@ -5,7 +5,7 @@ const {
   defaultDeleteRequestConfig,
   generateErrorObject,
 } = require('../../util');
-const { AUTH_CACHE_TTL } = require('../../util/constant');
+const { AUTH_CACHE_TTL, JSON_MIME_TYPE } = require('../../util/constant');
 const { getIds, validateMessageType } = require('./util');
 const {
   getDestinationExternalID,
@@ -37,7 +37,7 @@ const responseBuilder = (endPoint, leadIds, operation, token) => {
   }
   response.headers = {
     Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   return response;
 };

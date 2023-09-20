@@ -7,6 +7,10 @@ on:
       - reopened
       - synchronize
 
+env:
+  type: dt
+
+
 jobs:
   generate-tag-names:
     runs-on: ubuntu-latest
@@ -66,3 +70,17 @@ jobs:
       push_target: production
     secrets:
       DOCKERHUB_PROD_TOKEN: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
+
+  test-step:
+    name: test job
+    runs-on: ubuntu-latest
+    steps:
+      - name: test step one
+        if: ${{ env.type == 'dt' }}
+        run: |
+          echo "test echo one"
+
+      - name: test step two
+        if: ${{ env.type }} == 'dt'
+        run: |
+          echo "test echo two"

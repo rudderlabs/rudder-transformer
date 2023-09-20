@@ -388,4 +388,5 @@ module.exports = {
   getPayloadData,
   getFormData,
   handleHttpRequest,
+  enhanceRequestOptions
 };

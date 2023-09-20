@@ -1,6 +1,6 @@
 import { globSync } from 'glob';
 import { join } from 'path';
-import { TestCaseData } from './testTypes';
+import { MockHttpCallsData, TestCaseData } from './testTypes';
 
 export const getTestDataFilePaths = (dirPath: string, destination: string = ''): string[] => {
   const globPattern = join(dirPath, '**', 'data.ts');
@@ -13,4 +13,8 @@ export const getTestDataFilePaths = (dirPath: string, destination: string = ''):
 
 export const getTestData = (filePath): TestCaseData[] => {
   return require(filePath).data as TestCaseData[];
+};
+
+export const getMockHttpCallsData = (filePath): MockHttpCallsData[] => {
+  return require(filePath).networkCallsData as MockHttpCallsData[];
 };

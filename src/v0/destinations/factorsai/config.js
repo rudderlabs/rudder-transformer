@@ -11,6 +11,14 @@ const ConfigCategories = {
     type: 'identify',
     name: 'FactorsAIIdentifyConfig',
   },
+  PAGE: {
+    type: 'page',
+    name: 'FactorsAIPageConfig',
+  },
+  GROUP: {
+    type: 'group',
+    name: 'FactorsAIGroupConfig',
+  },
 };
 
 const mappingConfig = getMappingConfig(ConfigCategories, __dirname);

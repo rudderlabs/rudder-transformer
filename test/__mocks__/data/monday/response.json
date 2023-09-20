@@ -1,5 +1,5 @@
 {
-  "https://api.monday.com/v2": {
+  "339283933": {
     "data": {
       "boards": [
         {
@@ -202,5 +202,11 @@
       ]
     },
     "account_id": 13215538
+  },
+  "339283934": {
+    "data": {
+      "boards": []
+    },
+    "account_id": 16260452
   }
 }

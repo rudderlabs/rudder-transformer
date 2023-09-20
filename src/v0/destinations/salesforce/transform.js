@@ -26,6 +26,8 @@ const {
 const { getAccessToken, salesforceResponseHandler } = require('./utils');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { InstrumentationError, NetworkInstrumentationError } = require('../../util/errorTypes');
+const logger = require('../../../logger');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 // Basic response builder
 // We pass the parameterMap with any processing-specific key-value pre-populated
@@ -84,7 +86,7 @@ function responseBuilderSimple(
 
   const response = defaultRequestConfig();
   const header = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     Authorization: authorizationData.token,
   };
   response.method = defaultPostRequestConfig.requestMethod;
@@ -103,12 +105,16 @@ async function getSaleforceIdForRecord(
   identifierValue,
   destination,
 ) {
-  const objSearchUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${identifierValue}&sobject=${objectType}&in=${identifierType}&${objectType}.fields=id`;
+  const objSearchUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${identifierValue}&sobject=${objectType}&in=${identifierType}&${objectType}.fields=id,${identifierType}`;
   const { processedResponse: processedsfSearchResponse } = await handleHttpRequest(
     'get',
     objSearchUrl,
     {
       headers: { Authorization: authorizationData.token },
+    },
+    {
+      destType: 'salesforce',
+      feature: 'transformation',
     },
   );
   if (processedsfSearchResponse.status !== 200) {
@@ -118,7 +124,11 @@ async function getSaleforceIdForRecord(
       destination.ID,
     );
   }
-  return get(processedsfSearchResponse.response, 'searchRecords.0.Id');
+  const searchRecord = processedsfSearchResponse.response?.searchRecords?.find(
+    (rec) => rec[identifierType] === identifierValue,
+  );
+
+  return searchRecord?.Id;
 }
 
 // Check for externalId field under context and look for probable Salesforce objects
@@ -207,14 +217,14 @@ async function getSalesforceIdFromPayload(message, authorizationData, destinatio
       {
         headers: { Authorization: authorizationData.token },
       },
+      {
+        destType: 'salesforce',
+        feature: 'transformation',
+      },
     );
 
     if (processedLeadQueryResponse.status !== 200) {
-      salesforceResponseHandler(
-        processedLeadQueryResponse,
-        `:- during Lead Query`,
-        destination.ID,
-      );
+      salesforceResponseHandler(processedLeadQueryResponse, `:- during Lead Query`, destination.ID);
     }
 
     if (processedLeadQueryResponse.response.searchRecords.length > 0) {

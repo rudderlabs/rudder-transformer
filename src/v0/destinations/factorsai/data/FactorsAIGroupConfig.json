@@ -1,0 +1,38 @@
+[
+  {
+    "destKey": "userId",
+    "sourceKeys": "userId",
+    "required": false
+  },
+  {
+    "destKey": "anonymousId",
+    "sourceKeys": "anonymousId",
+    "required": false
+  },
+  {
+    "destKey": "timestamp",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": true
+  },
+  {
+    "destKey": "traits",
+    "sourceKeys": "traits",
+    "required": false
+  },
+  {
+    "destKey": "messageId",
+    "sourceKeys": "messageId",
+    "required": false
+  },
+  {
+    "destKey": "groupId",
+    "sourceKeys": "groupId",
+    "required": true
+  },
+  {
+    "destKey": "email",
+    "sourceKeys": "email",
+    "required": false
+  }
+]

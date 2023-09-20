@@ -4,8 +4,10 @@ const {
   CustomError: CDKCustomError,
   DataValidationError,
 } = require('rudder-transformer-cdk/build/error/index');
+const stackTraceParser = require('stacktrace-parser');
 const { logger } = require('../../logger');
 const pkg = require('../../../package.json');
+
 const {
   BaseError,
   TransformationError,
@@ -23,7 +25,11 @@ const {
   NetworkInstrumentationError,
 } = require('../../v0/util/errorTypes');
 
-const { BUGSNAG_API_KEY: apiKey, transformer_build_version: imageVersion } = process.env;
+const {
+  BUGSNAG_API_KEY: apiKey,
+  transformer_build_version: imageVersion,
+  git_commit_sha: gitCommitSHA,
+} = process.env;
 
 const errorTypesDenyList = [
   BaseError,
@@ -44,6 +50,11 @@ const errorTypesDenyList = [
   DataValidationError,
 ];
 
+const pathsDenyList = [
+  '/src/warehouse/',
+  '/src/util/custom', // User-transformation files
+];
+
 let bugsnagClient;
 
 function init() {
@@ -54,6 +65,9 @@ function init() {
       metadata: {
         image: {
           version: imageVersion,
+        },
+        source: {
+          gitCommitSHA,
         },
       },
       onError(event) {
@@ -66,15 +80,19 @@ function init() {
 }
 
 function notify(err, context, metadata) {
-  if (bugsnagClient) {
-    const isDeniedErrType = errorTypesDenyList.some((errType) => err instanceof errType);
+  if (!bugsnagClient) return;
 
-    if (isDeniedErrType) return;
+  const isDeniedErrType = errorTypesDenyList.some((errType) => err instanceof errType);
+  if (isDeniedErrType) return;
 
-    bugsnagClient.notify(err, (event) => {
-      event.addMetadata('metadata', { ...metadata, opContext: context });
-    });
-  }
+  const isDeniedErrPath = pathsDenyList.some((denyPath) =>
+    stackTraceParser.parse(err.stack)?.[0]?.file?.includes(denyPath),
+  );
+  if (isDeniedErrPath) return;
+
+  bugsnagClient.notify(err, (event) => {
+    event.addMetadata('metadata', { ...metadata, opContext: context });
+  });
 }
 
 module.exports = {

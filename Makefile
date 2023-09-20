@@ -34,7 +34,9 @@ install-openfaas:
 		--set generateBasicAuth=false \
 		--set ceScaling=true \
 		--set async=false \
-		--set openfaasImagePullPolicy=IfNotPresent
+		--set openfaasImagePullPolicy=IfNotPresent \
+		--set gateway.image=rudderlabs/rudder-openfaas-gateway:0.25.2 \
+		--set faasnetes.image=rudderlabs/rudder-openfaas-faas-netes:0.15.4
 	kubectl rollout status deploy/gateway --timeout 120s -n openfaas
 	kubectl get events -n openfaas
 	kubectl get pods -n openfaas
@@ -56,4 +58,4 @@ uninstall:
 .PHONY: test
 test:
 	kubectl port-forward service/gateway-external 8080:8080 -n openfaas & \
-	npm run test:integration
+	npm run test:ut:integration:ci

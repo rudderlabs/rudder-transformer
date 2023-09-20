@@ -30,7 +30,7 @@ const {
   handleRtTfSingleEventError,
 } = require('../../util');
 const Cache = require('../../util/cache');
-const { USER_LEAD_CACHE_TTL, AUTH_CACHE_TTL } = require('../../util/constant');
+const { USER_LEAD_CACHE_TTL, AUTH_CACHE_TTL, JSON_MIME_TYPE } = require('../../util/constant');
 const {
   marketoResponseHandler,
   sendGetRequest,
@@ -71,10 +71,10 @@ const getAuthToken = async (formattedDestination) =>
     );
     const data = marketoResponseHandler(clientResponse, 'During fetching auth token');
     if (data) {
-      stats.increment(FETCH_TOKEN_METRIC, 1, { status: 'success' });
+      stats.increment(FETCH_TOKEN_METRIC, { status: 'success' });
       return { value: data.access_token, age: data.expires_in };
     }
-    stats.increment(FETCH_TOKEN_METRIC, 1, { status: 'failed' });
+    stats.increment(FETCH_TOKEN_METRIC, { status: 'failed' });
     return null;
   });
 
@@ -96,7 +96,7 @@ const getAuthToken = async (formattedDestination) =>
 const createOrUpdateLead = async (formattedDestination, token, userId, anonymousId) =>
   userIdLeadCache.get(userId || anonymousId, async () => {
     const attribute = userId ? { userId } : { anonymousId };
-    stats.increment(LEAD_LOOKUP_METRIC, 1, {
+    stats.increment(LEAD_LOOKUP_METRIC, {
       type: 'userid',
       action: 'create',
     });
@@ -112,7 +112,7 @@ const createOrUpdateLead = async (formattedDestination, token, userId, anonymous
       {
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-type': 'application/json',
+          'Content-type': JSON_MIME_TYPE,
         },
       },
     );
@@ -138,7 +138,7 @@ const createOrUpdateLead = async (formattedDestination, token, userId, anonymous
 // ------------------------
 const lookupLeadUsingEmail = async (formattedDestination, token, email) =>
   emailLeadCache.get(email, async () => {
-    stats.increment(LEAD_LOOKUP_METRIC, 1, { type: 'email', action: 'fetch' });
+    stats.increment(LEAD_LOOKUP_METRIC, { type: 'email', action: 'fetch' });
     const clientResponse = await sendGetRequest(
       `https://${formattedDestination.accountId}.mktorest.com/rest/v1/leads.json`,
       // `https://httpstat.us/200`,
@@ -170,7 +170,7 @@ const lookupLeadUsingEmail = async (formattedDestination, token, email) =>
 // ------------------------
 const lookupLeadUsingId = async (formattedDestination, token, userId, anonymousId) =>
   userIdLeadCache.get(userId || anonymousId, async () => {
-    stats.increment(LEAD_LOOKUP_METRIC, 1, { type: 'userId', action: 'fetch' });
+    stats.increment(LEAD_LOOKUP_METRIC, { type: 'userId', action: 'fetch' });
     const clientResponse = await sendGetRequest(
       `https://${formattedDestination.accountId}.mktorest.com/rest/v1/leads.json`,
       {
@@ -214,7 +214,10 @@ const getLeadId = async (message, formattedDestination, token) => {
   //     "identifierType": "email",
   //     "type": "MARKETO-{object}"
   //   }
-  let leadId = getDestinationExternalIDInfoForRetl(message, 'MARKETO').destinationExternalId;
+  let leadId;
+  if (get(message, MappedToDestinationKey)) {
+    leadId = getDestinationExternalIDInfoForRetl(message, 'MARKETO').destinationExternalId;
+  }
   if (!leadId) {
     leadId = getDestinationExternalID(message, 'marketoLeadId');
   }
@@ -400,7 +403,7 @@ const processTrack = async (message, formattedDestination, token) => {
   };
 
   // metric collection
-  stats.increment(ACTIVITY_METRIC, 1);
+  stats.increment(ACTIVITY_METRIC);
 
   return {
     endPoint: `https://${accountId}.mktorest.com/rest/v1/activities/external.json`,
@@ -413,7 +416,7 @@ const responseWrapper = (response) => {
   const resp = defaultRequestConfig();
   resp.endpoint = response.endPoint;
   resp.method = defaultPostRequestConfig.requestMethod;
-  resp.headers = { ...response.headers, 'Content-Type': 'application/json' };
+  resp.headers = { ...response.headers, 'Content-Type': JSON_MIME_TYPE };
   resp.body.JSON = response.payload;
   return resp;
 };

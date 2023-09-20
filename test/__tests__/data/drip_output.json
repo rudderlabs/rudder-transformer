@@ -265,5 +265,55 @@
       }
     },
     "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.getdrip.com/v2/1809802/subscribers",
+    "headers": {
+      "Authorization": "Basic ZTg1OTIyNDVlZTBmY2Y5ZTk5OTdkZmU1MzhmYjhiMjI=",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {},
+      "JSON": {
+        "subscribers": [
+          {
+            "email": "ruddertest@gmail.com",
+            "user_id": "user@1",
+            "address1": "Chicago, IL, USA",
+            "last_name": "test",
+            "first_name": "rudder",
+            "custom_fields": {
+              "title": "Social Impact Program Manager",
+              "industry": "Education",
+              "verified": false,
+              "isDeleted": false,
+              "jobFunction": "Program manager",
+              "reminderType": 1,
+              "jobPreferences": {
+                "motivationStr": "I am looking for a job in climate change.,I want to learn about climate change.,I’d like to connect with other climate enthusiasts.",
+                "searchUrgency": "As soon as possible",
+                "maxCompensation": 0,
+                "minCompensation": 0
+              },
+              "visibilityType": "public",
+              "hubbleOnboarded": false,
+              "sharePreference": false,
+              "notificationType": 0,
+              "shortDescription": "Social Impact Program Manager",
+              "jobProfileComplete": false,
+              "noOfMonthExperience": 0,
+              "onboarding_completed": "Yes"
+            }
+          }
+        ]
+      }
+    },
+    "files": {}
   }
 ]

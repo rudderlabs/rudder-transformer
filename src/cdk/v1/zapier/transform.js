@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 const { getHashFromArray } = require('../../../v0/util');
 
 function commonPostMapper(event, mappedPayload, rudderContext) {

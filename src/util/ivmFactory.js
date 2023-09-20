@@ -2,14 +2,19 @@ const ivm = require('isolated-vm');
 const fetch = require('node-fetch');
 const _ = require('lodash');
 
-const stats = require('./stats');
 const { getLibraryCodeV1, getRudderLibByImportName } = require('./customTransforrmationsStore-v1');
-const { parserForImport } = require('./parser');
+const { extractStackTraceUptoLastSubstringMatch } = require('./utils');
 const logger = require('../logger');
+const stats = require('./stats');
+const { fetchWithDnsWrapper } = require('./utils');
 
+const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
 const RUDDER_LIBRARY_REGEX = /^@rs\/[A-Za-z]+\/v[0-9]{1,3}$/;
+const GEOLOCATION_TIMEOUT_IN_MS = parseInt(process.env.GEOLOCATION_TIMEOUT_IN_MS || '1000', 10);
 
-const isolateVmMem = 128;
+const SUPPORTED_FUNC_NAMES = ['transformEvent', 'transformBatch'];
+
+const isolateVmMem = ISOLATE_VM_MEMORY;
 async function evaluateModule(isolate, context, moduleCode) {
   const module = await isolate.compileModule(moduleCode);
   await module.instantiate(context, (specifier, referrer) => referrer);
@@ -17,13 +22,13 @@ async function evaluateModule(isolate, context, moduleCode) {
   return true;
 }
 
-async function loadModule(isolateInternal, contextInternal, moduleCode) {
-  const module = await isolateInternal.compileModule(moduleCode);
+async function loadModule(isolateInternal, contextInternal, moduleName, moduleCode) {
+  const module = await isolateInternal.compileModule(moduleCode, { filename: `library ${moduleName}` });
   await module.instantiate(contextInternal, () => {});
   return module;
 }
 
-async function createIvm(code, libraryVersionIds, versionId, testMode) {
+async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) {
   const createIvmStartTime = new Date();
   const logs = [];
   const libraries = await Promise.all(
@@ -31,17 +36,27 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
   );
   const librariesMap = {};
   if (code && libraries) {
-    const extractedLibImportNames = Object.keys(await parserForImport(code));
+    const extractedLibraries = Object.keys(
+      await require('./customTransformer').extractLibraries(
+        code,
+        null,
+        false,
+        [],
+        'javascript',
+        testMode,
+      ),
+    );
 
+    // TODO: Check if this should this be &&
     libraries.forEach((library) => {
       const libHandleName = _.camelCase(library.name);
-      if (extractedLibImportNames.includes(libHandleName)) {
+      if (extractedLibraries.includes(libHandleName)) {
         librariesMap[libHandleName] = library.code;
       }
     });
 
     // Extract ruddder libraries from import names
-    const rudderLibImportNames = extractedLibImportNames.filter((name) =>
+    const rudderLibImportNames = extractedLibraries.filter((name) =>
       RUDDER_LIBRARY_REGEX.test(name),
     );
     const rudderLibraries = await Promise.all(
@@ -74,7 +89,13 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
       }
       switch(transformType) {
         case "transformBatch":
-          const transformedEventsBatch = await transformBatch(eventMessages, metadata);
+          let transformedEventsBatch;
+          try {
+            transformedEventsBatch = await transformBatch(eventMessages, metadata);
+          } catch (error) {
+            outputEvents.push({error: extractStackTrace(error.stack, [transformType]), metadata: {}});
+            return outputEvents;
+          }
           if (!Array.isArray(transformedEventsBatch)) {
             outputEvents.push({error: "returned events from transformBatch(event) is not an array", metadata: {}});
             break;
@@ -111,12 +132,12 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
               }
               if (!isObject(transformedOutput)) {
                 return outputEvents.push({error: "returned event from transformEvent(event) is not an object", metadata: eventsMetadata[currMsgId] || {}});
-              } 
+              }
               outputEvents.push({transformedEvent: transformedOutput, metadata: eventsMetadata[currMsgId] || {}});
               return;
             } catch (error) {
               // Handling the errors in versionedRouter.js
-              return outputEvents.push({error: error.toString(), metadata: eventsMetadata[currMsgId] || {}});
+              return outputEvents.push({error: extractStackTrace(error.stack, [transformType]), metadata: eventsMetadata[currMsgId] || {}});
             }
           }));
           break;
@@ -124,7 +145,7 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
       return outputEvents
     }
   `;
-  const isolate = new ivm.Isolate({ memoryLimit: isolateVmMem });
+  const isolate = new ivm.Isolate({ memoryLimit: ISOLATE_VM_MEMORY });
   const isolateStartWallTime = isolate.wallTime;
   const isolateStartCPUTime = isolate.cpuTime;
   const context = await isolate.createContext();
@@ -134,7 +155,7 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
   await Promise.all(
     Object.entries(librariesMap).map(async ([moduleName, moduleCode]) => {
       compiledModules[moduleName] = {
-        module: await loadModule(isolate, context, moduleCode),
+        module: await loadModule(isolate, context, moduleName, moduleCode),
       };
     }),
   );
@@ -155,7 +176,7 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
     new ivm.Reference(async (resolve, ...args) => {
       try {
         const fetchStartTime = new Date();
-        const res = await fetch(...args);
+        const res = await fetchWithDnsWrapper(versionId, ...args);
         const data = await res.json();
         stats.timing('fetch_call_duration', fetchStartTime, { versionId });
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
@@ -170,7 +191,7 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
     new ivm.Reference(async (resolve, reject, ...args) => {
       try {
         const fetchStartTime = new Date();
-        const res = await fetch(...args);
+        const res = await fetchWithDnsWrapper(versionId, ...args);
         const headersContent = {};
         res.headers.forEach((value, header) => {
           headersContent[header] = value;
@@ -195,6 +216,36 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
     }),
   );
 
+  await jail.set(
+    '_geolocation',
+    new ivm.Reference(async (resolve, reject, ...args) => {
+      try {
+        const geoStartTime = new Date();
+        if (args.length < 1) {
+          throw new Error('ip address is required');
+        }
+        if (!process.env.GEOLOCATION_URL) throw new Error('geolocation is not available right now');
+        const res = await fetch(`${process.env.GEOLOCATION_URL}/geoip/${args[0]}`, {
+          timeout: GEOLOCATION_TIMEOUT_IN_MS,
+        });
+        if (res.status !== 200) {
+          throw new Error(`request to fetch geolocation failed with status code: ${res.status}`);
+        }
+        const geoData = await res.json();
+        stats.timing('geo_call_duration', geoStartTime, { versionId });
+        resolve.applyIgnored(undefined, [new ivm.ExternalCopy(geoData).copyInto()]);
+      } catch (error) {
+        const err = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
+        reject.applyIgnored(undefined, [new ivm.ExternalCopy(err).copyInto()]);
+      }
+    }),
+  );
+
+  await jail.set('_rsSecrets', function (...args) {
+    if (args.length == 0 || !secrets || !secrets[args[0]]) return 'ERROR';
+    return secrets[args[0]];
+  });
+
   await jail.set('log', function (...args) {
     if (testMode) {
       let logString = 'Log:';
@@ -203,6 +254,10 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
       });
       logs.push(logString);
     }
+  });
+
+  await jail.set('extractStackTrace', function(trace, stringLiterals) {
+    return extractStackTraceUptoLastSubstringMatch(trace, stringLiterals);
   });
 
   const bootstrap = await isolate.compileScript(
@@ -244,6 +299,26 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
         });
       };
 
+      let geolocation = _geolocation;
+      delete _geolocation;
+      global.geolocation = function(...args) {
+        return new Promise((resolve, reject) => {
+          geolocation.applyIgnored(undefined, [
+            new ivm.Reference(resolve),
+            new ivm.Reference(reject),
+            ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
+          ]);
+        });
+      };
+      
+      let rsSecrets = _rsSecrets;
+      delete _rsSecrets;
+      global.rsSecrets = function(...args) {
+        return rsSecrets([
+          ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
+        ]);
+      };
+
       return new ivm.Reference(function forwardMainPromise(
         fnRef,
         resolve,
@@ -271,7 +346,7 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
   // Now we can execute the script we just compiled:
   const bootstrapScriptResult = await bootstrap.run(context);
   // const customScript = await isolate.compileScript(`${library} ;\n; ${code}`);
-  const customScriptModule = await isolate.compileModule(`${codeWithWrapper}`);
+  const customScriptModule = await isolate.compileModule(`${codeWithWrapper}`, { filename: 'base transformation' });
   await customScriptModule.instantiate(context, async (spec) => {
     if (librariesMap[spec]) {
       return compiledModules[spec].module;
@@ -283,11 +358,10 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
   });
   await customScriptModule.evaluate();
 
-  const supportedFuncNames = ['transformEvent', 'transformBatch'];
   const supportedFuncs = {};
 
   await Promise.all(
-    supportedFuncNames.map(async (sName) => {
+    SUPPORTED_FUNC_NAMES.map(async (sName) => {
       const funcRef = await customScriptModule.namespace.get(sName, {
         reference: true,
       });
@@ -300,7 +374,7 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
   const availableFuncNames = Object.keys(supportedFuncs);
   if (availableFuncNames.length !== 1) {
     throw new Error(
-      `Expected one of ${supportedFuncNames}. Found ${Object.values(availableFuncNames)}`,
+      `Expected one of ${SUPPORTED_FUNC_NAMES}. Found ${Object.values(availableFuncNames)}`,
     );
   }
 
@@ -328,15 +402,15 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
 }
 
 async function compileUserLibrary(code) {
-  const isolate = new ivm.Isolate({ memoryLimit: 128 });
+  const isolate = new ivm.Isolate({ memoryLimit: ISOLATE_VM_MEMORY });
   const context = await isolate.createContext();
   return evaluateModule(isolate, context, code);
 }
 
-async function getFactory(code, libraryVersionIds, versionId, testMode) {
+async function getFactory(code, libraryVersionIds, versionId, secrets, testMode) {
   const factory = {
     create: async () => {
-      return createIvm(code, libraryVersionIds, versionId, testMode);
+      return createIvm(code, libraryVersionIds, versionId, secrets, testMode);
     },
     destroy: async (client) => {
       client.fnRef.release();
@@ -353,4 +427,5 @@ async function getFactory(code, libraryVersionIds, versionId, testMode) {
 module.exports = {
   getFactory,
   compileUserLibrary,
+  SUPPORTED_FUNC_NAMES,
 };

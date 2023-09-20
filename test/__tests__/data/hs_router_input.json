@@ -52,15 +52,15 @@
     "destination": {
       "Config": {
         "authorizationType": "newPrivateAppApi",
-        "accessToken": "pat-na1-d19ac452-5fc6-465e-92b9-04b4949d3041",
-        "hubID": "22315509",
-        "apiKey": "f6c355c9-0bbf-4a10-b5dc-7d68ffae4cc1",
+        "accessToken": "dummy-access-token",
+        "hubID": "dummy-hubId",
+        "apiKey": "dummy-apikey",
         "apiVersion": "newApi",
         "lookupField": "email",
         "hubspotEvents": [
           {
             "rsEventName": "Purchase",
-            "hubspotEventName": "pe22315509_rs_hub_test",
+            "hubspotEventName": "pedummy-hubId_rs_hub_test",
             "eventProperties": [
               {
                 "from": "Revenue",
@@ -74,7 +74,7 @@
           },
           {
             "rsEventName": "Order Complete",
-            "hubspotEventName": "pe22315509_rs_hub_chair",
+            "hubspotEventName": "pedummy-hubId_rs_hub_chair",
             "eventProperties": [
               {
                 "from": "firstName",
@@ -172,15 +172,15 @@
     "destination": {
       "Config": {
         "authorizationType": "newPrivateAppApi",
-        "accessToken": "pat-na1-d19ac452-5fc6-465e-92b9-04b4949d3041",
-        "hubID": "22315509",
-        "apiKey": "f6c355c9-0bbf-4a10-b5dc-7d68ffae4cc1",
+        "accessToken": "dummy-access-token",
+        "hubID": "dummy-hubId",
+        "apiKey": "dummy-apikey",
         "apiVersion": "newApi",
         "lookupField": "email",
         "hubspotEvents": [
           {
             "rsEventName": "Purchase",
-            "hubspotEventName": "pe22315509_rs_hub_test",
+            "hubspotEventName": "pedummy-hubId_rs_hub_test",
             "eventProperties": [
               {
                 "from": "Revenue",
@@ -194,7 +194,7 @@
           },
           {
             "rsEventName": "Order Complete",
-            "hubspotEventName": "pe22315509_rs_hub_chair",
+            "hubspotEventName": "pedummy-hubId_rs_hub_chair",
             "eventProperties": [
               {
                 "from": "firstName",
@@ -263,15 +263,15 @@
     "destination": {
       "Config": {
         "authorizationType": "newPrivateAppApi",
-        "accessToken": "pat-na1-d19ac452-5fc6-465e-92b9-04b4949d3041",
-        "hubID": "22315509",
-        "apiKey": "f6c355c9-0bbf-4a10-b5dc-7d68ffae4cc1",
+        "accessToken": "dummy-access-token",
+        "hubID": "dummy-hubId",
+        "apiKey": "dummy-apikey",
         "apiVersion": "newApi",
         "lookupField": "lookupField",
         "hubspotEvents": [
           {
             "rsEventName": "Purchase",
-            "hubspotEventName": "pe22315509_rs_hub_test",
+            "hubspotEventName": "pedummy-hubId_rs_hub_test",
             "eventProperties": [
               {
                 "from": "Revenue",
@@ -285,7 +285,7 @@
           },
           {
             "rsEventName": "Order Complete",
-            "hubspotEventName": "pe22315509_rs_hub_chair",
+            "hubspotEventName": "pedummy-hubId_rs_hub_chair",
             "eventProperties": [
               {
                 "from": "firstName",
@@ -383,15 +383,15 @@
     "destination": {
       "Config": {
         "authorizationType": "newPrivateAppApi",
-        "accessToken": "pat-na1-d19ac452-5fc6-465e-92b9-04b4949d3041",
-        "hubID": "22315509",
-        "apiKey": "f6c355c9-0bbf-4a10-b5dc-7d68ffae4cc1",
+        "accessToken": "dummy-access-token",
+        "hubID": "dummy-hubId",
+        "apiKey": "dummy-apikey",
         "apiVersion": "newApi",
         "lookupField": "email",
         "hubspotEvents": [
           {
             "rsEventName": "Purchase",
-            "hubspotEventName": "pe22315509_rs_hub_test",
+            "hubspotEventName": "pedummy-hubId_rs_hub_test",
             "eventProperties": [
               {
                 "from": "Revenue",
@@ -405,7 +405,7 @@
           },
           {
             "rsEventName": "Order Complete",
-            "hubspotEventName": "pe22315509_rs_hub_chair",
+            "hubspotEventName": "pedummy-hubId_rs_hub_chair",
             "eventProperties": [
               {
                 "from": "firstName",
@@ -503,15 +503,15 @@
     "destination": {
       "Config": {
         "authorizationType": "newPrivateAppApi",
-        "accessToken": "pat-na1-d19ac452-5fc6-465e-92b9-04b4949d3041",
-        "hubID": "22315509",
-        "apiKey": "f6c355c9-0bbf-4a10-b5dc-7d68ffae4cc1",
+        "accessToken": "dummy-access-token",
+        "hubID": "dummy-hubId",
+        "apiKey": "dummy-apikey",
         "apiVersion": "newApi",
         "lookupField": "email",
         "hubspotEvents": [
           {
             "rsEventName": "Purchase",
-            "hubspotEventName": "pe22315509_rs_hub_test",
+            "hubspotEventName": "pedummy-hubId_rs_hub_test",
             "eventProperties": [
               {
                 "from": "Revenue",
@@ -525,7 +525,7 @@
           },
           {
             "rsEventName": "Order Complete",
-            "hubspotEventName": "pe22315509_rs_hub_chair",
+            "hubspotEventName": "pedummy-hubId_rs_hub_chair",
             "eventProperties": [
               {
                 "from": "firstName",

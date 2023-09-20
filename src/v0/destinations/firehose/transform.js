@@ -1,3 +1,4 @@
+const isString = require('lodash/isString');
 const { getHashFromArray, simpleProcessRouterDest } = require('../../util');
 const { ConfigurationError } = require('../../util/errorTypes');
 
@@ -6,8 +7,10 @@ function getDeliveryStreamMapTo(event) {
   const { mapEvents } = destination.Config;
   const hashMap = getHashFromArray(mapEvents, 'from', 'to');
   return (
-    (message.event ? hashMap[message.event.toLowerCase()] : null) ||
-    hashMap[message.type.toLowerCase()] ||
+    (isString(message.event) && message.event.length > 0
+      ? hashMap[message?.event.toLowerCase()]
+      : null) ||
+    (message.type ? hashMap[message.type.toLowerCase()] : null) ||
     hashMap['*']
   );
 }

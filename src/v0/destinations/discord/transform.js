@@ -16,6 +16,7 @@ const {
   getWhiteListedTraits,
   buildDefaultTraitTemplate,
 } = require('../slack/util');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const getEmbed = (templateInput, destination, callType) => {
   // building titleTemplate
@@ -53,7 +54,7 @@ const buildResponse = (responseBody, destination) => {
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
   response.method = defaultPostRequestConfig.requestMethod;
-  response.headers = { 'Content-Type': 'application/json' };
+  response.headers = { 'Content-Type': JSON_MIME_TYPE };
   response.body.JSON = responseBody;
   return response;
 };

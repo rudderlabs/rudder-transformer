@@ -1,0 +1,28 @@
+[
+  {
+    "description": "Should return false as no connectionMode key is present",
+    "input": {},
+    "output": false
+  },
+  {
+    "description": "Should return false as connectionMode is cloud",
+    "input": {
+      "connectionMode": "cloud"
+    },
+    "output": false
+  },
+  {
+    "description": "Should return false as connectionMode is device",
+    "input": {
+      "connectionMode": "device"
+    },
+    "output": false
+  },
+  {
+    "description": "Should return true as connectionMode is hybrid",
+    "input": {
+      "connectionMode": "hybrid"
+    },
+    "output": true
+  }
+]

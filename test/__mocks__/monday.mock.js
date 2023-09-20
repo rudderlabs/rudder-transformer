@@ -1,29 +1,17 @@
 const fs = require("fs");
 const path = require("path");
 
-const urlDirectoryMap = {
-  "api.monday.com": "monday"
-};
-
-const getData = url => {
-  let directory = "";
-  Object.keys(urlDirectoryMap).forEach(key => {
-    if (url.includes(key)) {
-      directory = urlDirectoryMap[key];
-    }
-  });
-  if (directory) {
+const getData = payload => {
     const dataFile = fs.readFileSync(
-      path.resolve(__dirname, `./data/${directory}/response.json`)
+      path.resolve(__dirname, `./data/monday/response.json`)
     );
     const data = JSON.parse(dataFile);
-    return data[url];
-  }
-  return {};
+    const boardId = payload.query.substring(21,30);
+    return data[boardId];
 };
 
-const mondayPostRequestHandler = url => {
-  const mockData = getData(url);
+const mondayPostRequestHandler = payload => {
+  const mockData = getData(payload);
   if (mockData) {
     return { data: mockData, status: 200 };
   }

@@ -54,6 +54,7 @@ function prepareUrl(message, destination) {
 
 // process track call
 function processTrack(message, metadata, destination) {
+  const { properties } = message;
   const requestJson = constructPayload(message, mappingConfig[ConfigCategories.TRACK.name]);
   requestJson.nonPersonalizedAd = isDefinedAndNotNull(requestJson.nonPersonalizedAd)
     ? requestJson.nonPersonalizedAd
@@ -68,7 +69,7 @@ function processTrack(message, metadata, destination) {
     ? requestJson.limitAdTracking
     : destination.Config.limitAdTracking;
   // updating these values is not allowed
-  if (message.properties.requestType === 'batchupdate') {
+  if (properties.requestType === 'batchupdate') {
     delete requestJson.childDirectedTreatment;
     delete requestJson.limitAdTracking;
   }
@@ -76,15 +77,15 @@ function processTrack(message, metadata, destination) {
 
   const encryptionInfo = {};
   // prepare encrptionInfo if encryptedUserId or encryptedUserIdCandidates is given
-  if (message.properties.encryptedUserId || message.properties.encryptedUserIdCandidates) {
-    if (EncryptionEntityType.includes(message.properties.encryptionEntityType)) {
-      encryptionInfo.encryptionEntityType = message.properties.encryptionEntityType;
+  if (properties.encryptedUserId || properties.encryptedUserIdCandidates) {
+    if (EncryptionEntityType.includes(properties.encryptionEntityType)) {
+      encryptionInfo.encryptionEntityType = properties.encryptionEntityType;
     }
-    if (EncryptionSource.includes(message.properties.encryptionSource)) {
-      encryptionInfo.encryptionSource = message.properties.encryptionSource;
+    if (EncryptionSource.includes(properties.encryptionSource)) {
+      encryptionInfo.encryptionSource = properties.encryptionSource;
     }
 
-    encryptionInfo.encryptionEntityId = message.properties.encryptionEntityId;
+    encryptionInfo.encryptionEntityId = properties.encryptionEntityId;
 
     if (
       isDefinedAndNotNull(encryptionInfo.encryptionSource) &&
@@ -100,14 +101,17 @@ function processTrack(message, metadata, destination) {
     }
   }
 
+  // const customFloodlightVariable = {};
+
+  // if (properties.customVariableType && properties.customVariableValue) {
+  //   customFloodlightVariable.type = properties.customVariableType;
+  //   customFloodlightVariable.value = properties.customVariableValue;
+  //   customFloodlightVariable.kind = "dfareporting#customFloodlightVariable";
+  //   requestJson.customVariables = [customFloodlightVariable];
+  // }
+
   const endpointUrl = prepareUrl(message, destination);
-  return buildResponse(
-    requestJson,
-    metadata,
-    endpointUrl,
-    message.properties.requestType,
-    encryptionInfo,
-  );
+  return buildResponse(requestJson, metadata, endpointUrl, properties.requestType, encryptionInfo);
 }
 
 function validateRequest(message) {
@@ -138,35 +142,17 @@ function postValidateRequest(response) {
     );
   }
 
-  let count = 0;
-
-  if (response.body.JSON.conversions[0].gclid) {
-    count += 1;
-  }
-
-  if (response.body.JSON.conversions[0].dclid) {
-    count += 1;
-  }
-
-  if (response.body.JSON.conversions[0].encryptedUserId) {
-    count += 1;
-  }
-
-  if (response.body.JSON.conversions[0].encryptedUserIdCandidates) {
-    count += 1;
-  }
-
-  if (response.body.JSON.conversions[0].mobileDeviceId) {
-    count += 1;
-  }
-
-  if (response.body.JSON.conversions[0].impressionId) {
-    count += 1;
-  }
-
-  if (count !== 1) {
+  if (
+    !response.body.JSON.conversions[0].gclid &&
+    !response.body.JSON.conversions[0].matchId &&
+    !response.body.JSON.conversions[0].dclid &&
+    !response.body.JSON.conversions[0].encryptedUserId &&
+    !response.body.JSON.conversions[0].encryptedUserIdCandidates &&
+    !response.body.JSON.conversions[0].mobileDeviceId &&
+    !response.body.JSON.conversions[0].impressionId
+  ) {
     throw new InstrumentationError(
-      '[CAMPAIGN MANAGER (DCM)]: For CM360 we need one of encryptedUserId,encryptedUserIdCandidates, matchId, mobileDeviceId, gclid, dclid, impressionId.',
+      '[CAMPAIGN MANAGER (DCM)]: Atleast one of encryptedUserId,encryptedUserIdCandidates, matchId, mobileDeviceId, gclid, dclid, impressionId.',
     );
   }
 }

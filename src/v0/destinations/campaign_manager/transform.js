@@ -74,7 +74,6 @@ function processTrack(message, metadata, destination) {
     delete requestJson.limitAdTracking;
   }
   requestJson.timestampMicros = requestJson.timestampMicros.toString();
-
   const encryptionInfo = {};
   // prepare encrptionInfo if encryptedUserId or encryptedUserIdCandidates is given
   if (properties.encryptedUserId || properties.encryptedUserIdCandidates) {

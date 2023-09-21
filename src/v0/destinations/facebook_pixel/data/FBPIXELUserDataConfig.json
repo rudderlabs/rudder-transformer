@@ -155,5 +155,15 @@
     "destKey": "fb_login_id",
     "sourceKeys": "context.fb_login_id",
     "required": false
+  },
+  {
+    "destKey": "madid",
+    "sourceKeys": "context.device.advertisingId",
+    "required": false
+  },
+  {
+    "destKey": "anon_id",
+    "sourceKeys": "context.device.advertisingId",
+    "required": false
   }
 ]

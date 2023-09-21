@@ -6,6 +6,7 @@ const CONFIG_CATEGORIES = {
     type: 'identify',
     name: 'FBPIXELUserDataConfig',
   },
+  APPDATA: { name: 'FBDATASETSAppEventsConfig' },
   COMMON: { name: 'FBPIXELCommonConfig' },
   SIMPLE_TRACK: {
     standard: false,

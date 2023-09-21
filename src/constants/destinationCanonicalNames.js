@@ -1,5 +1,6 @@
 const DestHandlerMap = {
   ga360: 'ga',
+  facebook_datasets: 'facebook_pixel',
 };
 
 const DestCanonicalNames = {

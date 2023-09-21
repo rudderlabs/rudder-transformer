@@ -743,7 +743,7 @@
     }
   },
   {
-    "error": "Pixel Id not found. Aborting",
+    "error": "Pixel Id/Dataset Id not found. Aborting",
     "statusCode": 400,
     "statTags": {
       "errorCategory": "dataValidation",

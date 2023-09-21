@@ -23,6 +23,7 @@ const {
   transformedPayloadData,
   getActionSource,
   fetchUserData,
+  fetchAppData,
   handleProduct,
   handleSearch,
   handleProductListViewed,
@@ -34,10 +35,11 @@ const { InstrumentationError, ConfigurationError } = require('../../util/errorTy
 
 const responseBuilderSimple = (message, category, destination, categoryToContent) => {
   const { Config } = destination;
-  const { pixelId, accessToken } = Config;
+  const { pixelId, datasetId, accessToken } = Config;
+  const identifier = pixelId || datasetId;
 
-  if (!pixelId) {
-    throw new ConfigurationError('Pixel Id not found. Aborting');
+  if (!identifier) {
+    throw new ConfigurationError('Pixel Id/Dataset Id not found. Aborting');
   }
 
   if (!accessToken) {
@@ -55,7 +57,7 @@ const responseBuilderSimple = (message, category, destination, categoryToContent
   } = Config;
   const integrationsObj = getIntegrationsObj(message, 'fb_pixel');
 
-  const endpoint = `https://graph.facebook.com/v17.0/${pixelId}/events?access_token=${accessToken}`;
+  const endpoint = `https://graph.facebook.com/v17.0/${identifier}/events?access_token=${accessToken}`;
 
   const userData = fetchUserData(message, Config);
 
@@ -177,12 +179,18 @@ const responseBuilderSimple = (message, category, destination, categoryToContent
     }
   }
 
+  let appData = {};
+  if (commonData.action_source === 'app' && datasetId) {
+    appData = fetchAppData(message);
+  }
+
   // content_category should only be a string ref: https://developers.facebook.com/docs/marketing-api/conversions-api/parameters/custom-data
 
   return formingFinalResponse(
     userData,
     commonData,
     customData,
+    appData,
     endpoint,
     testDestination,
     testEventCode,

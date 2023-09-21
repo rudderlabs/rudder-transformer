@@ -7,6 +7,7 @@ const {
   constructPayload,
   defaultPostRequestConfig,
   defaultRequestConfig,
+  isAppleFamily,
 } = require('../../util');
 const { ACTION_SOURCES_VALUES, CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
 
@@ -302,6 +303,31 @@ const fetchUserData = (message, Config) => {
   return userData;
 };
 
+const fetchAppData = (message) => {
+  const appData = constructPayload(
+    message,
+    MAPPING_CONFIG[CONFIG_CATEGORIES.APPDATA.name],
+    'fb_pixel',
+  );
+
+  if (appData) {
+    let sourceSDK = appData.extinfo[0];
+    if (sourceSDK === 'android') {
+      sourceSDK = 'a2';
+    } else if (isAppleFamily(sourceSDK)) {
+      sourceSDK = 'i2';
+    } else {
+      // if the sourceSDK is not android or ios
+      throw new InstrumentationError(
+        'Extended device information i.e, "context.device.type" is required',
+      );
+    }
+    appData.extinfo[0] = sourceSDK;
+  }
+
+  return appData;
+};
+
 /**
  *
  * @param {*} message Rudder element
@@ -480,6 +506,7 @@ const formingFinalResponse = (
   userData,
   commonData,
   customData,
+  appData,
   endpoint,
   testDestination,
   testEventCode,
@@ -488,11 +515,15 @@ const formingFinalResponse = (
     const response = defaultRequestConfig();
     response.endpoint = endpoint;
     response.method = defaultPostRequestConfig.requestMethod;
-    const jsonStringify = JSON.stringify({
+    const jsonData = {
       user_data: userData,
       ...commonData,
       custom_data: customData,
-    });
+    };
+    if (Object.keys(appData).length > 0) {
+      jsonData.appData = appData;
+    }
+    const jsonStringify = JSON.stringify(jsonData);
     const payload = {
       data: [jsonStringify],
     };
@@ -516,6 +547,7 @@ module.exports = {
   transformedPayloadData,
   getActionSource,
   fetchUserData,
+  fetchAppData,
   handleProduct,
   handleSearch,
   handleProductListViewed,

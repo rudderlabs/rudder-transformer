@@ -10,16 +10,39 @@ import { Command } from 'commander';
 import { createHttpTerminator } from 'http-terminator';
 import { MockHttpCallsData, TestCaseData } from './testTypes';
 import { applicationRoutes } from '../../src/routes/index';
-import { getTestDataFilePaths, getTestData, getMockHttpCallsData } from './testUtils';
+import {
+  getTestDataFilePaths,
+  getTestData,
+  getMockHttpCallsData,
+  getAllTestMockDataFilePaths,
+} from './testUtils';
 import tags from '../../src/v0/util/tags';
 import { Server } from 'http';
+import { appendFileSync } from 'fs';
+import { responses } from '../testHelper';
 
 // To run single destination test cases
 // npm run test:ts -- component  --destination=adobe_analytics
+
+// Use below command to generate mocks
+// npm run test:ts -- component --destination=zendesk --generate=true
+// npm run test:ts:component:generateNwMocks -- --destination=zendesk
 const command = new Command();
 command.allowUnknownOption().option('-d, --destination <string>', 'Enter Destination Name').parse();
+// This option will only work when destination option is also provided
+command
+  .allowUnknownOption()
+  .option('-g, --generate <string>', 'Enter "true" If you want to generate network file')
+  .parse();
 
 const opts = command.opts();
+if (opts.generate === 'true' && !opts.destination) {
+  throw new Error('Invalid option, generate should be true for a destination');
+}
+
+if (opts.generate === 'true') {
+  process.env.GEN_AXIOS_FOR_TESTS = 'true';
+}
 
 let server: Server;
 
@@ -35,68 +58,89 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
+  if (opts.generate === 'true') {
+    const callsDataStr = responses.join('\n');
+    const calls = `
+    export const networkCallsData = [
+      ${callsDataStr}
+    ]
+    `;
+    appendFileSync(join(__dirname, 'destinations', opts.destination, 'network.ts'), calls);
+  }
+  jest.clearAllMocks();
   await createHttpTerminator({ server }).terminate();
 });
 
-// unmock already existing axios-mocking
-jest.unmock('axios')
+if (!opts.generate || opts.generate === 'false') {
+  // unmock already existing axios-mocking
+  jest.unmock('axios');
 
-jest.mock('axios')
-const formAxiosReqsMap = (calls: MockHttpCallsData[]) => {
-  try {
-    return calls.reduce((agg, curr) => {
-      let obj = curr.httpReq;
-      return { ...agg, [stringify(obj)]: curr.httpRes };
-    }, {})
-  } catch (error) {
-    return {}
-  }
-}
-
-const mockImpl = (type, axReqMap) => {
-  // return value fn
-  const retVal = (key) => {
-    if (axReqMap[key]) {
-      return axReqMap[key];
+  jest.mock('axios');
+  const formAxiosReqsMap = (calls: MockHttpCallsData[]) => {
+    try {
+      return calls.reduce((agg, curr) => {
+        let obj = curr.httpReq;
+        return { ...agg, [stringify(obj)]: curr.httpRes };
+      }, {});
+    } catch (error) {
+      return {};
     }
-    return {
-      status: 500,
-      body: 'Something bad'
-    }
-  }
-
-  if (['constructor'].includes(type)) {
-    return (opts) => {
-      // mock result from some cache
-      const key = stringify({ ...opts })
-      return retVal(key);
-    };
-  } else if (['delete', 'get'].includes(type)) {
-    return (url, opts) => {
-      // mock result from some cache
-      const key = stringify({ url, ...opts})
-      return retVal(key);
-    };
-  }
-  
-  // post, patch, put
-  return (url, data, opts) => {
-    // mock result from some cache
-    const key = stringify({ url, data, ...opts })
-    return retVal(key);
   };
-};
 
-const makeNetworkMocks = (axiosReqsMap: Record<string, any>) => {
-  axios.put = jest.fn(mockImpl('put', axiosReqsMap))
-  axios.post = jest.fn(mockImpl('post', axiosReqsMap))
-  axios.patch = jest.fn(mockImpl('patch', axiosReqsMap))
-  // @ts-ignore
-  axios.delete = jest.fn(mockImpl('delete', axiosReqsMap))
-  // @ts-ignore
-  axios.get = jest.fn(mockImpl('get', axiosReqsMap))
-  // @ts-ignore
-  axios.mockImplementation(mockImpl('constructor', axiosReqsMap))
+  const mockImpl = (type, axReqMap) => {
+    // return value fn
+    const retVal = (key) => {
+      if (axReqMap[key]) {
+        return axReqMap[key];
+      }
+      return {
+        status: 500,
+        body: 'Something bad',
+      };
+    };
+
+    if (['constructor'].includes(type)) {
+      return (opts) => {
+        // mock result from some cache
+        const key = stringify({ ...opts });
+        return retVal(key);
+      };
+    } else if (['delete', 'get'].includes(type)) {
+      return (url, opts) => {
+        // mock result from some cache
+        const key = stringify({ url, ...opts });
+        return retVal(key);
+      };
+    }
+
+    // post, patch, put
+    return (url, data, opts) => {
+      // mock result from some cache
+      const key = stringify({ url, data, ...opts });
+      return retVal(key);
+    };
+  };
+
+  const makeNetworkMocks = (axiosReqsMap: Record<string, any>) => {
+    axios.put = jest.fn(mockImpl('put', axiosReqsMap));
+    axios.post = jest.fn(mockImpl('post', axiosReqsMap));
+    axios.patch = jest.fn(mockImpl('patch', axiosReqsMap));
+    // @ts-ignore
+    axios.delete = jest.fn(mockImpl('delete', axiosReqsMap));
+    // @ts-ignore
+    axios.get = jest.fn(mockImpl('get', axiosReqsMap));
+    // @ts-ignore
+    axios.mockImplementation(mockImpl('constructor', axiosReqsMap));
+  };
+
+  // all the axios requests will be stored in this map
+  const allTestMockDataFilePaths = getAllTestMockDataFilePaths(__dirname, opts.destination);
+  const allAxiosReqsMap = allTestMockDataFilePaths.reduce((agg, currPath) => {
+    const mockNetworkCallsData: MockHttpCallsData[] = getMockHttpCallsData(currPath);
+    const reqMap = formAxiosReqsMap(mockNetworkCallsData);
+    return { ...agg, ...reqMap };
+  }, {});
+  makeNetworkMocks(allAxiosReqsMap);
 }
 
 // END
@@ -177,16 +221,14 @@ const sourceTestHandler = async (tcData) => {
   )}`;
   await testRoute(route, tcData);
 };
-// all the axios requests will be stored in this map
-const allAxiosReqsMap = allTestDataFilePaths.reduce((agg, currPath) => {
-  const mockNetworkCallsData: MockHttpCallsData[] = getMockHttpCallsData(currPath);
-  const reqMap = formAxiosReqsMap(mockNetworkCallsData)
-  return {...agg, ...reqMap}
-}, {})
-makeNetworkMocks(allAxiosReqsMap);
 
 // Trigger the test suites
 describe.each(allTestDataFilePaths)('%s Tests', (testDataPath) => {
+  // add special mocks for specific destinations
+  if (testDataPath.includes('yahoo_dsp')) {
+    // 21 September 2023 19:39:50 GMT+05:30
+    Date.now = jest.fn(() => 1695305390000);
+  }
   const testData: TestCaseData[] = getTestData(testDataPath);
   test.each(testData)('$name - $module - $feature -> $description', async (tcData) => {
     switch (tcData.module) {

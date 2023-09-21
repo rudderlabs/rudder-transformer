@@ -12,7 +12,7 @@ const responses = [];
 
 const setResponsesForNwMockGeneration = (reqType, { url, data, requestOptions }, {response}) => {
   if (process.env.GEN_AXIOS_FOR_TESTS === 'true') {
-    let resp = '';
+    let resp;
     switch (reqType) {
       case "constructor":
         resp = `{httpReq: ${stringify(requestOptions)},httpRes: ${stringify(response)}},`

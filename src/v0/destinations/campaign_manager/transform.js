@@ -7,6 +7,7 @@ const {
   removeUndefinedAndNullValues,
   isDefinedAndNotNull,
   simpleProcessRouterDest,
+  getAccessToken,
 } = require('../../util');
 
 const {
@@ -17,14 +18,8 @@ const {
   EncryptionSource,
 } = require('./config');
 
-const { InstrumentationError, OAuthSecretError } = require('../../util/errorTypes');
-
-const getAccessToken = ({ secret }) => {
-  if (!secret) {
-    throw new OAuthSecretError('[CAMPAIGN MANAGER (DCM)]:: OAuth - access token not found');
-  }
-  return secret.access_token;
-};
+const { InstrumentationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function isEmptyObject(obj) {
   return Object.keys(obj).length === 0 && obj.constructor === Object;
@@ -35,8 +30,8 @@ function buildResponse(requestJson, metadata, endpointUrl, requestType, encrypti
   const response = defaultRequestConfig();
   response.endpoint = endpointUrl;
   response.headers = {
-    Authorization: `Bearer ${getAccessToken(metadata)}`,
-    'Content-Type': 'application/json',
+    Authorization: `Bearer ${getAccessToken(metadata, 'access_token')}`,
+    'Content-Type': JSON_MIME_TYPE,
   };
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON.kind =
@@ -190,12 +185,10 @@ function process(event) {
   const messageType = message.type.toLowerCase();
   let response = {};
 
-  switch (messageType) {
-    case EventType.TRACK:
-      response = processTrack(message, metadata, destination);
-      break;
-    default:
-      throw new InstrumentationError(`Message type ${messageType} not supported`);
+  if (messageType === EventType.TRACK) {
+    response = processTrack(message, metadata, destination);
+  } else {
+    throw new InstrumentationError(`Message type ${messageType} not supported`);
   }
   postValidateRequest(response);
   return response;

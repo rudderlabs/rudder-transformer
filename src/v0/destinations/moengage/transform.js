@@ -21,6 +21,7 @@ const {
   TransformationError,
   InstrumentationError,
 } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function responseBuilderSimple(message, category, destination) {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
@@ -42,7 +43,7 @@ function responseBuilderSimple(message, category, destination) {
   }
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     'MOE-APPKEY': apiId,
     // Basic Authentication encodes a 'username:password'
     // using base64 and prepends it with the string 'Basic '.
@@ -88,6 +89,10 @@ function responseBuilderSimple(message, category, destination) {
           payload.actions[0].platform = 'iOS';
         }
         break;
+      case EventType.ALIAS:
+        // clean as per merge user call in moengage
+        delete response.headers['MOE-APPKEY'];
+        break;
       default:
         throw new InstrumentationError(`Event type ${category.type} is not supported`);
     }
@@ -126,6 +131,11 @@ const processEvent = (message, destination) => {
       break;
     case EventType.TRACK:
       category = CONFIG_CATEGORIES.TRACK;
+      // build the response
+      response = responseBuilderSimple(message, category, destination);
+      break;
+    case EventType.ALIAS:
+      category = CONFIG_CATEGORIES.ALIAS;
       // build the response
       response = responseBuilderSimple(message, category, destination);
       break;

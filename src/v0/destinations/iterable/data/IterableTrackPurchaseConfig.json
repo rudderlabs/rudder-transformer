@@ -6,12 +6,18 @@
   },
   {
     "destKey": "id",
-    "sourceKeys": "properties.orderId",
+    "sourceKeys": [
+      "properties.order_id",
+      "properties.orderId",
+      "properties.id",
+      "properties.event_id"
+    ],
     "required": false
   },
   {
     "destKey": "createdAt",
-    "sourceKeys": "originalTimestamp",
+    "sourceKeys": "createdAt",
+    "sourceFromGenericMap": true,
     "required": false
   },
   {

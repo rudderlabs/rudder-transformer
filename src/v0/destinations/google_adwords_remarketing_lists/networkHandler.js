@@ -1,7 +1,8 @@
 const { httpSend, prepareProxyRequest } = require('../../../adapters/network');
-const { isHttpStatusSuccess } = require('../../util/index');
-
-const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
+const {
+  isHttpStatusSuccess,
+  getAuthErrCategoryFromErrDetailsAndStCode,
+} = require('../../util/index');
 
 const {
   processAxiosResponse,
@@ -33,7 +34,10 @@ const createJob = async (endpoint, customerId, listId, headers, method) => {
     headers,
     method,
   };
-  const response = await httpSend(jobCreatingRequest);
+  const response = await httpSend(jobCreatingRequest, {
+    destType: 'google_adwords_remarketing_lists',
+    feature: 'proxy',
+  });
   return response;
 };
 /**
@@ -53,7 +57,10 @@ const addUserToJob = async (endpoint, headers, method, jobId, body) => {
     headers,
     method,
   };
-  const response = await httpSend(secondRequest);
+  const response = await httpSend(secondRequest, {
+    destType: 'google_adwords_remarketing_lists',
+    feature: 'proxy',
+  });
   return response;
 };
 
@@ -71,7 +78,10 @@ const runTheJob = async (endpoint, headers, method, jobId) => {
     headers,
     method,
   };
-  const response = await httpSend(thirdRequest);
+  const response = await httpSend(thirdRequest, {
+    destType: 'google_adwords_remarketing_lists',
+    feature: 'proxy',
+  });
   return response;
 };
 
@@ -99,7 +109,6 @@ const gaAudienceProxyRequest = async (request) => {
     // eslint-disable-next-line prefer-destructuring
     jobId = firstResponse.response.data.resourceName.split('/')[3];
   const secondResponse = await addUserToJob(endpoint, headers, method, jobId, body);
-  // console.log(JSON.stringify(secondResponse.response.response));
   if (!secondResponse.success && !isHttpStatusSuccess(secondResponse?.response?.response?.status)) {
     return secondResponse;
   }
@@ -107,24 +116,6 @@ const gaAudienceProxyRequest = async (request) => {
   // step3: running the job
   const thirdResponse = await runTheJob(endpoint, headers, method, jobId);
   return thirdResponse;
-};
-
-/**
- * This function helps to detarmine type of error occured. According to the response
- * we set authErrorCategory to take decision if we need to refresh the access_token
- * or need to disable the destination.
- * @param {*} code
- * @param {*} response
- * @returns
- */
-const getAuthErrCategory = (code, response) => {
-  switch (code) {
-    case 401:
-      if (!response.error.details) return REFRESH_TOKEN;
-      return '';
-    default:
-      return '';
-  }
 };
 
 const gaAudienceRespHandler = (destResponse, stageMsg) => {
@@ -139,7 +130,7 @@ const gaAudienceRespHandler = (destResponse, stageMsg) => {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },
     response,
-    getAuthErrCategory(status, response),
+    getAuthErrCategoryFromErrDetailsAndStCode(status, response),
   );
 };
 

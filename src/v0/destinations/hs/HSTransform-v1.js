@@ -35,6 +35,7 @@ const {
   formatPropertyValueForIdentify,
   getHsSearchId,
 } = require('./util');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
  * using legacy API
@@ -104,7 +105,7 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
 
   response.endpoint = endpoint;
   response.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
 
   // choosing API Type
@@ -156,7 +157,7 @@ const processLegacyTrack = async (message, destination, propertyMap) => {
   response.endpoint = TRACK_ENDPOINT;
   response.method = defaultGetRequestConfig.requestMethod;
   response.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   response.messageType = 'track';
 
@@ -349,7 +350,7 @@ const legacyBatchEvents = (destEvents) => {
     });
 
     batchEventResponse.batchedRequest.headers = {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
     };
 
     // choosing API Type

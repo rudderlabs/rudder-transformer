@@ -5,6 +5,7 @@ const {
   defaultPostRequestConfig,
   removeUndefinedAndNullValues,
 } = require('../../util');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 const {
   ConfigurationError,
   TransformationError,
@@ -17,7 +18,7 @@ const responseBuilder = (payload, endpoint) => {
     const response = defaultRequestConfig();
     response.endpoint = endpoint;
     response.headers = {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
     };
     response.method = defaultPostRequestConfig.requestMethod;
     response.body.JSON = removeUndefinedAndNullValues(payload);

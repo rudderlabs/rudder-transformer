@@ -265,7 +265,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -531,7 +531,9 @@
         "app": {
           "namespace": "com.rudderlabs.javascript"
         },
-        "os": { "name": "android" },
+        "os": {
+          "name": "android"
+        },
         "traits": {
           "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
         },
@@ -611,7 +613,9 @@
         "app": {
           "namespace": "com.rudderlabs.javascript"
         },
-        "os": { "name": "android" },
+        "os": {
+          "name": "android"
+        },
         "traits": {
           "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
         },
@@ -671,7 +675,9 @@
         "app": {
           "namespace": "com.rudderlabs.javascript"
         },
-        "os": { "name": "android" },
+        "os": {
+          "name": "android"
+        },
         "traits": {
           "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
         },
@@ -716,7 +722,9 @@
         "app": {
           "namespace": "com.rudderlabs.javascript"
         },
-        "os": { "name": "android" },
+        "os": {
+          "name": "android"
+        },
         "traits": {
           "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
         },
@@ -796,7 +804,9 @@
         "app": {
           "namespace": "com.rudderlabs.javascript"
         },
-        "os": { "name": "android" },
+        "os": {
+          "name": "android"
+        },
         "traits": {
           "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
         },
@@ -1008,6 +1018,70 @@
         "devKey": "ef1d42390426e3f7c90ac78272e74344",
         "androidAppId": "com.rudderlabs.javascript",
         "sharingFilter": "all"
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "externalId": [
+          {
+            "type": "appsflyerExternalId",
+            "id": "afUid"
+          }
+        ],
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "testhubspot2@email.com",
+          "name": "Test Hubspot",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-GB",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "page",
+      "messageId": "e8585d9a-7137-4223-b295-68ab1b17dad7",
+      "originalTimestamp": "2019-10-15T09:35:31.289Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "properties": {
+        "path": "",
+        "referrer": "",
+        "search": "",
+        "title": "",
+        "url": ""
+      },
+      "name": "ApplicationLoaded",
+      "sentAt": "2019-10-14T11:15:53.296Z",
+      "integrations": {
+        "AF": {
+          "af_uid": "afUid"
+        }
+      }
+    },
+    "destination": {
+      "Config": {
+        "devKey": "ef1d42390426e3f7c90ac78272e74344",
+        "androidAppId": "com.rudderlabs.javascript"
       },
       "Enabled": true
     }

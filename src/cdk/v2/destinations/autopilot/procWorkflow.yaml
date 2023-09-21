@@ -1,0 +1,64 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+
+steps:
+  - name: validateInput
+    template: |
+      $.assert(.message.type, "message Type is not present. Aborting message.");
+       $.assert(.message.type in {{$.EventType.([.IDENTIFY, .TRACK])}}, 
+        "message type " + .message.type + " is not supported");
+  - name: setMessageType
+    template: |
+      $.context.messageType = .message.type.toLowerCase();
+  - name: preparePayloadForIdentify
+    condition: $.context.messageType === {{$.EventType.IDENTIFY}}
+    template: |
+      $.context.endpoint = 'https://api2.autopilothq.com/v1/contact';
+      const basePayload = .message.({
+        Email: .traits.email ?? .context.traits.email,
+        FirstName: {{{{$.getGenericPaths("firstName")}}}},
+        LastName: {{{{$.getGenericPaths("lastName")}}}},
+        Phone: {{{{$.getGenericPaths("phone")}}}},
+        Company: .traits.company.name ?? .context.traits.company.name,
+        Status: .traits.status ?? .context.traits.status,
+        LeadSource: .traits.LeadSource ?? .context.traits.LeadSource
+      });
+      const traits =  .message.traits ?? .message.context.traits ?? {};
+      const customPayload = traits{~['email', 'firstname', 'firstName',
+                                      'lastname', 'lastName', 'phone',
+                                      'company', 'status', 'LeadSource']}
+      $.context.payload = { contact: basePayload }
+      Object.keys(customPayload).length > 0 ? $.context.payload.contact.custom = customPayload
+  - name: preparePayloadForTrack
+    condition: $.context.messageType === {{$.EventType.TRACK}}
+    template: |
+      const contactIdOrEmail = .message.(
+        {{{{$.getGenericPaths("email")}}}};
+      );
+      $.assert(contactIdOrEmail, 'Email is required for track calls');
+      $.context.endpoint = "https://api2.autopilothq.com/v1/trigger/" + .destination.Config.triggerId + "/contact/" + contactIdOrEmail;
+      $.context.payload = {
+        property: .message.properties
+      }
+  - name: buildResponse
+    description: In batchMode we return payload directly
+    condition: $.batchMode
+    template: |
+      $.context.payload
+    else:
+      name: buildResponseForProcessTransformation
+      template: |
+        const response = $.defaultRequestConfig();
+        response.body.JSON = $.context.payload;
+        response.userId = .message.anonymousId;
+        response.endpoint = $.context.endpoint;
+        response.headers = {
+          "Accept": "application/json",
+          "autopilotapikey": .destination.Config.apiKey,
+          "Content-Type": "application/json"
+        }
+        response

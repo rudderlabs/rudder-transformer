@@ -45,33 +45,13 @@ const {
   getSuccessRespEvents,
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
+  getAccessToken,
 } = require('../../util');
 const { CONFIG_CATEGORIES } = require('./config');
 const {
-  OAuthSecretError,
   ConfigurationError,
   InstrumentationError,
 } = require('../../util/errorTypes');
-
-/**
- * Get access token to be bound to the event req headers
- *
- * Note:
- * This method needs to be implemented particular to the destination
- * As the schema that we'd get in `metadata.secret` can be different
- * for different destinations
- *
- * @param {Object} metadata
- * @returns
- */
-const getAccessToken = (metadata) => {
-  // OAuth for this destination
-  const { secret } = metadata;
-  if (!secret) {
-    throw new OAuthSecretError('Empty/Invalid access token');
-  }
-  return secret.access_token;
-};
 
 const buildResponse = (payload, url, destination, token) => {
   const responseBody = removeUndefinedValues(payload);
@@ -122,7 +102,7 @@ const getUrl = (urlParams) => {
 
 const processIdentify = ({ message, metadata }, destination, category) => {
   const { campaignId } = destination.Config;
-  const accessToken = getAccessToken(metadata);
+  const accessToken = getAccessToken(metadata, 'access_token');
 
   let extId = get(message, 'context.externalId');
   extId = extId && extId.length > 0 ? extId[0] : null;
@@ -172,21 +152,19 @@ const processEvent = (metadata, message, destination) => {
 
 const process = (event) => processEvent(event.metadata, event.message, event.destination);
 
-const processRouterDest = async (events, reqMetadata) => {
+const processRouterDest = (events, reqMetadata) => {
   const errorRespEvents = checkInvalidRtTfEvents(events);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
 
-  const responseList = Promise.all(
-    events.map((event) => {
-      try {
-        return getSuccessRespEvents(process(event), [event.metadata], event.destination);
-      } catch (error) {
-        return handleRtTfSingleEventError(event, error, reqMetadata);
-      }
-    }),
-  );
+  const responseList = events.map((event) => {
+    try {
+      return getSuccessRespEvents(process(event), [event.metadata], event.destination);
+    } catch (error) {
+      return handleRtTfSingleEventError(event, error, reqMetadata);
+    }
+  });
   return responseList;
 };
 

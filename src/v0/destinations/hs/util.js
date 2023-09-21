@@ -28,6 +28,7 @@ const {
 } = require('./config');
 
 const tags = require('../../util/tags');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
  * validate destination config and check for existence of data
@@ -92,16 +93,26 @@ const getProperties = async (destination) => {
     // Private Apps
     const requestOptions = {
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': JSON_MIME_TYPE,
         Authorization: `Bearer ${Config.accessToken}`,
       },
     };
-    hubspotPropertyMapResponse = await httpGET(CONTACT_PROPERTY_MAP_ENDPOINT, requestOptions);
+    hubspotPropertyMapResponse = await httpGET(CONTACT_PROPERTY_MAP_ENDPOINT, requestOptions, {
+      destType: 'hs',
+      feature: 'transformation',
+    });
     hubspotPropertyMapResponse = processAxiosResponse(hubspotPropertyMapResponse);
   } else {
     // API Key (hapikey)
     const url = `${CONTACT_PROPERTY_MAP_ENDPOINT}?hapikey=${Config.apiKey}`;
-    hubspotPropertyMapResponse = await httpGET(url);
+    hubspotPropertyMapResponse = await httpGET(
+      url,
+      {},
+      {
+        destType: 'hs',
+        feature: 'transformation',
+      },
+    );
     hubspotPropertyMapResponse = processAxiosResponse(hubspotPropertyMapResponse);
   }
 
@@ -117,11 +128,51 @@ const getProperties = async (destination) => {
   }
 
   const propertyMap = {};
-  hubspotPropertyMapResponse.response.forEach((element) => {
-    propertyMap[element.name] = element.type;
-  });
+  if (hubspotPropertyMapResponse.response && Array.isArray(hubspotPropertyMapResponse.response)) {
+    hubspotPropertyMapResponse.response.forEach((element) => {
+      propertyMap[element.name] = element.type;
+    });
+  }
+
   hubspotPropertyMap = propertyMap;
   return hubspotPropertyMap;
+};
+
+/**
+ * Validates the Hubspot property and payload property data types
+ * @param {*} propertyMap
+ * @param {*} hsSupportedKey
+ * @param {*} value
+ * @param {*} traitsKey
+ */
+const validatePayloadDataTypes = (propertyMap, hsSupportedKey, value, traitsKey) => {
+  let propValue = value;
+  // Hub spot data type validations
+  if (propertyMap[hsSupportedKey] === 'string' && typeof propValue !== 'string') {
+    if (typeof propValue === 'object') {
+      propValue = JSON.stringify(propValue);
+    } else {
+      propValue = propValue.toString();
+    }
+  }
+
+  if (propertyMap[hsSupportedKey] === 'bool' && typeof propValue === 'object') {
+    throw new InstrumentationError(
+      `Property ${traitsKey} data type ${typeof propValue} is not matching with Hubspot property data type ${
+        propertyMap[hsSupportedKey]
+      }`,
+    );
+  }
+
+  if (propertyMap[hsSupportedKey] === 'number' && typeof propValue !== 'number') {
+    throw new InstrumentationError(
+      `Property ${traitsKey} data type ${typeof propValue} is not matching with Hubspot property data type ${
+        propertyMap[hsSupportedKey]
+      }`,
+    );
+  }
+
+  return propValue;
 };
 
 /**
@@ -143,7 +194,6 @@ const getTransformedJSON = async (message, destination, propertyMap) => {
       // eslint-disable-next-line no-param-reassign
       propertyMap = await getProperties(destination);
     }
-
     rawPayload = constructPayload(message, hsCommonConfigJson);
 
     // if there is any extra/custom property in hubspot, that has not already
@@ -159,7 +209,13 @@ const getTransformedJSON = async (message, destination, propertyMap) => {
           date.setUTCHours(0, 0, 0, 0);
           propValue = date.getTime();
         }
-        rawPayload[hsSupportedKey] = propValue;
+
+        rawPayload[hsSupportedKey] = validatePayloadDataTypes(
+          propertyMap,
+          hsSupportedKey,
+          propValue,
+          traitsKey,
+        );
       }
     });
   }
@@ -232,10 +288,7 @@ const getLookupFieldValue = (message, lookupField) => {
     // Check in free-flowing object level
     SOURCE_KEYS.some((sourceKey) => {
       value = getMappingFieldValueFormMessage(message, sourceKey, lookupField);
-      if (value) {
-        return true;
-      }
-      return false;
+      return !!value;
     });
   }
   const lookupValueInfo = value ? { fieldName: lookupField, value } : null;
@@ -281,11 +334,12 @@ const searchContacts = async (message, destination) => {
     after: 0,
   };
 
+  const endpointPath = '/contacts/search';
   if (Config.authorizationType === 'newPrivateAppApi') {
     // Private Apps
     const requestOptions = {
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': JSON_MIME_TYPE,
         Authorization: `Bearer ${Config.accessToken}`,
       },
     };
@@ -293,12 +347,21 @@ const searchContacts = async (message, destination) => {
       IDENTIFY_CRM_SEARCH_CONTACT,
       requestData,
       requestOptions,
+      {
+        destType: 'hs',
+        feature: 'transformation',
+        endpointPath,
+      },
     );
     searchContactsResponse = processAxiosResponse(searchContactsResponse);
   } else {
     // API Key
     const url = `${IDENTIFY_CRM_SEARCH_CONTACT}?hapikey=${Config.apiKey}`;
-    searchContactsResponse = await httpPOST(url, requestData);
+    searchContactsResponse = await httpPOST(url, requestData, {
+      destType: 'hs',
+      feature: 'transformation',
+      endpointPath,
+    });
     searchContactsResponse = processAxiosResponse(searchContactsResponse);
   }
 
@@ -366,7 +429,9 @@ const getEventAndPropertiesFromConfig = (message, destination, payload) => {
   });
 
   if (!hubspotEventFound) {
-    throw new ConfigurationError(`'${event}' event name not found`);
+    throw new ConfigurationError(
+      `Event name '${event}' mappings are not configured in the destination`,
+    );
   }
 
   // 2. fetch event properties from webapp config
@@ -431,7 +496,7 @@ const getExistingData = async (inputs, destination) => {
 
   const requestOptions = {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Bearer ${Config.accessToken}`,
     },
   };
@@ -446,6 +511,7 @@ const getExistingData = async (inputs, destination) => {
 
   while (checkAfter) {
     const endpoint = IDENTIFY_CRM_SEARCH_ALL_OBJECTS.replace(':objectType', objectType);
+    const endpointPath = `objects/:objectType/search`;
 
     const url =
       Config.authorizationType === 'newPrivateAppApi'
@@ -453,8 +519,16 @@ const getExistingData = async (inputs, destination) => {
         : `${endpoint}?hapikey=${Config.apiKey}`;
     searchResponse =
       Config.authorizationType === 'newPrivateAppApi'
-        ? await httpPOST(url, requestData, requestOptions)
-        : await httpPOST(url, requestData);
+        ? await httpPOST(url, requestData, requestOptions, {
+            destType: 'hs',
+            feature: 'transformation',
+            endpointPath,
+          })
+        : await httpPOST(url, requestData, {
+            destType: 'hs',
+            feature: 'transformation',
+            endpointPath,
+          });
     searchResponse = processAxiosResponse(searchResponse);
 
     if (searchResponse.status !== 200) {
@@ -561,4 +635,5 @@ module.exports = {
   searchContacts,
   splitEventsForCreateUpdate,
   getHsSearchId,
+  validatePayloadDataTypes,
 };

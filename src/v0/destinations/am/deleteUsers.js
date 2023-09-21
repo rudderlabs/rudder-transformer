@@ -10,6 +10,7 @@ const { ConfigurationError, NetworkError } = require('../../util/errorTypes');
 const { executeCommonValidations } = require('../../util/regulation-api');
 const { DELETE_MAX_BATCH_SIZE } = require('./config');
 const { getUserIdBatches } = require('../../util/deleteUserUtils');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const userDeletionHandler = async (userAttributes, config) => {
   if (!config) {
@@ -21,7 +22,7 @@ const userDeletionHandler = async (userAttributes, config) => {
   }
 
   const headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     Authorization: `Basic ${btoa(`${apiKey}:${apiSecret}`)}`,
   };
   // Ref : https://www.docs.developers.amplitude.com/analytics/apis/user-privacy-api/#response
@@ -37,7 +38,10 @@ const userDeletionHandler = async (userAttributes, config) => {
       const requestOptions = {
         headers,
       };
-      const resp = await httpPOST(url, data, requestOptions);
+      const resp = await httpPOST(url, data, requestOptions, {
+        destType: 'am',
+        feature: 'deleteUsers',
+      });
       const handledDelResponse = processAxiosResponse(resp);
       if (!isHttpStatusSuccess(handledDelResponse.status)) {
         throw new NetworkError(

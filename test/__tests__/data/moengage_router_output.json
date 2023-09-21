@@ -8,12 +8,12 @@
       "headers": {
         "Content-Type": "application/json",
         "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+        "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOmR1bW15QXBpS2V5"
       },
       "params": {},
       "body": {
         "JSON": {
-          "customer_id": "ruchu123",
+          "customer_id": "rudder123",
           "type": "event",
           "actions": [
             {
@@ -70,14 +70,82 @@
                 "shipping": 4,
                 "value": 31.98
               },
+              "platform": "web",
               "app_version": "1.1.6",
               "current_time": "2020-10-16T13:40:12.791+05:30",
               "user_timezone_offset": 32400
             }
           ]
         },
-        "XML": {},
         "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "4eb021e9-a2af-4926-ae82-fe996d12f3c5"
+    },
+    "metadata": [
+      {
+        "jobId": 1
+      }
+    ],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "ID": "1iuTZs6eEZVMm6GjRBe6bNShaL3",
+      "Name": "MoEngage Testing",
+      "DestinationDefinition": {
+        "ID": "1iu4802Tx27kNC4KNYYou6D8jzL",
+        "Name": "MOENGAGE",
+        "DisplayName": "MoEngage",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": ["apiId", "apiKey", "region"]
+          },
+          "excludeKeys": [],
+          "includeKeys": [],
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"]
+        }
+      },
+      "Config": {
+        "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
+        "apiKey": "dummyApiKey",
+        "eventDelivery": false,
+        "eventDeliveryTS": 1602757086384,
+        "region": "US"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
+  },
+  {
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api-01.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA",
+      "headers": {
+        "Content-Type": "application/json",
+        "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
+        "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOmR1bW15QXBpS2V5"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "customer_id": "rudder123",
+          "type": "customer",
+          "attributes": {
+            "name": "Rudder Test",
+            "email": "rudderTest@gmail.com",
+            "created_time": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
+            "company.id": "abc123",
+            "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
+            "plan": "Enterprise"
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
         "FORM": {}
       },
       "files": {},
@@ -108,74 +176,7 @@
       },
       "Config": {
         "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
-        "eventDelivery": false,
-        "eventDeliveryTS": 1602757086384,
-        "region": "US"
-      },
-      "Enabled": true,
-      "Transformations": [],
-      "IsProcessorEnabled": true
-    }
-  },
-  {
-    "batchedRequest": {
-      "body": {
-        "XML": {},
-        "JSON_ARRAY": {},
-        "FORM": {},
-        "JSON": {
-          "type": "customer",
-          "attributes": {
-            "name": "Ruchira Moitra",
-            "plan": "Enterprise",
-            "email": "ruchira@gmail.com",
-            "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
-            "company.id": "abc123",
-            "created_time": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)"
-          },
-          "customer_id": "ruchu123"
-        }
-      },
-      "type": "REST",
-      "files": {},
-      "method": "POST",
-      "params": {},
-      "userId": "4eb021e9-a2af-4926-ae82-fe996d12f3c5",
-      "headers": {
-        "MOE-APPKEY": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "Content-Type": "application/json",
-        "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
-      },
-      "version": "1",
-      "endpoint": "https://api-01.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA"
-    },
-    "metadata": [
-      {
-        "jobId": 2
-      }
-    ],
-    "batched": false,
-    "statusCode": 200,
-    "destination": {
-      "ID": "1iuTZs6eEZVMm6GjRBe6bNShaL3",
-      "Name": "MoEngage Testing",
-      "DestinationDefinition": {
-        "ID": "1iu4802Tx27kNC4KNYYou6D8jzL",
-        "Name": "MOENGAGE",
-        "DisplayName": "MoEngage",
-        "Config": {
-          "destConfig": {
-            "defaultConfig": ["apiId", "apiKey", "region"]
-          },
-          "excludeKeys": [],
-          "includeKeys": [],
-          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"]
-        }
-      },
-      "Config": {
-        "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+        "apiKey": "dummyApiKey",
         "eventDelivery": false,
         "eventDeliveryTS": 1602757086384,
         "region": "US"

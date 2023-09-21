@@ -41,11 +41,11 @@
     "metadata": {}
   },
   {
-    "error": "Error: Non-identify found",
+    "error": "Error: Non-identify found\n    at rejectNonIdentifies (base transformation:7:15)\n    at transformEvent (base transformation:10:28)",
     "metadata": {}
   },
   {
-    "error": "Error: Non-identify found",
+    "error": "Error: Non-identify found\n    at rejectNonIdentifies (base transformation:7:15)\n    at transformEvent (base transformation:10:28)",
     "metadata": {}
   }
 ]

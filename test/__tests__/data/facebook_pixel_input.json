@@ -2,6 +2,7 @@
   {
     "message": {
       "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "channel": "mobile",
       "destination_props": {
         "Fb": {
           "app_id": "RudderFbApp"
@@ -27,6 +28,9 @@
         },
         "traits": {
           "email": "    aBc@gmail.com   ",
+          "address": {
+            "zip": 1234
+          },
           "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
         }
       },
@@ -52,7 +56,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",
@@ -64,6 +68,7 @@
             "eventCustomProperties": ""
           }
         ],
+        "removeExternalId": true,
         "valueFieldIdentifier": "",
         "advancedMapping": false,
         "whitelistPiiProperties": [
@@ -128,7 +133,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",
@@ -156,7 +161,7 @@
       "channel": "web",
       "context": {
         "traits": {
-          "name": "Ruchira"
+          "name": "Test"
         },
         "app": {
           "build": "1.0.0",
@@ -180,8 +185,8 @@
         }
       },
       "properties": {
-        "plan": "ruchira plan",
-        "name": "ruchira moitra"
+        "plan": "standard plan",
+        "name": "rudder test"
       },
       "type": "identify",
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
@@ -202,7 +207,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",
@@ -230,10 +235,10 @@
       "channel": "web",
       "context": {
         "traits": {
-          "name": "Ruchira Moitra",
+          "name": "Rudder Test",
           "email": "abc@gmail.com",
-          "firstname": "Ruchira  ",
-          "lastname": "  Moitra",
+          "firstname": "Rudder",
+          "lastname": "Test",
           "phone": 9000000000,
           "gender": "female"
         },
@@ -259,8 +264,8 @@
         }
       },
       "properties": {
-        "plan": "ruchira plan",
-        "name": "ruchira moitra"
+        "plan": "standard plan",
+        "name": "rudder test"
       },
       "type": "identify",
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
@@ -281,7 +286,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",
@@ -309,9 +314,12 @@
       "channel": "web",
       "context": {
         "traits": {
-          "name": "Ruchira Moitra",
+          "name": "Rudder Test",
           "email": "abc@gmail.com",
           "phone": 9000000000,
+          "address": {
+            "postalCode": 1234
+          },
           "gender": "female"
         },
         "app": {
@@ -336,8 +344,8 @@
         }
       },
       "properties": {
-        "plan": "ruchira plan",
-        "name": "ruchira moitra"
+        "plan": "standard plan",
+        "name": "rudder test"
       },
       "type": "identify",
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
@@ -358,7 +366,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",
@@ -434,7 +442,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",
@@ -510,7 +518,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",
@@ -587,7 +595,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",
@@ -664,7 +672,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",
@@ -739,7 +747,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",
@@ -813,7 +821,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",
@@ -904,7 +912,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",
@@ -995,7 +1003,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",
@@ -1053,6 +1061,8 @@
         "quantity": 2,
         "category": "cat 1",
         "list_id": "1234",
+        "contentName": "nutrition",
+        "value": 18.9,
         "filters": [
           {
             "type": "department",
@@ -1100,7 +1110,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",
@@ -1205,7 +1215,8 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
+        "removeExternalId": false,
         "eventsToEvents": [
           {
             "from": "My product list",
@@ -1288,8 +1299,9 @@
             "to": "product"
           }
         ],
+        "removeExternalId": true,
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",
@@ -1366,7 +1378,8 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
+        "removeExternalId": false,
         "eventsToEvents": [
           {
             "from": "",
@@ -1400,7 +1413,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -1423,12 +1436,13 @@
       "userId": "12345",
       "event": "order completed",
       "properties": {
-        "order_id": "ruchiraorder1",
+        "order_id": "rudderstackorder1",
         "total": 99.99,
         "revenue": 12.24,
         "shipping": 13.99,
         "tax": 20.99,
         "currency": "INR",
+        "contentName": "all about nutrition",
         "products": [
           {
             "quantity": 1,
@@ -1464,7 +1478,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",
@@ -1498,7 +1512,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -1523,6 +1537,7 @@
       "properties": {
         "currency": "CAD",
         "category": "clothing",
+        "contentName": "abc",
         "products": [
           {
             "quantity": 1,
@@ -1562,7 +1577,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",
@@ -1571,7 +1586,7 @@
         ],
         "eventCustomProperties": [
           {
-            "eventCustomProperties": ""
+            "eventCustomProperties": "contentName"
           }
         ],
         "valueFieldIdentifier": "properties.price",
@@ -1643,7 +1658,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",
@@ -1724,7 +1739,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",
@@ -1758,7 +1773,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -1781,6 +1796,11 @@
       "userId": "12345",
       "event": "products searched",
       "properties": {
+        "product_id": "p-298",
+        "quantity": 2,
+        "price": 18.9,
+        "category": "health",
+        "value": 18.9,
         "query": "HDMI cable"
       },
       "integrations": {
@@ -1803,7 +1823,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",
@@ -1837,7 +1857,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -1884,7 +1904,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",
@@ -1960,7 +1980,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",
@@ -2036,7 +2056,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "track page",
@@ -2141,7 +2161,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "My product list",
@@ -2216,7 +2236,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",
@@ -2293,7 +2313,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",
@@ -2370,7 +2390,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",
@@ -2447,7 +2467,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",
@@ -2481,7 +2501,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -2505,7 +2525,7 @@
       "event": "order completed",
       "properties": {
         "category": ["clothing", "fishing"],
-        "order_id": "ruchiraorder1",
+        "order_id": "rudderstackorder1",
         "total": 99.99,
         "revenue": 12.24,
         "shipping": 13.99,
@@ -2546,7 +2566,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",
@@ -2580,7 +2600,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -2604,7 +2624,7 @@
       "event": "order completed",
       "properties": {
         "category": 100,
-        "order_id": "ruchiraorder1",
+        "order_id": "rudderstackorder1",
         "total": 99.99,
         "revenue": 12.24,
         "shipping": 13.99,
@@ -2645,7 +2665,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",
@@ -2679,7 +2699,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -2705,7 +2725,7 @@
         "category": {
           "category1": "1"
         },
-        "order_id": "ruchiraorder1",
+        "order_id": "rudderstackorder1",
         "total": 99.99,
         "revenue": 12.24,
         "shipping": 13.99,
@@ -2746,7 +2766,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",
@@ -2828,7 +2848,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "spin_result",
@@ -2913,7 +2933,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "spin_result",
@@ -2990,8 +3010,8 @@
             "blacklistPiiHash": false
           }
         ],
-        "accessToken": "EAAUMWU0Ql8kBALehZBtEcAyKx6kbM4shVl1sjZCE3rYFUDLn5bdk1QSmClQrq1Oamg2dN9ZAH5Sn4QJA1i9hRSRyvmQ74wWmyoQZBLLiFTDvGZCtecf77ZAAjegyXZAxXbFTD8VlzfXqXZBWR9kkP4n0UIH3w2Lt9Uv2Kws2pcOLdZBXgIvRtc9QOyqPFie8TiVYZD",
-        "pixelId": "658311142062817",
+        "accessToken": "validToken",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",
@@ -3025,7 +3045,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -3072,7 +3092,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",
@@ -3106,7 +3126,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -3151,7 +3171,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",
@@ -3185,7 +3205,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -3252,7 +3272,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",
@@ -3286,7 +3306,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -3310,7 +3330,9 @@
       "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
-      "event": { "name": "checkout started" },
+      "event": {
+        "name": "checkout started"
+      },
       "properties": {
         "currency": "CAD",
         "category": "clothing",
@@ -3353,7 +3375,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",
@@ -3387,7 +3409,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -3454,7 +3476,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",
@@ -3475,6 +3497,596 @@
         ]
       },
       "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "product viewed",
+      "properties": {
+        "currency": "CAD",
+        "quantity": 1,
+        "price": 24.75,
+        "name": "my product 1",
+        "category": "clothing",
+        "sku": "p-298",
+        "testDimension": true,
+        "testMetric": true,
+        "position": 4.5
+      },
+      "integrations": {
+        "All": true,
+        "Facebook_Pixel": {
+          "contentType": "sending dedicated content type for this particular payload"
+        }
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "blacklistPiiProperties": [
+          {
+            "blacklistPiiProperties": "",
+            "blacklistPiiHash": true
+          }
+        ],
+        "categoryToContent": [
+          {
+            "from": "clothing",
+            "to": "product"
+          }
+        ],
+        "removeExternalId": true,
+        "accessToken": "09876",
+        "pixelId": "dummyPixelId",
+        "eventsToEvents": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "eventCustomProperties": [
+          {
+            "eventCustomProperties": ""
+          }
+        ],
+        "valueFieldIdentifier": "properties.price",
+        "advancedMapping": false,
+        "whitelistPiiProperties": [
+          {
+            "whitelistPiiProperties": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "product viewed",
+      "properties": {
+        "currency": "CAD",
+        "quantity": 1,
+        "price": 24.75,
+        "value": 18.9,
+        "name": "my product 1",
+        "category": "clothing",
+        "sku": "p-298",
+        "testDimension": true,
+        "testMetric": true,
+        "position": 4.5
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "blacklistPiiProperties": [
+          {
+            "blacklistPiiProperties": "",
+            "blacklistPiiHash": true
+          }
+        ],
+        "categoryToContent": [
+          {
+            "from": "clothing",
+            "to": "product"
+          }
+        ],
+        "removeExternalId": true,
+        "accessToken": "09876",
+        "pixelId": "dummyPixelId",
+        "eventsToEvents": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "eventCustomProperties": [
+          {
+            "eventCustomProperties": ""
+          }
+        ],
+        "valueFieldIdentifier": "properties.value",
+        "advancedMapping": false,
+        "whitelistPiiProperties": [
+          {
+            "whitelistPiiProperties": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "test@rudderstack.com"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "order completed",
+      "properties": {
+        "order_id": "rudderstackorder1",
+        "total": 99.99,
+        "revenue": 12.24,
+        "shipping": 13.99,
+        "tax": 20.99,
+        "currency": "INR",
+        "contentName": "all about nutrition",
+        "products": {
+          "quantity": 1,
+          "price": 24.75,
+          "name": "my product",
+          "sku": "p-298"
+        }
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "blacklistPiiProperties": [
+          {
+            "blacklistPiiProperties": "",
+            "blacklistPiiHash": true
+          }
+        ],
+        "categoryToContent": [
+          {
+            "from": "clothing",
+            "to": "product"
+          }
+        ],
+        "accessToken": "09876",
+        "pixelId": "dummyPixelId",
+        "eventsToEvents": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "eventCustomProperties": [
+          {
+            "eventCustomProperties": ""
+          }
+        ],
+        "valueFieldIdentifier": "properties.price",
+        "advancedMapping": false,
+        "whitelistPiiProperties": [
+          {
+            "whitelistPiiProperties": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "product list viewed",
+      "properties": {
+        "email": "abc@gmail.com",
+        "quantity": 2,
+        "category": "cat 1",
+        "list_id": "1234",
+        "contentName": "nutrition",
+        "value": 18.9,
+        "products": [
+          {
+            "product_id": "507f1f77bcf86cd799439011",
+            "productDimension": "My Product Dimension",
+            "productMetric": "My Product Metric",
+            "position": 10
+          },
+          [
+            {
+              "product_id": "507f1f77bcf86cdef799439011",
+              "productDimension": "My Product Dimension1",
+              "productMetric": "My Product Metric1",
+              "position": -10
+            }
+          ]
+        ],
+        "testDimension": true,
+        "testMetric": true
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "blacklistPiiProperties": [
+          {
+            "blacklistPiiProperties": "",
+            "blacklistPiiHash": true
+          }
+        ],
+        "accessToken": "09876",
+        "pixelId": "dummyPixelId",
+        "eventsToEvents": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "eventCustomProperties": [
+          {
+            "eventCustomProperties": ""
+          }
+        ],
+        "valueFieldIdentifier": "",
+        "advancedMapping": false,
+        "whitelistPiiProperties": [
+          {
+            "whitelistPiiProperties": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "custom",
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "blacklistPiiProperties": [
+          {
+            "blacklistPiiProperties": "",
+            "blacklistPiiHash": true
+          }
+        ],
+        "pixelId": "dummyPixelId",
+        "valueFieldIdentifier": "",
+        "advancedMapping": false,
+        "whitelistPiiProperties": [
+          {
+            "whitelistPiiProperties": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "custom",
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "blacklistPiiProperties": [
+          {
+            "blacklistPiiProperties": "",
+            "blacklistPiiHash": true
+          }
+        ],
+        "valueFieldIdentifier": "",
+        "advancedMapping": false,
+        "whitelistPiiProperties": [
+          {
+            "whitelistPiiProperties": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "metadata": {
+      "jobId": 12
+    },
+    "destination": {
+      "secretConfig": {},
+      "Config": {
+        "blacklistPiiProperties": [
+          {
+            "blacklistPiiProperties": "",
+            "blacklistPiiHash": false
+          }
+        ],
+        "pixelId": "dummyPixelId",
+        "eventsToEvents": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "valueFieldIdentifier": "properties.price",
+        "advancedMapping": false,
+        "whitelistPiiProperties": [],
+        "limitedDataUSage": false,
+        "accessToken": "dummyAccessToken",
+        "testDestination": false,
+        "testEventCode": "",
+        "standardPageCall": false,
+        "blacklistedEvents": [],
+        "whitelistedEvents": [],
+        "eventFilteringOption": "disable",
+        "removeExternalId": false,
+        "useUpdatedMapping": false,
+        "oneTrustCookieCategories": [],
+        "useNativeSDK": false,
+        "eventDelivery": false,
+        "eventDeliveryTS": 1686748039135
+      },
+      "liveEventsConfig": {
+        "eventDelivery": false,
+        "eventDeliveryTS": 1686748039135
+      },
+      "id": "destId1",
+      "workspaceId": "wsp2",
+      "transformations": [],
+      "isConnectionEnabled": true,
+      "isProcessorEnabled": true,
+      "name": "san-fb_pixel",
+      "enabled": true,
+      "deleted": false,
+      "createdAt": "2023-06-06T13:36:08.579Z",
+      "updatedAt": "2023-06-14T13:07:19.136Z",
+      "revisionId": "revId2",
+      "secretVersion": 3
+    },
+    "message": {
+      "type": "page",
+      "sentAt": "2019-09-01T15:46:51.000Z",
+      "userId": "user@19",
+      "channel": "web",
+      "context": {
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "app": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "dev-snapshot",
+          "namespace": "com.rudderlabs.javascript"
+        },
+        "page": {
+          "url": "http://127.0.0.1:8888/",
+          "path": "/",
+          "title": "Document",
+          "search": "",
+          "tab_url": "http://127.0.0.1:8888/",
+          "referrer": "http://127.0.0.1:8888/",
+          "initial_referrer": "$direct",
+          "referring_domain": "127.0.0.1:8888",
+          "initial_referring_domain": ""
+        },
+        "locale": "en-GB",
+        "screen": {
+          "width": 1728,
+          "height": 1117,
+          "density": 2,
+          "innerWidth": 547,
+          "innerHeight": 915
+        },
+        "traits": {
+          "name": false,
+          "source": "rudderstack"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "dev-snapshot"
+        },
+        "campaign": {},
+        "sessionId": 1687769234506,
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
+      },
+      "rudderId": "6bbfd003-c074-4ee9-8674-c132ded9ff04",
+      "timestamp": "2019-09-01T15:46:51.000Z",
+      "properties": {
+        "url": "http://127.0.0.1:8888/",
+        "path": "/",
+        "title": "Document",
+        "search": "",
+        "tab_url": "http://127.0.0.1:8888/",
+        "referrer": "http://127.0.0.1:8888/",
+        "initial_referrer": "$direct",
+        "referring_domain": "127.0.0.1:8888",
+        "initial_referring_domain": ""
+      },
+      "receivedAt": "2019-09-01T15:46:51.000Z",
+      "request_ip": "49.206.54.243",
+      "anonymousId": "700ab220-faad-4cdf-8484-63e4c6bce6fe",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2019-09-01T15:46:51.000Z"
     }
   }
 ]

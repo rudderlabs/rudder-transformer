@@ -51,7 +51,8 @@
   },
   {
     "destKey": "$timestamp",
-    "sourceKeys": ["originalTimestamp", "timestamp"],
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
     "all": true
   },
   {

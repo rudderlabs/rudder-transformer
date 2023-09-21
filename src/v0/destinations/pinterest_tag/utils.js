@@ -6,28 +6,65 @@ const {
   isDefinedAndNotNull,
   isDefined,
   getHashFromArrayWithDuplicate,
+  removeUndefinedAndNullValues,
 } = require('../../util');
-const { InstrumentationError } = require('../../util/errorTypes');
-const { COMMON_CONFIGS, CUSTOM_CONFIGS } = require('./config');
+const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
+const { COMMON_CONFIGS, CUSTOM_CONFIGS, API_VERSION } = require('./config');
 
 const VALID_ACTION_SOURCES = ['app_android', 'app_ios', 'web', 'offline'];
 
 const ecomEventMaps = [
   {
     src: ['order completed'],
-    dest: 'Checkout',
+    dest: 'checkout',
   },
   {
     src: ['product added'],
-    dest: 'AddToCart',
+    dest: 'add_to_cart',
   },
   {
     src: ['products searched', 'product list filtered'],
-    dest: 'Search',
+    dest: 'search',
   },
 ];
 
 const USER_NON_ARRAY_PROPERTIES = ['client_user_agent', 'client_ip_address'];
+
+const getHashedValue = (key, value) => {
+  switch (key) {
+    case 'em':
+    case 'ct':
+    case 'st':
+    case 'country':
+    case 'ln':
+    case 'fn':
+    case 'ge':
+      value = Array.isArray(value)
+        ? value.map((val) => val.toString().toLowerCase())
+        : value.toString().toLowerCase();
+      break;
+    case 'ph':
+      // phone numbers should only contain digits & should not contain leading zeros
+      value = Array.isArray(value)
+        ? value.map((val) => val.toString().replace(/\D/g, '').replace(/^0+/, ''))
+        : value.toString().replace(/\D/g, '').replace(/^0+/, '');
+      break;
+    case 'zp':
+      // zip fields should only contain digits
+      value = Array.isArray(value)
+        ? value.map((val) => val.toString().replace(/\D/g, ''))
+        : value.toString().replace(/\D/g, '');
+      break;
+    case 'hashed_maids':
+    case 'external_id':
+    case 'db':
+      // no action needed on value
+      break;
+    default:
+      return String(value);
+  }
+  return Array.isArray(value) ? value.map((val) => sha256(val)) : [sha256(value)];
+};
 
 /**
  *
@@ -37,36 +74,8 @@ const USER_NON_ARRAY_PROPERTIES = ['client_user_agent', 'client_ip_address'];
  * Ref: https://s.pinimg.com/ct/docs/conversions_api/dist/v3.html
  */
 const processUserPayload = (userPayload) => {
-  let formatValue = '';
   Object.keys(userPayload).forEach((key) => {
-    switch (key) {
-      case 'em':
-        formatValue = userPayload[key].toString().toLowerCase();
-        userPayload[key] = [sha256(formatValue)];
-        break;
-      case 'ph':
-      case 'zp':
-        // zip fields should only contain digits
-        formatValue = userPayload[key].toString().replace(/\D/g, '');
-        if (key === 'ph') {
-          // phone numbers should not contain leading zeros
-          formatValue = formatValue.replace(/^0+/, '');
-        }
-        userPayload[key] = [sha256(formatValue)];
-        break;
-      case 'ct':
-      case 'st':
-      case 'country':
-      case 'ge':
-      case 'db':
-      case 'ln':
-      case 'fn':
-      case 'hashed_maids':
-        userPayload[key] = [sha256(userPayload[key])];
-        break;
-      default:
-        userPayload[key] = String(userPayload[key]);
-    }
+    userPayload[key] = getHashedValue(key, userPayload[key]);
   });
   return userPayload;
 };
@@ -118,6 +127,20 @@ const processCommonPayload = (message) => {
 
 /**
  *
+ * @param {*} eventName // ["WatchVideo", "ViewCategory", "Custom"]
+ * @returns // ["watch_video", "view_category", "custom""]
+ * This function will return the snake case name of the destination config mapped event
+ */
+const convertToSnakeCase = (eventName) =>
+  eventName.map((str) =>
+    str
+      .replace(/([a-z])([A-Z])/g, '$1_$2')
+      .replace(/\s+/g, '_')
+      .toLowerCase(),
+  );
+
+/**
+ *
  * @param {*} message
  * @param {*} Config
  * @returns
@@ -125,15 +148,15 @@ const processCommonPayload = (message) => {
  * const ecomEventMaps = [
     {
       src: ["order completed"],
-      dest: "Checkout",
+      dest: "checkout",
     },
     {
       src: ["product added"],
-      dest: "AddToCart",
+      dest: "add_to_cart",
     },
     {
       src: ["products searched", "product list filtered"],
-      dest: "Search",
+      dest: "search",
     },
   ];
  * For others, it depends on mapping from the UI. If any event, other than mapped events are sent,
@@ -142,6 +165,7 @@ const processCommonPayload = (message) => {
 const deduceTrackScreenEventName = (message, Config) => {
   let eventName;
   const { event, name } = message;
+  const { apiVersion = API_VERSION.v3, eventsMapping, sendAsCustomEvent } = Config;
   const trackEventOrScreenName = event || name;
   if (!trackEventOrScreenName) {
     throw new InstrumentationError('event_name could not be mapped. Aborting');
@@ -151,12 +175,12 @@ const deduceTrackScreenEventName = (message, Config) => {
   Step 1: If the event is not amongst the above list of ecommerce events, will look for
           the event mapping in the UI. In case it is similar, will map to that.
    */
-  if (Config.eventsMapping.length > 0) {
-    const keyMap = getHashFromArrayWithDuplicate(Config.eventsMapping, 'from', 'to', false);
+  if (eventsMapping.length > 0) {
+    const keyMap = getHashFromArrayWithDuplicate(eventsMapping, 'from', 'to', false);
     eventName = keyMap[trackEventOrScreenName];
   }
   if (isDefined(eventName)) {
-    return [...eventName];
+    return convertToSnakeCase([...eventName]);
   }
 
   /*
@@ -178,10 +202,24 @@ const deduceTrackScreenEventName = (message, Config) => {
   }
 
   /*
-  Step 3: In case both of the above stated cases fail, will send the event name as it is.
-          This is going to be reflected as "unknown" event in conversion API dashboard.
- */
-  return [trackEventOrScreenName];
+  Step 3: In case both of the above stated cases fail, will check if sendAsCustomEvent toggle is enabled in UI. 
+          If yes, then we will send it as custom event
+    */
+  if (sendAsCustomEvent) {
+    return ['custom'];
+  }
+
+  if (apiVersion === API_VERSION.v3) {
+    /* 
+    Step 4: In case both of the above stated cases fail, will send the event name as it is.
+            This is going to be reflected as "unknown" event in conversion API dashboard.
+    */
+    return [trackEventOrScreenName];
+  }
+
+  throw new ConfigurationError(
+    `${event} is not mapped in UI. Make sure to map the event in UI or enable the 'send as custom event' setting`,
+  );
 };
 
 /**
@@ -199,7 +237,7 @@ const deduceEventName = (message, Config) => {
   let eventName = [];
   switch (type) {
     case EventType.PAGE:
-      eventName = isDefinedAndNotNull(category) ? ['ViewCategory'] : ['PageVisit'];
+      eventName = isDefinedAndNotNull(category) ? ['view_category'] : ['page_visit'];
       break;
     case EventType.TRACK:
     case EventType.SCREEN:
@@ -255,14 +293,23 @@ const processHashedUserPayload = (userPayload, message) => {
   const processedHashedUserPayload = {};
   Object.keys(userPayload).forEach((key) => {
     if (!USER_NON_ARRAY_PROPERTIES.includes(key)) {
-      processedHashedUserPayload[key] = [userPayload[key]];
+      if (Array.isArray(userPayload[key])) {
+        processedHashedUserPayload[key] = [...userPayload[key]];
+      } else {
+        processedHashedUserPayload[key] = [userPayload[key]];
+      }
     } else {
       processedHashedUserPayload[key] = userPayload[key];
     }
   });
   // multiKeyMap will works on only specific values like m, male, MALE, f, F, Female
   // if hashed data is sent from the user, it is directly set over here
-  processedHashedUserPayload.ge = [message.traits?.gender || message.context?.traits?.gender || null];
+  const gender = message.traits?.gender || message.context?.traits?.gender;
+  if (gender && Array.isArray(gender)) {
+    processedHashedUserPayload.ge = [...gender];
+  } else if (gender) {
+    processedHashedUserPayload.ge = [gender];
+  }
   return processedHashedUserPayload;
 };
 
@@ -286,7 +333,9 @@ const postProcessEcomFields = (message, mandatoryPayload) => {
     const { products, quantity } = properties;
     products.forEach((product) => {
       const prodParams = setIdPriceQuantity(product, message);
-      contentIds.push(prodParams.contentId);
+      if (prodParams.contentId) {
+        contentIds.push(prodParams.contentId);
+      }
       contentArray.push(prodParams.content);
       if (!product.quantity) {
         quantityInconsistent = true;
@@ -307,7 +356,9 @@ const postProcessEcomFields = (message, mandatoryPayload) => {
     quantity are taken into consideration
     */
     const prodParams = setIdPriceQuantity(properties, message);
-    contentIds.push(prodParams.contentId);
+    if (prodParams.contentId) {
+      contentIds.push(prodParams.contentId);
+    }
     contentArray.push(prodParams.content);
     totalQuantity = properties.quantity ? totalQuantity + properties.quantity : totalQuantity;
   }
@@ -320,14 +371,38 @@ const postProcessEcomFields = (message, mandatoryPayload) => {
   }
   customPayload = {
     ...customPayload,
-    content_ids: contentIds,
     contents: contentArray,
   };
 
+  if (contentIds.length > 0) {
+    customPayload.content_ids = contentIds;
+  }
+
   return {
     ...mandatoryPayload,
-    custom_data: { ...customPayload },
+    custom_data: { ...removeUndefinedAndNullValues(customPayload) },
   };
+};
+
+const validateInput = (message, { Config }) => {
+  const { apiVersion = API_VERSION.v3, advertiserId, adAccountId, conversionToken } = Config;
+  if (apiVersion === API_VERSION.v3 && !advertiserId) {
+    throw new ConfigurationError('Advertiser Id not found. Aborting');
+  }
+
+  if (apiVersion === API_VERSION.v5) {
+    if (!adAccountId) {
+      throw new ConfigurationError('Ad Account ID not found. Aborting');
+    }
+
+    if (!conversionToken) {
+      throw new ConfigurationError('Conversion Token not found. Aborting');
+    }
+  }
+
+  if (!message.type) {
+    throw new InstrumentationError('Event type is required');
+  }
 };
 
 module.exports = {
@@ -340,4 +415,6 @@ module.exports = {
   VALID_ACTION_SOURCES,
   postProcessEcomFields,
   ecomEventMaps,
+  convertToSnakeCase,
+  validateInput,
 };

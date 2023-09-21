@@ -6,8 +6,7 @@
   },
   {
     "destKey": "dataFields",
-    "sourceKeys": ["traits", "context.traits"],
-    "required": false
+    "sourceKeys": ["traits", "context.traits"]
   },
   {
     "destKey": "userId",

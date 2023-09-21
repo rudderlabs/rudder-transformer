@@ -17,6 +17,10 @@ const {
   fullEventColumnTypeByProvider
 } = require("../../src/warehouse/index.js");
 
+const {
+  validTimestamp
+} = require("../../src/warehouse/util.js");
+
 const version = "v0";
 const integrations = [
   "rs",
@@ -26,7 +30,10 @@ const integrations = [
   "snowflake",
   "mssql",
   "azure_synapse",
-  "s3_datalake"
+  "deltalake",
+  "azure_datalake",
+  "s3_datalake",
+  "gcs_datalake",
 ];
 const transformers = integrations.map(integration =>
   require(`../../src/${version}/destinations/${integration}/transform`)
@@ -117,6 +124,16 @@ describe("event types", () => {
       transformers.forEach((transformer, index) => {
         const received = transformer.process(i);
         expect(received).toMatchObject(output("alias", integrations[index]));
+      });
+    });
+  });
+
+  describe("extract", () => {
+    it("should generate one event for every extract call", () => {
+      const i = input("extract");
+      transformers.forEach((transformer, index) => {
+        const received = transformer.process(i);
+        expect(received).toMatchObject(output("extract", integrations[index]));
       });
     });
   });
@@ -215,7 +232,7 @@ describe("column & table names", () => {
         );
         return;
       }
-      if (integrations[index] === "s3_datalake") {
+      if (integrations[index] === "s3_datalake" || integrations[index] === "gcs_datalake" || integrations[index] === "azure_datalake") {
         expect(received[1].metadata).toHaveProperty(
           "table",
           "a_1_a_2_a_3_a_4_a_5_b_1_b_2_b_3_b_4_b_5_c_1_c_2_c_3_c_4_c_5_d_1_d_2_d_3_d_4_d_5_e_1_e_2_e_3_e_4_e_5_f_1_f_2_f_3_f_4_f_5_g_1_g_2_g_3_g_4_g_5"
@@ -353,7 +370,7 @@ describe("handle reserved words", () => {
         Object.keys(reserverdKeywordsMap).forEach(k => {
           expect(out.metadata.columns).not.toHaveProperty(k.toLowerCase());
           expect(out.metadata.columns).not.toHaveProperty(k.toUpperCase());
-          snakeCasedKey = _.snakeCase(k).toUpperCase();
+          let snakeCasedKey = _.snakeCase(k).toUpperCase();
           if (k === snakeCasedKey) {
             k = `_${k}`;
           } else {
@@ -929,7 +946,7 @@ describe("Handle no of columns in an event", () => {
   it("should throw an error if no of columns are more than 200", () => {
     const i = input("track");
     transformers
-      .filter((transformer, index) => integrations[index] !== "s3_datalake")
+      .filter((transformer, index) => integrations[index] !== "s3_datalake" && integrations[index] !== "gcs_datalake" && integrations[index] !== "azure_datalake")
       .forEach((transformer, index) => {
         i.message.properties = largeNoOfColumnsevent;
         expect(() => transformer.process(i)).toThrow(
@@ -995,7 +1012,7 @@ describe("Integration options", () => {
     it("should generate two events for every track call", () => {
       const i = opInput("track");
       transformers.forEach((transformer, index) => {
-        const { jsonPaths } = i.destination.Config;
+        const {jsonPaths} = i.destination.Config;
         if (integrations[index] === "postgres") {
           delete i.destination.Config.jsonPaths;
         }
@@ -1005,4 +1022,128 @@ describe("Integration options", () => {
       });
     });
   });
+
+  describe("users", () => {
+    it("should skip users when skipUsersTable is set", () => {
+      const i = opInput("users");
+      transformers.forEach((transformer, index) => {
+        const received = transformer.process(i);
+        expect(received).toEqual(opOutput("users", integrations[index]));
+      });
+    });
+  });
+
+  describe("json paths", () => {
+    const output = (config, provider) => {
+      switch (provider) {
+        case "rs":
+          return _.cloneDeep(config.output.rs);
+        case "bq":
+          return _.cloneDeep(config.output.bq);
+        case "postgres":
+          return _.cloneDeep(config.output.postgres);
+        case "snowflake":
+          return _.cloneDeep(config.output.snowflake);
+        default:
+          return _.cloneDeep(config.output.default);
+      }
+    }
+
+    const testCases = [
+      {
+        eventType: "aliases",
+      },
+      {
+        eventType: "groups",
+      },
+      {
+        eventType: "identifies",
+      },
+      {
+        eventType: "pages",
+      },
+      {
+        eventType: "screens",
+      },
+      {
+        eventType: "tracks",
+      },
+      {
+        eventType: "extract",
+      },
+    ];
+
+    for (const testCase of testCases) {
+      transformers.forEach((transformer, index) => {
+        it(`new ${testCase.eventType} for ${integrations[index]}`, () => {
+          const config = require("./data/warehouse/integrations/jsonpaths/new/" + testCase.eventType);
+          const input = _.cloneDeep(config.input);
+          const received = transformer.process(input);
+          expect(received).toEqual(output(config, integrations[index]));
+        })
+
+        it(`legacy ${testCase.eventType} for ${integrations[index]}`, () => {
+          const config = require("./data/warehouse/integrations/jsonpaths/legacy/" + testCase.eventType);
+          const input = _.cloneDeep(config.input);
+          const received = transformer.process(input);
+          expect(received).toEqual(output(config, integrations[index]));
+        })
+      });
+    }
+  });
+});
+
+describe("validTimestamp", () => {
+  const testCases = [
+    {
+      input: undefined,
+      expected: false,
+    },
+    {
+      input: '-0001-11-30T00:00:00+0000',
+      expected: false,
+    },
+    {
+      input: '-2023-06-14T05:23:59.244Z',
+      expected: false,
+    },
+    {
+      input: '+2023-06-14T05:23:59.244Z',
+      expected: false,
+    },
+    {
+      input: '2023-06-14T05:23:59.244Z',
+      expected: true,
+    },
+    {
+      input: '-1900-06-14T05:23:59.244Z',
+      expected: false,
+    },
+    {
+      input: 'abc',
+      expected: false,
+    },
+    {
+      input: '%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216Windows%u2216win%u002ein',
+      expected: false,
+    },
+    {
+      input: '',
+      expected: false,
+    },
+    {
+      input: '2023-06-14',
+      expected: true,
+    },
+    {
+      input: '05:23:59.244Z',
+      expected: false,
+    }
+  ]
+
+  for (const testCase of testCases) {
+    it(`should return ${testCase.expected} for ${testCase.input}`, () => {
+      expect(validTimestamp(testCase.input)).toEqual(testCase.expected);
+    });
+  }
 });

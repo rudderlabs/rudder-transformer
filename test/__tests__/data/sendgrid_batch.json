@@ -7,7 +7,7 @@
           "ID": "2HOQOO6wWKaKjeQrEABXgiH6cmU",
           "Config": {
             "IPPoolName": "",
-            "apiKey": "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",
+            "apiKey": "apikey",
             "attachments": [
               {
                 "content": "",
@@ -30,7 +30,7 @@
             "eventDeliveryTS": 1668424218224,
             "eventNamesSettings": [{ "event": "open" }],
             "footer": false,
-            "fromEmail": "ankitcingh93@gmail.com",
+            "fromEmail": "a@g.com",
             "fromName": "",
             "ganalytics": false,
             "group": "",
@@ -56,7 +56,7 @@
             "traits": {
               "age": "30",
               "email": "user3@rudderlabs.com",
-              "phone": "+91 66788956789",
+              "phone": "+91 9876543210",
               "city": "Ahmedabad",
               "state": "Gujarat",
               "lastName": "gupta",
@@ -80,7 +80,7 @@
           "ID": "2HOQOO6wWKaKjeQrEABXgiH6cmU",
           "Config": {
             "IPPoolName": "",
-            "apiKey": "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",
+            "apiKey": "apikey",
             "attachments": [
               {
                 "content": "",
@@ -103,7 +103,7 @@
             "eventDeliveryTS": 1668424218224,
             "eventNamesSettings": [{ "event": "open" }],
             "footer": false,
-            "fromEmail": "ankitcingh93@gmail.com",
+            "fromEmail": "a@g.com",
             "fromName": "",
             "ganalytics": false,
             "group": "",
@@ -128,7 +128,7 @@
           "context": {
             "traits": {
               "email": "user4@rudderlabs.com",
-              "phone": "+91 66788956769",
+              "phone": "+91 9876543210",
               "userId": "sajal",
               "city": "Bombey",
               "state": "Maharastra",
@@ -153,7 +153,7 @@
           "ID": "2HOQOO6wWKaKjeQrEABXgiH6cmU",
           "Config": {
             "IPPoolName": "",
-            "apiKey": "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",
+            "apiKey": "apikey",
             "attachments": [
               {
                 "content": "",
@@ -176,7 +176,7 @@
             "eventDeliveryTS": 1668424218224,
             "eventNamesSettings": [{ "event": "open" }],
             "footer": false,
-            "fromEmail": "ankitcingh93@gmail.com",
+            "fromEmail": "a@g.com",
             "fromName": "",
             "ganalytics": false,
             "group": "",
@@ -201,7 +201,7 @@
           "context": {
             "traits": {
               "email": "user5@rudderlabs.com",
-              "phone": "+91 66788956769",
+              "phone": "+91 9876543210",
               "city": "Banglore",
               "lastName": "bhatt",
               "username": "kiran bhatt",
@@ -227,7 +227,7 @@
           "ID": "2HOQOO6wWKaKjeQrEABXgiH6cmU",
           "Config": {
             "IPPoolName": "",
-            "apiKey": "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",
+            "apiKey": "apikey",
             "attachments": [
               {
                 "content": "",
@@ -250,7 +250,7 @@
             "eventDeliveryTS": 1668424218224,
             "eventNamesSettings": [{ "event": "open" }],
             "footer": false,
-            "fromEmail": "ankitcingh93@gmail.com",
+            "fromEmail": "a@g.com",
             "fromName": "",
             "ganalytics": false,
             "group": "",
@@ -275,7 +275,7 @@
           "context": {
             "traits": {
               "email": "user6@rudderlabs.com",
-              "phone": "+91 66758956769",
+              "phone": "+91 9876543210",
               "city": "Los Angeles",
               "lastName": "doe",
               "name": "john doe",
@@ -302,7 +302,7 @@
           "ID": "2HOQOO6wWKaKjeQrEABXgiH6cmU",
           "Config": {
             "IPPoolName": "",
-            "apiKey": "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",
+            "apiKey": "apikey",
             "attachments": [
               {
                 "content": "",
@@ -325,7 +325,7 @@
             "eventDeliveryTS": 1668424218224,
             "eventNamesSettings": [{ "event": "open" }],
             "footer": false,
-            "fromEmail": "ankitcingh93@gmail.com",
+            "fromEmail": "a@g.com",
             "fromName": "",
             "ganalytics": false,
             "group": "",
@@ -350,7 +350,7 @@
           "context": {
             "traits": {
               "email": "user7@rudderlabs.com",
-              "phone": "+91 66958956769",
+              "phone": "+91 9876543210",
               "city": "Chicago",
               "lastName": "patel",
               "name": "reshma patel",
@@ -368,7 +368,7 @@
           "ID": "2HOQOO6wWKaKjeQrEABXgiH6cmU",
           "Config": {
             "IPPoolName": "",
-            "apiKey": "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",
+            "apiKey": "apikey",
             "attachments": [
               {
                 "content": "",
@@ -391,7 +391,7 @@
             "eventDeliveryTS": 1668424218224,
             "eventNamesSettings": [{ "event": "open" }],
             "footer": false,
-            "fromEmail": "ankitcingh93@gmail.com",
+            "fromEmail": "a@g.com",
             "fromName": "",
             "ganalytics": false,
             "group": "",
@@ -416,7 +416,7 @@
           "context": {
             "traits": {
               "email": "user8@rudderlabs.com",
-              "phone": "+91 76958956769",
+              "phone": "+91 9876543210",
               "city": "Chicago",
               "lastName": "patel",
               "name": "karishma patel",
@@ -450,7 +450,7 @@
           "endpoint": "https://api.sendgrid.com/v3/marketing/contacts",
           "headers": {
             "Content-Type": "application/json",
-            "Authorization": "Bearer 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"
+            "Authorization": "Bearer apikey"
           },
           "params": {},
           "body": {
@@ -459,7 +459,7 @@
               "contacts": [
                 {
                   "email": "user3@rudderlabs.com",
-                  "phone_number": "+91 66788956789",
+                  "phone_number": "+91 9876543210",
                   "first_name": "aman",
                   "last_name": "gupta",
                   "unique_name": "aman gupta",
@@ -480,7 +480,7 @@
           "ID": "2HOQOO6wWKaKjeQrEABXgiH6cmU",
           "Config": {
             "IPPoolName": "",
-            "apiKey": "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",
+            "apiKey": "apikey",
             "attachments": [
               {
                 "content": "",
@@ -503,7 +503,7 @@
             "eventDeliveryTS": 1668424218224,
             "eventNamesSettings": [{ "event": "open" }],
             "footer": false,
-            "fromEmail": "ankitcingh93@gmail.com",
+            "fromEmail": "a@g.com",
             "fromName": "",
             "ganalytics": false,
             "group": "",
@@ -531,7 +531,7 @@
           "endpoint": "https://api.sendgrid.com/v3/marketing/contacts",
           "headers": {
             "Content-Type": "application/json",
-            "Authorization": "Bearer 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"
+            "Authorization": "Bearer apikey"
           },
           "params": {},
           "body": {
@@ -540,7 +540,7 @@
               "contacts": [
                 {
                   "email": "user4@rudderlabs.com",
-                  "phone_number": "+91 66788956769",
+                  "phone_number": "+91 9876543210",
                   "first_name": "suresh",
                   "last_name": "gupta",
                   "custom_fields": {}
@@ -560,7 +560,7 @@
           "ID": "2HOQOO6wWKaKjeQrEABXgiH6cmU",
           "Config": {
             "IPPoolName": "",
-            "apiKey": "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",
+            "apiKey": "apikey",
             "attachments": [
               {
                 "content": "",
@@ -583,7 +583,7 @@
             "eventDeliveryTS": 1668424218224,
             "eventNamesSettings": [{ "event": "open" }],
             "footer": false,
-            "fromEmail": "ankitcingh93@gmail.com",
+            "fromEmail": "a@g.com",
             "fromName": "",
             "ganalytics": false,
             "group": "",
@@ -611,7 +611,7 @@
           "endpoint": "https://api.sendgrid.com/v3/marketing/contacts",
           "headers": {
             "Content-Type": "application/json",
-            "Authorization": "Bearer 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"
+            "Authorization": "Bearer apikey"
           },
           "params": {},
           "body": {
@@ -623,7 +623,7 @@
               "contacts": [
                 {
                   "email": "user5@rudderlabs.com",
-                  "phone_number": "+91 66788956769",
+                  "phone_number": "+91 9876543210",
                   "first_name": "kiran",
                   "last_name": "bhatt",
                   "custom_fields": {}
@@ -643,7 +643,7 @@
           "ID": "2HOQOO6wWKaKjeQrEABXgiH6cmU",
           "Config": {
             "IPPoolName": "",
-            "apiKey": "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",
+            "apiKey": "apikey",
             "attachments": [
               {
                 "content": "",
@@ -666,7 +666,7 @@
             "eventDeliveryTS": 1668424218224,
             "eventNamesSettings": [{ "event": "open" }],
             "footer": false,
-            "fromEmail": "ankitcingh93@gmail.com",
+            "fromEmail": "a@g.com",
             "fromName": "",
             "ganalytics": false,
             "group": "",
@@ -694,7 +694,7 @@
           "endpoint": "https://api.sendgrid.com/v3/marketing/contacts",
           "headers": {
             "Content-Type": "application/json",
-            "Authorization": "Bearer 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"
+            "Authorization": "Bearer apikey"
           },
           "params": {},
           "body": {
@@ -706,7 +706,7 @@
               "contacts": [
                 {
                   "email": "user6@rudderlabs.com",
-                  "phone_number": "+91 66758956769",
+                  "phone_number": "+91 9876543210",
                   "first_name": "john",
                   "last_name": "doe",
                   "unique_name": "john doe",
@@ -727,7 +727,7 @@
           "ID": "2HOQOO6wWKaKjeQrEABXgiH6cmU",
           "Config": {
             "IPPoolName": "",
-            "apiKey": "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",
+            "apiKey": "apikey",
             "attachments": [
               {
                 "content": "",
@@ -750,7 +750,7 @@
             "eventDeliveryTS": 1668424218224,
             "eventNamesSettings": [{ "event": "open" }],
             "footer": false,
-            "fromEmail": "ankitcingh93@gmail.com",
+            "fromEmail": "a@g.com",
             "fromName": "",
             "ganalytics": false,
             "group": "",
@@ -778,7 +778,7 @@
           "endpoint": "https://api.sendgrid.com/v3/marketing/contacts",
           "headers": {
             "Content-Type": "application/json",
-            "Authorization": "Bearer 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"
+            "Authorization": "Bearer apikey"
           },
           "params": {},
           "body": {
@@ -786,7 +786,7 @@
               "contacts": [
                 {
                   "email": "user7@rudderlabs.com",
-                  "phone_number": "+91 66958956769",
+                  "phone_number": "+91 9876543210",
                   "first_name": "reshma",
                   "last_name": "patel",
                   "unique_name": "reshma patel",
@@ -807,7 +807,7 @@
           "ID": "2HOQOO6wWKaKjeQrEABXgiH6cmU",
           "Config": {
             "IPPoolName": "",
-            "apiKey": "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",
+            "apiKey": "apikey",
             "attachments": [
               {
                 "content": "",
@@ -830,7 +830,7 @@
             "eventDeliveryTS": 1668424218224,
             "eventNamesSettings": [{ "event": "open" }],
             "footer": false,
-            "fromEmail": "ankitcingh93@gmail.com",
+            "fromEmail": "a@g.com",
             "fromName": "",
             "ganalytics": false,
             "group": "",
@@ -858,7 +858,7 @@
           "endpoint": "https://api.sendgrid.com/v3/marketing/contacts",
           "headers": {
             "Content-Type": "application/json",
-            "Authorization": "Bearer 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"
+            "Authorization": "Bearer apikey"
           },
           "params": {},
           "body": {
@@ -872,7 +872,7 @@
               "contacts": [
                 {
                   "email": "user8@rudderlabs.com",
-                  "phone_number": "+91 76958956769",
+                  "phone_number": "+91 9876543210",
                   "first_name": "karishma",
                   "last_name": "patel",
                   "unique_name": "karishma patel",
@@ -893,7 +893,7 @@
           "ID": "2HOQOO6wWKaKjeQrEABXgiH6cmU",
           "Config": {
             "IPPoolName": "",
-            "apiKey": "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",
+            "apiKey": "apikey",
             "attachments": [
               {
                 "content": "",
@@ -916,7 +916,7 @@
             "eventDeliveryTS": 1668424218224,
             "eventNamesSettings": [{ "event": "open" }],
             "footer": false,
-            "fromEmail": "ankitcingh93@gmail.com",
+            "fromEmail": "a@g.com",
             "fromName": "",
             "ganalytics": false,
             "group": "",

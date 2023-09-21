@@ -30,6 +30,7 @@ const {
   identifyMapping,
 } = require('./config');
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
  * Create/Update a User with user attributes
@@ -43,7 +44,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
   const response = defaultRequestConfig();
   response.headers = {
     'X-APTRINSIC-API-KEY': Config.apiKey,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
 
   const { success: isPresent } = await objectExists(userId, Config, 'user');
@@ -62,6 +63,8 @@ const identifyResponseBuilder = async (message, { Config }) => {
     ['traits', 'context.traits'],
     USER_EXCLUSION_FIELDS,
   );
+
+  customAttributes = removeUndefinedAndNullValues(customAttributes);
 
   const userCustomFieldsMap = getHashFromArray(Config.userAttributeMap, 'from', 'to', false);
   customAttributes = renameCustomFields(customAttributes, userCustomFieldsMap);
@@ -143,7 +146,7 @@ const newGroupResponseBuilder = async (message, { Config }) => {
   response.method = defaultPutRequestConfig.requestMethod;
   response.headers = {
     'X-APTRINSIC-API-KEY': Config.apiKey,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   response.endpoint = `${ENDPOINTS.USERS_ENDPOINT}/${userId}`;
   response.body.JSON = {
@@ -211,7 +214,7 @@ const groupResponseBuilder = async (message, { Config }) => {
   response.method = defaultPutRequestConfig.requestMethod;
   response.headers = {
     'X-APTRINSIC-API-KEY': Config.apiKey,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   response.endpoint = `${ENDPOINTS.USERS_ENDPOINT}/${userId}`;
   response.body.JSON = {
@@ -235,13 +238,13 @@ const trackResponseBuilder = (message, { Config }) => {
     globalContext = getHashFromArray(Config.globalContextMap, 'from', 'to', false);
   }
 
-  if (payload.attributes && payload.attributes.globalContext) {
+  if (payload.attributes?.globalContext) {
     delete payload.attributes.globalContext;
   }
 
   payload = {
     ...payload,
-    attributes: formatEventProps(payload.attributes),
+    attributes: payload.attributes ? formatEventProps(payload.attributes) : {},
     propertyKey: Config.productTagKey,
     userType: 'USER',
     globalContext: !isEmptyObject(globalContext) ? globalContext : null,
@@ -252,7 +255,7 @@ const trackResponseBuilder = (message, { Config }) => {
   response.body.JSON = removeUndefinedAndNullValues(payload);
   response.headers = {
     'X-APTRINSIC-API-KEY': Config.apiKey,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   response.endpoint = ENDPOINTS.CUSTOM_EVENTS_ENDPOINT;
   return response;

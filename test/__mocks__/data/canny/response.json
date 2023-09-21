@@ -3,12 +3,12 @@
     "data": {
       "avatarURL": "https://canny.io/images/cddfd145056cd4bc04132ee0e7de04ee.png",
       "created": "2022-07-15T11:16:32.648Z",
-      "email": "rohithkaza@abc.com",
+      "email": "test@rudderstack.com",
       "id": "52d14c90fff7c80abcd12345",
       "isAdmin": true,
       "lastActivity": "2022-07-18T14:24:43.632Z",
-      "name": "Rohith Kumar Kaza",
-      "url": "https://rohith-kaza-rudder.canny.io/admin/users/rohith-kumar-kaza-1",
+      "name": "Rudder Test",
+      "url": "https://ruderstack.canny.io/admin/users/dummyUser",
       "userID": null
     }
   }

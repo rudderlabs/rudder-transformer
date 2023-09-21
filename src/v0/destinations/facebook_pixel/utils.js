@@ -1,7 +1,16 @@
 const sha256 = require('sha256');
-const { isObject, getFieldValueFromMessage, formatTimeStamp } = require('../../util');
+const {
+  isObject,
+  getFieldValueFromMessage,
+  formatTimeStamp,
+  getIntegrationsObj,
+  constructPayload,
+  defaultPostRequestConfig,
+  defaultRequestConfig,
+} = require('../../util');
+const { ACTION_SOURCES_VALUES, CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
 
-const { InstrumentationError } = require('../../util/errorTypes');
+const { InstrumentationError, TransformationError } = require('../../util/errorTypes');
 
 /**  format revenue according to fb standards with max two decimal places.
  * @param revenue
@@ -28,14 +37,12 @@ const formatRevenue = (revenue) => {
  * - https://developers.facebook.com/docs/facebook-pixel/reference/#object-properties
  */
 const getContentType = (message, defaultValue, categoryToContent) => {
-  const { integrations, properties } = message;
-  if (
-    integrations &&
-    integrations.FacebookPixel &&
-    isObject(integrations.FacebookPixel) &&
-    integrations.FacebookPixel.contentType
-  ) {
-    return integrations.FacebookPixel.contentType;
+  let tempCategoryToContent = categoryToContent;
+  const { properties } = message;
+  const integrationsObj = getIntegrationsObj(message, 'fb_pixel');
+
+  if (integrationsObj?.contentType) {
+    return integrationsObj.contentType;
   }
 
   let { category } = properties;
@@ -45,15 +52,16 @@ const getContentType = (message, defaultValue, categoryToContent) => {
       category = products[0].category;
     }
   } else {
-    if (categoryToContent === undefined) {
-      categoryToContent = [];
+    if (tempCategoryToContent === undefined) {
+      tempCategoryToContent = [];
     }
-    const mapped = categoryToContent;
+    const mapped = tempCategoryToContent;
     const mappedTo = mapped.reduce((filtered, map) => {
+      let filter = filtered;
       if (map.from === category) {
-        filtered = map.to;
+        filter = map.to;
       }
-      return filtered;
+      return filter;
     }, '');
     if (mappedTo.length > 0) {
       return mappedTo;
@@ -110,8 +118,6 @@ Also checks if it is a standard event and sends properties only if it is mention
 @param whitelistPiiProperties -->
 [ { whitelistPiiProperties: 'email' } ] // sets email
 
-@param isStandard --> is standard if among the ecommerce spec of rudder other wise is not standard for simple track, identify and page calls
-false
 
 @param eventCustomProperties -->
 [ { eventCustomProperties: 'leadId' } ] // leadId if present will be set
@@ -123,8 +129,6 @@ const transformedPayloadData = (
   customData,
   blacklistPiiProperties,
   whitelistPiiProperties,
-  isStandard,
-  eventCustomProperties,
   integrationsObj,
 ) => {
   const defaultPiiProperties = [
@@ -141,54 +145,46 @@ const transformedPayloadData = (
     'phone',
     'state',
     'zip',
+    'postalCode',
     'birthday',
   ];
-  blacklistPiiProperties = blacklistPiiProperties || [];
-  whitelistPiiProperties = whitelistPiiProperties || [];
-  eventCustomProperties = eventCustomProperties || [];
+  const clonedCustomData = { ...customData };
+  const finalBlacklistPiiProperties = blacklistPiiProperties || [];
+  const finalWhitelistPiiProperties = whitelistPiiProperties || [];
   const customBlackListedPiiProperties = {};
-  const customWhiteListedProperties = {};
-  const customEventProperties = {};
-  blacklistPiiProperties.forEach((property) => {
+
+  // create list of whitelisted properties
+  const customWhiteListedProperties = finalWhitelistPiiProperties.map(
+    (propObject) => propObject.whitelistPiiProperties,
+  );
+
+  // create map of blacklisted properties
+  finalBlacklistPiiProperties.forEach((property) => {
     const singularConfigInstance = property;
     customBlackListedPiiProperties[singularConfigInstance.blacklistPiiProperties] =
       singularConfigInstance.blacklistPiiHash;
   });
 
-  whitelistPiiProperties.forEach((property) => {
-    const singularConfigInstance = property;
-    customWhiteListedProperties[singularConfigInstance.whitelistPiiProperties] = true;
-  });
-
-  eventCustomProperties.forEach((property) => {
-    const singularConfigInstance = property;
-    customEventProperties[singularConfigInstance.eventCustomProperties] = true;
-  });
-
-  Object.keys(customData).forEach((eventProp) => {
+  // remove properties which are default pii properties and not whitelisted
+  Object.keys(clonedCustomData).forEach((eventProp) => {
     const isDefaultPiiProperty = defaultPiiProperties.includes(eventProp);
-    const isProperyWhiteListed = customWhiteListedProperties[eventProp] || false;
-    if (isDefaultPiiProperty && !isProperyWhiteListed) {
-      delete customData[eventProp];
-    }
+    const isProperyWhiteListed = customWhiteListedProperties.includes(eventProp);
 
     if (Object.prototype.hasOwnProperty.call(customBlackListedPiiProperties, eventProp)) {
       if (customBlackListedPiiProperties[eventProp]) {
-        customData[eventProp] =
-          integrationsObj && integrationsObj.hashed
-            ? String(message.properties[eventProp])
-            : sha256(String(message.properties[eventProp]));
-      } else {
-        delete customData[eventProp];
+        // if customBlackListedPiiProperty is marked to be hashed from UI
+        clonedCustomData[eventProp] = integrationsObj?.hashed
+          ? String(message.properties[eventProp])
+          : sha256(String(message.properties[eventProp]));
+      } else if (isDefaultPiiProperty && !isProperyWhiteListed) {
+        delete clonedCustomData[eventProp];
       }
-    }
-    const isCustomProperty = customEventProperties[eventProp] || false;
-    if (isStandard && !isCustomProperty && !isDefaultPiiProperty) {
-      delete customData[eventProp];
+    } else if (isDefaultPiiProperty && !isProperyWhiteListed) {
+      delete clonedCustomData[eventProp];
     }
   });
 
-  return customData;
+  return clonedCustomData;
 };
 
 /**
@@ -227,9 +223,302 @@ const deduceFbcParam = (message) => {
   return `fb.1.${formatTimeStamp(creationTime)}.${fbclid}`;
 };
 
+/**
+ * Returns action source
+ * ref : https://developers.facebook.com/docs/marketing-api/conversions-api/parameters/server-event#action-source
+ * @param {*} payload
+ * @param {*} channel
+ * @returns
+ */
+const getActionSource = (payload, channel) => {
+  let actionSource = 'other';
+  if (payload.action_source) {
+    const isActionSourceValid = ACTION_SOURCES_VALUES.includes(payload.action_source);
+    if (!isActionSourceValid) {
+      throw new InstrumentationError('Invalid Action Source type');
+    }
+    actionSource = payload.action_source;
+  } else if (channel === 'web') {
+    actionSource = 'website';
+  } else if (channel === 'mobile') {
+    actionSource = 'app';
+  }
+
+  return actionSource;
+};
+
+/**
+ * This method gets content category with proper error-handling
+ *
+ * @param {*} category
+ * @returns The content category as a string
+ */
+const getContentCategory = (category) => {
+  let contentCategory = category;
+  if (Array.isArray(contentCategory)) {
+    contentCategory = contentCategory.map(String).join(',');
+  }
+  if (
+    contentCategory &&
+    typeof contentCategory !== 'string' &&
+    typeof contentCategory !== 'object'
+  ) {
+    contentCategory = String(contentCategory);
+  }
+  if (
+    contentCategory &&
+    typeof contentCategory !== 'string' &&
+    !Array.isArray(contentCategory) &&
+    typeof contentCategory === 'object'
+  ) {
+    throw new InstrumentationError("'properties.category' must be either be a string or an array");
+  }
+  return contentCategory;
+};
+
+const fetchUserData = (message, Config) => {
+  const integrationsObj = getIntegrationsObj(message, 'fb_pixel');
+  const userData = constructPayload(
+    message,
+    MAPPING_CONFIG[CONFIG_CATEGORIES.USERDATA.name],
+    'fb_pixel',
+  );
+  const { removeExternalId } = Config;
+  if (removeExternalId) {
+    delete userData.external_id;
+  }
+
+  if (userData) {
+    const split = userData.name?.split(' ');
+    if (split && split.length === 2) {
+      const hashValue = (value) => (integrationsObj?.hashed ? value : sha256(value));
+      userData.fn = hashValue(split[0]);
+      userData.ln = hashValue(split[1]);
+    }
+    delete userData.name;
+    userData.fbc = userData.fbc || deduceFbcParam(message);
+  }
+
+  return userData;
+};
+
+/**
+ *
+ * @param {*} message Rudder element
+ * @param {*} categoryToContent [ { from: 'clothing', to: 'product' } ]
+ *
+ * Handles order completed and checkout started types of specific events
+ */
+const handleOrder = (message, categoryToContent) => {
+  const { products, revenue } = message.properties;
+  const value = formatRevenue(revenue);
+
+  const contentType = getContentType(message, 'product', categoryToContent);
+  const contentIds = [];
+  const contents = [];
+  const { category, quantity, price, currency, contentName } = message.properties;
+  if (products) {
+    if (products.length > 0 && Array.isArray(products)) {
+      products.forEach((singleProduct) => {
+        const pId = singleProduct.product_id || singleProduct.sku || singleProduct.id;
+        if (pId) {
+          contentIds.push(pId);
+          // required field for content
+          // ref: https://developers.facebook.com/docs/meta-pixel/reference#object-properties
+          const content = {
+            id: pId,
+            quantity: singleProduct.quantity || quantity || 1,
+            item_price: singleProduct.price || price,
+          };
+          contents.push(content);
+        }
+      });
+    } else {
+      throw new InstrumentationError("'properties.products' is not sent as an Array<Object>");
+    }
+  }
+
+  return {
+    content_category: getContentCategory(category),
+    content_ids: contentIds,
+    content_type: contentType,
+    currency: currency || 'USD',
+    value,
+    contents,
+    num_items: contentIds.length,
+    content_name: contentName,
+  };
+};
+
+/**
+ *
+ * @param {*} message Rudder element
+ * @param {*} categoryToContent [ { from: 'clothing', to: 'product' } ]
+ *
+ * Handles product list viewed
+ */
+const handleProductListViewed = (message, categoryToContent) => {
+  let contentType;
+  const contentIds = [];
+  const contents = [];
+  const { products, category, quantity, value, contentName } = message.properties;
+  if (products && products.length > 0 && Array.isArray(products)) {
+    products.forEach((product, index) => {
+      if (isObject(product)) {
+        const productId = product.product_id || product.sku || product.id;
+        if (productId) {
+          contentIds.push(productId);
+          contents.push({
+            id: productId,
+            quantity: product.quantity || quantity || 1,
+            item_price: product.price,
+          });
+        }
+      } else {
+        throw new InstrumentationError(`'properties.products[${index}]' is not an object`);
+      }
+    });
+  }
+
+  if (contentIds.length > 0) {
+    contentType = 'product';
+    //  for viewContent event content_ids and content arrays are not mandatory
+  } else if (category) {
+    contentIds.push(category);
+    contents.push({
+      id: category,
+      quantity: 1,
+    });
+    contentType = 'product_group';
+  }
+
+  return {
+    content_ids: contentIds,
+    content_type: getContentType(message, contentType, categoryToContent),
+    contents,
+    content_category: getContentCategory(category),
+    content_name: contentName,
+    value: formatRevenue(value),
+  };
+};
+
+/**
+ *
+ * @param {*} message Rudder Payload
+ * @param {*} categoryToContent [ { from: 'clothing', to: 'product' } ]
+ * @param {*} valueFieldIdentifier it can be either value or price which will be matched from properties and assigned to value for fb payload
+ */
+const handleProduct = (message, categoryToContent, valueFieldIdentifier) => {
+  const contentIds = [];
+  const contents = [];
+  const useValue = valueFieldIdentifier === 'properties.value';
+  const contentId =
+    message.properties?.product_id || message.properties?.sku || message.properties?.id;
+  const contentType = getContentType(message, 'product', categoryToContent);
+  const contentName = message.properties.product_name || message.properties.name || '';
+  const contentCategory = message.properties.category || '';
+  const currency = message.properties.currency || 'USD';
+  const value = useValue
+    ? formatRevenue(message.properties.value)
+    : formatRevenue(message.properties.price);
+  if (contentId) {
+    contentIds.push(contentId);
+    contents.push({
+      id: contentId,
+      quantity: message.properties.quantity || 1,
+      item_price: message.properties.price,
+    });
+  }
+  return {
+    content_ids: contentIds,
+    content_type: contentType,
+    content_name: contentName,
+    content_category: getContentCategory(contentCategory),
+    currency,
+    value,
+    contents,
+  };
+};
+
+const handleSearch = (message) => {
+  const query = message?.properties?.query;
+  /**
+   * Facebook Pixel states "search_string" a string type
+   * ref: https://developers.facebook.com/docs/meta-pixel/reference#:~:text=an%20exact%20value.-,search_string,-String
+   * But it accepts "number" and "boolean" types. So, we are also doing the same by accepting "number" and "boolean"
+   * and throwing an error if "Object" or other types are being sent.
+   */
+  const validQueryType = ['string', 'number', 'boolean'];
+  if (query && !validQueryType.includes(typeof query)) {
+    throw new InstrumentationError("'query' should be in string format only");
+  }
+
+  const contentIds = [];
+  const contents = [];
+  const contentId =
+    message.properties?.product_id || message.properties?.sku || message.properties?.id;
+  const contentCategory = message?.properties?.category || '';
+  const value = message?.properties?.value;
+  if (contentId) {
+    contentIds.push(contentId);
+    contents.push({
+      id: contentId,
+      quantity: message?.properties?.quantity || 1,
+      item_price: message?.properties?.price,
+    });
+  }
+  return {
+    content_ids: contentIds,
+    content_category: getContentCategory(contentCategory),
+    value: formatRevenue(value),
+    contents,
+    search_string: query,
+  };
+};
+
+const formingFinalResponse = (
+  userData,
+  commonData,
+  customData,
+  endpoint,
+  testDestination,
+  testEventCode,
+) => {
+  if (userData && commonData) {
+    const response = defaultRequestConfig();
+    response.endpoint = endpoint;
+    response.method = defaultPostRequestConfig.requestMethod;
+    const jsonStringify = JSON.stringify({
+      user_data: userData,
+      ...commonData,
+      custom_data: customData,
+    });
+    const payload = {
+      data: [jsonStringify],
+    };
+
+    // Ref: https://developers.facebook.com/docs/marketing-api/conversions-api/using-the-api/
+    // Section: Test Events Tool
+    if (testDestination) {
+      payload.test_event_code = testEventCode;
+    }
+    response.body.FORM = payload;
+    return response;
+  }
+  // fail-safety for developer error
+  throw new TransformationError('Payload could not be constructed');
+};
+
 module.exports = {
   deduceFbcParam,
   formatRevenue,
   getContentType,
   transformedPayloadData,
+  getActionSource,
+  fetchUserData,
+  handleProduct,
+  handleSearch,
+  handleProductListViewed,
+  handleOrder,
+  formingFinalResponse,
 };

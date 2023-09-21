@@ -5,7 +5,7 @@
     "method": "POST",
     "endpoint": "https://api.attentivemobile.com/v1/subscriptions",
     "headers": {
-      "Authorization": "Bearer d1cwZXF1eVZicnpPeGJ6M0JOTXFxTVN2QkdpWTJ3NENp",
+      "Authorization": "Bearer dummyApiKey",
       "Content-Type": "application/json"
     },
     "params": {},
@@ -13,7 +13,7 @@
       "JSON": {
         "user": {
           "phone": "+16405273911",
-          "email": "alex13@gmail.com"
+          "email": "a@gmail.com"
         },
         "signUpSourceId": "241654",
         "externalIdentifiers": {
@@ -41,7 +41,7 @@
     "method": "POST",
     "endpoint": "https://api.attentivemobile.com/v1/subscriptions/unsubscribe",
     "headers": {
-      "Authorization": "Bearer d1cwZXF1eVZicnpPeGJ6M0JOTXFxTVN2QkdpWTJ3NENp",
+      "Authorization": "Bearer dummyApiKey",
       "Content-Type": "application/json"
     },
     "params": {},
@@ -63,14 +63,19 @@
     "method": "POST",
     "endpoint": "https://api.attentivemobile.com/v1/events/ecommerce/purchase",
     "headers": {
-      "Authorization": "Bearer t1yurrb968zk",
+      "Authorization": "Bearer dummyApiKey",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
         "user": {
-          "email": "test@rudderlabs.com"
+          "email": "test@rudderstack.com",
+          "externalIdentifiers": {
+            "clientUserId": "144",
+            "shopifyId": "143",
+            "klaviyoId": "142"
+          }
         },
         "occuredAt": "2019-10-14T09:03:17.562Z",
         "items": [
@@ -86,12 +91,7 @@
               }
             ]
           }
-        ],
-        "externalIdentifiers": {
-          "clientUserId": "144",
-          "shopifyId": "143",
-          "klaviyoId": "142"
-        }
+        ]
       },
       "JSON_ARRAY": {},
       "XML": {},
@@ -109,7 +109,7 @@
     "method": "POST",
     "endpoint": "https://api.attentivemobile.com/v1/events/ecommerce/product-view",
     "headers": {
-      "Authorization": "Bearer t1yurrb968zk",
+      "Authorization": "Bearer dummyApiKey",
       "Content-Type": "application/json"
     },
     "params": {},
@@ -117,7 +117,12 @@
       "JSON": {
         "user": {
           "phone": "+16465053911",
-          "email": "test@rudderlabs.com"
+          "email": "test@rudderstack.com",
+          "externalIdentifiers": {
+            "clientUserId": "144",
+            "shopifyId": "143",
+            "klaviyoId": "142"
+          }
         },
         "occuredAt": "2019-10-14T09:03:17.562Z",
         "items": [
@@ -133,12 +138,7 @@
               }
             ]
           }
-        ],
-        "externalIdentifiers": {
-          "clientUserId": "144",
-          "shopifyId": "143",
-          "klaviyoId": "142"
-        }
+        ]
       },
       "JSON_ARRAY": {},
       "XML": {},
@@ -152,7 +152,7 @@
     "method": "POST",
     "endpoint": "https://api.attentivemobile.com/v1/events/ecommerce/product-view",
     "headers": {
-      "Authorization": "Bearer t1yurrb968zk",
+      "Authorization": "Bearer dummyApiKey",
       "Content-Type": "application/json"
     },
     "params": {},
@@ -160,7 +160,12 @@
       "JSON": {
         "user": {
           "phone": "+16465053911",
-          "email": "test@rudderlabs.com"
+          "email": "test@rudderstack.com",
+          "externalIdentifiers": {
+            "clientUserId": "144",
+            "shopifyId": "143",
+            "klaviyoId": "142"
+          }
         },
         "occuredAt": "2019-10-14T09:03:17.562Z",
         "items": [
@@ -176,12 +181,7 @@
               }
             ]
           }
-        ],
-        "externalIdentifiers": {
-          "clientUserId": "144",
-          "shopifyId": "143",
-          "klaviyoId": "142"
-        }
+        ]
       },
       "JSON_ARRAY": {},
       "XML": {},
@@ -195,7 +195,7 @@
     "method": "POST",
     "endpoint": "https://api.attentivemobile.com/v1/events/custom",
     "headers": {
-      "Authorization": "Bearer t1yurrb968zk",
+      "Authorization": "Bearer dummyApiKey",
       "Content-Type": "application/json"
     },
     "params": {},
@@ -203,7 +203,12 @@
       "JSON": {
         "user": {
           "phone": "+16465053911",
-          "email": "test@rudderlabs.com"
+          "email": "test@rudderstack.com",
+          "externalIdentifiers": {
+            "clientUserId": "144",
+            "shopifyId": "224",
+            "klaviyoId": "132"
+          }
         },
         "occuredAt": "2019-10-14T09:03:17.562Z",
         "properties": {
@@ -212,12 +217,7 @@
           "product_id": "r494",
           "quantity": "34"
         },
-        "type": "Order Shipped",
-        "externalIdentifiers": {
-          "clientUserId": "144",
-          "shopifyId": "224",
-          "klaviyoId": "132"
-        }
+        "type": "Order Shipped"
       },
       "JSON_ARRAY": {},
       "XML": {},
@@ -235,7 +235,7 @@
     "method": "POST",
     "endpoint": "https://api.attentivemobile.com/v1/subscriptions",
     "headers": {
-      "Authorization": "Bearer d1cwZXF1eVZicnpPeGJ6M0JOTXFxTVN2QkdpWTJ3NENp",
+      "Authorization": "Bearer dummyApiKey",
       "Content-Type": "application/json"
     },
     "params": {},
@@ -254,8 +254,45 @@
     "files": {}
   },
   {
-    "statusCode": 400,
-    "error": "[Attentive Tag] :: Either email or phone is required"
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.attentivemobile.com/v1/events/ecommerce/product-view",
+    "headers": {
+      "Authorization": "Bearer dummyApiKey",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user": {
+          "externalIdentifiers": {
+            "clientUserId": "144",
+            "shopifyId": "143",
+            "klaviyoId": "142"
+          }
+        },
+        "occuredAt": "2019-10-14T09:03:17.562Z",
+        "items": [
+          {
+            "productId": "507f1f77bcf86cd799439011",
+            "name": "MOBILE",
+            "productVariantId": "green",
+            "quantity": "2",
+            "price": [
+              {
+                "value": 19,
+                "currency": "USD"
+              }
+            ]
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
   },
   {
     "statusCode": 400,
@@ -275,7 +312,7 @@
     "method": "POST",
     "endpoint": "https://api.attentivemobile.com/v1/subscriptions",
     "headers": {
-      "Authorization": "Bearer d1cwZXF1eVZicnpPeGJ6M0JOTXFxTVN2QkdpWTJ3NENp",
+      "Authorization": "Bearer dummyApiKey",
       "Content-Type": "application/json"
     },
     "params": {},
@@ -286,6 +323,41 @@
           "email": "test0@gmail.com"
         },
         "signUpSourceId": "241654"
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.attentivemobile.com/v1/events/ecommerce/product-view",
+    "headers": {
+      "Authorization": "Bearer dummyApiKey",
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user": {},
+        "occuredAt": "2019-10-14T09:03:17.562Z",
+        "items": [
+          {
+            "productId": "507f1f77bcf86cd799439011",
+            "name": "MOBILE",
+            "productVariantId": "green",
+            "quantity": "2",
+            "price": [
+              {
+                "value": 19,
+                "currency": "USD"
+              }
+            ]
+          }
+        ]
       },
       "JSON_ARRAY": {},
       "XML": {},

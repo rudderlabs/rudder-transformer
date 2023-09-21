@@ -1,8 +1,10 @@
 const { get, set } = require('lodash');
 const sha256 = require('sha256');
-const { httpSend, prepareProxyRequest } = require('../../../adapters/network');
-const { isHttpStatusSuccess } = require('../../util/index');
-const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
+const { prepareProxyRequest, handleHttpRequest } = require('../../../adapters/network');
+const {
+  isHttpStatusSuccess,
+  getAuthErrCategoryFromErrDetailsAndStCode,
+} = require('../../util/index');
 const { CONVERSION_ACTION_ID_CACHE_TTL } = require('./config');
 const Cache = require('../../util/cache');
 
@@ -15,23 +17,6 @@ const {
 const { BASE_ENDPOINT } = require('./config');
 const { NetworkError, NetworkInstrumentationError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
-/**
- * This function helps to detarmine type of error occured. According to the response
- * we set authErrorCategory to take decision if we need to refresh the access_token
- * or need to disable the destination.
- * @param {*} code
- * @param {*} response
- * @returns
- */
-const getAuthErrCategory = (code, response) => {
-  switch (code) {
-    case 401:
-      if (!get(response, 'error.details')) return REFRESH_TOKEN;
-      return '';
-    default:
-      return '';
-  }
-};
 
 /**
  *  This function is used for collecting the conversionActionId using the conversion name
@@ -53,26 +38,36 @@ const getConversionActionId = async (method, headers, params) => {
       headers,
       method,
     };
-    const response = await httpSend(requestBody);
-    if (!response.success && !isHttpStatusSuccess(response.response?.response?.status)) {
+    const { processedResponse: gaecConversionActionIdResponse } = await handleHttpRequest(
+      'constructor',
+      requestBody,
+      {
+        destType: 'google_adwords_enhanced_conversions',
+        feature: 'proxy',
+      },
+    );
+    if (!isHttpStatusSuccess(gaecConversionActionIdResponse.status)) {
       throw new NetworkError(
-        `"${get(
-          response,
-          'response.response.data[0].error.message',
-          '',
-        )}" during Google_adwords_enhanced_conversions response transformation`,
-        response.response?.response?.status,
+        `"${JSON.stringify(
+          get(gaecConversionActionIdResponse, 'response[0].error.message', '')
+            ? get(gaecConversionActionIdResponse, 'response[0].error.message', '')
+            : gaecConversionActionIdResponse.response,
+        )} during Google_adwords_enhanced_conversions response transformation"`,
+        gaecConversionActionIdResponse.status,
         {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(response.response?.response?.status),
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(gaecConversionActionIdResponse.status),
         },
-        response.response?.response?.data,
-        getAuthErrCategory(
-          get(response, 'response.response.status'),
-          get(response, 'response.response.data[0]'),
+        gaecConversionActionIdResponse.response,
+        getAuthErrCategoryFromErrDetailsAndStCode(
+          get(gaecConversionActionIdResponse, 'status'),
+          get(gaecConversionActionIdResponse, 'response[0].error.message'),
         ),
       );
     }
-    const conversionActionId = get(response, 'response.data[0].results[0].conversionAction.id');
+    const conversionActionId = get(
+      gaecConversionActionIdResponse,
+      'response[0].results[0].conversionAction.id',
+    );
     if (!conversionActionId) {
       throw new NetworkInstrumentationError(
         `Unable to find conversionActionId for conversion:${params.event}`,
@@ -101,7 +96,10 @@ const ProxyRequest = async (request) => {
     `customers/${params.customerId}/conversionActions/${conversionActionId}`,
   );
   const requestBody = { url: endpoint, data: body.JSON, headers, method };
-  const response = await httpSend(requestBody);
+  const { httpResponse: response } = await handleHttpRequest('constructor', requestBody, {
+    destType: 'google_adwords_enhanced_conversions',
+    feature: 'proxy',
+  });
   return response;
 };
 
@@ -126,7 +124,7 @@ const responseHandler = (destinationResponse) => {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },
     response,
-    getAuthErrCategory(status, response),
+    getAuthErrCategoryFromErrDetailsAndStCode(status, response),
   );
 };
 // eslint-disable-next-line func-names

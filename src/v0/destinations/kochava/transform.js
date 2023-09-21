@@ -35,7 +35,7 @@ function responseBuilder(eventName, eventData, message, destination) {
     app_tracking_transparency: {
       att: get(message, 'context.device.attTrackingStatus') === 3 || false,
     },
-    usertime: formatTimeStamp(message.originalTimestamp || message.timestamp),
+    usertime: formatTimeStamp(message.timestamp || message.originalTimestamp),
     app_version: get(message, 'context.app.build'),
     device_ver:
       message.context &&

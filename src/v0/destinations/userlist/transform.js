@@ -10,6 +10,7 @@ const {
 const { endpoint } = require('./config');
 
 const { InstrumentationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 // ------------------------------------------------
 // Userlist built a custom endpoint for Rudderstack that processes the messages according to our spec.
@@ -34,7 +35,7 @@ function buildResponse(message, destination) {
   response.endpoint = endpoint;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     Authorization: `Push ${pushKey}`,
   };
   response.body.JSON = message;

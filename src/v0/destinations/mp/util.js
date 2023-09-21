@@ -8,6 +8,9 @@ const {
   isAppleFamily,
   getBrowserInfo,
   toUnixTimestamp,
+  batchMultiplexedEvents,
+  getSuccessRespEvents,
+  defaultBatchRequestConfig,
 } = require('../../util');
 const {
   ConfigCategory,
@@ -16,6 +19,7 @@ const {
   mappingConfig,
 } = require('./config');
 const { InstrumentationError } = require('../../util/errorTypes');
+const { CommonUtils } = require('../../../util/common');
 
 const mPIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 const mPProfileAndroidConfigJson = mappingConfig[ConfigCategory.PROFILE_ANDROID.name];
@@ -99,18 +103,23 @@ const createIdentifyResponse = (message, type, destination, responseBuilderSimpl
   // user payload created
   const properties = getTransformedJSON(message, mPIdentifyConfigJson, useNewMapping);
 
-  const parameters = {
+  const payload = {
     $set: properties,
     $token: token,
     $distinct_id: message.userId || message.anonymousId,
     $ip: get(message, 'context.ip') || message.request_ip,
     $time: toUnixTimestamp(message.timestamp),
   };
+
+  if (destination?.Config.identityMergeApi === 'simplified') {
+    payload.$distinct_id = message.userId || `$device:${message.anonymousId}`;
+  }
+
   if (message.context?.active === false) {
-    parameters.$ignore_time = true;
+    payload.$ignore_time = true;
   }
   // Creating the response to create user
-  return responseBuilderSimple(parameters, message, type, destination.Config);
+  return responseBuilderSimple(payload, message, type, destination.Config);
 };
 
 /**
@@ -125,4 +134,156 @@ const isImportAuthCredentialsAvailable = (destination) =>
     destination.Config.serviceAccountUserName &&
     destination.Config.projectId);
 
-module.exports = { createIdentifyResponse, isImportAuthCredentialsAvailable };
+/**
+ * Finds an existing batch based on metadata JobIds from the provided batch and metadataMap.
+ * @param {*} batch
+ * @param {*} metadataMap The map containing metadata items indexed by JobIds.
+ * @returns
+ */
+const findExistingBatch = (batch, metadataMap) => {
+  let existingBatch = null;
+
+  for (const metadataItem of batch.metadata) {
+    if (metadataMap.has(metadataItem.jobId)) {
+      existingBatch = metadataMap.get(metadataItem.jobId);
+      break;
+    }
+  }
+
+  return existingBatch;
+};
+
+/**
+ * Removes duplicate metadata within each merged batch object.
+ * @param {*} mergedBatches An array of merged batch objects.
+ */
+const removeDuplicateMetadata = (mergedBatches) => {
+  for (const batch of mergedBatches) {
+    const metadataSet = new Set();
+    batch.metadata = batch.metadata.filter((metadataItem) => {
+      if (!metadataSet.has(metadataItem.jobId)) {
+        metadataSet.add(metadataItem.jobId);
+        return true;
+      }
+      return false;
+    });
+  }
+};
+
+/**
+ * Group events with the same endpoint together in batches
+ * @param {*} events - An array of events
+ * @returns
+ */
+const groupEventsByEndpoint = (events) => {
+  const eventMap = {
+    engage: [],
+    groups: [],
+    track: [],
+    import: [],
+  };
+  const batchErrorRespList = [];
+
+  events.forEach((result) => {
+    if (result.message) {
+      const { destination, metadata } = result;
+      const message = CommonUtils.toArray(result.message);
+
+      message.forEach((msg) => {
+        const endpoint = Object.keys(eventMap).find((key) => msg.endpoint.includes(key));
+
+        if (endpoint) {
+          eventMap[endpoint].push({ message: msg, destination, metadata });
+        }
+      });
+    } else if (result.error) {
+      batchErrorRespList.push(result);
+    }
+  });
+
+  return {
+    engageEvents: eventMap.engage,
+    groupsEvents: eventMap.groups,
+    trackEvents: eventMap.track,
+    importEvents: eventMap.import,
+    batchErrorRespList,
+  };
+};
+
+const generateBatchedPayloadForArray = (events) => {
+  const { batchedRequest } = defaultBatchRequestConfig();
+  const batchResponseList = events.flatMap((event) => JSON.parse(event.body.JSON_ARRAY.batch));
+  batchedRequest.body.JSON_ARRAY = { batch: JSON.stringify(batchResponseList) };
+  batchedRequest.endpoint = events[0].endpoint;
+  batchedRequest.headers = events[0].headers;
+  batchedRequest.params = events[0].params;
+  return batchedRequest;
+};
+
+const batchEvents = (successRespList, maxBatchSize) => {
+  const batchedEvents = batchMultiplexedEvents(successRespList, maxBatchSize);
+  return batchedEvents.map((batch) => {
+    const batchedRequest = generateBatchedPayloadForArray(batch.events);
+    return getSuccessRespEvents(batchedRequest, batch.metadata, batch.destination, true);
+  });
+};
+
+/**
+ * Combines batched requests with the same JobIds.
+ * @param {*} inputBatches The array of batched request objects.
+ * @returns  The combined batched requests with merged JobIds.
+ *
+ */
+const combineBatchRequestsWithSameJobIds = (inputBatches) => {
+  const combineBatches = (batches) => {
+    const clonedBatches = [...batches];
+    const mergedBatches = [];
+    const metadataMap = new Map();
+
+    clonedBatches.forEach((batch) => {
+      const existingBatch = findExistingBatch(batch, metadataMap);
+
+      if (existingBatch) {
+        // Merge batchedRequests arrays
+        existingBatch.batchedRequest = [
+          ...(Array.isArray(existingBatch.batchedRequest)
+            ? existingBatch.batchedRequest
+            : [existingBatch.batchedRequest]),
+          ...(Array.isArray(batch.batchedRequest) ? batch.batchedRequest : [batch.batchedRequest]),
+        ];
+
+        // Merge metadata
+        batch.metadata.forEach((metadataItem) => {
+          if (!metadataMap.has(metadataItem.jobId)) {
+            metadataMap.set(metadataItem.jobId, existingBatch);
+          }
+          existingBatch.metadata.push(metadataItem);
+        });
+      } else {
+        mergedBatches.push(batch);
+        batch.metadata.forEach((metadataItem) => {
+          metadataMap.set(metadataItem.jobId, batch);
+        });
+      }
+    });
+
+    // Remove duplicate metadata within each merged object
+    removeDuplicateMetadata(mergedBatches);
+
+    return mergedBatches;
+  };
+  // We need to run this twice because in first pass some batches might not get merged
+  // and in second pass they might get merged
+  // Example: [[{jobID:1}, {jobID:2}], [{jobID:3}], [{jobID:1}, {jobID:3}]]
+  // 1st pass: [[{jobID:1}, {jobID:2}, {jobID:3}], [{jobID:3}]]
+  // 2nd pass: [[{jobID:1}, {jobID:2}, {jobID:3}]]
+  return combineBatches(combineBatches(inputBatches));
+};
+
+module.exports = {
+  createIdentifyResponse,
+  isImportAuthCredentialsAvailable,
+  groupEventsByEndpoint,
+  batchEvents,
+  combineBatchRequestsWithSameJobIds,
+};

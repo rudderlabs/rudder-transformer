@@ -1,123 +1,166 @@
-/* eslint-disable no-await-in-loop */
-const AWS = require('aws-sdk');
-const readline = require('readline-sync');
-// get inputs from user
-const accessKeyId = readline.question('Access Key ID ');
-const secretAccessKey = readline.question('Secret Access Key ');
-const region = readline.question('Region ');
-const name = readline.question('Name of Dataset Group ');
-let noOfFields = readline.question(
-  'Number of fields in Schema in addition to USER_ID, TIMESTAMP,ITEM_ID ',
-);
-const columns = [];
-const type = [];
-// eslint-disable-next-line radix
-noOfFields = parseInt(noOfFields);
-columns[0] = 'USER_ID';
-columns[1] = 'ITEM_ID';
-columns[2] = 'TIMESTAMP';
-type[0] = 'string';
-type[1] = 'string';
-type[2] = 'long';
-for (let i = 4; i <= noOfFields + 3; i += 1) {
-  columns[i - 1] = readline.question(`Name of field no. ${i}`);
-  type[i - 1] = readline.question(`Type of field ${columns[i - 1]} `);
-}
-let schema =
-  '{"type": "record","name": "Interactions","namespace": "com.amazonaws.personalize.schema","fields": [{"name": "USER_ID","type": "string"},{"name": "ITEM_ID","type": "string"},{"name": "TIMESTAMP","type": "long" }'; // ], "version": "1.0"}'
-if (noOfFields > 0) {
-  for (let i = 3; i < noOfFields + 3; i += 1) {
-    schema = `${schema},{"name": "${columns[i]}","type": "${type[i]}"}`;
-  }
-}
-schema += '], "version": "1.0"}';
-(async function () {
-  try {
-    AWS.config.update({
-      accessKeyId,
-      secretAccessKey,
-      region,
+const {
+  PersonalizeClient,
+  CreateDatasetGroupCommand,
+  DescribeDatasetGroupCommand,
+  CreateSchemaCommand,
+  CreateDatasetCommand,
+  DescribeDatasetCommand,
+  CreateEventTrackerCommand,
+} = require('@aws-sdk/client-personalize');
+const { fromEnv } = require('@aws-sdk/credential-providers');
+
+const readline = require('readline');
+
+require('dotenv').config()
+
+async function promtForInput(rl, questionText) {
+  return new Promise((resolve) => {
+    rl.question(questionText, (input) => {
+      resolve(input);
     });
+  });
+}
+
+async function checkEnvAndpromtForInput(rl, questionText, envVar) {
+  if (process.env[envVar]) {
+    return;
+  }
+  process.env[envVar] = await promtForInput(rl, questionText);
+}
+
+async function collectInputs(rl) {
+  await checkEnvAndpromtForInput(rl, 'AWS Access Key ID: ', 'AWS_ACCESS_KEY_ID');
+  await checkEnvAndpromtForInput(rl, 'AWS Secret Access Key: ', 'AWS_SECRET_ACCESS_KEY');
+  await checkEnvAndpromtForInput(rl, 'AWS REGION: ', 'AWS_REGION');
+  await checkEnvAndpromtForInput(rl, 'Name of Dataset Group: ', 'DATASET_GROUP_NAME');
+  await checkEnvAndpromtForInput(rl,
+    'Number of fields in Schema in addition to USER_ID, TIMESTAMP, ITEM_ID: ',
+    'NUMBER_OF_FIELDS',
+  );
+}
+
+async function collectFileds(rl) {
+  const noOfFields = parseInt(process.env.NUMBER_OF_FIELDS);
+  let schema = {
+    type: 'record',
+    name: 'Interactions',
+    namespace: 'com.amazonaws.personalize.schema',
+    fields: [
+      { name: 'USER_ID', type: 'string' },
+      { name: 'ITEM_ID', type: 'string' },
+      { name: 'TIMESTAMP', type: 'long' },
+    ],
+    version: '1.0',
+  };
+
+  for (let i = 4; i <= noOfFields + 3; i += 1) {
+    const fieldName = await promtForInput(rl, `Name of field no. ${i}: `);
+    const typeName = await promtForInput(rl, `Type of field ${fieldName}: `)
+    schema.fields.push({ name: fieldName, type: typeName });
+
+  }
+  return schema;
+}
+
+
+(async function () {
+  let rl = readline.createInterface(process.stdin, process.stdout);
+  await collectInputs(rl);
+  const schema = await collectFileds(rl);
+  rl.close();
+  const datasetGroup = process.env.DATASET_GROUP_NAME;
+  try {
+    const client = new PersonalizeClient({
+      region: process.env.AWS_REGION,
+      credentials: fromEnv(),
+    });
+
     // create the objects needed for personalize
-    const personalize = new AWS.Personalize();
-    // datasetgroup
-    const paramsCreateDatasetGroup = {
-      name: `${name}_DataSetGroup` /* required */,
-    };
-    const responseDatasetGroup = await personalize
-      .createDatasetGroup(paramsCreateDatasetGroup)
-      .promise();
+    const createDatasetGroupCommand = new CreateDatasetGroupCommand({
+      name: `${datasetGroup}_DataSetGroup`,
+    });
+
+    const responseDatasetGroup = await client.send(createDatasetGroupCommand);
     const { datasetGroupArn } = responseDatasetGroup;
+
     // describe dataset group
     console.log(datasetGroupArn);
-    const paramsDescribeDatasetGroup = {
-      datasetGroupArn /* required */,
-    };
-    let responseDescribeDSGroup = await personalize
-      .describeDatasetGroup(paramsDescribeDatasetGroup)
-      .promise();
+
+    const describeDatasetGroupCommand = new DescribeDatasetGroupCommand({
+      datasetGroupArn,
+    });
+
+    let responseDescribeDSGroup = await client.send(describeDatasetGroupCommand);
     let statusDSGroup = responseDescribeDSGroup.datasetGroup.status;
+
     // schema
-    const paramsSchema = {
-      name: `${name}_schema` /* required */,
-      schema,
-      /* required */
-    };
-    const responseSchema = await personalize.createSchema(paramsSchema).promise();
+    const createSchemaCommand = new CreateSchemaCommand({
+      name: `${datasetGroup}_schema`,
+      schema: JSON.stringify(schema),
+    });
+
+    const responseSchema = await client.send(createSchemaCommand);
     const { schemaArn } = responseSchema;
+
     // dataset
     while (statusDSGroup !== 'ACTIVE') {
-      responseDescribeDSGroup = await personalize
-        .describeDatasetGroup(paramsDescribeDatasetGroup)
-        .promise();
+      responseDescribeDSGroup = await client.send(describeDatasetGroupCommand);
       statusDSGroup = responseDescribeDSGroup.datasetGroup.status;
     }
-    const paramsDataset = {
-      datasetGroupArn /* required */,
-      datasetType: 'Interactions' /* required */,
-      name: `${name}_dataset` /* required */,
-      schemaArn /* required */,
-    };
-    const responseDataset = await personalize.createDataset(paramsDataset).promise();
+
+    const createDatasetCommand = new CreateDatasetCommand({
+      datasetGroupArn,
+      datasetType: 'Interactions',
+      name: `${datasetGroup}_dataset`,
+      schemaArn,
+    });
+
+    const responseDataset = await client.send(createDatasetCommand);
     const { datasetArn } = responseDataset;
+
     // describe dataset
-    const paramsDescribeDataset = {
+    const describeDatasetCommand = new DescribeDatasetCommand({
       datasetArn,
-    };
-    let responseDescribeDS = await personalize.describeDataset(paramsDescribeDataset).promise();
+    });
+
+    let responseDescribeDS = await client.send(describeDatasetCommand);
     let statusDS = responseDescribeDS.dataset.status;
+
     while (statusDS !== 'ACTIVE') {
-      responseDescribeDS = await personalize.describeDataset(paramsDescribeDataset).promise();
+      responseDescribeDS = await client.send(describeDatasetCommand);
       statusDS = responseDescribeDS.dataset.status;
     }
+
     // event tracker
-    const paramsEventTracker = {
-      datasetGroupArn /* required */,
-      name: `${name}_eventtracker` /* required */,
-    };
-    const responseEventTracker = await personalize.createEventTracker(paramsEventTracker).promise();
+    const createEventTrackerCommand = new CreateEventTrackerCommand({
+      datasetGroupArn,
+      name: `${datasetGroup}_eventtracker`,
+    });
+
+    const responseEventTracker = await client.send(createEventTrackerCommand);
     const { trackingId } = responseEventTracker;
+
     return trackingId;
   } catch (e) {
     let errMsg;
-    if (e.code === 'InvalidInputException') {
+    if (e.name === 'InvalidInputException') {
       errMsg =
         'Wrong type of field. Types can be of: null, boolean, int, long, float, double, bytes, and string.Try Again.';
       return errMsg;
     }
-    if (e.code === 'ResourceAlreadyExistsException') {
+    if (e.name === 'ResourceAlreadyExistsException') {
       errMsg = 'Please try another name. Dataset Group or Schema with this name already exists';
       return errMsg;
     }
-    if (e.code === 'UnrecognizedClientException') {
+    if (e.name === 'UnrecognizedClientException') {
       errMsg = 'Please check your access id';
       return errMsg;
     }
-    if (e.code === 'InvalidSignatureException') {
+    if (e.name === 'InvalidSignatureException') {
       errMsg = 'Please check your secret id';
       return errMsg;
     }
-    if (e.code === 'NetworkingError') {
+    if (e.name === 'NetworkingError') {
       errMsg = 'Please check your region';
       return errMsg;
     }

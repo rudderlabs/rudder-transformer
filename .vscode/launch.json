@@ -8,9 +8,17 @@
       "name": "transformer",
       "type": "node",
       "request": "launch",
-      "program": "${workspaceRoot}/destTransformer.js",
+      "program": "${workspaceRoot}/index.js",
       "runtimeArgs": ["--nolazy"],
       "sourceMaps": true,
+      "runtimeExecutable": "/usr/local/bin/node"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch TS",
+      "program": "${workspaceFolder}/dist/src/index.js",
+      "outFiles": ["${workspaceFolder}/dist/src/**/*.js"],
       "runtimeExecutable": "/usr/local/bin/node"
     },
     {

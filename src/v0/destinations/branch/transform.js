@@ -12,6 +12,7 @@ const {
   simpleProcessRouterDest,
 } = require('../../util');
 const { InstrumentationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function responseBuilder(payload, message, destination, category) {
   const response = defaultRequestConfig();
@@ -31,8 +32,8 @@ function responseBuilder(payload, message, destination, category) {
   return {
     ...response,
     headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
+      Accept: JSON_MIME_TYPE,
     },
     userId: message.anonymousId,
   };
@@ -45,7 +46,11 @@ function getCategoryAndName(rudderEventName) {
     let requiredCategory = null;
     // eslint-disable-next-line array-callback-return
     Object.keys(category.name).find((branchKey) => {
-      if (branchKey.toLowerCase() === rudderEventName.toLowerCase()) {
+      if (
+        typeof branchKey === 'string' &&
+        typeof rudderEventName === 'string' &&
+        branchKey.toLowerCase() === rudderEventName.toLowerCase()
+      ) {
         requiredName = category.name[branchKey];
         requiredCategory = category;
       }

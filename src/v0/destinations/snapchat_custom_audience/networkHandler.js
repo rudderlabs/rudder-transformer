@@ -1,13 +1,16 @@
-const { removeUndefinedValues } = require('../../util');
+const { removeUndefinedValues, getAuthErrCategoryFromErrDetailsAndStCode } = require('../../util');
 const { prepareProxyRequest, getPayloadData, httpSend } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util/index');
-const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
+const {
+  REFRESH_TOKEN,
+} = require('../../../adapters/networkhandler/authConstants');
 const tags = require('../../util/tags');
 const {
   getDynamicErrorType,
   processAxiosResponse,
 } = require('../../../adapters/utils/networkUtils');
-const { NetworkError } = require('../../util/errorTypes');
+const { NetworkError, RetryableError, AbortedError } = require('../../util/errorTypes');
+const { HTTP_STATUS_CODES } = require('../../util/constant');
 
 const prepareProxyReq = (request) => {
   const { body } = request;
@@ -29,24 +32,6 @@ const prepareProxyReq = (request) => {
   });
 };
 
-/**
- * This function helps to determine type of error occurred. According to the response
- * we set authErrorCategory to take decision if we need to refresh the access_token
- * or need to disable the destination.
- * @param {*} code
- * @param {*} response
- * @returns
- */
-const getAuthErrCategory = (code, response) => {
-  switch (code) {
-    case 401:
-      if (!response.error?.details) return REFRESH_TOKEN;
-      return '';
-    default:
-      return '';
-  }
-};
-
 const scAudienceProxyRequest = async (request) => {
   const { endpoint, data, method, params, headers } = prepareProxyReq(request);
 
@@ -57,22 +42,43 @@ const scAudienceProxyRequest = async (request) => {
     headers,
     method,
   };
-  const response = await httpSend(requestOptions);
+  const response = await httpSend(requestOptions, {
+    feature: 'proxy',
+    destType: 'snapchat_custom_audience',
+  });
   return response;
 };
 
 const scaAudienceRespHandler = (destResponse, stageMsg) => {
   const { status, response } = destResponse;
-  // const respAttributes = response["@attributes"] || null;
-  // const { stat, err_code: errorCode } = respAttributes;
+  const authErrCategory = getAuthErrCategoryFromErrDetailsAndStCode(status, response);
+
+  if (authErrCategory === REFRESH_TOKEN) {
+    throw new RetryableError(
+      `Failed with ${response} ${stageMsg}`,
+      HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
+      destResponse,
+      authErrCategory,
+    );
+  }
+
+  // Permissions error
+  if (response?.error_code === 'E3002') {
+    throw new AbortedError(
+      `${response.error?.message} ${stageMsg}`,
+      null,
+      destResponse,
+      authErrCategory,
+    );
+  }
   throw new NetworkError(
     `${response.error?.message} ${stageMsg}`,
     status,
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },
-    response,
-    getAuthErrCategory(status, response),
+    destResponse,
+    authErrCategory,
   );
 };
 

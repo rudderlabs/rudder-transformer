@@ -1,0 +1,124 @@
+[
+  {
+    "output": {
+      "status": 200,
+      "message": "[TIKTOK_ADS Response Handler] - Request Processed Successfully",
+      "destinationResponse": {
+        "response": {
+          "code": 0,
+          "message": "OK"
+        },
+        "status": 200
+      }
+    }
+  },
+  {
+    "output": {
+      "status": 400,
+      "message": "Request failed with status: 40002",
+      "destinationResponse": {
+        "response": {
+          "code": 40002,
+          "message": "Batch.0.properties.contents.0.content_id: Not a valid string"
+        },
+        "status": 200
+      },
+      "statTags": {
+        "destType": "TIKTOK_ADS",
+        "errorCategory": "network",
+        "destinationId": "Non-determininable",
+        "workspaceId": "Non-determininable",
+        "errorType": "aborted",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
+      }
+    }
+  },
+  {
+    "output": {
+      "status": 400,
+      "message": "Request failed with status: 40001",
+      "destinationResponse": {
+        "response": {
+          "code": 40001,
+          "message": "No permission to operate pixel code: BU35TSQHT2A1QT375OMG. You must be an admin or operator of this advertiser account."
+        },
+        "status": 200
+      },
+      "statTags": {
+        "destType": "TIKTOK_ADS",
+        "errorCategory": "network",
+        "destinationId": "Non-determininable",
+        "workspaceId": "Non-determininable",
+        "errorType": "aborted",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
+      }
+    }
+  },
+  {
+    "output": {
+      "status": 429,
+      "message": "Request failed with status: 40100",
+      "destinationResponse": {
+        "response": {
+          "code": 40100,
+          "message": "Too many requests. Please retry in some time."
+        },
+        "status": 200
+      },
+      "statTags": {
+        "destType": "TIKTOK_ADS",
+        "errorCategory": "network",
+        "destinationId": "Non-determininable",
+        "workspaceId": "Non-determininable",
+        "errorType": "throttled",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
+      }
+    }
+  },
+  {
+    "output": {
+      "status": 502,
+      "message": "Request failed with status: 502",
+      "destinationResponse": {
+        "response": "<html>\r\n<head><title>502 Bad Gateway</title></head>\r\n<body bgcolor=\"white\">\r\n<center><h1>502 Bad Gateway</h1></center>\r\n<hr><center>nginx</center>\r\n</body>\r\n</html>\r\n",
+        "status": 502
+      },
+      "statTags": {
+        "destType": "TIKTOK_ADS",
+        "errorCategory": "network",
+        "destinationId": "Non-determininable",
+        "workspaceId": "Non-determininable",
+        "errorType": "retryable",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
+      }
+    }
+  },
+  {
+    "output": {
+      "status": 500,
+      "message": "Request failed with status: 500",
+      "destinationResponse": {
+        "response": "[ECONNRESET] :: Connection reset by peer",
+        "status": 500
+      },
+      "statTags": {
+        "destType": "TIKTOK_ADS",
+        "errorCategory": "network",
+        "destinationId": "Non-determininable",
+        "workspaceId": "Non-determininable",
+        "errorType": "retryable",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
+      }
+    }
+  }
+]

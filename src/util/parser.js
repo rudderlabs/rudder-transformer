@@ -1,20 +1,5 @@
-const axios = require('axios');
 const parseStaticImports = require('parse-static-imports');
 const { executeFaasFunction, FAAS_AST_VID, FAAS_AST_FN_NAME } = require('./openfaas');
-
-async function parserForImport(code, validateImports=true, language="javascript") {
-  if (!code || code.trim().length === 0) throw Error('No code for parsing');
-
-  switch(language) {
-    case "javascript":
-      return parserForJSImports(code);
-    case "python":
-    case "pythonfaas":
-      return parserForPythonImports(code, validateImports);
-    default:
-      throw Error(`Unsupported language ${language}`);
-  }
-}
 
 function parserForJSImports(code) {
   const obj = {};
@@ -37,33 +22,49 @@ function parserForJSImports(code) {
   return obj;
 }
 
-async function parserForPythonImports(code, validateImports=true, additionalLibs=[]) {
+async function parserForPythonImports(code, validateImports = true, additionalLibraries = []) {
   const obj = {};
 
-  const payload = [{
-    message: {
-      messageId: "1",
-      code,
-      validateImports,
-      additionalLibraries: additionalLibs
-    }
-  }];
+  const payload = [
+    {
+      message: {
+        messageId: '1',
+        code,
+        validateImports,
+        additionalLibraries,
+      },
+    },
+  ];
 
-  const result = await executeFaasFunction(
-    FAAS_AST_FN_NAME,
-    payload,
-    FAAS_AST_VID,
-    false
-  );
+  const result = await executeFaasFunction(FAAS_AST_FN_NAME, payload, FAAS_AST_VID, [], false);
 
-  const err = result.transformedEvents[0].error;
+  const errMsg = result.transformedEvents[0].error;
 
-  if (err) {
-    throw Error(err);
+  if (errMsg) {
+    throw new Error(errMsg);
   }
 
-  result.transformedEvents[0].transformedEvent.modules.forEach((mod) =>  obj[mod.name] = []);
+  result.transformedEvents[0].transformedEvent.modules.forEach((mod) => {
+    obj[mod.name] = [];
+  });
   return obj;
+}
+
+async function parserForImport(
+  code,
+  validateImports = false,
+  additionalLibraries = [],
+  language = 'javascript',
+) {
+  switch (language) {
+    case 'javascript':
+      return parserForJSImports(code);
+    case 'python':
+    case 'pythonfaas':
+      return parserForPythonImports(code, validateImports, additionalLibraries);
+    default:
+      throw new Error(`Unsupported language ${language}`);
+  }
 }
 
 exports.parserForImport = parserForImport;

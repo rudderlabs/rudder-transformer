@@ -1,0 +1,32 @@
+title: Processor Transformation Output
+type: object
+properties:
+  version:
+    type: string
+  type:
+    type: string
+  method:
+    type: string
+  endpoint:
+    type: string
+  userId:
+    type: string
+  headers:
+    type: object
+  params:
+    type: object
+  body:
+    type: object
+    properties:
+      JSON:
+        type: object
+      JSON_ARRAY:
+        type: object
+      XML:
+        type: object
+      FORM:
+        type: object
+  files:
+    type: object
+  metadata:
+    $ref: './metadata.yaml'

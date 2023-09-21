@@ -8,6 +8,7 @@ const {
   defaultBatchRequestConfig,
 } = require('../../util');
 const { ENDPOINT } = require('./config');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const channelMapping = {
   web: 'WEB',
@@ -41,10 +42,7 @@ function getNormalizedPhoneNumber(message) {
   let leadingZero = true;
   if (phoneNumber) {
     for (let i = 0; i < phoneNumber.length; i += 1) {
-      if (Number.isNaN(parseInt(phoneNumber[i], 10))) {
-        phoneNumber = phoneNumber.replace(phoneNumber[i], '');
-        i -= 1;
-      } else if (phoneNumber[i] === '0' && leadingZero) {
+      if (Number.isNaN(parseInt(phoneNumber[i], 10)) || (phoneNumber[i] === '0' && leadingZero)) {
         phoneNumber = phoneNumber.replace(phoneNumber[i], '');
         i -= 1;
       } else {
@@ -95,9 +93,10 @@ function getPriceSum(message) {
   const products = get(message, 'properties.products');
   if (products && Array.isArray(products)) {
     products.forEach((element) => {
-      const pPrice = element.price;
-      if (pPrice && !Number.isNaN(parseFloat(pPrice))) {
-        priceSum += parseFloat(pPrice);
+      const { price } = element;
+      const { quantity = 1 } = element;
+      if (price && !Number.isNaN(parseFloat(price)) && !Number.isNaN(parseInt(quantity, 10))) {
+        priceSum += parseFloat(price) * parseInt(quantity, 10);
       }
     });
   } else {
@@ -111,39 +110,31 @@ function getPriceSum(message) {
  * @param {*} events
  * @returns
  */
-function generateBatchedPayloadForArray(events) {
+function generateBatchedPayloadForArray(events, destination) {
   const batchResponseList = [];
-  const metadata = [];
 
   // extracting destination
   // from the first event in a batch
-  const { destination } = events[0];
   const { apiKey } = destination.Config;
 
-  let batchEventResponse = defaultBatchRequestConfig();
+  const { batchedRequest } = defaultBatchRequestConfig();
 
   // Batch event into dest batch structure
   events.forEach((ev) => {
-    batchResponseList.push(ev.message.body.JSON);
-    metadata.push(ev.metadata);
+    batchResponseList.push(ev.body.JSON);
   });
 
-  batchEventResponse.batchedRequest.body.JSON_ARRAY = {
+  batchedRequest.body.JSON_ARRAY = {
     batch: JSON.stringify(batchResponseList),
   };
 
-  batchEventResponse.batchedRequest.endpoint = ENDPOINT;
-  batchEventResponse.batchedRequest.headers = {
-    'Content-Type': 'application/json',
+  batchedRequest.endpoint = ENDPOINT;
+  batchedRequest.headers = {
+    'Content-Type': JSON_MIME_TYPE,
     Authorization: `Bearer ${apiKey}`,
   };
-  batchEventResponse = {
-    ...batchEventResponse,
-    metadata,
-    destination,
-  };
 
-  return batchEventResponse;
+  return batchedRequest;
 }
 
 module.exports = {

@@ -15,6 +15,7 @@ const {
   simpleProcessRouterDest,
 } = require('../../util');
 const { InstrumentationError, TransformationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 // Logic To match destination Property key that is in Rudder Stack Properties Object.
 const generatePropertyDefination = (message) => {
@@ -82,6 +83,10 @@ const responseBuilderSimple = (message, category, destination) => {
     throw new TransformationError(ErrorMessage.FailedToConstructPayload);
   }
 
+  if (!payload.timestamp && isDefinedAndNotNull(payload.properties?.timestamp)) {
+    payload.timestamp = payload.properties.timestamp
+  }
+
   payload.properties = {
     ...generatePropertyDefination(message),
     ...payload.properties,
@@ -129,7 +134,7 @@ const responseBuilderSimple = (message, category, destination) => {
   }/batch`;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   response.body.JSON = responseBody;
   return response;

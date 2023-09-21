@@ -2882,19 +2882,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "secretAccessKey"
-          ],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ],
+          "secretKeys": ["accessKeyId", "secretAccessKey"],
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"],
           "transformAt": "processor"
         }
       },

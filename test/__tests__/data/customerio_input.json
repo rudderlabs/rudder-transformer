@@ -2,6 +2,28 @@
   {
     "message": {
       "channel": "web",
+      "type": "identify",
+      "userId": "cio_1234",
+      "integrations": {
+        "All": true
+      },
+      "traits": {
+        "email": "updated_email@example.com",
+        "id": "updated-id-value"
+      },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenter": "US",
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "dummyApiKey"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
       "context": {
         "app": {
           "build": "1.0.0",
@@ -11,7 +33,7 @@
         },
         "traits": {
           "anonymousId": "123456",
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "address": {
             "city": "kolkata",
             "country": "India",
@@ -65,9 +87,8 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
-        "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "datacenter": "US",
+        "siteID": "46be54768e7d49ab2628"
       }
     }
   },
@@ -83,7 +104,148 @@
         },
         "traits": {
           "anonymousId": "123456",
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
+          "address": {
+            "city": "kolkata",
+            "country": "India",
+            "postalCode": 712136,
+            "state": "WB",
+            "street": ""
+          },
+          "ip": "0.0.0.0",
+          "age": 26
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "user_properties": {
+        "prop1": "val1",
+        "prop2": "val2"
+      },
+      "type": "identify",
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "anonymousId": "123456",
+      "userId": "123456",
+      "integrations": {
+        "All": true
+      },
+      "traits": {
+        "anonymousId": "anon-id",
+        "email": "test@gmail.com",
+        "dot.name": "Arnab Pal",
+        "address": {
+          "city": "NY",
+          "country": "USA",
+          "postalCode": 712136,
+          "state": "CA",
+          "street": ""
+        }
+      },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenter": "US",
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "dummyApiKey"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "anonymousId": "123456",
+          "address": {
+            "city": "kolkata",
+            "country": "India",
+            "postalCode": 712136,
+            "state": "WB",
+            "street": ""
+          },
+          "ip": "0.0.0.0",
+          "age": 26
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "user_properties": {
+        "prop1": "val1",
+        "prop2": "val2"
+      },
+      "type": "identify",
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "anonymousId": "123456",
+      "integrations": {
+        "All": true
+      },
+      "traits": {
+        "anonymousId": "anon-id",
+        "dot.name": "Arnab Pal",
+        "address": {
+          "city": "NY",
+          "country": "USA",
+          "postalCode": 712136,
+          "state": "CA",
+          "street": ""
+        }
+      },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenter": "US",
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "dummyApiKey"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "anonymousId": "123456",
+          "email": "test@rudderstack.com",
           "address": {
             "city": "kolkata",
             "country": "India",
@@ -136,9 +298,9 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -153,7 +315,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -191,9 +353,9 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -208,7 +370,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -244,9 +406,9 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -261,7 +423,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -297,9 +459,61 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "userId": "",
+      "event": "test track event",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenter": "US",
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -366,9 +580,9 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -435,9 +649,9 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -459,7 +673,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -495,9 +709,9 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -519,7 +733,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -554,9 +768,9 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -578,7 +792,65 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "event": "Application Uninstalled",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenter": "US",
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "dummyApiKey"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "mobile",
+      "context": {
+        "device": {
+          "name": "test android",
+          "id": "sample_device_id",
+          "model": "some_model_device",
+          "type": "mobile",
+          "token": "somel"
+        },
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -613,9 +885,9 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -637,7 +909,65 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "event": "Application Installed",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenter": "US",
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "dummyApiKey"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "mobile",
+      "context": {
+        "device": {
+          "name": "test android",
+          "id": "sample_device_id",
+          "model": "some_model_device",
+          "type": "mobile",
+          "token": "somel"
+        },
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -673,9 +1003,9 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -696,7 +1026,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -732,9 +1062,9 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -755,7 +1085,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -791,9 +1121,9 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -815,7 +1145,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -851,9 +1181,9 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -875,7 +1205,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -911,9 +1241,9 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -929,7 +1259,7 @@
         },
         "traits": {
           "anonymousId": "123456",
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "address": {
             "city": "kolkata",
             "country": "India",
@@ -982,9 +1312,9 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": true,
+        "datacenter": "EU",
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -999,7 +1329,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -1037,9 +1367,9 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": true,
+        "datacenter": "EU",
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -1054,7 +1384,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -1090,9 +1420,9 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": true,
+        "datacenter": "EU",
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -1107,7 +1437,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -1143,623 +1473,9 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": true,
+        "datacenter": "EU",
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
-      }
-    }
-  },
-  {
-    "message": {
-      "anonymousId": "7e32188a4dab669f",
-      "channel": "mobile",
-      "context": {
-        "app": {
-          "build": "1",
-          "name": "RudderAndroidClient",
-          "namespace": "com.torpedolabs.wynn.wscci.dev",
-          "version": "1.0"
-        },
-        "device": {
-          "id": "7e32188a4dab669f",
-          "manufacturer": "Google",
-          "model": "Android SDK built for x86",
-          "name": "generic_x86",
-          "type": "android",
-          "token": "abcxyz"
-        },
-        "library": {
-          "name": "com.rudderlabs.android.sdk.core",
-          "version": "0.1.4"
-        },
-        "locale": "en-US",
-        "network": {
-          "carrier": "Android",
-          "bluetooth": false,
-          "cellular": true,
-          "wifi": true
-        },
-        "os": {
-          "name": "Android",
-          "version": "9"
-        },
-        "screen": {
-          "density": 420,
-          "height": 1794,
-          "width": 1080
-        },
-        "timezone": "Asia/Kolkata",
-        "traits": {
-          "anonymousId": "7e32188a4dab669f"
-        },
-        "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)"
-      },
-      "event": "Application Installed",
-      "integrations": {
-        "All": true
-      },
-      "messageId": "1578564113557-af022c68-429e-4af4-b99b-2b9174056383",
-      "properties": {
-        "review_id": "some_review_id",
-        "product_id": "some_product_id_a",
-        "rating": 2.0,
-        "review_body": "Some Review Body"
-      },
-      "userId": "12345",
-      "originalTimestamp": "2020-01-09T10:01:53.558Z",
-      "type": "track",
-      "sentAt": "2020-01-09T10:02:03.257Z"
-    },
-    "destination": {
-      "Config": {
-        "datacenterEU": true,
-        "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
-      }
-    }
-  },
-  {
-    "message": {
-      "anonymousId": "7e32188a4dab669f",
-      "channel": "mobile",
-      "context": {
-        "app": {
-          "build": "1",
-          "name": "RudderAndroidClient",
-          "namespace": "com.torpedolabs.wynn.wscci.dev",
-          "version": "1.0"
-        },
-        "device": {
-          "id": "7e32188a4dab669f",
-          "manufacturer": "Google",
-          "model": "Android SDK built for x86",
-          "name": "generic_x86",
-          "type": "android",
-          "token": "abcxyz"
-        },
-        "library": {
-          "name": "com.rudderlabs.android.sdk.core",
-          "version": "0.1.4"
-        },
-        "locale": "en-US",
-        "network": {
-          "carrier": "Android",
-          "bluetooth": false,
-          "cellular": true,
-          "wifi": true
-        },
-        "os": {
-          "name": "Android",
-          "version": "9"
-        },
-        "screen": {
-          "density": 420,
-          "height": 1794,
-          "width": 1080
-        },
-        "timezone": "Asia/Kolkata",
-        "traits": {
-          "anonymousId": "7e32188a4dab669f"
-        },
-        "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)"
-      },
-      "event": "Application Uninstalled",
-      "integrations": {
-        "All": true
-      },
-      "messageId": "1578564113557-af022c68-429e-4af4-b99b-2b9174056383",
-      "properties": {
-        "review_id": "some_review_id",
-        "product_id": "some_product_id_a",
-        "rating": 2.0,
-        "review_body": "Some Review Body"
-      },
-      "userId": "12345",
-      "originalTimestamp": "2020-01-09T10:01:53.558Z",
-      "type": "track",
-      "sentAt": "2020-01-09T10:02:03.257Z"
-    },
-    "destination": {
-      "Config": {
-        "datacenterEU": true,
-        "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
-      }
-    }
-  },
-  {
-    "message": {
-      "channel": "mobile",
-      "context": {
-        "device": {
-          "name": "test android",
-          "id": "sample_device_id",
-          "model": "some_model_device",
-          "type": "mobile",
-          "token": "somel"
-        },
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "traits": {
-          "email": "sayan@gmail.com",
-          "anonymousId": "12345"
-        },
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-        "locale": "en-US",
-        "ip": "0.0.0.0",
-        "os": {
-          "name": "",
-          "version": ""
-        },
-        "screen": {
-          "density": 2
-        }
-      },
-      "type": "track",
-      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-      "originalTimestamp": "2019-10-14T11:15:18.300Z",
-      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
-      "userId": "12345",
-      "event": "Application Uninstalled",
-      "properties": {
-        "user_actual_role": "system_admin",
-        "user_actual_id": 12345,
-        "user_time_spent": 50000
-      },
-      "integrations": {
-        "All": true
-      },
-      "sentAt": "2019-10-14T11:15:53.296Z"
-    },
-    "destination": {
-      "Config": {
-        "datacenterEU": true,
-        "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
-      }
-    }
-  },
-  {
-    "message": {
-      "channel": "mobile",
-      "context": {
-        "device": {
-          "name": "test android",
-          "id": "sample_device_id",
-          "model": "some_model_device",
-          "type": "mobile",
-          "token": "somel"
-        },
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "traits": {
-          "email": "sayan@gmail.com",
-          "anonymousId": "12345"
-        },
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-        "locale": "en-US",
-        "ip": "0.0.0.0",
-        "os": {
-          "name": "",
-          "version": ""
-        },
-        "screen": {
-          "density": 2
-        }
-      },
-      "type": "track",
-      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-      "originalTimestamp": "2019-10-14T11:15:18.300Z",
-      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
-      "event": "Application Uninstalled",
-      "properties": {
-        "user_actual_role": "system_admin",
-        "user_actual_id": 12345,
-        "user_time_spent": 50000
-      },
-      "integrations": {
-        "All": true
-      },
-      "sentAt": "2019-10-14T11:15:53.296Z"
-    },
-    "destination": {
-      "Config": {
-        "datacenterEU": true,
-        "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
-      }
-    }
-  },
-  {
-    "message": {
-      "channel": "mobile",
-      "context": {
-        "device": {
-          "name": "test android",
-          "id": "sample_device_id",
-          "model": "some_model_device",
-          "type": "mobile",
-          "token": "somel"
-        },
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "traits": {
-          "email": "sayan@gmail.com",
-          "anonymousId": "12345"
-        },
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-        "locale": "en-US",
-        "ip": "0.0.0.0",
-        "os": {
-          "name": "",
-          "version": ""
-        },
-        "screen": {
-          "density": 2
-        }
-      },
-      "type": "track",
-      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-      "originalTimestamp": "2019-10-14T11:15:18.300Z",
-      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
-      "event": "Application Installed",
-      "properties": {
-        "user_actual_role": "system_admin",
-        "user_actual_id": 12345,
-        "user_time_spent": 50000
-      },
-      "integrations": {
-        "All": true
-      },
-      "sentAt": "2019-10-14T11:15:53.296Z"
-    },
-    "destination": {
-      "Config": {
-        "datacenterEU": true,
-        "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
-      }
-    }
-  },
-  {
-    "message": {
-      "channel": "mobile",
-      "context": {
-        "device": {
-          "name": "test android",
-          "id": "sample_device_id",
-          "model": "some_model_device",
-          "type": "mobile",
-          "token": "somel"
-        },
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "traits": {
-          "email": "sayan@gmail.com",
-          "anonymousId": "12345"
-        },
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-        "locale": "en-US",
-        "ip": "0.0.0.0",
-        "os": {
-          "name": "",
-          "version": ""
-        },
-        "screen": {
-          "density": 2
-        }
-      },
-      "type": "track",
-      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-      "originalTimestamp": "2019-10-14T11:15:18.300Z",
-      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
-      "event": "Application Installed",
-      "userId": "12345",
-      "properties": {
-        "user_actual_role": "system_admin",
-        "user_actual_id": 12345,
-        "user_time_spent": 50000
-      },
-      "integrations": {
-        "All": true
-      },
-      "sentAt": "2019-10-14T11:15:53.296Z"
-    },
-    "destination": {
-      "Config": {
-        "datacenterEU": true,
-        "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
-      }
-    }
-  },
-  {
-    "message": {
-      "channel": "mobile",
-      "context": {
-        "device": {
-          "name": "test android",
-          "id": "sample_device_id",
-          "model": "some_model_device",
-          "type": "mobile"
-        },
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "traits": {
-          "email": "sayan@gmail.com",
-          "anonymousId": "12345"
-        },
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-        "locale": "en-US",
-        "ip": "0.0.0.0",
-        "os": {
-          "name": "",
-          "version": ""
-        },
-        "screen": {
-          "density": 2
-        }
-      },
-      "type": "track",
-      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-      "originalTimestamp": "2019-10-14T11:15:18.300Z",
-      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
-      "event": "Application Installed",
-      "userId": "12345",
-      "properties": {
-        "user_actual_role": "system_admin",
-        "user_actual_id": 12345,
-        "user_time_spent": 50000
-      },
-      "integrations": {
-        "All": true
-      },
-      "sentAt": "2019-10-14T11:15:53.296Z"
-    },
-    "destination": {
-      "Config": {
-        "datacenterEU": true,
-        "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
-      }
-    }
-  },
-  {
-    "message": {
-      "channel": "mobile",
-      "context": {
-        "device": {
-          "name": "test android",
-          "id": "sample_device_id",
-          "model": "some_model_device",
-          "type": "mobile"
-        },
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "traits": {
-          "email": "sayan@gmail.com",
-          "anonymousId": "12345"
-        },
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-        "locale": "en-US",
-        "ip": "0.0.0.0",
-        "os": {
-          "name": "",
-          "version": ""
-        },
-        "screen": {
-          "density": 2
-        }
-      },
-      "type": "track",
-      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-      "originalTimestamp": "2019-10-14T11:15:18.300Z",
-      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
-      "event": "Application Opened",
-      "userId": "12345",
-      "properties": {
-        "user_actual_role": "system_admin",
-        "user_actual_id": 12345,
-        "user_time_spent": 50000
-      },
-      "integrations": {
-        "All": true
-      },
-      "sentAt": "2019-10-14T11:15:53.296Z"
-    },
-    "destination": {
-      "Config": {
-        "datacenterEU": true,
-        "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
-      }
-    }
-  },
-  {
-    "message": {
-      "channel": "mobile",
-      "context": {
-        "device": {
-          "name": "test android",
-          "id": "sample_device_id",
-          "model": "some_model_device",
-          "type": "mobile",
-          "token": "sample_device_token"
-        },
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "traits": {
-          "email": "sayan@gmail.com",
-          "anonymousId": "12345"
-        },
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-        "locale": "en-US",
-        "ip": "0.0.0.0",
-        "os": {
-          "name": "",
-          "version": ""
-        },
-        "screen": {
-          "density": 2
-        }
-      },
-      "type": "track",
-      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-      "originalTimestamp": "2019-10-14T11:15:18.300Z",
-      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
-      "event": "Application Opened",
-      "userId": "12345",
-      "properties": {
-        "user_actual_role": "system_admin",
-        "user_actual_id": 12345,
-        "user_time_spent": 50000
-      },
-      "integrations": {
-        "All": true
-      },
-      "sentAt": "2019-10-14T11:15:53.296Z"
-    },
-    "destination": {
-      "Config": {
-        "datacenterEU": true,
-        "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
-      }
-    }
-  },
-  {
-    "message": {
-      "channel": "mobile",
-      "context": {
-        "device": {
-          "name": "test android",
-          "id": "sample_device_id",
-          "model": "some_model_device",
-          "type": "mobile",
-          "token": "sample_device_token"
-        },
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "traits": {
-          "email": "sayan@gmail.com",
-          "anonymousId": "12345"
-        },
-        "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-        "locale": "en-US",
-        "ip": "0.0.0.0",
-        "os": {
-          "name": "",
-          "version": ""
-        },
-        "screen": {
-          "density": 2
-        }
-      },
-      "type": "track",
-      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-      "originalTimestamp": "2019-10-14T11:15:18.300Z",
-      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
-      "event": "Application Uninstalled",
-      "userId": "12345",
-      "properties": {
-        "user_actual_role": "system_admin",
-        "user_actual_id": 12345,
-        "user_time_spent": 50000
-      },
-      "integrations": {
-        "All": true
-      },
-      "sentAt": "2019-10-14T11:15:53.296Z"
-    },
-    "destination": {
-      "Config": {
-        "datacenterEU": true,
-        "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -1774,7 +1490,729 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "userId": "",
+      "event": "test track event",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenter": "EU",
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "dummyApiKey"
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "7e32188a4dab669f",
+      "channel": "mobile",
+      "context": {
+        "app": {
+          "build": "1",
+          "name": "RudderAndroidClient",
+          "namespace": "com.torpedolabs.wynn.wscci.dev",
+          "version": "1.0"
+        },
+        "device": {
+          "id": "7e32188a4dab669f",
+          "manufacturer": "Google",
+          "model": "Android SDK built for x86",
+          "name": "generic_x86",
+          "type": "android",
+          "token": "abcxyz"
+        },
+        "library": {
+          "name": "com.rudderlabs.android.sdk.core",
+          "version": "0.1.4"
+        },
+        "locale": "en-US",
+        "network": {
+          "carrier": "Android",
+          "bluetooth": false,
+          "cellular": true,
+          "wifi": true
+        },
+        "os": {
+          "name": "Android",
+          "version": "9"
+        },
+        "screen": {
+          "density": 420,
+          "height": 1794,
+          "width": 1080
+        },
+        "timezone": "Asia/Kolkata",
+        "traits": {
+          "anonymousId": "7e32188a4dab669f"
+        },
+        "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)"
+      },
+      "event": "Application Installed",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "1578564113557-af022c68-429e-4af4-b99b-2b9174056383",
+      "properties": {
+        "review_id": "some_review_id",
+        "product_id": "some_product_id_a",
+        "rating": 2.0,
+        "review_body": "Some Review Body"
+      },
+      "userId": "12345",
+      "originalTimestamp": "2020-01-09T10:01:53.558Z",
+      "type": "track",
+      "sentAt": "2020-01-09T10:02:03.257Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenter": "EU",
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "dummyApiKey"
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "7e32188a4dab669f",
+      "channel": "mobile",
+      "context": {
+        "app": {
+          "build": "1",
+          "name": "RudderAndroidClient",
+          "namespace": "com.torpedolabs.wynn.wscci.dev",
+          "version": "1.0"
+        },
+        "device": {
+          "id": "7e32188a4dab669f",
+          "manufacturer": "Google",
+          "model": "Android SDK built for x86",
+          "name": "generic_x86",
+          "type": "android",
+          "token": "abcxyz"
+        },
+        "library": {
+          "name": "com.rudderlabs.android.sdk.core",
+          "version": "0.1.4"
+        },
+        "locale": "en-US",
+        "network": {
+          "carrier": "Android",
+          "bluetooth": false,
+          "cellular": true,
+          "wifi": true
+        },
+        "os": {
+          "name": "Android",
+          "version": "9"
+        },
+        "screen": {
+          "density": 420,
+          "height": 1794,
+          "width": 1080
+        },
+        "timezone": "Asia/Kolkata",
+        "traits": {
+          "anonymousId": "7e32188a4dab669f"
+        },
+        "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)"
+      },
+      "event": "Application Uninstalled",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "1578564113557-af022c68-429e-4af4-b99b-2b9174056383",
+      "properties": {
+        "review_id": "some_review_id",
+        "product_id": "some_product_id_a",
+        "rating": 2.0,
+        "review_body": "Some Review Body"
+      },
+      "userId": "12345",
+      "originalTimestamp": "2020-01-09T10:01:53.558Z",
+      "type": "track",
+      "sentAt": "2020-01-09T10:02:03.257Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenter": "EU",
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "dummyApiKey"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "mobile",
+      "context": {
+        "device": {
+          "name": "test android",
+          "id": "sample_device_id",
+          "model": "some_model_device",
+          "type": "mobile",
+          "token": "somel"
+        },
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "test@rudderstack.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "userId": "12345",
+      "event": "Application Uninstalled",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenter": "EU",
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "dummyApiKey"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "mobile",
+      "context": {
+        "device": {
+          "name": "test android",
+          "id": "sample_device_id",
+          "model": "some_model_device",
+          "type": "mobile",
+          "token": "somel"
+        },
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "event": "Application Uninstalled",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenter": "EU",
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "dummyApiKey"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "mobile",
+      "context": {
+        "device": {
+          "name": "test android",
+          "id": "sample_device_id",
+          "model": "some_model_device",
+          "type": "mobile",
+          "token": "somel"
+        },
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "test@rudderstack.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "event": "Application Installed",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenter": "EU",
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "dummyApiKey"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "mobile",
+      "context": {
+        "device": {
+          "name": "test android",
+          "id": "sample_device_id",
+          "model": "some_model_device",
+          "type": "mobile",
+          "token": "somel"
+        },
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "event": "Application Installed",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenter": "EU",
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "dummyApiKey"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "mobile",
+      "context": {
+        "device": {
+          "name": "test android",
+          "id": "sample_device_id",
+          "model": "some_model_device",
+          "type": "mobile",
+          "token": "somel"
+        },
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "test@rudderstack.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "event": "Application Installed",
+      "userId": "12345",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenter": "EU",
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "dummyApiKey"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "mobile",
+      "context": {
+        "device": {
+          "name": "test android",
+          "id": "sample_device_id",
+          "model": "some_model_device",
+          "type": "mobile"
+        },
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "test@rudderstack.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "event": "Application Installed",
+      "userId": "12345",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenter": "EU",
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "dummyApiKey"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "mobile",
+      "context": {
+        "device": {
+          "name": "test android",
+          "id": "sample_device_id",
+          "model": "some_model_device",
+          "type": "mobile"
+        },
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "test@rudderstack.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "event": "Application Opened",
+      "userId": "12345",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenter": "EU",
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "dummyApiKey"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "mobile",
+      "context": {
+        "device": {
+          "name": "test android",
+          "id": "sample_device_id",
+          "model": "some_model_device",
+          "type": "mobile",
+          "token": "sample_device_token"
+        },
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "test@rudderstack.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "event": "Application Opened",
+      "userId": "12345",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenter": "EU",
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "dummyApiKey"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "mobile",
+      "context": {
+        "device": {
+          "name": "test android",
+          "id": "sample_device_id",
+          "model": "some_model_device",
+          "type": "mobile",
+          "token": "sample_device_token"
+        },
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "test@rudderstack.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "event": "Application Uninstalled",
+      "userId": "12345",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenter": "EU",
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "dummyApiKey"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
           "anonymousId": "12345"
         },
         "library": {
@@ -1809,9 +2247,9 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -1826,7 +2264,58 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "event": "https://www.stoodi.com.br/exershgcios/upe/2019/questao/gregorio-de-matos-poeta-baiano-que-viveu-no-seculo-xvi/",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenter": "US",
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "dummyApiKey"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
           "anonymousId": "12345"
         },
         "library": {
@@ -1861,15 +2350,67 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
   {
     "message": {
-      "anonymousId": "ruchira-100-anon",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "test@rudderstack.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "screen",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-10-14T11:15:18.300Z",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "event": "https://www.stoodi.com.br/exercicios/upe/2016/questao/gregorio-de-matos-poeta-baiano-que-viveu-no-seculo-xvi/",
+      "properties": {
+        "user_actual_role": "system_admin",
+        "user_actual_id": 12345,
+        "user_time_spent": 50000
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenter": "US",
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "dummyApiKey"
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "dummy-100-anon",
       "channel": "mobile",
       "context": {
         "app": {
@@ -1922,11 +2463,11 @@
       "rudderId": "782cdb50-e2b9-45fc-9d22-07fe792dcfba",
       "sentAt": "2021-09-22T12:40:14.453Z",
       "type": "track",
-      "userId": "ruchira-user-id-100"
+      "userId": "dummy-user-id-100"
     },
     "destination": {
       "Config": {
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "abc",
         "apiKey": "xyz"
       }
@@ -1944,7 +2485,7 @@
         },
         "traits": {
           "anonymousId": "123456",
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "address": {
             "city": "kolkata",
             "country": "India",
@@ -1973,8 +2514,8 @@
       "type": "identify",
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
       "originalTimestamp": "2019-10-14T09:03:17.562Z",
-      "anonymousId": "ruchira-100-anon",
-      "userId": "ruchira-user-id-100",
+      "anonymousId": "dummy-100-anon",
+      "userId": "dummy-user-id-100",
       "integrations": {
         "All": true
       },
@@ -1992,9 +2533,9 @@
     },
     "destination": {
       "Config": {
-        "datacenterEU": true,
+        "datacenter": "EU",
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -2043,11 +2584,21 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU"],
-            "web": ["useNativeSDK"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU"
+            ],
+            "web": [
+              "useNativeSDK"
+            ]
           },
           "excludeKeys": [],
-          "includeKeys": ["apiKey", "siteID", "datacenterEU"],
+          "includeKeys": [
+            "apiKey",
+            "siteID",
+            "datacenterEU"
+          ],
           "saveDestinationResponse": true,
           "secretKeys": [],
           "supportedSourceTypes": [
@@ -2067,7 +2618,7 @@
       },
       "Config": {
         "apiKey": "a292d85ac36de15fc219",
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "eead090ab9e2e35004dc"
       },
       "Enabled": true,
@@ -2107,7 +2658,6 @@
       "request_ip": "10.1.85.177",
       "rudderId": "5b19a81b-df60-4ccd-abf0-fcfe2b7db054",
       "sentAt": "2021-10-27T09:09:56.673Z",
-      "timestamp": "2021-10-27T09:09:56.186Z",
       "traits": {
         "last_name": "xavier",
         "first_name": "charles"
@@ -2124,11 +2674,21 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU"],
-            "web": ["useNativeSDK"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU"
+            ],
+            "web": [
+              "useNativeSDK"
+            ]
           },
           "excludeKeys": [],
-          "includeKeys": ["apiKey", "siteID", "datacenterEU"],
+          "includeKeys": [
+            "apiKey",
+            "siteID",
+            "datacenterEU"
+          ],
           "saveDestinationResponse": true,
           "secretKeys": [],
           "supportedSourceTypes": [
@@ -2148,7 +2708,7 @@
       },
       "Config": {
         "apiKey": "a292d85ac36de15fc219",
-        "datacenterEU": false,
+        "datacenter": "US",
         "siteID": "eead090ab9e2e35004dc"
       },
       "Enabled": true,
@@ -2224,7 +2784,7 @@
         "All": true
       },
       "messageId": "1641808826-28d23237-f4f0-4f65-baa2-99141e422a8f",
-      "originalTimestamp": "2022-01-10T10:00:26.513Z",
+      "timestamp": "2022-01-10T10:00:26.513Z",
       "properties": {
         "from_background": false
       },
@@ -2232,7 +2792,6 @@
       "request_ip": "[::1]",
       "rudderId": "423cdf83-0448-4a99-b14d-36fcc63e6ea0",
       "sentAt": "2022-01-10T10:00:26.982Z",
-      "timestamp": "2022-01-10T20:35:30.087+05:30",
       "type": "track",
       "userId": "e91e0378-63fe-11ec-82ac-0a028ee659c3"
     },
@@ -2245,8 +2804,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -2258,7 +2826,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -2279,7 +2852,7 @@
       },
       "Config": {
         "apiKey": "DESAU SAI",
-        "datacenterEU": false,
+        "datacenter": "US",
         "deviceTokenEventName": "device_token_registered",
         "siteID": "DESU SAI"
       },
@@ -2372,8 +2945,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -2385,7 +2967,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -2406,7 +2993,7 @@
       },
       "Config": {
         "apiKey": "DESAU SAI",
-        "datacenterEU": false,
+        "datacenter": "US",
         "deviceTokenEventName": "device_token_registered",
         "siteID": "DESU SAI"
       },
@@ -2486,7 +3073,6 @@
       "request_ip": "[::1]",
       "rudderId": "423cdf83-0448-4a99-b14d-36fcc63e6ea0",
       "sentAt": "2022-01-10T10:00:26.982Z",
-      "timestamp": "2022-01-10T20:41:30.501+05:30",
       "type": "track",
       "userId": "e91e0378-63fe-11ec-82ac-0a028ee659c3"
     },
@@ -2499,8 +3085,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -2512,7 +3107,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -2533,7 +3133,7 @@
       },
       "Config": {
         "apiKey": "DESAU SAI",
-        "datacenterEU": false,
+        "datacenter": "US",
         "deviceTokenEventName": "device_token_registered",
         "siteID": "DESU SAI"
       },
@@ -2614,7 +3214,6 @@
       "request_ip": "[::1]",
       "rudderId": "0aef312c-0dc0-4a49-b613-4f33fb4e9b46",
       "sentAt": "2022-01-10T10:00:26.982Z",
-      "timestamp": "2022-01-10T20:44:52.315+05:30",
       "type": "track"
     },
     "destination": {
@@ -2626,8 +3225,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -2639,7 +3247,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -2660,7 +3273,7 @@
       },
       "Config": {
         "apiKey": "DESAU SAI",
-        "datacenterEU": false,
+        "datacenter": "US",
         "deviceTokenEventName": "device_token_registered",
         "siteID": "DESU SAI"
       },
@@ -2733,12 +3346,11 @@
         "All": true
       },
       "messageId": "1641808826-28d23237-f4f0-4f65-baa2-99141e422a8f",
-      "originalTimestamp": "2022-01-10T10:00:26.513Z",
+      "timestamp": "2022-01-10T10:00:26.513Z",
       "receivedAt": "2022-01-10T20:47:36.180+05:30",
       "request_ip": "[::1]",
       "rudderId": "0aef312c-0dc0-4a49-b613-4f33fb4e9b46",
       "sentAt": "2022-01-10T10:00:26.982Z",
-      "timestamp": "2022-01-10T20:47:35.711+05:30",
       "type": "track"
     },
     "destination": {
@@ -2750,8 +3362,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -2763,7 +3384,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -2784,7 +3410,7 @@
       },
       "Config": {
         "apiKey": "DESAU SAI",
-        "datacenterEU": false,
+        "datacenter": "US",
         "deviceTokenEventName": "device_token_registered",
         "siteID": "DESU SAI"
       },
@@ -2865,7 +3491,6 @@
       "request_ip": "[::1]",
       "rudderId": "423cdf83-0448-4a99-b14d-36fcc63e6ea0",
       "sentAt": "2022-01-10T10:00:26.982Z",
-      "timestamp": "2022-01-10T20:49:05.326+05:30",
       "type": "track",
       "userId": "e91e0378-63fe-11ec-82ac-0a028ee659c3"
     },
@@ -2878,8 +3503,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -2891,7 +3525,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -2912,7 +3551,7 @@
       },
       "Config": {
         "apiKey": "DESAU SAI",
-        "datacenterEU": false,
+        "datacenter": "US",
         "deviceTokenEventName": "device_token_registered",
         "siteID": "DESU SAI"
       },
@@ -3005,8 +3644,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -3018,7 +3666,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -3039,7 +3692,7 @@
       },
       "Config": {
         "apiKey": "DESAU SAI",
-        "datacenterEU": false,
+        "datacenter": "US",
         "deviceTokenEventName": "device_token_registered",
         "siteID": "DESU SAI"
       },
@@ -3132,8 +3785,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -3145,7 +3807,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -3166,7 +3833,7 @@
       },
       "Config": {
         "apiKey": "DESAU SAI",
-        "datacenterEU": false,
+        "datacenter": "US",
         "deviceTokenEventName": "device_token_registered",
         "siteID": "DESU SAI"
       },
@@ -3247,7 +3914,6 @@
       "request_ip": "[::1]",
       "rudderId": "0aef312c-0dc0-4a49-b613-4f33fb4e9b46",
       "sentAt": "2022-01-10T10:00:26.982Z",
-      "timestamp": "2022-01-10T20:53:43.211+05:30",
       "type": "track"
     },
     "destination": {
@@ -3259,8 +3925,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -3272,7 +3947,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -3293,7 +3973,7 @@
       },
       "Config": {
         "apiKey": "DESAU SAI",
-        "datacenterEU": false,
+        "datacenter": "US",
         "deviceTokenEventName": "device_token_registered",
         "siteID": "DESU SAI"
       },
@@ -3371,7 +4051,6 @@
       "request_ip": "[::1]",
       "rudderId": "0aef312c-0dc0-4a49-b613-4f33fb4e9b46",
       "sentAt": "2022-01-10T10:00:26.982Z",
-      "timestamp": "2022-01-10T20:55:03.376+05:30",
       "type": "track"
     },
     "destination": {
@@ -3383,8 +4062,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -3396,7 +4084,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -3417,7 +4110,7 @@
       },
       "Config": {
         "apiKey": "DESAU SAI",
-        "datacenterEU": false,
+        "datacenter": "US",
         "deviceTokenEventName": "device_token_registered",
         "siteID": "DESU SAI"
       },
@@ -3498,7 +4191,6 @@
       "request_ip": "[::1]",
       "rudderId": "423cdf83-0448-4a99-b14d-36fcc63e6ea0",
       "sentAt": "2022-01-10T10:00:26.982Z",
-      "timestamp": "2022-01-10T20:41:30.501+05:30",
       "type": "track",
       "userId": "e91e0378-63fe-11ec-82ac-0a028ee659c3"
     },
@@ -3511,8 +4203,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -3524,7 +4225,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -3545,13 +4251,920 @@
       },
       "Config": {
         "apiKey": "DESAU SAI",
-        "datacenterEU": false,
+        "datacenter": "US",
         "deviceTokenEventName": "device_token_registered",
         "siteID": "DESU SAI"
       },
       "Enabled": true,
       "Transformations": [],
       "IsProcessorEnabled": true
+    }
+  },
+  {
+    "description": "successful group call with identify action",
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.0-beta.2"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.0-beta.2"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
+      },
+      "groupId": "group@1",
+      "integrations": {
+        "All": true
+      },
+      "traits": {
+        "domainNames": "rudderstack.com",
+        "email": "help@rudderstack.com",
+        "name": "rudderstack",
+        "action": "identify"
+      },
+      "type": "group",
+      "userId": "user@1"
+    },
+    "destination": {
+      "ID": "23Mi76khsFhY7bh9ZyRcvR3pHDt",
+      "Name": "Customer IO Dev",
+      "DestinationDefinition": {
+        "ID": "23MgSlHXsPLsiH7SbW7IzCP32fn",
+        "Name": "CUSTOMERIO",
+        "DisplayName": "Customer IO",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
+          },
+          "excludeKeys": [],
+          "includeKeys": [
+            "apiKey",
+            "siteID",
+            "datacenterEU",
+            "blackListedEvents",
+            "whiteListedEvents"
+          ],
+          "saveDestinationResponse": true,
+          "secretKeys": [],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "warehouse",
+            "reactnative",
+            "flutter",
+            "cordova"
+          ],
+          "supportsVisualMapper": true,
+          "transformAt": "processor",
+          "transformAtV1": "processor"
+        },
+        "ResponseRules": {}
+      },
+      "Config": {
+        "apiKey": "ef32c3f60fb98f39ef35",
+        "datacenter": "US",
+        "deviceTokenEventName": "device_token_registered",
+        "siteID": "c0efdbd20b9fbe24a7e2"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
+  },
+  {
+    "description": "successful group call with delete action",
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.0-beta.2"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.0-beta.2"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
+      },
+      "groupId": "group@1",
+      "integrations": {
+        "All": true
+      },
+      "traits": {
+        "domainNames": "rudderstack.com",
+        "email": "help@rudderstack.com",
+        "name": "rudderstack",
+        "action": "delete"
+      },
+      "type": "group",
+      "userId": "user@1"
+    },
+    "destination": {
+      "ID": "23Mi76khsFhY7bh9ZyRcvR3pHDt",
+      "Name": "Customer IO Dev",
+      "DestinationDefinition": {
+        "ID": "23MgSlHXsPLsiH7SbW7IzCP32fn",
+        "Name": "CUSTOMERIO",
+        "DisplayName": "Customer IO",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
+          },
+          "excludeKeys": [],
+          "includeKeys": [
+            "apiKey",
+            "siteID",
+            "datacenterEU",
+            "blackListedEvents",
+            "whiteListedEvents"
+          ],
+          "saveDestinationResponse": true,
+          "secretKeys": [],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "warehouse",
+            "reactnative",
+            "flutter",
+            "cordova"
+          ],
+          "supportsVisualMapper": true,
+          "transformAt": "processor",
+          "transformAtV1": "processor"
+        },
+        "ResponseRules": {}
+      },
+      "Config": {
+        "apiKey": "ef32c3f60fb98f39ef35",
+        "datacenter": "US",
+        "deviceTokenEventName": "device_token_registered",
+        "siteID": "c0efdbd20b9fbe24a7e2"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
+  },
+  {
+    "description": "successful group call with add_relationships action",
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.0-beta.2"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.0-beta.2"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "email": "test@rudderstack.com"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
+      },
+      "groupId": "group@1",
+      "integrations": {
+        "All": true
+      },
+      "traits": {
+        "domainNames": "rudderstack.com",
+        "email": "help@rudderstack.com",
+        "name": "rudderstack",
+        "action": "add_relationships"
+      },
+      "type": "group",
+      "userId": "user@1"
+    },
+    "destination": {
+      "ID": "23Mi76khsFhY7bh9ZyRcvR3pHDt",
+      "Name": "Customer IO Dev",
+      "DestinationDefinition": {
+        "ID": "23MgSlHXsPLsiH7SbW7IzCP32fn",
+        "Name": "CUSTOMERIO",
+        "DisplayName": "Customer IO",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
+          },
+          "excludeKeys": [],
+          "includeKeys": [
+            "apiKey",
+            "siteID",
+            "datacenterEU",
+            "blackListedEvents",
+            "whiteListedEvents"
+          ],
+          "saveDestinationResponse": true,
+          "secretKeys": [],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "warehouse",
+            "reactnative",
+            "flutter",
+            "cordova"
+          ],
+          "supportsVisualMapper": true,
+          "transformAt": "processor",
+          "transformAtV1": "processor"
+        },
+        "ResponseRules": {}
+      },
+      "Config": {
+        "apiKey": "ef32c3f60fb98f39ef35",
+        "datacenter": "US",
+        "deviceTokenEventName": "device_token_registered",
+        "siteID": "c0efdbd20b9fbe24a7e2"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
+  },
+  {
+    "description": "successful group call with delete_relationships action",
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.0-beta.2"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.0-beta.2"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "email": "test@rudderstack.com"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
+      },
+      "groupId": "group@1",
+      "integrations": {
+        "All": true
+      },
+      "traits": {
+        "domainNames": "rudderstack.com",
+        "email": "help@rudderstack.com",
+        "name": "rudderstack",
+        "action": "delete_relationships"
+      },
+      "type": "group",
+      "userId": "user@1"
+    },
+    "destination": {
+      "ID": "23Mi76khsFhY7bh9ZyRcvR3pHDt",
+      "Name": "Customer IO Dev",
+      "DestinationDefinition": {
+        "ID": "23MgSlHXsPLsiH7SbW7IzCP32fn",
+        "Name": "CUSTOMERIO",
+        "DisplayName": "Customer IO",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
+          },
+          "excludeKeys": [],
+          "includeKeys": [
+            "apiKey",
+            "siteID",
+            "datacenterEU",
+            "blackListedEvents",
+            "whiteListedEvents"
+          ],
+          "saveDestinationResponse": true,
+          "secretKeys": [],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "warehouse",
+            "reactnative",
+            "flutter",
+            "cordova"
+          ],
+          "supportsVisualMapper": true,
+          "transformAt": "processor",
+          "transformAtV1": "processor"
+        },
+        "ResponseRules": {}
+      },
+      "Config": {
+        "apiKey": "ef32c3f60fb98f39ef35",
+        "datacenter": "US",
+        "deviceTokenEventName": "device_token_registered",
+        "siteID": "c0efdbd20b9fbe24a7e2"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
+  },
+  {
+    "description": "successful group call with userId and groupId as an integer",
+    "message": {
+      "type": "group",
+      "header": {
+        "content-type": "application/json; charset=utf-8"
+      },
+      "sentAt": "2023-03-28T09:36:49.882Z",
+      "traits": {
+        "city": "Frankfurt",
+        "name": "rudder test",
+        "state": "Hessen",
+        "isFake": true,
+        "address": "Solmsstraße 83",
+        "country": "DE",
+        "website": "http://www.rudderstack.com",
+        "industry": "Waste and recycling",
+        "postcode": "60486",
+        "whiteLabel": "rudderlabs",
+        "maxNbJobBoards": 2,
+        "organisationId": 306,
+        "pricingPackage": "packageExpert",
+        "dateProTrialEnd": "2022-08-31T00:00:00+00:00",
+        "isProTrialActive": true,
+        "datetimeRegistration": "2020-07-01T10:23:41+00:00",
+        "isPersonnelServiceProvider": false
+      },
+      "userId": 432,
+      "channel": "server",
+      "context": {
+        "library": {
+          "name": "rudder-analytics-php",
+          "version": "2.0.1",
+          "consumer": "LibCurl"
+        }
+      },
+      "groupId": 306,
+      "rudderId": "f5b46a12-2dab-4e24-a127-7316eed414fc",
+      "messageId": "7032394c-e813-4737-bf52-622dbcefe849",
+      "receivedAt": "2023-03-28T09:36:48.296Z",
+      "request_ip": "18.195.235.225",
+      "originalTimestamp": "2023-03-28T09:36:49.882Z"
+    },
+    "destination": {
+      "ID": "23Mi76khsFhY7bh9ZyRcvR3pHDt",
+      "Name": "Customer IO Dev",
+      "DestinationDefinition": {
+        "ID": "23MgSlHXsPLsiH7SbW7IzCP32fn",
+        "Name": "CUSTOMERIO",
+        "DisplayName": "Customer IO",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
+          },
+          "excludeKeys": [],
+          "includeKeys": [
+            "apiKey",
+            "siteID",
+            "datacenterEU",
+            "blackListedEvents",
+            "whiteListedEvents"
+          ],
+          "saveDestinationResponse": true,
+          "secretKeys": [],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "warehouse",
+            "reactnative",
+            "flutter",
+            "cordova"
+          ],
+          "supportsVisualMapper": true,
+          "transformAt": "processor",
+          "transformAtV1": "processor"
+        },
+        "ResponseRules": {}
+      },
+      "Config": {
+        "apiKey": "ef32c3f60fb98f39ef35",
+        "datacenter": "US",
+        "deviceTokenEventName": "device_token_registered",
+        "siteID": "c0efdbd20b9fbe24a7e2"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
+  },
+  {
+    "description": "successful group call with userId in email format ",
+    "message": {
+      "type": "group",
+      "header": {
+        "content-type": "application/json; charset=utf-8"
+      },
+      "sentAt": "2023-03-28T09:36:49.882Z",
+      "traits": {
+        "city": "Frankfurt",
+        "name": "rudder test",
+        "state": "Hessen",
+        "isFake": true,
+        "address": "Solmsstraße 83",
+        "country": "DE",
+        "website": "http://www.rudderstack.com",
+        "industry": "Waste and recycling",
+        "postcode": "60486",
+        "whiteLabel": "rudderlabs",
+        "maxNbJobBoards": 2,
+        "organisationId": 306,
+        "pricingPackage": "packageExpert",
+        "dateProTrialEnd": "2022-08-31T00:00:00+00:00",
+        "isProTrialActive": true,
+        "datetimeRegistration": "2020-07-01T10:23:41+00:00",
+        "isPersonnelServiceProvider": false
+      },
+      "userId": "abc@xyz.com",
+      "channel": "server",
+      "context": {
+        "library": {
+          "name": "rudder-analytics-php",
+          "version": "2.0.1",
+          "consumer": "LibCurl"
+        }
+      },
+      "groupId": 306,
+      "rudderId": "f5b46a12-2dab-4e24-a127-7316eed414fc",
+      "messageId": "7032394c-e813-4737-bf52-622dbcefe849",
+      "receivedAt": "2023-03-28T09:36:48.296Z",
+      "request_ip": "18.195.235.225",
+      "originalTimestamp": "2023-03-28T09:36:49.882Z"
+    },
+    "destination": {
+      "ID": "23Mi76khsFhY7bh9ZyRcvR3pHDt",
+      "Name": "Customer IO Dev",
+      "DestinationDefinition": {
+        "ID": "23MgSlHXsPLsiH7SbW7IzCP32fn",
+        "Name": "CUSTOMERIO",
+        "DisplayName": "Customer IO",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
+          },
+          "excludeKeys": [],
+          "includeKeys": [
+            "apiKey",
+            "siteID",
+            "datacenterEU",
+            "blackListedEvents",
+            "whiteListedEvents"
+          ],
+          "saveDestinationResponse": true,
+          "secretKeys": [],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "warehouse",
+            "reactnative",
+            "flutter",
+            "cordova"
+          ],
+          "supportsVisualMapper": true,
+          "transformAt": "processor",
+          "transformAtV1": "processor"
+        },
+        "ResponseRules": {}
+      },
+      "Config": {
+        "apiKey": "ef32c3f60fb98f39ef35",
+        "datacenter": "US",
+        "deviceTokenEventName": "device_token_registered",
+        "siteID": "c0efdbd20b9fbe24a7e2"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
+  },
+  {
+    "description": "successful group call with eu as data center",
+    "message": {
+      "type": "group",
+      "header": {
+        "content-type": "application/json; charset=utf-8"
+      },
+      "sentAt": "2023-03-28T09:36:49.882Z",
+      "traits": {
+        "city": "Frankfurt",
+        "name": "rudder test",
+        "state": "Hessen",
+        "isFake": true,
+        "address": "Solmsstraße 83",
+        "country": "DE",
+        "website": "http://www.rudderstack.com",
+        "industry": "Waste and recycling",
+        "postcode": "60486",
+        "whiteLabel": "rudderlabs",
+        "maxNbJobBoards": 2,
+        "organisationId": 306,
+        "pricingPackage": "packageExpert",
+        "dateProTrialEnd": "2022-08-31T00:00:00+00:00",
+        "isProTrialActive": true,
+        "datetimeRegistration": "2020-07-01T10:23:41+00:00",
+        "isPersonnelServiceProvider": false
+      },
+      "userId": 432,
+      "channel": "server",
+      "context": {
+        "library": {
+          "name": "rudder-analytics-php",
+          "version": "2.0.1",
+          "consumer": "LibCurl"
+        }
+      },
+      "groupId": 306,
+      "rudderId": "f5b46a12-2dab-4e24-a127-7316eed414fc",
+      "messageId": "7032394c-e813-4737-bf52-622dbcefe849",
+      "receivedAt": "2023-03-28T09:36:48.296Z",
+      "request_ip": "18.195.235.225",
+      "originalTimestamp": "2023-03-28T09:36:49.882Z"
+    },
+    "destination": {
+      "ID": "23Mi76khsFhY7bh9ZyRcvR3pHDt",
+      "Name": "Customer IO Dev",
+      "DestinationDefinition": {
+        "ID": "23MgSlHXsPLsiH7SbW7IzCP32fn",
+        "Name": "CUSTOMERIO",
+        "DisplayName": "Customer IO",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
+          },
+          "excludeKeys": [],
+          "includeKeys": [
+            "apiKey",
+            "siteID",
+            "datacenterEU",
+            "blackListedEvents",
+            "whiteListedEvents"
+          ],
+          "saveDestinationResponse": true,
+          "secretKeys": [],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "warehouse",
+            "reactnative",
+            "flutter",
+            "cordova"
+          ],
+          "supportsVisualMapper": true,
+          "transformAt": "processor",
+          "transformAtV1": "processor"
+        },
+        "ResponseRules": {}
+      },
+      "Config": {
+        "apiKey": "ef32c3f60fb98f39ef35",
+        "datacenter": "EU",
+        "deviceTokenEventName": "device_token_registered",
+        "siteID": "c0efdbd20b9fbe24a7e2"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "test@rudderstack.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "page",
+      "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+      "originalTimestamp": "2019-10-14T11:15:18.299Z",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "userId": "12345",
+      "properties": {
+        "path": "/test",
+        "referrer": "Rudder",
+        "search": "abc",
+        "title": "Test Page",
+        "url": "www.rudderlabs.com"
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenter": "US",
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "dummyApiKey"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "test@rudderstack.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "page",
+      "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+      "originalTimestamp": "2019-10-14T11:15:18.299Z",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "userId": "12345",
+      "properties": {
+        "path": "/test",
+        "referrer": "Rudder",
+        "search": "abc",
+        "title": "Test Page"
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenter": "US",
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "dummyApiKey"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "test@rudderstack.com",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "page",
+      "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+      "originalTimestamp": "2019-10-14T11:15:18.299Z",
+      "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "userId": "12345",
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenter": "US",
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "dummyApiKey"
+      }
     }
   }
 ]

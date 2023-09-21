@@ -432,7 +432,18 @@
         "apiKey": "dummyApiKey",
         "token": "dummyApiKey",
         "prefixProperties": true,
-        "useNativeSDK": false
+        "useNativeSDK": false,
+        "propIncrements": [
+          {
+            "property": "counter"
+          },
+          {
+            "property": "item_purchased"
+          },
+          {
+            "property": "number_of_logins"
+          }
+        ]
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",
@@ -493,7 +504,10 @@
       "originalTimestamp": "2020-01-24T06:29:02.364Z",
       "properties": {
         "currency": "USD",
-        "revenue": 45.89
+        "revenue": 45.89,
+        "counter": 1,
+        "item_purchased": "2",
+        "number_of_logins": ""
       },
       "receivedAt": "2020-01-24T11:59:02.403+05:30",
       "request_ip": "[::1]:53710",
@@ -582,7 +596,12 @@
         "apiKey": "dummyApiKey",
         "token": "dummyApiKey",
         "prefixProperties": true,
-        "useNativeSDK": false
+        "useNativeSDK": false,
+        "propIncrements": [
+          {
+            "property": ""
+          }
+        ]
       },
       "DestinationDefinition": {
         "DisplayName": "Kiss Metrics",

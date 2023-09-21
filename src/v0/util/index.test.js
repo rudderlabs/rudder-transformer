@@ -11,6 +11,7 @@ const functionNames = [
   'extractCustomFields',
   'batchMultiplexedEvents',
   'removeUndefinedNullValuesAndEmptyObjectArray',
+  'groupEventsByType',
 ];
 
 // Names of the utility functions to test which expects multiple arguments as values and not objects

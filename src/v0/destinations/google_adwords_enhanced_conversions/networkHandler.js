@@ -1,8 +1,10 @@
 const { get, set } = require('lodash');
 const sha256 = require('sha256');
 const { prepareProxyRequest, handleHttpRequest } = require('../../../adapters/network');
-const { isHttpStatusSuccess } = require('../../util/index');
-const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
+const {
+  isHttpStatusSuccess,
+  getAuthErrCategoryFromErrDetailsAndStCode,
+} = require('../../util/index');
 const { CONVERSION_ACTION_ID_CACHE_TTL } = require('./config');
 const Cache = require('../../util/cache');
 
@@ -15,18 +17,6 @@ const {
 const { BASE_ENDPOINT } = require('./config');
 const { NetworkError, NetworkInstrumentationError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
-/**
- * This function helps to detarmine type of error occured. According to the response
- * we set authErrorCategory to take decision if we need to refresh the access_token
- * or need to disable the destination.
- * @param {*} code
- * @param {*} response
- * @returns
- */
-const getAuthErrCategory = (code, response) => {
-  if (code === 401 && !get(response, 'error.details')) return REFRESH_TOKEN;
-  return '';
-};
 
 /**
  *  This function is used for collecting the conversionActionId using the conversion name
@@ -68,7 +58,7 @@ const getConversionActionId = async (method, headers, params) => {
           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(gaecConversionActionIdResponse.status),
         },
         gaecConversionActionIdResponse.response,
-        getAuthErrCategory(
+        getAuthErrCategoryFromErrDetailsAndStCode(
           get(gaecConversionActionIdResponse, 'status'),
           get(gaecConversionActionIdResponse, 'response[0].error.message'),
         ),
@@ -134,7 +124,7 @@ const responseHandler = (destinationResponse) => {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },
     response,
-    getAuthErrCategory(status, response),
+    getAuthErrCategoryFromErrDetailsAndStCode(status, response),
   );
 };
 // eslint-disable-next-line func-names

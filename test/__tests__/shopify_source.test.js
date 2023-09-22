@@ -5,7 +5,7 @@ const version = 'v0'
 const fs = require("fs");
 const path = require("path");
 
-const transformer = require(`../../src/v1/sources/${integration}.${version}/transform`);
+const transformer = require(`../../src/${version}/sources/${integration}/transform`);
 
 
 // Processor Test Data

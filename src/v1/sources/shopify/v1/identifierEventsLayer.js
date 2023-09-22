@@ -1,12 +1,12 @@
 const { identifierEvents, NO_OPERATION_SUCCESS } = require('./config');
-const stats = require('../../../util/stats');
+const stats = require('../../../../util/stats');
 const { getLineItemsToStore } = require('./commonUtils');
-const { RedisDB } = require('../../../util/redis/redisConnector');
-const logger = require('../../../logger');
+const { RedisDB } = require('../../../../util/redis/redisConnector');
+const logger = require('../../../../logger');
 
 const identifierEventLayer = {
   isIdentifierEvent(event) {
-    return identifierEvents.includes(event?.event)
+    return identifierEvents.includes(event?.event);
   },
 
   async processIdentifierEvent(event, metricMetadata) {
@@ -51,7 +51,7 @@ const identifierEventLayer = {
       });
     }
     return NO_OPERATION_SUCCESS;
-  }
+  },
 };
 
 module.exports = { identifierEventLayer };

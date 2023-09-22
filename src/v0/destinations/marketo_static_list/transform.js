@@ -60,7 +60,7 @@ const batchResponseBuilder = (message, Config, token, leadIds, operation) => {
 const processEvent = (input) => {
   const { token, message, destination } = input;
   const { Config } = destination;
-  validateMessageType(message, ['audiencelist']);
+  validateMessageType(message, ['audiencelist', 'record']);
   const response = [];
   let toAdd;
   let toRemove;
@@ -74,14 +74,14 @@ const processEvent = (input) => {
     (Array.isArray(toAdd) && toAdd.length > 0) ||
     (Array.isArray(toRemove) && toRemove.length > 0)
   ) {
-    if (Array.isArray(toAdd) && toAdd.length > 0) {
-      const payload = batchResponseBuilder(message, Config, token, toAdd, 'add');
+    if (Array.isArray(toRemove) && toRemove.length > 0) {
+      const payload = batchResponseBuilder(message, Config, token, toRemove, 'remove');
       if (payload) {
         response.push(...payload);
       }
     }
-    if (Array.isArray(toRemove) && toRemove.length > 0) {
-      const payload = batchResponseBuilder(message, Config, token, toRemove, 'remove');
+    if (Array.isArray(toAdd) && toAdd.length > 0) {
+      const payload = batchResponseBuilder(message, Config, token, toAdd, 'add');
       if (payload) {
         response.push(...payload);
       }
@@ -93,6 +93,36 @@ const processEvent = (input) => {
   }
   return response;
 };
+
+function transformForRecordEvent(inputs, leadIdObj) {
+  const tokenisedInputs = inputs.map((input) => {
+    const { message } = input;
+    const { fields, action } = message;
+    if (!message.properties) {
+      message.properties = {};
+    }
+    if (!message.properties.listData) {
+      message.properties.listData = { add: [], remove: [] };
+    }
+    // message.properties.listData = message.properties.listData || { add: [], remove: [] };
+    if (action === 'insert') {
+      leadIdObj.insert.push({ id: fields.id });
+      message.properties.listData.add.push({ id: fields.id });
+    } else if (action === 'delete') {
+      leadIdObj.delete.push({ id: fields.id });
+      message.properties.listData.remove.push({ id: fields.id });
+    } else {
+      throw new InstrumentationError('Invalid action type');
+    }
+    return input;
+  });
+  const finalInput = [tokenisedInputs[0]];
+  finalInput[0].message.properties.listData.add = leadIdObj.insert;
+  finalInput[0].message.properties.listData.remove = leadIdObj.delete;
+
+  return finalInput;
+}
+
 const process = async (event) => {
   const token = await getAuthToken(formatConfig(event.destination));
 
@@ -107,6 +137,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
   // Token needs to be generated for marketo which will be done on input level.
   // If destination information is not present Error should be thrown
   let token;
+  let respList;
   try {
     token = await getAuthToken(formatConfig(inputs[0].destination));
     if (!token) {
@@ -140,7 +171,17 @@ const processRouterDest = async (inputs, reqMetadata) => {
   // If true then previous status is 500 and every subsequent event output should be
   // sent with status code 500 to the router to be retried.
   const tokenisedInputs = inputs.map((input) => ({ ...input, token }));
-  const respList = await simpleProcessRouterDest(tokenisedInputs, processEvent, reqMetadata);
+  const leadIdObj = {
+    insert: [],
+    delete: [],
+  };
+  let finalInputForRecordEvent;
+  if (inputs[0].message.channel === 'sources') {
+    finalInputForRecordEvent = transformForRecordEvent(tokenisedInputs, leadIdObj);
+    respList = await simpleProcessRouterDest(finalInputForRecordEvent, processEvent, reqMetadata);
+  } else {
+    respList = await simpleProcessRouterDest(tokenisedInputs, processEvent, reqMetadata);
+  }
   return respList;
 };
 

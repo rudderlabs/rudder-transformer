@@ -1232,9 +1232,9 @@ export const data = [
                 {
                   version: '1',
                   type: 'REST',
-                  method: 'POST',
+                  method: 'DELETE',
                   endpoint:
-                    'https://marketo_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=1&id=2&id=3',
+                    'https://marketo_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=4&id=5&id=6',
                   headers: {
                     Authorization: 'Bearer access_token_success',
                     'Content-Type': 'application/json',
@@ -1251,9 +1251,9 @@ export const data = [
                 {
                   version: '1',
                   type: 'REST',
-                  method: 'DELETE',
+                  method: 'POST',
                   endpoint:
-                    'https://marketo_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=4&id=5&id=6',
+                    'https://marketo_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=1&id=2&id=3',
                   headers: {
                     Authorization: 'Bearer access_token_success',
                     'Content-Type': 'application/json',

@@ -10,9 +10,10 @@ const hash = require('object-hash');
 const logger = require('../logger');
 const trackingPlan = require('./trackingPlan');
 
+const SECONDS_IN_DAY = 60 * 60 * 24 * 1;
 const eventSchemaCache = new NodeCache();
-const ajv19Cache = new NodeCache({ useClones: false });
-const ajv4Cache = new NodeCache({ useClones: false });
+const ajv19Cache = new NodeCache({ useClones: false, stdTTL: SECONDS_IN_DAY });
+const ajv4Cache = new NodeCache({ useClones: false, stdTTL: SECONDS_IN_DAY });
 const { isEmptyObject } = require('../v0/util');
 
 const defaultOptions = {

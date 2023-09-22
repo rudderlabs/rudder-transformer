@@ -40,6 +40,7 @@ const userDeletionHandler = async (userAttributes, config) => {
       const handledDelResponse = processAxiosResponse(resp);
       if (!isHttpStatusSuccess(handledDelResponse.status) && handledDelResponse.status !== 404) {
         if (handledDelResponse.status !== 400) {
+          // Generic errors such as invalid api key
           throw new NetworkError(
             `User deletion request failed : ${handledDelResponse.response.msg}`,
             handledDelResponse.status,
@@ -49,6 +50,7 @@ const userDeletionHandler = async (userAttributes, config) => {
             handledDelResponse,
           );
         } else {
+          // Specific errors such as user is not found
           failedUserDeletions.push({ userId: uId, Reason: handledDelResponse.response.msg });
         }
       }

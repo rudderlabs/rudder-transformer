@@ -13,65 +13,65 @@ const uaParser = require('@amplitude/ua-parser-js');
 const logger = require('../../../logger');
 const { isDefinedAndNotNull } = require('../../util');
 
-function getInfoFromUA(path, payload, defaultVal) {
+const getInfoFromUA = (path, payload, defaultVal) => {
   const ua = get(payload, 'context.userAgent');
   const devInfo = ua ? uaParser(ua) : {};
   return get(devInfo, path) || defaultVal;
-}
+};
 
-function getOSName(payload, sourceKey) {
+const getOSName = (payload, sourceKey) => {
   const payloadVal = get(payload, sourceKey);
   if (payload.channel && payload.channel.toLowerCase() === 'web') {
     return getInfoFromUA('browser.name', payload, payloadVal);
   }
   return payloadVal;
-}
+};
 
-function getOSVersion(payload, sourceKey) {
+const getOSVersion = (payload, sourceKey) => {
   const payloadVal = get(payload, sourceKey);
 
   if (payload.channel && payload.channel.toLowerCase() === 'web') {
     return getInfoFromUA('browser.version', payload, payloadVal);
   }
   return payloadVal;
-}
+};
 
-function getDeviceModel(payload, sourceKey) {
+const getDeviceModel = (payload, sourceKey) => {
   const payloadVal = get(payload, sourceKey);
 
   if (payload.channel && payload.channel.toLowerCase() === 'web') {
     return getInfoFromUA('os.name', payload, payloadVal);
   }
   return payloadVal;
-}
+};
 
-function getDeviceManufacturer(payload, sourceKey) {
+const getDeviceManufacturer = (payload, sourceKey) => {
   const payloadVal = get(payload, sourceKey);
 
   if (payload.channel && payload.channel.toLowerCase() === 'web') {
     return getInfoFromUA('device.vendor', payload, payloadVal);
   }
   return payloadVal;
-}
+};
 
-function getPlatform(payload, sourceKey) {
+const getPlatform = (payload, sourceKey) => {
   const payloadVal = get(payload, sourceKey);
   return payload.channel
     ? payload.channel.toLowerCase() === 'web'
       ? 'Web'
       : payloadVal
     : payloadVal;
-}
+};
 
-function getBrand(payload, sourceKey, Config) {
+const getBrand = (payload, sourceKey, Config) => {
   if (Config.mapDeviceBrand) {
     const payloadVal = get(payload, sourceKey);
     return payloadVal;
   }
   return undefined;
-}
+};
 
-function getEventId(payload, sourceKey) {
+const getEventId = (payload, sourceKey) => {
   const eventId = get(payload, sourceKey);
 
   if (isDefinedAndNotNull(eventId)) {
@@ -80,7 +80,7 @@ function getEventId(payload, sourceKey) {
     } else return eventId;
   }
   return undefined;
-}
+};
 
 module.exports = {
   getOSName,

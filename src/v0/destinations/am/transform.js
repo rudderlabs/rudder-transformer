@@ -1,6 +1,7 @@
 /* eslint-disable no-lonely-if */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-param-reassign */
+const _ = require('lodash');
 const get = require('get-value');
 const set = require('set-value');
 const {
@@ -40,7 +41,7 @@ const tags = require('../../util/tags');
 const AMUtils = require('./utils');
 
 const logger = require('../../../logger');
-const { InstrumentationError } = require('../../util/errorTypes');
+const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const AMBatchSizeLimit = 20 * 1024 * 1024; // 20 MB
@@ -79,82 +80,80 @@ const aliasEndpoint = (destConfig) => {
   return retVal;
 };
 
-function handleSessionIdUnderRoot(message) {
+const handleSessionIdUnderRoot = (message) => {
   const sessionId = get(message, 'session_id');
   if (typeof sessionId === 'string') {
-    return sessionId.substr(sessionId.lastIndexOf(':') + 1, sessionId.length);
+    const extractedPart = sessionId.split(':').reverse();
+    return extractedPart[0];
   }
   return sessionId;
-}
+};
 
-function handleSessionIdUnderContext(message) {
+const handleSessionIdUnderContext = (message) => {
   let sessionId = get(message, 'context.sessionId');
   sessionId = Number(sessionId);
   if (Number.isNaN(sessionId)) return -1;
   return sessionId;
-}
+};
 
-function getSessionId(message) {
-  return get(message, 'session_id')
+const getSessionId = (message) =>
+  get(message, 'session_id')
     ? handleSessionIdUnderRoot(message)
     : get(message, 'context.sessionId')
     ? handleSessionIdUnderContext(message)
     : -1;
-}
 
-function addMinIdlength() {
-  return { min_id_length: 1 };
-}
+const addMinIdlength = () => ({ min_id_length: 1 });
 
-function setPriceQuanityInPayload(message, rawPayload) {
+const setPriceQuanityInPayload = (message, rawPayload) => {
   let price;
   let quantity;
-  if (isDefinedAndNotNull(message.properties.price)) {
+  if (isDefinedAndNotNull(message.properties?.price)) {
     price = message.properties.price;
-    quantity = message.properties.quantity || 1;
+    quantity = message.properties?.quantity || 1;
   } else {
-    price = message.properties.revenue;
+    price = message?.properties?.revenue;
     quantity = 1;
   }
   rawPayload.price = price;
   rawPayload.quantity = quantity;
-  rawPayload.revenue = message.properties.revenue;
+  rawPayload.revenue = message.properties?.revenue;
   return rawPayload;
-}
+};
 
-function createRevenuePayload(message, rawPayload) {
-  rawPayload.productId = message.properties.product_id;
+const createRevenuePayload = (message, rawPayload) => {
+  rawPayload.productId = message?.properties?.product_id;
   rawPayload.revenueType =
-    message.properties.revenueType || message.properties.revenue_type || 'Purchased';
+    message.properties?.revenueType || message.properties?.revenue_type || 'Purchased';
   rawPayload = setPriceQuanityInPayload(message, rawPayload);
   return rawPayload;
-}
+};
 
-function updateTraitsObject(property, traitsObject, actionKey) {
+const updateTraitsObject = (property, traitsObject, actionKey) => {
   const propertyToUpdate = getValueFromMessage(traitsObject, property);
   if (traitsObject[actionKey] && property && typeof property === 'string') {
     traitsObject[actionKey][property] = propertyToUpdate;
     deleteObjectProperty(traitsObject, property);
   }
   return traitsObject;
-}
+};
 
-function prepareTraitsConfig(configPropertyTrait, actionKey, traitsObject) {
+const prepareTraitsConfig = (configPropertyTrait, actionKey, traitsObject) => {
   traitsObject[actionKey] = {};
   configPropertyTrait.forEach((traitsElement) => {
-    const property = traitsElement.traits;
+    const property = traitsElement?.traits;
     traitsObject = updateTraitsObject(property, traitsObject, actionKey);
   });
-  if (Object.keys(traitsObject[actionKey]).length === 0) {
+  if (Object.keys(traitsObject[actionKey])?.length === 0) {
     delete traitsObject[actionKey];
   }
   return traitsObject;
-}
+};
 
-function handleTraits(messageTrait, destination) {
+const handleTraits = (messageTrait, destination) => {
   let traitsObject = JSON.parse(JSON.stringify(messageTrait));
 
-  if (destination.Config.traitsToIncrement) {
+  if (destination.Config?.traitsToIncrement) {
     const actionKey = '$add';
     traitsObject = prepareTraitsConfig(
       destination.Config.traitsToIncrement,
@@ -162,29 +161,29 @@ function handleTraits(messageTrait, destination) {
       traitsObject,
     );
   }
-  if (destination.Config.traitsToSetOnce) {
+  if (destination.Config?.traitsToSetOnce) {
     const actionKey = '$setOnce';
     traitsObject = prepareTraitsConfig(destination.Config.traitsToSetOnce, actionKey, traitsObject);
   }
-  if (destination.Config.traitsToAppend) {
+  if (destination.Config?.traitsToAppend) {
     const actionKey = '$append';
     traitsObject = prepareTraitsConfig(destination.Config.traitsToAppend, actionKey, traitsObject);
   }
-  if (destination.Config.traitsToPrepend) {
+  if (destination.Config?.traitsToPrepend) {
     const actionKey = '$prepend';
     traitsObject = prepareTraitsConfig(destination.Config.traitsToPrepend, actionKey, traitsObject);
   }
   return traitsObject;
-}
+};
 
-function handleMappingJsonObject(
+const handleMappingJsonObject = (
   mappingJson,
   sourceKey,
   validatePayload,
   payload,
   message,
   Config,
-) {
+) => {
   const { isFunc, funcName, outKey } = mappingJson[sourceKey];
   if (isFunc) {
     if (validatePayload) {
@@ -202,16 +201,16 @@ function handleMappingJsonObject(
       // that key (outKey) will be a default key for reverse ETL and thus removed from the payload.
       if (isDefinedAndNotNull(data)) {
         set(payload, outKey, data);
-        delete message.traits[outKey];
+        delete message.traits?.[outKey];
       } else {
         // get the destKey/outKey value from calling the util function
         set(payload, outKey, AMUtils[funcName](message, sourceKey, Config));
       }
     }
   }
-}
+};
 
-function updateConfigProperty(message, payload, mappingJson, validatePayload, Config) {
+const updateConfigProperty = (message, payload, mappingJson, validatePayload, Config) => {
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach((sourceKey) => {
     // check if custom processing is required on the payload sourceKey ==> destKey
@@ -243,9 +242,9 @@ function updateConfigProperty(message, payload, mappingJson, validatePayload, Co
       }
     }
   });
-}
+};
 
-function getResponseData(evType, destination, rawPayload, message, groupInfo) {
+const getResponseData = (evType, destination, rawPayload, message, groupInfo) => {
   let endpoint = defaultEndpoint(destination.Config);
   let traits;
   let groups;
@@ -329,16 +328,16 @@ function getResponseData(evType, destination, rawPayload, message, groupInfo) {
       groups = groupInfo && Object.assign(groupInfo);
   }
   return { endpoint, rawPayload, groups };
-}
+};
 
-function responseBuilderSimple(
+const responseBuilderSimple = (
   groupInfo,
   rootElementName,
   message,
   evType,
   mappingJson,
   destination,
-) {
+) => {
   let rawPayload = {};
   const addOptions = 'options';
   const respList = [];
@@ -511,11 +510,11 @@ function responseBuilderSimple(
   }
 
   return respList;
-}
+};
 
 // Generic process function which invokes specific handler functions depending on message type
 // and event type where applicable
-function processSingleMessage(message, destination) {
+const processSingleMessage = (message, destination) => {
   let payloadObjectName = 'events';
   let evType;
   let groupTraits;
@@ -613,12 +612,12 @@ function processSingleMessage(message, destination) {
     case EventType.TRACK:
       evType = message.event;
       if (!isDefinedAndNotNullAndNotEmpty(evType)) {
-        throw new InstrumentationError('message type not defined');
+        throw new InstrumentationError('Event not present. Please send event.');
       }
       if (
         message.properties &&
-        isDefinedAndNotNull(message.properties.revenue) &&
-        isDefinedAndNotNull(message.properties.revenue_type)
+        isDefinedAndNotNull(message.properties?.revenue) &&
+        isDefinedAndNotNull(message.properties?.revenue_type)
       ) {
         // if properties has revenue and revenue_type fields
         // consider the event as revenue event directly
@@ -639,10 +638,10 @@ function processSingleMessage(message, destination) {
     mappingConfig[category.name],
     destination,
   );
-}
+};
 
-function createProductPurchasedEvent(message, destination, product, counter) {
-  const eventClonePurchaseProduct = JSON.parse(JSON.stringify(message));
+const createProductPurchasedEvent = (message, destination, product, counter) => {
+  const eventClonePurchaseProduct = _.cloneDeep(message);
 
   eventClonePurchaseProduct.event = 'Product Purchased';
   // In product purchased event event properties consists of the details of each product
@@ -654,17 +653,17 @@ function createProductPurchasedEvent(message, destination, product, counter) {
   // need to modify the message id of each newly created event, as it is mapped to insert_id and that is used by Amplitude for dedup.
   eventClonePurchaseProduct.messageId = `${message.messageId}-${counter}`;
   return eventClonePurchaseProduct;
-}
+};
 
-function isProductArrayInPayload(message) {
+const isProductArrayInPayload = (message) => {
   const isProductArray =
-    (message.properties.products &&
+    (message.properties?.products &&
       Array.isArray(message.properties.products) &&
       message.properties.products.length > 0) === true;
   return isProductArray;
-}
+};
 
-function getProductPurchasedEvents(message, destination) {
+const getProductPurchasedEvents = (message, destination) => {
   const productPurchasedEvents = [];
   if (isProductArrayInPayload(message)) {
     let counter = 0;
@@ -682,16 +681,16 @@ function getProductPurchasedEvents(message, destination) {
     });
   }
   return productPurchasedEvents;
-}
+};
 
-function trackRevenueEvent(message, destination) {
+const trackRevenueEvent = (message, destination) => {
   let sendEvents = [];
   const originalEvent = JSON.parse(JSON.stringify(message));
 
   if (destination.Config.trackProductsOnce === false) {
     if (isProductArrayInPayload(message)) {
       // when trackProductsOnce false no product array present
-      delete originalEvent.properties.products;
+      delete originalEvent.properties?.products;
     } else {
       // when product array is not there in payload, will track the revenue of the original event.
       originalEvent.isRevenue = true;
@@ -719,16 +718,19 @@ function trackRevenueEvent(message, destination) {
     }
   }
   return sendEvents;
-}
+};
 
-function process(event) {
+const process = (event) => {
   const respList = [];
   const { message, destination } = event;
-  const messageType = message.type.toLowerCase();
+  const messageType = message.type?.toLowerCase();
   const toSendEvents = [];
+  if (!destination?.Config?.apiKey) {
+    throw new ConfigurationError('No API Key is Found. Please Configure API key from dashbaord');
+  }
   if (messageType === EventType.TRACK) {
     const { properties } = message;
-    if (properties && isDefinedAndNotNull(properties.revenue)) {
+    if (isDefinedAndNotNull(properties?.revenue)) {
       const revenueEvents = trackRevenueEvent(message, destination);
       revenueEvents.forEach((revenueEvent) => {
         toSendEvents.push(revenueEvent);
@@ -744,9 +746,9 @@ function process(event) {
     respList.push(...processSingleMessage(sendEvent, destination));
   });
   return respList;
-}
+};
 
-function getBatchEvents(message, destination, metadata, batchEventResponse) {
+const getBatchEvents = (message, destination, metadata, batchEventResponse) => {
   let batchComplete = false;
   const batchEventArray = get(batchEventResponse, 'batchedRequest.body.JSON.events') || [];
   const batchEventJobs = get(batchEventResponse, 'metadata') || [];
@@ -807,16 +809,14 @@ function getBatchEvents(message, destination, metadata, batchEventResponse) {
     }
   }
   return batchComplete;
-}
+};
 
-function batch(destEvents) {
+const batch = (destEvents) => {
   const respList = [];
   let batchEventResponse = defaultBatchRequestConfig();
   let response;
   let isBatchComplete;
   let jsonBody;
-  let userId;
-  let deviceId;
   let messageEvent;
   let destinationObject;
   destEvents.forEach((ev) => {
@@ -824,18 +824,11 @@ function batch(destEvents) {
     destinationObject = { ...destination };
     jsonBody = get(message, 'body.JSON');
     messageEvent = get(message, EVENTS_KEY_PATH);
-    userId =
-      messageEvent && Array.isArray(messageEvent)
-        ? messageEvent[0].user_id
-        : messageEvent
-        ? messageEvent.user_id
-        : undefined;
-    deviceId =
-      messageEvent && Array.isArray(messageEvent)
-        ? messageEvent[0].device_id
-        : messageEvent
-        ? messageEvent.device_id
-        : undefined;
+    const firstEvent = messageEvent && Array.isArray(messageEvent) ? messageEvent[0] : messageEvent;
+
+    const userId = firstEvent?.user_id ?? undefined;
+    const deviceId = firstEvent?.device_id ?? undefined;
+
     // this case shold not happen and should be filtered already
     // by the first pass of single event transformation
     if (messageEvent && !userId && !deviceId) {
@@ -879,12 +872,12 @@ function batch(destEvents) {
     }
   });
   // if there is some unfinished batch push it to response list
-  if (isBatchComplete !== undefined && isBatchComplete === false) {
+  if (isBatchComplete === false) {
     batchEventResponse.destination = destinationObject;
     respList.push(batchEventResponse);
   }
   return respList;
-}
+};
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);

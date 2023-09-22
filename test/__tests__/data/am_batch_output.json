@@ -1,6 +1,20 @@
 [
   [
     {
+      "batched": false,
+      "error": "Both userId and deviceId cannot be undefined",
+      "metadata": {
+        "job_id": 1
+      },
+      "statTags": {
+        "errorCategory": "dataValidation",
+        "errorType": "instrumentation"
+      },
+      "statusCode": 400
+    }
+  ],
+  [
+    {
       "batchedRequest": {
         "body": {
           "XML": {},
@@ -108,7 +122,9 @@
           "JSON_ARRAY": {},
           "FORM": {
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
-            "mapping": ["{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\"}"]
+            "mapping": [
+              "{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\"}"
+            ]
           },
           "JSON": {}
         },
@@ -361,7 +377,9 @@
           "JSON_ARRAY": {},
           "FORM": {
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
-            "mapping": ["{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\"}"]
+            "mapping": [
+              "{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\"}"
+            ]
           },
           "JSON": {}
         },
@@ -687,14 +705,29 @@
           "DisplayName": "Braze",
           "Config": {
             "destConfig": {
-              "android": ["useNativeSDK"],
-              "defaultConfig": ["appKey", "dataCenter", "restApiKey"],
-              "ios": ["useNativeSDK"],
-              "web": ["useNativeSDK"]
+              "android": [
+                "useNativeSDK"
+              ],
+              "defaultConfig": [
+                "appKey",
+                "dataCenter",
+                "restApiKey"
+              ],
+              "ios": [
+                "useNativeSDK"
+              ],
+              "web": [
+                "useNativeSDK"
+              ]
             },
             "excludeKeys": [],
-            "includeKeys": ["appKey", "dataCenter"],
-            "secretKeys": ["restApiKey"],
+            "includeKeys": [
+              "appKey",
+              "dataCenter"
+            ],
+            "secretKeys": [
+              "restApiKey"
+            ],
             "supportedSourceTypes": [
               "android",
               "ios",
@@ -760,7 +793,9 @@
           "JSON_ARRAY": {},
           "FORM": {
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
-            "mapping": ["{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\"}"]
+            "mapping": [
+              "{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\"}"
+            ]
           },
           "JSON": {}
         },
@@ -1043,7 +1078,9 @@
           "JSON_ARRAY": {},
           "FORM": {
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
-            "mapping": ["{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\"}"]
+            "mapping": [
+              "{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\"}"
+            ]
           },
           "JSON": {}
         },

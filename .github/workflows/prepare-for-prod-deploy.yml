@@ -47,7 +47,7 @@ jobs:
     uses: ./.github/workflows/build-push-docker-image.yml
     with:
       build_tag: rudderstack/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }}
-      push_tags: rudderstack/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }},rudderstack/rudder-transformer:latest,rudderlabs/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }},rudderlabs/rudder-transformer:latest
+      push_tags: rudderstack/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }},rudderstack/rudder-transformer:latest
       img_tag: ${{ needs.generate-tag-names.outputs.tag_name }}
       dockerfile: Dockerfile
       load_target: development

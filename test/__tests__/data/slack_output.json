@@ -1,5 +1,26 @@
 [
   {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://hooks.slack.com/services/THZM86VSS/BV9HZ2UN6/demo",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {
+        "payload": "{\"text\":\"Identified my-namehiji: hulala \",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+      }
+    },
+    "files": {},
+    "userId": "12345",
+    "statusCode": 200
+  },
+  {
     "error": "Event type page is not supported"
   },
   {
@@ -7,7 +28,9 @@
     "type": "REST",
     "method": "POST",
     "endpoint": "https://hooks.slack.com/services/THZM86VSS/BV9HZ2UN6/demo",
-    "headers": { "Content-Type": "application/x-www-form-urlencoded" },
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
     "params": {},
     "body": {
       "JSON": {},
@@ -25,15 +48,59 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://hooks.slack.com/services/THZM86VSS/BV9HZ2UN6/demo",
-    "headers": { "Content-Type": "application/x-www-form-urlencoded" },
+    "endpoint": "https://hooks.slack.com/services/id1/id2/demo",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
     "params": {},
     "body": {
       "JSON": {},
       "XML": {},
       "JSON_ARRAY": {},
       "FORM": {
-        "payload": "{\"channel\":\"#slack_integration\",\"text\":\"my-name performed test_isent1 with test_val1 test_val2 and traits hulala\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        "payload": "{\"text\":\"my-name performed test_isent1 with test_val1 test_val2 and traits hulala\"}"
+      }
+    },
+    "files": {},
+    "userId": "12345",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://hooks.slack.com/services/id1/id2/example",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {
+        "payload": "{\"text\":\"my-name performed test_eventing_testis with test_val1 test_val2\"}"
+      }
+    },
+    "files": {},
+    "userId": "12345",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://hooks.slack.com/services/id1/id2/example",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {
+        "payload": "{\"text\":\"my-name did test_eventing_test\"}"
       }
     },
     "files": {},
@@ -45,14 +112,37 @@
     "type": "REST",
     "method": "POST",
     "endpoint": "https://hooks.slack.com/services/THZM86VSS/BV9HZ2UN6/demo",
-    "headers": { "Content-Type": "application/x-www-form-urlencoded" },
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
     "params": {},
     "body": {
       "JSON": {},
       "XML": {},
       "JSON_ARRAY": {},
       "FORM": {
-        "payload": "{\"channel\":\"#slack_integration\",\"text\":\"my-name performed test_eventing_testis with test_val1 test_val2\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+        "payload": "{\"text\":\"my-name performed test_isent1 with test_val1 test_val2 and traits hulala\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
+      }
+    },
+    "files": {},
+    "userId": "12345",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://hooks.slack.com/services/THZM86VSS/BV9HZ2UN6/demo",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {
+        "payload": "{\"channel\":\"example-of-legacy\",\"text\":\"my-name performed test_eventing_testis with test_val1 test_val2\",\"username\":\"RudderStack\",\"icon_url\":\"https://cdn.rudderlabs.com/rudderstack.png\"}"
       }
     },
     "files": {},
@@ -67,5 +157,8 @@
   },
   {
     "error": "Something is wrong with the event template: '{{name}} performed {{event}} with {{properties. key1}} {{properties.key2}} and traits {{traitsList.hiji}}'"
+  },
+  {
+    "error": "Event is denied. Please check configuration."
   }
 ]

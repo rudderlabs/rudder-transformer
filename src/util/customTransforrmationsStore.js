@@ -4,7 +4,7 @@ const logger = require('../logger');
 const { responseStatusHandler } = require('./utils');
 const stats = require('./stats');
 
-const myCache = new NodeCache();
+const myCache = new NodeCache({ stdTTL: 60 * 60 * 24 * 1 });
 
 // const CONFIG_BACKEND_URL = "http://localhost:5000";
 const CONFIG_BACKEND_URL = process.env.CONFIG_BACKEND_URL || 'https://api.rudderlabs.com';

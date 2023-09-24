@@ -40,7 +40,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'GET',
       params: {
         client_id: 'marketo_client_id_success',
         client_secret: 'marketo_client_secret_success',

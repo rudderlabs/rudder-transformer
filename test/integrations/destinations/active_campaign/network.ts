@@ -9,7 +9,11 @@ export const networkCallsData = [
           phone: '92374162212',
         },
       },
-      headers: { 'Api-Token': 'dummyApiToken', 'Content-Type': 'application/json' },
+      headers: {
+        'Api-Token': 'dummyApiToken',
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/plain, */*',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -49,7 +53,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'POST',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -119,7 +123,11 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      headers: { 'Api-Token': 'dummyApiToken', 'Content-Type': 'application/json' },
+      headers: {
+        'Api-Token': 'dummyApiToken',
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/plain, */*',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -159,7 +167,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'GET',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -234,7 +242,11 @@ export const networkCallsData = [
   {
     httpReq: {
       data: { tag: { description: '', tag: 'Test_User', tagType: 'contact' } },
-      headers: { 'Api-Token': 'dummyApiToken', 'Content-Type': 'application/json' },
+      headers: {
+        Accept: 'application/json, text/plain, */*',
+        'Api-Token': 'dummyApiToken',
+        'Content-Type': 'application/json',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -274,7 +286,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'POST',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -353,7 +365,11 @@ export const networkCallsData = [
   {
     httpReq: {
       data: { tag: { description: '', tag: 'Interested_User', tagType: 'contact' } },
-      headers: { 'Api-Token': 'dummyApiToken', 'Content-Type': 'application/json' },
+      headers: {
+        Accept: 'application/json, text/plain, */*',
+        'Api-Token': 'dummyApiToken',
+        'Content-Type': 'application/json',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -393,7 +409,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'POST',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -472,7 +488,11 @@ export const networkCallsData = [
   {
     httpReq: {
       data: { contactTag: { contact: '2', tag: '5' } },
-      headers: { 'Api-Token': 'dummyApiToken', 'Content-Type': 'application/json' },
+      headers: {
+        Accept: 'application/json, text/plain, */*',
+        'Api-Token': 'dummyApiToken',
+        'Content-Type': 'application/json',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -512,7 +532,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'POST',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -535,7 +555,11 @@ export const networkCallsData = [
   {
     httpReq: {
       data: { contactTag: { contact: '2', tag: 1 } },
-      headers: { 'Api-Token': 'dummyApiToken', 'Content-Type': 'application/json' },
+      headers: {
+        Accept: 'application/json, text/plain, */*',
+        'Api-Token': 'dummyApiToken',
+        'Content-Type': 'application/json',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -575,7 +599,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'POST',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -598,7 +622,11 @@ export const networkCallsData = [
   {
     httpReq: {
       data: { contactTag: { contact: '2', tag: 2 } },
-      headers: { 'Api-Token': 'dummyApiToken', 'Content-Type': 'application/json' },
+      headers: {
+        Accept: 'application/json, text/plain, */*',
+        'Api-Token': 'dummyApiToken',
+        'Content-Type': 'application/json',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -638,7 +666,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'POST',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -661,7 +689,11 @@ export const networkCallsData = [
   {
     httpReq: {
       data: { contactList: { contact: '2', list: 2, status: '1' } },
-      headers: { 'Api-Token': 'dummyApiToken', 'Content-Type': 'application/json' },
+      headers: {
+        'Api-Token': 'dummyApiToken',
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/plain, */*',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -701,7 +733,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'POST',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -713,7 +745,11 @@ export const networkCallsData = [
   {
     httpReq: {
       data: { contactList: { contact: '2', list: 3, status: '2' } },
-      headers: { 'Api-Token': 'dummyApiToken', 'Content-Type': 'application/json' },
+      headers: {
+        'Api-Token': 'dummyApiToken',
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/plain, */*',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -753,7 +789,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'POST',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -764,7 +800,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      headers: { 'Api-Token': 'dummyApiToken' },
+      headers: { Accept: 'application/json, text/plain, */*', 'Api-Token': 'dummyApiToken' },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -804,7 +840,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'GET',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -947,7 +983,11 @@ export const networkCallsData = [
           phone: '92374162212',
         },
       },
-      headers: { 'Api-Token': 'dummyApiKey', 'Content-Type': 'application/json' },
+      headers: {
+        'Api-Token': 'dummyApiKey',
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/plain, */*',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -987,7 +1027,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'POST',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -1058,7 +1098,11 @@ export const networkCallsData = [
   {
     httpReq: {
       data: { contactList: { contact: '2', list: 2, status: '1' } },
-      headers: { 'Api-Token': 'dummyApiKey', 'Content-Type': 'application/json' },
+      headers: {
+        'Api-Token': 'dummyApiKey',
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/plain, */*',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -1098,7 +1142,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'POST',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -1110,7 +1154,11 @@ export const networkCallsData = [
   {
     httpReq: {
       data: { contactList: { contact: '2', list: 3, status: '2' } },
-      headers: { 'Api-Token': 'dummyApiKey', 'Content-Type': 'application/json' },
+      headers: {
+        'Api-Token': 'dummyApiKey',
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/plain, */*',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -1150,7 +1198,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'POST',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -1161,7 +1209,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      headers: { 'Api-Token': 'dummyApiKey' },
+      headers: { Accept: 'application/json, text/plain, */*', 'Api-Token': 'dummyApiKey' },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -1201,7 +1249,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'GET',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -1344,7 +1392,11 @@ export const networkCallsData = [
           phone: '92374162212',
         },
       },
-      headers: { 'Api-Token': 'dummyApiKey', 'Content-Type': 'application/json' },
+      headers: {
+        'Api-Token': 'dummyApiKey',
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/plain, */*',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -1384,7 +1436,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'POST',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -1454,7 +1506,11 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      headers: { 'Api-Token': 'dummyApiKey', 'Content-Type': 'application/json' },
+      headers: {
+        'Api-Token': 'dummyApiKey',
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/plain, */*',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -1494,7 +1550,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'GET',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -1569,7 +1625,11 @@ export const networkCallsData = [
   {
     httpReq: {
       data: { tag: { description: '', tag: 'Test_User', tagType: 'contact' } },
-      headers: { 'Api-Token': 'dummyApiKey', 'Content-Type': 'application/json' },
+      headers: {
+        Accept: 'application/json, text/plain, */*',
+        'Api-Token': 'dummyApiKey',
+        'Content-Type': 'application/json',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -1609,7 +1669,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'POST',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -1688,7 +1748,11 @@ export const networkCallsData = [
   {
     httpReq: {
       data: { tag: { description: '', tag: 'Interested_User', tagType: 'contact' } },
-      headers: { 'Api-Token': 'dummyApiKey', 'Content-Type': 'application/json' },
+      headers: {
+        Accept: 'application/json, text/plain, */*',
+        'Api-Token': 'dummyApiKey',
+        'Content-Type': 'application/json',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -1728,7 +1792,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'POST',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -1807,7 +1871,11 @@ export const networkCallsData = [
   {
     httpReq: {
       data: { contactTag: { contact: '2', tag: '5' } },
-      headers: { 'Api-Token': 'dummyApiKey', 'Content-Type': 'application/json' },
+      headers: {
+        Accept: 'application/json, text/plain, */*',
+        'Api-Token': 'dummyApiKey',
+        'Content-Type': 'application/json',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -1847,7 +1915,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'POST',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -1870,7 +1938,11 @@ export const networkCallsData = [
   {
     httpReq: {
       data: { contactTag: { contact: '2', tag: 6 } },
-      headers: { 'Api-Token': 'dummyApiKey', 'Content-Type': 'application/json' },
+      headers: {
+        Accept: 'application/json, text/plain, */*',
+        'Api-Token': 'dummyApiKey',
+        'Content-Type': 'application/json',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -1910,7 +1982,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'POST',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -1933,7 +2005,11 @@ export const networkCallsData = [
   {
     httpReq: {
       data: { contactTag: { contact: '2', tag: 7 } },
-      headers: { 'Api-Token': 'dummyApiKey', 'Content-Type': 'application/json' },
+      headers: {
+        Accept: 'application/json, text/plain, */*',
+        'Api-Token': 'dummyApiKey',
+        'Content-Type': 'application/json',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -1973,7 +2049,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'POST',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -1996,7 +2072,11 @@ export const networkCallsData = [
   {
     httpReq: {
       data: { contactList: { contact: '2', list: 2, status: '1' } },
-      headers: { 'Api-Token': 'dummyApiKey', 'Content-Type': 'application/json' },
+      headers: {
+        'Api-Token': 'dummyApiKey',
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/plain, */*',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -2036,7 +2116,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'POST',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -2048,7 +2128,11 @@ export const networkCallsData = [
   {
     httpReq: {
       data: { contactList: { contact: '2', list: 3, status: '2' } },
-      headers: { 'Api-Token': 'dummyApiKey', 'Content-Type': 'application/json' },
+      headers: {
+        'Api-Token': 'dummyApiKey',
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/plain, */*',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -2088,7 +2172,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'POST',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -2099,7 +2183,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      headers: { 'Api-Token': 'dummyApiKey' },
+      headers: { Accept: 'application/json, text/plain, */*', 'Api-Token': 'dummyApiKey' },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -2139,7 +2223,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'GET',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -2274,7 +2358,11 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      headers: { 'Api-Token': 'dummyApiKey', 'Content-Type': 'application/json' },
+      headers: {
+        'Api-Token': 'dummyApiKey',
+        Accept: 'application/json, text/plain, */*',
+        'Content-Type': 'application/json',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -2314,7 +2402,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'GET',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -2332,7 +2420,11 @@ export const networkCallsData = [
   {
     httpReq: {
       data: { eventTrackingEvent: { name: 'ScreenViewed' } },
-      headers: { 'Api-Token': 'dummyApiKey', 'Content-Type': 'application/json' },
+      headers: {
+        Accept: 'application/json, text/plain, */*',
+        'Api-Token': 'dummyApiKey',
+        'Content-Type': 'application/json',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -2372,7 +2464,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'POST',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -2383,7 +2475,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      headers: { 'Api-Token': 'dummyApiKey' },
+      headers: { 'Api-Token': 'dummyApiKey', Accept: 'application/json, text/plain, */*' },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -2423,7 +2515,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'GET',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -2441,7 +2533,11 @@ export const networkCallsData = [
   {
     httpReq: {
       data: { eventTrackingEvent: { name: 'Tracking Action' } },
-      headers: { 'Api-Token': 'dummyApiKey', 'Content-Type': 'application/json' },
+      headers: {
+        'Api-Token': 'dummyApiKey',
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/plain, */*',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -2481,7 +2577,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'POST',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -2493,7 +2589,11 @@ export const networkCallsData = [
   {
     httpReq: {
       data: { contact: { email: 'jamesDoe@gmail.com', phone: '92374162212' } },
-      headers: { 'Api-Token': 'dummyApiKey', 'Content-Type': 'application/json' },
+      headers: {
+        'Api-Token': 'dummyApiKey',
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/plain, */*',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -2533,7 +2633,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'POST',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -2603,7 +2703,11 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      headers: { 'Api-Token': 'dummyApiKey', 'Content-Type': 'application/json' },
+      headers: {
+        Accept: 'application/json, text/plain, */*',
+        'Api-Token': 'dummyApiKey',
+        'Content-Type': 'application/json',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -2643,7 +2747,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'GET',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -2718,7 +2822,11 @@ export const networkCallsData = [
   {
     httpReq: {
       data: { tag: { description: '', tag: 'Test_User', tagType: 'contact' } },
-      headers: { 'Api-Token': 'dummyApiKey', 'Content-Type': 'application/json' },
+      headers: {
+        Accept: 'application/json, text/plain, */*',
+        'Api-Token': 'dummyApiKey',
+        'Content-Type': 'application/json',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -2758,7 +2866,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'POST',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -2837,7 +2945,11 @@ export const networkCallsData = [
   {
     httpReq: {
       data: { tag: { description: '', tag: 'Interested_User', tagType: 'contact' } },
-      headers: { 'Api-Token': 'dummyApiKey', 'Content-Type': 'application/json' },
+      headers: {
+        Accept: 'application/json, text/plain, */*',
+        'Api-Token': 'dummyApiKey',
+        'Content-Type': 'application/json',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -2877,7 +2989,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'POST',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -2956,7 +3068,11 @@ export const networkCallsData = [
   {
     httpReq: {
       data: { contactTag: { contact: '2', tag: '5' } },
-      headers: { 'Api-Token': 'dummyApiKey', 'Content-Type': 'application/json' },
+      headers: {
+        Accept: 'application/json, text/plain, */*',
+        'Api-Token': 'dummyApiKey',
+        'Content-Type': 'application/json',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -2996,7 +3112,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'POST',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -3019,7 +3135,11 @@ export const networkCallsData = [
   {
     httpReq: {
       data: { contactTag: { contact: '2', tag: 11 } },
-      headers: { 'Api-Token': 'dummyApiKey', 'Content-Type': 'application/json' },
+      headers: {
+        Accept: 'application/json, text/plain, */*',
+        'Api-Token': 'dummyApiKey',
+        'Content-Type': 'application/json',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -3059,7 +3179,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'POST',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -3082,7 +3202,11 @@ export const networkCallsData = [
   {
     httpReq: {
       data: { contactTag: { contact: '2', tag: 12 } },
-      headers: { 'Api-Token': 'dummyApiKey', 'Content-Type': 'application/json' },
+      headers: {
+        Accept: 'application/json, text/plain, */*',
+        'Api-Token': 'dummyApiKey',
+        'Content-Type': 'application/json',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -3122,7 +3246,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'POST',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -3145,7 +3269,11 @@ export const networkCallsData = [
   {
     httpReq: {
       data: { contactList: { contact: '2', list: 2, status: '1' } },
-      headers: { 'Api-Token': 'dummyApiKey', 'Content-Type': 'application/json' },
+      headers: {
+        'Api-Token': 'dummyApiKey',
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/plain, */*',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -3185,7 +3313,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'POST',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -3197,7 +3325,11 @@ export const networkCallsData = [
   {
     httpReq: {
       data: { contactList: { contact: '2', list: 3, status: '2' } },
-      headers: { 'Api-Token': 'dummyApiKey', 'Content-Type': 'application/json' },
+      headers: {
+        'Api-Token': 'dummyApiKey',
+        'Content-Type': 'application/json',
+        Accept: 'application/json, text/plain, */*',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -3237,7 +3369,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'POST',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -3248,7 +3380,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      headers: { 'Api-Token': 'dummyApiKey' },
+      headers: { Accept: 'application/json, text/plain, */*', 'Api-Token': 'dummyApiKey' },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -3288,7 +3420,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'GET',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,

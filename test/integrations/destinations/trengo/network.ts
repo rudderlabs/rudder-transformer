@@ -1,7 +1,10 @@
 export const networkCallsData = [
   {
     httpReq: {
-      headers: { Authorization: 'Bearer trengo_integration_test_api_token' },
+      headers: {
+        Authorization: 'Bearer trengo_integration_test_api_token',
+        Accept: 'application/json, text/plain, */*',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -41,7 +44,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'GET',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -118,7 +121,10 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      headers: { Authorization: 'Bearer trengo_integration_test_api_token' },
+      headers: {
+        Authorization: 'Bearer trengo_integration_test_api_token',
+        Accept: 'application/json, text/plain, */*',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -158,7 +164,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'GET',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -187,7 +193,10 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      headers: { Authorization: 'Bearer trengo_integration_test_api_token' },
+      headers: {
+        Authorization: 'Bearer trengo_integration_test_api_token',
+        Accept: 'application/json, text/plain, */*',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -227,7 +236,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'GET',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -256,7 +265,10 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      headers: { Authorization: 'Bearer trengo_integration_test_api_token' },
+      headers: {
+        Authorization: 'Bearer trengo_integration_test_api_token',
+        Accept: 'application/json, text/plain, */*',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -296,18 +308,21 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'GET',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
       url: 'https://app.trengo.com/api/v2/contacts?page=1&term=null',
       withCredentials: false,
     },
-    httpRes: { error: 'Request failed', status: 404 },
+    httpRes: { data: { error: 'Request failed', status: 404 }, status: 200 },
   },
   {
     httpReq: {
-      headers: { Authorization: 'Bearer trengo_integration_test_api_token' },
+      headers: {
+        Authorization: 'Bearer trengo_integration_test_api_token',
+        Accept: 'application/json, text/plain, */*',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -347,7 +362,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'GET',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -376,7 +391,10 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      headers: { Authorization: 'Bearer trengo_integration_test_api_token' },
+      headers: {
+        Authorization: 'Bearer trengo_integration_test_api_token',
+        Accept: 'application/json, text/plain, */*',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -416,18 +434,21 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'GET',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
       url: 'https://app.trengo.com/api/v2/contacts?page=1&term=99999666661',
       withCredentials: false,
     },
-    httpRes: { error: 'Request failed', status: 404 },
+    httpRes: { data: { error: 'Request failed', status: 404 }, status: 200 },
   },
   {
     httpReq: {
-      headers: { Authorization: 'Bearer trengo_integration_test_api_token' },
+      headers: {
+        Authorization: 'Bearer trengo_integration_test_api_token',
+        Accept: 'application/json, text/plain, */*',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -467,7 +488,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'GET',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -591,7 +612,10 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      headers: { Authorization: 'Bearer trengo_integration_test_api_token' },
+      headers: {
+        Authorization: 'Bearer trengo_integration_test_api_token',
+        Accept: 'application/json, text/plain, */*',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -631,7 +655,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'GET',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -764,7 +788,10 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      headers: { Authorization: 'Bearer trengo_integration_test_api_token' },
+      headers: {
+        Authorization: 'Bearer trengo_integration_test_api_token',
+        Accept: 'application/json, text/plain, */*',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -804,7 +831,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'GET',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -937,7 +964,10 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      headers: { Authorization: 'Bearer trengo_integration_test_api_token' },
+      headers: {
+        Authorization: 'Bearer trengo_integration_test_api_token',
+        Accept: 'application/json, text/plain, */*',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -977,7 +1007,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'GET',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -1101,7 +1131,10 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      headers: { Authorization: 'Bearer trengo_integration_test_api_token' },
+      headers: {
+        Authorization: 'Bearer trengo_integration_test_api_token',
+        Accept: 'application/json, text/plain, */*',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -1141,7 +1174,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'GET',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -1274,7 +1307,10 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      headers: { Authorization: 'Bearer trengo_integration_test_api_token' },
+      headers: {
+        Authorization: 'Bearer trengo_integration_test_api_token',
+        Accept: 'application/json, text/plain, */*',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -1314,7 +1350,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'GET',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -1447,7 +1483,10 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      headers: { Authorization: 'Bearer trengo_integration_test_api_token' },
+      headers: {
+        Authorization: 'Bearer trengo_integration_test_api_token',
+        Accept: 'application/json, text/plain, */*',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -1487,7 +1526,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'GET',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -1620,7 +1659,10 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      headers: { Authorization: 'Bearer trengo_integration_test_api_token' },
+      headers: {
+        Authorization: 'Bearer trengo_integration_test_api_token',
+        Accept: 'application/json, text/plain, */*',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -1660,7 +1702,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'GET',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -1793,7 +1835,10 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      headers: { Authorization: 'Bearer trengo_integration_test_api_token' },
+      headers: {
+        Authorization: 'Bearer trengo_integration_test_api_token',
+        Accept: 'application/json, text/plain, */*',
+      },
       httpAgent: {
         _events: {},
         _eventsCount: 2,
@@ -1833,7 +1878,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'GET',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,

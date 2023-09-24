@@ -2,6 +2,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
+        Accept: 'application/json, text/plain, */*',
         Authorization: 'Basic VGVzdFJ1ZGRlcmxhYnM0NTgyM0BnbWFpbC5jb206ZHVtbXlQYXNzd29yZA==',
         'Content-Type': 'application/json',
       },
@@ -44,7 +45,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'GET',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -56,6 +57,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
+        Accept: 'application/json, text/plain, */*',
         Authorization: 'Basic VGVzdFJ1ZGRlcmxhYnM0NTgyM0BnbWFpbC5jb206ZHVtbXlQYXNzd29yZA==',
         'Content-Type': 'application/json',
       },
@@ -98,7 +100,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'GET',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -110,6 +112,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
+        Accept: 'application/json, text/plain, */*',
         Authorization: 'Basic VGVzdFJ1ZGRlcmxhYnM0NTgyM0BnbWFpbC5jb206ZHVtbXlQYXNzd29yZA==',
         'Content-Type': 'application/json',
       },
@@ -152,7 +155,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'GET',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -803,6 +806,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
+        Accept: 'application/json, text/plain, */*',
         Authorization: 'Basic VGVzdDQ1ODIzUnVkZGVybGFic0BnbWFpbC5jb206ZHVtbXlQYXNzd29yZA==',
         'Content-Type': 'application/json',
       },
@@ -845,7 +849,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'GET',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -1496,6 +1500,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
+        Accept: 'application/json, text/plain, */*',
         Authorization: 'Basic VGVzdDQ1ODIzUnVkZGVybGFic0BnbWFpbC5jb206ZHVtbXlQYXNzd29yZA==',
         'Content-Type': 'application/json',
       },
@@ -1538,7 +1543,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'GET',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,
@@ -3436,6 +3441,7 @@ export const networkCallsData = [
   {
     httpReq: {
       headers: {
+        Accept: 'application/json, text/plain, */*',
         Authorization: 'Basic VGVzdDQ1ODIzUnVkZGVybGFic0BnbWFpbC5jb206ZHVtbXlQYXNzd29yZA==',
         'Content-Type': 'application/json',
       },
@@ -3478,7 +3484,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'GET',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,

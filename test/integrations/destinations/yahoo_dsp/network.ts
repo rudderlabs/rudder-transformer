@@ -43,7 +43,7 @@ export const networkCallsData = [
       maxBodyLength: 100000000,
       maxContentLength: 100000000,
       maxRedirects: 5,
-      method: 'get',
+      method: 'POST',
       responseEncoding: 'utf8',
       responseType: 'json',
       timeout: 60000,

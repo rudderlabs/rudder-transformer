@@ -4,22 +4,23 @@ import request from 'supertest';
 // Mocking of axios calls
 import axios from 'axios';
 // new-library we are using
-import stringify from 'fast-json-stable-stringify';
 import bodyParser from 'koa-bodyparser';
 import { Command } from 'commander';
 import { createHttpTerminator } from 'http-terminator';
 import { MockHttpCallsData, TestCaseData } from './testTypes';
 import { applicationRoutes } from '../../src/routes/index';
+import MockAxiosAdapter from 'axios-mock-adapter';
 import {
   getTestDataFilePaths,
   getTestData,
   getMockHttpCallsData,
   getAllTestMockDataFilePaths,
 } from './testUtils';
-import tags from '../../src/v0/util/tags';
+import tags, { FEATURES } from '../../src/v0/util/tags';
 import { Server } from 'http';
 import { appendFileSync } from 'fs';
 import { responses } from '../testHelper';
+import utils from '../../src/v0/util';
 
 // To run single destination test cases
 // npm run test:ts -- component  --destination=adobe_analytics
@@ -67,80 +68,53 @@ afterAll(async () => {
     `;
     appendFileSync(join(__dirname, 'destinations', opts.destination, 'network.ts'), calls);
   }
-  jest.clearAllMocks();
   await createHttpTerminator({ server }).terminate();
 });
-
+let mock;
 if (!opts.generate || opts.generate === 'false') {
   // unmock already existing axios-mocking
-  jest.unmock('axios');
+  mock = new MockAxiosAdapter(axios, { onNoMatch: 'passthrough' });
+  const registerAxiosMocks = (axiosMocks: MockHttpCallsData[]) => {
+    axiosMocks.forEach((axiosMock) => {
+      const { url, method, data: reqData, ...opts } = axiosMock.httpReq;
+      const { data, headers, status } = axiosMock.httpRes;
 
-  jest.mock('axios');
-  const formAxiosReqsMap = (calls: MockHttpCallsData[]) => {
-    try {
-      return calls.reduce((agg, curr) => {
-        let obj = curr.httpReq;
-        return { ...agg, [stringify(obj)]: curr.httpRes };
-      }, {});
-    } catch (error) {
-      return {};
-    }
-  };
-
-  const mockImpl = (type, axReqMap) => {
-    // return value fn
-    const retVal = (key) => {
-      if (axReqMap[key]) {
-        return axReqMap[key];
+      switch (method.toLowerCase()) {
+        case 'get':
+          // @ts-ignore
+          mock.onGet(url, reqData, opts.headers).reply(status, data, headers);
+          break;
+        case 'delete':
+          // @ts-ignore
+          mock.onDelete(url, reqData, opts.headers).reply(status, data, headers);
+          break;
+        case 'post':
+          // @ts-ignore
+          mock.onPost(url, reqData, opts.headers).reply(status, data, headers);
+          break;
+        case 'patch':
+          // @ts-ignore
+          mock.onPatch(url, reqData, opts.headers).reply(status, data, headers);
+          break;
+        case 'put':
+          // @ts-ignore
+          mock.onPut(url, reqData, opts.headers).reply(status, data, headers);
+          break;
+        default:
+          break;
       }
-      return {
-        status: 500,
-        body: 'Something bad',
-      };
-    };
-
-    if (['constructor'].includes(type)) {
-      return (opts) => {
-        // mock result from some cache
-        const key = stringify({ ...opts });
-        return retVal(key);
-      };
-    } else if (['delete', 'get'].includes(type)) {
-      return (url, opts) => {
-        // mock result from some cache
-        const key = stringify({ url, ...opts });
-        return retVal(key);
-      };
-    }
-
-    // post, patch, put
-    return (url, data, opts) => {
-      // mock result from some cache
-      const key = stringify({ url, data, ...opts });
-      return retVal(key);
-    };
+    });
   };
 
-  const makeNetworkMocks = (axiosReqsMap: Record<string, any>) => {
-    axios.put = jest.fn(mockImpl('put', axiosReqsMap));
-    axios.post = jest.fn(mockImpl('post', axiosReqsMap));
-    axios.patch = jest.fn(mockImpl('patch', axiosReqsMap));
-    // @ts-ignore
-    axios.delete = jest.fn(mockImpl('delete', axiosReqsMap));
-    // @ts-ignore
-    axios.get = jest.fn(mockImpl('get', axiosReqsMap));
-    // @ts-ignore
-    axios.mockImplementation(mockImpl('constructor', axiosReqsMap));
-  };
-
-  // all the axios requests will be stored in this map
+  // // all the axios requests will be stored in this map
   const allTestMockDataFilePaths = getAllTestMockDataFilePaths(__dirname, opts.destination);
-  const allAxiosReqsMap = allTestMockDataFilePaths.reduce((agg, currPath) => {
-    const mockNetworkCallsData: MockHttpCallsData[] = getMockHttpCallsData(currPath);
-    const reqMap = formAxiosReqsMap(mockNetworkCallsData);
-    return { ...agg, ...reqMap };
-  }, {});
-  makeNetworkMocks(allAxiosReqsMap);
+  const allAxiosRequests = allTestMockDataFilePaths
+    .map((currPath) => {
+      const mockNetworkCallsData: MockHttpCallsData[] = getMockHttpCallsData(currPath);
+      return mockNetworkCallsData;
+    })
+    .flat();
+  registerAxiosMocks(allAxiosRequests);
 }
 
 // END
@@ -197,7 +171,7 @@ const destinationTestHandler = async (tcData: TestCaseData) => {
       route = `/${join(tcData.version || DEFAULT_VERSION, 'destinations', tcData.name, 'proxy')}`;
       break;
     case tags.FEATURES.USER_DELETION:
-      route = 'deleteUsers';
+      route = '/deleteUsers';
       break;
     case tags.FEATURES.PROCESSOR:
       // Processor transformation
@@ -231,6 +205,11 @@ describe.each(allTestDataFilePaths)('%s Tests', (testDataPath) => {
   }
   const testData: TestCaseData[] = getTestData(testDataPath);
   test.each(testData)('$name - $module - $feature -> $description', async (tcData) => {
+    if (tcData.feature === FEATURES.USER_DELETION && tcData.name === 'af') {
+      utils.generateUUID = jest.fn(() => '97fcd7b2-cc24-47d7-b776-057b7b199513');
+      jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2023-09-24T11:22:24.018Z');
+    }
+
     switch (tcData.module) {
       case tags.MODULES.DESTINATION:
         await destinationTestHandler(tcData);

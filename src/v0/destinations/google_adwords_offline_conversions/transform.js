@@ -100,7 +100,9 @@ const trackResponseBuilder = (message, metadata, destination) => {
 
   const responseList = [];
   if (!eventsToConversionsNamesMapping[event] || !eventsToOfflineConversionsTypeMapping[event]) {
-    throw new ConfigurationError(`Event name '${event}' is not valid`);
+    throw new ConfigurationError(
+      `Event name '${event}' is not present in the mapping provided in the dashboard.`,
+    );
   }
   const conversionTypes = Array.from(eventsToOfflineConversionsTypeMapping[event]);
   conversionTypes.forEach((conversionType) => {

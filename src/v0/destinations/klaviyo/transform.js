@@ -31,6 +31,7 @@ const {
   addExternalIdToTraits,
   adduserIdFromExternalId,
   getSuccessRespEvents,
+  getSuppressRespEvents,
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
   flattenJson,
@@ -337,7 +338,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
   const nonSubscribeSuccessList = nonSubscribeRespList.map((resp) =>
     resp.message.body.JSON?.action
       ? {
-          ...getSuccessRespEvents(resp.message, [resp.metadata], resp.destination),
+        ...getSuppressRespEvents(resp.message, [resp.metadata], resp.destination),
           action: resp.message.body.JSON.action,
         }
       : getSuccessRespEvents(resp.message, [resp.metadata], resp.destination),

@@ -52,7 +52,6 @@
   "dependencies": {
     "@amplitude/ua-parser-js": "^0.7.24",
     "@aws-sdk/client-personalize": "^3.391.0",
-    "@aws-sdk/client-lambda": "^3.276.0",
     "@aws-sdk/client-s3": "^3.370.0",
     "@aws-sdk/credential-providers": "^3.391.0",
     "@aws-sdk/lib-storage": "^3.391.0",
@@ -99,7 +98,6 @@
     "oauth-1.0a": "^2.2.6",
     "object-hash": "^3.0.0",
     "parse-static-imports": "^1.1.0",
-    "pprof": "^3.2.1",
     "prom-client": "^14.2.0",
     "qs": "^6.11.1",
     "rudder-transformer-cdk": "^1.4.11",

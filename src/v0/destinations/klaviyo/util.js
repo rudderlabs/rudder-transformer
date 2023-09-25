@@ -10,7 +10,6 @@ const {
   removeUndefinedAndNullValues,
   defaultBatchRequestConfig,
   getSuccessRespEvents,
-  defaultPatchRequestConfig,
 } = require('../../util');
 
 const { BASE_ENDPOINT, MAPPING_CONFIG, CONFIG_CATEGORIES, MAX_BATCH_SIZE } = require('./config');
@@ -33,7 +32,7 @@ const { client: errNotificationClient } = require('../../../util/errorNotifier')
  * @returns
  */
 const getIdFromNewOrExistingProfile = async (endpoint, payload, requestOptions) => {
-  let profileId;
+  let response;
   const endpointPath = '/api/profiles';
   const { processedResponse: resp } = await handleHttpRequest(
     'post',
@@ -46,15 +45,17 @@ const getIdFromNewOrExistingProfile = async (endpoint, payload, requestOptions) 
       endpointPath,
     },
   );
+
   if (resp.status === 201) {
-    profileId = resp.response?.data?.id;
+    const { data } = resp.response;
+    response = { id: data.id, attributes: data.attributes };
   } else if (resp.status === 409) {
     const { errors } = resp.response;
-    profileId = errors?.[0]?.meta?.duplicate_profile_id;
+    response = errors;
   }
 
-  if (profileId) {
-    return profileId;
+  if (response) {
+    return response;
   }
 
   let statusCode = resp.status;
@@ -76,22 +77,6 @@ const getIdFromNewOrExistingProfile = async (endpoint, payload, requestOptions) 
     },
     `${JSON.stringify(resp.response)}`,
   );
-};
-
-const profileUpdateResponseBuilder = (payload, profileId, category, privateApiKey) => {
-  const updatedPayload = payload;
-  const identifyResponse = defaultRequestConfig();
-  updatedPayload.data.id = profileId;
-  identifyResponse.endpoint = `${BASE_ENDPOINT}${category.apiUrl}/${profileId}`;
-  identifyResponse.method = defaultPatchRequestConfig.requestMethod;
-  identifyResponse.headers = {
-    Authorization: `Klaviyo-API-Key ${privateApiKey}`,
-    'Content-Type': JSON_MIME_TYPE,
-    Accept: JSON_MIME_TYPE,
-    revision: '2023-02-22',
-  };
-  identifyResponse.body.JSON = removeUndefinedAndNullValues({ ...payload, action: 'suppress' });
-  return identifyResponse;
 };
 
 /**
@@ -284,5 +269,4 @@ module.exports = {
   generateBatchedPaylaodForArray,
   batchSubscribeEvents,
   getIdFromNewOrExistingProfile,
-  profileUpdateResponseBuilder,
 };

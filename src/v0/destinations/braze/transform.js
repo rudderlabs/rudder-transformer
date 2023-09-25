@@ -23,7 +23,11 @@ const {
   simpleProcessRouterDestSync,
   simpleProcessRouterDest,
 } = require('../../util');
-const { InstrumentationError, NetworkError, FilteredEventsError } = require('../../util/errorTypes');
+const {
+  InstrumentationError,
+  NetworkError,
+  FilteredEventsError,
+} = require('../../util/errorTypes');
 const {
   ConfigCategory,
   mappingConfig,
@@ -80,7 +84,7 @@ function getIdentifyPayload(message) {
   let payload = {};
   payload = setAliasObjectWithAnonId(payload, message);
   payload = setExternalId(payload, message);
-  return { aliases_to_identify: [payload], merge_behavior: "merge" };
+  return { aliases_to_identify: [payload], merge_behavior: 'merge' };
 }
 
 function populateCustomAttributesWithOperation(
@@ -239,7 +243,6 @@ function processTrackWithUserAttributes(message, destination, mappingJson, proce
       } else {
         throw new FilteredEventsError(
           '[Braze Deduplication]: Duplicate user detected, the user is dropped',
-          'filtered'
         );
       }
     }

@@ -18,7 +18,6 @@ const {
   populateCustomFieldsFromTraits,
   batchSubscribeEvents,
   getIdFromNewOrExistingProfile,
-  profileUpdateResponseBuilder,
 } = require('./util');
 const {
   defaultRequestConfig,
@@ -106,10 +105,10 @@ const identifyRequestHandler = async (message, category, destination) => {
     },
   };
 
-  const profileId = await getIdFromNewOrExistingProfile(endpoint, payload, requestOptions);
+  const response = await getIdFromNewOrExistingProfile(endpoint, payload, requestOptions);
 
   // Update Profile
-  const responseArray = [profileUpdateResponseBuilder(payload, profileId, category, privateApiKey)];
+  const responseArray = [{ error: response }];
 
   // check if user wants to subscribe profile or not and listId is present or not
   if (
@@ -336,10 +335,10 @@ const processRouterDest = async (inputs, reqMetadata) => {
     batchedSubscribeResponseList.push(...batchedResponseList);
   }
   const nonSubscribeSuccessList = nonSubscribeRespList.map((resp) =>
-    resp.message.body.JSON?.action
+    resp.message?.error
       ? {
-        ...getSuppressRespEvents(resp.message, [resp.metadata], resp.destination),
-          action: resp.message.body.JSON.action,
+          ...getSuppressRespEvents({}, [resp.metadata], resp.destination),
+          error: resp.message.error,
         }
       : getSuccessRespEvents(resp.message, [resp.metadata], resp.destination),
   );

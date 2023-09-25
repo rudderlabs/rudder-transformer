@@ -363,11 +363,14 @@ const processBatch = (transformedEvents) => {
   const purchaseArray = [];
   const successMetadata = [];
   const failureResponses = [];
+  const filteredResponses = [];
   const subscriptionsArray = [];
   const mergeUsersArray = [];
   for (const transformedEvent of transformedEvents) {
     if (!isHttpStatusSuccess(transformedEvent?.statusCode)) {
       failureResponses.push(transformedEvent);
+    } else if (transformedEvent?.statusCode === 298) {
+      filteredResponses.push(transformedEvent);
     } else if (transformedEvent?.batchedRequest?.body?.JSON) {
       const { attributes, events, purchases, subscription_groups, merge_updates } =
         transformedEvent.batchedRequest.body.JSON;
@@ -444,6 +447,10 @@ const processBatch = (transformedEvents) => {
   }
   if (failureResponses.length > 0) {
     finalResponse.push(...failureResponses);
+  }
+
+  if (filteredResponses.length > 0) {
+    finalResponse.push(...filteredResponses);
   }
 
   return finalResponse;

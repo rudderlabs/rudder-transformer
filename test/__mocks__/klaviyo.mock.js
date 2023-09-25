@@ -19,6 +19,7 @@ const klaviyoPostRequestHandler = (url, payload) => {
         data: {
           data: {
             id: '01GW3PHVY0MTCDGS0A1612HARX',
+            attributes: {}
           },
         }
       };

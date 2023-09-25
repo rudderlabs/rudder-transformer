@@ -180,17 +180,17 @@ const buildtemplateList = (templateListForThisEvent, eventTemplateSettings, even
 const processTrack = (message, destination) => {
   // logger.debug(JSON.stringify(destination));
   const { Config } = destination;
-  const { eventChannelSettings, eventTemplateSettings, incomingWebhooksType, blacklistedEvents } =
+  const { eventChannelSettings, eventTemplateSettings, incomingWebhooksType, denyListOfEvents } =
     Config;
   const eventName = message.event;
 
   if (!eventName) {
     throw new InstrumentationError('Event name is required');
   }
-  if (blacklistedEvents?.length > 0) {
-    const blackListedEvents = blacklistedEvents.map((item) => item.eventName);
-    if (blackListedEvents.includes(eventName)) {
-      throw new ConfigurationError('Event is blacklisted. Please check configuration.');
+  if (denyListOfEvents?.length > 0) {
+    const denyListofEvents = denyListOfEvents.map((item) => item.eventName);
+    if (denyListofEvents.includes(eventName)) {
+      throw new ConfigurationError('Event is denied. Please check configuration.');
     }
   }
 

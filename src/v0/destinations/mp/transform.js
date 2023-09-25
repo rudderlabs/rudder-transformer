@@ -150,12 +150,14 @@ const processIncrementalProperties = (message, destination, propIncrements) => {
     payload.$distinct_id = message.userId || `$device:${message.anonymousId}`;
   }
 
-  Object.keys(message.properties).forEach((prop) => {
-    const value = message.properties[prop];
-    if (value && propIncrements.includes(prop)) {
-      payload.$add[prop] = value;
-    }
-  });
+  if (message.properties) {
+    Object.keys(message.properties).forEach((prop) => {
+      const value = message.properties[prop];
+      if (value && propIncrements.includes(prop)) {
+        payload.$add[prop] = value;
+      }
+    });
+  }
 
   return Object.keys(payload.$add).length > 0
     ? responseBuilderSimple(payload, message, 'incremental_properties', destination.Config)

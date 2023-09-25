@@ -35,8 +35,8 @@ jobs:
           echo "UT Tag Name: $tag_name_ut"
           echo "tag_name_ut=$tag_name_ut" >> $GITHUB_OUTPUT
 
-  build-rudderstack-transformer-image:
-    name: Build Transformer Docker Image For Rudderstack org - Staging
+  build-transformer-image:
+    name: Build Transformer Docker Image - Staging
     # Only pull requests from release candidate branches must trigger
     if: (startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/'))
     needs: [generate-tag-names]
@@ -51,24 +51,8 @@ jobs:
     secrets:
       DOCKERHUB_PROD_TOKEN: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 
-  build-rudderlabs-transformer-image:
-    name: Build Transformer Docker Image For Rudderlabs org - Staging
-    # Only pull requests from release candidate branches must trigger
-    if: (startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/'))
-    needs: [generate-tag-names]
-    uses: ./.github/workflows/build-push-docker-image.yml
-    with:
-      build_tag: rudderstack/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }}
-      push_tags: rudderlabs/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }}
-      img_tag: ${{ needs.generate-tag-names.outputs.tag_name }}
-      dockerfile: Dockerfile
-      load_target: development
-      push_target: production
-    secrets:
-      DOCKERHUB_PROD_TOKEN: ${{ secrets.DOCKERHUB_PROD_TOKEN }}  
-
-  build-rudderstack-user-transformer-image:
-    name: Build User Transformer Docker Image For Rudderstack org - Staging
+  build-user-transformer-image:
+    name: Build User Transformer Docker Image - Staging
     # Only pull requests from release candidate branches must trigger
     if: (startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/'))
 
@@ -84,27 +68,11 @@ jobs:
     secrets:
       DOCKERHUB_PROD_TOKEN: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 
-  build-rudderlabs-user-transformer-image:
-    name: Build User Transformer Docker Image For Rudderlabs org - Staging
-    # Only pull requests from release candidate branches must trigger
-    if: (startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/'))
-
-    needs: [generate-tag-names]
-    uses: ./.github/workflows/build-push-docker-image.yml
-    with:
-      build_tag: rudderstack/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name_ut }}
-      push_tags: rudderlabs/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name_ut }}
-      img_tag: ${{ needs.generate-tag-names.outputs.tag_name_ut }}
-      dockerfile: Dockerfile-ut-func
-      load_target: development
-      push_target: production
-    secrets:
-      DOCKERHUB_PROD_TOKEN: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 
   create-pull-request:
     name: Update Helm Charts For Staging and Create Pull Request
     runs-on: ubuntu-latest
-    needs: [generate-tag-names, build-rudderstack-transformer-image, build-rudderlabs-transformer-image, build-rudderstack-user-transformer-image, build-rudderlabs-user-transformer-image]
+    needs: [generate-tag-names, build-transformer-image, build-user-transformer-image]
     env:
       TAG_NAME: ${{ needs.generate-tag-names.outputs.tag_name }}
       UT_TAG_NAME: ${{ needs.generate-tag-names.outputs.tag_name_ut }}

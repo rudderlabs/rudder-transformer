@@ -210,6 +210,16 @@ describe.each(allTestDataFilePaths)('%s Tests', (testDataPath) => {
       jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2023-09-24T11:22:24.018Z');
     }
 
+    if (tcData.name === 'optimizely_fullstack') {
+      jest.mock('../../src/v0/util/index', () => {
+        const originalModule = jest.requireActual('../../src/v0/util/index');
+        return {
+          ...originalModule,
+          generateUUID: jest.fn(() => 'generated_uuid'),
+        };
+      });
+    }
+
     switch (tcData.module) {
       case tags.MODULES.DESTINATION:
         await destinationTestHandler(tcData);

@@ -159,6 +159,6 @@
     "error": "Something is wrong with the event template: '{{name}} performed {{event}} with {{properties. key1}} {{properties.key2}} and traits {{traitsList.hiji}}'"
   },
   {
-    "error": "Event is blacklisted. Please check configuration."
+    "error": "Event is denied. Please check configuration."
   }
 ]

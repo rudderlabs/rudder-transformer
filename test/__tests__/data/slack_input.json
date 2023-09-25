@@ -154,7 +154,7 @@
             "trait": ""
           }
         ],
-        "blacklistedEvents": [
+        "denyListOfEvents": [
           {
             "eventName": "black_event"
           }
@@ -390,7 +390,7 @@
             "trait": ""
           }
         ],
-        "blacklistedEvents": [
+        "denyListOfEvents": [
           {
             "eventName": "black_event"
           }
@@ -518,7 +518,7 @@
             "trait": ""
           }
         ],
-        "blacklistedEvents": [
+        "denyListOfEvents": [
           {
             "eventName": "black_event"
           }
@@ -646,7 +646,7 @@
             "trait": ""
           }
         ],
-        "blacklistedEvents": [
+        "denyListOfEvents": [
           {
             "eventName": "black_event"
           }
@@ -772,7 +772,7 @@
             "trait": ""
           }
         ],
-        "blacklistedEvents": [
+        "denyListOfEvents": [
           {
             "eventName": "black_event"
           }
@@ -899,7 +899,7 @@
             "trait": ""
           }
         ],
-        "blacklistedEvents": [
+        "denyListOfEvents": [
           {
             "eventName": "black_event"
           }
@@ -1369,7 +1369,7 @@
             "trait": ""
           }
         ],
-        "blacklistedEvents": [
+        "denyListOfEvents": [
           {
             "eventName": "black_event"
           }

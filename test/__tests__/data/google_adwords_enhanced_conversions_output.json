@@ -3,7 +3,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://googleads.googleapis.com/v13/customers/1234567890:uploadConversionAdjustments",
+    "endpoint": "https://googleads.googleapis.com/v14/customers/1234567890:uploadConversionAdjustments",
     "headers": {
       "Authorization": "Bearer abcd1234",
       "Content-Type": "application/json",
@@ -91,7 +91,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://googleads.googleapis.com/v13/customers/1234567890:uploadConversionAdjustments",
+    "endpoint": "https://googleads.googleapis.com/v14/customers/1234567890:uploadConversionAdjustments",
     "headers": {
       "Authorization": "Bearer abcd1234",
       "Content-Type": "application/json",
@@ -177,7 +177,7 @@
       "secret": null
     },
     "statusCode": 400,
-    "error": "Empty/Invalid access token",
+    "error": "OAuth - access token not found",
     "statTags": {
       "destination": "google_adwords_enhanced_conversions",
       "stage": "transform",
@@ -204,7 +204,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://googleads.googleapis.com/v13/customers/1234567890:uploadConversionAdjustments",
+    "endpoint": "https://googleads.googleapis.com/v14/customers/1234567890:uploadConversionAdjustments",
     "headers": {
       "Authorization": "Bearer abcd1234",
       "Content-Type": "application/json",
@@ -260,7 +260,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://googleads.googleapis.com/v13/customers/1234567890:uploadConversionAdjustments",
+    "endpoint": "https://googleads.googleapis.com/v14/customers/1234567890:uploadConversionAdjustments",
     "headers": {
       "Authorization": "Bearer abcd1234",
       "Content-Type": "application/json",

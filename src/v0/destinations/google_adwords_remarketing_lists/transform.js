@@ -1,6 +1,6 @@
 const sha256 = require('sha256');
-const logger = require('../../../logger');
 const get = require('get-value');
+const logger = require('../../../logger');
 const {
   isDefinedAndNotNullAndNotEmpty,
   returnArrayOfSubarrays,
@@ -11,13 +11,10 @@ const {
   removeHyphens,
   simpleProcessRouterDest,
   getDestinationExternalIDInfoForRetl,
+  getAccessToken,
 } = require('../../util');
 
-const {
-  InstrumentationError,
-  ConfigurationError,
-  OAuthSecretError,
-} = require('../../util/errorTypes');
+const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 const {
   offlineDataJobsMapping,
   addressInfoMapping,
@@ -39,27 +36,6 @@ const hashEncrypt = (object) => {
 };
 
 /**
- * Get access token to be bound to the event req headers
- *
- * Note:
- * This method needs to be implemented particular to the destination
- * As the schema that we'd get in `metadata.secret` can be different
- * for different destinations
- *
- * @param {Object} metadata
- * @returns
- */
-const getAccessToken = (metadata) => {
-  // OAuth for this destination
-  const { secret } = metadata;
-  // we would need to verify if secret is present and also if the access token field is present in secret
-  if (!secret || !secret.access_token) {
-    throw new OAuthSecretError('Empty/Invalid access token');
-  }
-  return secret.access_token;
-};
-
-/**
  * This function is used for building the response. It create a default rudder response
  * and populate headers, params and body.JSON
  * @param {*} metadata
@@ -73,11 +49,14 @@ const responseBuilder = (metadata, body, { Config }, message) => {
   const filteredCustomerId = removeHyphens(Config.customerId);
   response.endpoint = `${BASE_ENDPOINT}/${filteredCustomerId}/offlineUserDataJobs`;
   response.body.JSON = removeUndefinedAndNullValues(payload);
-  const accessToken = getAccessToken(metadata);
+  const accessToken = getAccessToken(metadata, 'access_token');
   let operationAudienceId = Config.audienceId || Config.listId;
   const mappedToDestination = get(message, MappedToDestinationKey);
   if (!operationAudienceId && mappedToDestination) {
-    const { objectType } = getDestinationExternalIDInfoForRetl(message, 'GOOGLE_ADWORDS_REMARKETING_LISTS');
+    const { objectType } = getDestinationExternalIDInfoForRetl(
+      message,
+      'GOOGLE_ADWORDS_REMARKETING_LISTS',
+    );
     operationAudienceId = objectType;
   }
   if (!isDefinedAndNotNullAndNotEmpty(operationAudienceId)) {

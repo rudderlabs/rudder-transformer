@@ -136,7 +136,6 @@
     "eslint-plugin-json": "^3.1.0",
     "eslint-plugin-sonarjs": "^0.19.0",
     "eslint-plugin-unicorn": "^46.0.1",
-    "fast-json-stable-stringify": "^2.1.0",
     "glob": "^10.3.3",
     "http-terminator": "^3.2.0",
     "husky": "^8.0.3",

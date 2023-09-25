@@ -1,6 +1,5 @@
 const fs = require('fs');
 const path = require('path');
-const stringify = require('fast-json-stable-stringify');
 
 const getFuncTestData = (dirPath, filePath) => {
   const fileData = fs.readFileSync(path.resolve(dirPath, filePath));
@@ -16,7 +15,7 @@ const setResponsesForMockAxiosAdapter = ({url, method, data, options}, {response
     if (data) {
       reqObj.data = data
     }
-    responses.push(`{httpReq: ${stringify(reqObj)},httpRes: ${stringify(response)}},`) 
+    responses.push(`{httpReq: ${JSON.stringify(reqObj)},httpRes: ${JSON.stringify(response)}},`) 
   }
 }
 module.exports = {

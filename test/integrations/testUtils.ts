@@ -1,7 +1,6 @@
 import { globSync } from 'glob';
 import { join } from 'path';
 import { MockHttpCallsData, TestCaseData } from './testTypes';
-import stringify from 'fast-json-stable-stringify';
 
 export const getTestDataFilePaths = (dirPath: string, destination: string = ''): string[] => {
   const globPattern = join(dirPath, '**', 'data.ts');

@@ -28,7 +28,7 @@ const {
   extractCustomFields,
 } = require('../../util');
 
-const trackLayer = {
+const TrackLayer = {
   getProductsListFromLineItems(lineItems) {
     if (!lineItems || lineItems.length === 0) {
       return [];
@@ -305,4 +305,4 @@ const trackLayer = {
     return [this.mapCustomerDetails(payload, event, dbData, eventName)];
   },
 };
-module.exports = { trackLayer };
+module.exports = { TrackLayer };

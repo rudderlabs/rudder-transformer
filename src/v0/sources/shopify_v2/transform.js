@@ -7,8 +7,8 @@ const {
   extractEmailFromPayload,
 } = require('./commonUtils');
 const { identifyLayer } = require('./identifyEventsLayer');
-const { trackLayer } = require('./trackEventsLayer');
-const { identifierEventLayer } = require('./identifierEventsLayer');
+const { TrackLayer } = require('./trackEventsLayer');
+const { IdentifierEventLayer } = require('./identifierEventsLayer');
 const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../util');
 const { IDENTIFY_TOPICS, INTEGRATION } = require('./config');
 
@@ -25,7 +25,7 @@ const processEvent = async (inputEvent, metricMetadata) => {
     if (isDefinedAndNotNull(cartToken)) {
       dbData = await getDataFromRedis(cartToken, metricMetadata);
     }
-    message = await trackLayer.processTrackEvent(
+    message = await TrackLayer.processTrackEvent(
       shopifyEvent,
       shopifyTopic,
       dbData,
@@ -71,8 +71,8 @@ const process = async (event) => {
     writeKey: event.query_parameters?.writeKey?.[0],
     source: 'SHOPIFY',
   };
-  if (identifierEventLayer.isIdentifierEvent(event)) {
-    return [await identifierEventLayer.processIdentifierEvent(event, metricMetadata)];
+  if (IdentifierEventLayer.isIdentifierEvent(event)) {
+    return [await IdentifierEventLayer.processIdentifierEvent(event, metricMetadata)];
   }
   const response = await processEvent(event, metricMetadata);
   return response;

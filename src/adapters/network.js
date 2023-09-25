@@ -96,7 +96,7 @@ const httpSend = async (options, statTags = {}) => {
     fireHTTPStats(clientResponse, startTime, statTags);
   }
 
-  setResponsesForMockAxiosAdapter({ url, data, method, options: opts }, clientResponse);
+  setResponsesForMockAxiosAdapter({ url, data, method, options }, clientResponse);
   return clientResponse;
 };
 
@@ -122,7 +122,7 @@ const httpGET = async (url, options, statTags = {}) => {
   } finally {
     fireHTTPStats(clientResponse, startTime, statTags);
   }
-  setResponsesForMockAxiosAdapter({ url, options: requestOptions, method: 'GET' }, clientResponse);
+  setResponsesForMockAxiosAdapter({ url, options, method: 'GET' }, clientResponse);
   return clientResponse;
 };
 
@@ -148,10 +148,7 @@ const httpDELETE = async (url, options, statTags = {}) => {
   } finally {
     fireHTTPStats(clientResponse, startTime, statTags);
   }
-  setResponsesForMockAxiosAdapter(
-    { url, options: requestOptions, method: 'DELETE' },
-    clientResponse,
-  );
+  setResponsesForMockAxiosAdapter({ url, options, method: 'DELETE' }, clientResponse);
   return clientResponse;
 };
 
@@ -178,10 +175,7 @@ const httpPOST = async (url, data, options, statTags = {}) => {
   } finally {
     fireHTTPStats(clientResponse, startTime, statTags);
   }
-  setResponsesForMockAxiosAdapter(
-    { url, data, options: requestOptions, method: 'POST' },
-    clientResponse,
-  );
+  setResponsesForMockAxiosAdapter({ url, data, options, method: 'POST' }, clientResponse);
   return clientResponse;
 };
 
@@ -208,10 +202,7 @@ const httpPUT = async (url, data, options, statTags = {}) => {
   } finally {
     fireHTTPStats(clientResponse, startTime, statTags);
   }
-  setResponsesForMockAxiosAdapter(
-    { url, data, options: requestOptions, method: 'PUT' },
-    clientResponse,
-  );
+  setResponsesForMockAxiosAdapter({ url, data, options, method: 'PUT' }, clientResponse);
   return clientResponse;
 };
 
@@ -238,10 +229,7 @@ const httpPATCH = async (url, data, options, statTags = {}) => {
   } finally {
     fireHTTPStats(clientResponse, startTime, statTags);
   }
-  setResponsesForMockAxiosAdapter(
-    { url, data, options: requestOptions, method: 'PATCH' },
-    clientResponse,
-  );
+  setResponsesForMockAxiosAdapter({ url, data, options, method: 'PATCH' }, clientResponse);
   return clientResponse;
 };
 

@@ -21,6 +21,7 @@ import { Server } from 'http';
 import { appendFileSync } from 'fs';
 import { responses } from '../testHelper';
 import utils from '../../src/v0/util';
+import isMatch from 'lodash/isMatch';
 
 // To run single destination test cases
 // npm run test:ts -- component  --destination=adobe_analytics
@@ -79,26 +80,32 @@ if (!opts.generate || opts.generate === 'false') {
       const { url, method, data: reqData, ...opts } = axiosMock.httpReq;
       const { data, headers, status } = axiosMock.httpRes;
 
+      const headersAsymMatch = {
+        asymmetricMatch: function (actual) {
+          return isMatch(actual, opts.headers);
+        },
+      };
+
       switch (method.toLowerCase()) {
         case 'get':
           // @ts-ignore
-          mock.onGet(url, reqData, opts.headers).reply(status, data, headers);
+          mock.onGet(url, reqData, headersAsymMatch).reply(status, data, headers);
           break;
         case 'delete':
           // @ts-ignore
-          mock.onDelete(url, reqData, opts.headers).reply(status, data, headers);
+          mock.onDelete(url, reqData, headersAsymMatch).reply(status, data, headers);
           break;
         case 'post':
           // @ts-ignore
-          mock.onPost(url, reqData, opts.headers).reply(status, data, headers);
+          mock.onPost(url, reqData, headersAsymMatch).reply(status, data, headers);
           break;
         case 'patch':
           // @ts-ignore
-          mock.onPatch(url, reqData, opts.headers).reply(status, data, headers);
+          mock.onPatch(url, reqData, headersAsymMatch).reply(status, data, headers);
           break;
         case 'put':
           // @ts-ignore
-          mock.onPut(url, reqData, opts.headers).reply(status, data, headers);
+          mock.onPut(url, reqData, headersAsymMatch).reply(status, data, headers);
           break;
         default:
           break;

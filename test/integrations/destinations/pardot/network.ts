@@ -3,7 +3,7 @@ import { enhanceRequestOptions, getFormData } from '../../../../src/adapters/net
 export const networkCallsData = [
   // 2nd proxy test-case
   {
-    httpReq: enhanceRequestOptions({
+    httpReq: {
       url: 'https://pi.pardot.com/api/prospect/version/4/do/upsert/email/Roger_12@waltair.io',
       data: getFormData({
         first_name: 'Roger_12',
@@ -15,14 +15,13 @@ export const networkCallsData = [
       }).toString(),
       params: { destination: 'pardot' },
       headers: {
-        Accept: 'application/json, text/plain, */*',
         Authorization: 'Bearer myToken',
         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
         'Pardot-Business-Unit-Id': '0Uv2v000000k9tHCAQ',
         'User-Agent': 'RudderLabs',
       },
       method: 'POST',
-    }),
+    },
     httpRes: {
       data: {
         '@attributes': {
@@ -138,7 +137,7 @@ export const networkCallsData = [
   },
   // 4th proxy test-case
   {
-    httpReq: enhanceRequestOptions({
+    httpReq: {
       url: 'https://pi.pardot.com/api/prospect/version/4/do/upsert/email/rolex_waltair@mywebsite.io',
       data: getFormData({
         first_name: 'Rolex',
@@ -151,13 +150,12 @@ export const networkCallsData = [
       params: { destination: 'pardot' },
       headers: {
         Authorization: 'Bearer myExpiredToken',
-        Accept: 'application/json, text/plain, */*',
         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
         'Pardot-Business-Unit-Id': '0Uv2v000000k9tHCAQ',
         'User-Agent': 'RudderLabs',
       },
       method: 'POST',
-    }),
+    },
     httpRes: {
       data: {
         '@attributes': {
@@ -173,7 +171,7 @@ export const networkCallsData = [
   },
   // 1st proxy test-case
   {
-    httpReq: enhanceRequestOptions({
+    httpReq: {
       url: 'https://pi.pardot.com/api/prospect/version/4/do/upsert/id/123435',
       data: getFormData({
         first_name: 'Roger12',
@@ -185,14 +183,13 @@ export const networkCallsData = [
       }).toString(),
       params: { destination: 'pardot' },
       headers: {
-        Accept: 'application/json, text/plain, */*',
         Authorization: 'Bearer myToken',
         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
         'Pardot-Business-Unit-Id': '0Uv2v000000k9tHCAQ',
         'User-Agent': 'RudderLabs',
       },
       method: 'POST',
-    }),
+    },
     httpRes: {
       data: {
         '@attributes': {
@@ -308,7 +305,7 @@ export const networkCallsData = [
   },
   // 3rd proxy test-case
   {
-    httpReq: enhanceRequestOptions({
+    httpReq: {
       url: 'https://pi.pardot.com/api/prospect/version/4/do/upsert/fid/00Q6r000002LKhTPVR',
       data: getFormData({
         first_name: 'Nick',
@@ -320,14 +317,13 @@ export const networkCallsData = [
       }).toString(),
       params: { destination: 'pardot' },
       headers: {
-        Accept: 'application/json, text/plain, */*',
         Authorization: 'Bearer myToken',
         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
         'Pardot-Business-Unit-Id': '0Uv2v000000k9tHCAQ',
         'User-Agent': 'RudderLabs',
       },
       method: 'POST',
-    }),
+    },
     httpRes: {
       data: {
         '@attributes': {

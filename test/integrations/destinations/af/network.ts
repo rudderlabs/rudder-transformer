@@ -1,14 +1,13 @@
-import { enhanceRequestOptions } from '../../../../src/adapters/network';
 import { JSON_MIME_TYPE } from '../../../../src/v0/util/constant';
 
 export const networkCallsData = [
   {
-    httpReq: enhanceRequestOptions({
+    httpReq: {
       method: 'post',
       url: 'https://hq1.appsflyer.com/api/gdpr/v1/opendsr_request',
       headers: {
         'Content-Type': JSON_MIME_TYPE,
-        Accept: 'application/json, text/plain, */*',
+
         Authorization: 'Bearer dummyApiToken',
       },
       data: {
@@ -24,7 +23,7 @@ export const networkCallsData = [
         subject_request_id: 'generated_uuid',
         submitted_time: '2023-09-24T11:22:24.018Z',
       },
-    }),
+    },
     httpRes: {
       data: {
         error: {
@@ -37,7 +36,7 @@ export const networkCallsData = [
     },
   },
   {
-    httpReq: enhanceRequestOptions({
+    httpReq: {
       method: 'post',
       url: 'https://hq1.appsflyer.com/api/gdpr/v1/opendsr_request',
       data: {
@@ -56,10 +55,10 @@ export const networkCallsData = [
       },
       headers: {
         'Content-Type': JSON_MIME_TYPE,
-        Accept: 'application/json, text/plain, */*',
+
         Authorization: 'Bearer dummyApiToken',
       },
-    }),
+    },
     httpRes: {
       status: 200,
       statusText: 'success',

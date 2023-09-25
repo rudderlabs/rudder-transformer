@@ -199,26 +199,25 @@ const sourceTestHandler = async (tcData) => {
 // Trigger the test suites
 describe.each(allTestDataFilePaths)('%s Tests', (testDataPath) => {
   // add special mocks for specific destinations
-  if (testDataPath.includes('yahoo_dsp')) {
-    // 21 September 2023 19:39:50 GMT+05:30
-    Date.now = jest.fn(() => 1695305390000);
-  }
   const testData: TestCaseData[] = getTestData(testDataPath);
   test.each(testData)('$name - $module - $feature -> $description', async (tcData) => {
+    if (testDataPath.includes('yahoo_dsp')) {
+      // 21 September 2023 19:39:50 GMT+05:30
+      Date.now = jest.fn(() => 1695305390000);
+    }
     if (tcData.feature === FEATURES.USER_DELETION && tcData.name === 'af') {
-      utils.generateUUID = jest.fn(() => '97fcd7b2-cc24-47d7-b776-057b7b199513');
       jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2023-09-24T11:22:24.018Z');
     }
 
-    if (tcData.name === 'optimizely_fullstack') {
-      jest.mock('../../src/v0/util/index', () => {
-        const originalModule = jest.requireActual('../../src/v0/util/index');
-        return {
-          ...originalModule,
-          generateUUID: jest.fn(() => 'generated_uuid'),
-        };
-      });
-    }
+    jest.mock('../../src/v0/util/index', () => {
+      const originalModule = jest.requireActual('../../src/v0/util/index');
+      return {
+        ...originalModule,
+        generateUUID: jest.fn().mockImplementation(() => {
+          return 'generated_uuid';
+        }),
+      };
+    });
 
     switch (tcData.module) {
       case tags.MODULES.DESTINATION:

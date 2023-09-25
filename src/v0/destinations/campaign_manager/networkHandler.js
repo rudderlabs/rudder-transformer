@@ -13,7 +13,8 @@ function checkIfFailuresAreRetryable(response) {
     if (Array.isArray(response.status) && Array.isArray(response.status[0].errors)) {
       return (
         response.status[0].errors[0].code !== 'PERMISSION_DENIED' &&
-        response.status[0].errors[0].code !== 'INVALID_ARGUMENT'
+        response.status[0].errors[0].code !== 'INVALID_ARGUMENT' &&
+        response.status[0].errors[0].code !== 'NOT_FOUND'
       );
     }
     return true;

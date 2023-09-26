@@ -54,6 +54,8 @@ const responseBuilderSimple = (message, category, destination, categoryToContent
     testDestination,
     testEventCode,
     standardPageCall,
+    overrideActionSource,
+    actionSource,
   } = Config;
   const integrationsObj = getIntegrationsObj(message, 'fb_pixel');
 
@@ -66,6 +68,9 @@ const responseBuilderSimple = (message, category, destination, categoryToContent
 
   commonData = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.COMMON.name], 'fb_pixel');
   commonData.action_source = getActionSource(commonData, message?.channel);
+  if (overrideActionSource) {
+    commonData.action_source = actionSource;
+  }
 
   if (category.type !== 'identify') {
     customData = flattenJson(

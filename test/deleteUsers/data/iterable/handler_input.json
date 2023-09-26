@@ -1,0 +1,93 @@
+[
+  {
+    "request": {
+      "body": [
+        {
+          "destType": "ITERABLE",
+          "userAttributes": [
+            {
+              "userId": "rudder1"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "request": {
+      "body": [
+        {
+          "destType": "ITERABLE",
+          "userAttributes": [
+            {
+              "userId": "rudder2"
+            }
+          ],
+          "config": {
+            "apiToken": "dummyApiKey"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "request": {
+      "body": [
+        {
+          "destType": "ITERABLE",
+          "userAttributes": [
+            {
+              "userId": "rudder1"
+            },
+            {
+              "userId": "rudder2"
+            }
+          ],
+          "config": {
+            "apiKey": "dummyApiKey"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "request": {
+      "body": [
+        {
+          "destType": "ITERABLE",
+          "userAttributes": [
+            {
+              "userId": "rudder3"
+            },
+            {
+              "userId": "rudder4"
+            }
+          ],
+          "config": {
+            "apiKey": "invalidKey"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "request": {
+      "body": [
+        {
+          "destType": "ITERABLE",
+          "userAttributes": [
+            {
+              "userId": "rudder5"
+            },
+            {
+              "userId": "rudder6"
+            }
+          ],
+          "config": {
+            "apiKey": "dummyApiKey"
+          }
+        }
+      ]
+    }
+  }
+]

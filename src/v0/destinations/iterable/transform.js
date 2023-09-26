@@ -1,7 +1,6 @@
 const _ = require('lodash');
 const get = require('get-value');
 const {
-  batchEvents,
   getCatalogEndpoint,
   hasMultipleResponses,
   pageEventPayloadBuilder,
@@ -23,6 +22,7 @@ const {
   handleRtTfSingleEventError,
   removeUndefinedAndNullValues,
   getDestinationExternalIDInfoForRetl,
+  groupEventsByType: batchEvents,
 } = require('../../util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { mappingConfig, ConfigCategory } = require('./config');

@@ -1,5 +1,6 @@
 const utilities = require('.');
 const { getFuncTestData } = require('../../../test/testHelper');
+const { hasCircularReference, flattenJson } = require('./index');
 
 // Names of the utility functions to test
 const functionNames = [
@@ -11,6 +12,7 @@ const functionNames = [
   'extractCustomFields',
   'batchMultiplexedEvents',
   'removeUndefinedNullValuesAndEmptyObjectArray',
+  'groupEventsByType',
 ];
 
 // Names of the utility functions to test which expects multiple arguments as values and not objects
@@ -67,3 +69,49 @@ describe('Utility Functions Tests', () => {
 });
 
 //Test cases which can't be fit in above test suite, have individual function level test blocks
+
+describe('hasCircularReference', () => {
+  it('should return false when object has no circular reference', () => {
+    const obj = { a: 1, b: 2, c: 3 };
+    expect(hasCircularReference(obj)).toBe(false);
+  });
+
+  it('should return true when object has circular reference', () => {
+    const obj = { a: 1, b: 2 };
+    obj.c = obj;
+    expect(hasCircularReference(obj)).toBe(true);
+  });
+
+  it('should return true when object has nested objects containing circular reference', () => {
+    const obj1 = { a: 1 };
+    const obj2 = { b: 2 };
+    obj1.c = obj2;
+    obj2.d = obj1;
+    expect(hasCircularReference(obj1)).toBe(true);
+  });
+
+  it('should return false when input is null', () => {
+    expect(hasCircularReference(null)).toBe(false);
+  });
+
+  it('should return false when input is not an object', () => {
+    expect(hasCircularReference(123)).toBe(false);
+  });
+
+  it('should return true when object has self-reference', () => {
+    const obj = { a: 1 };
+    obj.b = obj;
+    expect(hasCircularReference(obj)).toBe(true);
+  });
+});
+
+// extra test cases for flattenJson
+describe('flattenJson', () => {
+  it('should throw an error when flattening a json object with circular reference', () => {
+    const data = { name: 'John' };
+    data.self = data;
+    expect(() => flattenJson(data)).toThrow(
+      "Event has circular reference. Can't flatten the event",
+    );
+  });
+});

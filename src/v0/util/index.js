@@ -459,14 +459,6 @@ const getSuccessRespEvents = (message, metadata, destination, batched = false) =
   destination,
 });
 
-const getSuppressRespEvents = (message, metadata, destination, batched = false) => ({
-  batchedRequest: message,
-  metadata,
-  batched,
-  statusCode: 299,
-  destination,
-});
-
 // Router transformer
 // Error responses
 const getErrorRespEvents = (metadata, statusCode, error, statTags, batched = false) => ({
@@ -2130,7 +2122,6 @@ module.exports = {
   checkAndCorrectUserId,
   getAccessToken,
   formatValues,
-  getSuppressRespEvents,
   groupEventsByType,
   hasCircularReference,
   getAuthErrCategoryFromErrDetailsAndStCode,

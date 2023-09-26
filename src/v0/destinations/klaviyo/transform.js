@@ -30,7 +30,7 @@ const {
   addExternalIdToTraits,
   adduserIdFromExternalId,
   getSuccessRespEvents,
-  getSuppressRespEvents,
+  getErrorRespEvents,
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
   flattenJson,
@@ -108,7 +108,7 @@ const identifyRequestHandler = async (message, category, destination) => {
   const response = await getIdFromNewOrExistingProfile(endpoint, payload, requestOptions);
 
   // Update Profile
-  const responseArray = [{ error: response }];
+  const responseArray = [{ error: JSON.stringify(response) }];
 
   // check if user wants to subscribe profile or not and listId is present or not
   if (
@@ -336,11 +336,9 @@ const processRouterDest = async (inputs, reqMetadata) => {
   }
   const nonSubscribeSuccessList = nonSubscribeRespList.map((resp) =>
     resp.message?.error
-      ? {
-          ...getSuppressRespEvents({}, [resp.metadata], resp.destination),
-          error: resp.message.error,
-        }
-      : getSuccessRespEvents(resp.message, [resp.metadata], resp.destination),
+      ?
+      getErrorRespEvents([resp.metadata], 299, resp.message.error)
+    : getSuccessRespEvents(resp.message, [resp.metadata], resp.destination),
   );
   batchResponseList = [...batchedSubscribeResponseList, ...nonSubscribeSuccessList];
 

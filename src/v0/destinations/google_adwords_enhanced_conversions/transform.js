@@ -8,12 +8,12 @@ const {
   getValueFromMessage,
   removeHyphens,
   simpleProcessRouterDest,
+  getAccessToken,
 } = require('../../util');
 
 const {
   InstrumentationError,
   ConfigurationError,
-  OAuthSecretError,
 } = require('../../util/errorTypes');
 
 const { trackMapping, BASE_ENDPOINT } = require('./config');
@@ -36,34 +36,13 @@ const updateMappingJson = (mapping) => {
   return newMapping;
 };
 
-/**
- * Get access token to be bound to the event req headers
- *
- * Note:
- * This method needs to be implemented particular to the destination
- * As the schema that we'd get in `metadata.secret` can be different
- * for different destinations
- *
- * @param {Object} metadata
- * @returns
- */
-const getAccessToken = (metadata) => {
-  // OAuth for this destination
-  const { secret } = metadata;
-  // we would need to verify if secret is present and also if the access token field is present in secret
-  if (!secret || !secret.access_token) {
-    throw new OAuthSecretError('Empty/Invalid access token');
-  }
-  return secret.access_token;
-};
-
 const responseBuilder = async (metadata, message, { Config }, payload) => {
   const response = defaultRequestConfig();
   const { event } = message;
   const filteredCustomerId = removeHyphens(Config.customerId);
   response.endpoint = `${BASE_ENDPOINT}/${filteredCustomerId}:uploadConversionAdjustments`;
   response.body.JSON = payload;
-  const accessToken = getAccessToken(metadata);
+  const accessToken = getAccessToken(metadata, 'access_token');
   response.headers = {
     Authorization: `Bearer ${accessToken}`,
     'Content-Type': JSON_MIME_TYPE,

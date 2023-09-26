@@ -28,6 +28,10 @@ const {
 } = require('./errorTypes');
 const { client: errNotificationClient } = require('../../util/errorNotifier');
 const { HTTP_STATUS_CODES } = require('./constant');
+const {
+  REFRESH_TOKEN,
+  AUTH_STATUS_INACTIVE,
+} = require('../../adapters/networkhandler/authConstants');
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -242,9 +246,38 @@ const getValueFromPropertiesOrTraits = ({ message, key }) => {
   return !_.isNil(val) ? val : null;
 };
 
+/**
+ * Checks if an object contains a circular reference.
+ *
+ * @param {object} obj - The object to check for circular references.
+ * @param {array} [seen=[]] - An array that keeps track of objects already seen during the recursive traversal. Defaults to an empty array.
+ * @returns {boolean} - True if a circular reference is found, false otherwise.
+ */
+const hasCircularReference = (obj, seen = []) => {
+  if (typeof obj !== 'object' || obj === null) {
+    return false;
+  }
+
+  if (seen.includes(obj)) {
+    return true;
+  }
+
+  seen.push(obj);
+  for (const value of Object.values(obj)) {
+    if (hasCircularReference(value, seen)) {
+      return true;
+    }
+  }
+  seen.pop();
+  return false;
+};
+
 // function to flatten a json
 function flattenJson(data, separator = '.', mode = 'normal', flattenArrays = true) {
   const result = {};
+  if (hasCircularReference(data)) {
+    throw new InstrumentationError("Event has circular reference. Can't flatten the event");
+  }
 
   // a recursive function to loop through the array of the data
   function recurse(cur, prop) {
@@ -1837,8 +1870,8 @@ const getAccessToken = (metadata, accessTokenKey) => {
   // OAuth for this destination
   const { secret } = metadata;
   // we would need to verify if secret is present and also if the access token field is present in secret
-  if (!secret || !secret[accessTokenKey]) {
-    throw new OAuthSecretError('Empty/Invalid access token');
+  if (!secret?.[accessTokenKey]) {
+    throw new OAuthSecretError('OAuth - access token not found');
   }
   return secret[accessTokenKey];
 };
@@ -1918,6 +1951,83 @@ const batchMultiplexedEvents = (transformedEventsList, maxBatchSize) => {
   }
 
   return batchedEvents;
+};
+
+/**
+ * Groups events with the same message type together in batches.
+ * Each batch contains events that have the same message type and are from different users.
+ * @param {*} inputs - An array of events
+ * @returns {*} - An array of batches
+ */
+const groupEventsByType = (inputs) => {
+  const batches = [];
+  let currentInputsArray = inputs;
+  while (currentInputsArray.length > 0) {
+    const remainingInputsArray = [];
+    const userOrderTracker = {};
+    const event = currentInputsArray.shift();
+    const messageType = event.message.type;
+    const batch = [event];
+    currentInputsArray.forEach((currentInput) => {
+      const currentMessageType = currentInput.message.type;
+      const currentUser = currentInput.metadata.userId;
+      if (currentMessageType === messageType && !userOrderTracker[currentUser]) {
+        batch.push(currentInput);
+      } else {
+        remainingInputsArray.push(currentInput);
+        userOrderTracker[currentUser] = true;
+      }
+    });
+    batches.push(batch);
+    currentInputsArray = remainingInputsArray;
+  }
+
+  return batches;
+};
+
+/**
+ * This function helps to detarmine type of error occured. According to the response
+ * we set authErrorCategory to take decision if we need to refresh the access_token
+ * or need to de-activate authStatus for the destination.
+ *
+ * **Scenarios**:
+ * - statusCode=401, response.error.details !== "" -> REFRESH_TOKEN
+ * - statusCode=403, response.error.details !== "" -> AUTH_STATUS_INACTIVE
+ *
+ * @param {*} code
+ * @param {*} response
+ * @returns
+ */
+const getAuthErrCategoryFromErrDetailsAndStCode = (code, response) => {
+  if (code === 401 && (!get(response, 'error.details') || typeof response === 'string'))
+    return REFRESH_TOKEN;
+  if (code === 403 && (!get(response, 'error.details') || typeof response === 'string'))
+    return AUTH_STATUS_INACTIVE;
+  return '';
+};
+
+/**
+ * This function helps to determine the type of error occurred. We set the authErrorCategory
+ * as per the destination response that is received and take the decision whether
+ * to refresh the access_token or de-activate authStatus.
+ *
+ * **Scenarios**:
+ * - statusCode=401 -> REFRESH_TOKEN
+ * - statusCode=403 -> AUTH_STATUS_INACTIVE
+ *
+ * @param {*} status
+ * @returns
+ */
+const getAuthErrCategoryFromStCode = (status) => {
+  if (status === 401) {
+    // UNAUTHORIZED
+    return REFRESH_TOKEN;
+  }
+  if (status === 403) {
+    // ACCESS_DENIED
+    return AUTH_STATUS_INACTIVE;
+  }
+  return '';
 };
 
 // ========================================================================
@@ -2020,5 +2130,9 @@ module.exports = {
   checkAndCorrectUserId,
   getAccessToken,
   formatValues,
-  getSuppressRespEvents
+  getSuppressRespEvents,
+  groupEventsByType,
+  hasCircularReference,
+  getAuthErrCategoryFromErrDetailsAndStCode,
+  getAuthErrCategoryFromStCode,
 };

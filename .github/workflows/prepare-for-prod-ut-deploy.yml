@@ -50,11 +50,12 @@ jobs:
     uses: ./.github/workflows/build-push-docker-image.yml
     with:
       build_tag: rudderstack/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name_ut }}
-      push_tags: rudderstack/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name_ut }},rudderstack/rudder-transformer:ut-latest,rudderlabs/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name_ut }},rudderlabs/rudder-transformer:ut-latest
+      push_tags: rudderstack/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name_ut }}
       img_tag: ${{ needs.generate-tag-names.outputs.tag_name_ut }}
       dockerfile: Dockerfile-ut-func
       load_target: development
       push_target: production
+      build_type: ut
     secrets:
       DOCKERHUB_PROD_TOKEN: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 

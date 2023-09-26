@@ -736,41 +736,7 @@ const filterEventsAndPrepareBatchRequests = (transformedEvents) => {
   return prepareBatchRequests(filteredEvents);
 };
 
-/**
- * Groups events with the same message type together in batches.
- * Each batch contains events that have the same message type and are from different users.
- *
- * @param {Array} inputs - An array of events
- * @returns {Array} - An array of batches
- */
-const batchEvents = (inputs) => {
-  const batches = [];
-  let currentInputsArray = inputs;
-  while (currentInputsArray.length > 0) {
-    const remainingInputsArray = [];
-    const userOrderTracker = {};
-    const event = currentInputsArray.shift();
-    const messageType = event.message.type;
-    const batch = [event];
-    currentInputsArray.forEach((currentInput) => {
-      const currentMessageType = currentInput.message.type;
-      const currentUser = currentInput.metadata.userId;
-      if (currentMessageType === messageType && !userOrderTracker[currentUser]) {
-        batch.push(currentInput);
-      } else {
-        remainingInputsArray.push(currentInput);
-        userOrderTracker[currentUser] = true;
-      }
-    });
-    batches.push(batch);
-    currentInputsArray = remainingInputsArray;
-  }
-
-  return batches;
-};
-
 module.exports = {
-  batchEvents,
   getCatalogEndpoint,
   hasMultipleResponses,
   pageEventPayloadBuilder,

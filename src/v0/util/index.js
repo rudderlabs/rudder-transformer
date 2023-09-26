@@ -246,9 +246,38 @@ const getValueFromPropertiesOrTraits = ({ message, key }) => {
   return !_.isNil(val) ? val : null;
 };
 
+/**
+ * Checks if an object contains a circular reference.
+ *
+ * @param {object} obj - The object to check for circular references.
+ * @param {array} [seen=[]] - An array that keeps track of objects already seen during the recursive traversal. Defaults to an empty array.
+ * @returns {boolean} - True if a circular reference is found, false otherwise.
+ */
+const hasCircularReference = (obj, seen = []) => {
+  if (typeof obj !== 'object' || obj === null) {
+    return false;
+  }
+
+  if (seen.includes(obj)) {
+    return true;
+  }
+
+  seen.push(obj);
+  for (const value of Object.values(obj)) {
+    if (hasCircularReference(value, seen)) {
+      return true;
+    }
+  }
+  seen.pop();
+  return false;
+};
+
 // function to flatten a json
 function flattenJson(data, separator = '.', mode = 'normal', flattenArrays = true) {
   const result = {};
+  if (hasCircularReference(data)) {
+    throw new InstrumentationError("Event has circular reference. Can't flatten the event");
+  }
 
   // a recursive function to loop through the array of the data
   function recurse(cur, prop) {
@@ -1917,6 +1946,38 @@ const batchMultiplexedEvents = (transformedEventsList, maxBatchSize) => {
 };
 
 /**
+ * Groups events with the same message type together in batches.
+ * Each batch contains events that have the same message type and are from different users.
+ * @param {*} inputs - An array of events
+ * @returns {*} - An array of batches
+ */
+const groupEventsByType = (inputs) => {
+  const batches = [];
+  let currentInputsArray = inputs;
+  while (currentInputsArray.length > 0) {
+    const remainingInputsArray = [];
+    const userOrderTracker = {};
+    const event = currentInputsArray.shift();
+    const messageType = event.message.type;
+    const batch = [event];
+    currentInputsArray.forEach((currentInput) => {
+      const currentMessageType = currentInput.message.type;
+      const currentUser = currentInput.metadata.userId;
+      if (currentMessageType === messageType && !userOrderTracker[currentUser]) {
+        batch.push(currentInput);
+      } else {
+        remainingInputsArray.push(currentInput);
+        userOrderTracker[currentUser] = true;
+      }
+    });
+    batches.push(batch);
+    currentInputsArray = remainingInputsArray;
+  }
+
+  return batches;
+};
+
+/**
  * This function helps to detarmine type of error occured. According to the response
  * we set authErrorCategory to take decision if we need to refresh the access_token
  * or need to de-activate authStatus for the destination.
@@ -2061,6 +2122,8 @@ module.exports = {
   checkAndCorrectUserId,
   getAccessToken,
   formatValues,
+  groupEventsByType,
+  hasCircularReference,
   getAuthErrCategoryFromErrDetailsAndStCode,
   getAuthErrCategoryFromStCode,
 };

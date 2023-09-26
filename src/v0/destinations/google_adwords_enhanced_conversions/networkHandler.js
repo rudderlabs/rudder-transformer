@@ -113,7 +113,9 @@ const responseHandler = (destinationResponse) => {
     // Ref - https://github.com/googleapis/googleapis/blob/master/google/rpc/code.proto
     if (partialFailureError && partialFailureError.code !== 0) {
       throw new NetworkError(
-        `[Google Ads Offline Conversions]:: partialFailureError - ${partialFailureError?.message}`,
+        `[Google Ads Offline Conversions]:: partialFailureError - ${JSON.stringify(
+          partialFailureError,
+        )}`,
         400,
         {
           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(400),

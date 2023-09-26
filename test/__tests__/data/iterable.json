@@ -3103,7 +3103,6 @@
         "JSON_ARRAY": {},
         "FORM": {},
         "JSON": {
-          "id": "event1234",
           "userId": "abcdeeeeeeeexxxx102",
           "createdAt": 1598631966468,
           "dataFields": {

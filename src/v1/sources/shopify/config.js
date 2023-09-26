@@ -1,7 +1,7 @@
 const path = require('path');
 const fs = require('fs');
-const { EventType } = require('../../../../constants');
-const { getMappingConfig } = require('../../../../v0/util');
+const { EventType } = require('../../../constants');
+const { getMappingConfig } = require('../../../v0/util');
 
 const INTEGRATION = 'SHOPIFY';
 

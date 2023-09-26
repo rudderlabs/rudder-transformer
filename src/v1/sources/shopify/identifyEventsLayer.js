@@ -1,5 +1,5 @@
-const Message = require('../../../../v0/sources/message');
-const { EventType } = require('../../../../constants');
+const Message = require('../../../v0/sources/message');
+const { EventType } = require('../../../constants');
 const {
     INTEGRATION,
     MAPPING_CATEGORIES

@@ -1,7 +1,7 @@
 const { v5 } = require('uuid');
 const { SHOPIFY_ADMIN_ONLY_EVENTS } = require('./config');
 const { getCartToken } = require('./commonUtils');
-const { generateUUID, isDefinedAndNotNull } = require('../../../../v0/util');
+const { generateUUID, isDefinedAndNotNull } = require('../../../v0/util');
 
 const idResolutionLayer = {
   /**

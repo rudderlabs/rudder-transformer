@@ -1,8 +1,8 @@
 const { identifierEvents, NO_OPERATION_SUCCESS } = require('./config');
-const stats = require('../../../../util/stats');
+const stats = require('../../../util/stats');
 const { getLineItemsToStore } = require('./commonUtils');
-const { RedisDB } = require('../../../../util/redis/redisConnector');
-const logger = require('../../../../logger');
+const { RedisDB } = require('../../../util/redis/redisConnector');
+const logger = require('../../../logger');
 
 const identifierEventLayer = {
   isIdentifierEvent(event) {
@@ -50,7 +50,7 @@ const identifierEventLayer = {
         ...metricMetadata,
       });
     }
-    return NO_OPERATION_SUCCESS;
+    return [NO_OPERATION_SUCCESS, NO_OPERATION_SUCCESS];
   },
 };
 

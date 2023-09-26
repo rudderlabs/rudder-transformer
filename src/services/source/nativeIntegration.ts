@@ -32,18 +32,7 @@ export default class NativeIntegrationSourceService implements IntegrationSource
     _requestMetadata: Object,
   ): Promise<SourceTransformationResponse[]> {
     // if shopify/v1 , webhook/v1 (error) => webhook/v0
-    let sourceHandler:any;
-    try {
-      sourceHandler = FetchHandler.getSourceHandler(sourceType, version);
-    } catch (error) {
-      if (version === 'v1') {
-        version = 'v0';
-        sourceHandler = FetchHandler.getSourceHandler(sourceType, version);
-      } else {
-        throw error;
-      }
-    }
-
+    const sourceHandler = FetchHandler.getSourceHandler(sourceType, version);
     const respList: SourceTransformationResponse[] = await Promise.all<any>(
       sourceEvents.map(async (sourceEvent) => {
         try {

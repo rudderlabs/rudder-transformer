@@ -43,7 +43,7 @@ export default class NativeIntegrationSourceService implements IntegrationSource
             respEvents = await sourceHandler.process(sourceEvent as SourceInput);
           }
           else {
-            respEvents = await sourceHandler.process(sourceEvent as unknown);
+            respEvents = await sourceHandler.process(sourceEvent);
           }
           return PostTransformationServiceSource.handleSuccessEventsSource(respEvents);
         } catch (error: any) {

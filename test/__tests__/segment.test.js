@@ -8,26 +8,22 @@ const version = "v0";
 const transformer = require(`../../src/${version}/destinations/${integration}/transform`);
 // const { compareJSON } = require("./util");
 
-const inputDataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_input.json`)
+const testDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}.json`)
 );
-const outputDataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_output.json`)
-);
+const testData = JSON.parse(testDataFile);
 
-const inputData = JSON.parse(inputDataFile);
-const expectedData = JSON.parse(outputDataFile);
-
-inputData.forEach((input, index) => {
-  test(`${name} Tests: payload - ${index}`, () => {
-    let output, expected;
-    try {
-      output = transformer.process(input);
-      expected = expectedData[index];
-    } catch (error) {
-      output = error.message;
-      expected = expectedData[index].message;
-    }
-    expect(output).toEqual(expected);
+describe(`${name} Tests`, () => {
+  describe("Processor", () => {
+    testData.forEach((dataPoint, index) => {
+      it(`${index}. ${integration} - ${dataPoint.description}`, async () => {
+        try {
+          const output = await transformer.process(dataPoint.input);
+          expect(output).toEqual(dataPoint.output);
+        } catch (error) {
+          expect(error.message).toEqual(dataPoint.output.message);
+        }
+      });
+    });
   });
 });

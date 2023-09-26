@@ -14,14 +14,10 @@ const testDataFile = fs.readFileSync(
 const testData = JSON.parse(testDataFile);
 
 // Router Test files
-const inputRouterDataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_router_input.json`)
+const routerTestDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_router.json`)
 );
-const outputRouterDataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_router_output.json`)
-);
-const inputRouterData = JSON.parse(inputRouterDataFile);
-const expectedRouterData = JSON.parse(outputRouterDataFile);
+const routerTestData = JSON.parse(routerTestDataFile);
 
 Date.now = jest.fn(() => new Date("2022-04-22T10:57:58Z"));
 
@@ -39,10 +35,12 @@ describe(`${name} Tests`, () => {
     });
   });
 
-  describe("Router Tests", () => {
-    it("Payload", async () => {
-      const routerOutput = await transformer.processRouterDest(inputRouterData);
-      expect(routerOutput).toEqual(expectedRouterData);
+  describe("Router", () => {
+    routerTestData.forEach((dataPoint, index) => {
+      it(`${index}. ${integration} - ${dataPoint.description}`, async () => {
+        const output = await transformer.processRouterDest(dataPoint.input);
+        expect(output).toEqual(dataPoint.output);
+      });
     });
   });
 });

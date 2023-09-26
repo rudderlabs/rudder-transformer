@@ -7,25 +7,21 @@ const version = "v0";
 
 const transformer = require(`../../src/${version}/destinations/${integration}/transform`);
 
-// Processor Test Data
-const inputDataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_input.json`)
+const testDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}.json`)
 );
-const outputDataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_output.json`)
-);
-const inputData = JSON.parse(inputDataFile);
-const expectedData = JSON.parse(outputDataFile);
+const testData = JSON.parse(testDataFile);
+
 
 describe(`${name} Tests`, () => {
-  describe("Processor Tests", () => {
-    inputData.forEach((input, index) => {
-      it(`${name} - payload: ${index}`, async () => {
+  describe("Processor", () => {
+    testData.forEach((dataPoint, index) => {
+      it(`${index}. ${integration} - ${dataPoint.description}`, async () => {
         try {
-          const output = await transformer.process(input);
-          expect(output).toEqual(expectedData[index]);
+          const output = await transformer.process(dataPoint.input);
+          expect(output).toEqual(dataPoint.output);
         } catch (error) {
-          expect(error.message).toEqual(expectedData[index].error);
+          expect(error.message).toEqual(dataPoint.output.message);
         }
       });
     });

@@ -12,9 +12,9 @@ const userDeletionHandler = async (userAttributes, config) => {
   if (!config) {
     throw new ConfigurationError('Config for deletion not present');
   }
-  const { apiKey } = config;
-  if (!apiKey) {
-    throw new ConfigurationError('api key for deletion not present');
+  const { accessToken } = config;
+  if (!accessToken) {
+    throw new ConfigurationError('access token for deletion not present');
   }
   const validUserIds = [];
   userAttributes.forEach((userAttribute) => {
@@ -31,7 +31,7 @@ const userDeletionHandler = async (userAttributes, config) => {
       };
       const requestOptions = {
         headers: {
-          Authorization: `Bearer ${apiKey}`,
+          Authorization: `Bearer ${accessToken}`,
           Accept: JSON_MIME_TYPE,
         },
       };

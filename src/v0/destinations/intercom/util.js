@@ -58,7 +58,7 @@ const validateTrack = (payload) => {
  */
 const getHeaders = (destination) => ({
   'Content-Type': JSON_MIME_TYPE,
-  Authorization: `Bearer ${destination.Config.apiKey}`,
+  Authorization: `Bearer ${destination.Config.accessToken}`,
   Accept: JSON_MIME_TYPE,
   'Intercom-Version': '2.10',
 });

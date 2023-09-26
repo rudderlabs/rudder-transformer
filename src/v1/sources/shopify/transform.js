@@ -72,7 +72,7 @@ const process = async (event) => {
     source: 'SHOPIFY',
   };
   if (identifierEventLayer.isIdentifierEvent(event)) {
-    return await identifierEventLayer.processIdentifierEvent(event, metricMetadata);
+    return identifierEventLayer.processIdentifierEvent(event, metricMetadata);
   }
   const response = await processEvent(event, metricMetadata);
   return response;

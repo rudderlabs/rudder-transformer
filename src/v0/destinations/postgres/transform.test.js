@@ -1,7 +1,7 @@
 const { getDataType } = require('../../../../src/warehouse/index');
 const { getDataTypeOverride } = require('./transform');
 
-var testCases = [
+const testCases = [
   {
     name: 'normalInt',
     data: 1,

@@ -86,7 +86,7 @@ const httpSend = async (options, statTags = {}) => {
   const requestOptions = enhanceRequestOptions(options);
 
   const startTime = new Date();
-  const { url, data, method, ...opts } = requestOptions;
+  const { url, data, method } = requestOptions;
   try {
     const response = await axios(requestOptions);
     clientResponse = { success: true, response };

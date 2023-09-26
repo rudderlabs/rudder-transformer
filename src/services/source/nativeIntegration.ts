@@ -11,7 +11,6 @@ import FetchHandler from '../../helpers/fetchHandlers';
 import tags from '../../v0/util/tags';
 import stats from '../../util/stats';
 
-
 export default class NativeIntegrationSourceService implements IntegrationSourceService {
   public getTags(): MetaTransferObject {
     const metaTO = {
@@ -26,7 +25,6 @@ export default class NativeIntegrationSourceService implements IntegrationSource
     return metaTO;
   }
 
-
   public async sourceTransformRoutine(
     sourceEvents: unknown[],
     sourceType: string,
@@ -34,15 +32,25 @@ export default class NativeIntegrationSourceService implements IntegrationSource
     _requestMetadata: Object,
   ): Promise<SourceTransformationResponse[]> {
     // if shopify/v1 , webhook/v1 (error) => webhook/v0
-    const  sourceHandler = FetchHandler.getSourceHandler(sourceType, version);
+    let sourceHandler:any;
+    try {
+      sourceHandler = FetchHandler.getSourceHandler(sourceType, version);
+    } catch (error) {
+      if (version === 'v1') {
+        version = 'v0';
+        sourceHandler = FetchHandler.getSourceHandler(sourceType, version);
+      } else {
+        throw error;
+      }
+    }
+
     const respList: SourceTransformationResponse[] = await Promise.all<any>(
       sourceEvents.map(async (sourceEvent) => {
         try {
           let respEvents: RudderMessage | RudderMessage[] | SourceTransformationResponse;
           if (version === 'v1') {
             respEvents = await sourceHandler.process(sourceEvent as SourceInput);
-          }
-          else {
+          } else {
             respEvents = await sourceHandler.process(sourceEvent);
           }
           return PostTransformationServiceSource.handleSuccessEventsSource(respEvents);

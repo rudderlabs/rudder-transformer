@@ -246,9 +246,38 @@ const getValueFromPropertiesOrTraits = ({ message, key }) => {
   return !_.isNil(val) ? val : null;
 };
 
+/**
+ * Checks if an object contains a circular reference.
+ *
+ * @param {object} obj - The object to check for circular references.
+ * @param {array} [seen=[]] - An array that keeps track of objects already seen during the recursive traversal. Defaults to an empty array.
+ * @returns {boolean} - True if a circular reference is found, false otherwise.
+ */
+const hasCircularReference = (obj, seen = []) => {
+  if (typeof obj !== 'object' || obj === null) {
+    return false;
+  }
+
+  if (seen.includes(obj)) {
+    return true;
+  }
+
+  seen.push(obj);
+  for (const value of Object.values(obj)) {
+    if (hasCircularReference(value, seen)) {
+      return true;
+    }
+  }
+  seen.pop();
+  return false;
+};
+
 // function to flatten a json
 function flattenJson(data, separator = '.', mode = 'normal', flattenArrays = true) {
   const result = {};
+  if (hasCircularReference(data)) {
+    throw new InstrumentationError("Event has circular reference. Can't flatten the event");
+  }
 
   // a recursive function to loop through the array of the data
   function recurse(cur, prop) {
@@ -2094,6 +2123,7 @@ module.exports = {
   getAccessToken,
   formatValues,
   groupEventsByType,
+  hasCircularReference,
   getAuthErrCategoryFromErrDetailsAndStCode,
   getAuthErrCategoryFromStCode,
 };

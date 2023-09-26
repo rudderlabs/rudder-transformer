@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.43.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.42.0...v1.43.0) (2023-09-25)
+
+
+### Features
+
+* update google_cloud_function implementation as per custom destination ([#2652](https://github.com/rudderlabs/rudder-transformer/issues/2652)) ([5c981e1](https://github.com/rudderlabs/rudder-transformer/commit/5c981e12c8e203c80229881a07704c6413c842a9))
+
 ## [1.42.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.41.1...v1.42.0) (2023-09-18)
 
 

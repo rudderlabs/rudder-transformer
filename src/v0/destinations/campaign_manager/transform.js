@@ -77,10 +77,19 @@ function processTrack(message, metadata, destination) {
     delete requestJson.limitAdTracking;
   }
 
+  // for handling when input is timestamp as string
+  const numTimestamp = /^\d+$/.test(requestJson.timestampMicros);
+  if (numTimestamp) {
+    // is digit only, below convert string timestamp to numeric
+    requestJson.timestampMicros *= 1;
+  }
+
+  // 2022-10-11T05:453:90.ZZ
+  // 16483423423423423
   const date = new Date(requestJson.timestampMicros);
   let unixTimestamp = date.getTime();
   // Date, moment both are not able to distinguish input if it is second,millisecond or microsecond unix timestamp
-  // Using count of digits to distinguish between the 3, 9999999999999 (13 digits) means Nov 20 2286
+  // Using count of digits to distinguish between these 3, 9999999999999 (13 digits) means Nov 20 2286 which is long far in future
   if (unixTimestamp.toString().length === 13) {
     // milliseconds
     unixTimestamp *= 1000;

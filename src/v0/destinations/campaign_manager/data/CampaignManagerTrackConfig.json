@@ -12,7 +12,8 @@
   {
     "destKey": "timestampMicros",
     "sourceKeys": "timestamp",
-    "sourceFromGenericMap": true
+    "sourceFromGenericMap": true,
+    "required": true
   },
   {
     "destKey": "floodlightActivityId",

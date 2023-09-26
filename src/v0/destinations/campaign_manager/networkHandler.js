@@ -9,14 +9,36 @@ const { AbortedError, RetryableError, NetworkError } = require('../../util/error
 const tags = require('../../util/tags');
 
 function checkIfFailuresAreRetryable(response) {
+  const { status } = response;
+  let isRetryable = true;
   try {
-    if (Array.isArray(response.status) && Array.isArray(response.status[0].errors)) {
-      return (
-        response.status[0].errors[0].code !== 'PERMISSION_DENIED' &&
-        response.status[0].errors[0].code !== 'INVALID_ARGUMENT'
-      );
+    if (Array.isArray(status)) {
+      // iterate over each status, and if found retryable in conversations ..retry else discard
+      /* status : [{
+        "conversion": {
+          object (Conversion)
+        },
+        "errors": [
+          {
+            object (ConversionError)
+          }
+        ],
+        "kind": string
+      }] */
+      for (const st of status) {
+        st.errors.forEach(err => {
+          // if code is any of these, event is not retryable
+          if (
+            err.code === 'PERMISSION_DENIED' ||
+            err.code === 'INVALID_ARGUMENT' ||
+            err.code === 'NOT_FOUND'
+          ) {
+            isRetryable = false;
+          }
+        })
+      }
     }
-    return true;
+    return isRetryable;
   } catch (e) {
     return true;
   }

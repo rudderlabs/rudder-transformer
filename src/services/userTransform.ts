@@ -8,18 +8,21 @@ import {
   UserTransformationResponse,
   UserTransformationServiceResponse,
 } from '../types/index';
-import { RespStatusError, RetryRequestError, extractStackTraceUptoLastSubstringMatch } from '../util/utils';
+import {
+  RespStatusError,
+  RetryRequestError,
+  extractStackTraceUptoLastSubstringMatch,
+} from '../util/utils';
 import { getMetadata, isNonFuncObject } from '../v0/util';
 import { SUPPORTED_FUNC_NAMES } from '../util/ivmFactory';
 import logger from '../logger';
 import stats from '../util/stats';
+import { CommonUtils } from '../util/common';
 
 export default class UserTransformService {
   public static async transformRoutine(
     events: ProcessorTransformationRequest[],
   ): Promise<UserTransformationServiceResponse> {
-
-    const startTime = new Date();
     let retryStatus = 200;
     const groupedEvents: Object = groupBy(
       events,
@@ -43,6 +46,8 @@ export default class UserTransformService {
         const transformationVersionId =
           eventsToProcess[0]?.destination?.Transformations[0]?.VersionID;
         const messageIds = eventsToProcess.map((ev) => ev.metadata?.messageId);
+        const messageIdsSet = new Set<string>(messageIds);
+        const messageIdsInOutputSet = new Set<string>();
 
         const commonMetadata = {
           sourceId: eventsToProcess[0]?.metadata?.sourceId,
@@ -76,31 +81,54 @@ export default class UserTransformService {
             transformationVersionId,
             librariesVersionIDs,
           );
-          transformedEvents.push(
-            ...destTransformedEvents.map((ev) => {
-              if (ev.error) {
-                return {
-                  statusCode: 400,
-                  error: ev.error,
-                  metadata: isEmpty(ev.metadata) ? commonMetadata : ev.metadata,
-                } as ProcessorTransformationResponse;
-              }
-              if (!isNonFuncObject(ev.transformedEvent)) {
-                return {
-                  statusCode: 400,
-                  error: `returned event in events from user transformation is not an object. transformationVersionId:${transformationVersionId} and returned event: ${JSON.stringify(
-                    ev.transformedEvent,
-                  )}`,
-                  metadata: isEmpty(ev.metadata) ? commonMetadata : ev.metadata,
-                } as ProcessorTransformationResponse;
-              }
-              return {
-                output: ev.transformedEvent,
+
+          const transformedEventsWithMetadata: ProcessorTransformationResponse[] = [];
+          destTransformedEvents.forEach((ev) => {
+            if (ev.error) {
+              transformedEventsWithMetadata.push({
+                statusCode: 400,
+                error: ev.error,
                 metadata: isEmpty(ev.metadata) ? commonMetadata : ev.metadata,
-                statusCode: 200,
-              } as ProcessorTransformationResponse;
-            }),
-          );
+              } as ProcessorTransformationResponse);
+              return;
+            }
+            if (!isNonFuncObject(ev.transformedEvent)) {
+              transformedEventsWithMetadata.push({
+                statusCode: 400,
+                error: `returned event in events from user transformation is not an object. transformationVersionId:${transformationVersionId} and returned event: ${JSON.stringify(
+                  ev.transformedEvent,
+                )}`,
+                metadata: isEmpty(ev.metadata) ? commonMetadata : ev.metadata,
+              } as ProcessorTransformationResponse);
+              return;
+            }
+            // add messageId to output set
+            if (ev.metadata?.messageId) {
+              messageIdsInOutputSet.add(ev.metadata.messageId);
+            } else if (ev.metadata?.messageIds) {
+              ev.metadata.messageIds.forEach((id) => messageIdsInOutputSet.add(id));
+            }
+            transformedEventsWithMetadata.push({
+              output: ev.transformedEvent,
+              metadata: isEmpty(ev.metadata) ? commonMetadata : ev.metadata,
+              statusCode: 200,
+            } as ProcessorTransformationResponse);
+          });
+
+          // TODO: add feature flag based on rudder-server version to do this
+          // find difference between input and output messageIds
+          const messageIdsNotInOutput = CommonUtils.setDiff(messageIdsSet, messageIdsInOutputSet);
+          const droppedEvents = messageIdsNotInOutput.map((id) => ({
+            statusCode: 298,
+            metadata: {
+              ...commonMetadata,
+              messageId: id,
+              messageIds: null,
+            },
+          }));
+          transformedEvents.push(...droppedEvents);
+
+          transformedEvents.push(...transformedEventsWithMetadata);
         } catch (error: any) {
           logger.error(error);
           let status = 400;
@@ -172,7 +200,9 @@ export default class UserTransformService {
       response.status = 200;
     } catch (error: any) {
       response.status = 400;
-      response.body = { error: extractStackTraceUptoLastSubstringMatch(error.stack, SUPPORTED_FUNC_NAMES) };
+      response.body = {
+        error: extractStackTraceUptoLastSubstringMatch(error.stack, SUPPORTED_FUNC_NAMES),
+      };
     }
     return response;
   }

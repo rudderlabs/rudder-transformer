@@ -10,7 +10,6 @@ const tags = require('../../util/tags');
 
 function checkIfFailuresAreRetryable(response) {
   const { status } = response;
-  let isRetryable = true;
   try {
     if (Array.isArray(status)) {
       // iterate over each status, and if found retryable in conversations ..retry else discard
@@ -26,19 +25,19 @@ function checkIfFailuresAreRetryable(response) {
         "kind": string
       }] */
       for (const st of status) {
-        st.errors.forEach(err => {
+        for(const err of st.errors) {
           // if code is any of these, event is not retryable
           if (
             err.code === 'PERMISSION_DENIED' ||
             err.code === 'INVALID_ARGUMENT' ||
             err.code === 'NOT_FOUND'
           ) {
-            isRetryable = false;
+            return false;
           }
-        })
+        }
       }
     }
-    return isRetryable;
+    return true;
   } catch (e) {
     return true;
   }

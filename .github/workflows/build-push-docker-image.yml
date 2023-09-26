@@ -21,6 +21,8 @@ on:
       push_target:
         required: true
         type: string
+      build_type:
+        type: string
     secrets:
       DOCKERHUB_PROD_TOKEN:
         required: true
@@ -147,3 +149,15 @@ jobs:
       - name: Create multi-arch manifest
         run: |
           docker buildx imagetools create -t ${{ inputs.push_tags }} ${{ inputs.push_tags }}-amd64 ${{ inputs.push_tags }}-arm64
+
+      - name: Create latest multi-arch manifest
+        # To be triggered only for release/hotfix PR merges coming from `prepare-for-prod-deploy.yaml`
+        if: ${{ inputs.build_type == 'dt' }}
+        run: |
+          docker buildx imagetools create -t rudderstack/rudder-transformer:latest ${{ inputs.push_tags }}-amd64 ${{ inputs.push_tags }}-arm64
+      
+      - name: Create latest ut multi-arch manifest
+        # To be triggered only for release/hotfix PR merges coming from `prepare-for-prod-ut-deploy.yaml`
+        if: ${{ inputs.build_type == 'ut' }}
+        run: |
+          docker buildx imagetools create -t rudderstack/rudder-transformer:ut-latest ${{ inputs.push_tags }}-amd64 ${{ inputs.push_tags }}-arm64

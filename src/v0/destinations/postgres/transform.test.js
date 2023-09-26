@@ -37,11 +37,11 @@ const testCases = [
 ];
 
 describe('Postgres data types testing', () => {
-  let options = {};
+  const options = {};
   options.getDataTypeOverride = getDataTypeOverride;
   testCases.forEach((testCase) => {
     it(`should return data type ${testCase.type} for this input data ${testCase.data} everytime`, () => {
-      var dataType = getDataType(testCase.name, testCase.data, options);
+      const dataType = getDataType(testCase.name, testCase.data, options);
       expect(dataType).toEqual(testCase.type);
     });
   });

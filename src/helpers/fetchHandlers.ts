@@ -20,16 +20,13 @@ export default class FetchHandler {
 
   public static getSourceHandler(source: string, version: string) {
     let sourceHandler: any;
-    let sourceVersion = version;
-    if (this.sourceHandlerMap.has(source)) {
-      const sourceHandlerAndVersion = this.sourceHandlerMap.get(source);
-      sourceHandler = sourceHandlerAndVersion.sourceHandler;
-      sourceVersion = sourceHandlerAndVersion.sourceVersion;
+    if (this.sourceHandlerMap.has(`${source}_${version}`)) {
+      sourceHandler = this.sourceHandlerMap.get(`${source}_${version}`);
     } else {
-      sourceHandler = MiscService.getSourceHandler(source, sourceVersion);
-      this.sourceHandlerMap.set(source, { sourceVersion, sourceHandler });
+      sourceHandler = MiscService.getSourceHandler(source, version);
+      this.sourceHandlerMap.set(`${source}_${version}`, sourceHandler);
     }
-    return { sourceHandler, sourceVersion };
+    return sourceHandler;
   }
 
   public static getDeletionHandler(dest: string, version: string) {

@@ -35,20 +35,15 @@ export default class NativeIntegrationSourceService implements IntegrationSource
     let sourceHandler: any;
     let sourceVersion = version;
     try {
-      const sourceHandlerAndVersion = FetchHandler.getSourceHandler(sourceType, version);
-      sourceHandler = sourceHandlerAndVersion.sourceHandler;
-      sourceVersion = sourceHandlerAndVersion.sourceVersion;
-    } catch (error) {
-      if (version === 'v1') {
+      sourceHandler = FetchHandler.getSourceHandler(sourceType, version);
+   } catch (error) {
+       if (version === 'v1') {
+        sourceEvents = (sourceEvents as SourceInput[]).map(sourceEvent => sourceEvent.event);
         sourceVersion = 'v0';
-        const sourceHandlerAndVersion = FetchHandler.getSourceHandler(sourceType, sourceVersion);
-        sourceHandler = sourceHandlerAndVersion.sourceHandler;
+        sourceHandler = FetchHandler.getSourceHandler(sourceType, sourceVersion);
       } else {
         throw error;
       }
-    }
-    if (version === "v1" && sourceVersion === "v0") {
-      sourceEvents = (sourceEvents as SourceInput[]).map(sourceEvent => sourceEvent.event);
     }
     const respList: SourceTransformationResponse[] = await Promise.all<any>(
       sourceEvents.map(async (sourceEvent) => {

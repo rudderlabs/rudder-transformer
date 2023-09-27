@@ -69,7 +69,7 @@ const processEvent = async (inputEvent, metricMetadata) => {
 
 const process = async (inputEvent) => {
   const { event, source } = inputEvent;
-  if (source.Config.version !== 'v1') {
+  if (source?.Config?.version !== 'v1') {
     return processV0(event);
   }
   const metricMetadata = {

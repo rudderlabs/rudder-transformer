@@ -176,8 +176,8 @@ describe('Destination api tests', () => {
 });
 
 describe('Source api tests', () => {
-  test('(shopify) successful source transform', async () => {
-    const data = getDataFromPath('./data_scenarios/source/successful.json');
+  test('/v0 (shopify) successful source transform', async () => {
+    const data = getDataFromPath('./data_scenarios/source/v0/successful.json');
     const response = await request(server)
       .post('/v0/sources/shopify')
       .set('Accept', 'application/json')
@@ -188,8 +188,8 @@ describe('Source api tests', () => {
     expect(parsedResp).toEqual(data.output);
   });
 
-  test('(shopify) failure source transform (shopify)', async () => {
-    const data = getDataFromPath('./data_scenarios/source/failure.json');
+  test('/v0 (shopify) failure source transform (shopify)', async () => {
+    const data = getDataFromPath('./data_scenarios/source/v0/failure.json');
     const response = await request(server)
       .post('/v0/sources/shopify')
       .set('Accept', 'application/json')
@@ -198,14 +198,49 @@ describe('Source api tests', () => {
     expect(JSON.parse(response.text)).toEqual(data.output);
   });
 
-  test('(shopify) success source transform (monday)', async () => {
-    const data = getDataFromPath('./data_scenarios/source/response_to_caller.json');
+  test('/v0 (shopify) success source transform (monday)', async () => {
+    const data = getDataFromPath('./data_scenarios/source/v0/response_to_caller.json');
     const response = await request(server)
       .post('/v0/sources/monday')
       .set('Accept', 'application/json')
       .send(data.input);
     expect(response.status).toEqual(200);
     expect(JSON.parse(response.text)).toEqual(data.output);
+  });
+});
+describe('V1 Source api tests', () => {
+  test('/v1 (shopify) successful source transform', async () => {
+    const data = getDataFromPath('./data_scenarios/source/v1/successful.json');
+    const response = await request(server)
+      .post('/v1/sources/shopify')
+      .set('Accept', 'application/json')
+      .send(data.input);
+    const parsedResp = JSON.parse(response.text);
+    delete parsedResp[0].output.batch[0].anonymousId;
+    expect(response.status).toEqual(200);
+    expect(parsedResp).toEqual(data.output);
+  });
+
+  test('/v1 (shopify) failure source transform (shopify)', async () => {
+    const data = getDataFromPath('./data_scenarios/source/v1/failure.json');
+    const response = await request(server)
+      .post('/v1/sources/shopify')
+      .set('Accept', 'application/json')
+      .send(data.input);
+    expect(response.status).toEqual(200);
+    expect(JSON.parse(response.text)).toEqual(data.output);
+  });
+
+  test('/v1 success source transform (webhook)', async () => {
+    const data = getDataFromPath('./data_scenarios/source/v1/response_to_caller.json');
+    const response = await request(server)
+      .post('/v1/sources/webhook')
+      .set('Accept', 'application/json')
+      .send(data.input);
+    const parsedResp = JSON.parse(response.text);
+    delete parsedResp[0].output.batch[0].anonymousId;
+    expect(response.status).toEqual(200);
+    expect(parsedResp).toEqual(data.output);
   });
 });
 

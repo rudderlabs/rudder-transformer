@@ -1,0 +1,29 @@
+{
+  "input": [
+    {
+      "event": {
+        "query_parameters": {
+          "topic": [
+            "random_event"
+          ],
+          "signature": [
+            "rudderstack"
+          ],
+          "writeKey": [
+            "sample-write-key"
+          ]
+        }
+      },
+      "source": {}
+    }
+  ],
+  "output": [
+    {
+      "outputToSource": {
+        "body": "T0s=",
+        "contentType": "text/plain"
+      },
+      "statusCode": 200
+    }
+  ]
+}

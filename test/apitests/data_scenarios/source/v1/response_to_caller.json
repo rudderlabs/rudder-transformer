@@ -1,0 +1,25 @@
+{
+  "input": [
+    {
+      "event": {
+        "challenge": "some_key"
+      },
+      "source": {}
+    }
+  ],
+  "output": [
+    {
+      "output": {
+        "batch": [
+          {
+            "event": "webhook_source_event",
+            "properties": {
+              "challenge": "some_key"
+            },
+            "type": "track"
+          }
+        ]
+      }
+    }
+  ]
+}

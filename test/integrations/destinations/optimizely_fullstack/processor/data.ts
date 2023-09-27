@@ -1,3 +1,8 @@
+import utils from '../../../../../src/v0/util';
+export const mockFns = (_) => {
+  // @ts-ignore
+  jest.spyOn(utils, 'generateUUID').mockImplementation(() => 'generated_uuid');
+};
 export const data = [
   {
     name: 'optimizely_fullstack',
@@ -2162,4 +2167,4 @@ export const data = [
       },
     },
   },
-];
+].map((d) => ({ ...d, mockFns }));

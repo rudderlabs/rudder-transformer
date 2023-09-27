@@ -20,7 +20,7 @@ export const networkCallsData = [
           },
         ],
         property_id: 'AnAID',
-        subject_request_id: 'generated_uuid',
+        subject_request_id: '97fcd7b2-cc24-47d7-b776-057b7b199513',
         submitted_time: '2023-09-24T11:22:24.018Z',
       },
     },
@@ -50,7 +50,7 @@ export const networkCallsData = [
         ],
         status_callback_urls: ['https://examplecontroller.com/opengdpr_callbacks'],
         property_id: '123456789',
-        subject_request_id: 'generated_uuid',
+        subject_request_id: '97fcd7b2-cc24-47d7-b776-057b7b199513',
         submitted_time: '2023-09-24T11:22:24.018Z',
       },
       headers: {

@@ -1,4 +1,5 @@
 import { FEATURES } from '../../../../../src/v0/util/tags';
+import { mockFns } from '../processor/data';
 
 export const data = [
   {
@@ -557,5 +558,6 @@ export const data = [
         },
       },
     },
+    mockFns,
   },
 ];

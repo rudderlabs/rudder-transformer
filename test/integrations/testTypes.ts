@@ -1,4 +1,5 @@
-import { AxiosResponse } from "axios";
+import { AxiosResponse } from 'axios';
+import MockAdapter from 'axios-mock-adapter';
 
 export interface requestType {
   method: string;
@@ -36,9 +37,10 @@ export interface TestCaseData {
   input: inputType;
   output: outputType;
   mock?: mockType[];
+  mockFns?: (mockAdapter: MockAdapter) => {};
 }
 
 export type MockHttpCallsData = {
   httpReq: Record<string, any>;
   httpRes: Partial<AxiosResponse>;
-}
+};

@@ -15,6 +15,7 @@ import {
   getTestData,
   getMockHttpCallsData,
   getAllTestMockDataFilePaths,
+  addMock,
 } from './testUtils';
 import tags, { FEATURES } from '../../src/v0/util/tags';
 import { Server } from 'http';
@@ -76,46 +77,13 @@ if (!opts.generate || opts.generate === 'false') {
   // unmock already existing axios-mocking
   mock = new MockAxiosAdapter(axios, { onNoMatch: 'passthrough' });
   const registerAxiosMocks = (axiosMocks: MockHttpCallsData[]) => {
-    axiosMocks.forEach((axiosMock) => {
-      const { url, method, data: reqData, ...opts } = axiosMock.httpReq;
-      const { data, headers, status } = axiosMock.httpRes;
-
-      const headersAsymMatch = {
-        asymmetricMatch: function (actual) {
-          return isMatch(actual, opts.headers);
-        },
-      };
-
-      switch (method.toLowerCase()) {
-        case 'get':
-          // @ts-ignore
-          mock.onGet(url, reqData, headersAsymMatch).reply(status, data, headers);
-          break;
-        case 'delete':
-          // @ts-ignore
-          mock.onDelete(url, reqData, headersAsymMatch).reply(status, data, headers);
-          break;
-        case 'post':
-          // @ts-ignore
-          mock.onPost(url, reqData, headersAsymMatch).reply(status, data, headers);
-          break;
-        case 'patch':
-          // @ts-ignore
-          mock.onPatch(url, reqData, headersAsymMatch).reply(status, data, headers);
-          break;
-        case 'put':
-          // @ts-ignore
-          mock.onPut(url, reqData, headersAsymMatch).reply(status, data, headers);
-          break;
-        default:
-          break;
-      }
-    });
+    axiosMocks.forEach((axiosMock) => addMock(mock, axiosMock));
   };
 
   // // all the axios requests will be stored in this map
   const allTestMockDataFilePaths = getAllTestMockDataFilePaths(__dirname, opts.destination);
   const allAxiosRequests = allTestMockDataFilePaths
+    .filter((d) => !d.includes('/af/'))
     .map((currPath) => {
       const mockNetworkCallsData: MockHttpCallsData[] = getMockHttpCallsData(currPath);
       return mockNetworkCallsData;
@@ -205,26 +173,13 @@ const sourceTestHandler = async (tcData) => {
 
 // Trigger the test suites
 describe.each(allTestDataFilePaths)('%s Tests', (testDataPath) => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
   // add special mocks for specific destinations
   const testData: TestCaseData[] = getTestData(testDataPath);
   test.each(testData)('$name - $module - $feature -> $description', async (tcData) => {
-    if (testDataPath.includes('yahoo_dsp')) {
-      // 21 September 2023 19:39:50 GMT+05:30
-      Date.now = jest.fn(() => 1695305390000);
-    }
-    if (tcData.feature === FEATURES.USER_DELETION && tcData.name === 'af') {
-      jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2023-09-24T11:22:24.018Z');
-    }
-
-    jest.mock('../../src/v0/util/index', () => {
-      const originalModule = jest.requireActual('../../src/v0/util/index');
-      return {
-        ...originalModule,
-        generateUUID: jest.fn().mockImplementation(() => {
-          return 'generated_uuid';
-        }),
-      };
-    });
+    tcData?.mockFns?.(mock);
 
     switch (tcData.module) {
       case tags.MODULES.DESTINATION:

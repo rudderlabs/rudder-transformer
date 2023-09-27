@@ -1,5 +1,15 @@
 import { cloneDeep } from 'lodash';
 import { FEATURES } from '../../../../../src/v0/util/tags';
+import { networkCallsData } from '../network';
+import { addMock } from '../../../testUtils';
+import MockAdapter from 'axios-mock-adapter';
+import utils from '../../../../../src/v0/util';
+
+const defaultMockFns = () => {
+  jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2023-09-24T11:22:24.018Z');
+  jest.spyOn(utils, 'generateUUID').mockReturnValue('97fcd7b2-cc24-47d7-b776-057b7b199513');
+};
+
 const requests = [
   {
     request: {
@@ -237,6 +247,11 @@ export const data = [
         ],
       },
     },
+    mockFns: (mockAdapter: MockAdapter) => {
+      const nwData = networkCallsData[0];
+      addMock(mockAdapter, nwData);
+      defaultMockFns();
+    },
   },
   {
     name: 'af',
@@ -276,6 +291,11 @@ export const data = [
           },
         ],
       },
+    },
+    mockFns: (mockAdapter: MockAdapter) => {
+      const nwData = networkCallsData[1];
+      addMock(mockAdapter, nwData);
+      defaultMockFns();
     },
   },
   ...nonNetworkCases,

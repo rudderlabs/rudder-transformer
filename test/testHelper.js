@@ -1,6 +1,5 @@
 const fs = require('fs');
 const path = require('path');
-const stringify = require('fast-json-stable-stringify');
 
 const getFuncTestData = (dirPath, filePath) => {
   const fileData = fs.readFileSync(path.resolve(dirPath, filePath));
@@ -10,28 +9,17 @@ const getFuncTestData = (dirPath, filePath) => {
 
 const responses = [];
 
-const setResponsesForNwMockGeneration = (reqType, { url, data, requestOptions }, {response}) => {
+const setResponsesForMockAxiosAdapter = ({url, method, data, options}, {response}) => {
   if (process.env.GEN_AXIOS_FOR_TESTS === 'true') {
-    let resp;
-    switch (reqType) {
-      case "constructor":
-        resp = `{httpReq: ${stringify(requestOptions)},httpRes: ${stringify(response)}},`
-        break;
-      case "get":
-      case "delete":
-        resp = `{httpReq: ${stringify({url, ...requestOptions})},httpRes: ${stringify(response)}},`
-        break
-      default:
-        // put, patch, post
-        resp = `{httpReq: ${stringify({url, data, ...requestOptions})},httpRes: ${stringify(response)}},`
-        break;
+    const reqObj = {url, ...options, method}
+    if (data) {
+      reqObj.data = data
     }
-    responses.push(resp)
+    responses.push(`{httpReq: ${JSON.stringify(reqObj)},httpRes: ${JSON.stringify(response)}},`) 
   }
 }
-
 module.exports = {
   getFuncTestData,
   responses,
-  setResponsesForNwMockGeneration
+  setResponsesForMockAxiosAdapter
 };

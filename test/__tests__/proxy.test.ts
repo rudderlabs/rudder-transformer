@@ -1,12 +1,13 @@
 const name = 'Proxy';
-import fs from 'fs';
-import path from 'path';
+import fs, { appendFileSync } from 'fs';
+import path, { join } from 'path';
 import request from 'supertest';
 import { createHttpTerminator } from 'http-terminator';
 import { mockedAxiosClient } from '../__mocks__/network';
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
 import { applicationRoutes } from '../../src/routes';
+import { responses } from '../testHelper';
 
 let server: any;
 const OLD_ENV = process.env;
@@ -48,7 +49,7 @@ const destinations = [
   'marketo_static_list',
   'criteo_audience',
   'tiktok_ads',
-  'intercom'
+  'intercom',
 ];
 
 // start of generic tests
@@ -88,6 +89,20 @@ destinations.forEach((destination) => {
           .send(input);
         expect(response.body).toEqual(expectedData[index]);
       });
+    });
+    afterAll(() => {
+      if (process.env.GEN_AXIOS_FOR_TESTS === 'true') {
+        const callsDataStr = responses.join('\n');
+        const calls = `
+        export const networkCallsData = [
+          ${callsDataStr}
+        ]
+        `;
+        appendFileSync(
+          join(__dirname, '..', 'integrations', 'destinations', destination, 'network.ts'),
+          calls,
+        );
+      }
     });
   });
 });

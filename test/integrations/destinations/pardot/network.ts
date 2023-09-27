@@ -3,7 +3,7 @@ import { enhanceRequestOptions, getFormData } from '../../../../src/adapters/net
 export const networkCallsData = [
   // 2nd proxy test-case
   {
-    httpReq: enhanceRequestOptions({
+    httpReq: {
       url: 'https://pi.pardot.com/api/prospect/version/4/do/upsert/email/Roger_12@waltair.io',
       data: getFormData({
         first_name: 'Roger_12',
@@ -11,15 +11,17 @@ export const networkCallsData = [
         website: 'https://rudderstack.com',
         score: 14,
         campaign_id: 42213,
-      }),
+        format: 'json',
+      }).toString(),
       params: { destination: 'pardot' },
       headers: {
         Authorization: 'Bearer myToken',
+        'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
         'Pardot-Business-Unit-Id': '0Uv2v000000k9tHCAQ',
         'User-Agent': 'RudderLabs',
       },
       method: 'POST',
-    }),
+    },
     httpRes: {
       data: {
         '@attributes': {
@@ -135,7 +137,7 @@ export const networkCallsData = [
   },
   // 4th proxy test-case
   {
-    httpReq: enhanceRequestOptions({
+    httpReq: {
       url: 'https://pi.pardot.com/api/prospect/version/4/do/upsert/email/rolex_waltair@mywebsite.io',
       data: getFormData({
         first_name: 'Rolex',
@@ -144,15 +146,16 @@ export const networkCallsData = [
         score: 15,
         campaign_id: 42213,
         format: 'json',
-      }),
+      }).toString(),
       params: { destination: 'pardot' },
       headers: {
         Authorization: 'Bearer myExpiredToken',
+        'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
         'Pardot-Business-Unit-Id': '0Uv2v000000k9tHCAQ',
         'User-Agent': 'RudderLabs',
       },
       method: 'POST',
-    }),
+    },
     httpRes: {
       data: {
         '@attributes': {
@@ -168,7 +171,7 @@ export const networkCallsData = [
   },
   // 1st proxy test-case
   {
-    httpReq: enhanceRequestOptions({
+    httpReq: {
       url: 'https://pi.pardot.com/api/prospect/version/4/do/upsert/id/123435',
       data: getFormData({
         first_name: 'Roger12',
@@ -177,15 +180,16 @@ export const networkCallsData = [
         score: 14,
         campaign_id: 42213,
         format: 'json',
-      }),
+      }).toString(),
       params: { destination: 'pardot' },
       headers: {
         Authorization: 'Bearer myToken',
+        'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
         'Pardot-Business-Unit-Id': '0Uv2v000000k9tHCAQ',
         'User-Agent': 'RudderLabs',
       },
       method: 'POST',
-    }),
+    },
     httpRes: {
       data: {
         '@attributes': {
@@ -301,7 +305,7 @@ export const networkCallsData = [
   },
   // 3rd proxy test-case
   {
-    httpReq: enhanceRequestOptions({
+    httpReq: {
       url: 'https://pi.pardot.com/api/prospect/version/4/do/upsert/fid/00Q6r000002LKhTPVR',
       data: getFormData({
         first_name: 'Nick',
@@ -310,15 +314,16 @@ export const networkCallsData = [
         score: 12,
         campaign_id: 42213,
         format: 'json',
-      }),
+      }).toString(),
       params: { destination: 'pardot' },
       headers: {
         Authorization: 'Bearer myToken',
+        'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
         'Pardot-Business-Unit-Id': '0Uv2v000000k9tHCAQ',
         'User-Agent': 'RudderLabs',
       },
       method: 'POST',
-    }),
+    },
     httpRes: {
       data: {
         '@attributes': {

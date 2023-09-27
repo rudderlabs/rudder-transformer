@@ -4,22 +4,25 @@ import request from 'supertest';
 // Mocking of axios calls
 import axios from 'axios';
 // new-library we are using
-import stringify from 'fast-json-stable-stringify';
 import bodyParser from 'koa-bodyparser';
 import { Command } from 'commander';
 import { createHttpTerminator } from 'http-terminator';
 import { MockHttpCallsData, TestCaseData } from './testTypes';
 import { applicationRoutes } from '../../src/routes/index';
+import MockAxiosAdapter from 'axios-mock-adapter';
 import {
   getTestDataFilePaths,
   getTestData,
   getMockHttpCallsData,
   getAllTestMockDataFilePaths,
+  addMock,
 } from './testUtils';
-import tags from '../../src/v0/util/tags';
+import tags, { FEATURES } from '../../src/v0/util/tags';
 import { Server } from 'http';
 import { appendFileSync } from 'fs';
 import { responses } from '../testHelper';
+import utils from '../../src/v0/util';
+import isMatch from 'lodash/isMatch';
 
 // To run single destination test cases
 // npm run test:ts -- component  --destination=adobe_analytics
@@ -67,80 +70,26 @@ afterAll(async () => {
     `;
     appendFileSync(join(__dirname, 'destinations', opts.destination, 'network.ts'), calls);
   }
-  jest.clearAllMocks();
   await createHttpTerminator({ server }).terminate();
 });
-
+let mock;
 if (!opts.generate || opts.generate === 'false') {
   // unmock already existing axios-mocking
-  jest.unmock('axios');
-
-  jest.mock('axios');
-  const formAxiosReqsMap = (calls: MockHttpCallsData[]) => {
-    try {
-      return calls.reduce((agg, curr) => {
-        let obj = curr.httpReq;
-        return { ...agg, [stringify(obj)]: curr.httpRes };
-      }, {});
-    } catch (error) {
-      return {};
-    }
+  mock = new MockAxiosAdapter(axios, { onNoMatch: 'passthrough' });
+  const registerAxiosMocks = (axiosMocks: MockHttpCallsData[]) => {
+    axiosMocks.forEach((axiosMock) => addMock(mock, axiosMock));
   };
 
-  const mockImpl = (type, axReqMap) => {
-    // return value fn
-    const retVal = (key) => {
-      if (axReqMap[key]) {
-        return axReqMap[key];
-      }
-      return {
-        status: 500,
-        body: 'Something bad',
-      };
-    };
-
-    if (['constructor'].includes(type)) {
-      return (opts) => {
-        // mock result from some cache
-        const key = stringify({ ...opts });
-        return retVal(key);
-      };
-    } else if (['delete', 'get'].includes(type)) {
-      return (url, opts) => {
-        // mock result from some cache
-        const key = stringify({ url, ...opts });
-        return retVal(key);
-      };
-    }
-
-    // post, patch, put
-    return (url, data, opts) => {
-      // mock result from some cache
-      const key = stringify({ url, data, ...opts });
-      return retVal(key);
-    };
-  };
-
-  const makeNetworkMocks = (axiosReqsMap: Record<string, any>) => {
-    axios.put = jest.fn(mockImpl('put', axiosReqsMap));
-    axios.post = jest.fn(mockImpl('post', axiosReqsMap));
-    axios.patch = jest.fn(mockImpl('patch', axiosReqsMap));
-    // @ts-ignore
-    axios.delete = jest.fn(mockImpl('delete', axiosReqsMap));
-    // @ts-ignore
-    axios.get = jest.fn(mockImpl('get', axiosReqsMap));
-    // @ts-ignore
-    axios.mockImplementation(mockImpl('constructor', axiosReqsMap));
-  };
-
-  // all the axios requests will be stored in this map
+  // // all the axios requests will be stored in this map
   const allTestMockDataFilePaths = getAllTestMockDataFilePaths(__dirname, opts.destination);
-  const allAxiosReqsMap = allTestMockDataFilePaths.reduce((agg, currPath) => {
-    const mockNetworkCallsData: MockHttpCallsData[] = getMockHttpCallsData(currPath);
-    const reqMap = formAxiosReqsMap(mockNetworkCallsData);
-    return { ...agg, ...reqMap };
-  }, {});
-  makeNetworkMocks(allAxiosReqsMap);
+  const allAxiosRequests = allTestMockDataFilePaths
+    .filter((d) => !d.includes('/af/'))
+    .map((currPath) => {
+      const mockNetworkCallsData: MockHttpCallsData[] = getMockHttpCallsData(currPath);
+      return mockNetworkCallsData;
+    })
+    .flat();
+  registerAxiosMocks(allAxiosRequests);
 }
 
 // END
@@ -197,7 +146,7 @@ const destinationTestHandler = async (tcData: TestCaseData) => {
       route = `/${join(tcData.version || DEFAULT_VERSION, 'destinations', tcData.name, 'proxy')}`;
       break;
     case tags.FEATURES.USER_DELETION:
-      route = 'deleteUsers';
+      route = '/deleteUsers';
       break;
     case tags.FEATURES.PROCESSOR:
       // Processor transformation
@@ -224,13 +173,14 @@ const sourceTestHandler = async (tcData) => {
 
 // Trigger the test suites
 describe.each(allTestDataFilePaths)('%s Tests', (testDataPath) => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
   // add special mocks for specific destinations
-  if (testDataPath.includes('yahoo_dsp')) {
-    // 21 September 2023 19:39:50 GMT+05:30
-    Date.now = jest.fn(() => 1695305390000);
-  }
   const testData: TestCaseData[] = getTestData(testDataPath);
   test.each(testData)('$name - $module - $feature -> $description', async (tcData) => {
+    tcData?.mockFns?.(mock);
+
     switch (tcData.module) {
       case tags.MODULES.DESTINATION:
         await destinationTestHandler(tcData);

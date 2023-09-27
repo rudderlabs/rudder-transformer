@@ -13,7 +13,7 @@ const NO_OPERATION_SUCCESS = {
   statusCode: 200,
 };
 
-const identifierEvents = ['rudderIdentifier', 'rudderSessionIdentifier'];
+const IDENTIFIER_EVENTS = ['rudderIdentifier', 'rudderSessionIdentifier'];
 
 const IDENTIFY_TOPICS = ['customers_create', 'customers_update'];
 
@@ -103,7 +103,7 @@ const maxTimeToIdentifyRSGeneratedCall = 10000; // in ms
 
 module.exports = {
   NO_OPERATION_SUCCESS,
-  identifierEvents,
+  IDENTIFIER_EVENTS,
   IDENTIFY_TOPICS,
   INTEGRATION,
   SHOPIFY_TO_RUDDER_ECOM_EVENTS_MAP,

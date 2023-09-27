@@ -1,4 +1,4 @@
-const { trackLayer } = require('./trackEventsLayer');
+const { TrackLayer } = require('./trackEventsLayer');
 const {
   lineItems,
   products,
@@ -11,7 +11,7 @@ const {
 describe('Track Event Layer Tests', () => {
   describe('getProductsListFromLineItems() unit test cases', () => {
     it('Line items is empty/null', () => {
-      expect(trackLayer.getProductsListFromLineItems(null)).toEqual([]); // empty object as input would be returned as it is
+      expect(TrackLayer.getProductsListFromLineItems(null)).toEqual([]); // empty object as input would be returned as it is
     });
 
     it('Line items is non empty', () => {
@@ -37,7 +37,7 @@ describe('Track Event Layer Tests', () => {
           extra_property2: 'extra value2',
         },
       ];
-      expect(trackLayer.getProductsListFromLineItems(lineItems)).toEqual(expectedOutput);
+      expect(TrackLayer.getProductsListFromLineItems(lineItems)).toEqual(expectedOutput);
     });
   });
 
@@ -55,7 +55,7 @@ describe('Track Event Layer Tests', () => {
         products,
       };
       expect(
-        trackLayer.createPropertiesForEcomEvent(checkoutsCreateWebhook, 'checkouts_create'),
+        TrackLayer.createPropertiesForEcomEvent(checkoutsCreateWebhook, 'checkouts_create'),
       ).toEqual(expectedOutput);
     });
 
@@ -67,7 +67,7 @@ describe('Track Event Layer Tests', () => {
       };
 
       expect(
-        trackLayer.createPropertiesForEcomEvent(checkoutsUpdateWebhook[shopifyTopic], shopifyTopic),
+        TrackLayer.createPropertiesForEcomEvent(checkoutsUpdateWebhook[shopifyTopic], shopifyTopic),
       ).toEqual(expectedOutput);
     });
 
@@ -80,7 +80,7 @@ describe('Track Event Layer Tests', () => {
       };
 
       expect(
-        trackLayer.createPropertiesForEcomEvent(checkoutsUpdateWebhook[shopifyTopic], shopifyTopic),
+        TrackLayer.createPropertiesForEcomEvent(checkoutsUpdateWebhook[shopifyTopic], shopifyTopic),
       ).toEqual(expectedOutput);
     });
 
@@ -93,7 +93,7 @@ describe('Track Event Layer Tests', () => {
       };
 
       expect(
-        trackLayer.createPropertiesForEcomEvent(checkoutsUpdateWebhook[shopifyTopic], shopifyTopic),
+        TrackLayer.createPropertiesForEcomEvent(checkoutsUpdateWebhook[shopifyTopic], shopifyTopic),
       ).toEqual(expectedOutput);
     });
 
@@ -112,7 +112,7 @@ describe('Track Event Layer Tests', () => {
       };
 
       expect(
-        trackLayer.createPropertiesForEcomEvent(ordersUpdatedWebhook, 'orders_updated'),
+        TrackLayer.createPropertiesForEcomEvent(ordersUpdatedWebhook, 'orders_updated'),
       ).toEqual(expectedOutput);
     });
 
@@ -130,7 +130,7 @@ describe('Track Event Layer Tests', () => {
         products,
       };
 
-      expect(trackLayer.createPropertiesForEcomEvent(ordersPaidWebhook, 'orders_paid')).toEqual(
+      expect(TrackLayer.createPropertiesForEcomEvent(ordersPaidWebhook, 'orders_paid')).toEqual(
         expectedOutput,
       );
     });
@@ -150,7 +150,7 @@ describe('Track Event Layer Tests', () => {
       };
 
       expect(
-        trackLayer.createPropertiesForEcomEvent(ordersCancelledWebhook, 'orders_cancelled'),
+        TrackLayer.createPropertiesForEcomEvent(ordersCancelledWebhook, 'orders_cancelled'),
       ).toEqual(expectedOutput);
     });
   });
@@ -325,7 +325,7 @@ describe('Track Event Layer Tests', () => {
           },
         },
       ];
-      expect(await trackLayer.generateProductAddedAndRemovedEvents(input, {})).toEqual(
+      expect(await TrackLayer.generateProductAddedAndRemovedEvents(input, {})).toEqual(
         expectedOutput,
       );
     });
@@ -457,7 +457,7 @@ describe('Track Event Layer Tests', () => {
           },
         },
       ];
-      expect(await trackLayer.generateProductAddedAndRemovedEvents(input, {})).toEqual(
+      expect(await TrackLayer.generateProductAddedAndRemovedEvents(input, {})).toEqual(
         expectedOutput,
       );
     });
@@ -489,7 +489,7 @@ describe('Track Event Layer Tests', () => {
         id: 'cart_id',
         line_items: [
           {
-            id: "123456",
+            id: '123456',
             properties: null,
             quantity: 5,
             variant_id: 123456,
@@ -529,7 +529,7 @@ describe('Track Event Layer Tests', () => {
             properties: null,
             price: 30,
             quantity: 2,
-            id: "123456",
+            id: '123456',
           },
         },
         {
@@ -548,7 +548,7 @@ describe('Track Event Layer Tests', () => {
           type: 'track',
           event: 'Product Removed',
           properties: {
-            id: "2",
+            id: '2',
             cart_id: 'cart_id',
             variant_id: 321,
             product_id: '3476',
@@ -559,7 +559,7 @@ describe('Track Event Layer Tests', () => {
           },
         },
       ];
-      expect(await trackLayer.generateProductAddedAndRemovedEvents(input, dbData, {})).toEqual(
+      expect(await TrackLayer.generateProductAddedAndRemovedEvents(input, dbData, {})).toEqual(
         expectedOutput,
       );
     });
@@ -573,7 +573,7 @@ describe('Track Event Layer Tests', () => {
       };
 
       expect(
-        trackLayer.createPropertiesForEcomEvent(checkoutsUpdateWebhook[shopifyTopic], shopifyTopic),
+        TrackLayer.createPropertiesForEcomEvent(checkoutsUpdateWebhook[shopifyTopic], shopifyTopic),
       ).toEqual(expectedOutput);
     });
   });

@@ -149,7 +149,7 @@
             "app_name": "RudderLabs JavaScript SDK",
             "app_version": "1.0.0",
             "language": "en-US",
-            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "session_id": -1,
             "insert_id": "84e26acc-56a5-4835-8233-591137fca468",
             "ip": "0.0.0.0",
             "user_properties": {
@@ -205,7 +205,7 @@
             "app_name": "RudderLabs JavaScript SDK",
             "app_version": "1.0.0",
             "language": "en-US",
-            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "session_id": -1,
             "insert_id": "84e26acc-56a5-4835-8233-591137fca468",
             "ip": "0.0.0.0",
             "user_properties": {
@@ -265,7 +265,7 @@
             "app_name": "RudderLabs JavaScript SDK",
             "app_version": "1.0.0",
             "language": "en-US",
-            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "session_id": -1,
             "event_type": "$identify",
             "user_properties": {
               "anonymousId": "123456",
@@ -330,7 +330,7 @@
               "initial_referring_domain": "docs.rudderstack.com",
               "initial_referrer": "https://docs.rudderstack.com"
             },
-            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "session_id": -1,
             "ip": "1.1.1.1",
             "time": 1571051718299,
             "user_id": "12345",
@@ -389,7 +389,7 @@
               "initial_referring_domain": "docs.rudderstack.com",
               "initial_referrer": "https://docs.rudderstack.com"
             },
-            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "session_id": -1,
             "ip": "1.1.1.1",
             "groups": {
               "Company": "ABC"
@@ -440,7 +440,7 @@
             "app_version": "1.0.0",
             "language": "en-US",
             "event_type": "test track event",
-            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "session_id": -1,
             "event_properties": {
               "user_actual_role": "system_admin",
               "user_actual_id": 12345,
@@ -494,7 +494,7 @@
             "app_name": "RudderLabs JavaScript SDK",
             "app_version": "1.0.0",
             "language": "en-US",
-            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "session_id": -1,
             "event_type": "$identify",
             "user_properties": {
               "anonymousId": "123456",
@@ -3014,7 +3014,7 @@
             "app_name": "RudderLabs JavaScript SDK",
             "app_version": "1.0.0",
             "language": "en-US",
-            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "session_id": -1,
             "event_type": "$identify",
             "device_brand": "testBrand",
             "device_manufacturer": "testManufacturer",
@@ -3159,7 +3159,7 @@
             "app_name": "RudderLabs JavaScript SDK",
             "app_version": "1.0.0",
             "language": "en-US",
-            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "session_id": -1,
             "insert_id": "84e26acc-56a5-4835-8233-591137fca468",
             "ip": "0.0.0.0",
             "user_properties": {
@@ -3731,7 +3731,7 @@
               "initial_referring_domain": "docs.rudderstack.com",
               "name": "ApplicationLoaded"
             },
-            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "session_id": -1,
             "insert_id": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
             "ip": "1.1.1.1",
             "event_id": 2,
@@ -3869,7 +3869,7 @@
             "event_type": "$identify",
             "time": 1571043797562,
             "user_id": "123456",
-            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "session_id": 1662393792,
             "country": "India",
             "city": "kolkata",
             "library": "rudderstack"
@@ -3975,7 +3975,7 @@
               "initial_referring_domain": "docs.rudderstack.com",
               "name": "ApplicationLoaded"
             },
-            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "session_id": -1,
             "insert_id": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
             "ip": "1.1.1.1",
             "event_id": 2,
@@ -4035,7 +4035,7 @@
               "initial_referring_domain": "docs.rudderstack.com",
               "name": "ApplicationLoaded"
             },
-            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "session_id": -1,
             "insert_id": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
             "ip": "1.1.1.1",
             "event_id": 2,
@@ -4095,7 +4095,7 @@
               "initial_referring_domain": "docs.rudderstack.com",
               "name": "ApplicationLoaded"
             },
-            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "session_id": -1,
             "insert_id": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
             "ip": "1.1.1.1",
             "event_id": 2,
@@ -4155,7 +4155,7 @@
               "initial_referring_domain": "docs.rudderstack.com",
               "name": "ApplicationLoaded"
             },
-            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "session_id": -1,
             "insert_id": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
             "ip": "1.1.1.1",
             "event_id": 2,

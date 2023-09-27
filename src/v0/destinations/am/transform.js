@@ -27,6 +27,7 @@ const {
   isAppleFamily,
   isDefinedAndNotNullAndNotEmpty,
   simpleProcessRouterDest,
+  isValidInteger,
 } = require('../../util');
 const {
   BASE_URL,
@@ -80,28 +81,35 @@ const aliasEndpoint = (destConfig) => {
   return retVal;
 };
 
-const handleSessionIdUnderRoot = (message) => {
-  const sessionId = get(message, 'session_id');
+const handleSessionIdUnderRoot = (sessionId) => {
   if (typeof sessionId === 'string') {
     const extractedPart = sessionId.split(':').reverse();
+    if (!isValidInteger(extractedPart[0])) return -1;
     return extractedPart[0];
+  }
+  return Number(sessionId);
+};
+
+const handleSessionIdUnderContext = (sessionId) => {
+  if (!isValidInteger(sessionId)) return -1;
+  return Number(sessionId);
+};
+
+const getSessionId = (message) => {
+  let sessionId = -1;
+  const rootSessionId = get(message, 'session_id');
+  if (rootSessionId) {
+    sessionId = handleSessionIdUnderRoot(rootSessionId);
+    if (sessionId !== -1) {
+      return sessionId;
+    }
+  }
+  const contextSessionId = get(message, 'context.sessionId');
+  if (contextSessionId) {
+    sessionId = handleSessionIdUnderContext(contextSessionId);
   }
   return sessionId;
 };
-
-const handleSessionIdUnderContext = (message) => {
-  let sessionId = get(message, 'context.sessionId');
-  sessionId = Number(sessionId);
-  if (Number.isNaN(sessionId)) return -1;
-  return sessionId;
-};
-
-const getSessionId = (message) =>
-  get(message, 'session_id')
-    ? handleSessionIdUnderRoot(message)
-    : get(message, 'context.sessionId')
-    ? handleSessionIdUnderContext(message)
-    : -1;
 
 const addMinIdlength = () => ({ min_id_length: 1 });
 

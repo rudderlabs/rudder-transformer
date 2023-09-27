@@ -1992,7 +1992,14 @@ const getAuthErrCategoryFromStCode = (status) => {
   }
   return '';
 };
-
+const isValidInteger = (value) => {
+  if (Number.isNaN(value) || !isDefinedAndNotNull(value)) {
+    return false;
+  }
+  // const valueToString = `${value}`;
+  // Use a regular expression to check if the string is a valid integer or a valid floating-point number
+  return /^-?\d+(\.\d+)?$/.test(`${value}`);
+};
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -2096,4 +2103,5 @@ module.exports = {
   groupEventsByType,
   getAuthErrCategoryFromErrDetailsAndStCode,
   getAuthErrCategoryFromStCode,
+  isValidInteger,
 };

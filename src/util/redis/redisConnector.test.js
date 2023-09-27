@@ -3,7 +3,7 @@ const path = require('path');
 const { RedisDB } = require('./redisConnector');
 jest.mock('ioredis', () => require('../../../test/__mocks__/redis'));
 const sourcesList = [
-  // { fileName: 'shopify', name: 'shopify', sourceEndpointVersion: 'v0' },
+  { fileName: 'shopify', name: 'shopify', sourceEndpointVersion: 'v0' },
   { fileName: 'shopify_v1', name: 'shopify', sourceEndpointVersion: 'v1' },
 ];
 process.env.USE_REDIS_DB = 'true';

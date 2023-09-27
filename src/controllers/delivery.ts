@@ -7,8 +7,7 @@ import ControllerUtility from './util';
 import logger from '../logger';
 import DestinationPostTransformationService from '../services/destination/postTransformation';
 import tags from '../v0/util/tags';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { CatchErr, FixMe } from '../util/types';
+import { FixMe } from '../util/types';
 
 export default class DeliveryController {
   public static async deliverToDestination(ctx: Context) {

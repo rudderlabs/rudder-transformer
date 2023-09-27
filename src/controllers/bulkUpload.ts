@@ -58,7 +58,7 @@ export const fileUpload = async (ctx) => {
     response = await destFileUploadHandler.processFileData(ctx.request.body);
   } catch (error: CatchErr) {
     response = {
-      statusCode: error.response ? error.response.status : 400,
+      statusCode: error?.response?.status || error?.status || 400,
       error: error.message || ERROR_MESSAGE_PROCESSOR_STRING,
       metadata: error.response ? error.response.metadata : null,
     };

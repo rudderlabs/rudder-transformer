@@ -31,9 +31,9 @@ const isSubEventTypeProfiles = (message) => {
   return sources.profiles_entity && sources.profiles_id_type && sources.profiles_model;
 };
 
-const transforrmSubEventTypeProfiles = (message, workspaceId) => {
+const transformSubEventTypeProfiles = (message, workspaceId, destinationId) => {
   // form the hash
-  const hash = `${workspaceId}:${message.context.sources.profiles_entity}:${message.context.sources.profiles_id_type}:${message.userId}`;
+  const hash = `${workspaceId}:${destinationId}:${message.context.sources.profiles_entity}:${message.context.sources.profiles_id_type}:${message.userId}`;
   const key = `${message.context.sources.profiles_model}`;
   const value = JSON.stringify(message.traits);
   return {
@@ -59,11 +59,12 @@ const process = (event) => {
   }
 
   const { prefix } = destination.Config;
+  const destinationId = destination.ID;
   const keyPrefix = isEmpty(prefix) ? '' : `${prefix.trim()}:`;
 
   if (isSubEventTypeProfiles(message)) {
     const { workspaceId } = metadata;
-    return transforrmSubEventTypeProfiles(message, workspaceId);
+    return transformSubEventTypeProfiles(message, workspaceId, destinationId);
   }
 
   const hmap = {

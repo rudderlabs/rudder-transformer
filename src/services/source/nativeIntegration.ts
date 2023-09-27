@@ -5,12 +5,11 @@ import {
   RudderMessage,
   SourceTransformationResponse,
 } from '../../types/index';
+import { FixMe } from '../../util/types';
 import PostTransformationServiceSource from './postTransformation';
 import FetchHandler from '../../helpers/fetchHandlers';
 import tags from '../../v0/util/tags';
 import stats from '../../util/stats';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { CatchErr, FixMe } from '../../util/types';
 
 export default class NativeIntegrationSourceService implements IntegrationSourceService {
   public getTags(): MetaTransferObject {
@@ -40,7 +39,7 @@ export default class NativeIntegrationSourceService implements IntegrationSource
           const respEvents: RudderMessage | RudderMessage[] | SourceTransformationResponse =
             await sourceHandler.process(sourceEvent);
           return PostTransformationServiceSource.handleSuccessEventsSource(respEvents);
-        } catch (error: CatchErr) {
+        } catch (error: FixMe) {
           const metaTO = this.getTags();
           stats.increment('source_transform_errors', {
             sourceType,

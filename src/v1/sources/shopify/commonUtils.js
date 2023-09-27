@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+const zlib = require('zlib');
 const stats = require('../../../util/stats');
 const { flattenJson } = require('../../../v0/util');
 const { RedisDB } = require('../../../util/redis/redisConnector');
@@ -24,6 +25,11 @@ const getDataFromRedis = async (key, metricMetadata) => {
       stats.increment('shopify_redis_no_val', {
         ...metricMetadata,
       });
+    }
+    if (dbData?.lineItems !== 'EMPTY') {
+      const decodedData = Buffer.from(dbData.lineItems, 'base64');
+      const decompressedData = zlib.gunzipSync(decodedData).toString();
+      dbData.lineItems = decompressedData;
     }
     return dbData;
   } catch (e) {
@@ -89,7 +95,7 @@ const getLineItemsToStore = (cart) => {
   if (lineItems === 'EMPTY') {
     return lineItems;
   }
-  return JSON.stringify(lineItems);
+  return zlib.gzipSync(JSON.stringify(lineItems)).toString('base64'); // compressing the data here
   // return msgpack.encode(lineItems);
 };
 

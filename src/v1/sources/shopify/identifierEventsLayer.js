@@ -50,7 +50,7 @@ const identifierEventLayer = {
         ...metricMetadata,
       });
     }
-    return [NO_OPERATION_SUCCESS, NO_OPERATION_SUCCESS];
+    return [NO_OPERATION_SUCCESS];
   },
 };
 

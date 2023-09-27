@@ -11,6 +11,7 @@ const { trackLayer } = require('./trackEventsLayer');
 const { identifierEventLayer } = require('./identifierEventsLayer');
 const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../../v0/util');
 const { IDENTIFY_TOPICS, INTEGRATION } = require('./config');
+const { process: processV0 } = require('../../../v0/sources/shopify/transform');
 
 const processEvent = async (inputEvent, metricMetadata) => {
   let message;
@@ -66,7 +67,11 @@ const processEvent = async (inputEvent, metricMetadata) => {
   return message;
 };
 
-const process = async (event) => {
+const process = async (inputEvent) => {
+  const { event, source } = inputEvent;
+  if (source.Config.version !== 'v1') {
+    return processV0(event);
+  }
   const metricMetadata = {
     writeKey: event.query_parameters?.writeKey?.[0],
     source: 'SHOPIFY',

@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const directoryMap = {
     "shopify_test": "shopify",
-    "shopify_v2_test": "shopify_v2",
+    "shopify_v1_test": "shopify_v1",
     "redis_test": "redis",
 }
 const getData = redisKey => {
@@ -23,7 +23,7 @@ const getData = redisKey => {
 }
 let connectionRequestCount = 0;
 const getCallKeysForError = ["error", "shopifyGetAnonymousId", "shopifyGetSessionId", "shopify_test_get_items_fail"];
-const setCallKeysForError = ["error", "shopify_test_set_map_fail", "shopify_test_set_redis_error", "shopify_v2_test_set_map_fail", "shopify_v2_test_set_redis_error"];
+const setCallKeysForError = ["error", "shopify_test_set_map_fail", "shopify_test_set_redis_error", "shopify_v1_test_set_map_fail", "shopify_v1_test_set_redis_error"];
 class Redis {
     constructor(data) {
         this.host = data.host,

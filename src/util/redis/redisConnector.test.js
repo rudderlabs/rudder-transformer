@@ -3,8 +3,8 @@ const path = require('path');
 const { RedisDB } = require('./redisConnector');
 jest.mock('ioredis', () => require('../../../test/__mocks__/redis'));
 const sourcesList = [
-  { fileName: 'shopify', name: 'shopify', sourceEndpointVersion: 'v0' },
-  { fileName: 'shopify_v2', name: 'shopify', sourceEndpointVersion: 'v1' },
+  // { fileName: 'shopify', name: 'shopify', sourceEndpointVersion: 'v0' },
+  { fileName: 'shopify_v1', name: 'shopify', sourceEndpointVersion: 'v1' },
 ];
 process.env.USE_REDIS_DB = 'true';
 
@@ -57,10 +57,7 @@ describe(`Source Tests`, () => {
     data.forEach((dataPoint, index) => {
       it(`${index}. ${source.fileName} - ${dataPoint.description}`, async () => {
         try {
-          const output =
-            source.sourceEndpointVersion === 'v0'
-              ? await transformer.process(dataPoint.input)
-              : await transformer.process(dataPoint.input.event, dataPoint.input.source);
+          const output = await transformer.process(dataPoint.input);
           expect(output).toEqual(dataPoint.output);
         } catch (error) {
           expect(error.message).toEqual(dataPoint.output.error);

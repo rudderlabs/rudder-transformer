@@ -38,7 +38,6 @@ const version = '1';
 const destinations = [
   'marketo',
   'braze',
-  'pardot',
   'google_adwords_remarketing_lists',
   'google_adwords_enhanced_conversions',
   'facebook_pixel',

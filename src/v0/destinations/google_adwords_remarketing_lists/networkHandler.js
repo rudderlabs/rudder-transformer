@@ -103,6 +103,13 @@ const gaAudienceProxyRequest = async (request) => {
     return firstResponse;
   }
 
+  if (isHttpStatusSuccess(firstResponse?.response?.status)) {
+    const { partialFailureError } = firstResponse.response.data;
+    if (partialFailureError && partialFailureError.code !== 0) {
+      return firstResponse;
+    }
+  }
+
   // step2: putting users into the job
   let jobId;
   if (firstResponse?.response?.data?.resourceName)

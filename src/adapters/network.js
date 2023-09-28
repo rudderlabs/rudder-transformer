@@ -9,6 +9,8 @@ const log = require('../logger');
 const stats = require('../util/stats');
 const { removeUndefinedValues } = require('../v0/util');
 const { processAxiosResponse } = require('./utils/networkUtils');
+// Only for tests
+const { setResponsesForMockAxiosAdapter } = require('../../test/testHelper');
 
 const MAX_CONTENT_LENGTH = parseInt(process.env.MAX_CONTENT_LENGTH, 10) || 100000000;
 const MAX_BODY_LENGTH = parseInt(process.env.MAX_BODY_LENGTH, 10) || 100000000;
@@ -84,6 +86,7 @@ const httpSend = async (options, statTags = {}) => {
   const requestOptions = enhanceRequestOptions(options);
 
   const startTime = new Date();
+  const { url, data, method } = requestOptions;
   try {
     const response = await axios(requestOptions);
     clientResponse = { success: true, response };
@@ -92,6 +95,8 @@ const httpSend = async (options, statTags = {}) => {
   } finally {
     fireHTTPStats(clientResponse, startTime, statTags);
   }
+
+  setResponsesForMockAxiosAdapter({ url, data, method, options }, clientResponse);
   return clientResponse;
 };
 
@@ -117,6 +122,7 @@ const httpGET = async (url, options, statTags = {}) => {
   } finally {
     fireHTTPStats(clientResponse, startTime, statTags);
   }
+  setResponsesForMockAxiosAdapter({ url, options, method: 'GET' }, clientResponse);
   return clientResponse;
 };
 
@@ -142,6 +148,7 @@ const httpDELETE = async (url, options, statTags = {}) => {
   } finally {
     fireHTTPStats(clientResponse, startTime, statTags);
   }
+  setResponsesForMockAxiosAdapter({ url, options, method: 'DELETE' }, clientResponse);
   return clientResponse;
 };
 
@@ -168,6 +175,7 @@ const httpPOST = async (url, data, options, statTags = {}) => {
   } finally {
     fireHTTPStats(clientResponse, startTime, statTags);
   }
+  setResponsesForMockAxiosAdapter({ url, data, options, method: 'POST' }, clientResponse);
   return clientResponse;
 };
 
@@ -194,6 +202,7 @@ const httpPUT = async (url, data, options, statTags = {}) => {
   } finally {
     fireHTTPStats(clientResponse, startTime, statTags);
   }
+  setResponsesForMockAxiosAdapter({ url, data, options, method: 'PUT' }, clientResponse);
   return clientResponse;
 };
 
@@ -220,6 +229,7 @@ const httpPATCH = async (url, data, options, statTags = {}) => {
   } finally {
     fireHTTPStats(clientResponse, startTime, statTags);
   }
+  setResponsesForMockAxiosAdapter({ url, data, options, method: 'PATCH' }, clientResponse);
   return clientResponse;
 };
 
@@ -388,4 +398,5 @@ module.exports = {
   getPayloadData,
   getFormData,
   handleHttpRequest,
+  enhanceRequestOptions,
 };

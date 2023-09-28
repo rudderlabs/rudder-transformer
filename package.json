@@ -36,6 +36,7 @@
     "test:js:silent": "npm run test:js -- --silent",
     "test:js:ci": "npm run test:js -- --coverage --expand --maxWorkers=50%",
     "test:ts": "jest -c jest.config.typescript.js --detectOpenHandles",
+    "test:ts:component:generateNwMocks": "npm run test:ts -- component --generate=true",
     "test:ts:silent": "npm run test:ts -- --silent",
     "test:ts:ci": "npm run test:ts -- --coverage --expand --maxWorkers=50%",
     "test:ut:integration": "jest \"user_transformation.integration.test.js\"  --detectOpenHandles --notify",
@@ -113,6 +114,7 @@
   "devDependencies": {
     "@commitlint/config-conventional": "^17.6.3",
     "@digitalroute/cz-conventional-changelog-for-jira": "^8.0.1",
+    "@types/fast-json-stable-stringify": "^2.1.0",
     "@types/jest": "^29.5.1",
     "@types/koa": "^2.13.6",
     "@types/koa-bodyparser": "^4.3.10",
@@ -120,6 +122,7 @@
     "@types/node": "^20.2.5",
     "@typescript-eslint/eslint-plugin": "^5.61.0",
     "@typescript-eslint/parser": "^5.59.2",
+    "axios-mock-adapter": "^1.22.0",
     "benchmark-suite": "^0.1.8",
     "commander": "^10.0.1",
     "commitizen": "^4.3.0",

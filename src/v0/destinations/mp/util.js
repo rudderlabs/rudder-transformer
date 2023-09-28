@@ -1,5 +1,6 @@
 const set = require('set-value');
 const get = require('get-value');
+const zlib = require('zlib');
 const {
   isDefined,
   constructPayload,
@@ -212,11 +213,22 @@ const groupEventsByEndpoint = (events) => {
 
 const generateBatchedPayloadForArray = (events) => {
   const { batchedRequest } = defaultBatchRequestConfig();
+  const firstEvent = events[0];
+  batchedRequest.endpoint = firstEvent.endpoint;
+  batchedRequest.headers = firstEvent.headers;
+  batchedRequest.params = firstEvent.params;
+
   const batchResponseList = events.flatMap((event) => JSON.parse(event.body.JSON_ARRAY.batch));
-  batchedRequest.body.JSON_ARRAY = { batch: JSON.stringify(batchResponseList) };
-  batchedRequest.endpoint = events[0].endpoint;
-  batchedRequest.headers = events[0].headers;
-  batchedRequest.params = events[0].params;
+  // Gzipping the payload for /import endpoint
+  if (firstEvent.endpoint.includes('import')) {
+    batchedRequest.body.GZIP = {
+      payload: zlib.gzipSync(JSON.stringify(batchResponseList)).toString('base64'),
+    };
+    batchedRequest.headers['Content-Encoding'] = 'gzip';
+  } else {
+    batchedRequest.body.JSON_ARRAY = { batch: JSON.stringify(batchResponseList) };
+  }
+
   return batchedRequest;
 };
 
@@ -284,6 +296,7 @@ module.exports = {
   createIdentifyResponse,
   isImportAuthCredentialsAvailable,
   groupEventsByEndpoint,
+  generateBatchedPayloadForArray,
   batchEvents,
   combineBatchRequestsWithSameJobIds,
 };

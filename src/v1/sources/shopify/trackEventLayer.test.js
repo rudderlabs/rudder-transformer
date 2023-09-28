@@ -464,7 +464,7 @@ describe('Track Event Layer Tests', () => {
 
     it('Multiple Product Removed event with lesser quantity and no quantity', async () => {
       const dbData = {
-        lineItems: JSON.stringify({
+        lineItems: {
           123456: {
             quantity: 7,
             variant_id: 123456,
@@ -483,7 +483,7 @@ describe('Track Event Layer Tests', () => {
             title: 'Shirt 2 - Medium',
             vendor: 'example',
           },
-        }),
+        },
       };
       const input = {
         id: 'cart_id',

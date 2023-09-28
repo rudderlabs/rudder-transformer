@@ -29,7 +29,7 @@ const getDataFromRedis = async (key, metricMetadata) => {
     if (dbData?.lineItems !== 'EMPTY') {
       const decodedData = Buffer.from(dbData.lineItems, 'base64');
       const decompressedData = zlib.gunzipSync(decodedData).toString();
-      dbData.lineItems = decompressedData;
+      dbData.lineItems = JSON.parse(decompressedData);
     }
     return dbData;
   } catch (e) {
@@ -95,16 +95,9 @@ const getLineItemsToStore = (cart) => {
   if (lineItems === 'EMPTY') {
     return lineItems;
   }
-  return zlib.gzipSync(JSON.stringify(lineItems)).toString('base64'); // compressing the data here
-  // return msgpack.encode(lineItems);
-};
+  const a = zlib.gzipSync(JSON.stringify(lineItems));
 
-const getUnhashedLineItems = (lineItems) => {
-  if (lineItems === 'EMPTY') {
-    return {};
-  }
-  return JSON.parse(lineItems);
-  // return msgpack.decode(lineItems);
+  return a.toString('base64'); // compressing the data here
 };
 
 const extractEmailFromPayload = (event) => {
@@ -127,5 +120,4 @@ module.exports = {
   extractEmailFromPayload,
   getLineItemsToStore,
   getDataFromRedis,
-  getUnhashedLineItems,
 };

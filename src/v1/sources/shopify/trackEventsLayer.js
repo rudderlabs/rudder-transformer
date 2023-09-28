@@ -17,11 +17,7 @@ const { enrichPayload } = require('./enrichmentLayer');
 const Message = require('../../../v0/sources/message');
 const { EventType } = require('../../../constants');
 const stats = require('../../../util/stats');
-const {
-  extractEmailFromPayload,
-  getUnhashedLineItems,
-  getLineItemsToStore,
-} = require('./commonUtils');
+const { extractEmailFromPayload, getLineItemsToStore } = require('./commonUtils');
 const {
   removeUndefinedAndNullValues,
   constructPayload,
@@ -181,7 +177,7 @@ const TrackLayer = {
 
   async generateProductAddedAndRemovedEvents(event, dbData, metricMetadata) {
     const events = [];
-    let prevLineItems = dbData?.lineItems;
+    const prevLineItems = dbData?.lineItems;
     // if no prev cart is found we trigger product added event for every line_item present
     if (!prevLineItems) {
       event?.line_items.forEach((product) => {
@@ -190,7 +186,6 @@ const TrackLayer = {
       });
       return events;
     }
-    prevLineItems = getUnhashedLineItems(prevLineItems);
     // This will compare current cartSate with previous cartState
     event?.line_items.forEach((product) => {
       const key = product.id;
@@ -217,12 +212,14 @@ const TrackLayer = {
       }
     });
     // We also want to see what prevLineItems are not present in the currentCart to trigger Product Removed Event for them
-    Object.keys(prevLineItems).forEach((lineItemID) => {
-      const product = prevLineItems[lineItemID];
-      const updatedProduct = this.getUpdatedProductProperties(product, event?.id || event?.token);
-      updatedProduct.id = lineItemID;
-      events.push(this.ecomPayloadBuilder(updatedProduct, 'product_removed'));
-    });
+    if (prevLineItems !== 'EMPTY') {
+      Object.keys(prevLineItems).forEach((lineItemID) => {
+        const product = prevLineItems[lineItemID];
+        const updatedProduct = this.getUpdatedProductProperties(product, event?.id || event?.token);
+        updatedProduct.id = lineItemID;
+        events.push(this.ecomPayloadBuilder(updatedProduct, 'product_removed'));
+      });
+    }
     if (events.length > 0) {
       await this.updateCartState(
         getLineItemsToStore(event),

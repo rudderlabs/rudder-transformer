@@ -143,7 +143,6 @@ const isImportAuthCredentialsAvailable = (destination) =>
 const findExistingBatch = (batch, metadataMap) => {
   let existingBatch = null;
 
-  // eslint-disable-next-line no-restricted-syntax
   for (const metadataItem of batch.metadata) {
     if (metadataMap.has(metadataItem.jobId)) {
       existingBatch = metadataMap.get(metadataItem.jobId);

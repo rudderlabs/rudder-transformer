@@ -96,7 +96,6 @@ const responseBuilderSimple = (payload, message, eventType, destConfig) => {
       }
       break;
     case 'merge':
-      // eslint-disable-next-line no-case-declarations
       const credentials = setImportCredentials(destConfig);
       response.endpoint = credentials.endpoint;
       response.headers = credentials.headers;

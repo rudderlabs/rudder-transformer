@@ -177,6 +177,7 @@ const aliasResponseBuilder = (message, userId) => {
   if (validateEmail(userId)) {
     cioProperty = 'email';
   }
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   let prev_cioProperty = 'id';
   if (validateEmail(message.previousId)) {
     prev_cioProperty = 'email';

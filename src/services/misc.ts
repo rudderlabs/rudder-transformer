@@ -1,3 +1,4 @@
+/* eslint-disable global-require, import/no-dynamic-require */
 import fs from 'fs';
 import path from 'path';
 import { Context } from 'koa';
@@ -21,6 +22,7 @@ export default class MiscService {
     return require(`../${version}/destinations/${dest}/deleteUsers`);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public static getRequestMetadata(ctx: Context) {
     // TODO: Parse information such as
     // cluster, namespace, etc information

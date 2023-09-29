@@ -17,14 +17,15 @@ import { getMetadata, isNonFuncObject } from '../v0/util';
 import { SUPPORTED_FUNC_NAMES } from '../util/ivmFactory';
 import logger from '../logger';
 import stats from '../util/stats';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { CatchErr, FixMe } from '../util/types';
 
 export default class UserTransformService {
   public static async transformRoutine(
     events: ProcessorTransformationRequest[],
   ): Promise<UserTransformationServiceResponse> {
-    const startTime = new Date();
     let retryStatus = 200;
-    const groupedEvents: Object = groupBy(
+    const groupedEvents: NonNullable<unknown> = groupBy(
       events,
       (event: ProcessorTransformationRequest) =>
         `${event.metadata.destinationId}_${event.metadata.sourceId}`,
@@ -32,14 +33,14 @@ export default class UserTransformService {
     stats.counter('user_transform_function_group_size', Object.entries(groupedEvents).length, {});
     stats.histogram('user_transform_input_events', events.length, {});
 
-    const transformedEvents: any[] = [];
-    let librariesVersionIDs: any[] = [];
+    const transformedEvents: FixMe[] = [];
+    let librariesVersionIDs: FixMe[] = [];
     if (events[0].libraries) {
       librariesVersionIDs = events[0].libraries.map(
         (library: UserTransformationLibrary) => library.VersionID,
       );
     }
-    const responses = await Promise.all<any>(
+    const responses = await Promise.all<FixMe>(
       Object.entries(groupedEvents).map(async ([dest, destEvents]) => {
         logger.debug(`dest: ${dest}`);
         const eventsToProcess = destEvents as ProcessorTransformationRequest[];
@@ -86,7 +87,7 @@ export default class UserTransformService {
                   statusCode: 400,
                   error: ev.error,
                   metadata: isEmpty(ev.metadata) ? commonMetadata : ev.metadata,
-                } as ProcessorTransformationResponse;
+                } as unknown as ProcessorTransformationResponse;
               }
               if (!isNonFuncObject(ev.transformedEvent)) {
                 return {
@@ -104,7 +105,7 @@ export default class UserTransformService {
               } as ProcessorTransformationResponse;
             }),
           );
-        } catch (error: any) {
+        } catch (error: CatchErr) {
           logger.error(error);
           let status = 400;
           const errorString = error.toString();
@@ -153,7 +154,7 @@ export default class UserTransformService {
   }
 
   public static async testTransformRoutine(events, trRevCode, libraryVersionIDs) {
-    const response: any = {};
+    const response: FixMe = {};
     try {
       if (!trRevCode || !trRevCode.code || !trRevCode.codeVersion) {
         throw new Error('Invalid Request. Missing parameters in transformation code block');
@@ -163,6 +164,7 @@ export default class UserTransformService {
       }
 
       logger.debug(`[CT] Test Input Events: ${JSON.stringify(events)}`);
+      // eslint-disable-next-line no-param-reassign
       trRevCode.versionId = 'testVersionId';
       response.body = await userTransformHandler()(
         events,
@@ -173,7 +175,7 @@ export default class UserTransformService {
       );
       logger.debug(`[CT] Test Output Events: ${JSON.stringify(response.body.transformedEvents)}`);
       response.status = 200;
-    } catch (error: any) {
+    } catch (error: CatchErr) {
       response.status = 400;
       response.body = {
         error: extractStackTraceUptoLastSubstringMatch(error.stack, SUPPORTED_FUNC_NAMES),

@@ -1,3 +1,6 @@
+import { CatchErr, FixMe } from '../util/types';
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
 type ProcessorTransformationOutput = {
   version: string;
   type: string;
@@ -25,8 +28,8 @@ type Metadata = {
   sourceCategory: string;
   trackingPlanId: string;
   trackingPlanVersion: number;
-  sourceTpConfig: Object;
-  mergedTpConfig: Object;
+  sourceTpConfig: object;
+  mergedTpConfig: object;
   destinationId: string;
   jobRunId: string;
   jobId: number;
@@ -35,7 +38,7 @@ type Metadata = {
   sourceJobRunId: string;
   sourceTaskId: string;
   sourceTaskRunId: string;
-  recordId: Object;
+  recordId: object;
   destinationType: string;
   messageId: string;
   oauthAccessToken: string;
@@ -52,21 +55,21 @@ type Metadata = {
 type UserTransformationInput = {
   VersionID: string;
   ID: string;
-  Config: Object;
+  Config: object;
 };
 
 type DestinationDefinition = {
   ID: string;
   Name: string;
   DisplayName: string;
-  Config: Object;
+  Config: FixMe;
 };
 
 type Destination = {
   ID: string;
   Name: string;
   DestinationDefinition: DestinationDefinition;
-  Config: Object;
+  Config: FixMe;
   Enabled: boolean;
   WorkspaceID: string;
   Transformations: UserTransformationInput[];
@@ -78,16 +81,16 @@ type UserTransformationLibrary = {
 };
 
 type ProcessorTransformationRequest = {
-  request?: Object;
-  message: Object;
+  request?: object;
+  message: object;
   metadata: Metadata;
   destination: Destination;
   libraries: UserTransformationLibrary[];
 };
 
 type RouterTransformationRequestData = {
-  request?: Object;
-  message: Object;
+  request?: object;
+  message: object;
   metadata: Metadata;
   destination: Destination;
 };
@@ -102,7 +105,7 @@ type ProcessorTransformationResponse = {
   metadata: Metadata;
   statusCode: number;
   error?: string;
-  statTags: Object;
+  statTags: object;
 };
 
 type RouterTransformationResponse = {
@@ -112,7 +115,7 @@ type RouterTransformationResponse = {
   batched: boolean;
   statusCode: number;
   error: string;
-  statTags: Object;
+  statTags: object;
 };
 
 type SourceTransformationOutput = {
@@ -121,17 +124,17 @@ type SourceTransformationOutput = {
 
 type SourceTransformationResponse = {
   output: SourceTransformationOutput;
-  error: Object;
+  error: CatchErr;
   statusCode: number;
-  outputToSource: Object;
-  statTags: Object;
+  outputToSource: object;
+  statTags: object;
 };
 
 type DeliveryResponse = {
   status: number;
   message: string;
-  destinationResponse: Object;
-  statTags: Object;
+  destinationResponse: object;
+  statTags: object;
   authErrorCategory?: string;
 };
 
@@ -150,15 +153,15 @@ type RudderMessage = {
   anonymousId: string;
   type: MessageType;
   channel: string;
-  context: Object;
+  context: object;
   originalTimestamp: Date;
   sentAt: Date;
   timestamp: Date;
   event?: string;
-  integrations?: Object;
+  integrations?: object;
   messageId: string;
-  properties?: Object;
-  traits?: Object;
+  properties?: object;
+  traits?: object;
 };
 
 type ErrorDetailer = {
@@ -187,7 +190,7 @@ type MetaTransferObject = {
 type UserTransformationResponse = {
   transformedEvent: RudderMessage;
   metadata: Metadata;
-  error: Object;
+  error: CatchErr;
 };
 
 type UserTransformationServiceResponse = {
@@ -196,8 +199,8 @@ type UserTransformationServiceResponse = {
 };
 
 type UserDeletionRequest = {
-  userAttributes: any[];
-  config: Object;
+  userAttributes: FixMe[];
+  config: object;
   destType: string;
   jobId: string;
 };
@@ -206,15 +209,15 @@ type UserDeletionResponse = {
   statusCode: number;
   error?: string;
   status?: string;
-  authErrorCategory: any;
-  statTags: Object;
+  authErrorCategory: FixMe;
+  statTags: object;
 };
 
 type ComparatorInput = {
   events: ProcessorTransformationRequest[] | RouterTransformationRequestData[];
   destination: string;
   version: string;
-  requestMetadata: Object;
+  requestMetadata: object;
   feature: string;
 };
 

@@ -4,9 +4,9 @@ export default interface SourceService {
   getTags(): MetaTransferObject;
 
   sourceTransformRoutine(
-    sourceEvents: Object[],
+    sourceEvents: NonNullable<unknown>[],
     sourceType: string,
     version: string,
-    requestMetadata: Object,
+    requestMetadata: NonNullable<unknown>,
   ): Promise<SourceTransformationResponse[]>;
 }

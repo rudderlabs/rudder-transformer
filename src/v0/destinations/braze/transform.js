@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary,no-param-reassign */
-const _ = require('lodash');
+const lodash = require('lodash');
 const get = require('get-value');
 const {
   BrazeDedupUtility,
@@ -379,6 +379,7 @@ function processGroup(message, destination) {
     } else if (email) {
       subscriptionGroup.emails = [email];
     }
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const subscription_groups = [subscriptionGroup];
     const response = defaultRequestConfig();
     response.endpoint = getSubscriptionGroupEndPoint(getEndpointFromConfig(destination));
@@ -518,7 +519,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
     BrazeDedupUtility.updateUserStore(userStore, lookedUpUsers, destination.ID);
   }
   // group events by userId or anonymousId and then call process
-  const groupedInputs = _.groupBy(
+  const groupedInputs = lodash.groupBy(
     inputs,
     (input) => input.message.userId || input.message.anonymousId,
   );
@@ -537,7 +538,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
 
   const output = await Promise.all(allResps);
 
-  const allTransfomredEvents = _.flatMap(output);
+  const allTransfomredEvents = lodash.flatMap(output);
   return processBatch(allTransfomredEvents);
 };
 

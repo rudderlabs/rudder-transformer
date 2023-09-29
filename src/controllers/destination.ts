@@ -14,7 +14,7 @@ import stats from '../util/stats';
 import logger from '../logger';
 import { getIntegrationVersion } from '../util/utils';
 import tags from '../v0/util/tags';
-import { DynamicConfigParser } from '../util/dynamicConfigParser';
+import DynamicConfigParser from '../util/dynamicConfigParser';
 
 export default class DestinationController {
   public static async destinationTransformAtProcessor(ctx: Context) {

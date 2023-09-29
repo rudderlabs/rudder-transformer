@@ -18,6 +18,8 @@ const { BASE_ENDPOINT } = require('./config');
 const { NetworkError, NetworkInstrumentationError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 
+const ERROR_MSG_PATH = 'response[0].error.message';
+
 /**
  *  This function is used for collecting the conversionActionId using the conversion name
  * @param {*} method
@@ -49,8 +51,8 @@ const getConversionActionId = async (method, headers, params) => {
     if (!isHttpStatusSuccess(gaecConversionActionIdResponse.status)) {
       throw new NetworkError(
         `"${JSON.stringify(
-          get(gaecConversionActionIdResponse, 'response[0].error.message', '')
-            ? get(gaecConversionActionIdResponse, 'response[0].error.message', '')
+          get(gaecConversionActionIdResponse, ERROR_MSG_PATH, '')
+            ? get(gaecConversionActionIdResponse, ERROR_MSG_PATH, '')
             : gaecConversionActionIdResponse.response,
         )} during Google_adwords_enhanced_conversions response transformation"`,
         gaecConversionActionIdResponse.status,
@@ -60,7 +62,7 @@ const getConversionActionId = async (method, headers, params) => {
         gaecConversionActionIdResponse.response,
         getAuthErrCategoryFromErrDetailsAndStCode(
           get(gaecConversionActionIdResponse, 'status'),
-          get(gaecConversionActionIdResponse, 'response[0].error.message'),
+          get(gaecConversionActionIdResponse, ERROR_MSG_PATH),
         ),
       );
     }
@@ -107,7 +109,23 @@ const responseHandler = (destinationResponse) => {
   const message = 'Request Processed Successfully';
   const { status } = destinationResponse;
   if (isHttpStatusSuccess(status)) {
-    // Mostly any error will not have a status of 2xx
+    // for google ads enhance conversions the partialFailureError returns with status 200
+    const { partialFailureError } = destinationResponse.response;
+    // non-zero code signifies partialFailure
+    // Ref - https://github.com/googleapis/googleapis/blob/master/google/rpc/code.proto
+    if (partialFailureError && partialFailureError.code !== 0) {
+      throw new NetworkError(
+        `[Google Ads Offline Conversions]:: partialFailureError - ${JSON.stringify(
+          partialFailureError,
+        )}`,
+        400,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(400),
+        },
+        partialFailureError,
+      );
+    }
+
     return {
       status,
       message,
@@ -127,7 +145,8 @@ const responseHandler = (destinationResponse) => {
     getAuthErrCategoryFromErrDetailsAndStCode(status, response),
   );
 };
-// eslint-disable-next-line func-names
+
+// eslint-disable-next-line func-names, @typescript-eslint/naming-convention
 class networkHandler {
   constructor() {
     this.proxy = ProxyRequest;
@@ -136,4 +155,5 @@ class networkHandler {
     this.prepareProxy = prepareProxyRequest;
   }
 }
+
 module.exports = { networkHandler };

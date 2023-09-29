@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+/* eslint-disable @typescript-eslint/naming-convention */
 const { v5 } = require('uuid');
 const sha256 = require('sha256');
 const stats = require('../../../util/stats');
@@ -116,11 +117,11 @@ const extractEmailFromPayload = (event) => {
 };
 
 const getCartToken = (message) => {
-  const { event } = message;
+  const { event, properties } = message;
   if (event === SHOPIFY_TRACK_MAP.carts_update) {
-    return message.properties?.id || message.properties?.token;
+    return properties?.id || properties?.token;
   }
-  return message.properties?.cart_token || null;
+  return properties?.cart_token || null;
 };
 
 /**
@@ -234,10 +235,10 @@ const checkAndUpdateCartItems = async (inputEvent, redisData, metricMetadata) =>
     }
     await updateCartItemsInRedis(cartToken, newCartItemsHash, metricMetadata);
   } else {
-    const { created_at, updated_at } = inputEvent;
+    const { created_at, updated_at, line_items } = inputEvent;
     const timeDifference = Date.parse(updated_at) - Date.parse(created_at);
     const isTimeWithinThreshold = timeDifference < maxTimeToIdentifyRSGeneratedCall;
-    const isLineItemsEmpty = inputEvent?.line_items?.length === 0;
+    const isLineItemsEmpty = line_items?.length === 0;
 
     if (isTimeWithinThreshold && isLineItemsEmpty) {
       return false;

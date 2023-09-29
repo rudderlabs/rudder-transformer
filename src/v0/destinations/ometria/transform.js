@@ -1,4 +1,4 @@
-/* eslint-disable one-var */
+/* eslint-disable one-var, @typescript-eslint/naming-convention */
 /* eslint-disable camelcase */
 const { EventType } = require('../../../constants');
 const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');

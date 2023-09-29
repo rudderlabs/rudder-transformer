@@ -106,7 +106,7 @@ const responseBuilder = (message, { Config }) => {
       }
       break;
     default:
-      throw ConfigurationError('Invalid type of client');
+      throw new ConfigurationError('Invalid type of client');
   }
 
   let payload = {};
@@ -233,7 +233,7 @@ const responseBuilder = (message, { Config }) => {
   }
 
   // Prepare GA4 user properties
-  const userProperties = prepareUserProperties(message);
+  const userProperties = prepareUserProperties(message,Config.piiPropertiesToIgnore);
   if (!isEmptyObject(userProperties)) {
     rawPayload.user_properties = userProperties;
   }

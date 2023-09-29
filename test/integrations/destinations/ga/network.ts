@@ -289,5 +289,39 @@ const deleteNwData = [
       statusText: 'OK',
     },
   },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://www.googleapis.com/analytics/v3/userDeletion/userDeletionRequests:upsert',
+      data: {
+        kind: 'analytics#userDeletionRequest',
+        id: {
+          type: 'USER_ID',
+          userId: 'test_user_20',
+        },
+        webPropertyId: 'UA-123456789-7',
+      },
+      headers: {
+        Authorization: 'Bearer no_permissions_token',
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    },
+    httpRes: {
+      data: {
+        error: {
+          errors: [
+            {
+              reason: 'insufficientPermissions',
+            },
+          ],
+          code: 403,
+          message: 'User does not have sufficient permissions',
+        },
+      },
+      status: 200,
+      statusText: 'OK',
+    },
+  },
 ];
 export const networkCallsData = [...deleteNwData];

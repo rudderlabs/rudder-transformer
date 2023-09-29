@@ -311,6 +311,33 @@ describe('Google Analytics 4 utils test', () => {
         });
       });
 
+      // PII properties are undefined
+      it('should return undefined when user_properties is undefined', () => {
+        // Arrange
+        const message = {
+          properties: {
+            user_properties: {
+              property1: 'value1',
+              property2: 'value2',
+              pii_property1: 'pii_value1',
+              pii_property2: 'pii_value2',
+            },
+          },
+        };
+        const piiPropertiesToIgnore = undefined;
+
+        // Act
+        const result = prepareUserProperties(message, piiPropertiesToIgnore);
+
+        // Assert
+        expect(result).toEqual({
+          pii_property1: { value: 'pii_value1' },
+          pii_property2: { value: 'pii_value2' },
+          property1: { value: 'value1' },
+          property2: { value: 'value2' },
+        });
+      });
+
       // User properties with valid keys and values are returned in expected format
       it('should return user properties with valid keys and values in expected format', () => {
         // Arrange

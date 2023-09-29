@@ -5,46 +5,49 @@ import eventValidator from '../util/eventValidation';
 import stats from '../util/stats';
 
 export default class TrackingPlanservice {
-  public static async validateTrackingPlan(events, requestSize, reqParams) {
+  /**
+   * validate takes in events as argument and iterates over the events
+   * validating them using the tracking 
+   * @param events 
+   * @param requestSize 
+   * @param reqParams 
+   * @returns 
+   */
+  public static async validate(events, requestSize, reqParams) {
     const requestStartTime = new Date();
-    const respList: any[] = [];
+    const validatedEvents: any[] = [];
     const metaTags = events[0].metadata ? getMetadata(events[0].metadata) : {};
     let ctxStatusCode = 200;
 
-    for (let i = 0; i < events.length; i++) {
-      const event = events[i];
-      const eventStartTime = new Date();
+
+    events.forEach(async (event) => {
+      let errorReport;
+      let exception = false;
+
       try {
         const parsedEvent = event;
         parsedEvent.request = { query: reqParams };
-        const hv = await eventValidator.handleValidation(parsedEvent);
-        if (hv['dropEvent']) {
-          respList.push({
-            output: event.message,
-            metadata: event.metadata,
-            statusCode: 400,
-            validationErrors: hv['validationErrors'],
-            error: JSON.stringify(constructValidationErrors(hv['validationErrors'])),
-          });
-          stats.counter('tp_violation_type', 1, {
-            violationType: hv['violationType'],
-            ...metaTags,
-          });
-        } else {
-          respList.push({
-            output: event.message,
-            metadata: event.metadata,
-            statusCode: 200,
-            validationErrors: hv['validationErrors'],
-            error: JSON.stringify(constructValidationErrors(hv['validationErrors'])),
-          });
-          stats.counter('tp_propagated_events', 1, {
-            ...metaTags,
-          });
-        }
+        const failure = await eventValidator.handleValidation(parsedEvent);
+
+        failure['dropEvent'] ? 
+        errorReport = {
+          statusCode: 400,
+          validationErrors: failure['validationErrors'],
+          error: JSON.stringify(constructValidationErrors(failure['validationErrors'])),
+          violationType: failure['violationType'],
+        }:
+        errorReport = {
+          statusCode: 200,
+          validationErrors: failure['validationErrors'],
+          error: JSON.stringify(constructValidationErrors(failure['validationErrors'])),
+        };
+
       } catch (error) {
+        exception = true;
+
         const errMessage = `Error occurred while validating : ${error}`;
         logger.error(errMessage);
+
         let status = 200;
         if (error instanceof RetryRequestError) {
           ctxStatusCode = error.statusCode;
@@ -52,24 +55,35 @@ export default class TrackingPlanservice {
         if (error instanceof RespStatusError) {
           status = error.statusCode;
         }
-        respList.push({
-          output: event.message,
-          metadata: event.metadata,
+
+        errorReport = {
           statusCode: status,
           validationErrors: [],
           error: errMessage,
-        });
-        stats.counter('tp_errors', 1, {
-          ...metaTags,
-          workspaceId: event.metadata?.workspaceId,
-          trackingPlanId: event.metadata?.trackingPlanId,
-        });
-      } finally {
-        stats.timing('tp_event_latency', eventStartTime, {
-          ...metaTags,
-        });
+        }
       }
-    }
+
+      // stat which is fired per tp event validation level
+      // containing labels which allows us to identify the information
+      // at each stage.
+      stats.counter('tp_event_validation', 1, {
+        ...metaTags,
+        workspaceId: event.metadata?.workspaceId,
+        trackingPlanId: event.metadata?.trackingPlanId,
+        status: errorReport?.status,
+        violationType: errorReport.violationType ? errorReport.violationType : '',
+        exception: exception,
+      });
+
+      // push validated event into final return which contains error report
+      // for the validation and output along with metadata.
+      validatedEvents.push({
+        output: event.message,
+        meatdata: event.metadata,
+        ...errorReport,
+      });
+
+    });
 
     stats.counter('tp_events_count', events.length, {
       ...metaTags,
@@ -85,6 +99,6 @@ export default class TrackingPlanservice {
       trackingPlanId: events[0]?.metadata?.trackingPlanId,
     });
 
-    return { body: respList, status: ctxStatusCode };
+    return { body: validatedEvents, status: ctxStatusCode };
   }
 }

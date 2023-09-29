@@ -175,21 +175,23 @@ describe.each(allTestDataFilePaths)('%s Tests', (testDataPath) => {
   });
   // add special mocks for specific destinations
   const testData: TestCaseData[] = getTestData(testDataPath);
-  test.each(testData)('$name - $module - $feature -> $description', async (tcData) => {
-    tcData?.mockFns?.(mock);
+  describe(`${testData[0].name} ${testData[0].module}`, () => {
+    test.each(testData)('$feature -> $description', async (tcData) => {
+      tcData?.mockFns?.(mock);
 
-    switch (tcData.module) {
-      case tags.MODULES.DESTINATION:
-        await destinationTestHandler(tcData);
-        break;
-      case tags.MODULES.SOURCE:
-        await sourceTestHandler(tcData);
-        break;
-      default:
-        console.log('Invalid module');
-        // Intentionally fail the test case
-        expect(true).toEqual(false);
-        break;
-    }
+      switch (tcData.module) {
+        case tags.MODULES.DESTINATION:
+          await destinationTestHandler(tcData);
+          break;
+        case tags.MODULES.SOURCE:
+          await sourceTestHandler(tcData);
+          break;
+        default:
+          console.log('Invalid module');
+          // Intentionally fail the test case
+          expect(true).toEqual(false);
+          break;
+      }
+    });
   });
 });

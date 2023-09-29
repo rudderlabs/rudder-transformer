@@ -234,7 +234,7 @@ class Prometheus {
           'destinationType',
           'k8_namespace',
           'workspaceId',
-          'transformationId',
+          'trackingPlanId',
         ],
       },
       {
@@ -586,7 +586,7 @@ class Prometheus {
           'destinationType',
           'k8_namespace',
           'workspaceId',
-          'transformationId',
+          'trackingPlanId',
         ],
       },
       {
@@ -621,18 +621,6 @@ class Prometheus {
         labelNames: [
           'workspaceId',
           'transformationId',
-          'sourceType',
-          'destinationType',
-          'k8_namespace',
-        ],
-      },
-      {
-        name: 'user_transform_function_latency',
-        help: 'user_transform_function_latency',
-        type: 'histogram',
-        labelNames: [
-          'transformationVersionId',
-          'processSessions',
           'sourceType',
           'destinationType',
           'k8_namespace',

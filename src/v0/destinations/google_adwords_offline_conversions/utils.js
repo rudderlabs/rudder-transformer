@@ -76,7 +76,9 @@ const getConversionActionId = async (headers, params) => {
       'response.0.results.0.conversionAction.resourceName',
     );
     if (!conversionAction) {
-      throw new AbortedError(`Unable to find conversionActionId for conversion:${params.event}`);
+      throw new AbortedError(
+        `Unable to find conversionActionId for conversion:${params.event}. Most probably the conversion name in Google dashboard and Rudderstack dashboard are not same.`,
+      );
     }
     return conversionAction;
   });
@@ -172,7 +174,7 @@ const requestBuilder = (
       const filteredLoginCustomerId = removeHyphens(loginCustomerId);
       response.headers['login-customer-id'] = filteredLoginCustomerId;
     } else {
-      throw new ConfigurationError(`loginCustomerId is required as subAccount is enabled`);
+      throw new ConfigurationError(`"Login Customer ID" is required as "Sub Account" is enabled`);
     }
   }
   return response;

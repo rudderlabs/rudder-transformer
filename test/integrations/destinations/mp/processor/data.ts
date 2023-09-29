@@ -2,6 +2,34 @@ const defaultMockFns = () => {
   jest.spyOn(Date, 'now').mockImplementation(() => new Date(Date.UTC(2020, 0, 25)).valueOf());
 };
 
+const sampleDestination = {
+  Config: {
+    apiKey: 'dummyApiKey',
+    token: 'dummyApiKey2',
+    prefixProperties: true,
+    useNativeSDK: false,
+  },
+  DestinationDefinition: {
+    DisplayName: 'Kiss Metrics',
+    ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
+    Name: 'MIXPANEL',
+  },
+  Enabled: true,
+  ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
+  Name: 'Kiss Metrics',
+  Transformations: [],
+};
+
+const getDestination = (configValues) => {
+  const destination = sampleDestination;
+  const configKeys = Object.keys(configValues);
+  configKeys.forEach((key) => {
+    destination.Config[key] = configValues[key];
+  });
+  console.log(destination);
+  return destination;
+};
+
 export const data = [
   {
     name: 'mp',
@@ -13,23 +41,7 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: getDestination({ token: 'dummyApiKey' }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'web',

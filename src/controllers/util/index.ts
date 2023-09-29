@@ -18,9 +18,9 @@ export default class ControllerUtility {
       `context.${RETL_TIMESTAMP}`,
       `context.traits.${RETL_TIMESTAMP}`,
       `traits.${RETL_TIMESTAMP}`,
-      ...genericFieldMap['timestamp'],
+      ...genericFieldMap.timestamp,
     ],
-    [EventType.TRACK]: [`properties.${RETL_TIMESTAMP}`, ...genericFieldMap['timestamp']],
+    [EventType.TRACK]: [`properties.${RETL_TIMESTAMP}`, ...genericFieldMap.timestamp],
   };
 
   private static getCompatibleStatusCode(status: number): number {

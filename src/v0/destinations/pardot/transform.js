@@ -48,10 +48,7 @@ const {
   getAccessToken,
 } = require('../../util');
 const { CONFIG_CATEGORIES } = require('./config');
-const {
-  ConfigurationError,
-  InstrumentationError,
-} = require('../../util/errorTypes');
+const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 
 const buildResponse = (payload, url, destination, token) => {
   const responseBody = removeUndefinedValues(payload);

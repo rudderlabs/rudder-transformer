@@ -1,4 +1,4 @@
-const _ = require('lodash');
+const lodash = require('lodash');
 const get = require('get-value');
 const jsonSize = require('json-size');
 const {
@@ -21,6 +21,8 @@ const {
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
+
+const MESSAGE_JSON_PATH = 'message.body.JSON';
 
 /**
  * Returns preferUserId param
@@ -168,7 +170,8 @@ const pageOrScreenEventPayloadBuilder = (message, destination, category) => {
   let rawPayload = {};
   const eventType = message.type.toLowerCase();
 
-  const { trackAllPages, trackCategorisedPages, trackNamedPages } = destination.Config;
+  const { trackAllPages, trackCategorisedPages, trackNamedPages, mapToSingleEvent } =
+    destination.Config;
   if (trackAllPages) {
     rawPayload = constructPayload(message, mappingConfig[category.name]);
   } else if (trackCategorisedPages && (message.properties?.category || message.category)) {
@@ -185,7 +188,7 @@ const pageOrScreenEventPayloadBuilder = (message, destination, category) => {
   rawPayload.campaignId = rawPayload.campaignId ? parseInt(rawPayload.campaignId, 10) : undefined;
   rawPayload.templateId = rawPayload.templateId ? parseInt(rawPayload.templateId, 10) : undefined;
   rawPayload.eventName =
-    destination.Config.mapToSingleEvent === true
+    mapToSingleEvent === true
       ? `Loaded a ${eventType.charAt(0).toUpperCase()}${eventType.slice(1)}`
       : `${rawPayload.eventName} ${eventType}`;
 
@@ -368,7 +371,7 @@ const prepareAndSplitUpdateUserBatchesBasedOnPayloadSize = (
   let nonBatchedRequests = [];
 
   chunk.forEach((event) => {
-    size += jsonSize(get(event, 'message.body.JSON'));
+    size += jsonSize(get(event, `${MESSAGE_JSON_PATH}`));
     if (size > IDENTIFY_MAX_BODY_SIZE_IN_BYTES) {
       batches.push({
         users: usersChunk,
@@ -380,7 +383,7 @@ const prepareAndSplitUpdateUserBatchesBasedOnPayloadSize = (
       usersChunk = [];
       metadataChunk = [];
       nonBatchedRequests = [];
-      size = jsonSize(get(event, 'message.body.JSON'));
+      size = jsonSize(get(event, `${MESSAGE_JSON_PATH}`));
     }
 
     if (registerDeviceOrBrowserTokenEvents[event.metadata.jobId]) {
@@ -389,7 +392,7 @@ const prepareAndSplitUpdateUserBatchesBasedOnPayloadSize = (
     }
 
     metadataChunk.push(event.metadata);
-    usersChunk.push(get(event, 'message.body.JSON'));
+    usersChunk.push(get(event, `${MESSAGE_JSON_PATH}`));
   });
 
   if (usersChunk.length > 0) {
@@ -467,7 +470,7 @@ const processUpdateUserBatch = (chunk, registerDeviceOrBrowserTokenEvents) => {
 const batchUpdateUserEvents = (updateUserEvents, registerDeviceOrBrowserTokenEvents) => {
   // Batching update user events
   // arrayChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
-  const updateUserEventsChunks = _.chunk(updateUserEvents, IDENTIFY_MAX_BATCH_SIZE);
+  const updateUserEventsChunks = lodash.chunk(updateUserEvents, IDENTIFY_MAX_BATCH_SIZE);
   return updateUserEventsChunks.reduce((batchedResponseList, chunk) => {
     const batchedResponse = processUpdateUserBatch(chunk, registerDeviceOrBrowserTokenEvents);
     return batchedResponseList.concat(batchedResponse);
@@ -532,7 +535,7 @@ const processCatalogBatch = (chunk) => {
 const batchCatalogEvents = (catalogEvents) => {
   // Batching catalog events
   // arrayChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
-  const catalogEventsChunks = _.chunk(catalogEvents, IDENTIFY_MAX_BATCH_SIZE);
+  const catalogEventsChunks = lodash.chunk(catalogEvents, IDENTIFY_MAX_BATCH_SIZE);
   return catalogEventsChunks.reduce((batchedResponseList, chunk) => {
     const batchedResponse = processCatalogBatch(chunk);
     return batchedResponseList.concat(batchedResponse);
@@ -553,7 +556,7 @@ const processTrackBatch = (chunk) => {
 
   chunk.forEach((event) => {
     metadata.push(event.metadata);
-    events.push(get(event, 'message.body.JSON'));
+    events.push(get(event, `${MESSAGE_JSON_PATH}`));
   });
 
   const batchEventResponse = defaultBatchRequestConfig();
@@ -579,7 +582,7 @@ const processTrackBatch = (chunk) => {
 const batchTrackEvents = (trackEvents) => {
   // Batching track events
   // arrayChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
-  const trackEventsChunks = _.chunk(trackEvents, TRACK_MAX_BATCH_SIZE);
+  const trackEventsChunks = lodash.chunk(trackEvents, TRACK_MAX_BATCH_SIZE);
   return trackEventsChunks.reduce((batchedResponseList, chunk) => {
     const batchedResponse = processTrackBatch(chunk);
     return batchedResponseList.concat(batchedResponse);
@@ -649,9 +652,9 @@ const mapRegisterDeviceOrBrowserTokenEventsWithJobId = (events) => {
  * @returns
  */
 const categorizeEvent = (event) => {
-  const { message, metadata, destination } = event;
+  const { message, metadata, destination, error } = event;
 
-  if (event?.error) {
+  if (error) {
     return { type: 'error', data: event };
   }
 

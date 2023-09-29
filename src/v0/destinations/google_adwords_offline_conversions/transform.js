@@ -139,6 +139,7 @@ const process = async (event) => {
 
 const getEventChunks = (event, storeSalesEvents, clickCallEvents) => {
   const { message, metadata, destination } = event;
+  // eslint-disable-next-line @typescript-eslint/no-shadow
   message.forEach((message) => {
     if (message.body.JSON?.isStoreConversion) {
       storeSalesEvents.push({ message, metadata, destination });
@@ -166,7 +167,7 @@ const batchEvents = (storeSalesEvents) => {
     if (index === 0) {
       return;
     }
-    batchEventResponse.batchedRequest?.body?.JSON['addConversionPayload']?.operations?.push(
+    batchEventResponse.batchedRequest?.body?.JSON.addConversionPayload?.operations?.push(
       storeSalesEvent.message?.body?.JSON?.addConversionPayload?.operations,
     );
     batchEventResponse.metadatas.push(storeSalesEvent.metadata);

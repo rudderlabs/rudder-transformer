@@ -1,5 +1,5 @@
 const { defaultRequestConfig } = require('rudder-transformer-cdk/build/utils');
-const _ = require('lodash');
+const lodash = require('lodash');
 const { WhiteListedTraits } = require('../../../constants');
 
 const {
@@ -20,6 +20,8 @@ const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { client: errNotificationClient } = require('../../../util/errorNotifier');
+
+const REVISION_CONSTANT = '2023-02-22';
 
 /**
  * This function calls the create user endpoint ref: https://developers.klaviyo.com/en/reference/create_profile
@@ -88,7 +90,7 @@ const profileUpdateResponseBuilder = (payload, profileId, category, privateApiKe
     Authorization: `Klaviyo-API-Key ${privateApiKey}`,
     'Content-Type': JSON_MIME_TYPE,
     Accept: JSON_MIME_TYPE,
-    revision: '2023-02-22',
+    revision: REVISION_CONSTANT,
   };
   identifyResponse.body.JSON = removeUndefinedAndNullValues(payload);
   return identifyResponse;
@@ -148,7 +150,7 @@ const subscribeUserToList = (message, traitsInfo, destination) => {
     Authorization: `Klaviyo-API-Key ${privateApiKey}`,
     'Content-Type': JSON_MIME_TYPE,
     Accept: JSON_MIME_TYPE,
-    revision: '2023-02-22',
+    revision: REVISION_CONSTANT,
   };
   response.body.JSON = removeUndefinedAndNullValues(payload);
 
@@ -220,7 +222,7 @@ const generateBatchedPaylaodForArray = (events) => {
     Authorization: `Klaviyo-API-Key ${destination.Config.privateApiKey}`,
     'Content-Type': JSON_MIME_TYPE,
     Accept: JSON_MIME_TYPE,
-    revision: '2023-02-22',
+    revision: REVISION_CONSTANT,
   };
 
   batchEventResponse = {
@@ -237,7 +239,7 @@ const generateBatchedPaylaodForArray = (events) => {
  * @returns
  */
 const groupSubsribeResponsesUsingListId = (subscribeResponseList) => {
-  const subscribeEventGroups = _.groupBy(
+  const subscribeEventGroups = lodash.groupBy(
     subscribeResponseList,
     (event) => event.message.body.JSON.data.attributes.list_id,
   );
@@ -248,7 +250,7 @@ const getBatchedResponseList = (subscribeEventGroups, identifyResponseList) => {
   let batchedResponseList = [];
   Object.keys(subscribeEventGroups).forEach((listId) => {
     // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
-    const eventChunks = _.chunk(subscribeEventGroups[listId], MAX_BATCH_SIZE);
+    const eventChunks = lodash.chunk(subscribeEventGroups[listId], MAX_BATCH_SIZE);
     const batchedResponse = eventChunks.map((chunk) => {
       const batchEventResponse = generateBatchedPaylaodForArray(chunk);
       return getSuccessRespEvents(

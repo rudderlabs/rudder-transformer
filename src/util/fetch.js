@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/return-await */
 const fetch = require('node-fetch');
 const HttpsProxyAgent = require('https-proxy-agent');
-const _ = require('lodash');
+const lodash = require('lodash');
 const { RetryRequestError } = require('./utils');
 
 const fetchWithProxy = async (url, options = {}) => {
@@ -13,7 +14,7 @@ const fetchWithProxy = async (url, options = {}) => {
       instanceOptions.agent = new HttpsProxyAgent(process.env.HTTPS_PROXY);
     }
 
-    if (_.isEmpty(instanceOptions)) {
+    if (lodash.isEmpty(instanceOptions)) {
       return await fetch(url);
     }
     return await fetch(url, instanceOptions);

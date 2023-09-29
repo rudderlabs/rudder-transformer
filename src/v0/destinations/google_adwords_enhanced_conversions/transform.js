@@ -11,10 +11,7 @@ const {
   getAccessToken,
 } = require('../../util');
 
-const {
-  InstrumentationError,
-  ConfigurationError,
-} = require('../../util/errorTypes');
+const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
 const { trackMapping, BASE_ENDPOINT } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');

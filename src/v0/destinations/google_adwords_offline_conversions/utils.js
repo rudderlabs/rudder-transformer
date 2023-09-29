@@ -25,11 +25,7 @@ const {
 } = require('./config');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const Cache = require('../../util/cache');
-const {
-  AbortedError,
-  ConfigurationError,
-  InstrumentationError,
-} = require('../../util/errorTypes');
+const { AbortedError, ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 
 const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
 

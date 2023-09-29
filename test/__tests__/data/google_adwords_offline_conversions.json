@@ -1622,7 +1622,7 @@
         }
       },
       "statusCode": 400,
-      "error": "Event name 'purchase' is not valid",
+      "error": "Event name 'purchase' is not present in the mapping provided in the dashboard.",
       "statTags": {
         "destination": "google_adwords_offline_conversions",
         "stage": "transform",
@@ -2948,7 +2948,7 @@
         "secret": null
       },
       "statusCode": 400,
-      "error": "loginCustomerId is required as subAccount is enabled",
+      "error": "\"Login Customer ID\" is required as \"Sub Account\" is enabled",
       "statTags": {
         "destination": "google_adwords_offline_conversions",
         "stage": "transform",

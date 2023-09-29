@@ -285,7 +285,8 @@ export const data = [
         status: 200,
         body: [
           {
-            error: '{"product_id":123} is not of valid type',
+            error:
+              'Value of properties.products.sub.product_id is not of valid type. It should be of type string',
             statTags: {
               destType: 'FB',
               errorCategory: 'dataValidation',
@@ -436,7 +437,7 @@ export const data = [
         status: 200,
         body: [
           {
-            error: 'properties.revenue is not of valid type',
+            error: 'Value of properties.revenue is not of valid type. It should be of type number',
             statTags: {
               destType: 'FB',
               errorCategory: 'dataValidation',

@@ -306,7 +306,8 @@ export const data = [
               },
               batched: false,
               statusCode: 400,
-              error: '{"product_id":123} is not of valid type',
+              error:
+                'Value of properties.products.sub.product_id is not of valid type. It should be of type string',
             },
           ],
         },

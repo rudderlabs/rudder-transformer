@@ -124,14 +124,13 @@ const deployFaasFunction = async (functionName, code, versionId, libraryVersionI
       envProcess = `${envProcess} --code "${code}" --config-backend-url ${CONFIG_BACKEND_URL} --lvids "${lvidsString}"`;
     }
 
-    if (GEOLOCATION_URL) {
-      envProcess = `${envProcess} --geolocation-url ${GEOLOCATION_URL}`;
-    }
-
     const envVars = {};
     if (FAAS_ENABLE_WATCHDOG_ENV_VARS.trim().toLowerCase() === 'true') {
       envVars.max_inflight = FAAS_MAX_INFLIGHT;
       envVars.exec_timeout = FAAS_EXEC_TIMEOUT;
+    }
+    if (GEOLOCATION_URL) {
+      envVars.geolocation_url = GEOLOCATION_URL;
     }
     // TODO: investigate and add more required labels and annotations
     const payload = {

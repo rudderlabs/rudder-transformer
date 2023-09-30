@@ -20,6 +20,7 @@ const FAAS_MAX_INFLIGHT = process.env.FAAS_MAX_INFLIGHT || '4';
 const FAAS_EXEC_TIMEOUT = process.env.FAAS_EXEC_TIMEOUT || '4s';
 const FAAS_ENABLE_WATCHDOG_ENV_VARS = process.env.FAAS_ENABLE_WATCHDOG_ENV_VARS || 'true';
 const CONFIG_BACKEND_URL = process.env.CONFIG_BACKEND_URL || 'https://api.rudderlabs.com';
+const GEOLOCATION_URL = process.env.GEOLOCATION_URL || '';
 const FAAS_AST_VID = 'ast';
 const FAAS_AST_FN_NAME = 'fn-ast';
 
@@ -121,6 +122,10 @@ const deployFaasFunction = async (functionName, code, versionId, libraryVersionI
       envProcess = `${envProcess} --vid ${versionId} --config-backend-url ${CONFIG_BACKEND_URL} --lvids "${lvidsString}"`;
     } else {
       envProcess = `${envProcess} --code "${code}" --config-backend-url ${CONFIG_BACKEND_URL} --lvids "${lvidsString}"`;
+    }
+
+    if (GEOLOCATION_URL) {
+      envProcess = `${envProcess} --geolocation-url ${GEOLOCATION_URL}`;
     }
 
     const envVars = {};

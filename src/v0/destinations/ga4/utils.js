@@ -410,9 +410,9 @@ const prepareUserProperties = (message) => {
   const validatedUserProperties = Object.entries(userProperties)
     .filter(([key, value]) => isValidUserProperty(key, value))
     .reduce((acc, [key, value]) => {
-      const userProperties = acc;
-      userProperties[key] = { value };
-      return userProperties;
+      const userPropertiesObj = acc;
+      userPropertiesObj[key] = { value };
+      return userPropertiesObj;
     }, {});
 
   return validatedUserProperties;

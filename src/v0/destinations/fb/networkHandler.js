@@ -11,6 +11,7 @@ const destResponseHandler = (destinationResponse) => {
   };
 };
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 class networkHandler {
   constructor() {
     this.prepareProxyRequest = prepareProxyRequest;

@@ -1,4 +1,4 @@
-const _ = require('lodash');
+const lodash = require('lodash');
 const { KEY_CHECK_LIST, MANDATORY_PROPERTIES } = require('./config');
 const { EventType } = require('../../../constants');
 const {
@@ -42,28 +42,28 @@ const putEventsHandler = (message, destination) => {
         throw new InstrumentationError(`Mapped property ${keyMap[key]} not found`);
       }
       if (isDefined(disableStringify) && disableStringify) {
-        outputEvent.properties[_.camelCase(key)] = value;
+        outputEvent.properties[lodash.camelCase(key)] = value;
       } else {
         // users using old config will have stringified property by default
-        outputEvent.properties[_.camelCase(key)] = String(value);
+        outputEvent.properties[lodash.camelCase(key)] = String(value);
       }
     } else if (!MANDATORY_PROPERTIES.includes(key.toUpperCase())) {
       if ((!isDefinedAndNotNull(value) || isBlank(value)) && key.toUpperCase() !== 'ITEM_ID') {
         throw new InstrumentationError(`Null values cannot be sent for ${keyMap[key]} `);
       }
       if (!(key.toUpperCase() === 'IMPRESSION' || key.toUpperCase() === 'EVENT_VALUE'))
-        outputEvent[_.camelCase(key)] = String(value);
+        outputEvent[lodash.camelCase(key)] = String(value);
       else if (key.toUpperCase() === 'IMPRESSION') {
-        outputEvent[_.camelCase(key)] = Array.isArray(value) ? value.map(String) : [String(value)];
-        outputEvent[_.camelCase(key)] = _.without(
-          outputEvent[_.camelCase(key)],
+        outputEvent[lodash.camelCase(key)] = Array.isArray(value) ? value.map(String) : [String(value)];
+        outputEvent[lodash.camelCase(key)] = lodash.without(
+          outputEvent[lodash.camelCase(key)],
           undefined,
           null,
           '',
         );
       } else if (!Number.isNaN(parseFloat(value))) {
         // for eventValue
-        outputEvent[_.camelCase(key)] = parseFloat(value);
+        outputEvent[lodash.camelCase(key)] = parseFloat(value);
       } else throw new InstrumentationError('EVENT_VALUE should be a float value');
     }
   });
@@ -115,7 +115,7 @@ const putItemsHandler = (message, destination) => {
       // eslint-disable-next-line no-lonely-if
       if (!isDefinedAndNotNull(value) || isBlank(value)) {
         // itemId cannot be null
-        value = String(_.get(message, keyMap[key]));
+        value = String(lodash.get(message, keyMap[key]));
       }
     }
     if (!isDefined(value)) {
@@ -123,7 +123,7 @@ const putItemsHandler = (message, destination) => {
     }
     if (key.toUpperCase() !== 'ITEM_ID') {
       // itemId is not allowed inside properties
-      outputItem.properties[_.camelCase(key)] = value;
+      outputItem.properties[lodash.camelCase(key)] = value;
     } else {
       outputItem.itemId = String(value);
     }
@@ -185,7 +185,7 @@ const identifyRequestHandler = (message, destination, eventOperation) => {
     }
     if (key.toUpperCase() !== 'USER_ID') {
       // userId is not allowed inside properties
-      outputUser.properties[_.camelCase(key)] = value;
+      outputUser.properties[lodash.camelCase(key)] = value;
     }
   });
   if (!outputUser.userId) {

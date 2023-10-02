@@ -28,8 +28,8 @@ const isSupportedContentType = (contentType) => {
 
 const testRouter = new Router({ prefix: '/test-router' });
 
-const getDestHandler = (version, destination) =>
-  require(`./${version}/destinations/${destination}/transform`);
+const getDestHandler = (ver, destination) =>
+  require(`./${ver}/destinations/${destination}/transform`);
 
 const getDestinations = () => fs.readdirSync(path.resolve(__dirname, version, 'destinations'));
 

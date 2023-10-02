@@ -20,10 +20,13 @@ import stats from '../util/stats';
 import { CommonUtils } from '../util/common';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CatchErr, FixMe } from '../util/types';
+import { FeatureFlags, FEATURE_FILTER_CODE } from '../middlewares/featureFlag';
+import { HTTP_CUSTOM_STATUS_CODES } from '../constants';
 
 export default class UserTransformService {
   public static async transformRoutine(
     events: ProcessorTransformationRequest[],
+    features: FeatureFlags,
   ): Promise<UserTransformationServiceResponse> {
     let retryStatus = 200;
     const groupedEvents: NonNullable<unknown> = groupBy(
@@ -42,8 +45,7 @@ export default class UserTransformService {
       );
     }
     const responses = await Promise.all<FixMe>(
-      Object.entries(groupedEvents).map(async ([dest, destEvents]) => {
-        logger.debug(`dest: ${dest}`);
+      Object.entries(groupedEvents).map(async ([, destEvents]) => {
         const eventsToProcess = destEvents as ProcessorTransformationRequest[];
         const transformationVersionId =
           eventsToProcess[0]?.destination?.Transformations[0]?.VersionID;
@@ -117,18 +119,19 @@ export default class UserTransformService {
             } as ProcessorTransformationResponse);
           });
 
-          // TODO: add feature flag based on rudder-server version to do this
-          // find difference between input and output messageIds
-          const messageIdsNotInOutput = CommonUtils.setDiff(messageIdsSet, messageIdsInOutputSet);
-          const droppedEvents = messageIdsNotInOutput.map((id) => ({
-            statusCode: 298,
-            metadata: {
-              ...commonMetadata,
-              messageId: id,
-              messageIds: null,
-            },
-          }));
-          transformedEvents.push(...droppedEvents);
+          if (features[FEATURE_FILTER_CODE]) {
+            // find difference between input and output messageIds
+            const messageIdsNotInOutput = CommonUtils.setDiff(messageIdsSet, messageIdsInOutputSet);
+            const droppedEvents = messageIdsNotInOutput.map((id) => ({
+              statusCode: HTTP_CUSTOM_STATUS_CODES.FILTERED,
+              metadata: {
+                ...commonMetadata,
+                messageId: id,
+                messageIds: null,
+              },
+            }));
+            transformedEvents.push(...droppedEvents);
+          }
 
           transformedEvents.push(...transformedEventsWithMetadata);
         } catch (error: CatchErr) {

@@ -1,5 +1,6 @@
-import UserTransformService from '../../src/services/userTransform';
 import fetch from 'node-fetch';
+import UserTransformService from '../../src/services/userTransform';
+import { FeatureFlags, FEATURE_FILTER_CODE } from '../../src/middlewares/featureFlag';
 jest.mock('node-fetch', () => jest.fn());
 
 const integration = 'user_transformation_service';
@@ -29,7 +30,9 @@ describe('User Transform Service', () => {
       status: 200,
       json: jest.fn().mockResolvedValue(respBody),
     });
-    const output = await UserTransformService.transformRoutine(inputData);
+    const output = await UserTransformService.transformRoutine(inputData, {
+      [FEATURE_FILTER_CODE]: true,
+    } as FeatureFlags);
     expect(fetch).toHaveBeenCalledWith(
       `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`,
     );

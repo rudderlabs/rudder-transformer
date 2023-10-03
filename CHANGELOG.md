@@ -7,6 +7,8 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Features
 
+* add geolocation support for python transformations ([#2678](https://github.com/rudderlabs/rudder-transformer/issues/2678)) ([b688c4a](https://github.com/rudderlabs/rudder-transformer/commit/b688c4a6889250bacfd2a81c9de8a1436281daa9))
+* add axios mocking to component test-suite ([#2638](https://github.com/rudderlabs/rudder-transformer/issues/2638)) ([100c808](https://github.com/rudderlabs/rudder-transformer/commit/100c80881eb99716198231deb9ec0e69dc3fa2a0))
 * add optional chaining for traits ([#2677](https://github.com/rudderlabs/rudder-transformer/issues/2677)) ([100c808](https://github.com/rudderlabs/rudder-transformer/commit/100c80881eb99716198231deb9ec0e69dc3fa2a0))
 * add circular reference check in flattern json ([#2650](https://github.com/rudderlabs/rudder-transformer/issues/2650)) ([a21ea3a](https://github.com/rudderlabs/rudder-transformer/commit/a21ea3aaecfc3d10de3f4eaa34425dda388032ff))
 * **gaec:** partial failures handling ([#2631](https://github.com/rudderlabs/rudder-transformer/issues/2631)) ([0008277](https://github.com/rudderlabs/rudder-transformer/commit/0008277fe43d20ced4066f8f1f1b0f1d12345f01))

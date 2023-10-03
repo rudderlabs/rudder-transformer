@@ -1,4 +1,4 @@
-const _ = require('lodash');
+const lodash = require('lodash');
 const get = require('get-value');
 const {
   defaultRequestConfig,
@@ -62,7 +62,7 @@ const preparePayload = (
   disableFormat,
   destinationId,
 ) => {
-  const prepareFinalPayload = _.cloneDeep(paramsPayload);
+  const prepareFinalPayload = lodash.cloneDeep(paramsPayload);
   if (Array.isArray(userSchema)) {
     prepareFinalPayload.schema = userSchema;
   } else {

@@ -18,6 +18,8 @@ const { BASE_ENDPOINT } = require('./config');
 const { NetworkError, NetworkInstrumentationError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 
+const ERROR_MSG_PATH = 'response[0].error.message';
+
 /**
  *  This function is used for collecting the conversionActionId using the conversion name
  * @param {*} method
@@ -49,8 +51,8 @@ const getConversionActionId = async (method, headers, params) => {
     if (!isHttpStatusSuccess(gaecConversionActionIdResponse.status)) {
       throw new NetworkError(
         `"${JSON.stringify(
-          get(gaecConversionActionIdResponse, 'response[0].error.message', '')
-            ? get(gaecConversionActionIdResponse, 'response[0].error.message', '')
+          get(gaecConversionActionIdResponse, ERROR_MSG_PATH, '')
+            ? get(gaecConversionActionIdResponse, ERROR_MSG_PATH, '')
             : gaecConversionActionIdResponse.response,
         )} during Google_adwords_enhanced_conversions response transformation"`,
         gaecConversionActionIdResponse.status,
@@ -60,7 +62,7 @@ const getConversionActionId = async (method, headers, params) => {
         gaecConversionActionIdResponse.response,
         getAuthErrCategoryFromErrDetailsAndStCode(
           get(gaecConversionActionIdResponse, 'status'),
-          get(gaecConversionActionIdResponse, 'response[0].error.message'),
+          get(gaecConversionActionIdResponse, ERROR_MSG_PATH),
         ),
       );
     }
@@ -144,6 +146,7 @@ const responseHandler = (destinationResponse) => {
   );
 };
 
+// eslint-disable-next-line func-names, @typescript-eslint/naming-convention
 class networkHandler {
   constructor() {
     this.proxy = ProxyRequest;

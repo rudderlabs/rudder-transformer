@@ -1,3 +1,5 @@
+import { AUTH_STATUS_INACTIVE } from '../../../../../src/adapters/networkhandler/authConstants';
+
 export const data = [
   {
     name: 'ga',
@@ -131,6 +133,46 @@ export const data = [
             statusCode: 403,
             error:
               'Error occurred while completing deletion request: [dummy response] The parameter used to query is not correct',
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'ga',
+    description: 'Test 3',
+    feature: 'userDeletion',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        headers: {
+          'x-rudder-dest-info': '{"secret": { "access_token": "no_permissions_token" }}',
+        },
+        body: [
+          {
+            destType: 'GA',
+            userAttributes: [
+              {
+                userId: 'test_user_20',
+              },
+            ],
+            config: {
+              trackingID: 'UA-123456789-7',
+              useNativeSDK: false,
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 400,
+        body: [
+          {
+            statusCode: 400,
+            authErrorCategory: AUTH_STATUS_INACTIVE,
+            error: 'User does not have sufficient permissions',
           },
         ],
       },

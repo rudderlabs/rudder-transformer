@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+/* eslint-disable @typescript-eslint/naming-convention */
 const { EventType } = require('../../../constants');
 const {
   defaultRequestConfig,

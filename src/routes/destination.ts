@@ -26,4 +26,5 @@ router.post(
 
 router.post('/deleteUsers', RegulationController.deleteUsers);
 
-export const destinationRoutes = router.routes();
+const destinationRoutes = router.routes();
+export default destinationRoutes;

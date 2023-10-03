@@ -2,7 +2,56 @@
   {
     "destination": {
       "Config": {
-        "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "passcode": "sample_passcode",
+        "accountId": "476550467",
+        "trackAnonymous": true,
+        "enableObjectIdMapping": false
+      }
+    },
+    "message": {
+      "channel": "web",
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "anonymousId": "anon_id",
+      "type": "identify",
+      "traits": {
+        "anonymousId": "anon_id",
+        "email": "jamesDoe@gmail.com",
+        "name": "James Doe",
+        "phone": "92374162212",
+        "gender": "M",
+        "employed": true,
+        "birthday": "1614775793",
+        "education": "Science",
+        "graduate": true,
+        "married": true,
+        "customerType": "Prime",
+        "msg_push": true,
+        "msgSms": true,
+        "msgemail": true,
+        "msgwhatsapp": false,
+        "custom_tags": ["Test_User", "Interested_User", "DIY_Hobby"],
+        "custom_mappings": {
+          "Office": "Trastkiv",
+          "Country": "Russia"
+        },
+        "address": {
+          "city": "kolkata",
+          "country": "India",
+          "postalCode": 789223,
+          "state": "WB",
+          "street": ""
+        }
+      },
+      "integrations": { "All": true },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "passcode": "sample_passcode",
         "accountId": "476550467",
         "trackAnonymous": true,
         "enableObjectIdMapping": false
@@ -65,7 +114,7 @@
   {
     "destination": {
       "Config": {
-        "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "passcode": "sample_passcode",
         "accountId": "476550467",
         "trackAnonymous": true,
         "enableObjectIdMapping": false
@@ -91,7 +140,7 @@
   {
     "destination": {
       "Config": {
-        "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "passcode": "sample_passcode",
         "accountId": "476550467",
         "trackAnonymous": true,
         "enableObjectIdMapping": false
@@ -116,7 +165,7 @@
   {
     "destination": {
       "Config": {
-        "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "passcode": "sample_passcode",
         "accountId": "476550467",
         "trackAnonymous": true,
         "enableObjectIdMapping": false
@@ -139,7 +188,7 @@
   {
     "destination": {
       "Config": {
-        "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "passcode": "sample_passcode",
         "accountId": "476550467",
         "trackAnonymous": true,
         "enableObjectIdMapping": false
@@ -161,7 +210,7 @@
   {
     "destination": {
       "Config": {
-        "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "passcode": "sample_passcode",
         "accountId": "476550467",
         "trackAnonymous": true,
         "enableObjectIdMapping": false
@@ -184,7 +233,7 @@
   {
     "destination": {
       "Config": {
-        "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "passcode": "sample_passcode",
         "accountId": "476550467",
         "trackAnonymous": true,
         "enableObjectIdMapping": false
@@ -279,7 +328,7 @@
   {
     "destination": {
       "Config": {
-        "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "passcode": "sample_passcode",
         "accountId": "476550467",
         "trackAnonymous": false,
         "enableObjectIdMapping": false
@@ -302,7 +351,7 @@
   {
     "destination": {
       "Config": {
-        "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "passcode": "sample_passcode",
         "accountId": "476550467",
         "trackAnonymous": true,
         "enableObjectIdMapping": false
@@ -365,7 +414,7 @@
   {
     "destination": {
       "Config": {
-        "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "passcode": "sample_passcode",
         "accountId": "476550467",
         "trackAnonymous": true,
         "enableObjectIdMapping": false
@@ -428,7 +477,7 @@
   {
     "destination": {
       "Config": {
-        "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "passcode": "sample_passcode",
         "accountId": "476550467",
         "trackAnonymous": true,
         "enableObjectIdMapping": true
@@ -499,7 +548,7 @@
   {
     "destination": {
       "Config": {
-        "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "passcode": "sample_passcode",
         "accountId": "476550467",
         "trackAnonymous": true,
         "enableObjectIdMapping": true
@@ -566,7 +615,7 @@
   {
     "destination": {
       "Config": {
-        "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "passcode": "sample_passcode",
         "accountId": "476550467",
         "trackAnonymous": true,
         "enableObjectIdMapping": true
@@ -587,7 +636,7 @@
   {
     "destination": {
       "Config": {
-        "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "passcode": "sample_passcode",
         "accountId": "476550467",
         "trackAnonymous": true,
         "enableObjectIdMapping": true
@@ -608,7 +657,7 @@
   {
     "destination": {
       "Config": {
-        "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "passcode": "sample_passcode",
         "accountId": "476550467",
         "trackAnonymous": true,
         "enableObjectIdMapping": false
@@ -682,7 +731,7 @@
   {
     "destination": {
       "Config": {
-        "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "passcode": "sample_passcode",
         "accountId": "476550467",
         "trackAnonymous": true,
         "enableObjectIdMapping": true
@@ -750,7 +799,7 @@
   {
     "destination": {
       "Config": {
-        "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "passcode": "sample_passcode",
         "accountId": "476550467",
         "trackAnonymous": true,
         "enableObjectIdMapping": true
@@ -772,7 +821,7 @@
   {
     "destination": {
       "Config": {
-        "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "passcode": "sample_passcode",
         "accountId": "476550467",
         "trackAnonymous": true,
         "enableObjectIdMapping": false
@@ -850,7 +899,7 @@
   {
     "destination": {
       "Config": {
-        "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "passcode": "sample_passcode",
         "accountId": "476550467",
         "trackAnonymous": true,
         "enableObjectIdMapping": false
@@ -930,7 +979,7 @@
   {
     "destination": {
       "Config": {
-        "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "passcode": "sample_passcode",
         "accountId": "476550467",
         "trackAnonymous": true,
         "enableObjectIdMapping": false
@@ -1015,7 +1064,7 @@
   {
     "destination": {
       "Config": {
-        "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "passcode": "sample_passcode",
         "accountId": "476550467",
         "trackAnonymous": true,
         "enableObjectIdMapping": true

@@ -10,60 +10,64 @@ const {
 const { fromEnv } = require('@aws-sdk/credential-providers');
 
 const readline = require('readline');
-let rl = readline.createInterface(process.stdin, process.stdout);
 
-function promtForInput(questionText, envName) {
-  if (!process.env[envName]) {
-    rl.question(questionText, (input) => (process.env[envName] = input));
-  }
-}
-// get inputs from user
-promtForInput('AWS Access Key ID: ', 'AWS_ACCESS_KEY_ID');
-promtForInput('AWS Secret Access Key: ', 'AWS_SECRET_ACCESS_KEY');
-promtForInput('AWS REGION: ', 'AWS_REGION');
-promtForInput('Name of Dataset Group:', 'DATASET_GROUP_NAME');
-promtForInput(
-  'Number of fields in Schema in addition to USER_ID, TIMESTAMP, ITEM_ID: ',
-  'NUMBER_OF_FIELDS',
-);
-rl.close();
-const datasetGroup = process.env.DATASET_GROUP_NAME;
-const columns = [];
-const type = [];
+require('dotenv').config();
 
-// eslint-disable-next-line radix
-const noOfFields = parseInt(process.env.NUMBER_OF_FIELDS);
-columns[0] = 'USER_ID';
-columns[1] = 'ITEM_ID';
-columns[2] = 'TIMESTAMP';
-type[0] = 'string';
-type[1] = 'string';
-type[2] = 'long';
-
-for (let i = 4; i <= noOfFields + 3; i += 1) {
-  columns[i - 1] = readline.question(`Name of field no. ${i}: `);
-  type[i - 1] = readline.question(`Type of field ${columns[i - 1]}: `);
+async function promtForInput(rl, questionText) {
+  return new Promise((resolve) => {
+    rl.question(questionText, (input) => {
+      resolve(input);
+    });
+  });
 }
 
-let schema = {
-  type: 'record',
-  name: 'Interactions',
-  namespace: 'com.amazonaws.personalize.schema',
-  fields: [
-    { name: 'USER_ID', type: 'string' },
-    { name: 'ITEM_ID', type: 'string' },
-    { name: 'TIMESTAMP', type: 'long' },
-  ],
-  version: '1.0',
-};
-
-if (noOfFields > 0) {
-  for (let i = 3; i < noOfFields + 3; i += 1) {
-    schema.fields.push({ name: columns[i], type: type[i] });
+async function checkEnvAndpromtForInput(rl, questionText, envVar) {
+  if (process.env[envVar]) {
+    return;
   }
+  process.env[envVar] = await promtForInput(rl, questionText);
+}
+
+async function collectInputs(rl) {
+  await checkEnvAndpromtForInput(rl, 'AWS Access Key ID: ', 'AWS_ACCESS_KEY_ID');
+  await checkEnvAndpromtForInput(rl, 'AWS Secret Access Key: ', 'AWS_SECRET_ACCESS_KEY');
+  await checkEnvAndpromtForInput(rl, 'AWS REGION: ', 'AWS_REGION');
+  await checkEnvAndpromtForInput(rl, 'Name of Dataset Group: ', 'DATASET_GROUP_NAME');
+  await checkEnvAndpromtForInput(
+    rl,
+    'Number of fields in Schema in addition to USER_ID, TIMESTAMP, ITEM_ID: ',
+    'NUMBER_OF_FIELDS',
+  );
+}
+
+async function collectFileds(rl) {
+  const noOfFields = parseInt(process.env.NUMBER_OF_FIELDS);
+  let schema = {
+    type: 'record',
+    name: 'Interactions',
+    namespace: 'com.amazonaws.personalize.schema',
+    fields: [
+      { name: 'USER_ID', type: 'string' },
+      { name: 'ITEM_ID', type: 'string' },
+      { name: 'TIMESTAMP', type: 'long' },
+    ],
+    version: '1.0',
+  };
+
+  for (let i = 4; i <= noOfFields + 3; i += 1) {
+    const fieldName = await promtForInput(rl, `Name of field no. ${i}: `);
+    const typeName = await promtForInput(rl, `Type of field ${fieldName}: `);
+    schema.fields.push({ name: fieldName, type: typeName });
+  }
+  return schema;
 }
 
 (async function () {
+  let rl = readline.createInterface(process.stdin, process.stdout);
+  await collectInputs(rl);
+  const schema = await collectFileds(rl);
+  rl.close();
+  const datasetGroup = process.env.DATASET_GROUP_NAME;
   try {
     const client = new PersonalizeClient({
       region: process.env.AWS_REGION,

@@ -1,3 +1,11 @@
+import { addMock } from '../../../testUtils';
+import { networkCallsData } from '../network';
+
+export const mockFns = (mockAdapter) => {
+  addMock(mockAdapter, networkCallsData[0]);
+  // 21 September 2023 19:39:50 GMT+05:30
+  Date.now = jest.fn(() => 1695305390000);
+};
 export const data = [
   {
     name: 'yahoo_dsp',
@@ -1107,4 +1115,6 @@ export const data = [
       },
     },
   },
-];
+].map((d) => {
+  return { ...d, mockFns };
+});

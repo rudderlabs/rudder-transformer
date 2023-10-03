@@ -826,5 +826,18 @@
       "type": "REST",
       "version": "1"
     }
-  ]
+  ],
+
+  {
+    "statusCode": 400,
+    "error": "Event and property mappings are required for track call",
+    "statTags": {
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation",
+      "destType": "HS",
+      "module": "destination",
+      "implementation": "native",
+      "feature": "processor"
+    }
+  }
 ]

@@ -5,28 +5,23 @@ const defaultMockFns = () => {
 const sampleDestination = {
   Config: {
     apiKey: 'dummyApiKey',
-    token: 'dummyApiKey2',
+    token: 'dummyApiKey',
     prefixProperties: true,
     useNativeSDK: false,
   },
   DestinationDefinition: {
-    DisplayName: 'Kiss Metrics',
+    DisplayName: 'Mixpanel',
     ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-    Name: 'MIXPANEL',
+    Name: 'MP',
   },
   Enabled: true,
   ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-  Name: 'Kiss Metrics',
+  Name: 'MP',
   Transformations: [],
 };
 
 const getDestination = (configValues) => {
-  const destination = sampleDestination;
-  const configKeys = Object.keys(configValues);
-  configKeys.forEach((key) => {
-    destination.Config[key] = configValues[key];
-  });
-  console.log(destination);
+  const destination = Object.assign({}, sampleDestination, { Config: configValues });
   return destination;
 };
 
@@ -41,7 +36,7 @@ export const data = [
       request: {
         body: [
           {
-            destination: getDestination({ token: 'dummyApiKey' }),
+            destination: getDestination({ ...sampleDestination.Config, token: 'dummyApiKey' }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'web',
@@ -141,23 +136,7 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: sampleDestination,
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'web',
@@ -258,23 +237,7 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: sampleDestination,
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'mobile',
@@ -355,23 +318,7 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: sampleDestination,
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'mobile',
@@ -459,23 +406,7 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: sampleDestination,
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'mobile',
@@ -552,24 +483,7 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-                useNewMapping: true,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: getDestination({ ...sampleDestination.Config, useNewMapping: true }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'web',
@@ -672,28 +586,13 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-                propIncrements: [
-                  { property: 'counter' },
-                  { property: 'item_purchased' },
-                  { property: 'number_of_logins' },
-                ],
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: getDestination({
+              ...sampleDestination.Config, propIncrements: [
+                { property: 'counter' },
+                { property: 'item_purchased' },
+                { property: 'number_of_logins' },
+              ]
+            }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'web',
@@ -831,31 +730,14 @@ export const data = [
   },
   {
     name: 'mp',
-    description: 'Test 7',
-    feature: 'processor',
+    description: 'Test 7', feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: sampleDestination,
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'web',
@@ -950,24 +832,7 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-                propIncrements: [{ property: '' }],
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: getDestination({ ...sampleDestination.Config, propIncrements: [{ property: '' }], }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'web',
@@ -1117,23 +982,7 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: sampleDestination,
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'web',
@@ -1289,23 +1138,7 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: sampleDestination,
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'web',
@@ -1436,23 +1269,7 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: sampleDestination,
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'web',
@@ -1583,23 +1400,7 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: sampleDestination,
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'mobile',
@@ -1673,23 +1474,7 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: sampleDestination,
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'web',
@@ -1780,24 +1565,7 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-                groupKeySettings: [{ groupKey: 'company' }],
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: getDestination({ ...sampleDestination.Config, groupKeySettings: [{ groupKey: 'company' }] }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'mobile',
@@ -1904,24 +1672,7 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-                groupKeySettings: [{ groupKey: 'company' }],
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: getDestination({ ...sampleDestination.Config, groupKeySettings: [{ groupKey: 'company' }] }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'mobile',
@@ -2050,25 +1801,10 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                usenativesdk: false,
-                dataResidency: 'eu',
-                groupKeySettings: [{ groupKey: 'company' }],
-              },
-              destinationdefinition: {
-                displayname: 'kiss metrics',
-                id: '1whbsz6ua3h5chvifhpfl2h6sie',
-                name: 'mixpanel',
-              },
-              enabled: true,
-              id: '1whcocggj9aszu850hvugu2c3aq',
-              name: 'kiss metrics',
-              transformations: [],
-            },
+            destination: getDestination({
+              ...sampleDestination.Config, dataResidency: 'eu',
+              groupKeySettings: [{ groupKey: 'company' }]
+            }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'mobile',
@@ -2175,24 +1911,9 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                dataResidency: 'eu',
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: getDestination({
+              ...sampleDestination.Config, dataResidency: 'eu',
+            }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'web',
@@ -2343,24 +2064,9 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                dataResidency: 'eu',
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: getDestination({
+              ...sampleDestination.Config, dataResidency: 'eu',
+            }),
             message: {
               anonymousId: '5094f5704b9cf2b3',
               channel: 'mobile',
@@ -2443,25 +2149,9 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                apiSecret: 'some_api_secret',
-                prefixProperties: true,
-                dataResidency: 'eu',
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: getDestination({
+              ...sampleDestination.Config, apiSecret: 'some_api_secret', dataResidency: 'eu',
+            }),
             message: {
               anonymousId: '5094f5704b9cf2b3',
               channel: 'mobile',
@@ -2570,23 +2260,7 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: sampleDestination,
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'web',
@@ -2683,23 +2357,7 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: sampleDestination,
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'web',
@@ -2794,25 +2452,9 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                apiSecret: 'some_api_secret',
-                prefixProperties: true,
-                dataResidency: 'eu',
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: getDestination({
+              ...sampleDestination.Config, apiSecret: 'some_api_secret', dataResidency: 'eu',
+            }),
             message: {
               anonymousId: '5094f5704b9cf2b3',
               channel: 'mobile',
@@ -2924,23 +2566,7 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: sampleDestination,
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'web',
@@ -3033,23 +2659,7 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: sampleDestination,
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'web',
@@ -3141,23 +2751,7 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: sampleDestination,
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'web',
@@ -3250,23 +2844,7 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: sampleDestination,
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'web',
@@ -3364,24 +2942,9 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-                useNewMapping: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: getDestination({
+              ...sampleDestination.Config, useNewMapping: false,
+            }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'web',
@@ -3475,24 +3038,9 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-                useNewMapping: true,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: getDestination({
+              ...sampleDestination.Config, useNewMapping: true,
+            }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'web',
@@ -3585,24 +3133,9 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-                useNewMapping: true,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: getDestination({
+              ...sampleDestination.Config, useNewMapping: true,
+            }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'web',
@@ -3694,24 +3227,9 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-                useNewMapping: true,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: getDestination({
+              ...sampleDestination.Config, useNewMapping: true,
+            }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'web',
@@ -3804,24 +3322,9 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-                useNewMapping: true,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: getDestination({
+              ...sampleDestination.Config, useNewMapping: true,
+            }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'web',
@@ -3920,24 +3423,9 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-                useNewMapping: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: getDestination({
+              ...sampleDestination.Config, useNewMapping: false,
+            }),
             message: {
               type: 'track',
               event: 'FirstTrackCall12',
@@ -4034,24 +3522,9 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-                useNewMapping: true,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: getDestination({
+              ...sampleDestination.Config, useNewMapping: true,
+            }),
             message: {
               type: 'track',
               event: 'FirstTrackCall12',
@@ -4148,25 +3621,9 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                apiSecret: 'some_api_secret',
-                prefixProperties: true,
-                dataResidency: 'eu',
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: getDestination({
+              ...sampleDestination.Config, apiSecret: 'some_api_secret', dataResidency: 'eu',
+            }),
             message: {
               anonymousId: '5094f5704b9cf2b3',
               channel: 'mobile',
@@ -4257,24 +3714,9 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                apiSecret: 'someApiSecret',
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: getDestination({
+              ...sampleDestination.Config, apiSecret: 'some_api_secret',
+            }),
             message: {
               channel: 'web',
               context: {
@@ -4353,24 +3795,9 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                apiSecret: 'someApiSecret',
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: getDestination({
+              ...sampleDestination.Config, apiSecret: 'some_api_secret',
+            }),
             message: {
               channel: 'web',
               context: {
@@ -4449,24 +3876,9 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-                useNewMapping: true,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: getDestination({
+              ...sampleDestination.Config, useNewMapping: true,
+            }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'web',
@@ -4570,24 +3982,9 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-                useNewMapping: true,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: getDestination({
+              ...sampleDestination.Config, useNewMapping: true,
+            }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'web',
@@ -4691,24 +4088,9 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-                useNewMapping: true,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: getDestination({
+              ...sampleDestination.Config, useNewMapping: true,
+            }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'web',
@@ -4802,27 +4184,10 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                serviceAccountUserName: 'rudder.d2a3f1.mp-service-account',
-                serviceAccountSecret: 'jatpQxcjMh8eetk1xrH3KjQIbzy4iX8b',
-                projectId: '123456',
-                prefixProperties: true,
-                useNativeSDK: false,
-                useNewMapping: true,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: getDestination({
+              ...sampleDestination.Config, serviceAccountUserName: 'rudder.d2a3f1.mp-service-account',
+              serviceAccountSecret: 'jatpQxcjMh8eetk1xrH3KjQIbzy4iX8b', projectId: '123456', useNewMapping: true,
+            }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'web',
@@ -4992,25 +4357,10 @@ export const data = [
               integrations: { All: true },
               originalTimestamp: '2022-09-05T07:46:20.290Z',
             },
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                apiSecret: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-                useNewMapping: true,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: getDestination({
+              ...sampleDestination.Config, apiSecret: 'dummyApiKey',
+              useNewMapping: true,
+            }),
           },
         ],
         method: 'POST',
@@ -5097,25 +4447,10 @@ export const data = [
               integrations: { All: true },
               originalTimestamp: '2022-09-05T07:46:20.290Z',
             },
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                apiSecret: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-                useNewMapping: true,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: getDestination({
+              ...sampleDestination.Config, apiSecret: 'dummyApiKey',
+              useNewMapping: true,
+            }),
           },
         ],
         method: 'POST',
@@ -5165,24 +4500,9 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-                groupKeySettings: [{ groupKey: 'groupId' }],
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: getDestination({
+              ...sampleDestination.Config, groupKeySettings: [{ groupKey: 'groupId' }],
+            }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'mobile',
@@ -5292,14 +4612,9 @@ export const data = [
           {
             description:
               'Track: set device id and user id when simplified id merge api is selected',
-            destination: {
-              Config: {
-                apiKey: 'apiKey123',
-                token: 'apiToken123',
-                prefixProperties: true,
-                identityMergeApi: 'simplified',
-              },
-            },
+            destination: getDestination({
+              ...sampleDestination.Config, token: 'apiToken123', identityMergeApi: 'simplified',
+            }),
             message: {
               anonymousId: 'anonId01',
               channel: 'mobile',
@@ -5388,14 +4703,9 @@ export const data = [
         body: [
           {
             description: 'Identify: skip merge event when simplified id merge api is selected',
-            destination: {
-              Config: {
-                apiKey: 'apiKey123',
-                token: 'apiToken123',
-                prefixProperties: true,
-                identityMergeApi: 'simplified',
-              },
-            },
+            destination: getDestination({
+              ...sampleDestination.Config, token: 'apiToken123', identityMergeApi: 'simplified',
+            }),
             message: {
               anonymousId: 'anonId01',
               channel: 'web',
@@ -5500,9 +4810,9 @@ export const data = [
           {
             description:
               'Identify: append $device: to deviceId while creating the user when simplified id merge api is selected',
-            destination: {
-              Config: { apiKey: 'apiKey123', token: 'apiToken123', identityMergeApi: 'simplified' },
-            },
+            destination: getDestination({
+              ...sampleDestination.Config, apiKey: 'apiKey123', token: 'apiToken123', identityMergeApi: 'simplified',
+            }),
             message: {
               anonymousId: 'anonId01',
               channel: 'web',
@@ -5605,9 +4915,9 @@ export const data = [
         body: [
           {
             description: 'Unsupported alias call when simplified id merge api is selected',
-            destination: {
-              Config: { apiKey: 'apiKey123', token: 'apiToken123', identityMergeApi: 'simplified' },
-            },
+            destination: getDestination({
+              ...sampleDestination.Config, apiKey: 'apiKey123', token: 'apiToken123', identityMergeApi: 'simplified',
+            }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'web',
@@ -5691,14 +5001,9 @@ export const data = [
           {
             description:
               'Track revenue event: set device id and user id when simplified id merge api is selected',
-            destination: {
-              Config: {
-                apiKey: 'apiKey123',
-                token: 'apiToken123',
-                prefixProperties: true,
-                identityMergeApi: 'simplified',
-              },
-            },
+            destination: getDestination({
+              ...sampleDestination.Config, apiKey: 'apiKey123', token: 'apiToken123', identityMergeApi: 'simplified',
+            }),
             message: {
               anonymousId: 'anonId01',
               channel: 'web',
@@ -5817,9 +5122,9 @@ export const data = [
         body: [
           {
             description: 'Page with anonymous user when simplified api is selected',
-            destination: {
-              Config: { apiKey: 'apiKey123', token: 'apiToken123', identityMergeApi: 'simplified' },
-            },
+            destination: getDestination({
+              ...sampleDestination.Config, apiKey: 'apiKey123', token: 'apiToken123', identityMergeApi: 'simplified',
+            }),
             message: {
               anonymousId: 'anonId01',
               channel: 'web',
@@ -5919,14 +5224,9 @@ export const data = [
         body: [
           {
             description: 'Group call with anonymous user when simplified api is selected',
-            destination: {
-              Config: {
-                apiKey: 'apiKey123',
-                token: 'apiToken123',
-                identityMergeApi: 'simplified',
-                groupKeySettings: [{ groupKey: 'company' }],
-              },
-            },
+            destination: getDestination({
+              ...sampleDestination.Config, apiKey: 'apiKey123', token: 'apiToken123', identityMergeApi: 'simplified', groupKeySettings: [{ groupKey: 'company' }],
+            }),
             message: {
               anonymousId: 'anonId01',
               channel: 'mobile',
@@ -6032,24 +5332,9 @@ export const data = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-                groupKeySettings: [{ groupKey: 'company' }],
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: getDestination({
+              ...sampleDestination.Config, apiKey: 'apiKey123', token: 'apiToken123', identityMergeApi: 'simplified', groupKeySettings: [{ groupKey: 'company' }],
+            }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'mobile',
@@ -6163,25 +5448,9 @@ export const data = [
               integrations: { All: true },
               originalTimestamp: '2022-09-05T07:46:20.290Z',
             },
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                apiSecret: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-                useNewMapping: true,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: getDestination({
+              ...sampleDestination.Config, apiKey: 'dummyApiKey', token: 'dummyApiKey', apiSecret: 'dummyApiKey', useNewMapping: true,
+            }),
           },
         ],
         method: 'POST',
@@ -6291,25 +5560,9 @@ export const data = [
               integrations: { All: true },
               originalTimestamp: '2022-09-05T07:46:20.290Z',
             },
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                apiSecret: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-                useNewMapping: true,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: getDestination({
+              ...sampleDestination.Config, apiKey: 'dummyApiKey', token: 'dummyApiKey', apiSecret: 'dummyApiKey', useNewMapping: true,
+            }),
           },
         ],
         method: 'POST',
@@ -6382,26 +5635,9 @@ export const data = [
         body: [
           {
             description: 'Track: with strict mode enabled',
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                apiSecret: 'some_api_secret',
-                prefixProperties: true,
-                dataResidency: 'eu',
-                useNativeSDK: false,
-                strictMode: true,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Mixpanel',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MP',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Mixpanel',
-              Transformations: [],
-            },
+            destination: getDestination({
+              ...sampleDestination.Config, apiKey: 'dummyApiKey', token: 'dummyApiKey', apiSecret: 'some_api_secret', dataResidency: 'eu', strictMode: true,
+            }),
             message: {
               anonymousId: '5094f5704b9cf2b3',
               channel: 'mobile',
@@ -6511,23 +5747,7 @@ export const data = [
         body: [
           {
             description: 'Alias: with same previousId and userId',
-            destination: {
-              Config: {
-                apiKey: 'dummyApiKey',
-                token: 'dummyApiKey',
-                prefixProperties: true,
-                useNativeSDK: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Kiss Metrics',
-                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                Name: 'MIXPANEL',
-              },
-              Enabled: true,
-              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-              Name: 'Kiss Metrics',
-              Transformations: [],
-            },
+            destination: sampleDestination,
             message: {
               anonymousId: 'test_anonymous_id',
               channel: 'web',
@@ -6601,3 +5821,4 @@ export const data = [
     },
   },
 ];
+

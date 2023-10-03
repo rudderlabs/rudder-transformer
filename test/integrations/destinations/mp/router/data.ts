@@ -1,3 +1,30 @@
+const defaultMockFns = () => {
+  jest.spyOn(Date, 'now').mockImplementation(() => new Date(Date.UTC(2020, 0, 25)).valueOf());
+};
+
+const sampleDestination = {
+  Config: {
+    apiKey: 'dummyApiKey',
+    token: 'dummyApiKey',
+    prefixProperties: true,
+    useNativeSDK: false,
+  },
+  DestinationDefinition: {
+    DisplayName: 'Mixpanel',
+    ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
+    Name: 'MP',
+  },
+  Enabled: true,
+  ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
+  Name: 'MP',
+  Transformations: [],
+};
+
+const getDestination = (configValues) => {
+  const destination = Object.assign({}, sampleDestination, { Config: configValues });
+  return destination;
+};
+
 export const data = [
   {
     name: 'mp',
@@ -11,25 +38,11 @@ export const data = [
           input: [
             {
               description: 'Page call',
-              destination: {
-                Config: {
-                  apiSecret: 'test_api_secret',
-                  token: 'test_api_token',
-                  prefixProperties: true,
-                  useNativeSDK: false,
-                  useOldMapping: true,
-                  strictMode: true,
-                },
-                DestinationDefinition: {
-                  DisplayName: 'Mixpanel',
-                  ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                  Name: 'MP',
-                },
-                Enabled: true,
-                ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-                Name: 'Mixpanel',
-                Transformations: [],
-              },
+              destination: getDestination({
+                ...sampleDestination.Config, apiSecret: 'test_api_secret',
+                token: 'test_api_token', useOldMapping: true,
+                strictMode: true,
+              }),
               metadata: {
                 jobId: 1,
                 additionalProp: 1,
@@ -98,24 +111,11 @@ export const data = [
             {
               description:
                 'Track: set device id and user id when simplified id merge api is selected',
-              destination: {
-                Config: {
-                  apiSecret: 'test_api_secret',
-                  token: 'test_api_token',
-                  prefixProperties: true,
-                  identityMergeApi: 'simplified',
-                  strictMode: true,
-                },
-                DestinationDefinition: {
-                  DisplayName: 'Mixpanel',
-                  ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                  Name: 'MP',
-                },
-                Enabled: true,
-                ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-                Name: 'Mixpanel',
-                Transformations: [],
-              },
+              destination: getDestination({
+                ...sampleDestination.Config, apiSecret: 'test_api_secret',
+                token: 'test_api_token', identityMergeApi: 'simplified',
+                strictMode: true,
+              }),
               metadata: {
                 jobId: 2,
                 additionalProp: 2,
@@ -181,25 +181,11 @@ export const data = [
             },
             {
               description: 'Identify call to create anonymous user profile',
-              destination: {
-                Config: {
-                  apiSecret: 'test_api_secret',
-                  token: 'test_api_token',
-                  prefixProperties: true,
-                  useNativeSDK: false,
-                  useOldMapping: true,
-                  strictMode: true,
-                },
-                DestinationDefinition: {
-                  DisplayName: 'Mixpanel',
-                  ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                  Name: 'MP',
-                },
-                Enabled: true,
-                ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-                Name: 'Mixpanel',
-                Transformations: [],
-              },
+              destination: getDestination({
+                ...sampleDestination.Config, apiSecret: 'test_api_secret',
+                token: 'test_api_token', useOldMapping: true,
+                strictMode: true,
+              }),
               metadata: {
                 jobId: 3,
                 additionalProp: 3,
@@ -272,23 +258,11 @@ export const data = [
             {
               description:
                 'Identify: append $device: to deviceId while creating the user when simplified id merge api is selected',
-              destination: {
-                Config: {
-                  apiSecret: 'test_api_secret',
-                  token: 'test_api_token',
-                  identityMergeApi: 'simplified',
-                  strictMode: true,
-                },
-                DestinationDefinition: {
-                  DisplayName: 'Mixpanel',
-                  ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                  Name: 'MP',
-                },
-                Enabled: true,
-                ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-                Name: 'Mixpanel',
-                Transformations: [],
-              },
+              destination: getDestination({
+                ...sampleDestination.Config, apiSecret: 'test_api_secret',
+                token: 'test_api_token', identityMergeApi: 'simplified',
+                strictMode: true,
+              }),
               metadata: {
                 jobId: 4,
                 additionalProp: 4,
@@ -361,24 +335,11 @@ export const data = [
             },
             {
               description: 'Merge call with strict mode enabled',
-              destination: {
-                Config: {
-                  apiSecret: 'test_api_secret',
-                  token: 'test_api_token',
-                  prefixProperties: true,
-                  useNativeSDK: false,
-                  strictMode: true,
-                },
-                DestinationDefinition: {
-                  DisplayName: 'Mixpanel',
-                  ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                  Name: 'MP',
-                },
-                Enabled: true,
-                ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-                Name: 'Mixpanel',
-                Transformations: [],
-              },
+              destination: getDestination({
+                ...sampleDestination.Config, apiSecret: 'test_api_secret',
+                token: 'test_api_token',
+                strictMode: true,
+              }),
               metadata: {
                 jobId: 5,
                 additionalProp: 5,
@@ -446,27 +407,15 @@ export const data = [
             },
             {
               description: 'Group call',
-              destination: {
-                Config: {
-                  apiSecret: 'test_api_secret',
-                  token: 'test_api_token',
-                  groupKeySettings: [
-                    {
-                      groupKey: 'company',
-                    },
-                  ],
-                  strictMode: true,
-                },
-                DestinationDefinition: {
-                  DisplayName: 'Mixpanel',
-                  ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                  Name: 'MP',
-                },
-                Enabled: true,
-                ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-                Name: 'Mixpanel',
-                Transformations: [],
-              },
+              destination: getDestination({
+                ...sampleDestination.Config, apiSecret: 'test_api_secret',
+                token: 'test_api_token', groupKeySettings: [
+                  {
+                    groupKey: 'company',
+                  },
+                ],
+                strictMode: true,
+              }),
               metadata: {
                 jobId: 6,
                 additionalProp: 6,
@@ -535,27 +484,15 @@ export const data = [
             },
             {
               description: 'Group key not present in traits',
-              destination: {
-                Config: {
-                  apiSecret: 'test_api_secret',
-                  token: 'test_api_token',
-                  groupKeySettings: [
-                    {
-                      groupKey: 'company',
-                    },
-                  ],
-                  strictMode: true,
-                },
-                DestinationDefinition: {
-                  DisplayName: 'Mixpanel',
-                  ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
-                  Name: 'MP',
-                },
-                Enabled: true,
-                ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-                Name: 'Mixpanel',
-                Transformations: [],
-              },
+              destination: getDestination({
+                ...sampleDestination.Config, apiSecret: 'test_api_secret',
+                token: 'test_api_token', groupKeySettings: [
+                  {
+                    groupKey: 'company',
+                  },
+                ],
+                strictMode: true,
+              }),
               metadata: {
                 jobId: 7,
                 additionalProp: 7,
@@ -664,6 +601,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
+                  apiKey: "dummyApiKey",
                   apiSecret: 'test_api_secret',
                   token: 'test_api_token',
                   prefixProperties: true,
@@ -678,7 +616,7 @@ export const data = [
                 },
                 Enabled: true,
                 ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-                Name: 'Mixpanel',
+                Name: 'MP',
                 Transformations: [],
               },
             },
@@ -736,11 +674,13 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
+                  apiKey: "dummyApiKey",
                   apiSecret: 'test_api_secret',
                   token: 'test_api_token',
                   prefixProperties: true,
                   identityMergeApi: 'simplified',
                   strictMode: true,
+                  useNativeSDK: false,
                 },
                 DestinationDefinition: {
                   DisplayName: 'Mixpanel',
@@ -749,7 +689,7 @@ export const data = [
                 },
                 Enabled: true,
                 ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-                Name: 'Mixpanel',
+                Name: 'MP',
                 Transformations: [],
               },
             },
@@ -815,6 +755,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
+                  apiKey: "dummyApiKey",
                   apiSecret: 'test_api_secret',
                   token: 'test_api_token',
                   prefixProperties: true,
@@ -829,7 +770,7 @@ export const data = [
                 },
                 Enabled: true,
                 ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-                Name: 'Mixpanel',
+                Name: 'MP',
                 Transformations: [],
               },
             },
@@ -882,14 +823,17 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
+                  apiKey: "dummyApiKey",
                   apiSecret: 'test_api_secret',
                   token: 'test_api_token',
+                  prefixProperties: true,
                   groupKeySettings: [
                     {
                       groupKey: 'company',
                     },
                   ],
                   strictMode: true,
+                  useNativeSDK: false,
                 },
                 DestinationDefinition: {
                   DisplayName: 'Mixpanel',
@@ -898,7 +842,7 @@ export const data = [
                 },
                 Enabled: true,
                 ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-                Name: 'Mixpanel',
+                Name: 'MP',
                 Transformations: [],
               },
             },
@@ -923,8 +867,11 @@ export const data = [
               },
               destination: {
                 Config: {
+                  apiKey: "dummyApiKey",
                   apiSecret: 'test_api_secret',
                   token: 'test_api_token',
+                  prefixProperties: true,
+                  useNativeSDK: false,
                   groupKeySettings: [
                     {
                       groupKey: 'company',
@@ -939,7 +886,7 @@ export const data = [
                 },
                 Enabled: true,
                 ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
-                Name: 'Mixpanel',
+                Name: 'MP',
                 Transformations: [],
               },
             },

@@ -1,4 +1,5 @@
-import { sampleDestination, defaultMockFns, getDestination } from '../common';
+import { overrideDestination } from '../../../testUtils';
+import { sampleDestination, defaultMockFns } from '../common';
 
 export const data = [
   {
@@ -11,7 +12,7 @@ export const data = [
       request: {
         body: [
           {
-            destination: getDestination({ ...sampleDestination.Config, token: 'dummyApiKey' }),
+            destination: overrideDestination(sampleDestination, { token: 'dummyApiKey' }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'web',
@@ -458,7 +459,7 @@ export const data = [
       request: {
         body: [
           {
-            destination: getDestination({ ...sampleDestination.Config, useNewMapping: true }),
+            destination: overrideDestination(sampleDestination, { useNewMapping: true }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'web',
@@ -561,12 +562,12 @@ export const data = [
       request: {
         body: [
           {
-            destination: getDestination({
-              ...sampleDestination.Config, propIncrements: [
+            destination: overrideDestination(sampleDestination, {
+              propIncrements: [
                 { property: 'counter' },
                 { property: 'item_purchased' },
                 { property: 'number_of_logins' },
-              ]
+              ],
             }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
@@ -705,7 +706,8 @@ export const data = [
   },
   {
     name: 'mp',
-    description: 'Test 7', feature: 'processor',
+    description: 'Test 7',
+    feature: 'processor',
     module: 'destination',
     version: 'v0',
     input: {
@@ -807,7 +809,9 @@ export const data = [
       request: {
         body: [
           {
-            destination: getDestination({ ...sampleDestination.Config, propIncrements: [{ property: '' }], }),
+            destination: overrideDestination(sampleDestination, {
+              propIncrements: [{ property: '' }],
+            }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'web',
@@ -1540,7 +1544,9 @@ export const data = [
       request: {
         body: [
           {
-            destination: getDestination({ ...sampleDestination.Config, groupKeySettings: [{ groupKey: 'company' }] }),
+            destination: overrideDestination(sampleDestination, {
+              groupKeySettings: [{ groupKey: 'company' }],
+            }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'mobile',
@@ -1647,7 +1653,9 @@ export const data = [
       request: {
         body: [
           {
-            destination: getDestination({ ...sampleDestination.Config, groupKeySettings: [{ groupKey: 'company' }] }),
+            destination: overrideDestination(sampleDestination, {
+              groupKeySettings: [{ groupKey: 'company' }],
+            }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'mobile',
@@ -1776,9 +1784,9 @@ export const data = [
       request: {
         body: [
           {
-            destination: getDestination({
-              ...sampleDestination.Config, dataResidency: 'eu',
-              groupKeySettings: [{ groupKey: 'company' }]
+            destination: overrideDestination(sampleDestination, {
+              dataResidency: 'eu',
+              groupKeySettings: [{ groupKey: 'company' }],
             }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
@@ -1886,8 +1894,8 @@ export const data = [
       request: {
         body: [
           {
-            destination: getDestination({
-              ...sampleDestination.Config, dataResidency: 'eu',
+            destination: overrideDestination(sampleDestination, {
+              dataResidency: 'eu',
             }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
@@ -2039,8 +2047,8 @@ export const data = [
       request: {
         body: [
           {
-            destination: getDestination({
-              ...sampleDestination.Config, dataResidency: 'eu',
+            destination: overrideDestination(sampleDestination, {
+              dataResidency: 'eu',
             }),
             message: {
               anonymousId: '5094f5704b9cf2b3',
@@ -2124,8 +2132,9 @@ export const data = [
       request: {
         body: [
           {
-            destination: getDestination({
-              ...sampleDestination.Config, apiSecret: 'some_api_secret', dataResidency: 'eu',
+            destination: overrideDestination(sampleDestination, {
+              apiSecret: 'some_api_secret',
+              dataResidency: 'eu',
             }),
             message: {
               anonymousId: '5094f5704b9cf2b3',
@@ -2427,8 +2436,9 @@ export const data = [
       request: {
         body: [
           {
-            destination: getDestination({
-              ...sampleDestination.Config, apiSecret: 'some_api_secret', dataResidency: 'eu',
+            destination: overrideDestination(sampleDestination, {
+              apiSecret: 'some_api_secret',
+              dataResidency: 'eu',
             }),
             message: {
               anonymousId: '5094f5704b9cf2b3',
@@ -2917,8 +2927,8 @@ export const data = [
       request: {
         body: [
           {
-            destination: getDestination({
-              ...sampleDestination.Config, useNewMapping: false,
+            destination: overrideDestination(sampleDestination, {
+              useNewMapping: false,
             }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
@@ -3013,8 +3023,8 @@ export const data = [
       request: {
         body: [
           {
-            destination: getDestination({
-              ...sampleDestination.Config, useNewMapping: true,
+            destination: overrideDestination(sampleDestination, {
+              useNewMapping: true,
             }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
@@ -3108,8 +3118,8 @@ export const data = [
       request: {
         body: [
           {
-            destination: getDestination({
-              ...sampleDestination.Config, useNewMapping: true,
+            destination: overrideDestination(sampleDestination, {
+              useNewMapping: true,
             }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
@@ -3202,8 +3212,8 @@ export const data = [
       request: {
         body: [
           {
-            destination: getDestination({
-              ...sampleDestination.Config, useNewMapping: true,
+            destination: overrideDestination(sampleDestination, {
+              useNewMapping: true,
             }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
@@ -3297,8 +3307,8 @@ export const data = [
       request: {
         body: [
           {
-            destination: getDestination({
-              ...sampleDestination.Config, useNewMapping: true,
+            destination: overrideDestination(sampleDestination, {
+              useNewMapping: true,
             }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
@@ -3398,8 +3408,8 @@ export const data = [
       request: {
         body: [
           {
-            destination: getDestination({
-              ...sampleDestination.Config, useNewMapping: false,
+            destination: overrideDestination(sampleDestination, {
+              useNewMapping: false,
             }),
             message: {
               type: 'track',
@@ -3497,8 +3507,8 @@ export const data = [
       request: {
         body: [
           {
-            destination: getDestination({
-              ...sampleDestination.Config, useNewMapping: true,
+            destination: overrideDestination(sampleDestination, {
+              useNewMapping: true,
             }),
             message: {
               type: 'track',
@@ -3596,8 +3606,9 @@ export const data = [
       request: {
         body: [
           {
-            destination: getDestination({
-              ...sampleDestination.Config, apiSecret: 'some_api_secret', dataResidency: 'eu',
+            destination: overrideDestination(sampleDestination, {
+              apiSecret: 'some_api_secret',
+              dataResidency: 'eu',
             }),
             message: {
               anonymousId: '5094f5704b9cf2b3',
@@ -3689,8 +3700,8 @@ export const data = [
       request: {
         body: [
           {
-            destination: getDestination({
-              ...sampleDestination.Config, apiSecret: 'some_api_secret',
+            destination: overrideDestination(sampleDestination, {
+              apiSecret: 'some_api_secret',
             }),
             message: {
               channel: 'web',
@@ -3770,8 +3781,8 @@ export const data = [
       request: {
         body: [
           {
-            destination: getDestination({
-              ...sampleDestination.Config, apiSecret: 'some_api_secret',
+            destination: overrideDestination(sampleDestination, {
+              apiSecret: 'some_api_secret',
             }),
             message: {
               channel: 'web',
@@ -3851,8 +3862,8 @@ export const data = [
       request: {
         body: [
           {
-            destination: getDestination({
-              ...sampleDestination.Config, useNewMapping: true,
+            destination: overrideDestination(sampleDestination, {
+              useNewMapping: true,
             }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
@@ -3957,8 +3968,8 @@ export const data = [
       request: {
         body: [
           {
-            destination: getDestination({
-              ...sampleDestination.Config, useNewMapping: true,
+            destination: overrideDestination(sampleDestination, {
+              useNewMapping: true,
             }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
@@ -4063,8 +4074,8 @@ export const data = [
       request: {
         body: [
           {
-            destination: getDestination({
-              ...sampleDestination.Config, useNewMapping: true,
+            destination: overrideDestination(sampleDestination, {
+              useNewMapping: true,
             }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
@@ -4159,9 +4170,11 @@ export const data = [
       request: {
         body: [
           {
-            destination: getDestination({
-              ...sampleDestination.Config, serviceAccountUserName: 'rudder.d2a3f1.mp-service-account',
-              serviceAccountSecret: 'jatpQxcjMh8eetk1xrH3KjQIbzy4iX8b', projectId: '123456', useNewMapping: true,
+            destination: overrideDestination(sampleDestination, {
+              serviceAccountUserName: 'rudder.d2a3f1.mp-service-account',
+              serviceAccountSecret: 'jatpQxcjMh8eetk1xrH3KjQIbzy4iX8b',
+              projectId: '123456',
+              useNewMapping: true,
             }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
@@ -4332,8 +4345,8 @@ export const data = [
               integrations: { All: true },
               originalTimestamp: '2022-09-05T07:46:20.290Z',
             },
-            destination: getDestination({
-              ...sampleDestination.Config, apiSecret: 'dummyApiKey',
+            destination: overrideDestination(sampleDestination, {
+              apiSecret: 'dummyApiKey',
               useNewMapping: true,
             }),
           },
@@ -4422,8 +4435,8 @@ export const data = [
               integrations: { All: true },
               originalTimestamp: '2022-09-05T07:46:20.290Z',
             },
-            destination: getDestination({
-              ...sampleDestination.Config, apiSecret: 'dummyApiKey',
+            destination: overrideDestination(sampleDestination, {
+              apiSecret: 'dummyApiKey',
               useNewMapping: true,
             }),
           },
@@ -4475,8 +4488,8 @@ export const data = [
       request: {
         body: [
           {
-            destination: getDestination({
-              ...sampleDestination.Config, groupKeySettings: [{ groupKey: 'groupId' }],
+            destination: overrideDestination(sampleDestination, {
+              groupKeySettings: [{ groupKey: 'groupId' }],
             }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
@@ -4587,8 +4600,9 @@ export const data = [
           {
             description:
               'Track: set device id and user id when simplified id merge api is selected',
-            destination: getDestination({
-              ...sampleDestination.Config, token: 'apiToken123', identityMergeApi: 'simplified',
+            destination: overrideDestination(sampleDestination, {
+              token: 'apiToken123',
+              identityMergeApi: 'simplified',
             }),
             message: {
               anonymousId: 'anonId01',
@@ -4678,8 +4692,9 @@ export const data = [
         body: [
           {
             description: 'Identify: skip merge event when simplified id merge api is selected',
-            destination: getDestination({
-              ...sampleDestination.Config, token: 'apiToken123', identityMergeApi: 'simplified',
+            destination: overrideDestination(sampleDestination, {
+              token: 'apiToken123',
+              identityMergeApi: 'simplified',
             }),
             message: {
               anonymousId: 'anonId01',
@@ -4785,8 +4800,10 @@ export const data = [
           {
             description:
               'Identify: append $device: to deviceId while creating the user when simplified id merge api is selected',
-            destination: getDestination({
-              ...sampleDestination.Config, apiKey: 'apiKey123', token: 'apiToken123', identityMergeApi: 'simplified',
+            destination: overrideDestination(sampleDestination, {
+              apiKey: 'apiKey123',
+              token: 'apiToken123',
+              identityMergeApi: 'simplified',
             }),
             message: {
               anonymousId: 'anonId01',
@@ -4890,8 +4907,10 @@ export const data = [
         body: [
           {
             description: 'Unsupported alias call when simplified id merge api is selected',
-            destination: getDestination({
-              ...sampleDestination.Config, apiKey: 'apiKey123', token: 'apiToken123', identityMergeApi: 'simplified',
+            destination: overrideDestination(sampleDestination, {
+              apiKey: 'apiKey123',
+              token: 'apiToken123',
+              identityMergeApi: 'simplified',
             }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
@@ -4976,8 +4995,10 @@ export const data = [
           {
             description:
               'Track revenue event: set device id and user id when simplified id merge api is selected',
-            destination: getDestination({
-              ...sampleDestination.Config, apiKey: 'apiKey123', token: 'apiToken123', identityMergeApi: 'simplified',
+            destination: overrideDestination(sampleDestination, {
+              apiKey: 'apiKey123',
+              token: 'apiToken123',
+              identityMergeApi: 'simplified',
             }),
             message: {
               anonymousId: 'anonId01',
@@ -5097,8 +5118,10 @@ export const data = [
         body: [
           {
             description: 'Page with anonymous user when simplified api is selected',
-            destination: getDestination({
-              ...sampleDestination.Config, apiKey: 'apiKey123', token: 'apiToken123', identityMergeApi: 'simplified',
+            destination: overrideDestination(sampleDestination, {
+              apiKey: 'apiKey123',
+              token: 'apiToken123',
+              identityMergeApi: 'simplified',
             }),
             message: {
               anonymousId: 'anonId01',
@@ -5199,8 +5222,11 @@ export const data = [
         body: [
           {
             description: 'Group call with anonymous user when simplified api is selected',
-            destination: getDestination({
-              ...sampleDestination.Config, apiKey: 'apiKey123', token: 'apiToken123', identityMergeApi: 'simplified', groupKeySettings: [{ groupKey: 'company' }],
+            destination: overrideDestination(sampleDestination, {
+              apiKey: 'apiKey123',
+              token: 'apiToken123',
+              identityMergeApi: 'simplified',
+              groupKeySettings: [{ groupKey: 'company' }],
             }),
             message: {
               anonymousId: 'anonId01',
@@ -5307,8 +5333,11 @@ export const data = [
       request: {
         body: [
           {
-            destination: getDestination({
-              ...sampleDestination.Config, apiKey: 'apiKey123', token: 'apiToken123', identityMergeApi: 'simplified', groupKeySettings: [{ groupKey: 'company' }],
+            destination: overrideDestination(sampleDestination, {
+              apiKey: 'apiKey123',
+              token: 'apiToken123',
+              identityMergeApi: 'simplified',
+              groupKeySettings: [{ groupKey: 'company' }],
             }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
@@ -5423,8 +5452,11 @@ export const data = [
               integrations: { All: true },
               originalTimestamp: '2022-09-05T07:46:20.290Z',
             },
-            destination: getDestination({
-              ...sampleDestination.Config, apiKey: 'dummyApiKey', token: 'dummyApiKey', apiSecret: 'dummyApiKey', useNewMapping: true,
+            destination: overrideDestination(sampleDestination, {
+              apiKey: 'dummyApiKey',
+              token: 'dummyApiKey',
+              apiSecret: 'dummyApiKey',
+              useNewMapping: true,
             }),
           },
         ],
@@ -5535,8 +5567,11 @@ export const data = [
               integrations: { All: true },
               originalTimestamp: '2022-09-05T07:46:20.290Z',
             },
-            destination: getDestination({
-              ...sampleDestination.Config, apiKey: 'dummyApiKey', token: 'dummyApiKey', apiSecret: 'dummyApiKey', useNewMapping: true,
+            destination: overrideDestination(sampleDestination, {
+              apiKey: 'dummyApiKey',
+              token: 'dummyApiKey',
+              apiSecret: 'dummyApiKey',
+              useNewMapping: true,
             }),
           },
         ],
@@ -5610,8 +5645,12 @@ export const data = [
         body: [
           {
             description: 'Track: with strict mode enabled',
-            destination: getDestination({
-              ...sampleDestination.Config, apiKey: 'dummyApiKey', token: 'dummyApiKey', apiSecret: 'some_api_secret', dataResidency: 'eu', strictMode: true,
+            destination: overrideDestination(sampleDestination, {
+              apiKey: 'dummyApiKey',
+              token: 'dummyApiKey',
+              apiSecret: 'some_api_secret',
+              dataResidency: 'eu',
+              strictMode: true,
             }),
             message: {
               anonymousId: '5094f5704b9cf2b3',
@@ -5796,4 +5835,3 @@ export const data = [
     },
   },
 ];
-

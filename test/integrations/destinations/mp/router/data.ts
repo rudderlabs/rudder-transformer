@@ -1,4 +1,5 @@
-import { sampleDestination, getDestination } from '../common';
+import { overrideDestination } from '../../../testUtils';
+import { sampleDestination } from '../common';
 
 export const data = [
   {
@@ -13,9 +14,10 @@ export const data = [
           input: [
             {
               description: 'Page call',
-              destination: getDestination({
-                ...sampleDestination.Config, apiSecret: 'test_api_secret',
-                token: 'test_api_token', useOldMapping: true,
+              destination: overrideDestination(sampleDestination, {
+                apiSecret: 'test_api_secret',
+                token: 'test_api_token',
+                useOldMapping: true,
                 strictMode: true,
               }),
               metadata: {
@@ -86,9 +88,10 @@ export const data = [
             {
               description:
                 'Track: set device id and user id when simplified id merge api is selected',
-              destination: getDestination({
-                ...sampleDestination.Config, apiSecret: 'test_api_secret',
-                token: 'test_api_token', identityMergeApi: 'simplified',
+              destination: overrideDestination(sampleDestination, {
+                apiSecret: 'test_api_secret',
+                token: 'test_api_token',
+                identityMergeApi: 'simplified',
                 strictMode: true,
               }),
               metadata: {
@@ -156,9 +159,10 @@ export const data = [
             },
             {
               description: 'Identify call to create anonymous user profile',
-              destination: getDestination({
-                ...sampleDestination.Config, apiSecret: 'test_api_secret',
-                token: 'test_api_token', useOldMapping: true,
+              destination: overrideDestination(sampleDestination, {
+                apiSecret: 'test_api_secret',
+                token: 'test_api_token',
+                useOldMapping: true,
                 strictMode: true,
               }),
               metadata: {
@@ -233,9 +237,10 @@ export const data = [
             {
               description:
                 'Identify: append $device: to deviceId while creating the user when simplified id merge api is selected',
-              destination: getDestination({
-                ...sampleDestination.Config, apiSecret: 'test_api_secret',
-                token: 'test_api_token', identityMergeApi: 'simplified',
+              destination: overrideDestination(sampleDestination, {
+                apiSecret: 'test_api_secret',
+                token: 'test_api_token',
+                identityMergeApi: 'simplified',
                 strictMode: true,
               }),
               metadata: {
@@ -310,8 +315,8 @@ export const data = [
             },
             {
               description: 'Merge call with strict mode enabled',
-              destination: getDestination({
-                ...sampleDestination.Config, apiSecret: 'test_api_secret',
+              destination: overrideDestination(sampleDestination, {
+                apiSecret: 'test_api_secret',
                 token: 'test_api_token',
                 strictMode: true,
               }),
@@ -382,9 +387,10 @@ export const data = [
             },
             {
               description: 'Group call',
-              destination: getDestination({
-                ...sampleDestination.Config, apiSecret: 'test_api_secret',
-                token: 'test_api_token', groupKeySettings: [
+              destination: overrideDestination(sampleDestination, {
+                apiSecret: 'test_api_secret',
+                token: 'test_api_token',
+                groupKeySettings: [
                   {
                     groupKey: 'company',
                   },
@@ -459,9 +465,10 @@ export const data = [
             },
             {
               description: 'Group key not present in traits',
-              destination: getDestination({
-                ...sampleDestination.Config, apiSecret: 'test_api_secret',
-                token: 'test_api_token', groupKeySettings: [
+              destination: overrideDestination(sampleDestination, {
+                apiSecret: 'test_api_secret',
+                token: 'test_api_token',
+                groupKeySettings: [
                   {
                     groupKey: 'company',
                   },
@@ -576,7 +583,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: "dummyApiKey",
+                  apiKey: 'dummyApiKey',
                   apiSecret: 'test_api_secret',
                   token: 'test_api_token',
                   prefixProperties: true,
@@ -649,7 +656,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: "dummyApiKey",
+                  apiKey: 'dummyApiKey',
                   apiSecret: 'test_api_secret',
                   token: 'test_api_token',
                   prefixProperties: true,
@@ -730,7 +737,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: "dummyApiKey",
+                  apiKey: 'dummyApiKey',
                   apiSecret: 'test_api_secret',
                   token: 'test_api_token',
                   prefixProperties: true,
@@ -798,7 +805,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: "dummyApiKey",
+                  apiKey: 'dummyApiKey',
                   apiSecret: 'test_api_secret',
                   token: 'test_api_token',
                   prefixProperties: true,
@@ -842,7 +849,7 @@ export const data = [
               },
               destination: {
                 Config: {
-                  apiKey: "dummyApiKey",
+                  apiKey: 'dummyApiKey',
                   apiSecret: 'test_api_secret',
                   token: 'test_api_token',
                   prefixProperties: true,

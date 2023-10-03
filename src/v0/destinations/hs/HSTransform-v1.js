@@ -1,5 +1,5 @@
 const get = require('get-value');
-const _ = require('lodash');
+const lodash = require('lodash');
 const { MappedToDestinationKey, GENERIC_TRUE_VALUES } = require('../../../constants');
 const {
   defaultGetRequestConfig,
@@ -286,9 +286,9 @@ const legacyBatchEvents = (destEvents) => {
       eventsChunk.push(event);
     }
   });
-  const arrayChunksIdentifyCreateObjects = _.chunk(createAllObjectsEventChunk, maxBatchSize);
+  const arrayChunksIdentifyCreateObjects = lodash.chunk(createAllObjectsEventChunk, maxBatchSize);
 
-  const arrayChunksIdentifyUpdateObjects = _.chunk(updateAllObjectsEventChunk, maxBatchSize);
+  const arrayChunksIdentifyUpdateObjects = lodash.chunk(updateAllObjectsEventChunk, maxBatchSize);
   // batching up 'create' all objects endpoint chunks
   if (arrayChunksIdentifyCreateObjects.length > 0) {
     batchedResponseList = batchIdentifyForrETL(
@@ -308,7 +308,7 @@ const legacyBatchEvents = (destEvents) => {
   }
 
   // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
-  const arrayChunksIdentify = _.chunk(eventsChunk, MAX_BATCH_SIZE);
+  const arrayChunksIdentify = lodash.chunk(eventsChunk, MAX_BATCH_SIZE);
 
   // list of chunks [ [..], [..] ]
   arrayChunksIdentify.forEach((chunk) => {

@@ -10,6 +10,7 @@ const { NetworkError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 const stats = require('../../../util/stats');
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const responseHandler = (destinationResponse, _dest) => {
   const message = `Request for ${DESTINATION} Processed Successfully`;
   const { response, status } = destinationResponse;

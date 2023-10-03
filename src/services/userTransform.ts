@@ -26,7 +26,7 @@ import { HTTP_CUSTOM_STATUS_CODES } from '../constants';
 export default class UserTransformService {
   public static async transformRoutine(
     events: ProcessorTransformationRequest[],
-    features: FeatureFlags,
+    features: FeatureFlags = {},
   ): Promise<UserTransformationServiceResponse> {
     let retryStatus = 200;
     const groupedEvents: NonNullable<unknown> = groupBy(

@@ -150,10 +150,10 @@ const gaAudienceRespHandler = (destResponse, stageMsg) => {
 
 const responseHandler = (destinationResponse) => {
   const message = `Request Processed Successfully`;
-  const { status } = destinationResponse;
+  const { status, response } = destinationResponse;
   if (isHttpStatusSuccess(status)) {
     // for google ads offline conversions the partialFailureError returns with status 200
-    const { partialFailureError } = destinationResponse.response;
+    const { partialFailureError } = response;
     // non-zero code signifies partialFailure
     // Ref - https://github.com/googleapis/googleapis/blob/master/google/rpc/code.proto
     if (partialFailureError && partialFailureError.code !== 0) {

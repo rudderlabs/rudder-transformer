@@ -1,6 +1,5 @@
 const set = require('set-value');
 const get = require('get-value');
-const zlib = require('zlib');
 const {
   isDefined,
   constructPayload,
@@ -221,10 +220,7 @@ const generateBatchedPayloadForArray = (events) => {
   const batchResponseList = events.flatMap((event) => JSON.parse(event.body.JSON_ARRAY.batch));
   // Gzipping the payload for /import endpoint
   if (firstEvent.endpoint.includes('import')) {
-    batchedRequest.body.GZIP = {
-      payload: zlib.gzipSync(JSON.stringify(batchResponseList)).toString('base64'),
-    };
-    batchedRequest.headers['Content-Encoding'] = 'gzip';
+    batchedRequest.body.GZIP = { payload: JSON.stringify(batchResponseList) };
   } else {
     batchedRequest.body.JSON_ARRAY = { batch: JSON.stringify(batchResponseList) };
   }

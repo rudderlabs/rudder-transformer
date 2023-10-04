@@ -569,4 +569,58 @@ export const data = [
       },
     },
   },
+  {
+    name: 'june',
+    description: 'should fail with no message type',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                apiKey: '93EMyDLvfpbRxxYn',
+              },
+              ID: 'june123',
+            },
+            message: {
+              event: 'Product Reviewed',
+              properties: {
+                review_id: '12345',
+                product_id: '123',
+                rating: 3,
+                review_body: 'Average product, expected much more.',
+                groupId: '91Yb32830',
+              },
+              context: {},
+              rudderId: '553b5522-c575-40a7-8072-9741c5f9a647',
+              anonymousId: 'bf412108-0357-4330-b119-7305e767823c',
+              originalTimestamp: '2022-01-20T13:39:21.032Z',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'Event type is required',
+            statTags: {
+              destType: 'JUNE',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
 ];

@@ -181,7 +181,6 @@ const groupEventsByEndpoint = (events) => {
   const eventMap = {
     engage: [],
     groups: [],
-    track: [],
     import: [],
   };
   const batchErrorRespList = [];
@@ -206,7 +205,6 @@ const groupEventsByEndpoint = (events) => {
   return {
     engageEvents: eventMap.engage,
     groupsEvents: eventMap.groups,
-    trackEvents: eventMap.track,
     importEvents: eventMap.import,
     batchErrorRespList,
   };

@@ -8,6 +8,7 @@ const {
   defaultPostRequestConfig,
   getValidDynamicFormConfig,
   simpleProcessRouterDest,
+  validateEventType,
 } = require('../../util');
 const { InstrumentationError, TransformationError } = require('../../util/errorTypes');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
@@ -66,9 +67,7 @@ const identifyResponseBuilder = (message, { Config }) => {
  * @returns
  */
 const trackResponseBuilder = async (message, { Config }, event) => {
-  if (!event || typeof event !== 'string') {
-    throw new InstrumentationError('String Event name is required for track call.');
-  }
+  validateEventType(event);
   let payload;
 
   const response = defaultRequestConfig();

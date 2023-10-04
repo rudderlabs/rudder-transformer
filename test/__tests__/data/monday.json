@@ -428,7 +428,7 @@
       }
     },
     "output": {
-      "error": "Event name is required and it should be string"
+      "error": "Event is a required field and should be a string"
     }
   },
   {

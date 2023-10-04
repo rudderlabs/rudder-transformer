@@ -75,7 +75,7 @@
     },
     "output": {
       "statusCode": 400,
-      "error": "String Event name is required for track call.",
+      "error": "Event is a required field and should be a string",
       "statTags": {
         "errorAt": "proc",
         "destType": "FRESHMARKETER",

@@ -1,6 +1,6 @@
 [
   {
-    "message": "Could not determine event name"
+    "message": "Event is a required field and should be a string"
   },
   {
     "body": {

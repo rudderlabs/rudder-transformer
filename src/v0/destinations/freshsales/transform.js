@@ -66,8 +66,8 @@ const identifyResponseBuilder = (message, { Config }) => {
  * @returns
  */
 const trackResponseBuilder = async (message, { Config }, event) => {
-  if (!event) {
-    throw new InstrumentationError('Event name is required for track call.');
+  if (!event || typeof event !== 'string') {
+    throw new InstrumentationError('String Event name is required for track call.');
   }
   let payload;
 

@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-undef */
 
-const _ = require('lodash');
+const lodash = require('lodash');
 const http = require('http');
 const https = require('https');
 const axios = require('axios');
@@ -237,7 +237,7 @@ const getPayloadData = (body) => {
   let payload;
   let payloadFormat;
   Object.entries(body).forEach(([key, value]) => {
-    if (!_.isEmpty(value)) {
+    if (!lodash.isEmpty(value)) {
       payload = value;
       payloadFormat = key;
     }

@@ -8,6 +8,7 @@ const { removeUndefinedAndNullValues } = require('../../util');
 const getContents = (message) => {
   const contents = [];
   const { properties } = message;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   const { products, content_type, contentType } = properties;
   if (products && Array.isArray(products) && products.length > 0) {
     products.forEach((product) => {

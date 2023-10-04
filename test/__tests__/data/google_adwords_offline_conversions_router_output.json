@@ -472,7 +472,7 @@
     ],
     "batched": false,
     "statusCode": 400,
-    "error": "Event name 'order completed' is not valid",
+    "error": "Event name 'order completed' is not present in the mapping provided in the dashboard.",
     "statTags": { "errorCategory": "dataValidation", "errorType": "configuration" },
     "destination": {
       "Config": {

@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.43.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.43.0...v1.43.1) (2023-09-26)
+
+
+### Bug Fixes
+
+* **dm:** updated the stats definition for the tracking plan service ([eb2724f](https://github.com/rudderlabs/rudder-transformer/commit/eb2724f135d2c3c2a1fb8a88051cfb0f2720b5ed))
+* **iterable:** event id mapping ([#2659](https://github.com/rudderlabs/rudder-transformer/issues/2659)) ([84083aa](https://github.com/rudderlabs/rudder-transformer/commit/84083aa671312e3934414b5534489fba87d9b29f))
+
 ## [1.43.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.42.0...v1.43.0) (2023-09-25)
 
 

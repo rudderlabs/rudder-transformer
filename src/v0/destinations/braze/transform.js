@@ -227,7 +227,13 @@ async function processIdentify(message, destination) {
   }
 }
 
-function processTrackWithUserAttributes(message, destination, mappingJson, processParams) {
+function processTrackWithUserAttributes(
+  message,
+  destination,
+  mappingJson,
+  processParams,
+  reqMetadata,
+) {
   let payload = getUserAttributesObject(message, mappingJson);
   if (payload && Object.keys(payload).length > 0) {
     payload = setExternalIdOrAliasObject(payload, message);
@@ -240,8 +246,12 @@ function processTrackWithUserAttributes(message, destination, mappingJson, proce
       );
       if (dedupedAttributePayload) {
         requestJson.attributes = [dedupedAttributePayload];
-      } else {
+      } else if (reqMetadata?.features && reqMetadata.features['filter-code']) {
         throw new FilteredEventsError(
+          '[Braze Deduplication]: Duplicate user detected, the user is dropped',
+        );
+      } else {
+        throw new InstrumentationError(
           '[Braze Deduplication]: Duplicate user detected, the user is dropped',
         );
       }
@@ -448,7 +458,7 @@ function processAlias(message, destination) {
   );
 }
 
-async function process(event, processParams = { userStore: new Map() }) {
+async function process(event, processParams = { userStore: new Map() }, reqMetadata = {}) {
   let response;
   const { message, destination } = event;
   const messageType = message.type.toLowerCase();
@@ -494,6 +504,7 @@ async function process(event, processParams = { userStore: new Map() }) {
         destination,
         mappingConfig[category.name],
         processParams,
+        reqMetadata,
       );
       break;
     case EventType.GROUP:

@@ -454,11 +454,17 @@ const defaultBatchRequestConfig = () => ({
 
 // Router transformer
 // Success responses
-const getSuccessRespEvents = (message, metadata, destination, batched = false) => ({
+const getSuccessRespEvents = (
+  message,
+  metadata,
+  destination,
+  batched = false,
+  statusCode = 200,
+) => ({
   batchedRequest: message,
   metadata,
   batched,
-  statusCode: 200,
+  statusCode,
   destination,
 });
 
@@ -1704,7 +1710,7 @@ const simpleProcessRouterDestSync = async (inputs, singleTfFunc, reqMetadata, pr
       // transform if not already done
       if (!input.message.statusCode) {
         // eslint-disable-next-line no-await-in-loop
-        resp = await singleTfFunc(input, processParams);
+        resp = await singleTfFunc(input, processParams, reqMetadata);
       }
       respList.push(getSuccessRespEvents(resp, [input.metadata], input.destination));
     } catch (error) {

@@ -7,9 +7,9 @@
         "method": "POST",
         "endpoint": "https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs",
         "headers": {
+          "Authorization": "Klaviyo-API-Key dummyPrivateApiKey",
           "Content-Type": "application/json",
           "Accept": "application/json",
-          "Authorization": "Klaviyo-API-Key pk_b68c7b5163d98807fcb57e6f921216629d",
           "revision": "2023-02-22"
         },
         "params": {},
@@ -55,20 +55,70 @@
     "statusCode": 200,
     "destination": {
       "Config": {
-        "publicApiKey": "WJqij9",
-        "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d"
+        "publicApiKey": "dummyPublicApiKey",
+        "privateApiKey": "dummyPrivateApiKey"
       }
     }
   },
   {
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "PATCH",
+      "endpoint": "https://a.klaviyo.com/api/profiles/01GW3PHVY0MTCDGS0A1612HARX",
+      "headers": {
+        "Authorization": "Klaviyo-API-Key dummyPrivateApiKey",
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "revision": "2023-02-22"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "data": {
+            "type": "profile",
+            "attributes": {
+              "external_id": "test",
+              "email": "test@rudderstack.com",
+              "first_name": "Test",
+              "last_name": "Rudderlabs",
+              "phone_number": "+12 345 578 900",
+              "title": "Developer",
+              "organization": "Rudder",
+              "location": {
+                "city": "Tokyo",
+                "region": "Kanto",
+                "country": "JP",
+                "zip": "100-0001"
+              },
+              "properties": {
+                "Flagged": false,
+                "Residence": "Shibuya"
+              }
+            },
+            "id": "01GW3PHVY0MTCDGS0A1612HARX"
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "error": "{\"id\":\"01GW3PHVY0MTCDGS0A1612HARX\",\"attributes\":{}}"
+    },
     "metadata": [
       {
         "jobId": 1
       }
     ],
     "batched": false,
-    "error": "{\"id\":\"01GW3PHVY0MTCDGS0A1612HARX\",\"attributes\":{}}",
-    "statusCode": 299
+    "statusCode": 299,
+    "destination": {
+      "Config": {
+        "publicApiKey": "dummyPublicApiKey",
+        "privateApiKey": "dummyPrivateApiKey"
+      }
+    }
   },
   {
     "error": "Event type random is not supported",
@@ -85,8 +135,8 @@
     "statusCode": 400,
     "destination": {
       "Config": {
-        "publicApiKey": "WJqij9",
-        "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d"
+        "publicApiKey": "dummyPublicApiKey",
+        "privateApiKey": "dummyPrivateApiKey"
       }
     }
   },
@@ -105,8 +155,8 @@
     "statusCode": 400,
     "destination": {
       "Config": {
-        "publicApiKey": "WJqij9",
-        "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d"
+        "publicApiKey": "dummyPublicApiKey",
+        "privateApiKey": "dummyPrivateApiKey"
       }
     }
   }

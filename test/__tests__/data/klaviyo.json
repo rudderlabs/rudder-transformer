@@ -1,11 +1,11 @@
 [
   {
-    "description": "Profile updation call and subcribe user",
+    "description": "Profile updating call and subscribe user (old transformer)",
     "input": {
       "destination": {
         "Config": {
-          "publicApiKey": "WJqij9",
-          "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d"
+          "publicApiKey": "dummyPublicApiKey",
+          "privateApiKey": "dummyPrivateApiKey"
         }
       },
       "message": {
@@ -68,12 +68,56 @@
       {
         "version": "1",
         "type": "REST",
+        "method": "PATCH",
+        "endpoint": "https://a.klaviyo.com/api/profiles/01GW3PHVY0MTCDGS0A1612HARX",
+        "headers": {
+          "Authorization": "Klaviyo-API-Key dummyPrivateApiKey",
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "revision": "2023-02-22"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "data": {
+              "type": "profile",
+              "attributes": {
+                "external_id": "user@1",
+                "email": "test@rudderstack.com",
+                "first_name": "Test",
+                "last_name": "Rudderlabs",
+                "phone_number": "+12 345 578 900",
+                "title": "Developer",
+                "organization": "Rudder",
+                "location": {
+                  "city": "Tokyo",
+                  "region": "Kanto",
+                  "country": "JP",
+                  "zip": "100-0001"
+                },
+                "properties": {
+                  "Flagged": false,
+                  "Residence": "Shibuya"
+                }
+              },
+              "id": "01GW3PHVY0MTCDGS0A1612HARX"
+            }
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      },
+      {
+        "version": "1",
+        "type": "REST",
         "method": "POST",
         "endpoint": "https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs",
         "headers": {
           "Content-Type": "application/json",
           "Accept": "application/json",
-          "Authorization": "Klaviyo-API-Key pk_b68c7b5163d98807fcb57e6f921216629d",
+          "Authorization": "Klaviyo-API-Key dummyPrivateApiKey",
           "revision": "2023-02-22"
         },
         "params": {},
@@ -105,12 +149,12 @@
     ]
   },
   {
-    "description": "Identify call for with flattenProperties enabled",
+    "description": "Identify call for with flattenProperties enabled (old transformer)",
     "input": {
       "destination": {
         "Config": {
-          "publicApiKey": "WJqij9",
-          "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d",
+          "publicApiKey": "dummyPublicApiKey",
+          "privateApiKey": "dummyPrivateApiKey",
           "flattenProperties": true
         }
       },
@@ -181,12 +225,59 @@
       {
         "version": "1",
         "type": "REST",
+        "method": "PATCH",
+        "endpoint": "https://a.klaviyo.com/api/profiles/01GW3PHVY0MTCDGS0A1612HARX",
+        "headers": {
+          "Authorization": "Klaviyo-API-Key dummyPrivateApiKey",
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "revision": "2023-02-22"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "data": {
+              "type": "profile",
+              "attributes": {
+                "external_id": "user@1",
+                "email": "test@rudderstack.com",
+                "first_name": "Test",
+                "last_name": "Rudderlabs",
+                "phone_number": "+12 345 578 900",
+                "title": "Developer",
+                "organization": "Rudder",
+                "location": {
+                  "city": "Tokyo",
+                  "region": "Kanto",
+                  "country": "JP",
+                  "zip": "100-0001"
+                },
+                "properties": {
+                  "friend.age": 25,
+                  "friend.names.first": "Alice",
+                  "friend.names.last": "Smith",
+                  "Flagged": false,
+                  "Residence": "Shibuya"
+                }
+              },
+              "id": "01GW3PHVY0MTCDGS0A1612HARX"
+            }
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      },
+      {
+        "version": "1",
+        "type": "REST",
         "method": "POST",
         "endpoint": "https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs",
         "headers": {
           "Content-Type": "application/json",
           "Accept": "application/json",
-          "Authorization": "Klaviyo-API-Key pk_b68c7b5163d98807fcb57e6f921216629d",
+          "Authorization": "Klaviyo-API-Key dummyPrivateApiKey",
           "revision": "2023-02-22"
         },
         "params": {},
@@ -222,8 +313,8 @@
     "input": {
       "destination": {
         "Config": {
-          "publicApiKey": "WJqij9",
-          "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d"
+          "publicApiKey": "dummyPublicApiKey",
+          "privateApiKey": "dummyPrivateApiKey"
         }
       },
       "message": {
@@ -291,8 +382,8 @@
     "input": {
       "destination": {
         "Config": {
-          "publicApiKey": "WJqij9",
-          "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d"
+          "publicApiKey": "dummyPublicApiKey",
+          "privateApiKey": "dummyPrivateApiKey"
         }
       },
       "message": {
@@ -351,7 +442,49 @@
       }
     },
     "output": {
-     "error": "{\"id\":\"01GW3PHVY0MTCDGS0A1612HARX\",\"attributes\":{}}"
+      "version": "1",
+      "type": "REST",
+      "method": "PATCH",
+      "endpoint": "https://a.klaviyo.com/api/profiles/01GW3PHVY0MTCDGS0A1612HARX",
+      "headers": {
+        "Authorization": "Klaviyo-API-Key dummyPrivateApiKey",
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "revision": "2023-02-22"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "data": {
+            "type": "profile",
+            "attributes": {
+              "external_id": "user@1",
+              "email": "test@rudderstack.com",
+              "first_name": "Test",
+              "last_name": "Rudderlabs",
+              "phone_number": "+12 345 578 900",
+              "title": "Developer",
+              "organization": "Rudder",
+              "location": {
+                "city": "Tokyo",
+                "region": "Kanto",
+                "country": "JP",
+                "zip": "100-0001"
+              },
+              "properties": {
+                "Flagged": false,
+                "Residence": "Shibuya"
+              }
+            },
+            "id": "01GW3PHVY0MTCDGS0A1612HARX"
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "error": "{\"id\":\"01GW3PHVY0MTCDGS0A1612HARX\",\"attributes\":{}}"
     }
   },
   {
@@ -359,8 +492,8 @@
     "input": {
       "destination": {
         "Config": {
-          "publicApiKey": "WJqij9",
-          "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d",
+          "publicApiKey": "dummyPublicApiKey",
+          "privateApiKey": "dummyPrivateApiKey",
           "enforceEmailAsPrimary": true
         }
       },
@@ -424,12 +557,56 @@
       {
         "version": "1",
         "type": "REST",
+        "method": "PATCH",
+        "endpoint": "https://a.klaviyo.com/api/profiles/01GW3PHVY0MTCDGS0A1612HARX",
+        "headers": {
+          "Authorization": "Klaviyo-API-Key dummyPrivateApiKey",
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "revision": "2023-02-22"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "data": {
+              "type": "profile",
+              "attributes": {
+                "email": "test@rudderstack.com",
+                "first_name": "Test",
+                "last_name": "Rudderlabs",
+                "phone_number": "+12 345 578 900",
+                "title": "Developer",
+                "organization": "Rudder",
+                "location": {
+                  "city": "Tokyo",
+                  "region": "Kanto",
+                  "country": "JP",
+                  "zip": "100-0001"
+                },
+                "properties": {
+                  "Flagged": false,
+                  "Residence": "Shibuya",
+                  "_id": "user@1"
+                }
+              },
+              "id": "01GW3PHVY0MTCDGS0A1612HARX"
+            }
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      },
+      {
+        "version": "1",
+        "type": "REST",
         "method": "POST",
         "endpoint": "https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs",
         "headers": {
           "Content-Type": "application/json",
           "Accept": "application/json",
-          "Authorization": "Klaviyo-API-Key pk_b68c7b5163d98807fcb57e6f921216629d",
+          "Authorization": "Klaviyo-API-Key dummyPrivateApiKey",
           "revision": "2023-02-22"
         },
         "params": {},
@@ -465,8 +642,8 @@
     "input": {
       "destination": {
         "Config": {
-          "publicApiKey": "WJqij9",
-          "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d",
+          "publicApiKey": "dummyPublicApiKey",
+          "privateApiKey": "dummyPrivateApiKey",
           "enforceEmailAsPrimary": true
         }
       },
@@ -533,8 +710,8 @@
     "input": {
       "destination": {
         "Config": {
-          "publicApiKey": "WJqij9",
-          "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d"
+          "publicApiKey": "dummyPublicApiKey",
+          "privateApiKey": "dummyPrivateApiKey"
         }
       },
       "message": {
@@ -608,7 +785,7 @@
       "endpoint": "https://a.klaviyo.com/api/events",
       "headers": {
         "Accept": "application/json",
-        "Authorization": "Klaviyo-API-Key pk_b68c7b5163d98807fcb57e6f921216629d",
+        "Authorization": "Klaviyo-API-Key dummyPrivateApiKey",
         "Content-Type": "application/json",
         "revision": "2023-02-22"
       },
@@ -647,8 +824,8 @@
     "input": {
       "destination": {
         "Config": {
-          "publicApiKey": "WJqij9",
-          "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d",
+          "publicApiKey": "dummyPublicApiKey",
+          "privateApiKey": "dummyPrivateApiKey",
           "flattenProperties": true
         }
       },
@@ -729,7 +906,7 @@
       "endpoint": "https://a.klaviyo.com/api/events",
       "headers": {
         "Accept": "application/json",
-        "Authorization": "Klaviyo-API-Key pk_b68c7b5163d98807fcb57e6f921216629d",
+        "Authorization": "Klaviyo-API-Key dummyPrivateApiKey",
         "Content-Type": "application/json",
         "revision": "2023-02-22"
       },
@@ -770,8 +947,8 @@
     "input": {
       "destination": {
         "Config": {
-          "publicApiKey": "WJqij9",
-          "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d"
+          "publicApiKey": "dummyPublicApiKey",
+          "privateApiKey": "dummyPrivateApiKey"
         }
       },
       "message": {
@@ -848,7 +1025,7 @@
       "endpoint": "https://a.klaviyo.com/api/events",
       "headers": {
         "Accept": "application/json",
-        "Authorization": "Klaviyo-API-Key pk_b68c7b5163d98807fcb57e6f921216629d",
+        "Authorization": "Klaviyo-API-Key dummyPrivateApiKey",
         "Content-Type": "application/json",
         "revision": "2023-02-22"
       },
@@ -890,8 +1067,8 @@
     "input": {
       "destination": {
         "Config": {
-          "publicApiKey": "WJqij9",
-          "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d",
+          "publicApiKey": "dummyPublicApiKey",
+          "privateApiKey": "dummyPrivateApiKey",
           "enforceEmailAsPrimary": true
         }
       },
@@ -966,7 +1143,7 @@
       "endpoint": "https://a.klaviyo.com/api/events",
       "headers": {
         "Accept": "application/json",
-        "Authorization": "Klaviyo-API-Key pk_b68c7b5163d98807fcb57e6f921216629d",
+        "Authorization": "Klaviyo-API-Key dummyPrivateApiKey",
         "Content-Type": "application/json",
         "revision": "2023-02-22"
       },
@@ -1005,8 +1182,8 @@
     "input": {
       "destination": {
         "Config": {
-          "publicApiKey": "WJqij9",
-          "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d",
+          "publicApiKey": "dummyPublicApiKey",
+          "privateApiKey": "dummyPrivateApiKey",
           "enforceEmailAsPrimary": true
         }
       },
@@ -1081,8 +1258,8 @@
     "input": {
       "destination": {
         "Config": {
-          "publicApiKey": "WJqij9",
-          "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d"
+          "publicApiKey": "dummyPublicApiKey",
+          "privateApiKey": "dummyPrivateApiKey"
         }
       },
       "message": {
@@ -1115,7 +1292,7 @@
         "headers": {
           "Content-Type": "application/json",
           "Accept": "application/json",
-          "Authorization": "Klaviyo-API-Key pk_b68c7b5163d98807fcb57e6f921216629d",
+          "Authorization": "Klaviyo-API-Key dummyPrivateApiKey",
           "revision": "2023-02-22"
         },
         "params": {},
@@ -1147,8 +1324,8 @@
     "input": {
       "destination": {
         "Config": {
-          "publicApiKey": "WJqij9",
-          "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d"
+          "publicApiKey": "dummyPublicApiKey",
+          "privateApiKey": "dummyPrivateApiKey"
         }
       },
       "message": {
@@ -1181,8 +1358,8 @@
     "input": {
       "destination": {
         "Config": {
-          "publicApiKey": "WJqij9",
-          "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d"
+          "publicApiKey": "dummyPublicApiKey",
+          "privateApiKey": "dummyPrivateApiKey"
         }
       },
       "message": {
@@ -1215,8 +1392,8 @@
     "input": {
       "destination": {
         "Config": {
-          "publicApiKey": "WJqij9",
-          "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d"
+          "publicApiKey": "dummyPublicApiKey",
+          "privateApiKey": "dummyPrivateApiKey"
         }
       },
       "message": {
@@ -1296,7 +1473,7 @@
       "method": "POST",
       "endpoint": "https://a.klaviyo.com/api/events",
       "headers": {
-        "Authorization": "Klaviyo-API-Key pk_b68c7b5163d98807fcb57e6f921216629d",
+        "Authorization": "Klaviyo-API-Key dummyPrivateApiKey",
         "Content-Type": "application/json",
         "Accept": "application/json",
         "revision": "2023-02-22"
@@ -1343,8 +1520,8 @@
     "input": {
       "destination": {
         "Config": {
-          "publicApiKey": "WJqij9",
-          "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d",
+          "publicApiKey": "dummyPublicApiKey",
+          "privateApiKey": "dummyPrivateApiKey",
           "flattenProperties": true
         }
       },
@@ -1446,7 +1623,7 @@
       "method": "POST",
       "endpoint": "https://a.klaviyo.com/api/events",
       "headers": {
-        "Authorization": "Klaviyo-API-Key pk_b68c7b5163d98807fcb57e6f921216629d",
+        "Authorization": "Klaviyo-API-Key dummyPrivateApiKey",
         "Content-Type": "application/json",
         "Accept": "application/json",
         "revision": "2023-02-22"
@@ -1499,8 +1676,8 @@
     "input": {
       "destination": {
         "Config": {
-          "publicApiKey": "WJqij9",
-          "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d"
+          "publicApiKey": "dummyPublicApiKey",
+          "privateApiKey": "dummyPrivateApiKey"
         }
       },
       "message": {
@@ -1593,7 +1770,7 @@
       "method": "POST",
       "endpoint": "https://a.klaviyo.com/api/events",
       "headers": {
-        "Authorization": "Klaviyo-API-Key pk_b68c7b5163d98807fcb57e6f921216629d",
+        "Authorization": "Klaviyo-API-Key dummyPrivateApiKey",
         "Content-Type": "application/json",
         "Accept": "application/json",
         "revision": "2023-02-22"

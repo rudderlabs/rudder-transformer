@@ -18,6 +18,7 @@ const {
   populateCustomFieldsFromTraits,
   batchSubscribeEvents,
   getIdFromNewOrExistingProfile,
+  profileUpdateResponseBuilder,
 } = require('./util');
 const {
   defaultRequestConfig,
@@ -30,7 +31,6 @@ const {
   addExternalIdToTraits,
   adduserIdFromExternalId,
   getSuccessRespEvents,
-  getErrorRespEvents,
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
   flattenJson,
@@ -105,20 +105,22 @@ const identifyRequestHandler = async (message, category, destination) => {
     },
   };
 
-  const response = await getIdFromNewOrExistingProfile(endpoint, payload, requestOptions);
+  const { profileId, response } = await getIdFromNewOrExistingProfile(
+    endpoint,
+    payload,
+    requestOptions,
+  );
 
   // Update Profile
-  const responseArray = [{ error: JSON.stringify(response) }];
+  const responseArray = [profileUpdateResponseBuilder(payload, profileId, category, privateApiKey)];
 
   // check if user wants to subscribe profile or not and listId is present or not
-  if (
-    traitsInfo?.properties?.subscribe &&
-    (traitsInfo.properties?.listId || listId)
-  ) {
-    return [subscribeUserToList(message, traitsInfo, destination)];
+  if (traitsInfo?.properties?.subscribe && (traitsInfo.properties?.listId || listId)) {
+    responseArray.push(subscribeUserToList(message, traitsInfo, destination));
+    return responseArray;
   }
 
-  return responseArray[0];
+  return { ...responseArray[0], error: JSON.stringify(response) };
 };
 
 // ----------------------
@@ -331,15 +333,29 @@ const processRouterDest = async (inputs, reqMetadata) => {
   );
   const batchedSubscribeResponseList = [];
   if (subscribeRespList.length > 0) {
-    const batchedResponseList = batchSubscribeEvents(subscribeRespList);
+    const batchedResponseList = batchSubscribeEvents(subscribeRespList, reqMetadata);
     batchedSubscribeResponseList.push(...batchedResponseList);
   }
-  const nonSubscribeSuccessList = nonSubscribeRespList.map((resp) =>
-    resp.message?.error
-      ?
-      getErrorRespEvents([resp.metadata], 299, resp.message.error)
-    : getSuccessRespEvents(resp.message, [resp.metadata], resp.destination),
-  );
+  const nonSubscribeSuccessList = nonSubscribeRespList.map((resp) => {
+    const response = resp;
+    if (reqMetadata?.features && reqMetadata.features['filter-code'] && response.message?.error) {
+      return getSuccessRespEvents(
+        response.message,
+        [response.metadata],
+        response.destination,
+        false,
+        299,
+      );
+    }
+
+    if (response.message?.error) {
+      delete response.message?.error;
+      return getSuccessRespEvents(response.message, [response.metadata], response.destination);
+    }
+
+    return getSuccessRespEvents(response.message, [response.metadata], response.destination);
+  });
+
   batchResponseList = [...batchedSubscribeResponseList, ...nonSubscribeSuccessList];
 
   return [...batchResponseList, ...batchErrorRespList];

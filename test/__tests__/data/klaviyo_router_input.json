@@ -2,8 +2,8 @@
   {
     "destination": {
       "Config": {
-        "publicApiKey": "WJqij9",
-        "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d"
+        "publicApiKey": "dummyPublicApiKey",
+        "privateApiKey": "dummyPrivateApiKey"
       }
     },
     "metadata": {
@@ -66,8 +66,8 @@
   {
     "destination": {
       "Config": {
-        "publicApiKey": "WJqij9",
-        "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d"
+        "publicApiKey": "dummyPublicApiKey",
+        "privateApiKey": "dummyPrivateApiKey"
       }
     },
     "metadata": {
@@ -132,8 +132,8 @@
   {
     "destination": {
       "Config": {
-        "publicApiKey": "WJqij9",
-        "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d"
+        "publicApiKey": "dummyPublicApiKey",
+        "privateApiKey": "dummyPrivateApiKey"
       }
     },
     "metadata": {
@@ -163,8 +163,8 @@
   {
     "destination": {
       "Config": {
-        "publicApiKey": "WJqij9",
-        "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d"
+        "publicApiKey": "dummyPublicApiKey",
+        "privateApiKey": "dummyPrivateApiKey"
       }
     },
     "metadata": {
@@ -194,8 +194,8 @@
   {
     "destination": {
       "Config": {
-        "publicApiKey": "WJqij9",
-        "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d"
+        "publicApiKey": "dummyPublicApiKey",
+        "privateApiKey": "dummyPrivateApiKey"
       }
     },
     "metadata": {

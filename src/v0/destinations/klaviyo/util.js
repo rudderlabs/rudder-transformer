@@ -10,6 +10,7 @@ const {
   removeUndefinedAndNullValues,
   defaultBatchRequestConfig,
   getSuccessRespEvents,
+  defaultPatchRequestConfig,
 } = require('../../util');
 
 const { BASE_ENDPOINT, MAPPING_CONFIG, CONFIG_CATEGORIES, MAX_BATCH_SIZE } = require('./config');
@@ -35,6 +36,7 @@ const REVISION_CONSTANT = '2023-02-22';
  */
 const getIdFromNewOrExistingProfile = async (endpoint, payload, requestOptions) => {
   let response;
+  let profileId;
   const endpointPath = '/api/profiles';
   const { processedResponse: resp } = await handleHttpRequest(
     'post',
@@ -49,15 +51,17 @@ const getIdFromNewOrExistingProfile = async (endpoint, payload, requestOptions) 
   );
 
   if (resp.status === 201) {
+    profileId = resp.response?.data?.id;
     const { data } = resp.response;
     response = { id: data.id, attributes: data.attributes };
   } else if (resp.status === 409) {
     const { errors } = resp.response;
+    profileId = errors?.[0]?.meta?.duplicate_profile_id;
     response = errors;
   }
 
-  if (response) {
-    return response;
+  if (profileId) {
+    return { profileId, response };
   }
 
   let statusCode = resp.status;
@@ -79,6 +83,30 @@ const getIdFromNewOrExistingProfile = async (endpoint, payload, requestOptions) 
     },
     `${JSON.stringify(resp.response)}`,
   );
+};
+
+/**
+ * Update profile response builder
+ * @param {*} payload
+ * @param {*} profileId
+ * @param {*} category
+ * @param {*} privateApiKey
+ * @returns
+ */
+const profileUpdateResponseBuilder = (payload, profileId, category, privateApiKey) => {
+  const updatedPayload = payload;
+  const identifyResponse = defaultRequestConfig();
+  updatedPayload.data.id = profileId;
+  identifyResponse.endpoint = `${BASE_ENDPOINT}${category.apiUrl}/${profileId}`;
+  identifyResponse.method = defaultPatchRequestConfig.requestMethod;
+  identifyResponse.headers = {
+    Authorization: `Klaviyo-API-Key ${privateApiKey}`,
+    'Content-Type': JSON_MIME_TYPE,
+    Accept: JSON_MIME_TYPE,
+    revision: REVISION_CONSTANT,
+  };
+  identifyResponse.body.JSON = removeUndefinedAndNullValues(payload);
+  return identifyResponse;
 };
 
 /**
@@ -231,7 +259,7 @@ const groupSubscribeResponsesUsingListId = (subscribeResponseList) => {
   return subscribeEventGroups;
 };
 
-const getBatchedResponseList = (subscribeEventGroups) => {
+const getBatchedResponseList = (subscribeEventGroups, identifyResponseList, reqMetadata) => {
   let batchedResponseList = [];
   Object.keys(subscribeEventGroups).forEach((listId) => {
     // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
@@ -247,19 +275,38 @@ const getBatchedResponseList = (subscribeEventGroups) => {
     });
     batchedResponseList = [...batchedResponseList, ...batchedResponse];
   });
+
+  if (!(reqMetadata?.features && reqMetadata.features['filter-code'])) {
+    identifyResponseList.forEach((response) => {
+      batchedResponseList[0].batchedRequest.push(response);
+    });
+  }
+
   return batchedResponseList;
 };
 
-const batchSubscribeEvents = (subscribeRespList) => {
+const batchSubscribeEvents = (subscribeRespList, reqMetadata) => {
+  const identifyResponseList = [];
   subscribeRespList.forEach((event) => {
     const processedEvent = event;
     // for group and identify events (it will contain only subscribe response)
-    [processedEvent.message] = event.message.slice(0);
+    if (processedEvent.message.length === 2) {
+      // the array will contain one update profile reponse and one subscribe reponse
+      identifyResponseList.push(event.message[0]);
+      [processedEvent.message] = event.message.slice(1);
+    } else {
+      // for group events (it will contain only subscribe response)
+      [processedEvent.message] = event.message.slice(0);
+    }
   });
 
   const subscribeEventGroups = groupSubscribeResponsesUsingListId(subscribeRespList);
 
-  const batchedResponseList = getBatchedResponseList(subscribeEventGroups);
+  const batchedResponseList = getBatchedResponseList(
+    subscribeEventGroups,
+    identifyResponseList,
+    reqMetadata,
+  );
 
   return batchedResponseList;
 };
@@ -270,5 +317,6 @@ module.exports = {
   populateCustomFieldsFromTraits,
   generateBatchedPaylaodForArray,
   batchSubscribeEvents,
+  profileUpdateResponseBuilder,
   getIdFromNewOrExistingProfile,
 };

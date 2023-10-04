@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.44.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.43.1...v1.44.0) (2023-09-29)
+
+
+### Features
+
+* add geolocation support for python transformations ([#2678](https://github.com/rudderlabs/rudder-transformer/issues/2678)) ([b688c4a](https://github.com/rudderlabs/rudder-transformer/commit/b688c4a6889250bacfd2a81c9de8a1436281daa9))
+* add axios mocking to component test-suite ([#2638](https://github.com/rudderlabs/rudder-transformer/issues/2638)) ([100c808](https://github.com/rudderlabs/rudder-transformer/commit/100c80881eb99716198231deb9ec0e69dc3fa2a0))
+* add circular reference check in flattern json ([#2650](https://github.com/rudderlabs/rudder-transformer/issues/2650)) ([a21ea3a](https://github.com/rudderlabs/rudder-transformer/commit/a21ea3aaecfc3d10de3f4eaa34425dda388032ff))
+* **gaec:** partial failures handling ([#2631](https://github.com/rudderlabs/rudder-transformer/issues/2631)) ([0008277](https://github.com/rudderlabs/rudder-transformer/commit/0008277fe43d20ced4066f8f1f1b0f1d12345f01))
+* **iterable:** user deletion support ([#2621](https://github.com/rudderlabs/rudder-transformer/issues/2621)) ([c0ab19a](https://github.com/rudderlabs/rudder-transformer/commit/c0ab19a293a72ea0a7575b863356aea9a0e6762f))
+* tslint rules enable ([#2604](https://github.com/rudderlabs/rudder-transformer/issues/2604)) ([4d6c4b8](https://github.com/rudderlabs/rudder-transformer/commit/4d6c4b834de005484dc1099a52c69ab6212273e8))
+
+
+### Bug Fixes
+* add optional chaining for traits ([#2677](https://github.com/rudderlabs/rudder-transformer/issues/2677)) ([b80bfbc](https://github.com/rudderlabs/rudder-transformer/commit/b80bfbc8a6afdef57ad5f2560bb803c8e00bcbfc))
+* add auth status inactive category handling to GA in userDeletion flow ([#2669](https://github.com/rudderlabs/rudder-transformer/issues/2669)) ([b784800](https://github.com/rudderlabs/rudder-transformer/commit/b7848004e2679ec7278c8381560cb1a77da6c642))
+* add optional chaining for error message in network handler of Intercom ([#2648](https://github.com/rudderlabs/rudder-transformer/issues/2648)) ([10a13bc](https://github.com/rudderlabs/rudder-transformer/commit/10a13bcf7f987de45540b52d414883664e43f9cd))
+* bqstream event ordering fix ([#2624](https://github.com/rudderlabs/rudder-transformer/issues/2624)) ([e97e7ca](https://github.com/rudderlabs/rudder-transformer/commit/e97e7caed20ffb007f1c543e15c15c6e89e2dfb7))
+* **hubspot:** add validation for hubspotEvents ([#2643](https://github.com/rudderlabs/rudder-transformer/issues/2643)) ([b49d0ee](https://github.com/rudderlabs/rudder-transformer/commit/b49d0ee576f55e5f95e3d02b7111e995fc9b8ada))
+* **mixpanel:** batch event ordering ([#2608](https://github.com/rudderlabs/rudder-transformer/issues/2608)) ([36c7f06](https://github.com/rudderlabs/rudder-transformer/commit/36c7f06ccfa534b751ca9b3f5c41e9bb6d2e9f00))
+* refactor adjust using optional chaining ([#2671](https://github.com/rudderlabs/rudder-transformer/issues/2671)) ([f63b493](https://github.com/rudderlabs/rudder-transformer/commit/f63b4932d5ba467a82a36d3e8b80578f81f729cf))
+* **snyk:** fix dependencies version from snyk ([#2640](https://github.com/rudderlabs/rudder-transformer/issues/2640)) ([8422744](https://github.com/rudderlabs/rudder-transformer/commit/8422744b3af48f71358f7acbe2df7b3688ce04a8))
+* **snyk:** removed aws-sdk dependency ([08a3535](https://github.com/rudderlabs/rudder-transformer/commit/08a3535257e5d84566c95cebc701613478f0e039))
+* **snyk:** removed the new added dependencies ([364779c](https://github.com/rudderlabs/rudder-transformer/commit/364779ce959d7548e5cf1cc8c718b71331dcb378))
+* **snyk:** snyk updated versions merged to oen pr ([16a9b8e](https://github.com/rudderlabs/rudder-transformer/commit/16a9b8e6cc26a8df1331cb1af8774df7cc05c959))
+* use promise for prompts in personalize create tracking script ([#2635](https://github.com/rudderlabs/rudder-transformer/issues/2635)) ([5fbddd1](https://github.com/rudderlabs/rudder-transformer/commit/5fbddd1490b16dbda6bca19df4cac5bef6ff78c5))
+
 ### [1.43.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.43.0...v1.43.1) (2023-09-26)
 
 

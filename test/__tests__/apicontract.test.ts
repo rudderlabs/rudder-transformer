@@ -134,22 +134,26 @@ const assertRouterOutput = (routerOutput, inputData) => {
   expect(returnedJobids).toEqual(inputJobids);
 
   if (inputData.order) {
-    routerOutput.sort((a, b) => {
+    //The following sort is not necessary
+    /* routerOutput.sort((a, b) => {
       const aMin = min(a.metadata.map((meta) => meta.jobId));
       const bMin = min(b.metadata.map((meta) => meta.jobId));
       return aMin - bMin;
-    });
+    }); */
 
     let userIdJobIdMap = {};
     routerOutput.forEach((outEvent) => {
-      const metadata = outEvent.metadata;
-      metadata.forEach((meta) => {
-        const jobId = meta.jobId;
-        const userId = meta.userId;
-        let arr = userIdJobIdMap[userId] || [];
-        arr.push(jobId);
-        userIdJobIdMap[userId] = arr;
-      });
+      //Events with statusCode 400-499 are skipped. They are not sent to the destination.
+      if (outEvent.statusCode < 400 || outEvent.statusCode > 499) {
+        const metadata = outEvent.metadata;
+        metadata.forEach((meta) => {
+          const jobId = meta.jobId;
+          const userId = meta.userId;
+          let arr = userIdJobIdMap[userId] || [];
+          arr.push(jobId);
+          userIdJobIdMap[userId] = arr;
+        });
+      }
     });
 
     //The jobids for a user should be in order. If not, there is an issue.

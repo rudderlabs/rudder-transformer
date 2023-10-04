@@ -1,5 +1,8 @@
 [
   {
+    "message": "Could not determine event name"
+  },
+  {
     "body": {
       "XML": {},
       "JSON_ARRAY": {},

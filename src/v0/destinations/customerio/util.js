@@ -288,7 +288,7 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
       // 100 - len(`Viewed  Screen`) = 86
       trimmedEvName = `Viewed ${truncate(message.event || message.properties.name, 86)} Screen`;
     } else {
-      if (!evName) {
+      if (!evName || typeof evName !== 'string') {
         logger.error(`Could not determine event name`);
         throw new InstrumentationError(`Could not determine event name`);
       }

@@ -148,6 +148,8 @@
         "jobId": 5
       }
     ],
+    "batched": true,
+    "statusCode": 200,
     "destination": {
       "ID": "1uzGR4rn915R6Xts9KRfWAzmgGL",
       "Name": "local-kafka-test",
@@ -278,6 +280,8 @@
         "jobId": 7
       }
     ],
+    "batched": true,
+    "statusCode": 200,
     "destination": {
       "ID": "1uzGR4rn915R6Xts9KRfWAzmgGL",
       "Name": "local-kafka-test",
@@ -408,6 +412,8 @@
         "jobId": 9
       }
     ],
+    "batched": true,
+    "statusCode": 200,
     "destination": {
       "ID": "1uzGR4rn915R6Xts9KRfWAzmgGL",
       "Name": "local-kafka-test",
@@ -504,6 +510,8 @@
         "jobId": 10
       }
     ],
+    "batched": true,
+    "statusCode": 200,
     "destination": {
       "ID": "1uzGR4rn915R6Xts9KRfWAzmgGL",
       "Name": "local-kafka-test",

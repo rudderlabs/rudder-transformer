@@ -5,6 +5,7 @@ const {
   getIntegrationsObj,
   getHashFromArray,
   removeUndefinedAndNullValues,
+  getSuccessRespEvents,
 } = require('../../util');
 // const { InstrumentationError } = require("../../util/errorTypes");
 
@@ -52,9 +53,10 @@ const batch = (destEvents) => {
       metadata: events.map((event) => event.metadata),
       destination: events[0].destination,
     };
-    respList.push(response);
+    respList.push(
+      getSuccessRespEvents(response.batchedRequest, response.metadata, response.destination, true),
+    );
   }
-
   return respList;
 };
 

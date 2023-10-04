@@ -40,6 +40,9 @@ const responseBuilder = (payload, endpoint, apiToken) => {
 const trackResponseBuilder = async (message, { Config }) => {
   const { apiToken } = Config;
   let boardId = getDestinationExternalID(message, 'boardId');
+  if (!message?.event || typeof message.event !== 'string') {
+    throw new InstrumentationError('Event name is required and it should be string');
+  }
   if (!boardId) {
     boardId = Config.boardId;
   }
@@ -48,8 +51,8 @@ const trackResponseBuilder = async (message, { Config }) => {
   }
   const event = get(message, 'event');
 
-  if (!event) {
-    throw new InstrumentationError('event is not present in the input payloads');
+  if (!event || typeof event !== 'string') {
+    throw new InstrumentationError('Event name is required and it should be string');
   }
 
   if (!checkAllowedEventNameFromUI(event, Config)) {

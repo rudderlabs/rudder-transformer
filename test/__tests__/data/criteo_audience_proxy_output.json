@@ -1,5 +1,5 @@
 [
-  {
+{
     "output": {
       "status": 200,
       "message": "Request Processed Successfully",
@@ -18,7 +18,7 @@
           {
             "traceIdentifier": "80a1a0ba3981b04da847d05700752c77",
             "type": "authorization",
-            "code": "authorization-token-invalid",
+            "code": "authorization-token-expired",
             "instance": "/2022-10/audiences/123/contactlist",
             "title": "The authorization header is invalid"
           }
@@ -48,7 +48,7 @@
               "traceIdentifier": "80a1a0ba3981b04da847d05700752c77",
               "type": "authorization"
             }
-          ]
+]
         },
         "status": 404
       },

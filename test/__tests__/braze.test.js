@@ -31,26 +31,29 @@ inputData.forEach((input, index) => {
   });
 });
 // Router Test Data
-const inputRouterDataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_router_input.json`)
+const routerTestDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_router.json`)
 );
-const outputRouterDataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_router_output.json`)
-);
-const inputRouterData = JSON.parse(inputRouterDataFile);
-const expectedRouterData = JSON.parse(outputRouterDataFile);
+const routerTestData = JSON.parse(routerTestDataFile);
+const { simpleRouterTestData, dedupEnabledRouterTestData } = routerTestData; 
 
 describe(`${name} Tests`, () => {
   describe("Simple Router Tests", () => {
-    it("Payload", async () => {
-      const routerOutput = await transformer.processRouterDest(inputRouterData.simpleRouterRequests);
-      expect(routerOutput).toEqual(expectedRouterData.simpleRouterResponse);
+    simpleRouterTestData.forEach((dataPoint, index) => {
+      it(`${index}. ${integration} - ${dataPoint.description}`, async () => {
+        const output = await transformer.processRouterDest(dataPoint.input);
+        expect(output).toEqual(dataPoint.output);
+      });
     });
   });
   describe("Dedupenabled Router Tests", () => {
-    it("Payload", async () => {
-      const routerOutput = await transformer.processRouterDest(inputRouterData.dedupEnabledRouterRequests, { features: { [FEATURE_FILTER_CODE]: true } });
-      expect(routerOutput).toEqual(expectedRouterData.dedupEnabledRouterResponse);
+    dedupEnabledRouterTestData.forEach((dataPoint, index) => {
+      it(`${index}. ${integration} - ${dataPoint.description}`, async () => {
+        const oldTransformerOutput = await transformer.processRouterDest(dataPoint.input);
+        const newTransformerOutput = await transformer.processRouterDest(dataPoint.input, { features: { [FEATURE_FILTER_CODE]: true } });
+        expect(oldTransformerOutput).toEqual(dataPoint.oldTransformerOutput);
+        expect(newTransformerOutput).toEqual(dataPoint.newTransformerOutput);
+      });
     });
   });
 });

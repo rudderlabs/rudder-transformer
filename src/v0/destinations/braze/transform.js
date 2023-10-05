@@ -43,7 +43,7 @@ const logger = require('../../../logger');
 const { getEndpointFromConfig } = require('./util');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
-const { JSON_MIME_TYPE } = require('../../util/constant');
+const { JSON_MIME_TYPE, FEATURE_FILTER_CODE } = require('../../util/constant');
 
 function formatGender(gender) {
   // few possible cases of woman
@@ -246,7 +246,7 @@ function processTrackWithUserAttributes(
       );
       if (dedupedAttributePayload) {
         requestJson.attributes = [dedupedAttributePayload];
-      } else if (reqMetadata?.features && reqMetadata.features['filter-code']) {
+      } else if (reqMetadata?.features && reqMetadata.features[FEATURE_FILTER_CODE]) {
         throw new FilteredEventsError(
           '[Braze Deduplication]: Duplicate user detected, the user is dropped',
         );

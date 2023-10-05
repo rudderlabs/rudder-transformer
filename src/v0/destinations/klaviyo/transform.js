@@ -35,9 +35,8 @@ const {
   handleRtTfSingleEventError,
   flattenJson,
 } = require('../../util');
-
 const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
-const { JSON_MIME_TYPE } = require('../../util/constant');
+const { JSON_MIME_TYPE, HTTP_STATUS_CODES, FEATURE_FILTER_CODE } = require('../../util/constant');
 
 /**
  * Main Identify request handler func
@@ -338,13 +337,17 @@ const processRouterDest = async (inputs, reqMetadata) => {
   }
   const nonSubscribeSuccessList = nonSubscribeRespList.map((resp) => {
     const response = resp;
-    if (reqMetadata?.features && reqMetadata.features['filter-code'] && response.message?.error) {
+    if (
+      reqMetadata?.features &&
+      reqMetadata.features[FEATURE_FILTER_CODE] &&
+      response.message?.error
+    ) {
       return getSuccessRespEvents(
         response.message,
         [response.metadata],
         response.destination,
         false,
-        299,
+        HTTP_STATUS_CODES.SUPPRESS_EVENTS,
       );
     }
 

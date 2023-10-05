@@ -12,14 +12,13 @@ const {
   getSuccessRespEvents,
   defaultPatchRequestConfig,
 } = require('../../util');
-
-const { BASE_ENDPOINT, MAPPING_CONFIG, CONFIG_CATEGORIES, MAX_BATCH_SIZE } = require('./config');
-const { JSON_MIME_TYPE } = require('../../util/constant');
-const { NetworkError, InstrumentationError } = require('../../util/errorTypes');
-const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 const { handleHttpRequest } = require('../../../adapters/network');
+const { JSON_MIME_TYPE, FEATURE_FILTER_CODE } = require('../../util/constant');
+const { NetworkError, InstrumentationError } = require('../../util/errorTypes');
+const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { client: errNotificationClient } = require('../../../util/errorNotifier');
+const { BASE_ENDPOINT, MAPPING_CONFIG, CONFIG_CATEGORIES, MAX_BATCH_SIZE } = require('./config');
 
 const REVISION_CONSTANT = '2023-02-22';
 
@@ -276,7 +275,7 @@ const getBatchedResponseList = (subscribeEventGroups, identifyResponseList, reqM
     batchedResponseList = [...batchedResponseList, ...batchedResponse];
   });
 
-  if (!(reqMetadata?.features && reqMetadata.features['filter-code'])) {
+  if (!(reqMetadata?.features && reqMetadata.features[FEATURE_FILTER_CODE])) {
     identifyResponseList.forEach((response) => {
       batchedResponseList[0].batchedRequest.push(response);
     });

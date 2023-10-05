@@ -6,6 +6,7 @@ const name = "Klaviyo";
 const version = "v0";
 
 const transformer = require(`../../src/${version}/destinations/${integration}/transform`);
+const { FEATURE_FILTER_CODE } = require('../../src/v0/util/constant')
 
 // Processor Test Data
 const testDataFile = fs.readFileSync(
@@ -39,7 +40,7 @@ describe(`${name} Tests`, () => {
 
   describe("Router Tests", () => {
     it("Payload", async () => {
-      const routerOutput = await transformer.processRouterDest(inputRouterData, { features: { 'filter-code': true } });
+      const routerOutput = await transformer.processRouterDest(inputRouterData, { features: { [FEATURE_FILTER_CODE] : true } });
       expect(routerOutput).toEqual(expectedRouterData);
     });
   });

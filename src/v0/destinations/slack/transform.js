@@ -1,5 +1,4 @@
-/* eslint-disable no-nested-ternary */
-/* eslint-disable no-prototype-builtins */
+/* eslint-disable no-nested-ternary, no-restricted-syntax, no-prototype-builtins */
 const Handlebars = require('handlebars');
 const { EventType } = require('../../../constants');
 const {

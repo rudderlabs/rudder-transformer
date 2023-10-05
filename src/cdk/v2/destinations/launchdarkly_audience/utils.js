@@ -1,4 +1,4 @@
-const _ = require('lodash');
+const lodash = require('lodash');
 const { ACTION_TYPES, IDENTIFIER_KEY, MAX_IDENTIFIERS } = require('./config');
 
 /**
@@ -61,7 +61,7 @@ const batchIdentifiersList = (listData) => {
     ...audienceList.remove.map((item) => ({ ...item, type: 'remove' })),
   ];
 
-  const chunkedData = _.chunk(combinedList, MAX_IDENTIFIERS);
+  const chunkedData = lodash.chunk(combinedList, MAX_IDENTIFIERS);
 
   // Group the chunks by action type (add/remove)
   const groupedData = chunkedData.map((chunk) => {

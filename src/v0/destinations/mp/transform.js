@@ -1,4 +1,4 @@
-const _ = require('lodash');
+const lodash = require('lodash');
 const get = require('get-value');
 const { EventType } = require('../../../constants');
 const {
@@ -440,8 +440,8 @@ const processRouterDest = async (inputs, reqMetadata) => {
 
             let processedEvents = await process(event);
             processedEvents = CommonUtils.toArray(processedEvents);
-            return processedEvents.map((response) => ({
-              message: response,
+            return processedEvents.map((res) => ({
+              message: res,
               metadata: event.metadata,
               destination: event.destination,
             }));
@@ -451,7 +451,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
         }),
       );
 
-      transformedPayloads = _.flatMap(transformedPayloads);
+      transformedPayloads = lodash.flatMap(transformedPayloads);
       const { engageEvents, groupsEvents, trackEvents, importEvents, batchErrorRespList } =
         groupEventsByEndpoint(transformedPayloads);
 
@@ -471,7 +471,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
   );
 
   // Flatten the response array containing batched events from multiple groups
-  const allBatchedEvents = _.flatMap(response);
+  const allBatchedEvents = lodash.flatMap(response);
   return combineBatchRequestsWithSameJobIds(allBatchedEvents);
 };
 

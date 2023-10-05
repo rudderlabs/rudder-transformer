@@ -5,6 +5,7 @@ import {
   ExecutionBindings,
   StepOutput,
 } from '@rudderstack/workflow-engine';
+import { FixMe } from '../../util/types';
 
 import tags from '../../v0/util/tags';
 
@@ -25,7 +26,7 @@ export function getEmptyExecutionBindings() {
   return {
     outputs: {},
     context,
-    setContext: (key: string, value: any) => {
+    setContext: (key: string, value: FixMe) => {
       context[key] = value;
     },
   };
@@ -34,7 +35,7 @@ export function getEmptyExecutionBindings() {
 export async function getWorkflowEngine(
   destName: string,
   feature: string,
-  bindings: Record<string, any> = {},
+  bindings: Record<string, FixMe> = {},
 ) {
   const destRootDir = getRootPathForDestination(destName);
   const workflowPath = await getWorkflowPath(destRootDir, feature);
@@ -52,7 +53,7 @@ const workflowEnginePromiseMap = new Map();
 export function getCachedWorkflowEngine(
   destName: string,
   feature: string,
-  bindings: Record<string, any> = {},
+  bindings: Record<string, unknown> = {},
 ): WorkflowEngine {
   // Create a new instance of the engine for the destination if needed
   // TODO: Use cache to avoid long living engine objects
@@ -63,7 +64,7 @@ export function getCachedWorkflowEngine(
   return workflowEnginePromiseMap[destName][feature];
 }
 
-export async function executeWorkflow(workflowEngine: WorkflowEngine, parsedEvent: any) {
+export async function executeWorkflow(workflowEngine: WorkflowEngine, parsedEvent: FixMe) {
   try {
     const result = await workflowEngine.execute(parsedEvent);
     // TODO: Handle remaining output scenarios
@@ -75,9 +76,9 @@ export async function executeWorkflow(workflowEngine: WorkflowEngine, parsedEven
 
 export async function processCdkV2Workflow(
   destType: string,
-  parsedEvent: any,
+  parsedEvent: FixMe,
   feature: string,
-  bindings: Record<string, any> = {},
+  bindings: Record<string, FixMe> = {},
 ) {
   try {
     const workflowEngine = await getCachedWorkflowEngine(destType, feature, bindings);
@@ -90,7 +91,7 @@ export async function processCdkV2Workflow(
 export function executeStep(
   workflowEngine: WorkflowEngine,
   stepName: string,
-  input: any,
+  input: FixMe,
   bindings?: ExecutionBindings,
 ): Promise<StepOutput> {
   return workflowEngine

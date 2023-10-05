@@ -14,7 +14,7 @@ import stats from '../util/stats';
 import logger from '../logger';
 import { getIntegrationVersion } from '../util/utils';
 import tags from '../v0/util/tags';
-import { DynamicConfigParser } from '../util/dynamicConfigParser';
+import DynamicConfigParser from '../util/dynamicConfigParser';
 
 export default class DestinationController {
   public static async destinationTransformAtProcessor(ctx: Context) {
@@ -41,7 +41,9 @@ export default class DestinationController {
         ctx,
       ) as ProcessorTransformationRequest[];
       const timestampCorrectEvents = ControllerUtility.handleTimestampInEvents(events);
-      events = DynamicConfigParser.process(timestampCorrectEvents) as ProcessorTransformationRequest[];
+      events = DynamicConfigParser.process(
+        timestampCorrectEvents,
+      ) as ProcessorTransformationRequest[];
       resplist = await integrationService.doProcessorTransformation(
         events,
         destination,
@@ -194,7 +196,7 @@ export default class DestinationController {
     stats.timing('dest_transform_request_latency', startTime, {
       destination,
       feature: tags.FEATURES.BATCH,
-      version:"v0",
+      version: 'v0',
     });
     return ctx;
   }

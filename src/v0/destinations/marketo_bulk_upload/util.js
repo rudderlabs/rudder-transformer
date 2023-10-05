@@ -410,8 +410,9 @@ const getFieldSchemaMap = async (accessToken, munchkinId) => {
 const checkEventStatusViaSchemaMatching = (event, fieldMap) => {
   const mismatchedFields = {};
   const events = event.input;
-  events.forEach((event) => {
-    const { message, metadata } = event;
+  events.forEach((ev) => {
+    const { message, metadata } = ev;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const { job_id } = metadata;
 
     Object.entries(message).forEach(([paramName, paramValue]) => {

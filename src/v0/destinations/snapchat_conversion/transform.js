@@ -278,14 +278,18 @@ function eventMappingHandler(message, destination) {
 }
 
 function process(event) {
-  const { message, destination } = event;
-
+  const { message: incomingMessage, destination } = event;
+  const message = { ...incomingMessage };
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
   }
 
-  const messageType = message.type.toLowerCase();
+  let messageType = message.type.toLowerCase();
   let response;
+  if (messageType === EventType.PAGE) {
+    messageType = EventType.TRACK;
+    message.event = 'page_view';
+  }
   if (messageType === EventType.TRACK) {
     const mappedEvents = eventMappingHandler(message, destination);
     if (mappedEvents.length > 0) {

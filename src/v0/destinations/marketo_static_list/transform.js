@@ -95,8 +95,12 @@ const processEvent = (input) => {
 };
 
 function transformForRecordEvent(inputs, leadIdObj) {
+  const finalMetadata = [];
+  // iterate through each inputs metadata and create a final metadata
   const tokenisedInputs = inputs.map((input) => {
     const { message } = input;
+    const { metadata } = input;
+    finalMetadata.push(metadata);
     const { fields, action } = message;
     if (!message.properties) {
       message.properties = {};
@@ -117,6 +121,7 @@ function transformForRecordEvent(inputs, leadIdObj) {
     return input;
   });
   const finalInput = [tokenisedInputs[0]];
+  finalInput[0].metadata = finalMetadata;
   finalInput[0].message.properties.listData.add = leadIdObj.insert;
   finalInput[0].message.properties.listData.remove = leadIdObj.delete;
 

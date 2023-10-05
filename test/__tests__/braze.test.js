@@ -6,6 +6,7 @@ const path = require("path");
 
 const version = "v0";
 
+const { FEATURE_FILTER_CODE } = require('../../src/v0/util/constant');
 const transformer = require(`../../src/${version}/destinations/${integration}/transform`);
 const inputDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}_input.json`)
@@ -48,7 +49,7 @@ describe(`${name} Tests`, () => {
   });
   describe("Dedupenabled Router Tests", () => {
     it("Payload", async () => {
-      const routerOutput = await transformer.processRouterDest(inputRouterData.dedupEnabledRouterRequests);
+      const routerOutput = await transformer.processRouterDest(inputRouterData.dedupEnabledRouterRequests, { features: { [FEATURE_FILTER_CODE]: true } });
       expect(routerOutput).toEqual(expectedRouterData.dedupEnabledRouterResponse);
     });
   });

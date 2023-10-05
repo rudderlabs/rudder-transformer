@@ -5,8 +5,8 @@ const integration = "klaviyo";
 const name = "Klaviyo";
 const version = "v0";
 
+const { FEATURE_FILTER_CODE } = require('../../src/v0/util/constant');
 const transformer = require(`../../src/${version}/destinations/${integration}/transform`);
-const { FEATURE_FILTER_CODE } = require('../../src/v0/util/constant')
 
 // Processor Test Data
 const testDataFile = fs.readFileSync(

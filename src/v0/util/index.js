@@ -32,6 +32,7 @@ const {
   REFRESH_TOKEN,
   AUTH_STATUS_INACTIVE,
 } = require('../../adapters/networkhandler/authConstants');
+const { FEATURE_FILTER_CODE } = require('./constant');
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -76,6 +77,11 @@ const stripTrailingSlash = (str) => (str && str.endsWith('/') ? str.slice(0, -1)
 const isPrimitive = (arg) => {
   const type = typeof arg;
   return arg == null || (type !== 'object' && type !== 'function');
+};
+
+const isNewStatusCodesAccepted = (reqMetadata = {}) => {
+  const { features } = reqMetadata;
+  return !!(features && features[FEATURE_FILTER_CODE]);
 };
 
 /**
@@ -2135,4 +2141,5 @@ module.exports = {
   hasCircularReference,
   getAuthErrCategoryFromErrDetailsAndStCode,
   getAuthErrCategoryFromStCode,
+  isNewStatusCodesAccepted,
 };

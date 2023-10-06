@@ -34,9 +34,10 @@ const {
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
   flattenJson,
+  isNewStatusCodesAccepted,
 } = require('../../util');
 const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
-const { JSON_MIME_TYPE, HTTP_STATUS_CODES, FEATURE_FILTER_CODE } = require('../../util/constant');
+const { JSON_MIME_TYPE, HTTP_STATUS_CODES } = require('../../util/constant');
 
 /**
  * Main Identify request handler func
@@ -48,9 +49,10 @@ const { JSON_MIME_TYPE, HTTP_STATUS_CODES, FEATURE_FILTER_CODE } = require('../.
  * @param {*} message
  * @param {*} category
  * @param {*} destination
+ * @param {*} reqMetadata
  * @returns
  */
-const identifyRequestHandler = async (message, category, destination) => {
+const identifyRequestHandler = async (message, category, destination, reqMetadata) => {
   // If listId property is present try to subscribe/member user in list
   const { privateApiKey, enforceEmailAsPrimary, listId, flattenProperties } = destination.Config;
   const mappedToDestination = get(message, MappedToDestinationKey);
@@ -110,16 +112,30 @@ const identifyRequestHandler = async (message, category, destination) => {
     requestOptions,
   );
 
+  const responseArray = [];
   // Update Profile
-  const responseArray = [profileUpdateResponseBuilder(payload, profileId, category, privateApiKey)];
+  const updateProfileResponse = profileUpdateResponseBuilder(
+    payload,
+    profileId,
+    category,
+    privateApiKey,
+    reqMetadata,
+  );
+  responseArray.push(updateProfileResponse);
 
   // check if user wants to subscribe profile or not and listId is present or not
   if (traitsInfo?.properties?.subscribe && (traitsInfo.properties?.listId || listId)) {
-    responseArray.push(subscribeUserToList(message, traitsInfo, destination));
-    return responseArray;
+    const subscribeUserToListResponse = subscribeUserToList(message, traitsInfo, destination);
+    responseArray.push(subscribeUserToListResponse);
   }
 
-  return { ...responseArray[0], error: JSON.stringify(response) };
+  if (isNewStatusCodesAccepted(reqMetadata)) {
+    return responseArray.length > 1
+      ? [responseArray[1]]
+      : { ...responseArray[0], error: JSON.stringify(response) };
+  }
+
+  return responseArray.length > 1 ? responseArray : responseArray[0];
 };
 
 // ----------------------
@@ -245,7 +261,7 @@ const groupRequestHandler = (message, category, destination) => {
 };
 
 // Main event processor using specific handler funcs
-const processEvent = async (message, destination) => {
+const processEvent = async (message, destination, reqMetadata) => {
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
   }
@@ -259,7 +275,7 @@ const processEvent = async (message, destination) => {
   switch (messageType) {
     case EventType.IDENTIFY:
       category = CONFIG_CATEGORIES.IDENTIFY;
-      response = await identifyRequestHandler(message, category, destination);
+      response = await identifyRequestHandler(message, category, destination, reqMetadata);
       break;
     case EventType.SCREEN:
     case EventType.TRACK:
@@ -276,8 +292,8 @@ const processEvent = async (message, destination) => {
   return response;
 };
 
-const process = async (event) => {
-  const result = await processEvent(event.message, event.destination);
+const process = async (event, reqMetadata) => {
+  const result = await processEvent(event.message, event.destination, reqMetadata);
   return result;
 };
 
@@ -316,7 +332,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
           // if not transformed
           getEventChunks(
             {
-              message: await process(event),
+              message: await process(event, reqMetadata),
               metadata: event.metadata,
               destination,
             },
@@ -332,31 +348,27 @@ const processRouterDest = async (inputs, reqMetadata) => {
   );
   const batchedSubscribeResponseList = [];
   if (subscribeRespList.length > 0) {
-    const batchedResponseList = batchSubscribeEvents(subscribeRespList, reqMetadata);
+    const batchedResponseList = batchSubscribeEvents(subscribeRespList);
     batchedSubscribeResponseList.push(...batchedResponseList);
   }
   const nonSubscribeSuccessList = nonSubscribeRespList.map((resp) => {
     const response = resp;
+    const { message, metadata, destination: eventDestination } = response;
     if (
-      reqMetadata?.features &&
-      reqMetadata.features[FEATURE_FILTER_CODE] &&
-      response.message?.error
+      isNewStatusCodesAccepted(reqMetadata) &&
+      message?.statusCode &&
+      message.statusCode === HTTP_STATUS_CODES.SUPPRESS_EVENTS
     ) {
+      delete message.statusCode;
       return getSuccessRespEvents(
-        response.message,
-        [response.metadata],
-        response.destination,
+        message,
+        [metadata],
+        eventDestination,
         false,
         HTTP_STATUS_CODES.SUPPRESS_EVENTS,
       );
     }
-
-    if (response.message?.error) {
-      delete response.message?.error;
-      return getSuccessRespEvents(response.message, [response.metadata], response.destination);
-    }
-
-    return getSuccessRespEvents(response.message, [response.metadata], response.destination);
+    return getSuccessRespEvents(message, [metadata], eventDestination);
   });
 
   batchResponseList = [...batchedSubscribeResponseList, ...nonSubscribeSuccessList];

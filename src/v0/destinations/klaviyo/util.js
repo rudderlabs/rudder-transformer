@@ -11,10 +11,11 @@ const {
   defaultBatchRequestConfig,
   getSuccessRespEvents,
   defaultPatchRequestConfig,
+  isNewStatusCodesAccepted,
 } = require('../../util');
 const tags = require('../../util/tags');
 const { handleHttpRequest } = require('../../../adapters/network');
-const { JSON_MIME_TYPE, FEATURE_FILTER_CODE } = require('../../util/constant');
+const { JSON_MIME_TYPE, HTTP_STATUS_CODES } = require('../../util/constant');
 const { NetworkError, InstrumentationError } = require('../../util/errorTypes');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { client: errNotificationClient } = require('../../../util/errorNotifier');
@@ -90,9 +91,10 @@ const getIdFromNewOrExistingProfile = async (endpoint, payload, requestOptions) 
  * @param {*} profileId
  * @param {*} category
  * @param {*} privateApiKey
+ * @param {*} reqMetadata
  * @returns
  */
-const profileUpdateResponseBuilder = (payload, profileId, category, privateApiKey) => {
+const profileUpdateResponseBuilder = (payload, profileId, category, privateApiKey, reqMetadata) => {
   const updatedPayload = payload;
   const identifyResponse = defaultRequestConfig();
   updatedPayload.data.id = profileId;
@@ -105,6 +107,11 @@ const profileUpdateResponseBuilder = (payload, profileId, category, privateApiKe
     revision: REVISION_CONSTANT,
   };
   identifyResponse.body.JSON = removeUndefinedAndNullValues(payload);
+
+  if (isNewStatusCodesAccepted(reqMetadata)) {
+    identifyResponse.statusCode = HTTP_STATUS_CODES.SUPPRESS_EVENTS;
+  }
+
   return identifyResponse;
 };
 
@@ -258,7 +265,7 @@ const groupSubscribeResponsesUsingListId = (subscribeResponseList) => {
   return subscribeEventGroups;
 };
 
-const getBatchedResponseList = (subscribeEventGroups, identifyResponseList, reqMetadata) => {
+const getBatchedResponseList = (subscribeEventGroups, identifyResponseList) => {
   let batchedResponseList = [];
   Object.keys(subscribeEventGroups).forEach((listId) => {
     // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
@@ -275,7 +282,7 @@ const getBatchedResponseList = (subscribeEventGroups, identifyResponseList, reqM
     batchedResponseList = [...batchedResponseList, ...batchedResponse];
   });
 
-  if (!(reqMetadata?.features && reqMetadata.features[FEATURE_FILTER_CODE])) {
+  if (identifyResponseList.length > 0) {
     identifyResponseList.forEach((response) => {
       batchedResponseList[0].batchedRequest.push(response);
     });
@@ -284,7 +291,7 @@ const getBatchedResponseList = (subscribeEventGroups, identifyResponseList, reqM
   return batchedResponseList;
 };
 
-const batchSubscribeEvents = (subscribeRespList, reqMetadata) => {
+const batchSubscribeEvents = (subscribeRespList) => {
   const identifyResponseList = [];
   subscribeRespList.forEach((event) => {
     const processedEvent = event;
@@ -301,11 +308,7 @@ const batchSubscribeEvents = (subscribeRespList, reqMetadata) => {
 
   const subscribeEventGroups = groupSubscribeResponsesUsingListId(subscribeRespList);
 
-  const batchedResponseList = getBatchedResponseList(
-    subscribeEventGroups,
-    identifyResponseList,
-    reqMetadata,
-  );
+  const batchedResponseList = getBatchedResponseList(subscribeEventGroups, identifyResponseList);
 
   return batchedResponseList;
 };

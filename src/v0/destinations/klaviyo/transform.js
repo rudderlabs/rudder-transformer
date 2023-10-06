@@ -106,7 +106,7 @@ const identifyRequestHandler = async (message, category, destination, reqMetadat
     },
   };
 
-  const { profileId, response } = await getIdFromNewOrExistingProfile(
+  const { profileId, response, statusCode } = await getIdFromNewOrExistingProfile(
     endpoint,
     payload,
     requestOptions,
@@ -126,7 +126,7 @@ const identifyRequestHandler = async (message, category, destination, reqMetadat
     responseMap.subscribeUserToListResponse = subscribeUserToList(message, traitsInfo, destination);
   }
 
-  if (isNewStatusCodesAccepted(reqMetadata)) {
+  if (isNewStatusCodesAccepted(reqMetadata) && statusCode === HTTP_STATUS_CODES.CREATED) {
     responseMap.suppressEventResponse = {
       ...responseMap.profileUpdateResponse,
       statusCode: HTTP_STATUS_CODES.SUPPRESS_EVENTS,

@@ -14,7 +14,7 @@ const {
 } = require('../../util');
 const tags = require('../../util/tags');
 const { handleHttpRequest } = require('../../../adapters/network');
-const { JSON_MIME_TYPE } = require('../../util/constant');
+const { JSON_MIME_TYPE, HTTP_STATUS_CODES } = require('../../util/constant');
 const { NetworkError, InstrumentationError } = require('../../util/errorTypes');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { client: errNotificationClient } = require('../../../util/errorNotifier');
@@ -49,18 +49,21 @@ const getIdFromNewOrExistingProfile = async (endpoint, payload, requestOptions) 
     },
   );
 
-  if (resp.status === 201) {
+  /**
+   * 201 - profile is created with updated payload no need to update it again (suppress event with 299 status code)
+   * 409 - profile is already exist, it needs to get updated
+   */
+  if (resp.status === HTTP_STATUS_CODES.CREATED) {
     profileId = resp.response?.data?.id;
     const { data } = resp.response;
     response = { id: data.id, attributes: data.attributes };
-  } else if (resp.status === 409) {
+  } else if (resp.status === HTTP_STATUS_CODES.CONFLICT) {
     const { errors } = resp.response;
     profileId = errors?.[0]?.meta?.duplicate_profile_id;
-    response = errors;
   }
 
   if (profileId) {
-    return { profileId, response };
+    return { profileId, response, statusCode: resp.status };
   }
 
   let statusCode = resp.status;

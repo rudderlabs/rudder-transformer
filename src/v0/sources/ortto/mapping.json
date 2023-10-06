@@ -1,0 +1,14 @@
+[
+  {
+    "sourceKeys": "contact.email",
+    "destKeys": "context.traits.email"
+  },
+  {
+    "sourceKeys": "id",
+    "destKeys": "messageId"
+  },
+  {
+    "sourceKeys": "time",
+    "destKeys": "originalTimestamp"
+  }
+]

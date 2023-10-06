@@ -187,6 +187,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
   } else {
     respList = await simpleProcessRouterDest(tokenisedInputs, processEvent, reqMetadata);
   }
+  // [respList[0].metadata] = respList[0].metadata;
   return respList;
 };
 
@@ -197,7 +198,13 @@ const processRouterDest = async (inputs, reqMetadata) => {
  */
 function processMetadataForRouter(output) {
   const { metadata, destination } = output;
-  const clonedMetadata = cloneDeep(metadata);
+  // check if metadata[0] is an array or not
+  let clonedMetadata;
+  if (Array.isArray(metadata[0])) {
+    [clonedMetadata] = cloneDeep(metadata);
+  } else {
+    clonedMetadata = cloneDeep(metadata);
+  }
   clonedMetadata.forEach((metadataElement) => {
     // eslint-disable-next-line no-param-reassign
     metadataElement.destInfo = { authKey: destination.ID };

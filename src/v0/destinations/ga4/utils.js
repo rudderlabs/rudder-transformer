@@ -400,13 +400,25 @@ const isValidUserProperty = (key, value) => {
 /**
  * Function to validate and prepare user_properties
  * @param {*} message
+ * @param {*} piiPropertiesToIgnore
+ * @returns
  */
-const prepareUserProperties = (message) => {
+const prepareUserProperties = (message, piiPropertiesToIgnore = []) => {
+  // Exclude PII user traits
+  const piiProperties = [];
+  if (piiPropertiesToIgnore.length > 0) {
+    piiPropertiesToIgnore.forEach((property) => {
+      if (typeof property.piiProperty === 'string' && property.piiProperty.trim() !== '') {
+        piiProperties.push(property.piiProperty.trim());
+      }
+    });
+  }
+
   const userProperties = extractCustomFields(
     message,
     {},
     ['properties.user_properties', 'context.traits'],
-    GA4_RESERVED_USER_PROPERTY_EXCLUSION,
+    [...GA4_RESERVED_USER_PROPERTY_EXCLUSION, ...piiProperties],
   );
 
   const validatedUserProperties = Object.entries(userProperties)

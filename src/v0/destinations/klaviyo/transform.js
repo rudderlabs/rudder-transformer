@@ -112,30 +112,34 @@ const identifyRequestHandler = async (message, category, destination, reqMetadat
     requestOptions,
   );
 
-  const responseArray = [];
-  // Update Profile
-  const updateProfileResponse = profileUpdateResponseBuilder(
-    payload,
-    profileId,
-    category,
-    privateApiKey,
-    reqMetadata,
-  );
-  responseArray.push(updateProfileResponse);
+  const responseMap = {
+    profileUpdateResponse: profileUpdateResponseBuilder(
+      payload,
+      profileId,
+      category,
+      privateApiKey,
+    ),
+  };
 
   // check if user wants to subscribe profile or not and listId is present or not
   if (traitsInfo?.properties?.subscribe && (traitsInfo.properties?.listId || listId)) {
-    const subscribeUserToListResponse = subscribeUserToList(message, traitsInfo, destination);
-    responseArray.push(subscribeUserToListResponse);
+    responseMap.subscribeUserToListResponse = subscribeUserToList(message, traitsInfo, destination);
   }
 
   if (isNewStatusCodesAccepted(reqMetadata)) {
-    return responseArray.length > 1
-      ? [responseArray[1]]
-      : { ...responseArray[0], error: JSON.stringify(response) };
+    responseMap.suppressEventResponse = {
+      ...responseMap.profileUpdateResponse,
+      statusCode: HTTP_STATUS_CODES.SUPPRESS_EVENTS,
+      error: JSON.stringify(response),
+    };
+    return responseMap.subscribeUserToListResponse
+      ? [responseMap.subscribeUserToListResponse]
+      : responseMap.suppressEventResponse;
   }
 
-  return responseArray.length > 1 ? responseArray : responseArray[0];
+  return responseMap.subscribeUserToListResponse
+    ? [responseMap.profileUpdateResponse, responseMap.subscribeUserToListResponse]
+    : responseMap.profileUpdateResponse;
 };
 
 // ----------------------

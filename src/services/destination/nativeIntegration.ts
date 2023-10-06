@@ -106,10 +106,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
         );
         try {
           const doRouterTransformationResponse: RouterTransformationResponse[] =
-            await destHandler.processRouterDest(
-              cloneDeep(destInputArray),
-              cloneDeep(requestMetadata),
-            );
+            await destHandler.processRouterDest(cloneDeep(destInputArray), requestMetadata);
           metaTO.metadata = destInputArray[0].metadata;
           return DestinationPostTransformationService.handleRouterTransformSuccessEvents(
             doRouterTransformationResponse,

@@ -11,11 +11,10 @@ const {
   defaultBatchRequestConfig,
   getSuccessRespEvents,
   defaultPatchRequestConfig,
-  isNewStatusCodesAccepted,
 } = require('../../util');
 const tags = require('../../util/tags');
 const { handleHttpRequest } = require('../../../adapters/network');
-const { JSON_MIME_TYPE, HTTP_STATUS_CODES } = require('../../util/constant');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 const { NetworkError, InstrumentationError } = require('../../util/errorTypes');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { client: errNotificationClient } = require('../../../util/errorNotifier');
@@ -91,10 +90,9 @@ const getIdFromNewOrExistingProfile = async (endpoint, payload, requestOptions) 
  * @param {*} profileId
  * @param {*} category
  * @param {*} privateApiKey
- * @param {*} reqMetadata
  * @returns
  */
-const profileUpdateResponseBuilder = (payload, profileId, category, privateApiKey, reqMetadata) => {
+const profileUpdateResponseBuilder = (payload, profileId, category, privateApiKey) => {
   const updatedPayload = payload;
   const identifyResponse = defaultRequestConfig();
   updatedPayload.data.id = profileId;
@@ -107,11 +105,6 @@ const profileUpdateResponseBuilder = (payload, profileId, category, privateApiKe
     revision: REVISION_CONSTANT,
   };
   identifyResponse.body.JSON = removeUndefinedAndNullValues(payload);
-
-  if (isNewStatusCodesAccepted(reqMetadata)) {
-    identifyResponse.statusCode = HTTP_STATUS_CODES.SUPPRESS_EVENTS;
-  }
-
   return identifyResponse;
 };
 

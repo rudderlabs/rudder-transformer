@@ -22,6 +22,7 @@ const {
   isHttpStatusSuccess,
   simpleProcessRouterDestSync,
   simpleProcessRouterDest,
+  isNewStatusCodesAccepted,
 } = require('../../util');
 const {
   InstrumentationError,
@@ -43,7 +44,7 @@ const logger = require('../../../logger');
 const { getEndpointFromConfig } = require('./util');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
-const { JSON_MIME_TYPE, FEATURE_FILTER_CODE } = require('../../util/constant');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function formatGender(gender) {
   // few possible cases of woman
@@ -246,7 +247,7 @@ function processTrackWithUserAttributes(
       );
       if (dedupedAttributePayload) {
         requestJson.attributes = [dedupedAttributePayload];
-      } else if (reqMetadata?.features && reqMetadata.features[FEATURE_FILTER_CODE]) {
+      } else if (isNewStatusCodesAccepted(reqMetadata)) {
         throw new FilteredEventsError(
           '[Braze Deduplication]: Duplicate user detected, the user is dropped',
         );

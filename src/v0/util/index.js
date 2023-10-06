@@ -80,8 +80,11 @@ const isPrimitive = (arg) => {
 };
 
 const isNewStatusCodesAccepted = (reqMetadata = {}) => {
-  const { features } = reqMetadata;
-  return !!(features && features[FEATURE_FILTER_CODE]);
+  if (reqMetadata && typeof reqMetadata === 'object' && !Array.isArray(reqMetadata)) {
+    const { features } = reqMetadata;
+    return !!(features && features[FEATURE_FILTER_CODE]);
+  }
+  return false;
 };
 
 /**

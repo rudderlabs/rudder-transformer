@@ -15,8 +15,8 @@ steps:
   - name: successfulEvents
     template: |
       $.outputs.transform#idx.output.({
-        "batchedRequest": .,
-        "batched": false,
+        "batchedRequest": [.],
+        "batched": true,
         "destination": ^[idx].destination,
         "metadata": ^[idx].metadata[],
         "statusCode": 200

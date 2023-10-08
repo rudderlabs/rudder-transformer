@@ -1,9 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 import { Context } from 'koa';
+import { Metadata } from 'rs-integration-lib';
 import { DestHandlerMap } from '../constants/destinationCanonicalNames';
-import { Metadata } from '../types';
-import { getCPUProfile, getHeapProfile, } from '../middleware';
+import { getCPUProfile, getHeapProfile } from '../middleware';
 
 export class MiscService {
   public static getDestHandler(dest: string, version: string) {

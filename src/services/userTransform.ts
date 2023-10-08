@@ -43,9 +43,9 @@ export class UserTransformService {
     const responses = await Promise.all<any>(
       Object.entries(groupedEvents).map(async ([dest, destEvents]) => {
         logger.debug(`dest: ${dest}`);
-        const eventsToProcess = destEvents as ProcessorTransformationRequest[];
+        const eventsToProcess = destEvents
         const transformationVersionId =
-          eventsToProcess[0]?.destination?.Transformations[0]?.VersionID;
+          eventsToProcess[0].destination?.Transformations[0]?.VersionID;
         const messageIds = eventsToProcess.map((ev) => ev.metadata?.messageId);
 
         const commonMetadata = {

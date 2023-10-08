@@ -1,8 +1,14 @@
-import { RudderStackEvent, Integration, Destination, WorkflowType } from 'rs-integration-lib';
+import {
+  RudderStackEvent,
+  RudderStackEventPayload,
+  Integration,
+  Destination,
+  WorkflowType,
+  Metadata,
+} from 'rs-integration-lib';
 import { IntegrationsFactory } from 'rudder-integrations-store';
 import groupBy from 'lodash/groupBy';
 import {
-  Metadata,
   ProcessorTransformationRequest,
   RouterTransformationRequestData,
   TransformedOutput,
@@ -30,7 +36,10 @@ export class PluginAdapter {
     //   plugins: ['preprocessor', 'multiplexer'],
     // };
 
-    const integration = await IntegrationsFactory.createIntegration(integrationName, workflowType);
+    const integration = await IntegrationsFactory.createIntegration(
+      integrationName,
+      workflowType,
+    );
     this.pluginCache.set(cacheKey, integration);
     return integration;
   }
@@ -54,12 +63,12 @@ export class PluginAdapter {
     const result = await Promise.all(
       eventsPerDestinationId.map(async (inputs) => {
         const events = inputs.map((input) => ({
-          event: input.message as RudderStackEvent,
-          metadata: input.metadata,
+          event: [{ message: input.message as RudderStackEvent } as RudderStackEventPayload],
+          metadata: [input.metadata],
         }));
         const { destination } = inputs[0];
-        const output = await integrationPlugin.execute(events, destination as Destination);
-        const responseList = output.context;
+        const output = await integrationPlugin.execute(events, destination);
+        const responseList = output.resultContext;
         const errors = output.errorResults;
 
         const errorList: { metadata: Metadata; response: any; destination: Destination }[] = [];
@@ -88,7 +97,7 @@ export class PluginAdapter {
             transformedPayloadList.push({
               payload: transformedPayload,
               metadata: response.metadata[index],
-              destination: response.destination,
+              destination,
             });
           }
         }
@@ -128,9 +137,9 @@ export class PluginAdapter {
 
     const result = await Promise.all(
       eventsPerDestinationId.map(async (inputs) => {
-        const events = inputs.map((input) => ({
-          event: input.message as RudderStackEvent,
-          metadata: input.metadata,
+        const input = inputs.map((input) => ({
+          event: [{ message: input.message as RudderStackEvent } as RudderStackEventPayload],
+          metadata: [input.metadata],
         }));
 
         const { destination } = inputs[0];
@@ -138,8 +147,8 @@ export class PluginAdapter {
         // calling the plugin and we can expect batched and multiplexed responses
         // example: [ { payload: [event1, event2, event3], metadata: [metadata1, metadata2, metdata3] }, { payload: [event3, event4], metadata: [metadata3, metadata4] } ]
 
-        const output = await integrationPlugin.execute(events, destination as Destination);
-        const responseList = output.context;
+        const output = await integrationPlugin.execute(input, destination);
+        const responseList = output.resultContext;
         const errors = output.errorResults;
 
         // handle error scenario
@@ -149,7 +158,7 @@ export class PluginAdapter {
             const errResponses = e.metadata.map((metadata) => ({
               metadata,
               response: generateErrorObject(e.error), // add further tags here
-              destination: e.destination,
+              destination,
             }));
             return errResponses;
           });
@@ -204,7 +213,7 @@ export class PluginAdapter {
                   finalResponse[position].metadata.push(meta);
                 }
               });
-              finalResponse[position].destination = rankedResponse.destination;
+              finalResponse[position].destination = destination;
               isCurrentResponseAddedToFinalPayload = true;
               // break the loop as we have already appended the entire rankedResponse to the finalResponse
               break;
@@ -215,7 +224,7 @@ export class PluginAdapter {
             finalResponse.push({
               payload: rankedResponse.payload.map((payload) => payload as TransformedOutput),
               metadata: rankedResponse.metadata,
-              destination: rankedResponse.destination,
+              destination,
             });
             // update the jobIdPositionMap for all the jobIds in the rankedResponse
             rankedResponse.metadata.forEach((meta) => {

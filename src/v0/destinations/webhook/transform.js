@@ -164,3 +164,9 @@ const processRouterDest = async (inputs, reqMetadata) => {
 };
 
 module.exports = { processEvent, process, processRouterDest };
+
+
+
+u
+
+event -->  destination

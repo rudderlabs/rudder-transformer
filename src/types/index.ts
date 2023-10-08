@@ -1,3 +1,5 @@
+import { Destination, Metadata } from "rs-integration-lib";
+
 type ProcessorTransformationOutput = {
   version: string;
   type: string;
@@ -18,62 +20,7 @@ type ProcessorTransformationOutput = {
 
 type TransformedOutput = ProcessorTransformationOutput;
 
-type Metadata = {
-  sourceId: string;
-  workspaceId: string;
-  namespace: string;
-  instanceId: string;
-  sourceType: string;
-  sourceCategory: string;
-  trackingPlanId: string;
-  trackingPlanVersion: number;
-  sourceTpConfig: Object;
-  mergedTpConfig: Object;
-  destinationId: string;
-  jobRunId: string;
-  jobId: number;
-  sourceBatchId: string;
-  sourceJobId: string;
-  sourceJobRunId: string;
-  sourceTaskId: string;
-  sourceTaskRunId: string;
-  recordId: Object;
-  destinationType: string;
-  messageId: string;
-  oauthAccessToken: string;
-  messageIds: string[];
-  rudderId: string;
-  receivedAt: string;
-  eventName: string;
-  eventType: string;
-  sourceDefinitionId: string;
-  destinationDefinitionId: string;
-  transformationId: string;
-};
 
-type UserTransformationInput = {
-  VersionID: string;
-  ID: string;
-  Config: Object;
-};
-
-type DestinationDefinition = {
-  ID: string;
-  Name: string;
-  DisplayName: string;
-  Config: Object;
-};
-
-type Destination = {
-  ID: string;
-  Name: string;
-  DestinationDefinition: DestinationDefinition;
-  Config: Object;
-  Enabled: boolean;
-  WorkspaceID: string;
-  Transformations: UserTransformationInput[];
-  RevisionID?: string;
-};
 
 type UserTransformationLibrary = {
   VersionID: string;
@@ -221,7 +168,6 @@ type ComparatorInput = {
 };
 
 export {
-  Metadata,
   UserTransformationLibrary,
   ProcessorTransformationRequest,
   ProcessorTransformationResponse,
@@ -238,7 +184,6 @@ export {
   MetaTransferObject,
   UserDeletionRequest,
   UserDeletionResponse,
-  Destination,
   ComparatorInput,
   TransformedOutput,
 };

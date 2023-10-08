@@ -22,6 +22,7 @@
       },
       "type": "identify",
       "traits": {
+        "email": testhubspot2@email.com,
         "firstname": "Test Hubspot",
         "anonymousId": "12345",
         "country": "India"

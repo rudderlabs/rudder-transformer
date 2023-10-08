@@ -11,7 +11,6 @@ import { NativeIntegrationSourceService } from '../services/source/nativeIntegra
 import { ComparatorService } from '../services/comparator';
 import { PluginIntegrationService } from '../services/destination/pluginIntegration';
 
-
 dotenv.config();
 
 export class ServiceSelector {
@@ -24,6 +23,11 @@ export class ServiceSelector {
     [INTEGRATION_SERVICE.NATIVE_SOURCE]: NativeIntegrationSourceService,
     [INTEGRATION_SERVICE.PLUGIN_DEST]: PluginIntegrationService,
   };
+
+  private static isPluginDestination(destinationDefinitionConfig: Object) {
+    // return !!destinationDefinitionConfig?.['isPlugin'];
+    return true;
+  }
 
   private static isCdkDestination(destinationDefinitionConfig: Object) {
     return !!destinationDefinitionConfig?.['cdkEnabled'];
@@ -71,13 +75,13 @@ export class ServiceSelector {
   private static getPrimaryDestinationService(
     events: ProcessorTransformationRequest[] | RouterTransformationRequestData[],
   ): DestinationService {
-    // Plugin Service selected by some condition
-    if (process.env.PLUGIN_SERVICE !== 'false') {
+    const destinationDefinitionConfig: Object =
+      events[0]?.destination?.DestinationDefinition?.Config;
+
+    if (this.isPluginDestination(destinationDefinitionConfig)) {
       return this.fetchCachedService(INTEGRATION_SERVICE.PLUGIN_DEST);
     }
     // Legacy Services
-    const destinationDefinitionConfig: Object =
-      events[0]?.destination?.DestinationDefinition?.Config;
     if (this.isCdkDestination(destinationDefinitionConfig)) {
       return this.fetchCachedService(INTEGRATION_SERVICE.CDK_V1_DEST);
     }

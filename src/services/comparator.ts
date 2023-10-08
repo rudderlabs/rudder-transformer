@@ -1,7 +1,7 @@
+import { Destination } from 'rs-integration-lib';
 import { DestinationService } from '../interfaces/DestinationService';
 import {
   DeliveryResponse,
-  Destination,
   ErrorDetailer,
   MetaTransferObject,
   ProcessorTransformationOutput,

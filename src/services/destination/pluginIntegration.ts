@@ -1,11 +1,9 @@
-import { TransformationError } from 'rs-integration-lib';
+import { Metadata, TransformationError } from 'rs-integration-lib';
 import { PluginAdapter } from '../../helpers/pluginAdaper';
 import {
   DeliveryResponse,
-  Destination,
   ErrorDetailer,
   MetaTransferObject,
-  Metadata,
   ProcessorTransformationOutput,
   ProcessorTransformationRequest,
   ProcessorTransformationResponse,
@@ -96,7 +94,7 @@ export class PluginIntegrationService implements DestinationService {
         batchedRequest: successResponse.payload,
         statusCode: 200,
         metadata: successResponse.metadata,
-        destination: successResponse.destination as Destination, // commonalise the type destination
+        destination: successResponse.destination
       });
     });
 
@@ -106,7 +104,7 @@ export class PluginIntegrationService implements DestinationService {
         statusCode: errorResponse.response.status,
         error: errorResponse.response.message,
         statTags: errorResponse.response.statTags,
-        destination: errorResponse.destination as Destination,
+        destination: errorResponse.destination,
         batched: false,
       });
     });

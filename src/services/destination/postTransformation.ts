@@ -68,7 +68,7 @@ export class DestinationPostTransformationService {
     implementation: string,
     destinationType: string,
   ): RouterTransformationResponse[] {
-    const resultantPayloads: RouterTransformationResponse[] = cloneDeep(transformedPayloads);
+    const resultantPayloads: RouterTransformationResponse[] = transformedPayloads;
     resultantPayloads.forEach((resultantPayload) => {
       if (Array.isArray(resultantPayload.batchedRequest)) {
         resultantPayload.batchedRequest.forEach((batchedRequest) => {

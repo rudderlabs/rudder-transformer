@@ -422,10 +422,10 @@ const defaultBatchRequestConfig = () => ({
 
 // Router transformer
 // Success responses
-const getSuccessRespEvents = (message, metadata, destination, batched = false) => ({
-  batchedRequest: message,
+const getSuccessRespEvents = (message, metadata, destination) => ({
+  batchedRequest: [message],
   metadata,
-  batched,
+  batched: true,
   statusCode: 200,
   destination,
 });

@@ -2084,7 +2084,7 @@ export const data = [
   },
   {
     name: 'adj',
-    description: 'Test 17',
+    description: 'Test 18 -> No adverstisingId present',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -2104,7 +2104,6 @@ export const data = [
                 },
                 device: {
                   adTrackingEnabled: true,
-                  advertisingId: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
                   id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
                   manufacturer: 'Google',
                   model: 'AOSP on IA Emulator',
@@ -2160,12 +2159,101 @@ export const data = [
                 },
               },
               Config: {
-                appToken: 'testAppToken',
                 customMappings: [
                   { from: 'Application Installed', to: '3fdmll' },
                   { from: 'First Investment', to: 'testEventToken' },
                 ],
-                partnerParamsKeys: [],
+                environment: true,
+              },
+              Enabled: true,
+              Transformations: [],
+              IsProcessorEnabled: true,
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'App Token is not present. Please configure your app token from config dashbaord',
+            statTags: {
+              destType: 'ADJ',
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'adj',
+    description: 'Test 19 -> No properties object in message body',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              "type": "track",
+              "event": "Application Installed",
+              "sentAt": "2022-09-28T20:14:44.995Z",
+              "userId": "sample_user_id",
+              "context": {
+                "device": {
+                  "id": "sample_device_id",
+                  "type": "android",
+                  "advertisingId": "_sample"
+                },
+                "traits": {
+                  "userId": "_sample_uid",
+                  "anonymousId": "_sample_anonid"
+                }
+              },
+              "timestamp": "2022-09-28T20:14:43.314Z",
+              "request_ip": "71.189.106.156",
+              "originalTimestamp": "2022-09-28T20:14:44.995Z"
+            },
+            destination: {
+              ID: '1i3Em7GMU9xVEiDlZUN8c88BMS9',
+              Name: 'ADJ',
+              DestinationDefinition: {
+                ID: '1i3DeZo6eSUKrS3KzDUqjbBPCDJ',
+                Name: 'ADJ',
+                DisplayName: 'Adjust',
+                Config: {
+                  destConfig: {
+                    android: ['useNativeSDK'],
+                    defaultConfig: ['appToken', 'customMappings', 'delay', 'environment'],
+                    ios: ['useNativeSDK'],
+                    reactnative: ['useNativeSDK'],
+                  },
+                  excludeKeys: [],
+                  includeKeys: ['appToken', 'customMappings', 'delay'],
+                  supportedSourceTypes: ['android', 'ios', 'reactnative', 'cloud'],
+                },
+              },
+              Config: {
+                appToken: 'testAppToken',
+                customMappings: [
+                  { from: 'Application Installed', to: '3fdmll' }],
+                partnerParamsKeys: [
+                  { from: 'key1', to: 'partnerParamKey-1' },
+                  { from: 'key2', to: 'partnerParamKey-2' },
+                  { from: 'revenue', to: 'price' },
+                  { from: 'novalue', to: 'check' },
+                  { from: 'Custom_Val_NA', to: 'Custom_dest' },
+                ],
                 environment: true,
               },
               Enabled: true,
@@ -2189,28 +2277,21 @@ export const data = [
               endpoint: 'https://s2s.adjust.com/event',
               headers: { Accept: '*/*' },
               params: {
-                callback_params:
-                  '{"key1":"value1","key2":"value2","key3.k4":"v4","key3.k5.k6":"v6","key5[0].k":"v1","key5[1].k":"v2"}',
-                revenue: 20.38,
-                android_id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                gps_adid: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                att_status: 3,
-                tracking_enabled: true,
-                currency: 'EUR',
-                ip_address: '[::1]',
+                event_token: "3fdmll",
+                ip_address: "71.189.106.156",
+                android_id: 'sample_device_id',
+                gps_adid: "_sample",
                 s2s: 1,
                 app_token: 'testAppToken',
-                event_token: 'testEventToken',
                 environment: 'production',
               },
               body: { JSON: {}, XML: {}, JSON_ARRAY: {}, FORM: {} },
               files: {},
-              userId: '21e13f4bc7ceddad',
+              userId: '',
             },
             statusCode: 200,
           },
         ],
       },
     },
-  },
-];
+  },];

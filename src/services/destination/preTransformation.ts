@@ -7,12 +7,13 @@ export class PreTransformationDestinationService {
     ctx: Context,
   ) {
     const reqParams = ctx.request.query;
-    events = events.map(
+    const eventsProcessed = events.map(
       (event: ProcessorTransformationRequest | RouterTransformationRequestData) => {
+        // eslint-disable-next-line no-param-reassign
         event.request = { query: reqParams };
         return event;
       },
     );
-    return events;
+    return eventsProcessed;
   }
 }

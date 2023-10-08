@@ -1,4 +1,5 @@
-const _ = require('lodash');
+/* eslint-disable @typescript-eslint/naming-convention */
+const lodash = require('lodash');
 const get = require('get-value');
 const stats = require('../../../util/stats');
 const {
@@ -125,8 +126,8 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
 
 const processEvent = async (inputEvent, metricMetadata) => {
   let message;
+  const event = lodash.cloneDeep(inputEvent);
   let redisData;
-  const event = _.cloneDeep(inputEvent);
   const shopifyTopic = getShopifyTopic(event);
   delete event.query_parameters;
   switch (shopifyTopic) {

@@ -161,7 +161,7 @@ function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
   return clonedUpdatedEvent;
 }
 
-function getCorrectedTypedValue(pathToKey, value, originalPath) {
+function getCorrectedTypedValue(pathToKey, value) {
   const type = eventPropToTypeMapping[pathToKey];
   // TODO: we should remove this eslint rule or comeup with a better way
   // eslint-disable-next-line valid-typeof
@@ -169,10 +169,12 @@ function getCorrectedTypedValue(pathToKey, value, originalPath) {
     return value;
   }
 
+  const mappingKey = Object.keys(eventPropsMapping).find(
+    (key) => eventPropsMapping[key] === pathToKey,
+  );
+
   throw new InstrumentationError(
-    `${
-      typeof originalPath === 'object' ? JSON.stringify(originalPath) : originalPath
-    } is not of valid type`,
+    `Value of ${mappingKey} is not of valid type. It should be of type ${type}`,
   );
 }
 
@@ -221,7 +223,6 @@ function processEventTypeGeneric(message, baseEvent, fbEventName) {
             updatedEvent.custom_events[0][fbEventPath][length] = getCorrectedTypedValue(
               fbEventPath,
               intendValue,
-              parentArray[length],
             );
             length += 1;
             count -= 1;
@@ -233,7 +234,7 @@ function processEventTypeGeneric(message, baseEvent, fbEventName) {
           set(
             updatedEvent.custom_events[0],
             fbEventPath,
-            getCorrectedTypedValue(fbEventPath, intendValue, rudderEventPath),
+            getCorrectedTypedValue(fbEventPath, intendValue),
           );
         }
       } else {

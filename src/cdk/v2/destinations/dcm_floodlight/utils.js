@@ -1,5 +1,5 @@
-const _ = require('lodash');
 const { InstrumentationError } = require('rs-integration-lib');
+const lodash = require('lodash');
 const { getValueFromPropertiesOrTraits, getHashFromArray } = require('../../../../v0/util');
 const { GENERIC_TRUE_VALUES, GENERIC_FALSE_VALUES } = require('../../../../constants');
 
@@ -35,7 +35,7 @@ const transformCustomVariable = (customFloodlightVariable, message) => {
 
     if (
       // the value is not null
-      !_.isNil(itemValue) &&
+      !lodash.isNil(itemValue) &&
       // the value is string and doesn't have any blacklisted characters
       !(
         typeof itemValue === 'string' && BLACKLISTED_CHARACTERS.some((k) => itemValue.includes(k))

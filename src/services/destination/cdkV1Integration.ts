@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { ConfigFactory, Executor, RudderBaseConfig } from 'rudder-transformer-cdk';
 import path from 'path';
 import { TransformationError } from 'rs-integration-lib';
@@ -17,6 +18,7 @@ import {
 import { DestinationPostTransformationService } from './postTransformation';
 import tags from '../../v0/util/tags';
 import { getErrorInfo } from '../../cdk/v1/handler';
+import { CatchErr } from '../../util/types';
 
 export class CDKV1DestinationService implements DestinationService {
   public init() {
@@ -63,7 +65,7 @@ export class CDKV1DestinationService implements DestinationService {
     events: ProcessorTransformationRequest[],
     destinationType: string,
     _version: string,
-    _requestMetadata: Object,
+    _requestMetadata: NonNullable<unknown>,
   ): Promise<ProcessorTransformationResponse[]> {
     const tfConfig = await ConfigFactory.getConfig(destinationType);
     const respList: ProcessorTransformationResponse[][] = await Promise.all(
@@ -76,7 +78,7 @@ export class CDKV1DestinationService implements DestinationService {
             transformedPayloads,
             undefined,
           );
-        } catch (error: any) {
+        } catch (error: CatchErr) {
           const metaTO = this.getTags(
             destinationType,
             event.metadata.destinationId,
@@ -100,7 +102,7 @@ export class CDKV1DestinationService implements DestinationService {
     _events: RouterTransformationRequestData[],
     _destinationType: string,
     _version: string,
-    _requestMetadata: Object,
+    _requestMetadata: NonNullable<unknown>,
   ): Promise<RouterTransformationResponse[]> {
     throw new TransformationError('CDKV1 Does not Implement Router Transform Routine');
   }
@@ -109,7 +111,7 @@ export class CDKV1DestinationService implements DestinationService {
     _events: RouterTransformationRequestData[],
     _destinationType: string,
     _version: any,
-    _requestMetadata: Object,
+    _requestMetadata: NonNullable<unknown>,
   ): RouterTransformationResponse[] {
     throw new TransformationError('CDKV1 Does not Implement Batch Transform Routine');
   }
@@ -117,7 +119,7 @@ export class CDKV1DestinationService implements DestinationService {
   public deliver(
     _event: ProcessorTransformationOutput,
     _destinationType: string,
-    _requestMetadata: Object,
+    _requestMetadata: NonNullable<unknown>,
   ): Promise<DeliveryResponse> {
     throw new TransformationError('CDV1 Does not Implement Delivery Routine');
   }

@@ -1,5 +1,5 @@
+/* eslint-disable import/prefer-default-export */
 import { Context } from 'koa';
-import { MiscService } from '../services/misc';
 import { ProcessorTransformationRequest, UserTransformationServiceResponse } from '../types/index';
 import { UserTransformService } from '../services/userTransform';
 import logger from '../logger';
@@ -16,7 +16,6 @@ export class UserTransformController {
       '(User transform - router:/customTransform ):: Request to transformer',
       JSON.stringify(ctx.request.body),
     );
-    const requestMetadata = MiscService.getRequestMetadata(ctx);
     const events = ctx.request.body as ProcessorTransformationRequest[];
     const processedRespone: UserTransformationServiceResponse =
       await UserTransformService.transformRoutine(events);

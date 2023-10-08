@@ -30,4 +30,5 @@ router.post(
   UserTransformController.extractLibhandle,
 );
 
-export const userTransformRoutes = router.routes();
+const userTransformRoutes = router.routes();
+export default userTransformRoutes;

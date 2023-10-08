@@ -36,7 +36,13 @@ const responseBuilderSimple = async (message, destinationConfig, basicPayload) =
   const { event, context, properties } = message;
   // set default value of properties.overridePageView to false if not provided
   properties.overridePageView = properties.overridePageView ?? false;
-  const { overrideEvars, overrideHiers, overrideLists, overrideCustomProperties } = properties;
+  const {
+    overrideEvars,
+    overrideHiers,
+    overrideLists,
+    overrideCustomProperties,
+    overridePageView,
+  } = properties;
   // handle contextData
   payload = handleContextData(payload, destinationConfig, message);
 
@@ -60,7 +66,7 @@ const responseBuilderSimple = async (message, destinationConfig, basicPayload) =
   // handle link values
   // default linktype to 'o', linkName to event name, linkURL to ctx.page.url if not passed in integrations object
   const adobeIntegrationsObject = getIntegrationsObj(message, 'adobe_analytics');
-  if (!properties?.overridePageView) {
+  if (!overridePageView) {
     payload.linkType = adobeIntegrationsObject?.linkType || 'o';
     payload.linkName = adobeIntegrationsObject?.linkName || event;
     // setting linkname to page view for page calls
@@ -86,7 +92,7 @@ const responseBuilderSimple = async (message, destinationConfig, basicPayload) =
 
   // handle pageName, pageUrl
   const contextPageUrl = context?.page?.url;
-  if (properties?.overridePageView) {
+  if (overridePageView) {
     const propertiesPageUrl = properties?.pageUrl;
     const pageUrl = contextPageUrl || propertiesPageUrl;
     if (isDefinedAndNotNullAndNotEmpty(pageUrl)) {
@@ -337,7 +343,7 @@ const processTrackEvent = (message, adobeEventName, destinationConfig, extras = 
 
 const handleTrack = (message, destinationConfig) => {
   const ORDER_ID_KEY = 'properties.order_id';
-  const { event: rawEvent } = message;
+  const { event: rawEvent, properties } = message;
   let payload = null;
   // handle ecommerce events separately
   // generic events should go to the default
@@ -378,12 +384,8 @@ const handleTrack = (message, destinationConfig) => {
           destinationConfig.rudderEventsToAdobeEvents[event]?.trim(),
           destinationConfig,
         );
-      } else if (message?.properties?.overrideEventName) {
-        payload = processTrackEvent(
-          message,
-          message?.properties?.overrideEventName,
-          destinationConfig,
-        );
+      } else if (properties?.overrideEventName) {
+        payload = processTrackEvent(message, properties.overrideEventName, destinationConfig);
       } else {
         throw new ConfigurationError(
           'The event is not a supported ECOM event or a mapped custom event. Aborting.',

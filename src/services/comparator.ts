@@ -1,3 +1,4 @@
+/* eslint-disable import/prefer-default-export */
 import { Destination } from 'rs-integration-lib';
 import { DestinationService } from '../interfaces/DestinationService';
 import {
@@ -59,8 +60,10 @@ export class ComparatorService implements DestinationService {
   }
 
   private getTestThreshold(destination: Destination) {
-    return destination.DestinationDefinition?.Config['camparisonTestThreshold'] || 0;
+    const config = destination.DestinationDefinition?.Config as { camparisonTestThreshold?: number };
+    return config?.camparisonTestThreshold || 0;
   }
+
 
   private getComparisonLogs(
     primaryResplist: any,
@@ -78,6 +81,7 @@ export class ComparatorService implements DestinationService {
       return;
     }
 
+    // eslint-disable-next-line no-restricted-syntax
     for (const [index, element] of primaryResplist.entries()) {
       const objectDiff = CommonUtils.objectDiff(element, secondaryResplist[index]);
       if (Object.keys(objectDiff).length > 0) {
@@ -126,6 +130,7 @@ export class ComparatorService implements DestinationService {
     }
 
     let hasComparisonFailed = false;
+    // eslint-disable-next-line no-restricted-syntax
     for (const [index, element] of primaryResplist.entries()) {
       const objectDiff = CommonUtils.objectDiff(element, secondaryResplist[index]);
       if (Object.keys(objectDiff).length > 0) {
@@ -153,7 +158,7 @@ export class ComparatorService implements DestinationService {
     secondaryServiceCallback: any,
     destinationType: string,
     version: string,
-    requestMetadata: Object,
+    requestMetadata: NonNullable<unknown>,
     feature: string,
     destinationId: string,
   ): Promise<void> {
@@ -191,7 +196,7 @@ export class ComparatorService implements DestinationService {
     events: ProcessorTransformationRequest[],
     destinationType: string,
     version: string,
-    requestMetadata: Object,
+    requestMetadata: NonNullable<unknown>,
   ): Promise<ProcessorTransformationResponse[]> {
     const destinationId = events[0].destination.ID;
     const primaryStartTime = process.hrtime();
@@ -249,7 +254,7 @@ export class ComparatorService implements DestinationService {
     events: RouterTransformationRequestData[],
     destinationType: string,
     version: string,
-    requestMetadata: Object,
+    requestMetadata: NonNullable<unknown>,
   ): Promise<RouterTransformationResponse[]> {
     const destinationId = events[0].destination.ID;
     const primaryStartTime = process.hrtime();
@@ -307,7 +312,7 @@ export class ComparatorService implements DestinationService {
     events: RouterTransformationRequestData[],
     destinationType: string,
     version: string,
-    requestMetadata: Object,
+    requestMetadata: NonNullable<unknown>,
   ): RouterTransformationResponse[] {
     const destinationId = events[0].destination.ID;
     const primaryStartTime = process.hrtime();
@@ -364,7 +369,7 @@ export class ComparatorService implements DestinationService {
   public async deliver(
     event: ProcessorTransformationOutput,
     destinationType: string,
-    requestMetadata: Object,
+    requestMetadata: NonNullable<unknown>,
   ): Promise<DeliveryResponse> {
     const primaryResplist = await this.primaryService.deliver(
       event,

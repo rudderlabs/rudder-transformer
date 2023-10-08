@@ -25,7 +25,7 @@ const retrieveUserId = async (apiKey, message) => {
     message.traits?.email || message.context?.traits?.email || message.properties?.email;
   const { userId } = message;
 
-  const header = {
+  const headers = {
     'Content-Type': 'application/x-www-form-urlencoded',
     Accept: JSON_MIME_TYPE,
   };
@@ -38,10 +38,15 @@ const retrieveUserId = async (apiKey, message) => {
   } else {
     requestBody.userID = `${userId}`;
   }
-  const response = await httpPOST(url, qs.stringify(requestBody), header, {
-    destType: 'canny',
-    feature: 'transformation',
-  });
+  const response = await httpPOST(
+    url,
+    qs.stringify(requestBody),
+    { headers },
+    {
+      destType: 'canny',
+      feature: 'transformation',
+    },
+  );
   logger.debug(response);
   // If the request fails, throwing error.
   if (response.success === false) {

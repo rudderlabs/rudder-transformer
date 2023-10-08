@@ -2,10 +2,7 @@
 
 const get = require('get-value');
 const { cloneDeep } = require('lodash');
-const {
-  InstrumentationError,
-  ConfigurationError,
-} = require('rs-integration-lib');
+const { InstrumentationError, ConfigurationError } = require('rs-integration-lib');
 const {
   constructPayload,
   defaultRequestConfig,
@@ -14,7 +11,6 @@ const {
   simpleProcessRouterDest,
   getAccessToken,
 } = require('../../util');
-
 
 const { trackMapping, BASE_ENDPOINT } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');

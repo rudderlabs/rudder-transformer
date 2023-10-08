@@ -53,7 +53,7 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
  */
 const identifyRequestHandler = async (message, category, destination) => {
   // If listId property is present try to subscribe/member user in list
-  const { privateApiKey, enforceEmailAsPrimary, flattenProperties } = destination.Config;
+  const { privateApiKey, enforceEmailAsPrimary, listId, flattenProperties } = destination.Config;
   const mappedToDestination = get(message, MappedToDestinationKey);
   if (mappedToDestination) {
     addExternalIdToTraits(message);
@@ -111,10 +111,7 @@ const identifyRequestHandler = async (message, category, destination) => {
   const responseArray = [profileUpdateResponseBuilder(payload, profileId, category, privateApiKey)];
 
   // check if user wants to subscribe profile or not and listId is present or not
-  if (
-    traitsInfo?.properties?.subscribe &&
-    (traitsInfo.properties?.listId || destination.Config?.listId)
-  ) {
+  if (traitsInfo?.properties?.subscribe && (traitsInfo.properties?.listId || listId)) {
     responseArray.push(subscribeUserToList(message, traitsInfo, destination));
     return responseArray;
   }

@@ -1,4 +1,4 @@
-const _ = require('lodash');
+const lodash = require('lodash');
 const flatten = require('flat');
 
 const { isEmpty, isObject } = require('../../util');
@@ -17,7 +17,7 @@ const processValues = (obj) => {
     }
     const val = obj[key];
     // eslint-disable-next-line no-param-reassign
-    obj[key] = _.isArray(val) ? JSON.stringify(val) : _.toString(val);
+    obj[key] = lodash.isArray(val) ? JSON.stringify(val) : lodash.toString(val);
   });
 };
 
@@ -68,7 +68,7 @@ const process = (event) => {
   }
 
   const hmap = {
-    key: `${keyPrefix}user:${_.toString(message.userId)}`,
+    key: `${keyPrefix}user:${lodash.toString(message.userId)}`,
     fields: {},
   };
 

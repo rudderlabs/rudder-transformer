@@ -1,4 +1,4 @@
-const _ = require('lodash');
+const lodash = require('lodash');
 const cloneDeep = require('lodash/cloneDeep');
 const {
   defaultPostRequestConfig,
@@ -50,7 +50,7 @@ const batchResponseBuilder = (message, Config, token, leadIds, operation) => {
     throw new InstrumentationError('No static listId is provided');
   }
   const response = [];
-  const leadIdsChunks = _.chunk(leadIds, MAX_LEAD_IDS_SIZE);
+  const leadIdsChunks = lodash.chunk(leadIds, MAX_LEAD_IDS_SIZE);
   leadIdsChunks.forEach((ids) => {
     response.push(responseBuilder(endpoint, ids, operation, token));
   });

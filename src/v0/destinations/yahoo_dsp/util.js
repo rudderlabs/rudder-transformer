@@ -1,7 +1,7 @@
 const qs = require('qs');
 const sha256 = require('sha256');
 const { generateJWTToken } = require('../../../util/jwtTokenGenerator');
-const { httpPOST } = require('../../../adapters/network');
+const { httpSend } = require('../../../adapters/network');
 const { isDefinedAndNotNullAndNotEmpty } = require('../../util');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { ACCESS_TOKEN_CACHE_TTL, AUDIENCE_ATTRIBUTE, DSP_SUPPORTED_OPERATION } = require('./config');
@@ -119,7 +119,7 @@ const getAccessToken = async (destination) => {
     };
 
     const request = {
-      header: {
+      headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         Accept: JSON_MIME_TYPE,
       },
@@ -134,7 +134,7 @@ const getAccessToken = async (destination) => {
       }),
       method: 'POST',
     };
-    const dspAuthorisationData = await httpPOST(request.url, request.data, request.header, {
+    const dspAuthorisationData = await httpSend(request, {
       destType: 'yahoo_dsp',
       feature: 'transformation',
     });

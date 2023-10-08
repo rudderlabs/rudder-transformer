@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+/* eslint-disable @typescript-eslint/naming-convention */
 const _ = require('lodash');
 const { SHA256 } = require('crypto-js');
 const get = require('get-value');

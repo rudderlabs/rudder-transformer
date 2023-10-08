@@ -232,7 +232,7 @@ const getClevertapProfile = (message, category) => {
   if (message.traits?.overrideFields) {
     const { overrideFields } = message.traits;
     Object.assign(profile, overrideFields);
-  } else if (message.context.traits?.overrideFields) {
+  } else if (message.context?.traits?.overrideFields) {
     const { overrideFields } = message.context.traits;
     Object.assign(profile, overrideFields);
   }

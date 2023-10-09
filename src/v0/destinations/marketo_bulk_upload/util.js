@@ -2,6 +2,7 @@ const {
   AbortedError,
   RetryableError,
   NetworkError,
+  TransformationError,
 } = require('rs-integration-lib');
 const { handleHttpRequest } = require('../../../adapters/network');
 const tags = require('../../util/tags');

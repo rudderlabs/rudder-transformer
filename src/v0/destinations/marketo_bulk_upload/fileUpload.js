@@ -4,6 +4,8 @@ const fs = require('fs');
 const {
   NetworkError,
   ConfigurationError,
+  TransformationError,
+  RetryableError,
 } = require('rs-integration-lib');
 const {
   getAccessToken,
@@ -12,6 +14,7 @@ const {
   getFieldSchemaMap,
   hydrateStatusForServer,
 } = require('./util');
+const { client } = require('../../../util/errorNotifier');
 const { isHttpStatusSuccess } = require('../../util');
 const { MARKETO_FILE_SIZE, UPLOAD_FILE } = require('./config');
 const {
@@ -20,7 +23,7 @@ const {
   isDefinedAndNotNullAndNotEmpty,
 } = require('../../util');
 const { handleHttpRequest } = require('../../../adapters/network');
-const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
+require('../../../adapters/utils/networkUtils');
 const stats = require('../../../util/stats');
 
 const fetchFieldSchemaNames = async (config, accessToken) => {

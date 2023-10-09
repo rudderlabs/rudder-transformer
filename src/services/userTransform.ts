@@ -43,7 +43,7 @@ export class UserTransformService {
     const responses = await Promise.all<FixMe>(
       Object.entries(groupedEvents).map(async ([dest, destEvents]) => {
         logger.debug(`dest: ${dest}`);
-        const eventsToProcess = destEvents
+        const eventsToProcess = destEvents as any;
         const transformationVersionId =
           eventsToProcess[0].destination?.Transformations[0]?.VersionID;
         const messageIds = eventsToProcess.map((ev) => ev.metadata?.messageId);

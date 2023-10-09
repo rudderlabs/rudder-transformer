@@ -1,4 +1,4 @@
-import { Destination, Metadata } from "rs-integration-lib";
+import { Destination, Metadata } from 'rs-integration-lib';
 
 import { CatchErr, FixMe } from '../util/types';
 
@@ -22,8 +22,6 @@ type ProcessorTransformationOutput = {
 };
 
 type TransformedOutput = ProcessorTransformationOutput;
-
-
 
 type UserTransformationLibrary = {
   VersionID: string;
@@ -54,7 +52,7 @@ type ProcessorTransformationResponse = {
   metadata: Metadata;
   statusCode: number;
   error?: string;
-  statTags: object;
+  statTags?: object;
 };
 
 type RouterTransformationResponse = {
@@ -63,8 +61,8 @@ type RouterTransformationResponse = {
   destination: Destination;
   batched: boolean;
   statusCode: number;
-  error: string;
-  statTags: object;
+  error?: string;
+  statTags?: object;
 };
 
 type SourceTransformationOutput = {
@@ -76,14 +74,14 @@ type SourceTransformationResponse = {
   error: CatchErr;
   statusCode: number;
   outputToSource: object;
-  statTags: object;
+  statTags?: object;
 };
 
 type DeliveryResponse = {
   status: number;
   message: string;
   destinationResponse: object;
-  statTags: object;
+  statTags?: object;
   authErrorCategory?: string;
 };
 

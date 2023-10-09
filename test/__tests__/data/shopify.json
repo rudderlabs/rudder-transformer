@@ -2,21 +2,15 @@
   {
     "description": "Track Call -> carts_create ",
     "input": {
-      "payload": {
-        "id": "shopify_test3",
-        "query_parameters": {
-          "topic": ["carts_create"]
-        },
-        "token": "shopify_test3",
-        "line_items": [],
-        "note": null,
-        "updated_at": "2023-02-10T12:16:07.251Z",
-        "created_at": "2023-02-10T12:05:04.402Z"
+      "id": "shopify_test3",
+      "query_parameters": {
+        "topic": ["carts_create"]
       },
-      "source": {
-        "id": "shopify_test3",
-        "config": {}
-      }
+      "token": "shopify_test3",
+      "line_items": [],
+      "note": null,
+      "updated_at": "2023-02-10T12:16:07.251Z",
+      "created_at": "2023-02-10T12:05:04.402Z"
     },
     "output": {
       "outputToSource": {

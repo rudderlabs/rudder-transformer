@@ -454,10 +454,10 @@ const defaultBatchRequestConfig = () => ({
 
 // Router transformer
 // Success responses
-const getSuccessRespEvents = (message, metadata, destination) => ({
-  batchedRequest: [message],
+const getSuccessRespEvents = (message, metadata, destination, batched = false) => ({
+  batchedRequest: message,
   metadata,
-  batched: true,
+  batched,
   statusCode: 200,
   destination,
 });
@@ -1659,7 +1659,13 @@ const handleRtTfSingleEventError = (input, error, reqMetadata) => {
  * @param {Function} singleTfFunc - single event transformation function, we'd recommend this to be an async function(always)
  * @returns
  */
-const simpleProcessRouterDest = async (inputs, singleTfFunc, reqMetadata, processParams) => {
+const simpleProcessRouterDest = async (
+  inputs,
+  singleTfFunc,
+  reqMetadata,
+  processParams,
+  arrayfise = false,
+) => {
   const errorRespEvents = checkInvalidRtTfEvents(inputs);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
@@ -1673,7 +1679,9 @@ const simpleProcessRouterDest = async (inputs, singleTfFunc, reqMetadata, proces
         if (!input.message.statusCode) {
           resp = await singleTfFunc(input, processParams);
         }
-
+        if (arrayfise) {
+          return getSuccessRespEvents([resp], [input.metadata], input.destination, true);
+        }
         return getSuccessRespEvents(resp, [input.metadata], input.destination);
       } catch (error) {
         return handleRtTfSingleEventError(input, error, reqMetadata);

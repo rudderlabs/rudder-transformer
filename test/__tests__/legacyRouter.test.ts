@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import DestinationController from '../../src/controllers/destination';
+import { DestinationController } from '../../src/controllers/destination';
 const destArg = process.argv.filter((x) => x.startsWith('--destName='))[0]; // send arguments on which destination
 const typeArg = process.argv.filter((x) => x.startsWith('--type='))[0]; // send argument on which function
 

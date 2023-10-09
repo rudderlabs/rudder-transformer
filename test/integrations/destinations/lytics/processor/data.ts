@@ -780,7 +780,7 @@ export const data = [
               implementation: 'cdkV1',
               module: 'destination',
             },
-            statusCode: 400,
+            statusCode: 500,
           },
         ],
       },

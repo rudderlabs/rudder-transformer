@@ -1,12 +1,8 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-prototype-builtins */
-const {
-  PlatformError,
-} = require('rs-integration-lib');
-const {
-  getAccessToken,
-} = require('./util');
-const { httpGET } = require('../../../adapters/network');
+const { PlatformError } = require('rs-integration-lib');
+const { getAccessToken } = require('./util');
+const { handleHttpRequest } = require('../../../adapters/network');
 const stats = require('../../../util/stats');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const {

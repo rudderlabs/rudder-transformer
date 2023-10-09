@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Metadata, TransformationError } from 'rs-integration-lib';
 import { PluginAdapter } from '../../helpers/pluginAdaper';
 import {
@@ -46,7 +47,7 @@ export class PluginIntegrationService implements DestinationService {
     events: ProcessorTransformationRequest[],
     destinationType: string,
     _version: string,
-    _requestMetadata: Object,
+    _requestMetadata: unknown,
   ): Promise<ProcessorTransformationResponse[]> {
     const results = await PluginAdapter.transformAtProcessor(events, destinationType);
     const respList: ProcessorTransformationResponse[] = [];
@@ -84,7 +85,7 @@ export class PluginIntegrationService implements DestinationService {
     events: RouterTransformationRequestData[],
     destinationType: string,
     _version: string,
-    _requestMetadata: Object,
+    _requestMetadata: unknown,
   ): Promise<RouterTransformationResponse[]> {
     const results = await PluginAdapter.transformAtRouter(events, destinationType);
     const respList: RouterTransformationResponse[] = [];
@@ -94,7 +95,7 @@ export class PluginIntegrationService implements DestinationService {
         batchedRequest: successResponse.payload,
         statusCode: 200,
         metadata: successResponse.metadata,
-        destination: successResponse.destination
+        destination: successResponse.destination,
       });
     });
 
@@ -116,7 +117,7 @@ export class PluginIntegrationService implements DestinationService {
     _events: RouterTransformationRequestData[],
     _destinationType: string,
     _version: any,
-    _requestMetadata: Object,
+    _requestMetadata: unknown,
   ): RouterTransformationResponse[] {
     throw new TransformationError('CDKV1 Does not Implement Batch Transform Routine');
   }
@@ -124,7 +125,7 @@ export class PluginIntegrationService implements DestinationService {
   public deliver(
     _event: ProcessorTransformationOutput,
     _destinationType: string,
-    _requestMetadata: Object,
+    _requestMetadata: unknown,
   ): Promise<DeliveryResponse> {
     throw new TransformationError('CDV1 Does not Implement Delivery Routine');
   }

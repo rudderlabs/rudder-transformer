@@ -9,16 +9,37 @@ const { AbortedError, RetryableError, NetworkError } = require('../../util/error
 const tags = require('../../util/tags');
 
 function checkIfFailuresAreRetryable(response) {
+  const { status } = response;
   try {
-    if (Array.isArray(response.status) && Array.isArray(response.status[0].errors)) {
-      return (
-        response.status[0].errors[0].code !== 'PERMISSION_DENIED' &&
-        response.status[0].errors[0].code !== 'INVALID_ARGUMENT'
-      );
+    if (Array.isArray(status)) {
+      // iterate over each status, and if found retryable in conversations ..retry else discard
+      /* status : [{
+        "conversion": {
+          object (Conversion)
+        },
+        "errors": [
+          {
+            object (ConversionError)
+          }
+        ],
+        "kind": string
+      }] */
+      for (const st of status) {
+        for(const err of st.errors) {
+          // if code is any of these, event is not retryable
+          if (
+            err.code === 'PERMISSION_DENIED' ||
+            err.code === 'INVALID_ARGUMENT' ||
+            err.code === 'NOT_FOUND'
+          ) {
+            return false;
+          }
+        }
+      }
     }
     return true;
   } catch (e) {
-    return true;
+    return false;
   }
 }
 
@@ -52,7 +73,7 @@ const responseHandler = (destinationResponse) => {
   }
 
   throw new NetworkError(
-    `Campaign Manager: ${response.error?.message} during CAMPAIGN_MANAGER response transformation 3`,
+    `Campaign Manager: ${response.error?.message} during CAMPAIGN_MANAGER response transformation`,
     status,
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),

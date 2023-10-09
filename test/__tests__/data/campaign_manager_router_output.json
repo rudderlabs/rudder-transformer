@@ -23,15 +23,28 @@
             {
               "nonPersonalizedAd": false,
               "treatmentForUnderage": false,
-              "timestampMicros": "1668624722000000",
+              "timestampMicros": "1668624722903000",
               "floodlightConfigurationId": "213123123",
               "ordinal": "string",
               "quantity": "455678",
               "floodlightActivityId": "456543345245",
-              "value": 7,
+              "value": 47,
               "encryptedUserIdCandidates": ["dfghjbnm"],
               "limitAdTracking": true,
               "childDirectedTreatment": true
+            },
+            {
+              "floodlightConfigurationId": "213123123",
+              "ordinal": "345345345",
+              "quantity": "4556784325345345",
+              "floodlightActivityId": "456543345245",
+              "value": 17,
+              "encryptedUserIdCandidates": ["dfghjbnm"],
+              "limitAdTracking": true,
+              "childDirectedTreatment": true,
+              "nonPersonalizedAd": false,
+              "timestampMicros": "1700160722903000",
+              "treatmentForUnderage": false
             }
           ]
         },
@@ -49,9 +62,17 @@
           "refresh_token": "efgh5678"
         },
         "jobId": 1
+      },
+      {
+        "jobId": 2,
+        "secret": {
+          "access_token": "dummyApiToken",
+          "developer_token": "ijkl91011",
+          "refresh_token": "efgh5678"
+        }
       }
     ],
-    "batched": false,
+    "batched": true,
     "statusCode": 200,
     "destination": {
       "Config": {
@@ -87,7 +108,7 @@
             {
               "nonPersonalizedAd": false,
               "treatmentForUnderage": false,
-              "timestampMicros": "1668624722000000",
+              "timestampMicros": "1668624722903000",
               "floodlightConfigurationId": "213123123",
               "ordinal": "string",
               "quantity": "455678",
@@ -113,7 +134,7 @@
         "jobId": 2
       }
     ],
-    "batched": false,
+    "batched": true,
     "statusCode": 200,
     "destination": {
       "Config": {

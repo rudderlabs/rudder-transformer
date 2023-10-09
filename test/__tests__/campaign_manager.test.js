@@ -28,8 +28,7 @@ describe(`${name} Tests`, () => {
     testData.forEach((dataPoint, index) => {
       it(`${index}. ${integration} - ${dataPoint.description}`, async () => {
         try {
-          let output = await transformer.process(dataPoint.input);
-          delete output.body.JSON.idempotency;
+          const output = await transformer.process(dataPoint.input);
           expect(output).toEqual(dataPoint.output);
         } catch (error) {
           expect(error.message).toEqual(dataPoint.output.error);
@@ -37,7 +36,7 @@ describe(`${name} Tests`, () => {
       });
     });
   });
-
+  
   describe("Router Tests", () => {
     it("Payload", async () => {
       const routerOutput = await transformer.processRouterDest(inputRouterData);

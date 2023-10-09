@@ -134,6 +134,11 @@ const responseHandler = (destinationResponse) => {
               message: "Floodlight config id: 213123123 was not found.",
               kind: "dfareporting#conversionError",
             },
+            {
+              code: "INVALID_ARGUMENT",
+              message: "gclid: 123 was not found.",
+              kind: "dfareporting#conversionError",
+            }
           ],
           kind: "dfareporting#conversionStatus",
         },

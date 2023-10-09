@@ -143,6 +143,7 @@ const isImportAuthCredentialsAvailable = (destination) =>
 const findExistingBatch = (batch, metadataMap) => {
   let existingBatch = null;
 
+  // eslint-disable-next-line no-restricted-syntax
   for (const metadataItem of batch.metadata) {
     if (metadataMap.has(metadataItem.jobId)) {
       existingBatch = metadataMap.get(metadataItem.jobId);
@@ -158,8 +159,9 @@ const findExistingBatch = (batch, metadataMap) => {
  * @param {*} mergedBatches An array of merged batch objects.
  */
 const removeDuplicateMetadata = (mergedBatches) => {
-  for (const batch of mergedBatches) {
+  mergedBatches.forEach((batch) => {
     const metadataSet = new Set();
+    // eslint-disable-next-line no-param-reassign
     batch.metadata = batch.metadata.filter((metadataItem) => {
       if (!metadataSet.has(metadataItem.jobId)) {
         metadataSet.add(metadataItem.jobId);
@@ -167,7 +169,7 @@ const removeDuplicateMetadata = (mergedBatches) => {
       }
       return false;
     });
-  }
+  });
 };
 
 /**

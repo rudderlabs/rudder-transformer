@@ -1,4 +1,4 @@
-const _ = require('lodash');
+const lodash = require('lodash');
 const {
   getErrorRespEvents,
   getSuccessRespEvents,
@@ -98,12 +98,12 @@ const batchEvents = (successRespList) => {
   "listId2&&Action2": [{message : {}, metadata : {}, destination: {}}],
   "listId2&&Action1": [{message : {}, metadata : {}, destination: {}}]
   */
-  const eventGroups = _.groupBy(successRespList, (event) => {
+  const eventGroups = lodash.groupBy(successRespList, (event) => {
     const { listId, action } = event.message;
     return `${listId}&&${action}`;
   });
   Object.keys(eventGroups).forEach((combination) => {
-    const eventChunks = _.chunk(eventGroups[combination], MAX_BATCH_SIZE);
+    const eventChunks = lodash.chunk(eventGroups[combination], MAX_BATCH_SIZE);
     // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
     eventChunks.forEach((chunk) => {
       const batchEventResponse = generateBatchedPaylaodForArray(chunk, combination);

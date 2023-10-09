@@ -1,14 +1,15 @@
 import cloneDeep from 'lodash/cloneDeep';
 import { ProcessorTransformationRequest, RouterTransformationRequestData } from '../types/index';
+import { FixMe } from './types';
 
 /* eslint-disable no-param-reassign */
 const get = require('get-value');
 const unset = require('unset-value');
 
-export class DynamicConfigParser {
+export default class DynamicConfigParser {
   private static getDynamicConfigValue(
     event: ProcessorTransformationRequest | RouterTransformationRequestData,
-    value: any,
+    value: FixMe,
   ) {
     // this regex checks for pattern  "only spaces {{ path || defaultvalue }}  only spaces" .
     //  " {{message.traits.key  ||   \"email\" }} "
@@ -38,7 +39,7 @@ export class DynamicConfigParser {
   }
 
   private static configureVal(
-    value: any,
+    value: FixMe,
     event: ProcessorTransformationRequest | RouterTransformationRequestData,
   ) {
     if (value) {

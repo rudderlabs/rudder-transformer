@@ -29,6 +29,7 @@ export default class DeliveryTestService {
         // This is to make sure we encode `~` in the data coming from the router.
         // The data coming from the router is already a query parameter string
         const routerDataVal = new URLSearchParams(routerDestReqPayload.data);
+        // eslint-disable-next-line no-param-reassign
         routerDestReqPayload.data = routerDataVal;
 
         const proxyDataVal = new URLSearchParams();

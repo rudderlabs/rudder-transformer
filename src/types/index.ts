@@ -136,6 +136,7 @@ type DeliveryResponse = {
   destinationResponse: object;
   statTags: object;
   authErrorCategory?: string;
+  response?: object;
 };
 
 enum MessageType {

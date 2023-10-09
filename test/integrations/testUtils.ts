@@ -65,3 +65,8 @@ export const addMock = (mock: MockAdapter, axiosMock: MockHttpCallsData) => {
       break;
   }
 };
+export const overrideDestination = (destination, overrideConfigValues) => {
+  return Object.assign({}, destination, {
+    Config: { ...destination.Config, ...overrideConfigValues },
+  });
+};

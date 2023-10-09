@@ -5,7 +5,7 @@ const {
 } = require('../../../adapters/utils/networkUtils');
 const { isHttpStatusSuccess } = require('../../util');
 const tags = require('../../util/tags');
-const { ConfigurationError, NetworkError } = require('../../util/errorTypes');
+const { ConfigurationError, NetworkError } = require('rs-integration-lib');
 const { executeCommonValidations } = require('../../util/regulation-api');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 

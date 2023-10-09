@@ -16,16 +16,16 @@ const uaParser = require('ua-parser-js');
 const moment = require('moment-timezone');
 const sha256 = require('sha256');
 const crypto = require('crypto');
-const logger = require('../../logger');
-const stats = require('../../util/stats');
-const { DestCanonicalNames, DestHandlerMap } = require('../../constants/destinationCanonicalNames');
 const {
-  InstrumentationError,
   BaseError,
+  InstrumentationError,
   PlatformError,
   TransformationError,
   OAuthSecretError,
-} = require('./errorTypes');
+} = require('rs-integration-lib');
+const logger = require('../../logger');
+const stats = require('../../util/stats');
+const { DestCanonicalNames, DestHandlerMap } = require('../../constants/destinationCanonicalNames');
 const { client: errNotificationClient } = require('../../util/errorNotifier');
 const { HTTP_STATUS_CODES } = require('./constant');
 const {

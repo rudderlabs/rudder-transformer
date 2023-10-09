@@ -9,7 +9,7 @@ const surveyMapping = require('./data/surveyMapping.json');
 const featureMatchMapping = require('./data/featureMatchMapping.json');
 const segmentIoMapping = require('./data/segmentIOMapping.json');
 const { refinePayload, refineTraitPayload } = require('./utils');
-const { TransformationError } = require('../../util/errorTypes');
+const { TransformationError } = require('rs-integration-lib');
 
 const buildIdentifyPayload = (event) => {
   let message = new Message(`GAINSIGHTPX`);

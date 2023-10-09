@@ -6,7 +6,7 @@ const {
   processAxiosResponse,
 } = require('../../../adapters/utils/networkUtils');
 const { DESTINATION } = require('./config');
-const { NetworkError } = require('../../util/errorTypes');
+const { NetworkError } = require('rs-integration-lib');
 const tags = require('../../util/tags');
 const stats = require('../../../util/stats');
 

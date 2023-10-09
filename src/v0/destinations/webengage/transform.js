@@ -15,7 +15,7 @@ const {
   simpleProcessRouterDest,
   extractCustomFields,
 } = require('../../util');
-const { InstrumentationError, TransformationError } = require('../../util/errorTypes');
+const { InstrumentationError, TransformationError } = require('rs-integration-lib');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (message, category, { Config }) => {

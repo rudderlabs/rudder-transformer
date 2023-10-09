@@ -15,7 +15,7 @@ const {
 
 const { BASE_ENDPOINT, MAPPING_CONFIG, CONFIG_CATEGORIES, MAX_BATCH_SIZE } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-const { NetworkError, InstrumentationError } = require('../../util/errorTypes');
+const { NetworkError, InstrumentationError } = require('rs-integration-lib');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 const { handleHttpRequest } = require('../../../adapters/network');

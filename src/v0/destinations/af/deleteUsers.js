@@ -1,12 +1,12 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-param-reassign */
+const { ConfigurationError, InstrumentationError, NetworkError } = require('rs-integration-lib');
 const { httpPOST } = require('../../../adapters/network');
 const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 const { generateUUID, isHttpStatusSuccess } = require('../../util');
-const { ConfigurationError, InstrumentationError, NetworkError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 const { executeCommonValidations } = require('../../util/regulation-api');
 

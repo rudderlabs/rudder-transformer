@@ -23,7 +23,7 @@ const {
   simpleProcessRouterDestSync,
   simpleProcessRouterDest,
 } = require('../../util');
-const { InstrumentationError, NetworkError } = require('../../util/errorTypes');
+const { InstrumentationError, NetworkError } = require('rs-integration-lib');
 const {
   ConfigCategory,
   mappingConfig,

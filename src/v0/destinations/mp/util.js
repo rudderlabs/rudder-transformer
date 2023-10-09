@@ -1,5 +1,6 @@
 const set = require('set-value');
 const get = require('get-value');
+const { InstrumentationError } = require('rs-integration-lib');
 const {
   isDefined,
   constructPayload,
@@ -18,7 +19,6 @@ const {
   GEO_SOURCE_ALLOWED_VALUES,
   mappingConfig,
 } = require('./config');
-const { InstrumentationError } = require('../../util/errorTypes');
 const { CommonUtils } = require('../../../util/common');
 
 const mPIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];

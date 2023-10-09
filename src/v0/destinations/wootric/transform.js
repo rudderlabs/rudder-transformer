@@ -19,7 +19,7 @@ const {
   createDeclinePayloadBuilder,
 } = require('./util');
 const { PROPERTIES, END_USER_PROPERTIES } = require('./config');
-const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
+const { TransformationError, InstrumentationError } = require('rs-integration-lib');
 
 const responseBuilder = async (payload, endpoint, method, accessToken) => {
   if (payload) {

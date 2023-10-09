@@ -1,7 +1,7 @@
 const { handleHttpRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util');
 const Cache = require('../../util/cache');
-const { RetryableError, ThrottledError, AbortedError } = require('../../util/errorTypes');
+const { RetryableError, ThrottledError, AbortedError } = require('rs-integration-lib');
 const {
   ACCESS_TOKEN_CACHE_TTL,
   SF_TOKEN_REQUEST_URL_SANDBOX,

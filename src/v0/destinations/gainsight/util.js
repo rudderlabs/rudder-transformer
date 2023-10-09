@@ -1,7 +1,7 @@
 const myAxios = require('../../../util/myAxios');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const logger = require('../../../logger');
-const { ConfigurationError, RetryableError, NetworkError } = require('../../util/errorTypes');
+const { ConfigurationError, RetryableError, NetworkError } = require('rs-integration-lib');
 const { ENDPOINTS, getLookupPayload } = require('./config');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');

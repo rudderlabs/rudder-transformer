@@ -7,7 +7,7 @@ const {
   getDynamicErrorType,
   processAxiosResponse,
 } = require('../../../adapters/utils/networkUtils');
-const { NetworkError, RetryableError, AbortedError } = require('../../util/errorTypes');
+const { NetworkError, RetryableError, AbortedError } = require('rs-integration-lib');
 const { HTTP_STATUS_CODES } = require('../../util/constant');
 
 const prepareProxyReq = (request) => {

@@ -1,5 +1,5 @@
 const { removeUndefinedAndNullValues, simpleProcessRouterDest } = require('../../util');
-const { ConfigurationError } = require('../../util/errorTypes');
+const { ConfigurationError } = require('rs-integration-lib');
 
 function getResouceList(config) {
   let resource;

@@ -32,7 +32,7 @@ const {
   channelMapping,
   generateBatchedPayloadForArray,
 } = require('./util');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
+const { InstrumentationError, ConfigurationError } = require('rs-integration-lib');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function buildResponse(apiKey, payload) {

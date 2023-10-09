@@ -15,7 +15,7 @@ const {
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 const { BASE_ENDPOINT } = require('./config');
-const { NetworkError, NetworkInstrumentationError } = require('../../util/errorTypes');
+const { NetworkError, NetworkInstrumentationError } = require('rs-integration-lib');
 const tags = require('../../util/tags');
 
 const ERROR_MSG_PATH = 'response[0].error.message';

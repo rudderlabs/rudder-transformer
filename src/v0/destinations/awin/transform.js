@@ -2,7 +2,7 @@ const { BASE_URL, ConfigCategory, mappingConfig } = require('./config');
 const { defaultRequestConfig, constructPayload, simpleProcessRouterDest } = require('../../util');
 
 const { getParams } = require('./utils');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
+const { InstrumentationError, ConfigurationError } = require('rs-integration-lib');
 
 const responseBuilder = (message, { Config }) => {
   const { advertiserId, eventsToTrack } = Config;

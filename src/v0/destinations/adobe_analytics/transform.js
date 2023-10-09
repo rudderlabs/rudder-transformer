@@ -1,5 +1,10 @@
 const jsonxml = require('jsontoxml');
 const get = require('get-value');
+const {
+  InstrumentationError,
+  TransformationError,
+  ConfigurationError,
+} = require('rs-integration-lib');
 const { EventType } = require('../../../constants');
 const { ECOM_PRODUCT_EVENTS, commonConfig, formatDestinationConfig } = require('./config');
 const {
@@ -13,11 +18,6 @@ const {
   getIntegrationsObj,
   simpleProcessRouterDest,
 } = require('../../util');
-const {
-  InstrumentationError,
-  TransformationError,
-  ConfigurationError,
-} = require('../../util/errorTypes');
 
 const {
   handleContextData,

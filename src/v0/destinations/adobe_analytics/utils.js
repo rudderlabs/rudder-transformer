@@ -4,8 +4,8 @@
 /* eslint-disable unicorn/no-for-loop */
 /* eslint-disable no-restricted-syntax */
 const get = require('get-value');
+const { InstrumentationError } = require('rs-integration-lib');
 const { isDefinedAndNotNull, getValueFromMessage } = require('../../util');
-const { InstrumentationError } = require('../../util/errorTypes');
 
 const SOURCE_KEYS = ['properties', 'traits', 'context.traits', 'context'];
 

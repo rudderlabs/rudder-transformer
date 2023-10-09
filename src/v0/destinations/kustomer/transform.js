@@ -13,7 +13,7 @@ const {
   simpleProcessRouterDest,
 } = require('../../util');
 const { fetchKustomer, handleAdvancedtransformations } = require('./util');
-const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
+const { TransformationError, InstrumentationError } = require('rs-integration-lib');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 // Function responsible for constructing the Kustomer (User) Payload for identify

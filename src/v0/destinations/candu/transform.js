@@ -6,7 +6,7 @@ const {
   simpleProcessRouterDest,
 } = require('../../util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
+const { InstrumentationError, ConfigurationError } = require('rs-integration-lib');
 const { endpoint, identifyDataMapping, trackDataMapping } = require('./config');
 
 const responseBuilder = (body, { Config }) => {

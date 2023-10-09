@@ -1,6 +1,11 @@
 const sha256 = require('sha256');
 const { get, set, cloneDeep } = require('lodash');
 const moment = require('moment');
+const {
+  AbortedError,
+  ConfigurationError,
+  InstrumentationError,
+} = require('rs-integration-lib');
 const { httpPOST } = require('../../../adapters/network');
 const {
   isHttpStatusSuccess,
@@ -25,7 +30,6 @@ const {
 } = require('./config');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const Cache = require('../../util/cache');
-const { AbortedError, ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 
 const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
 

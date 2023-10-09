@@ -26,7 +26,7 @@ const {
 } = require('../../util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { mappingConfig, ConfigCategory } = require('./config');
-const { InstrumentationError } = require('../../util/errorTypes');
+const { InstrumentationError } = require('rs-integration-lib');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 
 /**

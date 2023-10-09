@@ -12,7 +12,7 @@ const {
 const { MAX_BATCH_SIZE } = require('./config');
 const { EventType } = require('../../../constants');
 const { createOrUpdateContactResponseBuilder } = require('./utils');
-const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
+const { TransformationError, InstrumentationError } = require('rs-integration-lib');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (payload) => {

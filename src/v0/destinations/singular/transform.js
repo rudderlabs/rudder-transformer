@@ -10,7 +10,7 @@ const {
   generateRevenuePayloadArray,
   isSessionEvent,
 } = require('./util');
-const { InstrumentationError } = require('../../util/errorTypes');
+const { InstrumentationError } = require('rs-integration-lib');
 
 const responseBuilderSimple = (message, { Config }) => {
   const eventName = message.event;

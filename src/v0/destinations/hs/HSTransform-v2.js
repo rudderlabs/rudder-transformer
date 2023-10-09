@@ -20,7 +20,7 @@ const {
   TransformationError,
   ConfigurationError,
   InstrumentationError,
-} = require('../../util/errorTypes');
+} = require('rs-integration-lib');
 const {
   IDENTIFY_CRM_UPDATE_CONTACT,
   IDENTIFY_CRM_CREATE_NEW_CONTACT,

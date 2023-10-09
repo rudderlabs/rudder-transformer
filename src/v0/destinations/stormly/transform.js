@@ -12,7 +12,7 @@ const {
   getDestinationExternalID,
 } = require('../../util');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
-const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
+const { TransformationError, InstrumentationError } = require('rs-integration-lib');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (payload, endpoint, destination) => {

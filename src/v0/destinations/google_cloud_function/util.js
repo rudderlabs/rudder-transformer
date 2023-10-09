@@ -1,4 +1,4 @@
-const { ConfigurationError } = require('../../util/errorTypes');
+const { ConfigurationError } = require('rs-integration-lib');
 
 /**
  * validate destination config

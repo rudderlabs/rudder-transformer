@@ -1,5 +1,5 @@
 const { getIntegrationsObj, getFieldValueFromMessage, getBrowserInfo } = require('../../util');
-const { InstrumentationError } = require('../../util/errorTypes');
+const { InstrumentationError } = require('rs-integration-lib');
 
 // For mapping device_type value
 const deviceTypeMapping = {

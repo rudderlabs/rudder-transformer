@@ -3,7 +3,7 @@ const flatten = require('flat');
 
 const { isEmpty, isObject } = require('../../util');
 const { EventType } = require('../../../constants');
-const { InstrumentationError } = require('../../util/errorTypes');
+const { InstrumentationError } = require('rs-integration-lib');
 
 // processValues:
 // 1. removes keys with empty values or still an object(empty) after flattening

@@ -15,7 +15,7 @@ const {
   ConfigurationError,
   InstrumentationError,
   UnsupportedEventError,
-} = require('../../util/errorTypes');
+} = require('rs-integration-lib');
 const {
   ENDPOINT,
   mappingConfig,

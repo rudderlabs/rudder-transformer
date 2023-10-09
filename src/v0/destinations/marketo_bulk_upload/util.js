@@ -1,10 +1,10 @@
-const { handleHttpRequest } = require('../../../adapters/network');
 const {
   AbortedError,
   RetryableError,
   NetworkError,
   TransformationError,
-} = require('../../util/errorTypes');
+} = require('rs-integration-lib');
+const { handleHttpRequest } = require('../../../adapters/network');
 const tags = require('../../util/tags');
 const { isHttpStatusSuccess, generateUUID } = require('../../util');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');

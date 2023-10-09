@@ -7,7 +7,7 @@ const {
   extractCustomFields,
   isDefinedAndNotNull,
 } = require('../../util');
-const { InstrumentationError } = require('../../util/errorTypes');
+const { InstrumentationError } = require('rs-integration-lib');
 const { mappingConfig, ConfigCategory } = require('./config');
 
 /**

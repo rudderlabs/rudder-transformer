@@ -9,7 +9,7 @@ const {
   generateUUID,
 } = require('../../util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-const { InstrumentationError } = require('../../util/errorTypes');
+const { InstrumentationError } = require('rs-integration-lib');
 
 const { ConfigCategory, mappingConfig } = require('./config');
 

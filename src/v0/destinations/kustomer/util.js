@@ -6,7 +6,7 @@ const myAxios = require('../../../util/myAxios');
 const { DEFAULT_BASE_ENDPOINT } = require('./config');
 const { getType, isDefinedAndNotNull, isObject } = require('../../util');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
-const { NetworkError, AbortedError } = require('../../util/errorTypes');
+const { NetworkError, AbortedError } = require('rs-integration-lib');
 const tags = require('../../util/tags');
 
 /**

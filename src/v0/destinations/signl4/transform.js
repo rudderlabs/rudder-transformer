@@ -11,7 +11,7 @@ const {
   ConfigurationError,
   TransformationError,
   InstrumentationError,
-} = require('../../util/errorTypes');
+} = require('rs-integration-lib');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (payload, endpoint) => {

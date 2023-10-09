@@ -25,7 +25,7 @@ const {
 } = require('../../util');
 const { generateClevertapBatchedPayload } = require('./utils');
 
-const { InstrumentationError, TransformationError } = require('../../util/errorTypes');
+const { InstrumentationError, TransformationError } = require('rs-integration-lib');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const TIMESTAMP_KEY_PATH = 'context.traits.ts';

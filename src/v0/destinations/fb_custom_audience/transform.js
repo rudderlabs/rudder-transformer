@@ -30,7 +30,7 @@ const {
   InstrumentationError,
   TransformationError,
   ConfigurationError,
-} = require('../../util/errorTypes');
+} = require('rs-integration-lib');
 
 const responseBuilderSimple = (payload, audienceId) => {
   if (payload) {

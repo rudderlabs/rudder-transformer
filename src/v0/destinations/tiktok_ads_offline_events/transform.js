@@ -21,7 +21,7 @@ const {
   EVENT_NAME_MAPPING,
   PARTNER_NAME,
 } = require('./config');
-const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
+const { ConfigurationError, InstrumentationError } = require('rs-integration-lib');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const getContents = (message) => {

@@ -166,13 +166,15 @@ const GA4_ITEM_EXCLUSION = [
 ];
 
 /**
- * Remove arrays and objects from transformed payload 
- * @param {*} params 
- * @returns 
+ * Remove arrays and objects from transformed payload
+ * @param {*} params
+ * @returns
  */
 const removeInvalidParams = (params) =>
   Object.fromEntries(
-    Object.entries(params).filter(([key, value]) => key === 'items' || (typeof value !== 'object' && !isEmpty(value))),
+    Object.entries(params).filter(
+      ([key, value]) => key === 'items' || (typeof value !== 'object' && !isEmpty(value)),
+    ),
   );
 
 /**
@@ -244,10 +246,10 @@ const getItem = (message, isItemsRequired) => {
 
 /**
  * Returns items array for ga4 event payload
- * @param {*} message 
- * @param {*} item 
- * @param {*} itemList 
- * @returns 
+ * @param {*} message
+ * @param {*} item
+ * @param {*} itemList
+ * @returns
  */
 const getItemsArray = (message, item, itemList) => {
   let items = [];
@@ -269,7 +271,7 @@ const getItemsArray = (message, item, itemList) => {
   }
 
   return { items, mapRootLevelPropertiesToGA4ItemsArray };
-}
+};
 /**
  * get exclusion list for a particular event
  * ga4ExclusionList contains the sourceKeys that are already mapped
@@ -398,13 +400,25 @@ const isValidUserProperty = (key, value) => {
 /**
  * Function to validate and prepare user_properties
  * @param {*} message
+ * @param {*} piiPropertiesToIgnore
+ * @returns
  */
-const prepareUserProperties = (message) => {
+const prepareUserProperties = (message, piiPropertiesToIgnore = []) => {
+  // Exclude PII user traits
+  const piiProperties = [];
+  if (piiPropertiesToIgnore.length > 0) {
+    piiPropertiesToIgnore.forEach((property) => {
+      if (typeof property.piiProperty === 'string' && property.piiProperty.trim() !== '') {
+        piiProperties.push(property.piiProperty.trim());
+      }
+    });
+  }
+
   const userProperties = extractCustomFields(
     message,
     {},
     ['properties.user_properties', 'context.traits'],
-    GA4_RESERVED_USER_PROPERTY_EXCLUSION,
+    [...GA4_RESERVED_USER_PROPERTY_EXCLUSION, ...piiProperties],
   );
 
   const validatedUserProperties = Object.entries(userProperties)

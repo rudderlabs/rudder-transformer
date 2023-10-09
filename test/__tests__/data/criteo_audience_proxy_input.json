@@ -16,11 +16,40 @@
           "attributes": {
             "operation": "remove",
             "identifierType": "gum",
-            "identifiers": [
-              "sample_gum3"
-            ],
+            "identifiers": ["sample_gum3"],
             "internalIdentifiers": false,
             "gumCallerId": "329739"
+          }
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "params": {
+      "destination": "criteo_audience"
+    }
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "PATCH",
+    "endpoint": "https://api.criteo.com/2022-10/audiences/3485/contactlist",
+    "headers": {
+      "Authorization": "Bearer success_access_token",
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "body": {
+      "JSON": {
+        "data": {
+          "type": "ContactlistAmendment",
+          "attributes": {
+            "operation": "add",
+            "identifierType": "madid",
+            "identifiers": ["sample_madid", "sample_madid_1", "sample_madid_2"],
+            "internalIdentifiers": false
           }
         }
       },
@@ -50,11 +79,7 @@
           "attributes": {
             "operation": "add",
             "identifierType": "madid",
-            "identifiers": [
-              "sample_madid",
-              "sample_madid_1",
-              "sample_madid_2"
-            ],
+            "identifiers": ["sample_madid", "sample_madid_1", "sample_madid_2"],
             "internalIdentifiers": false
           }
         }
@@ -85,11 +110,7 @@
           "attributes": {
             "operation": "add",
             "identifierType": "madid",
-            "identifiers": [
-              "sample_madid",
-              "sample_madid_1",
-              "sample_madid_2"
-            ],
+            "identifiers": ["sample_madid", "sample_madid_1", "sample_madid_2"],
             "internalIdentifiers": false
           }
         }
@@ -120,11 +141,7 @@
           "attributes": {
             "operation": "add",
             "identifierType": "madid",
-            "identifiers": [
-              "sample_madid",
-              "sample_madid_1",
-              "sample_madid_2"
-            ],
+            "identifiers": ["sample_madid", "sample_madid_1", "sample_madid_2"],
             "internalIdentifiers": false
           }
         }
@@ -155,11 +172,7 @@
           "attributes": {
             "operation": "add",
             "identifierType": "madid",
-            "identifiers": [
-              "sample_madid",
-              "sample_madid_1",
-              "sample_madid_2"
-            ],
+            "identifiers": ["sample_madid", "sample_madid_1", "sample_madid_2"],
             "internalIdentifiers": false
           }
         }
@@ -190,11 +203,7 @@
           "attributes": {
             "operation": "add",
             "identifierType": "madid",
-            "identifiers": [
-              "sample_madid",
-              "sample_madid_1",
-              "sample_madid_2"
-            ],
+            "identifiers": ["sample_madid", "sample_madid_1", "sample_madid_2"],
             "internalIdentifiers": false
           }
         }

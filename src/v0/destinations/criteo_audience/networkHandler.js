@@ -26,7 +26,11 @@ const criteoAudienceRespHandler = (destResponse, stageMsg) => {
 
   // https://developers.criteo.com/marketing-solutions/docs/api-error-types#error-category-types
   // to handle the case when authorization-token is invalid
-  if (status === 401 && matchErrorCode('authorization-token-invalid', response)) {
+  if (
+    status === 401 &&
+    (matchErrorCode('authorization-token-invalid', response) ||
+      matchErrorCode('authorization-token-expired', response))
+  ) {
     throw new NetworkError(
       `${response?.errors[0]?.title} ${stageMsg}`,
       status,

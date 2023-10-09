@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-undef */
 
-const _ = require('lodash');
+const lodash = require('lodash');
 const http = require('http');
 const https = require('https');
 const axios = require('axios');
@@ -9,16 +9,19 @@ const log = require('../logger');
 const stats = require('../util/stats');
 const { removeUndefinedValues } = require('../v0/util');
 const { processAxiosResponse } = require('./utils/networkUtils');
+// Only for tests
+const { setResponsesForMockAxiosAdapter } = require('../../test/testHelper');
 
 const MAX_CONTENT_LENGTH = parseInt(process.env.MAX_CONTENT_LENGTH, 10) || 100000000;
 const MAX_BODY_LENGTH = parseInt(process.env.MAX_BODY_LENGTH, 10) || 100000000;
+const REQUEST_TIMEOUT_IN_MS = parseInt(process.env.REQUEST_TIMEOUT_IN_MS, 10) || 1000 * 60;
 // (httpsAgent, httpsAgent) ,these are deployment specific configs not request specific
 const networkClientConfigs = {
   // `method` is the request method to be used when making the request
   method: 'get',
 
   // `timeout` specifies the number of milliseconds before the request times out. If the request takes longer than `timeout`, the request will be aborted.
-  timeout: 1000 * 60,
+  timeout: REQUEST_TIMEOUT_IN_MS,
 
   // `withCredentials` indicates whether or not cross-site Access-Control requests should be made using credentials
   withCredentials: false,
@@ -42,13 +45,34 @@ const networkClientConfigs = {
   httpsAgent: new https.Agent({ keepAlive: true }),
 };
 
-const fireLatencyStat = (startTime, statTags) => {
+const fireHTTPStats = (clientResponse, startTime, statTags) => {
   const destType = statTags.destType ? statTags.destType : '';
   const feature = statTags.feature ? statTags.feature : '';
+  const endpointPath = statTags.endpointPath ? statTags.endpointPath : '';
+  const statusCode = clientResponse.success ? clientResponse.response.status : '';
   stats.timing('outgoing_request_latency', startTime, {
     feature,
     destType,
+    endpointPath,
   });
+  stats.counter('outgoing_request_count', 1, {
+    feature,
+    destType,
+    endpointPath,
+    success: clientResponse.success,
+    statusCode,
+  });
+};
+
+const enhanceRequestOptions = (options) => {
+  const requestOptions = {
+    ...networkClientConfigs,
+    ...options,
+    maxContentLength: MAX_CONTENT_LENGTH,
+    maxBodyLength: MAX_BODY_LENGTH,
+  };
+
+  return requestOptions;
 };
 
 /**
@@ -58,23 +82,21 @@ const fireLatencyStat = (startTime, statTags) => {
  */
 const httpSend = async (options, statTags = {}) => {
   let clientResponse;
-  // here the options argument K-Vs will take priority over requestOptions
-  const requestOptions = {
-    ...networkClientConfigs,
-    ...options,
-    maxContentLength: MAX_CONTENT_LENGTH,
-    maxBodyLength: MAX_BODY_LENGTH,
-  };
+  // here the options argument K-Vs will take priority over the default options
+  const requestOptions = enhanceRequestOptions(options);
 
   const startTime = new Date();
+  const { url, data, method } = requestOptions;
   try {
     const response = await axios(requestOptions);
     clientResponse = { success: true, response };
   } catch (err) {
     clientResponse = { success: false, response: err };
   } finally {
-    fireLatencyStat(startTime, statTags);
+    fireHTTPStats(clientResponse, startTime, statTags);
   }
+
+  setResponsesForMockAxiosAdapter({ url, data, method, options }, clientResponse);
   return clientResponse;
 };
 
@@ -88,16 +110,19 @@ const httpSend = async (options, statTags = {}) => {
  */
 const httpGET = async (url, options, statTags = {}) => {
   let clientResponse;
+  // here the options argument K-Vs will take priority over the default options
+  const requestOptions = enhanceRequestOptions(options);
 
   const startTime = new Date();
   try {
-    const response = await axios.get(url, options);
+    const response = await axios.get(url, requestOptions);
     clientResponse = { success: true, response };
   } catch (err) {
     clientResponse = { success: false, response: err };
   } finally {
-    fireLatencyStat(startTime, statTags);
+    fireHTTPStats(clientResponse, startTime, statTags);
   }
+  setResponsesForMockAxiosAdapter({ url, options, method: 'GET' }, clientResponse);
   return clientResponse;
 };
 
@@ -111,16 +136,19 @@ const httpGET = async (url, options, statTags = {}) => {
  */
 const httpDELETE = async (url, options, statTags = {}) => {
   let clientResponse;
+  // here the options argument K-Vs will take priority over the default options
+  const requestOptions = enhanceRequestOptions(options);
 
   const startTime = new Date();
   try {
-    const response = await axios.delete(url, options);
+    const response = await axios.delete(url, requestOptions);
     clientResponse = { success: true, response };
   } catch (err) {
     clientResponse = { success: false, response: err };
   } finally {
-    fireLatencyStat(startTime, statTags);
+    fireHTTPStats(clientResponse, startTime, statTags);
   }
+  setResponsesForMockAxiosAdapter({ url, options, method: 'DELETE' }, clientResponse);
   return clientResponse;
 };
 
@@ -135,16 +163,19 @@ const httpDELETE = async (url, options, statTags = {}) => {
  */
 const httpPOST = async (url, data, options, statTags = {}) => {
   let clientResponse;
+  // here the options argument K-Vs will take priority over the default options
+  const requestOptions = enhanceRequestOptions(options);
 
   const startTime = new Date();
   try {
-    const response = await axios.post(url, data, options);
+    const response = await axios.post(url, data, requestOptions);
     clientResponse = { success: true, response };
   } catch (err) {
     clientResponse = { success: false, response: err };
   } finally {
-    fireLatencyStat(startTime, statTags);
+    fireHTTPStats(clientResponse, startTime, statTags);
   }
+  setResponsesForMockAxiosAdapter({ url, data, options, method: 'POST' }, clientResponse);
   return clientResponse;
 };
 
@@ -159,16 +190,19 @@ const httpPOST = async (url, data, options, statTags = {}) => {
  */
 const httpPUT = async (url, data, options, statTags = {}) => {
   let clientResponse;
+  // here the options argument K-Vs will take priority over the default options
+  const requestOptions = enhanceRequestOptions(options);
 
   const startTime = new Date();
   try {
-    const response = await axios.put(url, data, options);
+    const response = await axios.put(url, data, requestOptions);
     clientResponse = { success: true, response };
   } catch (err) {
     clientResponse = { success: false, response: err };
   } finally {
-    fireLatencyStat(startTime, statTags);
+    fireHTTPStats(clientResponse, startTime, statTags);
   }
+  setResponsesForMockAxiosAdapter({ url, data, options, method: 'PUT' }, clientResponse);
   return clientResponse;
 };
 
@@ -183,16 +217,19 @@ const httpPUT = async (url, data, options, statTags = {}) => {
  */
 const httpPATCH = async (url, data, options, statTags = {}) => {
   let clientResponse;
+  // here the options argument K-Vs will take priority over the default options
+  const requestOptions = enhanceRequestOptions(options);
 
   const startTime = new Date();
   try {
-    const response = await axios.patch(url, data, options);
+    const response = await axios.patch(url, data, requestOptions);
     clientResponse = { success: true, response };
   } catch (err) {
     clientResponse = { success: false, response: err };
   } finally {
-    fireLatencyStat(startTime, statTags);
+    fireHTTPStats(clientResponse, startTime, statTags);
   }
+  setResponsesForMockAxiosAdapter({ url, data, options, method: 'PATCH' }, clientResponse);
   return clientResponse;
 };
 
@@ -200,7 +237,7 @@ const getPayloadData = (body) => {
   let payload;
   let payloadFormat;
   Object.entries(body).forEach(([key, value]) => {
-    if (!_.isEmpty(value)) {
+    if (!lodash.isEmpty(value)) {
       payload = value;
       payloadFormat = key;
     }
@@ -361,4 +398,5 @@ module.exports = {
   getPayloadData,
   getFormData,
   handleHttpRequest,
+  enhanceRequestOptions,
 };

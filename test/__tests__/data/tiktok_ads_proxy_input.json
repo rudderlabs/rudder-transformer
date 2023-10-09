@@ -5,7 +5,7 @@
     "method": "POST",
     "endpoint": "https://business-api.tiktok.com/open_api/v1.2/pixel/batch/",
     "headers": {
-      "Access-Token": "1234ac663758946dfep3520b394bbac511b371f7",
+      "Access-Token": "dummyAccessToken",
       "Content-Type": "application/json",
       "test-dest-response-key": "successResponse"
     },
@@ -66,7 +66,7 @@
     "method": "POST",
     "endpoint": "https://business-api.tiktok.com/open_api/v1.2/pixel/batch/",
     "headers": {
-      "Access-Token": "1234ac663758946dfexp3520b394bbac511b371f7",
+      "Access-Token": "dummyAccessToken",
       "Content-Type": "application/json",
       "test-dest-response-key": "invalidDataTypeResponse"
     },
@@ -127,7 +127,7 @@
     "method": "POST",
     "endpoint": "https://business-api.tiktok.com/open_api/v1.2/pixel/batch/",
     "headers": {
-      "Access-Token": "1234ac663758946dexp3520b394bbac511b371f7",
+      "Access-Token": "dummyAccessToken",
       "Content-Type": "application/json",
       "test-dest-response-key": "invalidPermissionsResponse"
     },
@@ -188,7 +188,7 @@
     "method": "POST",
     "endpoint": "https://business-api.tiktok.com/open_api/v1.2/pixel/batch/",
     "headers": {
-      "Access-Token": "1234ac663758946dexp3520b394bbac511b371f7",
+      "Access-Token": "dummyAccessToken",
       "Content-Type": "application/json",
       "test-dest-response-key": "tooManyRequests"
     },
@@ -249,7 +249,7 @@
     "method": "POST",
     "endpoint": "https://business-api.tiktok.com/open_api/v1.2/pixel/batch/",
     "headers": {
-      "Access-Token": "1234ac663758946dexp3520b394bbac511b371f7",
+      "Access-Token": "dummyAccessToken",
       "Content-Type": "application/json",
       "test-dest-response-key": "502-BadGateway"
     },
@@ -310,7 +310,7 @@
     "method": "POST",
     "endpoint": "https://business-api.tiktok.com/open_api/v1.2/pixel/batch/",
     "headers": {
-      "Access-Token": "1234ac663758946dexp3520b394bbac511b371f7",
+      "Access-Token": "dummyAccessToken",
       "Content-Type": "application/json",
       "test-dest-response-key": "500-NoResponse"
     },

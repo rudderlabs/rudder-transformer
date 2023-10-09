@@ -1,7 +1,6 @@
-const _ = require('lodash');
+const lodash = require('lodash');
 const get = require('get-value');
 const {
-  batchEvents,
   getCatalogEndpoint,
   hasMultipleResponses,
   pageEventPayloadBuilder,
@@ -23,6 +22,7 @@ const {
   handleRtTfSingleEventError,
   removeUndefinedAndNullValues,
   getDestinationExternalIDInfoForRetl,
+  groupEventsByType: batchEvents,
 } = require('../../util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { mappingConfig, ConfigCategory } = require('./config');
@@ -213,10 +213,10 @@ const processRouterDest = async (inputs, reqMetadata) => {
              * ]
              */
 
-            const responses = process(event);
-            const transformedPayloads = Array.isArray(responses) ? responses : [responses];
-            return transformedPayloads.map((response) => ({
-              message: response,
+            const responsesFn = process(event);
+            const transformedPayloadsArr = Array.isArray(responsesFn) ? responsesFn : [responsesFn];
+            return transformedPayloadsArr.map((res) => ({
+              message: res,
               metadata: event.metadata,
               destination: event.destination,
             }));
@@ -230,13 +230,13 @@ const processRouterDest = async (inputs, reqMetadata) => {
        * Before flat map : transformedPayloads = [{e1}, {e2}, [{e3}, {e4}, {e5}], {e6}]
        * After flat map : transformedPayloads = [{e1}, {e2}, {e3}, {e4}, {e5}, {e6}]
        */
-      transformedPayloads = _.flatMap(transformedPayloads);
+      transformedPayloads = lodash.flatMap(transformedPayloads);
       return filterEventsAndPrepareBatchRequests(transformedPayloads);
     }),
   );
 
   // Flatten the response array containing batched events from multiple groups
-  const allBatchedEvents = _.flatMap(response);
+  const allBatchedEvents = lodash.flatMap(response);
 
   return allBatchedEvents;
 };

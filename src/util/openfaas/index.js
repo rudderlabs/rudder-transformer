@@ -20,6 +20,7 @@ const FAAS_MAX_INFLIGHT = process.env.FAAS_MAX_INFLIGHT || '4';
 const FAAS_EXEC_TIMEOUT = process.env.FAAS_EXEC_TIMEOUT || '4s';
 const FAAS_ENABLE_WATCHDOG_ENV_VARS = process.env.FAAS_ENABLE_WATCHDOG_ENV_VARS || 'true';
 const CONFIG_BACKEND_URL = process.env.CONFIG_BACKEND_URL || 'https://api.rudderlabs.com';
+const GEOLOCATION_URL = process.env.GEOLOCATION_URL || '';
 const FAAS_AST_VID = 'ast';
 const FAAS_AST_FN_NAME = 'fn-ast';
 
@@ -92,8 +93,18 @@ const isFunctionDeployed = (functionName) => {
 
 const setFunctionInCache = (functionName) => {
   const funcList = functionListCache.get(FUNC_LIST_KEY) || [];
-  funcList.push(functionName);
-  functionListCache.set(FUNC_LIST_KEY, funcList);
+  if (funcList.includes(functionName)) return;
+  const funcListSet = new Set(funcList);
+  funcListSet.add(functionName);
+  functionListCache.set(FUNC_LIST_KEY, Array.from(funcListSet));
+};
+
+const removeFunctionFromCache = (functionName) => {
+  const funcList = functionListCache.get(FUNC_LIST_KEY) || [];
+  if (!funcList.includes(functionName)) return;
+  const funcListSet = new Set(funcList);
+  funcListSet.delete(functionName);
+  functionListCache.set(FUNC_LIST_KEY, Array.from(funcListSet));
 };
 
 const invalidateFnCache = () => {
@@ -117,6 +128,9 @@ const deployFaasFunction = async (functionName, code, versionId, libraryVersionI
     if (FAAS_ENABLE_WATCHDOG_ENV_VARS.trim().toLowerCase() === 'true') {
       envVars.max_inflight = FAAS_MAX_INFLIGHT;
       envVars.exec_timeout = FAAS_EXEC_TIMEOUT;
+    }
+    if (GEOLOCATION_URL) {
+      envVars.geolocation_url = GEOLOCATION_URL;
     }
     // TODO: investigate and add more required labels and annotations
     const payload = {
@@ -150,7 +164,10 @@ const deployFaasFunction = async (functionName, code, versionId, libraryVersionI
     logger.error(`[Faas] Error while deploying ${functionName}: ${error.message}`);
     // To handle concurrent create requests,
     // throw retry error if deployment or service already exists so that request can be retried
-    if ((error.statusCode === 500 || error.statusCode === 400) && error.message.includes('already exists')) {
+    if (
+      (error.statusCode === 500 || error.statusCode === 400) &&
+      error.message.includes('already exists')
+    ) {
       setFunctionInCache(functionName);
       throw new RetryRequestError(`${functionName} already exists`);
     }
@@ -199,6 +216,7 @@ const executeFaasFunction = async (
       error.statusCode === 404 &&
       error.message.includes(`error finding function ${functionName}`)
     ) {
+      removeFunctionFromCache(functionName);
       await setupFaasFunction(functionName, null, versionId, libraryVersionIDs, testMode);
       throw new RetryRequestError(`${functionName} not found`);
     }

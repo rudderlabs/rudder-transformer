@@ -32,7 +32,7 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: 'abcdefghij1234',
+                password: 'dummyPassword',
                 subDomainName: '',
                 domainMethod: 'domainNameOption',
                 domainName: 'https://testmautic.com',
@@ -57,7 +57,7 @@ export const data = [
               endpoint: 'https://testmautic.com/api/contacts/new',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic YWJjZGVmQGdtYWlsLmNvbTphYmNkZWZnaGlqMTIzNA==',
+                Authorization: 'Basic YWJjZGVmQGdtYWlsLmNvbTpkdW1teVBhc3N3b3Jk',
               },
               params: {},
               body: {
@@ -114,7 +114,7 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: 'abcdefghij1234',
+                password: 'dummyPassword',
                 subDomainName: 'test',
                 domainMethod: 'subDomainNameOption',
                 domainName: 'https://testmautic.com/',
@@ -139,7 +139,7 @@ export const data = [
               endpoint: 'https://test.mautic.net/api/contacts/new',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic YWJjZGVmQGdtYWlsLmNvbTphYmNkZWZnaGlqMTIzNA==',
+                Authorization: 'Basic YWJjZGVmQGdtYWlsLmNvbTpkdW1teVBhc3N3b3Jk',
               },
               params: {},
               body: {
@@ -195,7 +195,7 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: 'abcdefghij1234',
+                password: 'dummyPassword',
                 subDomainName: 'test',
                 domainMethod: 'domainNameOption',
                 domainName: 'https://testmautic.com',
@@ -220,7 +220,7 @@ export const data = [
               endpoint: 'https://testmautic.com/api/contacts/new',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic YWJjZGVmQGdtYWlsLmNvbTphYmNkZWZnaGlqMTIzNA==',
+                Authorization: 'Basic YWJjZGVmQGdtYWlsLmNvbTpkdW1teVBhc3N3b3Jk',
               },
               params: {},
               body: {
@@ -261,8 +261,8 @@ export const data = [
                   name: 'http',
                 },
                 traits: {
-                  firstName: 'Anant',
-                  lastName: 'jain',
+                  firstName: 'Test',
+                  lastName: 'Rudderlabs',
                 },
               },
               messageId: '25ea6605-c788-4cab-8fed-2cf0b831c4a8',
@@ -327,8 +327,8 @@ export const data = [
                   name: 'http',
                 },
                 traits: {
-                  firstName: 'Anant',
-                  lastName: 'jain',
+                  firstName: 'Test',
+                  lastName: 'Rudderlabs',
                 },
               },
               messageId: '25ea6605-c788-4cab-8fed-2cf0b831c4a8',
@@ -344,7 +344,7 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: 'abcdefghij1234',
+                password: 'dummyPassword',
                 subDomainName: '',
                 domainName: '',
                 userName: 'opiogfuebj',
@@ -392,14 +392,14 @@ export const data = [
                 ip: '14.5.67.21',
                 library: { name: 'http' },
                 traits: {
-                  firstName: 'Anant',
-                  lastName: 'jain',
+                  firstName: 'Test',
+                  lastName: 'Rudderlabs',
                   role: 'Manager',
                   address: 'Flat No 58 ABC building XYZ Area near PQRS , 354408',
                   hasPurchased: 'yes',
                   email: 'abc@xyz.com',
                   title: 'Mr',
-                  phone: '9876543212',
+                  phone: '9876543210',
                   state: 'Uttar Pradesh',
                   zipcode: '243001',
                   prospectOrCustomer: 'Prospect',
@@ -421,9 +421,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: 'm3dG325C51C1RPq',
+                password: 'dummyPassword',
                 subDomainName: 'ruddertest2',
-                userName: 'anantjain45823@gmail.com',
+                userName: 'TestRudderlabs45823@gmail.com',
               },
             },
           },
@@ -444,16 +444,16 @@ export const data = [
               endpoint: 'https://ruddertest2.mautic.net/api/contacts/new',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic YW5hbnRqYWluNDU4MjNAZ21haWwuY29tOm0zZEczMjVDNTFDMVJQcQ==',
+                Authorization: 'Basic VGVzdFJ1ZGRlcmxhYnM0NTgyM0BnbWFpbC5jb206ZHVtbXlQYXNzd29yZA==',
               },
               params: {},
               body: {
                 JSON: {
                   email: 'abc@xyz.com',
                   title: 'Mr',
-                  firstname: 'Anant',
-                  lastname: 'jain',
-                  phone: '9876543212',
+                  firstname: 'Test',
+                  lastname: 'Rudderlabs',
+                  phone: '9876543210',
                   website: 'abc.com',
                   state: 'Uttar Pradesh',
                   zipcode: '243001',
@@ -496,14 +496,14 @@ export const data = [
                 ip: '14.5.67.21',
                 library: { name: 'http' },
                 traits: {
-                  firstName: 'Anant',
-                  lastName: 'jain',
+                  firstName: 'Test',
+                  lastName: 'Rudderlabs',
                   role: 'Manager',
                   address: 'Flat No 58 ABC building XYZ Area near PQRS , 354408',
                   hasPurchased: 'yes',
                   email: 'hijibi@gmail.com',
                   title: 'Mr',
-                  phone: '9876543212',
+                  phone: '9876543210',
                   state: 'Uttar Pradesh',
                   zipcode: '243001',
                   prospectOrCustomer: 'Prospect',
@@ -525,9 +525,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: 'm3dG325C51C1RPq',
+                password: 'dummyPassword',
                 subDomainName: 'ruddertest2',
-                userName: 'anantjain45823@gmail.com',
+                userName: 'TestRudderlabs45823@gmail.com',
               },
             },
           },
@@ -548,7 +548,7 @@ export const data = [
               endpoint: 'https://ruddertest2.mautic.net/api/contacts/247/edit',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic YW5hbnRqYWluNDU4MjNAZ21haWwuY29tOm0zZEczMjVDNTFDMVJQcQ==',
+                Authorization: 'Basic VGVzdFJ1ZGRlcmxhYnM0NTgyM0BnbWFpbC5jb206ZHVtbXlQYXNzd29yZA==',
               },
               params: {},
               body: {
@@ -556,9 +556,9 @@ export const data = [
                   email: 'hijibi@gmail.com',
                   title: 'Mr',
                   last_active: '2020-02-02T05:53:08.977+05:30',
-                  firstname: 'Anant',
-                  lastname: 'jain',
-                  phone: '9876543212',
+                  firstname: 'Test',
+                  lastname: 'Rudderlabs',
+                  phone: '9876543210',
                   website: 'abc.com',
                   state: 'Uttar Pradesh',
                   zipcode: '243001',
@@ -600,14 +600,14 @@ export const data = [
                 ip: '14.5.67.21',
                 library: { name: 'http' },
                 traits: {
-                  firstName: 'Anant',
-                  lastName: 'jain',
+                  firstName: 'Test',
+                  lastName: 'Rudderlabs',
                   role: 'Manager',
                   address: 'Flat No 58 ABC building XYZ Area near PQRS , 354408',
                   hasPurchased: 'yes',
                   email: 'abc@xyz.com',
                   title: 'Mr',
-                  phone: '9876543212',
+                  phone: '9876543210',
                   state: 'Uttar Pradesh',
                   zipcode: '243001',
                   prospectOrCustomer: 'Prospect',
@@ -629,7 +629,7 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: 'abcdefghij1234',
+                password: 'dummyPassword',
                 subDomainName: 'testapi3',
                 userName: '',
               },
@@ -675,7 +675,7 @@ export const data = [
               context: {
                 ip: '14.5.67.21',
                 library: { name: 'http' },
-                traits: { firstName: 'Anant', lastName: 'jain' },
+                traits: { firstName: 'Test', lastName: 'Rudderlabs' },
               },
               messageId: '25ea6605-c788-4cab-8fed-2cf0b831c4a8',
               originalTimestamp: '2020-02-02T00:23:09.544Z',
@@ -737,14 +737,14 @@ export const data = [
                 ip: '14.5.67.21',
                 library: { name: 'http' },
                 traits: {
-                  firstName: 'Anant',
-                  lastName: 'jain',
+                  firstName: 'Test',
+                  lastName: 'Rudderlabs',
                   role: 'Manager',
                   address: 'Flat No 58 ABC building XYZ Area near PQRS , 354408',
                   hasPurchased: 'yes',
                   email: 'abc@xyz.com',
                   title: 'Mr',
-                  phone: '9876543212',
+                  phone: '9876543210',
                   state: 'Uttar Pradesh',
                   zipcode: '243001',
                   prospectOrCustomer: 'Prospect',
@@ -766,7 +766,7 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: 'abcdefghij1234',
+                password: 'dummyPassword',
                 subDomainName: '',
                 userName: 'abcdef@gmail.com',
               },
@@ -826,7 +826,7 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: 'm3dG325C51C1RPq',
+                password: 'dummyPassword',
                 subDomainName: 'testapi3',
                 userName: 'abcdef@gmail.com',
               },
@@ -887,9 +887,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: 'm3dG325C51C1RPq',
+                password: 'dummyPassword',
                 subDomainName: 'testapi3',
-                userName: 'anantjain45823@gmail.com',
+                userName: 'TestRudderlabs45823@gmail.com',
               },
             },
           },
@@ -944,7 +944,7 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: 'abcdefghij1234',
+                password: 'dummyPassword',
                 subDomainName: 'testapi3',
                 userName: 'abcdef@gmail.com',
               },
@@ -1001,7 +1001,7 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: 'abcdefghij1234',
+                password: 'dummyPassword',
                 subDomainName: 'testapi3',
                 userName: 'abcdef@gmail.com',
               },
@@ -1062,7 +1062,7 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: 'abcdefghij1234',
+                password: 'dummyPassword',
                 subDomainName: 'testapi3',
                 userName: 'abcdef@gmail.com',
               },
@@ -1119,9 +1119,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: 'm3dG325C51C1RPq',
+                password: 'dummyPassword',
                 subDomainName: 'testapi3',
-                userName: 'anantjain45823@gmail.com',
+                userName: 'TestRudderlabs45823@gmail.com',
               },
             },
           },
@@ -1180,9 +1180,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: 'm3dG325C51C1RPq',
+                password: 'dummyPassword',
                 subDomainName: 'testapi3',
-                userName: 'anantjain45823@gmail.com',
+                userName: 'TestRudderlabs45823@gmail.com',
               },
             },
           },
@@ -1229,9 +1229,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: 'm3dG325C51C1RPq',
+                password: 'dummyPassword',
                 subDomainName: 'testapi3',
-                userName: 'anantjain45823@gmail.com',
+                userName: 'TestRudderlabs45823@gmail.com',
               },
             },
           },
@@ -1290,9 +1290,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: 'm3dG325C51C1RPq',
+                password: 'dummyPassword',
                 subDomainName: 'testapi3',
-                userName: 'anantjain45823@gmail.com',
+                userName: 'TestRudderlabs45823@gmail.com',
               },
             },
           },
@@ -1347,7 +1347,7 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: 'abcdefghij1234',
+                password: 'dummyPassword',
                 subDomainName: 'testapi3',
                 userName: 'abcdef@gmail.com',
               },
@@ -1370,7 +1370,7 @@ export const data = [
               endpoint: 'https://testapi3.mautic.net/api/contacts/new',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic YWJjZGVmQGdtYWlsLmNvbTphYmNkZWZnaGlqMTIzNA==',
+                Authorization: 'Basic YWJjZGVmQGdtYWlsLmNvbTpkdW1teVBhc3N3b3Jk',
               },
               params: {},
               body: {
@@ -1426,7 +1426,7 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: 'abcdefghij1234',
+                password: 'dummyPassword',
                 subDomainName: 'testapi3',
                 userName: 'abcdef@gmail.com',
               },
@@ -1449,7 +1449,7 @@ export const data = [
               endpoint: 'https://testapi3.mautic.net/api/contacts/new',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic YWJjZGVmQGdtYWlsLmNvbTphYmNkZWZnaGlqMTIzNA==',
+                Authorization: 'Basic YWJjZGVmQGdtYWlsLmNvbTpkdW1teVBhc3N3b3Jk',
               },
               params: {},
               body: {
@@ -1485,7 +1485,7 @@ export const data = [
             message: {
               anonymousId: 'anon-id-new',
               context: { externalId: [{ type: 'mauticContactId', id: '246' }] },
-              traits: { firstName: 'Anant', role: 'Manager' },
+              traits: { firstName: 'Test', role: 'Manager' },
               messageId: '25ea6605-c788-4cab-8fed-2cf0b831c4a8',
               originalTimestamp: '2020-02-02T00:23:09.544Z',
               receivedAt: '2022-08-17T10:40:21.162+05:30',
@@ -1499,9 +1499,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: 'zzlOylGKJRKVr87',
+                password: 'dummyPassword',
                 subDomainName: 'testapi5',
-                userName: 'anant45823jain@gmail.com',
+                userName: 'Test45823Rudderlabs@gmail.com',
               },
             },
           },
@@ -1522,13 +1522,13 @@ export const data = [
               endpoint: 'https://testapi5.mautic.net/api/contacts/246/edit',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic YW5hbnQ0NTgyM2phaW5AZ21haWwuY29tOnp6bE95bEdLSlJLVnI4Nw==',
+                Authorization: 'Basic VGVzdDQ1ODIzUnVkZGVybGFic0BnbWFpbC5jb206ZHVtbXlQYXNzd29yZA==',
               },
               params: {},
               body: {
                 JSON: {
                   last_active: '2020-02-02T05:53:08.977+05:30',
-                  firstname: 'Anant',
+                  firstname: 'Test',
                   role: 'Manager',
                 },
                 JSON_ARRAY: {},
@@ -1563,9 +1563,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'lastName',
-                password: 'zzlOylGKJRKVr87',
+                password: 'dummyPassword',
                 subDomainName: 'testapi5',
-                userName: 'anant45823jain@gmail.com',
+                userName: 'Test45823Rudderlabs@gmail.com',
               },
             },
           },
@@ -1615,9 +1615,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'lastName',
-                password: 'zzlOylGKJRKVr87',
+                password: 'dummyPassword',
                 subDomainName: 'testapi5',
-                userName: 'anant45823jain@gmail.com',
+                userName: 'Test45823Rudderlabs@gmail.com',
               },
             },
           },
@@ -1638,7 +1638,7 @@ export const data = [
               endpoint: 'https://testapi5.mautic.net/api/segments/17/contact/246/remove',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic YW5hbnQ0NTgyM2phaW5AZ21haWwuY29tOnp6bE95bEdLSlJLVnI4Nw==',
+                Authorization: 'Basic VGVzdDQ1ODIzUnVkZGVybGFic0BnbWFpbC5jb206ZHVtbXlQYXNzd29yZA==',
               },
               params: {},
               body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
@@ -1672,9 +1672,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'lastName',
-                password: 'zzlOylGKJRKVr87',
+                password: 'dummyPassword',
                 subDomainName: 'testapi5',
-                userName: 'anant45823jain@gmail.com',
+                userName: 'Test45823Rudderlabs@gmail.com',
               },
             },
           },
@@ -1695,7 +1695,7 @@ export const data = [
               endpoint: 'https://testapi5.mautic.net/api/segments/17/contact/246/add',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic YW5hbnQ0NTgyM2phaW5AZ21haWwuY29tOnp6bE95bEdLSlJLVnI4Nw==',
+                Authorization: 'Basic VGVzdDQ1ODIzUnVkZGVybGFic0BnbWFpbC5jb206ZHVtbXlQYXNzd29yZA==',
               },
               params: {},
               body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
@@ -1727,7 +1727,7 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'lastName',
-                password: 'abcdefghij1234',
+                password: 'dummyPassword',
                 subDomainName: 'testapi5',
                 userName: 'abcdef@gmail.com',
               },
@@ -1778,7 +1778,7 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'lastName',
-                password: 'abcdefghij1234',
+                password: 'dummyPassword',
                 subDomainName: 'testapi5',
                 userName: 'abcdef@gmail.com',
               },
@@ -1830,9 +1830,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'email',
-                password: 'zzlOylGKJRKVr87',
+                password: 'dummyPassword',
                 subDomainName: 'ruddertest2',
-                userName: 'anant45823jain@gmail.com',
+                userName: 'Test45823Rudderlabs@gmail.com',
               },
             },
           },
@@ -1853,7 +1853,7 @@ export const data = [
               endpoint: 'https://ruddertest2.mautic.net/api/companies/20/contact/247/add',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic YW5hbnQ0NTgyM2phaW5AZ21haWwuY29tOnp6bE95bEdLSlJLVnI4Nw==',
+                Authorization: 'Basic VGVzdDQ1ODIzUnVkZGVybGFic0BnbWFpbC5jb206ZHVtbXlQYXNzd29yZA==',
               },
               params: {},
               body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
@@ -1886,9 +1886,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'lastName',
-                password: 'zzlOylGKJRKVr87',
+                password: 'dummyPassword',
                 subDomainName: 'ruddertest2',
-                userName: 'anant45823jain@gmail.com',
+                userName: 'Test45823Rudderlabs@gmail.com',
               },
             },
           },
@@ -1936,9 +1936,9 @@ export const data = [
             destination: {
               Config: {
                 lookUpField: 'lastName',
-                password: 'zzlOylGKJRKVr87',
+                password: 'dummyPassword',
                 subDomainName: 'ruddertest2',
-                userName: 'anant45823jain@gmail.com',
+                userName: 'Test45823Rudderlabs@gmail.com',
               },
             },
           },

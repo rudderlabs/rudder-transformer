@@ -1,3 +1,4 @@
+const lodash = require('lodash');
 const get = require('get-value');
 const { EventType } = require('../../../constants');
 const {
@@ -14,9 +15,7 @@ const {
   getFieldValueFromMessage,
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
-  batchMultiplexedEvents,
-  getSuccessRespEvents,
-  defaultBatchRequestConfig,
+  groupEventsByType,
 } = require('../../util');
 const {
   ConfigCategory,
@@ -32,6 +31,8 @@ const {
   createIdentifyResponse,
   isImportAuthCredentialsAvailable,
   combineBatchRequestsWithSameJobIds,
+  groupEventsByEndpoint,
+  batchEvents,
 } = require('./util');
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 const { CommonUtils } = require('../../../util/common');
@@ -54,7 +55,7 @@ const setImportCredentials = (destConfig) => {
     params.projectId = projectId;
   } else {
     throw new InstrumentationError(
-      'Event timestamp is older than 5 days and no apisecret or service account credentials (i.e. username, secret and projectId) is provided in destination config',
+      'Event timestamp is older than 5 days and no API secret or service account credentials (i.e. username, secret and projectId) are provided in destination configuration',
     );
   }
   return { endpoint, headers, params };
@@ -130,6 +131,39 @@ const processRevenueEvents = (message, destination, revenueValue) => {
   return responseBuilderSimple(payload, message, 'revenue', destination.Config);
 };
 
+/**
+ * This function is used to process the incremental properties
+ * ref :- https://developer.mixpanel.com/reference/profile-numerical-add
+ * @param {*} message
+ * @param {*} destination
+ * @param {*} propIncrements
+ * @returns
+ */
+const processIncrementalProperties = (message, destination, propIncrements) => {
+  const payload = {
+    $add: {},
+    $token: destination.Config.token,
+    $distinct_id: message.userId || message.anonymousId,
+  };
+
+  if (destination?.Config.identityMergeApi === 'simplified') {
+    payload.$distinct_id = message.userId || `$device:${message.anonymousId}`;
+  }
+
+  if (message.properties) {
+    Object.keys(message.properties).forEach((prop) => {
+      const value = message.properties[prop];
+      if (value && propIncrements.includes(prop)) {
+        payload.$add[prop] = value;
+      }
+    });
+  }
+
+  return Object.keys(payload.$add).length > 0
+    ? responseBuilderSimple(payload, message, 'incremental_properties', destination.Config)
+    : null;
+};
+
 const getEventValueForTrackEvent = (message, destination) => {
   const mappedProperties = constructPayload(message, mPEventPropertiesConfigJson);
   // This is to conform with SDKs sending timestamp component with messageId
@@ -177,6 +211,14 @@ const processTrack = (message, destination) => {
 
   if (revenue) {
     returnValue.push(processRevenueEvents(message, destination, revenue));
+  }
+
+  if (Array.isArray(destination.Config.propIncrements)) {
+    const propIncrements = destination.Config.propIncrements.map((item) => item.property);
+    const response = processIncrementalProperties(message, destination, propIncrements);
+    if (response) {
+      returnValue.push(response);
+    }
   }
   returnValue.push(getEventValueForTrackEvent(message, destination));
   return returnValue;
@@ -257,12 +299,14 @@ const processAliasEvents = (message, type, destination) => {
   const aliasId = message.previousId || message.anonymousId;
   if (!aliasId) {
     throw new InstrumentationError(
-      'Either previous id or anonymous id should be present in alias payload',
+      'Either `previousId` or `anonymousId` should be present in alias payload',
     );
   }
 
   if (aliasId === message.userId) {
-    throw new InstrumentationError('One of previousId/anonymousId is same as userId');
+    throw new InstrumentationError(
+      'One of `previousId` or `anonymousId` is same as `userId`. Aborting',
+    );
   }
 
   const payload = {
@@ -327,37 +371,17 @@ const processGroupEvents = (message, type, destination) => {
       }
     });
   } else {
-    throw new ConfigurationError('Group Key Settings is not configured');
+    throw new ConfigurationError('`Group Key Settings` is not configured in destination');
   }
   if (returnValue.length === 0) {
-    throw new InstrumentationError('Group Key is not present. Aborting message');
+    throw new InstrumentationError(
+      'Group Key is not present. Please ensure that the group key is included in the payload as configured in the `Group Key Settings` in destination',
+    );
   }
   return returnValue;
 };
 
-const generateBatchedPayloadForArray = (events) => {
-  const { batchedRequest } = defaultBatchRequestConfig();
-  const batchResponseList = events.flatMap((event) => JSON.parse(event.body.JSON_ARRAY.batch));
-  batchedRequest.body.JSON_ARRAY = { batch: JSON.stringify(batchResponseList) };
-  batchedRequest.endpoint = events[0].endpoint;
-  batchedRequest.headers = events[0].headers;
-  batchedRequest.params = events[0].params;
-  return batchedRequest;
-};
-
-const batchEvents = (successRespList, maxBatchSize) => {
-  const batchResponseList = [];
-  const batchedEvents = batchMultiplexedEvents(successRespList, maxBatchSize);
-  batchedEvents.forEach((batch) => {
-    const batchedRequest = generateBatchedPayloadForArray(batch.events);
-    batchResponseList.push(
-      getSuccessRespEvents(batchedRequest, batch.metadata, batch.destination, true),
-    );
-  });
-  return batchResponseList;
-};
-
-const processSingleMessage = async (message, destination) => {
+const processSingleMessage = (message, destination) => {
   const clonedMessage = { ...message };
   if (clonedMessage.userId) {
     clonedMessage.userId = String(clonedMessage.userId);
@@ -378,86 +402,17 @@ const processSingleMessage = async (message, destination) => {
       return processIdentifyEvents(clonedMessage, clonedMessage.type, destination);
     case EventType.ALIAS:
       if (destination.Config?.identityMergeApi === 'simplified') {
-        throw new InstrumentationError(
-          `Event type '${EventType.ALIAS}' is not supported when 'Simplified ID merge' api is selected in webapp`,
-        );
+        throw new InstrumentationError('Alias call is deprecated in `Simplified ID merge`');
       }
       return processAliasEvents(message, message.type, destination);
     case EventType.GROUP:
       return processGroupEvents(clonedMessage, clonedMessage.type, destination);
     default:
-      throw new InstrumentationError(`Event type ${clonedMessage.type} is not supported`);
+      throw new InstrumentationError(`Event type '${clonedMessage.type}' is not supported`);
   }
 };
 
-const process = async (event) => processSingleMessage(event.message, event.destination);
-
-const processEvents = async (inputs, reqMetadata) =>
-  await Promise.all(
-    inputs.map(async (event) => {
-      try {
-        if (event.message.statusCode) {
-          // already transformed event
-          return { output: event };
-        }
-
-        // if not transformed
-        return {
-          output: {
-            message: await process(event),
-            metadata: event.metadata,
-            destination: event.destination,
-          },
-        };
-      } catch (error) {
-        const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
-        return { error: errRespEvent };
-      }
-    }),
-  );
-
-const processAndChunkEvents = async (inputs, reqMetadata) => {
-  const processedEvents = await processEvents(inputs, reqMetadata);
-  const engageEventChunks = [];
-  const groupsEventChunks = [];
-  const trackEventChunks = [];
-  const importEventChunks = [];
-  const batchErrorRespList = [];
-  processedEvents.forEach((result) => {
-    if (result.output) {
-      const event = result.output;
-      const { destination, metadata } = event;
-      let { message } = event;
-      message = CommonUtils.toArray(message);
-      message.forEach((msg) => {
-        // eslint-disable-next-line default-case
-        switch (true) {
-          case msg.endpoint.includes('engage'):
-            engageEventChunks.push({ message: msg, destination, metadata });
-            break;
-          case msg.endpoint.includes('groups'):
-            groupsEventChunks.push({ message: msg, destination, metadata });
-            break;
-          case msg.endpoint.includes('track'):
-            trackEventChunks.push({ message: msg, destination, metadata });
-            break;
-          case msg.endpoint.includes('import'):
-            importEventChunks.push({ message: msg, destination, metadata });
-            break;
-        }
-      });
-    } else if (result.error) {
-      batchErrorRespList.push(result.error);
-    }
-  });
-  return {
-    engageEventChunks,
-    groupsEventChunks,
-    trackEventChunks,
-    importEventChunks,
-    batchErrorRespList,
-  };
-};
+const process = (event) => processSingleMessage(event.message, event.destination);
 
 // Documentation about how Mixpanel handles the utm parameters
 // Ref: https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel
@@ -468,28 +423,56 @@ const processRouterDest = async (inputs, reqMetadata) => {
     return errorRespEvents;
   }
 
-  const {
-    engageEventChunks,
-    groupsEventChunks,
-    trackEventChunks,
-    importEventChunks,
-    batchErrorRespList,
-  } = await processAndChunkEvents(inputs, reqMetadata);
+  const groupedEvents = groupEventsByType(inputs);
+  const response = await Promise.all(
+    groupedEvents.map(async (listOfEvents) => {
+      let transformedPayloads = await Promise.all(
+        listOfEvents.map(async (event) => {
+          try {
+            if (event.message.statusCode) {
+              // already transformed event
+              return {
+                message: event.message,
+                metadata: event.metadata,
+                destination: event.destination,
+              };
+            }
 
-  const engageRespList = batchEvents(engageEventChunks, ENGAGE_MAX_BATCH_SIZE);
-  const groupsRespList = batchEvents(groupsEventChunks, GROUPS_MAX_BATCH_SIZE);
-  const trackRespList = batchEvents(trackEventChunks, TRACK_MAX_BATCH_SIZE);
-  const importRespList = batchEvents(importEventChunks, IMPORT_MAX_BATCH_SIZE);
+            let processedEvents = await process(event);
+            processedEvents = CommonUtils.toArray(processedEvents);
+            return processedEvents.map((res) => ({
+              message: res,
+              metadata: event.metadata,
+              destination: event.destination,
+            }));
+          } catch (error) {
+            return handleRtTfSingleEventError(event, error, reqMetadata);
+          }
+        }),
+      );
 
-  let batchSuccessRespList = [
-    ...engageRespList,
-    ...groupsRespList,
-    ...trackRespList,
-    ...importRespList,
-  ];
-  batchSuccessRespList = combineBatchRequestsWithSameJobIds(batchSuccessRespList);
+      transformedPayloads = lodash.flatMap(transformedPayloads);
+      const { engageEvents, groupsEvents, trackEvents, importEvents, batchErrorRespList } =
+        groupEventsByEndpoint(transformedPayloads);
 
-  return [...batchSuccessRespList, ...batchErrorRespList];
+      const engageRespList = batchEvents(engageEvents, ENGAGE_MAX_BATCH_SIZE);
+      const groupsRespList = batchEvents(groupsEvents, GROUPS_MAX_BATCH_SIZE);
+      const trackRespList = batchEvents(trackEvents, TRACK_MAX_BATCH_SIZE);
+      const importRespList = batchEvents(importEvents, IMPORT_MAX_BATCH_SIZE);
+      const batchSuccessRespList = [
+        ...engageRespList,
+        ...groupsRespList,
+        ...trackRespList,
+        ...importRespList,
+      ];
+
+      return [...batchSuccessRespList, ...batchErrorRespList];
+    }),
+  );
+
+  // Flatten the response array containing batched events from multiple groups
+  const allBatchedEvents = lodash.flatMap(response);
+  return combineBatchRequestsWithSameJobIds(allBatchedEvents);
 };
 
 module.exports = { process, processRouterDest };

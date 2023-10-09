@@ -1,4 +1,4 @@
-/* eslint-disable camelcase */
+/* eslint-disable */
 const _ = require('lodash');
 const get = require('get-value');
 const stats = require('../../../util/stats');
@@ -298,7 +298,7 @@ const BrazeDedupUtility = {
       external_id,
       user_alias,
     };
-    const identifier = external_id || user_alias.alias_name;
+    const identifier = external_id || user_alias?.alias_name;
     store.set(identifier, { ...storedUserData, ...deduplicatedUserData });
     return removeUndefinedValues(deduplicatedUserData);
   },

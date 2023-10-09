@@ -10,9 +10,10 @@ const hash = require('object-hash');
 const logger = require('../logger');
 const trackingPlan = require('./trackingPlan');
 
+const SECONDS_IN_DAY = 60 * 60 * 24 * 1;
 const eventSchemaCache = new NodeCache();
-const ajv19Cache = new NodeCache({ useClones: false });
-const ajv4Cache = new NodeCache({ useClones: false });
+const ajv19Cache = new NodeCache({ useClones: false, stdTTL: SECONDS_IN_DAY });
+const ajv4Cache = new NodeCache({ useClones: false, stdTTL: SECONDS_IN_DAY });
 const { isEmptyObject } = require('../v0/util');
 
 const defaultOptions = {
@@ -52,7 +53,7 @@ ajv19.addMetaSchema(draft7MetaSchema);
 /**
  * @param {*} ajvOptions
  * @param {*} isDraft4
- * @returns {ajv}
+ * @returns {Ajv}
  *
  * Generates new ajv contructed from ajvoptions
  */
@@ -200,7 +201,7 @@ async function validate(event) {
             message: error.message,
             property: error.params.missingProperty,
             meta: {
-              instacePath: error.instancePath,
+              instancePath: error.instancePath,
               schemaPath: error.schemaPath,
             },
           };
@@ -210,7 +211,7 @@ async function validate(event) {
             type: violationTypes.DatatypeMismatch,
             message: error.message,
             meta: {
-              instacePath: error.instancePath,
+              instancePath: error.instancePath,
               schemaPath: error.schemaPath,
             },
           };
@@ -221,7 +222,7 @@ async function validate(event) {
             message: `${error.message} '${error.params.additionalProperty}'`,
             property: error.params.additionalProperty,
             meta: {
-              instacePath: error.instancePath,
+              instancePath: error.instancePath,
               schemaPath: error.schemaPath,
             },
           };
@@ -231,7 +232,7 @@ async function validate(event) {
             type: violationTypes.UnknownViolation,
             message: error.message,
             meta: {
-              instacePath: error.instancePath,
+              instancePath: error.instancePath,
               schemaPath: error.schemaPath,
             },
           };

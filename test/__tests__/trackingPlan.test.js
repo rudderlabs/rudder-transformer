@@ -602,7 +602,7 @@ const eventValidationTestCases = [
         type: "Datatype-Mismatch",
         message: "must be integer",
         meta: {
-          instacePath: "/properties/revenue",
+          instancePath: "/properties/revenue",
           schemaPath: "#/properties/properties/properties/revenue/type"
         }
       }
@@ -617,7 +617,7 @@ const eventValidationTestCases = [
         type: "Unknown-Violation",
         message: "must be <= 4",
         meta: {
-          instacePath: "/properties/revenue",
+          instancePath: "/properties/revenue",
           schemaPath: "#/properties/properties/properties/revenue/then/maximum"
         }
       },
@@ -625,7 +625,7 @@ const eventValidationTestCases = [
         type: "Unknown-Violation",
         message: 'must match "then" schema',
         meta: {
-          instacePath: "/properties/revenue",
+          instancePath: "/properties/revenue",
           schemaPath: "#/properties/properties/properties/revenue/if"
         }
       }
@@ -640,7 +640,7 @@ const eventValidationTestCases = [
         type: "Datatype-Mismatch",
         message: "must be number",
         meta: {
-          instacePath: "/properties/props/0",
+          instancePath: "/properties/props/0",
           schemaPath: "#/properties/properties/properties/props/contains/type"
         }
       },
@@ -648,7 +648,7 @@ const eventValidationTestCases = [
         type: "Unknown-Violation",
         message: "must contain at least 1 and no more than 2 valid item(s)",
         meta: {
-          instacePath: "/properties/props",
+          instancePath: "/properties/props",
           schemaPath: "#/properties/properties/properties/props/contains"
         }
       }
@@ -662,7 +662,7 @@ const eventValidationTestCases = [
       {
         message: "must match format \"date-time\"",
         meta: {
-          instacePath: "/properties/dateString",
+          instancePath: "/properties/dateString",
           schemaPath: "#/properties/properties/properties/dateString/format",
         },
         type: "Unknown-Violation",
@@ -697,7 +697,7 @@ const eventValidationTestCases = [
         message: "must have required property 'flairs'",
         property: "flairs",
         meta: {
-            instacePath: "/properties",
+            instancePath: "/properties",
             schemaPath: "#/properties/properties/required",
         }
       }
@@ -712,7 +712,7 @@ const eventValidationTestCases = [
         "type": "Datatype-Mismatch",
         "message": "must be string,null",
         "meta": {
-            "instacePath": "/properties/post_comment",
+            "instancePath": "/properties/post_comment",
             "schemaPath": "#/properties/properties/properties/post_comment/type"
         }
       }
@@ -728,7 +728,7 @@ const eventValidationTestCases = [
         "message": "must NOT have additional properties 'new_property'",
         "property": "new_property",
         "meta": {
-          "instacePath": "/properties",
+          "instancePath": "/properties",
           "schemaPath": "#/properties/properties/additionalProperties",
         }
       }

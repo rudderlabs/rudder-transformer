@@ -1,4 +1,4 @@
-const { removeUndefinedValues } = require('../../util');
+const { removeUndefinedValues, getAuthErrCategoryFromErrDetailsAndStCode } = require('../../util');
 const { prepareProxyRequest, getPayloadData, httpSend } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util/index');
 const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
@@ -30,22 +30,6 @@ const prepareProxyReq = (request) => {
   });
 };
 
-/**
- * This function helps to determine type of error occurred. According to the response
- * we set authErrorCategory to take decision if we need to refresh the access_token
- * or need to disable the destination.
- * @param {*} code
- * @param {*} response
- * @returns
- */
-const getAuthErrCategory = (code, response) => {
-  let authErrCategory = '';
-  if (code === 401) {
-    authErrCategory = !response.error?.details ? REFRESH_TOKEN : '';
-  }
-  return authErrCategory;
-};
-
 const scAudienceProxyRequest = async (request) => {
   const { endpoint, data, method, params, headers } = prepareProxyReq(request);
 
@@ -65,7 +49,7 @@ const scAudienceProxyRequest = async (request) => {
 
 const scaAudienceRespHandler = (destResponse, stageMsg) => {
   const { status, response } = destResponse;
-  const authErrCategory = getAuthErrCategory(status, response);
+  const authErrCategory = getAuthErrCategoryFromErrDetailsAndStCode(status, response);
 
   if (authErrCategory === REFRESH_TOKEN) {
     throw new RetryableError(

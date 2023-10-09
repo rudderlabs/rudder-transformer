@@ -43,7 +43,7 @@
       "type": "track"
     },
     "metadata": {
-      "jobId": 2
+      "jobId": 1
     },
     "destination": {
       "Config": {
@@ -56,7 +56,7 @@
         ],
         "removeExternalId": true,
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",
@@ -84,10 +84,10 @@
       "channel": "web",
       "context": {
         "traits": {
-          "name": "Ruchira Moitra",
+          "name": "Rudder Test",
           "email": "abc@gmail.com",
-          "firstname": "Ruchira",
-          "lastname": "Moitra",
+          "firstname": "Test",
+          "lastname": "Test",
           "phone": 9000000000,
           "gender": "female"
         },
@@ -113,8 +113,8 @@
         }
       },
       "properties": {
-        "plan": "ruchira plan",
-        "name": "ruchira moitra"
+        "plan": "standard plan",
+        "name": "rudder test"
       },
       "type": "identify",
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
@@ -138,7 +138,7 @@
           }
         ],
         "accessToken": "09876",
-        "pixelId": "dfgdfgdgd",
+        "pixelId": "dummyPixelId",
         "eventsToEvents": [
           {
             "from": "",

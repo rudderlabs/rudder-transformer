@@ -8,6 +8,9 @@ const {
   isAppleFamily,
   getBrowserInfo,
   toUnixTimestamp,
+  batchMultiplexedEvents,
+  getSuccessRespEvents,
+  defaultBatchRequestConfig,
 } = require('../../util');
 const {
   ConfigCategory,
@@ -16,6 +19,7 @@ const {
   mappingConfig,
 } = require('./config');
 const { InstrumentationError } = require('../../util/errorTypes');
+const { CommonUtils } = require('../../../util/common');
 
 const mPIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 const mPProfileAndroidConfigJson = mappingConfig[ConfigCategory.PROFILE_ANDROID.name];
@@ -139,6 +143,7 @@ const isImportAuthCredentialsAvailable = (destination) =>
 const findExistingBatch = (batch, metadataMap) => {
   let existingBatch = null;
 
+  // eslint-disable-next-line no-restricted-syntax
   for (const metadataItem of batch.metadata) {
     if (metadataMap.has(metadataItem.jobId)) {
       existingBatch = metadataMap.get(metadataItem.jobId);
@@ -154,8 +159,9 @@ const findExistingBatch = (batch, metadataMap) => {
  * @param {*} mergedBatches An array of merged batch objects.
  */
 const removeDuplicateMetadata = (mergedBatches) => {
-  for (const batch of mergedBatches) {
+  mergedBatches.forEach((batch) => {
     const metadataSet = new Set();
+    // eslint-disable-next-line no-param-reassign
     batch.metadata = batch.metadata.filter((metadataItem) => {
       if (!metadataSet.has(metadataItem.jobId)) {
         metadataSet.add(metadataItem.jobId);
@@ -163,7 +169,65 @@ const removeDuplicateMetadata = (mergedBatches) => {
       }
       return false;
     });
-  }
+  });
+};
+
+/**
+ * Group events with the same endpoint together in batches
+ * @param {*} events - An array of events
+ * @returns
+ */
+const groupEventsByEndpoint = (events) => {
+  const eventMap = {
+    engage: [],
+    groups: [],
+    track: [],
+    import: [],
+  };
+  const batchErrorRespList = [];
+
+  events.forEach((result) => {
+    if (result.message) {
+      const { destination, metadata } = result;
+      const message = CommonUtils.toArray(result.message);
+
+      message.forEach((msg) => {
+        const endpoint = Object.keys(eventMap).find((key) => msg.endpoint.includes(key));
+
+        if (endpoint) {
+          eventMap[endpoint].push({ message: msg, destination, metadata });
+        }
+      });
+    } else if (result.error) {
+      batchErrorRespList.push(result);
+    }
+  });
+
+  return {
+    engageEvents: eventMap.engage,
+    groupsEvents: eventMap.groups,
+    trackEvents: eventMap.track,
+    importEvents: eventMap.import,
+    batchErrorRespList,
+  };
+};
+
+const generateBatchedPayloadForArray = (events) => {
+  const { batchedRequest } = defaultBatchRequestConfig();
+  const batchResponseList = events.flatMap((event) => JSON.parse(event.body.JSON_ARRAY.batch));
+  batchedRequest.body.JSON_ARRAY = { batch: JSON.stringify(batchResponseList) };
+  batchedRequest.endpoint = events[0].endpoint;
+  batchedRequest.headers = events[0].headers;
+  batchedRequest.params = events[0].params;
+  return batchedRequest;
+};
+
+const batchEvents = (successRespList, maxBatchSize) => {
+  const batchedEvents = batchMultiplexedEvents(successRespList, maxBatchSize);
+  return batchedEvents.map((batch) => {
+    const batchedRequest = generateBatchedPayloadForArray(batch.events);
+    return getSuccessRespEvents(batchedRequest, batch.metadata, batch.destination, true);
+  });
 };
 
 /**
@@ -221,5 +285,7 @@ const combineBatchRequestsWithSameJobIds = (inputBatches) => {
 module.exports = {
   createIdentifyResponse,
   isImportAuthCredentialsAvailable,
+  groupEventsByEndpoint,
+  batchEvents,
   combineBatchRequestsWithSameJobIds,
 };

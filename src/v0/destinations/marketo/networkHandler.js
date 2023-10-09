@@ -3,7 +3,6 @@ const { marketoResponseHandler } = require('./util');
 const { proxyRequest, prepareProxyRequest } = require('../../../adapters/network');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 
-// eslint-disable-next-line no-unused-vars
 const responseHandler = (destinationResponse, destType) => {
   const message = 'Request Processed Successfully';
   const { status, rudderJobMetadata } = destinationResponse;

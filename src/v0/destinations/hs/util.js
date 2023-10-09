@@ -334,6 +334,7 @@ const searchContacts = async (message, destination) => {
     after: 0,
   };
 
+  const endpointPath = '/contacts/search';
   if (Config.authorizationType === 'newPrivateAppApi') {
     // Private Apps
     const requestOptions = {
@@ -349,6 +350,7 @@ const searchContacts = async (message, destination) => {
       {
         destType: 'hs',
         feature: 'transformation',
+        endpointPath,
       },
     );
     searchContactsResponse = processAxiosResponse(searchContactsResponse);
@@ -358,6 +360,7 @@ const searchContacts = async (message, destination) => {
     searchContactsResponse = await httpPOST(url, requestData, {
       destType: 'hs',
       feature: 'transformation',
+      endpointPath,
     });
     searchContactsResponse = processAxiosResponse(searchContactsResponse);
   }
@@ -404,6 +407,9 @@ const getEventAndPropertiesFromConfig = (message, destination, payload) => {
   if (!event) {
     throw new InstrumentationError('event name is required for track call');
   }
+  if (!hubspotEvents) {
+    throw new InstrumentationError('Event and property mappings are required for track call');
+  }
   event = event.trim().toLowerCase();
   let eventName;
   let eventProperties;
@@ -426,7 +432,9 @@ const getEventAndPropertiesFromConfig = (message, destination, payload) => {
   });
 
   if (!hubspotEventFound) {
-    throw new ConfigurationError(`'${event}' event name not found`);
+    throw new ConfigurationError(
+      `Event name '${event}' mappings are not configured in the destination`,
+    );
   }
 
   // 2. fetch event properties from webapp config
@@ -506,6 +514,7 @@ const getExistingData = async (inputs, destination) => {
 
   while (checkAfter) {
     const endpoint = IDENTIFY_CRM_SEARCH_ALL_OBJECTS.replace(':objectType', objectType);
+    const endpointPath = `objects/:objectType/search`;
 
     const url =
       Config.authorizationType === 'newPrivateAppApi'
@@ -516,10 +525,12 @@ const getExistingData = async (inputs, destination) => {
         ? await httpPOST(url, requestData, requestOptions, {
             destType: 'hs',
             feature: 'transformation',
+            endpointPath,
           })
         : await httpPOST(url, requestData, {
             destType: 'hs',
             feature: 'transformation',
+            endpointPath,
           });
     searchResponse = processAxiosResponse(searchResponse);
 

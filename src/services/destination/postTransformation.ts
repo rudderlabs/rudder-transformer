@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import cloneDeep from 'lodash/cloneDeep';
 import isObject from 'lodash/isObject';
 import isEmpty from 'lodash/isEmpty';
@@ -47,7 +48,7 @@ export default class DestinationPostTransformationService {
   }
 
   public static handleProcessorTransformFailureEvents(
-    error: Object,
+    error: NonNullable<unknown>,
     metaTo: MetaTransferObject,
   ): ProcessorTransformationResponse {
     const errObj = generateErrorObject(error, metaTo.errorDetails);
@@ -111,7 +112,7 @@ export default class DestinationPostTransformationService {
   }
 
   public static handleRouterTransformFailureEvents(
-    error: Object,
+    error: NonNullable<unknown>,
     metaTo: MetaTransferObject,
   ): RouterTransformationResponse {
     const errObj = generateErrorObject(error, metaTo.errorDetails);
@@ -128,7 +129,7 @@ export default class DestinationPostTransformationService {
   }
 
   public static handleBatchTransformFailureEvents(
-    error: Object,
+    error: NonNullable<unknown>,
     metaTo: MetaTransferObject,
   ): RouterTransformationResponse {
     const errObj = generateErrorObject(error, metaTo.errorDetails);
@@ -144,7 +145,7 @@ export default class DestinationPostTransformationService {
   }
 
   public static handleDeliveryFailureEvents(
-    error: Object,
+    error: NonNullable<unknown>,
     metaTo: MetaTransferObject,
   ): DeliveryResponse {
     const errObj = generateErrorObject(error, metaTo.errorDetails, false);
@@ -162,7 +163,7 @@ export default class DestinationPostTransformationService {
   }
 
   public static handleUserDeletionFailureEvents(
-    error: Object,
+    error: NonNullable<unknown>,
     metaTo: MetaTransferObject,
   ): UserDeletionResponse {
     const errObj = generateErrorObject(error, metaTo.errorDetails, false);

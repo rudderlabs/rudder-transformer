@@ -1,7 +1,9 @@
 import { sendToDestination, userTransformHandler } from '../../routerUtils';
+import { FixMe } from '../../util/types';
 
 export default class EventTesterService {
   private static getDestHandler(version, destination) {
+    // eslint-disable-next-line global-require, import/no-dynamic-require
     return require(`../../${version}/destinations/${destination}/transform`);
   }
 
@@ -9,7 +11,7 @@ export default class EventTesterService {
     function capitalize(s) {
       return s === 'id' ? s.toUpperCase() : s.charAt(0).toUpperCase() + s.slice(1);
     }
-    const transformedObj = {};
+    let transformedObj: FixMe;
     const { destinationDefinition } = dest;
     Object.keys(dest).forEach((key) => {
       transformedObj[capitalize(key)] = dest[key];
@@ -19,7 +21,7 @@ export default class EventTesterService {
     Object.keys(destinationDefinition).forEach((key) => {
       destDef[capitalize(key)] = destinationDefinition[key];
     });
-    transformedObj['DestinationDefinition'] = destDef;
+    transformedObj.DestinationDefinition = destDef;
     return transformedObj;
   }
 
@@ -52,19 +54,19 @@ export default class EventTesterService {
           libraries,
         };
 
-        let response = {};
+        let response: FixMe;
         let errorFound = false;
 
         if (stage.user_transform) {
           let librariesVersionIDs = [];
-          if (event.libraries) {
+          if (libraries) {
             librariesVersionIDs = events[0].libraries.map((library) => library.versionId);
           }
           const transformationVersionId =
             ev.destination &&
-            ev.destination['Transformations'] &&
-            ev.destination['Transformations'][0] &&
-            ev.destination['Transformations'][0].versionId;
+            ev.destination.Transformations &&
+            ev.destination.Transformations[0] &&
+            ev.destination.Transformations[0].versionId;
 
           if (transformationVersionId) {
             try {
@@ -78,16 +80,16 @@ export default class EventTesterService {
                 throw new Error(userTransformedEvent.error);
               }
 
-              response['user_transformed_payload'] = userTransformedEvent.transformedEvent;
+              response.user_transformed_payload = userTransformedEvent.transformedEvent;
               ev.message = userTransformedEvent.transformedEvent;
             } catch (err: any) {
               errorFound = true;
-              response['user_transformed_payload'] = {
+              response.user_transformed_payload = {
                 error: err.message || JSON.stringify(err),
               };
             }
           } else {
-            response['user_transformed_payload'] = {
+            response.user_transformed_payload = {
               error: 'Transformation VersionID not found',
             };
           }
@@ -99,18 +101,18 @@ export default class EventTesterService {
               const desthandler = this.getDestHandler(version, dest);
               const transformedOutput = await desthandler.process(ev);
               if (Array.isArray(transformedOutput)) {
-                response['dest_transformed_payload'] = transformedOutput;
+                response.dest_transformed_payload = transformedOutput;
               } else {
-                response['dest_transformed_payload'] = [transformedOutput];
+                response.dest_transformed_payload = [transformedOutput];
               }
             } catch (err: any) {
               errorFound = true;
-              response['dest_transformed_payload'] = {
+              response.dest_transformed_payload = {
                 error: err.message || JSON.stringify(err),
               };
             }
           } else {
-            response['dest_transformed_payload'] = {
+            response.dest_transformed_payload = {
               error: 'error encountered in user_transformation stage. Aborting.',
             };
           }
@@ -119,27 +121,27 @@ export default class EventTesterService {
         if (stage.dest_transform && stage.send_to_destination) {
           // send event to destination only after transformation
           if (!errorFound) {
-            const destResponses: any[] = [];
-            const destResponseStatuses: any[] = [];
+            const destResponses: FixMe[] = [];
+            const destResponseStatuses: FixMe[] = [];
 
-            const transformedPayloads = response['dest_transformed_payload'];
+            const transformedPayloads = response.dest_transformed_payload;
             // eslint-disable-next-line no-restricted-syntax
             for (const payload of transformedPayloads) {
               // eslint-disable-next-line no-await-in-loop
               const parsedResponse = await sendToDestination(dest, payload);
 
               let contentType = '';
-              let response = '';
+              let responsePayload = '';
               if (parsedResponse.headers) {
                 contentType = parsedResponse.headers['content-type'];
                 if (this.isSupportedContentType(contentType)) {
-                  response = parsedResponse.response;
+                  responsePayload = parsedResponse.response;
                 }
               } else if (parsedResponse.networkFailure) {
-                response = parsedResponse.response;
+                responsePayload = parsedResponse.response;
               }
 
-              destResponses.push(response);
+              destResponses.push(responsePayload);
               destResponseStatuses.push(parsedResponse.status);
 
               // TODO: Use updated handleResponseTransform function
@@ -162,7 +164,7 @@ export default class EventTesterService {
               destination_response_status: destResponseStatuses,
             };
           } else {
-            response['destination_response'] = {
+            response.destination_response = {
               error: 'error encountered in dest_transformation stage. Aborting.',
             };
           }

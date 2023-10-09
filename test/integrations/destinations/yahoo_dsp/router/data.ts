@@ -1,3 +1,5 @@
+import { mockFns } from '../processor/data';
+
 export const data = [
   {
     name: 'yahoo_dsp',
@@ -34,7 +36,7 @@ export const data = [
                         ipAddress: 'fdffddf',
                         email: 'alex@email.com',
                         deviceId: 'djfdjfkdjf',
-                        phone: '09432457768',
+                        phone: '09876543210',
                         firstName: 'alex',
                         lastName: 'hales',
                         country: 'AUS',
@@ -47,9 +49,9 @@ export const data = [
                         ipAddress: 'fdffddf',
                         email: 'amy@abc.com',
                         deviceId: 'djfdjfkdjf',
-                        phone: '09432457768',
-                        firstName: 'sudip',
-                        lastName: 'paul',
+                        phone: '09876543210',
+                        firstName: 'test',
+                        lastName: 'rudderlabs',
                         country: 'US',
                         includeChains: 1573,
                         postalCode: '1245',
@@ -60,9 +62,9 @@ export const data = [
                         ipAddress: 'fdffddf',
                         email: 'van@abc.com',
                         deviceId: 'djfdjfkdjf',
-                        phone: '@09432457768',
-                        firstName: 'sudip',
-                        lastName: 'paul',
+                        phone: '@09876543210',
+                        firstName: 'test',
+                        lastName: 'rudderlabs',
                         country: 'US',
                         includeChains: 1573,
                         postalCode: '1245',
@@ -102,7 +104,7 @@ export const data = [
                   'https://dspapi.admanagerplus.yahoo.com/traffic/audiences/email_address/34893',
                 headers: {
                   'X-Auth-Method': 'OAuth2',
-                  'X-Auth-Token': 'fb8c05c9-3a32-409a-9993-3f53d307fe75',
+                  'X-Auth-Token': 'testAuthToken',
                   'Content-Type': 'application/json',
                 },
                 params: {},
@@ -144,5 +146,6 @@ export const data = [
         },
       },
     },
+    mockFns,
   },
 ];

@@ -44,16 +44,15 @@ const setImportCredentials = (destConfig) => {
     destConfig.dataResidency === 'eu' ? `${BASE_ENDPOINT_EU}/import/` : `${BASE_ENDPOINT}/import/`;
   const headers = { 'Content-Type': 'application/json' };
   const params = { strict: destConfig.strictMode ? 1 : 0 };
-  const { apiSecret, token, serviceAccountUserName, serviceAccountSecret, projectId } = destConfig;
-  if (apiSecret) {
-    headers.Authorization = `Basic ${base64Convertor(`${apiSecret}:`)}`;
-  } else if (serviceAccountUserName && serviceAccountSecret && projectId) {
+  const { serviceAccountUserName, serviceAccountSecret, projectId, token } = destConfig;
+  if (serviceAccountUserName && serviceAccountSecret && projectId) {
     headers.Authorization = `Basic ${base64Convertor(
       `${serviceAccountUserName}:${serviceAccountSecret}`,
     )}`;
     params.projectId = projectId;
+  } else {
+    headers.Authorization = `Basic ${base64Convertor(`${token}:`)}`;
   }
-  headers.Authorization = `Basic ${base64Convertor(`${token}:`)}`;
   return { endpoint, headers, params };
 };
 

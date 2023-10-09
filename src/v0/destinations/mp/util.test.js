@@ -1,6 +1,5 @@
 const {
   combineBatchRequestsWithSameJobIds,
-  groupEventsByType,
   groupEventsByEndpoint,
   batchEvents,
 } = require('./util');
@@ -33,7 +32,6 @@ describe('Mixpanel utils test', () => {
       expect(result).toEqual({
         engageEvents: [],
         groupsEvents: [],
-        trackEvents: [],
         importEvents: [],
         batchErrorRespList: [],
       });
@@ -76,7 +74,7 @@ describe('Mixpanel utils test', () => {
         },
         {
           message: {
-            endpoint: '/track',
+            endpoint: '/import',
             body: {
               JSON_ARRAY: {
                 batch: '[{prop:4}]',
@@ -137,10 +135,10 @@ describe('Mixpanel utils test', () => {
             },
           },
         ],
-        trackEvents: [
+        importEvents: [
           {
             message: {
-              endpoint: '/track',
+              endpoint: '/import',
               body: {
                 JSON_ARRAY: {
                   batch: '[{prop:4}]',
@@ -149,8 +147,6 @@ describe('Mixpanel utils test', () => {
               userId: 'user1',
             },
           },
-        ],
-        importEvents: [
           {
             message: {
               endpoint: '/import',
@@ -265,7 +261,7 @@ describe('Mixpanel utils test', () => {
       const input = [
         {
           batchedRequest: {
-            endpoint: 'https://api.mixpanel.com/track/',
+            endpoint: 'https://api.mixpanel.com/import/',
           },
           metadata: [
             {
@@ -286,19 +282,6 @@ describe('Mixpanel utils test', () => {
           metadata: [
             {
               jobId: 3,
-            },
-          ],
-          batched: true,
-          statusCode: 200,
-          destination: destinationMock,
-        },
-        {
-          batchedRequest: {
-            endpoint: 'https://api.mixpanel.com/track/',
-          },
-          metadata: [
-            {
-              jobId: 5,
             },
           ],
           batched: true,
@@ -340,7 +323,7 @@ describe('Mixpanel utils test', () => {
         {
           batchedRequest: [
             {
-              endpoint: 'https://api.mixpanel.com/track/',
+              endpoint: 'https://api.mixpanel.com/import/',
             },
             {
               endpoint: 'https://api.mixpanel.com/engage/',
@@ -358,19 +341,6 @@ describe('Mixpanel utils test', () => {
             },
             {
               jobId: 3,
-            },
-          ],
-          batched: true,
-          statusCode: 200,
-          destination: destinationMock,
-        },
-        {
-          batchedRequest: {
-            endpoint: 'https://api.mixpanel.com/track/',
-          },
-          metadata: [
-            {
-              jobId: 5,
             },
           ],
           batched: true,
@@ -398,7 +368,7 @@ describe('Mixpanel utils test', () => {
       const input = [
         {
           batchedRequest: {
-            endpoint: 'https://api.mixpanel.com/track/',
+            endpoint: 'https://api.mixpanel.com/import/',
           },
           metadata: [
             {
@@ -443,7 +413,7 @@ describe('Mixpanel utils test', () => {
       const expectedOutput = [
         {
           batchedRequest: {
-            endpoint: 'https://api.mixpanel.com/track/',
+            endpoint: 'https://api.mixpanel.com/import/',
           },
 
           metadata: [

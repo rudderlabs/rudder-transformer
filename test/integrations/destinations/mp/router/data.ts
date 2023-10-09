@@ -557,7 +557,7 @@ export const data = [
                 endpoint: 'https://api.mixpanel.com/import/',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Basic dGVzdF9hcGlfc2VjcmV0Og==',
+                  Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
                 },
                 params: {
                   strict: 1,
@@ -629,7 +629,7 @@ export const data = [
                   endpoint: 'https://api.mixpanel.com/import/',
                   headers: {
                     'Content-Type': 'application/json',
-                    Authorization: 'Basic dGVzdF9hcGlfc2VjcmV0Og==',
+                    Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
                   },
                   params: {
                     strict: 1,
@@ -702,7 +702,7 @@ export const data = [
                   endpoint: 'https://api.mixpanel.com/import/',
                   headers: {
                     'Content-Type': 'application/json',
-                    Authorization: 'Basic dGVzdF9hcGlfc2VjcmV0Og==',
+                    Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
                   },
                   params: {
                     strict: 1,

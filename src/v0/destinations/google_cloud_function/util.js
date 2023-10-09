@@ -1,6 +1,5 @@
 const { ConfigurationError } = require('rs-integration-lib');
 
-
 /**
  * validate destination config
  * @param {*} param0

@@ -26,7 +26,6 @@ const {
 } = require('../../util');
 const { getAccessToken, salesforceResponseHandler } = require('./utils');
 const { handleHttpRequest } = require('../../../adapters/network');
-const logger = require('../../../logger');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 // Basic response builder

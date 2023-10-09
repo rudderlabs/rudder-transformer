@@ -495,13 +495,13 @@ describe('Mixpanel utils test', () => {
         {
           body: { JSON_ARRAY: { batch: '[{"event": "event1"}]' } },
           endpoint: '/import',
-          headers: { 'Content-Type': 'application/json', 'Content-Encoding': 'gzip' },
+          headers: { 'Content-Type': 'application/json' },
           params: {},
         },
         {
           body: { JSON_ARRAY: { batch: '[{"event": "event2"}]' } },
           endpoint: '/import',
-          headers: { 'Content-Type': 'application/json', 'Content-Encoding': 'gzip' },
+          headers: { 'Content-Type': 'application/json' },
           params: {},
         },
       ];
@@ -512,12 +512,12 @@ describe('Mixpanel utils test', () => {
           JSON_ARRAY: {},
           XML: {},
           GZIP: {
-            payload: 'H4sIAAAAAAAAE4uuVkotS80rUbKC0IZKtTpoQkZKtbEAcv1DfCcAAAA=',
+            payload: '[{"event":"event1"},{"event":"event2"}]',
           },
         },
         endpoint: '/import',
         files: {},
-        headers: { 'Content-Type': 'application/json', 'Content-Encoding': 'gzip' },
+        headers: { 'Content-Type': 'application/json' },
         method: 'POST',
         params: {},
         type: 'REST',

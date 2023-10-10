@@ -119,7 +119,10 @@
         "context": {
           "traits": {
             "email": "test@email.com",
-            "phone": "+91 2111111 "
+            "phone": "+91 2111111 ",
+            "country": "IN",
+            "zicode": "Sxp-12345",
+            "region": "some_region"
           },
           "app": {
             "build": "1.0.0",
@@ -666,7 +669,10 @@
         "context": {
           "traits": {
             "email": "test@email.com",
-            "phone": "+91 2111111 "
+            "phone": "+91 2111111 ",
+            "country": "IN",
+            "zipcode": "Sxp-12345",
+            "region": "some_region"
           },
           "app": {
             "build": "1.0.0",
@@ -747,6 +753,9 @@
           "event_type": "VIEW_CONTENT",
           "item_ids": ["123", "123"],
           "price": "56",
+          "country": "IN",
+          "hashed_zip": "cbb2704f5b334a0cec32e5463d1fd9355f6ef73987bfe0ebb8389b7617452152",
+          "region": "some_region",
           "hashed_email": "73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2",
           "hashed_phone_number": "bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492",
           "hashed_mobile_ad_id": "f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2",

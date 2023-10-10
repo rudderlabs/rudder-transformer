@@ -53,8 +53,7 @@ function buildResponse(apiKey, payload) {
  * @param {*} message
  * @returns updatedPayload
  */
-function populateHashedValues(payload, message) {
-  const updatedPayload = payload;
+const populateHashedValues = (payload, message) => {
   const email = getFieldValueFromMessage(message, 'email');
   const phone = getNormalizedPhoneNumber(message);
   const ip = message.context?.ip || message.request_ip;
@@ -63,29 +62,22 @@ function populateHashedValues(payload, message) {
   const middleName = getFieldValueFromMessage(message, 'middleName');
   const city = getFieldValueFromMessage(message, 'city');
   const state = getFieldValueFromMessage(message, 'state');
-  const zip = getFieldValueFromMessage(message, 'zip');
-  if (firstName) {
-    updatedPayload.hashed_first_name_sha = getHashedValue(
-      firstName.toString().toLowerCase().trim(),
-    );
-  }
-  if (middleName) {
-    updatedPayload.hashed_middle_name_sha = getHashedValue(
-      middleName.toString().toLowerCase().trim(),
-    );
-  }
-  if (lastName) {
-    updatedPayload.hashed_last_name_sha = getHashedValue(lastName.toString().toLowerCase().trim());
-  }
-  if (city) {
-    updatedPayload.hashed_city_sha = getHashedValue(city.toString().toLowerCase().trim());
-  }
-  if (zip) {
-    updatedPayload.hashed_zip = getHashedValue(zip.toString().toLowerCase().trim());
-  }
-  if (state) {
-    updatedPayload.hashed_state_sha = getHashedValue(state.toString().toLowerCase().trim());
-  }
+  const zip = getFieldValueFromMessage(message, 'zipcode');
+  const updatedPayload = {
+    ...payload,
+    hashed_first_name_sha: firstName
+      ? getHashedValue(firstName.toString().toLowerCase().trim())
+      : undefined,
+    hashed_middle_name_sha: middleName
+      ? getHashedValue(middleName.toString().toLowerCase().trim())
+      : undefined,
+    hashed_last_name_sha: lastName
+      ? getHashedValue(lastName.toString().toLowerCase().trim())
+      : undefined,
+    hashed_city_sha: city ? getHashedValue(city.toString().toLowerCase().trim()) : undefined,
+    hashed_zip: zip ? getHashedValue(zip.toString().toLowerCase().trim()) : undefined,
+    hashed_state_sha: state ? getHashedValue(state.toString().toLowerCase().trim()) : undefined,
+  };
   if (email) {
     updatedPayload.hashed_email = getHashedValue(email.toString().toLowerCase().trim());
   }
@@ -111,10 +103,10 @@ function populateHashedValues(payload, message) {
     );
   }
   return updatedPayload;
-}
+};
 
 // Returns the response for the track event after constructing the payload and setting necessary fields
-function trackResponseBuilder(message, { Config }, mappedEvent) {
+const trackResponseBuilder = (message, { Config }, mappedEvent) => {
   let payload = {};
   const event = mappedEvent.trim().replace(/\s+/g, '_');
 
@@ -226,10 +218,10 @@ function trackResponseBuilder(message, { Config }, mappedEvent) {
   payload.level = get(message, 'properties.level');
   payload.click_id = get(message, 'properties.click_id');
   payload.event_tag = get(message, 'properties.event_tag');
-  payload = populateHashedValues(payload, message);
   payload.country = getFieldValueFromMessage(message, 'country'); // Must be provided as a two letter ISO 3166 alpha-2 country code.
   payload.region = getFieldValueFromMessage(message, 'region');
   payload.user_agent = message.context?.userAgent?.toString().toLowerCase();
+  payload = populateHashedValues(payload, message);
 
   if (
     !payload.hashed_email &&
@@ -280,7 +272,7 @@ function trackResponseBuilder(message, { Config }, mappedEvent) {
   // build response
   const response = buildResponse(apiKey, payload);
   return response;
-}
+};
 
 // Checks if there are any mapping events for the track event and returns them
 function eventMappingHandler(message, destination) {

@@ -1,5 +1,5 @@
 [
-{
+  {
     "output": {
       "status": 200,
       "message": "Request Processed Successfully",
@@ -76,7 +76,7 @@
               "traceIdentifier": "80a1a0ba3981b04da847d05700752c77",
               "type": "authorization"
             }
-]
+          ]
         },
         "status": 404
       },

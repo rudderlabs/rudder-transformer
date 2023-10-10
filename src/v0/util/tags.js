@@ -51,6 +51,7 @@ const ERROR_TYPES = {
   OAUTH_SECRET: 'oAuthSecret',
   UNSUPPORTED: 'unsupported',
   REDIS: 'redis',
+  FILTERED: 'filtered',
 };
 
 const METADATA = {

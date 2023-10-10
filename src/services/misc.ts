@@ -30,6 +30,7 @@ export default class MiscService {
     return {
       namespace: 'Unknown',
       cluster: 'Unknown',
+      features: ctx.state?.features || {},
     };
   }
 

@@ -1,6 +1,6 @@
 [
   {
-    "description": "Test case for Prodcuts Searched event for conversion type offline",
+    "description": "Test case for Products Searched event for conversion type offline",
     "input": {
       "message": {
         "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
@@ -9,7 +9,12 @@
         "context": {
           "traits": {
             "email": "test@email.com",
-            "phone": "+91 2111111 "
+            "phone": "+91 2111111 ",
+            "firstName": "john",
+            "middleName": "victor",
+            "lastName": "doe",
+            "city": "some_city",
+            "state": "some_state"
           },
           "app": {
             "build": "1.0.0",
@@ -26,7 +31,6 @@
             "type": "ios",
             "attTrackingStatus": 3
           },
-
           "library": {
             "name": "RudderLabs JavaScript SDK",
             "version": "1.0.0"
@@ -52,7 +56,9 @@
         "properties": {
           "query": "t-shirts",
           "event_conversion_type": "web",
-          "number_items": 4
+          "number_items": 4,
+          "click_id": "some_click_id",
+          "description": "Products Searched event for conversion type offline"
         },
         "integrations": {
           "All": true
@@ -88,7 +94,13 @@
           "timestamp": "1650625078",
           "event_conversion_type": "OFFLINE",
           "pixel_id": "dummyPixelId",
-          "number_items": 4
+          "number_items": 4,
+          "click_id": "some_click_id",
+          "description": "Products Searched event for conversion type offline",
+          "hashed_first_name_sha": "96d9632f363564cc3032521409cf22a852f2032eec099ed5967c0d000cec607a",
+          "hashed_last_name_sha": "799ef92a11af918e3fb741df42934f3b568ed2d93ac1df74f1b8d41a27932a6f",
+          "hashed_state_sha": "6db488fc98e30afdf67a05a6da916805b02891ce58f03970c6deff79129c5f1c",
+          "hashed_middle_name_sha": "99bde068af2d49ed7fc8b8fa79abe13a6059e0db320bb73459fd96624bb4b33f"
         },
         "JSON_ARRAY": {},
         "XML": {},
@@ -2025,7 +2037,6 @@
             "type": "ios",
             "attTrackingStatus": 3
           },
-
           "library": {
             "name": "RudderLabs JavaScript SDK",
             "version": "1.0.0"
@@ -2227,7 +2238,6 @@
             "type": "ios",
             "attTrackingStatus": 3
           },
-
           "library": {
             "name": "RudderLabs JavaScript SDK",
             "version": "1.0.0"
@@ -2331,7 +2341,6 @@
             "type": "ios",
             "attTrackingStatus": 3
           },
-
           "library": {
             "name": "RudderLabs JavaScript SDK",
             "version": "1.0.0"
@@ -2403,7 +2412,6 @@
             "type": "ios",
             "attTrackingStatus": 3
           },
-
           "library": {
             "name": "RudderLabs JavaScript SDK",
             "version": "1.0.0"
@@ -2501,7 +2509,6 @@
             "type": "ios",
             "attTrackingStatus": 3
           },
-
           "library": {
             "name": "RudderLabs JavaScript SDK",
             "version": "1.0.0"

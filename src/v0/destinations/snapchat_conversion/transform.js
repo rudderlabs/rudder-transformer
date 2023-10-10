@@ -58,7 +58,34 @@ function populateHashedValues(payload, message) {
   const email = getFieldValueFromMessage(message, 'email');
   const phone = getNormalizedPhoneNumber(message);
   const ip = message.context?.ip || message.request_ip;
-
+  const firstName = getFieldValueFromMessage(message, 'firstName');
+  const lastName = getFieldValueFromMessage(message, 'lastName');
+  const middleName = getFieldValueFromMessage(message, 'middleName');
+  const city = getFieldValueFromMessage(message, 'city');
+  const state = getFieldValueFromMessage(message, 'state');
+  const zip = getFieldValueFromMessage(message, 'zip');
+  if (firstName) {
+    updatedPayload.hashed_first_name_sha = getHashedValue(
+      firstName.toString().toLowerCase().trim(),
+    );
+  }
+  if (middleName) {
+    updatedPayload.hashed_middle_name_sha = getHashedValue(
+      middleName.toString().toLowerCase().trim(),
+    );
+  }
+  if (lastName) {
+    updatedPayload.hashed_last_name_sha = getHashedValue(lastName.toString().toLowerCase().trim());
+  }
+  if (city) {
+    updatedPayload.hashed_city_sha = getHashedValue(city.toString().toLowerCase().trim());
+  }
+  if (zip) {
+    updatedPayload.hashed_zip = getHashedValue(zip.toString().toLowerCase().trim());
+  }
+  if (state) {
+    updatedPayload.hashed_state_sha = getHashedValue(state.toString().toLowerCase().trim());
+  }
   if (email) {
     updatedPayload.hashed_email = getHashedValue(email.toString().toLowerCase().trim());
   }
@@ -190,10 +217,18 @@ function trackResponseBuilder(message, { Config }, mappedEvent) {
   } else {
     throw new InstrumentationError(`Event ${event} doesn't match with Snapchat Events!`);
   }
-
+  payload.description = get(message, 'properties.description');
+  if (Array.isArray(message.properties?.brands)) {
+    payload.brands = get(message, 'properties.brands');
+  }
+  payload.customer_status = get(message, 'properties.customer_status');
+  payload.uuid_c1 = get(message, 'properties.uuid_c1');
+  payload.level = get(message, 'properties.level');
+  payload.click_id = get(message, 'properties.click_id');
   payload.event_tag = get(message, 'properties.event_tag');
   payload = populateHashedValues(payload, message);
-
+  payload.country = getFieldValueFromMessage(message, 'country'); // Must be provided as a two letter ISO 3166 alpha-2 country code.
+  payload.region = getFieldValueFromMessage(message, 'region');
   payload.user_agent = message.context?.userAgent?.toString().toLowerCase();
 
   if (

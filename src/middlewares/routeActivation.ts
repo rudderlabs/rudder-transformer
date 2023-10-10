@@ -78,6 +78,7 @@ export default class RouteActivationMiddleware {
     );
   }
 
+  // eslint-disable-next-line sonarjs/no-identical-functions
   public static destinationBatchFilter(ctx: Context, next: Next) {
     const routerRequest = ctx.request.body as RouterTransformationRequest;
     const destination = routerRequest.destType;

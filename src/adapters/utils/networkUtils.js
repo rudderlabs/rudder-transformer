@@ -1,5 +1,5 @@
 /* eslint-disable eqeqeq */
-const _ = require('lodash');
+const lodash = require('lodash');
 const { isEmpty } = require('lodash');
 const {
   isHttpStatusRetryable,
@@ -100,7 +100,7 @@ const parseDestResponse = (destResponse, destination = '') => {
   if (
     !isDefinedAndNotNull(responseBody) ||
     !isDefinedAndNotNull(status) ||
-    !_.isNumber(status) ||
+    !lodash.isNumber(status) ||
     status === 0
   ) {
     throw new AbortedError(

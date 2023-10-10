@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.44.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.44.1...v1.44.2) (2023-10-09)
+
+
+### Bug Fixes
+
+* create instance of transformedObj ([37495e3](https://github.com/rudderlabs/rudder-transformer/commit/37495e3e4a90dc9c5abbf74e7d58152a9af10daf))
+
 ### [1.44.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.44.0...v1.44.1) (2023-10-06)
 
 

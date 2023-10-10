@@ -32,6 +32,7 @@ const {
   REFRESH_TOKEN,
   AUTH_STATUS_INACTIVE,
 } = require('../../adapters/networkhandler/authConstants');
+const { FEATURE_FILTER_CODE } = require('./constant');
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -76,6 +77,14 @@ const stripTrailingSlash = (str) => (str && str.endsWith('/') ? str.slice(0, -1)
 const isPrimitive = (arg) => {
   const type = typeof arg;
   return arg == null || (type !== 'object' && type !== 'function');
+};
+
+const isNewStatusCodesAccepted = (reqMetadata = {}) => {
+  if (reqMetadata && typeof reqMetadata === 'object' && !Array.isArray(reqMetadata)) {
+    const { features } = reqMetadata;
+    return !!(features && features[FEATURE_FILTER_CODE]);
+  }
+  return false;
 };
 
 /**
@@ -454,11 +463,17 @@ const defaultBatchRequestConfig = () => ({
 
 // Router transformer
 // Success responses
-const getSuccessRespEvents = (message, metadata, destination, batched = false) => ({
+const getSuccessRespEvents = (
+  message,
+  metadata,
+  destination,
+  batched = false,
+  statusCode = 200,
+) => ({
   batchedRequest: message,
   metadata,
   batched,
-  statusCode: 200,
+  statusCode,
   destination,
 });
 
@@ -1704,7 +1719,7 @@ const simpleProcessRouterDestSync = async (inputs, singleTfFunc, reqMetadata, pr
       // transform if not already done
       if (!input.message.statusCode) {
         // eslint-disable-next-line no-await-in-loop
-        resp = await singleTfFunc(input, processParams);
+        resp = await singleTfFunc(input, processParams, reqMetadata);
       }
       respList.push(getSuccessRespEvents(resp, [input.metadata], input.destination));
     } catch (error) {
@@ -2129,4 +2144,5 @@ module.exports = {
   hasCircularReference,
   getAuthErrCategoryFromErrDetailsAndStCode,
   getAuthErrCategoryFromStCode,
+  isNewStatusCodesAccepted,
 };

@@ -420,15 +420,21 @@ const processBatch = (transformedEvents) => {
     const events = eventsArrayChunks[i];
     const purchases = purchaseArrayChunks[i];
 
-    stats.gauge('braze_batch_attributes_pack_size', attributes.length, {
-      destination_id: destination.ID,
-    });
-    stats.gauge('braze_batch_events_pack_size', events.length, {
-      destination_id: destination.ID,
-    });
-    stats.gauge('braze_batch_purchase_pack_size', purchases.length, {
-      destination_id: destination.ID,
-    });
+    if (attributes) {
+      stats.gauge('braze_batch_attributes_pack_size', attributes.length, {
+        destination_id: destination.ID,
+      });
+    }
+    if (events) {
+      stats.gauge('braze_batch_events_pack_size', events.length, {
+        destination_id: destination.ID,
+      });
+    }
+    if (purchases) {
+      stats.gauge('braze_batch_purchase_pack_size', purchases.length, {
+        destination_id: destination.ID,
+      });
+    }
 
     const response = defaultRequestConfig();
     response.endpoint = endpoint;

@@ -7,6 +7,7 @@ const {
   constructPayload,
   defaultPostRequestConfig,
   defaultRequestConfig,
+  getHashFromArray,
 } = require('../../util');
 const { ACTION_SOURCES_VALUES, CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
 
@@ -18,7 +19,7 @@ const { InstrumentationError, TransformationError } = require('../../util/errorT
  */
 
 const formatRevenue = (revenue) => {
-  const formattedRevenue = parseFloat(parseFloat(revenue || 0).toFixed(2));
+  const formattedRevenue = parseFloat(parseFloat(revenue || '0').toFixed(2));
   if (!Number.isNaN(formattedRevenue)) {
     return formattedRevenue;
   }
@@ -29,7 +30,7 @@ const formatRevenue = (revenue) => {
  *
  * @param {*} message Rudder Payload
  * @param {*} defaultValue product / product_group
- * @param {*} categoryToContent [ { from: 'clothing', to: 'product' } ]
+ * @param {*} categoryToContent example: [ { from: 'clothing', to: 'product' } ]
  *
  * We will be mapping properties.category to user provided content else taking the default value as per ecomm spec
  * If category is clothing it will be set to ["product"]
@@ -37,7 +38,6 @@ const formatRevenue = (revenue) => {
  * - https://developers.facebook.com/docs/facebook-pixel/reference/#object-properties
  */
 const getContentType = (message, defaultValue, categoryToContent) => {
-  let tempCategoryToContent = categoryToContent;
   const { properties } = message;
   const integrationsObj = getIntegrationsObj(message, 'fb_pixel');
 
@@ -51,22 +51,15 @@ const getContentType = (message, defaultValue, categoryToContent) => {
     if (products && products.length > 0 && Array.isArray(products) && isObject(products[0])) {
       category = products[0].category;
     }
-  } else {
-    if (tempCategoryToContent === undefined) {
-      tempCategoryToContent = [];
-    }
-    const mapped = tempCategoryToContent;
-    const mappedTo = mapped.reduce((filtered, map) => {
-      let filter = filtered;
-      if (map.from === category) {
-        filter = map.to;
-      }
-      return filter;
-    }, '');
-    if (mappedTo.length > 0) {
-      return mappedTo;
+  }
+
+  if (Array.isArray(categoryToContent) && category) {
+    const categoryToContentHash = getHashFromArray(categoryToContent, 'from', 'to', false);
+    if (categoryToContentHash[category]) {
+      return categoryToContentHash[category];
     }
   }
+
   return defaultValue;
 };
 
@@ -190,7 +183,7 @@ const transformedPayloadData = (
 /**
  *
  * @param {*} message
- * @returns fbc parameter which is a combined string of the parameters below
+ * @returns string which is fbc parameter
  *
  * version : "fb" (default)
  *
@@ -405,7 +398,7 @@ const handleProductListViewed = (message, categoryToContent) => {
 /**
  *
  * @param {*} message Rudder Payload
- * @param {*} categoryToContent [ { from: 'clothing', to: 'product' } ]
+ * @param {*} categoryToContent Example: [ { from: 'clothing', to: 'product' } ]
  * @param {*} valueFieldIdentifier it can be either value or price which will be matched from properties and assigned to value for fb payload
  */
 const handleProduct = (message, categoryToContent, valueFieldIdentifier) => {
@@ -476,6 +469,61 @@ const handleSearch = (message) => {
   };
 };
 
+const populateCustomDataBasedOnCategory = (
+  customData,
+  message,
+  category,
+  categoryToContent,
+  valueFieldIdentifier,
+) => {
+  let updatedCustomData;
+  switch (category.type) {
+    case 'product list viewed':
+      updatedCustomData = {
+        ...customData,
+        ...handleProductListViewed(message, categoryToContent),
+      };
+      break;
+    case 'product viewed':
+    case 'product added':
+      updatedCustomData = {
+        ...customData,
+        ...handleProduct(message, categoryToContent, valueFieldIdentifier),
+      };
+      break;
+    case 'order completed':
+      updatedCustomData = {
+        ...customData,
+        ...handleOrder(message, categoryToContent),
+      };
+      break;
+    case 'products searched': {
+      updatedCustomData = {
+        ...customData,
+        ...handleSearch(message),
+      };
+      break;
+    }
+    case 'checkout started': {
+      const orderPayload = handleOrder(message, categoryToContent);
+      delete orderPayload.content_name;
+      updatedCustomData = {
+        ...customData,
+        ...orderPayload,
+      };
+      break;
+    }
+    case 'page_view': // executed when sending track calls but with standard type PageView
+    case 'page': // executed when page call is done with standard PageView turned on
+    case 'otherStandard':
+      updatedCustomData = { ...customData };
+      break;
+    default:
+      throw new InstrumentationError(`${category.standard} type of standard event does not exist`);
+  }
+  return updatedCustomData;
+};
+
 const formingFinalResponse = (
   userData,
   commonData,
@@ -521,4 +569,5 @@ module.exports = {
   handleProductListViewed,
   handleOrder,
   formingFinalResponse,
+  populateCustomDataBasedOnCategory,
 };

@@ -184,13 +184,7 @@ const handleDeduplication = (payload, enableDeduplication, deduplicationKey, mes
   }
   return undefined;
 };
-
-// Returns the response for the track event after constructing the payload and setting necessary fields
-const trackResponseBuilder = (message, { Config }, mappedEvent) => {
-  let payload = {};
-  const event = mappedEvent.trim().replace(/\s+/g, '_');
-
-  const { apiKey, pixelId, snapAppId, appId, deduplicationKey, enableDeduplication } = Config;
+const getEventConversionType = (message) => {
   const channel = get(message, 'channel');
   let eventConversionType = message?.properties?.eventConversionType;
   if (
@@ -203,6 +197,15 @@ const trackResponseBuilder = (message, { Config }, mappedEvent) => {
   } else {
     eventConversionType = 'OFFLINE';
   }
+  return eventConversionType;
+};
+
+// Returns the response for the track event after constructing the payload and setting necessary fields
+const trackResponseBuilder = (message, { Config }, mappedEvent) => {
+  let payload = {};
+  const event = mappedEvent.trim().replace(/\s+/g, '_');
+  const eventConversionType = getEventConversionType(message);
+  const { apiKey, pixelId, snapAppId, appId, deduplicationKey, enableDeduplication } = Config;
   validateEventConfiguration(eventConversionType, pixelId, snapAppId, appId);
 
   if (eventNameMapping[event.toLowerCase()]) {

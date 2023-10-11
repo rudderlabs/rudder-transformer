@@ -1,3 +1,9 @@
+import utils from '../../../../src/v0/util';
+
+const defaultMockFns = () => {
+  jest.spyOn(utils, 'generateUUID').mockReturnValue('97fcd7b2-cc24-47d7-b776-057b7b199513');
+};
+
 export const data = [
   {
     name: 'ortto',
@@ -48,7 +54,7 @@ export const data = [
                   },
                   integrations: { ortto: false },
                   type: 'track',
-                  anonymousId: '26b811de-7ed3-448e-a2db-dfb31279dae3',
+                  anonymousId: '97fcd7b2-cc24-47d7-b776-057b7b199513',
                   messageId: '00651b946cef87c7af64f4f3',
                   originalTimestamp: '2023-10-03T04:11:24.25726779Z',
                   properties: {
@@ -65,6 +71,9 @@ export const data = [
           },
         ],
       },
+    },
+    mockFns: () => {
+      defaultMockFns();
     },
   }
 ]

@@ -47,6 +47,7 @@ const handleFirstLoginGA4Property = (destination, event, traits) => {
   };
 
   const oncehubTransformer = (destination, event) => {
+    destination= destination.toString().toLowerCase();
     const contextTraitsPresent = doesEventContainContextTraits(event);
     const eventTraitsPresent = doesEventContainsTraits(event);
     const checkDestinationList=getPIIDestinationList().includes(destination);

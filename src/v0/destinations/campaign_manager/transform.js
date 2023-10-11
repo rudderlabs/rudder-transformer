@@ -1,5 +1,3 @@
-/* eslint-disable consistent-return */
-/* eslint-disable no-else-return */
 const { EventType } = require('../../../constants');
 
 const {
@@ -38,7 +36,9 @@ function convertToMicroseconds(input) {
     }
     // to handle case of "2022-11-17T00:22:02.903+05:30" strings
     return timestamp.toString().length <= 13 ? timestamp * 1000 : timestamp * 1000000;
-  } else if (/^\d+$/.test(input)) {
+  }
+
+  if (/^\d+$/.test(input)) {
     // If the input is a numeric string (assume microseconds or milliseconds)
     if (input.length <= 13) {
       // Length less than or equal to 13 indicates milliseconds
@@ -47,6 +47,7 @@ function convertToMicroseconds(input) {
     // Otherwise, assume microseconds
     return parseInt(input, 10);
   }
+  return timestamp;
 }
 
 // build final response

@@ -345,7 +345,7 @@
       "statusCode": 400,
       "error": "[CAMPAIGN MANAGER (DCM)]: If encryptedUserId or encryptedUserIdCandidates is used, provide proper values for properties.encryptionEntityType , properties.encryptionSource and properties.encryptionEntityId",
       "statTags": {
-        "destination": "blueshift",
+        "destination": "campaign_manager",
         "stage": "transform",
         "scope": "exception"
       }
@@ -396,7 +396,7 @@
       "statusCode": 400,
       "error": "[CAMPAIGN MANAGER (DCM)]: Atleast one of encryptedUserId,encryptedUserIdCandidates, matchId, mobileDeviceId, gclid, dclid, impressionId.",
       "statTags": {
-        "destination": "blueshift",
+        "destination": "campaign_manager",
         "stage": "transform",
         "scope": "exception"
       }

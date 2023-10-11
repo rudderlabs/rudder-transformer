@@ -447,7 +447,7 @@ const populateCustomDataBasedOnCategory = (
   categoryToContent,
   valueFieldIdentifier,
 ) => {
-  let eventTypeCustomData = constructPayload(message, category.name);
+  let eventTypeCustomData = constructPayload(message, MAPPING_CONFIG[category.name]);
   switch (category.type) {
     case 'product list viewed':
       eventTypeCustomData = updateCustomDataForProductListViewed(eventTypeCustomData, message, categoryToContent);

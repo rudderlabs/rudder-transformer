@@ -176,7 +176,7 @@
             "density": 2
           }
         },
-        "originalTimestamp": "2022-11-17T00:22:02.903+05:30",
+        "originalTimestamp": "2021-01-04T08:25:04.780Z",
         "properties": {
           "profileId": "34245",
           "floodlightConfigurationId": "213123123",
@@ -234,7 +234,7 @@
             {
               "floodlightConfigurationId": "213123123",
               "ordinal": "string",
-              "timestampMicros": "1668624722903000",
+              "timestampMicros": "1609748704780000",
               "floodlightActivityId": "456543345245",
               "quantity": "455678",
               "value": 756,

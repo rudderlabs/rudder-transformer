@@ -110,6 +110,67 @@ const populateHashedValues = (payload, message) => {
   }
   return updatedPayload;
 };
+const getEventProperties = (message) => ({
+  description: get(message, 'properties.description'),
+  brands: Array.isArray(message.properties?.brands) ? get(message, 'properties.brands') : undefined,
+  customer_status: get(message, 'properties.customer_status'),
+  uuid_c1: get(message, 'properties.uuid_c1'),
+  level: get(message, 'properties.level'),
+  click_id: get(message, 'properties.click_id'),
+  event_tag: get(message, 'properties.event_tag'),
+  country: getFieldValueFromMessage(message, 'country'),
+  region: getFieldValueFromMessage(message, 'region'),
+  user_agent: message.context?.userAgent?.toString()?.toLowerCase(),
+});
+const validateEventConfiguration = (eventConversionType, pixelId, snapAppId, appId) => {
+  if ((eventConversionType === 'WEB' || eventConversionType === 'OFFLINE') && !pixelId) {
+    throw new ConfigurationError('Pixel Id is required for web and offline events');
+  }
+
+  if (eventConversionType === 'MOBILE_APP' && !(appId && snapAppId)) {
+    if (!appId) {
+      throw new ConfigurationError('App Id is required for app events');
+    } else {
+      throw new ConfigurationError('Snap App Id is required for app events');
+    }
+  }
+};
+const validateRequiredFields = (payload) => {
+  if (
+    !payload.hashed_email &&
+    !payload.hashed_phone_number &&
+    !payload.hashed_mobile_ad_id &&
+    !(payload.hashed_ip_address && payload.user_agent)
+  ) {
+    throw new InstrumentationError(
+      'At least one of email or phone or advertisingId or ip and userAgent is required',
+    );
+  }
+};
+const addSpecificEventDetails = (
+  message,
+  payload,
+  eventConversionType,
+  pixelId,
+  snapAppId,
+  appId,
+) => {
+  const updatedPayload = { ...payload };
+  if (eventConversionType === 'WEB') {
+    updatedPayload.pixel_id = pixelId;
+    updatedPayload.page_url = getFieldValueFromMessage(message, 'pageUrl');
+  }
+
+  if (eventConversionType === 'MOBILE_APP') {
+    updatedPayload.snap_app_id = snapAppId;
+    updatedPayload.app_id = appId;
+  }
+
+  if (eventConversionType === 'OFFLINE') {
+    updatedPayload.pixel_id = pixelId;
+  }
+  return updatedPayload;
+};
 
 // Returns the response for the track event after constructing the payload and setting necessary fields
 const trackResponseBuilder = (message, { Config }, mappedEvent) => {
@@ -129,18 +190,7 @@ const trackResponseBuilder = (message, { Config }, mappedEvent) => {
   } else {
     eventConversionType = 'OFFLINE';
   }
-
-  if ((eventConversionType === 'WEB' || eventConversionType === 'OFFLINE') && !pixelId) {
-    throw new ConfigurationError('Pixel Id is required for web and offline events');
-  }
-
-  if (eventConversionType === 'MOBILE_APP' && !(appId && snapAppId)) {
-    if (!appId) {
-      throw new ConfigurationError('App Id is required for app events');
-    } else {
-      throw new ConfigurationError('Snap App Id is required for app events');
-    }
-  }
+  validateEventConfiguration(eventConversionType, pixelId, snapAppId, appId);
 
   if (eventNameMapping[event.toLowerCase()]) {
     // Snapchat standard events
@@ -215,30 +265,10 @@ const trackResponseBuilder = (message, { Config }, mappedEvent) => {
   } else {
     throw new InstrumentationError(`Event ${event} doesn't match with Snapchat Events!`);
   }
-  payload.description = get(message, 'properties.description');
-  if (Array.isArray(message.properties?.brands)) {
-    payload.brands = get(message, 'properties.brands');
-  }
-  payload.customer_status = get(message, 'properties.customer_status');
-  payload.uuid_c1 = get(message, 'properties.uuid_c1');
-  payload.level = get(message, 'properties.level');
-  payload.click_id = get(message, 'properties.click_id');
-  payload.event_tag = get(message, 'properties.event_tag');
-  payload.country = getFieldValueFromMessage(message, 'country'); // Must be provided as a two letter ISO 3166 alpha-2 country code.
-  payload.region = getFieldValueFromMessage(message, 'region');
-  payload.user_agent = message.context?.userAgent?.toString().toLowerCase();
-  payload = populateHashedValues(payload, message);
 
-  if (
-    !payload.hashed_email &&
-    !payload.hashed_phone_number &&
-    !payload.hashed_mobile_ad_id &&
-    !(payload.hashed_ip_address && payload.user_agent)
-  ) {
-    throw new InstrumentationError(
-      'At least one of email or phone or advertisingId or ip and userAgent is required',
-    );
-  }
+  payload = { ...payload, ...getEventProperties(message) };
+  payload = populateHashedValues(payload, message);
+  validateRequiredFields(payload);
   payload.timestamp = getFieldValueFromMessage(message, 'timestamp');
   const timeStamp = payload.timestamp;
   if (timeStamp) {
@@ -256,17 +286,14 @@ const trackResponseBuilder = (message, { Config }, mappedEvent) => {
   }
 
   payload.event_conversion_type = eventConversionType;
-  if (eventConversionType === 'WEB') {
-    payload.pixel_id = pixelId;
-    payload.page_url = getFieldValueFromMessage(message, 'pageUrl');
-  }
-  if (eventConversionType === 'MOBILE_APP') {
-    payload.snap_app_id = snapAppId;
-    payload.app_id = appId;
-  }
-  if (eventConversionType === 'OFFLINE') {
-    payload.pixel_id = pixelId;
-  }
+  payload = addSpecificEventDetails(
+    message,
+    payload,
+    eventConversionType,
+    pixelId,
+    snapAppId,
+    appId,
+  );
 
   // adding for deduplication for more than one source
   if (enableDeduplication) {

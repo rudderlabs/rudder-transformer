@@ -21,6 +21,7 @@ const {
   mappingConfig,
   ConfigCategory,
   MAX_BATCH_SIZE,
+  pageTypeToTrackEvent,
 } = require('./config');
 const {
   msUnixTimestamp,
@@ -279,14 +280,16 @@ function eventMappingHandler(message, destination) {
 
 function process(event) {
   const { message, destination } = event;
-
+  // const message = { ...incomingMessage };
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
   }
 
   const messageType = message.type.toLowerCase();
   let response;
-  if (messageType === EventType.TRACK) {
+  if (messageType === EventType.PAGE) {
+    response = trackResponseBuilder(message, destination, pageTypeToTrackEvent);
+  } else if (messageType === EventType.TRACK) {
     const mappedEvents = eventMappingHandler(message, destination);
     if (mappedEvents.length > 0) {
       response = [];

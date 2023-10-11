@@ -11,7 +11,7 @@ export default class EventTesterService {
     function capitalize(s) {
       return s === 'id' ? s.toUpperCase() : s.charAt(0).toUpperCase() + s.slice(1);
     }
-    let transformedObj: FixMe;
+    const transformedObj: FixMe = {};
     const { destinationDefinition } = dest;
     Object.keys(dest).forEach((key) => {
       transformedObj[capitalize(key)] = dest[key];
@@ -54,7 +54,7 @@ export default class EventTesterService {
           libraries,
         };
 
-        let response: FixMe;
+        let response: FixMe = {};
         let errorFound = false;
 
         if (stage.user_transform) {

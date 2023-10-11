@@ -171,6 +171,19 @@ const addSpecificEventDetails = (
   }
   return updatedPayload;
 };
+const handleDeduplication = (payload, enableDeduplication, deduplicationKey, message) => {
+  if (enableDeduplication) {
+    const dedupId = deduplicationKey || 'messageId';
+    const clientDedupId = get(message, dedupId);
+    if (!clientDedupId) {
+      throw new InstrumentationError(
+        'Deduplication enabled but no deduplication key provided in the message',
+      );
+    }
+    return clientDedupId;
+  }
+  return undefined;
+};
 
 // Returns the response for the track event after constructing the payload and setting necessary fields
 const trackResponseBuilder = (message, { Config }, mappedEvent) => {
@@ -294,6 +307,7 @@ const trackResponseBuilder = (message, { Config }, mappedEvent) => {
     snapAppId,
     appId,
   );
+  payload.client_dedup_id = handleDeduplication(enableDeduplication, deduplicationKey, message);
 
   // adding for deduplication for more than one source
   if (enableDeduplication) {
@@ -308,7 +322,7 @@ const trackResponseBuilder = (message, { Config }, mappedEvent) => {
 };
 
 // Checks if there are any mapping events for the track event and returns them
-function eventMappingHandler(message, destination) {
+const eventMappingHandler = (message, destination) => {
   let event = get(message, 'event');
 
   if (!event) {
@@ -335,9 +349,9 @@ function eventMappingHandler(message, destination) {
   }
 
   return [...mappedEvents];
-}
+};
 
-function process(event) {
+const process = (event) => {
   const { message, destination } = event;
   // const message = { ...incomingMessage };
   if (!message.type) {
@@ -363,7 +377,7 @@ function process(event) {
     throw new InstrumentationError(`Event type ${messageType} is not supported`);
   }
   return response;
-}
+};
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const errorRespEvents = checkInvalidRtTfEvents(inputs);

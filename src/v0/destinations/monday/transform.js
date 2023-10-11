@@ -8,6 +8,7 @@ const {
   removeUndefinedAndNullValues,
   simpleProcessRouterDest,
   getDestinationExternalID,
+  validateEventType,
 } = require('../../util');
 const {
   ConfigurationError,
@@ -40,18 +41,14 @@ const responseBuilder = (payload, endpoint, apiToken) => {
 const trackResponseBuilder = async (message, { Config }) => {
   const { apiToken } = Config;
   let boardId = getDestinationExternalID(message, 'boardId');
+  const event = get(message, 'event');
+  validateEventType(event);
   if (!boardId) {
     boardId = Config.boardId;
   }
   if (!boardId) {
     throw new ConfigurationError('boardId is a required field');
   }
-  const event = get(message, 'event');
-
-  if (!event) {
-    throw new InstrumentationError('event is not present in the input payloads');
-  }
-
   if (!checkAllowedEventNameFromUI(event, Config)) {
     throw new ConfigurationError('Event Discarded. To allow this event, add this in Allowlist');
   }

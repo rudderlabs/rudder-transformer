@@ -169,8 +169,6 @@
         "encryptionEntityType": "DCM_ACCOUNT",
         "requestType": "batchupdate"
       },
-      "type": "track",
-      "event": "event test",
       "anonymousId": "randomId",
       "integrations": {
         "All": true
@@ -267,8 +265,6 @@
         },
         "requestType": "randomValue"
       },
-      "type": "track",
-      "event": "event test",
       "anonymousId": "randomId",
       "integrations": {
         "All": true

@@ -1,3 +1,5 @@
+/* eslint-disable consistent-return */
+/* eslint-disable no-else-return */
 const { EventType } = require('../../../constants');
 
 const {
@@ -23,6 +25,28 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function isEmptyObject(obj) {
   return Object.keys(obj).length === 0 && obj.constructor === Object;
+}
+
+function convertToMicroseconds(input) {
+  const timestamp = Date.parse(input);
+
+  if (!Number.isNaN(timestamp)) {
+    // If the input is a valid date string, timestamp will be a number
+    if (input.includes('Z')) {
+      // ISO 8601 date string with milliseconds
+      return timestamp * 1000;
+    }
+    // to handle case of "2022-11-17T00:22:02.903+05:30" strings
+    return timestamp.toString().length <= 13 ? timestamp * 1000 : timestamp * 1000000;
+  } else if (/^\d+$/.test(input)) {
+    // If the input is a numeric string (assume microseconds or milliseconds)
+    if (input.length <= 13) {
+      // Length less than or equal to 13 indicates milliseconds
+      return parseInt(input, 10) * 1000;
+    }
+    // Otherwise, assume microseconds
+    return parseInt(input, 10);
+  }
 }
 
 // build final response
@@ -73,27 +97,7 @@ function processTrack(message, metadata, destination) {
     delete requestJson.limitAdTracking;
   }
 
-  // for handling when input is timestamp as string
-  const numTimestamp = /^\d+$/.test(requestJson.timestampMicros);
-  if (numTimestamp) {
-    // is digit only, below convert string timestamp to numeric
-    requestJson.timestampMicros *= 1;
-  }
-
-  // 2022-10-11T05:453:90.ZZ
-  // 16483423423423423
-  const date = new Date(requestJson.timestampMicros);
-  let unixTimestamp = date.getTime();
-  // Date, moment both are not able to distinguish input if it is second,millisecond or microsecond unix timestamp
-  // Using count of digits to distinguish between these 3, 9999999999999 (13 digits) means Nov 20 2286 which is long far in future
-  if (unixTimestamp.toString().length === 13) {
-    // milliseconds
-    unixTimestamp *= 1000;
-  } else if (unixTimestamp.toString().length === 10) {
-    // seconds
-    unixTimestamp *= 1000000;
-  }
-  requestJson.timestampMicros = unixTimestamp.toString();
+  requestJson.timestampMicros = convertToMicroseconds(requestJson.timestampMicros).toString();
 
   const encryptionInfo = {};
   // prepare encrptionInfo if encryptedUserId or encryptedUserIdCandidates is given

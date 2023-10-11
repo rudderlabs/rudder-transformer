@@ -9,7 +9,12 @@ const {
   defaultRequestConfig,
   getHashFromArray,
 } = require('../../util');
-const { ACTION_SOURCES_VALUES, CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
+const {
+  ACTION_SOURCES_VALUES,
+  CONFIG_CATEGORIES,
+  MAPPING_CONFIG,
+  OTHER_STANDARD_EVENTS,
+} = require('./config');
 
 const { InstrumentationError, TransformationError } = require('../../util/errorTypes');
 
@@ -524,6 +529,48 @@ const populateCustomDataBasedOnCategory = (
   return updatedCustomData;
 };
 
+const getCategoryFromEvent = (eventName) => {
+  let category;
+  switch (eventName) {
+    case CONFIG_CATEGORIES.PRODUCT_LIST_VIEWED.type:
+    case CONFIG_CATEGORIES.PRODUCT_LIST_VIEWED.eventName:
+      category = CONFIG_CATEGORIES.PRODUCT_LIST_VIEWED;
+      break;
+    case CONFIG_CATEGORIES.PRODUCT_VIEWED.type:
+      category = CONFIG_CATEGORIES.PRODUCT_VIEWED;
+      break;
+    case CONFIG_CATEGORIES.PRODUCT_ADDED.type:
+    case CONFIG_CATEGORIES.PRODUCT_ADDED.eventName:
+      category = CONFIG_CATEGORIES.PRODUCT_ADDED;
+      break;
+    case CONFIG_CATEGORIES.ORDER_COMPLETED.type:
+    case CONFIG_CATEGORIES.ORDER_COMPLETED.eventName:
+      category = CONFIG_CATEGORIES.ORDER_COMPLETED;
+      break;
+    case CONFIG_CATEGORIES.PRODUCTS_SEARCHED.type:
+    case CONFIG_CATEGORIES.PRODUCTS_SEARCHED.eventName:
+      category = CONFIG_CATEGORIES.PRODUCTS_SEARCHED;
+      break;
+    case CONFIG_CATEGORIES.CHECKOUT_STARTED.type:
+    case CONFIG_CATEGORIES.CHECKOUT_STARTED.eventName:
+      category = CONFIG_CATEGORIES.CHECKOUT_STARTED;
+      break;
+    case CONFIG_CATEGORIES.PAGE_VIEW.eventName:
+      category = CONFIG_CATEGORIES.PAGE_VIEW;
+      break;
+    default:
+      category = CONFIG_CATEGORIES.SIMPLE_TRACK;
+      break;
+  }
+
+  if (OTHER_STANDARD_EVENTS.includes(eventName)) {
+    category = CONFIG_CATEGORIES.OTHER_STANDARD;
+    category.eventName = eventName;
+  }
+
+  return category;
+};
+
 const formingFinalResponse = (
   userData,
   commonData,
@@ -570,4 +617,5 @@ module.exports = {
   handleOrder,
   formingFinalResponse,
   populateCustomDataBasedOnCategory,
+  getCategoryFromEvent,
 };

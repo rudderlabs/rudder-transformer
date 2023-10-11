@@ -1,0 +1,38 @@
+bindings:
+  - name: handleRtTfSingleEventError
+    path: ../../../../v0/util/index
+
+steps:
+  - name: validateInput
+    template: |
+      $.assert(Array.isArray(^) && ^.length > 0, "Invalid event array")
+
+  - name: transform
+    externalWorkflow:
+      path: ./procWorkflow.yaml
+    loopOverInput: true
+
+  - name: successfulEvents
+    template: |
+      const output = []
+      $.outputs.transform.forEach(function(transformedData,index){
+        const result = {
+          "batchedRequest": transformedData.output,
+          "batched": true,
+          "destination": ^[index].destination,
+          "metadata": ^[index].metadata[],
+          "statusCode": 200
+        }
+        output.push(result);
+      })
+      console.log(JSON.stringify(output))
+      output
+
+  - name: failedEvents
+    template: |
+      $.outputs.transform#idx.error.(
+        $.handleRtTfSingleEventError(^[idx], .originalError ?? ., {})
+      )[]
+  - name: finalPayload
+    template: |
+      [...$.outputs.failedEvents, ...$.outputs.successfulEvents]

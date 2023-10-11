@@ -300,21 +300,11 @@ const fetchUserData = (message, Config) => {
   return userData;
 };
 
-/**
- *
- * @param {*} message Rudder element
- * @param {*} categoryToContent [ { from: 'clothing', to: 'product' } ]
- *
- * Handles order completed and checkout started types of specific events
- */
-const handleOrder = (message, categoryToContent) => {
-  const { products, revenue } = message.properties;
-  const value = formatRevenue(revenue);
-
-  const contentType = getContentType(message, 'product', categoryToContent);
+const updateCustomDataForOrderCompletedAndCheckoutStarted = (customData, message, categoryToContent) => {
+  const { products } = message.properties;
   const contentIds = [];
   const contents = [];
-  const { category, quantity, price, currency, contentName } = message.properties;
+  const { quantity, price} = message.properties;
   if (products) {
     if (products.length > 0 && Array.isArray(products)) {
       products.forEach((singleProduct) => {
@@ -336,30 +326,20 @@ const handleOrder = (message, categoryToContent) => {
     }
   }
 
-  return {
-    content_category: getContentCategory(category),
-    content_ids: contentIds,
-    content_type: contentType,
-    currency: currency || 'USD',
-    value,
-    contents,
-    num_items: contentIds.length,
-    content_name: contentName,
-  };
+  const updatedCustomData = { ...customData }
+  updatedCustomData.content_category = getContentCategory(customData.content_category);
+  updatedCustomData.content_ids = contentIds;
+  updatedCustomData.content_type = getContentType(message, customData.content_type, categoryToContent);
+  updatedCustomData.contents = contents;
+  updatedCustomData.num_items = contentIds.length;
+
+  return updatedCustomData;
 };
 
-/**
- *
- * @param {*} message Rudder element
- * @param {*} categoryToContent [ { from: 'clothing', to: 'product' } ]
- *
- * Handles product list viewed
- */
-const handleProductListViewed = (message, categoryToContent) => {
-  let contentType;
+const updateCustomDataForProductListViewed = (customData, message, categoryToContent) => {
   const contentIds = [];
   const contents = [];
-  const { products, category, quantity, value, contentName } = message.properties;
+  const { products, quantity } = message.properties;
   if (products && products.length > 0 && Array.isArray(products)) {
     products.forEach((product, index) => {
       if (isObject(product)) {
@@ -378,6 +358,8 @@ const handleProductListViewed = (message, categoryToContent) => {
     });
   }
 
+  let contentType;
+  const category = customData.content_category;
   if (contentIds.length > 0) {
     contentType = 'product';
     //  for viewContent event content_ids and content arrays are not mandatory
@@ -390,35 +372,19 @@ const handleProductListViewed = (message, categoryToContent) => {
     contentType = 'product_group';
   }
 
-  return {
-    content_ids: contentIds,
-    content_type: getContentType(message, contentType, categoryToContent),
-    contents,
-    content_category: getContentCategory(category),
-    content_name: contentName,
-    value: formatRevenue(value),
-  };
+  const updatedCustomData = { ...customData }
+  updatedCustomData.content_ids = contentIds;
+  updatedCustomData.content_type = getContentType(message, contentType, categoryToContent);
+  updatedCustomData.contents = contents;
+  updatedCustomData.content_category = getContentCategory(category);
+
+  return updatedCustomData;
 };
 
-/**
- *
- * @param {*} message Rudder Payload
- * @param {*} categoryToContent Example: [ { from: 'clothing', to: 'product' } ]
- * @param {*} valueFieldIdentifier it can be either value or price which will be matched from properties and assigned to value for fb payload
- */
-const handleProduct = (message, categoryToContent, valueFieldIdentifier) => {
+const updateCustomDataForProductAddedAndProductViewed = (customData, message, categoryToContent, valueFieldIdentifier) => {
   const contentIds = [];
   const contents = [];
-  const useValue = valueFieldIdentifier === 'properties.value';
-  const contentId =
-    message.properties?.product_id || message.properties?.sku || message.properties?.id;
-  const contentType = getContentType(message, 'product', categoryToContent);
-  const contentName = message.properties.product_name || message.properties.name || '';
-  const contentCategory = message.properties.category || '';
-  const currency = message.properties.currency || 'USD';
-  const value = useValue
-    ? formatRevenue(message.properties.value)
-    : formatRevenue(message.properties.price);
+  const contentId = customData.content_ids;
   if (contentId) {
     contentIds.push(contentId);
     contents.push({
@@ -427,19 +393,22 @@ const handleProduct = (message, categoryToContent, valueFieldIdentifier) => {
       item_price: message.properties.price,
     });
   }
-  return {
-    content_ids: contentIds,
-    content_type: contentType,
-    content_name: contentName,
-    content_category: getContentCategory(contentCategory),
-    currency,
-    value,
-    contents,
-  };
+
+  const updatedCustomData = { ...customData }
+  updatedCustomData.content_ids = contentIds;
+  updatedCustomData.content_type = getContentType(message, customData.content_type, categoryToContent);
+  updatedCustomData.content_category = getContentCategory(customData.content_category);
+  const useValue = valueFieldIdentifier === 'properties.value';
+  if (!useValue) {
+    updatedCustomData.value = formatRevenue(message?.properties?.price);
+  }
+  updatedCustomData.contents = contents;
+
+  return updatedCustomData;
 };
 
-const handleSearch = (message) => {
-  const query = message?.properties?.query;
+const updateCustomDataForProductSearched = (customData, message) => {
+  const query = customData.search_string;
   /**
    * Facebook Pixel states "search_string" a string type
    * ref: https://developers.facebook.com/docs/meta-pixel/reference#:~:text=an%20exact%20value.-,search_string,-String
@@ -453,10 +422,7 @@ const handleSearch = (message) => {
 
   const contentIds = [];
   const contents = [];
-  const contentId =
-    message.properties?.product_id || message.properties?.sku || message.properties?.id;
-  const contentCategory = message?.properties?.category || '';
-  const value = message?.properties?.value;
+  const contentId = customData.content_ids;
   if (contentId) {
     contentIds.push(contentId);
     contents.push({
@@ -465,13 +431,13 @@ const handleSearch = (message) => {
       item_price: message?.properties?.price,
     });
   }
-  return {
-    content_ids: contentIds,
-    content_category: getContentCategory(contentCategory),
-    value: formatRevenue(value),
-    contents,
-    search_string: query,
-  };
+
+  const updatedCustomData = { ...customData }
+  updatedCustomData.content_ids = contentIds;
+  updatedCustomData.content_category = getContentCategory(customData.content_category);
+  updatedCustomData.contents = contents;
+
+  return updatedCustomData;
 };
 
 const populateCustomDataBasedOnCategory = (
@@ -481,52 +447,32 @@ const populateCustomDataBasedOnCategory = (
   categoryToContent,
   valueFieldIdentifier,
 ) => {
-  let updatedCustomData;
+  let eventTypeCustomData = constructPayload(message, category.name);
   switch (category.type) {
     case 'product list viewed':
-      updatedCustomData = {
-        ...customData,
-        ...handleProductListViewed(message, categoryToContent),
-      };
+      eventTypeCustomData = updateCustomDataForProductListViewed(eventTypeCustomData, message, categoryToContent);
       break;
     case 'product viewed':
     case 'product added':
-      updatedCustomData = {
-        ...customData,
-        ...handleProduct(message, categoryToContent, valueFieldIdentifier),
-      };
+      eventTypeCustomData = updateCustomDataForProductAddedAndProductViewed(eventTypeCustomData, message, categoryToContent, valueFieldIdentifier);
       break;
     case 'order completed':
-      updatedCustomData = {
-        ...customData,
-        ...handleOrder(message, categoryToContent),
-      };
+    case 'checkout started':
+      eventTypeCustomData = updateCustomDataForOrderCompletedAndCheckoutStarted(eventTypeCustomData, message, categoryToContent);
       break;
     case 'products searched': {
-      updatedCustomData = {
-        ...customData,
-        ...handleSearch(message),
-      };
-      break;
-    }
-    case 'checkout started': {
-      const orderPayload = handleOrder(message, categoryToContent);
-      delete orderPayload.content_name;
-      updatedCustomData = {
-        ...customData,
-        ...orderPayload,
-      };
+      eventTypeCustomData = updateCustomDataForProductSearched(eventTypeCustomData, message);
       break;
     }
     case 'page_view': // executed when sending track calls but with standard type PageView
     case 'page': // executed when page call is done with standard PageView turned on
     case 'otherStandard':
-      updatedCustomData = { ...customData };
+      eventTypeCustomData = { ...eventTypeCustomData };
       break;
     default:
       throw new InstrumentationError(`${category.standard} type of standard event does not exist`);
   }
-  return updatedCustomData;
+  return { ...customData, ...eventTypeCustomData };
 };
 
 const getCategoryFromEvent = (eventName) => {
@@ -611,10 +557,6 @@ module.exports = {
   transformedPayloadData,
   getActionSource,
   fetchUserData,
-  handleProduct,
-  handleSearch,
-  handleProductListViewed,
-  handleOrder,
   formingFinalResponse,
   populateCustomDataBasedOnCategory,
   getCategoryFromEvent,

@@ -1,0 +1,35 @@
+[
+  {
+    "destKey": "content_ids",
+    "sourceKeys": "",
+    "metadata": {
+      "defaultValue": []
+    }
+  },
+  {
+    "destKey": "content_type",
+    "sourceKeys": ""
+  },
+  {
+    "destKey": "contents",
+    "sourceKeys": "",
+    "metadata": {
+      "defaultValue": []
+    }
+  },
+  {
+    "destKey": "content_category",
+    "sourceKeys": "properties.category"
+  },
+  {
+    "destKey": "content_name",
+    "sourceKeys": "properties.contentName"
+  },
+  {
+    "destKey": "value",
+    "sourceKeys": "properties.value",
+    "metadata": {
+      "type": "numberForRevenue"
+    }
+  }
+]

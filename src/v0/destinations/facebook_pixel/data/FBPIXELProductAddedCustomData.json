@@ -1,0 +1,48 @@
+[
+  {
+    "destKey": "content_ids",
+    "sourceKeys": ["properties.product_id", "properties.sku", "properties.id"]
+  },
+  {
+    "destKey": "content_type",
+    "sourceKeys": "",
+    "metadata": {
+      "defaultValue": "product"
+    }
+  },
+  {
+    "destKey": "content_name",
+    "sourceKeys": ["properties.product_name", "properties.name"],
+    "metadata": {
+      "defaultValue": ""
+    }
+  },
+  {
+    "destKey": "content_category",
+    "sourceKeys": "properties.category",
+    "metadata": {
+      "defaultValue": ""
+    }
+  },
+  {
+    "destKey": "currency",
+    "sourceKeys": "properties.currency",
+    "metadata": {
+      "defaultValue": "USD"
+    }
+  },
+  {
+    "destKey": "value",
+    "sourceKeys": "properties.value",
+    "metadata": {
+      "type": "numberForRevenue"
+    }
+  },
+  {
+    "destKey": "contents",
+    "sourceKeys": "",
+    "metadata": {
+      "defaultValue": []
+    }
+  }
+]

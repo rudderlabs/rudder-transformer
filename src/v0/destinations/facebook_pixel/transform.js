@@ -24,10 +24,6 @@ const {
   transformedPayloadData,
   getActionSource,
   fetchUserData,
-  handleProduct,
-  handleSearch,
-  handleProductListViewed,
-  handleOrder,
   formingFinalResponse,
   populateCustomDataBasedOnCategory,
   getCategoryFromEvent,
@@ -227,9 +223,5 @@ const processRouterDest = async (inputs, reqMetadata) => {
 
 module.exports = {
   process,
-  processRouterDest,
-  handleSearch,
-  handleProductListViewed,
-  handleProduct,
-  handleOrder,
+  processRouterDest
 };

@@ -2,7 +2,6 @@ const get = require('get-value');
 const set = require('set-value');
 const truncate = require('truncate-utf8-bytes');
 const { MAX_BATCH_SIZE, configFieldsToCheck } = require('./config');
-const logger = require('../../../logger');
 const {
   constructPayload,
   defaultPutRequestConfig,
@@ -11,6 +10,7 @@ const {
   defaultDeleteRequestConfig,
   isAppleFamily,
   validateEmail,
+  validateEventType,
 } = require('../../util');
 
 const { EventType, SpecedTraits, TraitsMapping } = require('../../../constants');
@@ -288,10 +288,7 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
       // 100 - len(`Viewed  Screen`) = 86
       trimmedEvName = `Viewed ${truncate(message.event || message.properties.name, 86)} Screen`;
     } else {
-      if (!evName) {
-        logger.error(`Could not determine event name`);
-        throw new InstrumentationError(`Could not determine event name`);
-      }
+      validateEventType(evName);
       trimmedEvName = truncate(evName, 100);
     }
     // anonymous_id needs to be sent for anon track calls to provide information on which anon user is being tracked

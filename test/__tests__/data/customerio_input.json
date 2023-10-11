@@ -1,6 +1,72 @@
 [
   {
     "message": {
+      "type": "track",
+      "event": {
+        "Phone": "123456677",
+        "Lead ID": "abc",
+        "Lead URL": "https://simplisafe.com/admin/store/leads/19635101/view",
+        "firstName": "david tenenbaum",
+        "Pro Install": "Yes",
+        "Property Type": "Home",
+        "Last Lead Source": "uyfasauya ",
+        "Saved System URL": "ihguwivkbjc"
+      },
+      "userId": "",
+      "channel": "web",
+      "context": {
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "app": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "x.x.x",
+          "namespace": "com.rudderlabs.javascript"
+        },
+        "page": {
+          "path": "/rudderstack-sample-site/",
+          "title": "Keyboard Site",
+          "search": "",
+          "referrer": "$direct",
+          "initial_referrer": "$direct",
+          "referring_domain": "",
+          "initial_referring_domain": ""
+        },
+        "locale": "en-US",
+        "screen": {
+          "width": 1512,
+          "height": 982,
+          "density": 2,
+          "innerWidth": 347,
+          "innerHeight": 778
+        },
+        "traits": {
+          "name": "john ",
+          "lead_id": "abc",
+          "firstName": "doe "
+        },
+        "campaign": {},
+        "sessionId": 123456
+      },
+      "rudderId": "rudder_id",
+      "timestamp": "2022-12-03T18:37:57.755Z",
+      "properties": {},
+      "receivedAt": "2022-12-03T18:37:57.758Z",
+      "request_ip": "62.59.170.125",
+      "anonymousId": "149a7c9f-0778-45f6-b071-d92523cc8738",
+      "originalTimestamp": "2022-12-03T18:37:57.614Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenter": "US",
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "dummyApiKey"
+      }
+    }
+  },
+  {
+    "message": {
       "channel": "web",
       "type": "identify",
       "userId": "cio_1234",

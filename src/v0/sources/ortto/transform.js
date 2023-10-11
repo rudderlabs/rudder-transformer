@@ -15,7 +15,7 @@ function settingProperties(event, message) {
   messageReplica.properties = removeUndefinedAndNullValues(flattenJson(event));
 
   // fields that are already mapped
-  const excludeFields = ['contact.email', 'contact.contact_id', 'id', 'time'];
+  const excludeFields = ['contact.email', 'contact.contact_id', 'id', 'time', 'activity.field_id'];
 
   // deleting already mapped fields
   excludeFields.forEach((field) => {
@@ -47,14 +47,14 @@ function process(event) {
 
   message.setPropertiesV2(event, mapping);
 
-  // Updating timestamp to acceptable timestamp format ["2017-09-01T09:16:17Z" -> "2017-09-01T09:16:17.000Z"]
-  // if (message.originalTimestamp) {
-  //   const date = `${Math.floor(new Date(message.originalTimestamp).getTime() / 1000)}`;
-  //   message.originalTimestamp = new Date(date).toISOString();
-  // }
+  // Updating timestamp to acceptable timestamp format ["2023-10-10T06:24:19.103820974Z" -> "2023-10-10T06:24:19.103820974Z"]
+  if (message.originalTimestamp) {
+    const date = `${Math.floor(new Date(message.originalTimestamp).getTime() / 1000)}`;
+    message.originalTimestamp = new Date(date * 1000).toISOString();
+  }
 
   // setting event Name
-  message.setEventName(eventMapping[event.activity.field_ids]);
+  message.setEventName(eventMapping[event.activity.field_id]);
 
   // setting up ortto contact.contact_id to externalId
   if (event.user?.id) {

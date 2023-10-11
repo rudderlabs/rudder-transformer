@@ -52,6 +52,7 @@ export const data = [
                     integration: { name: 'ortto' },
                     traits: { email: 'abhi@example.com' },
                   },
+                  event: 'Resubscribe globally',
                   integrations: { ortto: false },
                   type: 'track',
                   anonymousId: '97fcd7b2-cc24-47d7-b776-057b7b199513',
@@ -59,7 +60,6 @@ export const data = [
                   originalTimestamp: '2023-10-03T04:11:24.000Z',
                   properties: {
                     'activity.id': '00651b946bfef7e80478efee',
-                    'activity.field_id': 'act::s-all',
                     'activity.created': '2023-10-03T04:11:23Z',
                     'activity.attr.str::is': 'API',
                     'activity.attr.str::s-ctx': 'Subscribed via API',

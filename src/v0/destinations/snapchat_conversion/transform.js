@@ -47,6 +47,30 @@ function buildResponse(apiKey, payload) {
   response.body.JSON = removeUndefinedAndNullValues(payload);
   return response;
 }
+const populateHashedTraitsValues = (payload, message) => {
+  const firstName = getFieldValueFromMessage(message, 'firstName');
+  const lastName = getFieldValueFromMessage(message, 'lastName');
+  const middleName = getFieldValueFromMessage(message, 'middleName');
+  const city = getFieldValueFromMessage(message, 'city');
+  const state = getFieldValueFromMessage(message, 'state');
+  const zip = getFieldValueFromMessage(message, 'zipcode');
+  const updatedPayload = {
+    ...payload,
+    hashed_first_name_sha: firstName
+      ? getHashedValue(firstName.toString().toLowerCase().trim())
+      : undefined,
+    hashed_middle_name_sha: middleName
+      ? getHashedValue(middleName.toString().toLowerCase().trim())
+      : undefined,
+    hashed_last_name_sha: lastName
+      ? getHashedValue(lastName.toString().toLowerCase().trim())
+      : undefined,
+    hashed_city_sha: city ? getHashedValue(city.toString().toLowerCase().trim()) : undefined,
+    hashed_zip: zip ? getHashedValue(zip.toString().toLowerCase().trim()) : undefined,
+    hashed_state_sha: state ? getHashedValue(state.toString().toLowerCase().trim()) : undefined,
+  };
+  return updatedPayload;
+};
 
 /**
  * Seperate out hashing operations into one function
@@ -54,12 +78,12 @@ function buildResponse(apiKey, payload) {
  * @param {*} message
  * @returns updatedPayload
  */
-function populateHashedValues(payload, message) {
-  const updatedPayload = payload;
+const populateHashedValues = (payload, message) => {
   const email = getFieldValueFromMessage(message, 'email');
   const phone = getNormalizedPhoneNumber(message);
   const ip = message.context?.ip || message.request_ip;
 
+  const updatedPayload = populateHashedTraitsValues(payload, message);
   if (email) {
     updatedPayload.hashed_email = getHashedValue(email.toString().toLowerCase().trim());
   }
@@ -85,14 +109,82 @@ function populateHashedValues(payload, message) {
     );
   }
   return updatedPayload;
-}
+};
+const getEventProperties = (message) => ({
+  description: get(message, 'properties.description'),
+  brands: Array.isArray(message.properties?.brands) ? get(message, 'properties.brands') : undefined,
+  customer_status: get(message, 'properties.customer_status'),
+  uuid_c1: get(message, 'properties.uuid_c1'),
+  level: get(message, 'properties.level'),
+  click_id: get(message, 'properties.click_id'),
+  event_tag: get(message, 'properties.event_tag'),
+  country: getFieldValueFromMessage(message, 'country'),
+  region: getFieldValueFromMessage(message, 'region'),
+  user_agent: message.context?.userAgent?.toString()?.toLowerCase(),
+});
+const validateEventConfiguration = (eventConversionType, pixelId, snapAppId, appId) => {
+  if ((eventConversionType === 'WEB' || eventConversionType === 'OFFLINE') && !pixelId) {
+    throw new ConfigurationError('Pixel Id is required for web and offline events');
+  }
 
-// Returns the response for the track event after constructing the payload and setting necessary fields
-function trackResponseBuilder(message, { Config }, mappedEvent) {
-  let payload = {};
-  const event = mappedEvent.trim().replace(/\s+/g, '_');
+  if (eventConversionType === 'MOBILE_APP' && !(appId && snapAppId)) {
+    let requiredId = 'App Id';
+    if (!snapAppId) {
+      requiredId = 'Snap App Id';
+    }
+    throw new ConfigurationError(`${requiredId} is required for app events`);
+  }
+};
+const validateRequiredFields = (payload) => {
+  if (
+    !payload.hashed_email &&
+    !payload.hashed_phone_number &&
+    !payload.hashed_mobile_ad_id &&
+    !(payload.hashed_ip_address && payload.user_agent)
+  ) {
+    throw new InstrumentationError(
+      'At least one of email or phone or advertisingId or ip and userAgent is required',
+    );
+  }
+};
+const addSpecificEventDetails = (
+  message,
+  payload,
+  eventConversionType,
+  pixelId,
+  snapAppId,
+  appId,
+) => {
+  const updatedPayload = { ...payload };
+  if (eventConversionType === 'WEB') {
+    updatedPayload.pixel_id = pixelId;
+    updatedPayload.page_url = getFieldValueFromMessage(message, 'pageUrl');
+  }
 
-  const { apiKey, pixelId, snapAppId, appId, deduplicationKey, enableDeduplication } = Config;
+  if (eventConversionType === 'MOBILE_APP') {
+    updatedPayload.snap_app_id = snapAppId;
+    updatedPayload.app_id = appId;
+  }
+
+  if (eventConversionType === 'OFFLINE') {
+    updatedPayload.pixel_id = pixelId;
+  }
+  return updatedPayload;
+};
+const handleDeduplication = (payload, enableDeduplication, deduplicationKey, message) => {
+  if (enableDeduplication) {
+    const dedupId = deduplicationKey || 'messageId';
+    const clientDedupId = get(message, dedupId);
+    if (!clientDedupId) {
+      throw new InstrumentationError(
+        'Deduplication enabled but no deduplication key provided in the message',
+      );
+    }
+    return clientDedupId;
+  }
+  return undefined;
+};
+const getEventConversionType = (message) => {
   const channel = get(message, 'channel');
   let eventConversionType = message?.properties?.eventConversionType;
   if (
@@ -105,18 +197,16 @@ function trackResponseBuilder(message, { Config }, mappedEvent) {
   } else {
     eventConversionType = 'OFFLINE';
   }
+  return eventConversionType;
+};
 
-  if ((eventConversionType === 'WEB' || eventConversionType === 'OFFLINE') && !pixelId) {
-    throw new ConfigurationError('Pixel Id is required for web and offline events');
-  }
-
-  if (eventConversionType === 'MOBILE_APP' && !(appId && snapAppId)) {
-    if (!appId) {
-      throw new ConfigurationError('App Id is required for app events');
-    } else {
-      throw new ConfigurationError('Snap App Id is required for app events');
-    }
-  }
+// Returns the response for the track event after constructing the payload and setting necessary fields
+const trackResponseBuilder = (message, { Config }, mappedEvent) => {
+  let payload = {};
+  const event = mappedEvent.trim().replace(/\s+/g, '_');
+  const eventConversionType = getEventConversionType(message);
+  const { apiKey, pixelId, snapAppId, appId, deduplicationKey, enableDeduplication } = Config;
+  validateEventConfiguration(eventConversionType, pixelId, snapAppId, appId);
 
   if (eventNameMapping[event.toLowerCase()]) {
     // Snapchat standard events
@@ -192,21 +282,9 @@ function trackResponseBuilder(message, { Config }, mappedEvent) {
     throw new InstrumentationError(`Event ${event} doesn't match with Snapchat Events!`);
   }
 
-  payload.event_tag = get(message, 'properties.event_tag');
+  payload = { ...payload, ...getEventProperties(message) };
   payload = populateHashedValues(payload, message);
-
-  payload.user_agent = message.context?.userAgent?.toString().toLowerCase();
-
-  if (
-    !payload.hashed_email &&
-    !payload.hashed_phone_number &&
-    !payload.hashed_mobile_ad_id &&
-    !(payload.hashed_ip_address && payload.user_agent)
-  ) {
-    throw new InstrumentationError(
-      'At least one of email or phone or advertisingId or ip and userAgent is required',
-    );
-  }
+  validateRequiredFields(payload);
   payload.timestamp = getFieldValueFromMessage(message, 'timestamp');
   const timeStamp = payload.timestamp;
   if (timeStamp) {
@@ -224,17 +302,15 @@ function trackResponseBuilder(message, { Config }, mappedEvent) {
   }
 
   payload.event_conversion_type = eventConversionType;
-  if (eventConversionType === 'WEB') {
-    payload.pixel_id = pixelId;
-    payload.page_url = getFieldValueFromMessage(message, 'pageUrl');
-  }
-  if (eventConversionType === 'MOBILE_APP') {
-    payload.snap_app_id = snapAppId;
-    payload.app_id = appId;
-  }
-  if (eventConversionType === 'OFFLINE') {
-    payload.pixel_id = pixelId;
-  }
+  payload = addSpecificEventDetails(
+    message,
+    payload,
+    eventConversionType,
+    pixelId,
+    snapAppId,
+    appId,
+  );
+  payload.client_dedup_id = handleDeduplication(enableDeduplication, deduplicationKey, message);
 
   // adding for deduplication for more than one source
   if (enableDeduplication) {
@@ -246,10 +322,10 @@ function trackResponseBuilder(message, { Config }, mappedEvent) {
   // build response
   const response = buildResponse(apiKey, payload);
   return response;
-}
+};
 
 // Checks if there are any mapping events for the track event and returns them
-function eventMappingHandler(message, destination) {
+const eventMappingHandler = (message, destination) => {
   let event = get(message, 'event');
 
   if (!event) {
@@ -276,9 +352,9 @@ function eventMappingHandler(message, destination) {
   }
 
   return [...mappedEvents];
-}
+};
 
-function process(event) {
+const process = (event) => {
   const { message, destination } = event;
   // const message = { ...incomingMessage };
   if (!message.type) {
@@ -304,7 +380,7 @@ function process(event) {
     throw new InstrumentationError(`Event type ${messageType} is not supported`);
   }
   return response;
-}
+};
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const errorRespEvents = checkInvalidRtTfEvents(inputs);

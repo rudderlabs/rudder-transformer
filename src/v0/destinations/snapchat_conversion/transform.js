@@ -127,12 +127,12 @@ const validateEventConfiguration = (eventConversionType, pixelId, snapAppId, app
     throw new ConfigurationError('Pixel Id is required for web and offline events');
   }
 
-  if (eventConversionType === 'MOBILE_APP' && !(appId && snapAppId)) {
-    if (!appId) {
-      throw new ConfigurationError('App Id is required for app events');
-    } else {
-      throw new ConfigurationError('Snap App Id is required for app events');
+  if (eventConversionType === 'MOBILE_APP') {
+    let requiredId = "App Id"
+    if (!snapAppId) {
+      requiredId = "Snap App Id"
     }
+    throw new ConfigurationError(`${requiredId} is required for app events`);
   }
 };
 const validateRequiredFields = (payload) => {

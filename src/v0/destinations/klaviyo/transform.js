@@ -363,14 +363,18 @@ const processRouterDest = async (inputs, reqMetadata) => {
       message?.statusCode &&
       message.statusCode === HTTP_STATUS_CODES.SUPPRESS_EVENTS
     ) {
+      const { error } = message;
+      delete message.error;
       delete message.statusCode;
-      return getSuccessRespEvents(
-        message,
-        [metadata],
-        eventDestination,
-        false,
-        HTTP_STATUS_CODES.SUPPRESS_EVENTS,
-      );
+      return {
+        ...getSuccessRespEvents(
+          message,
+          [metadata],
+          eventDestination,
+          false,
+          HTTP_STATUS_CODES.SUPPRESS_EVENTS,
+        ), error
+      }
     }
     return getSuccessRespEvents(message, [metadata], eventDestination);
   });

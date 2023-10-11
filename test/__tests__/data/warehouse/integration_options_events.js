@@ -8,7 +8,7 @@ const _ = require("lodash");
  * SNOWFLAKE: skip tracks, use blendo
  *    no tracks
  *    path to $1,000,000 -> PATH_TO_$1_000_000; 9omega -> _9OMEGA; camelCase123Key -> CAMELCASE123KEY
- * S3_DATALAKE: skip eescaping
+ * S3_DATALAKE: skip escaping
  *    tracks table present
  *    no escaping on reserved keywords groups,timestamp
  *    path to $1,000,000 -> path_to_1_000_000; 9omega -> _9_omega; camelCase123Key -> camel_case_123_key

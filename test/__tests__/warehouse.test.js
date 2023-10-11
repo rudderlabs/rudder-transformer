@@ -7,6 +7,7 @@ const {
   opInput,
   opOutput
 } = require(`./data/warehouse/integration_options_events.js`);
+const destConfig = require(`./data/warehouse/dest_config_scenarios.js`);
 const { names } = require(`./data/warehouse/names.js`);
 const {
   largeNoOfColumnsevent
@@ -1002,6 +1003,29 @@ describe("Add receivedAt for events missing it", () => {
         expect(received[0].data).toHaveProperty(
           integrationCasedString(integrations[index], "received_at")
         );
+      });
+    });
+  });
+});
+
+describe("Destination config options", () => {
+  destConfig.scenarios().forEach(scenario => {
+    it(scenario.name, () => {
+      if (scenario.skipUsersTable !== null) {
+        scenario.event.destination.Config.skipUsersTable = scenario.skipUsersTable
+      }
+      if (scenario.skipTracksTable !== null) {
+        scenario.event.destination.Config.skipTracksTable = scenario.skipTracksTable
+      }
+
+      transformers.forEach((transformer, index) => {
+        const received = transformer.process(scenario.event);
+        expect(received).toHaveLength(scenario.expected.length);
+        for (const i in received) {
+          const evt = received[i];
+          expect(evt.data.id ? evt.data.id : evt.data.ID).toEqual(scenario.expected[i].id);
+          expect(evt.metadata.table.toLowerCase()).toEqual(scenario.expected[i].table);
+        }
       });
     });
   });

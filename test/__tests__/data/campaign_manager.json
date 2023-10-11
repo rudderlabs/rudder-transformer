@@ -352,7 +352,7 @@
     }
   },
   {
-    "description": "Track - batch insert Call failure",
+    "description": "Track - batch insert Call failure none of gclid, matcId are present",
     "input": {
       "message": {
         "channel": "sources",
@@ -403,7 +403,7 @@
     }
   },
   {
-    "description": "Track - batch insert Call",
+    "description": "Track - batch insert Call with only matchId",
     "input": {
       "message": {
         "channel": "web",
@@ -527,7 +527,7 @@
     }
   },
   {
-    "description": "Track - batch insert Call",
+    "description": "Track - batch insert Call timestamp in unix",
     "input": {
       "message": {
         "channel": "web",

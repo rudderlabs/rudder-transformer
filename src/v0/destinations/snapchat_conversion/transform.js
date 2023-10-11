@@ -47,17 +47,7 @@ function buildResponse(apiKey, payload) {
   response.body.JSON = removeUndefinedAndNullValues(payload);
   return response;
 }
-
-/**
- * Seperate out hashing operations into one function
- * @param {*} payload
- * @param {*} message
- * @returns updatedPayload
- */
-const populateHashedValues = (payload, message) => {
-  const email = getFieldValueFromMessage(message, 'email');
-  const phone = getNormalizedPhoneNumber(message);
-  const ip = message.context?.ip || message.request_ip;
+const populateHashedTraitsValues = (payload, message) => {
   const firstName = getFieldValueFromMessage(message, 'firstName');
   const lastName = getFieldValueFromMessage(message, 'lastName');
   const middleName = getFieldValueFromMessage(message, 'middleName');
@@ -79,6 +69,21 @@ const populateHashedValues = (payload, message) => {
     hashed_zip: zip ? getHashedValue(zip.toString().toLowerCase().trim()) : undefined,
     hashed_state_sha: state ? getHashedValue(state.toString().toLowerCase().trim()) : undefined,
   };
+  return updatedPayload;
+};
+
+/**
+ * Seperate out hashing operations into one function
+ * @param {*} payload
+ * @param {*} message
+ * @returns updatedPayload
+ */
+const populateHashedValues = (payload, message) => {
+  const email = getFieldValueFromMessage(message, 'email');
+  const phone = getNormalizedPhoneNumber(message);
+  const ip = message.context?.ip || message.request_ip;
+
+  const updatedPayload = populateHashedTraitsValues(payload, message);
   if (email) {
     updatedPayload.hashed_email = getHashedValue(email.toString().toLowerCase().trim());
   }

@@ -933,6 +933,7 @@
         "type": "track",
         "event": "Order Completed",
         "properties": {
+          "brands": ["brand01", "brand02"],
           "products": [
             {
               "product_id": "123",
@@ -940,7 +941,7 @@
               "quantity": 1
             },
             {
-              "product_id": "123",
+              "product_id": "124",
               "price": 14,
               "quantity": 3
             }
@@ -973,7 +974,8 @@
       "body": {
         "JSON": {
           "event_type": "PURCHASE",
-          "item_ids": ["123", "123"],
+          "item_ids": ["123", "124"],
+          "brands": ["brand01", "brand02"],
           "price": "56",
           "hashed_email": "73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2",
           "hashed_phone_number": "bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492",

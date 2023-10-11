@@ -72,7 +72,28 @@ function processTrack(message, metadata, destination) {
     delete requestJson.childDirectedTreatment;
     delete requestJson.limitAdTracking;
   }
-  requestJson.timestampMicros = requestJson.timestampMicros.toString();
+
+  // for handling when input is timestamp as string
+  const numTimestamp = /^\d+$/.test(requestJson.timestampMicros);
+  if (numTimestamp) {
+    // is digit only, below convert string timestamp to numeric
+    requestJson.timestampMicros *= 1;
+  }
+
+  // 2022-10-11T05:453:90.ZZ
+  // 16483423423423423
+  const date = new Date(requestJson.timestampMicros);
+  let unixTimestamp = date.getTime();
+  // Date, moment both are not able to distinguish input if it is second,millisecond or microsecond unix timestamp
+  // Using count of digits to distinguish between these 3, 9999999999999 (13 digits) means Nov 20 2286 which is long far in future
+  if (unixTimestamp.toString().length === 13) {
+    // milliseconds
+    unixTimestamp *= 1000;
+  } else if (unixTimestamp.toString().length === 10) {
+    // seconds
+    unixTimestamp *= 1000000;
+  }
+  requestJson.timestampMicros = unixTimestamp.toString();
 
   const encryptionInfo = {};
   // prepare encrptionInfo if encryptedUserId or encryptedUserIdCandidates is given
@@ -138,35 +159,17 @@ function postValidateRequest(response) {
     );
   }
 
-  let count = 0;
-
-  if (response.body.JSON.conversions[0].gclid) {
-    count += 1;
-  }
-
-  if (response.body.JSON.conversions[0].dclid) {
-    count += 1;
-  }
-
-  if (response.body.JSON.conversions[0].encryptedUserId) {
-    count += 1;
-  }
-
-  if (response.body.JSON.conversions[0].encryptedUserIdCandidates) {
-    count += 1;
-  }
-
-  if (response.body.JSON.conversions[0].mobileDeviceId) {
-    count += 1;
-  }
-
-  if (response.body.JSON.conversions[0].impressionId) {
-    count += 1;
-  }
-
-  if (count !== 1) {
+  if (
+    !response.body.JSON.conversions[0].gclid &&
+    !response.body.JSON.conversions[0].matchId &&
+    !response.body.JSON.conversions[0].dclid &&
+    !response.body.JSON.conversions[0].encryptedUserId &&
+    !response.body.JSON.conversions[0].encryptedUserIdCandidates &&
+    !response.body.JSON.conversions[0].mobileDeviceId &&
+    !response.body.JSON.conversions[0].impressionId
+  ) {
     throw new InstrumentationError(
-      '[CAMPAIGN MANAGER (DCM)]: For CM360 we need one of encryptedUserId,encryptedUserIdCandidates, matchId, mobileDeviceId, gclid, dclid, impressionId.',
+      '[CAMPAIGN MANAGER (DCM)]: Atleast one of encryptedUserId,encryptedUserIdCandidates, matchId, mobileDeviceId, gclid, dclid, impressionId.',
     );
   }
 }

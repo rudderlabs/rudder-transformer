@@ -154,6 +154,7 @@ module.exports = {
     '**/integrations/**/*.(test).[j]s?(x)',
     '**/util/**/*.(test).[j]s?(x)',
     '**/*.(test).[j]s?(x)',
+    '**/*.(test).ts?(x)',
   ],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped

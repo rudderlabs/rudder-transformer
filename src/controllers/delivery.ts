@@ -1,15 +1,15 @@
 import { Context } from 'koa';
-import MiscService from '../services/misc';
+import { MiscService } from '../services/misc';
 import { DeliveryResponse, ProcessorTransformationOutput } from '../types/index';
-import ServiceSelector from '../helpers/serviceSelector';
-import DeliveryTestService from '../services/delivertTest/deliveryTest';
-import ControllerUtility from './util';
+import { ServiceSelector } from '../helpers/serviceSelector';
+import { DeliveryTestService } from '../services/delivertTest/deliveryTest';
+import { ControllerUtility } from './util';
 import logger from '../logger';
-import DestinationPostTransformationService from '../services/destination/postTransformation';
+import { DestinationPostTransformationService } from '../services/destination/postTransformation';
 import tags from '../v0/util/tags';
 import { FixMe } from '../util/types';
 
-export default class DeliveryController {
+export class DeliveryController {
   public static async deliverToDestination(ctx: Context) {
     logger.debug('Native(Delivery):: Request to transformer::', JSON.stringify(ctx.request.body));
     let deliveryResponse: DeliveryResponse;

@@ -1,12 +1,13 @@
+/* eslint-disable import/prefer-default-export */
 /* eslint-disable global-require, import/no-dynamic-require */
 import fs from 'fs';
 import path from 'path';
 import { Context } from 'koa';
+import { Metadata } from 'rs-integration-lib';
 import { DestHandlerMap } from '../constants/destinationCanonicalNames';
-import { Metadata } from '../types';
 import { getCPUProfile, getHeapProfile } from '../middleware';
 
-export default class MiscService {
+export class MiscService {
   public static getDestHandler(dest: string, version: string) {
     if (DestHandlerMap.hasOwnProperty(dest)) {
       return require(`../${version}/destinations/${DestHandlerMap[dest]}/transform`);

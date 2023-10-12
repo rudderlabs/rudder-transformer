@@ -4,9 +4,7 @@
     "input": {
       "id": "shopify_test3",
       "query_parameters": {
-        "topic": [
-          "carts_create"
-        ]
+        "topic": ["carts_create"]
       },
       "token": "shopify_test3",
       "line_items": [],
@@ -33,12 +31,8 @@
     "description": "Invalid topic",
     "input": {
       "query_parameters": {
-        "signature": [
-          "rudderstack"
-        ],
-        "writeKey": [
-          "sample-write-key"
-        ]
+        "signature": ["rudderstack"],
+        "writeKey": ["sample-write-key"]
       }
     },
     "output": {
@@ -50,12 +44,8 @@
     "input": {
       "query_parameters": {
         "topic": [],
-        "signature": [
-          "rudderstack"
-        ],
-        "writeKey": [
-          "sample-write-key"
-        ]
+        "signature": ["rudderstack"],
+        "writeKey": ["sample-write-key"]
       }
     },
     "output": {
@@ -66,15 +56,9 @@
     "description": "Unsupported Event Type",
     "input": {
       "query_parameters": {
-        "topic": [
-          "random_event"
-        ],
-        "signature": [
-          "rudderstack"
-        ],
-        "writeKey": [
-          "sample-write-key"
-        ]
+        "topic": ["random_event"],
+        "signature": ["rudderstack"],
+        "writeKey": ["sample-write-key"]
       }
     },
     "output": {
@@ -89,15 +73,9 @@
     "description": "Identify Call for customers create event",
     "input": {
       "query_parameters": {
-        "topic": [
-          "customers_create"
-        ],
-        "signature": [
-          "rudderstack"
-        ],
-        "writeKey": [
-          "sample-write-key"
-        ]
+        "topic": ["customers_create"],
+        "signature": ["rudderstack"],
+        "writeKey": ["sample-write-key"]
       },
       "id": 5747017285820,
       "email": "anuraj@rudderstack.com",
@@ -256,15 +234,9 @@
     "description": "Unsupported checkout event",
     "input": {
       "query_parameters": {
-        "topic": [
-          "checkout_delete"
-        ],
-        "writeKey": [
-          "sample-write-key"
-        ],
-        "signature": [
-          "rudderstack"
-        ]
+        "topic": ["checkout_delete"],
+        "writeKey": ["sample-write-key"],
+        "signature": ["rudderstack"]
       },
       "admin_graphql_api_id": "gid://shopify/Fulfillment/4124667937024",
       "created_at": "2022-01-05T18:13:02+05:30",
@@ -292,13 +264,9 @@
       "status": "success",
       "tracking_company": "Amazon Logistics UK",
       "tracking_number": "Sample001test",
-      "tracking_numbers": [
-        "Sample001test"
-      ],
+      "tracking_numbers": ["Sample001test"],
       "tracking_url": "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530",
-      "tracking_urls": [
-        "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530"
-      ],
+      "tracking_urls": ["https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530"],
       "updated_at": "2022-01-05T18:16:48+05:30"
     },
     "output": {
@@ -313,15 +281,9 @@
     "description": "Track Call -> Fullfillments updated event",
     "input": {
       "query_parameters": {
-        "topic": [
-          "fulfillments_update"
-        ],
-        "writeKey": [
-          "sample-write-key"
-        ],
-        "signature": [
-          "rudderstack"
-        ]
+        "topic": ["fulfillments_update"],
+        "writeKey": ["sample-write-key"],
+        "signature": ["rudderstack"]
       },
       "shipping_address": {
         "address1": "11 Rani Sankari Lane Patuapara Bhowanipore"
@@ -420,13 +382,9 @@
       "status": "success",
       "tracking_company": "Amazon Logistics UK",
       "tracking_number": "Sample001test",
-      "tracking_numbers": [
-        "Sample001test"
-      ],
+      "tracking_numbers": ["Sample001test"],
       "tracking_url": "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530",
-      "tracking_urls": [
-        "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530"
-      ],
+      "tracking_urls": ["https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530"],
       "updated_at": "2022-01-05T18:16:48+05:30"
     },
     "output": {
@@ -462,9 +420,7 @@
         "status": "success",
         "tracking_company": "Amazon Logistics UK",
         "tracking_number": "Sample001test",
-        "tracking_numbers": [
-          "Sample001test"
-        ],
+        "tracking_numbers": ["Sample001test"],
         "tracking_url": "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530",
         "tracking_urls": [
           "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530"

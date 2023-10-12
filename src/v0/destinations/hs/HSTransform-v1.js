@@ -1,4 +1,9 @@
 const get = require('get-value');
+const {
+  InstrumentationError,
+  ConfigurationError,
+  TransformationError,
+} = require('rs-integration-lib');
 const lodash = require('lodash');
 const { MappedToDestinationKey, GENERIC_TRUE_VALUES } = require('../../../constants');
 const {
@@ -14,11 +19,6 @@ const {
   getDestinationExternalID,
   getDestinationExternalIDInfoForRetl,
 } = require('../../util');
-const {
-  InstrumentationError,
-  ConfigurationError,
-  TransformationError,
-} = require('rs-integration-lib');
 const {
   BATCH_CONTACT_ENDPOINT,
   MAX_BATCH_SIZE,

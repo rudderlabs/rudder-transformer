@@ -1,6 +1,6 @@
 import Router from '@koa/router';
-import DeliveryController from '../controllers/delivery';
-import RouteActivationMiddleware from '../middlewares/routeActivation';
+import { DeliveryController } from '../controllers/delivery';
+import { RouteActivationMiddleware } from '../middlewares/routeActivation';
 
 const router = new Router();
 

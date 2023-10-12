@@ -1,4 +1,5 @@
 const get = require('get-value');
+const { InstrumentationError } = require('rs-integration-lib');
 const { EventType } = require('../../../constants');
 const {
   checkInvalidRtTfEvents,
@@ -19,7 +20,6 @@ const {
   getProperties,
   validateDestinationConfig,
 } = require('./util');
-const { InstrumentationError } = require('rs-integration-lib');
 
 const processSingleMessage = async (message, destination, propertyMap) => {
   if (!message.type) {

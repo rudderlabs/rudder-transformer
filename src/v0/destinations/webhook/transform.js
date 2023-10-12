@@ -1,6 +1,7 @@
 /* eslint-disable no-nested-ternary */
 const get = require('get-value');
 const set = require('set-value');
+const { ConfigurationError } = require('rs-integration-lib');
 const {
   defaultPostRequestConfig,
   defaultPutRequestConfig,
@@ -17,7 +18,6 @@ const {
 } = require('../../util');
 
 const { EventType } = require('../../../constants');
-const { ConfigurationError } = require('rs-integration-lib');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const getPropertyParams = (message) => {
@@ -139,9 +139,7 @@ const processEvent = (event) => {
     // }
     if (
       (appendPath && typeof appendPath === 'string') ||
-      (integrationsObj &&
-        integrationsObj.appendPath &&
-        typeof integrationsObj.appendPath === 'string')
+      (integrationsObj?.appendPath && typeof integrationsObj.appendPath === 'string')
     ) {
       response.endpoint += appendPath || integrationsObj.appendPath;
       delete message.appendPath;
@@ -159,7 +157,13 @@ const process = (event) => {
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const destNameRichInputs = inputs.map((input) => ({ ...input, DESTINATION }));
-  const respList = await simpleProcessRouterDest(destNameRichInputs, processEvent, reqMetadata);
+  const respList = await simpleProcessRouterDest(
+    destNameRichInputs,
+    processEvent,
+    reqMetadata,
+    undefined,
+    true,
+  );
   return respList;
 };
 

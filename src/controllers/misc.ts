@@ -1,7 +1,7 @@
 import { Context } from 'koa';
-import MiscService from '../services/misc';
+import { MiscService } from '../services/misc';
 
-export default class MiscController {
+export class MiscController {
   public static healthStats(ctx: Context) {
     ctx.body = MiscService.getHealthInfo();
     ctx.status = 200;

@@ -1,26 +1,26 @@
 import Router from '@koa/router';
-import DestinationController from '../controllers/destination';
-import RegulationController from '../controllers/regulation';
-import RouteActivationController from '../middlewares/routeActivation';
+import { DestinationController } from '../controllers/destination';
+import { RegulationController } from '../controllers/regulation';
+import { RouteActivationMiddleware } from '../middlewares/routeActivation';
 
 const router = new Router();
 
 router.post(
   '/:version/destinations/:destination',
-  RouteActivationController.isDestinationRouteActive,
-  RouteActivationController.destinationProcFilter,
+  RouteActivationMiddleware.isDestinationRouteActive,
+  RouteActivationMiddleware.destinationProcFilter,
   DestinationController.destinationTransformAtProcessor,
 );
 router.post(
   '/routerTransform',
-  RouteActivationController.isDestinationRouteActive,
-  RouteActivationController.destinationRtFilter,
+  RouteActivationMiddleware.isDestinationRouteActive,
+  RouteActivationMiddleware.destinationRtFilter,
   DestinationController.destinationTransformAtRouter,
 );
 router.post(
   '/batch',
-  RouteActivationController.isDestinationRouteActive,
-  RouteActivationController.destinationBatchFilter,
+  RouteActivationMiddleware.isDestinationRouteActive,
+  RouteActivationMiddleware.destinationBatchFilter,
   DestinationController.batchProcess,
 );
 

@@ -20,7 +20,7 @@ import stats from '../util/stats';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CatchErr, FixMe } from '../util/types';
 
-export default class UserTransformService {
+export class UserTransformService {
   public static async transformRoutine(
     events: ProcessorTransformationRequest[],
   ): Promise<UserTransformationServiceResponse> {
@@ -43,9 +43,9 @@ export default class UserTransformService {
     const responses = await Promise.all<FixMe>(
       Object.entries(groupedEvents).map(async ([dest, destEvents]) => {
         logger.debug(`dest: ${dest}`);
-        const eventsToProcess = destEvents as ProcessorTransformationRequest[];
+        const eventsToProcess = destEvents as any;
         const transformationVersionId =
-          eventsToProcess[0]?.destination?.Transformations[0]?.VersionID;
+          eventsToProcess[0].destination?.Transformations[0]?.VersionID;
         const messageIds = eventsToProcess.map((ev) => ev.metadata?.messageId);
 
         const commonMetadata = {

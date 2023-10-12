@@ -493,42 +493,44 @@
   "output": {
     "output": [
       {
-        "batchedRequest": {
-          "version": "1",
-          "type": "REST",
-          "method": "POST",
-          "endpoint": "https://webhook.site/0d50d7b8-46fb-448e-bb53-52c216366a76",
-          "headers": {
-            "content-type": "application/json"
-          },
-          "params": {},
-          "body": {
-            "JSON": {
-              "type": "identify",
-              "sentAt": "2022-12-24T20:51:05.905+05:30",
-              "userId": "testUser",
-              "context": {
-                "traits": {
-                  "name": "Alex Mamoa",
-                  "email": "alex_mamoa@example.com",
-                  "last_name": "Mamoa",
-                  "first_name": "Alex"
-                },
-                "ip": "[::1]"
-              },
-              "rudderId": "ea17ae1d-6c6e-49ed-b8e0-f01eeeff2b04",
-              "messageId": "8dc410b3-4e97-4c0c-8761-5a01172794d8",
-              "timestamp": "2022-04-27T13:56:13.012Z",
-              "receivedAt": "2022-12-24T20:51:02.808+05:30",
-              "request_ip": "[::1]",
-              "originalTimestamp": "2022-12-24T20:51:05.905+05:30"
+        "batchedRequest": [
+          {
+            "version": "1",
+            "type": "REST",
+            "method": "POST",
+            "endpoint": "https://webhook.site/0d50d7b8-46fb-448e-bb53-52c216366a76",
+            "headers": {
+              "content-type": "application/json"
             },
-            "JSON_ARRAY": {},
-            "XML": {},
-            "FORM": {}
-          },
-          "files": {}
-        },
+            "params": {},
+            "body": {
+              "JSON": {
+                "type": "identify",
+                "sentAt": "2022-12-24T20:51:05.905+05:30",
+                "userId": "testUser",
+                "context": {
+                  "traits": {
+                    "name": "Alex Mamoa",
+                    "email": "alex_mamoa@example.com",
+                    "last_name": "Mamoa",
+                    "first_name": "Alex"
+                  },
+                  "ip": "[::1]"
+                },
+                "rudderId": "ea17ae1d-6c6e-49ed-b8e0-f01eeeff2b04",
+                "messageId": "8dc410b3-4e97-4c0c-8761-5a01172794d8",
+                "timestamp": "2022-04-27T13:56:13.012Z",
+                "receivedAt": "2022-12-24T20:51:02.808+05:30",
+                "request_ip": "[::1]",
+                "originalTimestamp": "2022-12-24T20:51:05.905+05:30"
+              },
+              "JSON_ARRAY": {},
+              "XML": {},
+              "FORM": {}
+            },
+            "files": {}
+          }
+        ],
         "metadata": [
           {
             "userId": "<<>>testUser<<>>testUser",
@@ -606,7 +608,7 @@
             "workerAssignedTime": "2022-12-24T20:51:06.92116+05:30"
           }
         ],
-        "batched": false,
+        "batched": true,
         "statusCode": 200,
         "destination": {
           "ID": "2JH9GMQf2YFJFaTw7rz1pxHAJPx",
@@ -652,61 +654,63 @@
         }
       },
       {
-        "batchedRequest": {
-          "version": "1",
-          "type": "REST",
-          "method": "POST",
-          "endpoint": "https://webhook.site/0d50d7b8-46fb-448e-bb53-52c216366a76",
-          "headers": {
-            "content-type": "application/json"
-          },
-          "params": {},
-          "body": {
-            "JSON": {
-              "type": "track",
-              "event": "Product Added",
-              "sentAt": "2022-12-24T20:51:05.905+05:30",
-              "userId": "testUser",
-              "channel": "offline",
-              "context": {
-                "traits": {
-                  "email": "test.c97@gmail.com",
-                  "phone": "+919876543210",
-                  "gender": "Male",
-                  "lastName": "Rudderlabs",
-                  "firstName": "test"
-                },
-                "ip": "[::1]"
-              },
-              "rudderId": "4b68d6ea-57ad-4f2c-8b1d-8e037ee7becf",
-              "messageId": "009a332d-9c07-4132-a293-0aca0e62755c",
-              "timestamp": "2022-12-24T20:51:02.807+05:30",
-              "properties": {
-                "sku": "F15",
-                "url": "https://www.website.com/product/path",
-                "name": "Game",
-                "brand": "Gamepro",
-                "price": 13.49,
-                "coupon": "DISC21",
-                "variant": "111",
-                "category": "Games",
-                "position": 1,
-                "quantity": 11,
-                "image_url": "https://www.website.com/product/path.png",
-                "product_id": "123"
-              },
-              "receivedAt": "2022-12-24T20:51:02.808+05:30",
-              "request_ip": "[::1]",
-              "anonymousId": "anon-id",
-              "originalTimestamp": "2022-12-24T20:51:05.905+05:30"
+        "batchedRequest": [
+          {
+            "version": "1",
+            "type": "REST",
+            "method": "POST",
+            "endpoint": "https://webhook.site/0d50d7b8-46fb-448e-bb53-52c216366a76",
+            "headers": {
+              "content-type": "application/json"
             },
-            "JSON_ARRAY": {},
-            "XML": {},
-            "FORM": {}
-          },
-          "files": {},
-          "userId": "anon-id"
-        },
+            "params": {},
+            "body": {
+              "JSON": {
+                "type": "track",
+                "event": "Product Added",
+                "sentAt": "2022-12-24T20:51:05.905+05:30",
+                "userId": "testUser",
+                "channel": "offline",
+                "context": {
+                  "traits": {
+                    "email": "test.c97@gmail.com",
+                    "phone": "+919876543210",
+                    "gender": "Male",
+                    "lastName": "Rudderlabs",
+                    "firstName": "test"
+                  },
+                  "ip": "[::1]"
+                },
+                "rudderId": "4b68d6ea-57ad-4f2c-8b1d-8e037ee7becf",
+                "messageId": "009a332d-9c07-4132-a293-0aca0e62755c",
+                "timestamp": "2022-12-24T20:51:02.807+05:30",
+                "properties": {
+                  "sku": "F15",
+                  "url": "https://www.website.com/product/path",
+                  "name": "Game",
+                  "brand": "Gamepro",
+                  "price": 13.49,
+                  "coupon": "DISC21",
+                  "variant": "111",
+                  "category": "Games",
+                  "position": 1,
+                  "quantity": 11,
+                  "image_url": "https://www.website.com/product/path.png",
+                  "product_id": "123"
+                },
+                "receivedAt": "2022-12-24T20:51:02.808+05:30",
+                "request_ip": "[::1]",
+                "anonymousId": "anon-id",
+                "originalTimestamp": "2022-12-24T20:51:05.905+05:30"
+              },
+              "JSON_ARRAY": {},
+              "XML": {},
+              "FORM": {}
+            },
+            "files": {},
+            "userId": "anon-id"
+          }
+        ],
         "metadata": [
           {
             "userId": "<<>>testUser<<>>testUser",
@@ -802,7 +806,7 @@
             "workerAssignedTime": "2022-12-24T20:51:06.92116+05:30"
           }
         ],
-        "batched": false,
+        "batched": true,
         "statusCode": 200,
         "destination": {
           "ID": "2JH9GMQf2YFJFaTw7rz1pxHAJPx",
@@ -848,61 +852,63 @@
         }
       },
       {
-        "batchedRequest": {
-          "version": "1",
-          "type": "REST",
-          "method": "POST",
-          "endpoint": "https://webhook.site/0d50d7b8-46fb-448e-bb53-52c216366a76",
-          "headers": {
-            "content-type": "application/json"
-          },
-          "params": {},
-          "body": {
-            "JSON": {
-              "type": "track",
-              "event": "Product Viewed",
-              "sentAt": "2022-12-24T20:51:05.905+05:30",
-              "userId": "testUser",
-              "channel": "offline",
-              "context": {
-                "traits": {
-                  "email": "test.c97@gmail.com",
-                  "phone": "+919876543210",
-                  "gender": "Male",
-                  "lastName": "Rudderlabs",
-                  "firstName": "test"
-                },
-                "ip": "[::1]"
-              },
-              "rudderId": "4b68d6ea-57ad-4f2c-8b1d-8e037ee7becf",
-              "messageId": "e8999482-7a72-49f6-929e-ef9adb07bf52",
-              "timestamp": "2022-12-24T20:51:02.807+05:30",
-              "properties": {
-                "sku": "F15",
-                "url": "https://www.website.com/product/path",
-                "name": "Game",
-                "brand": "Gamepro",
-                "price": 13.49,
-                "coupon": "DISC21",
-                "variant": "111",
-                "category": "Games",
-                "position": 1,
-                "quantity": 11,
-                "image_url": "https://www.website.com/product/path.png",
-                "product_id": "123"
-              },
-              "receivedAt": "2022-12-24T20:51:02.808+05:30",
-              "request_ip": "[::1]",
-              "anonymousId": "anon-id",
-              "originalTimestamp": "2022-12-24T20:51:05.905+05:30"
+        "batchedRequest": [
+          {
+            "version": "1",
+            "type": "REST",
+            "method": "POST",
+            "endpoint": "https://webhook.site/0d50d7b8-46fb-448e-bb53-52c216366a76",
+            "headers": {
+              "content-type": "application/json"
             },
-            "JSON_ARRAY": {},
-            "XML": {},
-            "FORM": {}
-          },
-          "files": {},
-          "userId": "anon-id"
-        },
+            "params": {},
+            "body": {
+              "JSON": {
+                "type": "track",
+                "event": "Product Viewed",
+                "sentAt": "2022-12-24T20:51:05.905+05:30",
+                "userId": "testUser",
+                "channel": "offline",
+                "context": {
+                  "traits": {
+                    "email": "test.c97@gmail.com",
+                    "phone": "+919876543210",
+                    "gender": "Male",
+                    "lastName": "Rudderlabs",
+                    "firstName": "test"
+                  },
+                  "ip": "[::1]"
+                },
+                "rudderId": "4b68d6ea-57ad-4f2c-8b1d-8e037ee7becf",
+                "messageId": "e8999482-7a72-49f6-929e-ef9adb07bf52",
+                "timestamp": "2022-12-24T20:51:02.807+05:30",
+                "properties": {
+                  "sku": "F15",
+                  "url": "https://www.website.com/product/path",
+                  "name": "Game",
+                  "brand": "Gamepro",
+                  "price": 13.49,
+                  "coupon": "DISC21",
+                  "variant": "111",
+                  "category": "Games",
+                  "position": 1,
+                  "quantity": 11,
+                  "image_url": "https://www.website.com/product/path.png",
+                  "product_id": "123"
+                },
+                "receivedAt": "2022-12-24T20:51:02.808+05:30",
+                "request_ip": "[::1]",
+                "anonymousId": "anon-id",
+                "originalTimestamp": "2022-12-24T20:51:05.905+05:30"
+              },
+              "JSON_ARRAY": {},
+              "XML": {},
+              "FORM": {}
+            },
+            "files": {},
+            "userId": "anon-id"
+          }
+        ],
         "metadata": [
           {
             "userId": "<<>>testUser<<>>testUser",
@@ -998,7 +1004,7 @@
             "workerAssignedTime": "2022-12-24T20:51:06.92116+05:30"
           }
         ],
-        "batched": false,
+        "batched": true,
         "statusCode": 200,
         "destination": {
           "ID": "2JH9GMQf2YFJFaTw7rz1pxHAJPx",

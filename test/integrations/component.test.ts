@@ -94,7 +94,7 @@ if (!opts.generate || opts.generate === 'false') {
 
 // END
 const rootDir = __dirname;
-const allTestDataFilePaths = getTestDataFilePaths(rootDir, opts.destination);
+const allTestDataFilePaths = getTestDataFilePaths(rootDir, opts.destination, opts.feature);
 const DEFAULT_VERSION = 'v0';
 
 const testRoute = async (route, tcData: TestCaseData) => {

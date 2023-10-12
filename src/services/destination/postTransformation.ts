@@ -12,11 +12,11 @@ import {
   UserDeletionResponse,
 } from '../../types/index';
 import { generateErrorObject } from '../../v0/util';
-import ErrorReportingService from '../errorReporting';
+import { ErrorReportingService } from '../errorReporting';
 import tags from '../../v0/util/tags';
 import stats from '../../util/stats';
 
-export default class DestinationPostTransformationService {
+export class DestinationPostTransformationService {
   public static handleProcessorTransformSucessEvents(
     event: ProcessorTransformationRequest,
     transformedPayloads: ProcessorTransformationOutput | ProcessorTransformationOutput[],
@@ -69,7 +69,7 @@ export default class DestinationPostTransformationService {
     implementation: string,
     destinationType: string,
   ): RouterTransformationResponse[] {
-    const resultantPayloads: RouterTransformationResponse[] = cloneDeep(transformedPayloads);
+    const resultantPayloads: RouterTransformationResponse[] = transformedPayloads;
     resultantPayloads.forEach((resultantPayload) => {
       if (Array.isArray(resultantPayload.batchedRequest)) {
         resultantPayload.batchedRequest.forEach((batchedRequest) => {

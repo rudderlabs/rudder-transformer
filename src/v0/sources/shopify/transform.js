@@ -198,8 +198,19 @@ const processEvent = async (inputEvent, metricMetadata) => {
   message = removeUndefinedAndNullValues(message);
   return message;
 };
-const isIdentifierEvent = (event) => ['rudderIdentifier', 'rudderSessionIdentifier'].includes(event?.event);
+const isIdentifierEvent = (event) => ['rudderIdentifier', 'rudderSessionIdentifier','shopifyPing'].includes(event?.event);
 const processIdentifierEvent = async (event, metricMetadata) => {
+  if(event.event === 'shopifyPing'){
+    return {
+      outputToSource: {
+        body: Buffer.from('OK').toString('base64'),
+        contentType: 'text/plain',
+      },
+      statusCode: 200,
+    };
+  }
+
+
   if (useRedisDatabase) {
     let value;
     let field;

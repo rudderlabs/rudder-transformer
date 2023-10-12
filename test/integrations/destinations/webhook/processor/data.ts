@@ -624,6 +624,7 @@ export const data = [
         body: [
           {
             message: {
+              ourIdentifier: 'identifier',
               anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               context: {
                 device: {

@@ -1,8 +1,8 @@
-/* eslint-disable class-methods-use-this */
-import IntegrationDestinationService from '../interfaces/DestinationService';
+/* eslint-disable import/prefer-default-export */
+import { Destination } from 'rs-integration-lib';
+import { DestinationService } from '../interfaces/DestinationService';
 import {
   DeliveryResponse,
-  Destination,
   ErrorDetailer,
   MetaTransferObject,
   ProcessorTransformationOutput,
@@ -20,15 +20,12 @@ import { CommonUtils } from '../util/common';
 
 const NS_PER_SEC = 1e9;
 
-export default class ComparatorService implements IntegrationDestinationService {
-  secondaryService: IntegrationDestinationService;
+export class ComparatorService implements DestinationService {
+  secondaryService: DestinationService;
 
-  primaryService: IntegrationDestinationService;
+  primaryService: DestinationService;
 
-  constructor(
-    primaryService: IntegrationDestinationService,
-    secondaryService: IntegrationDestinationService,
-  ) {
+  constructor(primaryService: DestinationService, secondaryService: DestinationService) {
     this.primaryService = primaryService;
     this.secondaryService = secondaryService;
   }
@@ -63,8 +60,10 @@ export default class ComparatorService implements IntegrationDestinationService 
   }
 
   private getTestThreshold(destination: Destination) {
-    return destination.DestinationDefinition?.Config?.camparisonTestThreshold || 0;
+    const config = destination.DestinationDefinition?.Config as { camparisonTestThreshold?: number };
+    return config?.camparisonTestThreshold || 0;
   }
+
 
   private getComparisonLogs(
     primaryResplist: any,

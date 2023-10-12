@@ -1,3 +1,4 @@
+const { InstrumentationError } = require('rs-integration-lib');
 const {
   getHashFromArray,
   getFieldValueFromMessage,
@@ -5,7 +6,6 @@ const {
   defaultRequestConfig,
 } = require('../../util');
 const { EventType } = require('../../../constants');
-const { InstrumentationError } = require('rs-integration-lib');
 
 function responseBuilderSimple(message, destination) {
   const payload = {};

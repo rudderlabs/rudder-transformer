@@ -13,13 +13,13 @@ const {
   getSuccessRespEvents,
   defaultBatchRequestConfig,
 } = require('../../util');
+const { CommonUtils } = require('../../../util/common');
 const {
   ConfigCategory,
   MP_IDENTIFY_EXCLUSION_LIST,
   GEO_SOURCE_ALLOWED_VALUES,
   mappingConfig,
 } = require('./config');
-const { CommonUtils } = require('../../../util/common');
 
 const mPIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 const mPProfileAndroidConfigJson = mappingConfig[ConfigCategory.PROFILE_ANDROID.name];

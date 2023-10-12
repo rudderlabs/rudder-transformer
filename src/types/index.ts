@@ -1,3 +1,5 @@
+import { Destination, Metadata } from 'rs-integration-lib';
+
 import { CatchErr, FixMe } from '../util/types';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -20,63 +22,6 @@ type ProcessorTransformationOutput = {
 };
 
 type TransformedOutput = ProcessorTransformationOutput;
-
-type Metadata = {
-  sourceId: string;
-  workspaceId: string;
-  namespace: string;
-  instanceId: string;
-  sourceType: string;
-  sourceCategory: string;
-  trackingPlanId: string;
-  trackingPlanVersion: number;
-  sourceTpConfig: object;
-  mergedTpConfig: object;
-  destinationId: string;
-  jobRunId: string;
-  jobId: number;
-  sourceBatchId: string;
-  sourceJobId: string;
-  sourceJobRunId: string;
-  sourceTaskId: string;
-  sourceTaskRunId: string;
-  recordId: object;
-  destinationType: string;
-  messageId: string;
-  oauthAccessToken: string;
-  messageIds: string[];
-  rudderId: string;
-  receivedAt: string;
-  eventName: string;
-  eventType: string;
-  sourceDefinitionId: string;
-  destinationDefinitionId: string;
-  transformationId: string;
-};
-
-type UserTransformationInput = {
-  VersionID: string;
-  ID: string;
-  Config: object;
-};
-
-type DestinationDefinition = {
-  ID: string;
-  Name: string;
-  DisplayName: string;
-  Config: FixMe;
-};
-
-type Destination = {
-  ID: string;
-  Name: string;
-  DestinationDefinition: DestinationDefinition;
-  Config: FixMe;
-  Enabled: boolean;
-  WorkspaceID: string;
-  Transformations: UserTransformationInput[];
-  RevisionID?: string;
-};
 
 type UserTransformationLibrary = {
   VersionID: string;
@@ -107,7 +52,7 @@ type ProcessorTransformationResponse = {
   metadata: Metadata;
   statusCode: number;
   error?: string;
-  statTags?: Object;
+  statTags?: object;
 };
 
 type RouterTransformationResponse = {
@@ -117,7 +62,7 @@ type RouterTransformationResponse = {
   batched: boolean;
   statusCode: number;
   error?: string;
-  statTags?: Object;
+  statTags?: object;
 };
 
 type SourceTransformationOutput = {
@@ -129,14 +74,14 @@ type SourceTransformationResponse = {
   error: CatchErr;
   statusCode: number;
   outputToSource: object;
-  statTags: object;
+  statTags?: object;
 };
 
 type DeliveryResponse = {
   status: number;
   message: string;
   destinationResponse: object;
-  statTags: object;
+  statTags?: object;
   authErrorCategory?: string;
 };
 
@@ -224,7 +169,6 @@ type ComparatorInput = {
 };
 
 export {
-  Metadata,
   UserTransformationLibrary,
   ProcessorTransformationRequest,
   ProcessorTransformationResponse,
@@ -241,7 +185,6 @@ export {
   MetaTransferObject,
   UserDeletionRequest,
   UserDeletionResponse,
-  Destination,
   ComparatorInput,
   TransformedOutput,
 };

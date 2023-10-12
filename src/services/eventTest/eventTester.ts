@@ -1,7 +1,7 @@
 import { sendToDestination, userTransformHandler } from '../../routerUtils';
 import { FixMe } from '../../util/types';
 
-export default class EventTesterService {
+export class EventTesterService {
   private static getDestHandler(version, destination) {
     // eslint-disable-next-line global-require, import/no-dynamic-require
     return require(`../../${version}/destinations/${destination}/transform`);

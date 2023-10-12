@@ -1,11 +1,10 @@
-import TransformationError from 'rs-integration-lib/build/errorDefinitions/transformationError';
-import PluginAdapter from '../../helpers/pluginAdaper';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Metadata, TransformationError } from 'rs-integration-lib';
+import { PluginAdapter } from '../../helpers/pluginAdaper';
 import {
   DeliveryResponse,
-  Destination,
   ErrorDetailer,
   MetaTransferObject,
-  Metadata,
   ProcessorTransformationOutput,
   ProcessorTransformationRequest,
   ProcessorTransformationResponse,
@@ -15,9 +14,9 @@ import {
   UserDeletionResponse,
 } from '../../types';
 import tags from '../../v0/util/tags';
-import NativeIntegrationDestinationService from './nativeIntegration';
+import { DestinationService } from '../../interfaces/DestinationService';
 
-export default class PluginIntegrationService implements NativeIntegrationDestinationService {
+export class PluginIntegrationService implements DestinationService {
   init() {}
 
   public getName(): string {
@@ -48,7 +47,7 @@ export default class PluginIntegrationService implements NativeIntegrationDestin
     events: ProcessorTransformationRequest[],
     destinationType: string,
     _version: string,
-    _requestMetadata: Object,
+    _requestMetadata: unknown,
   ): Promise<ProcessorTransformationResponse[]> {
     const results = await PluginAdapter.transformAtProcessor(events, destinationType);
     const respList: ProcessorTransformationResponse[] = [];
@@ -86,7 +85,7 @@ export default class PluginIntegrationService implements NativeIntegrationDestin
     events: RouterTransformationRequestData[],
     destinationType: string,
     _version: string,
-    _requestMetadata: Object,
+    _requestMetadata: unknown,
   ): Promise<RouterTransformationResponse[]> {
     const results = await PluginAdapter.transformAtRouter(events, destinationType);
     const respList: RouterTransformationResponse[] = [];
@@ -96,7 +95,7 @@ export default class PluginIntegrationService implements NativeIntegrationDestin
         batchedRequest: successResponse.payload,
         statusCode: 200,
         metadata: successResponse.metadata,
-        destination: successResponse.destination as Destination, // commonalise the type destination
+        destination: successResponse.destination,
       });
     });
 
@@ -106,7 +105,7 @@ export default class PluginIntegrationService implements NativeIntegrationDestin
         statusCode: errorResponse.response.status,
         error: errorResponse.response.message,
         statTags: errorResponse.response.statTags,
-        destination: errorResponse.destination as Destination,
+        destination: errorResponse.destination,
         batched: false,
       });
     });
@@ -118,7 +117,7 @@ export default class PluginIntegrationService implements NativeIntegrationDestin
     _events: RouterTransformationRequestData[],
     _destinationType: string,
     _version: any,
-    _requestMetadata: Object,
+    _requestMetadata: unknown,
   ): RouterTransformationResponse[] {
     throw new TransformationError('CDKV1 Does not Implement Batch Transform Routine');
   }
@@ -126,7 +125,7 @@ export default class PluginIntegrationService implements NativeIntegrationDestin
   public deliver(
     _event: ProcessorTransformationOutput,
     _destinationType: string,
-    _requestMetadata: Object,
+    _requestMetadata: unknown,
   ): Promise<DeliveryResponse> {
     throw new TransformationError('CDV1 Does not Implement Delivery Routine');
   }

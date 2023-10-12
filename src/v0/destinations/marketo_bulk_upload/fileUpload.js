@@ -4,8 +4,8 @@ const fs = require('fs');
 const {
   NetworkError,
   ConfigurationError,
-  RetryableError,
   TransformationError,
+  RetryableError,
 } = require('rs-integration-lib');
 const {
   getAccessToken,

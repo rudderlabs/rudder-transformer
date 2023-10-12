@@ -12,7 +12,7 @@ import { getValueFromMessage } from '../../v0/util';
 import genericFieldMap from '../../v0/util/data/GenericFieldMapping.json';
 import { EventType, MappedToDestinationKey } from '../../constants';
 
-export default class ControllerUtility {
+export class ControllerUtility {
   public static timestampValsMap: Record<string, string[]> = {
     [EventType.IDENTIFY]: [
       `context.${RETL_TIMESTAMP}`,

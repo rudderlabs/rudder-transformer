@@ -4,11 +4,17 @@ import { MockHttpCallsData, TestCaseData } from './testTypes';
 import MockAdapter from 'axios-mock-adapter';
 import isMatch from 'lodash/isMatch';
 
-export const getTestDataFilePaths = (dirPath: string, destination: string = ''): string[] => {
+export const getTestDataFilePaths = (
+  dirPath: string,
+  destination: string = '',
+  feature: string = 'processor',
+): string[] => {
   const globPattern = join(dirPath, '**', 'data.ts');
   let testFilePaths = globSync(globPattern);
   if (destination) {
-    testFilePaths = testFilePaths.filter((testFile) => testFile.includes(destination));
+    testFilePaths = testFilePaths.filter(
+      (testFile) => testFile.includes(destination) && testFile.includes(feature),
+    );
   }
   return testFilePaths;
 };

@@ -1,8 +1,14 @@
-import { IntegrationConfig, RudderStackEvent, Integration, Destination } from 'rs-integration-lib';
-import { Webhook } from 'rudder-integrations-store';
+import {
+  RudderStackEvent,
+  RudderStackEventPayload,
+  Integration,
+  Destination,
+  WorkflowType,
+  Metadata,
+} from 'rs-integration-lib';
+import { IntegrationsFactory } from 'rudder-integrations-store';
 import groupBy from 'lodash/groupBy';
 import {
-  Metadata,
   ProcessorTransformationRequest,
   RouterTransformationRequestData,
   TransformedOutput,
@@ -11,38 +17,40 @@ import { generateErrorObject } from '../v0/util';
 
 // error handling
 
-export default class PluginAdapter {
+export class PluginAdapter {
   private static pluginCache: Map<string, Integration> = new Map();
 
-  private static getPlugin(integrationName: string): Integration {
-    if (this.pluginCache.has(integrationName)) {
-      return this.pluginCache.get(integrationName) as Integration;
+  private static async getPlugin(
+    integrationName: string,
+    workflowType: WorkflowType,
+  ): Promise<Integration> {
+    const cacheKey = `${integrationName}_${workflowType}`;
+    if (this.pluginCache.has(cacheKey)) {
+      return this.pluginCache.get(cacheKey) as Integration;
     }
     // TODO: default integration config need to make it dynamic by making some sort of config call or get it from config file
-    const integrationConfig: IntegrationConfig = {
-      name: integrationName,
-      saveResponse: true,
-      eventOrdering: true,
-      plugins: ['preprocessor', 'multiplexer'],
-    };
+    // const integrationConfig: IntegrationConfig = {
+    //   name: integrationName,
+    //   saveResponse: true,
+    //   eventOrdering: true,
+    //   plugins: ['preprocessor', 'multiplexer'],
+    // };
 
-    switch (integrationName) {
-      case 'salesforce': {
-        const salesforce = new Webhook(integrationConfig);
-        this.pluginCache.set(integrationName, salesforce);
-        return salesforce;
-      }
-      // case 'google_analytics': { ... }
-      default:
-        throw new Error('Invalid integration name');
-    }
+    const integration = await IntegrationsFactory.createIntegration(
+      integrationName,
+      workflowType,
+    );
+    this.pluginCache.set(cacheKey, integration);
+    return integration;
   }
 
   public static async transformAtProcessor(
     inputs: ProcessorTransformationRequest[],
     integrationName: string,
   ) {
-    const integrationPlugin = PluginAdapter.getPlugin(integrationName);
+    // TODO: decide the workflow type based on config
+    const workflowType = WorkflowType.STREAM;
+    const integrationPlugin = await PluginAdapter.getPlugin(integrationName, workflowType);
 
     const groupedEventsByDestinationId = groupBy(
       inputs,
@@ -55,16 +63,12 @@ export default class PluginAdapter {
     const result = await Promise.all(
       eventsPerDestinationId.map(async (inputs) => {
         const events = inputs.map((input) => ({
-          event: input.message as RudderStackEvent,
-          metadata: input.metadata,
+          event: [{ message: input.message as RudderStackEvent } as RudderStackEventPayload],
+          metadata: [input.metadata],
         }));
         const { destination } = inputs[0];
-        const output = await integrationPlugin.execute(
-          events,
-          destination as Destination,
-          'processor',
-        );
-        const responseList = output.context;
+        const output = await integrationPlugin.execute(events, destination);
+        const responseList = output.resultContext;
         const errors = output.errorResults;
 
         const errorList: { metadata: Metadata; response: any; destination: Destination }[] = [];
@@ -93,7 +97,7 @@ export default class PluginAdapter {
             transformedPayloadList.push({
               payload: transformedPayload,
               metadata: response.metadata[index],
-              destination: response.destination,
+              destination,
             });
           }
         }
@@ -116,7 +120,10 @@ export default class PluginAdapter {
     inputs: RouterTransformationRequestData[],
     integrationName: string,
   ) {
-    const integrationPlugin = PluginAdapter.getPlugin(integrationName);
+    // TODO: decide the workflow type based on config
+    const workflowType = WorkflowType.STREAM;
+
+    const integrationPlugin = await PluginAdapter.getPlugin(integrationName, workflowType);
     // group events by destinationId
     // example: { destinationId1: [event1, event2], destinationId2: [event3, event4]}
     const groupedEventsByDestinationId = groupBy(
@@ -130,9 +137,9 @@ export default class PluginAdapter {
 
     const result = await Promise.all(
       eventsPerDestinationId.map(async (inputs) => {
-        const events = inputs.map((input) => ({
-          event: input.message as RudderStackEvent,
-          metadata: input.metadata,
+        const input = inputs.map((input) => ({
+          event: [{ message: input.message as RudderStackEvent } as RudderStackEventPayload],
+          metadata: [input.metadata],
         }));
 
         const { destination } = inputs[0];
@@ -140,12 +147,8 @@ export default class PluginAdapter {
         // calling the plugin and we can expect batched and multiplexed responses
         // example: [ { payload: [event1, event2, event3], metadata: [metadata1, metadata2, metdata3] }, { payload: [event3, event4], metadata: [metadata3, metadata4] } ]
 
-        const output = await integrationPlugin.execute(
-          events,
-          destination as Destination,
-          'router',
-        );
-        const responseList = output.context;
+        const output = await integrationPlugin.execute(input, destination);
+        const responseList = output.resultContext;
         const errors = output.errorResults;
 
         // handle error scenario
@@ -155,7 +158,7 @@ export default class PluginAdapter {
             const errResponses = e.metadata.map((metadata) => ({
               metadata,
               response: generateErrorObject(e.error), // add further tags here
-              destination: e.destination,
+              destination,
             }));
             return errResponses;
           });
@@ -210,7 +213,7 @@ export default class PluginAdapter {
                   finalResponse[position].metadata.push(meta);
                 }
               });
-              finalResponse[position].destination = rankedResponse.destination;
+              finalResponse[position].destination = destination;
               isCurrentResponseAddedToFinalPayload = true;
               // break the loop as we have already appended the entire rankedResponse to the finalResponse
               break;
@@ -221,7 +224,7 @@ export default class PluginAdapter {
             finalResponse.push({
               payload: rankedResponse.payload.map((payload) => payload as TransformedOutput),
               metadata: rankedResponse.metadata,
-              destination: rankedResponse.destination,
+              destination,
             });
             // update the jobIdPositionMap for all the jobIds in the rankedResponse
             rankedResponse.metadata.forEach((meta) => {

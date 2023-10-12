@@ -72,7 +72,7 @@ const eventNameMapping = {
   custom_event_4: 'CUSTOM_EVENT_4',
   custom_event_5: 'CUSTOM_EVENT_5',
 };
-
+const pageTypeToTrackEvent = 'page_view';
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 
 module.exports = {
@@ -82,4 +82,5 @@ module.exports = {
   mappingConfig,
   trackCommonConfig: mappingConfig[ConfigCategory.COMMON.name],
   MAX_BATCH_SIZE,
+  pageTypeToTrackEvent
 };

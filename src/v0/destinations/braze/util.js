@@ -22,7 +22,7 @@ const {
   ALIAS_BRAZE_MAX_REQ_COUNT,
   TRACK_BRAZE_MAX_REQ_COUNT,
 } = require('./config');
-const { JSON_MIME_TYPE } = require('../../util/constant');
+const { JSON_MIME_TYPE, HTTP_STATUS_CODES } = require('../../util/constant');
 const { isObject } = require('../../util');
 const { removeUndefinedValues, getIntegrationsObj } = require('../../util');
 const { InstrumentationError } = require('../../util/errorTypes');
@@ -363,11 +363,14 @@ const processBatch = (transformedEvents) => {
   const purchaseArray = [];
   const successMetadata = [];
   const failureResponses = [];
+  const filteredResponses = [];
   const subscriptionsArray = [];
   const mergeUsersArray = [];
   for (const transformedEvent of transformedEvents) {
     if (!isHttpStatusSuccess(transformedEvent?.statusCode)) {
       failureResponses.push(transformedEvent);
+    } else if (transformedEvent?.statusCode === HTTP_STATUS_CODES.FILTER_EVENTS) {
+      filteredResponses.push(transformedEvent);
     } else if (transformedEvent?.batchedRequest?.body?.JSON) {
       const { attributes, events, purchases, subscription_groups, merge_updates } =
         transformedEvent.batchedRequest.body.JSON;
@@ -416,6 +419,23 @@ const processBatch = (transformedEvents) => {
     const attributes = attributeArrayChunks[i];
     const events = eventsArrayChunks[i];
     const purchases = purchaseArrayChunks[i];
+
+    if (attributes) {
+      stats.gauge('braze_batch_attributes_pack_size', attributes.length, {
+        destination_id: destination.ID,
+      });
+    }
+    if (events) {
+      stats.gauge('braze_batch_events_pack_size', events.length, {
+        destination_id: destination.ID,
+      });
+    }
+    if (purchases) {
+      stats.gauge('braze_batch_purchase_pack_size', purchases.length, {
+        destination_id: destination.ID,
+      });
+    }
+
     const response = defaultRequestConfig();
     response.endpoint = endpoint;
     response.body.JSON = removeUndefinedAndNullValues({
@@ -444,6 +464,10 @@ const processBatch = (transformedEvents) => {
   }
   if (failureResponses.length > 0) {
     finalResponse.push(...failureResponses);
+  }
+
+  if (filteredResponses.length > 0) {
+    finalResponse.push(...filteredResponses);
   }
 
   return finalResponse;

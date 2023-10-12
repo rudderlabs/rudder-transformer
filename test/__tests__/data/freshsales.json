@@ -1,5 +1,90 @@
 [
   {
+    "description": "Track call, event is not supported.",
+    "input": {
+      "message": {
+        "channel": "web",
+        "context": {
+          "app": {
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK",
+            "namespace": "com.rudderlabs.javascript",
+            "version": "1.1.5"
+          },
+          "traits": {
+            "name": "Shehan Study",
+            "category": "SampleIdentify",
+            "email": "test@rudderstack.com",
+            "plan": "Open source",
+            "logins": 5,
+            "createdAt": 1599264000
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.1.5"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
+          "locale": "en-US",
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "screen": {
+            "density": 0.8999999761581421
+          },
+          "campaign": {
+            "source": "google",
+            "medium": "medium",
+            "term": "keyword",
+            "content": "some content",
+            "name": "some campaign",
+            "test": "other value"
+          },
+          "page": {
+            "path": "/destinations/amplitude",
+            "referrer": "",
+            "search": "",
+            "title": "",
+            "url": "https://docs.rudderstack.com/destinations/amplitude",
+            "category": "destination",
+            "initial_referrer": "https://docs.rudderstack.com",
+            "initial_referring_domain": "docs.rudderstack.com"
+          }
+        },
+        "type": "track",
+        "messageId": "dd46338d-5f83-493b-bd28-3b48f55d0be8",
+        "originalTimestamp": "2020-10-20T08:14:28.778Z",
+        "anonymousId": "my-anonymous-id-new",
+        "userId": "newUserIdAlias",
+        "properties": {
+          "product_name": "Shirt",
+          "brand": "Wrogn"
+        },
+        "event": {
+          "name": "Add to Cart"
+        },
+        "previousId": "sampleusrRudder3",
+        "sentAt": "2020-10-20T08:14:28.778Z"
+      },
+      "destination": {
+        "Config": {
+          "apiKey": "dummyApiKey",
+          "domain": "domain-rudder"
+        }
+      }
+    },
+    "output": {
+      "statusCode": 400,
+      "error": "Event is a required field and should be a string",
+      "statTags": {
+        "errorAt": "proc",
+        "destType": "FRESHMARKETER",
+        "stage": "transform",
+        "scope": "exception"
+      }
+    }
+  },
+  {
     "description": "Identify call for creating new user",
     "input": {
       "destination": {

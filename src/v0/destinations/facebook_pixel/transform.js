@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 const get = require('get-value');
 const moment = require('moment');
+const { InstrumentationError, ConfigurationError } = require('rs-integration-lib');
 const stats = require('../../../util/stats');
 const {
   CONFIG_CATEGORIES,
@@ -29,8 +30,6 @@ const {
   handleOrder,
   formingFinalResponse,
 } = require('./utils');
-
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
 const responseBuilderSimple = (message, category, destination, categoryToContent) => {
   const { Config } = destination;

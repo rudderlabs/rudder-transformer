@@ -1,4 +1,5 @@
 const get = require('get-value');
+const { InstrumentationError, TransformationError } = require('rs-integration-lib');
 const { EventType } = require('../../../constants');
 const {
   defaultRequestConfig,
@@ -10,7 +11,6 @@ const {
   simpleProcessRouterDest,
   validateEventType,
 } = require('../../util');
-const { InstrumentationError, TransformationError } = require('../../util/errorTypes');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
 const {
   getUserAccountDetails,

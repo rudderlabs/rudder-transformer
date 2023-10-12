@@ -1,11 +1,11 @@
 const { isEmpty } = require('lodash');
 const get = require('get-value');
+const { NetworkError } = require('rs-integration-lib');
 const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
-const { NetworkError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 const { ErrorDetailsExtractorBuilder } = require('../../../util/error-extractor');
 
@@ -168,7 +168,10 @@ const getStatus = (error) => {
   const isErrorDetailEmpty = isEmpty(errorDetail);
   if (isErrorDetailEmpty) {
     // Unhandled error response
-    return {status: errorStatus, tags: { [tags.TAG_NAMES.META]: tags.METADATA.UNHANDLED_STATUS_CODE, } }
+    return {
+      status: errorStatus,
+      tags: { [tags.TAG_NAMES.META]: tags.METADATA.UNHANDLED_STATUS_CODE },
+    };
   }
   errorStatus = errorDetail.status;
 

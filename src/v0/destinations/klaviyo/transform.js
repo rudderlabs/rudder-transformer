@@ -2,6 +2,7 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable  array-callback-return */
 const get = require('get-value');
+const { ConfigurationError, InstrumentationError } = require('rs-integration-lib');
 const { EventType, WhiteListedTraits, MappedToDestinationKey } = require('../../../constants');
 const {
   CONFIG_CATEGORIES,
@@ -36,7 +37,6 @@ const {
   flattenJson,
   isNewStatusCodesAccepted,
 } = require('../../util');
-const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE, HTTP_STATUS_CODES } = require('../../util/constant');
 
 /**

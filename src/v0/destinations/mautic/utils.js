@@ -1,5 +1,6 @@
 /* eslint-disable no-return-assign, no-param-reassign, no-restricted-syntax */
 const get = require('get-value');
+const { NetworkError, InstrumentationError, ConfigurationError } = require('rs-integration-lib');
 const { getFieldValueFromMessage } = require('../../util');
 const { BASE_URL, lookupFieldMap } = require('./config');
 const { httpGET } = require('../../../adapters/network');
@@ -7,7 +8,6 @@ const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
-const { NetworkError, InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 

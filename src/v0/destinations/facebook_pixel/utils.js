@@ -1,4 +1,5 @@
 const sha256 = require('sha256');
+const { InstrumentationError, TransformationError } = require('rs-integration-lib');
 const {
   isObject,
   getFieldValueFromMessage,
@@ -9,8 +10,6 @@ const {
   defaultRequestConfig,
 } = require('../../util');
 const { ACTION_SOURCES_VALUES, CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
-
-const { InstrumentationError, TransformationError } = require('../../util/errorTypes');
 
 /**  format revenue according to fb standards with max two decimal places.
  * @param revenue

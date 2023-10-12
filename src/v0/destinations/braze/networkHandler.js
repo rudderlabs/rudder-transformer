@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+const { NetworkError } = require('rs-integration-lib');
 const { isHttpStatusSuccess } = require('../../util/index');
 const { proxyRequest, prepareProxyRequest } = require('../../../adapters/network');
 const {
@@ -6,7 +7,6 @@ const {
   processAxiosResponse,
 } = require('../../../adapters/utils/networkUtils');
 const { DESTINATION } = require('./config');
-const { NetworkError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 const stats = require('../../../util/stats');
 
@@ -27,12 +27,14 @@ const responseHandler = (destinationResponse, _dest) => {
   }
 
   // Partial errors
-  if (!!response &&
+  if (
+    !!response &&
     response.message === 'success' &&
     response.errors &&
-    response.errors.length > 0){
-      stats.increment('braze_partial_failure')
-    }
+    response.errors.length > 0
+  ) {
+    stats.increment('braze_partial_failure');
+  }
 
   // application level errors
   if (

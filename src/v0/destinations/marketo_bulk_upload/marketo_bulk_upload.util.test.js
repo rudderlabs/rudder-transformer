@@ -4,7 +4,7 @@ const {
   handleFileUploadResponse,
 } = require('./util');
 
-const { AbortedError, RetryableError } = require('../../util/errorTypes');
+const { AbortedError, RetryableError } = require('rs-integration-lib');
 
 describe('handleCommonErrorResponse', () => {
   test('should throw AbortedError for abortable error codes', () => {

@@ -3,6 +3,7 @@
 /* eslint-disable no-param-reassign */
 const get = require('get-value');
 const set = require('set-value');
+const { InstrumentationError } = require('rs-integration-lib');
 const {
   EventType,
   SpecedTraits,
@@ -40,7 +41,6 @@ const tags = require('../../util/tags');
 const AMUtils = require('./utils');
 
 const logger = require('../../../logger');
-const { InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const AMBatchSizeLimit = 20 * 1024 * 1024; // 20 MB

@@ -1,5 +1,6 @@
 const { set, get } = require('lodash');
 const moment = require('moment');
+const { InstrumentationError, ConfigurationError } = require('rs-integration-lib');
 const { EventType } = require('../../../constants');
 const {
   getHashFromArrayWithDuplicate,
@@ -22,7 +23,6 @@ const {
   requestBuilder,
   getClickConversionPayloadAndEndpoint,
 } = require('./utils');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
 /**
  * get conversions depending on the type set from dashboard

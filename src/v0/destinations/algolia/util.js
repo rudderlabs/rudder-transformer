@@ -1,5 +1,5 @@
+const { InstrumentationError } = require('rs-integration-lib');
 const logger = require('../../../logger');
-const { InstrumentationError } = require('../../util/errorTypes');
 const { EVENT_TYPES } = require('./config');
 
 /**

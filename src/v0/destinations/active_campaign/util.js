@@ -1,8 +1,8 @@
+const { NetworkError } = require('rs-integration-lib');
 const {
   nodeSysErrorToStatus,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
-const { NetworkError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 
 const errorHandler = (err, message) => {

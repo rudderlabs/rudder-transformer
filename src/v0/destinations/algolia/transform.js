@@ -1,10 +1,6 @@
 const set = require('set-value');
+const { InstrumentationError, ConfigurationError, PlatformError } = require('rs-integration-lib');
 const { EventType } = require('../../../constants');
-const {
-  InstrumentationError,
-  ConfigurationError,
-  PlatformError,
-} = require('../../util/errorTypes');
 const {
   getValueFromMessage,
   constructPayload,

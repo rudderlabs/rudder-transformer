@@ -1,6 +1,5 @@
 const cloneDeep = require('lodash/cloneDeep');
 const { getIntegrationsObj } = require('../../util');
-// const { InstrumentationError } = require("../../util/errorTypes");
 
 function process(event) {
   const { message, destination } = event;

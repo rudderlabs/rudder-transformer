@@ -1,4 +1,5 @@
 const lodash = require('lodash');
+const { InstrumentationError, ConfigurationError } = require('rs-integration-lib');
 const {
   defaultPutRequestConfig,
   handleRtTfSingleEventError,
@@ -23,7 +24,6 @@ const {
   stringifyPropertiesValues,
 } = require('./utils');
 const { MAX_BATCH_SIZE, VALID_STATUSES, TRACK_CONFIG } = require('./config');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilderSimple = (finalPayload, endpoint, Config, audienceId) => {
@@ -62,7 +62,10 @@ const trackResponseBuilder = (message, { Config }) => {
   if (processedPayload?.properties) {
     processedPayload.properties = stringifyPropertiesValues(processedPayload.properties);
   }
-  if (processedPayload.name && !(processedPayload.name.length >= 2 && processedPayload.name.length <= 30)) {
+  if (
+    processedPayload.name &&
+    !(processedPayload.name.length >= 2 && processedPayload.name.length <= 30)
+  ) {
     throw new InstrumentationError('Event name should be between 2 and 30 characters');
   }
   processedPayload.name = processedPayload.name.trim().replace(/\s+/g, '_');

@@ -1,9 +1,9 @@
 const lodash = require('lodash');
 const flatten = require('flat');
 
+const { InstrumentationError } = require('rs-integration-lib');
 const { isEmpty, isObject } = require('../../util');
 const { EventType } = require('../../../constants');
-const { InstrumentationError } = require('../../util/errorTypes');
 
 // processValues:
 // 1. removes keys with empty values or still an object(empty) after flattening

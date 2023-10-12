@@ -1,14 +1,14 @@
+const {
+  ConfigurationError,
+  TransformationError,
+  InstrumentationError,
+} = require('rs-integration-lib');
 const { EventType } = require('../../../constants');
 const {
   ErrorMessage,
   simpleProcessRouterDest,
   getHashFromArrayWithDuplicate,
 } = require('../../util');
-const {
-  ConfigurationError,
-  TransformationError,
-  InstrumentationError,
-} = require('../../util/errorTypes');
 
 const {
   CONFIG_CATEGORIES,

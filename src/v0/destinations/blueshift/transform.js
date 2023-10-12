@@ -1,3 +1,8 @@
+const {
+  TransformationError,
+  InstrumentationError,
+  ConfigurationError,
+} = require('rs-integration-lib');
 const { EventType } = require('../../../constants');
 const {
   constructPayload,
@@ -10,11 +15,6 @@ const {
   simpleProcessRouterDest,
 } = require('../../util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-const {
-  TransformationError,
-  InstrumentationError,
-  ConfigurationError,
-} = require('../../util/errorTypes');
 
 const {
   MAPPING_CONFIG,

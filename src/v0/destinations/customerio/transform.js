@@ -1,6 +1,7 @@
 const get = require('get-value');
 const btoa = require('btoa');
 
+const { InstrumentationError } = require('rs-integration-lib');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 
 const {
@@ -23,7 +24,6 @@ const {
   defaultResponseBuilder,
   validateConfigFields,
 } = require('./util');
-const { InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function responseBuilder(message, evType, evName, destination, messageType) {

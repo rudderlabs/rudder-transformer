@@ -1,8 +1,8 @@
+const { NetworkError } = require('rs-integration-lib');
 const { getDynamicErrorType, trimResponse } = require('../../../adapters/utils/networkUtils');
 const { isDefinedAndNotNull } = require('../../util');
 const { isEmpty } = require('../../util/index');
 const tags = require('../../util/tags');
-const { NetworkError } = require('../../util/errorTypes');
 
 const responseTransform = (destResponse) => {
   let respBody;

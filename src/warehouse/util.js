@@ -3,7 +3,7 @@ const get = require('get-value');
 
 const v0 = require('./v0/util');
 const v1 = require('./v1/util');
-const { PlatformError, InstrumentationError } = require('../v0/util/errorTypes');
+const { PlatformError, InstrumentationError } = require('rs-integration-lib');
 
 const minTimeInMs = Date.parse('0001-01-01T00:00:00Z');
 const maxTimeInMs = Date.parse('9999-12-31T23:59:59.999Z');
@@ -59,7 +59,15 @@ const keysFromJsonPaths = (jsonPaths) => {
   const jsonPathKeys = {};
   const jsonLegacyPathKeys = {};
 
-  const supportedEventPrefixes = ['track.', 'identify.', 'page.', 'screen.', 'alias.', 'group.', 'extract.'];
+  const supportedEventPrefixes = [
+    'track.',
+    'identify.',
+    'page.',
+    'screen.',
+    'alias.',
+    'group.',
+    'extract.',
+  ];
 
   jsonPaths.forEach((jsonPath) => {
     const trimmedJSONPath = jsonPath.trim();
@@ -71,13 +79,13 @@ const keysFromJsonPaths = (jsonPaths) => {
     const key = paths.join('_');
     const pos = paths.length - 1;
 
-    if (supportedEventPrefixes.some(prefix => trimmedJSONPath.startsWith(prefix))) {
+    if (supportedEventPrefixes.some((prefix) => trimmedJSONPath.startsWith(prefix))) {
       jsonPathKeys[key] = pos;
       return;
     }
     jsonLegacyPathKeys[key] = pos;
   });
-  return {jsonPathKeys, jsonLegacyPathKeys};
+  return { jsonPathKeys, jsonLegacyPathKeys };
 };
 
 // https://www.myintervals.com/blog/2009/05/20/iso-8601-date-validation-that-doesnt-suck/

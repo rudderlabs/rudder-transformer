@@ -1,4 +1,4 @@
-const { PlatformError } = require('./errorTypes');
+const { PlatformError } = require('rs-integration-lib');
 
 const RegulationApiUtils = {
   /**

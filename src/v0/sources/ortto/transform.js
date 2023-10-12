@@ -15,7 +15,25 @@ function settingProperties(event, message) {
   messageReplica.properties = removeUndefinedAndNullValues(flattenJson(event));
 
   // fields that are already mapped
-  const excludeFields = ['contact.email', 'contact.contact_id', 'id', 'time', 'activity.field_id'];
+  const excludeFields = [
+    'contact.email',
+    'contact.contact_id',
+    'id',
+    'time',
+    'activity.field_id',
+    'contact.external_id',
+    'contact.country.name',
+    'contact.city.name',
+    'contact.postal',
+    'contact.first_name',
+    'contact.last_name',
+    'contact.birthday.day',
+    'contact.birthday.month',
+    'contact.birthday.year',
+    'contact.phone_number.c',
+    'contact.phone_number',
+    'contact.phone_number.n',
+  ];
 
   // deleting already mapped fields
   excludeFields.forEach((field) => {
@@ -42,12 +60,30 @@ function process(event) {
   // we are setting event type as track always
   message.setEventType('track');
 
-  // setting anonymousId
-  message.anonymousId = generateUUID();
-
   message.setPropertiesV2(event, mapping);
 
-  // Updating timestamp to acceptable timestamp format ["2023-10-10T06:24:19.103820974Z" -> "2023-10-10T06:24:19.103820974Z"]
+  // setting anonymousId
+  if (!message.userId) {
+    message.anonymousId = generateUUID();
+  }
+
+  if (event.contact?.birthday) {
+    const month =
+      event.contact.birthday?.month < 10
+        ? `0${event.contact.birthday?.month}`
+        : event.contact.birthday?.month;
+    const day =
+      event.contact.birthday?.day < 10
+        ? `0${event.contact.birthday?.day}`
+        : event.contact.birthday?.day;
+    message.context.traits.birthday = `${event.contact.birthday?.year}-${month}-${day}`;
+  }
+
+  if (event.contact?.phone_number) {
+    message.context.traits.phone = `${event.contact.phone_number?.c}${event.contact.phone_number?.n}`;
+  }
+
+  // Updating timestamp to acceptable timestamp format ["2023-10-10T06:24:19.103820974Z" -> "2023-10-10T06:24:19.000Z"]
   if (message.originalTimestamp) {
     const date = `${Math.floor(new Date(message.originalTimestamp).getTime() / 1000)}`;
     message.originalTimestamp = new Date(date * 1000).toISOString();
@@ -56,11 +92,15 @@ function process(event) {
   // setting event Name
   message.setEventName(eventMapping[event.activity.field_id]);
 
+  if (!message.event) {
+    message.event = 'custom event triggered';
+  }
+
   // setting up ortto contact.contact_id to externalId
-  if (event.user?.id) {
+  if (event.contact?.contact_id) {
     message.context.externalId = [
       {
-        type: 'orttoContactId',
+        type: 'orttoPersonId',
         id: event.contact.contact_id,
       },
     ];

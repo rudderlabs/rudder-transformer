@@ -428,7 +428,7 @@
       }
     },
     "output": {
-      "error": "event is not present in the input payloads"
+      "error": "Event is a required field and should be a string"
     }
   },
   {

@@ -50,7 +50,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
     events: ProcessorTransformationRequest[],
     destinationType: string,
     version: string,
-    _requestMetadata: NonNullable<unknown>,
+    requestMetadata: NonNullable<unknown>,
   ): Promise<ProcessorTransformationResponse[]> {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
     const respList: ProcessorTransformationResponse[][] = await Promise.all(
@@ -58,7 +58,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
         try {
           const transformedPayloads:
             | ProcessorTransformationOutput
-            | ProcessorTransformationOutput[] = await destHandler.process(event);
+            | ProcessorTransformationOutput[] = await destHandler.process(event, requestMetadata);
           return DestinationPostTransformationService.handleProcessorTransformSucessEvents(
             event,
             transformedPayloads,
@@ -88,7 +88,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
     events: RouterTransformationRequestData[],
     destinationType: string,
     version: string,
-    _requestMetadata: NonNullable<unknown>,
+    requestMetadata: NonNullable<unknown>,
   ): Promise<RouterTransformationResponse[]> {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
     const allDestEvents: NonNullable<unknown> = groupBy(
@@ -106,7 +106,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
         );
         try {
           const doRouterTransformationResponse: RouterTransformationResponse[] =
-            await destHandler.processRouterDest(cloneDeep(destInputArray));
+            await destHandler.processRouterDest(cloneDeep(destInputArray), requestMetadata);
           metaTO.metadata = destInputArray[0].metadata;
           return DestinationPostTransformationService.handleRouterTransformSuccessEvents(
             doRouterTransformationResponse,
@@ -132,7 +132,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
     events: RouterTransformationRequestData[],
     destinationType: string,
     version: any,
-    _requestMetadata: NonNullable<unknown>,
+    requestMetadata: NonNullable<unknown>,
   ): RouterTransformationResponse[] {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
     if (!destHandler.batch) {
@@ -145,7 +145,10 @@ export default class NativeIntegrationDestinationService implements IntegrationD
     const groupedEvents: RouterTransformationRequestData[][] = Object.values(allDestEvents);
     const response = groupedEvents.map((destEvents) => {
       try {
-        const destBatchedRequests: RouterTransformationResponse[] = destHandler.batch(destEvents);
+        const destBatchedRequests: RouterTransformationResponse[] = destHandler.batch(
+          destEvents,
+          requestMetadata,
+        );
         return destBatchedRequests;
       } catch (error: any) {
         const metaTO = this.getTags(

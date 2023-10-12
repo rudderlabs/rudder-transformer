@@ -34,13 +34,21 @@ describe("Tests", () => {
     });
   });
 
-  test(`${name} Batching Tests`, () => {
-    const inputData = JSON.parse(batchInputDataFile);
-    const batchExpectedData = JSON.parse(batchOutputDataFile);
-    const output = transformer.batch(inputData);
-    expect(Array.isArray(output)).toEqual(true);
-    expect(output).toEqual(batchExpectedData);
-  });
+  const batchInputData = JSON.parse(batchInputDataFile);
+  const batchExpectedData = JSON.parse(batchOutputDataFile);
+  batchInputData.forEach((input, index) => {
+    test(`Batching Tests ${index}`, () => {
+      const output = transformer.batch(input);
+      expect(Array.isArray(output)).toEqual(true);
+      expect(output.length).toEqual(batchExpectedData[index].length);
+      output.forEach((input, indexInner) => {
+        expect(output[indexInner]).toEqual(
+          batchExpectedData[index][indexInner]
+        );
+      });
+    });
+  });    
+  
 
   test(`${name} Metadata parse test`, done => {
     const inputData = JSON.parse(dataWithMetadata);

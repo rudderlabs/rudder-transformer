@@ -20,6 +20,10 @@ const CommonUtils = {
     }
     return [obj];
   },
+
+  setDiff(mainSet, comparisionSet) {
+    return [...mainSet].filter((item) => !comparisionSet.has(item));
+  },
 };
 
 module.exports = {

@@ -7,37 +7,20 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Features
 
-* add axios mocking to component test-suite ([#2638](https://github.com/rudderlabs/rudder-transformer/issues/2638)) ([100c808](https://github.com/rudderlabs/rudder-transformer/commit/100c80881eb99716198231deb9ec0e69dc3fa2a0))
-* add circular reference check in flattern json ([#2650](https://github.com/rudderlabs/rudder-transformer/issues/2650)) ([a21ea3a](https://github.com/rudderlabs/rudder-transformer/commit/a21ea3aaecfc3d10de3f4eaa34425dda388032ff))
-* **gaec:** partial failures handling ([#2631](https://github.com/rudderlabs/rudder-transformer/issues/2631)) ([0008277](https://github.com/rudderlabs/rudder-transformer/commit/0008277fe43d20ced4066f8f1f1b0f1d12345f01))
 * **integrations:** introduced new status codes to suppress or filter events ([#2611](https://github.com/rudderlabs/rudder-transformer/issues/2611)) ([6bdb01e](https://github.com/rudderlabs/rudder-transformer/commit/6bdb01e1152f52339dc6d1936cbe686e64faf070))
-* **iterable:** user deletion support ([#2621](https://github.com/rudderlabs/rudder-transformer/issues/2621)) ([c0ab19a](https://github.com/rudderlabs/rudder-transformer/commit/c0ab19a293a72ea0a7575b863356aea9a0e6762f))
 * onboard braze stats ([#2703](https://github.com/rudderlabs/rudder-transformer/issues/2703)) ([f205325](https://github.com/rudderlabs/rudder-transformer/commit/f2053255bedac6017f909fe8b6de3775dd50bc93))
 * support page call in snapchat conversion ([#2688](https://github.com/rudderlabs/rudder-transformer/issues/2688)) ([d681d5e](https://github.com/rudderlabs/rudder-transformer/commit/d681d5e1a39c1914e3a237e1020553518c297416))
-* tslint rules enable ([#2604](https://github.com/rudderlabs/rudder-transformer/issues/2604)) ([4d6c4b8](https://github.com/rudderlabs/rudder-transformer/commit/4d6c4b834de005484dc1099a52c69ab6212273e8))
 
 
 ### Bug Fixes
 
-* add auth status inactive category handling to GA in userDeletion flow ([#2669](https://github.com/rudderlabs/rudder-transformer/issues/2669)) ([b784800](https://github.com/rudderlabs/rudder-transformer/commit/b7848004e2679ec7278c8381560cb1a77da6c642))
-* add optional chaining for error message in network handler of Intercom ([#2648](https://github.com/rudderlabs/rudder-transformer/issues/2648)) ([10a13bc](https://github.com/rudderlabs/rudder-transformer/commit/10a13bcf7f987de45540b52d414883664e43f9cd))
 * added matchId check and timestamp conversion ([#2709](https://github.com/rudderlabs/rudder-transformer/issues/2709)) ([f49244d](https://github.com/rudderlabs/rudder-transformer/commit/f49244dce6cf15812d894d22c43d2432b5a4756a))
-* bqstream event ordering fix ([#2624](https://github.com/rudderlabs/rudder-transformer/issues/2624)) ([e97e7ca](https://github.com/rudderlabs/rudder-transformer/commit/e97e7caed20ffb007f1c543e15c15c6e89e2dfb7))
 * bugsnag event sent as an object for track call ([#2681](https://github.com/rudderlabs/rudder-transformer/issues/2681)) ([b211840](https://github.com/rudderlabs/rudder-transformer/commit/b21184019691b472650901f6002ef81b579a1146))
 * correct handling of permission_denied error for GAEC & GARL ([#2699](https://github.com/rudderlabs/rudder-transformer/issues/2699)) ([eca3be1](https://github.com/rudderlabs/rudder-transformer/commit/eca3be1fdcb7ac0ebf9432e9686a75fad2d6dc78))
-* create instance of transformedObj ([#2694](https://github.com/rudderlabs/rudder-transformer/issues/2694)) ([bbf7ad4](https://github.com/rudderlabs/rudder-transformer/commit/bbf7ad4da603936db4ef8f53d5734c5b4bb84ca9))
 * **garl:** partial failure handling ([#2666](https://github.com/rudderlabs/rudder-transformer/issues/2666)) ([d4cac26](https://github.com/rudderlabs/rudder-transformer/commit/d4cac268193e0db9540f95c7aab39157d70765c1))
-* **hubspot:** add validation for hubspotEvents ([#2643](https://github.com/rudderlabs/rudder-transformer/issues/2643)) ([b49d0ee](https://github.com/rudderlabs/rudder-transformer/commit/b49d0ee576f55e5f95e3d02b7111e995fc9b8ada))
 * **kafka:** add status code & batched value in response structure ([#2684](https://github.com/rudderlabs/rudder-transformer/issues/2684)) ([99f39f5](https://github.com/rudderlabs/rudder-transformer/commit/99f39f5cd62ceb82bd8f51d1de84442b1e59c004))
 * **klaviyo:** sending error field at root level for suppress events ([#2707](https://github.com/rudderlabs/rudder-transformer/issues/2707)) ([bc88f13](https://github.com/rudderlabs/rudder-transformer/commit/bc88f1303ec4f60a466492c72e8c3b57dd5070af))
-* **mixpanel:** batch event ordering ([#2608](https://github.com/rudderlabs/rudder-transformer/issues/2608)) ([36c7f06](https://github.com/rudderlabs/rudder-transformer/commit/36c7f06ccfa534b751ca9b3f5c41e9bb6d2e9f00))
-* refactor adjust using optional chaining ([#2671](https://github.com/rudderlabs/rudder-transformer/issues/2671)) ([f63b493](https://github.com/rudderlabs/rudder-transformer/commit/f63b4932d5ba467a82a36d3e8b80578f81f729cf))
 * snapchat conversion introduce missing fields ([#2704](https://github.com/rudderlabs/rudder-transformer/issues/2704)) ([d6488d5](https://github.com/rudderlabs/rudder-transformer/commit/d6488d5a189ea90d1142e4ecb34b2af0bb940fe9))
-* **snyk:** fix dependencies version from snyk ([#2640](https://github.com/rudderlabs/rudder-transformer/issues/2640)) ([8422744](https://github.com/rudderlabs/rudder-transformer/commit/8422744b3af48f71358f7acbe2df7b3688ce04a8))
-* **snyk:** removed aws-sdk dependency ([08a3535](https://github.com/rudderlabs/rudder-transformer/commit/08a3535257e5d84566c95cebc701613478f0e039))
-* **snyk:** removed the new added dependencies ([364779c](https://github.com/rudderlabs/rudder-transformer/commit/364779ce959d7548e5cf1cc8c718b71331dcb378))
-* **snyk:** snyk updated versions merged to oen pr ([16a9b8e](https://github.com/rudderlabs/rudder-transformer/commit/16a9b8e6cc26a8df1331cb1af8774df7cc05c959))
-* use promise for prompts in personalize create tracking script ([#2635](https://github.com/rudderlabs/rudder-transformer/issues/2635)) ([5fbddd1](https://github.com/rudderlabs/rudder-transformer/commit/5fbddd1490b16dbda6bca19df4cac5bef6ff78c5))
 
 ### [1.44.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.44.1...v1.44.2) (2023-10-09)
 

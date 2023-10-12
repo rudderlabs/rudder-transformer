@@ -25,7 +25,6 @@ steps:
         }
         output.push(result);
       })
-      console.log(JSON.stringify(output))
       output
 
   - name: failedEvents

@@ -9,7 +9,7 @@ const Handlebars = require('handlebars');
 
 const fs = require('fs');
 const path = require('path');
-const _ = require('lodash');
+const lodash = require('lodash');
 const set = require('set-value');
 const get = require('get-value');
 const uaParser = require('ua-parser-js');
@@ -32,21 +32,23 @@ const {
   REFRESH_TOKEN,
   AUTH_STATUS_INACTIVE,
 } = require('../../adapters/networkhandler/authConstants');
+const { FEATURE_FILTER_CODE } = require('./constant');
 // ========================================================================
 // INLINERS
 // ========================================================================
 
-const isDefined = (x) => !_.isUndefined(x);
-const isNotEmpty = (x) => !_.isEmpty(x);
+const isDefined = (x) => !lodash.isUndefined(x);
+const isNotEmpty = (x) => !lodash.isEmpty(x);
 const isNotNull = (x) => x != null;
 const isDefinedAndNotNull = (x) => isDefined(x) && isNotNull(x);
 const isDefinedAndNotNullAndNotEmpty = (x) => isDefined(x) && isNotNull(x) && isNotEmpty(x);
-const removeUndefinedValues = (obj) => _.pickBy(obj, isDefined);
-const removeNullValues = (obj) => _.pickBy(obj, isNotNull);
-const removeUndefinedAndNullValues = (obj) => _.pickBy(obj, isDefinedAndNotNull);
-const removeUndefinedAndNullAndEmptyValues = (obj) => _.pickBy(obj, isDefinedAndNotNullAndNotEmpty);
-const isBlank = (value) => _.isEmpty(_.toString(value));
-const flattenMap = (collection) => _.flatMap(collection, (x) => x);
+const removeUndefinedValues = (obj) => lodash.pickBy(obj, isDefined);
+const removeNullValues = (obj) => lodash.pickBy(obj, isNotNull);
+const removeUndefinedAndNullValues = (obj) => lodash.pickBy(obj, isDefinedAndNotNull);
+const removeUndefinedAndNullAndEmptyValues = (obj) =>
+  lodash.pickBy(obj, isDefinedAndNotNullAndNotEmpty);
+const isBlank = (value) => lodash.isEmpty(lodash.toString(value));
+const flattenMap = (collection) => lodash.flatMap(collection, (x) => x);
 // ========================================================================
 // GENERIC UTLITY
 // ========================================================================
@@ -75,6 +77,14 @@ const stripTrailingSlash = (str) => (str && str.endsWith('/') ? str.slice(0, -1)
 const isPrimitive = (arg) => {
   const type = typeof arg;
   return arg == null || (type !== 'object' && type !== 'function');
+};
+
+const isNewStatusCodesAccepted = (reqMetadata = {}) => {
+  if (reqMetadata && typeof reqMetadata === 'object' && !Array.isArray(reqMetadata)) {
+    const { features } = reqMetadata;
+    return !!(features && features[FEATURE_FILTER_CODE]);
+  }
+  return false;
 };
 
 /**
@@ -108,7 +118,7 @@ const isObject = (value) => {
 };
 
 function isEmpty(input) {
-  return _.isEmpty(_.toString(input).trim());
+  return lodash.isEmpty(lodash.toString(input).trim());
 }
 
 /**
@@ -126,8 +136,8 @@ function isEmptyObject(obj) {
 
 /**
  * Function to check if value is Defined, Not null and Not Empty.
- * Create this function, Because existing isDefinedAndNotNullAndNotEmpty(123) is returning false due to lodash _.isEmpty function.
- * _.isEmpty is used to detect empty collections/objects and it will return true for Integer, Boolean values.
+ * Create this function, Because existing isDefinedAndNotNullAndNotEmpty(123) is returning false due to lodash lodash.isEmpty function.
+ * lodash.isEmpty is used to detect empty collections/objects and it will return true for Integer, Boolean values.
  * ref: https://github.com/lodash/lodash/issues/496
  * @param {*} value 123
  * @returns yes
@@ -141,7 +151,7 @@ const isDefinedNotNullNotEmpty = (value) =>
     (typeof value === 'string' && value.trim().length === 0)
   );
 
-const removeUndefinedNullEmptyExclBoolInt = (obj) => _.pickBy(obj, isDefinedNotNullNotEmpty);
+const removeUndefinedNullEmptyExclBoolInt = (obj) => lodash.pickBy(obj, isDefinedNotNullNotEmpty);
 
 /**
  * Recursively removes undefined, null, empty objects, and empty arrays from the given object at all levels.
@@ -149,6 +159,7 @@ const removeUndefinedNullEmptyExclBoolInt = (obj) => _.pickBy(obj, isDefinedNotN
  * @returns
  */
 const removeUndefinedNullValuesAndEmptyObjectArray = (obj) => {
+  // eslint-disable-next-line @typescript-eslint/no-shadow
   function recursive(obj) {
     if (Array.isArray(obj)) {
       const cleanedArray = obj
@@ -239,11 +250,11 @@ const getHashFromArrayWithValueAsObject = (arrays, fromKey = 'from', isLowerCase
 const getValueFromPropertiesOrTraits = ({ message, key }) => {
   const keySet = ['properties', 'traits', 'context.traits'];
 
-  const val = _.find(
-    _.map(keySet, (k) => get(message, `${k}.${key}`)),
-    (v) => !_.isNil(v),
+  const val = lodash.find(
+    lodash.map(keySet, (k) => get(message, `${k}.${key}`)),
+    (v) => !lodash.isNil(v),
   );
-  return !_.isNil(val) ? val : null;
+  return !lodash.isNil(val) ? val : null;
 };
 
 /**
@@ -263,6 +274,7 @@ const hasCircularReference = (obj, seen = []) => {
   }
 
   seen.push(obj);
+  // eslint-disable-next-line no-restricted-syntax
   for (const value of Object.values(obj)) {
     if (hasCircularReference(value, seen)) {
       return true;
@@ -451,11 +463,17 @@ const defaultBatchRequestConfig = () => ({
 
 // Router transformer
 // Success responses
-const getSuccessRespEvents = (message, metadata, destination, batched = false) => ({
+const getSuccessRespEvents = (
+  message,
+  metadata,
+  destination,
+  batched = false,
+  statusCode = 200,
+) => ({
   batchedRequest: message,
   metadata,
   batched,
-  statusCode: 200,
+  statusCode,
   destination,
 });
 
@@ -556,7 +574,7 @@ const handleSourceKeysOperation = ({ message, operationObject }) => {
   // quick sanity check for the undefined values in the list.
   // if there is any undefined values, return null
   // without going further for operations
-  const isAllDefined = _.every(argValues, (v) => !_.isNil(v));
+  const isAllDefined = lodash.every(argValues, (v) => !lodash.isNil(v));
   if (!isAllDefined) {
     return null;
   }
@@ -568,9 +586,9 @@ const handleSourceKeysOperation = ({ message, operationObject }) => {
       result = 1;
       // eslint-disable-next-line no-restricted-syntax
       for (const v of argValues) {
-        if (_.isNumber(v)) {
+        if (lodash.isNumber(v)) {
           result *= v;
-        } else if (_.isString(v) && /^[+-]?(\d+(\.\d*)?|\.\d+)([Ee][+-]?\d+)?$/.test(v)) {
+        } else if (lodash.isString(v) && /^[+-]?(\d+(\.\d*)?|\.\d+)([Ee][+-]?\d+)?$/.test(v)) {
           result *= parseFloat(v);
         } else {
           // if there is a non number argument simply return null
@@ -583,7 +601,7 @@ const handleSourceKeysOperation = ({ message, operationObject }) => {
       result = 0;
       // eslint-disable-next-line no-restricted-syntax
       for (const v of argValues) {
-        if (_.isNumber(v)) {
+        if (lodash.isNumber(v)) {
           result += v;
         } else {
           // if there is a non number argument simply return null
@@ -1070,7 +1088,7 @@ const constructPayload = (message, mappingJson, destinationName = null) => {
       if (value || value === 0 || value === false) {
         if (destKey) {
           // set the value only if correct
-          _.set(payload, destKey, value);
+          lodash.set(payload, destKey, value);
         } else {
           // to set to root and flatten later
           payload[''] = value;
@@ -1447,12 +1465,12 @@ const errorStatusCodeKeys = ['response.status', 'code', 'status'];
 const getErrorStatusCode = (error, defaultStatusCode = HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR) => {
   try {
     let defaultStCode = defaultStatusCode;
-    if (!_.isNumber(defaultStatusCode)) {
+    if (!lodash.isNumber(defaultStatusCode)) {
       defaultStCode = HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR;
     }
     const errStCode = errorStatusCodeKeys
       .map((statusKey) => get(error, statusKey))
-      .find((stCode) => _.isNumber(stCode));
+      .find((stCode) => lodash.isNumber(stCode));
     return errStCode || defaultStCode;
   } catch (err) {
     logger.error('Failed in getErrorStatusCode', err);
@@ -1720,7 +1738,7 @@ const simpleProcessRouterDestSync = async (inputs, singleTfFunc, reqMetadata, pr
       // transform if not already done
       if (!input.message.statusCode) {
         // eslint-disable-next-line no-await-in-loop
-        resp = await singleTfFunc(input, processParams);
+        resp = await singleTfFunc(input, processParams, reqMetadata);
       }
       respList.push(getSuccessRespEvents(resp, [input.metadata], input.destination));
     } catch (error) {
@@ -1950,7 +1968,7 @@ const batchMultiplexedEvents = (transformedEventsList, maxBatchSize) => {
       }
       if (batchedEvents.length === 0 || eventsNotBatched) {
         if (transformedMessage.length > maxBatchSize) {
-          transformedMessage = _.chunk(transformedMessage, maxBatchSize);
+          transformedMessage = lodash.chunk(transformedMessage, maxBatchSize);
         }
         batchedEvents.push({
           events: transformedMessage,
@@ -2041,6 +2059,11 @@ const getAuthErrCategoryFromStCode = (status) => {
   return '';
 };
 
+const validateEventType = event => {
+  if(!event || typeof event !== "string"){
+    throw new InstrumentationError("Event is a required field and should be a string");
+  }
+}
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -2134,6 +2157,7 @@ module.exports = {
   getDestAuthCacheInstance,
   refinePayload,
   validateEmail,
+  validateEventType,
   validatePhoneWithCountryCode,
   getEventReqMetadata,
   isHybridModeEnabled,
@@ -2145,4 +2169,5 @@ module.exports = {
   hasCircularReference,
   getAuthErrCategoryFromErrDetailsAndStCode,
   getAuthErrCategoryFromStCode,
+  isNewStatusCodesAccepted,
 };

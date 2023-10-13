@@ -229,7 +229,7 @@ class Prometheus {
         name: 'tp_errors',
         help: 'tp_errors',
         type: 'counter',
-        labelNames: ['sourceType', 'destinationType', 'k8_namespace', 'workspaceId', 'transformationId'],
+        labelNames: ['sourceType', 'destinationType', 'k8_namespace', 'workspaceId', 'trackingPlanId'],
       },
       {
         name: 'tp_events_count',
@@ -551,6 +551,24 @@ class Prometheus {
         type: 'gauge',
         labelNames: ['destType', 'feature'],
       },
+      {
+        name: 'braze_batch_attributes_pack_size',
+        help: 'braze_batch_attributes_pack_size',
+        type: 'gauge',
+        labelNames: ['destination_id'],
+      },
+      {
+        name: 'braze_batch_events_pack_size',
+        help: 'braze_batch_events_pack_size',
+        type: 'gauge',
+        labelNames: ['destination_id'],
+      },
+      {
+        name: 'braze_batch_purchase_pack_size',
+        help: 'braze_batch_purchase_pack_size',
+        type: 'gauge',
+        labelNames: ['destination_id'],
+      },
 
       // Histograms
       {
@@ -575,7 +593,7 @@ class Prometheus {
         name: 'tp_request_latency',
         help: 'tp_request_latency',
         type: 'histogram',
-        labelNames: ['sourceType', 'destinationType', 'k8_namespace', 'workspaceId', 'transformationId'],
+        labelNames: ['sourceType', 'destinationType', 'k8_namespace', 'workspaceId', 'trackingPlanId'],
       },
       {
         name: 'cdk_events_latency',
@@ -609,18 +627,6 @@ class Prometheus {
         labelNames: [
           'workspaceId',
           'transformationId',
-          'sourceType',
-          'destinationType',
-          'k8_namespace',
-        ],
-      },
-      {
-        name: 'user_transform_function_latency',
-        help: 'user_transform_function_latency',
-        type: 'histogram',
-        labelNames: [
-          'transformationVersionId',
-          'processSessions',
           'sourceType',
           'destinationType',
           'k8_namespace',

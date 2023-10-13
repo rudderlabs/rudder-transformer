@@ -1,4 +1,4 @@
-const { removeUndefinedAndNullValues, generateUUID } = require('../../util');
+const { removeUndefinedAndNullValues, generateUUID } = require('../../../v0/util');
 
 function processEvent(event) {
   const payload = {
@@ -10,7 +10,8 @@ function processEvent(event) {
   return payload;
 }
 
-function process(event) {
+function process(inputEvent) {
+  const { event } = inputEvent;
   const response = processEvent(event);
   return removeUndefinedAndNullValues(response);
 }

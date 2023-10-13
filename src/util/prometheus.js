@@ -551,6 +551,24 @@ class Prometheus {
         type: 'gauge',
         labelNames: ['destType', 'feature'],
       },
+      {
+        name: 'braze_batch_attributes_pack_size',
+        help: 'braze_batch_attributes_pack_size',
+        type: 'gauge',
+        labelNames: ['destination_id'],
+      },
+      {
+        name: 'braze_batch_events_pack_size',
+        help: 'braze_batch_events_pack_size',
+        type: 'gauge',
+        labelNames: ['destination_id'],
+      },
+      {
+        name: 'braze_batch_purchase_pack_size',
+        help: 'braze_batch_purchase_pack_size',
+        type: 'gauge',
+        labelNames: ['destination_id'],
+      },
 
       // Histograms
       {

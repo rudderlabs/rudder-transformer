@@ -23,7 +23,7 @@
   },
   {
     "destKey": "content_name",
-    "sourceKeys": "properties.contentName"
+    "sourceKeys": ["properties.content_name", "properties.contentName"]
   },
   {
     "destKey": "value",

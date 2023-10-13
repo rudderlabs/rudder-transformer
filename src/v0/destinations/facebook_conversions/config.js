@@ -7,7 +7,7 @@ const CONFIG_CATEGORIES = {
     name: 'FBCUserDataConfig',
   },
   COMMON: { name: 'FBCCommonConfig' },
-  APPDATA: { name: 'FBAppEventsConfig' },
+  APPDATA: { name: 'FBCAppEventsConfig' },
   SIMPLE_TRACK: {
     standard: false,
     type: 'simple track',

@@ -1,5 +1,8 @@
 [
   {
+    "message": "Event is a required field and should be a string"
+  },
+  {
     "body": {
       "XML": {},
       "JSON_ARRAY": {},

@@ -1,8 +1,8 @@
 const {
   combineBatchRequestsWithSameJobIds,
-  groupEventsByType,
   groupEventsByEndpoint,
   batchEvents,
+  generateBatchedPayloadForArray,
 } = require('./util');
 
 const destinationMock = {
@@ -486,6 +486,83 @@ describe('Mixpanel utils test', () => {
         },
       ];
       expect(combineBatchRequestsWithSameJobIds(input)).toEqual(expectedOutput);
+    });
+  });
+
+  describe('Unit test cases for generateBatchedPayloadForArray', () => {
+    it('should generate a batched payload with GZIP payload for /import endpoint when given an array of events', () => {
+      const events = [
+        {
+          body: { JSON_ARRAY: { batch: '[{"event": "event1"}]' } },
+          endpoint: '/import',
+          headers: { 'Content-Type': 'application/json' },
+          params: {},
+        },
+        {
+          body: { JSON_ARRAY: { batch: '[{"event": "event2"}]' } },
+          endpoint: '/import',
+          headers: { 'Content-Type': 'application/json' },
+          params: {},
+        },
+      ];
+      const expectedBatchedRequest = {
+        body: {
+          FORM: {},
+          JSON: {},
+          JSON_ARRAY: {},
+          XML: {},
+          GZIP: {
+            payload: '[{"event":"event1"},{"event":"event2"}]',
+          },
+        },
+        endpoint: '/import',
+        files: {},
+        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',
+        params: {},
+        type: 'REST',
+        version: '1',
+      };
+
+      const result = generateBatchedPayloadForArray(events);
+
+      expect(result).toEqual(expectedBatchedRequest);
+    });
+
+    it('should generate a batched payload with JSON_ARRAY body when given an array of events', () => {
+      const events = [
+        {
+          body: { JSON_ARRAY: { batch: '[{"event": "event1"}]' } },
+          endpoint: '/endpoint',
+          headers: { 'Content-Type': 'application/json' },
+          params: {},
+        },
+        {
+          body: { JSON_ARRAY: { batch: '[{"event": "event2"}]' } },
+          endpoint: '/endpoint',
+          headers: { 'Content-Type': 'application/json' },
+          params: {},
+        },
+      ];
+      const expectedBatchedRequest = {
+        body: {
+          FORM: {},
+          JSON: {},
+          JSON_ARRAY: { batch: '[{"event":"event1"},{"event":"event2"}]' },
+          XML: {},
+        },
+        endpoint: '/endpoint',
+        files: {},
+        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',
+        params: {},
+        type: 'REST',
+        version: '1',
+      };
+
+      const result = generateBatchedPayloadForArray(events);
+
+      expect(result).toEqual(expectedBatchedRequest);
     });
   });
 });

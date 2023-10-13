@@ -220,7 +220,47 @@ type ComparatorInput = {
   requestMetadata: object;
   feature: string;
 };
+type SourceDefinition = {
+  ID: string
+  Name: string
+  Category: string
+  Type: string
+}
+type TrackingPlanT = {
+  Id: string
+  Version: number
+}
 
+type DgSourceTrackingPlanConfigT = {
+  SourceId: string;
+  SourceConfigVersion: number;
+  Config: object
+  MergedConfig: object
+  Deleted: boolean
+  TrackingPlan: TrackingPlanT
+};
+
+type Source = {
+  ID: string;
+  OriginalID: string
+  Name: string;
+  SourceDefinition: SourceDefinition;
+  Config: object;
+  Enabled: boolean;
+  WorkspaceID: string;
+  WriteKey: string
+  Transformations: UserTransformationInput[];
+  RevisionID?: string;
+  Destinations: Destination[]
+  Transient: boolean
+  EventSchemasEnabled: boolean
+  DgSourceTrackingPlanConfig: DgSourceTrackingPlanConfigT
+};
+
+type SourceInput = {
+  event: unknown;
+  source: Source;
+};
 export {
   Metadata,
   UserTransformationLibrary,
@@ -241,4 +281,5 @@ export {
   UserDeletionResponse,
   Destination,
   ComparatorInput,
+  SourceInput,
 };

@@ -4,8 +4,8 @@ import {
   MetaTransferObject,
   RudderMessage,
   SourceTransformationResponse,
+  SourceInput,
 } from '../../types/index';
-import { FixMe } from '../../util/types';
 import PostTransformationServiceSource from './postTransformation';
 import FetchHandler from '../../helpers/fetchHandlers';
 import tags from '../../v0/util/tags';
@@ -26,20 +26,47 @@ export default class NativeIntegrationSourceService implements IntegrationSource
   }
 
   public async sourceTransformRoutine(
-    sourceEvents: NonNullable<unknown>[],
+    sourceEvents: unknown[],
     sourceType: string,
     version: string,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    _requestMetadata: NonNullable<unknown>,
+    _requestMetadata: Object,
   ): Promise<SourceTransformationResponse[]> {
-    const sourceHandler = FetchHandler.getSourceHandler(sourceType, version);
-    const respList: SourceTransformationResponse[] = await Promise.all<FixMe>(
+    // if shopify/v1 , webhook/v1 (error) => webhook/v0
+    let sourceHandler: any;
+    let sourceVersion = version;
+    try {
+      ({ sourceHandler, updatedVersion: sourceVersion } = FetchHandler.getSourceHandler(sourceType, version));
+    } catch (error) {
+      if (sourceVersion === version && version === 'v1') {
+        // eslint-disable-next-line no-param-reassign
+        sourceEvents = (sourceEvents as SourceInput[]).map(sourceEvent => sourceEvent.event);
+        sourceVersion = 'v0';
+        ({ sourceHandler, updatedVersion: sourceVersion } = FetchHandler.getSourceHandler(sourceType, sourceVersion));
+      } else if (sourceVersion === version && version === 'v0') {
+
+        sourceVersion = 'v1';
+        ({ sourceHandler, updatedVersion: sourceHandler } = FetchHandler.getSourceHandler(sourceType, sourceVersion));
+      } else {
+        throw error;
+      }
+    }
+    const respList: SourceTransformationResponse[] = await Promise.all<any>(
       sourceEvents.map(async (sourceEvent) => {
         try {
-          const respEvents: RudderMessage | RudderMessage[] | SourceTransformationResponse =
-            await sourceHandler.process(sourceEvent);
+          let respEvents: RudderMessage | RudderMessage[] | SourceTransformationResponse;
+          if (sourceVersion === "v1") {
+            if (version === "v0") {
+              respEvents = await sourceHandler.process({ event: { sourceEvent }, source: undefined });
+            } else {
+              respEvents = await sourceHandler.process(sourceEvent as SourceInput);
+            }
+          } else if (version === "v1") {
+            respEvents = await sourceHandler.process((sourceEvent as SourceInput).event);
+          } else {
+            respEvents = await sourceHandler.process(sourceEvent);
+          }
           return PostTransformationServiceSource.handleSuccessEventsSource(respEvents);
-        } catch (error: FixMe) {
+        } catch (error: any) {
           const metaTO = this.getTags();
           stats.increment('source_transform_errors', {
             sourceType,

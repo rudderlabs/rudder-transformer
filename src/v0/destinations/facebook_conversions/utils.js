@@ -14,6 +14,20 @@ const {
 
 const { getContentType, getContentCategory } = require('../facebook_pixel/utils');
 const { InstrumentationError, TransformationError } = require('../../util/errorTypes');
+const { ACTION_SOURCES_VALUES } = require('../facebook_pixel/config');
+
+const getActionSource = (payload, fallbackActionSource) => {
+  let actionSource = fallbackActionSource;
+  if (payload.action_source) {
+    const isActionSourceValid = ACTION_SOURCES_VALUES.includes(payload.action_source);
+    if (!isActionSourceValid) {
+      throw new InstrumentationError('Invalid Action Source type');
+    }
+    actionSource = payload.action_source;
+  }
+
+  return actionSource;
+};
 
 const getCategoryFromEvent = (eventName) => {
   let category = STANDARD_ECOMM_EVENTS_CATEGORIES.find(
@@ -212,6 +226,7 @@ const formingFinalResponse = (
 
 module.exports = {
   fetchAppData,
+  getActionSource,
   getCategoryFromEvent,
   formingFinalResponse,
   populateCustomDataBasedOnCategory,

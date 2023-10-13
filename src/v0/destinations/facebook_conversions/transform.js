@@ -23,14 +23,11 @@ const {
   populateCustomDataBasedOnCategory,
   formingFinalResponse,
   getCategoryFromEvent,
+  getActionSource,
   fetchAppData,
 } = require('./utils');
 
-const {
-  transformedPayloadData,
-  getActionSource,
-  fetchUserData,
-} = require('../facebook_pixel/utils');
+const { transformedPayloadData, fetchUserData } = require('../facebook_pixel/utils');
 
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
@@ -49,6 +46,7 @@ const responseBuilderSimple = (message, category, destination) => {
     testEventCode,
     datasetId,
     accessToken,
+    actionSource,
   } = Config;
   const integrationsObj = getIntegrationsObj(message, DESTINATION.toLowerCase());
 
@@ -65,7 +63,7 @@ const responseBuilderSimple = (message, category, destination) => {
     MAPPING_CONFIG[CONFIG_CATEGORIES.COMMON.name],
     DESTINATION.toLowerCase(),
   );
-  commonData.action_source = getActionSource(commonData, message?.channel);
+  commonData.action_source = getActionSource(commonData, actionSource);
 
   let customData = {};
   customData = flattenJson(

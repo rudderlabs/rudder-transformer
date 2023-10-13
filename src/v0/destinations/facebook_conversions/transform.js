@@ -5,7 +5,7 @@ const {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   FB_CONVERSIONS_DEFAULT_EXCLUSION,
-  DESTINATION
+  DESTINATION,
 } = require('./config');
 const { EventType } = require('../../../constants');
 
@@ -21,14 +21,15 @@ const {
 
 const {
   populateCustomDataBasedOnCategory,
+  formingFinalResponse,
   getCategoryFromEvent,
+  fetchAppData,
 } = require('./utils');
 
 const {
   transformedPayloadData,
   getActionSource,
   fetchUserData,
-  formingFinalResponse
 } = require('../facebook_pixel/utils');
 
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
@@ -47,7 +48,7 @@ const responseBuilderSimple = (message, category, destination) => {
     testDestination,
     testEventCode,
     datasetId,
-    accessToken
+    accessToken,
   } = Config;
   const integrationsObj = getIntegrationsObj(message, DESTINATION.toLowerCase());
 
@@ -78,13 +79,7 @@ const responseBuilderSimple = (message, category, destination) => {
     whitelistPiiProperties,
     integrationsObj,
   );
-  customData = populateCustomDataBasedOnCategory(
-    customData,
-    message,
-    category,
-    categoryToContent,
-  );
-
+  customData = populateCustomDataBasedOnCategory(customData, message, category, categoryToContent);
 
   if (limitedDataUSage) {
     const dataProcessingOptions = get(message, 'context.dataProcessingOptions');
@@ -97,12 +92,16 @@ const responseBuilderSimple = (message, category, destination) => {
     }
   }
 
-  // content_category should only be a string ref: https://developers.facebook.com/docs/marketing-api/conversions-api/parameters/custom-data
+  let appData = {};
+  if (commonData.action_source === 'app') {
+    appData = fetchAppData(message);
+  }
 
   return formingFinalResponse(
     userData,
     commonData,
     customData,
+    appData,
     endpoint,
     testDestination,
     testEventCode,
@@ -185,5 +184,5 @@ const processRouterDest = async (inputs, reqMetadata) => {
 
 module.exports = {
   process,
-  processRouterDest
+  processRouterDest,
 };

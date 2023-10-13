@@ -273,12 +273,12 @@ const getContentCategory = (category) => {
   return contentCategory;
 };
 
-const fetchUserData = (message, Config) => {
-  const integrationsObj = getIntegrationsObj(message, 'fb_pixel');
+const fetchUserData = (message, Config, destinationName) => {
+  const integrationsObj = getIntegrationsObj(message, destinationName);
   const userData = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.USERDATA.name],
-    'fb_pixel',
+    destinationName,
   );
   const { removeExternalId } = Config;
   if (removeExternalId) {
@@ -607,6 +607,7 @@ module.exports = {
   deduceFbcParam,
   formatRevenue,
   getContentType,
+  getContentCategory,
   transformedPayloadData,
   getActionSource,
   fetchUserData,

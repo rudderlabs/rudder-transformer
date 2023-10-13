@@ -64,7 +64,7 @@ const responseBuilderSimple = (message, category, destination) => {
 
   const endpoint = `https://graph.facebook.com/v17.0/${pixelId}/events?access_token=${accessToken}`;
 
-  const userData = fetchUserData(message, Config);
+  const userData = fetchUserData(message, Config, 'fb_pixel');
 
   const commonData = constructPayload(
     message,

@@ -20,7 +20,6 @@ const {
 } = require('../../util');
 
 const {
-  formingFinalResponse,
   populateCustomDataBasedOnCategory,
   getCategoryFromEvent,
 } = require('./utils');
@@ -29,6 +28,7 @@ const {
   transformedPayloadData,
   getActionSource,
   fetchUserData,
+  formingFinalResponse
 } = require('../facebook_pixel/utils');
 
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');

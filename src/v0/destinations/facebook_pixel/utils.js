@@ -69,7 +69,6 @@ const getContentType = (message, defaultValue, categoryToContent) => {
 };
 
 /** This function transforms the payloads according to the config settings and adds, removes or hashes pii data.
-Also checks if it is a standard event and sends properties only if it is mentioned in our configs.
 @param message --> the rudder payload
 
 {
@@ -117,8 +116,8 @@ Also checks if it is a standard event and sends properties only if it is mention
 [ { whitelistPiiProperties: 'email' } ] // sets email
 
 
-@param eventCustomProperties -->
-[ { eventCustomProperties: 'leadId' } ] // leadId if present will be set
+@param integrationsObj -->
+{ hashed: true }
 
 */
 
@@ -303,7 +302,7 @@ const fetchUserData = (message, Config) => {
 /**
  *
  * @param {*} message Rudder element
- * @param {*} categoryToContent [ { from: 'clothing', to: 'product' } ]
+ * @param {*} categoryToContent example: [ { from: 'clothing', to: 'product' } ]
  *
  * Handles order completed and checkout started types of specific events
  */
@@ -318,7 +317,7 @@ const handleOrder = (message, categoryToContent) => {
   if (products) {
     if (products.length > 0 && Array.isArray(products)) {
       products.forEach((singleProduct) => {
-        const pId = singleProduct.product_id || singleProduct.sku || singleProduct.id;
+        const pId = singleProduct?.product_id || singleProduct?.sku || singleProduct?.id;
         if (pId) {
           contentIds.push(pId);
           // required field for content
@@ -351,7 +350,7 @@ const handleOrder = (message, categoryToContent) => {
 /**
  *
  * @param {*} message Rudder element
- * @param {*} categoryToContent [ { from: 'clothing', to: 'product' } ]
+ * @param {*} categoryToContent example [ { from: 'clothing', to: 'product' } ]
  *
  * Handles product list viewed
  */

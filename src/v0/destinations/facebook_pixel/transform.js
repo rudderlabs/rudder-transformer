@@ -92,9 +92,9 @@ const responseBuilderSimple = (message, category, destination) => {
       customData,
       blacklistPiiProperties,
       whitelistPiiProperties,
-      category.standard,
       integrationsObj,
     );
+    message.properties = message.properties || {};
     if (category.standard) {
       commonData.event_name = category.eventName;
       customData = populateCustomDataBasedOnCategory(

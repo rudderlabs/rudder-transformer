@@ -7,7 +7,7 @@ const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
-const { NetworkError } = require('../../util/errorTypes');
+const { AbortedError, RetryableError, NetworkError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -92,124 +92,124 @@ function isEventAbortable(element, proxyOutputObj) {
 const responseHandler = (destinationResponse) => {
   const message = `[CAMPAIGN_MANAGER Response Handler] - Request Processed Successfully`;
   const responseForPartialEventHandling = []
-  destinationResponse = {
-    response: {
-      hasFailures: true,
-      status: [
-        {
-          conversion: {
-            floodlightConfigurationId: "213123123",
-            floodlightActivityId: "456543345245",
-            timestampMicros: "1668624722555000",
-            value: 756234234234,
-            quantity: "3",
-            ordinal: "1",
-            limitAdTracking: false,
-            childDirectedTreatment: false,
-            gclid: "123",
-            nonPersonalizedAd: false,
-            treatmentForUnderage: false,
-            kind: "dfareporting#conversion",
-          },
-          kind: "dfareporting#conversionStatus",
-        },
-        {
-          conversion: {
-            floodlightConfigurationId: "213123123",
-            floodlightActivityId: "456543345245",
-            timestampMicros: "1668624722555000",
-            value: 756234234234,
-            quantity: "3",
-            ordinal: "1",
-            limitAdTracking: false,
-            childDirectedTreatment: false,
-            gclid: "123",
-            nonPersonalizedAd: false,
-            treatmentForUnderage: false,
-            kind: "dfareporting#conversion",
-          },
-          errors: [
-            {
-              code: "NOT_FOUND",
-              message: "Floodlight config id: 213123123 was not found.",
-              kind: "dfareporting#conversionError",
-            },
-            {
-              code: "INVALID_ARGUMENT",
-              message: "gclid: 123 was not found.",
-              kind: "dfareporting#conversionError",
-            }
-          ],
-          kind: "dfareporting#conversionStatus",
-        },
-        {
-          conversion: {
-            floodlightConfigurationId: "213123123",
-            floodlightActivityId: "456543345245",
-            timestampMicros: "1668624722555000",
-            value: 756234234234,
-            quantity: "3",
-            ordinal: "1",
-            limitAdTracking: false,
-            childDirectedTreatment: false,
-            gclid: "123",
-            nonPersonalizedAd: false,
-            treatmentForUnderage: false,
-            kind: "dfareporting#conversion",
-          },
-          errors: [
-            {
-              code: "NOT_FOUND",
-              message: "Floodlight config id: 213123123 was not found.",
-              kind: "dfareporting#conversionError",
-            },
-          ],
-          kind: "dfareporting#conversionStatus",
-        },
-      ],
-      kind: "dfareporting#conversionsBatchInsertResponse",
-    },
-    status: 200,
-    rudderJobMetadata: [{
-      jobId: 10,
-      attemptNum: 0,
-      userId: "",
-      sourceId: "24242",
-      destinationId: "24242",
-      workspaceId: "242424",
-      secret: {
-        access_token: "atoken",
-        refresh_token: "rtoken",
-        developer_token: "developer_Token",
-      },
-    },
-    {
-      jobId: 11,
-      attemptNum: 0,
-      userId: "",
-      sourceId: "2424",
-      destinationId: "24242",
-      workspaceId: "24242",
-      secret: {
-        access_token: "atoken",
-        refresh_token: "rtoken",
-        developer_token: "developer_Token",
-      },
-    },
-    {
-      jobId: 12,
-      attemptNum: 0,
-      userId: "",
-      sourceId: "24242",
-      destinationId: "234234",
-      workspaceId: "34324",
-      secret: {
-        access_token: "atoken",
-        refresh_token: "rtoken",
-        developer_token: "developer_Token",
-      },
-    }],
-  };
+  // destinationResponse = {
+  //   response: {
+  //     hasFailures: true,
+  //     status: [
+  //       {
+  //         conversion: {
+  //           floodlightConfigurationId: "213123123",
+  //           floodlightActivityId: "456543345245",
+  //           timestampMicros: "1668624722555000",
+  //           value: 756234234234,
+  //           quantity: "3",
+  //           ordinal: "1",
+  //           limitAdTracking: false,
+  //           childDirectedTreatment: false,
+  //           gclid: "123",
+  //           nonPersonalizedAd: false,
+  //           treatmentForUnderage: false,
+  //           kind: "dfareporting#conversion",
+  //         },
+  //         kind: "dfareporting#conversionStatus",
+  //       },
+  //       {
+  //         conversion: {
+  //           floodlightConfigurationId: "213123123",
+  //           floodlightActivityId: "456543345245",
+  //           timestampMicros: "1668624722555000",
+  //           value: 756234234234,
+  //           quantity: "3",
+  //           ordinal: "1",
+  //           limitAdTracking: false,
+  //           childDirectedTreatment: false,
+  //           gclid: "123",
+  //           nonPersonalizedAd: false,
+  //           treatmentForUnderage: false,
+  //           kind: "dfareporting#conversion",
+  //         },
+  //         errors: [
+  //           {
+  //             code: "NOT_FOUND",
+  //             message: "Floodlight config id: 213123123 was not found.",
+  //             kind: "dfareporting#conversionError",
+  //           },
+  //           {
+  //             code: "INVALID_ARGUMENT",
+  //             message: "gclid: 123 was not found.",
+  //             kind: "dfareporting#conversionError",
+  //           }
+  //         ],
+  //         kind: "dfareporting#conversionStatus",
+  //       },
+  //       {
+  //         conversion: {
+  //           floodlightConfigurationId: "213123123",
+  //           floodlightActivityId: "456543345245",
+  //           timestampMicros: "1668624722555000",
+  //           value: 756234234234,
+  //           quantity: "3",
+  //           ordinal: "1",
+  //           limitAdTracking: false,
+  //           childDirectedTreatment: false,
+  //           gclid: "123",
+  //           nonPersonalizedAd: false,
+  //           treatmentForUnderage: false,
+  //           kind: "dfareporting#conversion",
+  //         },
+  //         errors: [
+  //           {
+  //             code: "NOT_FOUND",
+  //             message: "Floodlight config id: 213123123 was not found.",
+  //             kind: "dfareporting#conversionError",
+  //           },
+  //         ],
+  //         kind: "dfareporting#conversionStatus",
+  //       },
+  //     ],
+  //     kind: "dfareporting#conversionsBatchInsertResponse",
+  //   },
+  //   status: 200,
+  //   rudderJobMetadata: [{
+  //     jobId: 10,
+  //     attemptNum: 0,
+  //     userId: "",
+  //     sourceId: "24242",
+  //     destinationId: "24242",
+  //     workspaceId: "242424",
+  //     secret: {
+  //       access_token: "atoken",
+  //       refresh_token: "rtoken",
+  //       developer_token: "developer_Token",
+  //     },
+  //   },
+  //   {
+  //     jobId: 11,
+  //     attemptNum: 0,
+  //     userId: "",
+  //     sourceId: "2424",
+  //     destinationId: "24242",
+  //     workspaceId: "24242",
+  //     secret: {
+  //       access_token: "atoken",
+  //       refresh_token: "rtoken",
+  //       developer_token: "developer_Token",
+  //     },
+  //   },
+  //   {
+  //     jobId: 12,
+  //     attemptNum: 0,
+  //     userId: "",
+  //     sourceId: "24242",
+  //     destinationId: "234234",
+  //     workspaceId: "34324",
+  //     secret: {
+  //       access_token: "atoken",
+  //       refresh_token: "rtoken",
+  //       developer_token: "developer_Token",
+  //     },
+  //   }],
+  // };
 
 
   // destinationResponse = {
@@ -260,16 +260,23 @@ const responseHandler = (destinationResponse) => {
     };
   }
 
-  // retry entire batch incase of entire batch delivery failure (eg. oauth error)
-  throw new NetworkError(
-    `Campaign Manager: ${response.error?.message} during CAMPAIGN_MANAGER response transformation`,
-    status,
-    {
-      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
-    },
+  throw new RetryableError(
+    `Campaign Manager: Retrying during CAMPAIGN_MANAGER response transformation`,
+    500,
     destinationResponse,
     getAuthErrCategoryFromStCode(status),
   );
+
+  // retry entire batch incase of entire batch delivery failure (eg. oauth error)
+  // throw new NetworkError(
+  //   `Campaign Manager: ${response.error?.message} during CAMPAIGN_MANAGER response transformation`,
+  //   status,
+  //   {
+  //     [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+  //   },
+  //   destinationResponse,
+  //   getAuthErrCategoryFromStCode(status),
+  // );
 };
 
 function networkHandler() {

@@ -1,3 +1,5 @@
+import fs = require('fs');
+import path = require('path');
 import IntegrationSourceService from '../../interfaces/SourceService';
 import {
   ErrorDetailer,
@@ -25,30 +27,49 @@ export default class NativeIntegrationSourceService implements IntegrationSource
     return metaTO;
   }
 
+  private getSourceVersionsMap(): object {
+    const versionSourceMap: object = {};
+    const versions = ["v0", "v1"]
+    versions.forEach(version => {
+      const directoryPath = path.resolve(`src/${version}/sources`);
+      const files = fs.readdirSync(directoryPath, { withFileTypes: true });
+      versionSourceMap[version] = files.filter(file => file.isDirectory())
+        .map(folder => folder.name)
+    });
+    return versionSourceMap;
+  }
+
   public async sourceTransformRoutine(
     sourceEvents: unknown[],
     sourceType: string,
     version: string,
-    _requestMetadata: Object,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _requestMetadata: object,
   ): Promise<SourceTransformationResponse[]> {
     // if shopify/v1 , webhook/v1 (error) => webhook/v0
     let sourceHandler: any;
     let sourceVersion = version;
-    try {
-      ({ sourceHandler, updatedVersion: sourceVersion } = FetchHandler.getSourceHandler(sourceType, version));
-    } catch (error) {
-      if (sourceVersion === version && version === 'v1') {
+    // version and sourceEvents structure handling
+    const sourceVersionsMap: object = this.getSourceVersionsMap();
+    if (!sourceVersionsMap[version].includes(sourceType)) {
+      if (version === "v1") {
+        sourceVersion = "v0"
         // eslint-disable-next-line no-param-reassign
         sourceEvents = (sourceEvents as SourceInput[]).map(sourceEvent => sourceEvent.event);
-        sourceVersion = 'v0';
-        ({ sourceHandler, updatedVersion: sourceVersion } = FetchHandler.getSourceHandler(sourceType, sourceVersion));
-      } else if (sourceVersion === version && version === 'v0') {
-
-        sourceVersion = 'v1';
-        ({ sourceHandler, updatedVersion: sourceHandler } = FetchHandler.getSourceHandler(sourceType, sourceVersion));
       } else {
-        throw error;
+        sourceVersion = "v1"
+        // eslint-disable-next-line no-param-reassign
+        sourceEvents = sourceEvents.map(sourceEvent => ({ event: sourceEvent, source: undefined }));
       }
+    }
+    /* 
+    * Here `version` is the version to which server has sent the event to and 
+    * `sourceVersion` is the updated version that trasformer internally would be using for a source
+    */
+    try {
+      sourceHandler = FetchHandler.getSourceHandler(sourceType, sourceVersion);
+    } catch (error) {
+      throw error;
     }
     const respList: SourceTransformationResponse[] = await Promise.all<any>(
       sourceEvents.map(async (sourceEvent) => {

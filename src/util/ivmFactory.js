@@ -26,7 +26,7 @@ async function loadModule(isolateInternal, contextInternal, moduleName, moduleCo
   const module = await isolateInternal.compileModule(moduleCode, {
     filename: `library ${moduleName}`,
   });
-  await module.instantiate(contextInternal, () => {});
+  await module.instantiate(contextInternal, () => { });
   return module;
 }
 
@@ -207,7 +207,7 @@ async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) 
 
         try {
           data.body = JSON.parse(data.body);
-        } catch (e) {}
+        } catch (e) { }
 
         stats.timing('fetchV2_call_duration', fetchStartTime, { versionId });
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
@@ -264,7 +264,7 @@ async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) 
 
   const bootstrap = await isolate.compileScript(
     'new ' +
-      `
+    `
     function() {
       // Grab a reference to the ivm module and delete it from global scope. Now this closure is the
       // only place in the context with a reference to the module. The 'ivm' module is very powerful

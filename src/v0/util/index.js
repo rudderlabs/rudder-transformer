@@ -373,16 +373,16 @@ const hashToSha256 = (value) => sha256(value);
 // Check what type of gender and convert to f or m
 const getFbGenderVal = (gender) => {
   if (
-    gender.toUpperCase() === 'FEMALE' ||
-    gender.toUpperCase() === 'F' ||
-    gender.toUpperCase() === 'WOMAN'
+    gender.toString().toUpperCase() === 'FEMALE' ||
+    gender.toString().toUpperCase() === 'F' ||
+    gender.toString().toUpperCase() === 'WOMAN'
   ) {
     return hashToSha256('f');
   }
   if (
-    gender.toUpperCase() === 'MALE' ||
-    gender.toUpperCase() === 'M' ||
-    gender.toUpperCase() === 'MAN'
+    gender.toString().toUpperCase() === 'MALE' ||
+    gender.toString().toUpperCase() === 'M' ||
+    gender.toString().toUpperCase() === 'MAN'
   ) {
     return hashToSha256('m');
   }
@@ -2047,11 +2047,11 @@ const getAuthErrCategoryFromStCode = (status) => {
   return '';
 };
 
-const validateEventType = event => {
-  if(!event || typeof event !== "string"){
-    throw new InstrumentationError("Event is a required field and should be a string");
+const validateEventType = (event) => {
+  if (!event || typeof event !== 'string') {
+    throw new InstrumentationError('Event is a required field and should be a string');
   }
-}
+};
 // ========================================================================
 // EXPORTS
 // ========================================================================

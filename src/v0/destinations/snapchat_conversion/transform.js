@@ -354,7 +354,7 @@ const process = (event) => {
   const messageType = message.type.toLowerCase();
   let response;
   if (messageType === EventType.PAGE) {
-    response = trackResponseBuilder(message, destination, pageTypeToTrackEvent);
+    response = [trackResponseBuilder(message, destination, pageTypeToTrackEvent)];
   } else if (messageType === EventType.TRACK) {
     const mappedEvents = eventMappingHandler(message, destination);
     if (mappedEvents.length > 0) {

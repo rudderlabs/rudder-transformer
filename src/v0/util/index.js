@@ -372,17 +372,20 @@ const hashToSha256 = (value) => sha256(value);
 
 // Check what type of gender and convert to f or m
 const getFbGenderVal = (gender) => {
+  if (typeof (gender) !== 'string') {
+    return null;
+  }
   if (
-    gender.toString().toUpperCase() === 'FEMALE' ||
-    gender.toString().toUpperCase() === 'F' ||
-    gender.toString().toUpperCase() === 'WOMAN'
+    gender.toUpperCase() === 'FEMALE' ||
+    gender.toUpperCase() === 'F' ||
+    gender.toUpperCase() === 'WOMAN'
   ) {
     return hashToSha256('f');
   }
   if (
-    gender.toString().toUpperCase() === 'MALE' ||
-    gender.toString().toUpperCase() === 'M' ||
-    gender.toString().toUpperCase() === 'MAN'
+    gender.toUpperCase() === 'MALE' ||
+    gender.toUpperCase() === 'M' ||
+    gender.toUpperCase() === 'MAN'
   ) {
     return hashToSha256('m');
   }

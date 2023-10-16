@@ -19,12 +19,10 @@
           "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
           "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
           "manufacturer": "Google",
-          "model": "AOSP on IA Emulator",
           "name": "generic_x86_arm",
           "type": "ios",
           "attTrackingStatus": 3
         },
-
         "library": {
           "name": "RudderLabs JavaScript SDK",
           "version": "1.0.0"
@@ -86,12 +84,10 @@
           "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
           "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
           "manufacturer": "Google",
-          "model": "AOSP on IA Emulator",
           "name": "generic_x86_arm",
           "type": "ios",
           "attTrackingStatus": 3
         },
-
         "library": {
           "name": "RudderLabs JavaScript SDK",
           "version": "1.0.0"
@@ -153,12 +149,10 @@
           "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
           "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
           "manufacturer": "Google",
-          "model": "AOSP on IA Emulator",
           "name": "generic_x86_arm",
           "type": "ios",
           "attTrackingStatus": 3
         },
-
         "library": {
           "name": "RudderLabs JavaScript SDK",
           "version": "1.0.0"

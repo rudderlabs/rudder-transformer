@@ -564,8 +564,9 @@ export const data = [
                 },
                 body: {
                   JSON: {},
-                  JSON_ARRAY: {
-                    batch:
+                  JSON_ARRAY: {},
+                  GZIP: {
+                    payload:
                       '[{"event":"Loaded a Page","properties":{"ip":"0.0.0.0","$user_id":"hjikl","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"dd266c67-9199-4a52-ba32-f46ddde67312","token":"test_api_token","distinct_id":"hjikl","time":1688624942,"name":"Contact Us","$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
                   },
                   XML: {},
@@ -636,8 +637,9 @@ export const data = [
                   },
                   body: {
                     JSON: {},
-                    JSON_ARRAY: {
-                      batch:
+                    JSON_ARRAY: {},
+                    GZIP: {
+                      payload:
                         '[{"event":"Product Viewed","properties":{"name":"T-Shirt","revenue":18.9,"$user_id":"userId01","$os":"iOS","$screen_height":1794,"$screen_width":1080,"$screen_dpi":420,"$carrier":"Android","$os_version":"8.1.0","$device":"generic_x86","$manufacturer":"Google","$model":"Android SDK built for x86","mp_device_model":"Android SDK built for x86","$wifi":true,"$bluetooth_enabled":false,"mp_lib":"com.rudderstack.android.sdk.core","$app_build_number":"1","$app_version_string":"1.0","$insert_id":"id2","token":"test_api_token","distinct_id":"userId01","time":1688624942,"$device_id":"anonId01"}}]',
                     },
                     XML: {},
@@ -709,8 +711,9 @@ export const data = [
                   },
                   body: {
                     JSON: {},
-                    JSON_ARRAY: {
-                      batch:
+                    JSON_ARRAY: {},
+                    GZIP: {
+                      payload:
                         '[{"event":"$merge","properties":{"$distinct_ids":["test_user_id","5094f5704b9cf2b3"],"token":"test_api_token"}}]',
                     },
                     XML: {},

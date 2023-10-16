@@ -58,5 +58,6 @@
     "OPTIMIZELY_FULLSTACK": true,
     "TWITTER_ADS": true,
     "CLEVERTAP": true
-  }
+  },
+  "supportSourceTransformV1": true
 }

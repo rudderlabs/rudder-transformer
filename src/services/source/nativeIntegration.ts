@@ -47,7 +47,6 @@ export default class NativeIntegrationSourceService implements IntegrationSource
     _requestMetadata: object,
   ): Promise<SourceTransformationResponse[]> {
     // if shopify/v1 , webhook/v1 (error) => webhook/v0
-    let sourceHandler: any;
     let sourceVersion = version;
     // version and sourceEvents structure handling
     const sourceVersionsMap: object = this.getSourceVersionsMap();
@@ -66,23 +65,13 @@ export default class NativeIntegrationSourceService implements IntegrationSource
     * Here `version` is the version to which server has sent the event to and 
     * `sourceVersion` is the updated version that trasformer internally would be using for a source
     */
-    try {
-      sourceHandler = FetchHandler.getSourceHandler(sourceType, sourceVersion);
-    } catch (error) {
-      throw error;
-    }
+    const sourceHandler = FetchHandler.getSourceHandler(sourceType, sourceVersion);
     const respList: SourceTransformationResponse[] = await Promise.all<any>(
       sourceEvents.map(async (sourceEvent) => {
         try {
           let respEvents: RudderMessage | RudderMessage[] | SourceTransformationResponse;
           if (sourceVersion === "v1") {
-            if (version === "v0") {
-              respEvents = await sourceHandler.process({ event: { sourceEvent }, source: undefined });
-            } else {
-              respEvents = await sourceHandler.process(sourceEvent as SourceInput);
-            }
-          } else if (version === "v1") {
-            respEvents = await sourceHandler.process((sourceEvent as SourceInput).event);
+            respEvents = await sourceHandler.process(sourceEvent as SourceInput);
           } else {
             respEvents = await sourceHandler.process(sourceEvent);
           }

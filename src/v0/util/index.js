@@ -2045,7 +2045,7 @@ const isValidInteger = (value) => {
   }
   // const valueToString = `${value}`;
   // Use a regular expression to check if the string is a valid integer or a valid floating-point number
-  return /^-?\d+(\.\d+)?$/.test(`${value}`);
+  return typeof value === 'string' ? /^-?\d+(\.\d+)?$/.test(`${value}`) : false;
 };
 // ========================================================================
 // EXPORTS

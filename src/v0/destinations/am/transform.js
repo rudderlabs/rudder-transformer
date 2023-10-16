@@ -1,7 +1,7 @@
 /* eslint-disable no-lonely-if */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-param-reassign */
-const _ = require('lodash');
+const cloneDeep = require('lodash/cloneDeep');
 const get = require('get-value');
 const set = require('set-value');
 const {
@@ -649,7 +649,7 @@ const processSingleMessage = (message, destination) => {
 };
 
 const createProductPurchasedEvent = (message, destination, product, counter) => {
-  const eventClonePurchaseProduct = _.cloneDeep(message);
+  const eventClonePurchaseProduct = cloneDeep(message);
 
   eventClonePurchaseProduct.event = 'Product Purchased';
   // In product purchased event event properties consists of the details of each product

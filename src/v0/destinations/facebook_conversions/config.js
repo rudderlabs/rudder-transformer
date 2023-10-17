@@ -49,6 +49,18 @@ const CONFIG_CATEGORIES = {
     eventName: 'InitiateCheckout',
     name: 'FBCCheckoutStartedCustomData',
   },
+  PAYMENT_INFO_ENTERED: {
+    standard: true,
+    type: 'payment info entered',
+    eventName: 'AddPaymentInfo',
+    name: 'FBCPaymentInfoEnteredCustomData',
+  },
+  PRODUCT_ADDED_TO_WISHLIST: {
+    standard: true,
+    type: 'product added to wishlist',
+    eventName: 'AddToWishlist',
+    name: 'FBCProductAddedToWishlistCustomData',
+  },
   OTHER_STANDARD: {
     standard: true,
     type: 'otherStandard',
@@ -75,8 +87,6 @@ const ACTION_SOURCES_VALUES = [
 ];
 
 const OTHER_STANDARD_EVENTS = [
-  'AddToWishlist',
-  'AddPaymentInfo',
   'Lead',
   'CompleteRegistration',
   'Contact',

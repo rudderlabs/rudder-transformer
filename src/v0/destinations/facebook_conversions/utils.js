@@ -106,9 +106,11 @@ const populateCustomDataBasedOnCategory = (customData, message, category, catego
       };
       break;
     }
-    case 'product viewed':
     case 'product added':
-    case 'products searched': {
+    case 'product viewed':
+    case 'products searched':
+    case 'payment info entered':
+    case 'product added to wishlist': {
       const contentCategory = eventTypeCustomData.content_category;
       const contentType = eventTypeCustomData.content_type;
       const { contentIds, contents } = populateContentsAndContentIDs([message.properties]);

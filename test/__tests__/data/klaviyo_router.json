@@ -331,9 +331,9 @@
             "XML": {},
             "FORM": {}
           },
-          "files": {},
-          "error": "{\"id\":\"01GW3PHVY0MTCDGS0A1612HARX\",\"attributes\":{}}"
+          "files": {}
         },
+        "error": "{\"id\":\"01GW3PHVY0MTCDGS0A1612HARX\",\"attributes\":{}}",
         "metadata": [
           {
             "jobId": 1

@@ -1,0 +1,38 @@
+[
+  {
+    "sourceKeys": "contact.email",
+    "destKeys": "context.traits.email"
+  },
+  {
+    "sourceKeys": "contact.external_id",
+    "destKeys": "userId"
+  },
+  {
+    "sourceKeys": "contact.country.name",
+    "destKeys": "context.traits.address.country"
+  },
+  {
+    "sourceKeys": "contact.city.name",
+    "destKeys": "context.traits.address.city"
+  },
+  {
+    "sourceKeys": "contact.postal",
+    "destKeys": "context.traits.address.postalCode"
+  },
+  {
+    "sourceKeys": "id",
+    "destKeys": "messageId"
+  },
+  {
+    "sourceKeys": "time",
+    "destKeys": "originalTimestamp"
+  },
+  {
+    "sourceKeys": "contact.first_name",
+    "destKeys": "context.traits.firstName"
+  },
+  {
+    "sourceKeys": "contact.last_name",
+    "destKeys": "context.traits.lastName"
+  }
+]

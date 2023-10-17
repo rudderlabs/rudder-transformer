@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.45.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.44.2...v1.45.0) (2023-10-11)
+
+
+### Features
+
+* **integrations:** introduced new status codes to suppress or filter events ([#2611](https://github.com/rudderlabs/rudder-transformer/issues/2611)) ([6bdb01e](https://github.com/rudderlabs/rudder-transformer/commit/6bdb01e1152f52339dc6d1936cbe686e64faf070))
+* onboard braze stats ([#2703](https://github.com/rudderlabs/rudder-transformer/issues/2703)) ([f205325](https://github.com/rudderlabs/rudder-transformer/commit/f2053255bedac6017f909fe8b6de3775dd50bc93))
+* support page call in snapchat conversion ([#2688](https://github.com/rudderlabs/rudder-transformer/issues/2688)) ([d681d5e](https://github.com/rudderlabs/rudder-transformer/commit/d681d5e1a39c1914e3a237e1020553518c297416))
+
+
+### Bug Fixes
+
+* added matchId check and timestamp conversion ([#2709](https://github.com/rudderlabs/rudder-transformer/issues/2709)) ([f49244d](https://github.com/rudderlabs/rudder-transformer/commit/f49244dce6cf15812d894d22c43d2432b5a4756a))
+* bugsnag event sent as an object for track call ([#2681](https://github.com/rudderlabs/rudder-transformer/issues/2681)) ([b211840](https://github.com/rudderlabs/rudder-transformer/commit/b21184019691b472650901f6002ef81b579a1146))
+* correct handling of permission_denied error for GAEC & GARL ([#2699](https://github.com/rudderlabs/rudder-transformer/issues/2699)) ([eca3be1](https://github.com/rudderlabs/rudder-transformer/commit/eca3be1fdcb7ac0ebf9432e9686a75fad2d6dc78))
+* **garl:** partial failure handling ([#2666](https://github.com/rudderlabs/rudder-transformer/issues/2666)) ([d4cac26](https://github.com/rudderlabs/rudder-transformer/commit/d4cac268193e0db9540f95c7aab39157d70765c1))
+* **kafka:** add status code & batched value in response structure ([#2684](https://github.com/rudderlabs/rudder-transformer/issues/2684)) ([99f39f5](https://github.com/rudderlabs/rudder-transformer/commit/99f39f5cd62ceb82bd8f51d1de84442b1e59c004))
+* **klaviyo:** sending error field at root level for suppress events ([#2707](https://github.com/rudderlabs/rudder-transformer/issues/2707)) ([bc88f13](https://github.com/rudderlabs/rudder-transformer/commit/bc88f1303ec4f60a466492c72e8c3b57dd5070af))
+* snapchat conversion introduce missing fields ([#2704](https://github.com/rudderlabs/rudder-transformer/issues/2704)) ([d6488d5](https://github.com/rudderlabs/rudder-transformer/commit/d6488d5a189ea90d1142e4ecb34b2af0bb940fe9))
+
 ### [1.44.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.44.1...v1.44.2) (2023-10-09)
 
 

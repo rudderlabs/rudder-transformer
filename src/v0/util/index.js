@@ -821,6 +821,13 @@ function formatValues(formattedVal, formattingType, typeFormat, integrationsObj)
         curFormattedVal = false;
       }
     },
+    IsArray: () => {
+      curFormattedVal = formattedVal;
+      if (!Array.isArray(formattedVal)) {
+        logger.debug('Array value missing, so dropping it');
+        curFormattedVal = undefined;
+      }
+    },
     trim: () => {
       if (typeof formattedVal === 'string') {
         curFormattedVal = formattedVal.trim();
@@ -2047,6 +2054,11 @@ const isValidInteger = (value) => {
   // Use a regular expression to check if the string is a valid integer or a valid floating-point number
   return typeof value === 'string' ? /^-?\d+(\.\d+)?$/.test(`${value}`) : false;
 };
+const validateEventType = event => {
+  if(!event || typeof event !== "string"){
+    throw new InstrumentationError("Event is a required field and should be a string");
+  }
+}
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -2140,6 +2152,7 @@ module.exports = {
   getDestAuthCacheInstance,
   refinePayload,
   validateEmail,
+  validateEventType,
   validatePhoneWithCountryCode,
   getEventReqMetadata,
   isHybridModeEnabled,

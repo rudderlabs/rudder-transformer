@@ -7,8 +7,14 @@ const {
   constructPayload,
   defaultPostRequestConfig,
   defaultRequestConfig,
+  getHashFromArray,
 } = require('../../util');
-const { ACTION_SOURCES_VALUES, CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
+const {
+  ACTION_SOURCES_VALUES,
+  CONFIG_CATEGORIES,
+  MAPPING_CONFIG,
+  OTHER_STANDARD_EVENTS,
+} = require('./config');
 
 const { InstrumentationError, TransformationError } = require('../../util/errorTypes');
 
@@ -18,7 +24,7 @@ const { InstrumentationError, TransformationError } = require('../../util/errorT
  */
 
 const formatRevenue = (revenue) => {
-  const formattedRevenue = parseFloat(parseFloat(revenue || 0).toFixed(2));
+  const formattedRevenue = parseFloat(parseFloat(revenue || '0').toFixed(2));
   if (!Number.isNaN(formattedRevenue)) {
     return formattedRevenue;
   }
@@ -29,7 +35,7 @@ const formatRevenue = (revenue) => {
  *
  * @param {*} message Rudder Payload
  * @param {*} defaultValue product / product_group
- * @param {*} categoryToContent [ { from: 'clothing', to: 'product' } ]
+ * @param {*} categoryToContent example: [ { from: 'clothing', to: 'product' } ]
  *
  * We will be mapping properties.category to user provided content else taking the default value as per ecomm spec
  * If category is clothing it will be set to ["product"]
@@ -37,7 +43,6 @@ const formatRevenue = (revenue) => {
  * - https://developers.facebook.com/docs/facebook-pixel/reference/#object-properties
  */
 const getContentType = (message, defaultValue, categoryToContent) => {
-  let tempCategoryToContent = categoryToContent;
   const { properties } = message;
   const integrationsObj = getIntegrationsObj(message, 'fb_pixel');
 
@@ -51,27 +56,19 @@ const getContentType = (message, defaultValue, categoryToContent) => {
     if (products && products.length > 0 && Array.isArray(products) && isObject(products[0])) {
       category = products[0].category;
     }
-  } else {
-    if (tempCategoryToContent === undefined) {
-      tempCategoryToContent = [];
-    }
-    const mapped = tempCategoryToContent;
-    const mappedTo = mapped.reduce((filtered, map) => {
-      let filter = filtered;
-      if (map.from === category) {
-        filter = map.to;
-      }
-      return filter;
-    }, '');
-    if (mappedTo.length > 0) {
-      return mappedTo;
+  }
+
+  if (Array.isArray(categoryToContent) && category) {
+    const categoryToContentHash = getHashFromArray(categoryToContent, 'from', 'to', false);
+    if (categoryToContentHash[category]) {
+      return categoryToContentHash[category];
     }
   }
+
   return defaultValue;
 };
 
 /** This function transforms the payloads according to the config settings and adds, removes or hashes pii data.
-Also checks if it is a standard event and sends properties only if it is mentioned in our configs.
 @param message --> the rudder payload
 
 {
@@ -119,8 +116,8 @@ Also checks if it is a standard event and sends properties only if it is mention
 [ { whitelistPiiProperties: 'email' } ] // sets email
 
 
-@param eventCustomProperties -->
-[ { eventCustomProperties: 'leadId' } ] // leadId if present will be set
+@param integrationsObj -->
+{ hashed: true }
 
 */
 
@@ -190,7 +187,7 @@ const transformedPayloadData = (
 /**
  *
  * @param {*} message
- * @returns fbc parameter which is a combined string of the parameters below
+ * @returns string which is fbc parameter
  *
  * version : "fb" (default)
  *
@@ -305,7 +302,7 @@ const fetchUserData = (message, Config) => {
 /**
  *
  * @param {*} message Rudder element
- * @param {*} categoryToContent [ { from: 'clothing', to: 'product' } ]
+ * @param {*} categoryToContent example: [ { from: 'clothing', to: 'product' } ]
  *
  * Handles order completed and checkout started types of specific events
  */
@@ -320,7 +317,7 @@ const handleOrder = (message, categoryToContent) => {
   if (products) {
     if (products.length > 0 && Array.isArray(products)) {
       products.forEach((singleProduct) => {
-        const pId = singleProduct.product_id || singleProduct.sku || singleProduct.id;
+        const pId = singleProduct?.product_id || singleProduct?.sku || singleProduct?.id;
         if (pId) {
           contentIds.push(pId);
           // required field for content
@@ -353,7 +350,7 @@ const handleOrder = (message, categoryToContent) => {
 /**
  *
  * @param {*} message Rudder element
- * @param {*} categoryToContent [ { from: 'clothing', to: 'product' } ]
+ * @param {*} categoryToContent example [ { from: 'clothing', to: 'product' } ]
  *
  * Handles product list viewed
  */
@@ -405,7 +402,7 @@ const handleProductListViewed = (message, categoryToContent) => {
 /**
  *
  * @param {*} message Rudder Payload
- * @param {*} categoryToContent [ { from: 'clothing', to: 'product' } ]
+ * @param {*} categoryToContent Example: [ { from: 'clothing', to: 'product' } ]
  * @param {*} valueFieldIdentifier it can be either value or price which will be matched from properties and assigned to value for fb payload
  */
 const handleProduct = (message, categoryToContent, valueFieldIdentifier) => {
@@ -476,6 +473,103 @@ const handleSearch = (message) => {
   };
 };
 
+const populateCustomDataBasedOnCategory = (
+  customData,
+  message,
+  category,
+  categoryToContent,
+  valueFieldIdentifier,
+) => {
+  let updatedCustomData;
+  switch (category.type) {
+    case 'product list viewed':
+      updatedCustomData = {
+        ...customData,
+        ...handleProductListViewed(message, categoryToContent),
+      };
+      break;
+    case 'product viewed':
+    case 'product added':
+      updatedCustomData = {
+        ...customData,
+        ...handleProduct(message, categoryToContent, valueFieldIdentifier),
+      };
+      break;
+    case 'order completed':
+      updatedCustomData = {
+        ...customData,
+        ...handleOrder(message, categoryToContent),
+      };
+      break;
+    case 'products searched': {
+      updatedCustomData = {
+        ...customData,
+        ...handleSearch(message),
+      };
+      break;
+    }
+    case 'checkout started': {
+      const orderPayload = handleOrder(message, categoryToContent);
+      delete orderPayload.content_name;
+      updatedCustomData = {
+        ...customData,
+        ...orderPayload,
+      };
+      break;
+    }
+    case 'page_view': // executed when sending track calls but with standard type PageView
+    case 'page': // executed when page call is done with standard PageView turned on
+    case 'otherStandard':
+      updatedCustomData = { ...customData };
+      break;
+    default:
+      throw new InstrumentationError(`${category.standard} type of standard event does not exist`);
+  }
+  return updatedCustomData;
+};
+
+const getCategoryFromEvent = (eventName) => {
+  let category;
+  switch (eventName) {
+    case CONFIG_CATEGORIES.PRODUCT_LIST_VIEWED.type:
+    case CONFIG_CATEGORIES.PRODUCT_LIST_VIEWED.eventName:
+      category = CONFIG_CATEGORIES.PRODUCT_LIST_VIEWED;
+      break;
+    case CONFIG_CATEGORIES.PRODUCT_VIEWED.type:
+      category = CONFIG_CATEGORIES.PRODUCT_VIEWED;
+      break;
+    case CONFIG_CATEGORIES.PRODUCT_ADDED.type:
+    case CONFIG_CATEGORIES.PRODUCT_ADDED.eventName:
+      category = CONFIG_CATEGORIES.PRODUCT_ADDED;
+      break;
+    case CONFIG_CATEGORIES.ORDER_COMPLETED.type:
+    case CONFIG_CATEGORIES.ORDER_COMPLETED.eventName:
+      category = CONFIG_CATEGORIES.ORDER_COMPLETED;
+      break;
+    case CONFIG_CATEGORIES.PRODUCTS_SEARCHED.type:
+    case CONFIG_CATEGORIES.PRODUCTS_SEARCHED.eventName:
+      category = CONFIG_CATEGORIES.PRODUCTS_SEARCHED;
+      break;
+    case CONFIG_CATEGORIES.CHECKOUT_STARTED.type:
+    case CONFIG_CATEGORIES.CHECKOUT_STARTED.eventName:
+      category = CONFIG_CATEGORIES.CHECKOUT_STARTED;
+      break;
+    case CONFIG_CATEGORIES.PAGE_VIEW.eventName:
+      category = CONFIG_CATEGORIES.PAGE_VIEW;
+      break;
+    default:
+      category = CONFIG_CATEGORIES.SIMPLE_TRACK;
+      break;
+  }
+
+  if (OTHER_STANDARD_EVENTS.includes(eventName)) {
+    category = CONFIG_CATEGORIES.OTHER_STANDARD;
+    category.eventName = eventName;
+  }
+
+  return category;
+};
+
 const formingFinalResponse = (
   userData,
   commonData,
@@ -521,4 +615,6 @@ module.exports = {
   handleProductListViewed,
   handleOrder,
   formingFinalResponse,
+  populateCustomDataBasedOnCategory,
+  getCategoryFromEvent,
 };

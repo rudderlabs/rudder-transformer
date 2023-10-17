@@ -815,18 +815,19 @@ const getBatchEvents = (message, destination, metadata, batchEventResponse) => {
     : incomingMessageEvent;
   const userId = incomingMessageEvent.user_id;
 
-  // delete the userId as it is less than 5 as AM is giving 400
-  // that is not a documented behviour where it states if either deviceid or userid is present
-  // batch request won't return 400
-  //   {
-  //     "code": 400,
-  //     "events_with_invalid_id_lengths": {
-  //         "user_id": [
-  //             0
-  //         ]
-  //     },
-  //     "error": "Invalid id length for user_id or device_id"
-  // }
+  /* delete the userId as it is less than 5 as AM is giving 400
+  that is not a documented behviour where it states if either deviceid or userid is present
+  batch request won't return 400
+    {
+      "code": 400,
+      "events_with_invalid_id_lengths": {
+          "user_id": [
+              0
+          ]
+      },
+      "error": "Invalid id length for user_id or device_id"
+    }
+   */
   if (batchEventsWithUserIdLengthLowerThanFive && userId && userId.length < 5) {
     delete incomingMessageEvent.user_id;
   }
@@ -897,9 +898,10 @@ const batch = (destEvents) => {
       respList.push(errorResponse);
       return;
     }
-    // check if not a JSON body or (userId length < 5 && batchEventsWithUserIdLengthLowerThanFive is false) or
-    // (batchEventsWithUserIdLengthLowerThanFive is true and userId is less than 5 but deviceId not present)
-    // , send the event as is after batching
+    /* check if not a JSON body or (userId length < 5 && batchEventsWithUserIdLengthLowerThanFive is false) or
+      (batchEventsWithUserIdLengthLowerThanFive is true and userId is less than 5 but deviceId not present),
+      send the event as is after batching
+     */
     if (checkForJSONAndUserIdLengthAndDeviceId(jsonBody, userId, deviceId)) {
       response = defaultBatchRequestConfig();
       response = Object.assign(response, { batchedRequest: message });
@@ -910,8 +912,9 @@ const batch = (destEvents) => {
       // check if the event can be pushed to an existing batch
       isBatchComplete = getBatchEvents(message, destination, metadata, batchEventResponse);
       if (isBatchComplete) {
-        // if the batch is already complete, push it to response list
-        // and push the event to a new batch
+        /* if the batch is already complete, push it to response list
+        and push the event to a new batch
+        */
         batchEventResponse.destination = destinationObject;
         respList.push({ ...batchEventResponse });
         batchEventResponse = defaultBatchRequestConfig();
@@ -921,7 +924,7 @@ const batch = (destEvents) => {
     }
   });
   // if there is some unfinished batch push it to response list
-  if (isBatchComplete === false) {
+  if (isDefinedAndNotNull(isBatchComplete) && !isBatchComplete) {
     batchEventResponse.destination = destinationObject;
     respList.push(batchEventResponse);
   }

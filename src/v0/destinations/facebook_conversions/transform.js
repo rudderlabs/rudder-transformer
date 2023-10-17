@@ -17,6 +17,7 @@ const {
   getValidDynamicFormConfig,
   simpleProcessRouterDest,
   getHashFromArray,
+  getFieldValueFromMessage,
 } = require('../../util');
 
 const {
@@ -111,7 +112,7 @@ const processEvent = (message, destination) => {
     throw new InstrumentationError("'type' is missing");
   }
 
-  const timeStamp = message.timestamp || message.originalTimestamp;
+  const timeStamp = getFieldValueFromMessage(message, 'timestamp');
   if (timeStamp) {
     const start = moment.unix(moment(timeStamp).format('X'));
     const current = moment.unix(moment().format('X'));
@@ -154,11 +155,8 @@ const processEvent = (message, destination) => {
       category = CONFIG_CATEGORIES.PAGE_VIEW;
       break;
     case EventType.TRACK:
-      if (!message.event) {
-        throw new InstrumentationError("'event' is required");
-      }
-      if (typeof message.event !== 'string') {
-        throw new InstrumentationError('event name should be string');
+      if (!message.event || typeof message.event !== 'string') {
+        throw new InstrumentationError("'event' is required and should be a string");
       }
       if (eventsToEvents) {
         const eventMappingHash = getHashFromArray(eventsToEvents);

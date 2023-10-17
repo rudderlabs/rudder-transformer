@@ -13,7 +13,6 @@ steps:
   - name: validateInput
     template: |
       let messageType = .message.type;
-      console.log("Dollar");
       $.assert(.message.type, "message Type is not present. Aborting message.");
       $.assert(.destination.Config.privateApiKey, "Private Api Key is not present");
       $.assert(.destination.Config.instanceRegion, "Instance Region is not present");
@@ -70,14 +69,40 @@ steps:
     steps:
       - name: propertiesFields
         template: |
-          const tags =  .message.context.traits.tags || .message.traits.tags || .message.prooperties.tags;
-          const unset_tags = .message.context.traits.unset_tags || .message.traits.unset_tags || .message.prooperties.unset_tags;
-          const merge_by = ["external_id", "email"];
-          const identifyPayoad = {
-            "people":[$.outputs.commonFields, tags, unset_tags],
-            "merge_by": merge_by
+          const peopleObj = {
+            "fields": $.outputs.commonFields,
+            "tags": .message.context.traits.tags || .message.traits.tags || .message.prooperties.tags,
+            "unset_tags": .message.context.traits.unset_tags || .message.traits.unset_tags || .message.prooperties.unset_tags
+          }
+          const identifyPayoad = {                                  
+            "people":[peopleObj],
+            "merge_by": ["external_id", "email"];
           }
           $.removeUndefinedAndNullValues(identifyPayoad)
+
+  - name: prepareTrackPayload
+    condition: $.outputs.messageType === {{$.EventType.TRACK}}
+    steps:
+      - name: getTrimmedEvent
+        template: |
+          let customEvent = "";
+          const event = .message.event;
+          .destination.Config.orttoEventsMapping@order.(
+            customEvent = event === .rsEventName ? .orttoEventName : null;
+          )
+          $.assert(customEvent, "Event names is not mapped");
+          customEvent = "act:cm:"+customEvent.trim().toLowerCase().replace(new RegExp('\\s+', 'g'),'-');
+
+      - name: preparePayload
+        template: |
+          const activityObj = {
+            fields: $.outputs.commonFields,
+            activity_id: $.outputs.prepareTrackPayload.getTrimmedEvent
+          }
+          const trackPayoad = {   
+            "activities":[activityObj],
+            "merge_by": ["external_id", "email"]
+          }
 
   - name: payload
     condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
@@ -89,7 +114,7 @@ steps:
       name: trackPayload
       template: |
         const outputPayload = {
-        ...$.outputs.commonFields
+        ...$.outputs.prepareTrackPayload
         }
 
   - name: buildResponseForProcessTransformation

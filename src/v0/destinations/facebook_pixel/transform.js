@@ -21,17 +21,20 @@ const {
 } = require('../../util');
 
 const {
-  transformedPayloadData,
   getActionSource,
-  fetchUserData,
   handleProduct,
   handleSearch,
   handleProductListViewed,
   handleOrder,
-  formingFinalResponse,
   populateCustomDataBasedOnCategory,
   getCategoryFromEvent,
 } = require('./utils');
+
+const {
+  transformedPayloadData,
+  fetchUserData,
+  formingFinalResponse,
+} = require('../../util/facebookUtils');
 
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
@@ -64,7 +67,12 @@ const responseBuilderSimple = (message, category, destination) => {
 
   const endpoint = `https://graph.facebook.com/v17.0/${pixelId}/events?access_token=${accessToken}`;
 
-  const userData = fetchUserData(message, Config, 'fb_pixel');
+  const userData = fetchUserData(
+    message,
+    Config,
+    MAPPING_CONFIG[CONFIG_CATEGORIES.USERDATA.name],
+    'fb_pixel',
+  );
 
   const commonData = constructPayload(
     message,

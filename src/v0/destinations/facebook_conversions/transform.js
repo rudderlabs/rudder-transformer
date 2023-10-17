@@ -31,7 +31,7 @@ const {
   transformedPayloadData,
   fetchUserData,
   formingFinalResponse,
-} = require('../facebook_pixel/utils');
+} = require('../../util/facebookUtils');
 
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
@@ -56,7 +56,12 @@ const responseBuilderSimple = (message, category, destination) => {
 
   const endpoint = `https://graph.facebook.com/v17.0/${datasetId}/events?access_token=${accessToken}`;
 
-  const userData = fetchUserData(message, Config, DESTINATION.toLowerCase());
+  const userData = fetchUserData(
+    message,
+    Config,
+    MAPPING_CONFIG[CONFIG_CATEGORIES.USERDATA.name],
+    DESTINATION.toLowerCase(),
+  );
 
   if (category.standard) {
     message.event = category.eventName;

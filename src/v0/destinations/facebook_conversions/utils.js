@@ -3,12 +3,12 @@ const {
   OTHER_STANDARD_EVENTS,
   STANDARD_ECOMM_EVENTS_CATEGORIES,
   MAPPING_CONFIG,
+  ACTION_SOURCES_VALUES,
+  DESTINATION,
 } = require('./config');
 const { constructPayload, isObject, isAppleFamily } = require('../../util');
-
-const { getContentType, getContentCategory } = require('../facebook_pixel/utils');
+const { getContentType, getContentCategory } = require('../../util/facebookUtils');
 const { InstrumentationError } = require('../../util/errorTypes');
-const { ACTION_SOURCES_VALUES } = require('../facebook_pixel/config');
 
 const getActionSource = (payload, fallbackActionSource) => {
   let actionSource = fallbackActionSource;
@@ -79,25 +79,29 @@ const populateCustomDataBasedOnCategory = (customData, message, category, catego
         message.properties?.quantity,
       );
 
+      const contentCategory = eventTypeCustomData.content_category;
       let contentType;
       if (contentIds.length > 0) {
         contentType = 'product';
-      } else if (category) {
-        contentIds.push(category);
+      } else if (contentCategory) {
+        contentIds.push(contentCategory);
         contents.push({
-          id: category,
+          id: contentCategory,
           quantity: 1,
         });
         contentType = 'product_group';
       }
 
-      const contentCategory = eventTypeCustomData.content_category;
-
       eventTypeCustomData = {
         ...eventTypeCustomData,
         content_ids: contentIds,
         contents,
-        content_type: getContentType(message, contentType, categoryToContent),
+        content_type: getContentType(
+          message,
+          contentType,
+          categoryToContent,
+          DESTINATION.toLowerCase(),
+        ),
         content_category: getContentCategory(contentCategory),
       };
       break;
@@ -112,7 +116,12 @@ const populateCustomDataBasedOnCategory = (customData, message, category, catego
         ...eventTypeCustomData,
         content_ids: contentIds,
         contents,
-        content_type: getContentType(message, contentType, categoryToContent),
+        content_type: getContentType(
+          message,
+          contentType,
+          categoryToContent,
+          DESTINATION.toLowerCase(),
+        ),
         content_category: getContentCategory(contentCategory),
       };
 
@@ -138,7 +147,12 @@ const populateCustomDataBasedOnCategory = (customData, message, category, catego
         ...eventTypeCustomData,
         content_ids: contentIds,
         contents,
-        content_type: getContentType(message, contentType, categoryToContent),
+        content_type: getContentType(
+          message,
+          contentType,
+          categoryToContent,
+          DESTINATION.toLowerCase(),
+        ),
         content_category: getContentCategory(contentCategory),
         num_items: contentIds.length,
       };

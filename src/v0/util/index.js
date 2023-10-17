@@ -821,6 +821,13 @@ function formatValues(formattedVal, formattingType, typeFormat, integrationsObj)
         curFormattedVal = false;
       }
     },
+    IsArray: () => {
+      curFormattedVal = formattedVal;
+      if (!Array.isArray(formattedVal)) {
+        logger.debug('Array value missing, so dropping it');
+        curFormattedVal = undefined;
+      }
+    },
     trim: () => {
       if (typeof formattedVal === 'string') {
         curFormattedVal = formattedVal.trim();

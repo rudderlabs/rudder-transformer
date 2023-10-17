@@ -1,0 +1,105 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+    exportAll: true
+  - path: ./config
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+
+steps:
+  - name: validateInput
+    template: |
+      let messageType = .message.type;
+      console.log("Dollar");
+      $.assert(.message.type, "message Type is not present. Aborting message.");
+      $.assert(.destination.Config.privateApiKey, "Private Api Key is not present");
+      $.assert(.destination.Config.instanceRegion, "Instance Region is not present");
+      $.assert(messageType in {{$.EventType.([.IDENTIFY, .TRACK])}}, 
+        "message type " + messageType + " is not supported")
+
+  - name: messageType
+    template: |
+      .message.type.toLowerCase()
+
+  # - name: validateInputForIdentify
+  #   description: Additional validation for Identify events
+  #   condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
+  #   template: |
+
+  # - name: validateInputForTrack
+  #   description: Additional validation for Track events
+  #   condition: $.outputs.messageType === {{$.EventType.TRACK}}
+  #   template: |
+  #     $.assert(.message.event, "event is not present. Aborting.")
+
+  - name: commonFields
+    description: |
+      Builds common fields in destination payload.
+    template: |
+      let commonFields = .message.().({
+        "fields": { 
+          "str::first": {{{{$.getGenericPaths("firstName")}}}}, 
+          "str::last": {{{{$.getGenericPaths("lastName")}}}},
+          "str::email": {{{{$.getGenericPaths("email")}}}},  
+          "geo::city": {"name":{{{{$.getGenericPaths("city")}}}}},
+          "geo::country": {"name":{{{{$.getGenericPaths("country")}}}}},
+          "geo::region": {"name":{{{{$.getGenericPaths("region")}}}}},
+          "str::postal": {{{{$.getGenericPaths("zipcode")}}}},
+          "str::ei": {{{{$.getGenericPaths("userId")}}}},
+          "str::language": .message.context.traits.language || .message.context.locale,
+          "phn::phone": {"n": {{{{$.getGenericPaths("userId")}}}}},
+          "bol::gdpr": true,
+          "bol::p": false,
+          "bol::sp": false,
+          },
+        "location": {"source_ip": .message.context.ip}
+      });
+      $.removeUndefinedAndNullValues(commonFields)
+
+  - name: validateCommonFields
+    template: |
+      const external_id = $.outputs.commonFields.fields."str::ei";
+      const email = $.outputs.commonFields.fields."str::email";
+      $.assert(external_id || email, "userId or email is required");
+
+  - name: prepareIdentifyPayload
+    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
+    steps:
+      - name: propertiesFields
+        template: |
+          const tags =  .message.context.traits.tags || .message.traits.tags || .message.prooperties.tags;
+          const unset_tags = .message.context.traits.unset_tags || .message.traits.unset_tags || .message.prooperties.unset_tags;
+          const merge_by = ["external_id", "email"];
+          const identifyPayoad = {
+            "people":[$.outputs.commonFields, tags, unset_tags],
+            "merge_by": merge_by
+          }
+          $.removeUndefinedAndNullValues(identifyPayoad)
+
+  - name: payload
+    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
+    template: |
+      const outputPayload = {
+        ...$.outputs.prepareIdentifyPayload
+        }
+    else:
+      name: trackPayload
+      template: |
+        const outputPayload = {
+        ...$.outputs.commonFields
+        }
+
+  - name: buildResponseForProcessTransformation
+    description: build response
+    template: |
+      const response = $.defaultRequestConfig();
+      response.body.JSON = $.outputs.payload;
+      response.endpoint = $.ENDPOINT;
+      response.headers = {
+          "DY-API-Key": .destination.Config.privateApiKey,
+          "Content-Type": "application/json"
+        };
+      finalResponse = response;

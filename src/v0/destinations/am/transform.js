@@ -865,6 +865,8 @@ const getBatchEvents = (message, destination, metadata, batchEventResponse) => {
   return batchComplete;
 };
 
+const getFirstEvent = (messageEvent) =>
+  messageEvent && Array.isArray(messageEvent) ? messageEvent[0] : messageEvent;
 const batch = (destEvents) => {
   const respList = [];
   let batchEventResponse = defaultBatchRequestConfig();
@@ -878,7 +880,7 @@ const batch = (destEvents) => {
     destinationObject = { ...destination };
     jsonBody = get(message, 'body.JSON');
     messageEvent = get(message, EVENTS_KEY_PATH);
-    const firstEvent = messageEvent && Array.isArray(messageEvent) ? messageEvent[0] : messageEvent;
+    const firstEvent = getFirstEvent(messageEvent);
 
     const userId = firstEvent?.user_id ?? undefined;
     const deviceId = firstEvent?.device_id ?? undefined;

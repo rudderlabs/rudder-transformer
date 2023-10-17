@@ -1,5 +1,8 @@
 const { getMappingConfig } = require('../../util');
 
+const ENDPOINT = (datasetId, accessToken) =>
+  `https://graph.facebook.com/v17.0/${datasetId}/events?access_token=${accessToken}`;
+
 const CONFIG_CATEGORIES = {
   USERDATA: {
     standard: false,
@@ -112,8 +115,9 @@ const STANDARD_ECOMM_EVENTS_CATEGORIES = [
 ];
 
 module.exports = {
-  CONFIG_CATEGORIES,
+  ENDPOINT,
   MAPPING_CONFIG,
+  CONFIG_CATEGORIES,
   ACTION_SOURCES_VALUES,
   FB_CONVERSIONS_DEFAULT_EXCLUSION,
   STANDARD_ECOMM_EVENTS_CATEGORIES,

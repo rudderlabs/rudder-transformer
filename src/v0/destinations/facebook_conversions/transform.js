@@ -6,6 +6,7 @@ const {
   MAPPING_CONFIG,
   FB_CONVERSIONS_DEFAULT_EXCLUSION,
   DESTINATION,
+  ENDPOINT,
 } = require('./config');
 const { EventType } = require('../../../constants');
 
@@ -53,8 +54,6 @@ const responseBuilderSimple = (message, category, destination) => {
     actionSource,
   } = Config;
   const integrationsObj = getIntegrationsObj(message, DESTINATION.toLowerCase());
-
-  const endpoint = `https://graph.facebook.com/v17.0/${datasetId}/events?access_token=${accessToken}`;
 
   const userData = fetchUserData(
     message,
@@ -108,7 +107,7 @@ const responseBuilderSimple = (message, category, destination) => {
     userData,
     commonData,
     customData,
-    endpoint,
+    ENDPOINT(datasetId, accessToken),
     testDestination,
     testEventCode,
     appData,

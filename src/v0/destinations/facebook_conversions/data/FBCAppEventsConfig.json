@@ -12,6 +12,7 @@
   {
     "destKey": "extinfo.0",
     "sourceKeys": "context.device.type",
+    "required": true,
     "metadata": {
       "type": "toLower"
     }

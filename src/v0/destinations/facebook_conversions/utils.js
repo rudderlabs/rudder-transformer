@@ -66,6 +66,14 @@ const populateContentsAndContentIDs = (productPropertiesArray, fallbackQuantity)
   return { contentIds, contents };
 };
 
+const validateProductSearchedData = (eventTypeCustomData) => {
+  const query = eventTypeCustomData.search_string;
+  const validQueryType = ['string', 'number', 'boolean'];
+  if (query && !validQueryType.includes(typeof query)) {
+    throw new InstrumentationError("'query' should be in string format only");
+  }
+};
+
 const populateCustomDataBasedOnCategory = (customData, message, category, categoryToContent) => {
   let eventTypeCustomData = {};
   if (category.name) {
@@ -126,13 +134,7 @@ const populateCustomDataBasedOnCategory = (customData, message, category, catego
         ),
         content_category: getContentCategory(contentCategory),
       };
-
-      const query = eventTypeCustomData.search_string;
-      const validQueryType = ['string', 'number', 'boolean'];
-      if (query && !validQueryType.includes(typeof query)) {
-        throw new InstrumentationError("'query' should be in string format only");
-      }
-
+      validateProductSearchedData(eventTypeCustomData);
       break;
     }
     case 'order completed':
@@ -187,7 +189,7 @@ const fetchAppData = (message) => {
     } else {
       // if the sourceSDK is not android or ios
       throw new InstrumentationError(
-        'Extended device information i.e, "context.device.type" is required',
+        'Extended device information i.e, "context.device.type" is not a valid value. It should be either android or ios/watchos/ipados/tvos',
       );
     }
     appData.extinfo[0] = sourceSDK;

@@ -240,7 +240,7 @@
           "firstname": "Rudder",
           "lastname": "Test",
           "phone": 9000000000,
-          "gender": "female"
+          "gender": 1
         },
         "app": {
           "build": "1.0.0",

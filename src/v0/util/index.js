@@ -2050,11 +2050,11 @@ const getAuthErrCategoryFromStCode = (status) => {
   return '';
 };
 
-const validateEventType = (event) => {
-  if (!event || typeof event !== 'string') {
-    throw new InstrumentationError('Event is a required field and should be a string');
+const validateEventType = event => {
+  if(!event || typeof event !== "string"){
+    throw new InstrumentationError("Event is a required field and should be a string");
   }
-};
+}
 // ========================================================================
 // EXPORTS
 // ========================================================================

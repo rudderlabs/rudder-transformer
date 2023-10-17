@@ -1,4 +1,4 @@
-const { networkHandler, errorResponseHandler } = require('../facebook_pixel/networkHandler');
+const { networkHandler, errorResponseHandler } = require('../../util/facebookUtils/networkHandler');
 
 module.exports = {
   networkHandler,

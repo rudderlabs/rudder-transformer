@@ -2052,7 +2052,7 @@ const isValidInteger = (value) => {
   }
   // const valueToString = `${value}`;
   // Use a regular expression to check if the string is a valid integer or a valid floating-point number
-  return typeof value === 'string' ? /^-?\d+(.\d+)?$/.test(value) : false;
+  return typeof value === 'string' ? /^-?\d+$/.test(value) : false;
 };
 const validateEventType = (event) => {
   if (!event || typeof event !== 'string') {

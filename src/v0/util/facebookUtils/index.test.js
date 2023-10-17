@@ -1,4 +1,4 @@
-const { transformedPayloadData } = require('../../../../src/v0/destinations/facebook_pixel/utils');
+const { transformedPayloadData } = require('./index');
 const sha256 = require('sha256');
 
 describe('transformedPayloadData_function', () => {

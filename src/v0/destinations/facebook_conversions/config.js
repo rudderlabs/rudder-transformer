@@ -11,6 +11,7 @@ const CONFIG_CATEGORIES = {
   SIMPLE_TRACK: {
     standard: false,
     type: 'simple track',
+    name: 'FBCSimpleCustomConfig',
   },
   PRODUCT_LIST_VIEWED: {
     standard: true,
@@ -51,11 +52,13 @@ const CONFIG_CATEGORIES = {
   OTHER_STANDARD: {
     standard: true,
     type: 'otherStandard',
+    name: 'FBCSimpleCustomConfig',
   },
   PAGE_VIEW: {
     standard: true,
     type: 'page_view',
     eventName: 'PageView',
+    name: 'FBCSimpleCustomConfig',
   },
 };
 

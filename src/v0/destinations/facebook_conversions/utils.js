@@ -113,9 +113,11 @@ const populateCustomDataBasedOnCategory = (customData, message, category, catego
     case 'products searched': {
       const contentCategory = eventTypeCustomData.content_category;
       const contentType = eventTypeCustomData.content_type;
+      const { contentIds, contents } = populateContentsAndContentIDs([message.properties]);
       eventTypeCustomData = {
         ...eventTypeCustomData,
-        ...populateContentsAndContentIDs([message.properties]),
+        content_ids: contentIds,
+        contents,
         content_type: getContentType(message, contentType, categoryToContent),
         content_category: getContentCategory(contentCategory),
       };
@@ -148,9 +150,9 @@ const populateCustomDataBasedOnCategory = (customData, message, category, catego
       };
       break;
     }
-    case 'page_view': // executed when sending track calls but with standard type PageView
-    case 'page': // executed when page call is done with standard PageView turned on
+    case 'page_view':
     case 'otherStandard':
+    case 'simple track':
     default:
       eventTypeCustomData = { ...eventTypeCustomData };
       break;

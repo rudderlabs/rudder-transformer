@@ -7,20 +7,6 @@
     }
   },
   {
-    "destKey": "content_category",
-    "sourceKeys": "properties.category",
-    "metadata": {
-      "defaultValue": ""
-    }
-  },
-  {
-    "destKey": "value",
-    "sourceKeys": "properties.value",
-    "metadata": {
-      "type": "numberForRevenue"
-    }
-  },
-  {
     "destKey": "contents",
     "sourceKeys": "",
     "metadata": {
@@ -28,8 +14,18 @@
     }
   },
   {
-    "destKey": "search_string",
-    "sourceKeys": "properties.query"
+    "destKey": "content_type",
+    "sourceKeys": "",
+    "metadata": {
+      "defaultValue": "product"
+    }
+  },
+  {
+    "destKey": "content_category",
+    "sourceKeys": "properties.category",
+    "metadata": {
+      "defaultValue": ""
+    }
   },
   {
     "destKey": "currency",
@@ -39,10 +35,19 @@
     }
   },
   {
-    "destKey": "content_type",
-    "sourceKeys": "",
+    "destKey": "value",
+    "sourceKeys": [
+      "properties.revenue",
+      "properties.value",
+      "properties.price",
+      "properties.total"
+    ],
     "metadata": {
-      "defaultValue": "product"
+      "type": "numberForRevenue"
     }
+  },
+  {
+    "destKey": "search_string",
+    "sourceKeys": "properties.query"
   }
 ]

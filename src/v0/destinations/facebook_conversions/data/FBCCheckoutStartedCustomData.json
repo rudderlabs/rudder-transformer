@@ -1,10 +1,13 @@
 [
   {
-    "destKey": "content_category",
-    "sourceKeys": "properties.category"
+    "destKey": "content_ids",
+    "sourceKeys": "",
+    "metadata": {
+      "defaultValue": []
+    }
   },
   {
-    "destKey": "content_ids",
+    "destKey": "contents",
     "sourceKeys": "",
     "metadata": {
       "defaultValue": []
@@ -16,6 +19,10 @@
     "metadata": {
       "defaultValue": "product"
     }
+  },
+  {
+    "destKey": "content_category",
+    "sourceKeys": "properties.category"
   },
   {
     "destKey": "currency",
@@ -34,13 +41,6 @@
     ],
     "metadata": {
       "type": "numberForRevenue"
-    }
-  },
-  {
-    "destKey": "contents",
-    "sourceKeys": "",
-    "metadata": {
-      "defaultValue": []
     }
   },
   {

@@ -7,6 +7,13 @@
     }
   },
   {
+    "destKey": "contents",
+    "sourceKeys": "",
+    "metadata": {
+      "defaultValue": []
+    }
+  },
+  {
     "destKey": "content_type",
     "sourceKeys": "",
     "metadata": {
@@ -14,15 +21,15 @@
     }
   },
   {
-    "destKey": "content_name",
-    "sourceKeys": ["properties.name", "properties.product_name"],
+    "destKey": "content_category",
+    "sourceKeys": "properties.category",
     "metadata": {
       "defaultValue": ""
     }
   },
   {
-    "destKey": "content_category",
-    "sourceKeys": "properties.category",
+    "destKey": "content_name",
+    "sourceKeys": ["properties.name", "properties.product_name"],
     "metadata": {
       "defaultValue": ""
     }
@@ -44,13 +51,6 @@
     ],
     "metadata": {
       "type": "numberForRevenue"
-    }
-  },
-  {
-    "destKey": "contents",
-    "sourceKeys": "",
-    "metadata": {
-      "defaultValue": []
     }
   }
 ]

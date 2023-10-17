@@ -1,4 +1,26 @@
 {
+  "https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/101": {
+    "response": {
+      "data": [
+        {
+          "message": "[ECONNABORTED]",
+          "errorCode": "ECONNABORTED"
+        }
+      ],
+      "status": 400
+    }
+  },
+  "https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/102": {
+    "response": {
+      "data": [
+        {
+          "message": "[EAI_AGAIN]",
+          "errorCode": "EAI_AGAIN"
+        }
+      ],
+      "status": 400
+    }
+  },
   "https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/1": {
     "response": {
       "data": {

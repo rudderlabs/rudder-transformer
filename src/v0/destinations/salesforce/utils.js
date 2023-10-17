@@ -53,18 +53,6 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey) => {
         500,
         destResponse,
       );
-    } else if (
-      status === 400 &&
-      matchErrorCode('ECONNABORTED') &&
-      response.message.includes('ECONNABORTED')
-    ) {
-      // handling the error case where the record is failed due to ECONNABORTED error ( some salesforce internal error )
-      // this is a retryable error
-      throw new RetryableError(
-        `${DESTINATION} Request Failed - "ECONNABORTED error", (Retryable) ${sourceMessage}`,
-        500,
-        destResponse,
-      );
     } else if (status === 503 || status === 500) {
       // The salesforce server is unavailable to handle the request. Typically this occurs if the server is down
       // for maintenance or is currently overloaded.
@@ -82,6 +70,14 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey) => {
     let errorMessage = '';
     if (response && Array.isArray(response)) {
       errorMessage = response[0].message;
+    }
+    // handling ECONNABORTED ( Connection Aborted ) and EAI_AGAIN (DNS Temporary Not Found) errors
+    if (['[EAI_AGAIN]', '[ECONNABORTED]'].includes(errorMessage)) {
+      throw new RetryableError(
+        `${DESTINATION} Request Failed - due ${errorMessage} error", (Retryable) ${sourceMessage}`,
+        500,
+        destResponse,
+      );
     }
     // aborting for all other error codes
     throw new AbortedError(

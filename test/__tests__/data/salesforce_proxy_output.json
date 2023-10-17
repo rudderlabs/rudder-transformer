@@ -1,6 +1,66 @@
 [
   {
     "output": {
+      "status": 500,
+      "message": "Salesforce Request Failed - due [ECONNABORTED] error\", (Retryable) during Salesforce Response Handling",
+      "destinationResponse": {
+        "response": [
+          {
+            "message": "[ECONNABORTED]",
+            "errorCode": "ECONNABORTED"
+          }
+        ],
+        "status": 400,
+        "rudderJobMetadata": {
+          "destInfo": {
+            "authKey": "2HezPl1w11opbFSxnLDEgZ7kWTf"
+          }
+        }
+      },
+      "statTags": {
+        "destType": "SALESFORCE",
+        "errorCategory": "network",
+        "destinationId": "Non-determininable",
+        "workspaceId": "Non-determininable",
+        "errorType": "retryable",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
+      }
+    }
+  },
+  {
+    "output": {
+      "status": 500,
+      "message": "Salesforce Request Failed - due [EAI_AGAIN] error\", (Retryable) during Salesforce Response Handling",
+      "destinationResponse": {
+        "response": [
+          {
+            "message": "[EAI_AGAIN]",
+            "errorCode": "EAI_AGAIN"
+          }
+        ],
+        "status": 400,
+        "rudderJobMetadata": {
+          "destInfo": {
+            "authKey": "2HezPl1w11opbFSxnLDEgZ7kWTf"
+          }
+        }
+      },
+      "statTags": {
+        "destType": "SALESFORCE",
+        "errorCategory": "network",
+        "destinationId": "Non-determininable",
+        "workspaceId": "Non-determininable",
+        "errorType": "retryable",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
+      }
+    }
+  },
+  {
+    "output": {
       "status": 200,
       "message": "Request for destination: salesforce Processed Successfully",
       "destinationResponse": {

@@ -10,7 +10,7 @@ jobs:
 
     # Only allow to be deployed from tags and main branch
     # Only allow specific actors to trigger
-    if: (startsWith(github.ref, 'refs/tags/') || startsWith(github.ref, 'refs/heads/main')) && (github.actor == 'ItsSudip' || github.actor == 'krishna2020' || github.actor == 'saikumarrs') && (github.triggering_actor == 'ItsSudip' || github.triggering_actor == 'krishna2020' || github.triggering_actor == 'saikumarrs')
+    if: (startsWith(github.ref, 'refs/tags/') || startsWith(github.ref, 'refs/heads/main')) && (github.actor == 'ItsSudip' || github.actor == 'krishna2020' || github.actor == 'saikumarrs'  || github.actor == 'chandumlg') && (github.triggering_actor == 'ItsSudip' || github.triggering_actor == 'krishna2020' || github.triggering_actor == 'saikumarrs' || github.triggering_actor == 'chandumlg')
 
     steps:
       - name: Get Target Version

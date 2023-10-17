@@ -110,7 +110,7 @@ const transformedPayloadData = (
     const isDefaultPiiProperty = defaultPiiProperties.includes(eventProp);
     const isProperyWhiteListed = customWhiteListedProperties.includes(eventProp);
 
-    if (Object.prototype.hasOwnProperty.call(customBlackListedPiiProperties, eventProp)) {
+    if (Object.hasOwn(customBlackListedPiiProperties, eventProp)) {
       if (customBlackListedPiiProperties[eventProp]) {
         // if customBlackListedPiiProperty is marked to be hashed from UI
         clonedCustomData[eventProp] = integrationsObj?.hashed

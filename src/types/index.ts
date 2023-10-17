@@ -52,9 +52,9 @@ type Metadata = {
   transformationId: string;
 };
 
-type MessageIdMetadataMap {
+type MessageIdMetadataMap = {
   [key: string]: Metadata;
-}
+};
 
 type UserTransformationInput = {
   VersionID: string;

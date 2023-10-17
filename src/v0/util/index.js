@@ -2052,13 +2052,13 @@ const isValidInteger = (value) => {
   }
   // const valueToString = `${value}`;
   // Use a regular expression to check if the string is a valid integer or a valid floating-point number
-  return typeof value === 'string' ? /^-?\d+(\.\d+)?$/.test(`${value}`) : false;
+  return typeof value === 'string' ? /^-?\d+(.\d+)?$/.test(value) : false;
 };
-const validateEventType = event => {
-  if(!event || typeof event !== "string"){
-    throw new InstrumentationError("Event is a required field and should be a string");
+const validateEventType = (event) => {
+  if (!event || typeof event !== 'string') {
+    throw new InstrumentationError('Event is a required field and should be a string');
   }
-}
+};
 // ========================================================================
 // EXPORTS
 // ========================================================================

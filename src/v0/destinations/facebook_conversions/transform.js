@@ -22,13 +22,16 @@ const {
 
 const {
   populateCustomDataBasedOnCategory,
-  formingFinalResponse,
   getCategoryFromEvent,
   getActionSource,
   fetchAppData,
 } = require('./utils');
 
-const { transformedPayloadData, fetchUserData } = require('../facebook_pixel/utils');
+const {
+  transformedPayloadData,
+  fetchUserData,
+  formingFinalResponse,
+} = require('../facebook_pixel/utils');
 
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
@@ -100,10 +103,10 @@ const responseBuilderSimple = (message, category, destination) => {
     userData,
     commonData,
     customData,
-    appData,
     endpoint,
     testDestination,
     testEventCode,
+    appData,
   );
 };
 

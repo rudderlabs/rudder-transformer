@@ -577,16 +577,23 @@ const formingFinalResponse = (
   endpoint,
   testDestination,
   testEventCode,
+  appData,
 ) => {
   if (userData && commonData) {
     const response = defaultRequestConfig();
     response.endpoint = endpoint;
     response.method = defaultPostRequestConfig.requestMethod;
-    const jsonStringify = JSON.stringify({
+    const jsonData = {
       user_data: userData,
       ...commonData,
-      custom_data: customData,
-    });
+    };
+    if (appData && Object.keys(appData).length > 0) {
+      jsonData.app_data = appData;
+    }
+    if (customData && Object.keys(customData).length > 0) {
+      jsonData.custom_data = customData;
+    }
+    const jsonStringify = JSON.stringify(jsonData);
     const payload = {
       data: [jsonStringify],
     };

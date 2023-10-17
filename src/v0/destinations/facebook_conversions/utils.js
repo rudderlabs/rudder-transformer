@@ -4,16 +4,10 @@ const {
   STANDARD_ECOMM_EVENTS_CATEGORIES,
   MAPPING_CONFIG,
 } = require('./config');
-const {
-  constructPayload,
-  isObject,
-  isAppleFamily,
-  defaultRequestConfig,
-  defaultPostRequestConfig,
-} = require('../../util');
+const { constructPayload, isObject, isAppleFamily } = require('../../util');
 
 const { getContentType, getContentCategory } = require('../facebook_pixel/utils');
-const { InstrumentationError, TransformationError } = require('../../util/errorTypes');
+const { InstrumentationError } = require('../../util/errorTypes');
 const { ACTION_SOURCES_VALUES } = require('../facebook_pixel/config');
 
 const getActionSource = (payload, fallbackActionSource) => {
@@ -186,50 +180,9 @@ const fetchAppData = (message) => {
   return appData;
 };
 
-const formingFinalResponse = (
-  userData,
-  commonData,
-  customData,
-  appData,
-  endpoint,
-  testDestination,
-  testEventCode,
-) => {
-  if (userData && commonData) {
-    const response = defaultRequestConfig();
-    response.endpoint = endpoint;
-    response.method = defaultPostRequestConfig.requestMethod;
-    const jsonData = {
-      user_data: userData,
-      ...commonData,
-    };
-    if (Object.keys(appData).length > 0) {
-      jsonData.app_data = appData;
-    }
-    if (Object.keys(customData).length > 0) {
-      jsonData.custom_data = customData;
-    }
-    const jsonStringify = JSON.stringify(jsonData);
-    const payload = {
-      data: [jsonStringify],
-    };
-
-    // Ref: https://developers.facebook.com/docs/marketing-api/conversions-api/using-the-api/
-    // Section: Test Events Tool
-    if (testDestination) {
-      payload.test_event_code = testEventCode;
-    }
-    response.body.FORM = payload;
-    return response;
-  }
-  // fail-safety for developer error
-  throw new TransformationError('Payload could not be constructed');
-};
-
 module.exports = {
   fetchAppData,
   getActionSource,
   getCategoryFromEvent,
-  formingFinalResponse,
   populateCustomDataBasedOnCategory,
 };

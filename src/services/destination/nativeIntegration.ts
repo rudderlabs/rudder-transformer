@@ -182,7 +182,6 @@ export default class NativeIntegrationDestinationService implements IntegrationD
         destinationType,
       ) as DeliveryResponse;
     } catch (err: any) {
-      // update error block also
       const metaTO = this.getTags(
         destinationType,
         destinationRequest.metadata?.destinationId || 'Non-determininable',

@@ -7,7 +7,7 @@ const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
-const { AbortedError, RetryableError, NetworkError } = require('../../util/errorTypes');
+const { TransformerProxyError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -91,7 +91,7 @@ function isEventAbortable(element, proxyOutputObj) {
 
 const responseHandler = (destinationResponse) => {
   const message = `[CAMPAIGN_MANAGER Response Handler] - Request Processed Successfully`;
-  const responseForPartialEventHandling = []
+  const responseWithPartialEvents = []
   // destinationResponse = {
   //   response: {
   //     hasFailures: true,
@@ -249,34 +249,37 @@ const responseHandler = (destinationResponse) => {
       } else if (isEventAbortable(element, proxyOutputObj)) { 
         proxyOutputObj.statusCode = 400;
       }
-      responseForPartialEventHandling.push(proxyOutputObj);
+      responseWithPartialEvents.push(proxyOutputObj);
     }
 
     return {
       status,
       message,
       destinationResponse,
-      response: responseForPartialEventHandling
-    };
+      response: responseWithPartialEvents
+    }
   }
 
-  throw new RetryableError(
-    `Campaign Manager: Retrying during CAMPAIGN_MANAGER response transformation`,
+  // in case of failure status, populate response to maintain len(metadata)=len(response)
+  const errorMessage = response.error?.message || 'error msg failure';
+  for (const metadata of rudderJobMetadata) {
+    responseWithPartialEvents.push({
+      statusCode: 500,
+      metadata,
+      error: errorMessage
+    });
+  }
+
+  throw new TransformerProxyError(
+    `Campaign Manager: Error proxy during CAMPAIGN_MANAGER response transformation`,
     500,
+    {
+      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+    },
     destinationResponse,
     getAuthErrCategoryFromStCode(status),
+    responseWithPartialEvents
   );
-
-  // retry entire batch incase of entire batch delivery failure (eg. oauth error)
-  // throw new NetworkError(
-  //   `Campaign Manager: ${response.error?.message} during CAMPAIGN_MANAGER response transformation`,
-  //   status,
-  //   {
-  //     [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
-  //   },
-  //   destinationResponse,
-  //   getAuthErrCategoryFromStCode(status),
-  // );
 };
 
 function networkHandler() {

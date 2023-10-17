@@ -7,6 +7,7 @@ import {
   ProcessorTransformationResponse,
   UserTransformationResponse,
   UserTransformationServiceResponse,
+  MessageIdMetadataMap,
 } from '../types/index';
 import {
   RespStatusError,
@@ -49,8 +50,15 @@ export default class UserTransformService {
         const eventsToProcess = destEvents as ProcessorTransformationRequest[];
         const transformationVersionId =
           eventsToProcess[0]?.destination?.Transformations[0]?.VersionID;
-        const messageIds = eventsToProcess.map((ev) => ev.metadata?.messageId);
-        const messageIdsSet = new Set<string>(messageIds);
+        const messageIds: string[] = [];
+        const messageIdsSet = new Set<string>();
+        const messageIdMetadataMap: MessageIdMetadataMap = {};
+        eventsToProcess.forEach((ev) => {
+          messageIds.push(ev.metadata?.messageId);
+          messageIdsSet.add(ev.metadata?.messageId);
+          messageIdMetadataMap[ev.metadata?.messageId] = ev.metadata;
+        });
+
         const messageIdsInOutputSet = new Set<string>();
 
         const commonMetadata = {
@@ -125,7 +133,7 @@ export default class UserTransformService {
             const droppedEvents = messageIdsNotInOutput.map((id) => ({
               statusCode: HTTP_CUSTOM_STATUS_CODES.FILTERED,
               metadata: {
-                ...commonMetadata,
+                ...(isEmpty(messageIdMetadataMap[id]) ? commonMetadata : messageIdMetadataMap[id]),
                 messageId: id,
                 messageIds: null,
               },

@@ -184,6 +184,14 @@ const handleTraits = (messageTrait, destination) => {
   return traitsObject;
 };
 
+const getScreenevTypeAndUpdatedProperties = (message, CATEGORY_KEY) => ({
+  evType: `Viewed ${message.name || message.event || get(message, CATEGORY_KEY) || ''} Screen`,
+  updatedProperties: {
+    ...message.properties,
+    name: message.name || message.event || get(message, CATEGORY_KEY),
+  },
+});
+
 const payloadMapping = (payload, outKey, message, sourceKey, Config, funcName) => {
   const data = get(payload, outKey);
   if (!isDefinedAndNotNull(data)) {
@@ -343,6 +351,24 @@ const getResponseData = (evType, destination, rawPayload, message, groupInfo) =>
   return { endpoint, rawPayload, groups };
 };
 
+const buildPayloadForMobileChannel = (message, destination, payload) => {
+  if (!destination.Config.mapDeviceBrand) {
+    set(payload, 'device_brand', get(message, 'context.device.manufacturer'));
+  }
+
+  const deviceId = get(message, 'context.device.id');
+  const platform = get(message, 'context.device.type');
+  const advertId = get(message, 'context.device.advertisingId');
+
+  if (platform) {
+    if (isAppleFamily(platform)) {
+      set(payload, 'idfa', advertId);
+      set(payload, 'idfv', deviceId);
+    } else if (platform.toLowerCase() === 'android') {
+      set(payload, 'adid', advertId);
+    }
+  }
+};
 const nonAliasResponsebuilder = (
   message,
   payload,
@@ -357,24 +383,8 @@ const nonAliasResponsebuilder = (
   const groupResponse = defaultRequestConfig();
   const endpoint = defaultEndpoint(destination.Config);
   if (message.channel === 'mobile') {
-    if (!destination.Config.mapDeviceBrand) {
-      set(payload, 'device_brand', get(message, 'context.device.manufacturer'));
-    }
-
-    const deviceId = get(message, 'context.device.id');
-    const platform = get(message, 'context.device.type');
-    const advertId = get(message, 'context.device.advertisingId');
-
-    if (platform) {
-      if (isAppleFamily(platform)) {
-        set(payload, 'idfa', advertId);
-        set(payload, 'idfv', deviceId);
-      } else if (platform.toLowerCase() === 'android') {
-        set(payload, 'adid', advertId);
-      }
-    }
+    buildPayloadForMobileChannel(message, destination, payload);
   }
-
   payload.time = new Date(getFieldValueFromMessage(message, 'timestamp')).getTime();
 
   // send user_id only when present, for anonymous users not required
@@ -544,19 +554,46 @@ const responseBuilderSimple = (
   return respList;
 };
 
+const getGroupInfo = (message, destination, groupInfo, groupTraits) => {
+  let updatedGroupInfo = { ...groupInfo };
+  const groupTypeTrait = get(destination, 'Config.groupTypeTrait');
+  const groupValueTrait = get(destination, 'Config.groupValueTrait');
+  if (groupTypeTrait && groupValueTrait) {
+    const groupTypeValue = get(groupTraits, groupTypeTrait);
+    const groupNameValue = get(groupTraits, groupValueTrait);
+    // since the property updates on group at https://api2.amplitude.com/groupidentify
+    // expects a string group name and value , so error out if the keys are not primitive
+    // Note: This different for groups object at https://api.amplitude.com/2/httpapi where the
+    // group value can be array of strings as well.
+    if (
+      groupTypeValue &&
+      typeof groupTypeValue === 'string' &&
+      groupNameValue &&
+      (typeof groupNameValue === 'string' || typeof groupNameValue === 'number')
+    ) {
+      updatedGroupInfo = {};
+      updatedGroupInfo.group_type = groupTypeValue;
+      updatedGroupInfo.group_value = groupNameValue;
+      // passing the entire group traits without deleting the above keys
+      updatedGroupInfo.group_properties = groupTraits;
+      return updatedGroupInfo;
+    }
+    logger.debug('Group call parameters are not valid');
+    throw new InstrumentationError('Group call parameters are not valid');
+  }
+  return groupInfo;
+};
 // Generic process function which invokes specific handler functions depending on message type
 // and event type where applicable
 const processSingleMessage = (message, destination) => {
   let payloadObjectName = 'events';
   let evType;
-  let groupTraits;
-  let groupTypeTrait;
-  let groupValueTrait;
   // It is expected that Rudder alias. identify group calls won't have this set
   // To be used for track/page calls to associate the event to a group in AM
   let groupInfo = get(message, 'integrations.Amplitude.groups') || undefined;
   let category = ConfigCategory.DEFAULT;
-
+  let { properties } = message;
+  const { name, event } = message;
   const messageType = message.type.toLowerCase();
   const CATEGORY_KEY = 'properties.category';
   const { useUserDefinedPageEventName, userProvidedPageEventString } = destination.Config;
@@ -576,26 +613,26 @@ const processSingleMessage = (message, destination) => {
           .trim();
         evType =
           userProvidedPageEventString.trim() === ''
-            ? message.name
+            ? name
             : userProvidedPageEventString
                 .trim()
                 .replaceAll(/{{([^{}]+)}}/g, get(message, getMessagePath));
       } else {
-        evType = `Viewed ${message.name || get(message, CATEGORY_KEY) || ''} Page`;
+        evType = `Viewed ${name || get(message, CATEGORY_KEY) || ''} Page`;
       }
 
       message.properties = {
         ...message.properties,
-        name: message.name || get(message, CATEGORY_KEY),
+        name: name || get(message, CATEGORY_KEY),
       };
       category = ConfigCategory.PAGE;
       break;
     case EventType.SCREEN:
-      evType = `Viewed ${message.name || message.event || get(message, CATEGORY_KEY) || ''} Screen`;
-      message.properties = {
-        ...message.properties,
-        name: message.name || message.event || get(message, CATEGORY_KEY),
-      };
+      ({ evType, updatedProperties: properties } = getScreenevTypeAndUpdatedProperties(
+        message,
+        CATEGORY_KEY,
+      ));
+      message.properties = properties;
       category = ConfigCategory.SCREEN;
       break;
     case EventType.GROUP:
@@ -605,34 +642,14 @@ const processSingleMessage = (message, destination) => {
       // read from group traits from message
       // groupTraits => top level "traits" for JS SDK
       // groupTraits => "context.traits" for mobile SDKs
-      groupTraits = getFieldValueFromMessage(message, 'groupTraits');
+      groupInfo = getGroupInfo(
+        message,
+        destination,
+        groupInfo,
+        getFieldValueFromMessage(message, 'groupTraits'),
+      );
       // read destination config related group settings
       // https://developers.amplitude.com/docs/group-identify-api
-      groupTypeTrait = get(destination, 'Config.groupTypeTrait');
-      groupValueTrait = get(destination, 'Config.groupValueTrait');
-      if (groupTypeTrait && groupValueTrait) {
-        const groupTypeValue = get(groupTraits, groupTypeTrait);
-        const groupNameValue = get(groupTraits, groupValueTrait);
-        // since the property updates on group at https://api2.amplitude.com/groupidentify
-        // expects a string group name and value , so error out if the keys are not primitive
-        // Note: This different for groups object at https://api.amplitude.com/2/httpapi where the
-        // group value can be array of strings as well.
-        if (
-          groupTypeValue &&
-          typeof groupTypeValue === 'string' &&
-          groupNameValue &&
-          (typeof groupNameValue === 'string' || typeof groupNameValue === 'number')
-        ) {
-          groupInfo = {};
-          groupInfo.group_type = groupTypeValue;
-          groupInfo.group_value = groupNameValue;
-          // passing the entire group traits without deleting the above keys
-          groupInfo.group_properties = groupTraits;
-        } else {
-          logger.debug('Group call parameters are not valid');
-          throw new InstrumentationError('Group call parameters are not valid');
-        }
-      }
       break;
     case EventType.ALIAS:
       evType = 'alias';
@@ -642,7 +659,7 @@ const processSingleMessage = (message, destination) => {
       category = ConfigCategory.ALIAS;
       break;
     case EventType.TRACK:
-      evType = message.event;
+      evType = event;
       if (!isDefinedAndNotNullAndNotEmpty(evType)) {
         throw new InstrumentationError('Event not present. Please send event.');
       }

@@ -95,6 +95,10 @@ const handleSessionIdUnderContext = (sessionId) => {
   return Number(sessionId);
 };
 
+const checkForJSONAndUserIdLengthAndDeviceId = (jsonBody, userId, deviceId) =>
+  Object.keys(jsonBody).length === 0 ||
+  (!batchEventsWithUserIdLengthLowerThanFive && userId && userId.length < 5) ||
+  (batchEventsWithUserIdLengthLowerThanFive && userId && userId.length < 5 && !deviceId);
 const getSessionId = (message) => {
   let sessionId = -1;
   const rootSessionId = get(message, 'session_id');
@@ -896,11 +900,7 @@ const batch = (destEvents) => {
     // check if not a JSON body or (userId length < 5 && batchEventsWithUserIdLengthLowerThanFive is false) or
     // (batchEventsWithUserIdLengthLowerThanFive is true and userId is less than 5 but deviceId not present)
     // , send the event as is after batching
-    if (
-      Object.keys(jsonBody).length === 0 ||
-      (!batchEventsWithUserIdLengthLowerThanFive && userId && userId.length < 5) ||
-      (batchEventsWithUserIdLengthLowerThanFive && userId && userId.length < 5 && !deviceId)
-    ) {
+    if (checkForJSONAndUserIdLengthAndDeviceId(jsonBody, userId, deviceId)) {
       response = defaultBatchRequestConfig();
       response = Object.assign(response, { batchedRequest: message });
       response.metadata = [metadata];

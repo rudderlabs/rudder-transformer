@@ -85,7 +85,7 @@ const handleSessionIdUnderRoot = (sessionId) => {
   if (typeof sessionId === 'string') {
     const extractedPart = sessionId.split(':').reverse();
     if (!isValidInteger(extractedPart[0])) return -1;
-    return extractedPart[0];
+    return Number(extractedPart[0]);
   }
   return Number(sessionId);
 };
@@ -184,6 +184,15 @@ const handleTraits = (messageTrait, destination) => {
   return traitsObject;
 };
 
+const payloadMapping = (payload, outKey, message, sourceKey, Config, funcName) => {
+  const data = get(payload, outKey);
+  if (!isDefinedAndNotNull(data)) {
+    const val = AMUtils[funcName](message, sourceKey, Config);
+    if (val || val === false || val === 0) {
+      set(payload, outKey, val);
+    }
+  }
+};
 const handleMappingJsonObject = (
   mappingJson,
   sourceKey,
@@ -195,13 +204,7 @@ const handleMappingJsonObject = (
   const { isFunc, funcName, outKey } = mappingJson[sourceKey];
   if (isFunc) {
     if (validatePayload) {
-      const data = get(payload, outKey);
-      if (!isDefinedAndNotNull(data)) {
-        const val = AMUtils[funcName](message, sourceKey, Config);
-        if (val || val === false || val === 0) {
-          set(payload, outKey, val);
-        }
-      }
+      payloadMapping(payload, outKey, message, sourceKey, Config, funcName);
     } else {
       const data = get(message.traits, outKey);
       // when in identify(or any other call) it checks whether outKey is present in traits
@@ -251,56 +254,81 @@ const updateConfigProperty = (message, payload, mappingJson, validatePayload, Co
     }
   });
 };
+const identifyBuilder = (message, destination, rawPayload) => {
+  // update payload user_properties from userProperties/traits/context.traits/nested traits of Rudder message
+  // traits like address converted to top level user properties (think we can skip this extra processing as AM supports nesting upto 40 levels)
+  let traits = getFieldValueFromMessage(message, 'traits');
+  if (traits) {
+    traits = handleTraits(traits, destination);
+  }
+  rawPayload.user_properties = {
+    ...rawPayload.user_properties,
+    ...message.userProperties,
+  };
+  if (traits) {
+    Object.keys(traits).forEach((trait) => {
+      if (SpecedTraits.includes(trait)) {
+        const mapping = TraitsMapping[trait];
+        Object.keys(mapping).forEach((key) => {
+          const checkKey = get(rawPayload.user_properties, key);
+          // this is done only if we want to add default values under address to the user_properties
+          // these values are also sent to the destination at the top level.
+          if (!isDefinedAndNotNull(checkKey)) {
+            set(rawPayload, `user_properties.${key}`, get(traits, mapping[key]));
+          }
+        });
+      } else {
+        set(rawPayload, `user_properties.${trait}`, get(traits, trait));
+      }
+    });
+  }
+  return rawPayload;
+};
 
+const getDefaultResponseData = (message, rawPayload, evType, groupInfo) => {
+  const traits = getFieldValueFromMessage(message, 'traits');
+  set(rawPayload, 'event_properties', message.properties);
+
+  if (traits) {
+    rawPayload.user_properties = {
+      ...rawPayload.user_properties,
+      ...traits,
+    };
+  }
+
+  rawPayload.event_type = evType;
+  rawPayload.user_id = message.userId;
+  if (message.isRevenue) {
+    // making the revenue payload
+    rawPayload = createRevenuePayload(message, rawPayload);
+    // deleting the properties price, product_id, quantity and revenue from event_properties since it is already in root
+    if (rawPayload.event_properties) {
+      delete rawPayload.event_properties.price;
+      delete rawPayload.event_properties.product_id;
+      delete rawPayload.event_properties.quantity;
+      delete rawPayload.event_properties.revenue;
+    }
+  }
+  const groups = groupInfo && Object.assign(groupInfo);
+  return { groups, rawPayload };
+};
 const getResponseData = (evType, destination, rawPayload, message, groupInfo) => {
   let endpoint = defaultEndpoint(destination.Config);
-  let traits;
   let groups;
 
   switch (evType) {
     case EventType.IDENTIFY:
+      endpoint = defaultEndpoint(destination.Config);
+      // event_type for identify event is $identify
+      rawPayload.event_type = IDENTIFY_AM;
+      identifyBuilder(message, destination, rawPayload);
+      break;
     case EventType.GROUP:
       endpoint = defaultEndpoint(destination.Config);
       // event_type for identify event is $identify
       rawPayload.event_type = IDENTIFY_AM;
-
-      if (evType === EventType.IDENTIFY) {
-        // update payload user_properties from userProperties/traits/context.traits/nested traits of Rudder message
-        // traits like address converted to top level user properties (think we can skip this extra processing as AM supports nesting upto 40 levels)
-        traits = getFieldValueFromMessage(message, 'traits');
-        if (traits) {
-          traits = handleTraits(traits, destination);
-        }
-        rawPayload.user_properties = {
-          ...rawPayload.user_properties,
-          ...message.userProperties,
-        };
-        if (traits) {
-          Object.keys(traits).forEach((trait) => {
-            if (SpecedTraits.includes(trait)) {
-              const mapping = TraitsMapping[trait];
-              Object.keys(mapping).forEach((key) => {
-                const checkKey = get(rawPayload.user_properties, key);
-                // this is done only if we want to add default values under address to the user_properties
-                // these values are also sent to the destination at the top level.
-                if (!isDefinedAndNotNull(checkKey)) {
-                  set(rawPayload, `user_properties.${key}`, get(traits, mapping[key]));
-                }
-              });
-            } else {
-              set(rawPayload, `user_properties.${trait}`, get(traits, trait));
-            }
-          });
-        }
-      }
-
-      if (
-        evType === EventType.GROUP && // for Rudder group call, update the user_properties with group info
-        // Refer (1.)
-        groupInfo &&
-        groupInfo.group_type &&
-        groupInfo.group_value
-      ) {
+      // for Rudder group call, update the user_properties with group info
+      if (groupInfo?.group_type && groupInfo?.group_value) {
         groups = {};
         groups[groupInfo.group_type] = groupInfo.group_value;
         set(rawPayload, `user_properties.${[groupInfo.group_type]}`, groupInfo.group_value);
@@ -310,32 +338,114 @@ const getResponseData = (evType, destination, rawPayload, message, groupInfo) =>
       endpoint = aliasEndpoint(destination.Config);
       break;
     default:
-      traits = getFieldValueFromMessage(message, 'traits');
-      set(rawPayload, 'event_properties', message.properties);
-
-      if (traits) {
-        rawPayload.user_properties = {
-          ...rawPayload.user_properties,
-          ...traits,
-        };
-      }
-
-      rawPayload.event_type = evType;
-      rawPayload.user_id = message.userId;
-      if (message.isRevenue) {
-        // making the revenue payload
-        rawPayload = createRevenuePayload(message, rawPayload);
-        // deleting the properties price, product_id, quantity and revenue from event_properties since it is already in root
-        if (rawPayload.event_properties) {
-          delete rawPayload.event_properties.price;
-          delete rawPayload.event_properties.product_id;
-          delete rawPayload.event_properties.quantity;
-          delete rawPayload.event_properties.revenue;
-        }
-      }
-      groups = groupInfo && Object.assign(groupInfo);
+      ({ groups, rawPayload } = getDefaultResponseData(message, rawPayload, evType, groupInfo));
   }
   return { endpoint, rawPayload, groups };
+};
+
+const nonAliasResponsebuilder = (
+  message,
+  payload,
+  destination,
+  evType,
+  groupInfo,
+  rootElementName,
+) => {
+  const respList = [];
+  const addOptions = 'options';
+  const response = defaultRequestConfig();
+  const groupResponse = defaultRequestConfig();
+  const endpoint = defaultEndpoint(destination.Config);
+  if (message.channel === 'mobile') {
+    if (!destination.Config.mapDeviceBrand) {
+      set(payload, 'device_brand', get(message, 'context.device.manufacturer'));
+    }
+
+    const deviceId = get(message, 'context.device.id');
+    const platform = get(message, 'context.device.type');
+    const advertId = get(message, 'context.device.advertisingId');
+
+    if (platform) {
+      if (isAppleFamily(platform)) {
+        set(payload, 'idfa', advertId);
+        set(payload, 'idfv', deviceId);
+      } else if (platform.toLowerCase() === 'android') {
+        set(payload, 'adid', advertId);
+      }
+    }
+  }
+
+  payload.time = new Date(getFieldValueFromMessage(message, 'timestamp')).getTime();
+
+  // send user_id only when present, for anonymous users not required
+  if (
+    message.userId &&
+    message.userId !== '' &&
+    message.userId !== 'null' &&
+    message.userId !== null
+  ) {
+    payload.user_id = message.userId;
+  }
+  payload.session_id = getSessionId(message);
+
+  updateConfigProperty(
+    message,
+    payload,
+    mappingConfig[ConfigCategory.COMMON_CONFIG.name],
+    true,
+    destination.Config,
+  );
+
+  // we are not fixing the verson for android specifically any more because we've put a fix in iOS SDK
+  // for correct versionName
+  // ====================
+  // fixVersion(payload, message);
+
+  if (payload.user_properties) {
+    delete payload.user_properties.city;
+    delete payload.user_properties.country;
+    if (payload.user_properties.address) {
+      delete payload.user_properties.address.city;
+      delete payload.user_properties.address.country;
+    }
+  }
+
+  if (!payload.user_id && !payload.device_id) {
+    logger.debug('Either of user ID or device ID fields must be specified');
+    throw new InstrumentationError('Either of user ID or device ID fields must be specified');
+  }
+
+  payload.ip = getParsedIP(message);
+  payload.library = 'rudderstack';
+  payload = removeUndefinedAndNullValues(payload);
+  response.endpoint = endpoint;
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.headers = {
+    'Content-Type': JSON_MIME_TYPE,
+  };
+  response.userId = message.anonymousId;
+  response.body.JSON = {
+    api_key: destination.Config.apiKey,
+    [rootElementName]: [payload],
+    [addOptions]: addMinIdlength(),
+  };
+  respList.push(response);
+
+  // https://developers.amplitude.com/docs/group-identify-api
+  // Refer (1.), Rudder group call updates group propertiees.
+  if (evType === EventType.GROUP && groupInfo) {
+    groupResponse.method = defaultPostRequestConfig.requestMethod;
+    groupResponse.endpoint = groupEndpoint(destination.Config);
+    let groupPayload = Object.assign(groupInfo);
+    groupResponse.userId = message.anonymousId;
+    groupPayload = removeUndefinedValues(groupPayload);
+    groupResponse.body.FORM = {
+      api_key: destination.Config.apiKey,
+      identification: [JSON.stringify(groupPayload)],
+    };
+    respList.push(groupResponse);
+  }
+  return respList;
 };
 
 const responseBuilderSimple = (
@@ -347,13 +457,8 @@ const responseBuilderSimple = (
   destination,
 ) => {
   let rawPayload = {};
-  const addOptions = 'options';
   const respList = [];
-  const response = defaultRequestConfig();
-  const groupResponse = defaultRequestConfig();
   const aliasResponse = defaultRequestConfig();
-  let endpoint = defaultEndpoint(destination.Config);
-
   if (
     EventType.IDENTIFY && // If mapped to destination, Add externalId to traits
     get(message, MappedToDestinationKey)
@@ -398,7 +503,8 @@ const responseBuilderSimple = (
 
   const respData = getResponseData(evType, destination, rawPayload, message, groupInfo);
   const { groups } = respData;
-  ({ endpoint, rawPayload } = respData);
+  // eslint-disable-next-line prefer-const
+  ({ rawPayload } = respData);
 
   // for  https://api.amplitude.com/2/httpapi , pass the "groups" key
   // refer (1.) for passing "groups" for Rudder group call
@@ -426,97 +532,15 @@ const responseBuilderSimple = (
     };
     respList.push(aliasResponse);
   } else {
-    if (message.channel === 'mobile') {
-      if (!destination.Config.mapDeviceBrand) {
-        set(payload, 'device_brand', get(message, 'context.device.manufacturer'));
-      }
-
-      const deviceId = get(message, 'context.device.id');
-      const platform = get(message, 'context.device.type');
-      const advertId = get(message, 'context.device.advertisingId');
-
-      if (platform) {
-        if (isAppleFamily(platform)) {
-          set(payload, 'idfa', advertId);
-          set(payload, 'idfv', deviceId);
-        } else if (platform.toLowerCase() === 'android') {
-          set(payload, 'adid', advertId);
-        }
-      }
-    }
-
-    payload.time = new Date(getFieldValueFromMessage(message, 'timestamp')).getTime();
-
-    // send user_id only when present, for anonymous users not required
-    if (
-      message.userId &&
-      message.userId !== '' &&
-      message.userId !== 'null' &&
-      message.userId !== null
-    ) {
-      payload.user_id = message.userId;
-    }
-    payload.session_id = getSessionId(message);
-
-    updateConfigProperty(
+    return nonAliasResponsebuilder(
       message,
       payload,
-      mappingConfig[ConfigCategory.COMMON_CONFIG.name],
-      true,
-      destination.Config,
+      destination,
+      evType,
+      groupInfo,
+      rootElementName,
     );
-
-    // we are not fixing the verson for android specifically any more because we've put a fix in iOS SDK
-    // for correct versionName
-    // ====================
-    // fixVersion(payload, message);
-
-    if (payload.user_properties) {
-      delete payload.user_properties.city;
-      delete payload.user_properties.country;
-      if (payload.user_properties.address) {
-        delete payload.user_properties.address.city;
-        delete payload.user_properties.address.country;
-      }
-    }
-
-    if (!payload.user_id && !payload.device_id) {
-      logger.debug('Either of user ID or device ID fields must be specified');
-      throw new InstrumentationError('Either of user ID or device ID fields must be specified');
-    }
-
-    payload.ip = getParsedIP(message);
-    payload.library = 'rudderstack';
-    payload = removeUndefinedAndNullValues(payload);
-    response.endpoint = endpoint;
-    response.method = defaultPostRequestConfig.requestMethod;
-    response.headers = {
-      'Content-Type': JSON_MIME_TYPE,
-    };
-    response.userId = message.anonymousId;
-    response.body.JSON = {
-      api_key: destination.Config.apiKey,
-      [rootElementName]: [payload],
-      [addOptions]: addMinIdlength(),
-    };
-    respList.push(response);
-
-    // https://developers.amplitude.com/docs/group-identify-api
-    // Refer (1.), Rudder group call updates group propertiees.
-    if (evType === EventType.GROUP && groupInfo) {
-      groupResponse.method = defaultPostRequestConfig.requestMethod;
-      groupResponse.endpoint = groupEndpoint(destination.Config);
-      let groupPayload = Object.assign(groupInfo);
-      groupResponse.userId = message.anonymousId;
-      groupPayload = removeUndefinedValues(groupPayload);
-      groupResponse.body.FORM = {
-        api_key: destination.Config.apiKey,
-        identification: [JSON.stringify(groupPayload)],
-      };
-      respList.push(groupResponse);
-    }
   }
-
   return respList;
 };
 

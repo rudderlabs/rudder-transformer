@@ -14,18 +14,13 @@ steps:
 
   - name: successfulEvents
     template: |
-      const output = []
-      $.outputs.transform.forEach(function(transformedData,index){
-        const result = {
-          "batchedRequest": transformedData.output,
-          "batched": true,
-          "destination": ^[index].destination,
-          "metadata": ^[index].metadata[],
-          "statusCode": 200
-        }
-        output.push(result);
-      })
-      output
+      $.outputs.transform#idx.output.({
+        "batchedRequest": .,
+        "batched": true,
+        "destination": ^[idx].destination,
+        "metadata": ^[idx].metadata,
+        "statusCode": 200
+      })[]
 
   - name: failedEvents
     template: |

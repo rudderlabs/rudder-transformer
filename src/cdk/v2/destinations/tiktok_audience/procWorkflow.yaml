@@ -29,44 +29,39 @@ steps:
       const isHashRequired = .destination.Config.isHashRequired;
       const advertiserIds = .metadata.secret.advertiserIds;
       const hashTraits = function(traits) {
-        const batch_data = traits.map(function(trait){
-          const arr = destinationFields.map(function(destinationField){
-            const hashedData = trait[destinationField] ? {
-              "id": isHashRequired ? 
+        traits@trait.(destinationFields@destinationField.(
+          trait[destinationField] ? {
+            id: isHashRequired ? 
                 destinationField in $.SHA256_TRAITS ? 
                   $.SHA256(trait[destinationField]) : $.MD5(trait[destinationField]) 
                 : trait[destinationField],
-              "audience_ids":[audienceId]
-            } : {};
-            hashedData; 
-          })
-          arr;
-        })
-        batch_data
+            audience_ids:[audienceId]
+          } : {}
+        )[])
       };
-      const listData = .message.properties.listData
-      Object.keys(listData).map(function(action){
-        {
-          "batch_data": hashTraits(listData[action]),
-          "id_schema": destinationFields,
-          "advertiser_ids": advertiserIds,
-          "action": $.ACTION_MAP[action],
-        }
+      const listData = .message.properties.listData;
+      const actions = Object.keys(listData)
+      actions@action.({
+        "batch_data": hashTraits(listData[action]),
+        "id_schema": destinationFields,
+        "advertiser_ids": advertiserIds,
+        "action": $.ACTION_MAP[action],
       })[]
+
 
   - name: buildResponseForProcessTransformation
     description: build response
     template: |
       const accessToken = .metadata.secret.accessToken
-      const response = $.outputs.prepareIdentifiersList.map(function(prepareIdentifiersList){
-        const temp = $.defaultRequestConfig();
-        temp.body.JSON = prepareIdentifiersList;
-        temp.userId = .message.anonymousId;
-        temp.endpoint = "https://business-api.tiktok.com/open_api/v1.3/segment/mapping/";
-        temp.headers = {
+      const anonymousId = .message.anonymousId;
+      $.outputs.prepareIdentifiersList@body.(
+        let response = $.defaultRequestConfig();
+        response.body.JSON = body;
+        response.userId = anonymousId;
+        response.endpoint = "https://business-api.tiktok.com/open_api/v1.3/segment/mapping/";
+        response.headers = {
           "Access-Token": accessToken,
           "Content-Type": "application/json"
-        }
-        temp;
-      })
-      response
+        };
+        response
+      )

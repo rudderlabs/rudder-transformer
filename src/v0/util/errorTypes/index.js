@@ -15,6 +15,7 @@ const UnauthorizedError = require('./unauthorizedError');
 const NetworkInstrumentationError = require('./networkInstrumentationError');
 const UnsupportedEventError = require('./unsupportedEventError');
 const TransformerProxyError = require('./transformerProxyError');
+const FilteredEventsError = require('./filteredEventsError');
 
 module.exports = {
   BaseError,
@@ -34,4 +35,5 @@ module.exports = {
   UnsupportedEventError,
   RedisError,
   TransformerProxyError,
+  FilteredEventsError,
 };

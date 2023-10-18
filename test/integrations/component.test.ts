@@ -17,12 +17,10 @@ import {
   getAllTestMockDataFilePaths,
   addMock,
 } from './testUtils';
-import tags, { FEATURES } from '../../src/v0/util/tags';
+import tags from '../../src/v0/util/tags';
 import { Server } from 'http';
 import { appendFileSync } from 'fs';
 import { responses } from '../testHelper';
-import utils from '../../src/v0/util';
-import isMatch from 'lodash/isMatch';
 
 // To run single destination test cases
 // npm run test:ts -- component  --destination=adobe_analytics
@@ -31,10 +29,9 @@ import isMatch from 'lodash/isMatch';
 // npm run test:ts -- component --destination=zendesk --generate=true
 // npm run test:ts:component:generateNwMocks -- --destination=zendesk
 const command = new Command();
-command.allowUnknownOption().option('-d, --destination <string>', 'Enter Destination Name').parse();
-// This option will only work when destination option is also provided
 command
   .allowUnknownOption()
+  .option('-d, --destination <string>', 'Enter Destination Name')
   .option('-g, --generate <string>', 'Enter "true" If you want to generate network file')
   .parse();
 
@@ -178,21 +175,23 @@ describe.each(allTestDataFilePaths)('%s Tests', (testDataPath) => {
   });
   // add special mocks for specific destinations
   const testData: TestCaseData[] = getTestData(testDataPath);
-  test.each(testData)('$name - $module - $feature -> $description', async (tcData) => {
-    tcData?.mockFns?.(mock);
+  describe(`${testData[0].name} ${testData[0].module}`, () => {
+    test.each(testData)('$feature -> $description', async (tcData) => {
+      tcData?.mockFns?.(mock);
 
-    switch (tcData.module) {
-      case tags.MODULES.DESTINATION:
-        await destinationTestHandler(tcData);
-        break;
-      case tags.MODULES.SOURCE:
-        await sourceTestHandler(tcData);
-        break;
-      default:
-        console.log('Invalid module');
-        // Intentionally fail the test case
-        expect(true).toEqual(false);
-        break;
-    }
+      switch (tcData.module) {
+        case tags.MODULES.DESTINATION:
+          await destinationTestHandler(tcData);
+          break;
+        case tags.MODULES.SOURCE:
+          await sourceTestHandler(tcData);
+          break;
+        default:
+          console.log('Invalid module');
+          // Intentionally fail the test case
+          expect(true).toEqual(false);
+          break;
+      }
+    });
   });
 });

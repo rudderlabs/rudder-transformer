@@ -52,6 +52,10 @@ type Metadata = {
   transformationId: string;
 };
 
+type MessageIdMetadataMap = {
+  [key: string]: Metadata;
+};
+
 type UserTransformationInput = {
   VersionID: string;
   ID: string;
@@ -224,6 +228,7 @@ type ComparatorInput = {
 
 export {
   Metadata,
+  MessageIdMetadataMap,
   UserTransformationLibrary,
   ProcessorTransformationRequest,
   ProcessorTransformationResponse,

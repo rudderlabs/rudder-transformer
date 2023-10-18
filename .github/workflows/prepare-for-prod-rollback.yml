@@ -56,4 +56,4 @@ jobs:
           git commit -m "chore: rollback shared transformers to ${{ steps.target-version.outputs.tag_name }}"
           git push -u origin shared-transformer-rollback-${{ steps.target-version.outputs.tag_name }}
 
-          hub pull-request -m "chore: rollback shared transformers to ${{ steps.target-version.outputs.tag_name }}"
+          gh pr create --fill

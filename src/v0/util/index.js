@@ -372,7 +372,7 @@ const hashToSha256 = (value) => sha256(value);
 
 // Check what type of gender and convert to f or m
 const getFbGenderVal = (gender) => {
-  if (typeof gender !== 'string') {
+  if (typeof (gender) !== 'string') {
     return null;
   }
   if (
@@ -2050,11 +2050,11 @@ const getAuthErrCategoryFromStCode = (status) => {
   return '';
 };
 
-const validateEventType = (event) => {
-  if (!event || typeof event !== 'string') {
-    throw new InstrumentationError('Event is a required field and should be a string');
+const validateEventType = event => {
+  if(!event || typeof event !== "string") {
+    throw new InstrumentationError("Event is a required field and should be a string");
   }
-};
+}
 // ========================================================================
 // EXPORTS
 // ========================================================================

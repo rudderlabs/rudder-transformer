@@ -46,7 +46,7 @@
     "commit-msg": "commitlint --edit",
     "prepare": "node ./scripts/skipPrepareScript.js || husky install",
     "release": "npx standard-version",
-    "release:github": "DEBUG=conventional-github-releaser npx conventional-github-releaser -p angular --config github-release.config.js",
+    "release:github": "DEBUG=conventional-github-releaser npx conventional-github-releaser -p angular -v",
     "clean:node": "modclean",
     "check:lint": "eslint . -f json -o reports/eslint.json || exit 0"
   },

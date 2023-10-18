@@ -3,6 +3,7 @@ const { getMappingConfig } = require('../../util');
 const BASE_ENDPOINT = 'https://api.mixpanel.com';
 const BASE_ENDPOINT_EU = 'https://api-eu.mixpanel.com';
 const CREATE_DELETION_TASK_ENDPOINT = 'https://mixpanel.com/api/app/data-deletions/v3.0/';
+const FEATURE_GZIP_SUPPORT = 'gzip-support';
 
 const getCreateDeletionTaskEndpoint = (projectToken) =>
   `${CREATE_DELETION_TASK_ENDPOINT}?token=${projectToken}`;
@@ -61,6 +62,7 @@ module.exports = {
   DEL_MAX_BATCH_SIZE,
   ConfigCategory,
   BASE_ENDPOINT_EU,
+  FEATURE_GZIP_SUPPORT,
   GEO_SOURCE_ALLOWED_VALUES,
   MP_IDENTIFY_EXCLUSION_LIST,
   getCreateDeletionTaskEndpoint,

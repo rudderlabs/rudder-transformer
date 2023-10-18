@@ -211,7 +211,10 @@ const batchEvents = (successRespList) => {
   "contactListIds3": [{message : {}, metadata : {}, destination: {}}],
   "contactListIds4": [{message : {}, metadata : {}, destination: {}}]
   */
-    const eventGroups = lodash.groupBy(identifyCalls, (event) => event.message.body.JSON.contactListIds);
+    const eventGroups = lodash.groupBy(
+      identifyCalls,
+      (event) => event.message.body.JSON.contactListIds,
+    );
 
     Object.keys(eventGroups).forEach((combination) => {
       const eventChunks = lodash.chunk(eventGroups[combination], MAX_BATCH_SIZE);

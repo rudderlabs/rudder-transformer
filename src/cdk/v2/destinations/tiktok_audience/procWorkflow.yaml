@@ -1,3 +1,4 @@
+
 bindings:
   - name: EventType
     path: ../../../../constants
@@ -28,23 +29,20 @@ steps:
       const isHashRequired = .destination.Config.isHashRequired;
       const advertiserIds = .metadata.secret.advertiserIds;
       const hashTraits = function(traits) {
-        const batch_data = [];
-        traits.forEach(function(trait){
-          const arr = [];
-          destinationFields.forEach(function(destinationField){
-            let hashedData = trait[destinationField] ? {
-              "id": isHashRequired ? $.SHA256(trait) : trait,
+        const batch_data = traits.map(function(trait){
+          const arr = destinationFields.map(function(destinationField){
+            const hashedData = trait[destinationField] ? {
+              "id": isHashRequired ? 
+                destinationField in $.SHA256_TRAITS ? 
+                  $.SHA256(trait[destinationField]) : $.MD5(trait[destinationField]) 
+                : trait[destinationField],
               "audience_ids":[audienceId]
-            } :{};
-            arr.push(hashedData); 
+            } : {};
+            hashedData; 
           })
-          batch_data.push(arr);
+          arr;
         })
         batch_data
-      };
-      const actionMap = {
-          add: "add",
-          remove: "delete"
       };
       const listData = .message.properties.listData
       Object.keys(listData).map(function(action){
@@ -52,16 +50,15 @@ steps:
           "batch_data": hashTraits(listData[action]),
           "id_schema": destinationFields,
           "advertiser_ids": advertiserIds,
-          "action": actionMap[action],
+          "action": $.ACTION_MAP[action],
         }
       })[]
 
   - name: buildResponseForProcessTransformation
     description: build response
     template: |
-      const response = []
       const accessToken = .metadata.secret.accessToken
-      $.outputs.prepareIdentifiersList.forEach(function(prepareIdentifiersList){
+      const response = $.outputs.prepareIdentifiersList.map(function(prepareIdentifiersList){
         const temp = $.defaultRequestConfig();
         temp.body.JSON = prepareIdentifiersList;
         temp.userId = .message.anonymousId;
@@ -70,6 +67,6 @@ steps:
           "Access-Token": accessToken,
           "Content-Type": "application/json"
         }
-        response.push(temp);
+        temp;
       })
       response

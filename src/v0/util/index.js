@@ -372,6 +372,9 @@ const hashToSha256 = (value) => sha256(value);
 
 // Check what type of gender and convert to f or m
 const getFbGenderVal = (gender) => {
+  if (typeof (gender) !== 'string') {
+    return null;
+  }
   if (
     gender.toUpperCase() === 'FEMALE' ||
     gender.toUpperCase() === 'F' ||
@@ -819,6 +822,13 @@ function formatValues(formattedVal, formattingType, typeFormat, integrationsObj)
       if (!(typeof formattedVal === 'boolean')) {
         logger.debug('Boolean value missing, so dropping it');
         curFormattedVal = false;
+      }
+    },
+    IsArray: () => {
+      curFormattedVal = formattedVal;
+      if (!Array.isArray(formattedVal)) {
+        logger.debug('Array value missing, so dropping it');
+        curFormattedVal = undefined;
       }
     },
     trim: () => {

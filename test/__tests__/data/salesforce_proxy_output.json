@@ -2,15 +2,10 @@
   {
     "output": {
       "status": 500,
-      "message": "Salesforce Request Failed - due [ECONNABORTED] error\", (Retryable) during Salesforce Response Handling",
+      "message": "Salesforce Request Failed - due to \"\"[ECONNABORTED] :: Connection aborted\"\", (Retryable) during Salesforce Response Handling",
       "destinationResponse": {
-        "response": [
-          {
-            "message": "[ECONNABORTED]",
-            "errorCode": "ECONNABORTED"
-          }
-        ],
-        "status": 400,
+        "response": "[ECONNABORTED] :: Connection aborted",
+        "status": 500,
         "rudderJobMetadata": {
           "destInfo": {
             "authKey": "2HezPl1w11opbFSxnLDEgZ7kWTf"
@@ -32,15 +27,10 @@
   {
     "output": {
       "status": 500,
-      "message": "Salesforce Request Failed - due [EAI_AGAIN] error\", (Retryable) during Salesforce Response Handling",
+      "message": "Salesforce Request Failed - due to \"\"[EAI_AGAIN] :: Temporary failure in name resolution\"\", (Retryable) during Salesforce Response Handling",
       "destinationResponse": {
-        "response": [
-          {
-            "message": "[EAI_AGAIN]",
-            "errorCode": "EAI_AGAIN"
-          }
-        ],
-        "status": 400,
+        "response": "[EAI_AGAIN] :: Temporary failure in name resolution",
+        "status": 500,
         "rudderJobMetadata": {
           "destInfo": {
             "authKey": "2HezPl1w11opbFSxnLDEgZ7kWTf"

@@ -71,14 +71,6 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey) => {
     if (response && Array.isArray(response)) {
       errorMessage = response[0].message;
     }
-    // handling ECONNABORTED ( Connection Aborted ) and EAI_AGAIN (DNS Temporary Not Found) errors
-    if (['[EAI_AGAIN]', '[ECONNABORTED]'].includes(errorMessage)) {
-      throw new RetryableError(
-        `${DESTINATION} Request Failed - due ${errorMessage} error", (Retryable) ${sourceMessage}`,
-        500,
-        destResponse,
-      );
-    }
     // aborting for all other error codes
     throw new AbortedError(
       `${DESTINATION} Request Failed: "${status}" due to "${

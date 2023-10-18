@@ -84,7 +84,7 @@ const responseBuilderSimple = (message, category, destination) => {
   }
 
   if (!payload.timestamp && isDefinedAndNotNull(payload.properties?.timestamp)) {
-    payload.timestamp = payload.properties.timestamp
+    payload.timestamp = payload.properties.timestamp;
   }
 
   payload.properties = {

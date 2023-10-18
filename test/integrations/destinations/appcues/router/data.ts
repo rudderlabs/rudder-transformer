@@ -1,0 +1,221 @@
+export const data = [
+  {
+    name: 'appcues',
+    description: 'Test 0',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                anonymousId: '33787665-4168-4acc-8df7-17ba79325332',
+                channel: 'web',
+                context: {
+                  app: {
+                    build: '1.0.0',
+                    name: 'RudderLabs JavaScript SDK',
+                    namespace: 'com.rudderlabs.javascript',
+                    version: '1.1.9',
+                  },
+                  campaign: {},
+                  library: {
+                    name: 'RudderLabs JavaScript SDK',
+                    version: '1.1.9',
+                  },
+                  locale: 'en-GB',
+                  os: {
+                    name: '',
+                    version: '',
+                  },
+                  page: {
+                    path: '/rudder-sdk-js/tests/html/script-test.html',
+                    referrer: '',
+                    search: '',
+                    title: '',
+                    url: 'http://localhost:4321/rudder-sdk-js/tests/html/script-test.html',
+                  },
+                  screen: {
+                    density: 2,
+                  },
+                  traits: {},
+                  userAgent:
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36',
+                },
+                integrations: {
+                  All: true,
+                },
+                messageId: '6a5f38c0-4e75-4268-a066-2b73fbcad01f',
+                originalTimestamp: '2021-01-04T08:25:04.780Z',
+                receivedAt: '2021-01-04T13:55:04.799+05:30',
+                request_ip: '[::1]',
+                rudderId: '79881a62-980a-4d76-89ca-7099440f8c13',
+                sentAt: '2021-01-04T08:25:04.781Z',
+                timestamp: '2021-01-04T13:55:04.798+05:30',
+                type: 'identify',
+                userId: 'onlyUserId',
+              },
+              metadata: {
+                jobId: 1,
+              },
+              destination: {
+                Config: {
+                  accountId: '86086',
+                  useNativeSDK: false,
+                },
+              },
+            },
+            {
+              message: {
+                anonymousId: '33787665-4168-4acc-8df7-17ba79325332',
+                channel: 'web',
+                context: {
+                  app: {
+                    build: '1.0.0',
+                    name: 'RudderLabs JavaScript SDK',
+                    namespace: 'com.rudderlabs.javascript',
+                    version: '1.1.9',
+                  },
+                  campaign: {},
+                  library: {
+                    name: 'RudderLabs JavaScript SDK',
+                    version: '1.1.9',
+                  },
+                  locale: 'en-GB',
+                  os: {
+                    name: '',
+                    version: '',
+                  },
+                  page: {
+                    path: '/rudder-sdk-js/tests/html/script-test.html',
+                    referrer: '',
+                    search: '',
+                    title: '',
+                    url: 'http://localhost:4321/rudder-sdk-js/tests/html/script-test.html',
+                  },
+                  screen: {
+                    density: 2,
+                  },
+                  traits: {
+                    'first name': 'John',
+                    'last name': 'Abraham',
+                  },
+                  userAgent:
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36',
+                },
+                integrations: {
+                  All: true,
+                },
+                messageId: '57494c6a-3c62-4b30-83aa-6e821d37ac75',
+                originalTimestamp: '2021-01-04T08:25:04.786Z',
+                receivedAt: '2021-01-04T13:55:04.799+05:30',
+                request_ip: '[::1]',
+                rudderId: 'ed2ed08a-3cd9-4b2c-9b04-7e3d3501fab7',
+                sentAt: '2021-01-04T08:25:04.787Z',
+                timestamp: '2021-01-04T13:55:04.798+05:30',
+                type: 'identify',
+                userId: 'userIdWithProperties',
+              },
+              metadata: {
+                jobId: 2,
+              },
+              destination: {
+                Config: {
+                  accountId: '86086',
+                  useNativeSDK: false,
+                },
+              },
+            },
+          ],
+          destType: 'appcues',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                body: {
+                  XML: {},
+                  JSON_ARRAY: {},
+                  FORM: {},
+                  JSON: {
+                    request_id: '6a5f38c0-4e75-4268-a066-2b73fbcad01f',
+                    profile_update: {},
+                  },
+                },
+                type: 'REST',
+                files: {},
+                method: 'POST',
+                params: {},
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                version: '1',
+                endpoint: 'https://api.appcues.com/v1/accounts/86086/users/onlyUserId/activity',
+              },
+              metadata: [
+                {
+                  jobId: 1,
+                },
+              ],
+              batched: false,
+              statusCode: 200,
+              destination: {
+                Config: {
+                  accountId: '86086',
+                  useNativeSDK: false,
+                },
+              },
+            },
+            {
+              batchedRequest: {
+                body: {
+                  XML: {},
+                  JSON_ARRAY: {},
+                  FORM: {},
+                  JSON: {
+                    request_id: '57494c6a-3c62-4b30-83aa-6e821d37ac75',
+                    profile_update: {
+                      'last name': 'Abraham',
+                      'first name': 'John',
+                    },
+                  },
+                },
+                type: 'REST',
+                files: {},
+                method: 'POST',
+                params: {},
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                version: '1',
+                endpoint:
+                  'https://api.appcues.com/v1/accounts/86086/users/userIdWithProperties/activity',
+              },
+              metadata: [
+                {
+                  jobId: 2,
+                },
+              ],
+              batched: false,
+              statusCode: 200,
+              destination: {
+                Config: {
+                  accountId: '86086',
+                  useNativeSDK: false,
+                },
+              },
+            },
+          ],
+        },
+      },
+    },
+  }
+];

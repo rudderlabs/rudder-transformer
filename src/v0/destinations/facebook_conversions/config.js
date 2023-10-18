@@ -1,69 +1,79 @@
 const { getMappingConfig } = require('../../util');
 
+const ENDPOINT = (datasetId, accessToken) =>
+  `https://graph.facebook.com/v17.0/${datasetId}/events?access_token=${accessToken}`;
+
 const CONFIG_CATEGORIES = {
   USERDATA: {
     standard: false,
     type: 'identify',
-    name: 'FBPIXELUserDataConfig',
+    name: 'FBCUserDataConfig',
   },
-  COMMON: { name: 'FBPIXELCommonConfig' },
+  COMMON: { name: 'FBCCommonConfig' },
+  APPDATA: { name: 'FBCAppEventsConfig' },
   SIMPLE_TRACK: {
     standard: false,
     type: 'simple track',
-    name: 'FBPIXELPSimpleCustomConfig',
+    name: 'FBCSimpleCustomConfig',
   },
   PRODUCT_LIST_VIEWED: {
     standard: true,
     type: 'product list viewed',
     eventName: 'ViewContent',
-    name: 'FBPIXELPSimpleCustomConfig',
+    name: 'FBCProductListViewedCustomData',
   },
   PRODUCT_VIEWED: {
     standard: true,
     type: 'product viewed',
     eventName: 'ViewContent',
-    name: 'FBPIXELPSimpleCustomConfig',
+    name: 'FBCProductViewedCustomData',
   },
   PRODUCT_ADDED: {
     standard: true,
     type: 'product added',
     eventName: 'AddToCart',
-    name: 'FBPIXELPSimpleCustomConfig',
+    name: 'FBCProductAddedCustomData',
   },
   ORDER_COMPLETED: {
     standard: true,
     type: 'order completed',
     eventName: 'Purchase',
-    name: 'FBPIXELPSimpleCustomConfig',
+    name: 'FBCOrderCompletedCustomData',
   },
   PRODUCTS_SEARCHED: {
     standard: true,
     type: 'products searched',
     eventName: 'Search',
-    name: 'FBPIXELPSimpleCustomConfig',
+    name: 'FBCProductSearchedCustomData',
   },
   CHECKOUT_STARTED: {
     standard: true,
     type: 'checkout started',
     eventName: 'InitiateCheckout',
-    name: 'FBPIXELPSimpleCustomConfig',
+    name: 'FBCCheckoutStartedCustomData',
+  },
+  PAYMENT_INFO_ENTERED: {
+    standard: true,
+    type: 'payment info entered',
+    eventName: 'AddPaymentInfo',
+    name: 'FBCPaymentInfoEnteredCustomData',
+  },
+  PRODUCT_ADDED_TO_WISHLIST: {
+    standard: true,
+    type: 'product added to wishlist',
+    eventName: 'AddToWishlist',
+    name: 'FBCProductAddedToWishlistCustomData',
   },
   OTHER_STANDARD: {
     standard: true,
     type: 'otherStandard',
-    name: 'FBPIXELPSimpleCustomConfig',
+    name: 'FBCSimpleCustomConfig',
   },
   PAGE_VIEW: {
     standard: true,
     type: 'page_view',
     eventName: 'PageView',
-    name: 'FBPIXELPSimpleCustomConfig',
-  },
-  PAGE: {
-    standard: false,
-    type: 'page',
-    eventName: 'PageView',
-    name: 'FBPIXELPSimpleCustomConfig',
+    name: 'FBCSimpleCustomConfig',
   },
 };
 
@@ -80,8 +90,6 @@ const ACTION_SOURCES_VALUES = [
 ];
 
 const OTHER_STANDARD_EVENTS = [
-  'AddToWishlist',
-  'AddPaymentInfo',
   'Lead',
   'CompleteRegistration',
   'Contact',
@@ -94,22 +102,25 @@ const OTHER_STANDARD_EVENTS = [
   'Subscribe',
 ];
 
-const FB_PIXEL_DEFAULT_EXCLUSION = ['opt_out', 'event_id', 'action_source'];
-const STANDARD_ECOMM_EVENTS_TYPE = [
-  CONFIG_CATEGORIES.PRODUCT_LIST_VIEWED.type,
-  CONFIG_CATEGORIES.PRODUCT_VIEWED.type,
-  CONFIG_CATEGORIES.PRODUCT_ADDED.type,
-  CONFIG_CATEGORIES.ORDER_COMPLETED.type,
-  CONFIG_CATEGORIES.PRODUCTS_SEARCHED.type,
-  CONFIG_CATEGORIES.CHECKOUT_STARTED.type,
+const FB_CONVERSIONS_DEFAULT_EXCLUSION = ['opt_out', 'event_id', 'action_source'];
+const STANDARD_ECOMM_EVENTS_CATEGORIES = [
+  CONFIG_CATEGORIES.PRODUCT_LIST_VIEWED,
+  CONFIG_CATEGORIES.PRODUCT_VIEWED,
+  CONFIG_CATEGORIES.PRODUCT_ADDED,
+  CONFIG_CATEGORIES.ORDER_COMPLETED,
+  CONFIG_CATEGORIES.PRODUCTS_SEARCHED,
+  CONFIG_CATEGORIES.CHECKOUT_STARTED,
+  CONFIG_CATEGORIES.PAYMENT_INFO_ENTERED,
+  CONFIG_CATEGORIES.PRODUCT_ADDED_TO_WISHLIST,
 ];
 
 module.exports = {
-  CONFIG_CATEGORIES,
+  ENDPOINT,
   MAPPING_CONFIG,
+  CONFIG_CATEGORIES,
   ACTION_SOURCES_VALUES,
-  FB_PIXEL_DEFAULT_EXCLUSION,
-  STANDARD_ECOMM_EVENTS_TYPE,
+  FB_CONVERSIONS_DEFAULT_EXCLUSION,
+  STANDARD_ECOMM_EVENTS_CATEGORIES,
   OTHER_STANDARD_EVENTS,
-  DESTINATION: 'FACEBOOK_PIXEL',
+  DESTINATION: 'FACEBOOK_CONVERSIONS',
 };

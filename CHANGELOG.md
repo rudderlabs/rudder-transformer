@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.46.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.45.3...v1.46.0) (2023-10-18)
+
+
+### Features
+
+* enhancement: snapchat_conversion add new fields ([#2721](https://github.com/rudderlabs/rudder-transformer/issues/2721)) ([45da19d](https://github.com/rudderlabs/rudder-transformer/commit/45da19db1e583d80f9fc5b508316f7a8bdd415b6))
+* facebook pixel audit refactor ([#2713](https://github.com/rudderlabs/rudder-transformer/issues/2713)) ([43e1a61](https://github.com/rudderlabs/rudder-transformer/commit/43e1a61e19ad8b9c0fb999fe900b91347acb7ef8))
+* mixpanel gzip support for import endpoint ([#2667](https://github.com/rudderlabs/rudder-transformer/issues/2667)) ([6b6bb66](https://github.com/rudderlabs/rudder-transformer/commit/6b6bb6633ed26d466bd80d04ae2c008d1435faca))
+* onboard facebook_conversions destination ([#2720](https://github.com/rudderlabs/rudder-transformer/issues/2720)) ([5269af4](https://github.com/rudderlabs/rudder-transformer/commit/5269af47cdbceefec16be3b44910ca27aea35c35))
+* onboard source ortto ([#2693](https://github.com/rudderlabs/rudder-transformer/issues/2693)) ([4682268](https://github.com/rudderlabs/rudder-transformer/commit/4682268d8396a40685a343a5c4f3978e7316d2d3))
+
+
+### Bug Fixes
+
+* fix getFbGenderVal function ([#2724](https://github.com/rudderlabs/rudder-transformer/issues/2724)) ([3aabe81](https://github.com/rudderlabs/rudder-transformer/commit/3aabe81252a09010d2b2e54e44c32e2c6302c057))
+
 ### [1.45.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.45.2...v1.45.3) (2023-10-17)
 
 

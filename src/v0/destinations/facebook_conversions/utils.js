@@ -177,7 +177,7 @@ const fetchAppData = (message) => {
   const appData = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.APPDATA.name],
-    'fb_pixel',
+    DESTINATION.toLowerCase(),
   );
 
   if (appData) {
@@ -194,6 +194,10 @@ const fetchAppData = (message) => {
     }
     appData.extinfo[0] = sourceSDK;
   }
+
+  appData.extinfo = ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''].map(
+    (val, ind) => (appData.extinfo[ind] ? appData.extinfo[ind] : val),
+  );
 
   return appData;
 };

@@ -22,6 +22,7 @@ const {
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
   generateErrorObject,
+  isHttpStatusSuccess,
 } = require('../../util');
 const { getAccessToken, salesforceResponseHandler } = require('./utils');
 const { handleHttpRequest } = require('../../../adapters/network');
@@ -86,7 +87,7 @@ function responseBuilderSimple(
   const response = defaultRequestConfig();
   const header = {
     'Content-Type': JSON_MIME_TYPE,
-    Authorization: authorizationData.token,
+    Authorization: `Bearer ${authorizationData.token}`,
   };
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = header;
@@ -109,14 +110,14 @@ async function getSaleforceIdForRecord(
     'get',
     objSearchUrl,
     {
-      headers: { Authorization: authorizationData.token },
+      headers: { Authorization: `Bearer ${authorizationData.token}` },
     },
     {
       destType: 'salesforce',
       feature: 'transformation',
     },
   );
-  if (processedsfSearchResponse.status !== 200) {
+  if (!isHttpStatusSuccess(processedsfSearchResponse.status)) {
     salesforceResponseHandler(
       processedsfSearchResponse,
       `:- SALESFORCE SEARCH BY ID`,
@@ -214,7 +215,7 @@ async function getSalesforceIdFromPayload(message, authorizationData, destinatio
       'get',
       leadQueryUrl,
       {
-        headers: { Authorization: authorizationData.token },
+        headers: { Authorization: `Bearer ${authorizationData.token}` },
       },
       {
         destType: 'salesforce',
@@ -222,7 +223,7 @@ async function getSalesforceIdFromPayload(message, authorizationData, destinatio
       },
     );
 
-    if (processedLeadQueryResponse.status !== 200) {
+    if (!isHttpStatusSuccess(processedLeadQueryResponse.status)) {
       salesforceResponseHandler(processedLeadQueryResponse, `:- during Lead Query`, destination.ID);
     }
 
@@ -313,7 +314,7 @@ async function processSingleMessage(message, authorizationData, destination) {
 
 async function process(event) {
   // Get the authorization header if not available
-  const authorizationData = await getAccessToken(event.destination);
+  const authorizationData = await getAccessToken();
   const response = await processSingleMessage(event.message, authorizationData, event.destination);
   return response;
 }
@@ -326,7 +327,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
 
   let authorizationData;
   try {
-    authorizationData = await getAccessToken(inputs[0].destination);
+    authorizationData = getAccessToken(inputs[0].metadata);
   } catch (error) {
     const errObj = generateErrorObject(error);
     const respEvents = getErrorRespEvents(

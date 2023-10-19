@@ -2060,7 +2060,7 @@ const validateEventType = (event) => {
 const IsGzipSupported = (reqMetadata = {}) => {
   if (reqMetadata && typeof reqMetadata === 'object' && !Array.isArray(reqMetadata)) {
     const { features } = reqMetadata;
-    return !!(features && features[FEATURE_GZIP_SUPPORT]);
+    return !!features?.[FEATURE_GZIP_SUPPORT];
   }
   return false;
 };

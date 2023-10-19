@@ -47,7 +47,9 @@ export type MockHttpCallsData = {
 };
 
 export const arrayOrSingleElement = (schema: ZodTypeAny) => z.union([z.array(schema), schema]);
-export const formElementSchema = arrayOrSingleElement(z.union([z.string(), z.number(), z.boolean()]));
+export const formElementSchema = arrayOrSingleElement(
+  z.union([z.string(), z.number(), z.boolean()]),
+);
 export const eventResponseSchema = z.union([
   z.object({
     error: z.string(),

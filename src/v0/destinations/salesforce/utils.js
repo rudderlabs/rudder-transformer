@@ -1,10 +1,17 @@
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../util');
 const { RetryableError, ThrottledError, AbortedError, NetworkError } = require('../../util/errorTypes');
+const Cache = require('../../util/cache');
 const {
+  ACCESS_TOKEN_CACHE_TTL,
+  SF_TOKEN_REQUEST_URL_SANDBOX,
+  SF_TOKEN_REQUEST_URL,
   DESTINATION,
 } = require('./config');
 const tags = require('../../util/tags');
+const { handleHttpRequest } = require('../../../adapters/network');
+
+const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
 
 
 /**
@@ -89,9 +96,60 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey) => {
  * @param {*} destination
  * @returns
  */
-const getAccessToken = (metadata) => ({
+const getAccessTokenOauth = (metadata) => ({
   token : metadata.secret.access_token,
   instanceUrl : metadata.secret.instance_url
 });
 
-module.exports = { getAccessToken, salesforceResponseHandler };
+const getAccessToken = async (destination) => {
+  const accessTokenKey = destination.ID;
+
+  return ACCESS_TOKEN_CACHE.get(accessTokenKey, async () => {
+    let SF_TOKEN_URL;
+    if (destination.Config.sandbox) {
+      SF_TOKEN_URL = SF_TOKEN_REQUEST_URL_SANDBOX;
+    } else {
+      SF_TOKEN_URL = SF_TOKEN_REQUEST_URL;
+    }
+    const authUrl = `${SF_TOKEN_URL}?username=${
+      destination.Config.userName
+    }&password=${encodeURIComponent(destination.Config.password)}${encodeURIComponent(
+      destination.Config.initialAccessToken,
+    )}&client_id=${destination.Config.consumerKey}&client_secret=${
+      destination.Config.consumerSecret
+    }&grant_type=password`;
+    const { httpResponse, processedResponse } = await handleHttpRequest(
+      'post',
+      authUrl,
+      {},
+      {},
+      {
+        destType: 'salesforce',
+        feature: 'transformation',
+      },
+    );
+    // If the request fails, throwing error.
+    if (!httpResponse.success) {
+      salesforceResponseHandler(
+        processedResponse,
+        `:- authentication failed during fetching access token.`,
+        accessTokenKey,
+      );
+    }
+    const token = httpResponse.response.data;
+    // If the httpResponse.success is true it will not come, It's an extra security for developer's.
+    if (!token.access_token || !token.instance_url) {
+      salesforceResponseHandler(
+        processedResponse,
+        `:- authentication failed could not retrieve authorization token.`,
+        accessTokenKey,
+      );
+    }
+    return {
+      token: `Bearer ${token.access_token}`,
+      instanceUrl: token.instance_url,
+    };
+  });
+};
+
+module.exports = { getAccessTokenOauth, salesforceResponseHandler, getAccessToken };

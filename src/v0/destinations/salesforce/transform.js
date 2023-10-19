@@ -23,8 +23,9 @@ const {
   handleRtTfSingleEventError,
   generateErrorObject,
   isHttpStatusSuccess,
+  isDefinedAndNotNull,
 } = require('../../util');
-const { getAccessToken, salesforceResponseHandler } = require('./utils');
+const { salesforceResponseHandler, getAccessTokenOauth, getAccessToken } = require('./utils');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { InstrumentationError, NetworkInstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
@@ -39,6 +40,7 @@ function responseBuilderSimple(
   authorizationData,
   mapProperty,
   mappedToDestination,
+  authorizationFlow
 ) {
   const { salesforceType, salesforceId } = salesforceMap;
 
@@ -85,12 +87,18 @@ function responseBuilderSimple(
   }
 
   const response = defaultRequestConfig();
-  const header = {
+  const finalHeader = authorizationFlow === 'oauth' ? 
+  { 
     'Content-Type': JSON_MIME_TYPE,
-    Authorization: `Bearer ${authorizationData.token}`,
+    Authorization: `Bearer ${authorizationData.token}`
+   } : 
+   {
+    'Content-Type': JSON_MIME_TYPE,
+    Authorization: authorizationData.token
   };
+
   response.method = defaultPostRequestConfig.requestMethod;
-  response.headers = header;
+  response.headers = finalHeader;
   response.body.JSON = removeUndefinedValues(rawPayload);
   response.endpoint = targetEndpoint;
 
@@ -147,7 +155,7 @@ async function getSaleforceIdForRecord(
 // We'll use the Salesforce Object names by removing "Salesforce-" string from the type field
 //
 // Default Object type will be "Lead" for backward compatibility
-async function getSalesforceIdFromPayload(message, authorizationData, destination) {
+async function getSalesforceIdFromPayload(message, authorizationData, destination, authorizationFlow) {
   // define default map
   const salesforceMaps = [];
 
@@ -210,12 +218,14 @@ async function getSalesforceIdFromPayload(message, authorizationData, destinatio
       throw new InstrumentationError('Invalid Email address for Lead Objet');
     }
     const leadQueryUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${email}&sobject=Lead&Lead.fields=id,IsConverted,ConvertedContactId,IsDeleted`;
+    const finalHeader = authorizationFlow === 'oauth' ? { Authorization: `Bearer ${authorizationData.token}` } : {Authorization: authorizationData.token};
+
     // request configuration will be conditional
     const { processedResponse: processedLeadQueryResponse } = await handleHttpRequest(
       'get',
       leadQueryUrl,
       {
-        headers: { Authorization: `Bearer ${authorizationData.token}` },
+        headers: finalHeader,
       },
       {
         destType: 'salesforce',
@@ -260,7 +270,7 @@ async function getSalesforceIdFromPayload(message, authorizationData, destinatio
 }
 
 // Function for handling identify events
-async function processIdentify(message, authorizationData, destination) {
+async function processIdentify(message, authorizationData, destination, authorizationFlow) {
   const mapProperty =
     destination.Config.mapProperty === undefined ? true : destination.Config.mapProperty;
   // check the traits before hand
@@ -281,7 +291,7 @@ async function processIdentify(message, authorizationData, destination) {
   const responseData = [];
 
   // get salesforce object map
-  const salesforceMaps = await getSalesforceIdFromPayload(message, authorizationData, destination);
+  const salesforceMaps = await getSalesforceIdFromPayload(message, authorizationData, destination, authorizationFlow);
 
   // iterate over the object types found
   salesforceMaps.forEach((salesforceMap) => {
@@ -293,6 +303,7 @@ async function processIdentify(message, authorizationData, destination) {
         authorizationData,
         mapProperty,
         mappedToDestination,
+        authorizationFlow
       ),
     );
   });
@@ -302,10 +313,10 @@ async function processIdentify(message, authorizationData, destination) {
 
 // Generic process function which invokes specific handler functions depending on message type
 // and event type where applicable
-async function processSingleMessage(message, authorizationData, destination) {
+async function processSingleMessage(message, authorizationData, destination, authorizationFlow) {
   let response;
   if (message.type === EventType.IDENTIFY) {
-    response = await processIdentify(message, authorizationData, destination);
+    response = await processIdentify(message, authorizationData, destination, authorizationFlow);
   } else {
     throw new InstrumentationError(`message type ${message.type} is not supported`);
   }
@@ -313,8 +324,21 @@ async function processSingleMessage(message, authorizationData, destination) {
 }
 
 async function process(event) {
+
+  let authorizationFlow;
+  if(isDefinedAndNotNull(event.metadata?.secret)) {
+    authorizationFlow = 'oauth';
+  } else {
+    authorizationFlow = 'legacy';
+  }
+  let authorizationData;
+    if (authorizationFlow === 'oauth') {
+      authorizationData = getAccessTokenOauth(event.metadata);
+    } else {
+      authorizationData = await getAccessToken();
+    }
   // Get the authorization header if not available
-  const authorizationData = await getAccessToken();
+  
   const response = await processSingleMessage(event.message, authorizationData, event.destination);
   return response;
 }
@@ -324,10 +348,19 @@ const processRouterDest = async (inputs, reqMetadata) => {
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
-
+  let authorizationFlow;
+  if(isDefinedAndNotNull(inputs[0].metadata?.secret)) {
+    authorizationFlow = 'oauth';
+  } else {
+    authorizationFlow = 'legacy';
+  }
   let authorizationData;
   try {
-    authorizationData = getAccessToken(inputs[0].metadata);
+    if (authorizationFlow === 'oauth') {
+      authorizationData = getAccessTokenOauth(inputs[0].metadata);
+    } else {
+      authorizationData = await getAccessToken(inputs[0].destination);
+    }
   } catch (error) {
     const errObj = generateErrorObject(error);
     const respEvents = getErrorRespEvents(
@@ -349,7 +382,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
 
         // unprocessed payload
         return getSuccessRespEvents(
-          await processSingleMessage(input.message, authorizationData, input.destination),
+          await processSingleMessage(input.message, authorizationData, input.destination, authorizationFlow),
           [input.metadata],
           input.destination,
         );

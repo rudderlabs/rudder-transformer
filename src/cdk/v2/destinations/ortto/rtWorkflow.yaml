@@ -1,0 +1,69 @@
+bindings:
+  - path: ../../../../v0/destinations/pinterest_tag/config
+  - name: batchMultiplexedEvents
+    path: ../../../../v0/util/index
+  - path: ./utils
+  - path: ./config
+
+steps:
+  - name: validateInput
+    template: |
+      $.assert(Array.isArray(^) && ^.length > 0, "Invalid event array")
+
+  - name: transform
+    externalWorkflow:
+      path: ./procWorkflow.yaml
+      bindings:
+        - name: batchMode
+          value: true
+    loopOverInput: true
+  - name: successfulEvents
+    template: |
+      $.outputs.transform#idx{ "output" in .}.({
+        "message": .output[],
+        "destination": ^ [idx].destination,
+        "metadata": ^ [idx].metadata
+      })[]
+  - name: failedEvents
+    template: |
+      $.outputs.transform#idx.error.({
+        "metadata": ^[idx].metadata[],
+        "destination": ^[idx].destination,
+        "batched": false,
+        "statusCode": .status,
+        "error": .message,
+        "statTags": .originalError ? .originalError.statTags ? .originalError.statTags : undefined : undefined
+      })[]
+
+  - name: batchSuccessfulEvents
+    description: Batches the successfulEvents using V3 API
+    template: |
+      let batches = $.batchEvents($.outputs.successfulEvents);
+      batches@batch.({
+        "batchedRequest": {
+          "body": {
+            "JSON": ~r batch.message,
+            "JSON_ARRAY": {},
+            "XML": {},
+            "FORM": {}
+          },
+          "version": "1",
+          "type": "REST",
+          "method": "POST",
+          "endpoint": ~r batch.message.people ? $.IDENTIFY_ENDPOINT : $.TRACK_ENDPOINT, 
+          "headers": {
+            "Content-Type": "application/json",
+          },
+          "params": $.outputs.checkSendTestEventConfig,
+          "files": {}
+        },
+        "metadata": ~r batch.metadata,
+        "batched": true,
+        "statusCode": 200,
+        "destination": ~r batch.destination
+      })[];
+
+  - name: finalPayload
+    condition: $.outputs.apiVersion === {{$.API_VERSION.v3}}
+    template: |
+      [...$.outputs.batchSuccessfulEvents, ...$.outputs.failedEvents]

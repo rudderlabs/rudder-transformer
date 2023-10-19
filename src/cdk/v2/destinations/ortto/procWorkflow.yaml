@@ -18,21 +18,18 @@ steps:
       $.assert(.destination.Config.instanceRegion, "Instance Region is not present");
       $.assert(messageType in {{$.EventType.([.IDENTIFY, .TRACK])}}, 
         "message type " + messageType + " is not supported")
+      console.log($.getGenericPaths("email"));
+      $.assert(.message.().({{{{$.getGenericPaths("email")}}}}) || .message.().({{{{$.getGenericPaths("userId")}}}}), "email  or userId is a required field. Aborting message.");
 
   - name: messageType
     template: |
       .message.type.toLowerCase()
 
-  # - name: validateInputForIdentify
-  #   description: Additional validation for Identify events
-  #   condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
-  #   template: |
-
-  # - name: validateInputForTrack
-  #   description: Additional validation for Track events
-  #   condition: $.outputs.messageType === {{$.EventType.TRACK}}
-  #   template: |
-  #     $.assert(.message.event, "event is not present. Aborting.")
+  - name: validateInputForTrack
+    description: Additional validation for Track events
+    condition: $.outputs.messageType === {{$.EventType.TRACK}}
+    template: |
+      $.assert(.message.event, "event is not present. Aborting.")
 
   - name: commonFields
     description: |
@@ -56,6 +53,9 @@ steps:
           },
         "location": {"source_ip": .message.context.ip}
       });
+      .destination.Config.orttoPersonAttributes@attribute.(
+              commonFields.fields[$.fieldTypeMap[attribute.type]+":cm:"+attribute.orttoAttribute.trim().toLowerCase().replace(new RegExp('\\s+', 'g'),'-')] = $.originalInput.message.context.traits[attribute.rudderTraits]
+            )[]
       $.removeUndefinedAndNullValues(commonFields)
 
   - name: validateCommonFields
@@ -70,13 +70,13 @@ steps:
       - name: propertiesFields
         template: |
           const peopleObj = {
-            "fields": $.outputs.commonFields,
+            "fields": $.outputs.commonFields.fields,
             "tags": .message.context.traits.tags || .message.traits.tags || .message.prooperties.tags,
             "unset_tags": .message.context.traits.unset_tags || .message.traits.unset_tags || .message.prooperties.unset_tags
           }
           const identifyPayoad = {                                  
             "people":[peopleObj],
-            "merge_by": ["external_id", "email"];
+            "merge_by": ["external_id", "email"]
           }
           $.removeUndefinedAndNullValues(identifyPayoad)
 
@@ -93,11 +93,21 @@ steps:
           $.assert(customEvent, "Event names is not mapped");
           customEvent = "act:cm:"+customEvent.trim().toLowerCase().replace(new RegExp('\\s+', 'g'),'-');
 
+      - name: getAttributes
+        template: |
+          let attributes = {};
+          .destination.Config.orttoEventsMapping@event.eventProperties@prop.(
+             attributes[prop.type+":cm:"+prop.orttoProperty.trim().toLowerCase().replace(new RegExp('\\s+', 'g'),'-')] = $.originalInput.message.properties[prop.rudderProperty]
+           )
+          $.removeUndefinedAndNullValues(attributes)
+
       - name: preparePayload
         template: |
           const activityObj = {
-            fields: $.outputs.commonFields,
-            activity_id: $.outputs.prepareTrackPayload.getTrimmedEvent
+            "fields": $.outputs.commonFields.fields,
+            "activity_id": $.outputs.prepareTrackPayload.getTrimmedEvent,
+            "attributes": $.outputs.prepareTrackPayload.getAttributes,
+            "location": {"source_ip": .message.context.ip}
           }
           const trackPayoad = {   
             "activities":[activityObj],
@@ -122,7 +132,7 @@ steps:
     template: |
       const response = $.defaultRequestConfig();
       response.body.JSON = $.outputs.payload;
-      response.endpoint = $.ENDPOINT;
+      response.endpoint =  response.body.JSON.people? $.IDENTIFY_ENDPOINT: $.TRACK_ENDPOINT;
       response.headers = {
           "DY-API-Key": .destination.Config.privateApiKey,
           "Content-Type": "application/json"

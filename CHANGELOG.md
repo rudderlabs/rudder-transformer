@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.46.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.46.1...v1.46.2) (2023-10-19)
+
+
+### Bug Fixes
+
+* do not send 298 event for aborted ones in ut ([d414064](https://github.com/rudderlabs/rudder-transformer/commit/d414064aac1c8d769607346bc48b8db549e7a8dc))
+
+### [1.46.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.46.0...v1.46.1) (2023-10-19)
+
+### Bug Fixes
+
+* add gzip support compatibility ([#2745](https://github.com/rudderlabs/rudder-transformer/issues/2745)) ([d72410f](https://github.com/rudderlabs/rudder-transformer/commit/d72410f7962e702218be3c2414de62341ca29e39))
+
 ## [1.46.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.45.3...v1.46.0) (2023-10-18)
 
 

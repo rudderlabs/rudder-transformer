@@ -8,7 +8,7 @@ const name = 'User Transformations';
 const randomID = () => Math.random().toString(36).substring(2, 15);
 
 describe('User Transform Service', () => {
-  fit(`Filtering ${name} Test`, async () => {
+  it(`Filtering ${name} Test`, async () => {
     const versionId = '24'; // set in input file
     const inputData = require(`./data/${integration}_filter_input.json`);
     const expectedData = require(`./data/${integration}_filter_output.json`);
@@ -21,6 +21,7 @@ describe('User Transform Service', () => {
                 const eventType = event.type;
                 log(eventType);
                 log(eventType.match(/track/g));
+                if(eventType === 'non-standard') throw new Error('non-standard event');
                 if(eventType && !eventType.match(/track/g)) return;
                 return event;
               }

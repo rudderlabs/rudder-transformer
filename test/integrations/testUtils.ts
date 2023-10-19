@@ -3,12 +3,16 @@ import { join } from 'path';
 import { MockHttpCallsData, TestCaseData } from './testTypes';
 import MockAdapter from 'axios-mock-adapter';
 import isMatch from 'lodash/isMatch';
+import { OptionValues } from 'commander';
 
-export const getTestDataFilePaths = (dirPath: string, destination: string = ''): string[] => {
+export const getTestDataFilePaths = (dirPath: string, opts: OptionValues): string[] => {
   const globPattern = join(dirPath, '**', 'data.ts');
   let testFilePaths = globSync(globPattern);
-  if (destination) {
-    testFilePaths = testFilePaths.filter((testFile) => testFile.includes(destination));
+  if (opts.destination) {
+    testFilePaths = testFilePaths.filter((testFile) => testFile.includes(opts.destination));
+  }
+  if (opts.feature) {
+    testFilePaths = testFilePaths.filter((testFile) => testFile.includes(opts.feature));
   }
   return testFilePaths;
 };

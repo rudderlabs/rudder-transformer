@@ -86,37 +86,3 @@ jobs:
           branches: 'hotfix-release/*'
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
-
-      - name: Notify Slack Channel
-        id: slack
-        uses: slackapi/slack-github-action@v1.24.0
-        continue-on-error: true
-        env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-          PROJECT_NAME: 'Rudder Transformer'
-          RELEASES_URL: 'https://github.com/rudderlabs/rudder-transformer/releases/tag/'
-        with:
-          channel-id: ${{ secrets.SLACK_RELEASE_CHANNEL_ID }}
-          payload: |
-            {
-              "text": "*<${{env.RELEASES_URL}}v${{ steps.extract-version.outputs.release_version }}|v${{ steps.extract-version.outputs.release_version }}>*\nCC: <@U03KG4BK1L1> <@U02AE5GMMHV> <@U01LVJ30QEB>",
-              "blocks": [
-                {
-                  "type": "header",
-                  "text": {
-                    "type": "plain_text",
-                    "text": ":tada:  ${{ env.PROJECT_NAME }} - New GitHub Release  :tada:"
-                  }
-                },
-                {
-                  "type": "divider"
-                },
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "*<${{env.RELEASES_URL}}v${{ steps.extract-version.outputs.release_version }}|v${{ steps.extract-version.outputs.release_version }}>*\nCC: <@U03KG4BK1L1> <@U02AE5GMMHV> <@U01LVJ30QEB>"
-                  }
-                }
-              ]
-            }

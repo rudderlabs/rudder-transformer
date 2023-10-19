@@ -23,9 +23,6 @@ on:
         type: string
       build_type:
         type: string
-    secrets:
-      DOCKERHUB_PROD_TOKEN:
-        required: true
 
 env:
   DOCKERHUB_USERNAME: rudderlabs

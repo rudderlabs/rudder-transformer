@@ -335,7 +335,7 @@ async function process(event) {
     if (authorizationFlow === 'oauth') {
       authorizationData = getAccessTokenOauth(event.metadata);
     } else {
-      authorizationData = await getAccessToken();
+      authorizationData = await getAccessToken(event.destination);
     }
   // Get the authorization header if not available
   

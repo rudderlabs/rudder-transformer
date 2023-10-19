@@ -32,7 +32,8 @@ const {
   REFRESH_TOKEN,
   AUTH_STATUS_INACTIVE,
 } = require('../../adapters/networkhandler/authConstants');
-const { FEATURE_FILTER_CODE } = require('./constant');
+const { FEATURE_FILTER_CODE, FEATURE_GZIP_SUPPORT } = require('./constant');
+
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -372,7 +373,7 @@ const hashToSha256 = (value) => sha256(value);
 
 // Check what type of gender and convert to f or m
 const getFbGenderVal = (gender) => {
-  if (typeof (gender) !== 'string') {
+  if (typeof gender !== 'string') {
     return null;
   }
   if (
@@ -2050,11 +2051,20 @@ const getAuthErrCategoryFromStCode = (status) => {
   return '';
 };
 
-const validateEventType = event => {
-  if(!event || typeof event !== "string"){
-    throw new InstrumentationError("Event is a required field and should be a string");
+const validateEventType = (event) => {
+  if (!event || typeof event !== 'string') {
+    throw new InstrumentationError('Event is a required field and should be a string');
   }
-}
+};
+
+const IsGzipSupported = (reqMetadata = {}) => {
+  if (reqMetadata && typeof reqMetadata === 'object' && !Array.isArray(reqMetadata)) {
+    const { features } = reqMetadata;
+    return !!features?.[FEATURE_GZIP_SUPPORT];
+  }
+  return false;
+};
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -2161,4 +2171,5 @@ module.exports = {
   getAuthErrCategoryFromErrDetailsAndStCode,
   getAuthErrCategoryFromStCode,
   isNewStatusCodesAccepted,
+  IsGzipSupported,
 };

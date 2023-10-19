@@ -7,7 +7,13 @@ import axios from 'axios';
 import bodyParser from 'koa-bodyparser';
 import { Command } from 'commander';
 import { createHttpTerminator } from 'http-terminator';
-import { MockHttpCallsData, TestCaseData } from './testTypes';
+import {
+  MockHttpCallsData,
+  TestCaseData,
+  processorTransformSchema,
+  routerTransformSchema,
+  batchTransformSchema,
+} from './testTypes';
 import { applicationRoutes } from '../../src/routes/index';
 import MockAxiosAdapter from 'axios-mock-adapter';
 import {
@@ -21,6 +27,7 @@ import tags from '../../src/v0/util/tags';
 import { Server } from 'http';
 import { appendFileSync } from 'fs';
 import { responses } from '../testHelper';
+import { validate } from '../../src/util/eventValidation';
 
 // To run single destination test cases
 // npm run test:ts -- component  --destination=adobe_analytics
@@ -98,6 +105,19 @@ const rootDir = __dirname;
 const allTestDataFilePaths = getTestDataFilePaths(rootDir, opts);
 const DEFAULT_VERSION = 'v0';
 
+const validateSchema = (response, feature: string) => {
+  switch (feature) {
+    case tags.FEATURES.ROUTER:
+      routerTransformSchema.parse(response);
+      break;
+    case tags.FEATURES.BATCH:
+      batchTransformSchema.parse(response);
+      break;
+    case tags.FEATURES.PROCESSOR:
+      processorTransformSchema.parse(response);
+      break;
+  }
+};
 const testRoute = async (route, tcData: TestCaseData) => {
   const inputReq = tcData.input.request;
   const { headers, params, body } = inputReq;
@@ -127,6 +147,7 @@ const testRoute = async (route, tcData: TestCaseData) => {
 
   if (outputResp?.body) {
     expect(response.body).toEqual(outputResp.body);
+    validateSchema(response.body, tcData.feature);
   }
 
   if (outputResp.headers !== undefined) {

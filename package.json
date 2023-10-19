@@ -111,7 +111,8 @@
     "ua-parser-js": "^1.0.35",
     "unset-value": "^2.0.1",
     "uuid": "^9.0.0",
-    "valid-url": "^1.0.9"
+    "valid-url": "^1.0.9",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^17.6.3",

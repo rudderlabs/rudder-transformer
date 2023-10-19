@@ -53,6 +53,9 @@ export const data = [
                   ],
                 },
               },
+              metadata: {
+                jobId: 1,
+              },
             },
           ],
           destType: 'persistiq',
@@ -102,7 +105,7 @@ export const data = [
                   persistIqAttributesMapping: [{ from: 'useroccupation', to: 'occupation' }],
                 },
               },
-              metadata: [null],
+              metadata: [{ jobId: 1 }],
               statusCode: 200,
             },
           ],

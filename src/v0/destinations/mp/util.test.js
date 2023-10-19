@@ -4,6 +4,7 @@ const {
   batchEvents,
   generateBatchedPayloadForArray,
 } = require('./util');
+const { FEATURE_GZIP_SUPPORT } = require('../../util/constant');
 
 const destinationMock = {
   Config: {
@@ -524,7 +525,9 @@ describe('Mixpanel utils test', () => {
         version: '1',
       };
 
-      const result = generateBatchedPayloadForArray(events);
+      const result = generateBatchedPayloadForArray(events, {
+        features: { [FEATURE_GZIP_SUPPORT]: true },
+      });
 
       expect(result).toEqual(expectedBatchedRequest);
     });
@@ -560,7 +563,9 @@ describe('Mixpanel utils test', () => {
         version: '1',
       };
 
-      const result = generateBatchedPayloadForArray(events);
+      const result = generateBatchedPayloadForArray(events, {
+        features: { [FEATURE_GZIP_SUPPORT]: true },
+      });
 
       expect(result).toEqual(expectedBatchedRequest);
     });

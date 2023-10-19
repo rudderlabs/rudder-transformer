@@ -7,7 +7,7 @@ const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
-const { TransformerProxyError } = require('../../util/errorTypes');
+const { RetryableError, NetworkError, AbortedError, TransformerProxyError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -233,53 +233,93 @@ const responseHandler = (destinationResponse) => {
   // };
 
   const { response, status, rudderJobMetadata } = destinationResponse;
-  if (isHttpStatusSuccess(status)) {
-    // check for Partial Event failures and Successes 
-    const destPartialStatus = response.status;
-    
-    for (const [idx, element] of destPartialStatus.entries()) {
-      const proxyOutputObj = {
-        statusCode: 200,
-        metadata: rudderJobMetadata[idx],
-        error: "success"
-      };
-      // update status of partial event as per retriable or abortable
-      if (isEventRetryable(element, proxyOutputObj)) {
-        proxyOutputObj.statusCode = 500;
-      } else if (isEventAbortable(element, proxyOutputObj)) { 
-        proxyOutputObj.statusCode = 400;
+
+  if (Array.isArray(rudderJobMetadata)) {
+    if (isHttpStatusSuccess(status)) {
+      // check for Partial Event failures and Successes 
+      const destPartialStatus = response.status;
+      
+      for (const [idx, element] of destPartialStatus.entries()) {
+        const proxyOutputObj = {
+          statusCode: 200,
+          metadata: rudderJobMetadata[idx],
+          error: "success"
+        };
+        // update status of partial event as per retriable or abortable
+        if (isEventRetryable(element, proxyOutputObj)) {
+          proxyOutputObj.statusCode = 500;
+        } else if (isEventAbortable(element, proxyOutputObj)) { 
+          proxyOutputObj.statusCode = 400;
+        }
+        responseWithPartialEvents.push(proxyOutputObj);
       }
-      responseWithPartialEvents.push(proxyOutputObj);
+  
+      return {
+        status,
+        message,
+        destinationResponse,
+        response: responseWithPartialEvents
+      }
+    }
+  
+    // in case of failure status, populate response to maintain len(metadata)=len(response)
+    const errorMessage = response.error?.message || 'unknown error format';
+    for (const metadata of rudderJobMetadata) {
+      responseWithPartialEvents.push({
+        statusCode: 500,
+        metadata,
+        error: errorMessage
+      });
+    }
+  
+    throw new TransformerProxyError(
+      `Campaign Manager: Error proxy during CAMPAIGN_MANAGER response transformation`,
+      500,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+      },
+      destinationResponse,
+      getAuthErrCategoryFromStCode(status),
+      responseWithPartialEvents
+    );
+  }
+
+  if (isHttpStatusSuccess(status)) {
+    // check for Failures
+    if (response.hasFailures === true) {
+      if (checkIfFailuresAreRetryable(response)) {
+        throw new RetryableError(
+          `Campaign Manager: Retrying during CAMPAIGN_MANAGER response transformation`,
+          500,
+          destinationResponse,
+        );
+      } else {
+        // abort message
+        throw new AbortedError(
+          `Campaign Manager: Aborting during CAMPAIGN_MANAGER response transformation`,
+          400,
+          destinationResponse,
+        );
+      }
     }
 
     return {
       status,
       message,
       destinationResponse,
-      response: responseWithPartialEvents
-    }
+    };
   }
 
-  // in case of failure status, populate response to maintain len(metadata)=len(response)
-  const errorMessage = response.error?.message || 'error msg failure';
-  for (const metadata of rudderJobMetadata) {
-    responseWithPartialEvents.push({
-      statusCode: 500,
-      metadata,
-      error: errorMessage
-    });
-  }
-
-  throw new TransformerProxyError(
-    `Campaign Manager: Error proxy during CAMPAIGN_MANAGER response transformation`,
-    500,
+  throw new NetworkError(
+    `Campaign Manager: ${response.error?.message} during CAMPAIGN_MANAGER response transformation 3`,
+    status,
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },
     destinationResponse,
     getAuthErrCategoryFromStCode(status),
-    responseWithPartialEvents
   );
+
 };
 
 function networkHandler() {

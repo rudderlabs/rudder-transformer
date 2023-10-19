@@ -11,13 +11,13 @@ const {
   batchMultiplexedEvents,
   getSuccessRespEvents,
   defaultBatchRequestConfig,
+  IsGzipSupported,
 } = require('../../util');
 const {
   ConfigCategory,
   MP_IDENTIFY_EXCLUSION_LIST,
   GEO_SOURCE_ALLOWED_VALUES,
   mappingConfig,
-  FEATURE_GZIP_SUPPORT,
 } = require('./config');
 const { InstrumentationError } = require('../../util/errorTypes');
 const { CommonUtils } = require('../../../util/common');
@@ -211,14 +211,6 @@ const groupEventsByEndpoint = (events) => {
     importEvents: eventMap.import,
     batchErrorRespList,
   };
-};
-
-const IsGzipSupported = (reqMetadata = {}) => {
-  if (reqMetadata && typeof reqMetadata === 'object' && !Array.isArray(reqMetadata)) {
-    const { features } = reqMetadata;
-    return !!(features && features[FEATURE_GZIP_SUPPORT]);
-  }
-  return false;
 };
 
 const generateBatchedPayloadForArray = (events, reqMetadata) => {

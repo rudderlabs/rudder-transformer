@@ -9,7 +9,6 @@ const {
 } = require('../../../adapters/utils/networkUtils');
 const { RetryableError, NetworkError, AbortedError, TransformerProxyError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
-const logger = require('../../../logger');
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function checkIfFailuresAreRetryable(response, proxyOutputObj) {
@@ -92,156 +91,10 @@ function isEventAbortable(element, proxyOutputObj) {
 
 const responseHandler = (destinationResponse) => {
   const message = `[CAMPAIGN_MANAGER Response Handler] - Request Processed Successfully`;
-  const responseWithPartialEvents = []
-  // destinationResponse = {
-  //   response: {
-  //     hasFailures: true,
-  //     status: [
-  //       {
-  //         conversion: {
-  //           floodlightConfigurationId: "213123123",
-  //           floodlightActivityId: "456543345245",
-  //           timestampMicros: "1668624722555000",
-  //           value: 756234234234,
-  //           quantity: "3",
-  //           ordinal: "1",
-  //           limitAdTracking: false,
-  //           childDirectedTreatment: false,
-  //           gclid: "123",
-  //           nonPersonalizedAd: false,
-  //           treatmentForUnderage: false,
-  //           kind: "dfareporting#conversion",
-  //         },
-  //         kind: "dfareporting#conversionStatus",
-  //       },
-  //       {
-  //         conversion: {
-  //           floodlightConfigurationId: "213123123",
-  //           floodlightActivityId: "456543345245",
-  //           timestampMicros: "1668624722555000",
-  //           value: 756234234234,
-  //           quantity: "3",
-  //           ordinal: "1",
-  //           limitAdTracking: false,
-  //           childDirectedTreatment: false,
-  //           gclid: "123",
-  //           nonPersonalizedAd: false,
-  //           treatmentForUnderage: false,
-  //           kind: "dfareporting#conversion",
-  //         },
-  //         errors: [
-  //           {
-  //             code: "NOT_FOUND",
-  //             message: "Floodlight config id: 213123123 was not found.",
-  //             kind: "dfareporting#conversionError",
-  //           },
-  //           {
-  //             code: "INVALID_ARGUMENT",
-  //             message: "gclid: 123 was not found.",
-  //             kind: "dfareporting#conversionError",
-  //           }
-  //         ],
-  //         kind: "dfareporting#conversionStatus",
-  //       },
-  //       {
-  //         conversion: {
-  //           floodlightConfigurationId: "213123123",
-  //           floodlightActivityId: "456543345245",
-  //           timestampMicros: "1668624722555000",
-  //           value: 756234234234,
-  //           quantity: "3",
-  //           ordinal: "1",
-  //           limitAdTracking: false,
-  //           childDirectedTreatment: false,
-  //           gclid: "123",
-  //           nonPersonalizedAd: false,
-  //           treatmentForUnderage: false,
-  //           kind: "dfareporting#conversion",
-  //         },
-  //         errors: [
-  //           {
-  //             code: "NOT_FOUND",
-  //             message: "Floodlight config id: 213123123 was not found.",
-  //             kind: "dfareporting#conversionError",
-  //           },
-  //         ],
-  //         kind: "dfareporting#conversionStatus",
-  //       },
-  //     ],
-  //     kind: "dfareporting#conversionsBatchInsertResponse",
-  //   },
-  //   status: 200,
-  //   rudderJobMetadata: [{
-  //     jobId: 10,
-  //     attemptNum: 0,
-  //     userId: "",
-  //     sourceId: "24242",
-  //     destinationId: "24242",
-  //     workspaceId: "242424",
-  //     secret: {
-  //       access_token: "atoken",
-  //       refresh_token: "rtoken",
-  //       developer_token: "developer_Token",
-  //     },
-  //   },
-  //   {
-  //     jobId: 11,
-  //     attemptNum: 0,
-  //     userId: "",
-  //     sourceId: "2424",
-  //     destinationId: "24242",
-  //     workspaceId: "24242",
-  //     secret: {
-  //       access_token: "atoken",
-  //       refresh_token: "rtoken",
-  //       developer_token: "developer_Token",
-  //     },
-  //   },
-  //   {
-  //     jobId: 12,
-  //     attemptNum: 0,
-  //     userId: "",
-  //     sourceId: "24242",
-  //     destinationId: "234234",
-  //     workspaceId: "34324",
-  //     secret: {
-  //       access_token: "atoken",
-  //       refresh_token: "rtoken",
-  //       developer_token: "developer_Token",
-  //     },
-  //   }],
-  // };
-
-
-  // destinationResponse = {
-  //   response: {
-  //     error: {
-  //       code: 401,
-  //       message: "Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.",
-  //       errors: [
-  //         {
-  //           message: "Invalid Credentials",
-  //           domain: "global",
-  //           reason: "authError",
-  //           location: "Authorization",
-  //           locationType: "header",
-  //         },
-  //       ],
-  //       status: "UNAUTHENTICATED",
-  //     },
-  //   },
-  //   status: 401,
-  // };
-
+  const responseWithIndividualEvents = [];
   const { response, status, rudderJobMetadata } = destinationResponse;
 
   if (Array.isArray(rudderJobMetadata)) {
-    try {
-      logger.info('length of medatada: ', rudderJobMetadata.length);
-      logger.info('number of events: ', response.status.length);
-    } catch (error) {
-      logger.error(error);
-    }
     if (isHttpStatusSuccess(status)) {
       // check for Partial Event failures and Successes 
       const destPartialStatus = response.status;
@@ -258,21 +111,21 @@ const responseHandler = (destinationResponse) => {
         } else if (isEventAbortable(element, proxyOutputObj)) { 
           proxyOutputObj.statusCode = 400;
         }
-        responseWithPartialEvents.push(proxyOutputObj);
+        responseWithIndividualEvents.push(proxyOutputObj);
       }
   
       return {
         status,
         message,
         destinationResponse,
-        response: responseWithPartialEvents
+        response: responseWithIndividualEvents
       }
     }
   
     // in case of failure status, populate response to maintain len(metadata)=len(response)
     const errorMessage = response.error?.message || 'unknown error format';
     for (const metadata of rudderJobMetadata) {
-      responseWithPartialEvents.push({
+      responseWithIndividualEvents.push({
         statusCode: 500,
         metadata,
         error: errorMessage
@@ -287,7 +140,7 @@ const responseHandler = (destinationResponse) => {
       },
       destinationResponse,
       getAuthErrCategoryFromStCode(status),
-      responseWithPartialEvents
+      responseWithIndividualEvents
     );
   }
 

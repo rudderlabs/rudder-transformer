@@ -9,6 +9,7 @@ const {
 } = require('../../../adapters/utils/networkUtils');
 const { RetryableError, NetworkError, AbortedError, TransformerProxyError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
+const logger = require('../../../logger');
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function checkIfFailuresAreRetryable(response, proxyOutputObj) {
@@ -235,6 +236,12 @@ const responseHandler = (destinationResponse) => {
   const { response, status, rudderJobMetadata } = destinationResponse;
 
   if (Array.isArray(rudderJobMetadata)) {
+    try {
+      logger.info('length of medatada: ', rudderJobMetadata.length);
+      logger.info('number of events: ', response.status.length);
+    } catch (error) {
+      logger.error(error);
+    }
     if (isHttpStatusSuccess(status)) {
       // check for Partial Event failures and Successes 
       const destPartialStatus = response.status;

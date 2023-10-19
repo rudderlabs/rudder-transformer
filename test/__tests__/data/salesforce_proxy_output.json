@@ -19,21 +19,14 @@
   {
     "output": {
       "status": 500,
+      "authErrorCategory": "REFRESH_TOKEN",
       "message": "Salesforce Request Failed - due to \"INVALID_SESSION_ID\", (Retryable) during Salesforce Response Handling",
-      "destinationResponse": {
-        "response": [
-          {
-            "message": "Session expired or invalid",
-            "errorCode": "INVALID_SESSION_ID"
-          }
-        ],
-        "status": 401,
-        "rudderJobMetadata": {
-          "destInfo": {
-            "authKey": "2HezPl1w11opbFSxnLDEgZ7kWTf"
-          }
-        }
-      },
+      "destinationResponse":  [
+                {
+                 "errorCode": "INVALID_SESSION_ID",
+                 "message": "Session expired or invalid"
+               }
+             ],
       "statTags": {
         "destType": "SALESFORCE",
         "errorCategory": "network",

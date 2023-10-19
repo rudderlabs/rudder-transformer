@@ -1,6 +1,5 @@
-const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../util');
-const { RetryableError, ThrottledError, AbortedError, NetworkError } = require('../../util/errorTypes');
+const { RetryableError, ThrottledError, AbortedError } = require('../../util/errorTypes');
 const Cache = require('../../util/cache');
 const {
   ACCESS_TOKEN_CACHE_TTL,
@@ -8,7 +7,6 @@ const {
   SF_TOKEN_REQUEST_URL,
   DESTINATION,
 } = require('./config');
-const tags = require('../../util/tags');
 const { handleHttpRequest } = require('../../../adapters/network');
 
 const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
@@ -33,12 +31,9 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey) => {
       // checking for invalid/expired token errors and evicting cache in that case
       // rudderJobMetadata contains some destination info which is being used to evict the cache
 
-      throw new NetworkError(
+      throw new RetryableError(
         `${DESTINATION} Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${sourceMessage}`,
-        status,
-        {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
-        },
+        500,
         response,
         getAuthErrCategoryFromStCode(status),
       );

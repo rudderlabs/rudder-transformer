@@ -1,42 +1,12 @@
 {
   "https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/101": {
-    "message": "timeout of 1ms exceeded",
+    "message": "Connection Aborted",
     "name": "Error",
-    "stack": "Error: timeout of 1ms exceeded\n at createError (webpack-internal:///./node_modules/axios/lib/core/createError.js:16:15)\n at XMLHttpRequest.handleTimeout (webpack-internal:///./node_modules/axios/lib/adapters/xhr.js:89:14)",
-    "config": {
-      "url": "redacted",
-      "method": "get",
-      "headers": {
-        "Accept": "application/json, text/plain, */*"
-      },
-      "transformRequest": [
-        null
-      ],
-      "transformResponse": [
-        null
-      ],
-      "timeout": 1
-    },
     "code": "ECONNABORTED"
   },
   "https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/102": {
     "message": "DNS not found",
     "name": "Error",
-    "stack": "Error: timeout of 1ms exceeded\n at createError (webpack-internal:///./node_modules/axios/lib/core/createError.js:16:15)\n at XMLHttpRequest.handleTimeout (webpack-internal:///./node_modules/axios/lib/adapters/xhr.js:89:14)",
-    "config": {
-      "url": "redacted",
-      "method": "get",
-      "headers": {
-        "Accept": "application/json, text/plain, */*"
-      },
-      "transformRequest": [
-        null
-      ],
-      "transformResponse": [
-        null
-      ],
-      "timeout": 1
-    },
     "code": "EAI_AGAIN"
   },
   "https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/1": {

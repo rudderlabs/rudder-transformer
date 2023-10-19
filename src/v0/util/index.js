@@ -372,7 +372,7 @@ const hashToSha256 = (value) => sha256(value);
 
 // Check what type of gender and convert to f or m
 const getFbGenderVal = (gender) => {
-  if (typeof (gender) !== 'string') {
+  if (typeof gender !== 'string') {
     return null;
   }
   if (
@@ -1472,13 +1472,16 @@ const getErrorStatusCode = (error, defaultStatusCode = HTTP_STATUS_CODES.INTERNA
 /**
  * Used for generating error response with stats from native and built errors
  */
-function generateErrorObject(error, defTags = {}, shouldEnrichErrorMessage = false) {
+function generateErrorObject(error, defTags = {}, shouldEnrichErrorMessage = true) {
   let errObject = error;
   let errorMessage = error.message;
+  if (errorMessage?.includes('message')) {
+    delete errorMessage?.message;
+  }
   if (shouldEnrichErrorMessage) {
     if (error.destinationResponse) {
       errorMessage = JSON.stringify({
-        message: error.message,
+        message: errorMessage,
         destinationResponse: error.destinationResponse,
       });
     }
@@ -2050,11 +2053,11 @@ const getAuthErrCategoryFromStCode = (status) => {
   return '';
 };
 
-const validateEventType = event => {
-  if(!event || typeof event !== "string"){
-    throw new InstrumentationError("Event is a required field and should be a string");
+const validateEventType = (event) => {
+  if (!event || typeof event !== 'string') {
+    throw new InstrumentationError('Event is a required field and should be a string');
   }
-}
+};
 // ========================================================================
 // EXPORTS
 // ========================================================================

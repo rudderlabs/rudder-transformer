@@ -25,6 +25,7 @@ import { responses } from '../testHelper';
 // To run single destination test cases
 // npm run test:ts -- component  --destination=adobe_analytics
 // npm run test:ts -- component  --destination=adobe_analytics --feature=router
+// npm run test:ts -- component  --destination=adobe_analytics --feature=router --index=0
 
 // Use below command to generate mocks
 // npm run test:ts -- component --destination=zendesk --generate=true

@@ -50,7 +50,7 @@ const genericResponseBuilder = (message, destination, category) => {
   const { endpoint, name } = CONFIG_CATEGORIES[category];
   const payload = constructPayload(message, MAPPING_CONFIG[name]);
   return responseBuilder(payload, endpoint, destination);
-}
+};
 
 const processEvent = (message, destination) => {
   if (!message.type) {

@@ -119,5 +119,5 @@ module.exports = {
   SHOPIFY_TRACK_MAP,
   useRedisDatabase,
   SHOPIFY_ADMIN_ONLY_EVENTS,
-  maxTimeToIdentifyRSGeneratedCall
+  maxTimeToIdentifyRSGeneratedCall,
 };

@@ -130,7 +130,9 @@ const customTagProcessor = async (message, category, destination, contactId) => 
     if (parseInt(get(res, TOTAL_RECORDS_KEY), 10) > 100) {
       const limit = Math.floor(parseInt(get(res, TOTAL_RECORDS_KEY), 10) / 100);
       for (let i = 0; i < limit; i += 1) {
-        endpoint = `${destination.Config.apiUrl}${category.tagEndPoint}?limit=100&offset=${100 * (i + 1)}`;
+        endpoint = `${destination.Config.apiUrl}${category.tagEndPoint}?limit=100&offset=${
+          100 * (i + 1)
+        }`;
         requestOptions = {
           headers: getHeader(destination),
         };
@@ -249,7 +251,9 @@ const customFieldProcessor = async (message, category, destination) => {
   const limit = Math.floor(parseInt(get(res, TOTAL_RECORDS_KEY), 10) / 100);
   if (parseInt(get(res, TOTAL_RECORDS_KEY), 10) > 100) {
     for (let i = 0; i < limit; i += 1) {
-      endpoint = `${destination.Config.apiUrl}${category.fieldEndPoint}?limit=100&offset=${100 * (i + 1)}`;
+      endpoint = `${destination.Config.apiUrl}${category.fieldEndPoint}?limit=100&offset=${
+        100 * (i + 1)
+      }`;
       const requestOpt = {
         headers: {
           'Api-Token': destination.Config.apiKey,

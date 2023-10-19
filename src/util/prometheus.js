@@ -229,7 +229,13 @@ class Prometheus {
         name: 'tp_errors',
         help: 'tp_errors',
         type: 'counter',
-        labelNames: ['sourceType', 'destinationType', 'k8_namespace', 'workspaceId', 'trackingPlanId'],
+        labelNames: [
+          'sourceType',
+          'destinationType',
+          'k8_namespace',
+          'workspaceId',
+          'trackingPlanId',
+        ],
       },
       {
         name: 'tp_events_count',
@@ -593,7 +599,13 @@ class Prometheus {
         name: 'tp_request_latency',
         help: 'tp_request_latency',
         type: 'histogram',
-        labelNames: ['sourceType', 'destinationType', 'k8_namespace', 'workspaceId', 'trackingPlanId'],
+        labelNames: [
+          'sourceType',
+          'destinationType',
+          'k8_namespace',
+          'workspaceId',
+          'trackingPlanId',
+        ],
       },
       {
         name: 'cdk_events_latency',
@@ -928,7 +940,6 @@ class Prometheus {
         type: 'histogram',
         labelNames: [],
       },
-
     ];
 
     metrics.forEach((metric) => {

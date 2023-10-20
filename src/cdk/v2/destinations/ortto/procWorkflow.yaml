@@ -68,7 +68,7 @@ steps:
           }
           const identifyPayoad = {                                  
             "people":[peopleObj],
-            "merge_by": ["external_id", "email"]
+            "merge_by": ["str::ei", "str::email"]
           }
           $.removeUndefinedAndNullValues(identifyPayoad)
 
@@ -103,7 +103,7 @@ steps:
           }
           const trackPayoad = {   
             "activities":[activityObj],
-            "merge_by": ["external_id", "email"]
+            "merge_by": ["str::ei", "str::email"]
           }
 
   - name: payload

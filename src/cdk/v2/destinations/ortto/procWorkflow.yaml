@@ -48,8 +48,8 @@ steps:
           "str::language": .context.traits.language || .context.locale,
           "phn::phone": {"n": {{{{$.getGenericPaths("phone")}}}}},
           "bol::gdpr": .context.traits.gdpr !== undefined? .context.traits.gdpr: true,
-          "bol::p": false,
-          "bol::sp": false,
+          "bol::p": .context.traits.emailConsent || false,
+          "bol::sp": .context.traits.smsConsent || false,
           },
         "location": {"source_ip": .message.context.ip}
       });
@@ -91,7 +91,7 @@ steps:
         template: |
           let attributes = {};
           .destination.Config.orttoEventsMapping@event.eventProperties@prop.(
-             attributes[prop.type+":cm:"+prop.orttoProperty.trim().toLowerCase().replace(new RegExp('\\s+', 'g'),'-')] = $.originalInput.message.properties[prop.rudderProperty]
+             attributes[$.fieldTypeMap[prop.type]+":cm:"+prop.orttoProperty.trim().toLowerCase().replace(new RegExp('\\s+', 'g'),'-')] = $.originalInput.message.properties[prop.rudderProperty]
            )
           $.removeUndefinedAndNullValues(attributes)
 

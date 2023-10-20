@@ -176,6 +176,18 @@ const validatePayloadDataTypes = (propertyMap, hsSupportedKey, value, traitsKey)
 };
 
 /**
+ * Converts date to UTC Midnight TimeStamp
+ * @param {*} propValue 
+ * @returns 
+ */
+const getUTCMidnightTimeStampValue = (propValue) => {
+  const time = propValue;
+  const date = new Date(time);
+  date.setUTCHours(0, 0, 0, 0);
+  return date.getTime();
+}
+
+/**
  * add addtional properties in the payload that is provided in traits
  * only when it matches with HS properties (pre-defined/created from dashboard)
  * @param {*} message
@@ -204,10 +216,7 @@ const getTransformedJSON = async (message, destination, propertyMap) => {
       if (!rawPayload[traitsKey] && propertyMap[hsSupportedKey]) {
         let propValue = traits[traitsKey];
         if (propertyMap[hsSupportedKey] === 'date') {
-          const time = propValue;
-          const date = new Date(time);
-          date.setUTCHours(0, 0, 0, 0);
-          propValue = date.getTime();
+          propValue = getUTCMidnightTimeStampValue(propValue);
         }
 
         rawPayload[hsSupportedKey] = validatePayloadDataTypes(
@@ -459,7 +468,7 @@ const getEventAndPropertiesFromConfig = (message, destination, payload) => {
  */
 const getExistingData = async (inputs, destination) => {
   const { Config } = destination;
-  const values = [];
+  let values = [];
   let searchResponse;
   let updateHubspotIds = [];
   const firstMessage = inputs[0].message;
@@ -478,8 +487,16 @@ const getExistingData = async (inputs, destination) => {
   inputs.map(async (input) => {
     const { message } = input;
     const { destinationExternalId } = getDestinationExternalIDInfoForRetl(message, DESTINATION);
-    values.push(destinationExternalId);
+
+    if(typeof destinationExternalId === 'string'){
+      values.push(destinationExternalId.toLowerCase());
+    } else{
+      const value = typeof destinationExternalId === 'object' ? JSON.stringify(destinationExternalId).toLowerCase() : destinationExternalId.toString();
+      values.push(value);
+    }
   });
+
+  values = Array.from(new Set(values));
   const requestData = {
     filterGroups: [
       {
@@ -639,4 +656,5 @@ module.exports = {
   splitEventsForCreateUpdate,
   getHsSearchId,
   validatePayloadDataTypes,
+  getUTCMidnightTimeStampValue,
 };

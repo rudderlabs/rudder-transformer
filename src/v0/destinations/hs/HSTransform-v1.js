@@ -34,6 +34,8 @@ const {
   getEmailAndUpdatedProps,
   formatPropertyValueForIdentify,
   getHsSearchId,
+  getUTCMidnightTimeStampValue,
+  getProperties,
 } = require('./util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -80,6 +82,21 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
       )}/${hsSearchId}`;
       response.method = defaultPatchRequestConfig.requestMethod;
     }
+    
+    if (!propertyMap) {
+      // fetch HS properties
+      // eslint-disable-next-line no-param-reassign
+      propertyMap = await getProperties(destination);
+    }
+
+    const keys = Object.keys(traits);
+    keys.forEach((key) => {
+      const value = traits[key];
+      if (propertyMap[key] === 'date') {
+        traits[key] = getUTCMidnightTimeStampValue(value);
+      }
+    })
+
     response.body.JSON = removeUndefinedAndNullValues({ properties: traits });
     response.source = 'rETL';
     response.operation = operation;

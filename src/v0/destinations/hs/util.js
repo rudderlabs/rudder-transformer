@@ -158,22 +158,32 @@ const validatePayloadDataTypes = (propertyMap, hsSupportedKey, value, traitsKey)
 
   if (propertyMap[hsSupportedKey] === 'bool' && typeof propValue === 'object') {
     throw new InstrumentationError(
-      `Property ${traitsKey} data type ${typeof propValue} is not matching with Hubspot property data type ${
-        propertyMap[hsSupportedKey]
+      `Property ${traitsKey} data type ${typeof propValue} is not matching with Hubspot property data type ${propertyMap[hsSupportedKey]
       }`,
     );
   }
 
   if (propertyMap[hsSupportedKey] === 'number' && typeof propValue !== 'number') {
     throw new InstrumentationError(
-      `Property ${traitsKey} data type ${typeof propValue} is not matching with Hubspot property data type ${
-        propertyMap[hsSupportedKey]
+      `Property ${traitsKey} data type ${typeof propValue} is not matching with Hubspot property data type ${propertyMap[hsSupportedKey]
       }`,
     );
   }
 
   return propValue;
 };
+
+/**
+ * Converts date to UTC Midnight TimeStamp
+ * @param {*} propValue 
+ * @returns 
+ */
+const getUTCMidnightTimeStampValue = (propValue) => {
+  const time = propValue;
+  const date = new Date(time);
+  date.setUTCHours(0, 0, 0, 0);
+  return date.getTime();
+}
 
 /**
  * add addtional properties in the payload that is provided in traits
@@ -204,10 +214,7 @@ const getTransformedJSON = async (message, destination, propertyMap) => {
       if (!rawPayload[traitsKey] && propertyMap[hsSupportedKey]) {
         let propValue = traits[traitsKey];
         if (propertyMap[hsSupportedKey] === 'date') {
-          const time = propValue;
-          const date = new Date(time);
-          date.setUTCHours(0, 0, 0, 0);
-          propValue = date.getTime();
+          propValue = getUTCMidnightTimeStampValue(propValue);
         }
 
         rawPayload[hsSupportedKey] = validatePayloadDataTypes(
@@ -459,7 +466,7 @@ const getEventAndPropertiesFromConfig = (message, destination, payload) => {
  */
 const getExistingData = async (inputs, destination) => {
   const { Config } = destination;
-  const values = [];
+  let values = [];
   let searchResponse;
   let updateHubspotIds = [];
   const firstMessage = inputs[0].message;
@@ -478,8 +485,10 @@ const getExistingData = async (inputs, destination) => {
   inputs.map(async (input) => {
     const { message } = input;
     const { destinationExternalId } = getDestinationExternalIDInfoForRetl(message, DESTINATION);
-    values.push(destinationExternalId);
+    values.push(destinationExternalId.toString().toLowerCase());
   });
+
+  values = Array.from(new Set(values));
   const requestData = {
     filterGroups: [
       {
@@ -523,15 +532,15 @@ const getExistingData = async (inputs, destination) => {
     searchResponse =
       Config.authorizationType === 'newPrivateAppApi'
         ? await httpPOST(url, requestData, requestOptions, {
-            destType: 'hs',
-            feature: 'transformation',
-            endpointPath,
-          })
+          destType: 'hs',
+          feature: 'transformation',
+          endpointPath,
+        })
         : await httpPOST(url, requestData, {
-            destType: 'hs',
-            feature: 'transformation',
-            endpointPath,
-          });
+          destType: 'hs',
+          feature: 'transformation',
+          endpointPath,
+        });
     searchResponse = processAxiosResponse(searchResponse);
 
     if (searchResponse.status !== 200) {
@@ -626,6 +635,31 @@ const getHsSearchId = (message) => {
   return { hsSearchId };
 };
 
+/**
+ * returns updated traits
+ * @param {*} propertyMap 
+ * @param {*} traits 
+ * @param {*} destination 
+ */
+const populateTraits = async (propertyMap, traits, destination) => {
+  const populatedTraits = traits;
+  let propertyToTypeMap = propertyMap;
+  if (!propertyToTypeMap) {
+    // fetch HS properties
+    propertyToTypeMap = await getProperties(destination);
+  }
+
+  const keys = Object.keys(populatedTraits);
+  keys.forEach((key) => {
+    const value = populatedTraits[key];
+    if (propertyToTypeMap[key] === 'date') {
+      populatedTraits[key] = getUTCMidnightTimeStampValue(value);
+    }
+  })
+
+  return populatedTraits;
+}
+
 module.exports = {
   validateDestinationConfig,
   formatKey,
@@ -639,4 +673,6 @@ module.exports = {
   splitEventsForCreateUpdate,
   getHsSearchId,
   validatePayloadDataTypes,
+  getUTCMidnightTimeStampValue,
+  populateTraits,
 };

@@ -34,7 +34,6 @@ steps:
     description: |
       Builds common fields in destination payload.
     template: |
-      console.log($.)
       let commonFields = .message.().({
         "fields": { 
           "str::first": {{{{$.getGenericPaths("firstName")}}}}, 

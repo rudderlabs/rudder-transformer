@@ -32,7 +32,7 @@ steps:
         "batched": false,
         "statusCode": .status,
         "error": .message,
-        "statTags": .originalError ? .originalError.statTags ? .originalError.statTags : undefined : undefined
+        "statTags": .originalError.statTags
       })[]
 
   - name: batchSuccessfulEvents
@@ -50,7 +50,7 @@ steps:
           "version": "1",
           "type": "REST",
           "method": "POST",
-          "endpoint": ~r batch.message.people ? $.IDENTIFY_ENDPOINT[$.originalInput.destintion.Config.instanceRegion] : $.TRACK_ENDPOINT[$.originalInput.destintion.Config.instanceRegion], 
+          "endpoint": ~r batch.message.people ? $.IDENTIFY_ENDPOINT[$.originalInput[0].destination.Config.instanceRegion] : $.TRACK_ENDPOINT[$.originalInput[0].destination.Config.instanceRegion], 
           "headers": {
             "X-Api-Key": .destination.Config.privateApiKey,
             "Content-Type": "application/json",

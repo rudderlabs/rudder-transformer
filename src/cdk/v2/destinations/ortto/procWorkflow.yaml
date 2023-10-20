@@ -15,8 +15,8 @@ steps:
     template: |
       let messageType = .message.type;
       $.assert(.message.type, "message Type is not present. Aborting message.");
-      $.assert(.destination.Config.privateApiKey, "Private Api Key is not present");
-      $.assert(.destination.Config.instanceRegion, "Instance Region is not present");
+      $.assertConfig(.destination.Config.privateApiKey, "Private Api Key is not present");
+      $.assertConfig(.destination.Config.instanceRegion, "Instance Region is not present");
       $.assert(messageType in {{$.EventType.([.IDENTIFY, .TRACK])}}, "message type " + messageType + " is not supported");
       $.assert(.message.().({{{{$.getGenericPaths("email")}}}}) || .message.().({{{{$.getGenericPaths("userId")}}}}), "Either of email  or userId is required. Aborting message.");
 
@@ -47,32 +47,31 @@ steps:
           "str::ei": {{{{$.getGenericPaths("userId")}}}},
           "str::language": .context.traits.language || .context.locale,
           "phn::phone": {"n": {{{{$.getGenericPaths("phone")}}}}},
-          "bol::gdpr": .context.traits.gdpr !== undefined? .context.traits.gdpr: true,
+          "bol::gdpr": .context.traits.gdpr ?? true,
           "bol::p": .context.traits.emailConsent || false,
           "bol::sp": .context.traits.smsConsent || false,
           },
-        "location": {"source_ip": .message.context.ip}
+        "location": {"source_ip": .context.ip}
       });
       .destination.Config.orttoPersonAttributes@attribute.(
-              commonFields.fields[$.fieldTypeMap[attribute.type]+":cm:"+attribute.orttoAttribute.trim().toLowerCase().replace(new RegExp('\\s+', 'g'),'-')] = $.originalInput.message.context.traits[attribute.rudderTraits]
+              const trimmedOrttoAttribute = attribute.orttoAttribute.trim().toLowerCase().replace(new RegExp('\\s+', 'g'),'-');
+              commonFields.fields[$.fieldTypeMap[attribute.type]+":cm:"+trimmedOrttoAttribute] = $.originalInput.message.context.traits[attribute.rudderTraits]
             )[]
       $.removeUndefinedAndNullValues(commonFields)
 
   - name: prepareIdentifyPayload
     condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
-    steps:
-      - name: propertiesFields
-        template: |
-          const peopleObj = {
-            "fields": $.outputs.commonFields.fields,
-            "tags": .message.context.traits.tags || .message.traits.tags || .message.prooperties.tags,
-            "unset_tags": .message.context.traits.unset_tags || .message.traits.unset_tags || .message.prooperties.unset_tags
-          }
-          const identifyPayoad = {                                  
-            "people":[peopleObj],
-            "merge_by": ["str::ei", "str::email"]
-          }
-          $.removeUndefinedAndNullValues(identifyPayoad)
+    template: |
+      const peopleObj = {
+        "fields": $.outputs.commonFields.fields,
+        "tags": .message.context.traits.tags || .message.traits.tags || .message.prooperties.tags,
+        "unset_tags": .message.context.traits.unset_tags || .message.traits.unset_tags || .message.prooperties.unset_tags
+      }
+      const identifyPayoad = {                                  
+        "people":[peopleObj],
+        "merge_by": ["str::ei", "str::email"]
+      }
+      $.removeUndefinedAndNullValues(identifyPayoad)
 
   - name: prepareTrackPayload
     condition: $.outputs.messageType === {{$.EventType.TRACK}}
@@ -109,24 +108,16 @@ steps:
           }
 
   - name: payload
-    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
     template: |
-      const outputPayload = {
-        ...$.outputs.prepareIdentifyPayload
-        }
-    else:
-      name: trackPayload
-      template: |
-        const outputPayload = {
-        ...$.outputs.prepareTrackPayload
-        }
+      $.outputs.messageType === {{$.EventType.IDENTIFY}} ? $.outputs.prepareIdentifyPayload : $.outputs.prepareTrackPayload
 
   - name: buildResponseForProcessTransformation
     description: build response
     template: |
       const response = $.defaultRequestConfig();
+      const instanceRegion = $.originalInput.destination.Config.instanceRegion;
       response.body.JSON = $.outputs.payload;
-      response.endpoint =  response.body.JSON.people? $.IDENTIFY_ENDPOINT[$.originalInput.destination.Config.instanceRegion] : $.TRACK_ENDPOINT[$.originalInput.destination.Config.instanceRegion];
+      response.endpoint =  response.body.JSON.people? $.IDENTIFY_ENDPOINT[instanceRegion] : $.TRACK_ENDPOINT[instanceRegion];
       response.headers = {
           "X-Api-Key": .destination.Config.privateApiKey,
           "Content-Type": "application/json"

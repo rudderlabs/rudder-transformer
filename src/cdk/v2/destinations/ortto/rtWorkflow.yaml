@@ -50,11 +50,11 @@ steps:
           "version": "1",
           "type": "REST",
           "method": "POST",
-          "endpoint": ~r batch.message.people ? $.IDENTIFY_ENDPOINT : $.TRACK_ENDPOINT, 
+          "endpoint": ~r batch.message.people ? $.IDENTIFY_ENDPOINT[$.originalInput.destintion.Config.instanceRegion] : $.TRACK_ENDPOINT[$.originalInput.destintion.Config.instanceRegion], 
           "headers": {
             "Content-Type": "application/json",
           },
-          "params": $.outputs.checkSendTestEventConfig,
+          "params": {},
           "files": {}
         },
         "metadata": ~r batch.metadata,

@@ -349,7 +349,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api.ap3api.com/v1/activities/create;',
+              endpoint: 'https://api.ap3api.com/v1/activities/create',
               headers: {
                 'DY-API-Key': 'dummyApiKey',
                 'Content-Type': 'application/json',

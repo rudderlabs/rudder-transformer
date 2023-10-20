@@ -163,6 +163,11 @@ export const data = [
                         'geo::country': {},
                         'geo::region': {},
                         'str::postal': '700096',
+                        'dtz::b': {
+                          day: 26,
+                          month: 5,
+                          year: 2020,
+                        },
                         'str::ei': 'sample_user_id',
                         'str::language': 'en-US',
                         'phn::phone': {
@@ -368,6 +373,11 @@ export const data = [
                         },
                         'geo::country': {},
                         'geo::region': {},
+                        'dtz::b': {
+                          day: 26,
+                          month: 5,
+                          year: 2020,
+                        },
                         'str::postal': '700096',
                         'str::language': 'en-US',
                         'str::ei': 'sample_user_id',

@@ -2,6 +2,20 @@ const { CommonUtils } = require('../../../../util/common');
 const lodash = require('lodash');
 const { maxBatchSize } = require('./config');
 
+const getBirthdayObj = (birthday) => {
+  const date = new Date(birthday);
+
+  if (lodash.isNaN(date)) {
+    return null; // Invalid birthday format
+  }
+
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1; // Month is 0-based, so add 1
+  const day = date.getDate();
+
+  return { year, month, day };
+};
+
 const groupEventsByEndpoint = (events) => {
   const eventMap = {
     person: [],
@@ -65,5 +79,6 @@ const batchEvents = (successfulEvents) => {
   return [...batchedPersonEvents, ...batchedActivityEvents];
 };
 module.exports = {
+  getBirthdayObj,
   batchEvents,
 };

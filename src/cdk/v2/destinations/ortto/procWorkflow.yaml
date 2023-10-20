@@ -8,6 +8,7 @@ bindings:
     path: ../../../../v0/util
   - name: defaultRequestConfig
     path: ../../../../v0/util
+  - path: ./utils
 
 steps:
   - name: validateInput
@@ -33,6 +34,7 @@ steps:
     description: |
       Builds common fields in destination payload.
     template: |
+      console.log($.)
       let commonFields = .message.().({
         "fields": { 
           "str::first": {{{{$.getGenericPaths("firstName")}}}}, 
@@ -42,6 +44,7 @@ steps:
           "geo::country": {"name":{{{{$.getGenericPaths("country")}}}}},
           "geo::region": {"name":{{{{$.getGenericPaths("region")}}}}},
           "str::postal": {{{{$.getGenericPaths("zipcode")}}}},
+          "dtz::b": $.getBirthdayObj({{{{$.getGenericPaths("birthday")}}}}),
           "str::ei": {{{{$.getGenericPaths("userId")}}}},
           "str::language": .context.traits.language || .context.locale,
           "phn::phone": {"n": {{{{$.getGenericPaths("phone")}}}}},

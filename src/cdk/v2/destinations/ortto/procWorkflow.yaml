@@ -129,7 +129,7 @@ steps:
       response.body.JSON = $.outputs.payload;
       response.endpoint =  response.body.JSON.people? $.IDENTIFY_ENDPOINT[$.originalInput.destination.Config.instanceRegion] : $.TRACK_ENDPOINT[$.originalInput.destination.Config.instanceRegion];
       response.headers = {
-          "DY-API-Key": .destination.Config.privateApiKey,
+          "X-Api-Key": .destination.Config.privateApiKey,
           "Content-Type": "application/json"
         };
       finalResponse = response;

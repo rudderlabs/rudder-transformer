@@ -392,8 +392,8 @@ export const data = [
                       },
                       activity_id: 'act:cm:ortto-event',
                       attributes: {
-                        'text:cm:orttoprop': 'USD',
-                        'longText:cm:orttoprop': 'USD',
+                        'str:cm:orttoprop': 'USD',
+                        'txt:cm:orttoprop': 'USD',
                       },
                       location: {},
                     },

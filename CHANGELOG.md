@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.46.4](https://github.com/rudderlabs/rudder-transformer/compare/v1.46.3...v1.46.4) (2023-10-20)
+
+
+### Bug Fixes
+
+* **hs:** time stamp and contact not found issue ([391c7cd](https://github.com/rudderlabs/rudder-transformer/commit/391c7cdc5576152576bbd2c6d335a04ce6795833))
+
 ### [1.46.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.46.2...v1.46.3) (2023-10-20)
 
 

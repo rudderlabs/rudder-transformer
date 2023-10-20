@@ -218,7 +218,7 @@ async function processIdentify(message, destination) {
   );
   if (!isHttpStatusSuccess(brazeIdentifyResp.status)) {
     throw new NetworkError(
-      'Braze identify failed',
+      `Braze identify failed - ${JSON.stringify(brazeIdentifyResp.response)}`,
       brazeIdentifyResp.status,
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(brazeIdentifyResp.status),

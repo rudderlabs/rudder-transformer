@@ -64,8 +64,8 @@ steps:
     template: |
       const peopleObj = {
         "fields": $.outputs.commonFields.fields,
-        "tags": .message.context.traits.tags || .message.traits.tags || .message.prooperties.tags,
-        "unset_tags": .message.context.traits.unset_tags || .message.traits.unset_tags || .message.prooperties.unset_tags
+        "tags": .message.context.traits.tags || .message.traits.tags || .message.properties.tags,
+        "unset_tags": .message.context.traits.unset_tags || .message.traits.unset_tags || .message.properties.unset_tags
       }
       const identifyPayoad = {                                  
         "people":[peopleObj],

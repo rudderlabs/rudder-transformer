@@ -57,6 +57,7 @@ steps:
               const trimmedOrttoAttribute = attribute.orttoAttribute.trim().toLowerCase().replace(new RegExp('\\s+', 'g'),'-');
               commonFields.fields[$.fieldTypeMap[attribute.type]+":cm:"+trimmedOrttoAttribute] = $.originalInput.message.context.traits[attribute.rudderTraits]
             )[]
+      commonFields.fields = $.removeUndefinedAndNullValues(commonFields.fields)
       $.removeUndefinedAndNullValues(commonFields)
 
   - name: prepareIdentifyPayload

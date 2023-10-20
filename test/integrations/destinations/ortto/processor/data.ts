@@ -109,7 +109,7 @@ export const data = [
                   },
                   age: '30',
                   anonymousId: '8d872292709c6fbe',
-                  birthday: '2020-05-26',
+                  birthday: 'wrongValue',
                   createDate: '18th March 2020',
                   description: 'Premium User for 3 years',
                   email: 'identify@test.com',
@@ -167,11 +167,6 @@ export const data = [
                         'geo::country': {},
                         'geo::region': {},
                         'str::postal': '700096',
-                        'dtz::b': {
-                          day: 26,
-                          month: 5,
-                          year: 2020,
-                        },
                         'str::ei': 'sample_user_id',
                         'str::language': 'en-US',
                         'phn::phone': {

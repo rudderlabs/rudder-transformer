@@ -3,11 +3,12 @@ const { CommonUtils } = require('../../../../util/common');
 const { maxBatchSize } = require('./config');
 
 const getBirthdayObj = (birthday) => {
-  const date = new Date(birthday);
+  const dateRegex = /^\d{4}-\d{2}-\d{2}$/; // YYYY-MM-DD format
 
-  if (lodash.isNaN(date)) {
+  if (!dateRegex.test(birthday)) {
     return null; // Invalid birthday format
   }
+  const date = new Date(birthday);
 
   const year = date.getFullYear();
   const month = date.getMonth() + 1; // Month is 0-based, so add 1

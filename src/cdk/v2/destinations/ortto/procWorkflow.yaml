@@ -16,10 +16,8 @@ steps:
       $.assert(.message.type, "message Type is not present. Aborting message.");
       $.assert(.destination.Config.privateApiKey, "Private Api Key is not present");
       $.assert(.destination.Config.instanceRegion, "Instance Region is not present");
-      $.assert(messageType in {{$.EventType.([.IDENTIFY, .TRACK])}}, 
-        "message type " + messageType + " is not supported")
-      console.log($.getGenericPaths("email"));
-      $.assert(.message.().({{{{$.getGenericPaths("email")}}}}) || .message.().({{{{$.getGenericPaths("userId")}}}}), "email  or userId is a required field. Aborting message.");
+      $.assert(messageType in {{$.EventType.([.IDENTIFY, .TRACK])}}, "message type " + messageType + " is not supported");
+      $.assert(.message.().({{{{$.getGenericPaths("email")}}}}) || .message.().({{{{$.getGenericPaths("userId")}}}}), "Either of email  or userId is required. Aborting message.");
 
   - name: messageType
     template: |
@@ -45,9 +43,9 @@ steps:
           "geo::region": {"name":{{{{$.getGenericPaths("region")}}}}},
           "str::postal": {{{{$.getGenericPaths("zipcode")}}}},
           "str::ei": {{{{$.getGenericPaths("userId")}}}},
-          "str::language": .message.context.traits.language || .message.context.locale,
-          "phn::phone": {"n": {{{{$.getGenericPaths("userId")}}}}},
-          "bol::gdpr": true,
+          "str::language": .context.traits.language || .context.locale,
+          "phn::phone": {"n": {{{{$.getGenericPaths("phone")}}}}},
+          "bol::gdpr": .context.traits.gdpr !== undefined? .context.traits.gdpr: true,
           "bol::p": false,
           "bol::sp": false,
           },
@@ -57,12 +55,6 @@ steps:
               commonFields.fields[$.fieldTypeMap[attribute.type]+":cm:"+attribute.orttoAttribute.trim().toLowerCase().replace(new RegExp('\\s+', 'g'),'-')] = $.originalInput.message.context.traits[attribute.rudderTraits]
             )[]
       $.removeUndefinedAndNullValues(commonFields)
-
-  - name: validateCommonFields
-    template: |
-      const external_id = $.outputs.commonFields.fields."str::ei";
-      const email = $.outputs.commonFields.fields."str::email";
-      $.assert(external_id || email, "userId or email is required");
 
   - name: prepareIdentifyPayload
     condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}

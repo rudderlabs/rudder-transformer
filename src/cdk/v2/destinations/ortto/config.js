@@ -1,5 +1,7 @@
 const IDENTIFY_ENDPOINT = 'https://api.ap3api.com/v1/person/merge';
+// https://help.ortto.com/developer/latest/api-reference/person/merge.html#person-fields
 const TRACK_ENDPOINT = 'https://api.ap3api.com/v1/activities/create;';
+// https://help.ortto.com/a-271-create-a-custom-activity-event-create
 
 const maxBatchSize = 1;
 

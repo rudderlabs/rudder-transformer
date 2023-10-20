@@ -348,7 +348,7 @@ export const data = [
                   jobId: 1,
                 },
               ],
-              batched: false,
+              batched: true,
               statusCode: 200,
               destination: {
                 Config: {
@@ -411,7 +411,7 @@ export const data = [
                   jobId: 2,
                 },
               ],
-              batched: false,
+              batched: true,
               statusCode: 200,
               destination: {
                 Config: {

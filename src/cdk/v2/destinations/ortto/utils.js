@@ -1,5 +1,5 @@
-const { CommonUtils } = require('../../../../util/common');
 const lodash = require('lodash');
+const { CommonUtils } = require('../../../../util/common');
 const { maxBatchSize } = require('./config');
 
 const getBirthdayObj = (birthday) => {

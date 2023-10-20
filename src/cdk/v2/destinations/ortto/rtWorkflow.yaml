@@ -37,7 +37,6 @@ steps:
     condition: $.outputs.successfulEvents.length
     template: |
       let batches = $.batchEvents($.outputs.successfulEvents);
-      console.log("abc",JSON.stringify(batches,null,2))
       batches@batch.({
         "batchedRequest": {
           "body": {

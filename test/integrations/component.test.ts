@@ -24,6 +24,8 @@ import { responses } from '../testHelper';
 
 // To run single destination test cases
 // npm run test:ts -- component  --destination=adobe_analytics
+// npm run test:ts -- component  --destination=adobe_analytics --feature=router
+// npm run test:ts -- component  --destination=adobe_analytics --feature=router --index=0
 
 // Use below command to generate mocks
 // npm run test:ts -- component --destination=zendesk --generate=true
@@ -32,6 +34,8 @@ const command = new Command();
 command
   .allowUnknownOption()
   .option('-d, --destination <string>', 'Enter Destination Name')
+  .option('-f, --feature <string>', 'Enter Feature Name(processor, router)')
+  .option('-i, --index <number>', 'Enter Test index')
   .option('-g, --generate <string>', 'Enter "true" If you want to generate network file')
   .parse();
 
@@ -91,7 +95,7 @@ if (!opts.generate || opts.generate === 'false') {
 
 // END
 const rootDir = __dirname;
-const allTestDataFilePaths = getTestDataFilePaths(rootDir, opts.destination);
+const allTestDataFilePaths = getTestDataFilePaths(rootDir, opts);
 const DEFAULT_VERSION = 'v0';
 
 const testRoute = async (route, tcData: TestCaseData) => {
@@ -174,7 +178,10 @@ describe.each(allTestDataFilePaths)('%s Tests', (testDataPath) => {
     jest.clearAllMocks();
   });
   // add special mocks for specific destinations
-  const testData: TestCaseData[] = getTestData(testDataPath);
+  let testData: TestCaseData[] = getTestData(testDataPath);
+  if (opts.index !== undefined) {
+    testData = [testData[parseInt(opts.index)]];
+  }
   describe(`${testData[0].name} ${testData[0].module}`, () => {
     test.each(testData)('$feature -> $description', async (tcData) => {
       tcData?.mockFns?.(mock);

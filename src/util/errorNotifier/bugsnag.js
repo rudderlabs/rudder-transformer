@@ -20,7 +20,7 @@ const {
   UnhandledStatusCodeError,
   UnauthorizedError,
   NetworkInstrumentationError,
-} = require('rs-integration-lib');
+} = require('@rudderstack/integrations-lib');
 const { FilteredEventsError } = require('../../v0/util/errorTypes');
 const { logger } = require('../../logger');
 const pkg = require('../../../package.json');

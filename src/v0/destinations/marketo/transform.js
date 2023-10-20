@@ -7,7 +7,7 @@ const {
   InstrumentationError,
   ConfigurationError,
   UnauthorizedError,
-} = require('rs-integration-lib');
+} = require('@rudderstack/integrations-lib');
 const stats = require('../../../util/stats');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 const {

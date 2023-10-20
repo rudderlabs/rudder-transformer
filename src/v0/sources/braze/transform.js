@@ -2,7 +2,7 @@ const set = require('set-value');
 const get = require('get-value');
 const path = require('path');
 const fs = require('fs');
-const { TransformationError } = require('rs-integration-lib');
+const { TransformationError } = require('@rudderstack/integrations-lib');
 const { formatTimeStamp, removeUndefinedAndNullValues } = require('../../util');
 const Message = require('../message');
 

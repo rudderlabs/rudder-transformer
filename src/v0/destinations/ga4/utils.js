@@ -1,5 +1,5 @@
 const get = require('get-value');
-const { InstrumentationError } = require('rs-integration-lib');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
   isEmpty,
   constructPayload,

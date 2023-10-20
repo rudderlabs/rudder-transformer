@@ -1,5 +1,5 @@
 const { isEmpty } = require('lodash');
-const { InstrumentationError, OAuthSecretError } = require('rs-integration-lib');
+const { InstrumentationError, OAuthSecretError } = require('@rudderstack/integrations-lib');
 const { httpPOST } = require('../../../adapters/network');
 
 const { executeCommonValidations } = require('../../util/regulation-api');

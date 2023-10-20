@@ -1,6 +1,6 @@
 const { get, set } = require('lodash');
 const sha256 = require('sha256');
-const { NetworkError, NetworkInstrumentationError } = require('rs-integration-lib');
+const { NetworkError, NetworkInstrumentationError } = require('@rudderstack/integrations-lib');
 const { prepareProxyRequest, handleHttpRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../util/index');
 const { CONVERSION_ACTION_ID_CACHE_TTL } = require('./config');

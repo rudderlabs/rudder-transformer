@@ -1,5 +1,5 @@
 const lodash = require('lodash');
-const { InstrumentationError, ConfigurationError } = require('rs-integration-lib');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
   defaultPutRequestConfig,
   handleRtTfSingleEventError,

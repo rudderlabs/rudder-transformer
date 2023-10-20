@@ -4,7 +4,7 @@ const {
   InstrumentationError,
   TransformationError,
   ConfigurationError,
-} = require('rs-integration-lib');
+} = require('@rudderstack/integrations-lib');
 const {
   defaultRequestConfig,
   defaultPostRequestConfig,

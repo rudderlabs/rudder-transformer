@@ -1,5 +1,5 @@
 const sha256 = require('sha256');
-const { ConfigurationError } = require('rs-integration-lib');
+const { ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
   defaultRequestConfig,
   removeUndefinedAndNullValues,

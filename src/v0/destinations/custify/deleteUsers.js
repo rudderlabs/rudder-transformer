@@ -1,4 +1,8 @@
-const { ConfigurationError, InstrumentationError, NetworkError } = require('rs-integration-lib');
+const {
+  ConfigurationError,
+  InstrumentationError,
+  NetworkError,
+} = require('@rudderstack/integrations-lib');
 const { httpDELETE } = require('../../../adapters/network');
 const {
   processAxiosResponse,

@@ -1,7 +1,11 @@
 const set = require('set-value');
 const get = require('get-value');
 const sha256 = require('sha256');
-const { AbortedError, NetworkInstrumentationError, NetworkError } = require('rs-integration-lib');
+const {
+  AbortedError,
+  NetworkInstrumentationError,
+  NetworkError,
+} = require('@rudderstack/integrations-lib');
 const { prepareProxyRequest, httpSend, httpPOST } = require('../../../adapters/network');
 const {
   isHttpStatusSuccess,

@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 /* eslint-disable @typescript-eslint/naming-convention */
-const { TransformationError, InstrumentationError } = require('rs-integration-lib');
+const { TransformationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   defaultRequestConfig,

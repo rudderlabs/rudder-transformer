@@ -1,6 +1,10 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-param-reassign */
-const { ConfigurationError, InstrumentationError, NetworkError } = require('rs-integration-lib');
+const {
+  ConfigurationError,
+  InstrumentationError,
+  NetworkError,
+} = require('@rudderstack/integrations-lib');
 const { httpPOST } = require('../../../adapters/network');
 const {
   processAxiosResponse,

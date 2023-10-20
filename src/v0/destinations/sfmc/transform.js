@@ -1,5 +1,9 @@
 /* eslint-disable no-nested-ternary */
-const { NetworkError, ConfigurationError, InstrumentationError } = require('rs-integration-lib');
+const {
+  NetworkError,
+  ConfigurationError,
+  InstrumentationError,
+} = require('@rudderstack/integrations-lib');
 const myAxios = require('../../../util/myAxios');
 const { EventType } = require('../../../constants');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG, ENDPOINTS } = require('./config');

@@ -8,7 +8,7 @@ const {
   TransformationError,
   InstrumentationError,
   NetworkInstrumentationError,
-} = require('rs-integration-lib');
+} = require('@rudderstack/integrations-lib');
 const myAxios = require('../../../util/myAxios');
 const { EventType } = require('../../../constants');
 const { EndPoints, BASE_URL } = require('./config');

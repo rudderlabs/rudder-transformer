@@ -1,4 +1,4 @@
-const { PlatformError } = require('rs-integration-lib');
+const { PlatformError } = require('@rudderstack/integrations-lib');
 
 const RegulationApiUtils = {
   /**

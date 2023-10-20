@@ -1,5 +1,5 @@
 const get = require('get-value');
-const { InstrumentationError, TransformationError } = require('rs-integration-lib');
+const { InstrumentationError, TransformationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   defaultRequestConfig,

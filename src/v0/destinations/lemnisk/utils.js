@@ -1,4 +1,4 @@
-const { ConfigurationError } = require('rs-integration-lib');
+const { ConfigurationError } = require('@rudderstack/integrations-lib');
 
 /**
  * Fetches the platform type from the destination Config

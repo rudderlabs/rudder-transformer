@@ -1,7 +1,11 @@
 /* eslint-disable  array-callback-return */
 /* eslint-disable  no-empty */
 const get = require('get-value');
-const { InstrumentationError, TransformationError, NetworkError } = require('rs-integration-lib');
+const {
+  InstrumentationError,
+  TransformationError,
+  NetworkError,
+} = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG, getHeader } = require('./config');
 const {

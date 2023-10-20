@@ -1,5 +1,5 @@
 const { set } = require('lodash');
-const { InstrumentationError } = require('rs-integration-lib');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
   defaultRequestConfig,
   removeUndefinedAndNullValues,

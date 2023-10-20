@@ -1,5 +1,5 @@
 const lodash = require('lodash');
-const { ConfigurationError, InstrumentationError } = require('rs-integration-lib');
+const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { isDefinedAndNotNullAndNotEmpty } = require('../../util');
 const { MAX_IDENTIFIERS } = require('./config');
 

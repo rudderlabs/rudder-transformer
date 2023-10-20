@@ -5,7 +5,7 @@ const {
   RetryableError,
   UnhandledStatusCodeError,
   InstrumentationError,
-} = require('rs-integration-lib');
+} = require('@rudderstack/integrations-lib');
 const { httpGET, httpPOST } = require('../../../adapters/network');
 const {
   getDynamicErrorType,

@@ -1,5 +1,5 @@
 const { set } = require('lodash');
-const { TransformationError, InstrumentationError } = require('rs-integration-lib');
+const { TransformationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
   defaultRequestConfig,
   constructPayload,

@@ -1,4 +1,8 @@
-const { NetworkError, ConfigurationError, InstrumentationError } = require('rs-integration-lib');
+const {
+  NetworkError,
+  ConfigurationError,
+  InstrumentationError,
+} = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   getSubscriptionHistory,

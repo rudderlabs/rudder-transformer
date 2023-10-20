@@ -1,5 +1,5 @@
 const lodash = require('lodash');
-const { ConfigurationError, NetworkError } = require('rs-integration-lib');
+const { ConfigurationError, NetworkError } = require('@rudderstack/integrations-lib');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util');
 const {

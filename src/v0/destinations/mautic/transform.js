@@ -2,7 +2,7 @@ const {
   TransformationError,
   InstrumentationError,
   ConfigurationError,
-} = require('rs-integration-lib');
+} = require('@rudderstack/integrations-lib');
 const {
   defaultRequestConfig,
   constructPayload,

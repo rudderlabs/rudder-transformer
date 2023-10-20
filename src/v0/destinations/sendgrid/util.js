@@ -1,5 +1,9 @@
 const get = require('get-value');
-const { NetworkError, ConfigurationError, InstrumentationError } = require('rs-integration-lib');
+const {
+  NetworkError,
+  ConfigurationError,
+  InstrumentationError,
+} = require('@rudderstack/integrations-lib');
 const logger = require('../../../logger');
 const {
   isEmpty,

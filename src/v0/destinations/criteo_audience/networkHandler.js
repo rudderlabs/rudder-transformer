@@ -4,7 +4,7 @@ const {
   NetworkInstrumentationError,
   AbortedError,
   RetryableError,
-} = require('rs-integration-lib');
+} = require('@rudderstack/integrations-lib');
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util/index');
 const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');

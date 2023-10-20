@@ -2,7 +2,7 @@
 const lodash = require('lodash');
 const set = require('set-value');
 const get = require('get-value');
-const { NetworkError, AbortedError } = require('rs-integration-lib');
+const { NetworkError, AbortedError } = require('@rudderstack/integrations-lib');
 const myAxios = require('../../../util/myAxios');
 const { DEFAULT_BASE_ENDPOINT } = require('./config');
 const { getType, isDefinedAndNotNull, isObject } = require('../../util');

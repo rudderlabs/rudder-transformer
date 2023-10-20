@@ -1,7 +1,7 @@
 const lodash = require('lodash');
 const get = require('get-value');
 const { isEmpty } = require('lodash');
-const { ConfigurationError, InstrumentationError } = require('rs-integration-lib');
+const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const { ConfigCategory, IDENTIFY_MAX_BATCH_SIZE, mappingConfig, BASE_URL } = require('./config');
 const {

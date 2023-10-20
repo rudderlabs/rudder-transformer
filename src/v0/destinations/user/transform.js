@@ -2,7 +2,7 @@ const {
   TransformationError,
   InstrumentationError,
   NetworkInstrumentationError,
-} = require('rs-integration-lib');
+} = require('@rudderstack/integrations-lib');
 const {
   defaultRequestConfig,
   simpleProcessRouterDest,

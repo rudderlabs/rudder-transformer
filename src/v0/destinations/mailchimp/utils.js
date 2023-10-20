@@ -1,6 +1,6 @@
 const get = require('get-value');
 const md5 = require('md5');
-const { InstrumentationError, NetworkError } = require('rs-integration-lib');
+const { InstrumentationError, NetworkError } = require('@rudderstack/integrations-lib');
 const myAxios = require('../../../util/myAxios');
 const { MappedToDestinationKey } = require('../../../constants');
 const logger = require('../../../logger');

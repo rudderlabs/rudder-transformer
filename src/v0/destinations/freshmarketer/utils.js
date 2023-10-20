@@ -4,7 +4,7 @@ const {
   InstrumentationError,
   NetworkInstrumentationError,
   NetworkError,
-} = require('rs-integration-lib');
+} = require('@rudderstack/integrations-lib');
 const logger = require('../../../logger');
 const { httpPOST, httpGET } = require('../../../adapters/network');
 const {

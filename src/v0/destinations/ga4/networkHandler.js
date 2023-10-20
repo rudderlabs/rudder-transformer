@@ -1,4 +1,4 @@
-const { NetworkError } = require('rs-integration-lib');
+const { NetworkError } = require('@rudderstack/integrations-lib');
 const { proxyRequest, prepareProxyRequest } = require('../../../adapters/network');
 const {
   getDynamicErrorType,

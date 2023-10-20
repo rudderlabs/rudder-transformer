@@ -1,7 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const sha256 = require('sha256');
-const { TransformationError } = require('rs-integration-lib');
+const { TransformationError } = require('@rudderstack/integrations-lib');
 const { flattenJson, removeUndefinedAndNullAndEmptyValues } = require('../../util');
 const Message = require('../message');
 

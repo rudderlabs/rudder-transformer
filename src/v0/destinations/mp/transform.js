@@ -1,6 +1,6 @@
 const lodash = require('lodash');
 const get = require('get-value');
-const { InstrumentationError, ConfigurationError } = require('rs-integration-lib');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   base64Convertor,

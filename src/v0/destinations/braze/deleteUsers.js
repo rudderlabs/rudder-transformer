@@ -1,4 +1,4 @@
-const { NetworkError, ConfigurationError } = require('rs-integration-lib');
+const { NetworkError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { httpPOST } = require('../../../adapters/network');
 const {
   processAxiosResponse,

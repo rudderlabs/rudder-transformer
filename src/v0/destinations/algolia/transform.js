@@ -1,5 +1,9 @@
 const set = require('set-value');
-const { InstrumentationError, ConfigurationError, PlatformError } = require('rs-integration-lib');
+const {
+  InstrumentationError,
+  ConfigurationError,
+  PlatformError,
+} = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   getValueFromMessage,

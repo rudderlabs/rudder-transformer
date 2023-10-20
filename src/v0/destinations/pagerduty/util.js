@@ -1,6 +1,6 @@
 const get = require('get-value');
 const moment = require('moment');
-const { InstrumentationError } = require('rs-integration-lib');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
   SEVERITIES,
   EVENT_ACTIONS,

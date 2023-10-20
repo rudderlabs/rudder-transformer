@@ -1,4 +1,4 @@
-const { InstrumentationError, TransformationError } = require('rs-integration-lib');
+const { InstrumentationError, TransformationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
 const {

@@ -1,6 +1,6 @@
 const qs = require('qs');
 const sha256 = require('sha256');
-const { InstrumentationError, NetworkError } = require('rs-integration-lib');
+const { InstrumentationError, NetworkError } = require('@rudderstack/integrations-lib');
 const { generateJWTToken } = require('../../../util/jwtTokenGenerator');
 const { httpSend } = require('../../../adapters/network');
 const { isDefinedAndNotNullAndNotEmpty } = require('../../util');

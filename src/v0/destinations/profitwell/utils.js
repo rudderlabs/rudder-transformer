@@ -1,5 +1,8 @@
 const get = require('get-value');
-const { InstrumentationError, NetworkInstrumentationError } = require('rs-integration-lib');
+const {
+  InstrumentationError,
+  NetworkInstrumentationError,
+} = require('@rudderstack/integrations-lib');
 const { httpGET } = require('../../../adapters/network');
 const {
   toUnixTimestamp,

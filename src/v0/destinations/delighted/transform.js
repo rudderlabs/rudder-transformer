@@ -2,7 +2,7 @@ const {
   InstrumentationError,
   ConfigurationError,
   NetworkInstrumentationError,
-} = require('rs-integration-lib');
+} = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   getFieldValueFromMessage,

@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-const { NetworkError } = require('rs-integration-lib');
+const { NetworkError } = require('@rudderstack/integrations-lib');
 const { isHttpStatusSuccess } = require('../../util/index');
 const { proxyRequest, prepareProxyRequest } = require('../../../adapters/network');
 const {

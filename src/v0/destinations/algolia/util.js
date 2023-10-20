@@ -1,4 +1,4 @@
-const { InstrumentationError } = require('rs-integration-lib');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const logger = require('../../../logger');
 const { EVENT_TYPES } = require('./config');
 

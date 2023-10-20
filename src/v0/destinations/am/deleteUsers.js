@@ -1,5 +1,5 @@
 const btoa = require('btoa');
-const { ConfigurationError, NetworkError } = require('rs-integration-lib');
+const { ConfigurationError, NetworkError } = require('@rudderstack/integrations-lib');
 const { httpPOST } = require('../../../adapters/network');
 const tags = require('../../util/tags');
 const {

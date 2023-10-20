@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 const { v5 } = require('uuid');
 const sha256 = require('sha256');
-const { TransformationError } = require('rs-integration-lib');
+const { TransformationError } = require('@rudderstack/integrations-lib');
 const stats = require('../../../util/stats');
 const {
   constructPayload,

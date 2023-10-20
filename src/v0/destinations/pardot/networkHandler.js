@@ -1,4 +1,4 @@
-const { NetworkError } = require('rs-integration-lib');
+const { NetworkError } = require('@rudderstack/integrations-lib');
 const { removeUndefinedValues } = require('../../util');
 const { prepareProxyRequest, getPayloadData, httpSend } = require('../../../adapters/network');
 const {

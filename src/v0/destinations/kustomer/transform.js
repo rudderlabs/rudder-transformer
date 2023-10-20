@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 const get = require('get-value');
-const { TransformationError, InstrumentationError } = require('rs-integration-lib');
+const { TransformationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG, DEFAULT_BASE_ENDPOINT } = require('./config');
 const {

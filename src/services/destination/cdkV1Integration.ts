@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ConfigFactory, Executor, RudderBaseConfig } from 'rudder-transformer-cdk';
 import path from 'path';
-import { TransformationError } from 'rs-integration-lib';
+import { TransformationError } from '@rudderstack/integrations-lib';
 import IntegrationDestinationService from '../../interfaces/DestinationService';
 import {
   DeliveryResponse,

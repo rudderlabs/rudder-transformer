@@ -1,7 +1,7 @@
 const lodash = require('lodash');
 const get = require('get-value');
 const jsonSize = require('json-size');
-const { InstrumentationError, ConfigurationError } = require('rs-integration-lib');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
   isAppleFamily,
   constructPayload,

@@ -1,4 +1,4 @@
-const { InstrumentationError, ConfigurationError } = require('rs-integration-lib');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { BASE_URL, ConfigCategory, mappingConfig } = require('./config');
 const { defaultRequestConfig, constructPayload, simpleProcessRouterDest } = require('../../util');
 

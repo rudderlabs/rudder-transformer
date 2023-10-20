@@ -3,7 +3,7 @@ const {
   RetryableError,
   NetworkError,
   TransformationError,
-} = require('rs-integration-lib');
+} = require('@rudderstack/integrations-lib');
 const { handleHttpRequest } = require('../../../adapters/network');
 const tags = require('../../util/tags');
 const { isHttpStatusSuccess, generateUUID } = require('../../util');

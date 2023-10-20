@@ -1,4 +1,8 @@
-const { InstrumentationError, ConfigurationError, NetworkError } = require('rs-integration-lib');
+const {
+  InstrumentationError,
+  ConfigurationError,
+  NetworkError,
+} = require('@rudderstack/integrations-lib');
 const { isHttpStatusSuccess } = require('../../../v0/util');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../../v0/util/tags');

@@ -1,4 +1,4 @@
-const { NetworkError } = require('rs-integration-lib');
+const { NetworkError } = require('@rudderstack/integrations-lib');
 const myAxios = require('../../../util/myAxios');
 const { ENDPOINTS } = require('./config');
 const tags = require('../../util/tags');

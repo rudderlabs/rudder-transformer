@@ -4,7 +4,7 @@ const {
   ConfigurationError,
   TransformationError,
   InstrumentationError,
-} = require('rs-integration-lib');
+} = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   constructPayload,

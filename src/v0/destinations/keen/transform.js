@@ -2,7 +2,7 @@
 /* eslint-disable no-nested-ternary */
 const isIp = require('is-ip');
 const validUrl = require('valid-url');
-const { InstrumentationError } = require('rs-integration-lib');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   defaultPostRequestConfig,

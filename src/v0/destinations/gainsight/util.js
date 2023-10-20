@@ -1,4 +1,8 @@
-const { ConfigurationError, RetryableError, NetworkError } = require('rs-integration-lib');
+const {
+  ConfigurationError,
+  RetryableError,
+  NetworkError,
+} = require('@rudderstack/integrations-lib');
 const myAxios = require('../../../util/myAxios');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const logger = require('../../../logger');

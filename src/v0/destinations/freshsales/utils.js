@@ -4,7 +4,7 @@ const {
   NetworkInstrumentationError,
   InstrumentationError,
   NetworkError,
-} = require('rs-integration-lib');
+} = require('@rudderstack/integrations-lib');
 const { httpPOST, httpGET } = require('../../../adapters/network');
 const {
   processAxiosResponse,

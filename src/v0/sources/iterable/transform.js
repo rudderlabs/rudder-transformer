@@ -1,7 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const md5 = require('md5');
-const { TransformationError } = require('rs-integration-lib');
+const { TransformationError } = require('@rudderstack/integrations-lib');
 const Message = require('../message');
 
 // import mapping json using JSON.parse to preserve object key order

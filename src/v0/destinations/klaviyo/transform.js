@@ -2,7 +2,7 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable  array-callback-return */
 const get = require('get-value');
-const { ConfigurationError, InstrumentationError } = require('rs-integration-lib');
+const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType, WhiteListedTraits, MappedToDestinationKey } = require('../../../constants');
 const {
   CONFIG_CATEGORIES,
@@ -373,8 +373,9 @@ const processRouterDest = async (inputs, reqMetadata) => {
           eventDestination,
           false,
           HTTP_STATUS_CODES.SUPPRESS_EVENTS,
-        ), error
-      }
+        ),
+        error,
+      };
     }
     return getSuccessRespEvents(message, [metadata], eventDestination);
   });

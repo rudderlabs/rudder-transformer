@@ -1,7 +1,7 @@
 const lodash = require('lodash');
 const flatten = require('flat');
 
-const { InstrumentationError } = require('rs-integration-lib');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { isEmpty, isObject } = require('../../util');
 const { EventType } = require('../../../constants');
 

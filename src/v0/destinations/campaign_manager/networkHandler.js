@@ -1,4 +1,4 @@
-const { AbortedError, RetryableError, NetworkError } = require('rs-integration-lib');
+const { AbortedError, RetryableError, NetworkError } = require('@rudderstack/integrations-lib');
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../util/index');
 

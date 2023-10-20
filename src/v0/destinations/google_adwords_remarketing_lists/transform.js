@@ -1,6 +1,6 @@
 const sha256 = require('sha256');
 const get = require('get-value');
-const { InstrumentationError, ConfigurationError } = require('rs-integration-lib');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const logger = require('../../../logger');
 const {
   isDefinedAndNotNullAndNotEmpty,

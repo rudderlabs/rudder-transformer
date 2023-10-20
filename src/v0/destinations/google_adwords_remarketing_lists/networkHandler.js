@@ -1,4 +1,4 @@
-const { NetworkError } = require('rs-integration-lib');
+const { NetworkError } = require('@rudderstack/integrations-lib');
 const { httpSend, prepareProxyRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../util/index');
 

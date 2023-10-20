@@ -4,7 +4,7 @@ const {
   InstrumentationError,
   OAuthSecretError,
   ConfigurationError,
-} = require('rs-integration-lib');
+} = require('@rudderstack/integrations-lib');
 const {
   constructPayload,
   defaultRequestConfig,

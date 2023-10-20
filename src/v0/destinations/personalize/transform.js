@@ -1,5 +1,5 @@
 const lodash = require('lodash');
-const { ConfigurationError, InstrumentationError } = require('rs-integration-lib');
+const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { KEY_CHECK_LIST, MANDATORY_PROPERTIES } = require('./config');
 const { EventType } = require('../../../constants');
 const {

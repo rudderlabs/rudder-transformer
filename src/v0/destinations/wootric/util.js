@@ -1,5 +1,5 @@
 const qs = require('qs');
-const { InstrumentationError, NetworkError } = require('rs-integration-lib');
+const { InstrumentationError, NetworkError } = require('@rudderstack/integrations-lib');
 const { httpGET, httpPOST } = require('../../../adapters/network');
 const {
   getDynamicErrorType,

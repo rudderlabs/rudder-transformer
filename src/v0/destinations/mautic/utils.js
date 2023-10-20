@@ -1,6 +1,10 @@
 /* eslint-disable no-return-assign, no-param-reassign, no-restricted-syntax */
 const get = require('get-value');
-const { NetworkError, InstrumentationError, ConfigurationError } = require('rs-integration-lib');
+const {
+  NetworkError,
+  InstrumentationError,
+  ConfigurationError,
+} = require('@rudderstack/integrations-lib');
 const { getFieldValueFromMessage } = require('../../util');
 const { BASE_URL, lookupFieldMap } = require('./config');
 const { httpGET } = require('../../../adapters/network');

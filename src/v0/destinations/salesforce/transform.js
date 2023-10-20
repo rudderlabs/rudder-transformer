@@ -1,6 +1,9 @@
 const get = require('get-value');
 const cloneDeep = require('lodash/cloneDeep');
-const { InstrumentationError, NetworkInstrumentationError } = require('rs-integration-lib');
+const {
+  InstrumentationError,
+  NetworkInstrumentationError,
+} = require('@rudderstack/integrations-lib');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 const {
   SF_API_VERSION,

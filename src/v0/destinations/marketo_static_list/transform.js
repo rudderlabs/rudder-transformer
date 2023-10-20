@@ -1,6 +1,6 @@
 const lodash = require('lodash');
 const cloneDeep = require('lodash/cloneDeep');
-const { InstrumentationError, UnauthorizedError } = require('rs-integration-lib');
+const { InstrumentationError, UnauthorizedError } = require('@rudderstack/integrations-lib');
 const {
   defaultPostRequestConfig,
   defaultDeleteRequestConfig,

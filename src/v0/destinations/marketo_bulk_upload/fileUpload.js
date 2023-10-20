@@ -6,7 +6,7 @@ const {
   ConfigurationError,
   RetryableError,
   TransformationError,
-} = require('rs-integration-lib');
+} = require('@rudderstack/integrations-lib');
 const {
   getAccessToken,
   getMarketoFilePath,

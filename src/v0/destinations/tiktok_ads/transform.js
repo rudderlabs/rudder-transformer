@@ -4,7 +4,7 @@ const _ = require('lodash');
 const { SHA256 } = require('crypto-js');
 const get = require('get-value');
 const set = require('set-value');
-const { ConfigurationError, InstrumentationError } = require('rs-integration-lib');
+const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   constructPayload,

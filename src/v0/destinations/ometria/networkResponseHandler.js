@@ -1,4 +1,4 @@
-const { NetworkError } = require('rs-integration-lib');
+const { NetworkError } = require('@rudderstack/integrations-lib');
 const { getDynamicErrorType, trimResponse } = require('../../../adapters/utils/networkUtils');
 const { isDefinedAndNotNull } = require('../../util');
 const { isEmpty } = require('../../util/index');

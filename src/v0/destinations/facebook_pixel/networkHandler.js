@@ -1,6 +1,6 @@
 const { isEmpty } = require('lodash');
 const get = require('get-value');
-const { NetworkError } = require('rs-integration-lib');
+const { NetworkError } = require('@rudderstack/integrations-lib');
 const {
   processAxiosResponse,
   getDynamicErrorType,

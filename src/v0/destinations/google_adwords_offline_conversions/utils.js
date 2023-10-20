@@ -1,7 +1,11 @@
 const sha256 = require('sha256');
 const { get, set, cloneDeep } = require('lodash');
 const moment = require('moment');
-const { AbortedError, ConfigurationError, InstrumentationError } = require('rs-integration-lib');
+const {
+  AbortedError,
+  ConfigurationError,
+  InstrumentationError,
+} = require('@rudderstack/integrations-lib');
 const { httpPOST } = require('../../../adapters/network');
 const {
   isHttpStatusSuccess,

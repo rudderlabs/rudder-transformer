@@ -1,6 +1,6 @@
 const { set, get } = require('lodash');
 const moment = require('moment');
-const { InstrumentationError, ConfigurationError } = require('rs-integration-lib');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   getHashFromArrayWithDuplicate,

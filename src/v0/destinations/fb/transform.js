@@ -1,7 +1,7 @@
 const get = require('get-value');
 const set = require('set-value');
 const sha256 = require('sha256');
-const { InstrumentationError } = require('rs-integration-lib');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   removeUndefinedValues,

@@ -2,7 +2,7 @@ const {
   NetworkInstrumentationError,
   InstrumentationError,
   NetworkError,
-} = require('rs-integration-lib');
+} = require('@rudderstack/integrations-lib');
 const myAxios = require('../../../util/myAxios');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { getValueFromMessage } = require('../../util');

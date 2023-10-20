@@ -10,7 +10,7 @@ const {
   InstrumentationError,
   TransformationError,
   ConfigurationError,
-} = require('rs-integration-lib');
+} = require('@rudderstack/integrations-lib');
 const tags = require('../../v0/util/tags');
 const { generateErrorObject } = require('../../v0/util');
 

@@ -1,5 +1,5 @@
 const _ = require('lodash');
-const { InstrumentationError } = require('rs-integration-lib');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { getVersionedUtils } = require('./util');
 
 const identityEnabledWarehouses = ['snowflake', 'bq'];

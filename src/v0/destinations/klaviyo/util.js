@@ -1,6 +1,6 @@
 const { defaultRequestConfig } = require('rudder-transformer-cdk/build/utils');
 const lodash = require('lodash');
-const { NetworkError, InstrumentationError } = require('rs-integration-lib');
+const { NetworkError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { WhiteListedTraits } = require('../../../constants');
 
 const {

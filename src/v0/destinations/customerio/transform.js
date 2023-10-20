@@ -1,7 +1,7 @@
 const get = require('get-value');
 const btoa = require('btoa');
 
-const { InstrumentationError } = require('rs-integration-lib');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 
 const {

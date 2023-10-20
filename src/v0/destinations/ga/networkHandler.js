@@ -1,4 +1,4 @@
-const { NetworkError, InvalidAuthTokenError } = require('rs-integration-lib');
+const { NetworkError, InvalidAuthTokenError } = require('@rudderstack/integrations-lib');
 const {
   REFRESH_TOKEN,
   AUTH_STATUS_INACTIVE,

@@ -1,5 +1,5 @@
 const { get } = require('lodash');
-const { InstrumentationError } = require('rs-integration-lib');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   defaultRequestConfig,

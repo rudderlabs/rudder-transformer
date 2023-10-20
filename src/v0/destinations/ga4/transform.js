@@ -3,7 +3,7 @@ const {
   ConfigurationError,
   InstrumentationError,
   UnsupportedEventError,
-} = require('rs-integration-lib');
+} = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   isEmptyObject,

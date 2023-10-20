@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-const { InstrumentationError, TransformationError } = require('rs-integration-lib');
+const { InstrumentationError, TransformationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   CONFIG_CATEGORIES,

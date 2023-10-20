@@ -1,5 +1,9 @@
 const { isNumber } = require('lodash');
-const { NetworkError, ConfigurationError, InstrumentationError } = require('rs-integration-lib');
+const {
+  NetworkError,
+  ConfigurationError,
+  InstrumentationError,
+} = require('@rudderstack/integrations-lib');
 const { httpPOST } = require('../../../adapters/network');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const { getDestinationExternalID, isDefinedAndNotNull } = require('../../util');

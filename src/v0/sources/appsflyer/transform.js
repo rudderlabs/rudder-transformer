@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs');
-const { TransformationError } = require('rs-integration-lib');
+const { TransformationError } = require('@rudderstack/integrations-lib');
 const Message = require('../message');
 const { generateUUID } = require('../../util');
 

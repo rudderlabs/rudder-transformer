@@ -1,6 +1,6 @@
 const get = require('get-value');
 const md5 = require('md5');
-const { ConfigurationError, InstrumentationError } = require('rs-integration-lib');
+const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const { Event, GA_ENDPOINT, ConfigCategory, mappingConfig, nameToEventMap } = require('./config');
 const {

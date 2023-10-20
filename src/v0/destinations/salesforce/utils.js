@@ -1,4 +1,4 @@
-const { RetryableError, ThrottledError, AbortedError } = require('rs-integration-lib');
+const { RetryableError, ThrottledError, AbortedError } = require('@rudderstack/integrations-lib');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util');
 const Cache = require('../../util/cache');

@@ -1,5 +1,5 @@
 const get = require('get-value');
-const { InstrumentationError, NetworkError } = require('rs-integration-lib');
+const { InstrumentationError, NetworkError } = require('@rudderstack/integrations-lib');
 const {
   ConfigCategory,
   MappingConfig,

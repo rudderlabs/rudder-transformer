@@ -54,7 +54,7 @@ export const data = [
               Enabled: true,
               Transformations: [],
             },
-            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
+            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 1 },
             message: {
               anonymousId: '8d872292709c6fbe',
               channel: 'mobile',
@@ -192,6 +192,7 @@ export const data = [
             },
             metadata: {
               destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+              jobId: 1,
             },
             statusCode: 200,
           },
@@ -254,7 +255,7 @@ export const data = [
               Enabled: true,
               Transformations: [],
             },
-            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
+            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 2 },
             message: {
               anonymousId: '8d872292709c6fbe',
               channel: 'mobile',
@@ -409,6 +410,7 @@ export const data = [
             },
             metadata: {
               destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+              jobId: 2,
             },
             statusCode: 200,
           },

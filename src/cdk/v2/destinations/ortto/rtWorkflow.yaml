@@ -1,7 +1,4 @@
 bindings:
-  - path: ../../../../v0/destinations/pinterest_tag/config
-  - name: batchMultiplexedEvents
-    path: ../../../../v0/util/index
   - path: ./utils
   - path: ./config
 
@@ -65,6 +62,5 @@ steps:
       })[];
 
   - name: finalPayload
-    condition: $.outputs.apiVersion === {{$.API_VERSION.v3}}
     template: |
       [...$.outputs.batchSuccessfulEvents, ...$.outputs.failedEvents]

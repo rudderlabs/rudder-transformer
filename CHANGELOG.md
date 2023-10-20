@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.46.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.46.2...v1.46.3) (2023-10-20)
+
+
+### Bug Fixes
+
+* deduplication key issue ([#2757](https://github.com/rudderlabs/rudder-transformer/issues/2757)) ([bc76305](https://github.com/rudderlabs/rudder-transformer/commit/bc76305e3fcc3c9ac69e639e90a37499566d0837))
+
 ### [1.46.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.46.1...v1.46.2) (2023-10-19)
 
 

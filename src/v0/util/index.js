@@ -1475,7 +1475,7 @@ const getErrorStatusCode = (error, defaultStatusCode = HTTP_STATUS_CODES.INTERNA
 function generateErrorObject(error, defTags = {}, shouldEnrichErrorMessage = true) {
   let errObject = error;
   let errorMessage = error.message;
-  if (errorMessage?.includes('message')) {
+  if (typeof errorMessage === 'object' && errorMessage?.message) {
     delete errorMessage?.message;
   }
   if (shouldEnrichErrorMessage) {

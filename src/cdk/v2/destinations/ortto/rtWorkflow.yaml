@@ -47,7 +47,7 @@ steps:
           "version": "1",
           "type": "REST",
           "method": "POST",
-          "endpoint": ~r batch.message.people ? $.IDENTIFY_ENDPOINT[$.originalInput[0].destination.Config.instanceRegion] : $.TRACK_ENDPOINT[$.originalInput[0].destination.Config.instanceRegion], 
+          "endpoint": batch.message.people ? $.IDENTIFY_ENDPOINT[$.originalInput[0].destination.Config.instanceRegion] : $.TRACK_ENDPOINT[$.originalInput[0].destination.Config.instanceRegion], 
           "headers": {
             "X-Api-Key": .destination.Config.privateApiKey,
             "Content-Type": "application/json",

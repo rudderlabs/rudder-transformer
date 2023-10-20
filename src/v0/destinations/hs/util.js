@@ -158,16 +158,14 @@ const validatePayloadDataTypes = (propertyMap, hsSupportedKey, value, traitsKey)
 
   if (propertyMap[hsSupportedKey] === 'bool' && typeof propValue === 'object') {
     throw new InstrumentationError(
-      `Property ${traitsKey} data type ${typeof propValue} is not matching with Hubspot property data type ${
-        propertyMap[hsSupportedKey]
+      `Property ${traitsKey} data type ${typeof propValue} is not matching with Hubspot property data type ${propertyMap[hsSupportedKey]
       }`,
     );
   }
 
   if (propertyMap[hsSupportedKey] === 'number' && typeof propValue !== 'number') {
     throw new InstrumentationError(
-      `Property ${traitsKey} data type ${typeof propValue} is not matching with Hubspot property data type ${
-        propertyMap[hsSupportedKey]
+      `Property ${traitsKey} data type ${typeof propValue} is not matching with Hubspot property data type ${propertyMap[hsSupportedKey]
       }`,
     );
   }
@@ -487,13 +485,7 @@ const getExistingData = async (inputs, destination) => {
   inputs.map(async (input) => {
     const { message } = input;
     const { destinationExternalId } = getDestinationExternalIDInfoForRetl(message, DESTINATION);
-
-    if(typeof destinationExternalId === 'string'){
-      values.push(destinationExternalId.toLowerCase());
-    } else{
-      const value = typeof destinationExternalId === 'object' ? JSON.stringify(destinationExternalId).toLowerCase() : destinationExternalId.toString();
-      values.push(value);
-    }
+    values.push(destinationExternalId.toString().toLowerCase());
   });
 
   values = Array.from(new Set(values));
@@ -540,15 +532,15 @@ const getExistingData = async (inputs, destination) => {
     searchResponse =
       Config.authorizationType === 'newPrivateAppApi'
         ? await httpPOST(url, requestData, requestOptions, {
-            destType: 'hs',
-            feature: 'transformation',
-            endpointPath,
-          })
+          destType: 'hs',
+          feature: 'transformation',
+          endpointPath,
+        })
         : await httpPOST(url, requestData, {
-            destType: 'hs',
-            feature: 'transformation',
-            endpointPath,
-          });
+          destType: 'hs',
+          feature: 'transformation',
+          endpointPath,
+        });
     searchResponse = processAxiosResponse(searchResponse);
 
     if (searchResponse.status !== 200) {
@@ -643,6 +635,31 @@ const getHsSearchId = (message) => {
   return { hsSearchId };
 };
 
+/**
+ * returns updated traits
+ * @param {*} propertyMap 
+ * @param {*} traits 
+ * @param {*} destination 
+ */
+const populateTraits = async (propertyMap, traits, destination) => {
+  const populatedTraits = traits;
+  let propertyToTypeMap = propertyMap;
+  if (!propertyToTypeMap) {
+    // fetch HS properties
+    propertyToTypeMap = await getProperties(destination);
+  }
+
+  const keys = Object.keys(populatedTraits);
+  keys.forEach((key) => {
+    const value = populatedTraits[key];
+    if (propertyToTypeMap[key] === 'date') {
+      populatedTraits[key] = getUTCMidnightTimeStampValue(value);
+    }
+  })
+
+  return populatedTraits;
+}
+
 module.exports = {
   validateDestinationConfig,
   formatKey,
@@ -657,4 +674,5 @@ module.exports = {
   getHsSearchId,
   validatePayloadDataTypes,
   getUTCMidnightTimeStampValue,
+  populateTraits,
 };

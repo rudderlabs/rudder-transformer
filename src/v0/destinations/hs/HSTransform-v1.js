@@ -34,8 +34,7 @@ const {
   getEmailAndUpdatedProps,
   formatPropertyValueForIdentify,
   getHsSearchId,
-  getUTCMidnightTimeStampValue,
-  getProperties,
+  populateTraits,
 } = require('./util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -54,7 +53,7 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
  */
 const processLegacyIdentify = async (message, destination, propertyMap) => {
   const { Config } = destination;
-  const traits = getFieldValueFromMessage(message, 'traits');
+  let traits = getFieldValueFromMessage(message, 'traits');
   const mappedToDestination = get(message, MappedToDestinationKey);
   const operation = get(message, 'context.hubspotOperation');
   // if mappedToDestination is set true, then add externalId to traits
@@ -83,20 +82,7 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
       response.method = defaultPatchRequestConfig.requestMethod;
     }
     
-    if (!propertyMap) {
-      // fetch HS properties
-      // eslint-disable-next-line no-param-reassign
-      propertyMap = await getProperties(destination);
-    }
-
-    const keys = Object.keys(traits);
-    keys.forEach((key) => {
-      const value = traits[key];
-      if (propertyMap[key] === 'date') {
-        traits[key] = getUTCMidnightTimeStampValue(value);
-      }
-    })
-
+    traits = await populateTraits(propertyMap, traits, destination);
     response.body.JSON = removeUndefinedAndNullValues({ properties: traits });
     response.source = 'rETL';
     response.operation = operation;

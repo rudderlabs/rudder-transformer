@@ -145,7 +145,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.ap3api.com/v1/person/merge',
               headers: {
-                'DY-API-Key': 'dummyApiKey',
+                'X-Api-Key': 'dummyApiKey',
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -356,7 +356,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.ap3api.com/v1/activities/create',
               headers: {
-                'DY-API-Key': 'dummyApiKey',
+                'X-Api-Key': 'dummyApiKey',
                 'Content-Type': 'application/json',
               },
               params: {},

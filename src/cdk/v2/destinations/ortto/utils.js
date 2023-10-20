@@ -27,7 +27,7 @@ const groupEventsByEndpoint = (events) => {
       const { destination, metadata } = result;
       const message = CommonUtils.toArray(result.message);
       message.forEach((msg) => {
-        const endpoint = Object.keys(eventMap).find((key) => msg.endpoint.includes(key));
+        const endpoint = Object.keys(eventMap).find((key) => msg.endpoint?.includes(key));
         if (endpoint) {
           eventMap[endpoint].push({ message: msg.body.JSON, destination, metadata });
         }

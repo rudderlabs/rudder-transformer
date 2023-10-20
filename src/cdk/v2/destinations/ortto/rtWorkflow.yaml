@@ -16,8 +16,8 @@ steps:
     loopOverInput: true
   - name: successfulEvents
     template: |
-      $.outputs.transform#idx{ "output" in .}.({
-        "message": .output[],
+      $.outputs.transform#idx.output.({
+        "message": .[],
         "destination": ^ [idx].destination,
         "metadata": ^ [idx].metadata
       })[]
@@ -34,12 +34,14 @@ steps:
 
   - name: batchSuccessfulEvents
     description: Batches the successfulEvents using V3 API
+    condition: $.outputs.successfulEvents.length
     template: |
       let batches = $.batchEvents($.outputs.successfulEvents);
+      console.log("abc",JSON.stringify(batches,null,2))
       batches@batch.({
         "batchedRequest": {
           "body": {
-            "JSON": ~r batch.message,
+            "JSON": batch.message,
             "JSON_ARRAY": {},
             "XML": {},
             "FORM": {}
@@ -55,11 +57,14 @@ steps:
           "params": {},
           "files": {}
         },
-        "metadata": ~r batch.metadata,
+        "metadata": batch.metadata,
         "batched": true,
         "statusCode": 200,
-        "destination": ~r batch.destination
+        "destination": batch.destination
       })[];
+    else:
+      name: returnEmptyOuput
+      template: '[]'
 
   - name: finalPayload
     template: |

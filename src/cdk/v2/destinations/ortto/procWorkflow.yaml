@@ -84,7 +84,7 @@ steps:
             customEvent = event === .rsEventName ? .orttoEventName : null;
           )
           $.assert(customEvent, "Event names is not mapped");
-          customEvent = "act:cm:"+customEvent.trim().toLowerCase().replace(new RegExp('\\s+', 'g'),'-');
+          "act:cm:"+customEvent.trim().toLowerCase().replace(new RegExp('\\s+', 'g'),'-');
 
       - name: getAttributes
         template: |
@@ -101,8 +101,8 @@ steps:
             "activity_id": $.outputs.prepareTrackPayload.getTrimmedEvent,
             "attributes": $.outputs.prepareTrackPayload.getAttributes,
             "location": {"source_ip": .message.context.ip}
-          }
-          const trackPayoad = {   
+          };
+          {   
             "activities":[activityObj],
             "merge_by": ["str::ei", "str::email"]
           }
@@ -122,4 +122,4 @@ steps:
           "X-Api-Key": .destination.Config.privateApiKey,
           "Content-Type": "application/json"
         };
-      finalResponse = response;
+      response;

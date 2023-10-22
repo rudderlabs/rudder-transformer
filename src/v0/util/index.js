@@ -32,7 +32,8 @@ const {
   REFRESH_TOKEN,
   AUTH_STATUS_INACTIVE,
 } = require('../../adapters/networkhandler/authConstants');
-const { FEATURE_FILTER_CODE } = require('./constant');
+const { FEATURE_FILTER_CODE, FEATURE_GZIP_SUPPORT } = require('./constant');
+
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -2057,6 +2058,15 @@ const validateEventType = (event) => {
     throw new InstrumentationError('Event is a required field and should be a string');
   }
 };
+
+const IsGzipSupported = (reqMetadata = {}) => {
+  if (reqMetadata && typeof reqMetadata === 'object' && !Array.isArray(reqMetadata)) {
+    const { features } = reqMetadata;
+    return !!features?.[FEATURE_GZIP_SUPPORT];
+  }
+  return false;
+};
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -2163,4 +2173,5 @@ module.exports = {
   getAuthErrCategoryFromErrDetailsAndStCode,
   getAuthErrCategoryFromStCode,
   isNewStatusCodesAccepted,
+  IsGzipSupported,
 };

@@ -96,6 +96,12 @@ export default class UserTransformService {
 
           const transformedEventsWithMetadata: ProcessorTransformationResponse[] = [];
           destTransformedEvents.forEach((ev) => {
+            // add messageId to output set
+            if (ev.metadata?.messageId) {
+              messageIdsInOutputSet.add(ev.metadata.messageId);
+            } else if (ev.metadata?.messageIds) {
+              ev.metadata.messageIds.forEach((id) => messageIdsInOutputSet.add(id));
+            }
             if (ev.error) {
               transformedEventsWithMetadata.push({
                 statusCode: 400,
@@ -113,12 +119,6 @@ export default class UserTransformService {
                 metadata: isEmpty(ev.metadata) ? commonMetadata : ev.metadata,
               } as ProcessorTransformationResponse);
               return;
-            }
-            // add messageId to output set
-            if (ev.metadata?.messageId) {
-              messageIdsInOutputSet.add(ev.metadata.messageId);
-            } else if (ev.metadata?.messageIds) {
-              ev.metadata.messageIds.forEach((id) => messageIdsInOutputSet.add(id));
             }
             transformedEventsWithMetadata.push({
               output: ev.transformedEvent,

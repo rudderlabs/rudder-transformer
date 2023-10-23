@@ -846,7 +846,10 @@
       "body": {
         "JSON": {
           "event_type": "VIEW_CONTENT",
-          "item_ids": ["123", "123"],
+          "item_ids": [
+            "123",
+            "123"
+          ],
           "price": "56",
           "country": "IN",
           "hashed_zip": "cbb2704f5b334a0cec32e5463d1fd9355f6ef73987bfe0ebb8389b7617452152",
@@ -957,7 +960,10 @@
       "body": {
         "JSON": {
           "event_type": "START_CHECKOUT",
-          "item_ids": ["123", "123"],
+          "item_ids": [
+            "123",
+            "123"
+          ],
           "price": "42",
           "hashed_email": "73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2",
           "hashed_phone_number": "bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492",
@@ -2762,7 +2768,10 @@
       "body": {
         "JSON": {
           "event_type": "PURCHASE",
-          "item_ids": ["123", "123"],
+          "item_ids": [
+            "123",
+            "123"
+          ],
           "client_dedup_id": "1234",
           "hashed_ip_address": "12ca17b49af2289436f303e0166030a21e525d266e209267433801a8fd4071a0",
           "price": "100",
@@ -2873,7 +2882,10 @@
       "body": {
         "JSON": {
           "event_type": "VIEW_CONTENT",
-          "item_ids": ["123", "123"],
+          "item_ids": [
+            "123",
+            "123"
+          ],
           "price": "100",
           "hashed_email": "73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2",
           "hashed_phone_number": "bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492",
@@ -2982,7 +2994,10 @@
       "body": {
         "JSON": {
           "event_type": "VIEW_CONTENT",
-          "item_ids": ["123", "123"],
+          "item_ids": [
+            "123",
+            "123"
+          ],
           "price": "100",
           "hashed_email": "73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2",
           "hashed_phone_number": "bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492",

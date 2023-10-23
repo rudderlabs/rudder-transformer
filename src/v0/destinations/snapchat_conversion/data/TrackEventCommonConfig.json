@@ -1,0 +1,90 @@
+[
+  {
+    "destKey": "description",
+    "sourceKeys": "properties.description",
+    "required": false
+  },
+  {
+    "destKey": "brands",
+    "sourceKeys": "properties.brands",
+    "required": false,
+    "metadata": {
+      "type": "IsArray"
+    }
+  },
+  {
+    "destKey": "event_tag",
+    "sourceKeys": "properties.event_tag",
+    "required": false
+  },
+  {
+    "destKey": "click_id",
+    "sourceKeys": "properties.click_id",
+    "required": false
+  },
+  {
+    "destKey": "level",
+    "sourceKeys": "properties.level",
+    "required": false
+  },
+  {
+    "destKey": "uuid_c1",
+    "sourceKeys": "properties.uuid_c1",
+    "required": false
+  },
+  {
+    "destKey": "customer_status",
+    "sourceKeys": "properties.customer_status",
+    "required": false
+  },
+  {
+    "destKey": "data",
+    "sourceKeys": "properties.data",
+    "required": false
+  },
+  {
+    "destKey": "att_status",
+    "sourceKeys": "properties.att_status",
+    "required": false
+  },
+  {
+    "destKey": "sign_up_method",
+    "sourceKeys": "properties.sign_up_method",
+    "required": false
+  },
+  {
+    "destKey": "advertiser_cookie_1",
+    "sourceKeys": "properties.advertiser_cookie_1",
+    "required": false
+  },
+  {
+    "destKey": "delivery_method",
+    "sourceKeys": "properties.delivery_method",
+    "required": false
+  },
+  {
+    "sourceKeys": "context.device.model",
+    "destKey": "device_model",
+    "required": false
+  },
+  {
+    "sourceKeys": "country",
+    "destKey": "country",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "sourceKeys": "region",
+    "destKey": "region",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "sourceKeys": "context.userAgent",
+    "destKey": "user_agent",
+    "metadata": {
+      "type": "toLower"
+    },
+    "required": false
+  }
+]

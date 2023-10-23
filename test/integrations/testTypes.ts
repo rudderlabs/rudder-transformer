@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios';
 import { ZodTypeAny, z } from 'zod';
 import MockAdapter from 'axios-mock-adapter';
-
+import {FEATURES} from '../../src/v0/util/tags';
 export interface requestType {
   method: string;
   body?: any;
@@ -58,7 +58,7 @@ export const eventResponseSchema = z.union([
         destType: z.string().optional(),
         errorCategory: z.string().optional(),
         errorType: z.string().optional(),
-        feature: z.string().optional(),
+        feature: z.nativeEnum(FEATURES).optional(),
         implementation: z.string().optional(),
         module: z.string().optional(),
       })

@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.46.5](https://github.com/rudderlabs/rudder-transformer/compare/v1.46.4...v1.46.5) (2023-10-23)
+
+
+### Bug Fixes
+
+* **hubspot:** property mismatch ([5530031](https://github.com/rudderlabs/rudder-transformer/commit/553003192a1492220e3930c6b6f2dd11ebac1bcb))
+* **hubspot:** property mismatch ([#2765](https://github.com/rudderlabs/rudder-transformer/issues/2765)) ([5ddabdf](https://github.com/rudderlabs/rudder-transformer/commit/5ddabdf04f22ccd740a9bbdea42b18f128b31f94))
+
 ### [1.46.4](https://github.com/rudderlabs/rudder-transformer/compare/v1.46.3...v1.46.4) (2023-10-20)
 
 

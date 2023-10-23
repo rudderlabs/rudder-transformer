@@ -655,7 +655,7 @@ const populateTraits = async (propertyMap, traits, destination) => {
     if (propertyToTypeMap[key] === 'date') {
       populatedTraits[key] = getUTCMidnightTimeStampValue(value);
     }
-  });
+  })
 
   return populatedTraits;
 }

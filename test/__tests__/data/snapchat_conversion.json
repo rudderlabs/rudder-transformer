@@ -1077,11 +1077,11 @@
         "JSON": {
           "event_type": "PURCHASE",
           "item_ids": [
-            "123", 
+            "123",
             "124"
           ],
           "brands": [
-            "brand01", 
+            "brand01",
             "brand02"
           ],
           "price": "56",

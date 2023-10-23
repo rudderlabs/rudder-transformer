@@ -605,7 +605,7 @@ const splitEventsForCreateUpdate = async (inputs, destination) => {
     const { destinationExternalId } = getDestinationExternalIDInfoForRetl(message, DESTINATION);
 
     const filteredInfo = updateHubspotIds.filter(
-      (update) => update.property.toString() === destinationExternalId.toString(),
+      (update) => update.property.toString().toLowerCase() === destinationExternalId.toString().toLowerCase(),
     );
 
     if (filteredInfo.length > 0) {

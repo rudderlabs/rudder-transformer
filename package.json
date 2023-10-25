@@ -70,7 +70,7 @@
     "axios": "^1.4.0",
     "btoa": "^1.2.1",
     "component-each": "^0.2.6",
-    "crypto-js": "^4.1.1",
+    "crypto-js": "^4.2.0",
     "dotenv": "^16.0.3",
     "flat": "^5.0.2",
     "form-data": "^4.0.0",

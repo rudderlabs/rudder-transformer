@@ -71,6 +71,14 @@ const nodeSysErrorToStatus = (code) => {
       status: 500,
       message: '[ETIMEDOUT] :: Operation timed out',
     },
+    EAI_AGAIN: {
+      status: 500,
+      message: '[EAI_AGAIN] :: Temporary failure in name resolution',
+    },
+    ECONNABORTED: {
+      status: 500,
+      message: '[ECONNABORTED] :: Connection aborted',
+    },
   };
   return sysErrorToStatusMap[code] || { status: 400, message: `[${code}]` };
 };

@@ -1,5 +1,4 @@
 const { set, get } = require('lodash');
-const moment = require('moment');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
@@ -23,6 +22,7 @@ const {
   requestBuilder,
   getClickConversionPayloadAndEndpoint,
 } = require('./utils');
+const helper = require('./helper');
 
 /**
  * get conversions depending on the type set from dashboard
@@ -65,9 +65,7 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
     // eslint-disable-next-line unicorn/consistent-destructuring
     if (!properties.conversionDateTime && (timestamp || originalTimestamp)) {
       const conversionTimestamp = timestamp || originalTimestamp;
-      const conversionDateTime = moment(conversionTimestamp)
-        .utcOffset(moment(conversionTimestamp).utcOffset())
-        .format('YYYY-MM-DD HH:mm:ssZ');
+      const conversionDateTime = helper.formatTimestamp(conversionTimestamp);
       set(payload, 'conversions[0].conversionDateTime', conversionDateTime);
     }
     payload.partialFailure = true;

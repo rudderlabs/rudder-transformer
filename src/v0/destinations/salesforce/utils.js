@@ -44,7 +44,7 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey) => {
     } else if (
       status === 400 &&
       matchErrorCode('CANNOT_INSERT_UPDATE_ACTIVATE_ENTITY') &&
-      response.message.includes('UNABLE_TO_LOCK_ROW')
+      response?.message?.includes('UNABLE_TO_LOCK_ROW')
     ) {
       // handling the error case where the record is locked by another background job
       // this is a retryable error

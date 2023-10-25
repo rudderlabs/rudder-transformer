@@ -419,7 +419,7 @@ const processRouterDest = (inputs, reqMetadata) => {
     batchedEvents.forEach((batch) => {
       const batchedRequest = generateClevertapBatchedPayload(batch.events, batch.destination);
       batchResponseList.push(
-        getSuccessRespEvents(batchedRequest, batch.metadata, batch.destination, reqMetadata),
+        getSuccessRespEvents(batchedRequest, batch.metadata, batch.destination)
       );
     });
   }

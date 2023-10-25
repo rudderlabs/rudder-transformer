@@ -7,6 +7,7 @@ import {
   ProcessorTransformationResponse,
   UserTransformationResponse,
   UserTransformationServiceResponse,
+  MessageIdMetadataMap,
 } from '../types/index';
 import {
   RespStatusError,
@@ -49,8 +50,15 @@ export default class UserTransformService {
         const eventsToProcess = destEvents as ProcessorTransformationRequest[];
         const transformationVersionId =
           eventsToProcess[0]?.destination?.Transformations[0]?.VersionID;
-        const messageIds = eventsToProcess.map((ev) => ev.metadata?.messageId);
-        const messageIdsSet = new Set<string>(messageIds);
+        const messageIds: string[] = [];
+        const messageIdsSet = new Set<string>();
+        const messageIdMetadataMap: MessageIdMetadataMap = {};
+        eventsToProcess.forEach((ev) => {
+          messageIds.push(ev.metadata?.messageId);
+          messageIdsSet.add(ev.metadata?.messageId);
+          messageIdMetadataMap[ev.metadata?.messageId] = ev.metadata;
+        });
+
         const messageIdsInOutputSet = new Set<string>();
 
         const commonMetadata = {
@@ -88,6 +96,12 @@ export default class UserTransformService {
 
           const transformedEventsWithMetadata: ProcessorTransformationResponse[] = [];
           destTransformedEvents.forEach((ev) => {
+            // add messageId to output set
+            if (ev.metadata?.messageId) {
+              messageIdsInOutputSet.add(ev.metadata.messageId);
+            } else if (ev.metadata?.messageIds) {
+              ev.metadata.messageIds.forEach((id) => messageIdsInOutputSet.add(id));
+            }
             if (ev.error) {
               transformedEventsWithMetadata.push({
                 statusCode: 400,
@@ -106,12 +120,6 @@ export default class UserTransformService {
               } as ProcessorTransformationResponse);
               return;
             }
-            // add messageId to output set
-            if (ev.metadata?.messageId) {
-              messageIdsInOutputSet.add(ev.metadata.messageId);
-            } else if (ev.metadata?.messageIds) {
-              ev.metadata.messageIds.forEach((id) => messageIdsInOutputSet.add(id));
-            }
             transformedEventsWithMetadata.push({
               output: ev.transformedEvent,
               metadata: isEmpty(ev.metadata) ? commonMetadata : ev.metadata,
@@ -125,7 +133,7 @@ export default class UserTransformService {
             const droppedEvents = messageIdsNotInOutput.map((id) => ({
               statusCode: HTTP_CUSTOM_STATUS_CODES.FILTERED,
               metadata: {
-                ...commonMetadata,
+                ...(isEmpty(messageIdMetadataMap[id]) ? commonMetadata : messageIdMetadataMap[id]),
                 messageId: id,
                 messageIds: null,
               },

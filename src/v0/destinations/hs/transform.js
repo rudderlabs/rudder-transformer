@@ -88,6 +88,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
     if (mappedToDestination && GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())) {
       // skip splitting the batches to inserts and updates if object it is an association
       if (objectType.toLowerCase() !== 'association') {
+        propertyMap = await getProperties(destination);
         // get info about existing objects and splitting accordingly.
         tempInputs = await splitEventsForCreateUpdate(tempInputs, destination);
       }

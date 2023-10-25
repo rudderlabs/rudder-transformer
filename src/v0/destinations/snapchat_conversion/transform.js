@@ -110,18 +110,8 @@ const populateHashedValues = (payload, message) => {
   }
   return updatedPayload;
 };
-const getEventProperties = (message) => ({
-  description: get(message, 'properties.description'),
-  brands: Array.isArray(message.properties?.brands) ? get(message, 'properties.brands') : undefined,
-  customer_status: get(message, 'properties.customer_status'),
-  uuid_c1: get(message, 'properties.uuid_c1'),
-  level: get(message, 'properties.level'),
-  click_id: get(message, 'properties.click_id'),
-  event_tag: get(message, 'properties.event_tag'),
-  country: getFieldValueFromMessage(message, 'country'),
-  region: getFieldValueFromMessage(message, 'region'),
-  user_agent: message.context?.userAgent?.toString()?.toLowerCase(),
-});
+const getEventCommonProperties = (message) =>
+  constructPayload(message, mappingConfig[ConfigCategory.TRACK_COMMON.name]);
 const validateEventConfiguration = (eventConversionType, pixelId, snapAppId, appId) => {
   if ((eventConversionType === 'WEB' || eventConversionType === 'OFFLINE') && !pixelId) {
     throw new ConfigurationError('Pixel Id is required for web and offline events');
@@ -170,19 +160,6 @@ const addSpecificEventDetails = (
     updatedPayload.pixel_id = pixelId;
   }
   return updatedPayload;
-};
-const handleDeduplication = (payload, enableDeduplication, deduplicationKey, message) => {
-  if (enableDeduplication) {
-    const dedupId = deduplicationKey || 'messageId';
-    const clientDedupId = get(message, dedupId);
-    if (!clientDedupId) {
-      throw new InstrumentationError(
-        'Deduplication enabled but no deduplication key provided in the message',
-      );
-    }
-    return clientDedupId;
-  }
-  return undefined;
 };
 const getEventConversionType = (message) => {
   const channel = get(message, 'channel');
@@ -274,7 +251,7 @@ const trackResponseBuilder = (message, { Config }, mappedEvent) => {
         payload.event_type = eventNameMapping[event.toLowerCase()];
         break;
       default:
-        payload = constructPayload(message, mappingConfig[ConfigCategory.COMMON.name]);
+        payload = constructPayload(message, mappingConfig[ConfigCategory.DEFAULT.name]);
         payload.event_type = eventNameMapping[event.toLowerCase()];
         break;
     }
@@ -282,7 +259,7 @@ const trackResponseBuilder = (message, { Config }, mappedEvent) => {
     throw new InstrumentationError(`Event ${event} doesn't match with Snapchat Events!`);
   }
 
-  payload = { ...payload, ...getEventProperties(message) };
+  payload = { ...payload, ...getEventCommonProperties(message) };
   payload = populateHashedValues(payload, message);
   validateRequiredFields(payload);
   payload.timestamp = getFieldValueFromMessage(message, 'timestamp');
@@ -310,8 +287,6 @@ const trackResponseBuilder = (message, { Config }, mappedEvent) => {
     snapAppId,
     appId,
   );
-  payload.client_dedup_id = handleDeduplication(enableDeduplication, deduplicationKey, message);
-
   // adding for deduplication for more than one source
   if (enableDeduplication) {
     const dedupId = deduplicationKey || 'messageId';
@@ -364,7 +339,7 @@ const process = (event) => {
   const messageType = message.type.toLowerCase();
   let response;
   if (messageType === EventType.PAGE) {
-    response = trackResponseBuilder(message, destination, pageTypeToTrackEvent);
+    response = [trackResponseBuilder(message, destination, pageTypeToTrackEvent)];
   } else if (messageType === EventType.TRACK) {
     const mappedEvents = eventMappingHandler(message, destination);
     if (mappedEvents.length > 0) {

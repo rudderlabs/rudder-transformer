@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash';
 import { getFormData } from '../../../../src/adapters/network';
 import * as fbPixelNw from '../facebook_pixel/network';
 import { data } from './dataDelivery/data';
@@ -9,8 +10,10 @@ const fbPixelTcs = data
     const fbpTc = fbPixelNw.networkCallsData.filter((nw) => {
       return nw.httpReq.url === fbendpoint;
     })[0];
-    fbpTc.httpReq.data = getFormData(d.input.request.body.body.FORM).toString();
-    return fbpTc;
+    const clonedFbpTc = cloneDeep(fbpTc);
+    const clonedFormData = cloneDeep(d.input.request.body.body.FORM);
+    clonedFbpTc.httpReq.data = getFormData(clonedFormData).toString();
+    return clonedFbpTc;
   });
 
 export const networkCallsData = [

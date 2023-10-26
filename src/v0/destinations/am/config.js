@@ -122,7 +122,8 @@ events.forEach((event) => {
 const DELETE_MAX_BATCH_SIZE = 100;
 const DESTINATION = 'amplitude';
 const IDENTIFY_AM = '$identify';
-
+const AMBatchSizeLimit = 20 * 1024 * 1024; // 20 MB
+const AMBatchEventLimit = 500; // event size limit from sdk is 32KB => 15MB
 module.exports = {
   DESTINATION,
   Event,
@@ -134,4 +135,6 @@ module.exports = {
   DELETE_MAX_BATCH_SIZE,
   batchEventsWithUserIdLengthLowerThanFive,
   IDENTIFY_AM,
+  AMBatchSizeLimit,
+  AMBatchEventLimit
 };

@@ -1,0 +1,17 @@
+[
+    {
+        "description": "Number in string format",
+        "input": "123",
+        "output": true
+    },
+    {
+        "description": "Normal Integer",
+        "input": 123,
+        "output": true
+    },
+    {
+        "description": "Alphanumeric String",
+        "input": "abcd1234",
+        "output": false
+    }
+]

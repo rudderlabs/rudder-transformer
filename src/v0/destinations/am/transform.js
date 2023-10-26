@@ -36,6 +36,8 @@ const {
   mappingConfig,
   batchEventsWithUserIdLengthLowerThanFive,
   IDENTIFY_AM,
+  AMBatchSizeLimit,
+  AMBatchEventLimit
 } = require('./config');
 const tags = require('../../util/tags');
 
@@ -44,9 +46,6 @@ const AMUtils = require('./utils');
 const logger = require('../../../logger');
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-
-const AMBatchSizeLimit = 20 * 1024 * 1024; // 20 MB
-const AMBatchEventLimit = 500; // event size limit from sdk is 32KB => 15MB
 
 const EVENTS_KEY_PATH = 'body.JSON.events';
 
@@ -216,6 +215,7 @@ const handleMappingJsonObject = (
   const { isFunc, funcName, outKey } = mappingJson[sourceKey];
   if (isFunc) {
     if (validatePayload) {
+      // TODO: add a test case
       payloadMapping(payload, outKey, message, sourceKey, Config, funcName);
     } else {
       const data = get(message.traits, outKey);
@@ -665,7 +665,7 @@ const processSingleMessage = (message, destination) => {
     case EventType.TRACK:
       evType = event;
       if (!isDefinedAndNotNullAndNotEmpty(evType)) {
-        throw new InstrumentationError('Event not present. Please send event.');
+        throw new InstrumentationError('Event not present. Please send event field');
       }
       if (
         message.properties &&
@@ -675,9 +675,7 @@ const processSingleMessage = (message, destination) => {
         // if properties has revenue and revenue_type fields
         // consider the event as revenue event directly
         category = ConfigCategory.REVENUE;
-        break;
       }
-
       break;
     default:
       logger.debug('could not determine type');

@@ -372,7 +372,7 @@ const hashToSha256 = (value) => sha256(value);
 
 // Check what type of gender and convert to f or m
 const getFbGenderVal = (gender) => {
-  if (typeof (gender) !== 'string') {
+  if (typeof gender !== 'string') {
     return null;
   }
   if (
@@ -2053,9 +2053,9 @@ const isValidInteger = (value) => {
   if (Number.isNaN(value) || !isDefinedAndNotNull(value)) {
     return false;
   }
-  // const valueToString = `${value}`;
+  const valueToString = `${value}`;
   // Use a regular expression to check if the string is a valid integer or a valid floating-point number
-  return typeof value === 'string' ? /^-?\d+$/.test(value) : false;
+  return /^-?\d+$/.test(valueToString);
 };
 const validateEventType = (event) => {
   if (!event || typeof event !== 'string') {

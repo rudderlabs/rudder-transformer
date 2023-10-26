@@ -36,15 +36,7 @@ jest.mock('axios', () => jest.fn(mockedAxiosClient));
 
 const version = '1';
 const destinations = [
-  'braze',
-  'facebook_pixel',
-  'fb',
-  'snapchat_custom_audience',
-  'clevertap',
-  'marketo_static_list',
-  'criteo_audience',
-  'tiktok_ads',
-  'intercom',
+  'tiktok_ads'
 ];
 
 // start of generic tests

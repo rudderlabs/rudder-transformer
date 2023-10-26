@@ -5,9 +5,7 @@
       "user_id": "rudder01",
       "id": "shopify_test_get_items_fail",
       "query_parameters": {
-        "topic": [
-          "carts_update"
-        ]
+        "topic": ["carts_update"]
       },
       "token": "shopify_test_get_items_fail",
       "email": "test@rudderstack.com",
@@ -56,9 +54,7 @@
       "sessionId": "session_id",
       "cartToken": "shopify_test_set_map_fail",
       "query_parameters": {
-        "writeKey": [
-          "Shopify Write Key"
-        ]
+        "writeKey": ["Shopify Write Key"]
       },
       "cart": {
         "token": "shopify_test_set_map_fail",
@@ -80,9 +76,7 @@
     "input": {
       "cart_token": "shopifyGetSessionId",
       "query_parameters": {
-        "topic": [
-          "checkouts_delete"
-        ]
+        "topic": ["checkouts_delete"]
       },
       "line_items": [],
       "note": null,
@@ -121,9 +115,7 @@
     "input": {
       "cart_token": "shopifyGetAnonymousId",
       "query_parameters": {
-        "topic": [
-          "checkouts_delete"
-        ]
+        "topic": ["checkouts_delete"]
       },
       "line_items": [],
       "note": null,
@@ -162,9 +154,7 @@
     "input": {
       "id": "shopify_test3",
       "query_parameters": {
-        "topic": [
-          "carts_update"
-        ]
+        "topic": ["carts_update"]
       },
       "token": "shopify_test3",
       "line_items": [],
@@ -185,9 +175,7 @@
     "input": {
       "id": "shopify_test3",
       "query_parameters": {
-        "topic": [
-          "orders_delete"
-        ]
+        "topic": ["orders_delete"]
       },
       "line_items": [],
       "note": null,
@@ -225,9 +213,7 @@
     "input": {
       "id": "shopify_test3",
       "query_parameters": {
-        "topic": [
-          "checkouts_delete"
-        ]
+        "topic": ["checkouts_delete"]
       },
       "line_items": [],
       "note": null,
@@ -266,9 +252,7 @@
       "user_id": "rudder01",
       "id": "shopify_test_cart",
       "query_parameters": {
-        "topic": [
-          "carts_update"
-        ]
+        "topic": ["carts_update"]
       },
       "token": "shopify_test_cart",
       "email": "test@rudderstack.com",
@@ -464,9 +448,7 @@
       ],
       "id": "shopify_test2",
       "query_parameters": {
-        "topic": [
-          "orders_updated"
-        ]
+        "topic": ["orders_updated"]
       },
       "shipping_address": "abc",
       "billing_address": "abc",
@@ -540,9 +522,7 @@
     "description": "Track Call -> fullfillments_create",
     "input": {
       "query_parameters": {
-        "topic": [
-          "fulfillments_create"
-        ]
+        "topic": ["fulfillments_create"]
       },
       "order_id": "random",
       "status": "success",
@@ -699,9 +679,7 @@
       "id": "shopify_test2",
       "user_id": "rudder01",
       "query_parameters": {
-        "topic": [
-          "checkouts_update"
-        ]
+        "topic": ["checkouts_update"]
       },
       "token": "shopify_test2",
       "cart_token": "shopify_test2",
@@ -902,9 +880,7 @@
       ],
       "id": "shopify_test2",
       "query_parameters": {
-        "topic": [
-          "checkouts_update"
-        ]
+        "topic": ["checkouts_update"]
       },
       "cart_token": null,
       "line_items": [
@@ -1097,9 +1073,7 @@
     "input": {
       "id": "shopify_test2",
       "query_parameters": {
-        "topic": [
-          "checkouts_update"
-        ]
+        "topic": ["checkouts_update"]
       },
       "cart_token": null,
       "line_items": [
@@ -1282,9 +1256,7 @@
     "input": {
       "id": "shopify_test4",
       "query_parameters": {
-        "topic": [
-          "carts_update"
-        ]
+        "topic": ["carts_update"]
       },
       "token": "shopify_test4",
       "line_items": [],
@@ -1326,9 +1298,7 @@
       "anonymousId": "b9993cc5-9e60-4e69-be0e-4e38c228314b",
       "cartToken": "shopify_test1",
       "query_parameters": {
-        "writeKey": [
-          "Shopify Write Key"
-        ]
+        "writeKey": ["Shopify Write Key"]
       },
       "cart": {
         "token": "token",
@@ -1352,9 +1322,7 @@
       "sessionId": "b9993cc5-9e60-4e69-be0e-4e38c228314b",
       "cartToken": "shopify_test1",
       "query_parameters": {
-        "writeKey": [
-          "Shopify Write Key"
-        ]
+        "writeKey": ["Shopify Write Key"]
       },
       "cart": {
         "token": "token",
@@ -1376,9 +1344,7 @@
     "input": {
       "id": "order_id",
       "query_parameters": {
-        "topic": [
-          "checkouts_update"
-        ]
+        "topic": ["checkouts_update"]
       },
       "token": "shopify_test2",
       "cart_token": "shopify_test_no_sessionId",

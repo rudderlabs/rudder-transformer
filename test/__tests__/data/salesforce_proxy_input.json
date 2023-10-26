@@ -9,6 +9,72 @@
       "Authorization": "Bearer token"
     },
     "version": "1",
+    "endpoint": "https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/101",
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "Email": "denis.kornilov@sbermarket.ru",
+        "Company": "sbermarket.ru",
+        "LastName": "Корнилов",
+        "FirstName": "Денис",
+        "LeadSource": "App Signup",
+        "account_type__c": "free_trial"
+      },
+      "JSON_ARRAY": {}
+    },
+    "metadata": {
+      "destInfo": {
+        "authKey": "2HezPl1w11opbFSxnLDEgZ7kWTf"
+      }
+    },
+    "params": {
+      "destination": "salesforce"
+    }
+  },
+  {
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "userId": "",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer token"
+    },
+    "version": "1",
+    "endpoint": "https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/102",
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "Email": "denis.kornilov@sbermarket.ru",
+        "Company": "sbermarket.ru",
+        "LastName": "Корнилов",
+        "FirstName": "Денис",
+        "LeadSource": "App Signup",
+        "account_type__c": "free_trial"
+      },
+      "JSON_ARRAY": {}
+    },
+    "metadata": {
+      "destInfo": {
+        "authKey": "2HezPl1w11opbFSxnLDEgZ7kWTf"
+      }
+    },
+    "params": {
+      "destination": "salesforce"
+    }
+  },
+  {
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "userId": "",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer token"
+    },
+    "version": "1",
     "endpoint": "https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/1",
     "body": {
       "XML": {},

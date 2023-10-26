@@ -32,7 +32,8 @@ const {
   REFRESH_TOKEN,
   AUTH_STATUS_INACTIVE,
 } = require('../../adapters/networkhandler/authConstants');
-const { FEATURE_FILTER_CODE } = require('./constant');
+const { FEATURE_FILTER_CODE, FEATURE_GZIP_SUPPORT } = require('./constant');
+
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -1472,13 +1473,22 @@ const getErrorStatusCode = (error, defaultStatusCode = HTTP_STATUS_CODES.INTERNA
 /**
  * Used for generating error response with stats from native and built errors
  */
-function generateErrorObject(error, defTags = {}, shouldEnrichErrorMessage = false) {
-  let errObject = error;
+function generateErrorObject(error, defTags = {}, shouldEnrichErrorMessage = true) {
+  let errObject = new BaseError(
+    error.message,
+    getErrorStatusCode(error),
+    {
+      ...error.statTags,
+      ...defTags,
+    },
+    error.destinationResponse,
+    error.authErrorCategory,
+  );
   let errorMessage = error.message;
   if (shouldEnrichErrorMessage) {
     if (error.destinationResponse) {
       errorMessage = JSON.stringify({
-        message: error.message,
+        message: errorMessage,
         destinationResponse: error.destinationResponse,
       });
     }
@@ -1487,13 +1497,6 @@ function generateErrorObject(error, defTags = {}, shouldEnrichErrorMessage = fal
   if (!(error instanceof BaseError)) {
     errObject = new TransformationError(errorMessage, getErrorStatusCode(error));
   }
-
-  // Add higher level default tags
-  errObject.statTags = {
-    ...errObject.statTags,
-    ...defTags,
-  };
-
   return errObject;
 }
 /**
@@ -2049,6 +2052,7 @@ const getAuthErrCategoryFromStCode = (status) => {
   }
   return '';
 };
+
 const isValidInteger = (value) => {
   if (Number.isNaN(value) || !isDefinedAndNotNull(value)) {
     return false;
@@ -2062,6 +2066,21 @@ const validateEventType = (event) => {
     throw new InstrumentationError('Event is a required field and should be a string');
   }
 };
+
+const validateEventType = (event) => {
+  if (!event || typeof event !== 'string') {
+    throw new InstrumentationError('Event is a required field and should be a string');
+  }
+};
+
+const IsGzipSupported = (reqMetadata = {}) => {
+  if (reqMetadata && typeof reqMetadata === 'object' && !Array.isArray(reqMetadata)) {
+    const { features } = reqMetadata;
+    return !!features?.[FEATURE_GZIP_SUPPORT];
+  }
+  return false;
+};
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -2169,4 +2188,5 @@ module.exports = {
   getAuthErrCategoryFromStCode,
   isValidInteger,
   isNewStatusCodesAccepted,
+  IsGzipSupported,
 };

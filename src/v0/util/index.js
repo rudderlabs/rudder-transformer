@@ -1473,13 +1473,22 @@ const getErrorStatusCode = (error, defaultStatusCode = HTTP_STATUS_CODES.INTERNA
 /**
  * Used for generating error response with stats from native and built errors
  */
-function generateErrorObject(error, defTags = {}, shouldEnrichErrorMessage = false) {
-  let errObject = error;
+function generateErrorObject(error, defTags = {}, shouldEnrichErrorMessage = true) {
+  let errObject = new BaseError(
+    error.message,
+    getErrorStatusCode(error),
+    {
+      ...error.statTags,
+      ...defTags,
+    },
+    error.destinationResponse,
+    error.authErrorCategory,
+  );
   let errorMessage = error.message;
   if (shouldEnrichErrorMessage) {
     if (error.destinationResponse) {
       errorMessage = JSON.stringify({
-        message: error.message,
+        message: errorMessage,
         destinationResponse: error.destinationResponse,
       });
     }
@@ -1488,13 +1497,6 @@ function generateErrorObject(error, defTags = {}, shouldEnrichErrorMessage = fal
   if (!(error instanceof BaseError)) {
     errObject = new TransformationError(errorMessage, getErrorStatusCode(error));
   }
-
-  // Add higher level default tags
-  errObject.statTags = {
-    ...errObject.statTags,
-    ...defTags,
-  };
-
   return errObject;
 }
 /**

@@ -351,6 +351,10 @@ export const data = [
               type: 'page',
               userId: 'user12345',
             },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -360,14 +364,21 @@ export const data = [
         status: 200,
         body: [
           {
-            statusCode: 500,
-            error: "Cannot read properties of undefined (reading 'destinationId')",
+            statusCode: 400,
+            error: 'Bad event. Original error: message type "page" not supported for "autopilot"',
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
             statTags: {
-              errorCategory: 'transformation',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
               destType: 'AUTOPILOT',
               module: 'destination',
               implementation: 'cdkV1',
               feature: 'processor',
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
           },
         ],
@@ -464,6 +475,10 @@ export const data = [
               type: 'track',
               userId: 'user12345',
             },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -473,14 +488,20 @@ export const data = [
         status: 200,
         body: [
           {
-            statusCode: 500,
-            error: "Cannot read properties of undefined (reading 'destinationId')",
+            statusCode: 400,
+            error: 'Unknown error occurred. Original error: Email is required for track calls',
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
             statTags: {
               errorCategory: 'transformation',
               destType: 'AUTOPILOT',
               module: 'destination',
               implementation: 'cdkV1',
               feature: 'processor',
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
           },
         ],
@@ -576,6 +597,10 @@ export const data = [
               timestamp: '2020-04-17T20:12:44.757+05:30',
               userId: 'user12345',
             },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -585,13 +610,20 @@ export const data = [
         status: 200,
         body: [
           {
-            statusCode: 500,
-            error: "Cannot read properties of undefined (reading 'destinationId')",
+            statusCode: 400,
+            error:
+              'Unknown error occurred. Original error: "type" is a required field and it must be a string',
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
             statTags: {
               errorCategory: 'transformation',
               destType: 'AUTOPILOT',
               module: 'destination',
               implementation: 'cdkV1',
+              destinationId: 'destId',
+              workspaceId: 'wspId',
               feature: 'processor',
             },
           },
@@ -690,6 +722,10 @@ export const data = [
               type: 'group',
               userId: 'user12345',
             },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -699,13 +735,20 @@ export const data = [
         status: 200,
         body: [
           {
-            statusCode: 500,
-            error: "Cannot read properties of undefined (reading 'destinationId')",
+            statusCode: 400,
+            error: 'Bad event. Original error: message type "group" not supported for "autopilot"',
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
             statTags: {
-              errorCategory: 'transformation',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
               destType: 'AUTOPILOT',
               module: 'destination',
               implementation: 'cdkV1',
+              destinationId: 'destId',
+              workspaceId: 'wspId',
               feature: 'processor',
             },
           },
@@ -797,6 +840,10 @@ export const data = [
               type: 'identify',
               userId: 'user12345',
             },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -830,6 +877,10 @@ export const data = [
               },
               files: {},
               userId: 'ac7722c2-ccb6-4ae2-baf6-1effe861f4cd',
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
             statusCode: 200,
           },
@@ -927,6 +978,10 @@ export const data = [
               timestamp: '2020-04-17T20:12:44.757+05:30',
               userId: 'user12345',
             },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -936,13 +991,20 @@ export const data = [
         status: 200,
         body: [
           {
-            statusCode: 500,
-            error: "Cannot read properties of undefined (reading 'destinationId')",
+            statusCode: 400,
+            error:
+              'Unknown error occurred. Original error: "type" is a required field and it must be a string',
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
             statTags: {
               errorCategory: 'transformation',
               destType: 'AUTOPILOT',
               module: 'destination',
               implementation: 'cdkV1',
+              destinationId: 'destId',
+              workspaceId: 'wspId',
               feature: 'processor',
             },
           },
@@ -1034,6 +1096,10 @@ export const data = [
               type: 'group',
               userId: 'user12345',
             },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -1043,13 +1109,20 @@ export const data = [
         status: 200,
         body: [
           {
-            statusCode: 500,
-            error: "Cannot read properties of undefined (reading 'destinationId')",
+            statusCode: 400,
+            error: 'Bad event. Original error: message type "group" not supported for "autopilot"',
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
             statTags: {
-              errorCategory: 'transformation',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
               destType: 'AUTOPILOT',
               module: 'destination',
               implementation: 'cdkV1',
+              destinationId: 'destId',
+              workspaceId: 'wspId',
               feature: 'processor',
             },
           },
@@ -1141,6 +1214,10 @@ export const data = [
               type: 'Tals',
               userId: 'user12345',
             },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -1150,13 +1227,20 @@ export const data = [
         status: 200,
         body: [
           {
-            statusCode: 500,
-            error: "Cannot read properties of undefined (reading 'destinationId')",
+            statusCode: 400,
+            error: 'Bad event. Original error: message type "Tals" not supported for "autopilot"',
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
             statTags: {
-              errorCategory: 'transformation',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
               destType: 'AUTOPILOT',
               module: 'destination',
               implementation: 'cdkV1',
+              destinationId: 'destId',
+              workspaceId: 'wspId',
               feature: 'processor',
             },
           },

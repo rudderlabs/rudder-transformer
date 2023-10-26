@@ -92,8 +92,8 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey) => {
  * @returns
  */
 const getAccessTokenOauth = (metadata) => ({
-  token : metadata.secret.access_token,
-  instanceUrl : metadata.secret.instance_url
+  token : metadata.secret?.access_token,
+  instanceUrl : metadata.secret?.instance_url
 });
 
 const getAccessToken = async (destination) => {

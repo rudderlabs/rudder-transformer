@@ -37,7 +37,7 @@ const {
   batchEventsWithUserIdLengthLowerThanFive,
   IDENTIFY_AM,
   AMBatchSizeLimit,
-  AMBatchEventLimit
+  AMBatchEventLimit,
 } = require('./config');
 const tags = require('../../util/tags');
 
@@ -195,15 +195,6 @@ const getScreenevTypeAndUpdatedProperties = (message, CATEGORY_KEY) => ({
   },
 });
 
-const payloadMapping = (payload, outKey, message, sourceKey, Config, funcName) => {
-  const data = get(payload, outKey);
-  if (!isDefinedAndNotNull(data)) {
-    const val = AMUtils[funcName](message, sourceKey, Config);
-    if (val || val === false || val === 0) {
-      set(payload, outKey, val);
-    }
-  }
-};
 const handleMappingJsonObject = (
   mappingJson,
   sourceKey,
@@ -215,8 +206,13 @@ const handleMappingJsonObject = (
   const { isFunc, funcName, outKey } = mappingJson[sourceKey];
   if (isFunc) {
     if (validatePayload) {
-      // TODO: add a test case
-      payloadMapping(payload, outKey, message, sourceKey, Config, funcName);
+      const data = get(payload, outKey);
+      if (!isDefinedAndNotNull(data)) {
+        const val = AMUtils[funcName](message, sourceKey, Config);
+        if (val || val === false || val === 0) {
+          set(payload, outKey, val);
+        }
+      }
     } else {
       const data = get(message.traits, outKey);
       // when in identify(or any other call) it checks whether outKey is present in traits
@@ -558,7 +554,7 @@ const responseBuilderSimple = (
   return respList;
 };
 
-const getGroupInfo = (message, destination, groupInfo, groupTraits) => {
+const getGroupInfo = (destination, groupInfo, groupTraits) => {
   let updatedGroupInfo = { ...groupInfo };
   const groupTypeTrait = get(destination, 'Config.groupTypeTrait');
   const groupValueTrait = get(destination, 'Config.groupValueTrait');
@@ -647,7 +643,6 @@ const processSingleMessage = (message, destination) => {
       // groupTraits => top level "traits" for JS SDK
       // groupTraits => "context.traits" for mobile SDKs
       groupInfo = getGroupInfo(
-        message,
         destination,
         groupInfo,
         getFieldValueFromMessage(message, 'groupTraits'),

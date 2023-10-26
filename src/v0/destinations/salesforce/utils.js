@@ -20,7 +20,7 @@ const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
  * @param {*} stage
  * @param {String} authKey
  */
-const salesforceResponseHandler = (destResponse, sourceMessage, authKey) => {
+const salesforceResponseHandler = (destResponse, sourceMessage, authKey, authorizationFlow) => {
   const { status, response } = destResponse;
 
   // if the response from destination is not a success case build an explicit error
@@ -28,9 +28,16 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey) => {
     const matchErrorCode = (errorCode) =>
       response && Array.isArray(response) && response.some((resp) => resp?.errorCode === errorCode);
     if (status === 401 && authKey && matchErrorCode('INVALID_SESSION_ID')) {
+      if (authorizationFlow === 'legacy') {
       // checking for invalid/expired token errors and evicting cache in that case
       // rudderJobMetadata contains some destination info which is being used to evict the cache
-
+      ACCESS_TOKEN_CACHE.del(authKey);
+      throw new RetryableError(
+        `${DESTINATION} Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${sourceMessage}`,
+        500,
+        response,
+      );
+      }
       throw new RetryableError(
         `${DESTINATION} Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${sourceMessage}`,
         500,
@@ -129,6 +136,7 @@ const getAccessToken = async (destination) => {
         processedResponse,
         `:- authentication failed during fetching access token.`,
         accessTokenKey,
+        "legacy"
       );
     }
     const token = httpResponse.response.data;
@@ -138,6 +146,7 @@ const getAccessToken = async (destination) => {
         processedResponse,
         `:- authentication failed could not retrieve authorization token.`,
         accessTokenKey,
+        "legacy"
       );
     }
     return {

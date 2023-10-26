@@ -112,13 +112,15 @@ async function getSaleforceIdForRecord(
   identifierType,
   identifierValue,
   destination,
+  authorizationFlow
 ) {
   const objSearchUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${identifierValue}&sobject=${objectType}&in=${identifierType}&${objectType}.fields=id,${identifierType}`;
+  const finalHeader = authorizationFlow === 'oauth' ? { Authorization: `Bearer ${authorizationData.token}` } : {Authorization: authorizationData.token};
   const { processedResponse: processedsfSearchResponse } = await handleHttpRequest(
     'get',
     objSearchUrl,
     {
-      headers: { Authorization: `Bearer ${authorizationData.token}` },
+      headers: finalHeader
     },
     {
       destType: 'salesforce',
@@ -130,6 +132,7 @@ async function getSaleforceIdForRecord(
       processedsfSearchResponse,
       `:- SALESFORCE SEARCH BY ID`,
       destination.ID,
+      authorizationFlow
     );
   }
   const searchRecord = processedsfSearchResponse.response?.searchRecords?.find(
@@ -197,6 +200,7 @@ async function getSalesforceIdFromPayload(message, authorizationData, destinatio
         identifierType,
         id,
         destination,
+        authorizationFlow
       );
     }
 
@@ -234,7 +238,7 @@ async function getSalesforceIdFromPayload(message, authorizationData, destinatio
     );
 
     if (!isHttpStatusSuccess(processedLeadQueryResponse.status)) {
-      salesforceResponseHandler(processedLeadQueryResponse, `:- during Lead Query`, destination.ID);
+      salesforceResponseHandler(processedLeadQueryResponse, `:- during Lead Query`, destination.ID, authorizationFlow);
     }
 
     if (processedLeadQueryResponse.response.searchRecords.length > 0) {

@@ -36,7 +36,6 @@ jest.mock('axios', () => jest.fn(mockedAxiosClient));
 
 const version = '1';
 const destinations = [
-  'marketo',
   'braze',
   'facebook_pixel',
   'fb',

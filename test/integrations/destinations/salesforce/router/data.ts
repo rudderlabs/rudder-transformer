@@ -94,16 +94,39 @@ export const data = [
             metadata: {
               jobId: 1,
             },
-            statusCode: 400,
-            error:
-              'Salesforce Request Failed: "400" due to "{"error":"invalid_grant","error_description":"authentication failure"}", (Aborted) :- authentication failed during fetching access token.',
-            statTags: {
-              errorCategory: 'network',
-              errorType: 'aborted',
-              destType: 'SALESFORCE',
-              module: 'destination',
-              implementation: 'native',
-              feature: 'processor',
+            statusCode: 200,
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization:
+                  'Bearer 00D2v000002lXbX!ARcAQJBSGNA1Rq.MbUdtmlREscrN_nO3ckBz6kc4jRQGxqAzNkhT1XZIF0yPqyCQSnezWO3osMw1ewpjToO7q41E9.LvedWY',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  Email: 'peter.gibbons@initech.com',
+                  Phone: '570-690-4150',
+                  Rating: 'Hot',
+                  Title: 'VP of Derp',
+                  FirstName: 'Peter',
+                  LastName: 'Gibbons',
+                  PostalCode: '94115',
+                  City: 'east greenwich',
+                  Country: 'USA',
+                  State: 'California',
+                  Street: '19123 forest lane',
+                  Company: 'Initech',
+                },
+                XML: {},
+                JSON_ARRAY: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
             },
           },
         ],
@@ -205,16 +228,40 @@ export const data = [
             metadata: {
               jobId: 2,
             },
-            statusCode: 400,
-            error:
-              'Salesforce Request Failed: "400" due to "{"error":"invalid_grant","error_description":"authentication failure"}", (Aborted) :- authentication failed during fetching access token.',
-            statTags: {
-              errorCategory: 'network',
-              errorType: 'aborted',
-              destType: 'SALESFORCE',
-              module: 'destination',
-              implementation: 'native',
-              feature: 'processor',
+            statusCode: 200,
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint:
+                'https://ap15.salesforce.com/services/data/v50.0/sobjects/Lead/leadId?_HttpMethod=PATCH',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization:
+                  'Bearer 00D2v000002lXbX!ARcAQJBSGNA1Rq.MbUdtmlREscrN_nO3ckBz6kc4jRQGxqAzNkhT1XZIF0yPqyCQSnezWO3osMw1ewpjToO7q41E9.LvedWY',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  Email: 'ddv_ua+{{1234*245}}@bugFix.com',
+                  Phone: '570-690-4150',
+                  Rating: 'Hot',
+                  Title: 'VP of Derp',
+                  FirstName: 'Peter',
+                  LastName: 'Gibbons',
+                  PostalCode: '94115',
+                  City: 'east greenwich',
+                  Country: 'USA',
+                  State: 'California',
+                  Street: '19123 forest lane',
+                  Company: 'Initech',
+                },
+                XML: {},
+                JSON_ARRAY: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
             },
           },
         ],
@@ -316,33 +363,9 @@ export const data = [
             metadata: {
               jobId: 3,
             },
-            statusCode: 400,
-            error:
-              'Salesforce Request Failed: "400" due to "{"error":"invalid_grant","error_description":"authentication failure"}", (Aborted) :- authentication failed during fetching access token.',
-            statTags: {
-              errorCategory: 'network',
-              errorType: 'aborted',
-              destType: 'SALESFORCE',
-              module: 'destination',
-              implementation: 'native',
-              feature: 'processor',
-            },
-          },
-        ],
-      },
-    },
-  },
-  {
-    name: 'salesforce',
-    description: 'Test 3',
-    feature: 'processor',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: [
-          {
-            message: {
+            statusCode: 200,
+            output: {
+              userId: '',
               version: '1',
               type: 'REST',
               method: 'POST',
@@ -373,49 +396,6 @@ export const data = [
                 FORM: {},
               },
               files: {},
-              statusCode: 200,
-            },
-            metadata: {
-              jobId: 4,
-            },
-            destination: {
-              Config: {
-                initialAccessToken: 'dummyInitialAccessToken',
-                password: 'dummyPassword1',
-                userName: 'testsalesforce1453@gmail.com',
-              },
-              DestinationDefinition: {
-                DisplayName: 'Salesforce',
-                ID: '1T96GHZ0YZ1qQSLULHCoJkow9KC',
-                Name: 'SALESFORCE',
-              },
-              Enabled: true,
-              ID: '1WqFFH5esuVPnUgHkvEoYxDcX3y',
-              Name: 'tst',
-              Transformations: [],
-            },
-          },
-        ],
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: [
-          {
-            metadata: {
-              jobId: 4,
-            },
-            statusCode: 400,
-            error:
-              'Salesforce Request Failed: "400" due to "{"error":"invalid_grant","error_description":"authentication failure"}", (Aborted) :- authentication failed during fetching access token.',
-            statTags: {
-              errorCategory: 'network',
-              errorType: 'aborted',
-              destType: 'SALESFORCE',
-              module: 'destination',
-              implementation: 'native',
-              feature: 'processor',
             },
           },
         ],

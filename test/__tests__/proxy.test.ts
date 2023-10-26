@@ -42,7 +42,6 @@ const destinations = [
   'fb',
   'snapchat_custom_audience',
   'clevertap',
-  'salesforce',
   'marketo_static_list',
   'criteo_audience',
   'tiktok_ads',

@@ -76,7 +76,7 @@ afterAll(async () => {
 let mockAdapter;
 if (!opts.generate || opts.generate === 'false') {
   // unmock already existing axios-mocking
-  mockAdapter = new MockAxiosAdapter(axios, { onNoMatch: 'passthrough' });
+  mockAdapter = new MockAxiosAdapter(axios, { onNoMatch: 'throwException' });
   const registerAxiosMocks = (axiosMocks: MockHttpCallsData[]) => {
     axiosMocks.forEach((axiosMock) => addMock(mockAdapter, axiosMock));
   };

@@ -2067,12 +2067,6 @@ const validateEventType = (event) => {
   }
 };
 
-const validateEventType = (event) => {
-  if (!event || typeof event !== 'string') {
-    throw new InstrumentationError('Event is a required field and should be a string');
-  }
-};
-
 const IsGzipSupported = (reqMetadata = {}) => {
   if (reqMetadata && typeof reqMetadata === 'object' && !Array.isArray(reqMetadata)) {
     const { features } = reqMetadata;

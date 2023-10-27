@@ -51,7 +51,7 @@ const process = (event) => {
   const messageType = message && message.type && message.type.toLowerCase();
 
   if (messageType !== EventType.IDENTIFY) {
-    return [];
+    throw new InstrumentationError('Only Identify calls are supported');
   }
 
   if (isEmpty(message.userId)) {

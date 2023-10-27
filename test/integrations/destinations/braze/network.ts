@@ -1,5 +1,3 @@
-import { AxiosError } from "axios";
-
 const dataDeliveryMocksData = [
   {
     httpReq: {
@@ -180,28 +178,6 @@ const dataDeliveryMocksData = [
     },
     httpRes: {},
   },
-  // {
-  //   httpReq: {
-  //     url: 'https://rest.iad-03.braze.com/users/identify/test6',
-  //     data: {
-  //       aliases_to_identify: [
-  //         {
-  //           external_id: 'gabi_userId_45',
-  //           user_alias: { alias_label: 'rudder_id', alias_name: 'gabi_anonId_45' },
-  //         },
-  //       ],
-  //     },
-  //     params: { destination: 'braze' },
-  //     headers: {
-  //       Accept: 'application/json',
-  //       Authorization: 'Bearer api_key',
-  //       'Content-Type': 'application/json',
-  //       'User-Agent': 'RudderLabs',
-  //     },
-  //     method: 'POST',
-  //   },
-  //   httpRes: AxiosError.from('DNS not found', 'ENOTFOUND'),
-  // },
   {
     httpReq: {
       url: 'https://rest.iad-03.braze.com/users/identify/test7',

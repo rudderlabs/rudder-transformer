@@ -273,6 +273,65 @@ export const data = [
                 },
               },
             },
+            {
+              message: {
+                userId: 'user 1',
+                properties: {
+                  listData: {
+                    add: [
+                      {
+                        EMAIL_SHA256: 'alex@email.com',
+                        PHONE_SHA256: '+129988776655',
+                        AAID_MD5: '000999OOOQQQQ',
+                        IDFA_MD5: '1234lkasfjdalj12321',
+                      },
+                      {
+                        EMAIL_SHA256: 'amy@abc.com',
+                        AAID_SHA256: '000999OOOPPPP',
+                        AAID_MD5: '000999OOOPPPP',
+                        IDFA_MD5: '1234lkasfjdalj114455',
+                      },
+                    ],
+                  },
+                },
+                context: {
+                  ip: '14.5.67.21',
+                  library: {
+                    name: 'http',
+                  },
+                  externalId: [
+                    {
+                      type: 'TIKTOK_AUDIENCE-23856594064540489',
+                      identifierType: 'EMAIL_SHA256',
+                    },
+                  ],
+                  destinationFields:
+                    'EMAIL_SHA256, PHONE_SHA256, IDFA_SHA256, AAID_SHA256, AAID_MD, IDFA_MD5',
+                },
+                timestamp: '2020-02-02T00:23:09.544Z',
+              },
+              metadata: {
+                jobId: 1524545,
+                secret: {
+                  accessToken: 'dummyAccessToken',
+                  advertiserIds: ['dummyAdverTiserID'],
+                },
+              },
+              destination: {
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: true,
+                  },
+                },
+                Config: {
+                  isHashRequired: true,
+                  registerDeviceOrBrowserApiKey: true,
+                  apiKey: 'intercomApiKey',
+                  appId: '9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0',
+                  collectContext: false,
+                },
+              },
+            },
           ],
           destType: 'tiktok_audience',
         },
@@ -284,6 +343,42 @@ export const data = [
         status: 200,
         body: {
           output: [
+            {
+              error: 'message Type is not present. Aborting message.',
+              batched: false,
+              destination: {
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: true,
+                  },
+                },
+                Config: {
+                  isHashRequired: true,
+                  registerDeviceOrBrowserApiKey: true,
+                  apiKey: 'intercomApiKey',
+                  appId: '9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0',
+                  collectContext: false,
+                },
+              },
+              metadata: [
+                {
+                  jobId: 1524545,
+                  secret: {
+                    accessToken: 'dummyAccessToken',
+                    advertiserIds: ['dummyAdverTiserID'],
+                  },
+                },
+              ],
+              statTags: {
+                destType: 'TIKTOK_AUDIENCE',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'cdkV2',
+                module: 'destination',
+              },
+              statusCode: 400,
+            },
             {
               batchedRequest: [
                 {

@@ -174,6 +174,35 @@ const removeDuplicateMetadata = (mergedBatches) => {
 };
 
 /**
+ * Builds UTM parameters from a campaign object.
+ *
+ * @param {Object} campaign - The campaign object containing the campaign details.
+ * @returns {Object} - The object containing the UTM parameters extracted from the campaign object.
+ *
+ * @example
+ * const campaign = {
+ *   name: 'summer_sale',
+ *   source: 'newsletter',
+ *   medium: 'email'
+ * };
+ * { utm_campaign: 'summer_sale', utm_source: 'newsletter', utm_medium: 'email' }
+ */
+const buildUtmParams = (campaign) => {
+  const utmParams = {};
+  if (campaign) {
+    Object.keys(campaign).forEach((key) => {
+      if (key === 'name') {
+        utmParams.utm_campaign = campaign[key];
+      } else {
+        utmParams[`utm_${key}`] = campaign[key];
+      }
+    });
+  }
+
+  return utmParams;
+};
+
+/**
  * Group events with the same endpoint together in batches
  * @param {*} events - An array of events
  * @returns
@@ -295,6 +324,7 @@ const combineBatchRequestsWithSameJobIds = (inputBatches) => {
 module.exports = {
   createIdentifyResponse,
   isImportAuthCredentialsAvailable,
+  buildUtmParams,
   groupEventsByEndpoint,
   generateBatchedPayloadForArray,
   batchEvents,

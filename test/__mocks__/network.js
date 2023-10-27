@@ -24,7 +24,8 @@ const urlDirectoryMap = {
   "marketo_acct_id_success.mktorest.com": "marketo_static_list",
   "api.criteo.com": "criteo_audience",
   "business-api.tiktok.com": "tiktok_ads",
-  "api.intercom.io": "intercom"
+  "api.intercom.io": "intercom",
+  "https://graph.facebook.com/v17.0/aud1/users": "fb_custom_audience"
 };
 
 function getData(arg) {

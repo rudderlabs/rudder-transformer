@@ -47,6 +47,7 @@ const destinations = [
   'criteo_audience',
   'tiktok_ads',
   'intercom',
+  'fb_custom_audience'
 ];
 
 // start of generic tests

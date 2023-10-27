@@ -180,7 +180,7 @@ const getEventValueForTrackEvent = (message, destination) => {
     token: destination.Config.token,
     distinct_id: message.userId || message.anonymousId,
     time: unixTimestamp,
-    ...buildUtmParams(message.context.campaign),
+    ...buildUtmParams(message.context?.campaign),
   };
 
   if (destination.Config?.identityMergeApi === 'simplified') {
@@ -269,7 +269,7 @@ const processPageOrScreenEvents = (message, type, destination) => {
     token: destination.Config.token,
     distinct_id: message.userId || message.anonymousId,
     time: toUnixTimestamp(message.timestamp),
-    ...buildUtmParams(message.context.campaign),
+    ...buildUtmParams(message.context?.campaign),
   };
   if (destination.Config?.identityMergeApi === 'simplified') {
     properties = {

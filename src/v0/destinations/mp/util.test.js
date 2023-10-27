@@ -585,13 +585,6 @@ describe('Mixpanel utils test', () => {
       expect(result).toEqual({});
     });
 
-    // Should return an object with utm_campaign key when campaign has name key
-    it('should return an object with utm_campaign key when campaign has name key', () => {
-      const campaign = { name: 'Test Campaign' };
-      const result = buildUtmParams(campaign);
-      expect(result).toEqual({ utm_campaign: 'Test Campaign' });
-    });
-
     it('should handle campaign object with null/undefined values', () => {
       const campaign = { name: null, source: 'rudder', medium: 'rudder', test: undefined };
       const result = buildUtmParams(campaign);

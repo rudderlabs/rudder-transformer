@@ -119,11 +119,13 @@ export const networkCallsData = [
             files: {},
         },
         httpRes: {
-            "data": {
-                "code": 294,
-                "message": "Missing permission. Please make sure you have ads_management permission and the application is included in the allowlist"
+            data: {
+                error: {
+                code: 294,
+                message: "Missing permission. Please make sure you have ads_management permission and the application is included in the allowlist"
+                }
             },
-            "status": 200
+            "status": 400
         }
     },
     {

@@ -93,7 +93,7 @@ export const data = [
                 body: {
                     version: '1',
                     type: 'REST',
-                    method: 'DELETE',
+                    method: 'POST',
                     endpoint: 'https://graph.facebook.com/v17.0/aud1/users',
                     headers: {
                         "test-dest-response-key": "permissionMissingError"
@@ -106,7 +106,6 @@ export const data = [
                                 sub_type: 'ANYTHING',
                             },
                             schema: [
-                                'EMAIL',
                                 'DOBM',
                                 'DOBD',
                                 'DOBY',
@@ -120,7 +119,6 @@ export const data = [
                             ],
                             data: [
                                 [
-                                    'shrouti@abc.com',
                                     '2',
                                     '13',
                                     '2013',
@@ -147,22 +145,32 @@ export const data = [
         },
         output: {
             response: {
-              status: 200,
-              body: {
-                output: {
-                  status: 400,
-                  message: 'Request failed with status: 294',
-                  destinationResponse: {
-                    response: {
-                      code: 294,
-                      message: "Missing permission. Please make sure you have ads_management permission and the application is included in the allowlist",
+                status: 400,
+                body: {
+                    output: {
+                        destinationResponse: {
+                            error: {
+                                code: 294,
+                                message: "Missing permission. Please make sure you have ads_management permission and the application is included in the allowlist",
+                            },
+                            status: 400,
+
+                        },
+                        message: "Missing permission. Please make sure you have ads_management permission and the application is included in the allowlist",
+                        statTags: {
+                            destType: "FB_CUSTOM_AUDIENCE",
+                            destinationId: "Non-determininable",
+                            errorCategory: "network",
+                            errorType: "aborted",
+                            feature: "dataDelivery",
+                            implementation: "native",
+                            module: "destination",
+                            workspaceId: "Non-determininable",
+                        },
+                        "status": 400,
                     },
-                    status: 200,
-                  },
-               
                 },
-              },
             },
-          },
-    }
+        },
+    },
 ]

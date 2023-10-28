@@ -165,7 +165,7 @@ const convertToSnakeCase = (eventName) =>
 const deduceTrackScreenEventName = (message, Config) => {
   let eventName;
   const { event, name } = message;
-  const { apiVersion = API_VERSION.v3, eventsMapping, sendAsCustomEvent } = Config;
+  const { eventsMapping, sendAsCustomEvent } = Config;
   const trackEventOrScreenName = event || name;
   if (!trackEventOrScreenName) {
     throw new InstrumentationError('event_name could not be mapped. Aborting');
@@ -209,17 +209,11 @@ const deduceTrackScreenEventName = (message, Config) => {
     return ['custom'];
   }
 
-  if (apiVersion === API_VERSION.v3) {
-    /* 
-    Step 4: In case both of the above stated cases fail, will send the event name as it is.
-            This is going to be reflected as "unknown" event in conversion API dashboard.
-    */
-    return [trackEventOrScreenName];
-  }
-
-  throw new ConfigurationError(
-    `${event} is not mapped in UI. Make sure to map the event in UI or enable the 'send as custom event' setting`,
-  );
+  /* 
+  Step 4: In case all of the above stated cases failed, will send the event name as it is.
+          This is going to be reflected as "unknown" event in conversion API dashboard.
+  */
+  return [trackEventOrScreenName];
 };
 
 /**

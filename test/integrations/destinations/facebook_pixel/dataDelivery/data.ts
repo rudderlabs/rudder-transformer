@@ -290,7 +290,7 @@ export const data = [
           output: {
             status: 400,
             message:
-              "Object with ID 'PIXEL_ID' does not exist, cannot be loaded due to missing permissions, or does not support this operation",
+              "Object with ID 'PIXEL_ID' / 'DATASET_ID' / 'AUDIENCE_ID' does not exist, cannot be loaded due to missing permissions, or does not support this operation",
             destinationResponse: {
               error: {
                 message:

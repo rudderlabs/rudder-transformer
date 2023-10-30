@@ -1,4 +1,14 @@
 {
+  "https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/101": {
+    "message": "Connection Aborted",
+    "name": "Error",
+    "code": "ECONNABORTED"
+  },
+  "https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/102": {
+    "message": "DNS not found",
+    "name": "Error",
+    "code": "EAI_AGAIN"
+  },
   "https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/1": {
     "response": {
       "data": {

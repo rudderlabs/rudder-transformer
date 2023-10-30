@@ -152,6 +152,9 @@ const errorDetailsMap = {
       .build(),
   },
   // facebook custom audience related error codes
+  // ref:
+  // https://developers.facebook.com/docs/marketing-api/reference/custom-audience/#error-codes-4
+  // https://developers.facebook.com/docs/marketing-api/error-reference/
   294: {
     default: new ErrorDetailsExtractorBuilder()
       .setStatus(400)

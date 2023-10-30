@@ -155,7 +155,10 @@ const prepareTraitsConfig = (configPropertyTrait, actionKey, traitsObject) => {
     const property = traitsElement?.traits;
     traitsObject = updateTraitsObject(property, traitsObject, actionKey);
   });
-  if (typeof traitsObject?.[actionKey] === 'object' && Object.keys(traitsObject?.[actionKey] || {})?.length === 0) {
+  if (
+    typeof traitsObject?.[actionKey] === 'object' &&
+    Object.keys(traitsObject?.[actionKey] || {})?.length === 0
+  ) {
     delete traitsObject[actionKey];
   }
   return traitsObject;
@@ -220,7 +223,7 @@ const handleMappingJsonObject = (
       // that key (outKey) will be a default key for reverse ETL and thus removed from the payload.
       if (isDefinedAndNotNull(data)) {
         set(payload, outKey, data);
-        delete message.traits?.[outKey];
+        delete message.traits[outKey];
       } else {
         // get the destKey/outKey value from calling the util function
         set(payload, outKey, AMUtils[funcName](message, sourceKey, Config));
@@ -235,29 +238,26 @@ const updateConfigProperty = (message, payload, mappingJson, validatePayload, Co
     // check if custom processing is required on the payload sourceKey ==> destKey
     if (typeof mappingJson[sourceKey] === 'object') {
       handleMappingJsonObject(mappingJson, sourceKey, validatePayload, payload, message, Config);
-    } else {
-      // For common config
-      if (validatePayload) {
-        // if data is present in traits assign
-        const messageData = get(message.traits, mappingJson[sourceKey]);
-        if (isDefinedAndNotNull(messageData)) {
-          set(payload, mappingJson[sourceKey], messageData);
-        } else {
-          const data = get(payload, mappingJson[sourceKey]);
-          if (!isDefinedAndNotNull(data)) {
-            const val = get(message, sourceKey);
-            if (val || val === false || val === 0) {
-              set(payload, mappingJson[sourceKey], val);
-            }
+    } else if (validatePayload) {
+      // if data is present in traits assign
+      const messageData = get(message.traits, mappingJson[sourceKey]);
+      if (isDefinedAndNotNull(messageData)) {
+        set(payload, mappingJson[sourceKey], messageData);
+      } else {
+        const data = get(payload, mappingJson[sourceKey]);
+        if (!isDefinedAndNotNull(data)) {
+          const val = get(message, sourceKey);
+          if (val || val === false || val === 0) {
+            set(payload, mappingJson[sourceKey], val);
           }
         }
+      }
+    } else {
+      const data = get(message.traits, mappingJson[sourceKey]);
+      if (isDefinedAndNotNull(data)) {
+        set(payload, mappingJson[sourceKey], data);
       } else {
-        const data = get(message.traits, mappingJson[sourceKey]);
-        if (isDefinedAndNotNull(data)) {
-          set(payload, mappingJson[sourceKey], data);
-        } else {
-          set(payload, mappingJson[sourceKey], get(message, sourceKey));
-        }
+        set(payload, mappingJson[sourceKey], get(message, sourceKey));
       }
     }
   });

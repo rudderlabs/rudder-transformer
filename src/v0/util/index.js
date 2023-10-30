@@ -2057,9 +2057,11 @@ const isValidInteger = (value) => {
   if (Number.isNaN(value) || !isDefinedAndNotNull(value)) {
     return false;
   }
-  const valueToString = `${value}`;
+  if (typeof value === 'number' && value % 1 === 0) {
+    return true;
+  }
   // Use a regular expression to check if the string is a valid integer or a valid floating-point number
-  return /^-?\d+$/.test(valueToString);
+  return typeof value === 'string' ? /^-?\d+$/.test(value) : false;
 };
 const validateEventType = (event) => {
   if (!event || typeof event !== 'string') {

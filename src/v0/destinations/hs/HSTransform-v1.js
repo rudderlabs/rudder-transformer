@@ -81,7 +81,7 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
       )}/${hsSearchId}`;
       response.method = defaultPatchRequestConfig.requestMethod;
     }
-    
+
     traits = await populateTraits(propertyMap, traits, destination);
     response.body.JSON = removeUndefinedAndNullValues({ properties: traits });
     response.source = 'rETL';

@@ -1,3 +1,92 @@
+const dataDeliveryMocksData = [
+  {
+    httpReq: {
+      url: 'https://api.clevertap.com/1/upload/test1',
+      data: {
+        d: [
+          {
+            type: 'profile',
+            profileData: {
+              Email: 'jamesDoe@gmail.com',
+              Name: 'James Doe',
+              Phone: '92374162212',
+              Gender: 'M',
+              Employed: true,
+              DOB: '1614775793',
+              Education: 'Science',
+              Married: 'Y',
+              'Customer Type': 'Prime',
+              graduate: true,
+              msg_push: true,
+              msgSms: true,
+              msgemail: true,
+              msgwhatsapp: false,
+              custom_tags: '["Test_User","Interested_User","DIY_Hobby"]',
+              custom_mappings: '{"Office":"Trastkiv","Country":"Russia"}',
+              address:
+                '{"city":"kolkata","country":"India","postalCode":789223,"state":"WB","street":""}',
+            },
+            identity: 'anon_id',
+          },
+        ],
+      },
+      params: { destination: 'clevertap' },
+      headers: {
+        'X-CleverTap-Account-Id': '476550467',
+        'X-CleverTap-Passcode':
+          'fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1',
+        'Content-Type': 'application/json',
+        'User-Agent': 'RudderLabs',
+      },
+      method: 'POST',
+    },
+    httpRes: { data: { status: 'success', processed: 1, unprocessed: [] }, status: 200 },
+  },
+  {
+    httpReq: {
+      url: 'https://api.clevertap.com/1/upload/test2',
+      data: {
+        d: [
+          {
+            identity: 'anon-id-new',
+            type: 'event',
+            evtName: 'Web Page Viewed: Rudder',
+            evtData: { title: 'Home', path: '/' },
+          },
+        ],
+      },
+      params: { destination: 'clevertap' },
+      headers: {
+        'X-CleverTap-Account-Id': 'fakeId123',
+        'X-CleverTap-Passcode': 'fakePasscode123',
+        'Content-Type': 'application/json',
+        'User-Agent': 'RudderLabs',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: { status: 'fail', error: 'Invalid Credentials', code: 401 }, status: 401
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.clevertap.com/1/upload/test3',
+      data: {
+        d: [{ identity: 'anon-id-new', type: 'event', evtData: { title: 'Home', path: '/' } }],
+      },
+      params: { destination: 'clevertap' },
+      headers: {
+        'X-CleverTap-Account-Id': '476550467',
+        'X-CleverTap-Passcode':
+          'fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1',
+        'Content-Type': 'application/json',
+        'User-Agent': 'RudderLabs',
+      },
+      method: 'POST',
+    },
+    httpRes: { data: { status: 'fail', processed: 0, unprocessed: [] }, status: 200 },
+  },
+];
 const deleteNwData = [
   {
     httpReq: {
@@ -172,4 +261,4 @@ const deleteNwData = [
     },
   },
 ];
-export const networkCallsData = [...deleteNwData];
+export const networkCallsData = [...deleteNwData, ...dataDeliveryMocksData];

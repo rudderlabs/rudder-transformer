@@ -1,5 +1,9 @@
 [
   {
+    "description": "Number is undefined",
+    "output": false
+  },
+  {
     "description": "Number in string format",
     "input": "123",
     "output": true

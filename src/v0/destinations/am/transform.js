@@ -326,18 +326,15 @@ const getDefaultResponseData = (message, rawPayload, evType, groupInfo) => {
   return { groups, rawPayload };
 };
 const getResponseData = (evType, destination, rawPayload, message, groupInfo) => {
-  let endpoint = defaultEndpoint(destination.Config);
   let groups;
 
   switch (evType) {
     case EventType.IDENTIFY:
-      endpoint = defaultEndpoint(destination.Config);
       // event_type for identify event is $identify
       rawPayload.event_type = IDENTIFY_AM;
       identifyBuilder(message, destination, rawPayload);
       break;
     case EventType.GROUP:
-      endpoint = defaultEndpoint(destination.Config);
       // event_type for identify event is $identify
       rawPayload.event_type = IDENTIFY_AM;
       // for Rudder group call, update the user_properties with group info
@@ -348,12 +345,11 @@ const getResponseData = (evType, destination, rawPayload, message, groupInfo) =>
       }
       break;
     case EventType.ALIAS:
-      endpoint = aliasEndpoint(destination.Config);
       break;
     default:
       ({ groups, rawPayload } = getDefaultResponseData(message, rawPayload, evType, groupInfo));
   }
-  return { endpoint, rawPayload, groups };
+  return { rawPayload, groups };
 };
 
 const buildPayloadForMobileChannel = (message, destination, payload) => {
@@ -451,7 +447,7 @@ const nonAliasResponsebuilder = (
   if (evType === EventType.GROUP && groupInfo) {
     groupResponse.method = defaultPostRequestConfig.requestMethod;
     groupResponse.endpoint = groupEndpoint(destination.Config);
-    let groupPayload = Object.assign(groupInfo);
+    let groupPayload = cloneDeep(groupInfo);
     groupResponse.userId = message.anonymousId;
     groupPayload = removeUndefinedValues(groupPayload);
     groupResponse.body.FORM = {
@@ -471,7 +467,7 @@ const responseBuilderSimple = (
   mappingJson,
   destination,
 ) => {
-  let rawPayload = {};
+  const rawPayload = {};
   const respList = [];
   const aliasResponse = defaultRequestConfig();
   if (
@@ -517,15 +513,13 @@ const responseBuilderSimple = (
   };
 
   const respData = getResponseData(evType, destination, rawPayload, message, groupInfo);
-  const { groups } = respData;
-  // eslint-disable-next-line prefer-const
-  ({ rawPayload } = respData);
+  const { groups, rawPayload: updatedRawPayload } = respData;
 
   // for  https://api.amplitude.com/2/httpapi , pass the "groups" key
   // refer (1.) for passing "groups" for Rudder group call
   // https://developers.amplitude.com/docs/http-api-v2#schemaevent
-  set(rawPayload, 'groups', groups);
-  let payload = removeUndefinedValues(rawPayload);
+  set(updatedRawPayload, 'groups', groups);
+  let payload = removeUndefinedValues(updatedRawPayload);
   let unmapUserId;
   if (evType === EventType.ALIAS) {
     // By default (1.), Alias config file populates user_id and global_user_id
@@ -836,7 +830,7 @@ const getBatchEvents = (message, destination, metadata, batchEventResponse) => {
   if (batchEventArray.length === 0) {
     if (JSON.stringify(incomingMessageJSON).length < AMBatchSizeLimit) {
       delete message.body.JSON.options;
-      batchEventResponse = Object.assign(batchEventResponse, {
+      Object.assign(batchEventResponse, {
         batchedRequest: message,
       });
 
@@ -904,7 +898,7 @@ const batch = (destEvents) => {
      */
     if (checkForJSONAndUserIdLengthAndDeviceId(jsonBody, userId, deviceId)) {
       response = defaultBatchRequestConfig();
-      response = Object.assign(response, { batchedRequest: message });
+      Object.assign(response, { batchedRequest: message });
       response.metadata = [metadata];
       response.destination = destinationObject;
       respList.push(response);

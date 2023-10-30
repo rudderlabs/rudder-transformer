@@ -152,6 +152,7 @@ export const data = [
                             error: {
                                 code: 294,
                                 message: "Missing permission. Please make sure you have ads_management permission and the application is included in the allowlist",
+                                type: "GraphMethodException",
                             },
                             status: 400,
 
@@ -239,6 +240,7 @@ export const data = [
                             error: {
                                 code: 1487301,
                                 message: "Custom Audience Unavailable: The custom audience you are trying to use has not been shared with your ad account",
+                                type: "GraphMethodException",
                             },
                             status: 400,
 
@@ -326,6 +328,7 @@ export const data = [
                             error: {
                                 code: 1487366,
                                 message: "Custom Audience Has Been Deleted",
+                                type: "GraphMethodException",
                             },
                             status: 400,
 
@@ -413,6 +416,7 @@ export const data = [
                             error: {
                                 code: 2650,
                                 message: "Failed to update the custom audience",
+                                type: "GraphMethodException",
                             },
                             status: 400,
 
@@ -500,6 +504,7 @@ export const data = [
                             error: {
                                 code: 105,
                                 message: "The number of parameters exceeded the maximum for this operation",
+                                type: "GraphMethodException",
                             },
                             status: 400,
 
@@ -587,6 +592,7 @@ export const data = [
                             error: {
                                 code: 80003,
                                 message: "There have been too many calls to this ad-account.",
+                                type: "GraphMethodException",
                             },
                             status: 429,
 

@@ -133,7 +133,7 @@ const setPriceQuanityInPayload = (message, rawPayload) => {
 };
 
 const createRevenuePayload = (message, rawPayload) => {
-  rawPayload.productId = message?.properties?.product_id;
+  rawPayload.productId = message.properties?.product_id;
   rawPayload.revenueType =
     message.properties?.revenueType || message.properties?.revenue_type || 'Purchased';
   rawPayload = setPriceQuanityInPayload(message, rawPayload);

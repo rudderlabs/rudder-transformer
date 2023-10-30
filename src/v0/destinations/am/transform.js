@@ -155,7 +155,7 @@ const prepareTraitsConfig = (configPropertyTrait, actionKey, traitsObject) => {
     const property = traitsElement?.traits;
     traitsObject = updateTraitsObject(property, traitsObject, actionKey);
   });
-  if (Object.keys(traitsObject[actionKey])?.length === 0) {
+  if (typeof traitsObject?.[actionKey] === 'object' && Object.keys(traitsObject?.[actionKey] || {})?.length === 0) {
     delete traitsObject[actionKey];
   }
   return traitsObject;

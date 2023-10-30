@@ -96,8 +96,10 @@ const handleSessionIdUnderContext = (sessionId) => {
 
 const checkForJSONAndUserIdLengthAndDeviceId = (jsonBody, userId, deviceId) =>
   Object.keys(jsonBody).length === 0 ||
-  (!batchEventsWithUserIdLengthLowerThanFive && userId && userId.length < 5) ||
-  (batchEventsWithUserIdLengthLowerThanFive && userId && userId.length < 5 && !deviceId);
+  (userId &&
+    userId.length < 5 &&
+    (!batchEventsWithUserIdLengthLowerThanFive ||
+      (batchEventsWithUserIdLengthLowerThanFive && !deviceId)));
 const getSessionId = (message) => {
   let sessionId = -1;
   const rootSessionId = get(message, 'session_id');
@@ -123,7 +125,7 @@ const setPriceQuanityInPayload = (message, rawPayload) => {
     price = message.properties.price;
     quantity = message.properties?.quantity || 1;
   } else {
-    price = message?.properties?.revenue;
+    price = message.properties?.revenue;
     quantity = 1;
   }
   rawPayload.price = price;
@@ -190,13 +192,16 @@ const handleTraits = (messageTrait, destination) => {
   return traitsObject;
 };
 
-const getScreenevTypeAndUpdatedProperties = (message, CATEGORY_KEY) => ({
-  evType: `Viewed ${message.name || message.event || get(message, CATEGORY_KEY) || ''} Screen`,
-  updatedProperties: {
-    ...message.properties,
-    name: message.name || message.event || get(message, CATEGORY_KEY),
-  },
-});
+const getScreenevTypeAndUpdatedProperties = (message, CATEGORY_KEY) => {
+  const name = message.name || message.event || get(message, CATEGORY_KEY);
+  return {
+    evType: `Viewed ${name || ''} Screen`,
+    updatedProperties: {
+      ...message.properties,
+      name,
+    },
+  };
+};
 
 const handleMappingJsonObject = (
   mappingJson,
@@ -225,7 +230,7 @@ const handleMappingJsonObject = (
         set(payload, outKey, data);
         delete message.traits[outKey];
         return;
-      } 
+      }
       // get the destKey/outKey value from calling the util function
       set(payload, outKey, AMUtils[funcName](message, sourceKey, Config));
     }

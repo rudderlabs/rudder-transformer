@@ -1,7 +1,7 @@
 export const data = [
     {
         name: 'fb_custom_audience',
-        description: 'successResponse',
+        description: 'successfully adding users to audience',
         feature: 'dataDelivery',
         module: 'destination',
         version: 'v0',
@@ -84,7 +84,7 @@ export const data = [
     },
     {
         name: 'fb_custom_audience',
-        description: 'permissionMissingError',
+        description: 'user addition failed due to missing permission',
         feature: 'dataDelivery',
         module: 'destination',
         version: 'v0',
@@ -176,7 +176,7 @@ export const data = [
     },
     {
         name: 'fb_custom_audience',
-        description: 'audienceUnavailableError',
+        description: 'user addition failed due to unavailable audience error',
         feature: 'dataDelivery',
         module: 'destination',
         version: 'v0',
@@ -264,7 +264,7 @@ export const data = [
     },
     {
         name: 'fb_custom_audience',
-        description: 'audienceDeletedError',
+        description: 'user addition failed because the custom audience has been deleted',
         feature: 'dataDelivery',
         module: 'destination',
         version: 'v0',
@@ -352,7 +352,7 @@ export const data = [
     },
     {
         name: 'fb_custom_audience',
-        description: 'failedToUpdateAudienceError',
+        description: 'Failed to update the custom audience for unknown reason',
         feature: 'dataDelivery',
         module: 'destination',
         version: 'v0',
@@ -440,7 +440,7 @@ export const data = [
     },
     {
         name: 'fb_custom_audience',
-        description: 'parameterExceededError',
+        description: 'Failed to update the custom audience as excessive number of parameters were passed in the request',
         feature: 'dataDelivery',
         module: 'destination',
         version: 'v0',
@@ -528,7 +528,7 @@ export const data = [
     },
     {
         name: 'fb_custom_audience',
-        description: 'tooManyCallsError',
+        description: 'user update request is throttled due to too many calls to the ad account',
         feature: 'dataDelivery',
         module: 'destination',
         version: 'v0',

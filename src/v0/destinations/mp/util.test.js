@@ -3,6 +3,7 @@ const {
   groupEventsByEndpoint,
   batchEvents,
   generateBatchedPayloadForArray,
+  buildUtmParams,
 } = require('./util');
 const { FEATURE_GZIP_SUPPORT } = require('../../util/constant');
 
@@ -568,6 +569,37 @@ describe('Mixpanel utils test', () => {
       });
 
       expect(result).toEqual(expectedBatchedRequest);
+    });
+  });
+
+  describe('Unit test cases for buildUtmParams', () => {
+    it('should return an empty object when campaign is undefined', () => {
+      const campaign = undefined;
+      const result = buildUtmParams(campaign);
+      expect(result).toEqual({});
+    });
+
+    it('should return an empty object when campaign is an empty object', () => {
+      const campaign = {};
+      const result = buildUtmParams(campaign);
+      expect(result).toEqual({});
+    });
+
+    it('should return an empty object when campaign is not an object', () => {
+      const campaign = [{ name: 'test' }];
+      const result = buildUtmParams(campaign);
+      expect(result).toEqual({});
+    });
+
+    it('should handle campaign object with null/undefined values', () => {
+      const campaign = { name: null, source: 'rudder', medium: 'rudder', test: undefined };
+      const result = buildUtmParams(campaign);
+      expect(result).toEqual({
+        utm_campaign: null,
+        utm_source: 'rudder',
+        utm_medium: 'rudder',
+        test: undefined,
+      });
     });
   });
 });

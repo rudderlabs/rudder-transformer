@@ -40,6 +40,15 @@ export const data = [
                   initial_referrer: 'https://docs.rudderstack.com',
                   initial_referring_domain: 'docs.rudderstack.com',
                 },
+                campaign: {
+                  name: 'test_name',
+                  source: 'rudder',
+                  medium: 'test_medium',
+                  term: 'test_tem',
+                  content: 'test_content',
+                  test: 'test',
+                  keyword: 'test_keyword',
+                },
                 userAgent:
                   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36',
               },
@@ -85,7 +94,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"event":"Loaded a Page","properties":{"ip":"0.0.0.0","$user_id":"hjikl","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"dd266c67-9199-4a52-ba32-f46ddde67312","token":"dummyApiKey","distinct_id":"hjikl","time":1579847342,"name":"Contact Us","$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
+                    '[{"event":"Loaded a Page","properties":{"ip":"0.0.0.0","campaign_id":"test_name","$user_id":"hjikl","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"dd266c67-9199-4a52-ba32-f46ddde67312","token":"dummyApiKey","distinct_id":"hjikl","time":1579847342,"utm_campaign":"test_name","utm_source":"rudder","utm_medium":"test_medium","utm_term":"test_tem","utm_content":"test_content","utm_test":"test","utm_keyword":"test_keyword","name":"Contact Us","$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
                 },
                 XML: {},
                 FORM: {},
@@ -600,6 +609,15 @@ export const data = [
                   initial_referrer: 'https://docs.rudderstack.com',
                   initial_referring_domain: 'docs.rudderstack.com',
                 },
+                campaign: {
+                  name: 'test_name',
+                  source: 'rudder',
+                  medium: 'test_medium',
+                  term: 'test_tem',
+                  content: 'test_content',
+                  test: 'test',
+                  keyword: 'test_keyword',
+                },
                 userAgent:
                   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36',
               },
@@ -687,7 +705,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"event":"test revenue MIXPANEL","properties":{"currency":"USD","revenue":45.89,"counter":1,"item_purchased":"2","number_of_logins":"","city":"Disney","country":"USA","email":"mickey@disney.com","firstName":"Mickey","ip":"0.0.0.0","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"a6a0ad5a-bd26-4f19-8f75-38484e580fc7","token":"dummyApiKey","distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","time":1579847342,"$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
+                    '[{"event":"test revenue MIXPANEL","properties":{"currency":"USD","revenue":45.89,"counter":1,"item_purchased":"2","number_of_logins":"","city":"Disney","country":"USA","email":"mickey@disney.com","firstName":"Mickey","ip":"0.0.0.0","campaign_id":"test_name","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"a6a0ad5a-bd26-4f19-8f75-38484e580fc7","token":"dummyApiKey","distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","time":1579847342,"utm_campaign":"test_name","utm_source":"rudder","utm_medium":"test_medium","utm_term":"test_tem","utm_content":"test_content","utm_test":"test","utm_keyword":"test_keyword","$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
                 },
                 XML: {},
                 FORM: {},

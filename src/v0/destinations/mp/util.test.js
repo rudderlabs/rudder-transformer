@@ -585,6 +585,12 @@ describe('Mixpanel utils test', () => {
       expect(result).toEqual({});
     });
 
+    it('should return an empty object when campaign is not an object', () => {
+      const campaign = [{ name: 'test' }];
+      const result = buildUtmParams(campaign);
+      expect(result).toEqual({});
+    });
+
     it('should handle campaign object with null/undefined values', () => {
       const campaign = { name: null, source: 'rudder', medium: 'rudder', test: undefined };
       const result = buildUtmParams(campaign);

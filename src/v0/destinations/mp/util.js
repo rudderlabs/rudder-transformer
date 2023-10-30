@@ -12,6 +12,7 @@ const {
   getSuccessRespEvents,
   defaultBatchRequestConfig,
   IsGzipSupported,
+  isObject,
 } = require('../../util');
 const {
   ConfigCategory,
@@ -189,7 +190,7 @@ const removeDuplicateMetadata = (mergedBatches) => {
  */
 const buildUtmParams = (campaign) => {
   const utmParams = {};
-  if (campaign) {
+  if (isObject(campaign)) {
     Object.keys(campaign).forEach((key) => {
       if (key === 'name') {
         utmParams.utm_campaign = campaign[key];

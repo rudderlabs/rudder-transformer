@@ -1,0 +1,1511 @@
+export const data = [
+  {
+    name: 'statsig',
+    description: 'Test 0',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: '8d872292709c6fbe',
+              channel: 'mobile',
+              context: {
+                app: {
+                  build: '1',
+                  name: 'AMTestProject',
+                  namespace: 'com.rudderstack.android.rudderstack.sampleAndroidApp',
+                  version: '1.0',
+                },
+                device: {
+                  id: '8d872292709c6fbe',
+                  manufacturer: 'Google',
+                  model: 'AOSPonIAEmulator',
+                  name: 'generic_x86_arm',
+                  type: 'android',
+                },
+                library: {
+                  name: 'com.rudderstack.android.sdk.core',
+                  version: '1.0.2',
+                },
+                locale: 'en-US',
+                network: {
+                  carrier: 'Android',
+                  bluetooth: false,
+                  cellular: true,
+                  wifi: true,
+                },
+                os: {
+                  name: 'Android',
+                  version: '9',
+                },
+                screen: {
+                  density: 420,
+                  height: 1794,
+                  width: 1080,
+                },
+                timezone: 'Asia/Kolkata',
+                traits: {
+                  address: {
+                    city: 'Kolkata',
+                    country: 'India',
+                    postalcode: '700096',
+                    state: 'West bengal',
+                    street: 'Park Street',
+                  },
+                  age: '30',
+                  anonymousId: '8d872292709c6fbe',
+                  birthday: '2020-05-26',
+                  createdat: '18th March 2020',
+                  description: 'Premium User for 3 years',
+                  email: 'identify@test.com',
+                  firstname: 'John',
+                  userId: 'sample_user_id',
+                  lastname: 'Sparrow',
+                  name: 'John Sparrow',
+                  id: 'sample_user_id',
+                  phone: '9112340345',
+                  username: 'john_sparrow',
+                },
+                userAgent:
+                  'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
+              },
+              event: 'Product Clicked',
+              integrations: {
+                All: true,
+              },
+              messageId: '1590431830915-73bed370-5889-436d-9a9e-0c0e0c809d06',
+              properties: {
+                revenue: '30',
+                currency: 'USD',
+                quantity: '5',
+                test_key_2: {
+                  test_child_key_1: 'test_child_value_1',
+                },
+                price: '58.0',
+              },
+              originalTimestamp: '2020-05-25T18:37:10.917Z',
+              sentAt: '2020-05-25T18:37:10.917Z',
+              type: 'track',
+              userId: 'sample_user_id',
+            },
+            destination: {
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                },
+              },
+              Config: {
+                secretKey: 'secret-tHe5ecr37',
+              },
+            },
+            metadata: {
+              destinationId: 'd1',
+              workspaceId: 'w1',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.statsig.com/v1/webhooks/rudderstack',
+              headers: {
+                'STATSIG-API-KEY': 'secret-tHe5ecr37',
+                'content-type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  anonymousId: '8d872292709c6fbe',
+                  channel: 'mobile',
+                  context: {
+                    app: {
+                      build: '1',
+                      name: 'AMTestProject',
+                      namespace: 'com.rudderstack.android.rudderstack.sampleAndroidApp',
+                      version: '1.0',
+                    },
+                    device: {
+                      id: '8d872292709c6fbe',
+                      manufacturer: 'Google',
+                      model: 'AOSPonIAEmulator',
+                      name: 'generic_x86_arm',
+                      type: 'android',
+                    },
+                    library: {
+                      name: 'com.rudderstack.android.sdk.core',
+                      version: '1.0.2',
+                    },
+                    locale: 'en-US',
+                    network: {
+                      carrier: 'Android',
+                      bluetooth: false,
+                      cellular: true,
+                      wifi: true,
+                    },
+                    os: {
+                      name: 'Android',
+                      version: '9',
+                    },
+                    screen: {
+                      density: 420,
+                      height: 1794,
+                      width: 1080,
+                    },
+                    timezone: 'Asia/Kolkata',
+                    traits: {
+                      address: {
+                        city: 'Kolkata',
+                        country: 'India',
+                        postalcode: '700096',
+                        state: 'West bengal',
+                        street: 'Park Street',
+                      },
+                      age: '30',
+                      anonymousId: '8d872292709c6fbe',
+                      birthday: '2020-05-26',
+                      createdat: '18th March 2020',
+                      description: 'Premium User for 3 years',
+                      email: 'identify@test.com',
+                      firstname: 'John',
+                      userId: 'sample_user_id',
+                      lastname: 'Sparrow',
+                      name: 'John Sparrow',
+                      id: 'sample_user_id',
+                      phone: '9112340345',
+                      username: 'john_sparrow',
+                    },
+                    userAgent:
+                      'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
+                  },
+                  event: 'Product Clicked',
+                  integrations: {
+                    All: true,
+                  },
+                  messageId: '1590431830915-73bed370-5889-436d-9a9e-0c0e0c809d06',
+                  properties: {
+                    revenue: '30',
+                    currency: 'USD',
+                    quantity: '5',
+                    test_key_2: {
+                      test_child_key_1: 'test_child_value_1',
+                    },
+                    price: '58.0',
+                  },
+                  originalTimestamp: '2020-05-25T18:37:10.917Z',
+                  sentAt: '2020-05-25T18:37:10.917Z',
+                  type: 'track',
+                  userId: 'sample_user_id',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+            metadata: {
+              destinationId: 'd1',
+              workspaceId: 'w1',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'statsig',
+    description: 'Test 1',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: '8d872292709c6fbe',
+              channel: 'mobile',
+              context: {
+                app: {
+                  build: '1',
+                  name: 'AMTestProject',
+                  namespace: 'com.rudderstack.android.rudderstack.sampleAndroidApp',
+                  version: '1.0',
+                },
+                device: {
+                  id: '8d872292709c6fbe',
+                  manufacturer: 'Google',
+                  model: 'AOSP on IA Emulator',
+                  name: 'generic_x86_arm',
+                  type: 'android',
+                },
+                library: {
+                  name: 'com.rudderstack.android.sdk.core',
+                  version: '1.0.2',
+                },
+                locale: 'en-US',
+                network: {
+                  carrier: 'Android',
+                  bluetooth: false,
+                  cellular: true,
+                  wifi: true,
+                },
+                os: {
+                  name: 'Android',
+                  version: '9',
+                },
+                screen: {
+                  density: 420,
+                  height: 1794,
+                  width: 1080,
+                },
+                timezone: 'Asia/Kolkata',
+                traits: {
+                  address: {
+                    city: 'Kolkata',
+                    country: 'India',
+                    postalcode: '700096',
+                    state: 'West bengal',
+                    street: 'Park Street',
+                  },
+                  age: '30',
+                  anonymousId: '8d872292709c6fbe',
+                  birthday: '2020-05-26',
+                  createdat: '18th March 2020',
+                  description: 'Premium User for 3 years',
+                  email: 'identify@test.com',
+                  firstname: 'John',
+                  userId: 'sample_user_id',
+                  lastname: 'Sparrow',
+                  name: 'John Sparrow',
+                  id: 'sample_user_id',
+                  phone: '9876543210',
+                  username: 'john_sparrow',
+                  quantity: '5',
+                  price: '56.0',
+                },
+                userAgent:
+                  'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
+              },
+              event: 'identify',
+              integrations: {
+                All: true,
+              },
+              messageId: '1590431830865-3be680d6-7dcd-4b05-8460-f3acc30046d9',
+              originalTimestamp: '2020-05-25T18:37:10.865Z',
+              sentAt: '2020-05-25T18:37:10.917Z',
+              type: 'identify',
+              userId: 'sample_user_id',
+            },
+            destination: {
+              DestinationDefinition: {
+                Config: {
+                  cdkEnabled: true,
+                },
+              },
+              Config: {
+                secretKey: 'secret-tHe5ecr37',
+              },
+            },
+            metadata: {
+              destinationId: 'd1',
+              workspaceId: 'w1',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.statsig.com/v1/webhooks/rudderstack',
+              headers: {
+                'STATSIG-API-KEY': 'secret-tHe5ecr37',
+                'content-type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  anonymousId: '8d872292709c6fbe',
+                  channel: 'mobile',
+                  context: {
+                    app: {
+                      build: '1',
+                      name: 'AMTestProject',
+                      namespace: 'com.rudderstack.android.rudderstack.sampleAndroidApp',
+                      version: '1.0',
+                    },
+                    device: {
+                      id: '8d872292709c6fbe',
+                      manufacturer: 'Google',
+                      model: 'AOSP on IA Emulator',
+                      name: 'generic_x86_arm',
+                      type: 'android',
+                    },
+                    library: {
+                      name: 'com.rudderstack.android.sdk.core',
+                      version: '1.0.2',
+                    },
+                    locale: 'en-US',
+                    network: {
+                      carrier: 'Android',
+                      bluetooth: false,
+                      cellular: true,
+                      wifi: true,
+                    },
+                    os: {
+                      name: 'Android',
+                      version: '9',
+                    },
+                    screen: {
+                      density: 420,
+                      height: 1794,
+                      width: 1080,
+                    },
+                    timezone: 'Asia/Kolkata',
+                    traits: {
+                      address: {
+                        city: 'Kolkata',
+                        country: 'India',
+                        postalcode: '700096',
+                        state: 'West bengal',
+                        street: 'Park Street',
+                      },
+                      age: '30',
+                      anonymousId: '8d872292709c6fbe',
+                      birthday: '2020-05-26',
+                      createdat: '18th March 2020',
+                      description: 'Premium User for 3 years',
+                      email: 'identify@test.com',
+                      firstname: 'John',
+                      userId: 'sample_user_id',
+                      lastname: 'Sparrow',
+                      name: 'John Sparrow',
+                      id: 'sample_user_id',
+                      phone: '9876543210',
+                      username: 'john_sparrow',
+                      quantity: '5',
+                      price: '56.0',
+                    },
+                    userAgent:
+                      'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
+                  },
+                  event: 'identify',
+                  integrations: {
+                    All: true,
+                  },
+                  messageId: '1590431830865-3be680d6-7dcd-4b05-8460-f3acc30046d9',
+                  originalTimestamp: '2020-05-25T18:37:10.865Z',
+                  sentAt: '2020-05-25T18:37:10.917Z',
+                  type: 'identify',
+                  userId: 'sample_user_id',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+            metadata: {
+              destinationId: 'd1',
+              workspaceId: 'w1',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'statsig',
+    description: 'Test 2',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: '8d872292709c6fbe',
+              channel: 'mobile',
+              context: {
+                app: {
+                  build: '1',
+                  name: 'AMTestProject',
+                  namespace: 'com.rudderstack.android.rudderstack.sampleAndroidApp',
+                  version: '1.0',
+                },
+                device: {
+                  id: '8d872292709c6fbe',
+                  manufacturer: 'Google',
+                  model: 'AOSP on IA Emulator',
+                  name: 'generic_x86_arm',
+                  type: 'android',
+                },
+                library: {
+                  name: 'com.rudderstack.android.sdk.core',
+                  version: '1.0.2',
+                },
+                locale: 'en-US',
+                network: {
+                  carrier: 'Android',
+                  bluetooth: false,
+                  cellular: true,
+                  wifi: true,
+                },
+                os: {
+                  name: 'Android',
+                  version: '9',
+                },
+                screen: {
+                  density: 420,
+                  height: 1794,
+                  width: 1080,
+                },
+                timezone: 'Asia/Kolkata',
+                traits: {
+                  address: {
+                    city: 'Kolkata',
+                    country: 'India',
+                    postalcode: '700096',
+                    state: 'West bengal',
+                    street: 'Park Street',
+                  },
+                  age: '30',
+                  anonymousId: '8d872292709c6fbe',
+                  birthday: '2020-05-26',
+                  createdat: '18th March 2020',
+                  description: 'Premium User for 3 years',
+                  email: 'page@test.com',
+                  firstname: 'John',
+                  userId: 'sample_user_id',
+                  lastname: 'Sparrow',
+                  name: 'John Sparrow',
+                  id: 'sample_user_id',
+                  phone: '9876543210',
+                  username: 'john_sparrow',
+                  quantity: '5',
+                  price: '56.0',
+                },
+                userAgent:
+                  'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
+              },
+              event: 'page',
+              integrations: {
+                All: true,
+              },
+              messageId: '1590431830865-3be680d6-7dcd-4b05-8460-f3acc30046d9',
+              originalTimestamp: '2020-05-25T18:37:10.865Z',
+              sentAt: '2020-05-25T18:37:10.917Z',
+              type: 'page',
+              userId: 'sample_user_id',
+            },
+            destination: {
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                },
+              },
+              Config: {
+                secretKey: 'secret-tHe5ecr37',
+              },
+            },
+            metadata: {
+              destinationId: 'd1',
+              workspaceId: 'w1',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.statsig.com/v1/webhooks/rudderstack',
+              headers: {
+                'STATSIG-API-KEY': 'secret-tHe5ecr37',
+                'content-type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  anonymousId: '8d872292709c6fbe',
+                  channel: 'mobile',
+                  context: {
+                    app: {
+                      build: '1',
+                      name: 'AMTestProject',
+                      namespace: 'com.rudderstack.android.rudderstack.sampleAndroidApp',
+                      version: '1.0',
+                    },
+                    device: {
+                      id: '8d872292709c6fbe',
+                      manufacturer: 'Google',
+                      model: 'AOSP on IA Emulator',
+                      name: 'generic_x86_arm',
+                      type: 'android',
+                    },
+                    library: {
+                      name: 'com.rudderstack.android.sdk.core',
+                      version: '1.0.2',
+                    },
+                    locale: 'en-US',
+                    network: {
+                      carrier: 'Android',
+                      bluetooth: false,
+                      cellular: true,
+                      wifi: true,
+                    },
+                    os: {
+                      name: 'Android',
+                      version: '9',
+                    },
+                    screen: {
+                      density: 420,
+                      height: 1794,
+                      width: 1080,
+                    },
+                    timezone: 'Asia/Kolkata',
+                    traits: {
+                      address: {
+                        city: 'Kolkata',
+                        country: 'India',
+                        postalcode: '700096',
+                        state: 'West bengal',
+                        street: 'Park Street',
+                      },
+                      age: '30',
+                      anonymousId: '8d872292709c6fbe',
+                      birthday: '2020-05-26',
+                      createdat: '18th March 2020',
+                      description: 'Premium User for 3 years',
+                      email: 'page@test.com',
+                      firstname: 'John',
+                      userId: 'sample_user_id',
+                      lastname: 'Sparrow',
+                      name: 'John Sparrow',
+                      id: 'sample_user_id',
+                      phone: '9876543210',
+                      username: 'john_sparrow',
+                      quantity: '5',
+                      price: '56.0',
+                    },
+                    userAgent:
+                      'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
+                  },
+                  event: 'page',
+                  integrations: {
+                    All: true,
+                  },
+                  messageId: '1590431830865-3be680d6-7dcd-4b05-8460-f3acc30046d9',
+                  originalTimestamp: '2020-05-25T18:37:10.865Z',
+                  sentAt: '2020-05-25T18:37:10.917Z',
+                  type: 'page',
+                  userId: 'sample_user_id',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+            metadata: {
+              destinationId: 'd1',
+              workspaceId: 'w1',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'statsig',
+    description: 'Test 3',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: '8d872292709c6fbe',
+              channel: 'mobile',
+              context: {
+                app: {
+                  build: '1',
+                  name: 'AMTestProject',
+                  namespace: 'com.rudderstack.android.rudderstack.sampleAndroidApp',
+                  version: '1.0',
+                },
+                device: {
+                  id: '8d872292709c6fbe',
+                  manufacturer: 'Google',
+                  model: 'AOSP on IA Emulator',
+                  name: 'generic_x86_arm',
+                  type: 'android',
+                },
+                library: {
+                  name: 'com.rudderstack.android.sdk.core',
+                  version: '1.0.2',
+                },
+                locale: 'en-US',
+                network: {
+                  carrier: 'Android',
+                  bluetooth: false,
+                  cellular: true,
+                  wifi: true,
+                },
+                os: {
+                  name: 'Android',
+                  version: '9',
+                },
+                screen: {
+                  density: 420,
+                  height: 1794,
+                  width: 1080,
+                },
+                timezone: 'Asia/Kolkata',
+                traits: {
+                  address: {
+                    city: 'Kolkata',
+                    country: 'India',
+                    postalcode: '700096',
+                    state: 'West bengal',
+                    street: 'Park Street',
+                  },
+                  age: '30',
+                  anonymousId: '8d872292709c6fbe',
+                  birthday: '2020-05-26',
+                  createdat: '18th March 2020',
+                  description: 'Premium User for 3 years',
+                  email: 'screen@test.com',
+                  firstname: 'John',
+                  userId: 'sample_user_id',
+                  lastname: 'Sparrow',
+                  name: 'John Sparrow',
+                  id: 'sample_user_id',
+                  phone: '9876543210',
+                  username: 'john_sparrow',
+                  quantity: '5',
+                  price: '56.0',
+                },
+                userAgent:
+                  'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
+              },
+              event: 'screen',
+              integrations: {
+                All: true,
+              },
+              messageId: '1590431830865-3be680d6-7dcd-4b05-8460-f3acc30046d9',
+              originalTimestamp: '2020-05-25T18:37:10.865Z',
+              sentAt: '2020-05-25T18:37:10.917Z',
+              type: 'screen',
+              userId: 'sample_user_id',
+            },
+            destination: {
+              DestinationDefinition: {
+                Config: {
+                  cdkEnabled: true,
+                },
+              },
+              Config: {
+                secretKey: 'secret-tHe5ecr37',
+              },
+            },
+            metadata: {
+              destinationId: 'd1',
+              workspaceId: 'w1',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.statsig.com/v1/webhooks/rudderstack',
+              headers: {
+                'STATSIG-API-KEY': 'secret-tHe5ecr37',
+                'content-type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  anonymousId: '8d872292709c6fbe',
+                  channel: 'mobile',
+                  context: {
+                    app: {
+                      build: '1',
+                      name: 'AMTestProject',
+                      namespace: 'com.rudderstack.android.rudderstack.sampleAndroidApp',
+                      version: '1.0',
+                    },
+                    device: {
+                      id: '8d872292709c6fbe',
+                      manufacturer: 'Google',
+                      model: 'AOSP on IA Emulator',
+                      name: 'generic_x86_arm',
+                      type: 'android',
+                    },
+                    library: {
+                      name: 'com.rudderstack.android.sdk.core',
+                      version: '1.0.2',
+                    },
+                    locale: 'en-US',
+                    network: {
+                      carrier: 'Android',
+                      bluetooth: false,
+                      cellular: true,
+                      wifi: true,
+                    },
+                    os: {
+                      name: 'Android',
+                      version: '9',
+                    },
+                    screen: {
+                      density: 420,
+                      height: 1794,
+                      width: 1080,
+                    },
+                    timezone: 'Asia/Kolkata',
+                    traits: {
+                      address: {
+                        city: 'Kolkata',
+                        country: 'India',
+                        postalcode: '700096',
+                        state: 'West bengal',
+                        street: 'Park Street',
+                      },
+                      age: '30',
+                      anonymousId: '8d872292709c6fbe',
+                      birthday: '2020-05-26',
+                      createdat: '18th March 2020',
+                      description: 'Premium User for 3 years',
+                      email: 'screen@test.com',
+                      firstname: 'John',
+                      userId: 'sample_user_id',
+                      lastname: 'Sparrow',
+                      name: 'John Sparrow',
+                      id: 'sample_user_id',
+                      phone: '9876543210',
+                      username: 'john_sparrow',
+                      quantity: '5',
+                      price: '56.0',
+                    },
+                    userAgent:
+                      'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
+                  },
+                  event: 'screen',
+                  integrations: {
+                    All: true,
+                  },
+                  messageId: '1590431830865-3be680d6-7dcd-4b05-8460-f3acc30046d9',
+                  originalTimestamp: '2020-05-25T18:37:10.865Z',
+                  sentAt: '2020-05-25T18:37:10.917Z',
+                  type: 'screen',
+                  userId: 'sample_user_id',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+            metadata: {
+              destinationId: 'd1',
+              workspaceId: 'w1',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'statsig',
+    description: 'Test 4',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: '8d872292709c6fbe',
+              channel: 'mobile',
+              context: {
+                app: {
+                  build: '1',
+                  name: 'AMTestProject',
+                  namespace: 'com.rudderstack.android.rudderstack.sampleAndroidApp',
+                  version: '1.0',
+                },
+                device: {
+                  id: '8d872292709c6fbe',
+                  manufacturer: 'Google',
+                  model: 'AOSP on IA Emulator',
+                  name: 'generic_x86_arm',
+                  type: 'android',
+                },
+                library: {
+                  name: 'com.rudderstack.android.sdk.core',
+                  version: '1.0.2',
+                },
+                locale: 'en-US',
+                network: {
+                  carrier: 'Android',
+                  bluetooth: false,
+                  cellular: true,
+                  wifi: true,
+                },
+                os: {
+                  name: 'Android',
+                  version: '9',
+                },
+                screen: {
+                  density: 420,
+                  height: 1794,
+                  width: 1080,
+                },
+                timezone: 'Asia/Kolkata',
+                traits: {
+                  address: {
+                    city: 'Kolkata',
+                    country: 'India',
+                    postalcode: '700096',
+                    state: 'West bengal',
+                    street: 'Park Street',
+                  },
+                  age: '30',
+                  anonymousId: '8d872292709c6fbe',
+                  birthday: '2020-05-26',
+                  createdat: '18th March 2020',
+                  description: 'Premium User for 3 years',
+                  email: 'screen@test.com',
+                  firstname: 'John',
+                  userId: 'sample_user_id',
+                  lastname: 'Sparrow',
+                  name: 'John Sparrow',
+                  id: 'sample_user_id',
+                  phone: '9876543210',
+                  username: 'john_sparrow',
+                  quantity: '5',
+                  price: '56.0',
+                },
+                userAgent:
+                  'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
+              },
+              event: 'screen',
+              integrations: {
+                All: true,
+              },
+              messageId: '1590431830865-3be680d6-7dcd-4b05-8460-f3acc30046d9',
+              originalTimestamp: '2020-05-25T18:37:10.865Z',
+              sentAt: '2020-05-25T18:37:10.917Z',
+              type: 'screen',
+              userId: 'sample_user_id',
+            },
+            destination: {
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                },
+              },
+              Config: {
+                secretKey: 'secret-4n07h3rsecr3t',
+              },
+            },
+            metadata: {
+              destinationId: 'd1',
+              workspaceId: 'w1',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.statsig.com/v1/webhooks/rudderstack',
+              headers: {
+                'STATSIG-API-KEY': 'secret-4n07h3rsecr3t',
+                'content-type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  anonymousId: '8d872292709c6fbe',
+                  channel: 'mobile',
+                  context: {
+                    app: {
+                      build: '1',
+                      name: 'AMTestProject',
+                      namespace: 'com.rudderstack.android.rudderstack.sampleAndroidApp',
+                      version: '1.0',
+                    },
+                    device: {
+                      id: '8d872292709c6fbe',
+                      manufacturer: 'Google',
+                      model: 'AOSP on IA Emulator',
+                      name: 'generic_x86_arm',
+                      type: 'android',
+                    },
+                    library: {
+                      name: 'com.rudderstack.android.sdk.core',
+                      version: '1.0.2',
+                    },
+                    locale: 'en-US',
+                    network: {
+                      carrier: 'Android',
+                      bluetooth: false,
+                      cellular: true,
+                      wifi: true,
+                    },
+                    os: {
+                      name: 'Android',
+                      version: '9',
+                    },
+                    screen: {
+                      density: 420,
+                      height: 1794,
+                      width: 1080,
+                    },
+                    timezone: 'Asia/Kolkata',
+                    traits: {
+                      address: {
+                        city: 'Kolkata',
+                        country: 'India',
+                        postalcode: '700096',
+                        state: 'West bengal',
+                        street: 'Park Street',
+                      },
+                      age: '30',
+                      anonymousId: '8d872292709c6fbe',
+                      birthday: '2020-05-26',
+                      createdat: '18th March 2020',
+                      description: 'Premium User for 3 years',
+                      email: 'screen@test.com',
+                      firstname: 'John',
+                      userId: 'sample_user_id',
+                      lastname: 'Sparrow',
+                      name: 'John Sparrow',
+                      id: 'sample_user_id',
+                      phone: '9876543210',
+                      username: 'john_sparrow',
+                      quantity: '5',
+                      price: '56.0',
+                    },
+                    userAgent:
+                      'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
+                  },
+                  event: 'screen',
+                  integrations: {
+                    All: true,
+                  },
+                  messageId: '1590431830865-3be680d6-7dcd-4b05-8460-f3acc30046d9',
+                  originalTimestamp: '2020-05-25T18:37:10.865Z',
+                  sentAt: '2020-05-25T18:37:10.917Z',
+                  type: 'screen',
+                  userId: 'sample_user_id',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+            metadata: {
+              destinationId: 'd1',
+              workspaceId: 'w1',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'statsig',
+    description: 'Test 5',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.1.5',
+                },
+                traits: {
+                  name: 'Shehan Study',
+                  category: 'SampleIdentify',
+                  email: 'test@rudderstack.com',
+                  plan: 'Open source',
+                  logins: 5,
+                  createdAt: 1599264000,
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.1.5',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36',
+                locale: 'en-US',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                screen: {
+                  density: 0.8999999761581421,
+                },
+                campaign: {
+                  source: 'google',
+                  medium: 'medium',
+                  term: 'keyword',
+                  content: 'some content',
+                  name: 'some campaign',
+                  test: 'other value',
+                },
+                page: {
+                  path: '/destinations/amplitude',
+                  referrer: '',
+                  search: '',
+                  title: '',
+                  url: 'https://docs.rudderstack.com/destinations/amplitude',
+                  category: 'destination',
+                  initial_referrer: 'https://docs.rudderstack.com',
+                  initial_referring_domain: 'docs.rudderstack.com',
+                },
+              },
+              type: 'alias',
+              messageId: 'dd46338d-5f83-493b-bd28-3b48f55d0be8',
+              originalTimestamp: '2020-10-20T08:14:28.778Z',
+              anonymousId: 'my-anonymous-id-new',
+              userId: 'newUserIdAlias',
+              integrations: {
+                All: true,
+              },
+              previousId: 'sampleusrRudder3',
+              sentAt: '2020-10-20T08:14:28.778Z',
+            },
+            destination: {
+              DestinationDefinition: {
+                Config: {
+                  cdkEnabled: true,
+                },
+              },
+              Config: {
+                secretKey: 'secret-tHe5ecr37',
+              },
+            },
+            metadata: {
+              destinationId: 'd1',
+              workspaceId: 'w1',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.statsig.com/v1/webhooks/rudderstack',
+              headers: {
+                'STATSIG-API-KEY': 'secret-tHe5ecr37',
+                'content-type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  channel: 'web',
+                  context: {
+                    app: {
+                      build: '1.0.0',
+                      name: 'RudderLabs JavaScript SDK',
+                      namespace: 'com.rudderlabs.javascript',
+                      version: '1.1.5',
+                    },
+                    traits: {
+                      name: 'Shehan Study',
+                      category: 'SampleIdentify',
+                      email: 'test@rudderstack.com',
+                      plan: 'Open source',
+                      logins: 5,
+                      createdAt: 1599264000,
+                    },
+                    library: {
+                      name: 'RudderLabs JavaScript SDK',
+                      version: '1.1.5',
+                    },
+                    userAgent:
+                      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36',
+                    locale: 'en-US',
+                    os: {
+                      name: '',
+                      version: '',
+                    },
+                    screen: {
+                      density: 0.8999999761581421,
+                    },
+                    campaign: {
+                      source: 'google',
+                      medium: 'medium',
+                      term: 'keyword',
+                      content: 'some content',
+                      name: 'some campaign',
+                      test: 'other value',
+                    },
+                    page: {
+                      path: '/destinations/amplitude',
+                      referrer: '',
+                      search: '',
+                      title: '',
+                      url: 'https://docs.rudderstack.com/destinations/amplitude',
+                      category: 'destination',
+                      initial_referrer: 'https://docs.rudderstack.com',
+                      initial_referring_domain: 'docs.rudderstack.com',
+                    },
+                  },
+                  type: 'alias',
+                  messageId: 'dd46338d-5f83-493b-bd28-3b48f55d0be8',
+                  originalTimestamp: '2020-10-20T08:14:28.778Z',
+                  anonymousId: 'my-anonymous-id-new',
+                  userId: 'newUserIdAlias',
+                  integrations: {
+                    All: true,
+                  },
+                  previousId: 'sampleusrRudder3',
+                  sentAt: '2020-10-20T08:14:28.778Z',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+            metadata: {
+              destinationId: 'd1',
+              workspaceId: 'w1',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'statsig',
+    description: 'Test 6',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                locale: 'en-US',
+                ip: '0.0.0.0',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                screen: {
+                  density: 2,
+                },
+              },
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
+              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+              originalTimestamp: '2019-10-14T09:03:17.562Z',
+              anonymousId: '123456',
+              userId: '123456',
+              type: 'group',
+              traits: {
+                anonymousId: '123456',
+                email: 'test@rudderstack.com',
+                address: {
+                  city: 'kolkata',
+                  country: 'India',
+                  postalCode: 712136,
+                  state: 'WB',
+                  street: '',
+                },
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T09:03:22.563Z',
+            },
+            destination: {
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                },
+              },
+              Config: {
+                secretKey: 'secret-tHe5ecr37',
+              },
+            },
+            metadata: {
+              destinationId: 'd1',
+              workspaceId: 'w1',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.statsig.com/v1/webhooks/rudderstack',
+              headers: {
+                'STATSIG-API-KEY': 'secret-tHe5ecr37',
+                'content-type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  channel: 'web',
+                  context: {
+                    app: {
+                      build: '1.0.0',
+                      name: 'RudderLabs JavaScript SDK',
+                      namespace: 'com.rudderlabs.javascript',
+                      version: '1.0.0',
+                    },
+                    library: {
+                      name: 'RudderLabs JavaScript SDK',
+                      version: '1.0.0',
+                    },
+                    userAgent:
+                      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                    locale: 'en-US',
+                    ip: '0.0.0.0',
+                    os: {
+                      name: '',
+                      version: '',
+                    },
+                    screen: {
+                      density: 2,
+                    },
+                  },
+                  messageId: '84e26acc-56a5-4835-8233-591137fca468',
+                  session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+                  originalTimestamp: '2019-10-14T09:03:17.562Z',
+                  anonymousId: '123456',
+                  userId: '123456',
+                  type: 'group',
+                  traits: {
+                    anonymousId: '123456',
+                    email: 'test@rudderstack.com',
+                    address: {
+                      city: 'kolkata',
+                      country: 'India',
+                      postalCode: 712136,
+                      state: 'WB',
+                      street: '',
+                    },
+                  },
+                  integrations: {
+                    All: true,
+                  },
+                  sentAt: '2019-10-14T09:03:22.563Z',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+            metadata: {
+              destinationId: 'd1',
+              workspaceId: 'w1',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'statsig',
+    description: 'Test 7',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                locale: 'en-US',
+                ip: '0.0.0.0',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                screen: {
+                  density: 2,
+                },
+              },
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
+              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+              originalTimestamp: '2019-10-14T09:03:17.562Z',
+              anonymousId: '123456',
+              userId: '123456',
+              type: 'NOT_A_TYPE',
+              traits: {
+                anonymousId: '123456',
+                email: 'test@rudderstack.com',
+                address: {
+                  city: 'kolkata',
+                  country: 'India',
+                  postalCode: 712136,
+                  state: 'WB',
+                  street: '',
+                },
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T09:03:22.563Z',
+            },
+            destination: {
+              DestinationDefinition: {
+                Config: {
+                  cdkEnabled: true,
+                },
+              },
+              Config: {
+                secretKey: 'secret-tHe5ecr37',
+              },
+            },
+            metadata: {
+              destinationId: 'd1',
+              workspaceId: 'w1',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            statusCode: 400,
+            error:
+              'Bad event. Original error: message type "NOT_A_TYPE" not supported for "statsig"',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'STATSIG',
+              module: 'destination',
+              implementation: 'cdkV1',
+              destinationId: 'd1',
+              workspaceId: 'w1',
+              feature: 'processor',
+            },
+            metadata: {
+              destinationId: 'd1',
+              workspaceId: 'w1',
+            },
+          },
+        ],
+      },
+    },
+  },
+];

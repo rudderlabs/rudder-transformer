@@ -16,7 +16,7 @@
   },
   {
     "description": "Float string",
-    "input": "123.91",
+    "input": "123.00",
     "output": false
   },
   {

@@ -224,10 +224,10 @@ const handleMappingJsonObject = (
       if (isDefinedAndNotNull(data)) {
         set(payload, outKey, data);
         delete message.traits[outKey];
-      } else {
-        // get the destKey/outKey value from calling the util function
-        set(payload, outKey, AMUtils[funcName](message, sourceKey, Config));
-      }
+        return;
+      } 
+      // get the destKey/outKey value from calling the util function
+      set(payload, outKey, AMUtils[funcName](message, sourceKey, Config));
     }
   }
 };

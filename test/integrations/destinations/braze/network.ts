@@ -1,3 +1,207 @@
+const dataDeliveryMocksData = [
+  {
+    httpReq: {
+      url: 'https://api.amplitude.com/2/httpapi/test5',
+      data: {
+        api_key: 'c9d8a13b8bcab46a547f7be5200c483d',
+        events: [
+          {
+            app_name: 'Rudder-CleverTap_Example',
+            app_version: '1.0',
+            time: 1619006730330,
+            user_id: 'gabi_userId_45',
+            user_properties: {
+              Residence: 'Shibuya',
+              city: 'Tokyo',
+              country: 'JP',
+              email: 'gabi29@gmail.com',
+              gender: 'M',
+              name: 'User2 Gabi2',
+              organization: 'Company',
+              region: 'ABC',
+              title: 'Owner',
+              zip: '100-0001',
+            },
+          },
+        ],
+        options: { min_id_length: 1 },
+      },
+      params: { destination: 'any' },
+      headers: { 'Content-Type': 'application/json', 'User-Agent': 'RudderLabs' },
+      method: 'POST',
+    },
+    httpRes: { response: {} },
+  },
+  {
+    httpReq: {
+      url: 'https://api.amplitude.com/2/httpapi/test6',
+      data: {
+        api_key: 'c9d8a13b8bcab46a547f7be5200c483d',
+        events: [
+          {
+            app_name: 'Rudder-CleverTap_Example',
+            app_version: '1.0',
+            time: 1619006730330,
+            user_id: 'gabi_userId_45',
+            user_properties: {
+              Residence: 'Shibuya',
+              city: 'Tokyo',
+              country: 'JP',
+              email: 'gabi29@gmail.com',
+              gender: 'M',
+              name: 'User2 Gabi2',
+              organization: 'Company',
+              region: 'ABC',
+              title: 'Owner',
+              zip: '100-0001',
+            },
+          },
+        ],
+        options: { min_id_length: 1 },
+      },
+      params: { destination: 'any' },
+      headers: { 'Content-Type': 'application/json', 'User-Agent': 'RudderLabs' },
+      method: 'POST',
+    },
+    httpRes: {},
+  },
+  {
+    httpReq: {
+      url: 'https://rest.iad-03.braze.com/users/identify/test1',
+      data: {
+        aliases_to_identify: [
+          {
+            external_id: 'gabi_userId_45',
+            user_alias: { alias_label: 'rudder_id', alias_name: 'gabi_anonId_45' },
+          },
+        ],
+      },
+      params: { destination: 'braze' },
+      headers: {
+        Accept: 'application/json',
+        Authorization: 'Bearer api_key',
+        'Content-Type': 'application/json',
+        'User-Agent': 'RudderLabs',
+      },
+      method: 'POST',
+    },
+    httpRes: { data: { aliases_processed: 1, message: 'success' }, status: 201 },
+  },
+  {
+    httpReq: {
+      url: 'https://rest.iad-03.braze.com/users/identify/test2',
+      data: {
+        aliases_to_identify: [
+          {
+            external_id: 'gabi_userId_45',
+            user_alias: { alias_label: 'rudder_id', alias_name: 'gabi_anonId_45' },
+          },
+        ],
+      },
+      params: { destination: 'braze' },
+      headers: {
+        Accept: 'application/json',
+        Authorization: 'Bearer api_key',
+        'Content-Type': 'application/json',
+        'User-Agent': 'RudderLabs',
+      },
+      method: 'POST',
+    },
+    httpRes: { data: { message: 'success', errors: ['minor error message'] }, status: 201 },
+  },
+  {
+    httpReq: {
+      url: 'https://rest.iad-03.braze.com/users/identify/test3',
+      data: {
+        aliases_to_identify: [
+          {
+            external_id: 'gabi_userId_45',
+            user_alias: { alias_label: 'rudder_id', alias_name: 'gabi_anonId_45' },
+          },
+        ],
+      },
+      params: { destination: 'braze' },
+      headers: {
+        Accept: 'application/json',
+        Authorization: 'Bearer api_key',
+        'Content-Type': 'application/json',
+        'User-Agent': 'RudderLabs',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: { message: 'fatal error message', errors: ['minor error message'] },
+      status: 201,
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://rest.iad-03.braze.com/users/identify/test4',
+      data: {
+        aliases_to_identify: [
+          {
+            external_id: 'gabi_userId_45',
+            user_alias: { alias_label: 'rudder_id', alias_name: 'gabi_anonId_45' },
+          },
+        ],
+      },
+      params: { destination: 'braze' },
+      headers: {
+        Accept: 'application/json',
+        Authorization: 'Bearer api_key',
+        'Content-Type': 'application/json',
+        'User-Agent': 'RudderLabs',
+      },
+      method: 'POST',
+    },
+    httpRes: { data: '', status: 201 },
+  },
+  {
+    httpReq: {
+      url: 'https://rest.iad-03.braze.com/users/identify/test5',
+      data: {
+        aliases_to_identify: [
+          {
+            external_id: 'gabi_userId_45',
+            user_alias: { alias_label: 'rudder_id', alias_name: 'gabi_anonId_45' },
+          },
+        ],
+      },
+      params: { destination: 'braze' },
+      headers: {
+        Accept: 'application/json',
+        Authorization: 'Bearer api_key',
+        'Content-Type': 'application/json',
+        'User-Agent': 'RudderLabs',
+      },
+      method: 'POST',
+    },
+    httpRes: {},
+  },
+  {
+    httpReq: {
+      url: 'https://rest.iad-03.braze.com/users/identify/test7',
+      data: {
+        aliases_to_identify: [
+          {
+            external_id: 'gabi_userId_45',
+            user_alias: { alias_label: 'rudder_id', alias_name: 'gabi_anonId_45' },
+          },
+        ],
+      },
+      params: { destination: 'braze' },
+      headers: {
+        Accept: 'application/json',
+        Authorization: 'Bearer api_key',
+        'Content-Type': 'application/json',
+        'User-Agent': 'RudderLabs',
+      },
+      method: 'POST',
+    },
+    httpRes: { response: {} },
+  },
+];
+
 const deleteNwData = [
   {
     httpReq: {
@@ -188,4 +392,4 @@ const deleteNwData = [
     },
   },
 ];
-export const networkCallsData = [...deleteNwData];
+export const networkCallsData = [...deleteNwData, ...dataDeliveryMocksData];

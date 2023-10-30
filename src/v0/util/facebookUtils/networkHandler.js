@@ -75,7 +75,7 @@ const errorDetailsMap = {
     33: new ErrorDetailsExtractorBuilder()
       .setStatus(400)
       .setMessage(
-        "Object with ID 'PIXEL_ID' does not exist, cannot be loaded due to missing permissions, or does not support this operation",
+        "Object with ID 'PIXEL_ID' / 'DATASET_ID' / 'AUDIENCE_ID' does not exist, cannot be loaded due to missing permissions, or does not support this operation",
       )
       .build(),
     default: new ErrorDetailsExtractorBuilder()
@@ -149,6 +149,50 @@ const errorDetailsMap = {
     default: new ErrorDetailsExtractorBuilder()
       .setStatus(429)
       .setMessage('API User Too Many Calls')
+      .build(),
+  },
+  // facebook custom audience related error codes
+  // ref:
+  // https://developers.facebook.com/docs/marketing-api/reference/custom-audience/#error-codes-4
+  // https://developers.facebook.com/docs/marketing-api/error-reference/
+  294: {
+    default: new ErrorDetailsExtractorBuilder()
+      .setStatus(400)
+      .setMessage(
+        'Missing permission. Please make sure you have ads_management permission and the application is included in the allowlist',
+      )
+      .build(),
+  },
+  1487301: {
+    default: new ErrorDetailsExtractorBuilder()
+      .setStatus(400)
+      .setMessage(
+        'Custom Audience Unavailable: The custom audience you are trying to use has not been shared with your ad account',
+      )
+      .build(),
+  },
+  1487366: {
+    default: new ErrorDetailsExtractorBuilder()
+      .setStatus(400)
+      .setMessage('Custom Audience Has Been Deleted')
+      .build(),
+  },
+  2650: {
+    default: new ErrorDetailsExtractorBuilder()
+      .setStatus(400)
+      .setMessage('Failed to update the custom audience')
+      .build(),
+  },
+  105: {
+    default: new ErrorDetailsExtractorBuilder()
+      .setStatus(400)
+      .setMessage('The number of parameters exceeded the maximum for this operation')
+      .build(),
+  },
+  80003: {
+    default: new ErrorDetailsExtractorBuilder()
+      .setStatus(429)
+      .setMessage('There have been too many calls to this ad-account.')
       .build(),
   },
 };

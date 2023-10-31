@@ -1,6 +1,6 @@
 {
   "name": "rudder-transformer",
-  "version": "1.46.5",
+  "version": "1.47.0",
   "description": "",
   "homepage": "https://github.com/rudderlabs/rudder-transformer#readme",
   "bugs": {
@@ -32,6 +32,8 @@
     "verify": "eslint . || exit 1; npm run test:js || exit 1",
     "test:testRouter": "jest testRouter --detectOpenHandles --coverage --notify --watchAll=false",
     "test:benchmark": "node benchmark/index.js",
+    "test": "jest -c jest.config.js --detectOpenHandles",
+    "test:ci": "npm run test -- --coverage --expand --maxWorkers=50%",
     "test:js": "jest -c jest.default.config.js --detectOpenHandles",
     "test:js:silent": "npm run test:js -- --silent",
     "test:js:ci": "npm run test:js -- --coverage --expand --maxWorkers=50%",

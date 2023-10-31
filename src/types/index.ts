@@ -137,7 +137,7 @@ type SourceTransformationResponse = {
 type DeliveryResponse = {
   status: number;
   message: string;
-  destinationResponse: object;
+  destinationResponse: any;
   statTags: object;
   authErrorCategory?: string;
 };

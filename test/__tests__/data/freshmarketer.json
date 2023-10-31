@@ -1892,7 +1892,7 @@
       "destination": {
         "Config": {
           "apiKey": "dummyApiKey",
-          "domain": "domain-rudder.myfreshworks.com"
+          "domain": "domain-rudder.freshworks.com"
         }
       }
     },
@@ -1914,7 +1914,7 @@
         "Authorization": "Token token=dummyApiKey"
       },
       "version": "1",
-      "endpoint": "https://domain-rudder.myfreshworks.com/crm/sales/api/lists/70000059716/add_contacts"
+      "endpoint": "https://domain-rudder.freshworks.com/crm/sales/api/lists/70000059716/add_contacts"
     }
   },
   {
@@ -2043,7 +2043,7 @@
       "destination": {
         "Config": {
           "apiKey": "dummyApiKey",
-          "domain": "domain-rudder.myfreshworks.com"
+          "domain": "domain-rudder.freshworks.com"
         }
       }
     },
@@ -2065,7 +2065,7 @@
         "Authorization": "Token token=dummyApiKey"
       },
       "version": "1",
-      "endpoint": "https://domain-rudder.myfreshworks.com/crm/sales/api/lists/70000058627/add_contacts"
+      "endpoint": "https://domain-rudder.freshworks.com/crm/sales/api/lists/70000058627/add_contacts"
     }
   },
   {

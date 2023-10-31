@@ -23,8 +23,8 @@ const CONFIG_BACKEND_URL = process.env.CONFIG_BACKEND_URL || 'https://api.rudder
 const GEOLOCATION_URL = process.env.GEOLOCATION_URL || '';
 const FAAS_AST_VID = 'ast';
 const FAAS_AST_FN_NAME = 'fn-ast';
-const LABEL_WORKSPACE_IDS = process.env.LABEL_WORKSPACES_IDS || '';
-const labelWorkspaceIds = LABEL_WORKSPACE_IDS.split(',');
+const CUSTOM_NETWORK_POLICY_WORKSPACE_IDS = process.env.CUSTOM_NETWORK_POLICY_WORKSPACE_IDS || '';
+const customNetworkPolicyWorkspaceIds = CUSTOM_NETWORK_POLICY_WORKSPACE_IDS.split(',');
 
 // Initialise node cache
 const functionListCache = new NodeCache();
@@ -150,8 +150,11 @@ const deployFaasFunction = async (
       transformationId: trMetadata.transformationId,
       workspaceId: trMetadata.workspaceId,
     };
-    if (trMetadata.workspaceId && labelWorkspaceIds.includes(trMetadata.workspaceId)) {
-      labels.customPolicy = 'true';
+    if (
+      trMetadata.workspaceId &&
+      customNetworkPolicyWorkspaceIds.includes(trMetadata.workspaceId)
+    ) {
+      labels['custom-network-policy'] = 'true';
     }
 
     // TODO: investigate and add more required labels and annotations

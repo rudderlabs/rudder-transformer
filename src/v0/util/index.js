@@ -1403,6 +1403,12 @@ const getMetadata = (metadata) => ({
   destinationType: metadata.destinationType,
   k8_namespace: metadata.namespace,
 });
+
+const getTransformationMetadata = (metadata) => ({
+  transformationId: metadata.transformationId,
+  workspaceId: metadata.workspaceId,
+});
+
 // checks if array 2 is a subset of array 1
 function checkSubsetOfArray(array1, array2) {
   const result = array2.every((val) => array1.includes(val));
@@ -2113,6 +2119,7 @@ module.exports = {
   getIntegrationsObj,
   getMappingConfig,
   getMetadata,
+  getTransformationMetadata,
   getParsedIP,
   getStringValueOfJSON,
   getSuccessRespEvents,

@@ -82,13 +82,13 @@ async function setOpenFaasUserTransform(
   libraryVersionIds,
   pregeneratedFnName,
   testMode = false,
+  trMetadata = {},
 ) {
   const tags = {
     transformerVersionId: userTransformation.versionId,
     identifier: 'openfaas',
     testMode,
   };
-  const trMetadata = events[0].metadata ? getTransformationMetadata(userTransformation) : {};
   const functionName =
     pregeneratedFnName || generateFunctionName(userTransformation, libraryVersionIds, testMode);
   const setupTime = new Date();

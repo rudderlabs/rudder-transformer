@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file. See [standa
 * add support filtering component tests by feature and index ([#2748](https://github.com/rudderlabs/rudder-transformer/issues/2748)) ([146f1c6](https://github.com/rudderlabs/rudder-transformer/commit/146f1c63db4e895c7d5ce2848a1b60e7c5bb9fb6))
 * onboard destination ortto ([#2730](https://github.com/rudderlabs/rudder-transformer/issues/2730)) ([9be5740](https://github.com/rudderlabs/rudder-transformer/commit/9be5740d8670890b0318da3d37f258ddc5e35445))
 * onboard facebook custom audience to transformer proxy ([#2769](https://github.com/rudderlabs/rudder-transformer/issues/2769)) ([14c5e40](https://github.com/rudderlabs/rudder-transformer/commit/14c5e40284af7df9e4f5b262ad226dd3afef226e))
+* add custom event name support in pinterest v5 ([#2773](https://github.com/rudderlabs/rudder-transformer/pull/2773)) ([a586a92](https://github.com/rudderlabs/rudder-transformer/commit/a586a92bf410679d0f3aa7012d4d10f8e2f515d5))
 
 
 ### Bug Fixes

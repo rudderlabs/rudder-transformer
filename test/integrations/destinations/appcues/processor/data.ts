@@ -1160,7 +1160,7 @@ export const data = [
         status: 200,
         body: [
           {
-            error: "User id is absent. Aborting event as userId is mandatory for Appcues",
+            error: 'User id is absent. Aborting event as userId is mandatory for Appcues',
             statTags: {
               destType: 'APPCUES',
               errorCategory: 'dataValidation',
@@ -1169,7 +1169,7 @@ export const data = [
               implementation: 'native',
               module: 'destination',
             },
-			statusCode: 400,
+            statusCode: 400,
           },
         ],
       },
@@ -1258,7 +1258,7 @@ export const data = [
         status: 200,
         body: [
           {
-			error: 'Message Type is not present. Aborting message.',
+            error: 'Message Type is not present. Aborting message.',
             statTags: {
               destType: 'APPCUES',
               errorCategory: 'dataValidation',
@@ -1267,7 +1267,7 @@ export const data = [
               implementation: 'native',
               module: 'destination',
             },
-			statusCode: 400,
+            statusCode: 400,
           },
         ],
       },
@@ -1369,7 +1369,7 @@ export const data = [
         status: 200,
         body: [
           {
-			error: 'Message type is not supported',
+            error: 'Message type is not supported',
             statTags: {
               destType: 'APPCUES',
               errorCategory: 'dataValidation',
@@ -1378,7 +1378,7 @@ export const data = [
               implementation: 'native',
               module: 'destination',
             },
-			statusCode: 400,
+            statusCode: 400,
           },
         ],
       },

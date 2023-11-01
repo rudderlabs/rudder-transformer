@@ -857,15 +857,15 @@ export const data = [
         status: 200,
         body: [
           {
-              statusCode: 400,
-              error: '[CANDU]:: Message Type is not present. Aborting message.',
-              statTags: {
-                destType: 'CANDU',
-                errorCategory: 'dataValidation',
-                errorType: 'instrumentation',
-                feature: 'processor',
-                implementation: 'native',
-                module: 'destination',
+            statusCode: 400,
+            error: '[CANDU]:: Message Type is not present. Aborting message.',
+            statTags: {
+              destType: 'CANDU',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
             },
           },
         ],
@@ -996,7 +996,7 @@ export const data = [
             output: {
               version: '1',
               type: 'REST',
-			  userId: "",
+              userId: '',
               method: 'POST',
               endpoint: 'https://api.candu.ai/api/eventWebhook',
               headers: {
@@ -1160,7 +1160,7 @@ export const data = [
             output: {
               version: '1',
               type: 'REST',
-			  userId: "",
+              userId: '',
               method: 'POST',
               endpoint: 'https://api.candu.ai/api/eventWebhook',
               headers: {
@@ -1325,7 +1325,7 @@ export const data = [
             output: {
               version: '1',
               type: 'REST',
-			  userId: "",
+              userId: '',
               method: 'POST',
               endpoint: 'https://api.candu.ai/api/eventWebhook',
               headers: {

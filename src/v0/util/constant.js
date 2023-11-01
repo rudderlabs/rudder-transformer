@@ -11,6 +11,7 @@ const API_CALL = 'api_call_count';
 const JSON_MIME_TYPE = 'application/json';
 
 const FEATURE_FILTER_CODE = 'filter-code';
+const FEATURE_GZIP_SUPPORT = 'gzip-support';
 
 const HTTP_STATUS_CODES = {
   // 1xx Informational
@@ -89,4 +90,5 @@ module.exports = {
   HTTP_STATUS_CODES,
   USER_LEAD_CACHE_TTL,
   FEATURE_FILTER_CODE,
+  FEATURE_GZIP_SUPPORT,
 };

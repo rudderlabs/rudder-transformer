@@ -73,18 +73,17 @@ afterAll(async () => {
   }
   await createHttpTerminator({ server }).terminate();
 });
-let mock;
+let mockAdapter;
 if (!opts.generate || opts.generate === 'false') {
   // unmock already existing axios-mocking
-  mock = new MockAxiosAdapter(axios, { onNoMatch: 'passthrough' });
+  mockAdapter = new MockAxiosAdapter(axios, { onNoMatch: 'throwException' });
   const registerAxiosMocks = (axiosMocks: MockHttpCallsData[]) => {
-    axiosMocks.forEach((axiosMock) => addMock(mock, axiosMock));
+    axiosMocks.forEach((axiosMock) => addMock(mockAdapter, axiosMock));
   };
 
   // // all the axios requests will be stored in this map
   const allTestMockDataFilePaths = getAllTestMockDataFilePaths(__dirname, opts.destination);
   const allAxiosRequests = allTestMockDataFilePaths
-    .filter((d) => !d.includes('/af/'))
     .map((currPath) => {
       const mockNetworkCallsData: MockHttpCallsData[] = getMockHttpCallsData(currPath);
       return mockNetworkCallsData;
@@ -184,7 +183,7 @@ describe.each(allTestDataFilePaths)('%s Tests', (testDataPath) => {
   }
   describe(`${testData[0].name} ${testData[0].module}`, () => {
     test.each(testData)('$feature -> $description', async (tcData) => {
-      tcData?.mockFns?.(mock);
+      tcData?.mockFns?.(mockAdapter);
 
       switch (tcData.module) {
         case tags.MODULES.DESTINATION:

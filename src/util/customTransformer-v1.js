@@ -54,63 +54,47 @@ async function userTransformHandlerV1(
   libraryVersionIds,
   testMode = false,
 ) {
-  /*
-  Removing pool usage to address memory leaks
-  Env variable ON_DEMAND_ISOLATE_VM is not being used anymore
-  */
-  if (userTransformation.versionId) {
-    const metaTags = events.length && events[0].metadata ? getMetadata(events[0].metadata) : {};
-    const tags = {
-      transformerVersionId: userTransformation.versionId,
-      identifier: 'v1',
-      ...metaTags,
-    };
-
-    logger.debug(`Isolate VM being created... `);
-    const isolatevmFactory = await getFactory(
-      userTransformation.code,
-      libraryVersionIds,
-      userTransformation.versionId,
-      userTransformation.secrets || {},
-      testMode,
-    );
-    const isolatevm = await isolatevmFactory.create();
-    logger.debug(`Isolate VM created... `);
-
-    // Transform the event...
-    stats.counter('events_to_process', events.length, tags);
-    const isolateStartWallTime = calculateMsFromIvmTime(isolatevm.isolateStartWallTime);
-    const isolateStartCPUTime = calculateMsFromIvmTime(isolatevm.isolateStartCPUTime);
-
-    const invokeTime = new Date();
-    let transformedEvents;
-    // Destroy isolatevm in case of execution errors
-    try {
-      transformedEvents = await transform(isolatevm, events);
-    } catch (err) {
-      logger.error(`Error encountered while executing transformation: ${err.message}`);
-      isolatevmFactory.destroy(isolatevm);
-      throw err;
-    }
-    const { logs } = isolatevm;
-    stats.timing('run_time', invokeTime, tags);
-    const isolateEndWallTime = calculateMsFromIvmTime(isolatevm.isolate.wallTime);
-    const isolateEndCPUTime = calculateMsFromIvmTime(isolatevm.isolate.cpuTime);
-
-    //TODO: fix "Value is not a valid number: NaN" error and uncomment
-    //stats.timing('isolate_wall_time', isolateEndWallTime - isolateStartWallTime, tags);
-    //stats.timing('isolate_cpu_time', isolateEndCPUTime - isolateStartCPUTime, tags);
-
-    // Destroy the isolated vm resources created
-    logger.debug(`Isolate VM being destroyed... `);
-    isolatevmFactory.destroy(isolatevm);
-    logger.debug(`Isolate VM destroyed... `);
-
-    return { transformedEvents, logs };
-    // Events contain message and destination. We take the message part of event and run transformation on it.
-    // And put back the destination after transforrmation
+  if (!userTransformation.versionId) {
+    return { transformedEvents : events };
   }
-  return { transformedEvents: events };
+
+  const metaTags = events.length && events[0].metadata ? getMetadata(events[0].metadata) : {};
+  const tags = {
+    transformerVersionId: userTransformation.versionId,
+    identifier: 'v1',
+    language: 'javascript',
+    ...metaTags,
+  };
+
+  const isolatevmFactory = await getFactory(
+    userTransformation.code,
+    libraryVersionIds,
+    userTransformation.versionId,
+    userTransformation.secrets || {},
+    testMode,
+  );
+
+  logger.debug(`Creating IsolateVM`);
+  const isolatevm = await isolatevmFactory.create();
+
+  stats.counter('batch_user_transform_events', events.length, tags);
+  const invokeTime = new Date();
+  let transformedEvents;
+  let logs;
+
+  try {
+    transformedEvents = await transform(isolatevm, events);
+  } catch (err) {
+    logger.error(`Error encountered while executing transformation: ${err.message}`);
+    throw err;
+  } finally {
+    logger.debug(`Destroying IsolateVM`);
+    logs = isolatevm.logs;
+    isolatevmFactory.destroy(isolatevm);
+    stats.timing('batch_user_transform_request_latency', invokeTime, tags);
+  }
+
+  return { transformedEvents, logs };
 }
 
 async function setUserTransformHandlerV1() {

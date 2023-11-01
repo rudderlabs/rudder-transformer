@@ -1,7 +1,7 @@
 const { v4: uuidv4 } = require('uuid');
 const crypto = require('crypto');
 const NodeCache = require('node-cache');
-const { getMetadata } = require('../v0/util');
+const { getMetadata, getTransformationMetadata } = require('../v0/util');
 const stats = require('./stats');
 const {
   setupFaasFunction,

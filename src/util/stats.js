@@ -11,14 +11,17 @@ function init() {
     return;
   }
 
-  if (statsClientType === 'statsd') {
-    statsClient = new statsd.Statsd();
-    logger.info('created statsd client');
-  } else if (statsClientType === 'prometheus') {
-    statsClient = new prometheus.Prometheus();
-    logger.info('created prometheus client');
-  } else {
-    logger.info("Invalid stats client type. Valid values are 'statsd' and 'prometheus'.");
+  switch (statsClientType) {
+    case 'statsd':
+      logger.info("setting up statsd client")
+      statsClient = new statsd.Statsd();
+
+    case 'prometheus':
+      logger.info("setting up prometheus client")
+      statsClient = new prometheus.Prometheus();
+
+    default:
+      logger.error(`invalid stats client type: ${statsClientType}, supported values are 'statsd' and 'prometheues'`)
   }
 }
 

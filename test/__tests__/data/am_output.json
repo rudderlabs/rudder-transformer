@@ -3937,8 +3937,7 @@
             "app_version": "1.2",
             "platform": "Android",
             "language": "en-US",
-            "event_properties": {
-            },
+            "event_properties": {},
             "insert_id": "1662393883248-509420bf-b812-4f8d-bdb2-8c811bfde87f",
             "user_properties": {
               "anonymousId": "5d205961641ee6c5",
@@ -4277,17 +4276,15 @@
             "app_name": "RudderLabs JavaScript SDK",
             "app_version": "1.0.0",
             "language": "en-US",
-            "event_type": "Viewed Home Page event.",
+            "event_type": "Viewed Page",
             "event_properties": {
               "path": "/destinations/amplitude",
               "referrer": "",
               "search": "",
               "title": "",
               "url": "https://docs.rudderstack.com/destinations/amplitude",
-              "category": "destination",
               "initial_referrer": "https://docs.rudderstack.com",
-              "initial_referring_domain": "docs.rudderstack.com",
-              "name": "ApplicationLoaded"
+              "initial_referring_domain": "docs.rudderstack.com"
             },
             "session_id": -1,
             "insert_id": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",

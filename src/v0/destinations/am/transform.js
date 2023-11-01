@@ -612,7 +612,9 @@ const processSingleMessage = (message, destination) => {
                 .trim()
                 .replaceAll(/{{([^{}]+)}}/g, get(message, getMessagePath));
       } else {
-        evType = `Viewed ${name || get(message, CATEGORY_KEY) || ''} Page`;
+        const updatedName =
+          name || get(message, CATEGORY_KEY) ? `${name || get(message, CATEGORY_KEY)} ` : undefined;
+        evType = `Viewed ${updatedName || ''}Page`;
       }
 
       message.properties = {

@@ -4824,7 +4824,6 @@
         "search": "",
         "title": "",
         "url": "https://docs.rudderstack.com/destinations/amplitude",
-        "category": "destination",
         "initial_referrer": "https://docs.rudderstack.com",
         "initial_referring_domain": "docs.rudderstack.com"
       },
@@ -4834,13 +4833,12 @@
           "event_id": 2
         }
       },
-      "name": "ApplicationLoaded",
       "sentAt": "2019-10-14T11:15:53.296Z"
     },
     "destination": {
       "Config": {
         "apiKey": "abcde",
-        "useUserDefinedPageEventName": true,
+        "useUserDefinedPageEventName": false,
         "userProvidedPageEventString": "Viewed {{context.page.title}} event."
       }
     }

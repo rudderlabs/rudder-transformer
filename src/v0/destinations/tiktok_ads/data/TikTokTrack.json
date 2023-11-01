@@ -73,6 +73,11 @@
     "required": false
   },
   {
+    "destKey": "context.ad.callback",
+    "sourceKeys": "properties.clickId",
+    "required": false
+  },
+  {
     "destKey": "context.page",
     "sourceKeys": ["properties.context.page", "context.page"],
     "required": false

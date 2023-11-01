@@ -194,8 +194,9 @@ const handleTraits = (messageTrait, destination) => {
 
 const getScreenevTypeAndUpdatedProperties = (message, CATEGORY_KEY) => {
   const name = message.name || message.event || get(message, CATEGORY_KEY);
+  const updatedName = name ? `${name} ` : '';
   return {
-    evType: `Viewed ${name ? `${name} ` : ''}Screen`,
+    evType: `Viewed ${updatedName}Screen`,
     updatedProperties: {
       ...message.properties,
       name,

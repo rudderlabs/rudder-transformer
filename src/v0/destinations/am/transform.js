@@ -195,7 +195,7 @@ const handleTraits = (messageTrait, destination) => {
 const getScreenevTypeAndUpdatedProperties = (message, CATEGORY_KEY) => {
   const name = message.name || message.event || get(message, CATEGORY_KEY);
   return {
-    evType: `Viewed ${name || ''} Screen`,
+    evType: `Viewed ${name ? `${name} ` : ''}Screen`,
     updatedProperties: {
       ...message.properties,
       name,
@@ -322,7 +322,7 @@ const getDefaultResponseData = (message, rawPayload, evType, groupInfo) => {
       delete rawPayload.event_properties.revenue;
     }
   }
-  const groups = groupInfo && Object.assign(groupInfo);
+  const groups = groupInfo && cloneDeep(groupInfo);
   return { groups, rawPayload };
 };
 const getResponseData = (evType, destination, rawPayload, message, groupInfo) => {
@@ -389,12 +389,7 @@ const nonAliasResponsebuilder = (
   payload.time = new Date(getFieldValueFromMessage(message, 'timestamp')).getTime();
 
   // send user_id only when present, for anonymous users not required
-  if (
-    message.userId &&
-    message.userId !== '' &&
-    message.userId !== 'null' &&
-    message.userId !== null
-  ) {
+  if (message.userId && message.userId !== null) {
     payload.user_id = message.userId;
   }
   payload.session_id = getSessionId(message);
@@ -554,10 +549,9 @@ const responseBuilderSimple = (
 };
 
 const getGroupInfo = (destination, groupInfo, groupTraits) => {
-  let updatedGroupInfo = { ...groupInfo };
-  const groupTypeTrait = get(destination, 'Config.groupTypeTrait');
-  const groupValueTrait = get(destination, 'Config.groupValueTrait');
+  const { groupTypeTrait, groupValueTrait } = destination.Config;
   if (groupTypeTrait && groupValueTrait) {
+    let updatedGroupInfo = { ...groupInfo };
     const groupTypeValue = get(groupTraits, groupTypeTrait);
     const groupNameValue = get(groupTraits, groupValueTrait);
     // since the property updates on group at https://api2.amplitude.com/groupidentify
@@ -730,7 +724,7 @@ const getProductPurchasedEvents = (message, destination) => {
 
 const trackRevenueEvent = (message, destination) => {
   let sendEvents = [];
-  const originalEvent = JSON.parse(JSON.stringify(message));
+  const originalEvent = cloneDeep(message);
 
   if (destination.Config.trackProductsOnce === false) {
     if (isProductArrayInPayload(message)) {
@@ -830,10 +824,7 @@ const getBatchEvents = (message, destination, metadata, batchEventResponse) => {
   if (batchEventArray.length === 0) {
     if (JSON.stringify(incomingMessageJSON).length < AMBatchSizeLimit) {
       delete message.body.JSON.options;
-      Object.assign(batchEventResponse, {
-        batchedRequest: message,
-      });
-
+      batchEventResponse.batchedRequest = message;
       set(batchEventResponse, 'batchedRequest.endpoint', BATCH_ENDPOINT);
       batchEventResponse.metadata = [metadata];
     }

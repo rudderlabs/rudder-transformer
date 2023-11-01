@@ -4264,6 +4264,69 @@
   },
   {
     "message": {
+      "anonymousId": "5d205961641ee6c5",
+      "channel": "mobile",
+      "context": {
+        "app": {
+          "build": "6",
+          "name": "Sample Kotlin",
+          "namespace": "com.example.testapp1mg",
+          "version": "1.2"
+        },
+        "device": {
+          "id": "5d205961641ee6c5",
+          "manufacturer": "Google",
+          "model": "Android SDK built for x86",
+          "name": "generic_x86",
+          "type": "Android"
+        },
+        "library": {
+          "name": "com.rudderstack.android.sdk.core",
+          "version": "1.7.0"
+        },
+        "locale": "en-US",
+        "network": {
+          "carrier": "Android",
+          "bluetooth": false,
+          "cellular": true,
+          "wifi": true
+        },
+        "os": {
+          "name": "Android",
+          "version": "7.1.1"
+        },
+        "screen": {
+          "density": 440,
+          "height": 2148,
+          "width": 1080
+        },
+        "sessionId": "1662393792",
+        "timezone": "Asia/Kolkata",
+        "traits": {
+          "anonymousId": "5d205961641ee6c5",
+          "id": "User Android",
+          "userId": "User Android"
+        },
+        "userAgent": "Dalvik/2.1.0 (Linux; U; Android 7.1.1; Android SDK built for x86 Build/NYC)"
+      },
+      "integrations": {
+        "All": true
+      },
+      "messageId": "1662393883248-509420bf-b812-4f8d-bdb2-8c811bfde87f",
+      "properties": {
+      },
+      "originalTimestamp": "2022-09-05T16:04:43.250Z",
+      "type": "screen",
+      "userId": "User Android"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
       "channel": "web",
       "context": {
         "externalId": [

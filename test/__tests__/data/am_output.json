@@ -3927,6 +3927,57 @@
         "api_key": "abcde",
         "events": [
           {
+            "os_name": "Android",
+            "os_version": "7.1.1",
+            "device_model": "Android SDK built for x86",
+            "device_manufacturer": "Google",
+            "device_id": "5d205961641ee6c5",
+            "carrier": "Android",
+            "app_name": "Sample Kotlin",
+            "app_version": "1.2",
+            "platform": "Android",
+            "language": "en-US",
+            "event_properties": {
+            },
+            "insert_id": "1662393883248-509420bf-b812-4f8d-bdb2-8c811bfde87f",
+            "user_properties": {
+              "anonymousId": "5d205961641ee6c5",
+              "id": "User Android",
+              "userId": "User Android"
+            },
+            "event_type": "Viewed Screen",
+            "user_id": "User Android",
+            "device_brand": "Google",
+            "time": 1662393883250,
+            "session_id": 1662393792,
+            "library": "rudderstack"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "5d205961641ee6c5"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api2.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
             "os_name": "Chrome",
             "os_version": "test os",
             "device_model": "Mac",

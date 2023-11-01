@@ -86,6 +86,9 @@ const responseBuilderSimple = (message, category, destination) => {
   if (category.type !== 'identify') {
     customData = flattenJson(
       extractCustomFields(message, customData, ['properties'], FB_PIXEL_DEFAULT_EXCLUSION),
+      '.',
+      'normal',
+      false,
     );
     if (standardPageCall && category.type === 'page') {
       category.standard = true;

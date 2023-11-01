@@ -76,6 +76,9 @@ const responseBuilderSimple = (message, category, destination) => {
   let customData = {};
   customData = flattenJson(
     extractCustomFields(message, customData, ['properties'], FB_CONVERSIONS_DEFAULT_EXCLUSION),
+    '.',
+    'normal',
+    false,
   );
 
   customData = transformedPayloadData(

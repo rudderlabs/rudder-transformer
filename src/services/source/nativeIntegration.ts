@@ -38,6 +38,7 @@ export default class NativeIntegrationSourceService implements IntegrationSource
     });
     return versionSourceMap;
   }
+  
 
   public async sourceTransformRoutine(
     sourceEvents: unknown[],
@@ -50,17 +51,54 @@ export default class NativeIntegrationSourceService implements IntegrationSource
     let sourceVersion = version;
     // version and sourceEvents structure handling
     const sourceVersionsMap: object = this.getSourceVersionsMap();
-    if (!sourceVersionsMap[version].includes(sourceType)) {
+    if (!sourceVersionsMap[version].includes(sourceType)) {  
+      // /v1/src1
+      // {"v0":[src1,src2], "v1":[src3,src4]}
       if (version === "v1") {
         sourceVersion = "v0"
         // eslint-disable-next-line no-param-reassign
         sourceEvents = (sourceEvents as SourceInput[]).map(sourceEvent => sourceEvent.event);
       } else {
+        // /v0/src3
         sourceVersion = "v1"
         // eslint-disable-next-line no-param-reassign
         sourceEvents = sourceEvents.map(sourceEvent => ({ event: sourceEvent, source: undefined }));
       }
     }
+    /**
+     * 
+    // if shopify/v1 , webhook/v1 (error) => webhook/v0
+    let sourceVersion = version;
+    // version and sourceEvents structure handling
+    const sourceVersionsMap: object = this.getSourceVersionsMap();
+    // {"v0":[src1,src2, src3], "v1":[src3,src4,src1], "v2": [src1]}
+    // requestVersion is v2
+    // source is src3
+    // transformationVersion: ?
+    
+
+    // {src1: [v0,v1,v2], src2: [v0], src3: [v0,v1]}
+    // requestVersion is v2
+    // source is src3
+
+    // transformationVersion: "v1"
+    
+    if (!sourceVersionsMap[version].includes(sourceType)) {  
+      // /v1/src1
+      // {"v0":[src1,src2], "v1":[src3,src4]}
+      if (version === "v1") {
+        sourceVersion = "v0"
+      } else {
+        // /v0/src3
+        sourceVersion = "v1"
+      }
+    }
+    
+    // eslint-disable-next-line no-param-reassign
+    sourceEvents = sourceEvents.map(sourceEvent => ({ event: sourceEvent, source: undefined }));
+     * 
+     */
+
     /* 
     * Here `version` is the version to which server has sent the event to and 
     * `sourceVersion` is the updated version that trasformer internally would be using for a source

@@ -3474,4 +3474,89 @@ export const data = [
       },
     },
   },
+  {
+    name: 'pinterest_tag',
+    description: 'Test 26',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'track',
+              channel: 'web',
+              sentAt: '2020-08-14T05:30:30.118Z',
+              context: {
+                source: 'test',
+                userAgent: 'chrome',
+                traits: {
+                  anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
+                  email: 'abc@gmail.com',
+                  phone: '+1234589947',
+                  ge: 'male',
+                  db: '19950715',
+                  lastname: 'Rudderlabs',
+                  firstName: 'Test',
+                  address: { city: 'Kolkata', state: 'WB', zip: '700114', country: 'IN' },
+                },
+                device: { advertisingId: 'abc123' },
+                library: { name: 'rudder-sdk-ruby-sync', version: '1.0.6' },
+              },
+              messageId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
+              timestamp: '2020-08-14T05:30:30.118Z',
+              anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
+              integrations: { All: true },
+            },
+            destination: {
+              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+              ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+              Name: 'PINTEREST_TAG',
+              Config: {
+                sendAsTestEvent: false,
+                tagId: '123456789',
+                apiVersion: 'newApi',
+                adAccountId: 'accountId123',
+                conversionToken: 'conversionToken123',
+                appId: '429047995',
+                enhancedMatch: true,
+                enableDeduplication: true,
+                deduplicationKey: 'messageId',
+                sendingUnHashedData: true,
+                sendAsCustomEvent: false,
+                customProperties: [{ properties: 'presentclass' }, { properties: 'presentgrade' }],
+                eventsMapping: [{ from: 'ABC Searched', to: 'WatchVideo' }],
+              },
+              Enabled: true,
+              Transformations: [],
+            },
+            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
+          },
+        ],
+        method: 'POST',
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              'event_name could not be mapped. Aborting.: Workflow: procWorkflow, Step: validateInputForTrack, ChildStep: undefined, OriginalError: event_name could not be mapped. Aborting.',
+            metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
+            statTags: {
+              destType: 'PINTEREST_TAG',
+              errorCategory: 'platform',
+              feature: 'processor',
+              implementation: 'cdkV2',
+              module: 'destination',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
 ];

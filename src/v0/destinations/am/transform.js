@@ -493,7 +493,7 @@ const responseBuilderSimple = (
   const oldKeys = Object.keys(campaign);
   // appends utm_ prefix to all the keys of campaign object. For example the `name` key in campaign object will be changed to `utm_name`
   oldKeys.forEach((oldKey) => {
-    Object.assign(campaign, { [`utm_${oldKey}`]: campaign[oldKey] });
+    campaign[`utm_${oldKey}`] = campaign[oldKey];
     delete campaign[oldKey];
   });
 
@@ -889,7 +889,7 @@ const batch = (destEvents) => {
      */
     if (checkForJSONAndUserIdLengthAndDeviceId(jsonBody, userId, deviceId)) {
       response = defaultBatchRequestConfig();
-      Object.assign(response, { batchedRequest: message });
+      response.batchedRequest = message;
       response.metadata = [metadata];
       response.destination = destinationObject;
       respList.push(response);

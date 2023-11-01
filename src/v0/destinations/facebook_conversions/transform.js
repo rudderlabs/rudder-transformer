@@ -13,7 +13,6 @@ const { EventType } = require('../../../constants');
 const {
   constructPayload,
   extractCustomFields,
-  flattenJson,
   getIntegrationsObj,
   getValidDynamicFormConfig,
   simpleProcessRouterDest,
@@ -74,12 +73,7 @@ const responseBuilderSimple = (message, category, destination) => {
   commonData.action_source = getActionSource(commonData, actionSource);
 
   let customData = {};
-  customData = flattenJson(
-    extractCustomFields(message, customData, ['properties'], FB_CONVERSIONS_DEFAULT_EXCLUSION),
-    '.',
-    'normal',
-    false,
-  );
+  customData = extractCustomFields(message, customData, ['properties'], FB_CONVERSIONS_DEFAULT_EXCLUSION);
 
   customData = transformedPayloadData(
     message,

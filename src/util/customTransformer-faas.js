@@ -134,7 +134,7 @@ async function runOpenFaasUserTransform(
     testMode,
     ...metaTags,
   };
-  const trMetadata = events[0].metadata ? getTransformationMetadata(userTransformation) : {};
+  const trMetadata = events[0].metadata ? getTransformationMetadata(events[0].metadata) : {};
 
   // check and deploy faas function if not exists
   const functionName = generateFunctionName(userTransformation, libraryVersionIds, testMode);

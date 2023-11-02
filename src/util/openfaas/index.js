@@ -301,7 +301,7 @@ const executeFaasFunction = async (
     }
 
     stats.counter('batch_user_transform_events', events.length, tags)
-    stats.counter('batch_user_transform_latency', startTime, tags)
+    stats.timing('batch_user_transform_latency', startTime, tags)
   }
 };
 

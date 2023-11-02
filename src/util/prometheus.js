@@ -940,6 +940,40 @@ class Prometheus {
         type: 'histogram',
         labelNames: [],
       },
+      {
+        name: 'batch_user_transform_events',
+        help: 'batch_user_transform_events',
+        type: 'counter',
+        labelNames: [
+          'transformerVersionId',
+          'language',
+          'identifier',
+          'publish',
+          'testMode',
+          'sourceType',
+          'destinationType',
+          'k8_namespace',
+          'errored',
+          'statusCode'
+        ],
+      },
+      {
+        name: 'batch_user_transform_latency',
+        help: 'batch_user_transform_latency',
+        type: 'histogram',
+        labelNames: [
+          'transformerVersionId',
+          'language',
+          'identifier',
+          'publish',
+          'testMode',
+          'sourceType',
+          'destinationType',
+          'k8_namespace',
+          'errored',
+          'statusCode'
+        ],
+      }
     ];
 
     metrics.forEach((metric) => {

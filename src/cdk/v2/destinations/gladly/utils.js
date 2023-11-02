@@ -28,7 +28,7 @@ const getEndpoint = (destination) => {
 const formatField = (message, fieldName) => {
   const field = getFieldValueFromMessage(message, fieldName);
   if (field) {
-    if (typeof field === 'object' && Array.isArray(field)) {
+    if (Array.isArray(field)) {
       return field.map((item) => ({ original: item }));
     }
     return [{ original: field }];

@@ -577,6 +577,9 @@ const getGroupInfo = (destination, groupInfo, groupTraits) => {
   }
   return groupInfo;
 };
+const getUpdatedPageNameWithoutUserDefinedPageEventName = (name, message, CATEGORY_KEY) =>
+  name || get(message, CATEGORY_KEY) ? `${name || get(message, CATEGORY_KEY)} ` : undefined;
+
 // Generic process function which invokes specific handler functions depending on message type
 // and event type where applicable
 const processSingleMessage = (message, destination) => {
@@ -612,11 +615,13 @@ const processSingleMessage = (message, destination) => {
                 .trim()
                 .replaceAll(/{{([^{}]+)}}/g, get(message, getMessagePath));
       } else {
-        const updatedName =
-          name || get(message, CATEGORY_KEY) ? `${name || get(message, CATEGORY_KEY)} ` : undefined;
+        const updatedName = getUpdatedPageNameWithoutUserDefinedPageEventName(
+          name,
+          message,
+          CATEGORY_KEY,
+        );
         evType = `Viewed ${updatedName || ''}Page`;
       }
-
       message.properties = {
         ...message.properties,
         name: name || get(message, CATEGORY_KEY),

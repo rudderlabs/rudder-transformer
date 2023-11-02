@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const {
   InstrumentationError,
   ConfigurationError,
@@ -47,7 +48,12 @@ function assertHttpResp(processedResponse, message) {
   }
 }
 
+function MD5(data) {
+  return crypto.createHash('md5').update(data).digest('hex');
+}
+
 module.exports = {
+  MD5,
   isValidEventType,
   assert,
   assertConfig,

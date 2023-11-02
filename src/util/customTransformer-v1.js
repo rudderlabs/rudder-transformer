@@ -58,14 +58,6 @@ async function userTransformHandlerV1(
     return { transformedEvents : events };
   }
 
-  const metaTags = events.length && events[0].metadata ? getMetadata(events[0].metadata) : {};
-  const tags = {
-    transformerVersionId: userTransformation.versionId,
-    identifier: 'v1',
-    language: 'javascript',
-    ...metaTags,
-  };
-
   const isolatevmFactory = await getFactory(
     userTransformation.code,
     libraryVersionIds,
@@ -77,21 +69,31 @@ async function userTransformHandlerV1(
   logger.debug(`Creating IsolateVM`);
   const isolatevm = await isolatevmFactory.create();
 
-  stats.counter('batch_user_transform_events', events.length, tags);
   const invokeTime = new Date();
   let transformedEvents;
   let logs;
+  let transformationError;
 
   try {
     transformedEvents = await transform(isolatevm, events);
   } catch (err) {
     logger.error(`Error encountered while executing transformation: ${err.message}`);
+    transformationError = err;
     throw err;
   } finally {
     logger.debug(`Destroying IsolateVM`);
     logs = isolatevm.logs;
     isolatevmFactory.destroy(isolatevm);
-    stats.timing('batch_user_transform_request_latency', invokeTime, tags);
+    // send the observability stats
+    const tags = {
+      transformerVersionId: userTransformation.versionId,
+      identifier: 'v1',
+      language: 'javascript',
+      ...events.length && events[0].metadata ? getMetadata(events[0].metadata) : {},
+      errored: transformationError ? true : false
+    }
+    stats.counter('batch_user_transform_events', events.length, tags);
+    stats.timing('batch_user_transform_latency', invokeTime, tags);
   }
 
   return { transformedEvents, logs };

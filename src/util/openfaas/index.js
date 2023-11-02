@@ -9,6 +9,7 @@ const logger = require('../../logger');
 const { RetryRequestError, RespStatusError } = require('../utils');
 const stats = require('../stats');
 const { getMetadata } = require('../../v0/util');
+const { HTTP_STATUS_CODES } = require('../../v0/util/constant');
 
 
 const FAAS_BASE_IMG = process.env.FAAS_BASE_IMG || 'rudderlabs/openfaas-flask:main';
@@ -291,11 +292,12 @@ const executeFaasFunction = async (
     // setup the tags for observability and then fire the stats
     const tags = {
       transformerVersionId: versionId,
-      language: "python",
       identifier: "openfaas",
+      language: "python",
       testMode: testMode,
-      statusCode: errorRaised ? errorRaised.statusCode : 200, // default statuscode is 200
-      ...events[0].metadata ? getMetadata(events[0].metadata): {},
+      errored: errorRaised ? true : false,
+      statusCode: errorRaised ? errorRaised.statusCode : HTTP_STATUS_CODES.OK, // default statuscode is 200OK
+      ...events.length && events[0].metadata ? getMetadata(events[0].metadata): {},
     }
 
     stats.counter('batch_user_transform_events', events.length, tags)

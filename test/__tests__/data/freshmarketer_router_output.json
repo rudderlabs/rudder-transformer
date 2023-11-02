@@ -43,7 +43,7 @@
     "destination": {
       "Config": {
         "apiKey": "dummyApiKey",
-        "domain": "rudderstack-476952domain3105"
+        "domain": "rudderstack-476952domain3105.myfreshworks.com"
       }
     }
   },
@@ -91,7 +91,7 @@
     "destination": {
       "Config": {
         "apiKey": "dummyApiKey",
-        "domain": "rudderstack-476952domain3105"
+        "domain": "rudderstack-476952domain3105.myfreshworks.com"
       }
     }
   },
@@ -156,7 +156,7 @@
     "destination": {
       "Config": {
         "apiKey": "dummyApiKey",
-        "domain": "domain-rudder"
+        "domain": "domain-rudder.myfreshworks.com"
       }
     }
   }

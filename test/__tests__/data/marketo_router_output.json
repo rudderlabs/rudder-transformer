@@ -41,22 +41,17 @@
         "clientId": "marketo_client_id_success",
         "clientSecret": "marketo_client_secret_success",
         "trackAnonymousEvents": true,
-        "customActivityEventMap": [
+        "rudderEventsMapping": [
           {
-            "from": "Product Clicked",
-            "to": "100001"
+            "event": "Product Clicked",
+            "marketoPrimarykey": "name",
+            "marketoActivityId": "100001"
           }
         ],
         "customActivityPropertyMap": [
           {
             "from": "name",
             "to": "productName"
-          }
-        ],
-        "customActivityPrimaryKeyMap": [
-          {
-            "from": "Product Clicked",
-            "to": "name"
           }
         ],
         "leadTraitMapping": [
@@ -82,17 +77,25 @@
               "clientId",
               "clientSecret",
               "trackAnonymousEvents",
-              "customActivityEventMap",
-              "customActivityPropertyMap",
-              "customActivityPrimaryKeyMap",
+              "rudderEventsMapping",
               "leadTraitMapping"
             ]
           },
-          "secretKeys": ["clientSecret"],
+          "secretKeys": [
+            "clientSecret"
+          ],
           "excludeKeys": [],
           "includeKeys": [],
           "routerTransform": true,
-          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"]
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "reactnative"
+          ]
         },
         "responseRules": {
           "responseType": "JSON",
@@ -204,22 +207,17 @@
         "clientId": "marketo_client_id_success",
         "clientSecret": "marketo_client_secret_success",
         "trackAnonymousEvents": true,
-        "customActivityEventMap": [
-          {
-            "from": "Product Clicked",
-            "to": "100001"
-          }
-        ],
         "customActivityPropertyMap": [
           {
             "from": "name",
             "to": "productName"
           }
         ],
-        "customActivityPrimaryKeyMap": [
+        "rudderEventsMapping": [
           {
-            "from": "Product Clicked",
-            "to": "name"
+            "event": "Product Clicked",
+            "marketoPrimarykey": "name",
+            "marketoActivityId": "100001"
           }
         ],
         "leadTraitMapping": [
@@ -245,17 +243,25 @@
               "clientId",
               "clientSecret",
               "trackAnonymousEvents",
-              "customActivityEventMap",
-              "customActivityPropertyMap",
-              "customActivityPrimaryKeyMap",
+              "rudderEventsMapping",
               "leadTraitMapping"
             ]
           },
-          "secretKeys": ["clientSecret"],
+          "secretKeys": [
+            "clientSecret"
+          ],
           "excludeKeys": [],
           "includeKeys": [],
           "routerTransform": true,
-          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"]
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "reactnative"
+          ]
         },
         "responseRules": {
           "responseType": "JSON",
@@ -345,7 +351,7 @@
         "clientSecret": "3l3gJpzRsZagD6gu7tnTeKXz0bomLGnd",
         "trackAnonymousEvents": false,
         "createIfNotExist": true,
-        "customActivityEventMap": [
+        "": [
           {
             "from": "acq_signup_completed",
             "to": "100026"
@@ -388,17 +394,25 @@
               "clientId",
               "clientSecret",
               "trackAnonymousEvents",
-              "customActivityEventMap",
-              "customActivityPropertyMap",
-              "customActivityPrimaryKeyMap",
+              "rudderEventsMapping",
               "leadTraitMapping"
             ]
           },
-          "secretKeys": ["clientSecret"],
+          "secretKeys": [
+            "clientSecret"
+          ],
           "excludeKeys": [],
           "includeKeys": [],
           "routerTransform": true,
-          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"]
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "reactnative"
+          ]
         },
         "responseRules": {
           "responseType": "JSON",
@@ -492,7 +506,7 @@
         "clientSecret": "3l3gJpzRsZagD6gu7tnTeKXz0bomLGnd",
         "trackAnonymousEvents": false,
         "createIfNotExist": true,
-        "customActivityEventMap": [
+        "": [
           {
             "from": "acq_signup_completed",
             "to": "100026"
@@ -535,17 +549,25 @@
               "clientId",
               "clientSecret",
               "trackAnonymousEvents",
-              "customActivityEventMap",
-              "customActivityPropertyMap",
-              "customActivityPrimaryKeyMap",
+              "rudderEventsMapping",
               "leadTraitMapping"
             ]
           },
-          "secretKeys": ["clientSecret"],
+          "secretKeys": [
+            "clientSecret"
+          ],
           "excludeKeys": [],
           "includeKeys": [],
           "routerTransform": true,
-          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"]
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "reactnative"
+          ]
         },
         "responseRules": {
           "responseType": "JSON",
@@ -673,7 +695,7 @@
         "clientSecret": "3l3gJpzRsZagD6gu7tnTeKXz0bomLGnd",
         "trackAnonymousEvents": false,
         "createIfNotExist": true,
-        "customActivityEventMap": [
+        "": [
           {
             "from": "acq_signup_completed",
             "to": "100026"
@@ -716,17 +738,25 @@
               "clientId",
               "clientSecret",
               "trackAnonymousEvents",
-              "customActivityEventMap",
-              "customActivityPropertyMap",
-              "customActivityPrimaryKeyMap",
+              "rudderEventsMapping",
               "leadTraitMapping"
             ]
           },
-          "secretKeys": ["clientSecret"],
+          "secretKeys": [
+            "clientSecret"
+          ],
           "excludeKeys": [],
           "includeKeys": [],
           "routerTransform": true,
-          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"]
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "reactnative"
+          ]
         },
         "responseRules": {
           "responseType": "JSON",

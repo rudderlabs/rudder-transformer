@@ -55,7 +55,12 @@
           "includeKeys": [],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -77,7 +82,8 @@
       "Config": {
         "clientId": "marketo_client_id_success",
         "clientSecret": "marketo_client_secret_success",
-        "accountId": "marketo_acct_id_success"
+        "accountId": "marketo_acct_id_success",
+        "rudderEventsMapping": []
       },
       "Enabled": true,
       "Transformations": [],
@@ -151,22 +157,10 @@
         "clientId": "marketo_client_id_success",
         "clientSecret": "marketo_client_secret_success",
         "trackAnonymousEvents": true,
-        "customActivityEventMap": [
-          {
-            "from": "Product Clicked",
-            "to": "100001"
-          }
-        ],
         "customActivityPropertyMap": [
           {
             "from": "name",
             "to": "productName"
-          }
-        ],
-        "customActivityPrimaryKeyMap": [
-          {
-            "from": "Product Clicked",
-            "to": "name"
           }
         ],
         "leadTraitMapping": [
@@ -175,7 +169,14 @@
             "to": "customLeadScore"
           }
         ],
-        "createIfNotExist": true
+        "createIfNotExist": true,
+        "rudderEventsMapping": [
+          {
+            "event": "Product Clicked",
+            "marketoPrimarykey": "name",
+            "marketoActivityId": "100001"
+          }
+        ]
       }
     }
   },
@@ -243,12 +244,6 @@
         "clientId": "marketo_client_id_success",
         "clientSecret": "marketo_client_secret_success",
         "trackAnonymousEvents": true,
-        "customActivityEventMap": [
-          {
-            "from": "Product Clicked",
-            "to": "100001"
-          }
-        ],
         "customActivityPropertyMap": [
           {
             "from": "name",
@@ -259,19 +254,20 @@
             "to": "productId"
           }
         ],
-        "customActivityPrimaryKeyMap": [
-          {
-            "from": "Product Clicked",
-            "to": "name"
-          }
-        ],
         "leadTraitMapping": [
           {
             "from": "leadScore",
             "to": "customLeadScore"
           }
         ],
-        "createIfNotExist": true
+        "createIfNotExist": true,
+        "rudderEventsMapping": [
+          {
+            "event": "Product Clicked",
+            "marketoPrimarykey": "name",
+            "marketoActivityId": "100001"
+          }
+        ]
       }
     }
   },
@@ -339,22 +335,10 @@
         "clientId": "marketo_client_id_success",
         "clientSecret": "marketo_client_secret_success",
         "trackAnonymousEvents": false,
-        "customActivityEventMap": [
-          {
-            "from": "Product Clicked",
-            "to": "100001"
-          }
-        ],
         "customActivityPropertyMap": [
           {
             "from": "name",
             "to": "productName"
-          }
-        ],
-        "customActivityPrimaryKeyMap": [
-          {
-            "from": "Product Clicked",
-            "to": "name"
           }
         ],
         "leadTraitMapping": [
@@ -363,7 +347,14 @@
             "to": "customLeadScore"
           }
         ],
-        "createIfNotExist": true
+        "createIfNotExist": true,
+        "rudderEventsMapping": [
+          {
+            "event": "Product Clicked",
+            "marketoPrimarykey": "name",
+            "marketoActivityId": "100001"
+          }
+        ]
       }
     }
   },
@@ -397,22 +388,10 @@
         "clientId": "marketo_acct_id_token_failure",
         "clientSecret": "marketo_acct_id_token_failure",
         "trackAnonymousEvents": false,
-        "customActivityEventMap": [
-          {
-            "from": "Product Clicked",
-            "to": "100001"
-          }
-        ],
         "customActivityPropertyMap": [
           {
             "from": "name",
             "to": "productName"
-          }
-        ],
-        "customActivityPrimaryKeyMap": [
-          {
-            "from": "Product Clicked",
-            "to": "name"
           }
         ],
         "leadTraitMapping": [
@@ -421,7 +400,14 @@
             "to": "customLeadScore"
           }
         ],
-        "createIfNotExist": true
+        "createIfNotExist": true,
+        "rudderEventsMapping": [
+          {
+            "event": "Product Clicked",
+            "marketoPrimarykey": "name",
+            "marketoActivityId": "100001"
+          }
+        ]
       }
     }
   },
@@ -489,22 +475,10 @@
         "clientId": "marketo_client_id_success",
         "clientSecret": "marketo_client_secret_success",
         "trackAnonymousEvents": false,
-        "customActivityEventMap": [
-          {
-            "from": "Product Clicked",
-            "to": "100001"
-          }
-        ],
         "customActivityPropertyMap": [
           {
             "from": "name",
             "to": "productName"
-          }
-        ],
-        "customActivityPrimaryKeyMap": [
-          {
-            "from": "Product Clicked",
-            "to": "name"
           }
         ],
         "leadTraitMapping": [
@@ -513,7 +487,14 @@
             "to": "customLeadScore"
           }
         ],
-        "createIfNotExist": true
+        "createIfNotExist": true,
+        "rudderEventsMapping": [
+          {
+            "event": "Product Clicked",
+            "marketoPrimarykey": "name",
+            "marketoActivityId": "100001"
+          }
+        ]
       }
     }
   },
@@ -558,12 +539,6 @@
         "clientId": "marketo_client_id_success",
         "clientSecret": "marketo_client_secret_success",
         "trackAnonymousEvents": true,
-        "customActivityEventMap": [
-          {
-            "from": "Product Clicked",
-            "to": "100001"
-          }
-        ],
         "customActivityPropertyMap": [
           {
             "from": "name",
@@ -574,19 +549,20 @@
             "to": "productId"
           }
         ],
-        "customActivityPrimaryKeyMap": [
-          {
-            "from": "Product Clicked",
-            "to": "name"
-          }
-        ],
         "leadTraitMapping": [
           {
             "from": "leadScore",
             "to": "customLeadScore"
           }
         ],
-        "createIfNotExist": true
+        "createIfNotExist": true,
+        "rudderEventsMapping": [
+          {
+            "event": "Product Clicked",
+            "marketoPrimarykey": "name",
+            "marketoActivityId": "100001"
+          }
+        ]
       }
     }
   },
@@ -653,22 +629,10 @@
         "clientId": "marketo_client_id_success",
         "clientSecret": "marketo_client_secret_success",
         "trackAnonymousEvents": false,
-        "customActivityEventMap": [
-          {
-            "from": "Product Clicked",
-            "to": "100001"
-          }
-        ],
         "customActivityPropertyMap": [
           {
             "from": "name",
             "to": "productName"
-          }
-        ],
-        "customActivityPrimaryKeyMap": [
-          {
-            "from": "Product Clicked",
-            "to": "name"
           }
         ],
         "leadTraitMapping": [
@@ -677,7 +641,14 @@
             "to": "customLeadScore"
           }
         ],
-        "createIfNotExist": true
+        "createIfNotExist": true,
+        "rudderEventsMapping": [
+          {
+            "event": "Product Clicked",
+            "marketoPrimarykey": "name",
+            "marketoActivityId": "100001"
+          }
+        ]
       }
     }
   },
@@ -744,22 +715,10 @@
         "clientId": "marketo_client_id_success",
         "clientSecret": "marketo_client_secret_success",
         "trackAnonymousEvents": true,
-        "customActivityEventMap": [
-          {
-            "from": "Product Clicked",
-            "to": "100001"
-          }
-        ],
         "customActivityPropertyMap": [
           {
             "from": "name",
             "to": "productName"
-          }
-        ],
-        "customActivityPrimaryKeyMap": [
-          {
-            "from": "Product Clicked",
-            "to": "name"
           }
         ],
         "leadTraitMapping": [
@@ -768,7 +727,14 @@
             "to": "customLeadScore"
           }
         ],
-        "createIfNotExist": true
+        "createIfNotExist": true,
+        "rudderEventsMapping": [
+          {
+            "event": "Product Clicked",
+            "marketoPrimarykey": "name",
+            "marketoActivityId": "100001"
+          }
+        ]
       }
     }
   },
@@ -835,22 +801,10 @@
         "clientId": "marketo_client_id_success",
         "clientSecret": "marketo_client_secret_success",
         "trackAnonymousEvents": true,
-        "customActivityEventMap": [
-          {
-            "from": "Product Clicked",
-            "to": "100001"
-          }
-        ],
         "customActivityPropertyMap": [
           {
             "from": "name",
             "to": "productName"
-          }
-        ],
-        "customActivityPrimaryKeyMap": [
-          {
-            "from": "Product Clicked",
-            "to": "name"
           }
         ],
         "leadTraitMapping": [
@@ -859,7 +813,14 @@
             "to": "customLeadScore"
           }
         ],
-        "createIfNotExist": true
+        "createIfNotExist": true,
+        "rudderEventsMapping": [
+          {
+            "event": "Product Clicked",
+            "marketoPrimarykey": "name",
+            "marketoActivityId": "100001"
+          }
+        ]
       }
     }
   },
@@ -925,22 +886,10 @@
         "clientId": "marketo_client_id_success",
         "clientSecret": "marketo_client_secret_success",
         "trackAnonymousEvents": true,
-        "customActivityEventMap": [
-          {
-            "from": "Product Clicked",
-            "to": "100001"
-          }
-        ],
         "customActivityPropertyMap": [
           {
             "from": "name",
             "to": "productName"
-          }
-        ],
-        "customActivityPrimaryKeyMap": [
-          {
-            "from": "Product Clicked",
-            "to": "name"
           }
         ],
         "leadTraitMapping": [
@@ -949,7 +898,14 @@
             "to": "customLeadScore"
           }
         ],
-        "createIfNotExist": true
+        "createIfNotExist": true,
+        "rudderEventsMapping": [
+          {
+            "event": "Product Clicked",
+            "marketoPrimarykey": "name",
+            "marketoActivityId": "100001"
+          }
+        ]
       }
     }
   },
@@ -1016,22 +972,10 @@
         "clientId": "marketo_client_id_success",
         "clientSecret": "marketo_client_secret_success",
         "trackAnonymousEvents": true,
-        "customActivityEventMap": [
-          {
-            "from": "Product Clicked",
-            "to": "100001"
-          }
-        ],
         "customActivityPropertyMap": [
           {
             "from": "name",
             "to": "productName"
-          }
-        ],
-        "customActivityPrimaryKeyMap": [
-          {
-            "from": "Product Clicked",
-            "to": "name"
           }
         ],
         "leadTraitMapping": [
@@ -1040,7 +984,14 @@
             "to": "customLeadScore"
           }
         ],
-        "createIfNotExist": true
+        "createIfNotExist": true,
+        "rudderEventsMapping": [
+          {
+            "event": "Product Clicked",
+            "marketoPrimarykey": "name",
+            "marketoActivityId": "100001"
+          }
+        ]
       }
     }
   },
@@ -1088,12 +1039,6 @@
         "clientId": "marketo_client_id_success",
         "clientSecret": "marketo_client_secret_success",
         "trackAnonymousEvents": true,
-        "customActivityEventMap": [
-          {
-            "from": "Product Clicked",
-            "to": "100001"
-          }
-        ],
         "customActivityPropertyMap": [
           {
             "from": "name",
@@ -1104,16 +1049,17 @@
             "to": "productId"
           }
         ],
-        "customActivityPrimaryKeyMap": [
-          {
-            "from": "Product Clicked",
-            "to": "name"
-          }
-        ],
         "leadTraitMapping": [
           {
             "from": "score",
             "to": "customLeadScore"
+          }
+        ],
+        "rudderEventsMapping": [
+          {
+            "event": "Product Clicked",
+            "marketoPrimarykey": "name",
+            "marketoActivityId": "100001"
           }
         ]
       }
@@ -1174,7 +1120,12 @@
           "includeKeys": [],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -1196,7 +1147,8 @@
       "Config": {
         "clientId": "marketo_client_id_success",
         "clientSecret": "marketo_client_secret_success",
-        "accountId": "marketo_acct_id_success"
+        "accountId": "marketo_acct_id_success",
+        "rudderEventsMapping": []
       },
       "Enabled": true,
       "Transformations": [],

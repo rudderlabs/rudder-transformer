@@ -58,6 +58,8 @@
     "OPTIMIZELY_FULLSTACK": true,
     "TWITTER_ADS": true,
     "CLEVERTAP": true,
-    "ORTTO": true
+    "ORTTO": true,
+    "ONE_SIGNAL": true,
+    "TIKTOK_AUDIENCE": true
   }
 }

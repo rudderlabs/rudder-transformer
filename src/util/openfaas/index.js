@@ -119,7 +119,7 @@ const deployFaasFunction = async (
   versionId,
   libraryVersionIDs,
   testMode,
-  trMetadata,
+  trMetadata = {},
 ) => {
   try {
     logger.debug('[Faas] Deploying a faas function');
@@ -201,7 +201,7 @@ async function setupFaasFunction(
   versionId,
   libraryVersionIDs,
   testMode,
-  trMetadata,
+  trMetadata = {},
 ) {
   try {
     if (!testMode && isFunctionDeployed(functionName)) {
@@ -235,7 +235,7 @@ const executeFaasFunction = async (
   versionId,
   libraryVersionIDs,
   testMode,
-  trMetadata,
+  trMetadata = {},
 ) => {
   try {
     logger.debug('[Faas] Invoking faas function');

@@ -13,6 +13,7 @@ const { EventType } = require('../../../constants');
 const {
   constructPayload,
   extractCustomFields,
+  flattenJson,
   getIntegrationsObj,
   getValidDynamicFormConfig,
   simpleProcessRouterDest,
@@ -83,7 +84,9 @@ const responseBuilderSimple = (message, category, destination) => {
   let customData = {};
 
   if (category.type !== 'identify') {
-    customData = extractCustomFields(message, customData, ['properties'], FB_PIXEL_DEFAULT_EXCLUSION);
+    customData = flattenJson(
+      extractCustomFields(message, customData, ['properties'], FB_PIXEL_DEFAULT_EXCLUSION),
+    );
     if (standardPageCall && category.type === 'page') {
       category.standard = true;
     }
@@ -121,6 +124,12 @@ const responseBuilderSimple = (message, category, destination) => {
       }
       if (type === 'simple track') {
         customData.value = message.properties?.revenue;
+        if (message.properties?.content_ids) {
+          customData.content_ids = message.properties?.content_ids;
+        }
+        if (message.properties?.contents) {
+          customData.contents = message.properties?.contents;
+        }
         delete customData.revenue;
       }
     }

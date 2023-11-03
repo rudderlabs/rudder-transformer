@@ -203,7 +203,7 @@ const updateAccountWOContact = (payload, Config) => {
  */
 const updateContactWithList = (userId, listId, Config) => {
   const response = defaultRequestConfig();
-  response.endpoint = `https://${Config.domain}.myfreshworks.com/crm/sales/api/lists/${listId}/add_contacts`;
+  response.endpoint = `https://${Config.domain}/crm/sales/api/lists/${listId}/add_contacts`;
   response.headers = getHeaders(Config.apiKey);
   response.body.JSON = {
     ids: [userId],

@@ -1,7 +1,7 @@
 const { v4: uuidv4 } = require('uuid');
 const crypto = require('crypto');
 const NodeCache = require('node-cache');
-const { getMetadata } = require('../v0/util');
+const { getMetadata, getTransformationMetadata } = require('../v0/util');
 const stats = require('./stats');
 const {
   setupFaasFunction,
@@ -82,10 +82,10 @@ async function setOpenFaasUserTransform(
   libraryVersionIds,
   pregeneratedFnName,
   testMode = false,
+  trMetadata = {},
 ) {
   const tags = {
     transformerVersionId: userTransformation.versionId,
-    language: userTransformation.language,
     identifier: 'openfaas',
     testMode,
   };
@@ -106,6 +106,7 @@ async function setOpenFaasUserTransform(
       testMode,
     ),
     testMode,
+    trMetadata,
   );
 
   stats.timing('creation_time', setupTime, tags);
@@ -129,16 +130,22 @@ async function runOpenFaasUserTransform(
   const metaTags = events[0].metadata ? getMetadata(events[0].metadata) : {};
   const tags = {
     transformerVersionId: userTransformation.versionId,
-    language: userTransformation.language,
     identifier: 'openfaas',
     testMode,
     ...metaTags,
   };
+  const trMetadata = events[0].metadata ? getTransformationMetadata(events[0].metadata) : {};
 
   // check and deploy faas function if not exists
   const functionName = generateFunctionName(userTransformation, libraryVersionIds, testMode);
   if (testMode) {
-    await setOpenFaasUserTransform(userTransformation, libraryVersionIds, functionName, testMode);
+    await setOpenFaasUserTransform(
+      userTransformation,
+      libraryVersionIds,
+      functionName,
+      testMode,
+      trMetadata,
+    );
   }
 
   const invokeTime = new Date();
@@ -156,6 +163,7 @@ async function runOpenFaasUserTransform(
       testMode,
     ),
     testMode,
+    trMetadata,
   );
   stats.timing('run_time', invokeTime, tags);
   return result;

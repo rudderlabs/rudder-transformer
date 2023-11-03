@@ -88,7 +88,6 @@ async function userTransformHandlerV1(
     const tags = {
       transformerVersionId: userTransformation.versionId,
       identifier: 'v1',
-      language: 'javascript',
       ...events.length && events[0].metadata ? getMetadata(events[0].metadata) : {},
       errored: transformationError ? true : false
     }

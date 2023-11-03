@@ -293,7 +293,6 @@ const executeFaasFunction = async (
     const tags = {
       transformerVersionId: versionId,
       identifier: "openfaas",
-      language: "python",
       testMode: testMode,
       errored: errorRaised ? true : false,
       statusCode: errorRaised ? errorRaised.statusCode : HTTP_STATUS_CODES.OK, // default statuscode is 200OK

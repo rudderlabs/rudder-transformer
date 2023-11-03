@@ -946,7 +946,6 @@ class Prometheus {
         type: 'counter',
         labelNames: [
           'transformerVersionId',
-          'language',
           'identifier',
           'publish',
           'testMode',
@@ -963,7 +962,6 @@ class Prometheus {
         type: 'histogram',
         labelNames: [
           'transformerVersionId',
-          'language',
           'identifier',
           'publish',
           'testMode',

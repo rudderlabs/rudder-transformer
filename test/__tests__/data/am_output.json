@@ -1,5 +1,139 @@
 [
   {
+    "error": "Event not present. Please send event field"
+  },
+  {
+    "error": "message type not supported"
+  },
+  {
+    "error": "No API Key is Found. Please Configure API key from dashbaord"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api2.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+            "library": "rudderstack",
+            "event_type": "Order Completed",
+            "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
+            "event_properties": {
+              "tax": 2,
+              "total": 27.5,
+              "coupon": "hasbros",
+              "currency": "USD",
+              "discount": 2.5,
+              "order_id": "50314b8e9bcf000000000000",
+              "revenue_type": "Purchased",
+              "shipping": 3,
+              "subtotal": 22.5,
+              "affiliation": "Google Store",
+              "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
+            },
+            "revenueType": "Purchased",
+            "price": 48,
+            "quantity": 1,
+            "revenue": 48,
+            "time": 1597383030118,
+            "user_properties": {
+              "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
+            },
+            "session_id": -1
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api2.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "device_id": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+            "library": "rudderstack",
+            "event_type": "Order Completed",
+            "insert_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
+            "event_properties": {
+              "tax": 2,
+              "total": 27.5,
+              "coupon": "hasbros",
+              "currency": "USD",
+              "discount": 2.5,
+              "order_id": "50314b8e9bcf000000000000",
+              "products": [
+                {
+                  "category": "Games",
+                  "image_url": "https:///www.example.com/product/path.jpg",
+                  "name": "Monopoly: 3rd Edition",
+                  "price": 19,
+                  "product_id": "507f1f77bcf86cd799439011",
+                  "quantity": 1,
+                  "sku": "45790-32",
+                  "url": "https://www.example.com/product/path"
+                },
+                {
+                  "category": "Games",
+                  "name": "Uno Card Game",
+                  "price": 3,
+                  "product_id": "505bd76785ebb509fc183733",
+                  "quantity": 2,
+                  "sku": "46493-32"
+                }
+              ],
+              "shipping": 3,
+              "subtotal": 22.5,
+              "affiliation": "Google Store",
+              "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
+            },
+            "revenueType": "Purchased",
+            "price": 48,
+            "quantity": 1,
+            "revenue": 48,
+            "time": 1597383030118,
+            "user_properties": {
+              "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
+            },
+            "session_id": -1
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
+  },
+  {
     "version": "1",
     "type": "REST",
     "method": "POST",
@@ -21,7 +155,7 @@
             "app_name": "RudderLabs JavaScript SDK",
             "app_version": "1.0.0",
             "language": "en-US",
-            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "session_id": -1,
             "insert_id": "84e26acc-56a5-4835-8233-591137fca468",
             "ip": "0.0.0.0",
             "user_properties": {
@@ -77,7 +211,7 @@
             "app_name": "RudderLabs JavaScript SDK",
             "app_version": "1.0.0",
             "language": "en-US",
-            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "session_id": -1,
             "insert_id": "84e26acc-56a5-4835-8233-591137fca468",
             "ip": "0.0.0.0",
             "user_properties": {
@@ -137,7 +271,7 @@
             "app_name": "RudderLabs JavaScript SDK",
             "app_version": "1.0.0",
             "language": "en-US",
-            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "session_id": -1,
             "event_type": "$identify",
             "user_properties": {
               "anonymousId": "123456",
@@ -202,7 +336,7 @@
               "initial_referring_domain": "docs.rudderstack.com",
               "initial_referrer": "https://docs.rudderstack.com"
             },
-            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "session_id": -1,
             "ip": "1.1.1.1",
             "time": 1571051718299,
             "user_id": "12345",
@@ -261,7 +395,7 @@
               "initial_referring_domain": "docs.rudderstack.com",
               "initial_referrer": "https://docs.rudderstack.com"
             },
-            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "session_id": -1,
             "ip": "1.1.1.1",
             "groups": {
               "Company": "ABC"
@@ -312,7 +446,7 @@
             "app_version": "1.0.0",
             "language": "en-US",
             "event_type": "test track event",
-            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "session_id": -1,
             "event_properties": {
               "user_actual_role": "system_admin",
               "user_actual_id": 12345,
@@ -366,7 +500,7 @@
             "app_name": "RudderLabs JavaScript SDK",
             "app_version": "1.0.0",
             "language": "en-US",
-            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "session_id": -1,
             "event_type": "$identify",
             "user_properties": {
               "anonymousId": "123456",
@@ -419,7 +553,7 @@
               "timestamp": "2020-08-28 09:00:00"
             },
             "event_type": "$identify",
-            "session_id": "1598597129",
+            "session_id": 1598597129,
             "time": 0,
             "user_id": "ubcdfghi0001"
           }
@@ -450,7 +584,7 @@
         "events": [
           {
             "device_id": "123456",
-            "session_id": "1598597129",
+            "session_id": 1598597129,
             "event_type": "$identify",
             "library": "rudderstack",
             "user_properties": {
@@ -580,8 +714,11 @@
               "app_version": "1.1.5",
               "language": "en-US",
               "event_type": "$identify",
+              "groups": {
+                "Company": "ABC"
+              },
               "user_properties": {
-                "Company": "Comapny-ABC",
+                "Company": "ABC",
                 "utm_content": "some content",
                 "utm_medium": "medium",
                 "utm_name": "some campaign",
@@ -590,9 +727,6 @@
                 "utm_test": "other value",
                 "initial_referring_domain": "docs.rudderstack.com",
                 "initial_referrer": "https://docs.rudderstack.com"
-              },
-              "groups": {
-                "Company": "Comapny-ABC"
               },
               "time": 1603180498983,
               "user_id": "sampleusrRudder3",
@@ -624,7 +758,84 @@
         "FORM": {
           "api_key": "abcde",
           "identification": [
-            "{\"group_type\":\"Company\",\"group_value\":\"Comapny-ABC\",\"group_properties\":{\"KEY_3\":{\"CHILD_KEY_92\":\"value_95\",\"CHILD_KEY_102\":\"value_103\"},\"KEY_2\":{\"CHILD_KEY_92\":\"value_95\",\"CHILD_KEY_102\":\"value_103\"},\"name_trait\":\"Company\",\"value_trait\":\"Comapny-ABC\"}}"
+            "{\"group_type\":\"Company\",\"group_value\":\"ABC\"}"
+          ]
+        }
+      },
+      "files": {},
+      "userId": "my-anonymous-id-new"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api2.amplitude.com/2/httpapi",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "api_key": "abcde",
+          "events": [
+            {
+              "os_name": "Chrome",
+              "os_version": "85.0.4183.121",
+              "platform": "Web",
+              "library": "rudderstack",
+              "device_model": "Mac",
+              "device_id": "my-anonymous-id-new",
+              "app_name": "RudderLabs JavaScript SDK",
+              "app_version": "1.1.5",
+              "language": "en-US",
+              "event_type": "$identify",
+              "user_properties": {
+                "Company": "ABC",
+                "utm_content": "some content",
+                "utm_medium": "medium",
+                "utm_name": "some campaign",
+                "utm_source": "google",
+                "utm_term": "keyword",
+                "utm_test": "other value",
+                "initial_referring_domain": "docs.rudderstack.com",
+                "initial_referrer": "https://docs.rudderstack.com"
+              },
+              "groups": {
+                "Company": "ABC"
+              },
+              "time": 1603180498983,
+              "user_id": "sampleusrRudder3",
+              "session_id": -1
+            }
+          ],
+          "options": {
+            "min_id_length": 1
+          }
+        },
+        "XML": {},
+        "JSON_ARRAY": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "my-anonymous-id-new"
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api2.amplitude.com/groupidentify",
+      "headers": {},
+      "params": {},
+      "body": {
+        "JSON": {},
+        "XML": {},
+        "JSON_ARRAY": {},
+        "FORM": {
+          "api_key": "abcde",
+          "identification": [
+            "{\"group_type\":\"Company\",\"group_value\":\"ABC\",\"group_properties\":{\"KEY_3\":{\"CHILD_KEY_92\":\"value_95\",\"CHILD_KEY_102\":\"value_103\"},\"KEY_2\":{\"CHILD_KEY_92\":\"value_95\",\"CHILD_KEY_102\":\"value_103\"},\"name_trait\":\"Company\",\"value_trait\":\"ABC\"}}"
           ]
         }
       },
@@ -2244,7 +2455,7 @@
             "event_type": "Order Completed",
             "user_id": "userID123",
             "revenueType": "Purchased",
-            "price": 25,
+            "price": 25.0,
             "quantity": 2,
             "revenue": 48,
             "time": 1597383030118,
@@ -2886,7 +3097,7 @@
             "app_name": "RudderLabs JavaScript SDK",
             "app_version": "1.0.0",
             "language": "en-US",
-            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "session_id": -1,
             "event_type": "$identify",
             "device_brand": "testBrand",
             "device_manufacturer": "testManufacturer",
@@ -3031,7 +3242,7 @@
             "app_name": "RudderLabs JavaScript SDK",
             "app_version": "1.0.0",
             "language": "en-US",
-            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "session_id": -1,
             "insert_id": "84e26acc-56a5-4835-8233-591137fca468",
             "ip": "0.0.0.0",
             "user_properties": {
@@ -3091,7 +3302,7 @@
               "language": "en-US",
               "event_type": "$identify",
               "user_properties": {
-                "Company": "Comapny-ABC",
+                "Company": "ABC",
                 "utm_content": "some content",
                 "utm_medium": "medium",
                 "utm_name": "some campaign",
@@ -3102,7 +3313,7 @@
                 "initial_referrer": "https://docs.rudderstack.com"
               },
               "groups": {
-                "Company": "Comapny-ABC"
+                "Company": "ABC"
               },
               "time": 1603180498983,
               "user_id": "sampleusrRudder3",
@@ -3134,7 +3345,7 @@
         "FORM": {
           "api_key": "abcde",
           "identification": [
-            "{\"group_type\":\"Company\",\"group_value\":\"Comapny-ABC\",\"group_properties\":{\"KEY_3\":{\"CHILD_KEY_92\":\"value_95\",\"CHILD_KEY_102\":\"value_103\"},\"KEY_2\":{\"CHILD_KEY_92\":\"value_95\",\"CHILD_KEY_102\":\"value_103\"},\"name_trait\":\"Company\",\"value_trait\":\"Comapny-ABC\"}}"
+            "{\"group_type\":\"Company\",\"group_value\":\"ABC\",\"group_properties\":{\"KEY_3\":{\"CHILD_KEY_92\":\"value_95\",\"CHILD_KEY_102\":\"value_103\"},\"KEY_2\":{\"CHILD_KEY_92\":\"value_95\",\"CHILD_KEY_102\":\"value_103\"},\"name_trait\":\"Company\",\"value_trait\":\"ABC\"}}"
           ]
         }
       },
@@ -3483,11 +3694,11 @@
                 "utm_content": "some content",
                 "utm_name": "some campaign",
                 "utm_test": "other value",
-                "Company": "Comapny-ABC"
+                "Company": "ABC"
               },
               "event_type": "$identify",
               "groups": {
-                "Company": "Comapny-ABC"
+                "Company": "ABC"
               },
               "time": 1603180498983,
               "user_id": "sampleusrRudder3",
@@ -3520,7 +3731,7 @@
         "FORM": {
           "api_key": "abcde",
           "identification": [
-            "{\"group_type\":\"Company\",\"group_value\":\"Comapny-ABC\",\"group_properties\":{\"KEY_3\":{\"CHILD_KEY_92\":\"value_95\",\"CHILD_KEY_102\":\"value_103\"},\"KEY_2\":{\"CHILD_KEY_92\":\"value_95\",\"CHILD_KEY_102\":\"value_103\"},\"name_trait\":\"Company\",\"value_trait\":\"Comapny-ABC\"}}"
+            "{\"group_type\":\"Company\",\"group_value\":\"ABC\",\"group_properties\":{\"KEY_3\":{\"CHILD_KEY_92\":\"value_95\",\"CHILD_KEY_102\":\"value_103\"},\"KEY_2\":{\"CHILD_KEY_92\":\"value_95\",\"CHILD_KEY_102\":\"value_103\"},\"name_trait\":\"Company\",\"value_trait\":\"ABC\"}}"
           ]
         }
       },
@@ -3603,7 +3814,7 @@
               "initial_referring_domain": "docs.rudderstack.com",
               "name": "ApplicationLoaded"
             },
-            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "session_id": -1,
             "insert_id": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
             "ip": "1.1.1.1",
             "event_id": 2,
@@ -3716,6 +3927,56 @@
         "api_key": "abcde",
         "events": [
           {
+            "os_name": "Android",
+            "os_version": "7.1.1",
+            "device_model": "Android SDK built for x86",
+            "device_manufacturer": "Google",
+            "device_id": "5d205961641ee6c5",
+            "carrier": "Android",
+            "app_name": "Sample Kotlin",
+            "app_version": "1.2",
+            "platform": "Android",
+            "language": "en-US",
+            "event_properties": {},
+            "insert_id": "1662393883248-509420bf-b812-4f8d-bdb2-8c811bfde87f",
+            "user_properties": {
+              "anonymousId": "5d205961641ee6c5",
+              "id": "User Android",
+              "userId": "User Android"
+            },
+            "event_type": "Viewed Screen",
+            "user_id": "User Android",
+            "device_brand": "Google",
+            "time": 1662393883250,
+            "session_id": 1662393792,
+            "library": "rudderstack"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "5d205961641ee6c5"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api2.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
             "os_name": "Chrome",
             "os_version": "test os",
             "device_model": "Mac",
@@ -3741,7 +4002,7 @@
             "event_type": "$identify",
             "time": 1571043797562,
             "user_id": "123456",
-            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "session_id": 1662393792,
             "country": "India",
             "city": "kolkata",
             "library": "rudderstack"
@@ -3847,7 +4108,7 @@
               "initial_referring_domain": "docs.rudderstack.com",
               "name": "ApplicationLoaded"
             },
-            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "session_id": -1,
             "insert_id": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
             "ip": "1.1.1.1",
             "event_id": 2,
@@ -3907,7 +4168,7 @@
               "initial_referring_domain": "docs.rudderstack.com",
               "name": "ApplicationLoaded"
             },
-            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "session_id": -1,
             "insert_id": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
             "ip": "1.1.1.1",
             "event_id": 2,
@@ -3967,7 +4228,7 @@
               "initial_referring_domain": "docs.rudderstack.com",
               "name": "ApplicationLoaded"
             },
-            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "session_id": -1,
             "insert_id": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
             "ip": "1.1.1.1",
             "event_id": 2,
@@ -4015,19 +4276,17 @@
             "app_name": "RudderLabs JavaScript SDK",
             "app_version": "1.0.0",
             "language": "en-US",
-            "event_type": "Viewed Home Page event.",
+            "event_type": "Viewed Page",
             "event_properties": {
               "path": "/destinations/amplitude",
               "referrer": "",
               "search": "",
               "title": "",
               "url": "https://docs.rudderstack.com/destinations/amplitude",
-              "category": "destination",
               "initial_referrer": "https://docs.rudderstack.com",
-              "initial_referring_domain": "docs.rudderstack.com",
-              "name": "ApplicationLoaded"
+              "initial_referring_domain": "docs.rudderstack.com"
             },
-            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "session_id": -1,
             "insert_id": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
             "ip": "1.1.1.1",
             "event_id": 2,

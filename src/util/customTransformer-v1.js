@@ -1,7 +1,7 @@
 const ivm = require('isolated-vm');
 
 const { getFactory } = require('./ivmFactory');
-const { getMetadata } = require('../v0/util');
+const { getMetadata, getTransformationMetadata } = require('../v0/util');
 const logger = require('../logger');
 const stats = require('./stats');
 
@@ -86,10 +86,10 @@ async function userTransformHandlerV1(
     isolatevmFactory.destroy(isolatevm);
     // send the observability stats
     const tags = {
-      transformerVersionId: userTransformation.versionId,
       identifier: 'v1',
+      errored: transformationError ? true : false,
       ...events.length && events[0].metadata ? getMetadata(events[0].metadata) : {},
-      errored: transformationError ? true : false
+      ...events.length && events[0].metadata ? getTransformationMetadata(events[0].metadata) : {}
     }
     stats.counter('batch_user_transform_events', events.length, tags);
     stats.timing('batch_user_transform_latency', invokeTime, tags);

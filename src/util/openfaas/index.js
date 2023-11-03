@@ -8,7 +8,7 @@ const {
 const logger = require('../../logger');
 const { RetryRequestError, RespStatusError } = require('../utils');
 const stats = require('../stats');
-const { getMetadata } = require('../../v0/util');
+const { getMetadata, getTransformationMetadata } = require('../../v0/util');
 const { HTTP_STATUS_CODES } = require('../../v0/util/constant');
 
 
@@ -291,12 +291,12 @@ const executeFaasFunction = async (
 
     // setup the tags for observability and then fire the stats
     const tags = {
-      transformerVersionId: versionId,
       identifier: "openfaas",
       testMode: testMode,
       errored: errorRaised ? true : false,
       statusCode: errorRaised ? errorRaised.statusCode : HTTP_STATUS_CODES.OK, // default statuscode is 200OK
-      ...events.length && events[0].metadata ? getMetadata(events[0].metadata): {},
+      ...events.length && events[0].metadata ? getMetadata(events[0].metadata) : {},
+      ...events.length && events[0].metadata ? getTransformationMetadata(events[0].metadata) : {},
     }
 
     stats.counter('batch_user_transform_events', events.length, tags)

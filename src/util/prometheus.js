@@ -945,7 +945,6 @@ class Prometheus {
         help: 'batch_user_transform_events',
         type: 'counter',
         labelNames: [
-          'transformerVersionId',
           'identifier',
           'publish',
           'testMode',
@@ -953,7 +952,9 @@ class Prometheus {
           'destinationType',
           'k8_namespace',
           'errored',
-          'statusCode'
+          'statusCode',
+          'transformationId',
+          'workspaceId'
         ],
       },
       {
@@ -961,7 +962,6 @@ class Prometheus {
         help: 'batch_user_transform_latency',
         type: 'histogram',
         labelNames: [
-          'transformerVersionId',
           'identifier',
           'publish',
           'testMode',
@@ -969,7 +969,9 @@ class Prometheus {
           'destinationType',
           'k8_namespace',
           'errored',
-          'statusCode'
+          'statusCode',
+          'transformationId',
+          'workspaceId'
         ],
       }
     ];

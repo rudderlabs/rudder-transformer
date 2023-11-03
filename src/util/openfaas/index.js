@@ -259,7 +259,7 @@ const executeFaasFunction = async (
     ) {
       removeFunctionFromCache(name);
       await setupFaasFunction(
-        functionName,
+        name,
         null,
         versionId,
         libraryVersionIDs,
@@ -286,7 +286,7 @@ const executeFaasFunction = async (
     // delete the function created, if it's called as part of testMode
     if (testMode) {
       deleteFunction(name).catch((err) => 
-        logger.error(`[Faas] Error while deleting ${functionName}: ${err.message}`))
+        logger.error(`[Faas] Error while deleting ${name}: ${err.message}`))
     }
 
     // setup the tags for observability and then fire the stats

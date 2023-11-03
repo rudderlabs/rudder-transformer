@@ -23,6 +23,8 @@ const CONFIG_BACKEND_URL = process.env.CONFIG_BACKEND_URL || 'https://api.rudder
 const GEOLOCATION_URL = process.env.GEOLOCATION_URL || '';
 const FAAS_AST_VID = 'ast';
 const FAAS_AST_FN_NAME = 'fn-ast';
+const CUSTOM_NETWORK_POLICY_WORKSPACE_IDS = process.env.CUSTOM_NETWORK_POLICY_WORKSPACE_IDS || '';
+const customNetworkPolicyWorkspaceIds = CUSTOM_NETWORK_POLICY_WORKSPACE_IDS.split(',');
 
 // Initialise node cache
 const functionListCache = new NodeCache();
@@ -111,7 +113,14 @@ const invalidateFnCache = () => {
   functionListCache.set(FUNC_LIST_KEY, []);
 };
 
-const deployFaasFunction = async (functionName, code, versionId, libraryVersionIDs, testMode) => {
+const deployFaasFunction = async (
+  functionName,
+  code,
+  versionId,
+  libraryVersionIDs,
+  testMode,
+  trMetadata = {},
+) => {
   try {
     logger.debug('[Faas] Deploying a faas function');
     let envProcess = 'python index.py';
@@ -132,6 +141,22 @@ const deployFaasFunction = async (functionName, code, versionId, libraryVersionI
     if (GEOLOCATION_URL) {
       envVars.geolocation_url = GEOLOCATION_URL;
     }
+    // labels
+    const labels = {
+      'openfaas-fn': 'true',
+      'parent-component': 'openfaas',
+      'com.openfaas.scale.max': FAAS_MAX_PODS_IN_TEXT,
+      'com.openfaas.scale.min': FAAS_MIN_PODS_IN_TEXT,
+      transformationId: trMetadata.transformationId,
+      workspaceId: trMetadata.workspaceId,
+    };
+    if (
+      trMetadata.workspaceId &&
+      customNetworkPolicyWorkspaceIds.includes(trMetadata.workspaceId)
+    ) {
+      labels['custom-network-policy'] = 'true';
+    }
+
     // TODO: investigate and add more required labels and annotations
     const payload = {
       service: functionName,
@@ -139,12 +164,7 @@ const deployFaasFunction = async (functionName, code, versionId, libraryVersionI
       image: FAAS_BASE_IMG,
       envProcess,
       envVars,
-      labels: {
-        'openfaas-fn': 'true',
-        'parent-component': 'openfaas',
-        'com.openfaas.scale.max': FAAS_MAX_PODS_IN_TEXT,
-        'com.openfaas.scale.min': FAAS_MIN_PODS_IN_TEXT,
-      },
+      labels,
       annotations: {
         'prometheus.io.scrape': 'true',
       },
@@ -175,14 +195,28 @@ const deployFaasFunction = async (functionName, code, versionId, libraryVersionI
   }
 };
 
-async function setupFaasFunction(functionName, code, versionId, libraryVersionIDs, testMode) {
+async function setupFaasFunction(
+  functionName,
+  code,
+  versionId,
+  libraryVersionIDs,
+  testMode,
+  trMetadata = {},
+) {
   try {
     if (!testMode && isFunctionDeployed(functionName)) {
       logger.debug(`[Faas] Function ${functionName} already deployed`);
       return;
     }
     // deploy faas function
-    await deployFaasFunction(functionName, code, versionId, libraryVersionIDs, testMode);
+    await deployFaasFunction(
+      functionName,
+      code,
+      versionId,
+      libraryVersionIDs,
+      testMode,
+      trMetadata,
+    );
 
     // This api call is only used to check if function is spinned correctly
     await awaitFunctionReadiness(functionName);
@@ -201,6 +235,7 @@ const executeFaasFunction = async (
   versionId,
   libraryVersionIDs,
   testMode,
+  trMetadata = {},
 ) => {
   try {
     logger.debug('[Faas] Invoking faas function');
@@ -217,7 +252,14 @@ const executeFaasFunction = async (
       error.message.includes(`error finding function ${functionName}`)
     ) {
       removeFunctionFromCache(functionName);
-      await setupFaasFunction(functionName, null, versionId, libraryVersionIDs, testMode);
+      await setupFaasFunction(
+        functionName,
+        null,
+        versionId,
+        libraryVersionIDs,
+        testMode,
+        trMetadata,
+      );
       throw new RetryRequestError(`${functionName} not found`);
     }
 

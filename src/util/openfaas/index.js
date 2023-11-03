@@ -257,7 +257,7 @@ const executeFaasFunction = async (
       error.statusCode === 404 &&
       error.message.includes(`error finding function ${name}`)
     ) {
-      removeFunctionFromCache(functionName);
+      removeFunctionFromCache(name);
       await setupFaasFunction(
         functionName,
         null,
@@ -266,7 +266,7 @@ const executeFaasFunction = async (
         testMode,
         trMetadata,
       );
-      throw new RetryRequestError(`${functionName} not found`);
+      throw new RetryRequestError(`${name} not found`);
     }
 
     if (error.statusCode === 429) {

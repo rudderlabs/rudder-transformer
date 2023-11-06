@@ -7,12 +7,15 @@ bindings:
     path: ../../../../v0/util
   - name: defaultRequestConfig
     path: ../../../../v0/util
-  - name: getIntegrationsObj
-    path: ../../../../v0/util
   - name: removeUndefinedAndNullValues
     path: ../../../../v0/util
-  - name: handleHttpRequest
+  - name: getDestinationExternalID
+    path: ../../../../v0/util
+  - name: httpPOST
     path: ../../../../adapters/network
+  - name: processAxiosResponse
+    path: ../../../../adapters/utils/networkUtils
+  
 
 steps:
   - name: checkIfProcessed
@@ -33,25 +36,7 @@ steps:
       $.assertConfig(.destination.Config.apiToken, "API Token is not present. Aborting")
       $.assertConfig(.destination.Config.domain, "Gladly domain is not present. Aborting")
       $.assertConfig(.destination.Config.userName, "User Name is not present. Aborting")
-
-  - name: queryParams
-    description: Build query params from payload to find user
-    template: |
-      const integrationsObj = $.getIntegrationsObj(.message, "gladly");
-      $.getQueryParams(.message, integrationsObj)
-      
-  - name: findUser
-    description: Fetch user details if exists
-    condition: $.isDefinedAndNotNull($.outputs.queryParams) && $.isDefinedAndNotNull($.outputs.queryParams.key) && $.isDefinedAndNotNull($.outputs.queryParams.value)
-    template: |
-      const url = $.getEndpoint(.destination) + "?" + $.outputs.queryParams.key + "=" + $.outputs.queryParams.value
-      const requestOptions = {
-        headers: $.getHeaders(.destination)
-      }
-      const rawResponse = await $.handleHttpRequest("get", url, requestOptions)
-      const processedResponse = rawResponse.processedResponse
-      $.assertHttpResp(processedResponse, "Find User Lookup Failed due to " + JSON.stringify(processedResponse.response))
-      processedResponse.response
+      $.assert(.message.userId, "userId is required")
 
   - name: preparePayload
     template: |
@@ -60,34 +45,32 @@ steps:
         image: .message.context.traits.avatar || .message.traits.avatar,
         address: .message.context.traits.address || .message.traits.address
       }
+      $.context.payload.address ?  $.context.payload.address =  $.context.payload.address.toString()
       $.context.payload.emails = $.formatField(.message, "email")
       $.context.payload.phones = $.formatField(.message, "phone")
       $.context.payload.customAttributes = $.getCustomAttributes(.message)
-      $.context.payload.externalCustomerId = .message.context.externalId[0].id
+      $.context.payload.externalCustomerId = $.getDestinationExternalID(.message, "gladlyExternalCustomerId")
       $.context.payload = $.removeUndefinedAndNullValues($.context.payload)
 
   - name: createUser
     description: Prepare create user payload
-    condition: $.outputs.findUser.length === 0 || !$.isDefinedAndNotNull($.outputs.queryParams)
     template: |
-      $.assert(.message.userId, "userId is required")
-      $.context.payload.id = .message.userId
-      $.context.method = "POST"
-      $.context.endpoint = $.getEndpoint(.destination)
-    
-  - name: updateUser
-    description: Prepare update user payload
-    condition: $.outputs.findUser.length > 0
-    template: |
-      $.context.method = "PATCH"
-      $.context.endpoint = $.getEndpoint(.destination) + "/" + .message.userId
+      const requestOptions = {
+        headers: $.getHeaders(.destination)
+      }
+      const requestPayload = {...$.context.payload, id: .message.userId}
+      const endpoint = $.getEndpoint(.destination)
+      const rawResponse = await $.httpPOST(endpoint, requestPayload, requestOptions)
+      const processedResponse = $.processAxiosResponse(rawResponse)
+      processedResponse
 
   - name: buildResponseForProcessTransformation
-    description: build response
+    description: build response for updateUser
     template: |
       const response = $.defaultRequestConfig()
-      response.body.JSON = $.context.payload
-      response.endpoint = $.context.endpoint
-      response.method = $.context.method
+      response.body.JSON = $.removeUndefinedAndNullValues($.context.payload)
+      response.endpoint = $.getEndpoint(.destination) + "/" + .message.userId
+      response.method = "PATCH"
       response.headers = $.getHeaders(.destination)
-      response;
+      response.status = $.outputs.createUser.status
+      response

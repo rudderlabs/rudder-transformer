@@ -21,7 +21,7 @@ const {
   processAxiosResponse,
 } = require('../../../adapters/utils/networkUtils');
 const { httpGET } = require('../../../adapters/network');
-const { NetworkError, ConfigurationError, InstrumentationError } = require('rs-integration-lib');
+const { NetworkError, ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { AUTH_CACHE_TTL, JSON_MIME_TYPE } = require('../../util/constant');
 const { MAPPING_CONFIG, CONFIG_CATEGORIES } = require('./config');
 

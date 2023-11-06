@@ -1,6 +1,6 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-prototype-builtins */
-const { PlatformError } = require('rs-integration-lib');
+const { PlatformError } = require('@rudderstack/integrations-lib');
 const { getAccessToken } = require('./util');
 const { handleHttpRequest } = require('../../../adapters/network');
 const stats = require('../../../util/stats');

@@ -4,7 +4,7 @@ const {
   InstrumentationError,
   TransformationError,
   ConfigurationError,
-} = require('rs-integration-lib');
+} = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const { ECOM_PRODUCT_EVENTS, commonConfig, formatDestinationConfig } = require('./config');
 const {

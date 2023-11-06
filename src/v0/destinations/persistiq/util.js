@@ -6,7 +6,7 @@ const {
   flattenMultilevelPayload,
 } = require('../../util');
 const { identifySourceKeys, fileConfigCategories, mappingConfig } = require('./config');
-const { InstrumentationError } = require('rs-integration-lib');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 
 /**
  * Returns the remaining keys from traits

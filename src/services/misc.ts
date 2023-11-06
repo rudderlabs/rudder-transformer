@@ -3,7 +3,7 @@
 import fs from 'fs';
 import path from 'path';
 import { Context } from 'koa';
-import { Metadata } from 'rs-integration-lib';
+import { Metadata } from '@rudderstack/integrations-lib';
 import { DestHandlerMap } from '../constants/destinationCanonicalNames';
 import { getCPUProfile, getHeapProfile } from '../middleware';
 

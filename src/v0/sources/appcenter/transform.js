@@ -4,7 +4,7 @@ const { generateUUID } = require('../../util');
 const Message = require('../message');
 const mappingJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mapping.json'), 'utf-8'));
 const { removeUndefinedAndNullValues } = require('../../util');
-const { TransformationError } = require('rs-integration-lib');
+const { TransformationError } = require('@rudderstack/integrations-lib');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const processNormalEvent = (event) => {

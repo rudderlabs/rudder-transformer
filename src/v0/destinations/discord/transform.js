@@ -9,7 +9,7 @@ const {
   getFieldValueFromMessage,
   simpleProcessRouterDest,
 } = require('../../util');
-const { InstrumentationError } = require('rs-integration-lib');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
   stringifyJSON,
   getName,

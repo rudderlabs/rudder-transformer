@@ -1,4 +1,4 @@
-const { NetworkError } = require('rs-integration-lib');
+const { NetworkError } = require('@rudderstack/integrations-lib');
 const { removeUndefinedValues, isHttpStatusSuccess } = require('../../util');
 const { getAccessToken, handlePollResponse, hydrateStatusForServer } = require('./util');
 const { handleHttpRequest } = require('../../../adapters/network');

@@ -9,7 +9,7 @@ const {
   DEFAULT_EVENT_ACTION,
 } = require('./config');
 const { constructPayload, getIntegrationsObj } = require('../../util');
-const { InstrumentationError } = require('rs-integration-lib');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 
 /**
  * Validates the timestamp

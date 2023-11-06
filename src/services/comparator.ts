@@ -1,5 +1,5 @@
 /* eslint-disable import/prefer-default-export */
-import { Destination } from 'rs-integration-lib';
+import { Destination } from '@rudderstack/integrations-lib';
 import { DestinationService } from '../interfaces/DestinationService';
 import {
   DeliveryResponse,

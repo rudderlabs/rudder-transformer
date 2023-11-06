@@ -12,7 +12,7 @@ const {
 const { EventType } = require('../../../constants');
 const { BASE_URL, mappingConfig, ConfigCategories } = require('./config');
 const { refinePayload, getEvent } = require('./utils');
-const { TransformationError, InstrumentationError } = require('rs-integration-lib');
+const { TransformationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 
 const responseBuilder = (payload, endpoint, method, projectName) => {
   if (!payload) {

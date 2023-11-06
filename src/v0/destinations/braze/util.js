@@ -25,7 +25,7 @@ const {
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { isObject } = require('../../util');
 const { removeUndefinedValues, getIntegrationsObj } = require('../../util');
-const { InstrumentationError } = require('rs-integration-lib');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 
 const getEndpointFromConfig = (destination) => {
   // Init -- mostly for test cases

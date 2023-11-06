@@ -36,7 +36,7 @@ const {
   flattenJson,
 } = require('../../util');
 
-const { ConfigurationError, InstrumentationError } = require('rs-integration-lib');
+const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**

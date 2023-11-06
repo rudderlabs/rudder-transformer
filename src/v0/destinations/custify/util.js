@@ -16,7 +16,7 @@ const {
   constructPayload,
   isHttpStatusSuccess,
 } = require('../../util');
-const { InstrumentationError, NetworkError } = require('rs-integration-lib');
+const { InstrumentationError, NetworkError } = require('@rudderstack/integrations-lib');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 

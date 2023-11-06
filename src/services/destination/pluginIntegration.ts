@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Metadata, TransformationError } from 'rs-integration-lib';
+import { Metadata, TransformationError } from '@rudderstack/integrations-lib';
 import { PluginAdapter } from '../../helpers/pluginAdaper';
 import {
   DeliveryResponse,

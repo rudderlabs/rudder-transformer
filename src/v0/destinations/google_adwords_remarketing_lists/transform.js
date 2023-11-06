@@ -3,7 +3,7 @@ const get = require('get-value');
 const {
   InstrumentationError,
   ConfigurationError,
-} = require('rs-integration-lib');
+} = require('@rudderstack/integrations-lib');
 const logger = require('../../../logger');
 const {
   isDefinedAndNotNullAndNotEmpty,

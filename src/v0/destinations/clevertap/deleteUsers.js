@@ -6,7 +6,7 @@ const {
 } = require('../../../adapters/utils/networkUtils');
 const { isHttpStatusSuccess } = require('../../util');
 const { executeCommonValidations } = require('../../util/regulation-api');
-const { NetworkError, ConfigurationError } = require('rs-integration-lib');
+const { NetworkError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const tags = require('../../util/tags');
 const { getUserIdBatches } = require('../../util/deleteUserUtils');
 const { JSON_MIME_TYPE } = require('../../util/constant');

@@ -22,7 +22,7 @@ const {
   PlatformError,
   TransformationError,
   OAuthSecretError,
-} = require('rs-integration-lib');
+} = require('@rudderstack/integrations-lib');
 const logger = require('../../logger');
 const stats = require('../../util/stats');
 const { DestCanonicalNames, DestHandlerMap } = require('../../constants/destinationCanonicalNames');

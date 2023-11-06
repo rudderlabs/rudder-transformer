@@ -17,7 +17,7 @@ const {
   InstrumentationError,
   ConfigurationError,
   NetworkError,
-} = require('rs-integration-lib');
+} = require('@rudderstack/integrations-lib');
 const {
   CONTACT_PROPERTY_MAP_ENDPOINT,
   IDENTIFY_CRM_SEARCH_CONTACT,
@@ -478,7 +478,7 @@ const getExistingData = async (inputs, destination) => {
   inputs.map(async (input) => {
     const { message } = input;
     const { destinationExternalId } = getDestinationExternalIDInfoForRetl(message, DESTINATION);
-    values.push(destinationExternalId);
+    values.push(destinationExternalId.toLowerCase());
   });
   const requestData = {
     filterGroups: [

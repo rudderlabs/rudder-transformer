@@ -11,7 +11,7 @@ const {
   RetryableError,
   UnhandledStatusCodeError,
   InstrumentationError,
-} = require('rs-integration-lib');
+} = require('@rudderstack/integrations-lib');
 const tags = require('../../util/tags');
 
 /**

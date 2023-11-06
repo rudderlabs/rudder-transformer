@@ -17,7 +17,7 @@ const {
   simpleProcessRouterDest,
   isDefinedAndNotNull,
 } = require('../../util');
-const { InstrumentationError, ConfigurationError } = require('rs-integration-lib');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 
 // build the response to be sent to backend, url encoded header is required as slack accepts payload in this format
 // add the username and image for Rudder

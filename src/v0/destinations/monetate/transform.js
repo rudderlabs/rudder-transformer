@@ -11,7 +11,7 @@ const {
 } = require('./utils');
 const { EventType } = require('../../../constants');
 const { mappingConfig } = require('./config');
-const { InstrumentationError } = require('rs-integration-lib');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 
 function track(message, destination) {
   const rawPayload = constructPayload(message, mappingConfig.MONETATETrack);

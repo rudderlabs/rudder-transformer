@@ -1,4 +1,4 @@
-const { InstrumentationError } = require('rs-integration-lib');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const lodash = require('lodash');
 const { getValueFromPropertiesOrTraits, getHashFromArray } = require('../../../../v0/util');
 const { GENERIC_TRUE_VALUES, GENERIC_FALSE_VALUES } = require('../../../../constants');

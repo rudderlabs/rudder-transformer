@@ -10,7 +10,7 @@ const {
   TransformationError,
   InstrumentationError,
   ConfigurationError,
-} = require('rs-integration-lib');
+} = require('@rudderstack/integrations-lib');
 const { API_URL } = require('./config');
 
 const responseBuilder = (payload, endpoint, destination) => {

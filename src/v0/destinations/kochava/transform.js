@@ -11,7 +11,7 @@ const {
   formatTimeStamp,
   isAppleFamily,
 } = require('../../util');
-const { InstrumentationError } = require('rs-integration-lib');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 
 // build final response
 // --------------------

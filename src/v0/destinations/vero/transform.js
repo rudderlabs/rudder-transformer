@@ -11,7 +11,7 @@ const {
 } = require('../../util');
 const { EventType } = require('../../../constants');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
-const { InstrumentationError, ConfigurationError } = require('rs-integration-lib');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 
 // This function handles the common response payload for the supported calls
 const responseBuilderSimple = (message, category, destination) => {

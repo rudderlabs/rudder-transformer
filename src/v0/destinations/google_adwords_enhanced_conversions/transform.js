@@ -2,7 +2,7 @@
 
 const get = require('get-value');
 const { cloneDeep } = require('lodash');
-const { InstrumentationError, ConfigurationError } = require('rs-integration-lib');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
   constructPayload,
   defaultRequestConfig,

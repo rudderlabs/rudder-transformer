@@ -6,7 +6,7 @@ const {
   handleRtTfSingleEventError,
   checkInvalidRtTfEvents,
 } = require('../../util');
-const { ConfigurationError } = require('rs-integration-lib');
+const { ConfigurationError } = require('@rudderstack/integrations-lib');
 
 const SOURCE_KEYS = ['properties', 'traits', 'context.traits'];
 

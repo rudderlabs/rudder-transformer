@@ -22,7 +22,7 @@ const {
   eventToStandardMapping,
   MATCH_KEY_FIELD_TYPE_DICTIONARY,
 } = require('./config');
-const { ConfigurationError } = require('rs-integration-lib');
+const { ConfigurationError } = require('@rudderstack/integrations-lib');
 
 /**
  * @param {*} message

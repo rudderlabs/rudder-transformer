@@ -1,6 +1,6 @@
 const cloneDeep = require('lodash/cloneDeep');
 const { getIntegrationsObj } = require('../../util');
-// const { InstrumentationError } = require("rs-integration-lib");
+// const { InstrumentationError } = require("@rudderstack/integrations-lib");
 
 function process(event) {
   const { message, destination } = event;

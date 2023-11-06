@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable class-methods-use-this */
 import groupBy from 'lodash/groupBy';
-import { TransformationError } from 'rs-integration-lib';
+import { TransformationError } from '@rudderstack/integrations-lib';
 import { processCdkV2Workflow } from '../../cdk/v2/handler';
 import { DestinationService } from '../../interfaces/DestinationService';
 import {

@@ -1,4 +1,4 @@
-const { RetryableError } = require('rs-integration-lib');
+const { RetryableError } = require('@rudderstack/integrations-lib');
 const { proxyRequest, prepareProxyRequest } = require('../../../adapters/network');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 

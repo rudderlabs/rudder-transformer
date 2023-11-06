@@ -1,5 +1,5 @@
 const { simpleProcessRouterDest } = require('../../util');
-const { ConfigurationError } = require('rs-integration-lib');
+const { ConfigurationError } = require('@rudderstack/integrations-lib');
 
 const { getTopic, createAttributesMetadata } = require('./util');
 

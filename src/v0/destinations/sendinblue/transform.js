@@ -25,7 +25,7 @@ const {
   prepareTrackEventData,
   getListIds,
 } = require('./util');
-const { TransformationError, InstrumentationError } = require('rs-integration-lib');
+const { TransformationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 
 const responseBuilder = (
   payload,

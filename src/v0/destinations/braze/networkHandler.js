@@ -6,7 +6,7 @@ const {
   processAxiosResponse,
 } = require('../../../adapters/utils/networkUtils');
 const { DESTINATION } = require('./config');
-const { NetworkError } = require('rs-integration-lib');
+const { NetworkError } = require('@rudderstack/integrations-lib');
 const tags = require('../../util/tags');
 const stats = require('../../../util/stats');
 

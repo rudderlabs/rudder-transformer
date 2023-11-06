@@ -1,4 +1,4 @@
-import { Destination, Metadata } from 'rs-integration-lib';
+import { Destination, Metadata } from '@rudderstack/integrations-lib';
 
 import { CatchErr, FixMe } from '../util/types';
 

@@ -23,7 +23,7 @@ const {
   defaultResponseBuilder,
   validateConfigFields,
 } = require('./util');
-const { InstrumentationError } = require('rs-integration-lib');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function responseBuilder(message, evType, evName, destination, messageType) {

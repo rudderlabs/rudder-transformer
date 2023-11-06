@@ -8,7 +8,7 @@ const {
   flattenJson,
   simpleProcessRouterDest,
 } = require('../../util');
-const { InstrumentationError, TransformationError } = require('rs-integration-lib');
+const { InstrumentationError, TransformationError } = require('@rudderstack/integrations-lib');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function responseBuilderSimple(message, category, destination) {

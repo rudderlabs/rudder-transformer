@@ -8,7 +8,7 @@ const {
   getHashFromArrayWithDuplicate,
   removeUndefinedAndNullValues,
 } = require('../../util');
-const { InstrumentationError, ConfigurationError } = require('rs-integration-lib');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { COMMON_CONFIGS, CUSTOM_CONFIGS, API_VERSION } = require('./config');
 
 const VALID_ACTION_SOURCES = ['app_android', 'app_ios', 'web', 'offline'];

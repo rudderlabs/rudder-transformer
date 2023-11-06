@@ -23,7 +23,7 @@ const {
   simpleProcessRouterDestSync,
   simpleProcessRouterDest,
 } = require('../../util');
-const { InstrumentationError, NetworkError } = require('rs-integration-lib');
+const { InstrumentationError, NetworkError } = require('@rudderstack/integrations-lib');
 const {
   ConfigCategory,
   mappingConfig,

@@ -14,7 +14,7 @@ const {
   TransformationError,
   InstrumentationError,
   ConfigurationError,
-} = require('rs-integration-lib');
+} = require('@rudderstack/integrations-lib');
 
 const {
   MAPPING_CONFIG,

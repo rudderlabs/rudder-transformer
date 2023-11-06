@@ -13,7 +13,7 @@ const {
   InstrumentationError,
   NetworkInstrumentationError,
   TransformationError,
-} = require('rs-integration-lib');
+} = require('@rudderstack/integrations-lib');
 
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
 const {

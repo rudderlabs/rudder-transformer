@@ -22,7 +22,7 @@ const {
   requestBuilder,
   getClickConversionPayloadAndEndpoint,
 } = require('./utils');
-const { InstrumentationError, ConfigurationError } = require('rs-integration-lib');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 
 /**
  * get conversions depending on the type set from dashboard

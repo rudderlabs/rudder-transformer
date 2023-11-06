@@ -20,7 +20,7 @@ const {
   eventPropToTypeMapping,
 } = require('./config');
 const logger = require('../../../logger');
-const { InstrumentationError } = require('rs-integration-lib');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 
 // const funcMap = {
 //   integer: parseInt,

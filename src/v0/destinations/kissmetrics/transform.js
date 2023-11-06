@@ -17,7 +17,7 @@ const {
   simpleProcessRouterDest,
 } = require('../../util');
 const { ENDPOINT } = require('./config');
-const { InstrumentationError } = require('rs-integration-lib');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 
 // source : https://github.com/segment-integrations/analytics.js-integration-kissmetrics/blob/master/lib/index.js
 function toUnixTimestamp(date) {

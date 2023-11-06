@@ -30,7 +30,7 @@ const {
   formingFinalResponse,
 } = require('./utils');
 
-const { InstrumentationError, ConfigurationError } = require('rs-integration-lib');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 
 const responseBuilderSimple = (message, category, destination, categoryToContent) => {
   const { Config } = destination;

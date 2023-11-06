@@ -7,7 +7,7 @@ const {
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 
-const { NetworkError, InvalidAuthTokenError } = require('rs-integration-lib');
+const { NetworkError, InvalidAuthTokenError } = require('@rudderstack/integrations-lib');
 const tags = require('../../util/tags');
 
 /**

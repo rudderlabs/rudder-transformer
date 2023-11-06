@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 const get = require('get-value');
 const set = require('set-value');
-const { ConfigurationError } = require('rs-integration-lib');
+const { ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
   defaultPostRequestConfig,
   defaultPutRequestConfig,

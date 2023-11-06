@@ -4,7 +4,7 @@ import {
   WorkflowExecutionError,
   WorkflowCreationError,
 } from '@rudderstack/workflow-engine';
-import { PlatformError } from 'rs-integration-lib';
+import { PlatformError } from '@rudderstack/integrations-lib';
 import logger from '../../logger';
 import { generateErrorObject } from '../../v0/util';
 import tags from '../../v0/util/tags';

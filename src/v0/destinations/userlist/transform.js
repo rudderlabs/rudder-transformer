@@ -9,7 +9,7 @@ const {
 
 const { endpoint } = require('./config');
 
-const { InstrumentationError } = require('rs-integration-lib');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 // ------------------------------------------------

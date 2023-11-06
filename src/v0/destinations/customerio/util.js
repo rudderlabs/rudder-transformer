@@ -29,7 +29,7 @@ const {
   DEVICE_REGISTER_ENDPOINT,
 } = require('./config');
 
-const { InstrumentationError, ConfigurationError } = require('rs-integration-lib');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 
 const deviceRelatedEventNames = [
   'Application Installed',

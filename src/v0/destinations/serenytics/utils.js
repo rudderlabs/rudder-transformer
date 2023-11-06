@@ -4,7 +4,7 @@ const {
   defaultRequestConfig,
   defaultPostRequestConfig,
 } = require('../../util');
-const { ConfigurationError } = require('rs-integration-lib');
+const { ConfigurationError } = require('@rudderstack/integrations-lib');
 const { MAPPING_CONFIG } = require('./config');
 
 const checkStorageUrl = (STORAGE_URL, messageType) => {

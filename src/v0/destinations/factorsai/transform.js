@@ -9,7 +9,7 @@ const {
   simpleProcessRouterDest,
 } = require('../../util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-const { InstrumentationError } = require('rs-integration-lib');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 
 const { ConfigCategories, mappingConfig, BASE_URL } = require('./config');
 

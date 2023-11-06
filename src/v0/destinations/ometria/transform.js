@@ -1,7 +1,7 @@
 /* eslint-disable one-var, @typescript-eslint/naming-convention */
 /* eslint-disable camelcase */
 const { EventType } = require('../../../constants');
-const { ConfigurationError, InstrumentationError } = require('rs-integration-lib');
+const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
   constructPayload,
   extractCustomFields,

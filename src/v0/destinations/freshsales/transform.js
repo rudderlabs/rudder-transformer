@@ -9,7 +9,7 @@ const {
   getValidDynamicFormConfig,
   simpleProcessRouterDest,
 } = require('../../util');
-const { InstrumentationError, TransformationError } = require('rs-integration-lib');
+const { InstrumentationError, TransformationError } = require('@rudderstack/integrations-lib');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
 const {
   getUserAccountDetails,

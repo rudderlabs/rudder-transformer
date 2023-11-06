@@ -4,7 +4,7 @@ const {
   InstrumentationError,
   ConfigurationError,
   PlatformError,
-} = require('rs-integration-lib');
+} = require('@rudderstack/integrations-lib');
 const {
   getValueFromMessage,
   constructPayload,

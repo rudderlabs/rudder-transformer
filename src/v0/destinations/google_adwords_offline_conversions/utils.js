@@ -5,7 +5,7 @@ const {
   AbortedError,
   ConfigurationError,
   InstrumentationError,
-} = require('rs-integration-lib');
+} = require('@rudderstack/integrations-lib');
 const { httpPOST } = require('../../../adapters/network');
 const {
   isHttpStatusSuccess,

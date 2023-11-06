@@ -1,7 +1,7 @@
 const get = require('get-value');
 const { CONFIG_CATEGORIES } = require('./config');
 const { getHashFromArray, getFieldValueFromMessage } = require('../../util');
-const { InstrumentationError } = require('rs-integration-lib');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 
 /**
  * Validation for userId and an email

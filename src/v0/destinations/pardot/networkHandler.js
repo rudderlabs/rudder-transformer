@@ -7,7 +7,7 @@ const {
 const { isHttpStatusSuccess } = require('../../util/index');
 const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
 const tags = require('../../util/tags');
-const { NetworkError } = require('rs-integration-lib');
+const { NetworkError } = require('@rudderstack/integrations-lib');
 
 /**
  * Example Response from pardot

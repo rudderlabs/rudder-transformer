@@ -24,7 +24,7 @@ const {
   TransformationError,
   InstrumentationError,
   ConfigurationError,
-} = require('rs-integration-lib');
+} = require('@rudderstack/integrations-lib');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = async (payload, endpoint, method, messageType, Config) => {

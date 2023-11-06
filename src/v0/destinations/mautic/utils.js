@@ -7,7 +7,7 @@ const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
-const { NetworkError, InstrumentationError, ConfigurationError } = require('rs-integration-lib');
+const { NetworkError, InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 

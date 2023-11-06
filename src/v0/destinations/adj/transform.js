@@ -3,7 +3,7 @@ const {
   InstrumentationError,
   TransformationError,
   ConfigurationError,
-} = require('rs-integration-lib');
+} = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG, baseEndpoint } = require('./config');
 const {

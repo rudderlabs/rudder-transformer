@@ -6,7 +6,7 @@ const stats = require('../../../util/stats');
 
 const { isDefinedAndNotNull } = require('../../util');
 const { maxPayloadSize } = require('./config');
-const { InstrumentationError, ConfigurationError } = require('rs-integration-lib');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 
 /**
  * Example payload ={

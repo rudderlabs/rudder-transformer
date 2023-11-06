@@ -15,7 +15,7 @@ const {
   ConfigurationError,
   InstrumentationError,
   UnsupportedEventError,
-} = require('rs-integration-lib');
+} = require('@rudderstack/integrations-lib');
 const {
   ENDPOINT,
   mappingConfig,

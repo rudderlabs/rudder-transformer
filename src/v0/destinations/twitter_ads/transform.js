@@ -1,5 +1,5 @@
 const sha256 = require('sha256');
-const { InstrumentationError, OAuthSecretError, ConfigurationError } = require('rs-integration-lib');
+const { InstrumentationError, OAuthSecretError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
   constructPayload,
   defaultRequestConfig,

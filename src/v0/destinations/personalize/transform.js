@@ -9,7 +9,7 @@ const {
   isDefined,
   simpleProcessRouterDest,
 } = require('../../util');
-const { ConfigurationError, InstrumentationError } = require('rs-integration-lib');
+const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 
 const putEventsHandler = (message, destination) => {
   const { properties, anonymousId, event, messageId, context } = message;

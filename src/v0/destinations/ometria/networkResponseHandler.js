@@ -2,7 +2,7 @@ const { getDynamicErrorType, trimResponse } = require('../../../adapters/utils/n
 const { isDefinedAndNotNull } = require('../../util');
 const { isEmpty } = require('../../util/index');
 const tags = require('../../util/tags');
-const { NetworkError } = require('rs-integration-lib');
+const { NetworkError } = require('@rudderstack/integrations-lib');
 
 const responseTransform = (destResponse) => {
   let respBody;

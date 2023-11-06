@@ -5,7 +5,7 @@ const {
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
-const { NetworkError } = require('rs-integration-lib');
+const { NetworkError } = require('@rudderstack/integrations-lib');
 const tags = require('../../util/tags');
 const { ErrorDetailsExtractorBuilder } = require('../../../util/error-extractor');
 

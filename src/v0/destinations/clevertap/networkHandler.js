@@ -4,7 +4,7 @@ const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
-const { NetworkError, AbortedError } = require('rs-integration-lib');
+const { NetworkError, AbortedError } = require('@rudderstack/integrations-lib');
 const tags = require('../../util/tags');
 
 const responseHandler = (destinationResponse) => {

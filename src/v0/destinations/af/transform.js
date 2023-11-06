@@ -1,7 +1,7 @@
 const get = require('get-value');
 const set = require('set-value');
 
-const { InstrumentationError, ConfigurationError } = require('rs-integration-lib');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   removeUndefinedValues,

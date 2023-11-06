@@ -7,7 +7,7 @@ const {
 const { offlineConversionResponseBuilder, prepareUrls } = require('./utils');
 
 const { EventType } = require('../../../constants');
-const { InstrumentationError, TransformationError } = require('rs-integration-lib');
+const { InstrumentationError, TransformationError } = require('@rudderstack/integrations-lib');
 
 const responseBuilder = (endpoint) => {
   if (endpoint) {

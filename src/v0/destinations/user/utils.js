@@ -19,7 +19,7 @@ const {
   groupSourceKeys,
   identifySourceKeys,
 } = require('./config');
-const { InstrumentationError, NetworkInstrumentationError } = require('rs-integration-lib');
+const { InstrumentationError, NetworkInstrumentationError } = require('@rudderstack/integrations-lib');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const ACCEPT_HEADER_VAL = '*/*;version=2';

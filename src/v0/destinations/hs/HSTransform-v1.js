@@ -3,7 +3,7 @@ const {
   InstrumentationError,
   ConfigurationError,
   TransformationError,
-} = require('rs-integration-lib');
+} = require('@rudderstack/integrations-lib');
 const lodash = require('lodash');
 const { MappedToDestinationKey, GENERIC_TRUE_VALUES } = require('../../../constants');
 const {

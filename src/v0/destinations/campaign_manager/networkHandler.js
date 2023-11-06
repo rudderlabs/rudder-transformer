@@ -5,7 +5,7 @@ const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
-const { AbortedError, RetryableError, NetworkError } = require('rs-integration-lib');
+const { AbortedError, RetryableError, NetworkError } = require('@rudderstack/integrations-lib');
 const tags = require('../../util/tags');
 
 function checkIfFailuresAreRetryable(response) {

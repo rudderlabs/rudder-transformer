@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 import dotenv from 'dotenv';
-import { PlatformError } from 'rs-integration-lib';
+import { PlatformError } from '@rudderstack/integrations-lib';
 import { ProcessorTransformationRequest, RouterTransformationRequestData } from '../types/index';
 import { INTEGRATION_SERVICE } from '../routes/utils/constants';
 import { CDKV1DestinationService } from '../services/destination/cdkV1Integration';

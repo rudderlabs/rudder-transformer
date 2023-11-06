@@ -8,7 +8,7 @@ const Message = require('../message');
 
 const { mappingConfig } = require('./config');
 const { isDefinedAndNotNull } = require('../../util');
-// const { TransformationError } = require("rs-integration-lib");
+// const { TransformationError } = require("@rudderstack/integrations-lib");
 
 function process(event) {
   const message = new Message(`Customer.io`);

@@ -6,7 +6,7 @@ const path = require('path');
 const basePath = path.resolve(__dirname);
 ConfigFactory.init({ basePath, loggingMode: 'production' });
 
-const { TransformationError, ConfigurationError, InstrumentationError } = require('rs-integration-lib');
+const { TransformationError, ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const tags = require('../../v0/util/tags');
 const { generateErrorObject } = require('../../v0/util');
 

@@ -5,7 +5,7 @@ const {
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 const { isHttpStatusSuccess } = require('../../util');
-const { NetworkError, ConfigurationError } = require('rs-integration-lib');
+const { NetworkError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const tags = require('../../util/tags');
 const { executeCommonValidations } = require('../../util/regulation-api');
 

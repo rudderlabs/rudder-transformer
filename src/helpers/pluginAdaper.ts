@@ -5,7 +5,8 @@ import {
   Destination,
   WorkflowType,
   Metadata,
-} from 'rs-integration-lib';
+  get,
+} from '@rudderstack/integrations-lib';
 import { IntegrationsFactory } from 'rudder-integrations-store';
 import groupBy from 'lodash/groupBy';
 import {
@@ -14,6 +15,7 @@ import {
   TransformedOutput,
 } from '../types';
 import { generateErrorObject } from '../v0/util';
+import { MappedToDestinationKey } from '../constants';
 
 // error handling
 
@@ -36,10 +38,7 @@ export class PluginAdapter {
     //   plugins: ['preprocessor', 'multiplexer'],
     // };
 
-    const integration = await IntegrationsFactory.createIntegration(
-      integrationName,
-      workflowType,
-    );
+    const integration = await IntegrationsFactory.createIntegration(integrationName, workflowType);
     this.pluginCache.set(cacheKey, integration);
     return integration;
   }
@@ -48,8 +47,8 @@ export class PluginAdapter {
     inputs: ProcessorTransformationRequest[],
     integrationName: string,
   ) {
-    // TODO: decide the workflow type based on config
-    const workflowType = WorkflowType.STREAM;
+    const mappedToDestination = get(inputs[0].message, MappedToDestinationKey);
+    const workflowType = mappedToDestination ? WorkflowType.RETL : WorkflowType.STREAM;
     const integrationPlugin = await PluginAdapter.getPlugin(integrationName, workflowType);
 
     const groupedEventsByDestinationId = groupBy(
@@ -120,8 +119,8 @@ export class PluginAdapter {
     inputs: RouterTransformationRequestData[],
     integrationName: string,
   ) {
-    // TODO: decide the workflow type based on config
-    const workflowType = WorkflowType.STREAM;
+    const mappedToDestination = get(inputs[0].message, MappedToDestinationKey);
+    const workflowType = mappedToDestination ? WorkflowType.RETL : WorkflowType.STREAM;
 
     const integrationPlugin = await PluginAdapter.getPlugin(integrationName, workflowType);
     // group events by destinationId

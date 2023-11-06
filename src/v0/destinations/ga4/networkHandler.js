@@ -5,7 +5,7 @@ const {
 } = require('../../../adapters/utils/networkUtils');
 const { isDefinedAndNotNull, isDefined, isHttpStatusSuccess } = require('../../util');
 
-const { NetworkError } = require('rs-integration-lib');
+const { NetworkError } = require('@rudderstack/integrations-lib');
 const tags = require('../../util/tags');
 
 const responseHandler = (destinationResponse, dest) => {

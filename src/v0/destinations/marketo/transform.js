@@ -42,7 +42,7 @@ const {
   InstrumentationError,
   ConfigurationError,
   UnauthorizedError,
-} = require('rs-integration-lib');
+} = require('@rudderstack/integrations-lib');
 
 const userIdLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
 const emailLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day

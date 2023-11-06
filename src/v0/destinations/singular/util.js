@@ -20,7 +20,7 @@ const {
   isDefinedAndNotNull,
   isAppleFamily,
 } = require('../../util');
-const { TransformationError, InstrumentationError } = require('rs-integration-lib');
+const { TransformationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 
 /*
   All the fields listed inside properties which are not directly mapped, will be sent to 'e' as custom event attributes

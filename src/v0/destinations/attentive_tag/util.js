@@ -7,7 +7,7 @@ const {
   getDestinationExternalID,
   isDefinedAndNotNullAndNotEmpty,
 } = require('../../util');
-const { InstrumentationError } = require('rs-integration-lib');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { mappingConfig, ConfigCategory } = require('./config');
 
 /**

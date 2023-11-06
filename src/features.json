@@ -59,6 +59,8 @@
     "TWITTER_ADS": true,
     "CLEVERTAP": true,
     "ORTTO": true,
-    "GLADLY": true
+    "GLADLY": true,
+    "ONE_SIGNAL": true,
+    "TIKTOK_AUDIENCE": true
   }
 }

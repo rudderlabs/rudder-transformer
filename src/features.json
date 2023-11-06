@@ -57,6 +57,8 @@
     "BRAZE": true,
     "OPTIMIZELY_FULLSTACK": true,
     "TWITTER_ADS": true,
-    "CLEVERTAP": true
+    "CLEVERTAP": true,
+    "TIKTOK_AUDIENCE": true,
+    "ORTTO": true
   }
 }

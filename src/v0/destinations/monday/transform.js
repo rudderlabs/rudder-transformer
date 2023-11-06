@@ -8,7 +8,7 @@ const {
   removeUndefinedAndNullValues,
   simpleProcessRouterDest,
   getDestinationExternalID,
-  validateEventType,
+  validateEventName,
 } = require('../../util');
 const {
   ConfigurationError,
@@ -42,7 +42,7 @@ const trackResponseBuilder = async (message, { Config }) => {
   const { apiToken } = Config;
   let boardId = getDestinationExternalID(message, 'boardId');
   const event = get(message, 'event');
-  validateEventType(event);
+  validateEventName(event);
   if (!boardId) {
     boardId = Config.boardId;
   }

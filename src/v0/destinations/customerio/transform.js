@@ -12,6 +12,7 @@ const {
   adduserIdFromExternalId,
   getFieldValueFromMessage,
   handleRtTfSingleEventError,
+  validateEventName,
 } = require('../../util');
 
 const logger = require('../../../logger');
@@ -101,6 +102,7 @@ function processSingleMessage(message, destination) {
       break;
     case EventType.TRACK:
       evType = 'event';
+      validateEventName(message.event);
       evName = message.event;
       break;
     case EventType.ALIAS:

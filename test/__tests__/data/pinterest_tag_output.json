@@ -671,7 +671,12 @@
           "advertiser_id": "123456",
           "app_id": "429047995",
           "custom_data": {
-            "contents": [{ "item_price": "undefined", "quantity": 1 }],
+            "contents": [
+              {
+                "item_price": "undefined",
+                "quantity": 1
+              }
+            ],
             "currency": "USD",
             "num_items": 0,
             "order_id": "50314b8e9bcf000000000000",
@@ -698,7 +703,9 @@
       },
       "endpoint": "https://ct.pinterest.com/events/v3",
       "files": {},
-      "headers": { "Content-Type": "application/json" },
+      "headers": {
+        "Content-Type": "application/json"
+      },
       "method": "POST",
       "params": {},
       "type": "REST",
@@ -906,8 +913,54 @@
     "statusCode": 400,
     "error": "Conversion Token not found. Aborting"
   },
-  {
-    "statusCode": 400,
-    "error": "custom event is not mapped in UI. Make sure to map the event in UI or enable the 'send as custom event' setting"
-  }
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.pinterest.com/v5/ad_accounts/accountId123/events",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer conversionToken123"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "event_name": "custom event",
+          "event_time": 1597383030,
+          "action_source": "web",
+          "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
+          "app_id": "429047995",
+          "user_data": {
+            "em": ["48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"],
+            "ph": ["d164bbe036663cb5c96835e9ccc6501e9a521127ea62f6359744928ba932413b"],
+            "ln": ["dcf000c2386fb76d22cefc0d118a8511bb75999019cd373df52044bccd1bd251"],
+            "fn": ["9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"],
+            "ct": ["6689106ca7922c30b2fd2c175c85bc7fc2d52cc4941bdd7bb622c6cdc6284a85"],
+            "st": ["3b45022ab36728cdae12e709e945bba267c50ee8a91e6e4388539a8e03a3fdcd"],
+            "zp": ["1a4292e00780e18d00e76fde9850aee5344e939ba593333cd5e4b4aa2cd33b0c"],
+            "country": ["582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"],
+            "hashed_maids": ["6ca13d52ca70c883e0f0bb101e425a89e8624de51db2d2392593af6a84118090"],
+            "client_user_agent": "chrome"
+          },
+          "custom_data": {
+            "currency": "USD",
+            "value": "27.5",
+            "order_id": "50314b8e9bcf000000000000",
+            "num_items": 0,
+            "contents": [
+              {
+                "quantity": 1,
+                "item_price": "undefined"
+              }
+            ]
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  ]
 ]

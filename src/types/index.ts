@@ -83,21 +83,16 @@ type Destination = {
 type UserTransformationLibrary = {
   VersionID: string;
 };
-
-type ProcessorTransformationRequest = {
-  request?: object;
-  message: object;
-  metadata: Metadata;
-  destination: Destination;
-  libraries: UserTransformationLibrary[];
-};
-
 type RouterTransformationRequestData = {
   request?: object;
-  message: object;
+  message: RudderMessage;
   metadata: Metadata;
   destination: Destination;
 };
+
+type ProcessorTransformationRequest = {
+  libraries: UserTransformationLibrary[];
+} & RouterTransformationRequestData;
 
 type RouterTransformationRequest = {
   input: RouterTransformationRequestData[];

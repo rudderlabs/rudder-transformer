@@ -1,12 +1,7 @@
 const { camelCase } = require('lodash');
-const path = require('path');
-const fs = require('fs');
 const moment = require('moment');
 const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../util');
 const Message = require('../message');
-
-// import mapping json using JSON.parse to preserve object key order
-const mapping = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mapping.json'), 'utf-8'));
 
 function process(event) {
   const message = new Message(`RevenueCat`);
@@ -23,8 +18,6 @@ function process(event) {
     message.setProperty('properties', properties);
   }
 
-  message.setPropertiesV2(event, mapping);
-
   // setting up app_user_id to externalId : revenuecatAppUserId
   if (event?.event?.app_user_id) {
     message.context.externalId = [
@@ -35,11 +28,16 @@ function process(event) {
     ];
   }
 
-  if (isDefinedAndNotNull(event?.event?.event_timestamp_ms) && moment(event?.event?.event_timestamp_ms).isValid()) {
+  if (
+    isDefinedAndNotNull(event?.event?.event_timestamp_ms) &&
+    moment(event?.event?.event_timestamp_ms).isValid()
+  ) {
     const validTimestamp = new Date(event.event.event_timestamp_ms).toISOString();
     message.setProperty('originalTimestamp', validTimestamp);
     message.setProperty('sentAt', validTimestamp);
   }
+  message.event = event?.event?.type;
+  message.messageId = event?.event?.id;
 
   // removing undefined and null values from message
   removeUndefinedAndNullValues(message);

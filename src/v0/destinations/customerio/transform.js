@@ -113,6 +113,7 @@ function processSingleMessage(message, destination) {
       logger.error(`could not determine type ${messageType}`);
       throw new InstrumentationError(`could not determine type ${messageType}`);
   }
+  evName = evName ? String(evName) : evName;
   const response = responseBuilder(message, evType, evName, destination, messageType);
 
   // replace default domain with EU data center domainc for EU based account

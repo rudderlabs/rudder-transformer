@@ -16,12 +16,13 @@ steps:
 
   - name: successfulEvents
     template: |
+      const status = $.getStatusCode($.requestMetadata, $.outputs.transform#idx.output.status)
       $.outputs.transform#idx.output.({
-        "batchedRequest": $.getPayload(.),
+        "batchedRequest": .{~["status"]},
         "batched": false,
         "destination": ^[idx].destination,
         "metadata": ^[idx].metadata[],
-        "statusCode": $.getStatusCode($.requestMetadata, $.outputs.transform#idx.output.status)
+        "statusCode": status
       })[]
   - name: failedEvents
     template: |

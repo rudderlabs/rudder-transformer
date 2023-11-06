@@ -53,10 +53,4 @@ const getStatusCode = (requestMetadata, statusCode) => {
   return statusCode;
 }
 
-const getPayload = (eventPayload) => {
-  const payload = eventPayload;
-  delete payload.status;
-  return payload;
-}
-
-module.exports = { formatField, getCustomAttributes, getEndpoint, getHeaders, getStatusCode, getPayload };
+module.exports = { formatField, getCustomAttributes, getEndpoint, getHeaders, getStatusCode };

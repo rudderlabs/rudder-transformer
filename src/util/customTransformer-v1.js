@@ -76,13 +76,13 @@ async function userTransformHandlerV1(
 
   try {
     transformedEvents = await transform(isolatevm, events);
+    logs = isolatevm.logs;
   } catch (err) {
     logger.error(`Error encountered while executing transformation: ${err.message}`);
     transformationError = err;
     throw err;
   } finally {
     logger.debug(`Destroying IsolateVM`);
-    logs = isolatevm.logs;
     isolatevmFactory.destroy(isolatevm);
     // send the observability stats
     const tags = {
@@ -91,8 +91,8 @@ async function userTransformHandlerV1(
       ...events.length && events[0].metadata ? getMetadata(events[0].metadata) : {},
       ...events.length && events[0].metadata ? getTransformationMetadata(events[0].metadata) : {}
     }
-    stats.counter('batch_user_transform_events', events.length, tags);
-    stats.timing('batch_user_transform_latency', invokeTime, tags);
+    stats.counter('user_transform_function_input_events', events.length, tags);
+    stats.timing('user_transform_function_latency', invokeTime, tags);
   }
 
   return { transformedEvents, logs };

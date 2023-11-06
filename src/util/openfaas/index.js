@@ -11,7 +11,6 @@ const stats = require('../stats');
 const { getMetadata, getTransformationMetadata } = require('../../v0/util');
 const { HTTP_STATUS_CODES } = require('../../v0/util/constant');
 
-
 const FAAS_BASE_IMG = process.env.FAAS_BASE_IMG || 'rudderlabs/openfaas-flask:main';
 const FAAS_MAX_PODS_IN_TEXT = process.env.FAAS_MAX_PODS_IN_TEXT || '40';
 const FAAS_MIN_PODS_IN_TEXT = process.env.FAAS_MIN_PODS_IN_TEXT || '1';
@@ -299,8 +298,8 @@ const executeFaasFunction = async (
       ...events.length && events[0].metadata ? getTransformationMetadata(events[0].metadata) : {},
     }
 
-    stats.counter('batch_user_transform_events', events.length, tags)
-    stats.timing('batch_user_transform_latency', startTime, tags)
+    stats.counter('user_transform_function_input_events', events.length, tags)
+    stats.timing('user_transform_function_latency', startTime, tags)
   }
 };
 

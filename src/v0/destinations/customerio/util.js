@@ -10,7 +10,6 @@ const {
   defaultDeleteRequestConfig,
   isAppleFamily,
   validateEmail,
-  validateEventType,
 } = require('../../util');
 
 const { EventType, SpecedTraits, TraitsMapping } = require('../../../constants');
@@ -288,7 +287,6 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
       // 100 - len(`Viewed  Screen`) = 86
       trimmedEvName = `Viewed ${truncate(message.event || message.properties.name, 86)} Screen`;
     } else {
-      validateEventType(evName);
       trimmedEvName = truncate(evName, 100);
     }
     // anonymous_id needs to be sent for anon track calls to provide information on which anon user is being tracked

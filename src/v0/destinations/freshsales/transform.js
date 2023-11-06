@@ -8,7 +8,7 @@ const {
   defaultPostRequestConfig,
   getValidDynamicFormConfig,
   simpleProcessRouterDest,
-  validateEventType,
+  validateEventName,
 } = require('../../util');
 const { InstrumentationError, TransformationError } = require('../../util/errorTypes');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
@@ -67,7 +67,6 @@ const identifyResponseBuilder = (message, { Config }) => {
  * @returns
  */
 const trackResponseBuilder = async (message, { Config }, event) => {
-  validateEventType(event);
   let payload;
 
   const response = defaultRequestConfig();
@@ -125,9 +124,6 @@ const groupResponseBuilder = async (message, { Config }) => {
 // Checks if there are any mapping events for the track event and returns them
 function eventMappingHandler(message, destination) {
   const event = get(message, 'event');
-  if (!event) {
-    throw new InstrumentationError('Event name is required');
-  }
 
   let { rudderEventsToFreshsalesEvents } = destination.Config;
   const mappedEvents = new Set();
@@ -161,6 +157,7 @@ const processEvent = async (message, destination) => {
       response = identifyResponseBuilder(message, destination);
       break;
     case EventType.TRACK: {
+      validateEventName(message.event);
       const mappedEvents = eventMappingHandler(message, destination);
       if (mappedEvents.length > 0) {
         const respList = await Promise.all(

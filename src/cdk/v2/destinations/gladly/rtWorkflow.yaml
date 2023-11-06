@@ -1,6 +1,8 @@
 bindings:
   - name: handleRtTfSingleEventError
     path: ../../../../v0/util/index
+  - path: ./utils
+    exportAll: true
 
 steps:
   - name: validateInput
@@ -15,11 +17,11 @@ steps:
   - name: successfulEvents
     template: |
       $.outputs.transform#idx.output.({
-        "batchedRequest": .,
+        "batchedRequest": $.getPayload(.),
         "batched": false,
         "destination": ^[idx].destination,
         "metadata": ^[idx].metadata[],
-        "statusCode": 200
+        "statusCode": $.getStatusCode($.requestMetadata, $.outputs.transform#idx.output.status)
       })[]
   - name: failedEvents
     template: |

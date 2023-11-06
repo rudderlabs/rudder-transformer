@@ -3,8 +3,6 @@ bindings:
     path: ../../../../constants
   - path: ./utils
     exportAll: true
-  - name: isDefinedAndNotNull
-    path: ../../../../v0/util
   - name: defaultRequestConfig
     path: ../../../../v0/util
   - name: removeUndefinedAndNullValues
@@ -45,7 +43,7 @@ steps:
         image: .message.context.traits.avatar || .message.traits.avatar,
         address: .message.context.traits.address || .message.traits.address
       }
-      $.context.payload.address ?  $.context.payload.address =  $.context.payload.address.toString()
+      $.context.payload.address && typeof $.context.payload.address === "object" ?  $.context.payload.address =  JSON.stringify($.context.payload.address)
       $.context.payload.emails = $.formatField(.message, "email")
       $.context.payload.phones = $.formatField(.message, "phone")
       $.context.payload.customAttributes = $.getCustomAttributes(.message)
@@ -62,6 +60,7 @@ steps:
       const endpoint = $.getEndpoint(.destination)
       const rawResponse = await $.httpPOST(endpoint, requestPayload, requestOptions)
       const processedResponse = $.processAxiosResponse(rawResponse)
+      processedResponse.status == 400 ? $.assertHttpResp(processedResponse, "Unable to create or update user due to " + JSON.stringify(processedResponse.response));
       processedResponse
 
   - name: buildResponseForProcessTransformation

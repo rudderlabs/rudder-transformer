@@ -220,7 +220,17 @@ export const data = [
               },
               destination: {
                 Config: {
-                  webhookUrl: 'https://6b0e6a60.ngrok.io/n',
+                  webhookUrl: 'http://6b0e6a60.ngrok.io',
+                  headers: [
+                    {
+                      from: '',
+                      to: '',
+                    },
+                    {
+                      from: 'test2',
+                      to: 'value2',
+                    },
+                  ],
                 },
                 DestinationDefinition: {
                   Config: {
@@ -478,10 +488,11 @@ export const data = [
                     FORM: {},
                   },
                   files: {},
-                  endpoint: 'https://6b0e6a60.ngrok.io/n',
+                  endpoint: 'http://6b0e6a60.ngrok.io',
                   userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                   headers: {
                     'content-type': 'application/json',
+                    test2: 'value2',
                   },
                   version: '1',
                   params: {},
@@ -498,7 +509,17 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  webhookUrl: 'https://6b0e6a60.ngrok.io/n',
+                  webhookUrl: 'http://6b0e6a60.ngrok.io',
+                  headers: [
+                    {
+                      from: '',
+                      to: '',
+                    },
+                    {
+                      from: 'test2',
+                      to: 'value2',
+                    },
+                  ],
                 },
                 DestinationDefinition: {
                   Config: {

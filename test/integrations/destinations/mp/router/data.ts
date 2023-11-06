@@ -553,30 +553,32 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://api.mixpanel.com/import/',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: 'Basic dGVzdF9hcGlfc2VjcmV0Og==',
-                },
-                params: {
-                  strict: 1,
-                },
-                body: {
-                  JSON: {},
-                  JSON_ARRAY: {},
-                  GZIP: {
-                    payload:
-                      '[{"event":"Loaded a Page","properties":{"ip":"0.0.0.0","$user_id":"hjikl","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"dd266c67-9199-4a52-ba32-f46ddde67312","token":"test_api_token","distinct_id":"hjikl","time":1688624942,"name":"Contact Us","$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://api.mixpanel.com/import/',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Basic dGVzdF9hcGlfc2VjcmV0Og==',
                   },
-                  XML: {},
-                  FORM: {},
+                  params: {
+                    strict: 1,
+                  },
+                  body: {
+                    JSON: {},
+                    JSON_ARRAY: {},
+                    GZIP: {
+                      payload:
+                        '[{"event":"Loaded a Page","properties":{"ip":"0.0.0.0","$user_id":"hjikl","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"dd266c67-9199-4a52-ba32-f46ddde67312","token":"test_api_token","distinct_id":"hjikl","time":1688624942,"name":"Contact Us","$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
+                    },
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               metadata: [
                 {
                   jobId: 1,
@@ -1431,29 +1433,31 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://api.mixpanel.com/import/',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: 'Basic dGVzdF9hcGlfc2VjcmV0Og==',
-                },
-                params: {
-                  strict: 1,
-                },
-                body: {
-                  JSON: {},
-                  JSON_ARRAY: {
-                    batch:
-                      '[{"event":"Loaded a Page","properties":{"ip":"0.0.0.0","$user_id":"hjikl","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"dd266c67-9199-4a52-ba32-f46ddde67312","token":"test_api_token","distinct_id":"hjikl","time":1688624942,"name":"Contact Us","$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://api.mixpanel.com/import/',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Basic dGVzdF9hcGlfc2VjcmV0Og==',
                   },
-                  XML: {},
-                  FORM: {},
+                  params: {
+                    strict: 1,
+                  },
+                  body: {
+                    JSON: {},
+                    JSON_ARRAY: {
+                      batch:
+                        '[{"event":"Loaded a Page","properties":{"ip":"0.0.0.0","$user_id":"hjikl","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"dd266c67-9199-4a52-ba32-f46ddde67312","token":"test_api_token","distinct_id":"hjikl","time":1688624942,"name":"Contact Us","$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
+                    },
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               metadata: [
                 {
                   jobId: 1,

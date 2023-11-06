@@ -77,29 +77,31 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://api.attentivemobile.com/v1/subscriptions/unsubscribe',
-                headers: {
-                  Authorization: 'Bearer dummyApiKey',
-                  'Content-Type': 'application/json',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    user: {
-                      phone: '+16465453911',
-                      email: 'test0@gmail.com',
-                    },
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://api.attentivemobile.com/v1/subscriptions/unsubscribe',
+                  headers: {
+                    Authorization: 'Bearer dummyApiKey',
+                    'Content-Type': 'application/json',
                   },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
+                  params: {},
+                  body: {
+                    JSON: {
+                      user: {
+                        phone: '+16465453911',
+                        email: 'test0@gmail.com',
+                      },
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               metadata: [
                 {
                   jobId: 1,

@@ -158,28 +158,30 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://app.trengo.com/api/v2/tickets',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Accept: 'application/json',
-                  Authorization: 'Bearer trengo_integration_test_api_token',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    contact_id: 90002431001,
-                    channel_id: 'trengo_phone_channel',
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://app.trengo.com/api/v2/tickets',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    Authorization: 'Bearer trengo_integration_test_api_token',
                   },
-                  XML: {},
-                  JSON_ARRAY: {},
-                  FORM: {},
+                  params: {},
+                  body: {
+                    JSON: {
+                      contact_id: 90002431001,
+                      channel_id: 'trengo_phone_channel',
+                    },
+                    XML: {},
+                    JSON_ARRAY: {},
+                    FORM: {},
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               metadata: [
                 {
                   jobId: 2,
@@ -416,29 +418,31 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://app.trengo.com/api/v2/channels/trengo_email_channel/contacts',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Accept: 'application/json',
-                  Authorization: 'Bearer trengo_integration_test_api_token',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    name: 'Jimothy Halpert',
-                    identifier: 'j@d.com',
-                    channel_id: 'trengo_email_channel',
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://app.trengo.com/api/v2/channels/trengo_email_channel/contacts',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    Authorization: 'Bearer trengo_integration_test_api_token',
                   },
-                  XML: {},
-                  JSON_ARRAY: {},
-                  FORM: {},
+                  params: {},
+                  body: {
+                    JSON: {
+                      name: 'Jimothy Halpert',
+                      identifier: 'j@d.com',
+                      channel_id: 'trengo_email_channel',
+                    },
+                    XML: {},
+                    JSON_ARRAY: {},
+                    FORM: {},
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               metadata: [
                 {
                   jobId: 2,

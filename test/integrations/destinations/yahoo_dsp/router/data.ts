@@ -96,33 +96,35 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'PUT',
-                endpoint:
-                  'https://dspapi.admanagerplus.yahoo.com/traffic/audiences/email_address/34893',
-                headers: {
-                  'X-Auth-Method': 'OAuth2',
-                  'X-Auth-Token': 'testAuthToken',
-                  'Content-Type': 'application/json',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    seedList: [
-                      'ac0f1baec38a9ef3cfcb56db981df7d9bab2568c7f53ef3776d1c059ec58e72b',
-                      '49eaeca26c878f268ad33af8cfa8194ca5b8b8e448b1c775bf9153a2de734579',
-                      '2048acfa84a01121060ca2fc8a673a76d427176dc37224d4408c21973bd90e5c',
-                    ],
-                    accountId: '12444',
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'PUT',
+                  endpoint:
+                    'https://dspapi.admanagerplus.yahoo.com/traffic/audiences/email_address/34893',
+                  headers: {
+                    'X-Auth-Method': 'OAuth2',
+                    'X-Auth-Token': 'testAuthToken',
+                    'Content-Type': 'application/json',
                   },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
+                  params: {},
+                  body: {
+                    JSON: {
+                      seedList: [
+                        'ac0f1baec38a9ef3cfcb56db981df7d9bab2568c7f53ef3776d1c059ec58e72b',
+                        '49eaeca26c878f268ad33af8cfa8194ca5b8b8e448b1c775bf9153a2de734579',
+                        '2048acfa84a01121060ca2fc8a673a76d427176dc37224d4408c21973bd90e5c',
+                      ],
+                      accountId: '12444',
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               metadata: [
                 {
                   jobId: 1,

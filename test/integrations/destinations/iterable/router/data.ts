@@ -114,36 +114,38 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://api.iterable.com/api/catalogs/test-ruchira/items',
-                headers: {
-                  'Content-Type': 'application/json',
-                  api_key: '583af2f8-15ba-49c0-8511-76383e7de07e',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    documents: {
-                      Tiffany: {
-                        ruchira: 'donaldbaker@ellis.com',
-                        new_field2: 'GB',
-                      },
-                      ABC: {
-                        ruchira: 'abc@ellis.com',
-                        new_field2: 'GB1',
-                      },
-                    },
-                    replaceUploadedFieldsOnly: true,
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://api.iterable.com/api/catalogs/test-ruchira/items',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    api_key: '583af2f8-15ba-49c0-8511-76383e7de07e',
                   },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
+                  params: {},
+                  body: {
+                    JSON: {
+                      documents: {
+                        Tiffany: {
+                          ruchira: 'donaldbaker@ellis.com',
+                          new_field2: 'GB',
+                        },
+                        ABC: {
+                          ruchira: 'abc@ellis.com',
+                          new_field2: 'GB1',
+                        },
+                      },
+                      replaceUploadedFieldsOnly: true,
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               metadata: [
                 {
                   jobId: 2,
@@ -596,37 +598,39 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://api.iterable.com/api/events/trackBulk',
-                headers: {
-                  'Content-Type': 'application/json',
-                  api_key: '62d12498c37c4fd8a1a546c2d35c2f60',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    events: [
-                      {
-                        dataFields: {
-                          subject: 'resume validate',
-                          sendtime: '2020-01-01',
-                          sendlocation: 'akashdeep@gmail.com',
-                        },
-                        userId: 'abcdeeeeeeeexxxx102',
-                        eventName: 'Email Opened',
-                        createdAt: 1598631966468,
-                      },
-                    ],
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://api.iterable.com/api/events/trackBulk',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    api_key: '62d12498c37c4fd8a1a546c2d35c2f60',
                   },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
+                  params: {},
+                  body: {
+                    JSON: {
+                      events: [
+                        {
+                          dataFields: {
+                            subject: 'resume validate',
+                            sendtime: '2020-01-01',
+                            sendlocation: 'akashdeep@gmail.com',
+                          },
+                          userId: 'abcdeeeeeeeexxxx102',
+                          eventName: 'Email Opened',
+                          createdAt: 1598631966468,
+                        },
+                      ],
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               metadata: [
                 {
                   jobId: 2,
@@ -646,39 +650,41 @@ export const data = [
               },
             },
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://api.iterable.com/api/users/bulkUpdate',
-                headers: {
-                  'Content-Type': 'application/json',
-                  api_key: '62d12498c37c4fd8a1a546c2d35c2f60',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    users: [
-                      {
-                        email: 'manashi@website.com',
-                        dataFields: {
-                          city: 'Bangalore',
-                          name: 'manashi',
-                          email: 'manashi@website.com',
-                          country: 'India',
-                        },
-                        userId: 'abcdeeeeeeeexxxx102',
-                        preferUserId: true,
-                        mergeNestedObjects: true,
-                      },
-                    ],
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://api.iterable.com/api/users/bulkUpdate',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    api_key: '62d12498c37c4fd8a1a546c2d35c2f60',
                   },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
+                  params: {},
+                  body: {
+                    JSON: {
+                      users: [
+                        {
+                          email: 'manashi@website.com',
+                          dataFields: {
+                            city: 'Bangalore',
+                            name: 'manashi',
+                            email: 'manashi@website.com',
+                            country: 'India',
+                          },
+                          userId: 'abcdeeeeeeeexxxx102',
+                          preferUserId: true,
+                          mergeNestedObjects: true,
+                        },
+                      ],
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               metadata: [
                 {
                   jobId: 3,
@@ -698,41 +704,43 @@ export const data = [
               },
             },
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://api.iterable.com/api/events/trackBulk',
-                headers: {
-                  'Content-Type': 'application/json',
-                  api_key: '12345',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    events: [
-                      {
-                        email: 'sayan@gmail.com',
-                        dataFields: {
-                          path: '/abc',
-                          referrer: '',
-                          search: '',
-                          title: '',
-                          url: '',
-                          category: 'test-category',
-                        },
-                        userId: '12345',
-                        eventName: 'ApplicationLoaded page',
-                        createdAt: 1571051718299,
-                      },
-                    ],
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://api.iterable.com/api/events/trackBulk',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    api_key: '12345',
                   },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
+                  params: {},
+                  body: {
+                    JSON: {
+                      events: [
+                        {
+                          email: 'sayan@gmail.com',
+                          dataFields: {
+                            path: '/abc',
+                            referrer: '',
+                            search: '',
+                            title: '',
+                            url: '',
+                            category: 'test-category',
+                          },
+                          userId: '12345',
+                          eventName: 'ApplicationLoaded page',
+                          createdAt: 1571051718299,
+                        },
+                      ],
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               metadata: [
                 {
                   jobId: 4,
@@ -752,56 +760,58 @@ export const data = [
               },
             },
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://api.iterable.com/api/commerce/updateCart',
-                headers: {
-                  'Content-Type': 'application/json',
-                  api_key: '62d12498c37c4fd8a1a546c2d35c2f60',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    user: {
-                      email: 'sayan@gmail.com',
-                      dataFields: {
-                        email: 'sayan@gmail.com',
-                      },
-                      userId: '12345',
-                      preferUserId: true,
-                      mergeNestedObjects: true,
-                    },
-                    items: [
-                      {
-                        id: '507f1f77bcf86cd799439011',
-                        sku: '45790-32',
-                        name: 'Monopoly: 3rd Edition',
-                        categories: ['cars'],
-                        price: 19,
-                        quantity: 2,
-                        imageUrl: 'https://www.example.com/product/path.jpg',
-                        url: 'https://www.example.com/product/path',
-                      },
-                      {
-                        id: '507f1f77bcf86cd7994390112',
-                        sku: '45790-322',
-                        name: 'Monopoly: 3rd Edition2',
-                        categories: ['Cars2'],
-                        price: 192,
-                        quantity: 22,
-                        imageUrl: 'https://www.example.com/product/path.jpg2',
-                        url: 'https://www.example.com/product/path2',
-                      },
-                    ],
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://api.iterable.com/api/commerce/updateCart',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    api_key: '62d12498c37c4fd8a1a546c2d35c2f60',
                   },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
+                  params: {},
+                  body: {
+                    JSON: {
+                      user: {
+                        email: 'sayan@gmail.com',
+                        dataFields: {
+                          email: 'sayan@gmail.com',
+                        },
+                        userId: '12345',
+                        preferUserId: true,
+                        mergeNestedObjects: true,
+                      },
+                      items: [
+                        {
+                          id: '507f1f77bcf86cd799439011',
+                          sku: '45790-32',
+                          name: 'Monopoly: 3rd Edition',
+                          categories: ['cars'],
+                          price: 19,
+                          quantity: 2,
+                          imageUrl: 'https://www.example.com/product/path.jpg',
+                          url: 'https://www.example.com/product/path',
+                        },
+                        {
+                          id: '507f1f77bcf86cd7994390112',
+                          sku: '45790-322',
+                          name: 'Monopoly: 3rd Edition2',
+                          categories: ['Cars2'],
+                          price: 192,
+                          quantity: 22,
+                          imageUrl: 'https://www.example.com/product/path.jpg2',
+                          url: 'https://www.example.com/product/path2',
+                        },
+                      ],
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               metadata: [
                 {
                   jobId: 6,
@@ -821,37 +831,39 @@ export const data = [
               },
             },
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://api.iterable.com/api/events/trackBulk',
-                headers: {
-                  'Content-Type': 'application/json',
-                  api_key: '62d12498c37c4fd8a1a546c2d35c2f60',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    events: [
-                      {
-                        dataFields: {
-                          url: 'https://dominos.com',
-                          title: 'Pizza',
-                          referrer: 'https://google.com',
-                        },
-                        userId: 'abcdeeeeeeeexxxx102',
-                        createdAt: 1598631966468,
-                        eventName: 'undefined page',
-                      },
-                    ],
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://api.iterable.com/api/events/trackBulk',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    api_key: '62d12498c37c4fd8a1a546c2d35c2f60',
                   },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
+                  params: {},
+                  body: {
+                    JSON: {
+                      events: [
+                        {
+                          dataFields: {
+                            url: 'https://dominos.com',
+                            title: 'Pizza',
+                            referrer: 'https://google.com',
+                          },
+                          userId: 'abcdeeeeeeeexxxx102',
+                          createdAt: 1598631966468,
+                          eventName: 'undefined page',
+                        },
+                      ],
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               metadata: [
                 {
                   jobId: 7,
@@ -871,27 +883,29 @@ export const data = [
               },
             },
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://api.iterable.com/api/users/updateEmail',
-                headers: {
-                  'Content-Type': 'application/json',
-                  api_key: '62d12498c37c4fd8a1a546c2d35c2f60',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    currentEmail: 'old@email.com',
-                    newEmail: 'new@email.com',
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://api.iterable.com/api/users/updateEmail',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    api_key: '62d12498c37c4fd8a1a546c2d35c2f60',
                   },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
+                  params: {},
+                  body: {
+                    JSON: {
+                      currentEmail: 'old@email.com',
+                      newEmail: 'new@email.com',
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               metadata: [
                 {
                   jobId: 8,
@@ -911,42 +925,44 @@ export const data = [
               },
             },
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://api.iterable.com/api/users/bulkUpdate',
-                headers: {
-                  'Content-Type': 'application/json',
-                  api_key: '12345',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    users: [
-                      {
-                        email: 'lynnanderson@smith.net',
-                        dataFields: {
-                          administrative_unit: 'Minnesota',
-                          am_pm: 'AM',
-                          boolean: true,
-                          firstname: 'Jacqueline',
-                          pPower: 'AM',
-                          userId: 'Jacqueline',
-                          email: 'lynnanderson@smith.net',
-                        },
-                        userId: 'lynnanderson@smith.net',
-                        preferUserId: true,
-                        mergeNestedObjects: true,
-                      },
-                    ],
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://api.iterable.com/api/users/bulkUpdate',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    api_key: '12345',
                   },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
+                  params: {},
+                  body: {
+                    JSON: {
+                      users: [
+                        {
+                          email: 'lynnanderson@smith.net',
+                          dataFields: {
+                            administrative_unit: 'Minnesota',
+                            am_pm: 'AM',
+                            boolean: true,
+                            firstname: 'Jacqueline',
+                            pPower: 'AM',
+                            userId: 'Jacqueline',
+                            email: 'lynnanderson@smith.net',
+                          },
+                          userId: 'lynnanderson@smith.net',
+                          preferUserId: true,
+                          mergeNestedObjects: true,
+                        },
+                      ],
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               metadata: [
                 {
                   jobId: 5,

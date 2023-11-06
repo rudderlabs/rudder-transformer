@@ -105,49 +105,51 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                body: {
-                  XML: {},
-                  FORM: {},
-                  JSON_ARRAY: {},
-                  JSON: {
-                    contact: {
-                      email: 'jamesDoe@gmail.com',
-                      firstName: 'James',
-                      lastName: 'Doe',
-                      phone: '92374162212',
-                      fieldValues: [
-                        {
-                          field: '0',
-                          value: 'Trastkiv',
-                        },
-                        {
-                          field: '1',
-                          value: 'Russia',
-                        },
-                        {
-                          field: '3',
-                          value: '||Potato||Onion||',
-                        },
-                        {
-                          field: '4',
-                          value: 'random',
-                        },
-                      ],
+              batchedRequest: [
+                {
+                  body: {
+                    XML: {},
+                    FORM: {},
+                    JSON_ARRAY: {},
+                    JSON: {
+                      contact: {
+                        email: 'jamesDoe@gmail.com',
+                        firstName: 'James',
+                        lastName: 'Doe',
+                        phone: '92374162212',
+                        fieldValues: [
+                          {
+                            field: '0',
+                            value: 'Trastkiv',
+                          },
+                          {
+                            field: '1',
+                            value: 'Russia',
+                          },
+                          {
+                            field: '3',
+                            value: '||Potato||Onion||',
+                          },
+                          {
+                            field: '4',
+                            value: 'random',
+                          },
+                        ],
+                      },
                     },
                   },
+                  type: 'REST',
+                  files: {},
+                  method: 'POST',
+                  params: {},
+                  headers: {
+                    'Api-Token': 'dummyApiToken',
+                    'Content-Type': 'application/json',
+                  },
+                  version: '1',
+                  endpoint: 'https://active.campaigns.rudder.com/api/3/contact/sync',
                 },
-                type: 'REST',
-                files: {},
-                method: 'POST',
-                params: {},
-                headers: {
-                  'Api-Token': 'dummyApiToken',
-                  'Content-Type': 'application/json',
-                },
-                version: '1',
-                endpoint: 'https://active.campaigns.rudder.com/api/3/contact/sync',
-              },
+              ],
               metadata: [
                 {
                   jobId: 2,
@@ -252,28 +254,30 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                body: {
-                  XML: {},
-                  FORM: {},
-                  JSON_ARRAY: {},
-                  JSON: {
-                    siteTrackingDomain: {
-                      name: 'rudderlabs.com',
+              batchedRequest: [
+                {
+                  body: {
+                    XML: {},
+                    FORM: {},
+                    JSON_ARRAY: {},
+                    JSON: {
+                      siteTrackingDomain: {
+                        name: 'rudderlabs.com',
+                      },
                     },
                   },
+                  type: 'REST',
+                  files: {},
+                  method: 'POST',
+                  params: {},
+                  headers: {
+                    'Api-Token': 'dummyApiToken',
+                    'Content-Type': 'application/json',
+                  },
+                  version: '1',
+                  endpoint: 'https://active.campaigns.rudder.com/api/3/siteTrackingDomains',
                 },
-                type: 'REST',
-                files: {},
-                method: 'POST',
-                params: {},
-                headers: {
-                  'Api-Token': 'dummyApiToken',
-                  'Content-Type': 'application/json',
-                },
-                version: '1',
-                endpoint: 'https://active.campaigns.rudder.com/api/3/siteTrackingDomains',
-              },
+              ],
               metadata: [
                 {
                   jobId: 2,

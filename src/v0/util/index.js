@@ -2067,6 +2067,17 @@ const IsGzipSupported = (reqMetadata = {}) => {
   return false;
 };
 
+const normalizeFormValues = (form = {}) =>
+  lodash.mapValues(form, (value) => {
+    if (lodash.isArray(value)) {
+      return value.map((item) => (lodash.isString(item) ? item : JSON.stringify(item)));
+    }
+    if (lodash.isObject(value)) {
+      return JSON.stringify(value);
+    }
+    return value;
+  });
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -2174,4 +2185,5 @@ module.exports = {
   getAuthErrCategoryFromStCode,
   isNewStatusCodesAccepted,
   IsGzipSupported,
+  normalizeFormValues,
 };

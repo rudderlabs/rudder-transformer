@@ -140,26 +140,28 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                body: {
-                  XML: {},
-                  JSON_ARRAY: {},
-                  FORM: {},
-                  JSON: {
-                    request_id: '6a5f38c0-4e75-4268-a066-2b73fbcad01f',
-                    profile_update: {},
+              batchedRequest: [
+                {
+                  body: {
+                    XML: {},
+                    JSON_ARRAY: {},
+                    FORM: {},
+                    JSON: {
+                      request_id: '6a5f38c0-4e75-4268-a066-2b73fbcad01f',
+                      profile_update: {},
+                    },
                   },
+                  type: 'REST',
+                  files: {},
+                  method: 'POST',
+                  params: {},
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  version: '1',
+                  endpoint: 'https://api.appcues.com/v1/accounts/86086/users/onlyUserId/activity',
                 },
-                type: 'REST',
-                files: {},
-                method: 'POST',
-                params: {},
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                version: '1',
-                endpoint: 'https://api.appcues.com/v1/accounts/86086/users/onlyUserId/activity',
-              },
+              ],
               metadata: [
                 {
                   jobId: 1,
@@ -175,30 +177,32 @@ export const data = [
               },
             },
             {
-              batchedRequest: {
-                body: {
-                  XML: {},
-                  JSON_ARRAY: {},
-                  FORM: {},
-                  JSON: {
-                    request_id: '57494c6a-3c62-4b30-83aa-6e821d37ac75',
-                    profile_update: {
-                      'last name': 'Abraham',
-                      'first name': 'John',
+              batchedRequest: [
+                {
+                  body: {
+                    XML: {},
+                    JSON_ARRAY: {},
+                    FORM: {},
+                    JSON: {
+                      request_id: '57494c6a-3c62-4b30-83aa-6e821d37ac75',
+                      profile_update: {
+                        'last name': 'Abraham',
+                        'first name': 'John',
+                      },
                     },
                   },
+                  type: 'REST',
+                  files: {},
+                  method: 'POST',
+                  params: {},
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  version: '1',
+                  endpoint:
+                    'https://api.appcues.com/v1/accounts/86086/users/userIdWithProperties/activity',
                 },
-                type: 'REST',
-                files: {},
-                method: 'POST',
-                params: {},
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                version: '1',
-                endpoint:
-                  'https://api.appcues.com/v1/accounts/86086/users/userIdWithProperties/activity',
-              },
+              ],
               metadata: [
                 {
                   jobId: 2,
@@ -217,5 +221,5 @@ export const data = [
         },
       },
     },
-  }
+  },
 ];

@@ -68,43 +68,45 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://ruddertest2.mautic.net/api/contacts/new',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization:
-                    'Basic VGVzdFJ1ZGRlcmxhYnM0NTgyM0BnbWFpbC5jb206ZHVtbXlQYXNzd29yZA==',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    email: 'abc@xyz.com',
-                    title: 'Mr',
-                    firstname: 'Test',
-                    lastname: 'Rudderlabs',
-                    phone: '9876543210',
-                    website: 'abc.com',
-                    state: 'Uttar Pradesh',
-                    zipcode: '243001',
-                    ipAddress: '14.5.67.21',
-                    last_active: '2020-02-02T05:53:08.977+05:30',
-                    country: 'India',
-                    haspurchased: 'yes',
-                    role: 'Manager',
-                    subscription_status: 'New',
-                    prospect_or_customer: 'Prospect',
-                    address1: 'Flat No 58 ABC building XYZ Area near PQRS , 354408',
-                    address2: '',
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://ruddertest2.mautic.net/api/contacts/new',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization:
+                      'Basic VGVzdFJ1ZGRlcmxhYnM0NTgyM0BnbWFpbC5jb206ZHVtbXlQYXNzd29yZA==',
                   },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
+                  params: {},
+                  body: {
+                    JSON: {
+                      email: 'abc@xyz.com',
+                      title: 'Mr',
+                      firstname: 'Test',
+                      lastname: 'Rudderlabs',
+                      phone: '9876543210',
+                      website: 'abc.com',
+                      state: 'Uttar Pradesh',
+                      zipcode: '243001',
+                      ipAddress: '14.5.67.21',
+                      last_active: '2020-02-02T05:53:08.977+05:30',
+                      country: 'India',
+                      haspurchased: 'yes',
+                      role: 'Manager',
+                      subscription_status: 'New',
+                      prospect_or_customer: 'Prospect',
+                      address1: 'Flat No 58 ABC building XYZ Area near PQRS , 354408',
+                      address2: '',
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               metadata: [
                 {
                   jobId: 1,
@@ -278,25 +280,27 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://ruddertest2.mautic.net/api/segments/17/contact/246/add',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization:
-                    'Basic VGVzdFJ1ZGRlcmxhYnM0NTgyM0BnbWFpbC5jb206ZHVtbXlQYXNzd29yZA==',
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://ruddertest2.mautic.net/api/segments/17/contact/246/add',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization:
+                      'Basic VGVzdFJ1ZGRlcmxhYnM0NTgyM0BnbWFpbC5jb206ZHVtbXlQYXNzd29yZA==',
+                  },
+                  params: {},
+                  body: {
+                    JSON: {},
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
                 },
-                params: {},
-                body: {
-                  JSON: {},
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
-                },
-                files: {},
-              },
+              ],
               metadata: [
                 {
                   jobId: 3,

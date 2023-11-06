@@ -250,26 +250,28 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://api.ometria.com/v2/push',
-                headers: {
-                  'X-Ometria-Auth': 'dummyApiKey',
-                },
-                params: {},
-                body: {
-                  JSON: {},
-                  JSON_ARRAY: {
-                    batch:
-                      '[{"email":"testone@gmail.com","id":"test1","customer_id":"userId1","firstname":"test","lastname":"one","@type":"contact","properties":{"field1":"val1","ip":"0.0.0.0"},"marketing_optin":"EXPLICITLY_OPTEDOUT","channels":{"sms":{"allow_marketing":false,"allow_transactional":false}}},{"email":"testone@gmail.com","id":"updatedId1","customer_id":"userId1","firstname":"test","lastname":"one","@type":"contact","properties":{"field1":"val1","ip":"0.0.0.0"},"marketing_optin":"EXPLICITLY_OPTEDOUT","channels":{"sms":{"allow_marketing":true,"allow_transactional":false}}}]',
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://api.ometria.com/v2/push',
+                  headers: {
+                    'X-Ometria-Auth': 'dummyApiKey',
                   },
-                  XML: {},
-                  FORM: {},
+                  params: {},
+                  body: {
+                    JSON: {},
+                    JSON_ARRAY: {
+                      batch:
+                        '[{"email":"testone@gmail.com","id":"test1","customer_id":"userId1","firstname":"test","lastname":"one","@type":"contact","properties":{"field1":"val1","ip":"0.0.0.0"},"marketing_optin":"EXPLICITLY_OPTEDOUT","channels":{"sms":{"allow_marketing":false,"allow_transactional":false}}},{"email":"testone@gmail.com","id":"updatedId1","customer_id":"userId1","firstname":"test","lastname":"one","@type":"contact","properties":{"field1":"val1","ip":"0.0.0.0"},"marketing_optin":"EXPLICITLY_OPTEDOUT","channels":{"sms":{"allow_marketing":true,"allow_transactional":false}}}]',
+                    },
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               metadata: [
                 {
                   jobId: 1,

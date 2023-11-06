@@ -403,40 +403,42 @@ export const data = [
               error: 'Configuration for Web Mode requires write key and region url',
             },
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'http://10.11.36.17:8080/analyze/analyze.php',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    type: 'identify',
-                    context: {
-                      userAgent: {
-                        ua: 'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
-                      },
-                    },
-                    customerProperties: {
-                      name: 'Home | RudderStack',
-                      url: 'http://www.rudderstack.com',
-                    },
-                    id: 'anon-id-new',
-                    userId: 'anon-id-new',
-                    messageId: '1601322811899-d9c7dd00-50dc-4364-95c8-e89423eb3cfb',
-                    originalTimestamp: '2020-09-29T14:50:29.907+05:30',
-                    writeKey: 'pl_writeKey',
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'http://10.11.36.17:8080/analyze/analyze.php',
+                  headers: {
+                    'Content-Type': 'application/json',
                   },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
+                  params: {},
+                  body: {
+                    JSON: {
+                      type: 'identify',
+                      context: {
+                        userAgent: {
+                          ua: 'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
+                        },
+                      },
+                      customerProperties: {
+                        name: 'Home | RudderStack',
+                        url: 'http://www.rudderstack.com',
+                      },
+                      id: 'anon-id-new',
+                      userId: 'anon-id-new',
+                      messageId: '1601322811899-d9c7dd00-50dc-4364-95c8-e89423eb3cfb',
+                      originalTimestamp: '2020-09-29T14:50:29.907+05:30',
+                      writeKey: 'pl_writeKey',
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                  userId: 'anon-id-new',
                 },
-                files: {},
-                userId: 'anon-id-new',
-              },
+              ],
               destination: {
                 id: '2JAdls99p6UxoFNSKGwvh0aIt7E',
                 name: 'Lemnisk Marketing Automation',
@@ -518,64 +520,66 @@ export const data = [
               statusCode: 200,
             },
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'http://10.11.36.17:8080/analyze/analyze.php',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    type: 'track',
-                    context: {
-                      app: {
-                        build: '4',
-                        name: 'RuddCDN',
-                      },
-                      page: {
-                        referrer: 'google.com',
-                      },
-                      device: {
-                        id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                        name: 'generic_x86_arm',
-                      },
-                      library: {
-                        name: 'com.rudderstack.android.sdk.core',
-                        version: '1.0.6',
-                      },
-                      os: {
-                        name: 'Android',
-                        version: '9',
-                      },
-                      timezone: 'Asia/Kolkata',
-                      traits: {
-                        customProp: 'customValue',
-                      },
-                      userAgent: {
-                        ua: 'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
-                      },
-                    },
-                    properties: {
-                      title: 'Home | RudderStack',
-                      url: 'http://www.rudderstack.com',
-                    },
-                    event: 'Visited Home',
-                    id: 'anon-id-new',
-                    userId: 'anon-id-new',
-                    messageId: '1601322811899-d9c7dd00-50dc-4364-95c8-e89423eb3cfb',
-                    originalTimestamp: '2020-09-29T14:50:29.907+05:30',
-                    writeKey: 'pl_writeKey',
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'http://10.11.36.17:8080/analyze/analyze.php',
+                  headers: {
+                    'Content-Type': 'application/json',
                   },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
+                  params: {},
+                  body: {
+                    JSON: {
+                      type: 'track',
+                      context: {
+                        app: {
+                          build: '4',
+                          name: 'RuddCDN',
+                        },
+                        page: {
+                          referrer: 'google.com',
+                        },
+                        device: {
+                          id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
+                          name: 'generic_x86_arm',
+                        },
+                        library: {
+                          name: 'com.rudderstack.android.sdk.core',
+                          version: '1.0.6',
+                        },
+                        os: {
+                          name: 'Android',
+                          version: '9',
+                        },
+                        timezone: 'Asia/Kolkata',
+                        traits: {
+                          customProp: 'customValue',
+                        },
+                        userAgent: {
+                          ua: 'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
+                        },
+                      },
+                      properties: {
+                        title: 'Home | RudderStack',
+                        url: 'http://www.rudderstack.com',
+                      },
+                      event: 'Visited Home',
+                      id: 'anon-id-new',
+                      userId: 'anon-id-new',
+                      messageId: '1601322811899-d9c7dd00-50dc-4364-95c8-e89423eb3cfb',
+                      originalTimestamp: '2020-09-29T14:50:29.907+05:30',
+                      writeKey: 'pl_writeKey',
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                  userId: 'anon-id-new',
                 },
-                files: {},
-                userId: 'anon-id-new',
-              },
+              ],
               destination: {
                 id: '2JAdls99p6UxoFNSKGwvh0aIt7E',
                 name: 'Lemnisk Marketing Automation',

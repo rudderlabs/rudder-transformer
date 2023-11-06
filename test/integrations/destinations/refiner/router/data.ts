@@ -66,38 +66,37 @@ export const data = [
           output: [
             {
               batched: false,
-              batchedRequest: {
-                body: {
-                  FORM: {
-                    age: '30',
-                    city: 'Banglore',
-                    email: 'test@user.com',
-                    firstName: 'test',
-                    lastName: 'user',
-                    phone: '7267286346802347827',
-                    userAddress: {
-                      city: 'ahmedabad',
-                      state: 'india',
+              batchedRequest: [
+                {
+                  body: {
+                    FORM: {
+                      age: '30',
+                      city: 'Banglore',
+                      email: 'test@user.com',
+                      firstName: 'test',
+                      lastName: 'user',
+                      phone: '7267286346802347827',
+                      userAddress: '{"city":"ahmedabad","state":"india"}',
+                      userCountry: 'india',
+                      userId: 'user@45',
+                      username: 'testUser',
                     },
-                    userCountry: 'india',
-                    userId: 'user@45',
-                    username: 'testUser',
+                    JSON: {},
+                    JSON_ARRAY: {},
+                    XML: {},
                   },
-                  JSON: {},
-                  JSON_ARRAY: {},
-                  XML: {},
+                  endpoint: 'https://api.refiner.io/v1/identify-user',
+                  files: {},
+                  headers: {
+                    Authorization: 'Bearer dummyApiKey',
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                  },
+                  method: 'POST',
+                  params: {},
+                  type: 'REST',
+                  version: '1',
                 },
-                endpoint: 'https://api.refiner.io/v1/identify-user',
-                files: {},
-                headers: {
-                  Authorization: 'Bearer dummyApiKey',
-                  'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                method: 'POST',
-                params: {},
-                type: 'REST',
-                version: '1',
-              },
+              ],
               destination: {
                 Config: {
                   apiKey: 'dummyApiKey',
@@ -225,28 +224,30 @@ export const data = [
           output: [
             {
               batched: false,
-              batchedRequest: {
-                body: {
-                  FORM: {
-                    email: 'test@user.com',
-                    event: 'Product Searched',
-                    id: 'user@45',
+              batchedRequest: [
+                {
+                  body: {
+                    FORM: {
+                      email: 'test@user.com',
+                      event: 'Product Searched',
+                      id: 'user@45',
+                    },
+                    JSON: {},
+                    JSON_ARRAY: {},
+                    XML: {},
                   },
-                  JSON: {},
-                  JSON_ARRAY: {},
-                  XML: {},
+                  endpoint: 'https://api.refiner.io/v1/track',
+                  files: {},
+                  headers: {
+                    Authorization: 'Bearer dummyApiKey',
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                  },
+                  method: 'POST',
+                  params: {},
+                  type: 'REST',
+                  version: '1',
                 },
-                endpoint: 'https://api.refiner.io/v1/track',
-                files: {},
-                headers: {
-                  Authorization: 'Bearer dummyApiKey',
-                  'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                method: 'POST',
-                params: {},
-                type: 'REST',
-                version: '1',
-              },
+              ],
               destination: {
                 Config: {
                   apiKey: 'dummyApiKey',
@@ -326,29 +327,31 @@ export const data = [
           output: [
             {
               batched: false,
-              batchedRequest: {
-                body: {
-                  FORM: {
-                    'account[businessEmail]': 'business@rudderstack.com',
-                    'account[id]': 'group@123',
-                    'account[name]': 'rudder ventures',
-                    id: 'test@12',
+              batchedRequest: [
+                {
+                  body: {
+                    FORM: {
+                      'account[businessEmail]': 'business@rudderstack.com',
+                      'account[id]': 'group@123',
+                      'account[name]': 'rudder ventures',
+                      id: 'test@12',
+                    },
+                    JSON: {},
+                    JSON_ARRAY: {},
+                    XML: {},
                   },
-                  JSON: {},
-                  JSON_ARRAY: {},
-                  XML: {},
+                  endpoint: 'https://api.refiner.io/v1/identify-user',
+                  files: {},
+                  headers: {
+                    Authorization: 'Bearer dummyApiKey',
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                  },
+                  method: 'POST',
+                  params: {},
+                  type: 'REST',
+                  version: '1',
                 },
-                endpoint: 'https://api.refiner.io/v1/identify-user',
-                files: {},
-                headers: {
-                  Authorization: 'Bearer dummyApiKey',
-                  'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                method: 'POST',
-                params: {},
-                type: 'REST',
-                version: '1',
-              },
+              ],
               destination: {
                 Config: {
                   accountAttributesMapping: [{ from: 'email', to: 'businessEmail' }],

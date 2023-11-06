@@ -373,7 +373,7 @@ export const data = [
                   lastName: 'user',
                   username: 'testUser',
                   firstName: 'test',
-                  userAddress: { city: 'ahmedabad', state: 'india' },
+                  userAddress: '{"city":"ahmedabad","state":"india"}',
                   userCountry: 'india',
                 },
               },

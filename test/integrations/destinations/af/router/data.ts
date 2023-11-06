@@ -150,33 +150,35 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                endpoint: 'https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript',
-                headers: {
-                  'Content-Type': 'application/json',
-                  authentication: 'ef1d42390426e3f7c90ac78272e74344',
-                },
-                method: 'POST',
-                params: {},
-                body: {
-                  JSON: {
-                    app_version_name: '1.0.0',
-                    bundleIdentifier: 'com.rudderlabs.javascript',
-                    customer_user_id: '12345',
-                    eventValue: '{"path":"","referrer":"","search":"","title":"","url":""}',
-                    eventName: 'page',
-                    appsflyer_id: 'afUid',
-                    os: '',
-                    ip: '0.0.0.0',
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  endpoint: 'https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    authentication: 'ef1d42390426e3f7c90ac78272e74344',
                   },
-                  XML: {},
-                  JSON_ARRAY: {},
-                  FORM: {},
+                  method: 'POST',
+                  params: {},
+                  body: {
+                    JSON: {
+                      app_version_name: '1.0.0',
+                      bundleIdentifier: 'com.rudderlabs.javascript',
+                      customer_user_id: '12345',
+                      eventValue: '{"path":"","referrer":"","search":"","title":"","url":""}',
+                      eventName: 'page',
+                      appsflyer_id: 'afUid',
+                      os: '',
+                      ip: '0.0.0.0',
+                    },
+                    XML: {},
+                    JSON_ARRAY: {},
+                    FORM: {},
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               metadata: [{ jobId: 2 }],
               batched: false,
               statusCode: 200,
@@ -189,34 +191,36 @@ export const data = [
               },
             },
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                endpoint: 'https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript',
-                headers: {
-                  'Content-Type': 'application/json',
-                  authentication: 'ef1d42390426e3f7c90ac78272e74344',
-                },
-                params: {},
-                method: 'POST',
-                body: {
-                  JSON: {
-                    app_version_name: '1.0.0',
-                    bundleIdentifier: 'com.rudderlabs.javascript',
-                    customer_user_id: '12345',
-                    eventValue:
-                      '{"properties":{"user_actual_role":"system_admin, system_user","user_actual_id":12345}}',
-                    eventName: 'test track event HS',
-                    appsflyer_id: 'afUid',
-                    os: '',
-                    ip: '0.0.0.0',
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  endpoint: 'https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    authentication: 'ef1d42390426e3f7c90ac78272e74344',
                   },
-                  XML: {},
-                  JSON_ARRAY: {},
-                  FORM: {},
+                  params: {},
+                  method: 'POST',
+                  body: {
+                    JSON: {
+                      app_version_name: '1.0.0',
+                      bundleIdentifier: 'com.rudderlabs.javascript',
+                      customer_user_id: '12345',
+                      eventValue:
+                        '{"properties":{"user_actual_role":"system_admin, system_user","user_actual_id":12345}}',
+                      eventName: 'test track event HS',
+                      appsflyer_id: 'afUid',
+                      os: '',
+                      ip: '0.0.0.0',
+                    },
+                    XML: {},
+                    JSON_ARRAY: {},
+                    FORM: {},
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               metadata: [{ jobId: 2 }],
               batched: false,
               statusCode: 200,
@@ -229,34 +233,36 @@ export const data = [
               },
             },
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                endpoint: 'https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript',
-                headers: {
-                  'Content-Type': 'application/json',
-                  authentication: 'ef1d42390426e3f7c90ac78272e74344',
-                },
-                method: 'POST',
-                params: {},
-                body: {
-                  JSON: {
-                    app_version_name: '1.0.0',
-                    bundleIdentifier: 'com.rudderlabs.javascript',
-                    customer_user_id: '12345',
-                    eventValue: '{"path":"","referrer":"","search":"","title":"","url":""}',
-                    eventName: 'page',
-                    appsflyer_id: 'afUid',
-                    os: '',
-                    ip: '0.0.0.0',
-                    sharing_filter: 'hey',
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  endpoint: 'https://api2.appsflyer.com/inappevent/com.rudderlabs.javascript',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    authentication: 'ef1d42390426e3f7c90ac78272e74344',
                   },
-                  XML: {},
-                  JSON_ARRAY: {},
-                  FORM: {},
+                  method: 'POST',
+                  params: {},
+                  body: {
+                    JSON: {
+                      app_version_name: '1.0.0',
+                      bundleIdentifier: 'com.rudderlabs.javascript',
+                      customer_user_id: '12345',
+                      eventValue: '{"path":"","referrer":"","search":"","title":"","url":""}',
+                      eventName: 'page',
+                      appsflyer_id: 'afUid',
+                      os: '',
+                      ip: '0.0.0.0',
+                      sharing_filter: 'hey',
+                    },
+                    XML: {},
+                    JSON_ARRAY: {},
+                    FORM: {},
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               metadata: [{ jobId: 2 }],
               batched: false,
               statusCode: 200,

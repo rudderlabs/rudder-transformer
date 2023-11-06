@@ -73,28 +73,30 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                body: {
-                  XML: {},
-                  FORM: {},
-                  JSON: {
-                    user_id: 52,
-                    user_custom_id: 'user@123',
+              batchedRequest: [
+                {
+                  body: {
+                    XML: {},
+                    FORM: {},
+                    JSON: {
+                      user_id: 52,
+                      user_custom_id: 'user@123',
+                    },
+                    JSON_ARRAY: {},
                   },
-                  JSON_ARRAY: {},
+                  type: 'REST',
+                  files: {},
+                  method: 'POST',
+                  params: {},
+                  headers: {
+                    Accept: '*/*;version=2',
+                    'Content-Type': 'application/json',
+                    Authorization: 'Token dummyApiKey',
+                  },
+                  version: '1',
+                  endpoint: 'https://commander.user.com/api/public/companies/21/add_member/',
                 },
-                type: 'REST',
-                files: {},
-                method: 'POST',
-                params: {},
-                headers: {
-                  Accept: '*/*;version=2',
-                  'Content-Type': 'application/json',
-                  Authorization: 'Token dummyApiKey',
-                },
-                version: '1',
-                endpoint: 'https://commander.user.com/api/public/companies/21/add_member/',
-              },
+              ],
               metadata: [
                 {
                   jobId: 1,
@@ -198,37 +200,39 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                body: {
-                  XML: {},
-                  FORM: {},
-                  JSON: {
-                    age: 15,
-                    email: 'test@rudderstack.com',
-                    gender: 3,
-                    status: 1,
-                    country: 'india',
-                    custom_id: 'test@12',
-                    last_name: 'rudderstack',
-                    first_name: 'test',
-                    google_url: 'www.google.com',
-                    occupation: 'mechanical engineer',
-                    phone_number: '9876543210',
+              batchedRequest: [
+                {
+                  body: {
+                    XML: {},
+                    FORM: {},
+                    JSON: {
+                      age: 15,
+                      email: 'test@rudderstack.com',
+                      gender: 3,
+                      status: 1,
+                      country: 'india',
+                      custom_id: 'test@12',
+                      last_name: 'rudderstack',
+                      first_name: 'test',
+                      google_url: 'www.google.com',
+                      occupation: 'mechanical engineer',
+                      phone_number: '9876543210',
+                    },
+                    JSON_ARRAY: {},
                   },
-                  JSON_ARRAY: {},
+                  type: 'REST',
+                  files: {},
+                  method: 'PUT',
+                  params: {},
+                  headers: {
+                    Accept: '*/*;version=2',
+                    'Content-Type': 'application/json',
+                    Authorization: 'Token dummyApiKey',
+                  },
+                  version: '1',
+                  endpoint: 'https://commander.user.com/api/public/users/59/',
                 },
-                type: 'REST',
-                files: {},
-                method: 'PUT',
-                params: {},
-                headers: {
-                  Accept: '*/*;version=2',
-                  'Content-Type': 'application/json',
-                  Authorization: 'Token dummyApiKey',
-                },
-                version: '1',
-                endpoint: 'https://commander.user.com/api/public/users/59/',
-              },
+              ],
               metadata: [
                 {
                   jobId: 2,

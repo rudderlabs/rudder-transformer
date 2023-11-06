@@ -51,32 +51,34 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://api.mailjet.com/v3/REST/contactslist/58578/managemanycontacts',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: 'Basic ZHVtbXlBcGlLZXk6ZHVtbXlBcGlTZWNyZXQ=',
-                },
-                params: {},
-                body: {
-                  FORM: {},
-                  JSON: {
-                    Action: 'addnoforce',
-                    Contacts: [
-                      {
-                        email: 'test@user.com',
-                        properties: { country: 'india' },
-                      },
-                    ],
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://api.mailjet.com/v3/REST/contactslist/58578/managemanycontacts',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Basic ZHVtbXlBcGlLZXk6ZHVtbXlBcGlTZWNyZXQ=',
                   },
-                  JSON_ARRAY: {},
-                  XML: {},
+                  params: {},
+                  body: {
+                    FORM: {},
+                    JSON: {
+                      Action: 'addnoforce',
+                      Contacts: [
+                        {
+                          email: 'test@user.com',
+                          properties: { country: 'india' },
+                        },
+                      ],
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               metadata: [
                 {
                   jobId: 1,

@@ -142,38 +142,40 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://s2s.adjust.com/event',
-                headers: {
-                  Accept: '*/*',
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://s2s.adjust.com/event',
+                  headers: {
+                    Accept: '*/*',
+                  },
+                  params: {
+                    callback_params:
+                      '{"key1":"value1","key2":"value2","key3.k4":"v4","key3.k5.k6":"v6","key5[0].k":"v1","key5[1].k":"v2"}',
+                    revenue: 20.38,
+                    android_id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
+                    gps_adid: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
+                    att_status: 3,
+                    tracking_enabled: true,
+                    currency: 'EUR',
+                    s2s: 1,
+                    ip_address: '[::1]',
+                    app_token: 'testAppToken',
+                    event_token: 'testEventToken',
+                    environment: 'production',
+                  },
+                  body: {
+                    JSON: {},
+                    XML: {},
+                    JSON_ARRAY: {},
+                    FORM: {},
+                  },
+                  files: {},
+                  userId: '21e13f4bc7ceddad',
                 },
-                params: {
-                  callback_params:
-                    '{"key1":"value1","key2":"value2","key3.k4":"v4","key3.k5.k6":"v6","key5[0].k":"v1","key5[1].k":"v2"}',
-                  revenue: 20.38,
-                  android_id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                  gps_adid: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                  att_status: 3,
-                  tracking_enabled: true,
-                  currency: 'EUR',
-                  s2s: 1,
-                  ip_address: '[::1]',
-                  app_token: 'testAppToken',
-                  event_token: 'testEventToken',
-                  environment: 'production',
-                },
-                body: {
-                  JSON: {},
-                  XML: {},
-                  JSON_ARRAY: {},
-                  FORM: {},
-                },
-                files: {},
-                userId: '21e13f4bc7ceddad',
-              },
+              ],
               metadata: [
                 {
                   jobId: 2,
@@ -367,38 +369,40 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://s2s.adjust.com/event',
-                headers: {
-                  Accept: '*/*',
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://s2s.adjust.com/event',
+                  headers: {
+                    Accept: '*/*',
+                  },
+                  params: {
+                    callback_params:
+                      '{"key1":"value1","key2":"value2","key3.k4":"v4","key3.k5.k6":"v6","key5[0].k":"v1","key5[1].k":"v2"}',
+                    revenue: 20.38,
+                    idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
+                    idfa: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
+                    att_status: 3,
+                    tracking_enabled: true,
+                    currency: 'EUR',
+                    s2s: 1,
+                    ip_address: '[::1]',
+                    app_token: 'testAppToken',
+                    event_token: 'testEventToken',
+                    environment: 'production',
+                  },
+                  body: {
+                    JSON: {},
+                    XML: {},
+                    JSON_ARRAY: {},
+                    FORM: {},
+                  },
+                  files: {},
+                  userId: '21e13f4bc7ceddad',
                 },
-                params: {
-                  callback_params:
-                    '{"key1":"value1","key2":"value2","key3.k4":"v4","key3.k5.k6":"v6","key5[0].k":"v1","key5[1].k":"v2"}',
-                  revenue: 20.38,
-                  idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                  idfa: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                  att_status: 3,
-                  tracking_enabled: true,
-                  currency: 'EUR',
-                  s2s: 1,
-                  ip_address: '[::1]',
-                  app_token: 'testAppToken',
-                  event_token: 'testEventToken',
-                  environment: 'production',
-                },
-                body: {
-                  JSON: {},
-                  XML: {},
-                  JSON_ARRAY: {},
-                  FORM: {},
-                },
-                files: {},
-                userId: '21e13f4bc7ceddad',
-              },
+              ],
               metadata: [
                 {
                   jobId: 2,

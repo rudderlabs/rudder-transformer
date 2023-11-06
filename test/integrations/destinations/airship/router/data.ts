@@ -99,58 +99,60 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://go.urbanairship.com/api/custom-events',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Accept: 'application/vnd.urbanairship+json; version=3',
-                  'X-UA-Appkey': 'O2YARRI15I',
-                  Authorization: 'Bearer dummyApiKey',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    occured: '2019-10-14T09:03:17.562Z',
-                    user: {
-                      named_user_id: 'testuserId1',
-                    },
-                    body: {
-                      name: 'product_clicked',
-                      properties: {
-                        description: 'Sneaker purchase',
-                        brand: 'Victory Sneakers',
-                        colors: ['red', 'blue'],
-                        items: [
-                          {
-                            text: 'New Line Sneakers',
-                            price: '$ 79.95',
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://go.urbanairship.com/api/custom-events',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/vnd.urbanairship+json; version=3',
+                    'X-UA-Appkey': 'O2YARRI15I',
+                    Authorization: 'Bearer dummyApiKey',
+                  },
+                  params: {},
+                  body: {
+                    JSON: {
+                      occured: '2019-10-14T09:03:17.562Z',
+                      user: {
+                        named_user_id: 'testuserId1',
+                      },
+                      body: {
+                        name: 'product_clicked',
+                        properties: {
+                          description: 'Sneaker purchase',
+                          brand: 'Victory Sneakers',
+                          colors: ['red', 'blue'],
+                          items: [
+                            {
+                              text: 'New Line Sneakers',
+                              price: '$ 79.95',
+                            },
+                            {
+                              text: 'Old Line Sneakers',
+                              price: '$ 79.95',
+                            },
+                            {
+                              text: 'Blue Line Sneakers',
+                              price: '$ 79.95',
+                            },
+                          ],
+                          name: 'Hugh Manbeing',
+                          userLocation: {
+                            state: 'CO',
+                            zip: '80202',
                           },
-                          {
-                            text: 'Old Line Sneakers',
-                            price: '$ 79.95',
-                          },
-                          {
-                            text: 'Blue Line Sneakers',
-                            price: '$ 79.95',
-                          },
-                        ],
-                        name: 'Hugh Manbeing',
-                        userLocation: {
-                          state: 'CO',
-                          zip: '80202',
                         },
                       },
                     },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
                   },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               metadata: [
                 {
                   jobId: 1,

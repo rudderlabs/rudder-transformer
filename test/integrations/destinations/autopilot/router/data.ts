@@ -186,34 +186,36 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://api2.autopilothq.com/v1/contact',
-                headers: {
-                  autopilotapikey: 'dummyApiKey',
-                  'Content-Type': 'application/json',
-                  Accept: 'application/json',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    contact: {
-                      Email: 'testmp@rudderstack.com',
-                      FirstName: 'Test Kafka',
-                      custom: {
-                        age: 23,
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://api2.autopilothq.com/v1/contact',
+                  headers: {
+                    autopilotapikey: 'dummyApiKey',
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                  },
+                  params: {},
+                  body: {
+                    JSON: {
+                      contact: {
+                        Email: 'testmp@rudderstack.com',
+                        FirstName: 'Test Kafka',
+                        custom: {
+                          age: 23,
+                        },
                       },
                     },
+                    XML: {},
+                    JSON_ARRAY: {},
+                    FORM: {},
                   },
-                  XML: {},
-                  JSON_ARRAY: {},
-                  FORM: {},
+                  files: {},
+                  userId: 'ac7722c2-ccb6-4ae2-baf6-1effe861f4cd',
                 },
-                files: {},
-                userId: 'ac7722c2-ccb6-4ae2-baf6-1effe861f4cd',
-              },
+              ],
               metadata: [
                 {
                   jobId: 1,
@@ -249,32 +251,34 @@ export const data = [
               },
             },
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint:
-                  'https://api2.autopilothq.com/v1/trigger/00XX/contact/testmp@rudderstack.com',
-                headers: {
-                  autopilotapikey: 'dummyApiKey',
-                  'Content-Type': 'application/json',
-                  Accept: 'application/json',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    property: {
-                      test_prop_1: 'test prop',
-                      test_prop_2: 1232,
-                    },
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint:
+                    'https://api2.autopilothq.com/v1/trigger/00XX/contact/testmp@rudderstack.com',
+                  headers: {
+                    autopilotapikey: 'dummyApiKey',
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
                   },
-                  XML: {},
-                  JSON_ARRAY: {},
-                  FORM: {},
+                  params: {},
+                  body: {
+                    JSON: {
+                      property: {
+                        test_prop_1: 'test prop',
+                        test_prop_2: 1232,
+                      },
+                    },
+                    XML: {},
+                    JSON_ARRAY: {},
+                    FORM: {},
+                  },
+                  files: {},
+                  userId: 'ac7722c2-ccb6-4ae2-baf6-1effe861f4cd',
                 },
-                files: {},
-                userId: 'ac7722c2-ccb6-4ae2-baf6-1effe861f4cd',
-              },
+              ],
               metadata: [
                 {
                   jobId: 2,

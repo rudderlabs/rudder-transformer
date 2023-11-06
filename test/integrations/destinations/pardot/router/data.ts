@@ -622,30 +622,32 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://pi.pardot.com/api/prospect/version/4/do/upsert/id/123435',
-                headers: {
-                  Authorization: 'Bearer myToken',
-                  'Pardot-Business-Unit-Id': '0Uv2v000000k9tHCAQ',
-                },
-                params: {},
-                body: {
-                  JSON: {},
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {
-                    first_name: 'Roger12',
-                    last_name: 'Federer12',
-                    website: 'https://rudderstack.com',
-                    score: 14,
-                    campaign_id: 42213,
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://pi.pardot.com/api/prospect/version/4/do/upsert/id/123435',
+                  headers: {
+                    Authorization: 'Bearer myToken',
+                    'Pardot-Business-Unit-Id': '0Uv2v000000k9tHCAQ',
                   },
+                  params: {},
+                  body: {
+                    JSON: {},
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {
+                      first_name: 'Roger12',
+                      last_name: 'Federer12',
+                      website: 'https://rudderstack.com',
+                      score: 14,
+                      campaign_id: 42213,
+                    },
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               metadata: [
                 {
                   jobId: 1,
@@ -703,31 +705,33 @@ export const data = [
               },
             },
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint:
-                  'https://pi.pardot.com/api/prospect/version/4/do/upsert/email/Roger_12@waltair.io',
-                headers: {
-                  Authorization: 'Bearer myToken',
-                  'Pardot-Business-Unit-Id': '0Uv2v000000k9tHCAQ',
-                },
-                params: {},
-                body: {
-                  JSON: {},
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {
-                    first_name: 'Roger_12',
-                    last_name: 'Federer_12',
-                    website: 'https://rudderstack.com',
-                    score: 14,
-                    campaign_id: 42213,
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint:
+                    'https://pi.pardot.com/api/prospect/version/4/do/upsert/email/Roger_12@waltair.io',
+                  headers: {
+                    Authorization: 'Bearer myToken',
+                    'Pardot-Business-Unit-Id': '0Uv2v000000k9tHCAQ',
                   },
+                  params: {},
+                  body: {
+                    JSON: {},
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {
+                      first_name: 'Roger_12',
+                      last_name: 'Federer_12',
+                      website: 'https://rudderstack.com',
+                      score: 14,
+                      campaign_id: 42213,
+                    },
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               metadata: [
                 {
                   jobId: 2,
@@ -785,31 +789,33 @@ export const data = [
               },
             },
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint:
-                  'https://pi.pardot.com/api/prospect/version/4/do/upsert/fid/00Q6r000002LKhTPVR',
-                headers: {
-                  Authorization: 'Bearer myToken',
-                  'Pardot-Business-Unit-Id': '0Uv2v000000k9tHCAQ',
-                },
-                params: {},
-                body: {
-                  JSON: {},
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {
-                    first_name: 'Nick',
-                    last_name: 'Kyrgios',
-                    website: 'https://rudderstack.com',
-                    score: 12,
-                    campaign_id: 42213,
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint:
+                    'https://pi.pardot.com/api/prospect/version/4/do/upsert/fid/00Q6r000002LKhTPVR',
+                  headers: {
+                    Authorization: 'Bearer myToken',
+                    'Pardot-Business-Unit-Id': '0Uv2v000000k9tHCAQ',
                   },
+                  params: {},
+                  body: {
+                    JSON: {},
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {
+                      first_name: 'Nick',
+                      last_name: 'Kyrgios',
+                      website: 'https://rudderstack.com',
+                      score: 12,
+                      campaign_id: 42213,
+                    },
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               metadata: [
                 {
                   jobId: 3,
@@ -867,31 +873,33 @@ export const data = [
               },
             },
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint:
-                  'https://pi.pardot.com/api/prospect/version/4/do/upsert/email/rolex_waltair@mywebsite.io',
-                headers: {
-                  Authorization: 'Bearer myExpiredToken',
-                  'Pardot-Business-Unit-Id': '0Uv2v000000k9tHCAQ',
-                },
-                params: {},
-                body: {
-                  JSON: {},
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {
-                    first_name: 'Rolex',
-                    last_name: 'Waltair',
-                    website: 'https://rudderstack.com',
-                    score: 15,
-                    campaign_id: 42213,
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint:
+                    'https://pi.pardot.com/api/prospect/version/4/do/upsert/email/rolex_waltair@mywebsite.io',
+                  headers: {
+                    Authorization: 'Bearer myExpiredToken',
+                    'Pardot-Business-Unit-Id': '0Uv2v000000k9tHCAQ',
                   },
+                  params: {},
+                  body: {
+                    JSON: {},
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {
+                      first_name: 'Rolex',
+                      last_name: 'Waltair',
+                      website: 'https://rudderstack.com',
+                      score: 15,
+                      campaign_id: 42213,
+                    },
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               metadata: [
                 {
                   jobId: 4,

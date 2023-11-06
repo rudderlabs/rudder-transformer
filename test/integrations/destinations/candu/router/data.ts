@@ -125,37 +125,39 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://api.candu.ai/api/eventWebhook',
-                headers: {
-                  Authorization: 'Basic RlhMa0xVRWhHSnl2bVk0',
-                  'Content-Type': 'application/json',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    traits: {
-                      email: 'sampath@gmail.com',
-                      name: 'Joker',
-                      Gender: 'male',
-                      foo: { foo: 'bar' },
-                    },
-                    type: 'identify',
-                    userId: 'sampath',
-                    anonymousId: 'a1b2c3d4e5f6g7h8i9j10',
-                    timestamp: '2020-01-17T10:23:51.206+05:30',
-                    messageId: 'ea5cfab2-3961-4d8a-8187-3d1858c90a9f',
-                    context: { source: 'RudderStack' },
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://api.candu.ai/api/eventWebhook',
+                  headers: {
+                    Authorization: 'Basic RlhMa0xVRWhHSnl2bVk0',
+                    'Content-Type': 'application/json',
                   },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
+                  params: {},
+                  body: {
+                    JSON: {
+                      traits: {
+                        email: 'sampath@gmail.com',
+                        name: 'Joker',
+                        Gender: 'male',
+                        foo: { foo: 'bar' },
+                      },
+                      type: 'identify',
+                      userId: 'sampath',
+                      anonymousId: 'a1b2c3d4e5f6g7h8i9j10',
+                      timestamp: '2020-01-17T10:23:51.206+05:30',
+                      messageId: 'ea5cfab2-3961-4d8a-8187-3d1858c90a9f',
+                      context: { source: 'RudderStack' },
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               metadata: [
                 {
                   jobId: 1,

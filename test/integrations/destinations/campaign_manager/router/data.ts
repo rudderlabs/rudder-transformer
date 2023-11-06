@@ -296,48 +296,50 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint:
-                  'https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/437689/conversions/batchinsert',
-                headers: {
-                  Authorization: 'Bearer dummyApiToken',
-                  'Content-Type': 'application/json',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    kind: 'dfareporting#conversionsBatchInsertRequest',
-                    encryptionInfo: {
-                      kind: 'dfareporting#encryptionInfo',
-                      encryptionSource: 'AD_SERVING',
-                      encryptionEntityId: '3564523',
-                      encryptionEntityType: 'DCM_ACCOUNT',
-                    },
-                    conversions: [
-                      {
-                        nonPersonalizedAd: false,
-                        treatmentForUnderage: false,
-                        timestampMicros: '1668624722903000',
-                        floodlightConfigurationId: '213123123',
-                        ordinal: 'string',
-                        quantity: '455678',
-                        floodlightActivityId: '456543345245',
-                        value: 7,
-                        encryptedUserIdCandidates: ['dfghjbnm'],
-                        limitAdTracking: true,
-                        childDirectedTreatment: true,
-                      },
-                    ],
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint:
+                    'https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/437689/conversions/batchinsert',
+                  headers: {
+                    Authorization: 'Bearer dummyApiToken',
+                    'Content-Type': 'application/json',
                   },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
+                  params: {},
+                  body: {
+                    JSON: {
+                      kind: 'dfareporting#conversionsBatchInsertRequest',
+                      encryptionInfo: {
+                        kind: 'dfareporting#encryptionInfo',
+                        encryptionSource: 'AD_SERVING',
+                        encryptionEntityId: '3564523',
+                        encryptionEntityType: 'DCM_ACCOUNT',
+                      },
+                      conversions: [
+                        {
+                          nonPersonalizedAd: false,
+                          treatmentForUnderage: false,
+                          timestampMicros: '1668624722903000',
+                          floodlightConfigurationId: '213123123',
+                          ordinal: 'string',
+                          quantity: '455678',
+                          floodlightActivityId: '456543345245',
+                          value: 7,
+                          encryptedUserIdCandidates: ['dfghjbnm'],
+                          limitAdTracking: true,
+                          childDirectedTreatment: true,
+                        },
+                      ],
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               metadata: [
                 {
                   secret: {
@@ -361,46 +363,48 @@ export const data = [
               },
             },
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint:
-                  'https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/437689/conversions/batchupdate',
-                headers: {
-                  Authorization: 'Bearer dummyApiToken',
-                  'Content-Type': 'application/json',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    kind: 'dfareporting#conversionsBatchUpdateRequest',
-                    encryptionInfo: {
-                      kind: 'dfareporting#encryptionInfo',
-                      encryptionSource: 'AD_SERVING',
-                      encryptionEntityId: '3564523',
-                      encryptionEntityType: 'DCM_ACCOUNT',
-                    },
-                    conversions: [
-                      {
-                        nonPersonalizedAd: false,
-                        treatmentForUnderage: false,
-                        timestampMicros: '1668624722903000',
-                        floodlightConfigurationId: '213123123',
-                        ordinal: 'string',
-                        quantity: '455678',
-                        floodlightActivityId: '456543345245',
-                        value: 7,
-                        encryptedUserIdCandidates: ['dfghjbnm'],
-                      },
-                    ],
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint:
+                    'https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/437689/conversions/batchupdate',
+                  headers: {
+                    Authorization: 'Bearer dummyApiToken',
+                    'Content-Type': 'application/json',
                   },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
+                  params: {},
+                  body: {
+                    JSON: {
+                      kind: 'dfareporting#conversionsBatchUpdateRequest',
+                      encryptionInfo: {
+                        kind: 'dfareporting#encryptionInfo',
+                        encryptionSource: 'AD_SERVING',
+                        encryptionEntityId: '3564523',
+                        encryptionEntityType: 'DCM_ACCOUNT',
+                      },
+                      conversions: [
+                        {
+                          nonPersonalizedAd: false,
+                          treatmentForUnderage: false,
+                          timestampMicros: '1668624722903000',
+                          floodlightConfigurationId: '213123123',
+                          ordinal: 'string',
+                          quantity: '455678',
+                          floodlightActivityId: '456543345245',
+                          value: 7,
+                          encryptedUserIdCandidates: ['dfghjbnm'],
+                        },
+                      ],
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               metadata: [
                 {
                   secret: {

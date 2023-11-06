@@ -73,33 +73,35 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                body: {
-                  XML: {},
-                  FORM: {},
-                  JSON: {},
-                  JSON_ARRAY: {},
+              batchedRequest: [
+                {
+                  body: {
+                    XML: {},
+                    FORM: {},
+                    JSON: {},
+                    JSON_ARRAY: {},
+                  },
+                  type: 'REST',
+                  files: {},
+                  method: 'GET',
+                  params: {
+                    os: 'Android',
+                    app: 'RuddCDN',
+                    cookie: '21e13f4bc7ceddad',
+                    Project: 'abc.com',
+                    cv_email: 'test@r.com',
+                    cv_state: 'Delhi',
+                    cv_title: 'Mr',
+                    cv_hasPurchased: 'yes',
+                    cv_address: 'H.No. abc Street PQRS ',
+                    timestamp: '1601371229907',
+                    cv_Name: 'Test Rudderlabs',
+                  },
+                  headers: {},
+                  version: '1',
+                  endpoint: 'https://www.woopra.com/track/identify',
                 },
-                type: 'REST',
-                files: {},
-                method: 'GET',
-                params: {
-                  os: 'Android',
-                  app: 'RuddCDN',
-                  cookie: '21e13f4bc7ceddad',
-                  Project: 'abc.com',
-                  cv_email: 'test@r.com',
-                  cv_state: 'Delhi',
-                  cv_title: 'Mr',
-                  cv_hasPurchased: 'yes',
-                  cv_address: 'H.No. abc Street PQRS ',
-                  timestamp: '1601371229907',
-                  cv_Name: 'Test Rudderlabs',
-                },
-                headers: {},
-                version: '1',
-                endpoint: 'https://www.woopra.com/track/identify',
-              },
+              ],
               destination: {
                 Config: {
                   projectName: 'int.com',
@@ -189,30 +191,32 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                body: {
-                  XML: {},
-                  FORM: {},
-                  JSON: {},
-                  JSON_ARRAY: {},
+              batchedRequest: [
+                {
+                  body: {
+                    XML: {},
+                    FORM: {},
+                    JSON: {},
+                    JSON_ARRAY: {},
+                  },
+                  type: 'REST',
+                  files: {},
+                  method: 'GET',
+                  params: {
+                    os: 'Android',
+                    app: 'RuddCDN',
+                    event: 'First Investment',
+                    Project: 'int.com',
+                    timestamp: '1601371229907',
+                    ce_revenue: 20.37566,
+                    ce_currency: 'EUR',
+                    cookie: '21e13f4bc7ceddad',
+                  },
+                  headers: {},
+                  version: '1',
+                  endpoint: 'https://www.woopra.com/track/ce',
                 },
-                type: 'REST',
-                files: {},
-                method: 'GET',
-                params: {
-                  os: 'Android',
-                  app: 'RuddCDN',
-                  event: 'First Investment',
-                  Project: 'int.com',
-                  timestamp: '1601371229907',
-                  ce_revenue: 20.37566,
-                  ce_currency: 'EUR',
-                  cookie: '21e13f4bc7ceddad',
-                },
-                headers: {},
-                version: '1',
-                endpoint: 'https://www.woopra.com/track/ce',
-              },
+              ],
               destination: {
                 Config: {
                   projectName: 'int.com',

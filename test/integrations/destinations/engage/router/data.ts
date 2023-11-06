@@ -57,27 +57,29 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'DELETE',
-                endpoint: 'https://api.engage.so/v1/lists/17/subscribers/246',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization:
-                    'Basic NDl1cjQ5MHJqZm8zNGdpMDR5MzhyOWdvOm44OWczODl5cjM4OWZnYmVmMHUycmZm',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    subscribed: true,
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'DELETE',
+                  endpoint: 'https://api.engage.so/v1/lists/17/subscribers/246',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization:
+                      'Basic NDl1cjQ5MHJqZm8zNGdpMDR5MzhyOWdvOm44OWczODl5cjM4OWZnYmVmMHUycmZm',
                   },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
+                  params: {},
+                  body: {
+                    JSON: {
+                      subscribed: true,
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               destination: {
                 Config: {
                   publicKey: '49ur490rjfo34gi04y38r9go',
@@ -180,38 +182,40 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                body: {
-                  XML: {},
-                  FORM: {},
-                  JSON: {
-                    meta: {
-                      abc: 'jbc',
-                      city: 'iudcb',
-                      state: 'Delhi',
-                      title: 'Mr',
-                      hasPurchased: 'yes',
+              batchedRequest: [
+                {
+                  body: {
+                    XML: {},
+                    FORM: {},
+                    JSON: {
+                      meta: {
+                        abc: 'jbc',
+                        city: 'iudcb',
+                        state: 'Delhi',
+                        title: 'Mr',
+                        hasPurchased: 'yes',
+                      },
+                      email: 'Test@r.com',
+                      lists: ['100c983ry8934hf3094yfh348gf1', '4r40hfio3rbfln'],
+                      last_name: 'Rudderlabs',
+                      created_at: '2020-09-29T14:50:29.907+05:30',
+                      first_name: 'Test',
                     },
-                    email: 'Test@r.com',
-                    lists: ['100c983ry8934hf3094yfh348gf1', '4r40hfio3rbfln'],
-                    last_name: 'Rudderlabs',
-                    created_at: '2020-09-29T14:50:29.907+05:30',
-                    first_name: 'Test',
+                    JSON_ARRAY: {},
                   },
-                  JSON_ARRAY: {},
+                  type: 'REST',
+                  files: {},
+                  method: 'PUT',
+                  params: {},
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization:
+                      'Basic NDl1cjQ5MHJqZm8zNGdpMDR5MzhyOWdvOm44OWczODl5cjM4OWZnYmVmMHUycmZm',
+                  },
+                  version: '1',
+                  endpoint: 'https://api.engage.so/v1/users/1',
                 },
-                type: 'REST',
-                files: {},
-                method: 'PUT',
-                params: {},
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization:
-                    'Basic NDl1cjQ5MHJqZm8zNGdpMDR5MzhyOWdvOm44OWczODl5cjM4OWZnYmVmMHUycmZm',
-                },
-                version: '1',
-                endpoint: 'https://api.engage.so/v1/users/1',
-              },
+              ],
               destination: {
                 Config: {
                   publicKey: '49ur490rjfo34gi04y38r9go',

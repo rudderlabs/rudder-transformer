@@ -307,26 +307,28 @@ export const data = [
               error: 'Event type page is not supported',
             },
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://abcd.com/efgh/89078/979868/98678',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    content:
-                      'Identified my-name-1 with country: USA email: test@domain.com name: my-name-1 ',
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://abcd.com/efgh/89078/979868/98678',
+                  headers: {
+                    'Content-Type': 'application/json',
                   },
-                  XML: {},
-                  JSON_ARRAY: {},
-                  FORM: {},
+                  params: {},
+                  body: {
+                    JSON: {
+                      content:
+                        'Identified my-name-1 with country: USA email: test@domain.com name: my-name-1 ',
+                    },
+                    XML: {},
+                    JSON_ARRAY: {},
+                    FORM: {},
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               destination: {
                 ID: '1ZQVSU9SXNg6KYgZALaqjAO3PIL',
                 Name: 'test-Discord',
@@ -373,25 +375,27 @@ export const data = [
               statusCode: 200,
             },
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://abcd.com/efgh/89078/979868/98678',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    content: 'my-name performed test_eventing_testis with test_val1 test_val2',
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://abcd.com/efgh/89078/979868/98678',
+                  headers: {
+                    'Content-Type': 'application/json',
                   },
-                  XML: {},
-                  JSON_ARRAY: {},
-                  FORM: {},
+                  params: {},
+                  body: {
+                    JSON: {
+                      content: 'my-name performed test_eventing_testis with test_val1 test_val2',
+                    },
+                    XML: {},
+                    JSON_ARRAY: {},
+                    FORM: {},
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               destination: {
                 ID: '1ZQVSU9SXNg6KYgZALaqjAO3PIL',
                 Name: 'test-Discord',

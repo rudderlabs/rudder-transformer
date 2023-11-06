@@ -240,68 +240,70 @@ export const data = [
           output: [
             {
               batched: false,
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://logx.optimizely.com/v1/events',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    account_id: 'test_account_id',
-                    anonymize_ip: false,
-                    enrich_decisions: true,
-                    client_name: 'RudderStack',
-                    client_version: '1.0.0',
-                    visitors: [
-                      {
-                        visitor_id: 'userId123',
-                        attributes: [
-                          {
-                            entity_id: 'test_attribute_id_5',
-                            key: 'company',
-                            type: 'custom',
-                            value: 'RudderStack',
-                          },
-                          {
-                            entity_id: 'test_attribute_id_2',
-                            key: 'name',
-                            type: 'custom',
-                            value: 'John Doe',
-                          },
-                        ],
-                        snapshots: [
-                          {
-                            decisions: [
-                              {
-                                campaign_id: 'test_campaign_id',
-                                experiment_id: 'test_experiment_id',
-                                variation_id: 'test_variation_id_1',
-                              },
-                            ],
-                            events: [
-                              {
-                                entity_id: 'test_campaign_id',
-                                type: 'campaign_activated',
-                                timestamp: 1676031367251,
-                                uuid: '2116ef8c-efc3-4ca4-851b-02ee60dad6ff',
-                              },
-                            ],
-                          },
-                        ],
-                        session_id: '1685626914716',
-                      },
-                    ],
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://logx.optimizely.com/v1/events',
+                  headers: {
+                    'Content-Type': 'application/json',
                   },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
+                  params: {},
+                  body: {
+                    JSON: {
+                      account_id: 'test_account_id',
+                      anonymize_ip: false,
+                      enrich_decisions: true,
+                      client_name: 'RudderStack',
+                      client_version: '1.0.0',
+                      visitors: [
+                        {
+                          visitor_id: 'userId123',
+                          attributes: [
+                            {
+                              entity_id: 'test_attribute_id_5',
+                              key: 'company',
+                              type: 'custom',
+                              value: 'RudderStack',
+                            },
+                            {
+                              entity_id: 'test_attribute_id_2',
+                              key: 'name',
+                              type: 'custom',
+                              value: 'John Doe',
+                            },
+                          ],
+                          snapshots: [
+                            {
+                              decisions: [
+                                {
+                                  campaign_id: 'test_campaign_id',
+                                  experiment_id: 'test_experiment_id',
+                                  variation_id: 'test_variation_id_1',
+                                },
+                              ],
+                              events: [
+                                {
+                                  entity_id: 'test_campaign_id',
+                                  type: 'campaign_activated',
+                                  timestamp: 1676031367251,
+                                  uuid: '2116ef8c-efc3-4ca4-851b-02ee60dad6ff',
+                                },
+                              ],
+                            },
+                          ],
+                          session_id: '1685626914716',
+                        },
+                      ],
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               destination: {
                 DestinationDefinition: {
                   Config: {
@@ -335,67 +337,69 @@ export const data = [
             },
             {
               batched: false,
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://logx.optimizely.com/v1/events',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    account_id: 'test_account_id',
-                    anonymize_ip: true,
-                    enrich_decisions: true,
-                    client_name: 'RudderStack',
-                    client_version: '1.0.0',
-                    visitors: [
-                      {
-                        visitor_id: 'userId123',
-                        attributes: [
-                          {
-                            entity_id: 'test_attribute_id_5',
-                            key: 'company',
-                            type: 'custom',
-                            value: 'RudderStack',
-                          },
-                          {
-                            entity_id: 'test_attribute_id_2',
-                            key: 'name',
-                            type: 'custom',
-                            value: 'John Doe',
-                          },
-                        ],
-                        snapshots: [
-                          {
-                            decisions: [],
-                            events: [
-                              {
-                                entity_id: 'test_event_id_1',
-                                key: 'Product Added',
-                                timestamp: 1676031367251,
-                                uuid: '2116ef8c-efc3-4ca4-851b-02ee60dad6ff',
-                                quantity: 2,
-                                revenue: 12300,
-                                tags: {
-                                  foo: 'bar',
-                                },
-                              },
-                            ],
-                          },
-                        ],
-                        session_id: '1685626914716',
-                      },
-                    ],
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://logx.optimizely.com/v1/events',
+                  headers: {
+                    'Content-Type': 'application/json',
                   },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
+                  params: {},
+                  body: {
+                    JSON: {
+                      account_id: 'test_account_id',
+                      anonymize_ip: true,
+                      enrich_decisions: true,
+                      client_name: 'RudderStack',
+                      client_version: '1.0.0',
+                      visitors: [
+                        {
+                          visitor_id: 'userId123',
+                          attributes: [
+                            {
+                              entity_id: 'test_attribute_id_5',
+                              key: 'company',
+                              type: 'custom',
+                              value: 'RudderStack',
+                            },
+                            {
+                              entity_id: 'test_attribute_id_2',
+                              key: 'name',
+                              type: 'custom',
+                              value: 'John Doe',
+                            },
+                          ],
+                          snapshots: [
+                            {
+                              decisions: [],
+                              events: [
+                                {
+                                  entity_id: 'test_event_id_1',
+                                  key: 'Product Added',
+                                  timestamp: 1676031367251,
+                                  uuid: '2116ef8c-efc3-4ca4-851b-02ee60dad6ff',
+                                  quantity: 2,
+                                  revenue: 12300,
+                                  tags: {
+                                    foo: 'bar',
+                                  },
+                                },
+                              ],
+                            },
+                          ],
+                          session_id: '1685626914716',
+                        },
+                      ],
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               destination: {
                 DestinationDefinition: {
                   Config: {
@@ -440,52 +444,54 @@ export const data = [
             },
             {
               batched: false,
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://logx.optimizely.com/v1/events',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    account_id: 'test_account_id',
-                    anonymize_ip: true,
-                    enrich_decisions: true,
-                    client_name: 'RudderStack',
-                    client_version: '1.0.0',
-                    visitors: [
-                      {
-                        visitor_id: 'userId123',
-                        snapshots: [
-                          {
-                            decisions: [],
-                            events: [
-                              {
-                                entity_id: 'test_event_id_1',
-                                key: 'Product Added',
-                                timestamp: 1676031367251,
-                                uuid: '2116ef8c-efc3-4ca4-851b-02ee60dad6ff',
-                                tags: {
-                                  foo: 'bar',
-                                  category: 'food',
-                                },
-                              },
-                            ],
-                          },
-                        ],
-                        session_id: '1685626914716',
-                      },
-                    ],
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://logx.optimizely.com/v1/events',
+                  headers: {
+                    'Content-Type': 'application/json',
                   },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
+                  params: {},
+                  body: {
+                    JSON: {
+                      account_id: 'test_account_id',
+                      anonymize_ip: true,
+                      enrich_decisions: true,
+                      client_name: 'RudderStack',
+                      client_version: '1.0.0',
+                      visitors: [
+                        {
+                          visitor_id: 'userId123',
+                          snapshots: [
+                            {
+                              decisions: [],
+                              events: [
+                                {
+                                  entity_id: 'test_event_id_1',
+                                  key: 'Product Added',
+                                  timestamp: 1676031367251,
+                                  uuid: '2116ef8c-efc3-4ca4-851b-02ee60dad6ff',
+                                  tags: {
+                                    foo: 'bar',
+                                    category: 'food',
+                                  },
+                                },
+                              ],
+                            },
+                          ],
+                          session_id: '1685626914716',
+                        },
+                      ],
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               destination: {
                 DestinationDefinition: {
                   Config: {

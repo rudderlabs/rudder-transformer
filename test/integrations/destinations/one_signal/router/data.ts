@@ -229,31 +229,33 @@ export const data = [
               },
             },
             {
-              batchedRequest: {
-                body: {
-                  XML: {},
-                  FORM: {},
-                  JSON: {
-                    tags: {
-                      brand: 'Zara',
-                      price: '12000',
-                      add_to_Cart: true,
+              batchedRequest: [
+                {
+                  body: {
+                    XML: {},
+                    FORM: {},
+                    JSON: {
+                      tags: {
+                        brand: 'Zara',
+                        price: '12000',
+                        add_to_Cart: true,
+                      },
                     },
+                    JSON_ARRAY: {},
                   },
-                  JSON_ARRAY: {},
+                  type: 'REST',
+                  files: {},
+                  method: 'PUT',
+                  params: {},
+                  headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                  },
+                  version: '1',
+                  endpoint:
+                    'https://onesignal.com/api/v1/apps/random-818c-4a28-b98e-6cd8a994eb22/users/user@27',
                 },
-                type: 'REST',
-                files: {},
-                method: 'PUT',
-                params: {},
-                headers: {
-                  Accept: 'application/json',
-                  'Content-Type': 'application/json',
-                },
-                version: '1',
-                endpoint:
-                  'https://onesignal.com/api/v1/apps/random-818c-4a28-b98e-6cd8a994eb22/users/user@27',
-              },
+              ],
               metadata: [
                 {
                   jobId: 2,

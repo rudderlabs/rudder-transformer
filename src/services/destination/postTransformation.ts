@@ -2,6 +2,7 @@
 import cloneDeep from 'lodash/cloneDeep';
 import isObject from 'lodash/isObject';
 import isEmpty from 'lodash/isEmpty';
+
 import {
   ProcessorTransformationRequest,
   ProcessorTransformationResponse,
@@ -11,7 +12,7 @@ import {
   MetaTransferObject,
   UserDeletionResponse,
 } from '../../types/index';
-import { generateErrorObject } from '../../v0/util';
+import { generateErrorObject, normalizeFormValues } from '../../v0/util';
 import ErrorReportingService from '../errorReporting';
 import tags from '../../v0/util/tags';
 import stats from '../../util/stats';
@@ -32,6 +33,12 @@ export default class DestinationPostTransformationService {
       } else {
         userId = `${userId}`;
       }
+
+      const payload = transformedPayload;
+      if (payload.body?.FORM) {
+        payload.body.FORM = normalizeFormValues(payload.body.FORM);
+      }
+
       return {
         output: { ...transformedPayload, userId },
         metadata: destHandler?.processMetadata
@@ -71,9 +78,22 @@ export default class DestinationPostTransformationService {
   ): RouterTransformationResponse[] {
     const resultantPayloads: RouterTransformationResponse[] = cloneDeep(transformedPayloads);
     resultantPayloads.forEach((resultantPayload) => {
-      if (resultantPayload.batchedRequest && resultantPayload.batchedRequest.userId) {
-        resultantPayload.batchedRequest.userId = `${resultantPayload.batchedRequest.userId}`;
+      if (!resultantPayload.batchedRequest) {
+        return;
       }
+      const batchedRequest = Array.isArray(resultantPayload.batchedRequest)
+        ? resultantPayload.batchedRequest
+        : [resultantPayload.batchedRequest];
+      batchedRequest.forEach((payload) => {
+        if (payload && payload.userId) {
+          payload.userId =
+            typeof payload.userId === 'string' ? payload.userId : `${payload.userId}`;
+        }
+        if (payload && payload.body?.FORM) {
+          payload.body.FORM = normalizeFormValues(payload.body.FORM);
+        }
+      });
+      resultantPayload.batchedRequest = batchedRequest;
     });
 
     if (destHandler?.processMetadataForRouter) {
@@ -120,6 +140,22 @@ export default class DestinationPostTransformationService {
     ErrorReportingService.reportError(error, metaTo.errorContext, resp);
     stats.increment('event_transform_failure', metaTo.errorDetails);
     return resp;
+  }
+
+  public static handleBatchTransformSuccessEvents(
+    transformedPayloads: RouterTransformationResponse[],
+    destHandler: any,
+    metaTo: MetaTransferObject,
+    implementation: string,
+    destinationType: string,
+  ): RouterTransformationResponse[] {
+    return this.handleRouterTransformSuccessEvents(
+      transformedPayloads,
+      destHandler,
+      metaTo,
+      implementation,
+      destinationType,
+    );
   }
 
   public static handleBatchTransformFailureEvents(

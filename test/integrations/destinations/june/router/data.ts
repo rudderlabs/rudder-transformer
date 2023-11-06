@@ -74,33 +74,35 @@ export const data = [
           output: [
             {
               batched: false,
-              batchedRequest: {
-                body: {
-                  FORM: {},
-                  JSON: {
-                    anonymousId: 'bf412108-0357-4330-b119-7305e767823c',
-                    timestamp: '2022-01-20T13:39:21.032Z',
-                    traits: {
-                      age: 25,
-                      email: 'johndoe@gmail.com',
-                      name: 'John Doe',
+              batchedRequest: [
+                {
+                  body: {
+                    FORM: {},
+                    JSON: {
+                      anonymousId: 'bf412108-0357-4330-b119-7305e767823c',
+                      timestamp: '2022-01-20T13:39:21.032Z',
+                      traits: {
+                        age: 25,
+                        email: 'johndoe@gmail.com',
+                        name: 'John Doe',
+                      },
+                      userId: '5136633649',
                     },
-                    userId: '5136633649',
+                    JSON_ARRAY: {},
+                    XML: {},
                   },
-                  JSON_ARRAY: {},
-                  XML: {},
+                  endpoint: 'https://api.june.so/api/identify',
+                  files: {},
+                  headers: {
+                    Authorization: 'Basic 93EMyDLvfpbRxxYn',
+                    'Content-Type': 'application/json',
+                  },
+                  method: 'POST',
+                  params: {},
+                  type: 'REST',
+                  version: '1',
                 },
-                endpoint: 'https://api.june.so/api/identify',
-                files: {},
-                headers: {
-                  Authorization: 'Basic 93EMyDLvfpbRxxYn',
-                  'Content-Type': 'application/json',
-                },
-                method: 'POST',
-                params: {},
-                type: 'REST',
-                version: '1',
-              },
+              ],
               destination: {
                 Config: {
                   apiKey: '93EMyDLvfpbRxxYn',

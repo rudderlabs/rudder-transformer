@@ -113,7 +113,7 @@ type ProcessorTransformationResponse = {
 };
 
 type RouterTransformationResponse = {
-  batchedRequest?: ProcessorTransformationOutput;
+  batchedRequest?: ProcessorTransformationOutput | ProcessorTransformationOutput[];
   metadata: Metadata[];
   destination: Destination;
   batched: boolean;

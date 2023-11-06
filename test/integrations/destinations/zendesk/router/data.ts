@@ -250,33 +250,36 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://rudderlabshelp.zendesk.com/api/v2/organization_memberships.json',
-                headers: {
-                  Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
-                  'Content-Type': 'application/json',
-                  'X-Zendesk-Marketplace-Name': 'RudderStack',
-                  'X-Zendesk-Marketplace-Organization-Id': '3339',
-                  'X-Zendesk-Marketplace-App-Id': '263241',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    organization_membership: {
-                      user_id: 900113780483,
-                      organization_id: 900001329943,
-                    },
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint:
+                    'https://rudderlabshelp.zendesk.com/api/v2/organization_memberships.json',
+                  headers: {
+                    Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+                    'Content-Type': 'application/json',
+                    'X-Zendesk-Marketplace-Name': 'RudderStack',
+                    'X-Zendesk-Marketplace-Organization-Id': '3339',
+                    'X-Zendesk-Marketplace-App-Id': '263241',
                   },
-                  XML: {},
-                  JSON_ARRAY: {},
-                  FORM: {},
+                  params: {},
+                  body: {
+                    JSON: {
+                      organization_membership: {
+                        user_id: 900113780483,
+                        organization_id: 900001329943,
+                      },
+                    },
+                    XML: {},
+                    JSON_ARRAY: {},
+                    FORM: {},
+                  },
+                  files: {},
+                  userId: '297b0750-934b-4411-b66c-9b418cdbc0c9',
                 },
-                files: {},
-                userId: '297b0750-934b-4411-b66c-9b418cdbc0c9',
-              },
+              ],
               metadata: [
                 {
                   jobId: 2,

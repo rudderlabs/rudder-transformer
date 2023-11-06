@@ -148,47 +148,49 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://engine.monetate.net/api/engine/v1/decide/retailer',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    monetateId: '1234',
-                    events: [
-                      {
-                        eventType: 'monetate:context:IpAddress',
-                        ipAddress: '0.0.0.0',
-                      },
-                      {
-                        eventType: 'monetate:context:ScreenSize',
-                        height: 22,
-                        width: 11,
-                      },
-                      {
-                        eventType: 'monetate:context:ProductDetailView',
-                        products: [
-                          {
-                            productId: 'prodId',
-                            sku: '',
-                          },
-                        ],
-                      },
-                    ],
-                    customerId: 'newUser',
-                    channel: 'channel',
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://engine.monetate.net/api/engine/v1/decide/retailer',
+                  headers: {
+                    'Content-Type': 'application/json',
                   },
-                  XML: {},
-                  JSON_ARRAY: {},
-                  FORM: {},
+                  params: {},
+                  body: {
+                    JSON: {
+                      monetateId: '1234',
+                      events: [
+                        {
+                          eventType: 'monetate:context:IpAddress',
+                          ipAddress: '0.0.0.0',
+                        },
+                        {
+                          eventType: 'monetate:context:ScreenSize',
+                          height: 22,
+                          width: 11,
+                        },
+                        {
+                          eventType: 'monetate:context:ProductDetailView',
+                          products: [
+                            {
+                              productId: 'prodId',
+                              sku: '',
+                            },
+                          ],
+                        },
+                      ],
+                      customerId: 'newUser',
+                      channel: 'channel',
+                    },
+                    XML: {},
+                    JSON_ARRAY: {},
+                    FORM: {},
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               metadata: [
                 {
                   jobId: 1,
@@ -205,42 +207,44 @@ export const data = [
               },
             },
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://engine.monetate.net/api/engine/v1/decide/retailer',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    monetateId: '1234',
-                    events: [
-                      {
-                        eventType: 'monetate:context:IpAddress',
-                        ipAddress: '0.0.0.0',
-                      },
-                      {
-                        eventType: 'monetate:context:ScreenSize',
-                        height: 22,
-                        width: 11,
-                      },
-                      {
-                        eventType: 'monetate:context:ProductThumbnailView',
-                        products: ['1', '2'],
-                      },
-                    ],
-                    customerId: 'newUser',
-                    channel: 'channel',
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://engine.monetate.net/api/engine/v1/decide/retailer',
+                  headers: {
+                    'Content-Type': 'application/json',
                   },
-                  XML: {},
-                  JSON_ARRAY: {},
-                  FORM: {},
+                  params: {},
+                  body: {
+                    JSON: {
+                      monetateId: '1234',
+                      events: [
+                        {
+                          eventType: 'monetate:context:IpAddress',
+                          ipAddress: '0.0.0.0',
+                        },
+                        {
+                          eventType: 'monetate:context:ScreenSize',
+                          height: 22,
+                          width: 11,
+                        },
+                        {
+                          eventType: 'monetate:context:ProductThumbnailView',
+                          products: ['1', '2'],
+                        },
+                      ],
+                      customerId: 'newUser',
+                      channel: 'channel',
+                    },
+                    XML: {},
+                    JSON_ARRAY: {},
+                    FORM: {},
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               metadata: [
                 {
                   jobId: 2,

@@ -457,34 +457,36 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                body: {
-                  XML: {},
-                  FORM: {},
-                  JSON: {
-                    email: 'testuser@google.com',
-                    sent_at: '2022-04-22T10:57:58Z',
-                    user_id: 'ea5cfab2-3961-4d8a-8187-3d1858c99099',
-                    last_name: 'Mishra',
-                    timestamp: '2022-06-22T10:57:58Z',
-                    first_name: 'Rk',
-                    trait_phone: '9988776655',
-                    trait_owner_id: '70000090119',
-                    original_timestamp: '2022-06-22T10:57:58Z',
-                    trait_mobileNumber: '1-926-555-9504',
-                    trait_lifecycleStageId: 71010794467,
+              batchedRequest: [
+                {
+                  body: {
+                    XML: {},
+                    FORM: {},
+                    JSON: {
+                      email: 'testuser@google.com',
+                      sent_at: '2022-04-22T10:57:58Z',
+                      user_id: 'ea5cfab2-3961-4d8a-8187-3d1858c99099',
+                      last_name: 'Mishra',
+                      timestamp: '2022-06-22T10:57:58Z',
+                      first_name: 'Rk',
+                      trait_phone: '9988776655',
+                      trait_owner_id: '70000090119',
+                      original_timestamp: '2022-06-22T10:57:58Z',
+                      trait_mobileNumber: '1-926-555-9504',
+                      trait_lifecycleStageId: 71010794467,
+                    },
+                    JSON_ARRAY: {},
                   },
-                  JSON_ARRAY: {},
+                  type: 'REST',
+                  files: {},
+                  method: 'POST',
+                  params: {},
+                  headers: {},
+                  version: '1',
+                  endpoint:
+                    'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
                 },
-                type: 'REST',
-                files: {},
-                method: 'POST',
-                params: {},
-                headers: {},
-                version: '1',
-                endpoint:
-                  'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
-              },
+              ],
               metadata: [
                 {
                   jobId: 3,

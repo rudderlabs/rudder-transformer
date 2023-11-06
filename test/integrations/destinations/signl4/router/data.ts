@@ -81,33 +81,35 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://connect.signl4.com/webhook/dummyApiKey',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    message: 'Please check the alert',
-                    Title: 'New Alert',
-                    brand: 'Zara',
-                    price: '12000',
-                    'X-S4-Service': 'service',
-                    'X-S4-Location': '67.3, 32.3',
-                    'X-S4-AlertingScenario': 'single_ack',
-                    'X-S4-ExternalID': 'INC493933',
-                    'X-S4-Status': 'new',
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://connect.signl4.com/webhook/dummyApiKey',
+                  headers: {
+                    'Content-Type': 'application/json',
                   },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
+                  params: {},
+                  body: {
+                    JSON: {
+                      message: 'Please check the alert',
+                      Title: 'New Alert',
+                      brand: 'Zara',
+                      price: '12000',
+                      'X-S4-Service': 'service',
+                      'X-S4-Location': '67.3, 32.3',
+                      'X-S4-AlertingScenario': 'single_ack',
+                      'X-S4-ExternalID': 'INC493933',
+                      'X-S4-Status': 'new',
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               metadata: [
                 {
                   jobId: 1,

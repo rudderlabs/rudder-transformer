@@ -351,42 +351,44 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://insights.algolia.io/1/events',
-                headers: {
-                  'X-Algolia-Application-Id': 'appId',
-                  'X-Algolia-API-Key': 'apiKey',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    events: [
-                      {
-                        index: 'products',
-                        userToken: 'test-user-id1',
-                        queryID: '43b15df305339e827f0ac0bdc5ebcaa7',
-                        eventName: 'product list viewed',
-                        eventType: 'view',
-                        objectIDs: ['ecommerce-sample-data-919', '9780439784542'],
-                      },
-                      {
-                        index: 'products',
-                        userToken: 'test-user-id1',
-                        filters: ['field1:hello', 'val1:val2'],
-                        eventName: 'product clicked',
-                        eventType: 'click',
-                      },
-                    ],
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://insights.algolia.io/1/events',
+                  headers: {
+                    'X-Algolia-Application-Id': 'appId',
+                    'X-Algolia-API-Key': 'apiKey',
                   },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
+                  params: {},
+                  body: {
+                    JSON: {
+                      events: [
+                        {
+                          index: 'products',
+                          userToken: 'test-user-id1',
+                          queryID: '43b15df305339e827f0ac0bdc5ebcaa7',
+                          eventName: 'product list viewed',
+                          eventType: 'view',
+                          objectIDs: ['ecommerce-sample-data-919', '9780439784542'],
+                        },
+                        {
+                          index: 'products',
+                          userToken: 'test-user-id1',
+                          filters: ['field1:hello', 'val1:val2'],
+                          eventName: 'product clicked',
+                          eventType: 'click',
+                        },
+                      ],
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
                 },
-                files: {},
-              },
+              ],
               metadata: [
                 {
                   jobId: 1,
@@ -2207,55 +2209,57 @@ export const data = [
           output: [
             {
               batched: true,
-              batchedRequest: {
-                body: {
-                  FORM: {},
-                  JSON: {
-                    events: [
-                      {
-                        eventName: 'product list viewed',
-                        eventType: 'view',
-                        index: 'ecm_stg_product',
-                        objectIDs: [
-                          '1367585787601',
-                          '1367585788656',
-                          '1367585790735',
-                          '1367585782036',
-                          '1367585782285',
-                          '1367585790111',
-                          '1367585783304',
-                          '1367585791531',
-                          '1367585788307',
-                          '1367585789457',
-                          '1367585800344',
-                          '1367585787467',
-                          '1367585783058',
-                          '1367585783494',
-                          '1367585787042',
-                          '1367585793228',
-                          '1367585783124',
-                          '1367585788366',
-                          '1367585788996',
-                        ],
-                        queryID: 'eafb6ef1081263626abce46671147dc0',
-                        userToken: 'anonymous',
-                      },
-                    ],
+              batchedRequest: [
+                {
+                  body: {
+                    FORM: {},
+                    JSON: {
+                      events: [
+                        {
+                          eventName: 'product list viewed',
+                          eventType: 'view',
+                          index: 'ecm_stg_product',
+                          objectIDs: [
+                            '1367585787601',
+                            '1367585788656',
+                            '1367585790735',
+                            '1367585782036',
+                            '1367585782285',
+                            '1367585790111',
+                            '1367585783304',
+                            '1367585791531',
+                            '1367585788307',
+                            '1367585789457',
+                            '1367585800344',
+                            '1367585787467',
+                            '1367585783058',
+                            '1367585783494',
+                            '1367585787042',
+                            '1367585793228',
+                            '1367585783124',
+                            '1367585788366',
+                            '1367585788996',
+                          ],
+                          queryID: 'eafb6ef1081263626abce46671147dc0',
+                          userToken: 'anonymous',
+                        },
+                      ],
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
                   },
-                  JSON_ARRAY: {},
-                  XML: {},
+                  endpoint: 'https://insights.algolia.io/1/events',
+                  files: {},
+                  headers: {
+                    'X-Algolia-API-Key': 'apiKey',
+                    'X-Algolia-Application-Id': 'appId',
+                  },
+                  method: 'POST',
+                  params: {},
+                  type: 'REST',
+                  version: '1',
                 },
-                endpoint: 'https://insights.algolia.io/1/events',
-                files: {},
-                headers: {
-                  'X-Algolia-API-Key': 'apiKey',
-                  'X-Algolia-Application-Id': 'appId',
-                },
-                method: 'POST',
-                params: {},
-                type: 'REST',
-                version: '1',
-              },
+              ],
               destination: {
                 Config: {
                   apiKey: 'apiKey',

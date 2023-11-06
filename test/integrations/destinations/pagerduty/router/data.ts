@@ -193,53 +193,55 @@ export const data = [
           output: [
             {
               batched: false,
-              batchedRequest: {
-                body: {
-                  XML: {},
-                  FORM: {},
-                  JSON: {
-                    links: [
-                      {
-                        href: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error',
-                        text: 'Js Object Error',
+              batchedRequest: [
+                {
+                  body: {
+                    XML: {},
+                    FORM: {},
+                    JSON: {
+                      links: [
+                        {
+                          href: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error',
+                          text: 'Js Object Error',
+                        },
+                        {
+                          href: 'https://www.techtarget.com/whatis/definition/stack-overflow#:~:text=A%20stack%20overflow%20is%20a,been%20allocated%20to%20that%20stack',
+                          text: 'Stack Overflow Error',
+                        },
+                      ],
+                      images: [
+                        {
+                          alt: 'first image',
+                          src: 'https://static.s4be.cochrane.org/app/uploads/2017/04/shutterstock_531145954.jpg',
+                        },
+                        {
+                          alt: 'second image',
+                          src: 'https://chart.googleapis.com/chart?chs=600x400&chd=t:6,2,9,5,2,5,7,4,8,2,1&cht=lc&chds=a&chxt=y&chm=D,0033FF,0,0,5,1',
+                        },
+                      ],
+                      payload: {
+                        source: 'rudder-webapp',
+                        summary: 'Github CI/CD Triggered',
+                        custom_details: {
+                          'load avg': 0.75,
+                          'ping time': '1500ms',
+                        },
                       },
-                      {
-                        href: 'https://www.techtarget.com/whatis/definition/stack-overflow#:~:text=A%20stack%20overflow%20is%20a,been%20allocated%20to%20that%20stack',
-                        text: 'Stack Overflow Error',
-                      },
-                    ],
-                    images: [
-                      {
-                        alt: 'first image',
-                        src: 'https://static.s4be.cochrane.org/app/uploads/2017/04/shutterstock_531145954.jpg',
-                      },
-                      {
-                        alt: 'second image',
-                        src: 'https://chart.googleapis.com/chart?chs=600x400&chd=t:6,2,9,5,2,5,7,4,8,2,1&cht=lc&chds=a&chxt=y&chm=D,0033FF,0,0,5,1',
-                      },
-                    ],
-                    payload: {
-                      source: 'rudder-webapp',
-                      summary: 'Github CI/CD Triggered',
-                      custom_details: {
-                        'load avg': 0.75,
-                        'ping time': '1500ms',
-                      },
+                      routing_key: '9552b56325dc490bd0139be85f7b8fac',
                     },
-                    routing_key: '9552b56325dc490bd0139be85f7b8fac',
+                    JSON_ARRAY: {},
                   },
-                  JSON_ARRAY: {},
+                  type: 'REST',
+                  files: {},
+                  method: 'POST',
+                  params: {},
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  version: '1',
+                  endpoint: 'https://events.pagerduty.com/v2/change/enqueue',
                 },
-                type: 'REST',
-                files: {},
-                method: 'POST',
-                params: {},
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                version: '1',
-                endpoint: 'https://events.pagerduty.com/v2/change/enqueue',
-              },
+              ],
               destination: {
                 Config: {
                   routingKey: '9552b56325dc490bd0139be85f7b8fac',
@@ -251,27 +253,29 @@ export const data = [
             },
             {
               batched: false,
-              batchedRequest: {
-                body: {
-                  XML: {},
-                  FORM: {},
-                  JSON: {
-                    dedup_key: '9116b734-7e6b-4497-ab51-c16744d4487e',
-                    routing_key: '9552b56325dc490bd0139be85f7b8fac',
-                    event_action: 'acknowledge',
+              batchedRequest: [
+                {
+                  body: {
+                    XML: {},
+                    FORM: {},
+                    JSON: {
+                      dedup_key: '9116b734-7e6b-4497-ab51-c16744d4487e',
+                      routing_key: '9552b56325dc490bd0139be85f7b8fac',
+                      event_action: 'acknowledge',
+                    },
+                    JSON_ARRAY: {},
                   },
-                  JSON_ARRAY: {},
+                  type: 'REST',
+                  files: {},
+                  method: 'POST',
+                  params: {},
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  version: '1',
+                  endpoint: 'https://events.pagerduty.com/v2/enqueue',
                 },
-                type: 'REST',
-                files: {},
-                method: 'POST',
-                params: {},
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                version: '1',
-                endpoint: 'https://events.pagerduty.com/v2/enqueue',
-              },
+              ],
               destination: {
                 Config: {
                   routingKey: '9552b56325dc490bd0139be85f7b8fac',

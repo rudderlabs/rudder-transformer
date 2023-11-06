@@ -149,42 +149,44 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://api2.branch.io/v2/event/standard',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Accept: 'application/json',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    branch_key: '<branch key goes here>',
-                    name: 'ADD_TO_CART',
-                    content_items: [
-                      {
-                        $product_name: 'sampath',
-                      },
-                    ],
-                    user_data: {
-                      os: 'iOS',
-                      os_version: '',
-                      app_version: '1.0.0',
-                      screen_dpi: 2,
-                      developer_identity: 'sampath',
-                      user_agent:
-                        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-                    },
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://api2.branch.io/v2/event/standard',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
                   },
-                  XML: {},
-                  JSON_ARRAY: {},
-                  FORM: {},
+                  params: {},
+                  body: {
+                    JSON: {
+                      branch_key: '<branch key goes here>',
+                      name: 'ADD_TO_CART',
+                      content_items: [
+                        {
+                          $product_name: 'sampath',
+                        },
+                      ],
+                      user_data: {
+                        os: 'iOS',
+                        os_version: '',
+                        app_version: '1.0.0',
+                        screen_dpi: 2,
+                        developer_identity: 'sampath',
+                        user_agent:
+                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
+                      },
+                    },
+                    XML: {},
+                    JSON_ARRAY: {},
+                    FORM: {},
+                  },
+                  files: {},
+                  userId: 'sampath',
                 },
-                files: {},
-                userId: 'sampath',
-              },
+              ],
               metadata: [
                 {
                   jobId: 1,
@@ -209,42 +211,44 @@ export const data = [
               },
             },
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://api2.branch.io/v2/event/custom',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Accept: 'application/json',
-                },
-                params: {},
-                body: {
-                  JSON: {
-                    branch_key: '<branch key goes here>',
-                    name: 'sampath',
-                    custom_data: {
-                      anonymousId: 'sampath',
-                      email: 'sampath@gmail.com',
-                    },
-                    content_items: [{}],
-                    user_data: {
-                      os: 'iOS',
-                      os_version: '',
-                      app_version: '1.0.0',
-                      screen_dpi: 2,
-                      developer_identity: 'sampath',
-                      user_agent:
-                        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-                    },
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://api2.branch.io/v2/event/custom',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
                   },
-                  XML: {},
-                  JSON_ARRAY: {},
-                  FORM: {},
+                  params: {},
+                  body: {
+                    JSON: {
+                      branch_key: '<branch key goes here>',
+                      name: 'sampath',
+                      custom_data: {
+                        anonymousId: 'sampath',
+                        email: 'sampath@gmail.com',
+                      },
+                      content_items: [{}],
+                      user_data: {
+                        os: 'iOS',
+                        os_version: '',
+                        app_version: '1.0.0',
+                        screen_dpi: 2,
+                        developer_identity: 'sampath',
+                        user_agent:
+                          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
+                      },
+                    },
+                    XML: {},
+                    JSON_ARRAY: {},
+                    FORM: {},
+                  },
+                  files: {},
+                  userId: 'sampath',
                 },
-                files: {},
-                userId: 'sampath',
-              },
+              ],
               metadata: [
                 {
                   jobId: 2,

@@ -718,80 +718,82 @@
   "output": {
     "output": [
       {
-        "batchedRequest": {
-          "version": "1",
-          "type": "REST",
-          "method": "POST",
-          "endpoint": "https://ct.pinterest.com/events/v3",
-          "headers": {
-            "Content-Type": "application/json"
-          },
-          "params": {},
-          "body": {
-            "JSON": {
-              "data": [
-                {
-                  "event_name": "add_to_cart",
-                  "event_time": 1672064125,
-                  "event_source_url": "https://www.website.com/product/path",
-                  "action_source": "offline",
-                  "event_id": "8d0ffebf-7cc1-4cf4-b3bc-3b2cd9a6509f",
-                  "app_id": "",
-                  "advertiser_id": "549764492980",
-                  "user_data": {
-                    "em": ["b9ecbd1d999a0f17d442a08971caeea92d770dba89ac900688ecede233d652df"],
-                    "ph": ["92b5072176e723878b5e06ff3ca61898e4eb74e8c46642a0f2db800b17364ab0"],
-                    "ge": ["62c66a7a5dd70c3146618063c344e531e6d4b59e379808443ce962b3abd63c5a"],
-                    "ln": ["dcf000c2386fb76d22cefc0d118a8511bb75999019cd373df52044bccd1bd251"],
-                    "fn": ["9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"],
-                    "client_ip_address": "[::1]"
-                  },
-                  "custom_data": {
-                    "num_items": 11,
-                    "content_ids": ["123"],
-                    "contents": [
-                      {
-                        "quantity": 11,
-                        "item_price": "13.49"
-                      }
-                    ]
-                  }
-                },
-                {
-                  "event_name": "page_visit",
-                  "event_time": 1672064125,
-                  "event_source_url": "https://www.website.com/product/path",
-                  "action_source": "offline",
-                  "event_id": "03f65e33-dd6a-46b4-9b90-33c015eefbab",
-                  "app_id": "",
-                  "advertiser_id": "549764492980",
-                  "user_data": {
-                    "em": ["b9ecbd1d999a0f17d442a08971caeea92d770dba89ac900688ecede233d652df"],
-                    "ph": ["92b5072176e723878b5e06ff3ca61898e4eb74e8c46642a0f2db800b17364ab0"],
-                    "ge": ["62c66a7a5dd70c3146618063c344e531e6d4b59e379808443ce962b3abd63c5a"],
-                    "ln": ["dcf000c2386fb76d22cefc0d118a8511bb75999019cd373df52044bccd1bd251"],
-                    "fn": ["9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"],
-                    "client_ip_address": "[::1]"
-                  },
-                  "custom_data": {
-                    "num_items": 11,
-                    "content_ids": ["123"],
-                    "contents": [
-                      {
-                        "quantity": 11,
-                        "item_price": "13.49"
-                      }
-                    ]
-                  }
-                }
-              ]
+        "batchedRequest": [
+          {
+            "version": "1",
+            "type": "REST",
+            "method": "POST",
+            "endpoint": "https://ct.pinterest.com/events/v3",
+            "headers": {
+              "Content-Type": "application/json"
             },
-            "JSON_ARRAY": {},
-            "XML": {},
-            "FORM": {}
-          },
-          "files": {}
-        },
+            "params": {},
+            "body": {
+              "JSON": {
+                "data": [
+                  {
+                    "event_name": "add_to_cart",
+                    "event_time": 1672064125,
+                    "event_source_url": "https://www.website.com/product/path",
+                    "action_source": "offline",
+                    "event_id": "8d0ffebf-7cc1-4cf4-b3bc-3b2cd9a6509f",
+                    "app_id": "",
+                    "advertiser_id": "549764492980",
+                    "user_data": {
+                      "em": ["b9ecbd1d999a0f17d442a08971caeea92d770dba89ac900688ecede233d652df"],
+                      "ph": ["92b5072176e723878b5e06ff3ca61898e4eb74e8c46642a0f2db800b17364ab0"],
+                      "ge": ["62c66a7a5dd70c3146618063c344e531e6d4b59e379808443ce962b3abd63c5a"],
+                      "ln": ["dcf000c2386fb76d22cefc0d118a8511bb75999019cd373df52044bccd1bd251"],
+                      "fn": ["9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"],
+                      "client_ip_address": "[::1]"
+                    },
+                    "custom_data": {
+                      "num_items": 11,
+                      "content_ids": ["123"],
+                      "contents": [
+                        {
+                          "quantity": 11,
+                          "item_price": "13.49"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "event_name": "page_visit",
+                    "event_time": 1672064125,
+                    "event_source_url": "https://www.website.com/product/path",
+                    "action_source": "offline",
+                    "event_id": "03f65e33-dd6a-46b4-9b90-33c015eefbab",
+                    "app_id": "",
+                    "advertiser_id": "549764492980",
+                    "user_data": {
+                      "em": ["b9ecbd1d999a0f17d442a08971caeea92d770dba89ac900688ecede233d652df"],
+                      "ph": ["92b5072176e723878b5e06ff3ca61898e4eb74e8c46642a0f2db800b17364ab0"],
+                      "ge": ["62c66a7a5dd70c3146618063c344e531e6d4b59e379808443ce962b3abd63c5a"],
+                      "ln": ["dcf000c2386fb76d22cefc0d118a8511bb75999019cd373df52044bccd1bd251"],
+                      "fn": ["9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"],
+                      "client_ip_address": "[::1]"
+                    },
+                    "custom_data": {
+                      "num_items": 11,
+                      "content_ids": ["123"],
+                      "contents": [
+                        {
+                          "quantity": 11,
+                          "item_price": "13.49"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "JSON_ARRAY": {},
+              "XML": {},
+              "FORM": {}
+            },
+            "files": {}
+          }
+        ],
         "metadata": [
           {
             "userId": "<<>>anon-id<<>>testUser",

@@ -1166,84 +1166,92 @@
       "batched": false,
       "statusCode": 400,
       "statTags": {
+        "destType": "AM",
+        "destinationId": "2JK3ACpBjq9AmvUbxR1u2pDPSYR",
         "errorCategory": "dataValidation",
-        "errorType": "instrumentation"
+        "errorType": "instrumentation",
+        "feature": "batch",
+        "implementation": "native",
+        "module": "destination",
+        "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg"
       },
       "error": "Both userId and deviceId cannot be undefined"
     },
     {
-      "batchedRequest": {
-        "body": {
-          "XML": {},
-          "FORM": {},
-          "JSON": {
-            "events": [
-              {
-                "ip": "[::1]",
-                "time": 1671883143047,
-                "library": "rudderstack",
-                "user_id": "testUser",
-                "insert_id": "4ce7b3c4-af4a-4f17-bced-f4cb574e0124",
-                "event_type": "$identify",
-                "session_id": -1,
-                "user_properties": {
-                  "$add": {},
-                  "name": "Alex Mamoa",
-                  "email": "alex_mamoa@example.com",
-                  "$append": {},
-                  "$prepend": {},
-                  "$setOnce": {},
-                  "last_name": "Mamoa",
-                  "first_name": "Alex"
-                }
-              },
-              {
-                "ip": "[::1]",
-                "time": 1671883143047,
-                "library": "rudderstack",
-                "user_id": "testUser",
-                "device_id": "anon-id",
-                "insert_id": "73f7eed3-615e-43b3-ab58-acc631d21b12",
-                "event_type": "Product Viewed",
-                "session_id": -1,
-                "user_properties": {
-                  "email": "test.c97@gmail.com",
-                  "phone": "+919876543210",
-                  "gender": "Male",
-                  "lastName": "Rudderlabs",
-                  "firstName": "test"
+      "batchedRequest": [
+        {
+          "body": {
+            "XML": {},
+            "FORM": {},
+            "JSON": {
+              "events": [
+                {
+                  "ip": "[::1]",
+                  "time": 1671883143047,
+                  "library": "rudderstack",
+                  "user_id": "testUser",
+                  "insert_id": "4ce7b3c4-af4a-4f17-bced-f4cb574e0124",
+                  "event_type": "$identify",
+                  "session_id": -1,
+                  "user_properties": {
+                    "$add": {},
+                    "name": "Alex Mamoa",
+                    "email": "alex_mamoa@example.com",
+                    "$append": {},
+                    "$prepend": {},
+                    "$setOnce": {},
+                    "last_name": "Mamoa",
+                    "first_name": "Alex"
+                  }
                 },
-                "event_properties": {
-                  "sku": "F15",
-                  "url": "https://www.website.com/product/path",
-                  "name": "Game",
-                  "brand": "Gamepro",
-                  "price": 13.49,
-                  "coupon": "DISC21",
-                  "variant": "111",
-                  "category": "Games",
-                  "position": 1,
-                  "quantity": 11,
-                  "image_url": "https://www.website.com/product/path.png",
-                  "product_id": "123"
+                {
+                  "ip": "[::1]",
+                  "time": 1671883143047,
+                  "library": "rudderstack",
+                  "user_id": "testUser",
+                  "device_id": "anon-id",
+                  "insert_id": "73f7eed3-615e-43b3-ab58-acc631d21b12",
+                  "event_type": "Product Viewed",
+                  "session_id": -1,
+                  "user_properties": {
+                    "email": "test.c97@gmail.com",
+                    "phone": "+919876543210",
+                    "gender": "Male",
+                    "lastName": "Rudderlabs",
+                    "firstName": "test"
+                  },
+                  "event_properties": {
+                    "sku": "F15",
+                    "url": "https://www.website.com/product/path",
+                    "name": "Game",
+                    "brand": "Gamepro",
+                    "price": 13.49,
+                    "coupon": "DISC21",
+                    "variant": "111",
+                    "category": "Games",
+                    "position": 1,
+                    "quantity": 11,
+                    "image_url": "https://www.website.com/product/path.png",
+                    "product_id": "123"
+                  }
                 }
-              }
-            ],
-            "api_key": "dummyApiKey"
+              ],
+              "api_key": "dummyApiKey"
+            },
+            "JSON_ARRAY": {}
           },
-          "JSON_ARRAY": {}
-        },
-        "type": "REST",
-        "files": {},
-        "method": "POST",
-        "params": {},
-        "userId": "",
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "version": "1",
-        "endpoint": "https://api2.amplitude.com/batch"
-      },
+          "type": "REST",
+          "files": {},
+          "method": "POST",
+          "params": {},
+          "userId": "",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "version": "1",
+          "endpoint": "https://api2.amplitude.com/batch"
+        }
+      ],
       "metadata": [
         {
           "userId": "<<>>testUser<<>>testUser",

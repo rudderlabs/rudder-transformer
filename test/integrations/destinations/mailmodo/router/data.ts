@@ -163,42 +163,44 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                body: {
-                  XML: {},
-                  JSON_ARRAY: {},
-                  FORM: {},
-                  JSON: {
-                    listName: 'abc',
-                    values: [
-                      {
-                        email: 'test@abc.com',
-                      },
-                      {
-                        email: 'test@abc.com',
-                        data: {
-                          name: 'Rudder Test',
-                          first_name: 'Test',
-                          last_name: 'Rudderlabs',
-                          age: 21,
-                          phone: '9876543210',
-                          trait1: 'new-val',
+              batchedRequest: [
+                {
+                  body: {
+                    XML: {},
+                    JSON_ARRAY: {},
+                    FORM: {},
+                    JSON: {
+                      listName: 'abc',
+                      values: [
+                        {
+                          email: 'test@abc.com',
                         },
-                      },
-                    ],
+                        {
+                          email: 'test@abc.com',
+                          data: {
+                            name: 'Rudder Test',
+                            first_name: 'Test',
+                            last_name: 'Rudderlabs',
+                            age: 21,
+                            phone: '9876543210',
+                            trait1: 'new-val',
+                          },
+                        },
+                      ],
+                    },
                   },
+                  type: 'REST',
+                  files: {},
+                  method: 'POST',
+                  params: {},
+                  headers: {
+                    mmApiKey: 'dummyApiKey',
+                    'Content-Type': 'application/json',
+                  },
+                  version: '1',
+                  endpoint: 'https://api.mailmodo.com/api/v1/addToList/batch',
                 },
-                type: 'REST',
-                files: {},
-                method: 'POST',
-                params: {},
-                headers: {
-                  mmApiKey: 'dummyApiKey',
-                  'Content-Type': 'application/json',
-                },
-                version: '1',
-                endpoint: 'https://api.mailmodo.com/api/v1/addToList/batch',
-              },
+              ],
               metadata: [
                 {
                   jobId: 2,
@@ -218,33 +220,35 @@ export const data = [
               },
             },
             {
-              batchedRequest: {
-                body: {
-                  XML: {},
-                  JSON_ARRAY: {},
-                  FORM: {},
-                  JSON: {
-                    email: 'test@abc.com',
-                    event_name: 'Email Opened',
-                    event_properties: {
+              batchedRequest: [
+                {
+                  body: {
+                    XML: {},
+                    JSON_ARRAY: {},
+                    FORM: {},
+                    JSON: {
                       email: 'test@abc.com',
-                      sendlocation: 'akashdeep@gmail.com',
-                      sendtime: '2020-01-01',
-                      subject: 'resume validate',
+                      event_name: 'Email Opened',
+                      event_properties: {
+                        email: 'test@abc.com',
+                        sendlocation: 'akashdeep@gmail.com',
+                        sendtime: '2020-01-01',
+                        subject: 'resume validate',
+                      },
                     },
                   },
+                  type: 'REST',
+                  files: {},
+                  method: 'POST',
+                  params: {},
+                  headers: {
+                    mmApiKey: 'dummyApiKey',
+                    'Content-Type': 'application/json',
+                  },
+                  version: '1',
+                  endpoint: 'https://api.mailmodo.com/api/v1/addEvent',
                 },
-                type: 'REST',
-                files: {},
-                method: 'POST',
-                params: {},
-                headers: {
-                  mmApiKey: 'dummyApiKey',
-                  'Content-Type': 'application/json',
-                },
-                version: '1',
-                endpoint: 'https://api.mailmodo.com/api/v1/addEvent',
-              },
+              ],
               metadata: [
                 {
                   jobId: 3,

@@ -144,19 +144,26 @@ export default class NativeIntegrationDestinationService implements IntegrationD
     );
     const groupedEvents: RouterTransformationRequestData[][] = Object.values(allDestEvents);
     const response = groupedEvents.map((destEvents) => {
+      const metaTO = this.getTags(
+        destinationType,
+        destEvents[0].metadata.destinationId,
+        destEvents[0].metadata.workspaceId,
+        tags.FEATURES.BATCH,
+      );
       try {
         const destBatchedRequests: RouterTransformationResponse[] = destHandler.batch(
           destEvents,
           requestMetadata,
         );
-        return destBatchedRequests;
-      } catch (error: any) {
-        const metaTO = this.getTags(
-          destinationType,
-          destEvents[0].metadata.destinationId,
-          destEvents[0].metadata.workspaceId,
-          tags.FEATURES.BATCH,
+        metaTO.metadata = destEvents[0].metadata;
+        return DestinationPostTransformationService.handleBatchTransformSuccessEvents(
+          destBatchedRequests,
+          destHandler,
+          metaTO,
+          tags.IMPLEMENTATIONS.NATIVE,
+          destinationType.toUpperCase(),
         );
+      } catch (error: any) {
         metaTO.metadatas = events.map((event) => event.metadata);
         const errResp = DestinationPostTransformationService.handleBatchTransformFailureEvents(
           error,

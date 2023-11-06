@@ -17,7 +17,6 @@ const { handleHttpRequest } = require('../../../adapters/network');
 const { JSON_MIME_TYPE, HTTP_STATUS_CODES } = require('../../util/constant');
 const { NetworkError, InstrumentationError } = require('../../util/errorTypes');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
-const { client: errNotificationClient } = require('../../../util/errorNotifier');
 const { BASE_ENDPOINT, MAPPING_CONFIG, CONFIG_CATEGORIES, MAX_BATCH_SIZE } = require('./config');
 
 const REVISION_CONSTANT = '2023-02-22';
@@ -69,11 +68,6 @@ const getIdFromNewOrExistingProfile = async (endpoint, payload, requestOptions) 
   let statusCode = resp.status;
   if (resp.status === 201 || resp.status === 409) {
     // retryable error if the profile id is not found in the response
-    errNotificationClient.notify(
-      new Error('Klaviyo: ProfileId not found'),
-      'Profile Id not Found in the response',
-      JSON.stringify(resp.response),
-    );
     statusCode = 500;
   }
 

@@ -1,0 +1,67 @@
+
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+    exportAll: true
+  - path: ./config
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+
+steps:
+  - name: validateInput
+    template: |
+      let messageType = .message.type;
+      $.assert(.message.type, "message Type is not present. Aborting message.");
+      $.assert(.message.type.toLowerCase() ==='audiencelist', "Event type " + .message.type.toLowerCase() + " is not supported. Aborting message.");
+      $.assert(.message.properties, "Message properties is not present. Aborting message.");
+      $.assert(.message.properties.listData, "listData is not present inside properties. Aborting message.");
+      $.assert($.containsAll(Object.keys(.message.properties.listData), ["add", "remove"]), "unsupported action type. Aborting message.")
+
+  - name: prepareIdentifiersList
+    description: |
+      Populate list of identifiers to be updated
+    template: |
+      const destinationFields = .message.context.destinationFields.split(", ")
+      const audienceId = .message.context.externalId[0].type.split("-")[1];
+      const isHashRequired = .destination.Config.isHashRequired;
+      const advertiserIds = .metadata.secret.advertiserIds;
+      const hashTraits = function(traits) {
+        traits@trait.(destinationFields@destinationField.(
+          trait[destinationField] ? {
+            id: isHashRequired ? 
+                destinationField in $.SHA256_TRAITS ? 
+                  $.SHA256(trait[destinationField]) : $.MD5(trait[destinationField]) 
+                : trait[destinationField],
+            audience_ids:[audienceId]
+          } : {}
+        )[])
+      };
+      const listData = .message.properties.listData;
+      const actions = Object.keys(listData)
+      actions@action.({
+        "batch_data": hashTraits(listData[action]),
+        "id_schema": destinationFields,
+        "advertiser_ids": advertiserIds,
+        "action": $.ACTION_MAP[action],
+      })[]
+
+
+  - name: buildResponseForProcessTransformation
+    description: build response
+    template: |
+      const accessToken = .metadata.secret.accessToken
+      const anonymousId = .message.anonymousId;
+      $.outputs.prepareIdentifiersList@body.(
+        let response = $.defaultRequestConfig();
+        response.body.JSON = body;
+        response.userId = anonymousId;
+        response.endpoint = "https://business-api.tiktok.com/open_api/v1.3/segment/mapping/";
+        response.headers = {
+          "Access-Token": accessToken,
+          "Content-Type": "application/json"
+        };
+        response
+      )

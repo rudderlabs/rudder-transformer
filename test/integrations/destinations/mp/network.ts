@@ -1146,5 +1146,23 @@ const deleteNwData = [
       },
     },
   },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api-eu.mixpanel.com/engage',
+      data: [{ $distinct_id: 'rudder1', $token: 'test_token', $delete: null, $ignore_alias: true }],
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'text/plain',
+      },
+    },
+    httpRes: {
+      status: 200,
+      statusText: 'OK',
+      data: {
+        ' message': '1',
+      },
+    },
+  },
 ];
 export const networkCallsData = [...deleteNwData];

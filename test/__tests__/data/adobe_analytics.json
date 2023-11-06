@@ -1010,7 +1010,6 @@
         },
         "messageId": "1578564113557-af022c68-429e-4af4-b99b-2b9174056383",
         "properties": {
-          "order_id": "1234",
           "affiliation": "Apple Store",
           "value": 20,
           "revenue": 15.0,
@@ -1019,6 +1018,7 @@
           "discount": 1.5,
           "coupon": "ImagePro",
           "currency": "USD",
+          "purchaseId": "p101",
           "products": [
             {
               "product_id": "123",
@@ -1205,7 +1205,7 @@
         "JSON": {},
         "JSON_ARRAY": {},
         "XML": {
-          "payload": "<?xml version=\"1.0\" encoding=\"utf-8\"?><request><browserHeight>1794</browserHeight><browserWidth>1080</browserWidth><campaign>sales campaign</campaign><channel>web</channel><currencyCode>USD</currencyCode><ipaddress>127.0.0.1</ipaddress><language>en-US</language><purchaseID>1234</purchaseID><transactionID>1234</transactionID><userAgent>Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)</userAgent><referrer>https://www.google.com/search?q=estore+bestseller</referrer><contextData><roott01>roottval001</roott01></contextData><eVar6>RudderLabs JavaScript SDK</eVar6><linkType>o</linkType><linkName>checkout started</linkName><linkURL>https://www.estore.com/best-seller/1</linkURL><timestamp>2020-01-09T10:01:53.558Z</timestamp><marketingcloudorgid>mktcloudid001</marketingcloudorgid><events>scCheckout</events><products>Games;Monopoly;1;14.00,Games;UNO;2;6.90</products><reportSuiteID>footlockerrudderstackpoc</reportSuiteID></request>"
+          "payload": "<?xml version=\"1.0\" encoding=\"utf-8\"?><request><browserHeight>1794</browserHeight><browserWidth>1080</browserWidth><campaign>sales campaign</campaign><channel>web</channel><currencyCode>USD</currencyCode><ipaddress>127.0.0.1</ipaddress><language>en-US</language><userAgent>Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)</userAgent><referrer>https://www.google.com/search?q=estore+bestseller</referrer><contextData><roott01>roottval001</roott01></contextData><eVar6>RudderLabs JavaScript SDK</eVar6><linkType>o</linkType><linkName>checkout started</linkName><linkURL>https://www.estore.com/best-seller/1</linkURL><timestamp>2020-01-09T10:01:53.558Z</timestamp><marketingcloudorgid>mktcloudid001</marketingcloudorgid><purchaseID>p101</purchaseID><events>scCheckout</events><products>Games;Monopoly;1;14.00,Games;UNO;2;6.90</products><reportSuiteID>footlockerrudderstackpoc</reportSuiteID></request>"
         },
         "FORM": {}
       },

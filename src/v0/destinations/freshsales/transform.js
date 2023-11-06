@@ -141,7 +141,7 @@ function eventMappingHandler(message, destination) {
       destination.ID,
     );
     rudderEventsToFreshsalesEvents.forEach((mapping) => {
-      if (mapping.from.toLowerCase() === event.toLowerCase()) {
+      if (mapping.from.toLowerCase() === String(event).toLowerCase()) {
         mappedEvents.add(mapping.to);
       }
     });

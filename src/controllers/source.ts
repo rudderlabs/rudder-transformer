@@ -22,7 +22,7 @@ export default class SourceController {
         events,
       );
       const resplist = await integrationService.sourceTransformRoutine(
-        input as NonNullable<unknown>[],
+        input,
         source,
         implementationVersion,
         requestMetadata,

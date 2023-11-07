@@ -2,15 +2,9 @@
   "input": [
     {
       "query_parameters": {
-        "topic": [
-          "random_event"
-        ],
-        "signature": [
-          "rudderstack"
-        ],
-        "writeKey": [
-          "sample-write-key"
-        ]
+        "topic": ["random_event"],
+        "signature": ["rudderstack"],
+        "writeKey": ["sample-write-key"]
       }
     }
   ],
@@ -19,11 +13,7 @@
       "statusCode": 500,
       "error": "Cannot find module '../undefined/sources/NA_SOURCE/transform' from 'src/services/misc.ts'",
       "statTags": {
-        "errorCategory": "transformation",
-        "module": "source",
-        "implementation": "native",
-        "destinationId": "Non determinable",
-        "workspaceId": "Non determinable"
+        "errorCategory": "transformation"
       }
     }
   ]

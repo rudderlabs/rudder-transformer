@@ -29,7 +29,7 @@ export default class ControllerUtility {
   };
 
   private static getSourceVersionsMap(): Map<string, any> {
-    if (this.sourceVersionMap.size > 0) {
+    if (this.sourceVersionMap?.size > 0) {
       return this.sourceVersionMap;
     }
     const versions = ['v0', 'v1'];

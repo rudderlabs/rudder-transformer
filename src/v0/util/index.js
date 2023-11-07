@@ -659,6 +659,43 @@ const getValueFromMessage = (message, sourceKeys) => {
   return null;
 };
 
+const getKeyAndValueFromMessage = (message, sourceKeys) => {
+  if (Array.isArray(sourceKeys) && sourceKeys.length > 0) {
+    if (sourceKeys.length === 1) {
+      logger.warn('List with single element is not ideal. Use it as string instead');
+    }
+    // got the possible sourceKeys
+    // eslint-disable-next-line no-restricted-syntax
+    for (const sourceKey of sourceKeys) {
+      let val = null;
+      // if the sourceKey is an object we expect it to be a operation
+      if (typeof sourceKey === 'object') {
+        val = handleSourceKeysOperation({
+          message,
+          operationObject: sourceKey,
+        });
+      } else {
+        val = get(message, sourceKey);
+      }
+      if (val || val === false || val === 0) {
+        // return only if the value is valid.
+        // else look for next possible source in precedence
+        return { value: val, key: sourceKey };
+      }
+    }
+  } else if (typeof sourceKeys === 'string') {
+    // got a single key
+    // - we don't need to iterate over a loop for a single possible value
+    return { value: get(message, sourceKeys), key: sourceKeys };
+  } else {
+    // wrong sourceKey type. abort
+    // DEVELOPER ERROR
+    // TODO - think of a way to crash the pod
+    throw new PlatformError('Wrong sourceKey type or blank sourceKey array');
+  }
+  return { value: null, key: '' };
+};
+
 // get a field value from message.
 // if sourceFromGenericMap is true get its value from GenericFieldMapping.json and use it as sourceKey
 // else use sourceKey from `data/message.json` for actual field precedence
@@ -2192,4 +2229,5 @@ module.exports = {
   isValidInteger,
   isNewStatusCodesAccepted,
   IsGzipSupported,
+  getKeyAndValueFromMessage,
 };

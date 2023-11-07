@@ -1,36 +1,42 @@
-import { Context } from "koa";
-import { ProcessorTransformationRequest, RouterTransformationRequest, RouterTransformationRequestData } from "../types";
-import GeoLocationHelper from "../helpers/geoLocation";
+import { Context } from 'koa';
+import {
+  ProcessorTransformationRequest,
+  RouterTransformationRequest,
+  RouterTransformationRequestData,
+} from '../types';
+import GeoLocationHelper from '../helpers/geoLocation';
 
-export type DTRequest = RouterTransformationRequest | ProcessorTransformationRequest[]
+export type DTRequest = RouterTransformationRequest | ProcessorTransformationRequest[];
 
 export default class Enricher {
-
-  private static enrichWithGeoInfo(data: RouterTransformationRequestData[]): RouterTransformationRequestData[] {
-    return data.map(inpEv => {
-      const geoEnrichedContext = GeoLocationHelper.getGeoLocationData(inpEv.message?.context)
+  private static enrichWithGeoInfo(
+    data: RouterTransformationRequestData[],
+  ): RouterTransformationRequestData[] {
+    return data.map((inpEv) => {
+      const geoEnrichedMessage = GeoLocationHelper.getGeoLocationData(inpEv.message);
       return {
         ...inpEv,
-        message:  {
+        message: {
           ...inpEv.message,
-          context: {
-            ...inpEv.message?.context,
-            ...geoEnrichedContext
-          },
+          ...geoEnrichedMessage,
         },
       };
     });
   }
 
-  public static enrichGeoLocation (ctx: Context) {
+  public static enrichGeoLocation(ctx: Context) {
     const transformationRequest = ctx.request.body;
     let transformationReq: DTRequest;
     let reqBody: unknown;
-    const isRouterTransform = Array.isArray((transformationRequest as RouterTransformationRequest)?.input);
+    const isRouterTransform = Array.isArray(
+      (transformationRequest as RouterTransformationRequest)?.input,
+    );
     if (isRouterTransform) {
       // Router or batch transformation request
       transformationReq = transformationRequest as RouterTransformationRequest;
-      const enrichedEvents: RouterTransformationRequestData[] = Enricher.enrichWithGeoInfo(transformationReq.input);
+      const enrichedEvents: RouterTransformationRequestData[] = Enricher.enrichWithGeoInfo(
+        transformationReq.input,
+      );
       reqBody = {
         input: enrichedEvents,
         destType: transformationReq.destType,
@@ -42,5 +48,4 @@ export default class Enricher {
     }
     ctx.request.body = reqBody;
   }
-
 }

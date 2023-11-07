@@ -571,7 +571,6 @@ if (startDestTransformer) {
             destEvents.length > 0 && destEvents[0].metadata
               ? getMetadata(destEvents[0].metadata)
               : {};
-          const userFuncStartTime = new Date();
           if (transformationVersionId) {
             let destTransformedEvents;
             try {

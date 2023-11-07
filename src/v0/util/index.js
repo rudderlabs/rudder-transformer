@@ -667,16 +667,7 @@ const getKeyAndValueFromMessage = (message, sourceKeys) => {
     // got the possible sourceKeys
     // eslint-disable-next-line no-restricted-syntax
     for (const sourceKey of sourceKeys) {
-      let val = null;
-      // if the sourceKey is an object we expect it to be a operation
-      if (typeof sourceKey === 'object') {
-        val = handleSourceKeysOperation({
-          message,
-          operationObject: sourceKey,
-        });
-      } else {
-        val = get(message, sourceKey);
-      }
+      const val = get(message, sourceKey);
       if (val || val === false || val === 0) {
         // return only if the value is valid.
         // else look for next possible source in precedence

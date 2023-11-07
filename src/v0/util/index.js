@@ -2059,7 +2059,17 @@ const getAuthErrCategoryFromStCode = (status) => {
   return '';
 };
 
-const validateEventType = (event) => {
+const isValidInteger = (value) => {
+  if (Number.isNaN(value) || !isDefinedAndNotNull(value)) {
+    return false;
+  }
+  if (typeof value === 'number' && value % 1 === 0) {
+    return true;
+  }
+  // Use a regular expression to check if the string is a valid integer or a valid floating-point number
+  return typeof value === 'string' ? /^-?\d+$/.test(value) : false;
+};
+const validateEventName = (event) => {
   if (!event || typeof event !== 'string') {
     throw new InstrumentationError('Event is a required field and should be a string');
   }
@@ -2167,7 +2177,7 @@ module.exports = {
   getDestAuthCacheInstance,
   refinePayload,
   validateEmail,
-  validateEventType,
+  validateEventName,
   validatePhoneWithCountryCode,
   getEventReqMetadata,
   isHybridModeEnabled,
@@ -2179,6 +2189,7 @@ module.exports = {
   hasCircularReference,
   getAuthErrCategoryFromErrDetailsAndStCode,
   getAuthErrCategoryFromStCode,
+  isValidInteger,
   isNewStatusCodesAccepted,
   IsGzipSupported,
 };

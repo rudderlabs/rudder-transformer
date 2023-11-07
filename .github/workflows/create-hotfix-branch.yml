@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     # Only allow these users to create new hotfix branch from 'main'
-    if: github.ref == 'refs/heads/main' && (github.actor == 'ItsSudip' || github.actor == 'krishna2020' || github.actor == 'saikumarrs' || github.actor == 'sandeepdsvs' || github.actor == 'shrouti1507' || github.actor == 'anantjain45823' || github.actor == 'chandumlg' || github.actor == 'mihir-4116') && (github.triggering_actor == 'ItsSudip' || github.triggering_actor == 'krishna2020' ||  github.triggering_actor == 'saikumarrs' || github.triggering_actor == 'sandeepdsvs' || github.triggering_actor == 'shrouti1507' || github.triggering_actor == 'anantjain45823' || github.triggering_actor == 'chandumlg' || github.triggering_actor == 'mihir-4116')
+    if: github.ref == 'refs/heads/main' && (github.actor == 'ItsSudip' || github.actor == 'krishna2020' || github.actor == 'saikumarrs' || github.actor == 'sandeepdsvs' || github.actor == 'shrouti1507' || github.actor == 'anantjain45823' || github.actor == 'chandumlg' || github.actor == 'mihir-4116' || github.actor == 'ujjwal-ab') && (github.triggering_actor == 'ItsSudip' || github.triggering_actor == 'krishna2020' ||  github.triggering_actor == 'saikumarrs' || github.triggering_actor == 'sandeepdsvs' || github.triggering_actor == 'shrouti1507' || github.triggering_actor == 'anantjain45823' || github.triggering_actor == 'chandumlg' || github.triggering_actor == 'mihir-4116' || github.triggering_actor == 'ujjwal-ab)
     steps:
       - name: Create Branch
         uses: peterjgrainger/action-create-branch@v2.4.0

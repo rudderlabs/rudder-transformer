@@ -128,8 +128,8 @@ describe('GeoLocationHelper tests', () => {
 
     const enhancedMsg = GeoLocationHelper.getGeoLocationData(msg);
 
-    expect(enhancedMsg.traits.address).not.toBe(undefined);
-    expect(enhancedMsg.traits.address).toEqual({
+    expect(enhancedMsg.context.traits.address).not.toBe(undefined);
+    expect(enhancedMsg.context.traits.address).toEqual({
       city: 'Gurugram',
       country: 'IN',
       postalCode: '122001',

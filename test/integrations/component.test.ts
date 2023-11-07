@@ -17,24 +17,25 @@ import {
   getAllTestMockDataFilePaths,
   addMock,
 } from './testUtils';
-import tags, { FEATURES } from '../../src/v0/util/tags';
+import tags from '../../src/v0/util/tags';
 import { Server } from 'http';
 import { appendFileSync } from 'fs';
 import { responses } from '../testHelper';
-import utils from '../../src/v0/util';
-import isMatch from 'lodash/isMatch';
 
 // To run single destination test cases
 // npm run test:ts -- component  --destination=adobe_analytics
+// npm run test:ts -- component  --destination=adobe_analytics --feature=router
+// npm run test:ts -- component  --destination=adobe_analytics --feature=router --index=0
 
 // Use below command to generate mocks
 // npm run test:ts -- component --destination=zendesk --generate=true
 // npm run test:ts:component:generateNwMocks -- --destination=zendesk
 const command = new Command();
-command.allowUnknownOption().option('-d, --destination <string>', 'Enter Destination Name').parse();
-// This option will only work when destination option is also provided
 command
   .allowUnknownOption()
+  .option('-d, --destination <string>', 'Enter Destination Name')
+  .option('-f, --feature <string>', 'Enter Feature Name(processor, router)')
+  .option('-i, --index <number>', 'Enter Test index')
   .option('-g, --generate <string>', 'Enter "true" If you want to generate network file')
   .parse();
 
@@ -72,18 +73,17 @@ afterAll(async () => {
   }
   await createHttpTerminator({ server }).terminate();
 });
-let mock;
+let mockAdapter;
 if (!opts.generate || opts.generate === 'false') {
   // unmock already existing axios-mocking
-  mock = new MockAxiosAdapter(axios, { onNoMatch: 'passthrough' });
+  mockAdapter = new MockAxiosAdapter(axios, { onNoMatch: 'throwException' });
   const registerAxiosMocks = (axiosMocks: MockHttpCallsData[]) => {
-    axiosMocks.forEach((axiosMock) => addMock(mock, axiosMock));
+    axiosMocks.forEach((axiosMock) => addMock(mockAdapter, axiosMock));
   };
 
   // // all the axios requests will be stored in this map
   const allTestMockDataFilePaths = getAllTestMockDataFilePaths(__dirname, opts.destination);
   const allAxiosRequests = allTestMockDataFilePaths
-    .filter((d) => !d.includes('/af/'))
     .map((currPath) => {
       const mockNetworkCallsData: MockHttpCallsData[] = getMockHttpCallsData(currPath);
       return mockNetworkCallsData;
@@ -94,7 +94,7 @@ if (!opts.generate || opts.generate === 'false') {
 
 // END
 const rootDir = __dirname;
-const allTestDataFilePaths = getTestDataFilePaths(rootDir, opts.destination);
+const allTestDataFilePaths = getTestDataFilePaths(rootDir, opts);
 const DEFAULT_VERSION = 'v0';
 
 const testRoute = async (route, tcData: TestCaseData) => {
@@ -177,22 +177,27 @@ describe.each(allTestDataFilePaths)('%s Tests', (testDataPath) => {
     jest.clearAllMocks();
   });
   // add special mocks for specific destinations
-  const testData: TestCaseData[] = getTestData(testDataPath);
-  test.each(testData)('$name - $module - $feature -> $description', async (tcData) => {
-    tcData?.mockFns?.(mock);
+  let testData: TestCaseData[] = getTestData(testDataPath);
+  if (opts.index !== undefined) {
+    testData = [testData[parseInt(opts.index)]];
+  }
+  describe(`${testData[0].name} ${testData[0].module}`, () => {
+    test.each(testData)('$feature -> $description', async (tcData) => {
+      tcData?.mockFns?.(mockAdapter);
 
-    switch (tcData.module) {
-      case tags.MODULES.DESTINATION:
-        await destinationTestHandler(tcData);
-        break;
-      case tags.MODULES.SOURCE:
-        await sourceTestHandler(tcData);
-        break;
-      default:
-        console.log('Invalid module');
-        // Intentionally fail the test case
-        expect(true).toEqual(false);
-        break;
-    }
+      switch (tcData.module) {
+        case tags.MODULES.DESTINATION:
+          await destinationTestHandler(tcData);
+          break;
+        case tags.MODULES.SOURCE:
+          await sourceTestHandler(tcData);
+          break;
+        default:
+          console.log('Invalid module');
+          // Intentionally fail the test case
+          expect(true).toEqual(false);
+          break;
+      }
+    });
   });
 });

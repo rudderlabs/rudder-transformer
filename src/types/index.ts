@@ -52,6 +52,10 @@ type Metadata = {
   transformationId: string;
 };
 
+type MessageIdMetadataMap = {
+  [key: string]: Metadata;
+};
+
 type UserTransformationInput = {
   VersionID: string;
   ID: string;
@@ -133,7 +137,7 @@ type SourceTransformationResponse = {
 type DeliveryResponse = {
   status: number;
   message: string;
-  destinationResponse: object;
+  destinationResponse: any;
   statTags: object;
   authErrorCategory?: string;
 };
@@ -263,6 +267,7 @@ type SourceInput = {
 };
 export {
   Metadata,
+  MessageIdMetadataMap,
   UserTransformationLibrary,
   ProcessorTransformationRequest,
   ProcessorTransformationResponse,

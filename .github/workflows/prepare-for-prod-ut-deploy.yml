@@ -111,7 +111,7 @@ jobs:
           git commit -m "chore: upgrade shared user-transformers to $UT_TAG_NAME"
           git push -u origin shared-user-transformer-$UT_TAG_NAME
 
-          hub pull-request -m "chore: upgrade shared user-transformers to $UT_TAG_NAME"
+          gh pr create --fill
 
       - name: Update Helm Chart and Raise Pull Request For Hosted Transformer
         env:
@@ -128,4 +128,4 @@ jobs:
           git commit -m "chore: upgrade hosted user-transformer to $UT_TAG_NAME"
           git push -u origin hosted-user-transformer-$UT_TAG_NAME
 
-          hub pull-request -m "chore: upgrade hosted user-transformer to $UT_TAG_NAME"
+          gh pr create --fill

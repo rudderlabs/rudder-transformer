@@ -1,0 +1,101 @@
+[
+  {
+    "destKey": "advertiser_tracking_enabled",
+    "sourceKeys": "context.device.adTrackingEnabled",
+    "required": true
+  },
+  {
+    "destKey": "application_tracking_enabled",
+    "sourceKeys": "properties.application_tracking_enabled",
+    "required": true
+  },
+  {
+    "destKey": "extinfo.0",
+    "sourceKeys": "context.device.type",
+    "required": true,
+    "metadata": {
+      "type": "toLower"
+    }
+  },
+  {
+    "destKey": "extinfo.1",
+    "sourceKeys": "context.app.namespace"
+  },
+  {
+    "destKey": "extinfo.2",
+    "sourceKeys": "context.app.build"
+  },
+  {
+    "destKey": "extinfo.3",
+    "sourceKeys": "context.app.version"
+  },
+  {
+    "destKey": "extinfo.4",
+    "sourceKeys": "context.os.version",
+    "required": true
+  },
+  {
+    "destKey": "extinfo.5",
+    "sourceKeys": "context.device.model"
+  },
+  {
+    "destKey": "extinfo.6",
+    "sourceKeys": "context.locale"
+  },
+  {
+    "destKey": "extinfo.7",
+    "sourceKeys": "context.abv_timezone"
+  },
+  {
+    "destKey": "extinfo.8",
+    "sourceKeys": "context.network.carrier"
+  },
+  {
+    "destKey": "extinfo.9",
+    "sourceKeys": "context.screen.width"
+  },
+  {
+    "destKey": "extinfo.10",
+    "sourceKeys": "context.screen.height"
+  },
+  {
+    "destKey": "extinfo.11",
+    "sourceKeys": "context.screen.density"
+  },
+  {
+    "destKey": "extinfo.12",
+    "sourceKeys": "context.cpu_cores"
+  },
+  {
+    "destKey": "extinfo.13",
+    "sourceKeys": "context.ext_storage_size"
+  },
+  {
+    "destKey": "extinfo.14",
+    "sourceKeys": "context.avl_storage_size"
+  },
+  {
+    "destKey": "extinfo.15",
+    "sourceKeys": "context.timezone"
+  },
+  {
+    "destKey": "campaign_ids",
+    "sourceKeys": ["properties.campaignId", "context.traits.campaignId", "context.campaign.name"]
+  },
+  {
+    "destKey": "install_referrer",
+    "sourceKeys": "properties.install_referrer"
+  },
+  {
+    "destKey": "installer_package",
+    "sourceKeys": "properties.installer_package"
+  },
+  {
+    "destKey": "url_schemes",
+    "sourceKeys": "properties.url_schemes"
+  },
+  {
+    "destKey": "windows_attribution_id",
+    "sourceKeys": "properties.windows_attribution_id"
+  }
+]

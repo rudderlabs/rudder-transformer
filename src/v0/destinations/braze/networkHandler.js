@@ -27,12 +27,14 @@ const responseHandler = (destinationResponse, _dest) => {
   }
 
   // Partial errors
-  if (!!response &&
+  if (
+    !!response &&
     response.message === 'success' &&
     response.errors &&
-    response.errors.length > 0){
-      stats.increment('braze_partial_failure')
-    }
+    response.errors.length > 0
+  ) {
+    stats.increment('braze_partial_failure');
+  }
 
   // application level errors
   if (

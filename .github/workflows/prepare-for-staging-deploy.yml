@@ -120,5 +120,5 @@ jobs:
 
             git commit -m "chore: upgrade staging env transformers to \"$TAG_NAME\""
             git push -u origin $BRANCH_NAME
-            hub pull-request -m "chore: upgrade staging env transformers to \"$TAG_NAME\""
+            gh pr create --fill
           fi

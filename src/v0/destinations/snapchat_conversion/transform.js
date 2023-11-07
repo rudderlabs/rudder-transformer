@@ -161,19 +161,6 @@ const addSpecificEventDetails = (
   }
   return updatedPayload;
 };
-const handleDeduplication = (payload, enableDeduplication, deduplicationKey, message) => {
-  if (enableDeduplication) {
-    const dedupId = deduplicationKey || 'messageId';
-    const clientDedupId = get(message, dedupId);
-    if (!clientDedupId) {
-      throw new InstrumentationError(
-        'Deduplication enabled but no deduplication key provided in the message',
-      );
-    }
-    return clientDedupId;
-  }
-  return undefined;
-};
 const getEventConversionType = (message) => {
   const channel = get(message, 'channel');
   let eventConversionType = message?.properties?.eventConversionType;
@@ -300,8 +287,6 @@ const trackResponseBuilder = (message, { Config }, mappedEvent) => {
     snapAppId,
     appId,
   );
-  payload.client_dedup_id = handleDeduplication(enableDeduplication, deduplicationKey, message);
-
   // adding for deduplication for more than one source
   if (enableDeduplication) {
     const dedupId = deduplicationKey || 'messageId';

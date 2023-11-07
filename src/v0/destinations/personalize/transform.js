@@ -54,7 +54,9 @@ const putEventsHandler = (message, destination) => {
       if (!(key.toUpperCase() === 'IMPRESSION' || key.toUpperCase() === 'EVENT_VALUE'))
         outputEvent[lodash.camelCase(key)] = String(value);
       else if (key.toUpperCase() === 'IMPRESSION') {
-        outputEvent[lodash.camelCase(key)] = Array.isArray(value) ? value.map(String) : [String(value)];
+        outputEvent[lodash.camelCase(key)] = Array.isArray(value)
+          ? value.map(String)
+          : [String(value)];
         outputEvent[lodash.camelCase(key)] = lodash.without(
           outputEvent[lodash.camelCase(key)],
           undefined,

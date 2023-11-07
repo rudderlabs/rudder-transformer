@@ -30,6 +30,7 @@ const {
 const {
   createIdentifyResponse,
   isImportAuthCredentialsAvailable,
+  buildUtmParams,
   combineBatchRequestsWithSameJobIds,
   groupEventsByEndpoint,
   batchEvents,
@@ -179,6 +180,7 @@ const getEventValueForTrackEvent = (message, destination) => {
     token: destination.Config.token,
     distinct_id: message.userId || message.anonymousId,
     time: unixTimestamp,
+    ...buildUtmParams(message.context?.campaign),
   };
 
   if (destination.Config?.identityMergeApi === 'simplified') {
@@ -267,6 +269,7 @@ const processPageOrScreenEvents = (message, type, destination) => {
     token: destination.Config.token,
     distinct_id: message.userId || message.anonymousId,
     time: toUnixTimestamp(message.timestamp),
+    ...buildUtmParams(message.context?.campaign),
   };
   if (destination.Config?.identityMergeApi === 'simplified') {
     properties = {
@@ -455,10 +458,10 @@ const processRouterDest = async (inputs, reqMetadata) => {
       const { engageEvents, groupsEvents, trackEvents, importEvents, batchErrorRespList } =
         groupEventsByEndpoint(transformedPayloads);
 
-      const engageRespList = batchEvents(engageEvents, ENGAGE_MAX_BATCH_SIZE);
-      const groupsRespList = batchEvents(groupsEvents, GROUPS_MAX_BATCH_SIZE);
-      const trackRespList = batchEvents(trackEvents, TRACK_MAX_BATCH_SIZE);
-      const importRespList = batchEvents(importEvents, IMPORT_MAX_BATCH_SIZE);
+      const engageRespList = batchEvents(engageEvents, ENGAGE_MAX_BATCH_SIZE, reqMetadata);
+      const groupsRespList = batchEvents(groupsEvents, GROUPS_MAX_BATCH_SIZE, reqMetadata);
+      const trackRespList = batchEvents(trackEvents, TRACK_MAX_BATCH_SIZE, reqMetadata);
+      const importRespList = batchEvents(importEvents, IMPORT_MAX_BATCH_SIZE, reqMetadata);
       const batchSuccessRespList = [
         ...engageRespList,
         ...groupsRespList,

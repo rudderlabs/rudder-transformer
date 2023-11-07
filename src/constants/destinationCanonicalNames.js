@@ -3,6 +3,14 @@ const DestHandlerMap = {
 };
 
 const DestCanonicalNames = {
+  facebook_conversions: [
+    'fb_conversions',
+    'fb conversions',
+    'FacebookConversions',
+    'Facebook Conversions',
+    'FB Conversions',
+    'Facebook_Conversions',
+  ],
   fb_pixel: [
     'fb_pixel',
     'fb pixel',

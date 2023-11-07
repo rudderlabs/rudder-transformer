@@ -1,6 +1,216 @@
 [
   {
     "message": {
+      "type": "track",
+      "sentAt": "2020-08-14T05:30:30.118Z",
+      "context": {
+        "source": "test",
+        "traits": {
+          "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
+        },
+        "library": {
+          "name": "rudder-sdk-ruby-sync",
+          "version": "1.0.6"
+        }
+      },
+      "messageId": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
+      "timestamp": "2020-08-14T05:30:30.118Z",
+      "properties": {
+        "tax": 2,
+        "total": 27.5,
+        "coupon": "hasbros",
+        "revenue": 48,
+        "revenue_type": "Purchased",
+        "quantity": 2,
+        "currency": "USD",
+        "discount": 2.5,
+        "order_id": "50314b8e9bcf000000000000",
+        "shipping": 3,
+        "subtotal": 22.5,
+        "affiliation": "Google Store",
+        "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
+      },
+      "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+      "integrations": {
+        "S3": false,
+        "All": true
+      }
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "groupTypeTrait": "email",
+        "groupValueTrait": "age",
+        "trackProductsOnce": true,
+        "trackRevenuePerProduct": false
+      }
+    }
+  },
+  {
+    "message": {
+      "type": "UNSUPPORTED-TYPE",
+      "event": "Order Completed",
+      "sentAt": "2020-08-14T05:30:30.118Z",
+      "context": {},
+      "messageId": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
+      "timestamp": "2020-08-14T05:30:30.118Z",
+      "properties": {},
+      "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+      "integrations": {
+        "S3": false,
+        "All": true
+      }
+    },
+    "destination": {
+      "Config": {
+        "groupTypeTrait": "email",
+        "apiKey": "abcde",
+        "groupValueTrait": "age",
+        "trackProductsOnce": true,
+        "trackRevenuePerProduct": false
+      }
+    }
+  },
+  {
+    "message": {
+      "event": "Order Completed",
+      "sentAt": "2020-08-14T05:30:30.118Z",
+      "context": {},
+      "messageId": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
+      "timestamp": "2020-08-14T05:30:30.118Z",
+      "properties": {},
+      "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+      "integrations": {
+        "S3": false,
+        "All": true
+      }
+    },
+    "destination": {
+      "Config": {
+        "groupTypeTrait": "email",
+        "groupValueTrait": "age",
+        "trackProductsOnce": true,
+        "trackRevenuePerProduct": false
+      }
+    }
+  },
+  {
+    "message": {
+      "type": "track",
+      "event": "Order Completed",
+      "sentAt": "2020-08-14T05:30:30.118Z",
+      "context": {
+        "source": "test",
+        "traits": {
+          "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
+        },
+        "library": {
+          "name": "rudder-sdk-ruby-sync",
+          "version": "1.0.6"
+        }
+      },
+      "messageId": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
+      "timestamp": "2020-08-14T05:30:30.118Z",
+      "properties": {
+        "tax": 2,
+        "total": 27.5,
+        "coupon": "hasbros",
+        "revenue": 48,
+        "revenue_type": "Purchased",
+        "quantity": 2,
+        "currency": "USD",
+        "discount": 2.5,
+        "order_id": "50314b8e9bcf000000000000",
+        "shipping": 3,
+        "subtotal": 22.5,
+        "affiliation": "Google Store",
+        "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
+      },
+      "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+      "integrations": {
+        "S3": false,
+        "All": true
+      }
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "groupTypeTrait": "email",
+        "groupValueTrait": "age",
+        "trackProductsOnce": true,
+        "trackRevenuePerProduct": false
+      }
+    }
+  },
+  {
+    "message": {
+      "type": "track",
+      "event": "Order Completed",
+      "sentAt": "2020-08-14T05:30:30.118Z",
+      "context": {
+        "source": "test",
+        "traits": {
+          "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
+        },
+        "library": {
+          "name": "rudder-sdk-ruby-sync",
+          "version": "1.0.6"
+        }
+      },
+      "messageId": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
+      "timestamp": "2020-08-14T05:30:30.118Z",
+      "properties": {
+        "tax": 2,
+        "total": 27.5,
+        "coupon": "hasbros",
+        "revenue": 48,
+        "quantity": 2,
+        "currency": "USD",
+        "discount": 2.5,
+        "order_id": "50314b8e9bcf000000000000",
+        "products": [
+          {
+            "sku": "45790-32",
+            "url": "https://www.example.com/product/path",
+            "name": "Monopoly: 3rd Edition",
+            "price": 19,
+            "category": "Games",
+            "quantity": 1,
+            "image_url": "https:///www.example.com/product/path.jpg",
+            "product_id": "507f1f77bcf86cd799439011"
+          },
+          {
+            "sku": "46493-32",
+            "name": "Uno Card Game",
+            "price": 3,
+            "category": "Games",
+            "quantity": 2,
+            "product_id": "505bd76785ebb509fc183733"
+          }
+        ],
+        "shipping": 3,
+        "subtotal": 22.5,
+        "affiliation": "Google Store",
+        "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
+      },
+      "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+      "integrations": {
+        "S3": false,
+        "All": true
+      }
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "groupTypeTrait": "email",
+        "groupValueTrait": "age",
+        "trackProductsOnce": true,
+        "trackRevenuePerProduct": false
+      }
+    }
+  },
+  {
+    "message": {
       "channel": "web",
       "context": {
         "externalId": [
@@ -685,6 +895,91 @@
       "anonymousId": "my-anonymous-id-new",
       "userId": "sampleusrRudder3",
       "integrations": {
+        "All": true,
+        "Amplitude": {
+          "groups": {
+            "group_type": "Company",
+            "group_value": "ABC"
+          }
+        }
+      },
+      "groupId": "Sample_groupId23",
+      "traits": {
+        "KEY_3": {
+          "CHILD_KEY_92": "value_95",
+          "CHILD_KEY_102": "value_103"
+        },
+        "KEY_2": {
+          "CHILD_KEY_92": "value_95",
+          "CHILD_KEY_102": "value_103"
+        },
+        "name_trait": "Company",
+        "value_trait": "ABC"
+      },
+      "sentAt": "2020-10-20T07:54:58.983Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.5"
+        },
+        "traits": {
+          "name": "Shehan Study",
+          "category": "SampleIdentify",
+          "email": "test@rudderstack.com",
+          "plan": "Open source",
+          "logins": 5,
+          "createdAt": 1599264000
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.5"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 0.8999999761581421
+        },
+        "campaign": {
+          "source": "google",
+          "medium": "medium",
+          "term": "keyword",
+          "content": "some content",
+          "name": "some campaign",
+          "test": "other value"
+        },
+        "page": {
+          "path": "/destinations/amplitude",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        }
+      },
+      "type": "group",
+      "messageId": "e5034df0-a404-47b4-a463-76df99934fea",
+      "originalTimestamp": "2020-10-20T07:54:58.983Z",
+      "anonymousId": "my-anonymous-id-new",
+      "userId": "sampleusrRudder3",
+      "integrations": {
         "All": true
       },
       "groupId": "Sample_groupId23",
@@ -698,7 +993,7 @@
           "CHILD_KEY_102": "value_103"
         },
         "name_trait": "Company",
-        "value_trait": "Comapny-ABC"
+        "value_trait": "ABC"
       },
       "sentAt": "2020-10-20T07:54:58.983Z"
     },
@@ -779,7 +1074,9 @@
           "CHILD_KEY_102": "value_103"
         },
         "name_trait": "Company",
-        "value_trait": ["Comapny-ABC"]
+        "value_trait": [
+          "ABC"
+        ]
       },
       "sentAt": "2020-10-20T07:54:58.983Z"
     },
@@ -3173,7 +3470,7 @@
           "CHILD_KEY_102": "value_103"
         },
         "name_trait": "Company",
-        "value_trait": "Comapny-ABC"
+        "value_trait": "ABC"
       },
       "sentAt": "2020-10-20T07:54:58.983Z"
     },
@@ -3718,7 +4015,7 @@
           "CHILD_KEY_102": "value_103"
         },
         "name_trait": "Company",
-        "value_trait": "Comapny-ABC"
+        "value_trait": "ABC"
       },
       "sentAt": "2020-10-20T07:54:58.983Z"
     },
@@ -3967,6 +4264,69 @@
   },
   {
     "message": {
+      "anonymousId": "5d205961641ee6c5",
+      "channel": "mobile",
+      "context": {
+        "app": {
+          "build": "6",
+          "name": "Sample Kotlin",
+          "namespace": "com.example.testapp1mg",
+          "version": "1.2"
+        },
+        "device": {
+          "id": "5d205961641ee6c5",
+          "manufacturer": "Google",
+          "model": "Android SDK built for x86",
+          "name": "generic_x86",
+          "type": "Android"
+        },
+        "library": {
+          "name": "com.rudderstack.android.sdk.core",
+          "version": "1.7.0"
+        },
+        "locale": "en-US",
+        "network": {
+          "carrier": "Android",
+          "bluetooth": false,
+          "cellular": true,
+          "wifi": true
+        },
+        "os": {
+          "name": "Android",
+          "version": "7.1.1"
+        },
+        "screen": {
+          "density": 440,
+          "height": 2148,
+          "width": 1080
+        },
+        "sessionId": "1662393792",
+        "timezone": "Asia/Kolkata",
+        "traits": {
+          "anonymousId": "5d205961641ee6c5",
+          "id": "User Android",
+          "userId": "User Android"
+        },
+        "userAgent": "Dalvik/2.1.0 (Linux; U; Android 7.1.1; Android SDK built for x86 Build/NYC)"
+      },
+      "integrations": {
+        "All": true
+      },
+      "messageId": "1662393883248-509420bf-b812-4f8d-bdb2-8c811bfde87f",
+      "properties": {
+      },
+      "originalTimestamp": "2022-09-05T16:04:43.250Z",
+      "type": "screen",
+      "userId": "User Android"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde"
+      }
+    }
+  },
+  {
+    "message": {
       "channel": "web",
       "context": {
         "externalId": [
@@ -4185,7 +4545,7 @@
           "CHILD_KEY_102": "value_103"
         },
         "name_trait": "Company",
-        "value_trait": "Comapny-ABC"
+        "value_trait": "ABC"
       },
       "sentAt": "2020-10-20T07:54:58.983Z"
     },
@@ -4464,7 +4824,6 @@
         "search": "",
         "title": "",
         "url": "https://docs.rudderstack.com/destinations/amplitude",
-        "category": "destination",
         "initial_referrer": "https://docs.rudderstack.com",
         "initial_referring_domain": "docs.rudderstack.com"
       },
@@ -4474,13 +4833,12 @@
           "event_id": 2
         }
       },
-      "name": "ApplicationLoaded",
       "sentAt": "2019-10-14T11:15:53.296Z"
     },
     "destination": {
       "Config": {
         "apiKey": "abcde",
-        "useUserDefinedPageEventName": true,
+        "useUserDefinedPageEventName": false,
         "userProvidedPageEventString": "Viewed {{context.page.title}} event."
       }
     }

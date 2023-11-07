@@ -196,7 +196,7 @@ const getScreenevTypeAndUpdatedProperties = (message, CATEGORY_KEY) => {
   const name = message.name || message.event || get(message, CATEGORY_KEY);
   const updatedName = name ? `${name} ` : '';
   return {
-    evType: `Viewed ${updatedName}Screen`,
+    eventType: `Viewed ${updatedName}Screen`,
     updatedProperties: {
       ...message.properties,
       name,
@@ -589,7 +589,6 @@ const processSingleMessage = (message, destination) => {
   // To be used for track/page calls to associate the event to a group in AM
   let groupInfo = get(message, 'integrations.Amplitude.groups') || undefined;
   let category = ConfigCategory.DEFAULT;
-  let updatedProperties;
   const { name, event, properties } = message;
   const messageType = message.type.toLowerCase();
   const CATEGORY_KEY = 'properties.category';
@@ -629,9 +628,15 @@ const processSingleMessage = (message, destination) => {
       category = ConfigCategory.PAGE;
       break;
     case EventType.SCREEN:
-      ({ evType, updatedProperties } = getScreenevTypeAndUpdatedProperties(message, CATEGORY_KEY));
-      message.properties = updatedProperties;
-      category = ConfigCategory.SCREEN;
+      {
+        const { eventType, updatedProperties } = getScreenevTypeAndUpdatedProperties(
+          message,
+          CATEGORY_KEY,
+        );
+        evType = eventType;
+        message.properties = updatedProperties;
+        category = ConfigCategory.SCREEN;
+      }
       break;
     case EventType.GROUP:
       evType = 'group';

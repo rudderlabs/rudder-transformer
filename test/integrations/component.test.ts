@@ -17,12 +17,15 @@ import {
   getAllTestMockDataFilePaths,
   addMock,
 } from './testUtils';
-import tags, { FEATURES } from '../../src/v0/util/tags';
+import tags from '../../src/v0/util/tags';
 import { Server } from 'http';
 import { appendFileSync } from 'fs';
 import { responses } from '../testHelper';
-import utils from '../../src/v0/util';
-import isMatch from 'lodash/isMatch';
+import { set } from 'lodash';
+import { mockAxiosFromLib } from '@rudderstack/integrations-lib/mock';
+import MockAdapter from 'axios-mock-adapter';
+
+const pluginDestinations = ['webhook'];
 
 // To run single destination test cases
 // npm run test:ts -- component  --destination=adobe_analytics
@@ -72,12 +75,13 @@ afterAll(async () => {
   }
   await createHttpTerminator({ server }).terminate();
 });
+
 let mock;
 if (!opts.generate || opts.generate === 'false') {
   // unmock already existing axios-mocking
   mock = new MockAxiosAdapter(axios, { onNoMatch: 'passthrough' });
-  const registerAxiosMocks = (axiosMocks: MockHttpCallsData[]) => {
-    axiosMocks.forEach((axiosMock) => addMock(mock, axiosMock));
+  const registerAxiosMocks = (axiosMocks: MockHttpCallsData[], mockAdapter: MockAdapter) => {
+    axiosMocks.forEach((axiosMock) => addMock(mockAdapter, axiosMock));
   };
 
   // // all the axios requests will be stored in this map
@@ -89,7 +93,8 @@ if (!opts.generate || opts.generate === 'false') {
       return mockNetworkCallsData;
     })
     .flat();
-  registerAxiosMocks(allAxiosRequests);
+  registerAxiosMocks(allAxiosRequests, mock);
+  registerAxiosMocks(allAxiosRequests, mockAxiosFromLib);
 }
 
 // END
@@ -133,8 +138,27 @@ const testRoute = async (route, tcData: TestCaseData) => {
   }
 };
 
+const updateTCDataForPluginDests = (tcData: TestCaseData) => {
+  if (tcData.feature === tags.FEATURES.PROCESSOR) {
+    tcData.input.request.body.forEach((event) => {
+      set(event, 'destination.DestinationDefinition.Config.isPlugin', true);
+    });
+  }
+  if (tcData.feature === tags.FEATURES.ROUTER) {
+    tcData.input.request.body.input.forEach((event) => {
+      set(event, 'destination.DestinationDefinition.Config.isPlugin', true);
+    });
+    tcData.output.response?.body.output.forEach((payload) => {
+      set(payload, 'destination.DestinationDefinition.Config.isPlugin', true);
+    });
+  }
+};
+
 const destinationTestHandler = async (tcData: TestCaseData) => {
   let route;
+  if (pluginDestinations.includes(tcData.name)) {
+    updateTCDataForPluginDests(tcData);
+  }
   switch (tcData.feature) {
     case tags.FEATURES.ROUTER:
       route = `/routerTransform`;
@@ -183,7 +207,7 @@ describe.each(allTestDataFilePaths)('%s Tests', (testDataPath) => {
 
     switch (tcData.module) {
       case tags.MODULES.DESTINATION:
-        await destinationTestHandler(tcData);
+          await destinationTestHandler(tcData);
         break;
       case tags.MODULES.SOURCE:
         await sourceTestHandler(tcData);

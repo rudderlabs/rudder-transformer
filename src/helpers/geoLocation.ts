@@ -34,7 +34,9 @@ export default class GeoLocationHelper {
       },
       {},
     );
-    set(msg, addressKey, { ...address, ...mappedAddress });
+    if (!isEmpty(address) || !isEmpty(mappedAddress)) {
+      set(msg, addressKey, { ...address, ...mappedAddress });
+    }
     return msg;
   }
 }

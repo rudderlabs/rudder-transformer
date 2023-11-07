@@ -6,6 +6,7 @@ const { getMappingConfig } = require('../../util');
 // https://developers.activecampaign.com/reference/create-a-new-tag
 // https://developers.activecampaign.com/reference/contact-tags
 // https://developers.activecampaign.com/reference/update-list-status-for-contact
+// https://developers.activecampaign.com/reference/bulk-import-contacts
 
 // For PAGE
 // https://developers.activecampaign.com/reference/site-tracking
@@ -20,6 +21,8 @@ const { getMappingConfig } = require('../../util');
 // https://developers.activecampaign.com/reference/create-a-new-event-name-only
 // https://developers.activecampaign.com/reference/track-event
 
+const MAX_BATCH_SIZE = 250;
+
 const CONFIG_CATEGORIES = {
   IDENTIFY: {
     name: 'ACIdentify',
@@ -30,6 +33,7 @@ const CONFIG_CATEGORIES = {
     mergeTagWithContactUrl: '/api/3/contactTags',
     mergeFieldValueWithContactUrl: '/api/3/fieldValues',
     mergeListWithContactUrl: '/api/3/contactLists',
+    contactBulkImportUrl: '/api/3/import/bulk_import',
   },
 
   PAGE: { name: 'ACPage', endPoint: '/api/3/siteTrackingDomains' },
@@ -70,4 +74,5 @@ module.exports = {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   getHeader,
+  MAX_BATCH_SIZE
 };

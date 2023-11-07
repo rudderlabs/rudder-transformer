@@ -2,13 +2,16 @@
 /* eslint-disable  no-empty */
 const get = require('get-value');
 const { EventType } = require('../../../constants');
-const { CONFIG_CATEGORIES, MAPPING_CONFIG, getHeader } = require('./config');
+const { CONFIG_CATEGORIES, MAPPING_CONFIG, getHeader, MAX_BATCH_SIZE } = require('./config');
 const {
   defaultRequestConfig,
   constructPayload,
   defaultPostRequestConfig,
   removeUndefinedAndNullValues,
-  simpleProcessRouterDest,
+  // simpleProcessRouterDest,
+  handleRtTfSingleEventError,
+  getErrorRespEvents,
+  getSuccessRespEvents
 } = require('../../util');
 const { errorHandler } = require('./util');
 const { httpGET, httpPOST } = require('../../../adapters/network');
@@ -393,6 +396,33 @@ const identifyRequestHandler = async (message, category, destination) => {
   // sync the enriched payload
   return responseBuilderSimple(payload, category, destination);
 };
+
+const buildListObject = (listInfo) => {
+  const output = listInfo.reduce((result, item) => {
+    if (item.status === 'subscribe' || item.status === 'unsubscribe') {
+      if (!result[item.status]) {
+        // eslint-disable-next-line no-param-reassign
+        result[item.status] = [];
+      }
+      result[item.status].push({ listid: item.id });
+    }
+    return result;
+  }, {});
+  return output;
+};
+
+const buildFieldObject = (fieldInfo) => {
+
+};
+
+const identifyBatchRequestHandler = async (message, category, destination) => {
+   // create skeleton contact payload
+   let contactPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
+   contactPayload = removeUndefinedAndNullValues(contactPayload);
+   const listInput = buildListObject(contactPayload.lists);
+   const fieldInput = buildFieldObject(contactPayload);
+
+}
 // This method handles any page request
 // Creates the payload as per API spec and returns to rudder-server
 // Ref - https://developers.activecampaign.com/reference/site-tracking
@@ -593,9 +623,127 @@ const process = async (event) => {
   return result;
 };
 
-const processRouterDest = async (inputs, reqMetadata) => {
-  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
-  return respList;
+// const processRouterDest = async (inputs, reqMetadata) => {
+//   const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
+//   return respList;
+// };
+
+const getSizeInBytes = (obj) => {
+  let str = null;
+  if (typeof obj === 'string') {
+    // If obj is a string, then use it
+    str = obj;
+  } else {
+    // Else, make obj into a string
+    str = JSON.stringify(obj);
+  }
+  // Get the length of the Uint8Array
+  const bytes = new TextEncoder().encode(str).length;
+  return bytes;
 };
 
+
+const getEventChunks = (identifyEvents) => {
+  const eventChunks = [];
+  let batchedData = [];
+  let metadata = [];
+  let size = 0;
+
+  identifyEvents.forEach((events) => {
+    const objSize = getSizeInBytes(events);
+    size += objSize;
+    if (batchedData.length === MAX_BATCH_SIZE || size > 399999) {
+      eventChunks.push({ data: batchedData, metadata });
+      batchedData = [];
+      metadata = [];
+      size = 0;
+    }
+    metadata.push(events.metadata);
+    batchedData.push(events.message.body.JSON);
+  });
+
+  if (batchedData.length > 0) {
+    eventChunks.push({ data: batchedData, metadata });
+  }
+
+  return eventChunks;
+};
+
+const batchEvents = (successRespList) => {
+  const batchedResponseList = [];
+  const identifyEvents = [];
+  // Filtering out group calls to process batching
+  successRespList.forEach((resp) => {
+    if (!resp.message.endpoint.includes('import/bulk_import')) {
+      batchedResponseList.push(
+        getSuccessRespEvents(resp.message, [resp.metadata], resp.destination),
+      );
+    } else {
+      identifyEvents.push(resp);
+    }
+  });
+
+  if (identifyEvents.length > 0) {
+    // Extracting metadata, destination and message from the first event in a batch
+    const { destination, message } = identifyEvents[0];
+    const { headers, endpoint } = message;
+
+    // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
+    const eventChunks = getEventChunks(identifyEvents);
+
+    /**
+     * Ref : https://www.customer.io/docs/api/track/#operation/batch
+     */
+    eventChunks.forEach((chunk) => {
+      const request = defaultRequestConfig();
+      request.endpoint = endpoint;
+      request.headers = { ...headers };
+      // Setting the request body to an object with a single property called "batch" containing the batched data
+      request.body.JSON = { batch: chunk.data };
+
+      batchedResponseList.push(getSuccessRespEvents(request, chunk.metadata, destination));
+    });
+  }
+  return batchedResponseList;
+};
+
+const processRouterDest = (inputs, reqMetadata) => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, 'Invalid event array');
+    return [respEvents];
+  }
+  let batchResponseList = [];
+  const batchErrorRespList = [];
+  const successRespList = [];
+  const { destination } = inputs[0];
+  inputs.forEach((event) => {
+    try {
+      if (event.message.statusCode) {
+        // already transformed event
+        successRespList.push({
+          message: event.message,
+          metadata: event.metadata,
+          destination,
+        });
+      } else {
+        // if not transformed
+        const transformedPayload = {
+          message: process(event),
+          metadata: event.metadata,
+          destination,
+        };
+        successRespList.push(transformedPayload);
+      }
+    } catch (error) {
+      const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
+      batchErrorRespList.push(errRespEvent);
+    }
+  });
+
+  if (successRespList.length > 0) {
+    batchResponseList = batchEvents(successRespList);
+  }
+
+  return [...batchResponseList, ...batchErrorRespList];
+};
 module.exports = { process, processRouterDest };

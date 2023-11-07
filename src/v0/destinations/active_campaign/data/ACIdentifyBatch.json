@@ -1,0 +1,42 @@
+[
+    {
+      "destKey": "email",
+      "sourceKeys": "email",
+      "sourceFromGenericMap": true,
+      "required": true
+    },
+    {
+      "destKey": "phone",
+      "sourceKeys": "phone",
+      "sourceFromGenericMap": true,
+      "required": false
+    },
+    {
+      "destKey": "firstName",
+      "sourceKeys": "firstName",
+      "sourceFromGenericMap": true,
+      "required": false
+    },
+    {
+      "destKey": "lastName",
+      "sourceKeys": "lastName",
+      "sourceFromGenericMap": true,
+      "required": false
+    },
+  {
+    "destKey": "tags",
+    "sourceKeys": ["context.traits.tags", "traits.tags"],
+    "required": false
+  },
+  {
+    "destKey": "fieldInfo",
+    "sourceKeys": ["context.traits.fieldInfo", "traits.fieldInfo"],
+    "required": false
+  },
+  {
+    "destKey": "lists",
+    "sourceKeys": ["context.traits.lists", "traits.listse"],
+    "required": false
+  }
+  ]
+  

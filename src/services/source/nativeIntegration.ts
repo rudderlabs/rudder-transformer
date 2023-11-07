@@ -26,7 +26,7 @@ export default class NativeIntegrationSourceService implements IntegrationSource
 
 
   public async sourceTransformRoutine(
-    sourceEvents: unknown[],
+    sourceEvents: NonNullable<unknown>[],
     sourceType: string,
     version: string,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

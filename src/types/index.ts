@@ -253,9 +253,9 @@ type Source = {
   Enabled: boolean;
   WorkspaceID: string;
   WriteKey: string
-  Transformations: UserTransformationInput[];
+  Transformations?: UserTransformationInput[];
   RevisionID?: string;
-  Destinations: Destination[]
+  Destinations?: Destination[]
   Transient: boolean
   EventSchemasEnabled: boolean
   DgSourceTrackingPlanConfig: DgSourceTrackingPlanConfigT

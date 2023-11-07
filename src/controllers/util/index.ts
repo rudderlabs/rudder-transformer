@@ -11,13 +11,12 @@ import {
   RudderMessage,
   SourceInput,
 } from '../../types';
-import { getValueFromMessage, isDefinedAndNotNull } from '../../v0/util';
+import { getValueFromMessage } from '../../v0/util';
 import genericFieldMap from '../../v0/util/data/GenericFieldMapping.json';
 import { EventType, MappedToDestinationKey } from '../../constants';
 
 export default class ControllerUtility {
-
-  private static sourceVersionMap: object;
+  private static sourceVersionMap: Map<string, string> = new Map();
 
   public static timestampValsMap: Record<string, string[]> = {
     [EventType.IDENTIFY]: [
@@ -29,42 +28,44 @@ export default class ControllerUtility {
     [EventType.TRACK]: [`properties.${RETL_TIMESTAMP}`, ...genericFieldMap.timestamp],
   };
 
-
-
-
-  private static getSourceVersionsMap(): object {
-    if (isDefinedAndNotNull(this.sourceVersionMap)) {
+  private static getSourceVersionsMap(): Map<string, any> {
+    if (this.sourceVersionMap.size > 0) {
       return this.sourceVersionMap;
     }
-    const versions = ["v0", "v1"];
-    const sourceToVersionMap = {};
-    // TODO: USE MAP instead object
-    versions.forEach(version => {
-      const files = fs.readdirSync(path.resolve(__dirname, `../../${version}/sources`), { withFileTypes: true });
-      const sources = files.filter(file => file.isDirectory()).map(folder => folder.name)
-      sources.forEach(source => {
-        sourceToVersionMap[source] = version
+    const versions = ['v0', 'v1'];
+    versions.forEach((version) => {
+      const files = fs.readdirSync(path.resolve(__dirname, `../../${version}/sources`), {
+        withFileTypes: true,
+      });
+      const sources = files.filter((file) => file.isDirectory()).map((folder) => folder.name);
+      sources.forEach((source) => {
+        this.sourceVersionMap.set(source, version);
       });
     });
-    this.sourceVersionMap = sourceToVersionMap;
-    return this.sourceVersionMap
+    return this.sourceVersionMap;
   }
 
   private static convertSourceInputv1Tov0(sourceEvents: SourceInput[]): NonNullable<unknown>[] {
-    return sourceEvents.map(sourceEvent => sourceEvent.event);
+    return sourceEvents.map((sourceEvent) => sourceEvent.event);
   }
 
   private static convertSourceInputv0Tov1(sourceEvents: unknown[]): SourceInput[] {
-    return sourceEvents.map(sourceEvent => ({ event: sourceEvent, source: undefined } as SourceInput));
+    return sourceEvents.map(
+      (sourceEvent) => ({ event: sourceEvent, source: undefined } as SourceInput),
+    );
   }
 
-  public static adaptInputToVersion(sourceType: string, requestVersion: string, input: NonNullable<unknown>[]): { implementationVersion: string, input: NonNullable<unknown>[] } {
+  public static adaptInputToVersion(
+    sourceType: string,
+    requestVersion: string,
+    input: NonNullable<unknown>[],
+  ): { implementationVersion: string; input: NonNullable<unknown>[] } {
     const sourceToVersionMap = this.getSourceVersionsMap();
-    const implementationVersion = sourceToVersionMap[sourceType];
+    const implementationVersion = sourceToVersionMap.get(sourceType);
     let updatedInput: NonNullable<unknown>[] = input;
-    if (requestVersion === "v0" && implementationVersion === "v1") {
+    if (requestVersion === 'v0' && implementationVersion === 'v1') {
       updatedInput = this.convertSourceInputv0Tov1(input);
-    } else if (requestVersion === "v1" && implementationVersion === "v0") {
+    } else if (requestVersion === 'v1' && implementationVersion === 'v0') {
       updatedInput = this.convertSourceInputv1Tov0(input as SourceInput[]);
     }
     return { implementationVersion, input: updatedInput };

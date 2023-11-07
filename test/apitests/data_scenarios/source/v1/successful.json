@@ -1,0 +1,30 @@
+{
+  "input": [
+    {
+      "event": "Fulfillments Update",
+      "data": {
+        "fulfillment_id": "1234567890",
+        "status": "pending"
+      }
+    }
+  ],
+  "output": [
+    {
+      "output": {
+        "batch": [
+          {
+            "type": "track",
+            "event": "webhook_source_event",
+            "properties": {
+              "event": "Fulfillments Update",
+              "data": {
+                "fulfillment_id": "1234567890",
+                "status": "pending"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -41,6 +41,7 @@ function processEvents(eventList) {
   eventList.forEach((event) => {
     let response = {};
     // eslint-disable-next-line camelcase
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const { data, log_id } = event;
     // Dropping the event if type is not present
     if (data && data.type) {

@@ -1,5 +1,5 @@
 /* eslint-disable eqeqeq */
-const _ = require('lodash');
+const lodash = require('lodash');
 const { isEmpty } = require('lodash');
 const {
   isHttpStatusRetryable,
@@ -71,6 +71,14 @@ const nodeSysErrorToStatus = (code) => {
       status: 500,
       message: '[ETIMEDOUT] :: Operation timed out',
     },
+    EAI_AGAIN: {
+      status: 500,
+      message: '[EAI_AGAIN] :: Temporary failure in name resolution',
+    },
+    ECONNABORTED: {
+      status: 500,
+      message: '[ECONNABORTED] :: Connection aborted',
+    },
   };
   return sysErrorToStatusMap[code] || { status: 400, message: `[${code}]` };
 };
@@ -100,7 +108,7 @@ const parseDestResponse = (destResponse, destination = '') => {
   if (
     !isDefinedAndNotNull(responseBody) ||
     !isDefinedAndNotNull(status) ||
-    !_.isNumber(status) ||
+    !lodash.isNumber(status) ||
     status === 0
   ) {
     throw new AbortedError(

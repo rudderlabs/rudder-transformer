@@ -6,13 +6,11 @@
   },
   {
     "destKey": "id",
-    "sourceKeys": [
-      "properties.order_id",
-      "properties.orderId",
-      "properties.id",
-      "properties.event_id"
-    ],
-    "required": false
+    "sourceKeys": ["properties.order_id", "properties.orderId", "properties.event_id"],
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
   },
   {
     "destKey": "createdAt",

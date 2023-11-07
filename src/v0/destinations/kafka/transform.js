@@ -5,6 +5,8 @@ const {
   getIntegrationsObj,
   getHashFromArray,
   removeUndefinedAndNullValues,
+  getSuccessRespEvents,
+  getErrorRespEvents,
 } = require('../../util');
 // const { InstrumentationError } = require("../../util/errorTypes");
 
@@ -37,6 +39,10 @@ const filterConfigTopics = (message, destination) => {
 
 const batch = (destEvents) => {
   const respList = [];
+  if (!Array.isArray(destEvents) || destEvents.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, 'Invalid event array');
+    return [respEvents];
+  }
 
   // Grouping the events by topic
   const groupedEvents = groupBy(destEvents, (event) => event.message.topic);
@@ -52,9 +58,10 @@ const batch = (destEvents) => {
       metadata: events.map((event) => event.metadata),
       destination: events[0].destination,
     };
-    respList.push(response);
+    respList.push(
+      getSuccessRespEvents(response.batchedRequest, response.metadata, response.destination, true),
+    );
   }
-
   return respList;
 };
 

@@ -1,14 +1,11 @@
 import path from 'path';
 import fs from 'fs/promises';
-import {
-  WorkflowExecutionError,
-  WorkflowCreationError,
-  StatusError,
-} from '@rudderstack/workflow-engine';
+import { WorkflowExecutionError, WorkflowCreationError } from '@rudderstack/workflow-engine';
 import logger from '../../logger';
 import { generateErrorObject } from '../../v0/util';
 import { PlatformError } from '../../v0/util/errorTypes';
 import tags from '../../v0/util/tags';
+import { CatchErr } from '../../util/types';
 
 const CDK_V2_ROOT_DIR = __dirname;
 
@@ -83,7 +80,7 @@ export function getWorkflowEngineErrorMessage(err) {
  * @param {*} defTags default stat tags
  * @returns Error type object
  */
-export function getErrorInfo(err: any, isProd: boolean, defTags) {
+export function getErrorInfo(err: CatchErr, isProd: boolean, defTags) {
   // Handle various CDK error types
   const message = isProd ? getWorkflowEngineErrorMessage(err) : err.message;
 
@@ -91,7 +88,7 @@ export function getErrorInfo(err: any, isProd: boolean, defTags) {
     logger.error(`Error occurred during workflow step execution: ${message}`, err);
 
     // Determine the error instance
-    let errInstance: any = err;
+    let errInstance: CatchErr = err;
     if (err.originalError) {
       errInstance = err.originalError;
       errInstance.message = message;

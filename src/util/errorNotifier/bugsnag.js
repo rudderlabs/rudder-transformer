@@ -23,6 +23,7 @@ const {
   UnhandledStatusCodeError,
   UnauthorizedError,
   NetworkInstrumentationError,
+  FilteredEventsError,
 } = require('../../v0/util/errorTypes');
 
 const {
@@ -48,6 +49,7 @@ const errorTypesDenyList = [
   NetworkInstrumentationError,
   CDKCustomError,
   DataValidationError,
+  FilteredEventsError,
 ];
 
 const pathsDenyList = [

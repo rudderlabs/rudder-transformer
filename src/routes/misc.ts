@@ -13,4 +13,5 @@ router.get('/features', MiscController.features);
 router.get('/debug/pprof/profile', MiscController.getCPUProfile);
 router.get('/debug/pprof/heap', MiscController.getHeapProfile);
 
-export const miscRoutes = router.routes();
+const miscRoutes = router.routes();
+export default miscRoutes;

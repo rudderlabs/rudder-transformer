@@ -1,5 +1,6 @@
 import Router from '@koa/router';
 import RouteActivationController from '../middlewares/routeActivation';
+import FeatureFlagController from '../middlewares/featureFlag';
 import UserTransformController from '../controllers/userTransform';
 
 const router = new Router();
@@ -7,6 +8,7 @@ const router = new Router();
 router.post(
   '/customTransform',
   RouteActivationController.isUserTransformRouteActive,
+  FeatureFlagController.handle,
   UserTransformController.transform,
 );
 router.post(
@@ -30,4 +32,5 @@ router.post(
   UserTransformController.extractLibhandle,
 );
 
-export const userTransformRoutes = router.routes();
+const userTransformRoutes = router.routes();
+export default userTransformRoutes;

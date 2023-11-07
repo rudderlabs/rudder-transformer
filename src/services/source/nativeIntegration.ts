@@ -5,6 +5,7 @@ import {
   RudderMessage,
   SourceTransformationResponse,
 } from '../../types/index';
+import { FixMe } from '../../util/types';
 import PostTransformationServiceSource from './postTransformation';
 import FetchHandler from '../../helpers/fetchHandlers';
 import tags from '../../v0/util/tags';
@@ -25,19 +26,20 @@ export default class NativeIntegrationSourceService implements IntegrationSource
   }
 
   public async sourceTransformRoutine(
-    sourceEvents: Object[],
+    sourceEvents: NonNullable<unknown>[],
     sourceType: string,
     version: string,
-    _requestMetadata: Object,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _requestMetadata: NonNullable<unknown>,
   ): Promise<SourceTransformationResponse[]> {
     const sourceHandler = FetchHandler.getSourceHandler(sourceType, version);
-    const respList: SourceTransformationResponse[] = await Promise.all<any>(
+    const respList: SourceTransformationResponse[] = await Promise.all<FixMe>(
       sourceEvents.map(async (sourceEvent) => {
         try {
           const respEvents: RudderMessage | RudderMessage[] | SourceTransformationResponse =
             await sourceHandler.process(sourceEvent);
           return PostTransformationServiceSource.handleSuccessEventsSource(respEvents);
-        } catch (error: any) {
+        } catch (error: FixMe) {
           const metaTO = this.getTags();
           stats.increment('source_transform_errors', {
             sourceType,

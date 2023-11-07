@@ -1,4 +1,4 @@
-const _ = require('lodash');
+const lodash = require('lodash');
 const {
   defaultPutRequestConfig,
   handleRtTfSingleEventError,
@@ -62,7 +62,10 @@ const trackResponseBuilder = (message, { Config }) => {
   if (processedPayload?.properties) {
     processedPayload.properties = stringifyPropertiesValues(processedPayload.properties);
   }
-  if (processedPayload.name && !(processedPayload.name.length >= 2 && processedPayload.name.length <= 30)) {
+  if (
+    processedPayload.name &&
+    !(processedPayload.name.length >= 2 && processedPayload.name.length <= 30)
+  ) {
     throw new InstrumentationError('Event name should be between 2 and 30 characters');
   }
   processedPayload.name = processedPayload.name.trim().replace(/\s+/g, '_');
@@ -130,10 +133,10 @@ const batchEvents = (successRespList) => {
   //    audienceId1: [...events]
   //    audienceId2: [...events]
   // }
-  const audienceEventGroups = _.groupBy(successRespList, (event) => event.message.audienceId);
+  const audienceEventGroups = lodash.groupBy(successRespList, (event) => event.message.audienceId);
   Object.keys(audienceEventGroups).forEach((audienceId) => {
     // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
-    const eventChunks = _.chunk(audienceEventGroups[audienceId], MAX_BATCH_SIZE);
+    const eventChunks = lodash.chunk(audienceEventGroups[audienceId], MAX_BATCH_SIZE);
     eventChunks.forEach((chunk) => {
       const batchEventResponse = generateBatchedPaylaodForArray(audienceId, chunk);
       batchedResponseList.push(

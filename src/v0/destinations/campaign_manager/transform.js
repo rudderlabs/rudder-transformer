@@ -18,6 +18,8 @@ const {
   EncryptionSource,
 } = require('./config');
 
+const { convertToMicroseconds } = require('./util');
+
 const { InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -72,7 +74,8 @@ function processTrack(message, metadata, destination) {
     delete requestJson.childDirectedTreatment;
     delete requestJson.limitAdTracking;
   }
-  requestJson.timestampMicros = requestJson.timestampMicros.toString();
+
+  requestJson.timestampMicros = convertToMicroseconds(requestJson.timestampMicros).toString();
 
   const encryptionInfo = {};
   // prepare encrptionInfo if encryptedUserId or encryptedUserIdCandidates is given
@@ -138,35 +141,17 @@ function postValidateRequest(response) {
     );
   }
 
-  let count = 0;
-
-  if (response.body.JSON.conversions[0].gclid) {
-    count += 1;
-  }
-
-  if (response.body.JSON.conversions[0].dclid) {
-    count += 1;
-  }
-
-  if (response.body.JSON.conversions[0].encryptedUserId) {
-    count += 1;
-  }
-
-  if (response.body.JSON.conversions[0].encryptedUserIdCandidates) {
-    count += 1;
-  }
-
-  if (response.body.JSON.conversions[0].mobileDeviceId) {
-    count += 1;
-  }
-
-  if (response.body.JSON.conversions[0].impressionId) {
-    count += 1;
-  }
-
-  if (count !== 1) {
+  if (
+    !response.body.JSON.conversions[0].gclid &&
+    !response.body.JSON.conversions[0].matchId &&
+    !response.body.JSON.conversions[0].dclid &&
+    !response.body.JSON.conversions[0].encryptedUserId &&
+    !response.body.JSON.conversions[0].encryptedUserIdCandidates &&
+    !response.body.JSON.conversions[0].mobileDeviceId &&
+    !response.body.JSON.conversions[0].impressionId
+  ) {
     throw new InstrumentationError(
-      '[CAMPAIGN MANAGER (DCM)]: For CM360 we need one of encryptedUserId,encryptedUserIdCandidates, matchId, mobileDeviceId, gclid, dclid, impressionId.',
+      '[CAMPAIGN MANAGER (DCM)]: Atleast one of encryptedUserId,encryptedUserIdCandidates, matchId, mobileDeviceId, gclid, dclid, impressionId.',
     );
   }
 }

@@ -50,6 +50,10 @@ const MappedToDestinationKey = 'context.mappedToDestination';
 const GENERIC_TRUE_VALUES = ['true', 'True', 'TRUE', 't', 'T', '1'];
 const GENERIC_FALSE_VALUES = ['false', 'False', 'FALSE', 'f', 'F', '0'];
 
+const HTTP_CUSTOM_STATUS_CODES = {
+  FILTERED: 298,
+};
+
 module.exports = {
   EventType,
   GENERIC_TRUE_VALUES,
@@ -58,4 +62,5 @@ module.exports = {
   SpecedTraits,
   TraitsMapping,
   WhiteListedTraits,
+  HTTP_CUSTOM_STATUS_CODES,
 };

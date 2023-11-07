@@ -1,3 +1,6 @@
+import { enhanceRequestOptions } from '../../../../src/adapters/network';
+import qs from 'qs';
+
 export const data = [
   {
     name: 'canny',

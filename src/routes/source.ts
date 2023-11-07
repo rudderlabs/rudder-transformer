@@ -11,4 +11,5 @@ router.post(
   SourceController.sourceTransform,
 );
 
-export const sourceRoutes = router.routes();
+const sourceRoutes = router.routes();
+export default sourceRoutes;

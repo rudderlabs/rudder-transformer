@@ -1,7 +1,5 @@
 import { Context } from 'koa';
-import MiscService from '../services/misc';
 import { ProcessorTransformationRequest, UserTransformationServiceResponse } from '../types/index';
-import { compileUserLibrary } from '../util/ivmFactory';
 import UserTransformService from '../services/userTransform';
 import logger from '../logger';
 import {
@@ -17,10 +15,9 @@ export default class UserTransformController {
       '(User transform - router:/customTransform ):: Request to transformer',
       JSON.stringify(ctx.request.body),
     );
-    const requestMetadata = MiscService.getRequestMetadata(ctx);
     const events = ctx.request.body as ProcessorTransformationRequest[];
     const processedRespone: UserTransformationServiceResponse =
-      await UserTransformService.transformRoutine(events);
+      await UserTransformService.transformRoutine(events, ctx.state.features);
     ctx.body = processedRespone.transformedEvents;
     ControllerUtility.postProcess(ctx, processedRespone.retryStatus);
     logger.debug(

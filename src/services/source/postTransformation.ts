@@ -1,10 +1,11 @@
 import { MetaTransferObject, RudderMessage, SourceTransformationResponse } from '../../types/index';
+import { CatchErr } from '../../util/types';
 import { generateErrorObject } from '../../v0/util';
 import ErrorReportingService from '../errorReporting';
 
 export default class PostTransformationSourceService {
   public static handleFailureEventsSource(
-    error: Object,
+    error: CatchErr,
     metaTO: MetaTransferObject,
   ): SourceTransformationResponse {
     const errObj = generateErrorObject(error, metaTO.errorDetails);

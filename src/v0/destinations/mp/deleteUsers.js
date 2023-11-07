@@ -1,4 +1,4 @@
-const _ = require('lodash');
+const lodash = require('lodash');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util');
 const {
@@ -37,7 +37,7 @@ const deleteProfile = async (userAttributes, config) => {
 
   // batchEvents = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
   // ref : https://developer.mixpanel.com/reference/delete-profile
-  const batchEvents = _.chunk(data, DEL_MAX_BATCH_SIZE);
+  const batchEvents = lodash.chunk(data, DEL_MAX_BATCH_SIZE);
   await Promise.all(
     batchEvents.map(async (batchEvent) => {
       const { processedResponse: handledDelResponse } = await handleHttpRequest(
@@ -70,7 +70,7 @@ const deleteProfile = async (userAttributes, config) => {
 };
 
 const createDeletionTask = async (userAttributes, config) => {
-  const { token, gdprApiToken } = config;
+  const { token, gdprApiToken, dataResidency } = config;
 
   if (!gdprApiToken) {
     throw new ConfigurationError(
@@ -84,7 +84,7 @@ const createDeletionTask = async (userAttributes, config) => {
     'Content-Type': JSON_MIME_TYPE,
     Authorization: `Bearer ${gdprApiToken}`,
   };
-  const complianceType = config?.dataResidency === 'eu' ? 'GDPR' : 'CCPA';
+  const complianceType = dataResidency === 'eu' ? 'GDPR' : 'CCPA';
 
   // batchEvents = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
   // ref : https://developer.mixpanel.com/docs/privacy-security#create-a-deletion-task

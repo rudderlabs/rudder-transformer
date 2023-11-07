@@ -1,6 +1,6 @@
 const { SHA256 } = require('crypto-js');
 const set = require('set-value');
-const _ = require('lodash');
+const lodash = require('lodash');
 const { EventType } = require('../../../constants');
 const {
   constructPayload,
@@ -191,7 +191,7 @@ const batchEvents = (eventChunksArray) => {
   //    event_set_id1: [...events]
   //    event_set_id2: [...events]
   // }
-  const groupedEventChunks = _.groupBy(eventChunksArray, ({ message }) => {
+  const groupedEventChunks = lodash.groupBy(eventChunksArray, ({ message }) => {
     if (Array.isArray(message)) return message[0].event_set_id;
     return message.event_set_id;
   });

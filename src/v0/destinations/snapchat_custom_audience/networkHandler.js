@@ -1,9 +1,7 @@
 const { removeUndefinedValues, getAuthErrCategoryFromErrDetailsAndStCode } = require('../../util');
 const { prepareProxyRequest, getPayloadData, httpSend } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util/index');
-const {
-  REFRESH_TOKEN,
-} = require('../../../adapters/networkhandler/authConstants');
+const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
 const tags = require('../../util/tags');
 const {
   getDynamicErrorType,

@@ -253,7 +253,7 @@ const checkAllowedEventNameFromUI = (event, Config) => {
   let allowEvent;
   if (whitelistedEvents && whitelistedEvents.length > 0) {
     allowEvent = whitelistedEvents.some(
-      (whiteListedEvent) => whiteListedEvent.eventName.toLowerCase() === event.toLowerCase(),
+      (whiteListedEvent) => whiteListedEvent?.eventName?.toLowerCase() === event.toLowerCase(),
     );
   }
   return !!allowEvent;

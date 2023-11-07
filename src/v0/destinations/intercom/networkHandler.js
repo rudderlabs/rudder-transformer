@@ -23,6 +23,7 @@ const destResponseHandler = (destinationResponse, dest) => {
   };
 };
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 class networkHandler {
   constructor() {
     this.responseHandler = destResponseHandler;

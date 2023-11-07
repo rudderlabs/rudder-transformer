@@ -6,7 +6,8 @@
     }
   },
   "https://googleads.googleapis.com/v14/customers/7693729833/offlineUserDataJobs/18025019461:addOperations": {
-    "status": 200
+    "status": 200,
+    "data": {}
   },
   "https://googleads.googleapis.com/v14/customers/7693729833/offlineUserDataJobs/18025019461:run": {
     "status": 200

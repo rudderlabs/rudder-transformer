@@ -1,0 +1,31 @@
+[
+  {
+    "description": "Number is undefined",
+    "output": false
+  },
+  {
+    "description": "Number in string format",
+    "input": "123",
+    "output": true
+  },
+  {
+    "description": "Normal Integer",
+    "input": 123,
+    "output": true
+  },
+  {
+    "description": "Float",
+    "input": 123.91,
+    "output": false
+  },
+  {
+    "description": "Float string",
+    "input": "123.00",
+    "output": false
+  },
+  {
+    "description": "Alphanumeric String",
+    "input": "abcd1234",
+    "output": false
+  }
+]

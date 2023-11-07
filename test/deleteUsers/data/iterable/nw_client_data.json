@@ -1,0 +1,138 @@
+[
+  [
+    {
+      "type": "delete",
+      "reqParams": [
+        "https://api.iterable.com/api/users/byUserId/rudder1",
+        {},
+        {
+          "Accept": "application/json",
+          "api_key": "dummyApiKey"
+        }
+      ],
+      "response": {
+        "response": {
+          "data": {
+            "msg": "All users associated with rudder1 were successfully deleted",
+            "code": "Success",
+            "params": null
+          },
+          "status": 200
+        }
+      }
+    },
+    {
+      "type": "delete",
+      "reqParams": [
+        "https://api.iterable.com/api/users/byUserId/rudder2",
+        {},
+        {
+          "Accept": "application/json",
+          "api_key": "dummyApiKey"
+        }
+      ],
+      "response": {
+        "response": {
+          "data": {
+            "msg": "User does not exist. Email:  UserId: rudder2",
+            "code": "BadParams",
+            "params": null
+          },
+          "status": 400
+        }
+      }
+    }
+  ],
+  [
+    {
+      "type": "delete",
+      "reqParams": [
+        "https://api.iterable.com/api/users/byUserId/rudder3",
+        {},
+        {
+          "Accept": "application/json",
+          "api_key": "invalidKey"
+        }
+      ],
+      "response": {
+        "response": {
+          "data": {
+            "msg": "Invalid API key",
+            "code": "Success",
+            "params": {
+              "endpoint": "/api/users/byUserId/rudder3"
+            }
+          },
+          "status": 401
+        }
+      }
+    },
+    {
+      "type": "delete",
+      "reqParams": [
+        "https://api.iterable.com/api/users/byUserId/rudder4",
+        {},
+        {
+          "Accept": "application/json",
+          "api_key": "invalidKey"
+        }
+      ],
+      "response": {
+        "response": {
+          "data": {
+            "msg": "Invalid API key",
+            "code": "Success",
+            "params": {
+              "endpoint": "/api/users/byUserId/rudder3"
+            }
+          },
+          "status": 401
+        }
+      }
+    }
+  ],
+  [
+    {
+      "type": "delete",
+      "reqParams": [
+        "https://api.iterable.com/api/users/byUserId/rudder5",
+        {},
+        {
+          "Accept": "application/json",
+          "api_key": "dummyApiKey"
+        }
+      ],
+      "response": {
+        "response": {
+          "data": {
+            "msg": "All users associated with rudder5 were successfully deleted",
+            "code": "Success",
+            "params": null
+          },
+          "status": 200
+        }
+      }
+    },
+    {
+      "type": "delete",
+      "reqParams": [
+        "https://api.iterable.com/api/users/byUserId/rudder6",
+        {},
+        {
+          "Accept": "application/json",
+          "api_key": "dummyApiKey"
+        }
+      ],
+      "response": {
+        "response": {
+          "data": {
+            "msg": "All users associated with rudder6 were successfully deleted",
+            "code": "Success",
+            "params": null
+          },
+          "status": 200
+        }
+      }
+    }
+  ]
+]

@@ -8,6 +8,7 @@ import SourceService from '../interfaces/SourceService';
 import NativeIntegrationSourceService from '../services/source/nativeIntegration';
 import { PlatformError } from '../v0/util/errorTypes';
 import ComparatorService from '../services/comparator';
+import { FixMe } from '../util/types';
 
 export default class ServiceSelector {
   private static serviceMap: Map<string, any> = new Map();
@@ -19,23 +20,23 @@ export default class ServiceSelector {
     [INTEGRATION_SERVICE.NATIVE_SOURCE]: NativeIntegrationSourceService,
   };
 
-  private static isCdkDestination(destinationDefinitionConfig: Object) {
-    return !!destinationDefinitionConfig?.['cdkEnabled'];
+  private static isCdkDestination(destinationDefinitionConfig: FixMe) {
+    return !!destinationDefinitionConfig?.cdkEnabled;
   }
 
-  private static isCdkV2Destination(destinationDefinitionConfig: Object) {
-    return Boolean(destinationDefinitionConfig?.['cdkV2Enabled']);
+  private static isCdkV2Destination(destinationDefinitionConfig: FixMe) {
+    return Boolean(destinationDefinitionConfig?.cdkV2Enabled);
   }
 
-  private static isComparatorEnabled(destinationDefinitionConfig: Object): boolean {
+  private static isComparatorEnabled(destinationDefinitionConfig: FixMe): boolean {
     return (
       process.env.COMPARATOR_ENABLED === 'true' &&
-      !!destinationDefinitionConfig['comparisonTestEnabeld']
+      !!destinationDefinitionConfig.comparisonTestEnabeld
     );
   }
 
-  private static getSecondaryServiceName(destinationDefinitionConfig: Object): string {
-    return destinationDefinitionConfig['comparisonService'];
+  private static getSecondaryServiceName(destinationDefinitionConfig: FixMe): string {
+    return destinationDefinitionConfig.comparisonService;
   }
 
   private static fetchCachedService(serviceType: string) {
@@ -65,7 +66,7 @@ export default class ServiceSelector {
   private static getPrimaryDestinationService(
     events: ProcessorTransformationRequest[] | RouterTransformationRequestData[],
   ): DestinationService {
-    const destinationDefinitionConfig: Object =
+    const destinationDefinitionConfig: FixMe =
       events[0]?.destination?.DestinationDefinition?.Config;
     if (this.isCdkDestination(destinationDefinitionConfig)) {
       return this.fetchCachedService(INTEGRATION_SERVICE.CDK_V1_DEST);
@@ -76,6 +77,7 @@ export default class ServiceSelector {
     return this.fetchCachedService(INTEGRATION_SERVICE.NATIVE_DEST);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public static getSourceService(arg: unknown) {
     // Implement source event based descision logic for selecting service
   }

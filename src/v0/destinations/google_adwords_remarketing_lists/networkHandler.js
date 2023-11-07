@@ -1,8 +1,5 @@
 const { httpSend, prepareProxyRequest } = require('../../../adapters/network');
-const {
-  isHttpStatusSuccess,
-  getAuthErrCategoryFromErrDetailsAndStCode,
-} = require('../../util/index');
+const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../util/index');
 
 const {
   processAxiosResponse,
@@ -99,8 +96,15 @@ const gaAudienceProxyRequest = async (request) => {
   // step1: offlineUserDataJobs creation
 
   const firstResponse = await createJob(endpoint, customerId, listId, headers, method);
-  if (!firstResponse.success && !isHttpStatusSuccess(firstResponse?.response?.response?.status)) {
+  if (!firstResponse.success && !isHttpStatusSuccess(firstResponse?.response?.status)) {
     return firstResponse;
+  }
+
+  if (isHttpStatusSuccess(firstResponse?.response?.status)) {
+    const { partialFailureError } = firstResponse.response.data;
+    if (partialFailureError && partialFailureError.code !== 0) {
+      return firstResponse;
+    }
   }
 
   // step2: putting users into the job
@@ -109,8 +113,15 @@ const gaAudienceProxyRequest = async (request) => {
     // eslint-disable-next-line prefer-destructuring
     jobId = firstResponse.response.data.resourceName.split('/')[3];
   const secondResponse = await addUserToJob(endpoint, headers, method, jobId, body);
-  if (!secondResponse.success && !isHttpStatusSuccess(secondResponse?.response?.response?.status)) {
+  if (!secondResponse.success && !isHttpStatusSuccess(secondResponse?.response?.status)) {
     return secondResponse;
+  }
+
+  if (isHttpStatusSuccess(secondResponse?.response?.status)) {
+    const { partialFailureError } = secondResponse.response.data;
+    if (partialFailureError && partialFailureError.code !== 0) {
+      return secondResponse;
+    }
   }
 
   // step3: running the job
@@ -130,14 +141,31 @@ const gaAudienceRespHandler = (destResponse, stageMsg) => {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },
     response,
-    getAuthErrCategoryFromErrDetailsAndStCode(status, response),
+    getAuthErrCategoryFromStCode(status),
   );
 };
 
 const responseHandler = (destinationResponse) => {
   const message = `Request Processed Successfully`;
-  const { status } = destinationResponse;
+  const { status, response } = destinationResponse;
   if (isHttpStatusSuccess(status)) {
+    // for google ads offline conversions the partialFailureError returns with status 200
+    const { partialFailureError } = response;
+    // non-zero code signifies partialFailure
+    // Ref - https://github.com/googleapis/googleapis/blob/master/google/rpc/code.proto
+    if (partialFailureError && partialFailureError.code !== 0) {
+      throw new NetworkError(
+        `[Google Ads Re-marketing Lists]:: partialFailureError - ${JSON.stringify(
+          partialFailureError,
+        )}`,
+        400,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(400),
+        },
+        partialFailureError,
+      );
+    }
+
     // Mostly any error will not have a status of 2xx
     return {
       status,

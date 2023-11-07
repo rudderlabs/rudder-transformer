@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 const get = require('get-value');
-const _ = require('lodash');
+const lodash = require('lodash');
 const {
   removeUndefinedAndNullValues,
   isDefinedAndNotNull,
@@ -44,7 +44,7 @@ const transformCustomVariable = (customFloodlightVariable, message) => {
 
     if (
       // the value is not null
-      !_.isNil(itemValue) &&
+      !lodash.isNil(itemValue) &&
       // the value is string and doesn't have any blacklisted characters
       !(
         typeof itemValue === 'string' && BLACKLISTED_CHARACTERS.some((k) => itemValue.includes(k))

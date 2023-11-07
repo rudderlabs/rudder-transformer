@@ -6,7 +6,7 @@ const {
   generateErrorObject,
 } = require('../../util');
 const { AUTH_CACHE_TTL, JSON_MIME_TYPE } = require('../../util/constant');
-const { getIds, validateMessageType } = require('./util');
+const { getIds, validateMessageType, transformForRecordEvent } = require('./util');
 const {
   getDestinationExternalID,
   defaultRequestConfig,
@@ -16,7 +16,7 @@ const {
 const { formatConfig, MAX_LEAD_IDS_SIZE } = require('./config');
 const Cache = require('../../util/cache');
 const { getAuthToken } = require('../marketo/transform');
-const { InstrumentationError, UnauthorizedError } = require('../../util/errorTypes');
+const { InstrumentationError, UnauthorizedError, AbortedError } = require('../../util/errorTypes');
 
 const authCache = new Cache(AUTH_CACHE_TTL); // 1 hr
 
@@ -71,9 +71,13 @@ const processEvent = (input) => {
     toRemove = getIds(message.properties.listData.remove);
   }
   if (
-    (Array.isArray(toAdd) && toAdd.length > 0) ||
-    (Array.isArray(toRemove) && toRemove.length > 0)
+    (!Array.isArray(toAdd) || toAdd.length === 0) &&
+    (!Array.isArray(toRemove) || toRemove.length === 0)
   ) {
+    throw new InstrumentationError(
+      'Invalid leadIds format or no leadIds found neither to add nor to remove',
+    );
+  } else {
     if (Array.isArray(toRemove) && toRemove.length > 0) {
       const payload = batchResponseBuilder(message, Config, token, toRemove, 'remove');
       if (payload) {
@@ -86,47 +90,44 @@ const processEvent = (input) => {
         response.push(...payload);
       }
     }
-  } else {
-    throw new InstrumentationError(
-      'Invalid leadIds format or no leadIds found neither to add nor to remove',
-    );
   }
   return response;
 };
 
-function transformForRecordEvent(inputs, leadIdObj) {
-  const finalMetadata = [];
-  // iterate through each inputs metadata and create a final metadata
-  const tokenisedInputs = inputs.map((input) => {
-    const { message } = input;
-    const { metadata } = input;
-    finalMetadata.push(metadata);
-    const { fields, action } = message;
-    if (!message.properties) {
-      message.properties = {};
-    }
-    if (!message.properties.listData) {
-      message.properties.listData = { add: [], remove: [] };
-    }
-    // message.properties.listData = message.properties.listData || { add: [], remove: [] };
-    if (action === 'insert') {
-      leadIdObj.insert.push({ id: fields.id });
-      message.properties.listData.add.push({ id: fields.id });
-    } else if (action === 'delete') {
-      leadIdObj.delete.push({ id: fields.id });
-      message.properties.listData.remove.push({ id: fields.id });
-    } else {
-      throw new InstrumentationError('Invalid action type');
-    }
-    return input;
-  });
-  const finalInput = [tokenisedInputs[0]];
-  finalInput[0].metadata = finalMetadata;
-  finalInput[0].message.properties.listData.add = leadIdObj.insert;
-  finalInput[0].message.properties.listData.remove = leadIdObj.delete;
+// function transformForRecordEvent(inputs, leadIdObj) {
+//   const finalMetadata = [];
+//   // iterate through each inputs metadata and create a final metadata
+//   const tokenisedInputs = inputs.map((input) => {
+//     const { message } = input;
+//     const { metadata } = input;
+//     finalMetadata.push(metadata);
+//     const { fields, action } = message;
+//     if (!message.properties) {
+//       message.properties = {};
+//     }
+//     if (!message.properties.listData) {
+//       message.properties.listData = { add: [], remove: [] };
+//     }
+//     // message.properties.listData = message.properties.listData || { add: [], remove: [] };
+//     const fieldsId = fields.id;
+//     if (action === 'insert') {
+//       leadIdObj.insert.push({ id: fieldsId });
+//       message.properties.listData.add.push({ id: fieldsId });
+//     } else if (action === 'delete') {
+//       leadIdObj.delete.push({ id: fieldsId });
+//       message.properties.listData.remove.push({ id: fieldsId });
+//     } else {
+//       throw new InstrumentationError('Invalid action type');
+//     }
+//     return input;
+//   });
+//   const finalInput = [tokenisedInputs[0]];
+//   finalInput[0].metadata = finalMetadata;
+//   finalInput[0].message.properties.listData.add = leadIdObj.insert;
+//   finalInput[0].message.properties.listData.remove = leadIdObj.delete;
 
-  return finalInput;
-}
+//   return finalInput;
+// }
 
 const process = async (event) => {
   const token = await getAuthToken(formatConfig(event.destination));
@@ -146,19 +147,20 @@ const processRouterDest = async (inputs, reqMetadata) => {
   try {
     token = await getAuthToken(formatConfig(inputs[0].destination));
     if (!token) {
-      const errResp = {
-        status: 400,
-        message: 'Authorisation failed',
-        responseTransformFailure: true,
-        statTags: {},
-      };
-      const respEvents = getErrorRespEvents(
-        inputs.map((input) => input.metadata),
-        errResp.status,
-        errResp.message,
-        errResp.statTags,
-      );
-      return [{ ...respEvents, destination: inputs?.[0]?.destination }];
+      throw new AbortedError('Could not retrieve authorisation token', 400);
+      // const errResp = {
+      //   status: 400,
+      //   message: 'Authorisation failed',
+      //   responseTransformFailure: true,
+      //   statTags: {},
+      // };
+      // const respEvents = getErrorRespEvents(
+      //   inputs.map((input) => input.metadata),
+      //   errResp.status,
+      //   errResp.message,
+      //   errResp.statTags,
+      // );
+      // return [{ ...respEvents, destination: inputs?.[0]?.destination }];
     }
   } catch (error) {
     // Not using handleRtTfSingleEventError here as this is for multiple events
@@ -181,7 +183,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
     delete: [],
   };
   let finalInputForRecordEvent;
-  if (inputs[0].message.channel === 'sources') {
+  if (inputs[0].message.channel === 'sources' && inputs[0].message.type === 'record') {
     finalInputForRecordEvent = transformForRecordEvent(tokenisedInputs, leadIdObj);
     respList = await simpleProcessRouterDest(finalInputForRecordEvent, processEvent, reqMetadata);
   } else {

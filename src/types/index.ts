@@ -83,9 +83,37 @@ type Destination = {
 type UserTransformationLibrary = {
   VersionID: string;
 };
+
+type RudderTimestamp = Date | string;
+type RudderMessageType =
+  | 'identify'
+  | 'track'
+  | 'page'
+  | 'screen'
+  | 'group'
+  | 'alias'
+  | 'audiencelist';
+
+type RudderMessageSchema = Partial<{
+  userId: string;
+  anonymousId: string;
+  type: RudderMessageType;
+  channel: string;
+  context: object;
+  originalTimestamp: RudderTimestamp;
+  sentAt: RudderTimestamp;
+  timestamp: RudderTimestamp;
+  event: string;
+  integrations: object;
+  messageId: string;
+  properties: object;
+  traits: object;
+  [key: string]: FixMe;
+}>;
+
 type RouterTransformationRequestData = {
   request?: object;
-  message: RudderMessage;
+  message: RudderMessageSchema;
   metadata: Metadata;
   destination: Destination;
 };
@@ -241,4 +269,5 @@ export {
   UserDeletionResponse,
   Destination,
   ComparatorInput,
+  RudderMessageSchema,
 };

@@ -1,4 +1,8 @@
-const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../util');
+const {
+  isHttpStatusSuccess,
+  getAuthErrCategoryFromStCode,
+  isDefinedAndNotNull,
+} = require('../../util');
 const { RetryableError, ThrottledError, AbortedError } = require('../../util/errorTypes');
 const Cache = require('../../util/cache');
 const {
@@ -10,7 +14,6 @@ const {
 const { handleHttpRequest } = require('../../../adapters/network');
 
 const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
-
 
 /**
  * ref: https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/errorcodes.htm
@@ -29,14 +32,14 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey, authori
       response && Array.isArray(response) && response.some((resp) => resp?.errorCode === errorCode);
     if (status === 401 && authKey && matchErrorCode('INVALID_SESSION_ID')) {
       if (authorizationFlow === 'legacy') {
-      // checking for invalid/expired token errors and evicting cache in that case
-      // rudderJobMetadata contains some destination info which is being used to evict the cache
-      ACCESS_TOKEN_CACHE.del(authKey);
-      throw new RetryableError(
-        `${DESTINATION} Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${sourceMessage}`,
-        500,
-        response,
-      );
+        // checking for invalid/expired token errors and evicting cache in that case
+        // rudderJobMetadata contains some destination info which is being used to evict the cache
+        ACCESS_TOKEN_CACHE.del(authKey);
+        throw new RetryableError(
+          `${DESTINATION} Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${sourceMessage}`,
+          500,
+          response,
+        );
       }
       throw new RetryableError(
         `${DESTINATION} Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${sourceMessage}`,
@@ -99,8 +102,8 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey, authori
  * @returns
  */
 const getAccessTokenOauth = (metadata) => ({
-  token : metadata.secret?.access_token,
-  instanceUrl : metadata.secret?.instance_url
+  token: metadata.secret?.access_token,
+  instanceUrl: metadata.secret?.instance_url,
 });
 
 const getAccessToken = async (destination) => {
@@ -136,7 +139,7 @@ const getAccessToken = async (destination) => {
         processedResponse,
         `:- authentication failed during fetching access token.`,
         accessTokenKey,
-        "legacy"
+        'legacy',
       );
     }
     const token = httpResponse.response.data;
@@ -146,7 +149,7 @@ const getAccessToken = async (destination) => {
         processedResponse,
         `:- authentication failed could not retrieve authorization token.`,
         accessTokenKey,
-        "legacy"
+        'legacy',
       );
     }
     return {
@@ -156,4 +159,22 @@ const getAccessToken = async (destination) => {
   });
 };
 
-module.exports = { getAccessTokenOauth, salesforceResponseHandler, getAccessToken };
+const collectAuthorizationInfo = async (event) => {
+  let authorizationFlow;
+  let authorizationData;
+  if (isDefinedAndNotNull(event.metadata?.secret)) {
+    authorizationFlow = 'oauth';
+    authorizationData = getAccessTokenOauth(event.metadata);
+  } else {
+    authorizationFlow = 'legacy';
+    authorizationData = await getAccessToken(event.destination);
+  }
+  return { authorizationFlow, authorizationData };
+};
+
+module.exports = {
+  getAccessTokenOauth,
+  salesforceResponseHandler,
+  getAccessToken,
+  collectAuthorizationInfo,
+};

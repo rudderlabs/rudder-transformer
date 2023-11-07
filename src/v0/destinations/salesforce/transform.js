@@ -23,9 +23,8 @@ const {
   handleRtTfSingleEventError,
   generateErrorObject,
   isHttpStatusSuccess,
-  isDefinedAndNotNull,
 } = require('../../util');
-const { salesforceResponseHandler, getAccessTokenOauth, getAccessToken } = require('./utils');
+const { salesforceResponseHandler, collectAuthorizationInfo } = require('./utils');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { InstrumentationError, NetworkInstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
@@ -40,7 +39,7 @@ function responseBuilderSimple(
   authorizationData,
   mapProperty,
   mappedToDestination,
-  authorizationFlow
+  authorizationFlow,
 ) {
   const { salesforceType, salesforceId } = salesforceMap;
 
@@ -87,15 +86,16 @@ function responseBuilderSimple(
   }
 
   const response = defaultRequestConfig();
-  const finalHeader = authorizationFlow === 'oauth' ? 
-  { 
-    'Content-Type': JSON_MIME_TYPE,
-    Authorization: `Bearer ${authorizationData.token}`
-   } : 
-   {
-    'Content-Type': JSON_MIME_TYPE,
-    Authorization: authorizationData.token
-  };
+  const finalHeader =
+    authorizationFlow === 'oauth'
+      ? {
+          'Content-Type': JSON_MIME_TYPE,
+          Authorization: `Bearer ${authorizationData.token}`,
+        }
+      : {
+          'Content-Type': JSON_MIME_TYPE,
+          Authorization: authorizationData.token,
+        };
 
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = finalHeader;
@@ -112,15 +112,18 @@ async function getSaleforceIdForRecord(
   identifierType,
   identifierValue,
   destination,
-  authorizationFlow
+  authorizationFlow,
 ) {
   const objSearchUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${identifierValue}&sobject=${objectType}&in=${identifierType}&${objectType}.fields=id,${identifierType}`;
-  const finalHeader = authorizationFlow === 'oauth' ? { Authorization: `Bearer ${authorizationData.token}` } : {Authorization: authorizationData.token};
+  const finalHeader =
+    authorizationFlow === 'oauth'
+      ? { Authorization: `Bearer ${authorizationData.token}` }
+      : { Authorization: authorizationData.token };
   const { processedResponse: processedsfSearchResponse } = await handleHttpRequest(
     'get',
     objSearchUrl,
     {
-      headers: finalHeader
+      headers: finalHeader,
     },
     {
       destType: 'salesforce',
@@ -132,7 +135,7 @@ async function getSaleforceIdForRecord(
       processedsfSearchResponse,
       `:- SALESFORCE SEARCH BY ID`,
       destination.ID,
-      authorizationFlow
+      authorizationFlow,
     );
   }
   const searchRecord = processedsfSearchResponse.response?.searchRecords?.find(
@@ -158,7 +161,12 @@ async function getSaleforceIdForRecord(
 // We'll use the Salesforce Object names by removing "Salesforce-" string from the type field
 //
 // Default Object type will be "Lead" for backward compatibility
-async function getSalesforceIdFromPayload(message, authorizationData, destination, authorizationFlow) {
+async function getSalesforceIdFromPayload(
+  message,
+  authorizationData,
+  destination,
+  authorizationFlow,
+) {
   // define default map
   const salesforceMaps = [];
 
@@ -200,7 +208,7 @@ async function getSalesforceIdFromPayload(message, authorizationData, destinatio
         identifierType,
         id,
         destination,
-        authorizationFlow
+        authorizationFlow,
       );
     }
 
@@ -222,7 +230,10 @@ async function getSalesforceIdFromPayload(message, authorizationData, destinatio
       throw new InstrumentationError('Invalid Email address for Lead Objet');
     }
     const leadQueryUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${email}&sobject=Lead&Lead.fields=id,IsConverted,ConvertedContactId,IsDeleted`;
-    const finalHeader = authorizationFlow === 'oauth' ? { Authorization: `Bearer ${authorizationData.token}` } : {Authorization: authorizationData.token};
+    const finalHeader =
+      authorizationFlow === 'oauth'
+        ? { Authorization: `Bearer ${authorizationData.token}` }
+        : { Authorization: authorizationData.token };
 
     // request configuration will be conditional
     const { processedResponse: processedLeadQueryResponse } = await handleHttpRequest(
@@ -238,7 +249,12 @@ async function getSalesforceIdFromPayload(message, authorizationData, destinatio
     );
 
     if (!isHttpStatusSuccess(processedLeadQueryResponse.status)) {
-      salesforceResponseHandler(processedLeadQueryResponse, `:- during Lead Query`, destination.ID, authorizationFlow);
+      salesforceResponseHandler(
+        processedLeadQueryResponse,
+        `:- during Lead Query`,
+        destination.ID,
+        authorizationFlow,
+      );
     }
 
     if (processedLeadQueryResponse.response.searchRecords.length > 0) {
@@ -295,7 +311,12 @@ async function processIdentify(message, authorizationData, destination, authoriz
   const responseData = [];
 
   // get salesforce object map
-  const salesforceMaps = await getSalesforceIdFromPayload(message, authorizationData, destination, authorizationFlow);
+  const salesforceMaps = await getSalesforceIdFromPayload(
+    message,
+    authorizationData,
+    destination,
+    authorizationFlow,
+  );
 
   // iterate over the object types found
   salesforceMaps.forEach((salesforceMap) => {
@@ -307,7 +328,7 @@ async function processIdentify(message, authorizationData, destination, authoriz
         authorizationData,
         mapProperty,
         mappedToDestination,
-        authorizationFlow
+        authorizationFlow,
       ),
     );
   });
@@ -328,22 +349,12 @@ async function processSingleMessage(message, authorizationData, destination, aut
 }
 
 async function process(event) {
-
-  let authorizationFlow;
-  if(isDefinedAndNotNull(event.metadata?.secret)) {
-    authorizationFlow = 'oauth';
-  } else {
-    authorizationFlow = 'legacy';
-  }
-  let authorizationData;
-    if (authorizationFlow === 'oauth') {
-      authorizationData = getAccessTokenOauth(event.metadata);
-    } else {
-      authorizationData = await getAccessToken(event.destination);
-    }
-  // Get the authorization header if not available
-  
-  const response = await processSingleMessage(event.message, authorizationData, event.destination);
+  const authInfo = await collectAuthorizationInfo(event);
+  const response = await processSingleMessage(
+    event.message,
+    authInfo.authorizationData,
+    event.destination,
+  );
   return response;
 }
 
@@ -352,19 +363,9 @@ const processRouterDest = async (inputs, reqMetadata) => {
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
-  let authorizationFlow;
-  if(isDefinedAndNotNull(inputs[0].metadata?.secret)) {
-    authorizationFlow = 'oauth';
-  } else {
-    authorizationFlow = 'legacy';
-  }
-  let authorizationData;
+  let authInfo;
   try {
-    if (authorizationFlow === 'oauth') {
-      authorizationData = getAccessTokenOauth(inputs[0].metadata);
-    } else {
-      authorizationData = await getAccessToken(inputs[0].destination);
-    }
+    authInfo = await collectAuthorizationInfo(inputs[0]);
   } catch (error) {
     const errObj = generateErrorObject(error);
     const respEvents = getErrorRespEvents(
@@ -386,7 +387,12 @@ const processRouterDest = async (inputs, reqMetadata) => {
 
         // unprocessed payload
         return getSuccessRespEvents(
-          await processSingleMessage(input.message, authorizationData, input.destination, authorizationFlow),
+          await processSingleMessage(
+            input.message,
+            authInfo.authorizationData,
+            input.destination,
+            authInfo.authorizationFlow,
+          ),
           [input.metadata],
           input.destination,
         );

@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.49.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.48.0...v1.49.0) (2023-11-06)
+
+
+### Features
+
+* add new destination tiktok_audience ([#2710](https://github.com/rudderlabs/rudder-transformer/issues/2710)) ([9bc0fd8](https://github.com/rudderlabs/rudder-transformer/commit/9bc0fd8efcee44871a190bd6cb9e89c5cf035ff8))
+* onboard one signal to router transform ([#2785](https://github.com/rudderlabs/rudder-transformer/issues/2785)) ([818858e](https://github.com/rudderlabs/rudder-transformer/commit/818858e046ce5f9735bbb97715c43a959ad3aa3c))
+* onboard revenuecat as a source ([#2774](https://github.com/rudderlabs/rudder-transformer/issues/2774)) ([55f9637](https://github.com/rudderlabs/rudder-transformer/commit/55f96374b4d73db7013c1d5e72bfc9c8257b224b))
+
+
+### Bug Fixes
+
+* add check to remove null and undefined properties before sending ([#2796](https://github.com/rudderlabs/rudder-transformer/issues/2796)) ([6e89cd3](https://github.com/rudderlabs/rudder-transformer/commit/6e89cd3f67ea887ba17c1cd5ffbca6675f54d96c))
+* allow support for full url from UI in freshsales and freshmarketer ([#2780](https://github.com/rudderlabs/rudder-transformer/issues/2780)) ([570532c](https://github.com/rudderlabs/rudder-transformer/commit/570532ce790c05a69621d9289758a1b1a7acda8c))
+* busgnag issues for klaviyo, freshsales, customeio  ([#2795](https://github.com/rudderlabs/rudder-transformer/issues/2795)) ([11fb7c4](https://github.com/rudderlabs/rudder-transformer/commit/11fb7c47910681833e37d25a1573d2005e62742b))
+
 ## [1.48.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.47.0...v1.48.0) (2023-11-02)
 
 

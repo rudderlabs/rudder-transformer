@@ -589,8 +589,8 @@ const processSingleMessage = (message, destination) => {
   // To be used for track/page calls to associate the event to a group in AM
   let groupInfo = get(message, 'integrations.Amplitude.groups') || undefined;
   let category = ConfigCategory.DEFAULT;
-  let { properties } = message;
-  const { name, event } = message;
+  let updatedProperties;
+  const { name, event, properties } = message;
   const messageType = message.type.toLowerCase();
   const CATEGORY_KEY = 'properties.category';
   const { useUserDefinedPageEventName, userProvidedPageEventString } = destination.Config;
@@ -623,17 +623,14 @@ const processSingleMessage = (message, destination) => {
         evType = `Viewed ${updatedName || ''}Page`;
       }
       message.properties = {
-        ...message.properties,
+        ...properties,
         name: name || get(message, CATEGORY_KEY),
       };
       category = ConfigCategory.PAGE;
       break;
     case EventType.SCREEN:
-      ({ evType, updatedProperties: properties } = getScreenevTypeAndUpdatedProperties(
-        message,
-        CATEGORY_KEY,
-      ));
-      message.properties = properties;
+      ({ evType, updatedProperties } = getScreenevTypeAndUpdatedProperties(message, CATEGORY_KEY));
+      message.properties = updatedProperties;
       category = ConfigCategory.SCREEN;
       break;
     case EventType.GROUP:
@@ -664,9 +661,9 @@ const processSingleMessage = (message, destination) => {
         throw new InstrumentationError('Event not present. Please send event field');
       }
       if (
-        message.properties &&
-        isDefinedAndNotNull(message.properties?.revenue) &&
-        isDefinedAndNotNull(message.properties?.revenue_type)
+        properties &&
+        isDefinedAndNotNull(properties?.revenue) &&
+        isDefinedAndNotNull(properties?.revenue_type)
       ) {
         // if properties has revenue and revenue_type fields
         // consider the event as revenue event directly

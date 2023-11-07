@@ -41,10 +41,14 @@ export const data = [
               originalTimestamp: '2020-04-17T14:42:44.724Z',
               sentAt: '2020-04-17T14:42:44.724Z',
             },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
             destination: {
               DestinationDefinition: {
                 Config: {
-                  cdkEnabled: true,
+                  cdkV2Enabled: true,
                 },
               },
               Config: {
@@ -116,6 +120,10 @@ export const data = [
               userId: '',
             },
             statusCode: 200,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -163,10 +171,14 @@ export const data = [
               originalTimestamp: '2020-04-17T14:42:44.724Z',
               sentAt: '2020-04-17T14:42:44.724Z',
             },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
             destination: {
               DestinationDefinition: {
                 Config: {
-                  cdkEnabled: true,
+                  cdkV2Enabled: true,
                 },
               },
               Config: {
@@ -247,6 +259,10 @@ export const data = [
               userId: '',
             },
             statusCode: 200,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -294,10 +310,14 @@ export const data = [
               originalTimestamp: '2020-04-17T14:42:44.724Z',
               sentAt: '2020-04-17T14:42:44.724Z',
             },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
             destination: {
               DestinationDefinition: {
                 Config: {
-                  cdkEnabled: true,
+                  cdkV2Enabled: true,
                 },
               },
               Config: {
@@ -387,6 +407,10 @@ export const data = [
               userId: '',
             },
             statusCode: 200,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -434,10 +458,14 @@ export const data = [
               originalTimestamp: '2020-04-17T14:42:44.724Z',
               sentAt: '2020-04-17T14:42:44.724Z',
             },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
             destination: {
               DestinationDefinition: {
                 Config: {
-                  cdkEnabled: true,
+                  cdkV2Enabled: true,
                 },
               },
               Config: {
@@ -527,6 +555,10 @@ export const data = [
               userId: '',
             },
             statusCode: 200,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -574,10 +606,14 @@ export const data = [
               originalTimestamp: '2020-04-17T14:42:44.724Z',
               sentAt: '2020-04-17T14:42:44.724Z',
             },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
             destination: {
               DestinationDefinition: {
                 Config: {
-                  cdkEnabled: true,
+                  cdkV2Enabled: true,
                 },
               },
               Config: {
@@ -658,6 +694,10 @@ export const data = [
               userId: '',
             },
             statusCode: 200,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },

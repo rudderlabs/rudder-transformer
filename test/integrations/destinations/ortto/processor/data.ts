@@ -347,7 +347,8 @@ export const data = [
           {
             statTags: {
               destType: 'ORTTO',
-              errorCategory: 'platform',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',
@@ -505,7 +506,8 @@ export const data = [
           {
             statTags: {
               destType: 'ORTTO',
-              errorCategory: 'platform',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',
@@ -667,7 +669,8 @@ export const data = [
           {
             statTags: {
               destType: 'ORTTO',
-              errorCategory: 'platform',
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',
@@ -829,7 +832,8 @@ export const data = [
           {
             statTags: {
               destType: 'ORTTO',
-              errorCategory: 'platform',
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',
@@ -1216,7 +1220,8 @@ export const data = [
           {
             statTags: {
               destType: 'ORTTO',
-              errorCategory: 'platform',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',

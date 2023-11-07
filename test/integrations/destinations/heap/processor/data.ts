@@ -15,7 +15,7 @@ export const data = [
               },
               DestinationDefinition: {
                 Config: {
-                  cdkEnabled: true,
+                  cdkV2Enabled: true,
                 },
                 DisplayName: 'Heap.io',
                 ID: '1WTbl0l5GjOQKOvfmcGwk0T49kV',
@@ -25,6 +25,10 @@ export const data = [
               ID: '1WTcDSEOE437e4ePH10BJNELXmE',
               Name: 'heap test',
               Transformations: [],
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
             message: {
               anonymousId: 'sampath',
@@ -104,6 +108,10 @@ export const data = [
               userId: 'sampath',
             },
             statusCode: 200,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -125,7 +133,7 @@ export const data = [
               },
               DestinationDefinition: {
                 Config: {
-                  cdkEnabled: true,
+                  cdkV2Enabled: true,
                 },
                 DisplayName: 'Heap.io',
                 ID: '1WTbl0l5GjOQKOvfmcGwk0T49kV',
@@ -135,6 +143,10 @@ export const data = [
               ID: '1WTcDSEOE437e4ePH10BJNELXmE',
               Name: 'heap test',
               Transformations: [],
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
             message: {
               anonymousId: 'sampath',
@@ -221,6 +233,10 @@ export const data = [
               userId: 'sampath',
             },
             statusCode: 200,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -242,7 +258,7 @@ export const data = [
               },
               DestinationDefinition: {
                 Config: {
-                  cdkEnabled: false,
+                  cdkV2Enabled: false,
                 },
                 DisplayName: 'Heap.io',
                 ID: '1WTbl0l5GjOQKOvfmcGwk0T49kV',
@@ -252,6 +268,10 @@ export const data = [
               ID: '1WTcDSEOE437e4ePH10BJNELXmE',
               Name: 'heap test',
               Transformations: [],
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
             message: {
               anonymousId: 'sampath',
@@ -311,8 +331,14 @@ export const data = [
               feature: 'processor',
               implementation: 'native',
               module: 'destination',
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
             statusCode: 400,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -334,7 +360,7 @@ export const data = [
               },
               DestinationDefinition: {
                 Config: {
-                  cdkEnabled: false,
+                  cdkV2Enabled: false,
                 },
                 DisplayName: 'Heap.io',
                 ID: '1WTbl0l5GjOQKOvfmcGwk0T49kV',
@@ -344,6 +370,10 @@ export const data = [
               ID: '1WTcDSEOE437e4ePH10BJNELXmE',
               Name: 'heap test',
               Transformations: [],
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
             message: {
               anonymousId: 'sampath',
@@ -403,6 +433,8 @@ export const data = [
           {
             error: 'message type page not supported for heap',
             statTags: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
               destType: 'HEAP',
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
@@ -411,6 +443,10 @@ export const data = [
               module: 'destination',
             },
             statusCode: 400,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -432,7 +468,7 @@ export const data = [
               },
               DestinationDefinition: {
                 Config: {
-                  cdkEnabled: true,
+                  cdkV2Enabled: true,
                 },
                 DisplayName: 'Heap.io',
                 ID: '1WTbl0l5GjOQKOvfmcGwk0T49kV',
@@ -442,6 +478,10 @@ export const data = [
               ID: '1WTcDSEOE437e4ePH10BJNELXmE',
               Name: 'heap test',
               Transformations: [],
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
             message: {
               anonymousId: 'sampath',
@@ -530,6 +570,10 @@ export const data = [
               userId: 'sampath',
             },
             statusCode: 200,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -551,7 +595,7 @@ export const data = [
               },
               DestinationDefinition: {
                 Config: {
-                  cdkEnabled: true,
+                  cdkV2Enabled: true,
                 },
                 DisplayName: 'Heap.io',
                 ID: '1WTbl0l5GjOQKOvfmcGwk0T49kV',
@@ -561,6 +605,10 @@ export const data = [
               ID: '1WTcDSEOE437e4ePH10BJNELXmE',
               Name: 'heap test',
               Transformations: [],
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
             message: {
               anonymousId: 'sampath',
@@ -649,6 +697,10 @@ export const data = [
               userId: 'sampath',
             },
             statusCode: 200,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -670,7 +722,7 @@ export const data = [
               },
               DestinationDefinition: {
                 Config: {
-                  cdkEnabled: true,
+                  cdkV2Enabled: true,
                 },
                 DisplayName: 'Heap.io',
                 ID: '1WTbl0l5GjOQKOvfmcGwk0T49kV',
@@ -680,6 +732,10 @@ export const data = [
               ID: '1WTcDSEOE437e4ePH10BJNELXmE',
               Name: 'heap test',
               Transformations: [],
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
             message: {
               anonymousId: 'sampath',
@@ -771,6 +827,10 @@ export const data = [
               userId: 'sampath',
             },
             statusCode: 200,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -792,7 +852,7 @@ export const data = [
               },
               DestinationDefinition: {
                 Config: {
-                  cdkEnabled: true,
+                  cdkV2Enabled: true,
                 },
                 DisplayName: 'Heap.io',
                 ID: '1WTbl0l5GjOQKOvfmcGwk0T49kV',
@@ -802,6 +862,10 @@ export const data = [
               ID: '1WTcDSEOE437e4ePH10BJNELXmE',
               Name: 'heap test',
               Transformations: [],
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
             message: {
               anonymousId: 'sampath',
@@ -888,6 +952,10 @@ export const data = [
               userId: 'sampath',
             },
             statusCode: 200,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },

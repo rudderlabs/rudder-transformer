@@ -258,8 +258,8 @@ type Source = {
 };
 
 type SourceInput = {
-  event: unknown;
-  source: Source;
+  event: NonNullable<unknown>[];
+  source?: Source;
 };
 export {
   Metadata,
@@ -282,4 +282,5 @@ export {
   Destination,
   ComparatorInput,
   SourceInput,
+  Source
 };

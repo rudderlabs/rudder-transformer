@@ -16,10 +16,11 @@ export default class SourceController {
     const { version, source }: { version: string; source: string } = ctx.params;
     const integrationService = ServiceSelector.getNativeSourceService();
     try {
+      const { implementationVersion, input } = ControllerUtility.adaptInputToVersion(source, version, events)
       const resplist = await integrationService.sourceTransformRoutine(
-        events,
+        input as object[],
         source,
-        version,
+        implementationVersion,
         requestMetadata,
       );
       ctx.body = resplist;

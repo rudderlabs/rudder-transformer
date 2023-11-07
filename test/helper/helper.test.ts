@@ -413,3 +413,93 @@ describe('GeoLocationHelper tests', () => {
     expect(enhancedMsg).toEqual({});
   });
 });
+
+describe('get addressKey & address tests', () => {
+  test('addressKey should be "traits.address", when address is not present but traits object is present', () => {
+    const { addressKey } = GeoLocationHelper.getAddressKeyAndValue({
+      traits: {
+        name: 'Bruce Wayne',
+        age: 35,
+        title: 'The Dark Knight',
+      },
+    });
+    expect(addressKey).toEqual('traits.address');
+  });
+
+  test('addressKey should be "context.traits.address", when address is not present but traits object is present', () => {
+    const { addressKey } = GeoLocationHelper.getAddressKeyAndValue({
+      context: {
+        traits: {
+          name: 'Bruce Wayne',
+          age: 35,
+          title: 'The Dark Knight',
+        },
+      },
+    });
+    expect(addressKey).toEqual('context.traits.address');
+  });
+
+  test('addressKey should be "traits.address", when traits object is not present at all', () => {
+    const { addressKey } = GeoLocationHelper.getAddressKeyAndValue({
+      anonymousId: '129893-2idi9292',
+      originalTimestamp: '2020-04-17T14:42:44.722Z',
+      receivedAt: '2020-04-17T20:12:44.758+05:30',
+      request_ip: '[::1]:53513',
+      sentAt: '2020-04-17T14:42:44.722Z',
+      context: {
+        page: {
+          path: '/tests/html/index4.html',
+          referrer: '',
+          search: '',
+          title: '',
+          url: 'http://localhost/tests/html/index4.html',
+        },
+        screen: {
+          density: 2,
+        },
+        userAgent:
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36',
+      },
+    });
+    expect(addressKey).toEqual('traits.address');
+  });
+
+  test('addressKey should be "context.traits.address", when address is present in context.traits & address is not present in traits', () => {
+    const { addressKey } = GeoLocationHelper.getAddressKeyAndValue({
+      anonymousId: '129893-2idi9292',
+      originalTimestamp: '2020-04-17T14:42:44.722Z',
+      receivedAt: '2020-04-17T20:12:44.758+05:30',
+      request_ip: '[::1]:53513',
+      sentAt: '2020-04-17T14:42:44.722Z',
+      context: {
+        page: {
+          path: '/tests/html/index4.html',
+          referrer: '',
+          search: '',
+          title: '',
+          url: 'http://localhost/tests/html/index4.html',
+        },
+        screen: {
+          density: 2,
+        },
+        traits: {
+          address: {
+            city: 'Gotham',
+          },
+        },
+        userAgent:
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36',
+      },
+      traits: {
+        age: 23,
+        firstname: 'Selina Kyle',
+      },
+    });
+    expect(addressKey).toEqual('context.traits.address');
+  });
+
+  test('addressKey should be "traits.address", when empty payload is sent', () => {
+    const { addressKey } = GeoLocationHelper.getAddressKeyAndValue({});
+    expect(addressKey).toEqual('traits.address');
+  });
+});

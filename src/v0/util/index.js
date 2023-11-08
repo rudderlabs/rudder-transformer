@@ -1403,6 +1403,12 @@ const getMetadata = (metadata) => ({
   destinationType: metadata.destinationType,
   k8_namespace: metadata.namespace,
 });
+
+const getTransformationMetadata = (metadata) => ({
+  transformationId: metadata.transformationId,
+  workspaceId: metadata.workspaceId,
+});
+
 // checks if array 2 is a subset of array 1
 function checkSubsetOfArray(array1, array2) {
   const result = array2.every((val) => array1.includes(val));
@@ -2063,7 +2069,7 @@ const isValidInteger = (value) => {
   // Use a regular expression to check if the string is a valid integer or a valid floating-point number
   return typeof value === 'string' ? /^-?\d+$/.test(value) : false;
 };
-const validateEventType = (event) => {
+const validateEventName = (event) => {
   if (!event || typeof event !== 'string') {
     throw new InstrumentationError('Event is a required field and should be a string');
   }
@@ -2123,6 +2129,7 @@ module.exports = {
   getIntegrationsObj,
   getMappingConfig,
   getMetadata,
+  getTransformationMetadata,
   getParsedIP,
   getStringValueOfJSON,
   getSuccessRespEvents,
@@ -2170,7 +2177,7 @@ module.exports = {
   getDestAuthCacheInstance,
   refinePayload,
   validateEmail,
-  validateEventType,
+  validateEventName,
   validatePhoneWithCountryCode,
   getEventReqMetadata,
   isHybridModeEnabled,

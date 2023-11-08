@@ -85,9 +85,6 @@ export default class UserTransformService {
         }
         const userFuncStartTime = new Date();
         try {
-          stats.counter('user_transform_function_input_events', eventsToProcess.length, {
-            ...metaTags,
-          });
           const destTransformedEvents: UserTransformationResponse[] = await userTransformHandler()(
             eventsToProcess,
             transformationVersionId,

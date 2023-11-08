@@ -250,12 +250,6 @@ class Prometheus {
         labelNames: ['processSessions'],
       },
       {
-        name: 'user_transform_function_input_events',
-        help: 'user_transform_function_input_events',
-        type: 'counter',
-        labelNames: ['processSessions', 'sourceType', 'destinationType', 'k8_namespace'],
-      },
-      {
         name: 'user_transform_errors',
         help: 'user_transform_errors',
         type: 'counter',
@@ -506,20 +500,6 @@ class Prometheus {
         labelNames: ['writeKey', 'source'],
       },
       {
-        name: 'events_to_process',
-        help: 'events_to_process',
-        type: 'counter',
-        labelNames: [
-          'transformerVersionId',
-          'language',
-          'identifier',
-          'testMode',
-          'sourceType',
-          'destinationType',
-          'k8_namespace',
-        ],
-      },
-      {
         name: 'get_transformation_code',
         help: 'get_transformation_code',
         type: 'counter',
@@ -667,21 +647,6 @@ class Prometheus {
         help: 'creation_time',
         type: 'histogram',
         labelNames: ['transformerVersionId', 'language', 'identifier', 'publish', 'testMode'],
-      },
-      {
-        name: 'run_time',
-        help: 'run_time',
-        type: 'histogram',
-        labelNames: [
-          'transformerVersionId',
-          'language',
-          'identifier',
-          'publish',
-          'testMode',
-          'sourceType',
-          'destinationType',
-          'k8_namespace',
-        ],
       },
       { name: 'get_tracking_plan', help: 'get_tracking_plan', type: 'histogram', labelNames: [] },
       { name: 'createivm_duration', help: 'createivm_duration', type: 'histogram', labelNames: [] },
@@ -940,6 +905,38 @@ class Prometheus {
         type: 'histogram',
         labelNames: [],
       },
+      {
+        name: 'user_transform_function_input_events',
+        help: 'user_transform_function_input_events',
+        type: 'counter',
+        labelNames: [
+          'identifier',
+          'testMode',
+          'sourceType',
+          'destinationType',
+          'k8_namespace',
+          'errored',
+          'statusCode',
+          'transformationId',
+          'workspaceId'
+        ],
+      },
+      {
+        name: 'user_transform_function_latency',
+        help: 'user_transform_function_latency',
+        type: 'histogram',
+        labelNames: [
+          'identifier',
+          'testMode',
+          'sourceType',
+          'destinationType',
+          'k8_namespace',
+          'errored',
+          'statusCode',
+          'transformationId',
+          'workspaceId'
+        ],
+      }
     ];
 
     metrics.forEach((metric) => {

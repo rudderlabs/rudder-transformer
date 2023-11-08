@@ -3,6 +3,7 @@ import DestinationController from '../controllers/destination';
 import RegulationController from '../controllers/regulation';
 import FeatureFlagController from '../middlewares/featureFlag';
 import RouteActivationController from '../middlewares/routeActivation';
+import Enricher from '../middlewares/enricher';
 
 const router = new Router();
 
@@ -11,6 +12,7 @@ router.post(
   RouteActivationController.isDestinationRouteActive,
   RouteActivationController.destinationProcFilter,
   FeatureFlagController.handle,
+  Enricher.enrichGeoLocation,
   DestinationController.destinationTransformAtProcessor,
 );
 router.post(
@@ -18,6 +20,7 @@ router.post(
   RouteActivationController.isDestinationRouteActive,
   RouteActivationController.destinationRtFilter,
   FeatureFlagController.handle,
+  Enricher.enrichGeoLocation,
   DestinationController.destinationTransformAtRouter,
 );
 router.post(
@@ -25,6 +28,7 @@ router.post(
   RouteActivationController.isDestinationRouteActive,
   RouteActivationController.destinationBatchFilter,
   FeatureFlagController.handle,
+  Enricher.enrichGeoLocation,
   DestinationController.batchProcess,
 );
 

@@ -25,7 +25,7 @@ export default class GeoLocationHelper {
 
   public static getGeoLocationData(message: Record<string, FixMe>): Record<string, FixMe> {
     const msg = cloneDeep(message || {});
-    if (isEmpty(msg.context.geo)) {
+    if (isEmpty(msg?.context?.geo || {})) {
       // geo-location data was not sent
       return {};
     }

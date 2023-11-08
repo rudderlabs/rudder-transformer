@@ -1,4 +1,4 @@
-import { Context } from 'koa';
+import { Context, Next } from 'koa';
 import {
   ProcessorTransformationRequest,
   RouterTransformationRequest,
@@ -24,7 +24,7 @@ export default class Enricher {
     });
   }
 
-  public static enrichGeoLocation(ctx: Context) {
+  public static async enrichGeoLocation(ctx: Context, next: Next) {
     const transformationRequest = ctx.request.body;
     let transformationReq: DTRequest;
     let reqBody: unknown;
@@ -47,5 +47,6 @@ export default class Enricher {
       reqBody = Enricher.enrichWithGeoInfo(transformationReq);
     }
     ctx.request.body = reqBody;
+    await next();
   }
 }

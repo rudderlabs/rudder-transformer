@@ -2,7 +2,7 @@ import { ProcessorTransformationRequest, RouterTransformationRequest } from '../
 import Enricher from '../../src/middlewares/enricher';
 
 describe('[GeoLocation Enrichment] Processor transformation tests', () => {
-  test('should enrich when context.geo is populated correctly', () => {
+  test('should enrich when context.geo is populated correctly', async () => {
     const inputData: ProcessorTransformationRequest[] = [
       {
         destination: {
@@ -95,7 +95,7 @@ describe('[GeoLocation Enrichment] Processor transformation tests', () => {
     ];
     const ctx = { request: { body: inputData } };
     // @ts-ignore
-    Enricher.enrichGeoLocation(ctx);
+    await Enricher.enrichGeoLocation(ctx, () => {});
     expect(ctx.request.body[0].message.traits).toMatchObject(
       expect.objectContaining({
         age: 23,
@@ -111,7 +111,7 @@ describe('[GeoLocation Enrichment] Processor transformation tests', () => {
     );
   });
 
-  test('should not enrich when address is already enhanced', () => {
+  test('should not enrich when address is already enhanced', async () => {
     const inputData: ProcessorTransformationRequest[] = [
       {
         destination: {
@@ -211,7 +211,7 @@ describe('[GeoLocation Enrichment] Processor transformation tests', () => {
     ];
     const ctx = { request: { body: inputData } };
     // @ts-ignore
-    Enricher.enrichGeoLocation(ctx);
+    await Enricher.enrichGeoLocation(ctx, () => {});
     expect(ctx.request.body[0].message.traits).toMatchObject(
       expect.objectContaining({
         age: 23,
@@ -228,7 +228,7 @@ describe('[GeoLocation Enrichment] Processor transformation tests', () => {
     );
   });
 
-  test('should enrich only those fields that are not already enriched when address already contains partial data', () => {
+  test('should enrich only those fields that are not already enriched when address already contains partial data', async () => {
     const inputData: ProcessorTransformationRequest[] = [
       {
         destination: {
@@ -327,7 +327,7 @@ describe('[GeoLocation Enrichment] Processor transformation tests', () => {
     ];
     const ctx = { request: { body: inputData } };
     // @ts-ignore
-    Enricher.enrichGeoLocation(ctx);
+    await Enricher.enrichGeoLocation(ctx, () => {});
     expect(ctx.request.body[0].message.traits).toMatchObject(
       expect.objectContaining({
         age: 23,
@@ -345,7 +345,7 @@ describe('[GeoLocation Enrichment] Processor transformation tests', () => {
     );
   });
 
-  test('should not enrich when context.geo is not populated', () => {
+  test('should not enrich when context.geo is not populated', async () => {
     const inputData: ProcessorTransformationRequest[] = [
       {
         destination: {
@@ -429,13 +429,13 @@ describe('[GeoLocation Enrichment] Processor transformation tests', () => {
     ];
     const ctx = { request: { body: inputData } };
     // @ts-ignore
-    Enricher.enrichGeoLocation(ctx);
+    await Enricher.enrichGeoLocation(ctx, () => {});
 
     // @ts-ignore
     expect(ctx.request.body[0].message.traits?.address).toBe(undefined);
   });
 
-  test('should not contain address object, when context.geo & address are not present', () => {
+  test('should not contain address object, when context.geo & address are not present', async () => {
     const inputData: ProcessorTransformationRequest[] = [
       {
         destination: {
@@ -596,12 +596,12 @@ describe('[GeoLocation Enrichment] Processor transformation tests', () => {
     ];
     const ctx = { request: { body: inputData } };
     // @ts-ignore
-    Enricher.enrichGeoLocation(ctx);
+    await Enricher.enrichGeoLocation(ctx, () => {});
     expect(ctx.request.body[0].message.traits).not.toHaveProperty('address');
     expect(ctx.request.body[1].message.traits).not.toHaveProperty('address');
   });
 
-  test('should enrich when context.geo is populated correctly for multiple payloads with their own geolocation data', () => {
+  test('should enrich when context.geo is populated correctly for multiple payloads with their own geolocation data', async () => {
     const inputData: ProcessorTransformationRequest[] = [
       {
         destination: {
@@ -782,7 +782,7 @@ describe('[GeoLocation Enrichment] Processor transformation tests', () => {
     ];
     const ctx = { request: { body: inputData } };
     // @ts-ignore
-    Enricher.enrichGeoLocation(ctx);
+    await Enricher.enrichGeoLocation(ctx, () => {});
     expect(ctx.request.body[0].message.traits).toMatchObject(
       expect.objectContaining({
         age: 23,
@@ -811,7 +811,7 @@ describe('[GeoLocation Enrichment] Processor transformation tests', () => {
 });
 
 describe('[GeoLocation Enrichment] Router/Batch transformation tests', () => {
-  test('should enrich with geo information when context.geo is present', () => {
+  test('should enrich with geo information when context.geo is present', async () => {
     const inputData: RouterTransformationRequest = {
       input: [
         {
@@ -998,7 +998,7 @@ describe('[GeoLocation Enrichment] Router/Batch transformation tests', () => {
     };
     const ctx = { request: { body: inputData } };
     // @ts-ignore
-    Enricher.enrichGeoLocation(ctx);
+    await Enricher.enrichGeoLocation(ctx, () => {});
     expect(ctx.request.body.input[0].message.traits).toMatchObject(
       expect.objectContaining({
         age: 23,

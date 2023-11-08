@@ -660,10 +660,7 @@ const getValueFromMessage = (message, sourceKeys) => {
 };
 
 const getKeyAndValueFromMessage = (message, sourceKeys) => {
-  if (Array.isArray(sourceKeys) && sourceKeys.length > 0) {
-    if (sourceKeys.length === 1) {
-      logger.warn('List with single element is not ideal. Use it as string instead');
-    }
+  if (Array.isArray(sourceKeys)) {
     // got the possible sourceKeys
     // eslint-disable-next-line no-restricted-syntax
     for (const sourceKey of sourceKeys) {
@@ -678,11 +675,6 @@ const getKeyAndValueFromMessage = (message, sourceKeys) => {
     // got a single key
     // - we don't need to iterate over a loop for a single possible value
     return { value: get(message, sourceKeys), key: sourceKeys };
-  } else {
-    // wrong sourceKey type. abort
-    // DEVELOPER ERROR
-    // TODO - think of a way to crash the pod
-    throw new PlatformError('Wrong sourceKey type or blank sourceKey array');
   }
   return { value: null, key: '' };
 };

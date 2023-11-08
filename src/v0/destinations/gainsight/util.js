@@ -1,25 +1,20 @@
-const myAxios = require('../../../util/myAxios');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const logger = require('../../../logger');
 const { ConfigurationError, RetryableError, NetworkError } = require('../../util/errorTypes');
 const { ENDPOINTS, getLookupPayload } = require('./config');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { httpPOST, httpPUT } = require("../../../adapters/network");
 
 const searchGroup = async (groupName, Config) => {
   let resp;
   try {
-    resp = await myAxios.post(
-      `${ENDPOINTS.groupSearchEndpoint(Config.domain)}`,
-      getLookupPayload(groupName),
-      {
-        headers: {
-          Accesskey: Config.accessKey,
-          'Content-Type': JSON_MIME_TYPE,
-        },
+    resp = await httpPOST(`${ENDPOINTS.groupSearchEndpoint(Config.domain)}`, getLookupPayload(groupName), {
+      headers: {
+        Accesskey: Config.accessKey,
+        'Content-Type': JSON_MIME_TYPE,
       },
-      { destType: 'gainsight', feature: 'transformation' },
-    );
+    }, { destType: 'gainsight', feature: 'transformation' });
   } catch (error) {
     let errMessage = '';
     let errorStatus = 500;
@@ -41,19 +36,14 @@ const searchGroup = async (groupName, Config) => {
 const createGroup = async (payload, Config) => {
   let resp;
   try {
-    resp = await myAxios.post(
-      `${ENDPOINTS.groupCreateEndpoint(Config.domain)}`,
-      {
-        records: [payload],
+    resp = await httpPOST(`${ENDPOINTS.groupCreateEndpoint(Config.domain)}`, {
+      records: [payload],
+    }, {
+      headers: {
+        Accesskey: Config.accessKey,
+        'Content-Type': JSON_MIME_TYPE,
       },
-      {
-        headers: {
-          Accesskey: Config.accessKey,
-          'Content-Type': JSON_MIME_TYPE,
-        },
-      },
-      { destType: 'gainsight', feature: 'transformation' },
-    );
+    }, { destType: 'gainsight', feature: 'transformation' });
   } catch (error) {
     let errMessage = '';
     let errorStatus = 500;
@@ -75,22 +65,17 @@ const createGroup = async (payload, Config) => {
 const updateGroup = async (payload, Config) => {
   let resp;
   try {
-    resp = await myAxios.put(
-      `${ENDPOINTS.groupUpdateEndpoint(Config.domain)}`,
-      {
-        records: [payload],
+    resp = await httpPUT(`${ENDPOINTS.groupUpdateEndpoint(Config.domain)}`, {
+      records: [payload],
+    }, {
+      headers: {
+        Accesskey: Config.accessKey,
+        'Content-Type': JSON_MIME_TYPE,
       },
-      {
-        headers: {
-          Accesskey: Config.accessKey,
-          'Content-Type': JSON_MIME_TYPE,
-        },
-        params: {
-          keys: 'Name',
-        },
+      params: {
+        keys: 'Name',
       },
-      { destType: 'gainsight', feature: 'transformation' },
-    );
+    }, { destType: 'gainsight', feature: 'transformation' });
   } catch (error) {
     let errMessage = '';
     let errorStatus = 500;

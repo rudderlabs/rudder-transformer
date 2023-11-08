@@ -2,12 +2,12 @@
 const lodash = require('lodash');
 const set = require('set-value');
 const get = require('get-value');
-const myAxios = require('../../../util/myAxios');
 const { DEFAULT_BASE_ENDPOINT } = require('./config');
 const { getType, isDefinedAndNotNull, isObject } = require('../../util');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { NetworkError, AbortedError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
+const { httpGET } = require("../../../adapters/network");
 
 /**
  * RegExp to test a string for a ISO 8601 Date spec
@@ -132,15 +132,11 @@ const handleResponse = (response) => {
 const fetchKustomer = async (url, destination) => {
   let response;
   try {
-    response = await myAxios.get(
-      url,
-      {
-        headers: {
-          Authorization: `Bearer ${destination.Config.apiKey}`,
-        },
+    response = await httpGET(url, {
+      headers: {
+        Authorization: `Bearer ${destination.Config.apiKey}`,
       },
-      { destType: 'kustomer', feature: 'transformation' },
-    );
+    },{ destType: 'kustomer', feature: 'transformation' });
   } catch (err) {
     if (err.response) {
       return handleResponse(err.response);

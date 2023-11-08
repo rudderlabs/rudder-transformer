@@ -1,6 +1,5 @@
 const get = require('get-value');
 const md5 = require('md5');
-const myAxios = require('../../../util/myAxios');
 const { MappedToDestinationKey } = require('../../../constants');
 const logger = require('../../../logger');
 const {
@@ -20,6 +19,7 @@ const { MERGE_CONFIG, MERGE_ADDRESS, SUBSCRIPTION_STATUS, VALID_STATUSES } = req
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { httpGET } = require("../../../adapters/network");
 
 const ADDRESS_MANDATORY_FIELDS = ['addr1', 'city', 'state', 'zip'];
 
@@ -156,15 +156,11 @@ const checkIfMailExists = async (apiKey, datacenterId, audienceId, email) => {
   const url = `${mailChimpSubscriptionEndpoint(datacenterId, audienceId, email)}`;
   const basicAuth = Buffer.from(`apiKey:${apiKey}`).toString('base64');
   try {
-    const response = await myAxios.get(
-      url,
-      {
-        headers: {
-          Authorization: `Basic ${basicAuth}`,
-        },
+    const response = await httpGET(url, {
+      headers: {
+        Authorization: `Basic ${basicAuth}`,
       },
-      { destType: 'mailchimp', feature: 'transformation' },
-    );
+    }, { destType: 'mailchimp', feature: 'transformation' });
     if (response?.data?.contact_id) {
       userStatus.exists = true;
       userStatus.subscriptionStatus = response.data.status;
@@ -187,15 +183,11 @@ const checkIfDoubleOptIn = async (apiKey, datacenterId, audienceId) => {
   const url = `${getMailChimpBaseEndpoint(datacenterId, audienceId)}`;
   const basicAuth = Buffer.from(`apiKey:${apiKey}`).toString('base64');
   try {
-    response = await myAxios.get(
-      url,
-      {
-        headers: {
-          Authorization: `Basic ${basicAuth}`,
-        },
+    response = await httpGET(url, {
+      headers: {
+        Authorization: `Basic ${basicAuth}`,
       },
-      { destType: 'mailchimp', feature: 'transformation' },
-    );
+    }, { destType: 'mailchimp', feature: 'transformation' });
   } catch (error) {
     const status = error.status || 400;
     throw new NetworkError('User does not have access to the requested operation', status, {

@@ -1,4 +1,3 @@
-const myAxios = require('../../../util/myAxios');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const logger = require('../../../logger');
 const { constructPayload, isDefinedAndNotNull } = require('../../util');
@@ -6,6 +5,7 @@ const { NetworkError, AbortedError } = require('../../util/errorTypes');
 const { ENDPOINT, productMapping } = require('./config');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { httpGET, httpPOST } = require("../../../adapters/network");
 
 const isValidEmail = (email) => {
   const re =
@@ -23,16 +23,12 @@ const userExists = async (Config, id) => {
   const basicAuth = Buffer.from(Config.apiKey).toString('base64');
   let response;
   try {
-    response = await myAxios.get(
-      `${ENDPOINT}/v2/${Config.accountId}/subscribers/${id}`,
-      {
-        headers: {
-          Authorization: `Basic ${basicAuth}`,
-          'Content-Type': JSON_MIME_TYPE,
-        },
+    response = await httpGET(`${ENDPOINT}/v2/${Config.accountId}/subscribers/${id}`, {
+      headers: {
+        Authorization: `Basic ${basicAuth}`,
+        'Content-Type': JSON_MIME_TYPE,
       },
-      { destType: 'drip', feature: 'transformation' },
-    );
+    },{ destType: 'drip', feature: 'transformation' });
     if (response && response.status) {
       return response.status === 200;
     }
@@ -61,17 +57,12 @@ const userExists = async (Config, id) => {
 
 const createUpdateUser = async (finalpayload, Config, basicAuth) => {
   try {
-    const response = await myAxios.post(
-      `${ENDPOINT}/v2/${Config.accountId}/subscribers`,
-      finalpayload,
-      {
-        headers: {
-          Authorization: `Basic ${basicAuth}`,
-          'Content-Type': JSON_MIME_TYPE,
-        },
+    const response = await httpPOST(`${ENDPOINT}/v2/${Config.accountId}/subscribers`, finalpayload, {
+      headers: {
+        Authorization: `Basic ${basicAuth}`,
+        'Content-Type': JSON_MIME_TYPE,
       },
-      { destType: 'drip', feature: 'transformation' },
-    );
+    },{ destType: 'drip', feature: 'transformation' });
     if (response) {
       return response.status === 200 || response.status === 201;
     }

@@ -1,4 +1,3 @@
-const myAxios = require('../../../util/myAxios');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { getValueFromMessage } = require('../../util');
 const {
@@ -9,6 +8,7 @@ const {
 const { ENDPOINT } = require('./config');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const {httpGET} = require("../../../adapters/network");
 
 const isValidEmail = (email) => {
   const re =
@@ -52,17 +52,13 @@ const userValidity = async (channel, Config, userId) => {
   const basicAuth = Buffer.from(Config.apiKey).toString('base64');
   let response;
   try {
-    response = await myAxios.get(
-      `${ENDPOINT}`,
-      {
-        headers: {
-          Authorization: `Basic ${basicAuth}`,
-          'Content-Type': JSON_MIME_TYPE,
-        },
-        params: paramsdata,
+    response = await httpGET(`${ENDPOINT}`, {
+      headers: {
+        Authorization: `Basic ${basicAuth}`,
+        'Content-Type': JSON_MIME_TYPE,
       },
-      { destType: 'delighted', feature: 'transformation' },
-    );
+      params: paramsdata,
+    }, { destType: 'delighted', feature: 'transformation' });
     if (response && response.data && response.status === 200 && Array.isArray(response.data)) {
       return response.data.length > 0;
     }

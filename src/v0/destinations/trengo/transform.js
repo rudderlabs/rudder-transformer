@@ -2,7 +2,6 @@
 /* eslint-disable no-prototype-builtins */
 const Handlebars = require('handlebars');
 const get = require('get-value');
-const myAxios = require('../../../util/myAxios');
 const { EventType } = require('../../../constants');
 const { EndPoints, BASE_URL } = require('./config');
 const {
@@ -27,6 +26,7 @@ const {
 const tags = require('../../util/tags');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const {httpGET} = require("../../../adapters/network");
 
 /**
  *
@@ -83,15 +83,11 @@ const validate = (email, phone, channelIdentifier) => {
 const lookupContact = async (term, destination) => {
   let res;
   try {
-    res = await myAxios.get(
-      `${BASE_URL}/contacts?page=1&term=${term}`,
-      {
-        headers: {
-          Authorization: `Bearer ${destination.Config.apiToken}`,
-        },
+    res = await httpGET(`${BASE_URL}/contacts?page=1&term=${term}`,{
+      headers: {
+        Authorization: `Bearer ${destination.Config.apiToken}`,
       },
-      { destType: 'trengo', feature: 'transformation' },
-    );
+    }, { destType: 'trengo', feature: 'transformation' });
   } catch (err) {
     // check if exists err.response && err.response.status else 500
     const status = err.response?.status || 400;

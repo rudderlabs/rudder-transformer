@@ -1,5 +1,4 @@
 /* eslint-disable no-nested-ternary */
-const myAxios = require('../../../util/myAxios');
 const { EventType } = require('../../../constants');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG, ENDPOINTS } = require('./config');
 const {
@@ -22,6 +21,7 @@ const {
 const { NetworkError, ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { httpPOST } = require("../../../adapters/network");
 
 const CONTACT_KEY_KEY = 'Contact Key';
 
@@ -29,18 +29,13 @@ const CONTACT_KEY_KEY = 'Contact Key';
 
 const getToken = async (clientId, clientSecret, subdomain) => {
   try {
-    const resp = await myAxios.post(
-      `https://${subdomain}.${ENDPOINTS.GET_TOKEN}`,
-      {
-        grant_type: 'client_credentials',
-        client_id: clientId,
-        client_secret: clientSecret,
-      },
-      {
-        'Content-Type': JSON_MIME_TYPE,
-      },
-      { destType: 'sfmc', feature: 'transformation' },
-    );
+    const resp = await httpPOST(`https://${subdomain}.${ENDPOINTS.GET_TOKEN}`, {
+      grant_type: 'client_credentials',
+      client_id: clientId,
+      client_secret: clientSecret,
+    }, {
+      'Content-Type': JSON_MIME_TYPE,
+    }, { destType: 'sfmc', feature: 'transformation' });
     if (resp && resp.data) {
       return resp.data.access_token;
     }

@@ -1,6 +1,5 @@
 const get = require('get-value');
 const set = require('set-value');
-const myAxios = require('../../../util/myAxios');
 
 const { EventType } = require('../../../constants');
 const {
@@ -25,7 +24,7 @@ const {
 } = require('../../util');
 const { getSourceName } = require('./util');
 const logger = require('../../../logger');
-const { httpGET } = require('../../../adapters/network');
+const { httpGET, httpPOST } = require('../../../adapters/network');
 const {
   NetworkInstrumentationError,
   InstrumentationError,
@@ -144,7 +143,7 @@ async function createUserFields(url, config, newFields, fieldJson) {
       };
 
       try {
-        const response = await myAxios.post(url, fieldData, config, {
+        const response = await httpPOST(url, fieldData, config, {
           destType: 'zendesk',
           feature: 'transformation',
         });
@@ -173,7 +172,7 @@ async function checkAndCreateUserFields(
   const config = { headers };
 
   try {
-    const response = await myAxios.get(url, config, {
+    const response = await httpGET(url, config, {
       destType: 'zendesk',
       feature: 'transformation',
     });
@@ -280,7 +279,7 @@ async function getUserId(message, headers, baseEndpoint, type) {
   const config = { headers };
 
   try {
-    const resp = await myAxios.get(url, config, {
+    const resp = await httpGET(url, config, {
       destType: 'zendesk',
       feature: 'transformation',
     });
@@ -304,10 +303,10 @@ async function isUserAlreadyAssociated(userId, orgId, headers, baseEndpoint) {
   const url = `${baseEndpoint}/users/${userId}/organization_memberships.json`;
   const config = { headers };
   try {
-    const response = await myAxios.get(url, config, {
+    const response = await httpGET(url, config, {
       destType: 'zendesk',
       feature: 'transformation',
-    });
+    })
     if (response?.data?.organization_memberships?.[0]?.organization_id === orgId) {
       return true;
     }
@@ -336,7 +335,7 @@ async function createUser(message, headers, destinationConfig, baseEndpoint, typ
   const payload = { user: userObject };
 
   try {
-    const resp = await myAxios.post(url, payload, config, {
+    const resp = await httpPOST(url, payload, config, {
       destType: 'zendesk',
       feature: 'transformation',
     });
@@ -417,7 +416,7 @@ async function createOrganization(message, category, headers, destinationConfig,
   const config = { headers };
 
   try {
-    const resp = await myAxios.post(url, payload, config, {
+    const resp = await httpPOST(url, payload, config, {
       destType: 'zendesk',
       feature: 'transformation',
     });
@@ -485,7 +484,7 @@ async function processIdentify(message, destinationConfig, headers, baseEndpoint
       const membershipUrl = `${baseEndpoint}users/${userId}/organization_memberships.json`;
       try {
         const config = { headers };
-        const response = await myAxios.get(membershipUrl, config, {
+        const response = await httpGET(membershipUrl, config, {
           destType: 'zendesk',
           feature: 'transformation',
         });
@@ -532,7 +531,7 @@ async function processTrack(message, destinationConfig, headers, baseEndpoint) {
   const url = `${baseEndpoint}users/search.json?query=${userEmail}`;
   const config = { headers };
   try {
-    const userResponse = await myAxios.get(url, config, {
+    const userResponse = await httpGET(url, config, {
       destType: 'zendesk',
       feature: 'transformation',
     });

@@ -1,9 +1,9 @@
-const myAxios = require('../../../util/myAxios');
 const { ENDPOINTS } = require('./config');
 const { NetworkError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { httpGET, httpPOST, httpPUT } = require("../../../adapters/network");
 
 const handleErrorResponse = (error, customErrMessage, expectedErrStatus, defaultStatus = 400) => {
   let errMessage = '';
@@ -48,16 +48,13 @@ const objectExists = async (id, Config, objectType) => {
 
   let response;
   try {
-    response = await myAxios.get(
-      url,
-      {
-        headers: {
-          'X-APTRINSIC-API-KEY': Config.apiKey,
-          'Content-Type': JSON_MIME_TYPE,
-        },
+    response = await httpGET(url, {
+      headers: {
+        'X-APTRINSIC-API-KEY': Config.apiKey,
+        'Content-Type': JSON_MIME_TYPE,
       },
-      { destType: 'gainsight_px', feature: 'transformation' },
-    );
+    },
+    { destType: 'gainsight_px', feature: 'transformation' });
     if (response && response.status === 200) {
       return { success: true, err: null };
     }
@@ -79,17 +76,14 @@ const objectExists = async (id, Config, objectType) => {
 const createAccount = async (payload, Config) => {
   let response;
   try {
-    response = await myAxios.post(
-      ENDPOINTS.ACCOUNTS_ENDPOINT,
-      payload,
-      {
-        headers: {
-          'X-APTRINSIC-API-KEY': Config.apiKey,
-          'Content-Type': JSON_MIME_TYPE,
-        },
+    response = await httpPOST(ENDPOINTS.ACCOUNTS_ENDPOINT, payload, {
+      headers: {
+        'X-APTRINSIC-API-KEY': Config.apiKey,
+        'Content-Type': JSON_MIME_TYPE,
       },
-      { destType: 'gainsight_px', feature: 'transformation' },
-    );
+    }, {
+      destType: 'gainsight_px', feature: 'transformation'
+    });
     if (response && response.status === 201) {
       return { success: true, err: null };
     }
@@ -112,17 +106,14 @@ const createAccount = async (payload, Config) => {
 const updateAccount = async (accountId, payload, Config) => {
   let response;
   try {
-    response = await myAxios.put(
-      `${ENDPOINTS.ACCOUNTS_ENDPOINT}/${accountId}`,
-      payload,
-      {
-        headers: {
-          'X-APTRINSIC-API-KEY': Config.apiKey,
-          'Content-Type': JSON_MIME_TYPE,
-        },
+    response = await httpPUT(`${ENDPOINTS.ACCOUNTS_ENDPOINT}/${accountId}`, payload, {
+      headers: {
+        'X-APTRINSIC-API-KEY': Config.apiKey,
+        'Content-Type': JSON_MIME_TYPE,
       },
-      { destType: 'gainsight_px', feature: 'transformation' },
-    );
+    }, {
+      destType: 'gainsight_px', feature: 'transformation'
+    });
     if (response && response.status === 204) {
       return { success: true, err: null };
     }

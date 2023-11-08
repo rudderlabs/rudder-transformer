@@ -78,8 +78,13 @@
     "required": false
   },
   {
-    "destKey": "context.page",
-    "sourceKeys": ["properties.context.page", "context.page"],
+    "destKey": "context.page.url",
+    "sourceKeys": ["properties.context.page.url", "context.page.url"],
+    "required": false
+  },
+  {
+    "destKey": "context.page.referrer",
+    "sourceKeys": ["properties.context.page.referrer", "context.page.referrer"],
     "required": false
   },
   {

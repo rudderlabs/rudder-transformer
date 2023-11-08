@@ -9,6 +9,7 @@ describe('transformForRecordEvent', () => {
     const inputs = [
       {
         message: {
+          type: 'record',
           fields: { id: 1 },
           action: 'insert',
           properties: { listData: { add: [], remove: [] } },
@@ -20,6 +21,7 @@ describe('transformForRecordEvent', () => {
     const expectedOutput = [
       {
         message: {
+          type: 'record',
           fields: { id: 1 },
           action: 'insert',
           properties: { listData: { add: [{ id: 1 }], remove: [] } },
@@ -38,6 +40,7 @@ describe('transformForRecordEvent', () => {
     const inputs = [
       {
         message: {
+          type: 'record',
           fields: { id: 1 },
           action: 'delete',
           properties: { listData: { add: [], remove: [] } },
@@ -49,6 +52,7 @@ describe('transformForRecordEvent', () => {
     const expectedOutput = [
       {
         message: {
+          type: 'record',
           fields: { id: 1 },
           action: 'delete',
           properties: { listData: { add: [], remove: [{ id: 1 }] } },

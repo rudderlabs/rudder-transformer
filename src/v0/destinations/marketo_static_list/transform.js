@@ -16,7 +16,7 @@ const {
 const { formatConfig, MAX_LEAD_IDS_SIZE } = require('./config');
 const Cache = require('../../util/cache');
 const { getAuthToken } = require('../marketo/transform');
-const { InstrumentationError, UnauthorizedError, AbortedError } = require('../../util/errorTypes');
+const { InstrumentationError, UnauthorizedError } = require('../../util/errorTypes');
 
 const authCache = new Cache(AUTH_CACHE_TTL); // 1 hr
 
@@ -94,41 +94,6 @@ const processEvent = (input) => {
   return response;
 };
 
-// function transformForRecordEvent(inputs, leadIdObj) {
-//   const finalMetadata = [];
-//   // iterate through each inputs metadata and create a final metadata
-//   const tokenisedInputs = inputs.map((input) => {
-//     const { message } = input;
-//     const { metadata } = input;
-//     finalMetadata.push(metadata);
-//     const { fields, action } = message;
-//     if (!message.properties) {
-//       message.properties = {};
-//     }
-//     if (!message.properties.listData) {
-//       message.properties.listData = { add: [], remove: [] };
-//     }
-//     // message.properties.listData = message.properties.listData || { add: [], remove: [] };
-//     const fieldsId = fields.id;
-//     if (action === 'insert') {
-//       leadIdObj.insert.push({ id: fieldsId });
-//       message.properties.listData.add.push({ id: fieldsId });
-//     } else if (action === 'delete') {
-//       leadIdObj.delete.push({ id: fieldsId });
-//       message.properties.listData.remove.push({ id: fieldsId });
-//     } else {
-//       throw new InstrumentationError('Invalid action type');
-//     }
-//     return input;
-//   });
-//   const finalInput = [tokenisedInputs[0]];
-//   finalInput[0].metadata = finalMetadata;
-//   finalInput[0].message.properties.listData.add = leadIdObj.insert;
-//   finalInput[0].message.properties.listData.remove = leadIdObj.delete;
-
-//   return finalInput;
-// }
-
 const process = async (event) => {
   const token = await getAuthToken(formatConfig(event.destination));
 
@@ -143,24 +108,10 @@ const processRouterDest = async (inputs, reqMetadata) => {
   // Token needs to be generated for marketo which will be done on input level.
   // If destination information is not present Error should be thrown
   let token;
-  let respList;
   try {
     token = await getAuthToken(formatConfig(inputs[0].destination));
     if (!token) {
-      throw new AbortedError('Could not retrieve authorisation token', 400);
-      // const errResp = {
-      //   status: 400,
-      //   message: 'Authorisation failed',
-      //   responseTransformFailure: true,
-      //   statTags: {},
-      // };
-      // const respEvents = getErrorRespEvents(
-      //   inputs.map((input) => input.metadata),
-      //   errResp.status,
-      //   errResp.message,
-      //   errResp.statTags,
-      // );
-      // return [{ ...respEvents, destination: inputs?.[0]?.destination }];
+      throw new InstrumentationError('Could not retrieve authorisation token', 400);
     }
   } catch (error) {
     // Not using handleRtTfSingleEventError here as this is for multiple events
@@ -182,13 +133,19 @@ const processRouterDest = async (inputs, reqMetadata) => {
     insert: [],
     delete: [],
   };
-  let finalInputForRecordEvent;
-  if (inputs[0].message.channel === 'sources' && inputs[0].message.type === 'record') {
-    finalInputForRecordEvent = transformForRecordEvent(tokenisedInputs, leadIdObj);
-    respList = await simpleProcessRouterDest(finalInputForRecordEvent, processEvent, reqMetadata);
-  } else {
-    respList = await simpleProcessRouterDest(tokenisedInputs, processEvent, reqMetadata);
-  }
+  // use lodash.groupby to group the inputs based on message type
+  const groupedInputs = lodash.groupBy(tokenisedInputs, (input) => input.message.type);
+  const finalInputForRecordEvent = transformForRecordEvent(groupedInputs.record, leadIdObj);
+  const transformedRecordEvent = await simpleProcessRouterDest(finalInputForRecordEvent, processEvent, reqMetadata);
+  const transformedAudienceEvent = await simpleProcessRouterDest(groupedInputs.audiencelist, processEvent, reqMetadata);
+  const respList = [...transformedRecordEvent, ...transformedAudienceEvent];
+
+  // if (inputs[0].message.channel === 'sources' && inputs[0].message.type === 'record') {
+  //   finalInputForRecordEvent = transformForRecordEvent(tokenisedInputs, leadIdObj);
+  //   respList = await simpleProcessRouterDest(finalInputForRecordEvent, processEvent, reqMetadata);
+  // } else {
+  //   respList = await simpleProcessRouterDest(tokenisedInputs, processEvent, reqMetadata);
+  // }
   // [respList[0].metadata] = respList[0].metadata;
   return respList;
 };

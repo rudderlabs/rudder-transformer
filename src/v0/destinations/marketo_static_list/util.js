@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/consistent-destructuring */
 const { InstrumentationError } = require('../../util/errorTypes');
 
 /**
@@ -41,25 +42,25 @@ function transformForRecordEvent(inputs, leadIdObj) {
     const { message } = input;
     const { metadata } = input;
     finalMetadata.push(metadata);
-    const { fields, action } = message;
-    let { properties } = message;
+    const { fields, action, type } = message;
+    if (type !== 'record') {
+      throw new InstrumentationError('Invalid message type, Supported message type is record.');
+    }
+    const { properties } = message;
     if (!properties) {
-      properties = {};
+      message.properties = {};
     }
-    if (!properties.listData) {
-      properties.listData = { add: [], remove: [] };
-    }
-    // message.properties.listData = message.properties.listData || { add: [], remove: [] };
+    message.properties.listData = message?.properties.listData || { add: [], remove: [] };
     const fieldsId = fields?.id;
     if (fieldsId === undefined) {
       throw new InstrumentationError('No lead id passed in the payload.');
     }
     if (action === 'insert') {
       leadIdObj.insert.push({ id: fieldsId });
-      properties.listData.add.push({ id: fieldsId });
+      message.properties.listData.add.push({ id: fieldsId });
     } else if (action === 'delete') {
       leadIdObj.delete.push({ id: fieldsId });
-      properties.listData.remove.push({ id: fieldsId });
+      message.properties.listData.remove.push({ id: fieldsId });
     } else {
       throw new InstrumentationError('Invalid action type');
     }

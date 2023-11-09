@@ -2,7 +2,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import isEmpty from 'lodash/isEmpty';
 import set from 'set-value';
 import { FixMe } from '../util/types';
-import { getKeyAndValueFromMessage } from '../v0/util';
+import { getFirstMatchingKeyAndValue } from '../v0/util';
 import * as GenericFieldMappingJson from '../v0/util/data/GenericFieldMapping.json';
 
 export default class GeoLocationHelper {
@@ -11,15 +11,10 @@ export default class GeoLocationHelper {
     address: Record<string, FixMe>;
   } {
     const { value: address, key: foundKey } =
-      getKeyAndValueFromMessage(message, GenericFieldMappingJson.address) || {};
-    const { key: traitsKey } = getKeyAndValueFromMessage(message, GenericFieldMappingJson.traits);
-    let addressKey = foundKey;
-    if (!foundKey) {
-      addressKey = `${traitsKey}.address`;
-      if (!traitsKey) {
-        [addressKey] = GenericFieldMappingJson.address;
-      }
-    }
+      getFirstMatchingKeyAndValue(message, GenericFieldMappingJson.address) || {};
+    const { key: traitsKey } = getFirstMatchingKeyAndValue(message, GenericFieldMappingJson.traits);
+    const addressKey =
+      foundKey || (traitsKey ? `${traitsKey}.address` : GenericFieldMappingJson.address[0]);
     return { addressKey, address };
   }
 

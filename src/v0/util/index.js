@@ -659,23 +659,30 @@ const getValueFromMessage = (message, sourceKeys) => {
   return null;
 };
 
-const getKeyAndValueFromMessage = (message, sourceKeys) => {
-  if (Array.isArray(sourceKeys)) {
-    // got the possible sourceKeys
-    // eslint-disable-next-line no-restricted-syntax
-    for (const sourceKey of sourceKeys) {
-      const val = get(message, sourceKey);
-      if (val || val === false || val === 0) {
-        // return only if the value is valid.
-        // else look for next possible source in precedence
-        return { value: val, key: sourceKey };
-      }
-    }
-  } else if (typeof sourceKeys === 'string') {
-    // got a single key
-    // - we don't need to iterate over a loop for a single possible value
-    return { value: get(message, sourceKeys), key: sourceKeys };
+const getFirstMatchingKeyAndValue = (message, sourceKeys) => {
+  let srcKeys = sourceKeys;
+  if (
+    typeof message !== 'object' ||
+    (!Array.isArray(sourceKeys) && typeof sourceKeys !== 'string')
+  ) {
+    // sourceKeys => boolean, number, object, function etc,.
+    // message => anything other than object,.
+    return { value: null, key: '' };
   }
+  if (typeof sourceKeys === 'string') {
+    srcKeys = [sourceKeys];
+  }
+  // got the possible sourceKeys
+  // eslint-disable-next-line no-restricted-syntax
+  for (const sourceKey of srcKeys) {
+    const val = get(message, sourceKey);
+    if (val || val === false || val === 0) {
+      // return only if the value is valid.
+      // else look for next possible source in precedence
+      return { value: val, key: sourceKey };
+    }
+  }
+
   return { value: null, key: '' };
 };
 
@@ -2212,5 +2219,5 @@ module.exports = {
   isValidInteger,
   isNewStatusCodesAccepted,
   IsGzipSupported,
-  getKeyAndValueFromMessage,
+  getFirstMatchingKeyAndValue,
 };

@@ -117,6 +117,44 @@ const getFirstMatchKVCases = [
       key: '1.c.d',
     },
   },
+  {
+    description: 'should get value as "0"',
+    input: {
+      message: {
+        player: 'Roger Federer',
+        sport: 'Tennis',
+        rivals: {
+          spain: 0,
+          serbia: 'Novak Djokovic',
+          switzerland: 'Stan Wawrinka',
+        },
+      },
+      sourceKeys: ['spain.rivals', 'rivals.spain'],
+    },
+    expectedOutput: {
+      value: 0,
+      key: 'rivals.spain',
+    },
+  },
+  {
+    description: 'show get value as false',
+    input: {
+      message: {
+        player: 'Roger Federer',
+        sport: 'Tennis',
+        rivals: {
+          spain: false,
+          serbia: 'Novak Djokovic',
+          switzerland: 'Stan Wawrinka',
+        },
+      },
+      sourceKeys: ['spain.rivals', 'rivals.spain'],
+    },
+    expectedOutput: {
+      value: false,
+      key: 'rivals.spain',
+    },
+  },
 ];
 
 describe('getFirstMatchingKeyAndValue tests', () => {

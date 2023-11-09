@@ -29,17 +29,17 @@ export default class GeoLocationHelper {
       return {};
     }
     const { value: address, key: addressKey } = GeoLocationHelper.getAddressKeyAndValue(message);
-    const addressFieldMapping = {
+    const addressFieldToGeoFieldMap = {
       city: 'city',
       country: 'country',
       postalCode: 'postal',
       state: 'region',
     };
 
-    const mappedAddress = Object.entries(addressFieldMapping).reduce(
-      (agg, [identifyAddressKey, geoKey]) => {
-        if (!address?.[identifyAddressKey] && msg?.context?.geo?.[geoKey]) {
-          return { [identifyAddressKey]: msg.context.geo[geoKey], ...agg };
+    const mappedAddress = Object.entries(addressFieldToGeoFieldMap).reduce(
+      (agg, [addressFieldKey, geoFieldKey]) => {
+        if (!address?.[addressFieldKey] && msg?.context?.geo?.[geoFieldKey]) {
+          return { [addressFieldKey]: msg.context.geo[geoFieldKey], ...agg };
         }
         return agg;
       },

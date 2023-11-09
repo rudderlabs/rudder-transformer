@@ -676,7 +676,7 @@ const getFirstMatchingKeyAndValue = (message, sourceKeys) => {
   // eslint-disable-next-line no-restricted-syntax
   for (const sourceKey of srcKeys) {
     const val = get(message, sourceKey);
-    if (val || val === false || val === 0) {
+    if (!lodash.isNil(val)) {
       // return only if the value is valid.
       // else look for next possible source in precedence
       return { value: val, key: sourceKey };

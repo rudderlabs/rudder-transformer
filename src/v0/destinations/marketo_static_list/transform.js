@@ -4,6 +4,9 @@ const {
   defaultPostRequestConfig,
   defaultDeleteRequestConfig,
   generateErrorObject,
+  checkInvalidRtTfEvents,
+  getSuccessRespEvents,
+  handleRtTfSingleEventError,
 } = require('../../util');
 const { AUTH_CACHE_TTL, JSON_MIME_TYPE } = require('../../util/constant');
 const { getIds, validateMessageType, transformForRecordEvent } = require('./util');
@@ -11,7 +14,6 @@ const {
   getDestinationExternalID,
   defaultRequestConfig,
   getErrorRespEvents,
-  simpleProcessRouterDest,
 } = require('../../util');
 const { formatConfig, MAX_LEAD_IDS_SIZE } = require('./config');
 const Cache = require('../../util/cache');
@@ -57,10 +59,10 @@ const batchResponseBuilder = (message, Config, token, leadIds, operation) => {
   return response;
 };
 
-const processEvent = (input) => {
-  const { token, message, destination } = input;
+const processEvent = (event) => {
+  const { token, message, destination } = event;
   const { Config } = destination;
-  validateMessageType(message, ['audiencelist', 'record']);
+  validateMessageType(message, ['audiencelist']);
   const response = [];
   let toAdd;
   let toRemove;
@@ -94,14 +96,41 @@ const processEvent = (input) => {
   return response;
 };
 
-const process = async (event) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const process = async (event, _processParams) => {
   const token = await getAuthToken(formatConfig(event.destination));
-
   if (!token) {
     throw new UnauthorizedError('Authorization failed');
   }
-  const response = processEvent({ ...event, token });
+  const updatedEvent = { ...event, token };
+  const response = processEvent(updatedEvent);
   return response;
+};
+
+const triggerProcess = async (inputs, reqMetadata, processParams) => {
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
+  }
+
+  const respList = await Promise.all(
+    inputs.map(async (input) => {
+      try {
+        let resp = input.message;
+        // transform if not already done
+        if (!input.message.statusCode) {
+          resp = await process(input, processParams);
+        }
+        if (Array.isArray(input.metadata)) {
+          return getSuccessRespEvents(resp, [...input.metadata], input.destination);
+        }
+        return getSuccessRespEvents(resp, [input.metadata], input.destination);
+      } catch (error) {
+        return handleRtTfSingleEventError(input, error, reqMetadata);
+      }
+    }),
+  );
+  return respList;
 };
 
 const processRouterDest = async (inputs, reqMetadata) => {
@@ -114,46 +143,41 @@ const processRouterDest = async (inputs, reqMetadata) => {
       throw new UnauthorizedError('Could not retrieve authorisation token');
     }
   } catch (error) {
-    // Not using handleRtTfSingleEventError here as this is for multiple events
-    const errObj = generateErrorObject(error);
-    const respEvents = getErrorRespEvents(
-      inputs.map((input) => input.metadata),
-      errObj.status,
-      errObj.message,
-      errObj.statTags,
+    const errorObj = generateErrorObject(error);
+    const errResponses = inputs.map((input) =>
+      getErrorRespEvents(input.metadata, errorObj.status, errorObj.message, errorObj.statTags),
     );
-    return [{ ...respEvents, destination: inputs?.[0]?.destination }];
+
+    return errResponses;
   }
 
   // Checking previous status Code. Initially setting to false.
   // If true then previous status is 500 and every subsequent event output should be
   // sent with status code 500 to the router to be retried.
   const tokenisedInputs = inputs.map((input) => ({ ...input, token }));
-  const leadIdObj = {
-    insert: [],
-    delete: [],
-  };
   // use lodash.groupby to group the inputs based on message type
   let transformedRecordEvent = [];
   let transformedAudienceEvent = [];
   const groupedInputs = lodash.groupBy(tokenisedInputs, (input) => input.message.type);
 
+  const respList = [];
   if (groupedInputs.record && groupedInputs.record.length > 0) {
-    const finalInputForRecordEvent = transformForRecordEvent(groupedInputs.record, leadIdObj);
-    transformedRecordEvent = await simpleProcessRouterDest(
-      finalInputForRecordEvent,
+    const recordToAudienceTransformationOutput = transformForRecordEvent(groupedInputs.record);
+    respList.push(...recordToAudienceTransformationOutput.errorArr);
+    transformedRecordEvent = await triggerProcess(
+      recordToAudienceTransformationOutput.transformedAudienceEvent,
       processEvent,
       reqMetadata,
     );
   }
   if (groupedInputs.audiencelist && groupedInputs.audiencelist.length > 0) {
-    transformedAudienceEvent = await simpleProcessRouterDest(
+    transformedAudienceEvent = await triggerProcess(
       groupedInputs.audiencelist,
       processEvent,
       reqMetadata,
     );
   }
-  const respList = [...transformedRecordEvent, ...transformedAudienceEvent];
+  respList.push(...transformedRecordEvent, ...transformedAudienceEvent);
   return respList;
 };
 
@@ -164,16 +188,10 @@ const processRouterDest = async (inputs, reqMetadata) => {
  */
 function processMetadataForRouter(output) {
   const { metadata, destination } = output;
-  // check if metadata[0] is an array or not
-  let clonedMetadata;
-  if (Array.isArray(metadata[0])) {
-    [clonedMetadata] = cloneDeep(metadata);
-  } else {
-    clonedMetadata = cloneDeep(metadata);
-  }
+  const clonedMetadata = cloneDeep(metadata);
   clonedMetadata.forEach((metadataElement) => {
     // eslint-disable-next-line no-param-reassign
-    metadataElement.destInfo = { authKey: destination.ID };
+    metadataElement.destInfo = { authKey: destination?.ID };
   });
   return clonedMetadata;
 }

@@ -1,5 +1,7 @@
 /* eslint-disable unicorn/consistent-destructuring */
+const { getDestinationExternalID, isDefinedAndNotNull, getErrorRespEvents } = require('../../util');
 const { InstrumentationError } = require('../../util/errorTypes');
+const tags = require('../../util/tags');
 
 /**
  * Fetches the ids from the array of objects
@@ -35,43 +37,91 @@ const validateMessageType = (message, allowedTypes) => {
   }
 };
 
-function transformForRecordEvent(inputs, leadIdObj) {
-  const finalMetadata = [];
-  // iterate through each inputs metadata and create a final metadata
-  const tokenisedInputs = inputs.map((input) => {
-    const { message } = input;
-    const { metadata } = input;
-    finalMetadata.push(metadata);
-    const { fields, action, type } = message;
-    if (type !== 'record') {
-      throw new InstrumentationError('Invalid message type, Supported message type is record.');
-    }
-    const { properties } = message;
-    if (!properties) {
-      message.properties = {};
-    }
-    message.properties.listData = message?.properties.listData || { add: [], remove: [] };
-    const fieldsId = fields?.id;
-    if (fieldsId === undefined) {
-      throw new InstrumentationError('No lead id passed in the payload.');
-    }
-    if (action === 'insert') {
-      leadIdObj.insert.push({ id: fieldsId });
-      message.properties.listData.add.push({ id: fieldsId });
-    } else if (action === 'delete') {
-      leadIdObj.delete.push({ id: fieldsId });
-      message.properties.listData.remove.push({ id: fieldsId });
-    } else {
-      throw new InstrumentationError('Invalid action type');
-    }
-    return input;
-  });
-  const finalInput = [tokenisedInputs[0]];
-  finalInput[0].metadata = finalMetadata;
-  finalInput[0].message.properties.listData.add = leadIdObj.insert;
-  finalInput[0].message.properties.listData.remove = leadIdObj.delete;
+function transformForRecordEvent(inputs) {
+  const successMetadataList = [];
+  const { message, destination } = inputs[0];
+  const { staticListId } = destination.Config;
+  // TODO: Rethink this process
+  const mslExternalId = getDestinationExternalID(message, 'marketoStaticListId') || staticListId;
+  // Skeleton for audience message
+  const transformedAudienceMessage = {
+    type: 'audiencelist',
+    context: {
+      externalId: [
+        {
+          type: 'marketoStaticListId',
+          value: mslExternalId,
+        },
+      ],
+    },
+    properties: {
+      listData: {
+        add: [],
+        remove: [],
+      },
+    },
+  };
 
-  return finalInput;
+  // group input based on presence of field id
+  const groupedInputs = inputs.reduce(
+    (acc, input) => {
+      const { fields } = input.message;
+      const fieldsId = fields?.id;
+      if (isDefinedAndNotNull(fieldsId)) {
+        acc[0].push(input);
+      } else {
+        acc[1].push(input);
+      }
+      return acc;
+    },
+    [[], []],
+  );
+
+  // if there are no inputs with field id, then throw error
+  if (groupedInputs[0].length === 0) {
+    throw new InstrumentationError('No field id passed in the payload.');
+  }
+
+  // handle error for inputs with no field id
+  const errorArr = groupedInputs[1].map((input) =>
+    getErrorRespEvents(input.metadata, 400, 'No field id passed in the payload', {
+      [tags.TAG_NAMES.ERROR_CATEGORY]: tags.ERROR_CATEGORIES.DATA_VALIDATION,
+      [tags.TAG_NAMES.ERROR_TYPE]: tags.ERROR_TYPES.INSTRUMENTATION,
+    }),
+  );
+
+  // handle for success case
+  groupedInputs[0].forEach((input) => {
+    const { fields, action } = input.message;
+    const fieldsId = fields.id;
+    if (action === 'insert') {
+      transformedAudienceMessage.properties.listData.add.push({ id: fieldsId });
+      successMetadataList.push(input.metadata);
+    } else if (action === 'delete') {
+      transformedAudienceMessage.properties.listData.remove.push({ id: fieldsId });
+      successMetadataList.push(input.metadata);
+    } else {
+      errorArr.push(
+        getErrorRespEvents(input.metadata, 400, 'Invalid action type', {
+          [tags.TAG_NAMES.ERROR_CATEGORY]: tags.ERROR_CATEGORIES.DATA_VALIDATION,
+          [tags.TAG_NAMES.ERROR_TYPE]: tags.ERROR_TYPES.INSTRUMENTATION,
+        }),
+      );
+    }
+  });
+
+  const transformedAudienceEvent = [
+    {
+      destination,
+      metadata: successMetadataList,
+      message: transformedAudienceMessage,
+    },
+  ];
+
+  return {
+    errorArr,
+    transformedAudienceEvent,
+  };
 }
 
 module.exports = {

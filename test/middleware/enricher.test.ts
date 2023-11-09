@@ -345,7 +345,7 @@ describe('[GeoLocation Enrichment] Processor transformation tests', () => {
     );
   });
 
-  test('should not enrich when context.geo is not populated', async () => {
+  test('should not enrich when context.geo is not populated & address is already present', async () => {
     const inputData: ProcessorTransformationRequest[] = [
       {
         destination: {
@@ -420,6 +420,9 @@ describe('[GeoLocation Enrichment] Processor transformation tests', () => {
             age: 23,
             email: 'testmp@rudderstack.com',
             firstname: 'Test Kafka',
+            address: {
+              country: 'India',
+            },
           },
           timestamp: '2020-04-17T20:12:44.758+05:30',
           type: 'identify',
@@ -432,7 +435,7 @@ describe('[GeoLocation Enrichment] Processor transformation tests', () => {
     await Enricher.enrichGeoLocation(ctx, () => {});
 
     // @ts-ignore
-    expect(ctx.request.body[0].message.traits?.address).toBe(undefined);
+    expect(ctx.request.body[0].message.traits?.address).toEqual({ country: 'India' });
   });
 
   test('should not contain address object, when context.geo & address are not present', async () => {

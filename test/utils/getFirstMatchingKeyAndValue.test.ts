@@ -155,6 +155,30 @@ const getFirstMatchKVCases = [
       key: 'rivals.spain',
     },
   },
+  {
+    description: 'should get first available value(in this case "traits.address")',
+    input: {
+      message: {
+        context: {
+          traits: {
+            address: {
+              country: 'Switzerland',
+            },
+          },
+        },
+        traits: {
+          address: {
+            country: 'Bulgaria',
+          },
+        },
+      },
+      sourceKeys: ['traits.address', 'context.traits.address'],
+    },
+    expectedOutput: {
+      value: { country: 'Bulgaria' },
+      key: 'traits.address',
+    },
+  },
 ];
 
 describe('getFirstMatchingKeyAndValue tests', () => {

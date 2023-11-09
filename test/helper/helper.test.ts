@@ -59,7 +59,7 @@ describe('GeoLocationHelper tests', () => {
       userId: 'abcd-124',
     };
 
-    const enhancedMsg = GeoLocationHelper.getGeoLocationData(msg);
+    const enhancedMsg = GeoLocationHelper.getMessageWithGeoLocationData(msg);
 
     expect(enhancedMsg.context.traits.address).not.toBe(undefined);
     expect(enhancedMsg.context.traits.address).toEqual({
@@ -126,7 +126,7 @@ describe('GeoLocationHelper tests', () => {
       userId: 'abcd-124',
     };
 
-    const enhancedMsg = GeoLocationHelper.getGeoLocationData(msg);
+    const enhancedMsg = GeoLocationHelper.getMessageWithGeoLocationData(msg);
 
     expect(enhancedMsg.context.traits.address).not.toBe(undefined);
     expect(enhancedMsg.context.traits.address).toEqual({
@@ -199,7 +199,7 @@ describe('GeoLocationHelper tests', () => {
       userId: 'abcd-124',
     };
 
-    const enhancedMsg = GeoLocationHelper.getGeoLocationData(msg);
+    const enhancedMsg = GeoLocationHelper.getMessageWithGeoLocationData(msg);
 
     expect(enhancedMsg.traits.address).not.toBe(undefined);
     expect(enhancedMsg.traits.address).toEqual({
@@ -276,7 +276,7 @@ describe('GeoLocationHelper tests', () => {
       userId: 'abcd-124',
     };
 
-    const enhancedMsg = GeoLocationHelper.getGeoLocationData(msg);
+    const enhancedMsg = GeoLocationHelper.getMessageWithGeoLocationData(msg);
 
     expect(enhancedMsg.traits.address).not.toBe(undefined);
     expect(enhancedMsg.traits.address).toEqual({
@@ -351,7 +351,7 @@ describe('GeoLocationHelper tests', () => {
       userId: 'abcd-124',
     };
 
-    const enhancedMsg = GeoLocationHelper.getGeoLocationData(msg);
+    const enhancedMsg = GeoLocationHelper.getMessageWithGeoLocationData(msg);
 
     expect(enhancedMsg.traits.address).not.toBe(undefined);
     expect(enhancedMsg.traits.address).toEqual({
@@ -408,7 +408,7 @@ describe('GeoLocationHelper tests', () => {
       userId: 'abcd-124',
     };
 
-    const enhancedMsg = GeoLocationHelper.getGeoLocationData(msg);
+    const enhancedMsg = GeoLocationHelper.getMessageWithGeoLocationData(msg);
 
     expect(enhancedMsg).toEqual({});
   });
@@ -416,7 +416,7 @@ describe('GeoLocationHelper tests', () => {
 
 describe('get addressKey & address tests', () => {
   test('addressKey should be "traits.address", when address is not present but traits object is present', () => {
-    const { addressKey } = GeoLocationHelper.getAddressKeyAndValue({
+    const { key: addressKey } = GeoLocationHelper.getAddressKeyAndValue({
       traits: {
         name: 'Bruce Wayne',
         age: 35,
@@ -427,7 +427,7 @@ describe('get addressKey & address tests', () => {
   });
 
   test('addressKey should be "context.traits.address", when address is not present but traits object is present', () => {
-    const { addressKey } = GeoLocationHelper.getAddressKeyAndValue({
+    const { key: addressKey } = GeoLocationHelper.getAddressKeyAndValue({
       context: {
         traits: {
           name: 'Bruce Wayne',
@@ -440,7 +440,7 @@ describe('get addressKey & address tests', () => {
   });
 
   test('addressKey should be "traits.address", when traits object is not present at all', () => {
-    const { addressKey } = GeoLocationHelper.getAddressKeyAndValue({
+    const { key: addressKey } = GeoLocationHelper.getAddressKeyAndValue({
       anonymousId: '129893-2idi9292',
       originalTimestamp: '2020-04-17T14:42:44.722Z',
       receivedAt: '2020-04-17T20:12:44.758+05:30',
@@ -465,7 +465,7 @@ describe('get addressKey & address tests', () => {
   });
 
   test('addressKey should be "context.traits.address", when address is present in context.traits & address is not present in traits', () => {
-    const { addressKey } = GeoLocationHelper.getAddressKeyAndValue({
+    const { key: addressKey } = GeoLocationHelper.getAddressKeyAndValue({
       anonymousId: '129893-2idi9292',
       originalTimestamp: '2020-04-17T14:42:44.722Z',
       receivedAt: '2020-04-17T20:12:44.758+05:30',
@@ -499,7 +499,7 @@ describe('get addressKey & address tests', () => {
   });
 
   test('addressKey should be "traits.address", when empty payload is sent', () => {
-    const { addressKey } = GeoLocationHelper.getAddressKeyAndValue({});
+    const { key: addressKey } = GeoLocationHelper.getAddressKeyAndValue({});
     expect(addressKey).toEqual('traits.address');
   });
 });

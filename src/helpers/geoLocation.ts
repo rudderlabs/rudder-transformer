@@ -7,24 +7,28 @@ import * as GenericFieldMappingJson from '../v0/util/data/GenericFieldMapping.js
 
 export default class GeoLocationHelper {
   public static getAddressKeyAndValue(message: Record<string, FixMe>): {
-    addressKey: string;
-    address: Record<string, FixMe>;
+    key: string;
+    value: Record<string, FixMe>;
   } {
-    const { value: address, key: foundKey } =
-      getFirstMatchingKeyAndValue(message, GenericFieldMappingJson.address) || {};
+    const { value, key: foundKey } = getFirstMatchingKeyAndValue(
+      message,
+      GenericFieldMappingJson.address,
+    );
     const { key: traitsKey } = getFirstMatchingKeyAndValue(message, GenericFieldMappingJson.traits);
     const addressKey =
       foundKey || (traitsKey ? `${traitsKey}.address` : GenericFieldMappingJson.address[0]);
-    return { addressKey, address };
+    return { key: addressKey, value };
   }
 
-  public static getGeoLocationData(message: Record<string, FixMe>): Record<string, FixMe> {
+  public static getMessageWithGeoLocationData(
+    message: Record<string, FixMe>,
+  ): Record<string, FixMe> {
     const msg = cloneDeep(message || {});
     if (isEmpty(msg?.context?.geo || {})) {
       // geo-location data was not sent
       return {};
     }
-    const { address, addressKey } = GeoLocationHelper.getAddressKeyAndValue(message);
+    const { value: address, key: addressKey } = GeoLocationHelper.getAddressKeyAndValue(message);
     const addressFieldMapping = {
       city: 'city',
       country: 'country',

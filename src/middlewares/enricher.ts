@@ -13,7 +13,7 @@ export default class Enricher {
     data: RouterTransformationRequestData[],
   ): RouterTransformationRequestData[] {
     return data.map((inpEv) => {
-      const geoEnrichedMessage = GeoLocationHelper.getGeoLocationData(inpEv.message);
+      const geoEnrichedMessage = GeoLocationHelper.getMessageWithGeoLocationData(inpEv.message);
       return {
         ...inpEv,
         message: {

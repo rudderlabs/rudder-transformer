@@ -3944,7 +3944,7 @@
               "id": "User Android",
               "userId": "User Android"
             },
-            "event_type": "Viewed Screen",
+            "event_type": "Viewed  Screen",
             "user_id": "User Android",
             "device_brand": "Google",
             "time": 1662393883250,
@@ -4276,7 +4276,7 @@
             "app_name": "RudderLabs JavaScript SDK",
             "app_version": "1.0.0",
             "language": "en-US",
-            "event_type": "Viewed Page",
+            "event_type": "Viewed  Page",
             "event_properties": {
               "path": "/destinations/amplitude",
               "referrer": "",

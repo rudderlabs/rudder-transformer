@@ -194,9 +194,9 @@ const handleTraits = (messageTrait, destination) => {
 
 const getScreenevTypeAndUpdatedProperties = (message, CATEGORY_KEY) => {
   const name = message.name || message.event || get(message, CATEGORY_KEY);
-  const updatedName = name ? `${name} ` : '';
+
   return {
-    eventType: `Viewed ${updatedName}Screen`,
+    eventType: `Viewed ${name} Screen`,
     updatedProperties: {
       ...message.properties,
       name,
@@ -577,8 +577,6 @@ const getGroupInfo = (destination, groupInfo, groupTraits) => {
   }
   return groupInfo;
 };
-const getUpdatedPageNameWithoutUserDefinedPageEventName = (name, message, CATEGORY_KEY) =>
-  name || get(message, CATEGORY_KEY) ? `${name || get(message, CATEGORY_KEY)} ` : undefined;
 
 // Generic process function which invokes specific handler functions depending on message type
 // and event type where applicable
@@ -611,15 +609,10 @@ const processSingleMessage = (message, destination) => {
           userProvidedPageEventString.trim() === ''
             ? name
             : userProvidedPageEventString
-                .trim()
-                .replaceAll(/{{([^{}]+)}}/g, get(message, getMessagePath));
+              .trim()
+              .replaceAll(/{{([^{}]+)}}/g, get(message, getMessagePath));
       } else {
-        const updatedName = getUpdatedPageNameWithoutUserDefinedPageEventName(
-          name,
-          message,
-          CATEGORY_KEY,
-        );
-        evType = `Viewed ${updatedName || ''}Page`;
+        evType = `Viewed ${name || get(message, CATEGORY_KEY)} Page`;
       }
       message.properties = {
         ...properties,
@@ -843,7 +836,7 @@ const getBatchEvents = (message, destination, metadata, batchEventResponse) => {
     if (
       batchEventArray.length < AMBatchEventLimit &&
       JSON.stringify(batchPayloadJSON).length + JSON.stringify(incomingMessageEvent).length <
-        AMBatchSizeLimit
+      AMBatchSizeLimit
     ) {
       batchEventArray.push(incomingMessageEvent); // set value
       batchEventJobs.push(metadata);

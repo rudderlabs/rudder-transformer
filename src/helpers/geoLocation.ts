@@ -23,8 +23,8 @@ export default class GeoLocationHelper {
   public static getMessageWithGeoLocationData(
     message: Record<string, FixMe>,
   ): Record<string, FixMe> {
-    const msg = cloneDeep(message || {});
-    if (isEmpty(msg?.context?.geo || {})) {
+    let msg = message;
+    if (isEmpty(msg?.context?.geo)) {
       // geo-location data was not sent
       return {};
     }
@@ -46,6 +46,7 @@ export default class GeoLocationHelper {
       {},
     );
     if (!isEmpty(address) || !isEmpty(mappedAddress)) {
+      msg = cloneDeep(message || {});
       set(msg, addressKey, { ...address, ...mappedAddress });
     }
     return msg;

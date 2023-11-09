@@ -283,6 +283,8 @@ describe('GeoLocationHelper tests', () => {
       city: 'Dharamshala',
       postalCode: '123546',
     });
+    // same reference check
+    expect(enhancedMsg.traits.address).toStrictEqual(msg.traits.address);
   });
 
   test("when context.geo doesn't have some properties, do not make use of non-available values in context.geo", () => {
@@ -407,6 +409,21 @@ describe('GeoLocationHelper tests', () => {
     const enhancedMsg = GeoLocationHelper.getMessageWithGeoLocationData(msg);
 
     expect(enhancedMsg).toEqual({});
+    // @ts-ignore
+    expect(enhancedMsg?.traits?.address).toBe(undefined);
+    // @ts-ignore
+    expect(enhancedMsg?.context?.traits?.address).toBe(undefined);
+  });
+
+  test('when message is null(no geo-enrichment happened), enrichment would not happen', () => {
+    const msg = null;
+
+    // @ts-ignore
+    const enhancedMsg = GeoLocationHelper.getMessageWithGeoLocationData(msg);
+
+    expect(enhancedMsg).toEqual({});
+    // @ts-ignore
+    expect(enhancedMsg?.traits).toBe(undefined);
   });
 });
 

@@ -1,10 +1,18 @@
 {
   "input": [
     {
-      "event": "Fulfillments Update",
-      "data": {
-        "fulfillment_id": "1234567890",
-        "status": "pending"
+      "event": {
+        "event": "Fulfillments Update",
+        "data": {
+          "fulfillment_id": "1234567890",
+          "status": "pending"
+        }
+      },
+      "source": {
+        "id": "source_id",
+        "config": {
+          "configField1": "configVal1"
+        }
       }
     }
   ],

@@ -211,7 +211,7 @@ describe('Source api tests', () => {
   test('(webhook) successful source transform for source present in v1 and server providing v0 endpoint', async () => {
     const data = getDataFromPath('./data_scenarios/source/v1/successful.json');
     const response = await request(server)
-      .post('/v0/sources/webhook')
+      .post('/v1/sources/webhook')
       .set('Accept', 'application/json')
       .send(data.input);
     const parsedResp = JSON.parse(response.text);

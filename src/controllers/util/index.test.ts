@@ -44,7 +44,7 @@ describe('adaptInputToVersion', () => {
     expect(result).toEqual(expected);
   });
 
-  it('should convert input from v0 to v1 when the request version is v1 and the implementation version is v0', () => {
+  it('should convert input from v0 to v1 when the request version is v0 and the implementation version is v1', () => {
     const sourceType = 'webhook';
     const requestVersion = 'v0';
     const input = [

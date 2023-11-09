@@ -1172,50 +1172,6 @@ export const data = [
                 jobId: 2,
               },
             },
-            {
-              destination: {
-                ID: '1zia9wKshXt80YksLmUdJnr7IHI',
-                Name: 'test_marketo',
-                DestinationDefinition: {
-                  ID: '1iVQvTRMsPPyJzwol0ifH93QTQ6',
-                  Name: 'MARKETO',
-                  DisplayName: 'Marketo',
-                  transformAt: 'processor',
-                  transformAtV1: 'processor',
-                },
-                Config: {
-                  clientId: 'marketo_client_id_success',
-                  clientSecret: 'marketo_client_secret_success',
-                  accountId: 'marketo_acct_id_success',
-                  staticListId: 1234,
-                },
-                Enabled: true,
-                Transformations: [],
-                IsProcessorEnabled: true,
-              },
-              message: {
-                userId: 'user 1',
-                anonymousId: 'anon-id-new',
-                event: 'event1',
-                type: 'track',
-                properties: {
-                  listData: {
-                    remove: [1],
-                  },
-                  enablePartialFailure: true,
-                },
-                context: {
-                  ip: '14.5.67.21',
-                  library: {
-                    name: 'http',
-                  },
-                },
-                timestamp: '2020-02-02T00:23:09.544Z',
-              },
-              metadata: {
-                jobId: 3,
-              },
-            },
           ],
           destType: 'marketo_static_list',
         },
@@ -1369,43 +1325,6 @@ export const data = [
                 Enabled: true,
                 Transformations: [],
                 IsProcessorEnabled: true,
-              },
-            },
-            {
-              metadata: [
-                {
-                  destInfo: {
-                    authKey: '1zia9wKshXt80YksLmUdJnr7IHI',
-                  },
-                  jobId: 3,
-                },
-              ],
-              destination: {
-                ID: '1zia9wKshXt80YksLmUdJnr7IHI',
-                Name: 'test_marketo',
-                DestinationDefinition: {
-                  ID: '1iVQvTRMsPPyJzwol0ifH93QTQ6',
-                  Name: 'MARKETO',
-                  DisplayName: 'Marketo',
-                  transformAt: 'processor',
-                  transformAtV1: 'processor',
-                },
-                Config: {
-                  clientId: 'marketo_client_id_success',
-                  clientSecret: 'marketo_client_secret_success',
-                  accountId: 'marketo_acct_id_success',
-                  staticListId: 1234,
-                },
-                Enabled: true,
-                Transformations: [],
-                IsProcessorEnabled: true,
-              },
-              batched: false,
-              statusCode: 400,
-              error: 'Event type track is not supported',
-              statTags: {
-                errorCategory: 'dataValidation',
-                errorType: 'instrumentation',
               },
             },
           ],

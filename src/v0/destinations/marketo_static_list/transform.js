@@ -111,7 +111,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
   try {
     token = await getAuthToken(formatConfig(inputs[0].destination));
     if (!token) {
-      throw new InstrumentationError('Could not retrieve authorisation token', 400);
+      throw new UnauthorizedError('Could not retrieve authorisation token');
     }
   } catch (error) {
     // Not using handleRtTfSingleEventError here as this is for multiple events
@@ -134,19 +134,26 @@ const processRouterDest = async (inputs, reqMetadata) => {
     delete: [],
   };
   // use lodash.groupby to group the inputs based on message type
+  let transformedRecordEvent = [];
+  let transformedAudienceEvent = [];
   const groupedInputs = lodash.groupBy(tokenisedInputs, (input) => input.message.type);
-  const finalInputForRecordEvent = transformForRecordEvent(groupedInputs.record, leadIdObj);
-  const transformedRecordEvent = await simpleProcessRouterDest(finalInputForRecordEvent, processEvent, reqMetadata);
-  const transformedAudienceEvent = await simpleProcessRouterDest(groupedInputs.audiencelist, processEvent, reqMetadata);
-  const respList = [...transformedRecordEvent, ...transformedAudienceEvent];
 
-  // if (inputs[0].message.channel === 'sources' && inputs[0].message.type === 'record') {
-  //   finalInputForRecordEvent = transformForRecordEvent(tokenisedInputs, leadIdObj);
-  //   respList = await simpleProcessRouterDest(finalInputForRecordEvent, processEvent, reqMetadata);
-  // } else {
-  //   respList = await simpleProcessRouterDest(tokenisedInputs, processEvent, reqMetadata);
-  // }
-  // [respList[0].metadata] = respList[0].metadata;
+  if (groupedInputs.record && groupedInputs.record.length > 0) {
+    const finalInputForRecordEvent = transformForRecordEvent(groupedInputs.record, leadIdObj);
+    transformedRecordEvent = await simpleProcessRouterDest(
+      finalInputForRecordEvent,
+      processEvent,
+      reqMetadata,
+    );
+  }
+  if (groupedInputs.audiencelist && groupedInputs.audiencelist.length > 0) {
+    transformedAudienceEvent = await simpleProcessRouterDest(
+      groupedInputs.audiencelist,
+      processEvent,
+      reqMetadata,
+    );
+  }
+  const respList = [...transformedRecordEvent, ...transformedAudienceEvent];
   return respList;
 };
 

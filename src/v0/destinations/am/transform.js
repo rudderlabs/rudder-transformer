@@ -196,7 +196,7 @@ const getScreenevTypeAndUpdatedProperties = (message, CATEGORY_KEY) => {
   const name = message.name || message.event || get(message, CATEGORY_KEY);
 
   return {
-    eventType: `Viewed ${name} Screen`,
+    eventType: `Viewed ${message.name || message.event || get(message, CATEGORY_KEY) || ''} Screen`,
     updatedProperties: {
       ...message.properties,
       name,
@@ -609,10 +609,10 @@ const processSingleMessage = (message, destination) => {
           userProvidedPageEventString.trim() === ''
             ? name
             : userProvidedPageEventString
-              .trim()
-              .replaceAll(/{{([^{}]+)}}/g, get(message, getMessagePath));
+                .trim()
+                .replaceAll(/{{([^{}]+)}}/g, get(message, getMessagePath));
       } else {
-        evType = `Viewed ${name || get(message, CATEGORY_KEY)} Page`;
+        evType = `Viewed ${name || get(message, CATEGORY_KEY) || ''} Page`;
       }
       message.properties = {
         ...properties,
@@ -836,7 +836,7 @@ const getBatchEvents = (message, destination, metadata, batchEventResponse) => {
     if (
       batchEventArray.length < AMBatchEventLimit &&
       JSON.stringify(batchPayloadJSON).length + JSON.stringify(incomingMessageEvent).length <
-      AMBatchSizeLimit
+        AMBatchSizeLimit
     ) {
       batchEventArray.push(incomingMessageEvent); // set value
       batchEventJobs.push(metadata);

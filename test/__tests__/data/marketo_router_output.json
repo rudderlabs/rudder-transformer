@@ -41,13 +41,6 @@
         "clientId": "marketo_client_id_success",
         "clientSecret": "marketo_client_secret_success",
         "trackAnonymousEvents": true,
-        "rudderEventsMapping": [
-          {
-            "event": "Product Clicked",
-            "marketoPrimarykey": "name",
-            "marketoActivityId": "100001"
-          }
-        ],
         "customActivityPropertyMap": [
           {
             "from": "name",
@@ -58,6 +51,13 @@
           {
             "from": "leadScore",
             "to": "customLeadScore"
+          }
+        ],
+        "rudderEventsMapping": [
+          {
+            "event": "Product Clicked",
+            "marketoPrimarykey": "name",
+            "marketoActivityId": "100001"
           }
         ]
       },
@@ -78,6 +78,7 @@
               "clientSecret",
               "trackAnonymousEvents",
               "rudderEventsMapping",
+              "customActivityPropertyMap",
               "leadTraitMapping"
             ]
           },
@@ -213,17 +214,17 @@
             "to": "productName"
           }
         ],
+        "leadTraitMapping": [
+          {
+            "from": "leadScore",
+            "to": "customLeadScore"
+          }
+        ],
         "rudderEventsMapping": [
           {
             "event": "Product Clicked",
             "marketoPrimarykey": "name",
             "marketoActivityId": "100001"
-          }
-        ],
-        "leadTraitMapping": [
-          {
-            "from": "leadScore",
-            "to": "customLeadScore"
           }
         ]
       },
@@ -244,6 +245,7 @@
               "clientSecret",
               "trackAnonymousEvents",
               "rudderEventsMapping",
+              "customActivityPropertyMap",
               "leadTraitMapping"
             ]
           },
@@ -351,38 +353,38 @@
         "clientSecret": "3l3gJpzRsZagD6gu7tnTeKXz0bomLGnd",
         "trackAnonymousEvents": false,
         "createIfNotExist": true,
-        "": [
+        "rudderEventsMapping": [
           {
-            "from": "acq_signup_completed",
-            "to": "100026"
+            "event": "acq_signup_completed",
+            "marketoActivityId": "100026"
           },
           {
-            "from": "act_createwebinarform_submit",
-            "to": "100025"
+            "event": "act_createwebinarform_submit",
+            "marketoActivityId": "100025"
           },
           {
-            "from": "act_presentation_style",
-            "to": "100025"
+            "event": "act_presentation_style",
+            "marketoActivityId": "100025"
           },
           {
-            "from": "act_webinar_view",
-            "to": "100025"
+            "event": "act_webinar_view",
+            "marketoActivityId": "100025"
           },
           {
-            "from": "act_webinar_join",
-            "to": "100025"
+            "event": "act_webinar_join",
+            "marketoActivityId": "100025"
           },
           {
-            "from": "act_presentation_addteammember",
-            "to": "100025"
+            "event": "act_presentation_addteammember",
+            "marketoActivityId": "100025"
           },
           {
-            "from": "act_engagement_discussions_savediscussion",
-            "to": "100025"
+            "event": "act_engagement_discussions_savediscussion",
+            "marketoActivityId": "100025"
           },
           {
-            "to": "100025",
-            "from": "act_engagement_networking_savetime"
+            "event": "act_engagement_networking_savetime",
+            "marketoActivityId": "100025"
           }
         ]
       },
@@ -395,6 +397,7 @@
               "clientSecret",
               "trackAnonymousEvents",
               "rudderEventsMapping",
+              "customActivityPropertyMap",
               "leadTraitMapping"
             ]
           },
@@ -506,38 +509,38 @@
         "clientSecret": "3l3gJpzRsZagD6gu7tnTeKXz0bomLGnd",
         "trackAnonymousEvents": false,
         "createIfNotExist": true,
-        "": [
+        "rudderEventsMapping": [
           {
-            "from": "acq_signup_completed",
-            "to": "100026"
+            "event": "acq_signup_completed",
+            "marketoActivityId": "100026"
           },
           {
-            "from": "act_createwebinarform_submit",
-            "to": "100025"
+            "event": "act_createwebinarform_submit",
+            "marketoActivityId": "100025"
           },
           {
-            "from": "act_presentation_style",
-            "to": "100025"
+            "event": "act_presentation_style",
+            "marketoActivityId": "100025"
           },
           {
-            "from": "act_webinar_view",
-            "to": "100025"
+            "event": "act_webinar_view",
+            "marketoActivityId": "100025"
           },
           {
-            "from": "act_webinar_join",
-            "to": "100025"
+            "event": "act_webinar_join",
+            "marketoActivityId": "100025"
           },
           {
-            "from": "act_presentation_addteammember",
-            "to": "100025"
+            "event": "act_presentation_addteammember",
+            "marketoActivityId": "100025"
           },
           {
-            "from": "act_engagement_discussions_savediscussion",
-            "to": "100025"
+            "event": "act_engagement_discussions_savediscussion",
+            "marketoActivityId": "100025"
           },
           {
-            "to": "100025",
-            "from": "act_engagement_networking_savetime"
+            "event": "act_engagement_networking_savetime",
+            "marketoActivityId": "100025"
           }
         ]
       },
@@ -550,6 +553,7 @@
               "clientSecret",
               "trackAnonymousEvents",
               "rudderEventsMapping",
+              "customActivityPropertyMap",
               "leadTraitMapping"
             ]
           },
@@ -695,38 +699,38 @@
         "clientSecret": "3l3gJpzRsZagD6gu7tnTeKXz0bomLGnd",
         "trackAnonymousEvents": false,
         "createIfNotExist": true,
-        "": [
+        "rudderEventsMapping": [
           {
-            "from": "acq_signup_completed",
-            "to": "100026"
+            "event": "acq_signup_completed",
+            "marketoActivityId": "100026"
           },
           {
-            "from": "act_createwebinarform_submit",
-            "to": "100025"
+            "event": "act_createwebinarform_submit",
+            "marketoActivityId": "100025"
           },
           {
-            "from": "act_presentation_style",
-            "to": "100025"
+            "event": "act_presentation_style",
+            "marketoActivityId": "100025"
           },
           {
-            "from": "act_webinar_view",
-            "to": "100025"
+            "event": "act_webinar_view",
+            "marketoActivityId": "100025"
           },
           {
-            "from": "act_webinar_join",
-            "to": "100025"
+            "event": "act_webinar_join",
+            "marketoActivityId": "100025"
           },
           {
-            "from": "act_presentation_addteammember",
-            "to": "100025"
+            "event": "act_presentation_addteammember",
+            "marketoActivityId": "100025"
           },
           {
-            "from": "act_engagement_discussions_savediscussion",
-            "to": "100025"
+            "event": "act_engagement_discussions_savediscussion",
+            "marketoActivityId": "100025"
           },
           {
-            "to": "100025",
-            "from": "act_engagement_networking_savetime"
+            "event": "act_engagement_networking_savetime",
+            "marketoActivityId": "100025"
           }
         ]
       },
@@ -739,6 +743,7 @@
               "clientSecret",
               "trackAnonymousEvents",
               "rudderEventsMapping",
+              "customActivityPropertyMap",
               "leadTraitMapping"
             ]
           },

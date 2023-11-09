@@ -1,7 +1,7 @@
 import { Context } from 'koa';
 import { ProcessorTransformationRequest, RouterTransformationRequestData } from '../../types/index';
 
-export default class PreTransformationDestinationService {
+export class DestinationPreTransformationService {
   public static preProcess(
     events: ProcessorTransformationRequest[] | RouterTransformationRequestData[],
     ctx: Context,

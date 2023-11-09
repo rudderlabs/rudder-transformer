@@ -101,10 +101,6 @@ describe('GeoLocationHelper tests', () => {
       screen: {
         density: 2,
       },
-      traits: {
-        email: 'example124@email.com',
-        name: 'abcd124',
-      },
       userAgent:
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36',
     };
@@ -128,8 +124,8 @@ describe('GeoLocationHelper tests', () => {
 
     const enhancedMsg = GeoLocationHelper.getMessageWithGeoLocationData(msg);
 
-    expect(enhancedMsg.context.traits.address).not.toBe(undefined);
-    expect(enhancedMsg.context.traits.address).toEqual({
+    expect(enhancedMsg.traits.address).not.toBe(undefined);
+    expect(enhancedMsg.traits.address).toEqual({
       city: 'Gurugram',
       country: 'IN',
       postalCode: '122001',

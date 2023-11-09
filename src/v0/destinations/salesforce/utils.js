@@ -35,17 +35,12 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey, authori
         // checking for invalid/expired token errors and evicting cache in that case
         // rudderJobMetadata contains some destination info which is being used to evict the cache
         ACCESS_TOKEN_CACHE.del(authKey);
-        throw new RetryableError(
-          `${DESTINATION} Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${sourceMessage}`,
-          500,
-          response,
-        );
       }
       throw new RetryableError(
         `${DESTINATION} Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${sourceMessage}`,
         500,
         response,
-        getAuthErrCategoryFromStCode(status),
+        authorizationFlow === 'legacy' ? '' : getAuthErrCategoryFromStCode(status),
       );
     } else if (status === 403 && matchErrorCode('REQUEST_LIMIT_EXCEEDED')) {
       // If the error code is REQUEST_LIMIT_EXCEEDED, you’ve exceeded API request limits in your org.

@@ -1,6 +1,5 @@
 const NodeCache = require('node-cache');
 const {
-  getFunction,
   deleteFunction,
   deployFunction,
   invokeFunction,
@@ -8,6 +7,9 @@ const {
 } = require('./faasApi');
 const logger = require('../../logger');
 const { RetryRequestError, RespStatusError } = require('../utils');
+const stats = require('../stats');
+const { getMetadata, getTransformationMetadata } = require('../../v0/util');
+const { HTTP_STATUS_CODES } = require('../../v0/util/constant');
 
 const FAAS_BASE_IMG = process.env.FAAS_BASE_IMG || 'rudderlabs/openfaas-flask:main';
 const FAAS_MAX_PODS_IN_TEXT = process.env.FAAS_MAX_PODS_IN_TEXT || '40';
@@ -230,41 +232,44 @@ async function setupFaasFunction(
 }
 
 const executeFaasFunction = async (
-  functionName,
+  name,
   events,
   versionId,
   libraryVersionIDs,
   testMode,
   trMetadata = {},
 ) => {
+  logger.debug(`Executing faas function: ${name}`);
+
+  const startTime = new Date();
+  let errorRaised;
+
   try {
-    logger.debug('[Faas] Invoking faas function');
+    if (testMode) await awaitFunctionReadiness(name);
+    return await invokeFunction(name, events);
 
-    if (testMode) await awaitFunctionReadiness(functionName);
-
-    const res = await invokeFunction(functionName, events);
-    logger.debug('[Faas] Invoked faas function');
-    return res;
   } catch (error) {
-    logger.error(`[Faas] Error while invoking ${functionName}: ${error.message}`);
+    logger.error(`Error while invoking ${name}: ${error.message}`);
+    errorRaised = error;
+
     if (
       error.statusCode === 404 &&
-      error.message.includes(`error finding function ${functionName}`)
+      error.message.includes(`error finding function ${name}`)
     ) {
-      removeFunctionFromCache(functionName);
+      removeFunctionFromCache(name);
       await setupFaasFunction(
-        functionName,
+        name,
         null,
         versionId,
         libraryVersionIDs,
         testMode,
         trMetadata,
       );
-      throw new RetryRequestError(`${functionName} not found`);
+      throw new RetryRequestError(`${name} not found`);
     }
 
     if (error.statusCode === 429) {
-      throw new RetryRequestError(`Rate limit exceeded for ${functionName}`);
+      throw new RetryRequestError(`Rate limit exceeded for ${name}`);
     }
 
     if (error.statusCode === 500 || error.statusCode === 503) {
@@ -272,16 +277,29 @@ const executeFaasFunction = async (
     }
 
     if (error.statusCode === 504) {
-      throw new RespStatusError('Timed out');
+      throw new RespStatusError(`${name} timed out`);
     }
 
     throw error;
   } finally {
+    // delete the function created, if it's called as part of testMode
     if (testMode) {
-      deleteFunction(functionName).catch((err) => {
-        logger.error(`[Faas] Error while deleting ${functionName}: ${err.message}`);
-      });
+      deleteFunction(name).catch((err) => 
+        logger.error(`[Faas] Error while deleting ${name}: ${err.message}`))
     }
+
+    // setup the tags for observability and then fire the stats
+    const tags = {
+      identifier: "openfaas",
+      testMode: testMode,
+      errored: errorRaised ? true : false,
+      statusCode: errorRaised ? errorRaised.statusCode : HTTP_STATUS_CODES.OK, // default statuscode is 200OK
+      ...events.length && events[0].metadata ? getMetadata(events[0].metadata) : {},
+      ...events.length && events[0].metadata ? getTransformationMetadata(events[0].metadata) : {},
+    }
+
+    stats.counter('user_transform_function_input_events', events.length, tags)
+    stats.timing('user_transform_function_latency', startTime, tags)
   }
 };
 

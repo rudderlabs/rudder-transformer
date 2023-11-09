@@ -225,40 +225,27 @@ type ComparatorInput = {
   feature: string;
 };
 type SourceDefinition = {
-  ID: string
-  Name: string
-  Category: string
-  Type: string
-}
-type TrackingPlanT = {
-  Id: string
-  Version: number
-}
-
-type DgSourceTrackingPlanConfigT = {
-  SourceId: string;
-  SourceConfigVersion: number;
-  Config: object
-  MergedConfig: object
-  Deleted: boolean
-  TrackingPlan: TrackingPlanT
+  ID: string;
+  Name: string;
+  Category: string;
+  Type: string;
 };
 
 type Source = {
   ID: string;
-  OriginalID: string
+  OriginalID: string;
   Name: string;
   SourceDefinition: SourceDefinition;
   Config: object;
   Enabled: boolean;
   WorkspaceID: string;
-  WriteKey: string
+  WriteKey: string;
   Transformations?: UserTransformationInput[];
   RevisionID?: string;
-  Destinations?: Destination[]
-  Transient: boolean
-  EventSchemasEnabled: boolean
-  DgSourceTrackingPlanConfig: DgSourceTrackingPlanConfigT
+  Destinations?: Destination[];
+  Transient: boolean;
+  EventSchemasEnabled: boolean;
+  DgSourceTrackingPlanConfig: object;
 };
 
 type SourceInput = {
@@ -287,5 +274,5 @@ export {
   Destination,
   ComparatorInput,
   SourceInput,
-  Source
+  Source,
 };

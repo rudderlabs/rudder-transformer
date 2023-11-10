@@ -1,5 +1,9 @@
 const get = require('get-value');
 const cloneDeep = require('lodash/cloneDeep');
+const {
+  InstrumentationError,
+  NetworkInstrumentationError,
+} = require('@rudderstack/integrations-lib');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 const {
   SF_API_VERSION,
@@ -25,7 +29,6 @@ const {
 } = require('../../util');
 const { getAccessToken, salesforceResponseHandler } = require('./utils');
 const { handleHttpRequest } = require('../../../adapters/network');
-const { InstrumentationError, NetworkInstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 // Basic response builder

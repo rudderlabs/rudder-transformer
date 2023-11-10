@@ -1,7 +1,7 @@
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { isObject } = require('../../util');
 const { ACTION_SOURCES_VALUES, CONFIG_CATEGORIES, OTHER_STANDARD_EVENTS } = require('./config');
 const { getContentType, getContentCategory } = require('../../util/facebookUtils');
-const { InstrumentationError } = require('../../util/errorTypes');
 
 /**  format revenue according to fb standards with max two decimal places.
  * @param revenue

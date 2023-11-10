@@ -1,4 +1,9 @@
 const get = require('get-value');
+const {
+  ConfigurationError,
+  TransformationError,
+  InstrumentationError,
+} = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const { ENDPOINT } = require('./config');
 const { populatePayload, getBoardDetails, checkAllowedEventNameFromUI } = require('./util');
@@ -10,11 +15,6 @@ const {
   getDestinationExternalID,
   validateEventName,
 } = require('../../util');
-const {
-  ConfigurationError,
-  TransformationError,
-  InstrumentationError,
-} = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (payload, endpoint, apiToken) => {

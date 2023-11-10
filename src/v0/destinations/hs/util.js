@@ -1,4 +1,10 @@
 const get = require('get-value');
+const {
+  NetworkInstrumentationError,
+  InstrumentationError,
+  ConfigurationError,
+  NetworkError,
+} = require('@rudderstack/integrations-lib');
 const { httpGET, httpPOST } = require('../../../adapters/network');
 const {
   processAxiosResponse,
@@ -12,12 +18,6 @@ const {
   getDestinationExternalIDInfoForRetl,
   getValueFromMessage,
 } = require('../../util');
-const {
-  NetworkInstrumentationError,
-  InstrumentationError,
-  ConfigurationError,
-  NetworkError,
-} = require('../../util/errorTypes');
 const {
   CONTACT_PROPERTY_MAP_ENDPOINT,
   IDENTIFY_CRM_SEARCH_CONTACT,

@@ -1,4 +1,9 @@
 const get = require('get-value');
+const {
+  ConfigurationError,
+  InstrumentationError,
+  UnsupportedEventError,
+} = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   isEmptyObject,
@@ -11,11 +16,6 @@ const {
   getDestinationExternalID,
   removeUndefinedAndNullValues,
 } = require('../../util');
-const {
-  ConfigurationError,
-  InstrumentationError,
-  UnsupportedEventError,
-} = require('../../util/errorTypes');
 const {
   ENDPOINT,
   mappingConfig,

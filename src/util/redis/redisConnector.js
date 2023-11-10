@@ -1,5 +1,5 @@
 const Redis = require('ioredis');
-const { RedisError } = require('../../v0/util/errorTypes');
+const { RedisError } = require('@rudderstack/integrations-lib');
 const log = require('../../logger');
 const stats = require('../stats');
 

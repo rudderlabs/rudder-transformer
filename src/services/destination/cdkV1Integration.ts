@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ConfigFactory, Executor, RudderBaseConfig } from 'rudder-transformer-cdk';
 import path from 'path';
+import { TransformationError } from '@rudderstack/integrations-lib';
 import IntegrationDestinationService from '../../interfaces/DestinationService';
 import {
   DeliveryResponse,
@@ -14,7 +15,6 @@ import {
   UserDeletionRequest,
   UserDeletionResponse,
 } from '../../types/index';
-import { TransformationError } from '../../v0/util/errorTypes';
 import DestinationPostTransformationService from './postTransformation';
 import tags from '../../v0/util/tags';
 import { getErrorInfo } from '../../cdk/v1/handler';

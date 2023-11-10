@@ -1,13 +1,13 @@
 /* eslint-disable no-restricted-syntax */
 const get = require('get-value');
 const moment = require('moment');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
   constructPayload,
   isDefinedAndNotNull,
   getDestinationExternalID,
   isDefinedAndNotNullAndNotEmpty,
 } = require('../../util');
-const { InstrumentationError } = require('../../util/errorTypes');
 const { mappingConfig, ConfigCategory } = require('./config');
 
 /**

@@ -1,4 +1,5 @@
 const get = require('get-value');
+const { InstrumentationError, NetworkError } = require('@rudderstack/integrations-lib');
 const {
   ConfigCategory,
   MappingConfig,
@@ -16,7 +17,6 @@ const {
   constructPayload,
   isHttpStatusSuccess,
 } = require('../../util');
-const { InstrumentationError, NetworkError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 

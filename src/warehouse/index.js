@@ -25,7 +25,7 @@ const whScreenColumnMappingRules = require('./config/WHScreenConfig.js');
 const whGroupColumnMappingRules = require('./config/WHGroupConfig.js');
 const whAliasColumnMappingRules = require('./config/WHAliasConfig.js');
 const { isDataLakeProvider } = require('./config/helpers');
-const { InstrumentationError } = require('../v0/util/errorTypes');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const whExtractEventTableColumnMappingRules = require('./config/WHExtractEventTableConfig.js');
 
 const maxColumnsInEvent = parseInt(process.env.WH_MAX_COLUMNS_IN_EVENT || '200', 10);

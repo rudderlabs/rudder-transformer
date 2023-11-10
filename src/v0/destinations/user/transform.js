@@ -1,4 +1,9 @@
 const {
+  TransformationError,
+  InstrumentationError,
+  NetworkInstrumentationError,
+} = require('@rudderstack/integrations-lib');
+const {
   defaultRequestConfig,
   simpleProcessRouterDest,
   removeUndefinedAndNullValues,
@@ -17,11 +22,6 @@ const {
   createOrUpdateUserPayloadBuilder,
   createEventOccurrencePayloadBuilder,
 } = require('./utils');
-const {
-  TransformationError,
-  InstrumentationError,
-  NetworkInstrumentationError,
-} = require('../../util/errorTypes');
 
 const { EventType } = require('../../../constants');
 const { JSON_MIME_TYPE } = require('../../util/constant');

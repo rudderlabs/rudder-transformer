@@ -1,4 +1,9 @@
 const btoa = require('btoa');
+const {
+  ConfigurationError,
+  TransformationError,
+  InstrumentationError,
+} = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   CONFIG_CATEGORIES,
@@ -16,11 +21,6 @@ const {
   simpleProcessRouterDest,
   isAppleFamily,
 } = require('../../util');
-const {
-  ConfigurationError,
-  TransformationError,
-  InstrumentationError,
-} = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function responseBuilderSimple(message, category, destination) {

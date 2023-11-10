@@ -20,6 +20,8 @@ const { MERGE_CONFIG, MERGE_ADDRESS, SUBSCRIPTION_STATUS, VALID_STATUSES } = req
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { handleHttpRequest } = require('../../../adapters/network');
+
 
 const ADDRESS_MANDATORY_FIELDS = ['addr1', 'city', 'state', 'zip'];
 
@@ -156,7 +158,8 @@ const checkIfMailExists = async (apiKey, datacenterId, audienceId, email) => {
   const url = `${mailChimpSubscriptionEndpoint(datacenterId, audienceId, email)}`;
   const basicAuth = Buffer.from(`apiKey:${apiKey}`).toString('base64');
   try {
-    const response = await myAxios.get(
+    const { processedResponse: processedResponseMailChip } = await handleHttpRequest(
+      'get',
       url,
       {
         headers: {
@@ -165,9 +168,9 @@ const checkIfMailExists = async (apiKey, datacenterId, audienceId, email) => {
       },
       { destType: 'mailchimp', feature: 'transformation' },
     );
-    if (response?.data?.contact_id) {
+    if (processedResponseMailChip.response?.contact_id) {
       userStatus.exists = true;
-      userStatus.subscriptionStatus = response.data.status;
+      userStatus.subscriptionStatus = processedResponseMailChip.response.status;
     }
   } catch (error) {
     logger.info(`[Mailchimp] :: Email does not exists, Error: ${error.message}`);

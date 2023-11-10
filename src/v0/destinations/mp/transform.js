@@ -35,7 +35,7 @@ const {
   combineBatchRequestsWithSameJobIds,
   groupEventsByEndpoint,
   batchEvents,
-  parseConfigArray
+  parseConfigArray,
 } = require('./util');
 const { CommonUtils } = require('../../../util/common');
 
@@ -242,7 +242,7 @@ function trimTraits(traits, setOnceProperties) {
   const setOnce = {};
 
   // Iterate over setOnceProperties and move corresponding properties to setOnce
-  setOnceProperties.forEach(property => {
+  setOnceProperties.forEach((property) => {
     if (traitsCopy.hasOwnProperty(property)) {
       setOnce[property] = traitsCopy[property];
       delete traitsCopy[property];
@@ -262,21 +262,32 @@ const createSetOnceResponse = (message, type, destination, setOnce) => {
     $distinct_id: message.userId || message.anonymousId,
   };
   return responseBuilderSimple(payload, message, type, destination.Config);
-}
-
-
+};
 
 const processIdentifyEvents = async (message, type, destination) => {
   const messageClone = { ...message };
-  const setOnceProperties = parseConfigArray(destination.Config.setOnceProperties, 'property');
-  const { traits, setOnce } = trimTraits(getFieldValueFromMessage(messageClone, 'traits'), setOnceProperties);
-  messageClone.traits = traits;
-  
+  let seggregatedTraits = {};
   const returnValue = [];
+
+  // making payload for set_once properties
+  if (
+    destination.Config.setOnceProperties &&
+    Object.keys(destination.Config.setOnceProperties).length > 0
+  ) {
+    const setOnceProperties = parseConfigArray(destination.Config.setOnceProperties, 'property');
+    seggregatedTraits = trimTraits(
+      getFieldValueFromMessage(messageClone, 'traits'),
+      setOnceProperties,
+    );
+    messageClone.traits = seggregatedTraits.traits;
+    returnValue.push(
+      createSetOnceResponse(messageClone, type, destination, seggregatedTraits.setOnce),
+    );
+  }
+
   // Creating the user profile
   // https://developer.mixpanel.com/reference/profile-set
   returnValue.push(createIdentifyResponse(messageClone, type, destination, responseBuilderSimple));
-  returnValue.push(createSetOnceResponse(messageClone, type, destination, setOnce));
 
   if (
     destination.Config?.identityMergeApi !== 'simplified' &&

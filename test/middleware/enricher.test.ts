@@ -143,8 +143,6 @@ describe('[GeoLocation Enrichment] Processor transformation tests', () => {
           IsProcessorEnabled: true,
         },
         message: {
-          anonymousId: 'ac7722c2-ccb6-4ae2-baf6-1effe861f4cd',
-          channel: 'web',
           context: {
             geo: {
               city: 'Gurugram',
@@ -155,42 +153,14 @@ describe('[GeoLocation Enrichment] Processor transformation tests', () => {
               region: 'Haryana',
               timezone: 'Asia/Kolkata',
             },
-            app: {
-              build: '1.0.0',
-              name: 'RudderLabs JavaScript SDK',
-              namespace: 'com.rudderlabs.javascript',
-              version: '1.1.1-rc.2',
-            },
             library: {
               name: 'RudderLabs JavaScript SDK',
               version: '1.1.1-rc.2',
             },
-            locale: 'en-GB',
-            os: {
-              name: '',
-              version: '',
-            },
-            page: {
-              path: '/tests/html/index4.html',
-              referrer: '',
-              search: '',
-              title: '',
-              url: 'http://localhost/tests/html/index4.html',
-            },
-            screen: {
-              density: 2,
-            },
-            userAgent:
-              'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36',
           },
           integrations: {
             All: true,
           },
-          messageId: 'fad9b3fb-5778-4db3-9fb6-7168b554191f',
-          originalTimestamp: '2020-04-17T14:42:44.722Z',
-          receivedAt: '2020-04-17T20:12:44.758+05:30',
-          request_ip: '[::1]:53513',
-          sentAt: '2020-04-17T14:42:44.722Z',
           traits: {
             age: 23,
             email: 'testmp1@rudderstack.com',
@@ -203,9 +173,6 @@ describe('[GeoLocation Enrichment] Processor transformation tests', () => {
               city: 'Bandarpur',
             },
           },
-          timestamp: '2020-04-17T20:12:44.758+05:30',
-          type: 'identify',
-          userId: 'user12345',
         },
       },
     ];
@@ -260,8 +227,6 @@ describe('[GeoLocation Enrichment] Processor transformation tests', () => {
           IsProcessorEnabled: true,
         },
         message: {
-          anonymousId: 'ac7722c2-ccb6-4ae2-baf6-1effe861f4cd',
-          channel: 'web',
           context: {
             geo: {
               city: 'Gurugram',
@@ -272,42 +237,11 @@ describe('[GeoLocation Enrichment] Processor transformation tests', () => {
               region: 'Haryana',
               timezone: 'Asia/Kolkata',
             },
-            app: {
-              build: '1.0.0',
-              name: 'RudderLabs JavaScript SDK',
-              namespace: 'com.rudderlabs.javascript',
-              version: '1.1.1-rc.2',
-            },
             library: {
               name: 'RudderLabs JavaScript SDK',
               version: '1.1.1-rc.2',
             },
-            locale: 'en-GB',
-            os: {
-              name: '',
-              version: '',
-            },
-            page: {
-              path: '/tests/html/index4.html',
-              referrer: '',
-              search: '',
-              title: '',
-              url: 'http://localhost/tests/html/index4.html',
-            },
-            screen: {
-              density: 2,
-            },
-            userAgent:
-              'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36',
           },
-          integrations: {
-            All: true,
-          },
-          messageId: 'fad9b3fb-5778-4db3-9fb6-7168b554191f',
-          originalTimestamp: '2020-04-17T14:42:44.722Z',
-          receivedAt: '2020-04-17T20:12:44.758+05:30',
-          request_ip: '[::1]:53513',
-          sentAt: '2020-04-17T14:42:44.722Z',
           traits: {
             age: 23,
             email: 'testmp1@rudderstack.com',
@@ -319,9 +253,6 @@ describe('[GeoLocation Enrichment] Processor transformation tests', () => {
               postalCode: '123321',
             },
           },
-          timestamp: '2020-04-17T20:12:44.758+05:30',
-          type: 'identify',
-          userId: 'user12345',
         },
       },
     ];
@@ -377,45 +308,12 @@ describe('[GeoLocation Enrichment] Processor transformation tests', () => {
           IsProcessorEnabled: true,
         },
         message: {
-          anonymousId: 'ac7722c2-ccb6-4ae2-baf6-1effe861f4cd',
-          channel: 'web',
           context: {
-            app: {
-              build: '1.0.0',
-              name: 'RudderLabs JavaScript SDK',
-              namespace: 'com.rudderlabs.javascript',
-              version: '1.1.1-rc.2',
-            },
             library: {
               name: 'RudderLabs JavaScript SDK',
               version: '1.1.1-rc.2',
             },
-            locale: 'en-GB',
-            os: {
-              name: '',
-              version: '',
-            },
-            page: {
-              path: '/tests/html/index4.html',
-              referrer: '',
-              search: '',
-              title: '',
-              url: 'http://localhost/tests/html/index4.html',
-            },
-            screen: {
-              density: 2,
-            },
-            userAgent:
-              'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36',
           },
-          integrations: {
-            All: true,
-          },
-          messageId: 'fad9b3fb-5778-4db3-9fb6-7168b554191f',
-          originalTimestamp: '2020-04-17T14:42:44.722Z',
-          receivedAt: '2020-04-17T20:12:44.758+05:30',
-          request_ip: '[::1]:53513',
-          sentAt: '2020-04-17T14:42:44.722Z',
           traits: {
             age: 23,
             email: 'testmp@rudderstack.com',
@@ -424,9 +322,6 @@ describe('[GeoLocation Enrichment] Processor transformation tests', () => {
               country: 'India',
             },
           },
-          timestamp: '2020-04-17T20:12:44.758+05:30',
-          type: 'identify',
-          userId: 'user12345',
         },
       },
     ];
@@ -549,51 +444,15 @@ describe('[GeoLocation Enrichment] Processor transformation tests', () => {
           IsProcessorEnabled: true,
         },
         message: {
-          anonymousId: 'ac7722c2-ccb6-4ae2-baf6-1effe861f4cd',
-          channel: 'web',
           context: {
-            app: {
-              build: '1.0.0',
-              name: 'RudderLabs JavaScript SDK',
-              namespace: 'com.rudderlabs.javascript',
-              version: '1.1.1-rc.2',
-            },
             library: {
               name: 'RudderLabs JavaScript SDK',
               version: '1.1.1-rc.2',
             },
-            locale: 'en-GB',
-            os: {
-              name: '',
-              version: '',
-            },
-            page: {
-              path: '/tests/html/index4.html',
-              referrer: '',
-              search: '',
-              title: '',
-              url: 'http://localhost/tests/html/index4.html',
-            },
-            screen: {
-              density: 2,
-            },
-            userAgent:
-              'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36',
           },
-          integrations: {
-            All: true,
-          },
-          messageId: 'fad9b3fb-5778-4db3-9fb6-7168b554191f',
-          originalTimestamp: '2020-04-17T14:42:44.722Z',
-          receivedAt: '2020-04-17T20:12:44.758+05:30',
-          request_ip: '[::1]:53513',
-          sentAt: '2020-04-17T14:42:44.722Z',
           traits: {
             key: 'val',
           },
-          timestamp: '2020-04-17T20:12:44.758+05:30',
-          type: 'identify',
-          userId: 'user12345',
         },
       },
     ];
@@ -636,8 +495,6 @@ describe('[GeoLocation Enrichment] Processor transformation tests', () => {
           IsProcessorEnabled: true,
         },
         message: {
-          anonymousId: 'ac7722c2-ccb6-4ae2-baf6-1effe861f4cd',
-          channel: 'web',
           context: {
             geo: {
               city: 'Gurugram',
@@ -648,50 +505,16 @@ describe('[GeoLocation Enrichment] Processor transformation tests', () => {
               region: 'Haryana',
               timezone: 'Asia/Kolkata',
             },
-            app: {
-              build: '1.0.0',
-              name: 'RudderLabs JavaScript SDK',
-              namespace: 'com.rudderlabs.javascript',
-              version: '1.1.1-rc.2',
-            },
             library: {
               name: 'RudderLabs JavaScript SDK',
               version: '1.1.1-rc.2',
             },
-            locale: 'en-GB',
-            os: {
-              name: '',
-              version: '',
-            },
-            page: {
-              path: '/tests/html/index4.html',
-              referrer: '',
-              search: '',
-              title: '',
-              url: 'http://localhost/tests/html/index4.html',
-            },
-            screen: {
-              density: 2,
-            },
-            userAgent:
-              'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36',
           },
-          integrations: {
-            All: true,
-          },
-          messageId: 'fad9b3fb-5778-4db3-9fb6-7168b554191f',
-          originalTimestamp: '2020-04-17T14:42:44.722Z',
-          receivedAt: '2020-04-17T20:12:44.758+05:30',
-          request_ip: '[::1]:53513',
-          sentAt: '2020-04-17T14:42:44.722Z',
           traits: {
             age: 23,
             email: 'testmp@rudderstack.com',
             firstname: 'Test Kafka',
           },
-          timestamp: '2020-04-17T20:12:44.758+05:30',
-          type: 'identify',
-          userId: 'user12345',
         },
       },
       {
@@ -846,8 +669,6 @@ describe('[GeoLocation Enrichment] Router/Batch transformation tests', () => {
             IsProcessorEnabled: true,
           },
           message: {
-            anonymousId: 'ac7722c2-ccb6-4ae2-baf6-1effe861f4cd',
-            channel: 'web',
             context: {
               geo: {
                 city: 'Gurugram',
@@ -858,50 +679,12 @@ describe('[GeoLocation Enrichment] Router/Batch transformation tests', () => {
                 region: 'Haryana',
                 timezone: 'Asia/Kolkata',
               },
-              app: {
-                build: '1.0.0',
-                name: 'RudderLabs JavaScript SDK',
-                namespace: 'com.rudderlabs.javascript',
-                version: '1.1.1-rc.2',
-              },
-              library: {
-                name: 'RudderLabs JavaScript SDK',
-                version: '1.1.1-rc.2',
-              },
-              locale: 'en-GB',
-              os: {
-                name: '',
-                version: '',
-              },
-              page: {
-                path: '/tests/html/index4.html',
-                referrer: '',
-                search: '',
-                title: '',
-                url: 'http://localhost/tests/html/index4.html',
-              },
-              screen: {
-                density: 2,
-              },
-              userAgent:
-                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36',
             },
-            integrations: {
-              All: true,
-            },
-            messageId: 'fad9b3fb-5778-4db3-9fb6-7168b554191f',
-            originalTimestamp: '2020-04-17T14:42:44.722Z',
-            receivedAt: '2020-04-17T20:12:44.758+05:30',
-            request_ip: '[::1]:53513',
-            sentAt: '2020-04-17T14:42:44.722Z',
             traits: {
               age: 23,
               email: 'testm3p@rudderstack.com',
               firstname: 'Test Kafka',
             },
-            timestamp: '2020-04-17T20:12:44.758+05:30',
-            type: 'identify',
-            userId: 'user12345',
           },
         },
         {
@@ -933,8 +716,6 @@ describe('[GeoLocation Enrichment] Router/Batch transformation tests', () => {
             IsProcessorEnabled: true,
           },
           message: {
-            anonymousId: 'ac7722c2-ccb6-4ae2-baf6-1effe861f4cd',
-            channel: 'web',
             context: {
               geo: {
                 city: 'Gurugram',
@@ -945,55 +726,12 @@ describe('[GeoLocation Enrichment] Router/Batch transformation tests', () => {
                 region: 'Haryana',
                 timezone: 'Asia/Kolkata',
               },
-              app: {
-                build: '1.0.0',
-                name: 'RudderLabs JavaScript SDK',
-                namespace: 'com.rudderlabs.javascript',
-                version: '1.1.1-rc.2',
-              },
-              library: {
-                name: 'RudderLabs JavaScript SDK',
-                version: '1.1.1-rc.2',
-              },
-              locale: 'en-GB',
-              os: {
-                name: '',
-                version: '',
-              },
-              page: {
-                path: '/tests/html/index4.html',
-                referrer: '',
-                search: '',
-                title: '',
-                url: 'http://localhost/tests/html/index4.html',
-              },
-              screen: {
-                density: 2,
-              },
               traits: {
                 age: 23,
                 email: 'testmp@rudderstack.com',
                 firstname: 'Test Kafka',
               },
-              userAgent:
-                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36',
             },
-            event: 'test track with property',
-            integrations: {
-              All: true,
-            },
-            messageId: '37b75e61-9bd2-4fb8-91ed-e3a064905f3a',
-            originalTimestamp: '2020-04-17T14:42:44.724Z',
-            properties: {
-              test_prop_1: 'test prop',
-              test_prop_2: 1232,
-            },
-            receivedAt: '2020-04-17T20:12:44.758+05:30',
-            request_ip: '[::1]:53512',
-            sentAt: '2020-04-17T14:42:44.725Z',
-            timestamp: '2020-04-17T20:12:44.757+05:30',
-            type: 'track',
-            userId: 'user12345',
           },
         },
       ],

@@ -1,4 +1,5 @@
 /* eslint-disable no-param-reassign */
+const { InstrumentationError, TransformationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   CONFIG_CATEGORIES,
@@ -15,7 +16,6 @@ const {
   simpleProcessRouterDest,
   extractCustomFields,
 } = require('../../util');
-const { InstrumentationError, TransformationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (message, category, { Config }) => {

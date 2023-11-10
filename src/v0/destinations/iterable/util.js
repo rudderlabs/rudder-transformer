@@ -1,6 +1,7 @@
 const lodash = require('lodash');
 const get = require('get-value');
 const jsonSize = require('json-size');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
   isAppleFamily,
   constructPayload,
@@ -20,7 +21,6 @@ const {
 } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
 const MESSAGE_JSON_PATH = 'message.body.JSON';
 

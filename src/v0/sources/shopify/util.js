@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 const { v5 } = require('uuid');
 const sha256 = require('sha256');
+const { TransformationError } = require('@rudderstack/integrations-lib');
 const stats = require('../../../util/stats');
 const {
   constructPayload,
@@ -22,7 +23,6 @@ const {
   useRedisDatabase,
   maxTimeToIdentifyRSGeneratedCall,
 } = require('./config');
-const { TransformationError } = require('../../util/errorTypes');
 
 const getDataFromRedis = async (key, metricMetadata) => {
   try {
@@ -32,7 +32,7 @@ const getDataFromRedis = async (key, metricMetadata) => {
       ...metricMetadata,
     });
     const redisData = await RedisDB.getVal(key);
-    if (redisData === null) {
+    if (redisData === null || (typeof redisData === "object" && Object.keys(redisData).length === 0)) {
       stats.increment('shopify_redis_no_val', {
         ...metricMetadata,
       });

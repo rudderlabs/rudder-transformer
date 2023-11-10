@@ -1,8 +1,8 @@
+const { NetworkError } = require('@rudderstack/integrations-lib');
 const { removeUndefinedValues, isHttpStatusSuccess } = require('../../util');
 const { getAccessToken, handlePollResponse, hydrateStatusForServer } = require('./util');
 const { handleHttpRequest } = require('../../../adapters/network');
 const stats = require('../../../util/stats');
-const { NetworkError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { POLL_ACTIVITY } = require('./config');
 

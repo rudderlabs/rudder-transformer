@@ -1,5 +1,10 @@
 const sha1 = require('js-sha1');
 const btoa = require('btoa');
+const {
+  ConfigurationError,
+  TransformationError,
+  InstrumentationError,
+} = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
 const {
@@ -17,11 +22,6 @@ const {
   removeUndefinedAndNullValues,
   isDefinedAndNotNullAndNotEmpty,
 } = require('../../util');
-const {
-  ConfigurationError,
-  TransformationError,
-  InstrumentationError,
-} = require('../../util/errorTypes');
 
 /**
  * This function takes the transformed payload, endpoint and destination Config as input and returns the prepared response.

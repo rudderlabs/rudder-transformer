@@ -1,6 +1,7 @@
 /* eslint-disable eqeqeq */
 const lodash = require('lodash');
 const { isEmpty } = require('lodash');
+const { AbortedError } = require('@rudderstack/integrations-lib');
 const {
   isHttpStatusRetryable,
   isDefinedAndNotNullAndNotEmpty,
@@ -9,7 +10,6 @@ const {
   isHttpStatusSuccess,
   getErrorStatusCode,
 } = require('../../v0/util');
-const { AbortedError } = require('../../v0/util/errorTypes');
 const tags = require('../../v0/util/tags');
 const { HTTP_STATUS_CODES } = require('../../v0/util/constant');
 

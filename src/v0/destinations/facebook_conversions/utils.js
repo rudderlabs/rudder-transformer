@@ -1,3 +1,4 @@
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
   CONFIG_CATEGORIES,
   OTHER_STANDARD_EVENTS,
@@ -8,7 +9,6 @@ const {
 } = require('./config');
 const { constructPayload, isObject, isAppleFamily } = require('../../util');
 const { getContentType, getContentCategory } = require('../../util/facebookUtils');
-const { InstrumentationError } = require('../../util/errorTypes');
 
 const getActionSource = (payload, fallbackActionSource) => {
   let actionSource = fallbackActionSource;

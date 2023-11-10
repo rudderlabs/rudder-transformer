@@ -1,3 +1,4 @@
+const { TransformationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   defaultRequestConfig,
@@ -14,7 +15,6 @@ const {
   checkEventIfUIMapped,
 } = require('./util');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG, createTaskEndPoint } = require('./config');
-const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = async (payload, listId, apiToken) => {

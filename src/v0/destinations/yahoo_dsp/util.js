@@ -1,12 +1,12 @@
 const qs = require('qs');
 const sha256 = require('sha256');
+const { InstrumentationError, NetworkError } = require('@rudderstack/integrations-lib');
 const { generateJWTToken } = require('../../../util/jwtTokenGenerator');
 const { httpSend } = require('../../../adapters/network');
 const { isDefinedAndNotNullAndNotEmpty } = require('../../util');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { ACCESS_TOKEN_CACHE_TTL, AUDIENCE_ATTRIBUTE, DSP_SUPPORTED_OPERATION } = require('./config');
 const Cache = require('../../util/cache');
-const { InstrumentationError, NetworkError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 

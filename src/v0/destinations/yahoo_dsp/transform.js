@@ -1,3 +1,4 @@
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
   BASE_ENDPOINT,
   ENDPOINTS,
@@ -12,7 +13,6 @@ const {
 } = require('../../util');
 
 const { getAccessToken, createPayload } = require('./util');
-const { InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**

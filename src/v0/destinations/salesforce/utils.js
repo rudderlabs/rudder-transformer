@@ -1,7 +1,7 @@
+const { RetryableError, ThrottledError, AbortedError } = require('@rudderstack/integrations-lib');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util');
 const Cache = require('../../util/cache');
-const { RetryableError, ThrottledError, AbortedError } = require('../../util/errorTypes');
 const {
   ACCESS_TOKEN_CACHE_TTL,
   SF_TOKEN_REQUEST_URL_SANDBOX,

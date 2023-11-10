@@ -1,6 +1,11 @@
 const sha256 = require('sha256');
 
 const {
+  InstrumentationError,
+  OAuthSecretError,
+  ConfigurationError,
+} = require('@rudderstack/integrations-lib');
+const {
   constructPayload,
   defaultRequestConfig,
   defaultPostRequestConfig,
@@ -11,11 +16,6 @@ const {
 const { EventType } = require('../../../constants');
 const { ConfigCategories, mappingConfig, BASE_URL } = require('./config');
 
-const {
-  InstrumentationError,
-  OAuthSecretError,
-  ConfigurationError,
-} = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { getAuthHeaderForRequest } = require('./util');
 

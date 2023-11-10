@@ -1,8 +1,8 @@
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { BASE_URL, ConfigCategory, mappingConfig } = require('./config');
 const { defaultRequestConfig, constructPayload, simpleProcessRouterDest } = require('../../util');
 
 const { getParams } = require('./utils');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
 const responseBuilder = (message, { Config }) => {
   const { advertiserId, eventsToTrack } = Config;

@@ -2,7 +2,7 @@ const _ = require('lodash');
 
 const reservedANSIKeywordsMap = require('../config/ReservedKeywords.json');
 const { isDataLakeProvider } = require('../config/helpers');
-const { TransformationError } = require('../../v0/util/errorTypes');
+const { TransformationError } = require('@rudderstack/integrations-lib');
 
 function safeTableName(options, name = '') {
   const { provider } = options;

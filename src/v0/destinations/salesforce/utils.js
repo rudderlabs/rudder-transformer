@@ -11,6 +11,8 @@ const {
   SF_TOKEN_REQUEST_URL_SANDBOX,
   SF_TOKEN_REQUEST_URL,
   DESTINATION,
+  LEGACY,
+  OAUTH,
 } = require('./config');
 
 const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
@@ -31,7 +33,7 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey, authori
     const matchErrorCode = (errorCode) =>
       response && Array.isArray(response) && response.some((resp) => resp?.errorCode === errorCode);
     if (status === 401 && authKey && matchErrorCode('INVALID_SESSION_ID')) {
-      if (authorizationFlow === 'legacy') {
+      if (authorizationFlow === LEGACY) {
         // checking for invalid/expired token errors and evicting cache in that case
         // rudderJobMetadata contains some destination info which is being used to evict the cache
         ACCESS_TOKEN_CACHE.del(authKey);
@@ -40,7 +42,7 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey, authori
         `${DESTINATION} Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${sourceMessage}`,
         500,
         response,
-        authorizationFlow === 'legacy' ? '' : getAuthErrCategoryFromStCode(status),
+        authorizationFlow === LEGACY ? '' : getAuthErrCategoryFromStCode(status),
       );
     } else if (status === 403 && matchErrorCode('REQUEST_LIMIT_EXCEEDED')) {
       // If the error code is REQUEST_LIMIT_EXCEEDED, you’ve exceeded API request limits in your org.
@@ -134,7 +136,7 @@ const getAccessToken = async (destination) => {
         processedResponse,
         `:- authentication failed during fetching access token.`,
         accessTokenKey,
-        'legacy',
+        LEGACY,
       );
     }
     const token = httpResponse.response.data;
@@ -144,7 +146,7 @@ const getAccessToken = async (destination) => {
         processedResponse,
         `:- authentication failed could not retrieve authorization token.`,
         accessTokenKey,
-        'legacy',
+        LEGACY,
       );
     }
     return {
@@ -158,13 +160,20 @@ const collectAuthorizationInfo = async (event) => {
   let authorizationFlow;
   let authorizationData;
   if (isDefinedAndNotNull(event.metadata?.secret)) {
-    authorizationFlow = 'oauth';
+    authorizationFlow = OAUTH;
     authorizationData = getAccessTokenOauth(event.metadata);
   } else {
-    authorizationFlow = 'legacy';
+    authorizationFlow = LEGACY;
     authorizationData = await getAccessToken(event.destination);
   }
   return { authorizationFlow, authorizationData };
+};
+
+const getAuthHeader = (authInfo) => {
+  const { authorizationFlow, authorizationData } = authInfo;
+  return authorizationFlow === OAUTH
+    ? { Authorization: `Bearer ${authorizationData.token}` }
+    : { Authorization: authorizationData.token };
 };
 
 module.exports = {
@@ -172,4 +181,5 @@ module.exports = {
   salesforceResponseHandler,
   getAccessToken,
   collectAuthorizationInfo,
+  getAuthHeader,
 };

@@ -11,6 +11,7 @@ const {
   identifyContactMappingJson,
   ignoredLeadTraits,
   ignoredContactTraits,
+  OAUTH,
 } = require('./config');
 const {
   removeUndefinedValues,
@@ -28,7 +29,7 @@ const {
   generateErrorObject,
   isHttpStatusSuccess,
 } = require('../../util');
-const { salesforceResponseHandler, collectAuthorizationInfo } = require('./utils');
+const { salesforceResponseHandler, collectAuthorizationInfo, getAuthHeader } = require('./utils');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -89,15 +90,12 @@ function responseBuilderSimple(
   }
 
   const response = defaultRequestConfig();
-  const getAuthHeader = (authInfo) => {
-    const { authorizationFlow, authorizationData } = authInfo; 
-    return authorizationFlow === 'oauth'
-      ? { Authorization: `Bearer ${authorizationData.token}` }
-      : { Authorization: authorizationData.token };
-  }
 
   response.method = defaultPostRequestConfig.requestMethod;
-  response.headers = finalHeader;
+  response.headers = {
+    'Content-Type': JSON_MIME_TYPE,
+    ...getAuthHeader({ authorizationFlow, authorizationData }),
+  };
   response.body.JSON = removeUndefinedValues(rawPayload);
   response.endpoint = targetEndpoint;
 
@@ -115,7 +113,7 @@ async function getSaleforceIdForRecord(
 ) {
   const objSearchUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${identifierValue}&sobject=${objectType}&in=${identifierType}&${objectType}.fields=id,${identifierType}`;
   const finalHeader =
-    authorizationFlow === 'oauth'
+    authorizationFlow === OAUTH
       ? { Authorization: `Bearer ${authorizationData.token}` }
       : { Authorization: authorizationData.token };
   const { processedResponse: processedsfSearchResponse } = await handleHttpRequest(
@@ -230,7 +228,7 @@ async function getSalesforceIdFromPayload(
     }
     const leadQueryUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${email}&sobject=Lead&Lead.fields=id,IsConverted,ConvertedContactId,IsDeleted`;
     const finalHeader =
-      authorizationFlow === 'oauth'
+      authorizationFlow === OAUTH
         ? { Authorization: `Bearer ${authorizationData.token}` }
         : { Authorization: authorizationData.token };
 

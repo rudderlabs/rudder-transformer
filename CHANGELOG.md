@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Bug Fixes
 
+* source_transform_error stat label correction ([#2822](https://github.com/rudderlabs/rudder-transformer/issues/2822)) ([a7e6e5c](https://github.com/rudderlabs/rudder-transformer/commit/a7e6e5c99bf4f465e8c029a0d493e34c072cd3af))
 * add check to remove null and undefined properties before sending ([#2796](https://github.com/rudderlabs/rudder-transformer/issues/2796)) ([6e89cd3](https://github.com/rudderlabs/rudder-transformer/commit/6e89cd3f67ea887ba17c1cd5ffbca6675f54d96c))
 * allow support for full url from UI in freshsales and freshmarketer ([#2780](https://github.com/rudderlabs/rudder-transformer/issues/2780)) ([570532c](https://github.com/rudderlabs/rudder-transformer/commit/570532ce790c05a69621d9289758a1b1a7acda8c))
 * busgnag issues for klaviyo, freshsales, customeio  ([#2795](https://github.com/rudderlabs/rudder-transformer/issues/2795)) ([11fb7c4](https://github.com/rudderlabs/rudder-transformer/commit/11fb7c47910681833e37d25a1573d2005e62742b))

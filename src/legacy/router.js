@@ -7,6 +7,7 @@ const Router = require('@koa/router');
 const lodash = require('lodash');
 const fs = require('fs');
 const path = require('path');
+const { PlatformError } = require('@rudderstack/integrations-lib');
 const logger = require('../logger');
 const stats = require('../util/stats');
 const { SUPPORTED_VERSIONS, API_VERSION } = require('../routes/utils/constants');
@@ -35,7 +36,6 @@ const {
   sendViolationMetrics,
   constructValidationErrors,
 } = require('../util/utils');
-const { PlatformError } = require('../v0/util/errorTypes');
 const { processCdkV1 } = require('../cdk/v1/handler');
 const { extractLibraries } = require('../util/customTransformer');
 const { getCompatibleStatusCode } = require('../adapters/utils/networkUtils');

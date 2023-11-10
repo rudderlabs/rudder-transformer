@@ -667,7 +667,7 @@ const getFirstMatchingKeyAndValue = (message, sourceKeys) => {
   ) {
     // sourceKeys => boolean, number, object, function etc,.
     // message => anything other than object,.
-    return { value: null, key: '' };
+    return { key: '' };
   }
   if (typeof sourceKeys === 'string') {
     srcKeys = [sourceKeys];

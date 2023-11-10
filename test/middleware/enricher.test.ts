@@ -1,5 +1,5 @@
 import { ProcessorTransformationRequest, RouterTransformationRequest } from '../../src/types';
-import Enricher from '../../src/middlewares/enricher';
+import GeoEnricher from '../../src/middlewares/enricher';
 
 describe('[GeoLocation Enrichment] Processor transformation tests', () => {
   test('should enrich when context.geo is populated correctly', async () => {
@@ -95,7 +95,7 @@ describe('[GeoLocation Enrichment] Processor transformation tests', () => {
     ];
     const ctx = { request: { body: inputData } };
     // @ts-ignore
-    await Enricher.enrichGeoLocation(ctx, () => {});
+    await GeoEnricher.enrich(ctx, () => {});
     expect(ctx.request.body[0].message.traits).toMatchObject(
       expect.objectContaining({
         age: 23,
@@ -178,7 +178,7 @@ describe('[GeoLocation Enrichment] Processor transformation tests', () => {
     ];
     const ctx = { request: { body: inputData } };
     // @ts-ignore
-    await Enricher.enrichGeoLocation(ctx, () => {});
+    await GeoEnricher.enrich(ctx, () => {});
     expect(ctx.request.body[0].message.traits).toMatchObject(
       expect.objectContaining({
         age: 23,
@@ -258,7 +258,7 @@ describe('[GeoLocation Enrichment] Processor transformation tests', () => {
     ];
     const ctx = { request: { body: inputData } };
     // @ts-ignore
-    await Enricher.enrichGeoLocation(ctx, () => {});
+    await GeoEnricher.enrich(ctx, () => {});
     expect(ctx.request.body[0].message.traits).toMatchObject(
       expect.objectContaining({
         age: 23,
@@ -327,7 +327,7 @@ describe('[GeoLocation Enrichment] Processor transformation tests', () => {
     ];
     const ctx = { request: { body: inputData } };
     // @ts-ignore
-    await Enricher.enrichGeoLocation(ctx, () => {});
+    await GeoEnricher.enrich(ctx, () => {});
 
     // @ts-ignore
     expect(ctx.request.body[0].message.traits?.address).toEqual({ country: 'India' });
@@ -458,7 +458,7 @@ describe('[GeoLocation Enrichment] Processor transformation tests', () => {
     ];
     const ctx = { request: { body: inputData } };
     // @ts-ignore
-    await Enricher.enrichGeoLocation(ctx, () => {});
+    await GeoEnricher.enrich(ctx, () => {});
     expect(ctx.request.body[0].message.traits).not.toHaveProperty('address');
     expect(ctx.request.body[1].message.traits).not.toHaveProperty('address');
   });
@@ -608,7 +608,7 @@ describe('[GeoLocation Enrichment] Processor transformation tests', () => {
     ];
     const ctx = { request: { body: inputData } };
     // @ts-ignore
-    await Enricher.enrichGeoLocation(ctx, () => {});
+    await GeoEnricher.enrich(ctx, () => {});
     expect(ctx.request.body[0].message.traits).toMatchObject(
       expect.objectContaining({
         age: 23,
@@ -739,7 +739,7 @@ describe('[GeoLocation Enrichment] Router/Batch transformation tests', () => {
     };
     const ctx = { request: { body: inputData } };
     // @ts-ignore
-    await Enricher.enrichGeoLocation(ctx, () => {});
+    await GeoEnricher.enrich(ctx, () => {});
     expect(ctx.request.body.input[0].message.traits).toMatchObject(
       expect.objectContaining({
         age: 23,

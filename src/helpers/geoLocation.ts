@@ -20,7 +20,7 @@ export default class GeoLocationHelper {
     return { key: addressKey, value };
   }
 
-  public static getMessageWithGeoLocationData(
+  public static enrichMessageAddressWithGeoData(
     message: Record<string, FixMe>,
   ): Record<string, FixMe> {
     let msg = message;
@@ -28,7 +28,7 @@ export default class GeoLocationHelper {
       // geo-location data was not sent
       return {};
     }
-    const { value: address, key: addressKey } = GeoLocationHelper.getAddressKeyAndValue(message);
+    const { value: address, key: addressKey } = GeoLocationHelper.getAddressKeyAndValue(msg);
     const addressFieldToGeoFieldMap = {
       city: 'city',
       country: 'country',

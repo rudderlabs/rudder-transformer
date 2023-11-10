@@ -59,7 +59,7 @@ describe('GeoLocationHelper tests', () => {
       userId: 'abcd-124',
     };
 
-    const enhancedMsg = GeoLocationHelper.getMessageWithGeoLocationData(msg);
+    const enhancedMsg = GeoLocationHelper.enrichMessageAddressWithGeoData(msg);
 
     expect(enhancedMsg.context.traits.address).not.toBe(undefined);
     expect(enhancedMsg.context.traits.address).toEqual({
@@ -122,7 +122,7 @@ describe('GeoLocationHelper tests', () => {
       userId: 'abcd-124',
     };
 
-    const enhancedMsg = GeoLocationHelper.getMessageWithGeoLocationData(msg);
+    const enhancedMsg = GeoLocationHelper.enrichMessageAddressWithGeoData(msg);
 
     expect(enhancedMsg.traits.address).not.toBe(undefined);
     expect(enhancedMsg.traits.address).toEqual({
@@ -195,7 +195,7 @@ describe('GeoLocationHelper tests', () => {
       userId: 'abcd-124',
     };
 
-    const enhancedMsg = GeoLocationHelper.getMessageWithGeoLocationData(msg);
+    const enhancedMsg = GeoLocationHelper.enrichMessageAddressWithGeoData(msg);
 
     expect(enhancedMsg.traits.address).not.toBe(undefined);
     expect(enhancedMsg.traits.address).toEqual({
@@ -272,7 +272,7 @@ describe('GeoLocationHelper tests', () => {
       userId: 'abcd-124',
     };
 
-    const enhancedMsg = GeoLocationHelper.getMessageWithGeoLocationData(msg);
+    const enhancedMsg = GeoLocationHelper.enrichMessageAddressWithGeoData(msg);
 
     expect(enhancedMsg.traits.address).not.toBe(undefined);
     expect(enhancedMsg.traits.address).toEqual({
@@ -349,7 +349,7 @@ describe('GeoLocationHelper tests', () => {
       userId: 'abcd-124',
     };
 
-    const enhancedMsg = GeoLocationHelper.getMessageWithGeoLocationData(msg);
+    const enhancedMsg = GeoLocationHelper.enrichMessageAddressWithGeoData(msg);
 
     expect(enhancedMsg.traits.address).not.toBe(undefined);
     expect(enhancedMsg.traits.address).toEqual({
@@ -406,7 +406,7 @@ describe('GeoLocationHelper tests', () => {
       userId: 'abcd-124',
     };
 
-    const enhancedMsg = GeoLocationHelper.getMessageWithGeoLocationData(msg);
+    const enhancedMsg = GeoLocationHelper.enrichMessageAddressWithGeoData(msg);
 
     expect(enhancedMsg).toEqual({});
     // @ts-ignore
@@ -419,7 +419,7 @@ describe('GeoLocationHelper tests', () => {
     const msg = null;
 
     // @ts-ignore
-    const enhancedMsg = GeoLocationHelper.getMessageWithGeoLocationData(msg);
+    const enhancedMsg = GeoLocationHelper.enrichMessageAddressWithGeoData(msg);
 
     expect(enhancedMsg).toEqual({});
     // @ts-ignore

@@ -37,6 +37,10 @@ const formatField = (message, fieldName) => {
 };
 
 const getCustomAttributes = (message) => {
+  if (message.traits?.customAttributes && typeof message.traits?.customAttributes === 'object'){
+    return message.traits?.customAttributes;
+  }
+
   const customAttributes = message.context.traits;
   reservedCustomAttributes.forEach((customAttribute) => {
     if (customAttributes[customAttribute]) {

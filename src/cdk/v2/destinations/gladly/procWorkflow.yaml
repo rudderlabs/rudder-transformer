@@ -39,9 +39,9 @@ steps:
   - name: preparePayload
     template: |
       $.context.payload = {
-        name: .message.context.traits.name || .message.traits.name,
-        image: .message.context.traits.avatar || .message.traits.avatar,
-        address: .message.context.traits.address || .message.traits.address
+        name: .message.traits.name || .message.context.traits.name,
+        image: .message.traits.avatar || .message.context.traits.avatar,
+        address: .message.traits.address || .message.context.traits.address
       }
       $.context.payload.address && typeof $.context.payload.address === "object" ?  $.context.payload.address =  JSON.stringify($.context.payload.address)
       $.context.payload.emails = $.formatField(.message, "email")

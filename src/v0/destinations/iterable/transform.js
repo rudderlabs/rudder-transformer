@@ -1,5 +1,6 @@
 const lodash = require('lodash');
 const get = require('get-value');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
   getCatalogEndpoint,
   hasMultipleResponses,
@@ -26,7 +27,6 @@ const {
 } = require('../../util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { mappingConfig, ConfigCategory } = require('./config');
-const { InstrumentationError } = require('../../util/errorTypes');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 
 /**

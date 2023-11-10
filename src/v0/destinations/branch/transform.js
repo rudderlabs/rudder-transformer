@@ -1,4 +1,5 @@
 const get = require('get-value');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const { endpoints } = require('./config');
 const { categoriesList } = require('./data/eventMapping');
@@ -11,7 +12,6 @@ const {
   isAppleFamily,
   simpleProcessRouterDest,
 } = require('../../util');
-const { InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function responseBuilder(payload, message, destination, category) {

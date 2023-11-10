@@ -9,6 +9,7 @@
 const is = require('is');
 const extend = require('@ndhoule/extend');
 const each = require('component-each');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   defaultGetRequestConfig,
@@ -17,7 +18,6 @@ const {
   simpleProcessRouterDest,
 } = require('../../util');
 const { ENDPOINT } = require('./config');
-const { InstrumentationError } = require('../../util/errorTypes');
 
 // source : https://github.com/segment-integrations/analytics.js-integration-kissmetrics/blob/master/lib/index.js
 function toUnixTimestamp(date) {

@@ -1,3 +1,4 @@
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
   getHashFromArray,
   getFieldValueFromMessage,
@@ -5,7 +6,6 @@ const {
   defaultRequestConfig,
 } = require('../../util');
 const { EventType } = require('../../../constants');
-const { InstrumentationError } = require('../../util/errorTypes');
 
 function responseBuilderSimple(message, destination) {
   const payload = {};

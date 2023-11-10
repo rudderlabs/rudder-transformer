@@ -34,6 +34,7 @@
  */
 
 const get = require('get-value');
+const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { identifyConfig, DESTINATION } = require('./config');
 const logger = require('../../../logger');
 const {
@@ -48,7 +49,6 @@ const {
   getAccessToken,
 } = require('../../util');
 const { CONFIG_CATEGORIES } = require('./config');
-const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 
 const buildResponse = (payload, url, destination, token) => {
   const responseBody = removeUndefinedValues(payload);

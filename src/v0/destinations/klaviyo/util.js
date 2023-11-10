@@ -1,5 +1,6 @@
 const { defaultRequestConfig } = require('rudder-transformer-cdk/build/utils');
 const lodash = require('lodash');
+const { NetworkError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { WhiteListedTraits } = require('../../../constants');
 
 const {
@@ -15,7 +16,6 @@ const {
 const tags = require('../../util/tags');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { JSON_MIME_TYPE, HTTP_STATUS_CODES } = require('../../util/constant');
-const { NetworkError, InstrumentationError } = require('../../util/errorTypes');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { BASE_ENDPOINT, MAPPING_CONFIG, CONFIG_CATEGORIES, MAX_BATCH_SIZE } = require('./config');
 

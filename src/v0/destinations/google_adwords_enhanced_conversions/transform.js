@@ -2,6 +2,7 @@
 
 const get = require('get-value');
 const { cloneDeep } = require('lodash');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
   constructPayload,
   defaultRequestConfig,
@@ -10,8 +11,6 @@ const {
   simpleProcessRouterDest,
   getAccessToken,
 } = require('../../util');
-
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
 const { trackMapping, BASE_ENDPOINT } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');

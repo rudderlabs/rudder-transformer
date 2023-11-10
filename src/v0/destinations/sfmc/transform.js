@@ -1,4 +1,9 @@
 /* eslint-disable no-nested-ternary */
+const {
+  NetworkError,
+  ConfigurationError,
+  InstrumentationError,
+} = require('@rudderstack/integrations-lib');
 const myAxios = require('../../../util/myAxios');
 const { EventType } = require('../../../constants');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG, ENDPOINTS } = require('./config');
@@ -19,7 +24,6 @@ const {
   getDynamicErrorType,
   nodeSysErrorToStatus,
 } = require('../../../adapters/utils/networkUtils');
-const { NetworkError, ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 

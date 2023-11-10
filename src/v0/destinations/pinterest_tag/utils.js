@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 const sha256 = require('sha256');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   constructPayload,
@@ -8,7 +9,6 @@ const {
   getHashFromArrayWithDuplicate,
   removeUndefinedAndNullValues,
 } = require('../../util');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 const { COMMON_CONFIGS, CUSTOM_CONFIGS, API_VERSION } = require('./config');
 
 const VALID_ACTION_SOURCES = ['app_android', 'app_ios', 'web', 'offline'];

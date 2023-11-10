@@ -1,5 +1,10 @@
 const get = require('get-value');
 const lodash = require('lodash');
+const {
+  InstrumentationError,
+  ConfigurationError,
+  TransformationError,
+} = require('@rudderstack/integrations-lib');
 const { MappedToDestinationKey, GENERIC_TRUE_VALUES } = require('../../../constants');
 const {
   defaultGetRequestConfig,
@@ -14,11 +19,6 @@ const {
   getDestinationExternalID,
   getDestinationExternalIDInfoForRetl,
 } = require('../../util');
-const {
-  InstrumentationError,
-  ConfigurationError,
-  TransformationError,
-} = require('../../util/errorTypes');
 const {
   BATCH_CONTACT_ENDPOINT,
   MAX_BATCH_SIZE,

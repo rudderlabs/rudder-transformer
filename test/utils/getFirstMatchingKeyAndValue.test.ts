@@ -32,7 +32,6 @@ const getFirstMatchKVCases = [
       sourceKeys: ['spain.rivals', 'rivals.spain'],
     },
     expectedOutput: {
-      value: null,
       key: '',
     },
   },
@@ -59,7 +58,6 @@ const getFirstMatchKVCases = [
       sourceKeys: 'rivals.1',
     },
     expectedOutput: {
-      value: null,
       key: '',
     },
   },
@@ -99,7 +97,6 @@ const getFirstMatchKVCases = [
       sourceKeys: 'rivals.1',
     },
     expectedOutput: {
-      value: null,
       key: '',
     },
   },

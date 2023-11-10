@@ -683,7 +683,7 @@ const getFirstMatchingKeyAndValue = (message, sourceKeys) => {
     }
   }
 
-  return { value: null, key: '' };
+  return { key: '' };
 };
 
 // get a field value from message.

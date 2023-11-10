@@ -3555,7 +3555,8 @@ export const data = [
             metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
             statTags: {
               destType: 'PINTEREST_TAG',
-              errorCategory: 'platform',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',

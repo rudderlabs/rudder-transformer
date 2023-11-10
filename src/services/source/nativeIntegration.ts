@@ -42,7 +42,7 @@ export default class NativeIntegrationSourceService implements IntegrationSource
         } catch (error: FixMe) {
           const metaTO = this.getTags();
           stats.increment('source_transform_errors', {
-            sourceType,
+            source: sourceType,
             version,
           });
           return PostTransformationServiceSource.handleFailureEventsSource(error, metaTO);

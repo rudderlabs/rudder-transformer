@@ -89,16 +89,12 @@ function responseBuilderSimple(
   }
 
   const response = defaultRequestConfig();
-  const finalHeader =
-    authorizationFlow === 'oauth'
-      ? {
-          'Content-Type': JSON_MIME_TYPE,
-          Authorization: `Bearer ${authorizationData.token}`,
-        }
-      : {
-          'Content-Type': JSON_MIME_TYPE,
-          Authorization: authorizationData.token,
-        };
+  const getAuthHeader = (authInfo) => {
+    const { authorizationFlow, authorizationData } = authInfo; 
+    return authorizationFlow === 'oauth'
+      ? { Authorization: `Bearer ${authorizationData.token}` }
+      : { Authorization: authorizationData.token };
+  }
 
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = finalHeader;

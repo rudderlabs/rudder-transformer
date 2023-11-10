@@ -1,4 +1,5 @@
 const lodash = require('lodash');
+const { TransformationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
@@ -20,7 +21,6 @@ const {
   isDefinedAndNotNull,
   isAppleFamily,
 } = require('../../util');
-const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
 
 /*
   All the fields listed inside properties which are not directly mapped, will be sent to 'e' as custom event attributes

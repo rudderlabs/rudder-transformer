@@ -1,4 +1,5 @@
 /* eslint-disable no-underscore-dangle */
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 
 const {
@@ -9,7 +10,6 @@ const {
   simpleProcessRouterDest,
 } = require('../../util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-const { InstrumentationError } = require('../../util/errorTypes');
 
 const { ConfigCategory, mappingConfig, getEndpoint } = require('./config');
 

@@ -1,9 +1,6 @@
-const {
-  isHttpStatusSuccess,
-  getAuthErrCategoryFromStCode,
-  isDefinedAndNotNull,
-} = require('../../util');
-const { RetryableError, ThrottledError, AbortedError } = require('../../util/errorTypes');
+const { RetryableError, ThrottledError, AbortedError } = require('@rudderstack/integrations-lib');
+const { handleHttpRequest } = require('../../../adapters/network');
+const { isHttpStatusSuccess, getAuthErrCategoryFromStCode, isDefinedAndNotNull } = require('../../util');
 const Cache = require('../../util/cache');
 const {
   ACCESS_TOKEN_CACHE_TTL,

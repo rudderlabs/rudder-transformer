@@ -564,7 +564,8 @@ export const data = [
             metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
             statTags: {
               destType: 'PINTEREST_TAG',
-              errorCategory: 'platform',
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',
@@ -681,7 +682,8 @@ export const data = [
               'It is required at least one of em, hashed_maids or pair of client_ip_address and client_user_agent: Workflow: procWorkflow, Step: validateUserFields, ChildStep: undefined, OriginalError: It is required at least one of em, hashed_maids or pair of client_ip_address and client_user_agent',
             statTags: {
               destType: 'PINTEREST_TAG',
-              errorCategory: 'platform',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',
@@ -960,7 +962,8 @@ export const data = [
             metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
             statTags: {
               destType: 'PINTEREST_TAG',
-              errorCategory: 'platform',
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',
@@ -1079,7 +1082,8 @@ export const data = [
             metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
             statTags: {
               destType: 'PINTEREST_TAG',
-              errorCategory: 'platform',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',
@@ -1199,7 +1203,8 @@ export const data = [
               'Action source must be one of app_android, app_ios, web, offline: Workflow: procWorkflow, Step: validateCommonFields, ChildStep: undefined, OriginalError: Action source must be one of app_android, app_ios, web, offline',
             statTags: {
               destType: 'PINTEREST_TAG',
-              errorCategory: 'platform',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',
@@ -3236,7 +3241,8 @@ export const data = [
             metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
             statTags: {
               destType: 'PINTEREST_TAG',
-              errorCategory: 'platform',
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',
@@ -3323,7 +3329,8 @@ export const data = [
             metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
             statTags: {
               destType: 'PINTEREST_TAG',
-              errorCategory: 'platform',
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',
@@ -3550,7 +3557,8 @@ export const data = [
             metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
             statTags: {
               destType: 'PINTEREST_TAG',
-              errorCategory: 'platform',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',

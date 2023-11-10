@@ -1,5 +1,6 @@
 const get = require('get-value');
 const moment = require('moment');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 
 const {
@@ -33,7 +34,6 @@ const {
   channelMapping,
   generateBatchedPayloadForArray,
 } = require('./util');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function buildResponse(apiKey, payload) {

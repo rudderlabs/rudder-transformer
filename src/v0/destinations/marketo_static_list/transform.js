@@ -1,5 +1,6 @@
 const lodash = require('lodash');
 const cloneDeep = require('lodash/cloneDeep');
+const { InstrumentationError, UnauthorizedError } = require('@rudderstack/integrations-lib');
 const {
   defaultPostRequestConfig,
   defaultDeleteRequestConfig,
@@ -16,7 +17,6 @@ const {
 const { formatConfig, MAX_LEAD_IDS_SIZE } = require('./config');
 const Cache = require('../../util/cache');
 const { getAuthToken } = require('../marketo/transform');
-const { InstrumentationError, UnauthorizedError } = require('../../util/errorTypes');
 
 const authCache = new Cache(AUTH_CACHE_TTL); // 1 hr
 

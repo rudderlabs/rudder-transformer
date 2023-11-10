@@ -1,7 +1,7 @@
 const sha256 = require('sha256');
+const { TransformationError } = require('@rudderstack/integrations-lib');
 const Message = require('../message');
 const { mapping, formEventName } = require('./util');
-const { TransformationError } = require('../../util/errorTypes');
 const { generateUUID, removeUndefinedAndNullValues } = require('../../util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 

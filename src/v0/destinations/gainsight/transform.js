@@ -1,6 +1,7 @@
 /* eslint-disable no-nested-ternary */
 const set = require('set-value');
 const get = require('get-value');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   identifyMapping,
@@ -28,7 +29,6 @@ const {
   renameCustomFieldsFromMap,
   getConfigOrThrowError,
 } = require('./util');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**

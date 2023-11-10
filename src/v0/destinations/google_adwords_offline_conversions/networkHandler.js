@@ -1,6 +1,11 @@
 const set = require('set-value');
 const get = require('get-value');
 const sha256 = require('sha256');
+const {
+  AbortedError,
+  NetworkInstrumentationError,
+  NetworkError,
+} = require('@rudderstack/integrations-lib');
 const { prepareProxyRequest, httpSend, httpPOST } = require('../../../adapters/network');
 const {
   isHttpStatusSuccess,
@@ -15,11 +20,6 @@ const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
-const {
-  AbortedError,
-  NetworkInstrumentationError,
-  NetworkError,
-} = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 
 const conversionCustomVariableCache = new Cache(CONVERSION_CUSTOM_VARIABLE_CACHE_TTL);

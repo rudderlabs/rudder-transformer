@@ -1,6 +1,11 @@
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { isObject } = require('../../util');
-const { ACTION_SOURCES_VALUES, CONFIG_CATEGORIES, OTHER_STANDARD_EVENTS } = require('./config');
+const {
+  ACTION_SOURCES_VALUES,
+  CONFIG_CATEGORIES,
+  OTHER_STANDARD_EVENTS,
+  FB_PIXEL_CUSTOM_DATA_EXCLUDE_FLATTENING,
+} = require('./config');
 const { getContentType, getContentCategory } = require('../../util/facebookUtils');
 
 /**  format revenue according to fb standards with max two decimal places.
@@ -262,6 +267,11 @@ const populateCustomDataBasedOnCategory = (
     case 'page': // executed when page call is done with standard PageView turned on
     case 'otherStandard':
       updatedCustomData = { ...customData };
+      FB_PIXEL_CUSTOM_DATA_EXCLUDE_FLATTENING.forEach((customDataParameter) => {
+        if (message.properties?.[customDataParameter]) {
+          updatedCustomData[customDataParameter] = message.properties[customDataParameter];
+        }
+      });
       break;
     default:
       throw new InstrumentationError(`${category.standard} type of standard event does not exist`);

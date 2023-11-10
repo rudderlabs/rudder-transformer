@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.49.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.49.0...v1.49.1) (2023-11-10)
+
+
+### Bug Fixes
+
+* update create-hotfix-branch.yml ([#2815](https://github.com/rudderlabs/rudder-transformer/issues/2815)) ([dd884dd](https://github.com/rudderlabs/rudder-transformer/commit/dd884ddc78898bd7de155ec4f05ce8fe6e2c4b80))
+
 ## [1.49.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.48.0...v1.49.0) (2023-11-06)
 
 

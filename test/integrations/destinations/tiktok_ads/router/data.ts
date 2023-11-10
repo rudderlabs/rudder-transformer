@@ -52,6 +52,7 @@ export const data = [
                 event: 'checkout step completed',
                 properties: {
                   eventId: '1616318632825_357',
+                  clickId: 'dummyClickId',
                   contents: [
                     {
                       price: 8,
@@ -408,6 +409,9 @@ export const data = [
                           value: 46,
                         },
                         context: {
+                          ad: {
+                            callback: 'dummyClickId',
+                          },
                           page: {
                             url: 'http://demo.mywebsite.com/purchase',
                             referrer: 'http://demo.mywebsite.com',

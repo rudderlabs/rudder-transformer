@@ -1,4 +1,5 @@
 const get = require('get-value');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 const { ConfigCategory } = require('./config');
 const {
@@ -9,7 +10,6 @@ const {
   simpleProcessRouterDest,
 } = require('../../util');
 const { processIdentify, processTrack, processGroup } = require('./util');
-const { InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**

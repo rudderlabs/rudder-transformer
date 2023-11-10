@@ -4,6 +4,7 @@
 const cloneDeep = require('lodash/cloneDeep');
 const get = require('get-value');
 const set = require('set-value');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
   EventType,
   SpecedTraits,
@@ -44,7 +45,7 @@ const tags = require('../../util/tags');
 const AMUtils = require('./utils');
 
 const logger = require('../../../logger');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
+
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const EVENTS_KEY_PATH = 'body.JSON.events';

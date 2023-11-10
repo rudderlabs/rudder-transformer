@@ -1,4 +1,5 @@
 const sha256 = require('sha256');
+const { ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
   defaultRequestConfig,
   removeUndefinedAndNullValues,
@@ -6,7 +7,6 @@ const {
   isDefinedAndNotNullAndNotEmpty,
   getAccessToken,
 } = require('../../util');
-const { ConfigurationError } = require('../../util/errorTypes');
 const { BASE_URL, schemaType } = require('./config');
 const { validatePayload, validateFields } = require('./utils');
 const { JSON_MIME_TYPE } = require('../../util/constant');

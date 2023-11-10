@@ -1,4 +1,9 @@
 const lodash = require('lodash');
+const {
+  ConfigurationError,
+  TransformationError,
+  InstrumentationError,
+} = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   ErrorMessage,
@@ -34,11 +39,6 @@ const {
   generatePayloadFromConfig,
   createOrUpdateContactPayloadBuilder,
 } = require('./util');
-const {
-  ConfigurationError,
-  TransformationError,
-  InstrumentationError,
-} = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (payload, method, endpoint, apiKey) => {

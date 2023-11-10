@@ -1,10 +1,10 @@
-const { handleHttpRequest } = require('../../../adapters/network');
 const {
   AbortedError,
   RetryableError,
   NetworkError,
   TransformationError,
-} = require('../../util/errorTypes');
+} = require('@rudderstack/integrations-lib');
+const { handleHttpRequest } = require('../../../adapters/network');
 const tags = require('../../util/tags');
 const { isHttpStatusSuccess, generateUUID } = require('../../util');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');

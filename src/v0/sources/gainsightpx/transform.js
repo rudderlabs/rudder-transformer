@@ -1,4 +1,5 @@
 const md5 = require('md5');
+const { TransformationError } = require('@rudderstack/integrations-lib');
 const Message = require('../message');
 const customMapping = require('./data/customMapping.json');
 const identifyMapping = require('./data/identifyMapping.json');
@@ -9,7 +10,6 @@ const surveyMapping = require('./data/surveyMapping.json');
 const featureMatchMapping = require('./data/featureMatchMapping.json');
 const segmentIoMapping = require('./data/segmentIOMapping.json');
 const { refinePayload, refineTraitPayload } = require('./utils');
-const { TransformationError } = require('../../util/errorTypes');
 
 const buildIdentifyPayload = (event) => {
   let message = new Message(`GAINSIGHTPX`);

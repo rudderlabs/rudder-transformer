@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 const get = require('get-value');
 const moment = require('moment');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
@@ -33,8 +34,6 @@ const {
   fetchUserData,
   formingFinalResponse,
 } = require('../../util/facebookUtils');
-
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
 const responseBuilderSimple = (message, category, destination) => {
   const { Config, ID } = destination;

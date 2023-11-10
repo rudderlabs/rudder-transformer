@@ -25,7 +25,7 @@ export const data = [
           headers: {},
           version: '1',
           endpoint:
-            'https://graph.facebook.com/v17.0/1234567891234567/events?access_token=invalid_access_token',
+            'https://graph.facebook.com/v18.0/1234567891234567/events?access_token=invalid_access_token',
           params: {
             destination: 'facebook_pixel',
           },
@@ -90,7 +90,7 @@ export const data = [
           headers: {},
           version: '1',
           endpoint:
-            'https://graph.facebook.com/v17.0/1234567891234567/events?access_token=my_access_token',
+            'https://graph.facebook.com/v18.0/1234567891234567/events?access_token=my_access_token',
           params: {
             destination: 'facebook_pixel',
           },
@@ -140,7 +140,7 @@ export const data = [
           headers: {},
           version: '1',
           endpoint:
-            'https://graph.facebook.com/v17.0/1234567891234567/events?access_token=invalid_timestamp_correct_access_token',
+            'https://graph.facebook.com/v18.0/1234567891234567/events?access_token=invalid_timestamp_correct_access_token',
           params: {
             destination: 'facebook_pixel',
           },
@@ -210,7 +210,7 @@ export const data = [
           headers: {},
           version: '1',
           endpoint:
-            'https://graph.facebook.com/v17.0/1234567891234567/events?access_token=throttled_valid_access_token',
+            'https://graph.facebook.com/v18.0/1234567891234567/events?access_token=throttled_valid_access_token',
           params: {
             destination: 'facebook_pixel',
           },
@@ -275,7 +275,7 @@ export const data = [
           headers: {},
           version: '1',
           endpoint:
-            'https://graph.facebook.com/v17.0/1234567891234567/events?access_token=invalid_account_id_valid_access_token',
+            'https://graph.facebook.com/v18.0/1234567891234567/events?access_token=invalid_account_id_valid_access_token',
           params: {
             destination: 'facebook_pixel',
           },
@@ -343,7 +343,7 @@ export const data = [
           headers: {},
           version: '1',
           endpoint:
-            'https://graph.facebook.com/v17.0/1234567891234567/events?access_token=not_found_access_token',
+            'https://graph.facebook.com/v18.0/1234567891234567/events?access_token=not_found_access_token',
           params: {
             destination: 'facebook_pixel',
           },
@@ -412,7 +412,7 @@ export const data = [
           headers: {},
           version: '1',
           endpoint:
-            'https://graph.facebook.com/v17.0/1234567891234570/events?access_token=valid_access_token',
+            'https://graph.facebook.com/v18.0/1234567891234570/events?access_token=valid_access_token',
         },
         method: 'POST',
       },
@@ -478,7 +478,7 @@ export const data = [
           headers: {},
           version: '1',
           endpoint:
-            'https://graph.facebook.com/v17.0/1234567891234571/events?access_token=valid_access_token',
+            'https://graph.facebook.com/v18.0/1234567891234571/events?access_token=valid_access_token',
         },
         method: 'POST',
       },
@@ -544,7 +544,7 @@ export const data = [
           headers: {},
           version: '1',
           endpoint:
-            'https://graph.facebook.com/v17.0/1234567891234572/events?access_token=valid_access_token_unhandled_response',
+            'https://graph.facebook.com/v18.0/1234567891234572/events?access_token=valid_access_token_unhandled_response',
         },
         method: 'POST',
       },

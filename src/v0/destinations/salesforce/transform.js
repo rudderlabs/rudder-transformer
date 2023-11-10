@@ -357,6 +357,7 @@ async function process(event) {
     event.message,
     authInfo.authorizationData,
     event.destination,
+    authInfo.authorizationFlow,
   );
   return response;
 }

@@ -59,7 +59,14 @@ const handleOrder = (message, categoryToContent) => {
   const contentType = getContentType(message, 'product', categoryToContent);
   const contentIds = [];
   const contents = [];
-  const { category, quantity, price, currency, contentName } = message.properties;
+  const {
+    category,
+    quantity,
+    price,
+    currency,
+    contentName,
+    delivery_category: deliveryCategory,
+  } = message.properties;
   if (products) {
     if (products.length > 0 && Array.isArray(products)) {
       products.forEach((singleProduct) => {
@@ -72,6 +79,7 @@ const handleOrder = (message, categoryToContent) => {
             id: pId,
             quantity: singleProduct.quantity || quantity || 1,
             item_price: singleProduct.price || price,
+            delivery_category: singleProduct.delivery_category || deliveryCategory,
           };
           contents.push(content);
         }

@@ -1,3 +1,4 @@
+const { NetworkError } = require('@rudderstack/integrations-lib');
 const { removeUndefinedValues } = require('../../util');
 const { prepareProxyRequest, getPayloadData, httpSend } = require('../../../adapters/network');
 const {
@@ -7,7 +8,6 @@ const {
 const { isHttpStatusSuccess } = require('../../util/index');
 const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
 const tags = require('../../util/tags');
-const { NetworkError } = require('../../util/errorTypes');
 
 /**
  * Example Response from pardot

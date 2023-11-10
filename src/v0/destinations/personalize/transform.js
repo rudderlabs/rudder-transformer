@@ -1,4 +1,5 @@
 const lodash = require('lodash');
+const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { KEY_CHECK_LIST, MANDATORY_PROPERTIES } = require('./config');
 const { EventType } = require('../../../constants');
 const {
@@ -9,7 +10,6 @@ const {
   isDefined,
   simpleProcessRouterDest,
 } = require('../../util');
-const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 
 const putEventsHandler = (message, destination) => {
   const { properties, anonymousId, event, messageId, context } = message;

@@ -1,7 +1,7 @@
 const { isEmpty } = require('lodash');
+const { InstrumentationError, OAuthSecretError } = require('@rudderstack/integrations-lib');
 const { httpPOST } = require('../../../adapters/network');
 
-const { InstrumentationError, OAuthSecretError } = require('../../util/errorTypes');
 const { executeCommonValidations } = require('../../util/regulation-api');
 const { GA_USER_DELETION_ENDPOINT } = require('./config');
 const { gaResponseHandler } = require('./networkHandler');

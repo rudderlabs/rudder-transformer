@@ -1,3 +1,4 @@
+const { NetworkError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { httpGET } = require('../../../adapters/network');
 const {
   processAxiosResponse,
@@ -9,7 +10,6 @@ const {
   formatTimeStamp,
 } = require('../../util');
 const { getCustomFieldsEndPoint } = require('./config');
-const { NetworkError, InstrumentationError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 

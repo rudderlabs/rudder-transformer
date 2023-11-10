@@ -4,8 +4,8 @@
 /* eslint-disable unicorn/no-for-loop */
 /* eslint-disable no-restricted-syntax */
 const get = require('get-value');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { isDefinedAndNotNull, getValueFromMessage } = require('../../util');
-const { InstrumentationError } = require('../../util/errorTypes');
 
 const SOURCE_KEYS = ['properties', 'traits', 'context.traits', 'context'];
 
@@ -147,13 +147,13 @@ function rudderPropToDestMapWithDelimitter(mapping, delimMapping, message, prefi
           `${prefix} mapping properties variable is neither a string nor an array`,
         );
       }
-      
+
       if (typeof val === 'string') {
         /* following regex is used to find the one or more commas separated/padded by white spaces. 
         Example: val = 'r15,faze90R' , 'r1v, bvp, pol'
         */
-        val = val.replace(/\s*,+\s*/g, delimMapping[key]); 
-        // Above regex is good as for every comma with whitespace padding the no. of steps will increase by 4.  
+        val = val.replace(/\s*,+\s*/g, delimMapping[key]);
+        // Above regex is good as for every comma with whitespace padding the no. of steps will increase by 4.
       } else {
         val = val.join(delimMapping[key]);
       }

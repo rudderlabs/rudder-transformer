@@ -1,4 +1,5 @@
 const { set, get } = require('lodash');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   getHashFromArrayWithDuplicate,
@@ -21,7 +22,6 @@ const {
   requestBuilder,
   getClickConversionPayloadAndEndpoint,
 } = require('./utils');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 const helper = require('./helper');
 
 /**

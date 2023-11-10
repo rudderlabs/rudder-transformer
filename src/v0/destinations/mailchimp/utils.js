@@ -1,7 +1,7 @@
 const get = require('get-value');
 const md5 = require('md5');
 const { InstrumentationError, NetworkError } = require('@rudderstack/integrations-lib');
-const myAxios = require('../../../util/myAxios');
+const { isHttpStatusSuccess } = require('../../util');
 const { MappedToDestinationKey } = require('../../../constants');
 const logger = require('../../../logger');
 const {
@@ -186,11 +186,10 @@ const checkIfMailExists = async (apiKey, datacenterId, audienceId, email) => {
  * @returns
  */
 const checkIfDoubleOptIn = async (apiKey, datacenterId, audienceId) => {
-  let response;
   const url = `${getMailChimpBaseEndpoint(datacenterId, audienceId)}`;
   const basicAuth = Buffer.from(`apiKey:${apiKey}`).toString('base64');
-  try {
-    response = await myAxios.get(
+    const { processedResponse: processedResponseMailChip } = await handleHttpRequest(
+      'get',
       url,
       {
         headers: {
@@ -199,13 +198,14 @@ const checkIfDoubleOptIn = async (apiKey, datacenterId, audienceId) => {
       },
       { destType: 'mailchimp', feature: 'transformation' },
     );
-  } catch (error) {
-    const status = error.status || 400;
-    throw new NetworkError('User does not have access to the requested operation', status, {
-      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
-    });
-  }
-  return !!response.data.double_optin;
+
+    if (!isHttpStatusSuccess(processedResponseMailChip.status)) {
+      throw new NetworkError('User does not have access to the requested operation', processedResponseMailChip.status, {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedResponseMailChip.status),
+      });
+    }
+    
+  return !!processedResponseMailChip.response.double_optin;
 };
 
 /**

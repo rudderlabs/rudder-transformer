@@ -322,6 +322,10 @@ const combineBatchRequestsWithSameJobIds = (inputBatches) => {
   return combineBatches(combineBatches(inputBatches));
 };
 
+const parseConfigArray = (arr, key) => 
+   arr.map(item => item[key])
+;
+
 module.exports = {
   createIdentifyResponse,
   isImportAuthCredentialsAvailable,
@@ -330,4 +334,5 @@ module.exports = {
   generateBatchedPayloadForArray,
   batchEvents,
   combineBatchRequestsWithSameJobIds,
+  parseConfigArray
 };

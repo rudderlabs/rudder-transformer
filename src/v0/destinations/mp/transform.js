@@ -34,6 +34,7 @@ const {
   combineBatchRequestsWithSameJobIds,
   groupEventsByEndpoint,
   batchEvents,
+  parseConfigArray
 } = require('./util');
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 const { CommonUtils } = require('../../../util/common');
@@ -106,6 +107,13 @@ const responseBuilderSimple = (payload, message, eventType, destConfig) => {
         strict: credentials.params.strict,
       };
       break;
+    // case 'setOnce':
+    //   response.endpoint =  dataResidency === 'eu' ? `${BASE_ENDPOINT_EU}/engage#profile-set-once` : `${BASE_ENDPOINT}/engage#profile-set-once`;
+    //   response.headers = {
+    //     'Content-Type': 'application/json',
+    //     'accept': 'text/plain',
+    //   };
+    //   break;
     default:
       response.endpoint =
         dataResidency === 'eu' ? `${BASE_ENDPOINT_EU}/engage/` : `${BASE_ENDPOINT}/engage/`;
@@ -226,17 +234,54 @@ const processTrack = (message, destination) => {
   return returnValue;
 };
 
-const processIdentifyEvents = async (message, type, destination) => {
-  const returnValue = [];
+function trimTraits(traits, setOnceProperties) {
+  // Create a copy of the original traits object
+  const traitsCopy = { ...traits };
 
+  // Initialize setOnce object
+  const setOnce = {};
+
+  // Iterate over setOnceProperties and move corresponding properties to setOnce
+  setOnceProperties.forEach(property => {
+    if (traitsCopy.hasOwnProperty(property)) {
+      setOnce[property] = traitsCopy[property];
+      delete traitsCopy[property];
+    }
+  });
+
+  return {
+    traits: traitsCopy,
+    setOnce,
+  };
+}
+
+const createSetOnceResponse = (message, type, destination, setOnce) => {
+  const payload = {
+    $set_once: setOnce,
+    $token: destination.Config.token,
+    $distinct_id: message.userId || message.anonymousId,
+  };
+  return responseBuilderSimple(payload, message, type, destination.Config);
+}
+
+
+
+const processIdentifyEvents = async (message, type, destination) => {
+  const messageClone = { ...message };
+  const setOnceProperties = parseConfigArray(destination.Config.setOnceProperties, 'property');
+  const { traits, setOnce } = trimTraits(getFieldValueFromMessage(messageClone, 'traits'), setOnceProperties);
+  messageClone.traits = traits;
+  
+  const returnValue = [];
   // Creating the user profile
   // https://developer.mixpanel.com/reference/profile-set
-  returnValue.push(createIdentifyResponse(message, type, destination, responseBuilderSimple));
+  returnValue.push(createIdentifyResponse(messageClone, type, destination, responseBuilderSimple));
+  returnValue.push(createSetOnceResponse(messageClone, type, destination, setOnce));
 
   if (
     destination.Config?.identityMergeApi !== 'simplified' &&
-    message.userId &&
-    message.anonymousId &&
+    messageClone.userId &&
+    messageClone.anonymousId &&
     isImportAuthCredentialsAvailable(destination)
   ) {
     // If userId and anonymousId both are present and required credentials for /import
@@ -245,13 +290,13 @@ const processIdentifyEvents = async (message, type, destination) => {
     const trackPayload = {
       event: '$merge',
       properties: {
-        $distinct_ids: [message.userId, message.anonymousId],
+        $distinct_ids: [messageClone.userId, messageClone.anonymousId],
         token: destination.Config.token,
       },
     };
     const identifyTrackResponse = responseBuilderSimple(
       trackPayload,
-      message,
+      messageClone,
       'merge',
       destination.Config,
     );

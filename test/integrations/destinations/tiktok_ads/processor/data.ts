@@ -221,9 +221,6 @@ export const data = [
               properties: {
                 eventId: '1616318632825_357',
                 context: {
-                  ad: {
-                    callback: '123ATXSfe',
-                  },
                   page: {
                     url: 'http://demo.mywebsite.com/purchase',
                     referrer: 'http://demo.mywebsite.com',
@@ -307,9 +304,6 @@ export const data = [
                     value: 46,
                   },
                   context: {
-                    ad: {
-                      callback: '123ATXSfe',
-                    },
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
                       referrer: 'http://demo.mywebsite.com',
@@ -389,9 +383,6 @@ export const data = [
                 eventId: '1616318632825_357',
                 testEventCode: 'sample rudder test_event_code',
                 context: {
-                  ad: {
-                    callback: '123ATXSfe',
-                  },
                   page: {
                     url: 'http://demo.mywebsite.com/purchase',
                     referrer: 'http://demo.mywebsite.com',
@@ -476,9 +467,6 @@ export const data = [
                     value: 46,
                   },
                   context: {
-                    ad: {
-                      callback: '123ATXSfe',
-                    },
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
                       referrer: 'http://demo.mywebsite.com',
@@ -558,9 +546,6 @@ export const data = [
                 eventId: '1616318632825_357',
                 testEventCode: 'sample rudder test_event_code',
                 context: {
-                  ad: {
-                    callback: '123ATXSfe',
-                  },
                   page: {
                     url: 'http://demo.mywebsite.com/purchase',
                     referrer: 'http://demo.mywebsite.com',
@@ -677,9 +662,6 @@ export const data = [
                 eventId: '1616318632825_357',
                 testEventCode: 'sample rudder test_event_code',
                 context: {
-                  ad: {
-                    callback: '123ATXSfe',
-                  },
                   page: {
                     url: 'http://demo.mywebsite.com/purchase',
                     referrer: 'http://demo.mywebsite.com',
@@ -764,9 +746,6 @@ export const data = [
                     value: 46,
                   },
                   context: {
-                    ad: {
-                      callback: '123ATXSfe',
-                    },
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
                       referrer: 'http://demo.mywebsite.com',
@@ -849,9 +828,6 @@ export const data = [
                 eventId: '1616318632825_357',
                 testEventCode: 'sample rudder test_event_code',
                 context: {
-                  ad: {
-                    callback: '123ATXSfe',
-                  },
                   page: {
                     url: 'http://demo.mywebsite.com/purchase',
                     referrer: 'http://demo.mywebsite.com',
@@ -936,9 +912,6 @@ export const data = [
                     value: 46,
                   },
                   context: {
-                    ad: {
-                      callback: '123ATXSfe',
-                    },
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
                       referrer: 'http://demo.mywebsite.com',
@@ -1021,9 +994,6 @@ export const data = [
                 eventId: '1616318632825_357',
                 testEventCode: '',
                 context: {
-                  ad: {
-                    callback: '123ATXSfe',
-                  },
                   page: {
                     url: 'http://demo.mywebsite.com/purchase',
                     referrer: 'http://demo.mywebsite.com',
@@ -1106,9 +1076,6 @@ export const data = [
                     value: 46,
                   },
                   context: {
-                    ad: {
-                      callback: '123ATXSfe',
-                    },
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
                       referrer: 'http://demo.mywebsite.com',
@@ -1190,9 +1157,6 @@ export const data = [
               properties: {
                 eventId: '1616318632825_357',
                 context: {
-                  ad: {
-                    callback: '123ATXSfe',
-                  },
                   page: {
                     url: 'http://demo.mywebsite.com/purchase',
                     referrer: 'http://demo.mywebsite.com',
@@ -1276,9 +1240,6 @@ export const data = [
                     value: 46,
                   },
                   context: {
-                    ad: {
-                      callback: '123ATXSfe',
-                    },
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
                       referrer: 'http://demo.mywebsite.com',
@@ -1359,9 +1320,6 @@ export const data = [
               properties: {
                 eventId: '1616318632825_357',
                 context: {
-                  ad: {
-                    callback: '123ATXSfe',
-                  },
                   page: {
                     url: 'http://demo.mywebsite.com/purchase',
                     referrer: 'http://demo.mywebsite.com',
@@ -1474,9 +1432,6 @@ export const data = [
               properties: {
                 eventId: '1616318632825_357',
                 context: {
-                  ad: {
-                    callback: '123ATXSfe',
-                  },
                   page: {
                     url: 'http://demo.mywebsite.com/purchase',
                     referrer: 'http://demo.mywebsite.com',
@@ -1590,9 +1545,6 @@ export const data = [
               properties: {
                 eventId: '1616318632825_357',
                 context: {
-                  ad: {
-                    callback: '123ATXSfe',
-                  },
                   page: {
                     url: 'http://demo.mywebsite.com/purchase',
                     referrer: 'http://demo.mywebsite.com',
@@ -1675,9 +1627,6 @@ export const data = [
                     value: 46,
                   },
                   context: {
-                    ad: {
-                      callback: '123ATXSfe',
-                    },
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
                       referrer: 'http://demo.mywebsite.com',
@@ -1759,9 +1708,6 @@ export const data = [
               properties: {
                 eventId: '16163186328257',
                 context: {
-                  ad: {
-                    callback: '123ATXSfe',
-                  },
                   page: {
                     url: 'http://demo.mywebsite.com/purchase',
                     referrer: 'http://demo.mywebsite.com',
@@ -1845,9 +1791,6 @@ export const data = [
                     value: 46,
                   },
                   context: {
-                    ad: {
-                      callback: '123ATXSfe',
-                    },
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
                       referrer: 'http://demo.mywebsite.com',
@@ -1929,9 +1872,6 @@ export const data = [
               properties: {
                 eventId: '16163186328257',
                 context: {
-                  ad: {
-                    callback: '123ATXSfe',
-                  },
                   page: {
                     url: 'http://demo.mywebsite.com/purchase',
                     referrer: 'http://demo.mywebsite.com',
@@ -1984,9 +1924,6 @@ export const data = [
                   event_id: '16163186328257',
                   timestamp: '2020-09-17T19:49:27Z',
                   context: {
-                    ad: {
-                      callback: '123ATXSfe',
-                    },
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
                       referrer: 'http://demo.mywebsite.com',
@@ -2068,9 +2005,6 @@ export const data = [
               properties: {
                 eventId: '16163186328257',
                 context: {
-                  ad: {
-                    callback: '123ATXSfe',
-                  },
                   page: {
                     url: 'http://demo.mywebsite.com/purchase',
                     referrer: 'http://demo.mywebsite.com',
@@ -2154,9 +2088,6 @@ export const data = [
                     value: 46,
                   },
                   context: {
-                    ad: {
-                      callback: '123ATXSfe',
-                    },
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
                       referrer: 'http://demo.mywebsite.com',
@@ -2238,9 +2169,6 @@ export const data = [
               properties: {
                 eventId: '16163186328257',
                 context: {
-                  ad: {
-                    callback: '123ATXSfe',
-                  },
                   page: {
                     url: 'http://demo.mywebsite.com/purchase',
                     referrer: 'http://demo.mywebsite.com',
@@ -2355,9 +2283,6 @@ export const data = [
               properties: {
                 eventId: '1616318632825_357',
                 context: {
-                  ad: {
-                    callback: '123ATXSfe',
-                  },
                   page: {
                     url: 'http://demo.mywebsite.com/purchase',
                     referrer: 'http://demo.mywebsite.com',
@@ -2441,9 +2366,6 @@ export const data = [
                     value: 46,
                   },
                   context: {
-                    ad: {
-                      callback: '123ATXSfe',
-                    },
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
                       referrer: 'http://demo.mywebsite.com',
@@ -2525,9 +2447,6 @@ export const data = [
               properties: {
                 eventId: '1616318632825_357',
                 context: {
-                  ad: {
-                    callback: '123ATXSfe',
-                  },
                   page: {
                     url: 'http://demo.mywebsite.com/purchase',
                     referrer: 'http://demo.mywebsite.com',
@@ -2611,9 +2530,6 @@ export const data = [
                     value: 46,
                   },
                   context: {
-                    ad: {
-                      callback: '123ATXSfe',
-                    },
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
                       referrer: 'http://demo.mywebsite.com',
@@ -2700,9 +2616,6 @@ export const data = [
                 eventId: '1616318632825_357',
                 testEventCode: 'TEST0000000011',
                 context: {
-                  ad: {
-                    callback: '123ATXSfe',
-                  },
                   page: {
                     url: 'http://demo.mywebsite.com/purchase',
                     referrer: 'http://demo.mywebsite.com',
@@ -2786,9 +2699,6 @@ export const data = [
                     value: 46,
                   },
                   context: {
-                    ad: {
-                      callback: '123ATXSfe',
-                    },
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
                       referrer: 'http://demo.mywebsite.com',
@@ -2875,9 +2785,6 @@ export const data = [
                 eventId: '1616318632825_357',
                 testEventCode: 'TEST0000000011',
                 context: {
-                  ad: {
-                    callback: '123ATXSfe',
-                  },
                   page: {
                     url: 'http://demo.mywebsite.com/purchase',
                     referrer: 'http://demo.mywebsite.com',
@@ -2961,9 +2868,6 @@ export const data = [
                     value: 46,
                   },
                   context: {
-                    ad: {
-                      callback: '123ATXSfe',
-                    },
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
                       referrer: 'http://demo.mywebsite.com',
@@ -3028,9 +2932,6 @@ export const data = [
                 },
                 screen: {
                   density: 2,
-                },
-                ad: {
-                  callback: '999ATXSfe',
                 },
                 page: {
                   url: 'http://rudder.mywebsite.com/purchase',
@@ -3131,9 +3032,6 @@ export const data = [
                     value: 46,
                   },
                   context: {
-                    ad: {
-                      callback: '999ATXSfe',
-                    },
                     page: {
                       url: 'http://rudder.mywebsite.com/purchase',
                       referrer: 'http://rudder.mywebsite.com',
@@ -3231,9 +3129,6 @@ export const data = [
                 currency: 'USD',
                 value: 46,
                 context: {
-                  ad: {
-                    callback: '123ATXSfe',
-                  },
                   page: {
                     url: 'http://demo.mywebsite.com/purchase',
                     referrer: 'http://demo.mywebsite.com',
@@ -3315,9 +3210,6 @@ export const data = [
                     value: 46,
                   },
                   context: {
-                    ad: {
-                      callback: '123ATXSfe',
-                    },
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
                       referrer: 'http://demo.mywebsite.com',
@@ -3380,9 +3272,6 @@ export const data = [
                     value: 46,
                   },
                   context: {
-                    ad: {
-                      callback: '123ATXSfe',
-                    },
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
                       referrer: 'http://demo.mywebsite.com',
@@ -3480,9 +3369,6 @@ export const data = [
                 currency: 'USD',
                 value: 46,
                 context: {
-                  ad: {
-                    callback: '123ATXSfe',
-                  },
                   page: {
                     url: 'http://demo.mywebsite.com/purchase',
                     referrer: 'http://demo.mywebsite.com',
@@ -3603,9 +3489,6 @@ export const data = [
                 currency: 'USD',
                 value: 46,
                 context: {
-                  ad: {
-                    callback: '123ATXSfe',
-                  },
                   page: {
                     url: 'http://demo.mywebsite.com/purchase',
                     referrer: 'http://demo.mywebsite.com',
@@ -3683,9 +3566,6 @@ export const data = [
                     value: 46,
                   },
                   context: {
-                    ad: {
-                      callback: '123ATXSfe',
-                    },
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
                       referrer: 'http://demo.mywebsite.com',
@@ -3783,9 +3663,6 @@ export const data = [
                 currency: 'USD',
                 value: 46,
                 context: {
-                  ad: {
-                    callback: '123ATXSfe',
-                  },
                   page: {
                     url: 'http://demo.mywebsite.com/purchase',
                     referrer: 'http://demo.mywebsite.com',
@@ -3862,9 +3739,6 @@ export const data = [
                     value: 46,
                   },
                   context: {
-                    ad: {
-                      callback: '123ATXSfe',
-                    },
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
                       referrer: 'http://demo.mywebsite.com',
@@ -3962,9 +3836,6 @@ export const data = [
                 currency: 'USD',
                 value: 46,
                 context: {
-                  ad: {
-                    callback: '123ATXSfe',
-                  },
                   page: {
                     url: 'http://demo.mywebsite.com/purchase',
                     referrer: 'http://demo.mywebsite.com',
@@ -4041,9 +3912,6 @@ export const data = [
                     value: 46,
                   },
                   context: {
-                    ad: {
-                      callback: '123ATXSfe',
-                    },
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
                       referrer: 'http://demo.mywebsite.com',
@@ -4161,9 +4029,6 @@ export const data = [
                 currency: 'USD',
                 value: 46,
                 context: {
-                  ad: {
-                    callback: '123ATXSfe',
-                  },
                   page: {
                     url: 'http://demo.mywebsite.com/purchase',
                     referrer: 'http://demo.mywebsite.com',
@@ -4231,9 +4096,6 @@ export const data = [
                     value: 46,
                   },
                   context: {
-                    ad: {
-                      callback: '123ATXSfe',
-                    },
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
                       referrer: 'http://demo.mywebsite.com',
@@ -4338,9 +4200,6 @@ export const data = [
                 currency: 'USD',
                 value: 46,
                 context: {
-                  ad: {
-                    callback: '123ATXSfe',
-                  },
                   page: {
                     url: 'http://demo.mywebsite.com/purchase',
                     referrer: 'http://demo.mywebsite.com',
@@ -4411,9 +4270,6 @@ export const data = [
                     ],
                   },
                   context: {
-                    ad: {
-                      callback: '123ATXSfe',
-                    },
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
                       referrer: 'http://demo.mywebsite.com',
@@ -4519,9 +4375,6 @@ export const data = [
                 currency: 'USD',
                 value: 46,
                 context: {
-                  ad: {
-                    callback: '123ATXSfe',
-                  },
                   page: {
                     url: 'http://demo.mywebsite.com/purchase',
                     referrer: 'http://demo.mywebsite.com',
@@ -4593,9 +4446,6 @@ export const data = [
                     ],
                   },
                   context: {
-                    ad: {
-                      callback: '123ATXSfe',
-                    },
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
                       referrer: 'http://demo.mywebsite.com',
@@ -4704,9 +4554,6 @@ export const data = [
                 currency: 'USD',
                 value: 46,
                 context: {
-                  ad: {
-                    callback: '123ATXSfe',
-                  },
                   page: {
                     url: 'http://demo.mywebsite.com/purchase',
                     referrer: 'http://demo.mywebsite.com',
@@ -4783,9 +4630,6 @@ export const data = [
                     ],
                   },
                   context: {
-                    ad: {
-                      callback: '123ATXSfe',
-                    },
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
                       referrer: 'http://demo.mywebsite.com',

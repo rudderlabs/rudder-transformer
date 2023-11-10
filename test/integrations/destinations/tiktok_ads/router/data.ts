@@ -69,9 +69,6 @@ export const data = [
                   currency: 'USD',
                   value: 46.0,
                   context: {
-                    ad: {
-                      callback: '123ATXSfe',
-                    },
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
                       referrer: 'http://demo.mywebsite.com',
@@ -141,9 +138,6 @@ export const data = [
                 properties: {
                   eventId: '1616318632825_357',
                   context: {
-                    ad: {
-                      callback: '123ATXSfe',
-                    },
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
                       referrer: 'http://demo.mywebsite.com',
@@ -229,9 +223,6 @@ export const data = [
                 properties: {
                   eventId: '1616318632825_357',
                   context: {
-                    ad: {
-                      callback: '123ATXSfe',
-                    },
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
                       referrer: 'http://demo.mywebsite.com',
@@ -320,9 +311,6 @@ export const data = [
                 properties: {
                   eventId: '1616318632825_357',
                   context: {
-                    ad: {
-                      callback: '123ATXSfe',
-                    },
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
                       referrer: 'http://demo.mywebsite.com',
@@ -420,9 +408,6 @@ export const data = [
                           value: 46,
                         },
                         context: {
-                          ad: {
-                            callback: '123ATXSfe',
-                          },
                           page: {
                             url: 'http://demo.mywebsite.com/purchase',
                             referrer: 'http://demo.mywebsite.com',
@@ -446,9 +431,6 @@ export const data = [
                         type: 'track',
                         timestamp: '2020-09-17T19:49:27Z',
                         context: {
-                          ad: {
-                            callback: '123ATXSfe',
-                          },
                           ip: '13.57.97.131',
                           page: {
                             url: 'http://demo.mywebsite.com/purchase',
@@ -490,9 +472,6 @@ export const data = [
                         type: 'track',
                         timestamp: '2020-09-17T19:49:27Z',
                         context: {
-                          ad: {
-                            callback: '123ATXSfe',
-                          },
                           ip: '13.57.97.131',
                           page: {
                             url: 'http://demo.mywebsite.com/purchase',
@@ -534,9 +513,6 @@ export const data = [
                         type: 'track',
                         timestamp: '2020-09-17T19:49:27Z',
                         context: {
-                          ad: {
-                            callback: '123ATXSfe',
-                          },
                           ip: '13.57.97.131',
                           page: {
                             url: 'http://demo.mywebsite.com/purchase',
@@ -662,9 +638,6 @@ export const data = [
                   eventId: '1616318632825_357',
                   testEventCode: 'sample rudder test_event_code',
                   context: {
-                    ad: {
-                      callback: '123ATXSfe',
-                    },
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
                       referrer: 'http://demo.mywebsite.com',
@@ -729,9 +702,6 @@ export const data = [
                     FORM: {},
                     JSON: {
                       context: {
-                        ad: {
-                          callback: '123ATXSfe',
-                        },
                         ip: '13.57.97.131',
                         page: {
                           referrer: 'http://demo.mywebsite.com',

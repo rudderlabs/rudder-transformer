@@ -1,6 +1,10 @@
 const { RetryableError, ThrottledError, AbortedError } = require('@rudderstack/integrations-lib');
 const { handleHttpRequest } = require('../../../adapters/network');
-const { isHttpStatusSuccess, getAuthErrCategoryFromStCode, isDefinedAndNotNull } = require('../../util');
+const {
+  isHttpStatusSuccess,
+  getAuthErrCategoryFromStCode,
+  isDefinedAndNotNull,
+} = require('../../util');
 const Cache = require('../../util/cache');
 const {
   ACCESS_TOKEN_CACHE_TTL,
@@ -8,7 +12,6 @@ const {
   SF_TOKEN_REQUEST_URL,
   DESTINATION,
 } = require('./config');
-const { handleHttpRequest } = require('../../../adapters/network');
 
 const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
 

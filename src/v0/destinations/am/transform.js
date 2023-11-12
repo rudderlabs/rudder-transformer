@@ -593,7 +593,8 @@ const processSingleMessage = (message, destination) => {
   const { name, event, properties } = message;
   const messageType = message.type.toLowerCase();
   const CATEGORY_KEY = 'properties.category';
-  const { useUserDefinedPageEventName, userProvidedPageEventString } = destination.Config;
+  const { useUserDefinedPageEventName, userProvidedPageEventString,
+    useUserDefinedScreenEventName, userProvidedScreenEventString } = destination.Config;
   switch (messageType) {
     case EventType.IDENTIFY:
       payloadObjectName = 'events'; // identify same as events
@@ -629,15 +630,27 @@ const processSingleMessage = (message, destination) => {
       category = ConfigCategory.PAGE;
       break;
     case EventType.SCREEN:
-      {
-        const { eventType, updatedProperties } = getScreenevTypeAndUpdatedProperties(
+      let { eventType, updatedProperties } = getScreenevTypeAndUpdatedProperties(
           message,
           CATEGORY_KEY,
-        );
-        evType = eventType;
-        message.properties = updatedProperties;
-        category = ConfigCategory.SCREEN;
+      );
+      if (useUserDefinedScreenEventName) {
+        const getMessagePath = userProvidedScreenEventString
+            .substring(
+                userProvidedScreenEventString.indexOf('{') + 2,
+                userProvidedScreenEventString.indexOf('}'),
+            )
+            .trim();
+        eventType =
+            userProvidedScreenEventString.trim() === ''
+                ? eventType
+                : userProvidedScreenEventString
+                    .trim()
+                    .replaceAll(/{{([^{}]+)}}/g, get(message, getMessagePath));
       }
+      evType = eventType;
+      message.properties = updatedProperties;
+      category = ConfigCategory.SCREEN;
       break;
     case EventType.GROUP:
       evType = 'group';

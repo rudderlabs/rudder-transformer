@@ -604,22 +604,22 @@ const processSingleMessage = (message, destination) => {
     case EventType.PAGE:
       if (useUserDefinedPageEventName) {
         const getMessagePath = userProvidedPageEventString
-          .substring(
-            userProvidedPageEventString.indexOf('{') + 2,
-            userProvidedPageEventString.indexOf('}'),
-          )
-          .trim();
+            .substring(
+                userProvidedPageEventString.indexOf('{') + 2,
+                userProvidedPageEventString.indexOf('}'),
+            )
+            .trim();
         evType =
-          userProvidedPageEventString.trim() === ''
-            ? name
-            : userProvidedPageEventString
-                .trim()
-                .replaceAll(/{{([^{}]+)}}/g, get(message, getMessagePath));
+            userProvidedPageEventString.trim() === ''
+                ? name
+                : userProvidedPageEventString
+                    .trim()
+                    .replaceAll(/{{([^{}]+)}}/g, get(message, getMessagePath));
       } else {
         const updatedName = getUpdatedPageNameWithoutUserDefinedPageEventName(
-          name,
-          message,
-          CATEGORY_KEY,
+            name,
+            message,
+            CATEGORY_KEY,
         );
         evType = `Viewed ${updatedName || ''}Page`;
       }
@@ -630,27 +630,30 @@ const processSingleMessage = (message, destination) => {
       category = ConfigCategory.PAGE;
       break;
     case EventType.SCREEN:
-      let { eventType, updatedProperties } = getScreenevTypeAndUpdatedProperties(
-          message,
-          CATEGORY_KEY,
-      );
-      if (useUserDefinedScreenEventName) {
-        const getMessagePath = userProvidedScreenEventString
-            .substring(
-                userProvidedScreenEventString.indexOf('{') + 2,
-                userProvidedScreenEventString.indexOf('}'),
-            )
-            .trim();
-        eventType =
-            userProvidedScreenEventString.trim() === ''
-                ? eventType
-                : userProvidedScreenEventString
-                    .trim()
-                    .replaceAll(/{{([^{}]+)}}/g, get(message, getMessagePath));
+      {
+        const { eventType, updatedProperties } = getScreenevTypeAndUpdatedProperties(
+            message,
+            CATEGORY_KEY,
+        );
+        let customScreenEv = '';
+        if (useUserDefinedScreenEventName) {
+          const getMessagePath = userProvidedScreenEventString
+              .substring(
+                  userProvidedScreenEventString.indexOf('{') + 2,
+                  userProvidedScreenEventString.indexOf('}'),
+              )
+              .trim();
+          customScreenEv =
+              userProvidedScreenEventString.trim() === ''
+                  ? eventType
+                  : userProvidedScreenEventString
+                      .trim()
+                      .replaceAll(/{{([^{}]+)}}/g, get(message, getMessagePath));
+        }
+        evType =useUserDefinedScreenEventName ? customScreenEv : eventType;
+        message.properties = updatedProperties;
+        category = ConfigCategory.SCREEN;
       }
-      evType = eventType;
-      message.properties = updatedProperties;
-      category = ConfigCategory.SCREEN;
       break;
     case EventType.GROUP:
       evType = 'group';

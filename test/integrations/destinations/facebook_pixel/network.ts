@@ -4,7 +4,7 @@ import { getFormData } from '../../../../src/adapters/network';
 export const networkCallsData = [
   {
     httpReq: {
-      url: 'https://graph.facebook.com/v18.0/1234567891234567/events?access_token=invalid_access_token',
+      url: 'https://graph.facebook.com/v17.0/1234567891234567/events?access_token=invalid_access_token',
       data: getFormData(data[0].input.request.body.body.FORM).toString(),
       params: { destination: 'facebook_pixel' },
       headers: { 'User-Agent': 'RudderLabs' },
@@ -24,7 +24,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://graph.facebook.com/v18.0/1234567891234567/events?access_token=invalid_timestamp_correct_access_token',
+      url: 'https://graph.facebook.com/v17.0/1234567891234567/events?access_token=invalid_timestamp_correct_access_token',
       data: getFormData(data[2].input.request.body.body.FORM).toString(),
       params: { destination: 'facebook_pixel' },
       headers: { 'User-Agent': 'RudderLabs' },
@@ -49,7 +49,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://graph.facebook.com/v18.0/1234567891234567/events?access_token=throttled_valid_access_token',
+      url: 'https://graph.facebook.com/v17.0/1234567891234567/events?access_token=throttled_valid_access_token',
       data: getFormData(data[3].input.request.body.body.FORM).toString(),
       params: { destination: 'facebook_pixel' },
       headers: { 'User-Agent': 'RudderLabs' },
@@ -69,7 +69,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://graph.facebook.com/v18.0/1234567891234567/events?access_token=invalid_account_id_valid_access_token',
+      url: 'https://graph.facebook.com/v17.0/1234567891234567/events?access_token=invalid_account_id_valid_access_token',
       data: getFormData(data[4].input.request.body.body.FORM).toString(),
       params: { destination: 'facebook_pixel' },
       headers: { 'User-Agent': 'RudderLabs' },
@@ -91,7 +91,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://graph.facebook.com/v18.0/1234567891234567/events?access_token=not_found_access_token',
+      url: 'https://graph.facebook.com/v17.0/1234567891234567/events?access_token=not_found_access_token',
       data: getFormData(data[5].input.request.body.body.FORM).toString(),
       params: { destination: 'facebook_pixel' },
       headers: { 'User-Agent': 'RudderLabs' },
@@ -112,7 +112,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://graph.facebook.com/v18.0/1234567891234570/events?access_token=valid_access_token',
+      url: 'https://graph.facebook.com/v17.0/1234567891234570/events?access_token=valid_access_token',
       data: getFormData(data[6].input.request.body.body.FORM).toString(),
       params: { destination: 'facebook_pixel' },
       headers: { 'User-Agent': 'RudderLabs' },
@@ -133,7 +133,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://graph.facebook.com/v18.0/1234567891234571/events?access_token=valid_access_token',
+      url: 'https://graph.facebook.com/v17.0/1234567891234571/events?access_token=valid_access_token',
       data: getFormData(data[7].input.request.body.body.FORM).toString(),
       params: { destination: 'facebook_pixel' },
       headers: { 'User-Agent': 'RudderLabs' },
@@ -154,7 +154,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://graph.facebook.com/v18.0/1234567891234572/events?access_token=valid_access_token_unhandled_response',
+      url: 'https://graph.facebook.com/v17.0/1234567891234572/events?access_token=valid_access_token_unhandled_response',
       data: getFormData(data[8].input.request.body.body.FORM).toString(),
       params: { destination: 'facebook_pixel' },
       headers: { 'User-Agent': 'RudderLabs' },
@@ -175,7 +175,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://graph.facebook.com/v18.0/1234567891234567/events?access_token=my_access_token',
+      url: 'https://graph.facebook.com/v17.0/1234567891234567/events?access_token=my_access_token',
       data: getFormData(data[1].input.request.body.body.FORM).toString(),
       params: { destination: 'facebook_pixel' },
       headers: { 'User-Agent': 'RudderLabs' },

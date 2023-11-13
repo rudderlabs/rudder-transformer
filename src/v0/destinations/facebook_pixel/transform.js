@@ -65,7 +65,7 @@ const responseBuilderSimple = (message, category, destination) => {
   } = Config;
   const integrationsObj = getIntegrationsObj(message, 'fb_pixel');
 
-  const endpoint = `https://graph.facebook.com/v18.0/${pixelId}/events?access_token=${accessToken}`;
+  const endpoint = `https://graph.facebook.com/v17.0/${pixelId}/events?access_token=${accessToken}`;
 
   const userData = fetchUserData(
     message,

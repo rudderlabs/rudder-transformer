@@ -34,7 +34,6 @@ steps:
       $.assertConfig(.destination.Config.apiToken, "API Token is not present. Aborting")
       $.assertConfig(.destination.Config.domain, "Gladly domain is not present. Aborting")
       $.assertConfig(.destination.Config.userName, "User Name is not present. Aborting")
-      $.assert(.message.userId, "userId is required")
 
   - name: preparePayload
     template: |
@@ -47,8 +46,13 @@ steps:
       $.context.payload.emails = $.formatField(.message, "email")
       $.context.payload.phones = $.formatField(.message, "phone")
       $.context.payload.customAttributes = $.getCustomAttributes(.message)
-      $.context.payload.externalCustomerId = $.getDestinationExternalID(.message, "gladlyExternalCustomerId")
+      $.context.payload.externalCustomerId = $.getExternalCustomerId(.message)
+      $.context.payload.id = $.getCustomerId(.message)
       $.context.payload = $.removeUndefinedAndNullValues($.context.payload)
+
+  - name: validatePayload
+    template: |
+      $.validatePayload($.context.payload)
 
   - name: createUser
     description: Prepare create user payload
@@ -56,7 +60,7 @@ steps:
       const requestOptions = {
         headers: $.getHeaders(.destination)
       }
-      const requestPayload = {...$.context.payload, id: .message.userId}
+      const requestPayload = $.context.payload
       const endpoint = $.getEndpoint(.destination)
       const rawResponse = await $.httpPOST(endpoint, requestPayload, requestOptions)
       const processedResponse = $.processAxiosResponse(rawResponse)
@@ -67,8 +71,8 @@ steps:
     description: build response for updateUser
     template: |
       const response = $.defaultRequestConfig()
-      response.body.JSON = $.removeUndefinedAndNullValues($.context.payload)
-      response.endpoint = $.getEndpoint(.destination) + "/" + .message.userId
+      response.body.JSON = $.removeUndefinedAndNullValues($.context.payload.{~["id"]})
+      response.endpoint = $.getEndpoint(.destination) + "/" + $.context.payload.id
       response.method = "PATCH"
       response.headers = $.getHeaders(.destination)
       response.status = $.outputs.createUser.status

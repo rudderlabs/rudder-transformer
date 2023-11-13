@@ -1,4 +1,11 @@
-const { getFieldValueFromMessage, base64Convertor, isNewStatusCodesAccepted } = require('../../../../v0/util');
+const get = require('get-value');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const {
+  base64Convertor,
+  isNewStatusCodesAccepted,
+  getDestinationExternalID,
+} = require('../../../../v0/util');
+const { MappedToDestinationKey } = require('../../../../constants');
 const { HTTP_STATUS_CODES } = require('../../../../v0/util/constant');
 
 const reservedCustomAttributes = [
@@ -11,6 +18,9 @@ const reservedCustomAttributes = [
   'lstName',
   'userId',
 ];
+
+const externalIdKey = 'context.externalId.0.id';
+const identifierTypeKey = 'context.externalId.0.identifierType';
 
 const getHeaders = (destination) => {
   const { apiToken, userName } = destination.Config;
@@ -25,8 +35,8 @@ const getEndpoint = (destination) => {
   return `https://${domain}/api/v1/customer-profiles`;
 };
 
-const formatField = (message, fieldName) => {
-  const field = getFieldValueFromMessage(message, fieldName);
+
+const getFieldValue = (field) => {
   if (field) {
     if (Array.isArray(field)) {
       return field.map((item) => ({ original: item }));
@@ -34,14 +44,41 @@ const formatField = (message, fieldName) => {
     return [{ original: field }];
   }
   return undefined;
+}
+const formatField = (message, fieldName) => {
+  let field;
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  // for rETL
+  if (mappedToDestination) {
+    const identifierType = get(message, identifierTypeKey);
+    if (identifierType && identifierType === fieldName) {
+      field = get(message, externalIdKey);
+      if(field){
+        return [{ original: field }];
+      }
+    }
+    const key = fieldName === 'email' ? 'emails' : 'phones';
+    field = get(message, `traits.${key}`);
+    return getFieldValue(field);
+  }
+
+  // for event stream
+  field = get(message, `context.traits.${fieldName}`);
+  return getFieldValue(field);
 };
 
 const getCustomAttributes = (message) => {
-  if (message.traits?.customAttributes && typeof message.traits?.customAttributes === 'object'){
-    return message.traits?.customAttributes;
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  // for rETL
+  if (mappedToDestination) {
+    if (message?.traits?.customAttributes && typeof message.traits.customAttributes === 'object') {
+      return message.traits.customAttributes;
+    }
+    return undefined;
   }
 
-  const customAttributes = message.context.traits;
+  // for event stream
+  const customAttributes = message.context.traits || {};
   reservedCustomAttributes.forEach((customAttribute) => {
     if (customAttributes[customAttribute]) {
       delete customAttributes[customAttribute];
@@ -50,11 +87,67 @@ const getCustomAttributes = (message) => {
   return customAttributes;
 };
 
+const getExternalCustomerId = (message) => {
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  // for rETL
+  if (mappedToDestination) {
+    const identifierType = get(message, identifierTypeKey);
+    if (identifierType === 'externalCustomerId') {
+      return get(message, externalIdKey);
+    }
+
+    if (message?.traits?.externalCustomerId) {
+      return message.traits.externalCustomerId;
+    }
+
+    return undefined;
+  }
+
+  // for event stream
+  const externalCustomerId = getDestinationExternalID(message, 'GladlyExternalCustomerId');
+  return externalCustomerId;
+};
+
+const getCustomerId = (message) => {
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  // for rETL
+  if (mappedToDestination) {
+    const identifierType = get(message, identifierTypeKey);
+    if (identifierType === 'id') {
+      return get(message, externalIdKey);
+    }
+
+    if (message?.traits?.id){
+      return message.traits.id;
+    }
+
+    return undefined;
+  }
+
+  // for event stream
+  return message.userId;
+};
+
+const validatePayload = (payload) => {
+  if (!(payload.phones || payload.emails || payload.id || payload.externalCustomerId)) {
+    throw new InstrumentationError('One of phone, email, id or externalCustomerId is required for an identify call');
+  }
+};
+
 const getStatusCode = (requestMetadata, statusCode) => {
-  if(isNewStatusCodesAccepted(requestMetadata) && statusCode === 200){
+  if (isNewStatusCodesAccepted(requestMetadata) && statusCode === 200) {
     return HTTP_STATUS_CODES.SUPPRESS_EVENTS;
   }
   return statusCode;
-}
+};
 
-module.exports = { formatField, getCustomAttributes, getEndpoint, getHeaders, getStatusCode };
+module.exports = {
+  getHeaders,
+  getEndpoint,
+  formatField,
+  getStatusCode,
+  getCustomerId,
+  validatePayload,
+  getCustomAttributes,
+  getExternalCustomerId
+};

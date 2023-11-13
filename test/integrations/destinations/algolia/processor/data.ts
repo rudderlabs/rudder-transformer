@@ -66,6 +66,13 @@ export const data = [
               sentAt: '2019-10-14T09:03:22.563Z',
             },
             destination: {
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                  excludeKeys: [],
+                  includeKeys: [],
+                },
+              },
               Config: {
                 apiKey: 'dummyApiKey',
                 applicationId: 'O2YARRI15I',
@@ -76,6 +83,10 @@ export const data = [
                   },
                 ],
               },
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
           },
         ],
@@ -116,6 +127,10 @@ export const data = [
               version: '1',
             },
             statusCode: 200,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -197,7 +212,18 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
             destination: {
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                  excludeKeys: [],
+                  includeKeys: [],
+                },
+              },
               Config: {
                 apiKey: 'dummyApiKey',
                 applicationId: 'O2YARRI15I',
@@ -250,6 +276,10 @@ export const data = [
               version: '1',
             },
             statusCode: 200,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -322,7 +352,18 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
             destination: {
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                  excludeKeys: [],
+                  includeKeys: [],
+                },
+              },
               Config: {
                 apiKey: 'dummyApiKey',
                 applicationId: 'O2YARRI15I',
@@ -338,16 +379,23 @@ export const data = [
         status: 200,
         body: [
           {
-            error: 'Either filters or  objectIds is required.',
+            error:
+              'Either filters or  objectIds is required.: Workflow: procWorkflow, Step: validateDestPayload, ChildStep: undefined, OriginalError: Either filters or  objectIds is required.',
             statTags: {
               destType: 'ALGOLIA',
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
               feature: 'processor',
-              implementation: 'native',
+              implementation: 'cdkV2',
               module: 'destination',
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
             statusCode: 400,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -419,7 +467,18 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
             destination: {
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                  excludeKeys: [],
+                  includeKeys: [],
+                },
+              },
               Config: {
                 apiKey: 'dummyApiKey',
                 applicationId: 'O2YARRI15I',
@@ -435,16 +494,23 @@ export const data = [
         status: 200,
         body: [
           {
-            error: 'eventType is mandatory for track call',
+            error:
+              'eventType is mandatory for track call: Workflow: procWorkflow, Step: preparePayload, ChildStep: undefined, OriginalError: eventType is mandatory for track call',
             statTags: {
               destType: 'ALGOLIA',
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
               feature: 'processor',
-              implementation: 'native',
+              implementation: 'cdkV2',
               module: 'destination',
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
             statusCode: 400,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -526,7 +592,18 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
             destination: {
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                  excludeKeys: [],
+                  includeKeys: [],
+                },
+              },
               Config: {
                 apiKey: 'dummyApiKey',
                 applicationId: 'O2YARRI15I',
@@ -548,16 +625,22 @@ export const data = [
         body: [
           {
             error:
-              'for click eventType either both positions and queryId should be present or none',
+              'for click eventType either both positions and queryId should be present or none: Workflow: procWorkflow, Step: validatePayloadForClickEvent, ChildStep: undefined, OriginalError: for click eventType either both positions and queryId should be present or none',
             statTags: {
               destType: 'ALGOLIA',
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
               feature: 'processor',
-              implementation: 'native',
+              implementation: 'cdkV2',
               module: 'destination',
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
             statusCode: 400,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -639,7 +722,18 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
             destination: {
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                  excludeKeys: [],
+                  includeKeys: [],
+                },
+              },
               Config: {
                 apiKey: 'dummyApiKey',
                 applicationId: 'O2YARRI15I',
@@ -691,6 +785,10 @@ export const data = [
               version: '1',
             },
             statusCode: 200,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -772,7 +870,18 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
             destination: {
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                  excludeKeys: [],
+                  includeKeys: [],
+                },
+              },
               Config: {
                 apiKey: 'dummyApiKey',
                 applicationId: 'O2YARRI15I',
@@ -794,16 +903,22 @@ export const data = [
         body: [
           {
             error:
-              'for click eventType either both positions and queryId should be present or none',
+              'for click eventType either both positions and queryId should be present or none: Workflow: procWorkflow, Step: validatePayloadForClickEvent, ChildStep: undefined, OriginalError: for click eventType either both positions and queryId should be present or none',
             statTags: {
               destType: 'ALGOLIA',
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
               feature: 'processor',
-              implementation: 'native',
+              implementation: 'cdkV2',
               module: 'destination',
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
             statusCode: 400,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -885,7 +1000,18 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
             destination: {
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                  excludeKeys: [],
+                  includeKeys: [],
+                },
+              },
               Config: {
                 apiKey: 'dummyApiKey',
                 applicationId: 'O2YARRI15I',
@@ -906,16 +1032,23 @@ export const data = [
         status: 200,
         body: [
           {
-            error: 'eventType can be either click, view or conversion',
+            error:
+              'eventType can be either click, view or conversion: Workflow: procWorkflow, Step: preparePayload, ChildStep: undefined, OriginalError: eventType can be either click, view or conversion',
             statTags: {
               destType: 'ALGOLIA',
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
               feature: 'processor',
-              implementation: 'native',
+              implementation: 'cdkV2',
               module: 'destination',
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
             statusCode: 400,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -997,7 +1130,18 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
             destination: {
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                  excludeKeys: [],
+                  includeKeys: [],
+                },
+              },
               Config: {
                 apiKey: 'dummyApiKey',
                 applicationId: 'O2YARRI15I',
@@ -1012,16 +1156,23 @@ export const data = [
         status: 200,
         body: [
           {
-            error: 'eventType is mandatory for track call',
+            error:
+              'eventType is mandatory for track call: Workflow: procWorkflow, Step: preparePayload, ChildStep: undefined, OriginalError: eventType is mandatory for track call',
             statTags: {
               destType: 'ALGOLIA',
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
               feature: 'processor',
-              implementation: 'native',
+              implementation: 'cdkV2',
               module: 'destination',
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
             statusCode: 400,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -1092,7 +1243,18 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
             destination: {
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                  excludeKeys: [],
+                  includeKeys: [],
+                },
+              },
               Config: {
                 apiKey: 'dummyApiKey',
                 applicationId: 'O2YARRI15I',
@@ -1113,16 +1275,24 @@ export const data = [
         status: 200,
         body: [
           {
-            error: 'Missing required value from "properties.index"',
+            error:
+              'Missing required value from "properties.index": Workflow: procWorkflow, Step: preparePayload, ChildStep: undefined, OriginalError: Missing required value from "properties.index"',
             statTags: {
               destType: 'ALGOLIA',
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
               feature: 'processor',
-              implementation: 'native',
+              implementation: 'cdkV2',
               module: 'destination',
+
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
             statusCode: 400,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -1193,7 +1363,18 @@ export const data = [
               },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
             destination: {
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                  excludeKeys: [],
+                  includeKeys: [],
+                },
+              },
               Config: {
                 apiKey: 'dummyApiKey',
                 applicationId: 'O2YARRI15I',
@@ -1214,16 +1395,23 @@ export const data = [
         status: 200,
         body: [
           {
-            error: 'event name should be a string',
+            error:
+              'event name should be a string: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: event name should be a string',
             statTags: {
               destType: 'ALGOLIA',
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
               feature: 'processor',
-              implementation: 'native',
+              implementation: 'cdkV2',
               module: 'destination',
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
             statusCode: 400,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },

@@ -638,7 +638,7 @@ const processSingleMessage = (message, destination) => {
               .trim();
           customScreenEv =
               userProvidedScreenEventString.trim() === ''
-                  ? eventType
+                  ? name
                   : userProvidedScreenEventString
                       .trim()
                       .replaceAll(/{{([^{}]+)}}/g, get(message, getMessagePath));

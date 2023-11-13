@@ -4449,7 +4449,7 @@
               "prop1": "5",
               "name": "Screen"
             },
-            "event_type": "Viewed Screen Screen",
+            "event_type": "Screen",
             "time": 1580602989544,
             "user_id": "identified user id",
             "user_properties": {},

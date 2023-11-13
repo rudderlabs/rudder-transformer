@@ -1,6 +1,11 @@
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { isObject } = require('../../util');
-const { ACTION_SOURCES_VALUES, CONFIG_CATEGORIES, OTHER_STANDARD_EVENTS } = require('./config');
+const {
+  ACTION_SOURCES_VALUES,
+  CONFIG_CATEGORIES,
+  OTHER_STANDARD_EVENTS,
+  FB_PIXEL_CUSTOM_DATA_EXCLUDE_FLATTENING,
+} = require('./config');
 const { getContentType, getContentCategory } = require('../../util/facebookUtils');
 
 /**  format revenue according to fb standards with max two decimal places.
@@ -54,7 +59,14 @@ const handleOrder = (message, categoryToContent) => {
   const contentType = getContentType(message, 'product', categoryToContent);
   const contentIds = [];
   const contents = [];
-  const { category, quantity, price, currency, contentName } = message.properties;
+  const {
+    category,
+    quantity,
+    price,
+    currency,
+    contentName,
+    delivery_category: deliveryCategory,
+  } = message.properties;
   if (products) {
     if (products.length > 0 && Array.isArray(products)) {
       products.forEach((singleProduct) => {
@@ -67,6 +79,7 @@ const handleOrder = (message, categoryToContent) => {
             id: pId,
             quantity: singleProduct.quantity || quantity || 1,
             item_price: singleProduct.price || price,
+            delivery_category: singleProduct.delivery_category || deliveryCategory,
           };
           contents.push(content);
         }
@@ -262,6 +275,11 @@ const populateCustomDataBasedOnCategory = (
     case 'page': // executed when page call is done with standard PageView turned on
     case 'otherStandard':
       updatedCustomData = { ...customData };
+      FB_PIXEL_CUSTOM_DATA_EXCLUDE_FLATTENING.forEach((customDataParameter) => {
+        if (message.properties?.[customDataParameter]) {
+          updatedCustomData[customDataParameter] = message.properties[customDataParameter];
+        }
+      });
       break;
     default:
       throw new InstrumentationError(`${category.standard} type of standard event does not exist`);

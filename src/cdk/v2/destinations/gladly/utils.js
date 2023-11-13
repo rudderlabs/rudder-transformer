@@ -45,6 +45,7 @@ const getFieldValue = (field) => {
   }
   return undefined;
 }
+
 const formatField = (message, fieldName) => {
   let field;
   const mappedToDestination = get(message, MappedToDestinationKey);
@@ -53,7 +54,7 @@ const formatField = (message, fieldName) => {
     const identifierType = get(message, identifierTypeKey);
     if (identifierType && identifierType === fieldName) {
       field = get(message, externalIdKey);
-      if(field){
+      if (field) {
         return [{ original: field }];
       }
     }
@@ -104,8 +105,7 @@ const getExternalCustomerId = (message) => {
   }
 
   // for event stream
-  const externalCustomerId = getDestinationExternalID(message, 'GladlyExternalCustomerId');
-  return externalCustomerId;
+  return message.userId;
 };
 
 const getCustomerId = (message) => {
@@ -117,7 +117,7 @@ const getCustomerId = (message) => {
       return get(message, externalIdKey);
     }
 
-    if (message?.traits?.id){
+    if (message?.traits?.id) {
       return message.traits.id;
     }
 
@@ -125,7 +125,12 @@ const getCustomerId = (message) => {
   }
 
   // for event stream
-  return message.userId;
+  const customerId = getDestinationExternalID(message, 'GladlyCustomerId');
+  if (customerId) {
+    return customerId;
+  }
+
+  return undefined;
 };
 
 const validatePayload = (payload) => {
@@ -138,6 +143,7 @@ const getStatusCode = (requestMetadata, statusCode) => {
   if (isNewStatusCodesAccepted(requestMetadata) && statusCode === 200) {
     return HTTP_STATUS_CODES.SUPPRESS_EVENTS;
   }
+  if(statusCode === 409)return 200;
   return statusCode;
 };
 

@@ -44,6 +44,7 @@ export const data = [
                 order_id: '50314b8e9bcf000000000000',
                 requestIP: '123.0.0.0',
                 optOutType: 'LDP',
+                clickId: 'dummy_clickId',
                 products: [
                   {
                     sku: '45790-32',
@@ -132,6 +133,7 @@ export const data = [
                       '6ca13d52ca70c883e0f0bb101e425a89e8624de51db2d2392593af6a84118090',
                     ],
                     client_user_agent: 'chrome',
+                    click_id: 'dummy_clickId',
                     ge: ['1b16b1df538ba12dc3f97edbb85caa7050d46c148134290feba80f8236c83db9'],
                   },
                   custom_data: {
@@ -562,7 +564,8 @@ export const data = [
             metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
             statTags: {
               destType: 'PINTEREST_TAG',
-              errorCategory: 'platform',
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',
@@ -679,7 +682,8 @@ export const data = [
               'It is required at least one of em, hashed_maids or pair of client_ip_address and client_user_agent: Workflow: procWorkflow, Step: validateUserFields, ChildStep: undefined, OriginalError: It is required at least one of em, hashed_maids or pair of client_ip_address and client_user_agent',
             statTags: {
               destType: 'PINTEREST_TAG',
-              errorCategory: 'platform',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',
@@ -958,7 +962,8 @@ export const data = [
             metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
             statTags: {
               destType: 'PINTEREST_TAG',
-              errorCategory: 'platform',
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',
@@ -1077,7 +1082,8 @@ export const data = [
             metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
             statTags: {
               destType: 'PINTEREST_TAG',
-              errorCategory: 'platform',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',
@@ -1197,7 +1203,8 @@ export const data = [
               'Action source must be one of app_android, app_ios, web, offline: Workflow: procWorkflow, Step: validateCommonFields, ChildStep: undefined, OriginalError: Action source must be one of app_android, app_ios, web, offline',
             statTags: {
               destType: 'PINTEREST_TAG',
-              errorCategory: 'platform',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',
@@ -3234,7 +3241,8 @@ export const data = [
             metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
             statTags: {
               destType: 'PINTEREST_TAG',
-              errorCategory: 'platform',
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',
@@ -3321,7 +3329,8 @@ export const data = [
             metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
             statTags: {
               destType: 'PINTEREST_TAG',
-              errorCategory: 'platform',
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',
@@ -3548,7 +3557,8 @@ export const data = [
             metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq' },
             statTags: {
               destType: 'PINTEREST_TAG',
-              errorCategory: 'platform',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',

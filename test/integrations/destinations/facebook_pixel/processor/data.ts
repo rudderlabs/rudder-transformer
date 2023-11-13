@@ -6058,4 +6058,405 @@ export const data = [
       },
     },
   },
+  {
+    name: 'facebook_pixel',
+    description: 'Test 48',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                traits: {
+                  email: 'test@rudderstack.com',
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                locale: 'en-US',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                screen: {
+                  density: 2,
+                },
+              },
+              type: 'track',
+              messageId: 'ec5481b6-a926-4d2e-b293-0b3a77c4d3be',
+              originalTimestamp: '2023-10-14T15:46:51.693229+05:30',
+              anonymousId: '00000000000000000000000000',
+              userId: '12345',
+              event: 'order completed',
+              properties: {
+                category: ['clothing', 'fishing'],
+                order_id: 'rudderstackorder1',
+                total: 99.99,
+                revenue: 12.24,
+                shipping: 13.99,
+                tax: 20.99,
+                currency: 'INR',
+                products: [
+                  {
+                    quantity: 1,
+                    price: 24.75,
+                    name: 'my product',
+                    sku: 'p-298',
+                    delivery_category: 'home_delivery',
+                  },
+                  {
+                    quantity: 3,
+                    price: 24.75,
+                    name: 'other product',
+                    sku: 'p-299',
+                    delivery_category: 'home_delivery',
+                  },
+                ],
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T11:15:53.296Z',
+            },
+            destination: {
+              Config: {
+                blacklistPiiProperties: [
+                  {
+                    blacklistPiiProperties: '',
+                    blacklistPiiHash: true,
+                  },
+                ],
+                categoryToContent: [
+                  {
+                    from: 'clothing',
+                    to: 'product',
+                  },
+                ],
+                accessToken: '09876',
+                pixelId: 'dummyPixelId',
+                eventsToEvents: [
+                  {
+                    from: '',
+                    to: '',
+                  },
+                ],
+                eventCustomProperties: [
+                  {
+                    eventCustomProperties: '',
+                  },
+                ],
+                valueFieldIdentifier: 'properties.price',
+                advancedMapping: false,
+                whitelistPiiProperties: [
+                  {
+                    whitelistPiiProperties: '',
+                  },
+                ],
+              },
+              Enabled: true,
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://graph.facebook.com/v17.0/dummyPixelId/events?access_token=09876',
+              headers: {},
+              params: {},
+              body: {
+                JSON: {},
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {
+                  data: [
+                    '{"user_data":{"external_id":"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5","em":"1c5e54849f5c711ce38fa60716fbbe44bff478f9ca250897b39cdfc2438cd1bd","client_user_agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"},"event_name":"Purchase","event_time":1697278611,"event_id":"ec5481b6-a926-4d2e-b293-0b3a77c4d3be","action_source":"website","custom_data":{"category[0]":"clothing","category[1]":"fishing","order_id":"rudderstackorder1","total":99.99,"revenue":12.24,"shipping":13.99,"tax":20.99,"currency":"INR","products[0].quantity":1,"products[0].price":24.75,"products[0].name":"my product","products[0].sku":"p-298","products[0].delivery_category":"home_delivery","products[1].quantity":3,"products[1].price":24.75,"products[1].name":"other product","products[1].sku":"p-299","products[1].delivery_category":"home_delivery","content_category":"clothing,fishing","content_ids":["p-298","p-299"],"content_type":"product","value":12.24,"contents":[{"id":"p-298","quantity":1,"item_price":24.75,"delivery_category":"home_delivery"},{"id":"p-299","quantity":3,"item_price":24.75,"delivery_category":"home_delivery"}],"num_items":2}}',
+                  ],
+                },
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'facebook_pixel',
+    description: 'Test 49',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              channel: 'mobile',
+              destination_props: {
+                Fb: {
+                  app_id: 'RudderFbApp',
+                },
+              },
+              context: {
+                device: {
+                  id: 'df16bffa-5c3d-4fbb-9bce-3bab098129a7R',
+                  manufacturer: 'Xiaomi',
+                  model: 'Redmi 6',
+                  name: 'xiaomi',
+                },
+                network: {
+                  carrier: 'Banglalink',
+                },
+                os: {
+                  name: 'android',
+                  version: '8.1.0',
+                },
+                screen: {
+                  height: '100',
+                  density: 50,
+                },
+                traits: {
+                  email: '    aBc@gmail.com   ',
+                  address: {
+                    zip: 1234,
+                  },
+                  anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+                },
+              },
+              event: 'spin_result',
+              integrations: {
+                All: true,
+              },
+              message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
+              properties: {
+                revenue: 400,
+                additional_bet_index: 0,
+                content_ids: ['prod1', 'prod2'],
+              },
+              timestamp: '2023-10-14T00:00:00.693229+05:30',
+              type: 'track',
+            },
+            destination: {
+              Config: {
+                limitedDataUsage: true,
+                blacklistPiiProperties: [
+                  {
+                    blacklistPiiProperties: '',
+                    blacklistPiiHash: false,
+                  },
+                ],
+                accessToken: '09876',
+                pixelId: 'dummyPixelId',
+                eventsToEvents: [
+                  {
+                    from: '',
+                    to: '',
+                  },
+                ],
+                eventCustomProperties: [
+                  {
+                    eventCustomProperties: '',
+                  },
+                ],
+                removeExternalId: true,
+                valueFieldIdentifier: '',
+                advancedMapping: false,
+                whitelistPiiProperties: [
+                  {
+                    whitelistPiiProperties: '',
+                  },
+                ],
+              },
+              Enabled: true,
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://graph.facebook.com/v17.0/dummyPixelId/events?access_token=09876',
+              headers: {},
+              params: {},
+              body: {
+                JSON: {},
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {
+                  data: [
+                    '{"user_data":{"em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08","zp":"03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"},"event_name":"spin_result","event_time":1697221800,"action_source":"app","custom_data":{"additional_bet_index":0,"value":400,"content_ids":["prod1","prod2"]}}',
+                  ],
+                },
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'facebook_pixel',
+    description: 'Test 50',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              channel: 'mobile',
+              destination_props: {
+                Fb: {
+                  app_id: 'RudderFbApp',
+                },
+              },
+              context: {
+                device: {
+                  id: 'df16bffa-5c3d-4fbb-9bce-3bab098129a7R',
+                  manufacturer: 'Xiaomi',
+                  model: 'Redmi 6',
+                  name: 'xiaomi',
+                },
+                network: {
+                  carrier: 'Banglalink',
+                },
+                os: {
+                  name: 'android',
+                  version: '8.1.0',
+                },
+                screen: {
+                  height: '100',
+                  density: 50,
+                },
+                traits: {
+                  email: '    aBc@gmail.com   ',
+                  address: {
+                    zip: 1234,
+                  },
+                  anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+                },
+              },
+              event: 'spin_result',
+              integrations: {
+                All: true,
+              },
+              message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
+              properties: {
+                revenue: 400,
+                additional_bet_index: 0,
+                contents: [
+                  {
+                    id: 'prod1',
+                    quantity: 5,
+                    item_price: 55,
+                  },
+                ],
+              },
+              timestamp: '2023-10-14T00:00:00.693229+05:30',
+              type: 'track',
+            },
+            destination: {
+              Config: {
+                limitedDataUsage: true,
+                blacklistPiiProperties: [
+                  {
+                    blacklistPiiProperties: '',
+                    blacklistPiiHash: false,
+                  },
+                ],
+                accessToken: '09876',
+                pixelId: 'dummyPixelId',
+                eventsToEvents: [
+                  {
+                    from: '',
+                    to: '',
+                  },
+                ],
+                eventCustomProperties: [
+                  {
+                    eventCustomProperties: '',
+                  },
+                ],
+                removeExternalId: true,
+                valueFieldIdentifier: '',
+                advancedMapping: false,
+                whitelistPiiProperties: [
+                  {
+                    whitelistPiiProperties: '',
+                  },
+                ],
+              },
+              Enabled: true,
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://graph.facebook.com/v17.0/dummyPixelId/events?access_token=09876',
+              headers: {},
+              params: {},
+              body: {
+                JSON: {},
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {
+                  data: [
+                    '{"user_data":{"em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08","zp":"03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"},"event_name":"spin_result","event_time":1697221800,"action_source":"app","custom_data":{"additional_bet_index":0,"value":400,"contents":[{"id":"prod1","quantity":5,"item_price":55}]}}',
+                  ],
+                },
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ].map((d) => ({ ...d, mockFns }));

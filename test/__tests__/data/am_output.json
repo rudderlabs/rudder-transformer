@@ -4311,5 +4311,161 @@
     },
     "files": {},
     "userId": "00000000000000000000000000"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api2.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "device_id": "anon-id-new",
+            "library": "rudderstack",
+            "event_properties": {
+              "prop1": "5",
+              "name": "Screen View"
+            },
+            "event_type": "My Screen View event.",
+            "time": 1580602989544,
+            "user_id": "identified user id",
+            "user_properties": {},
+            "session_id": -1,
+            "ip": "14.5.67.21"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "anon-id-new"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api2.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "device_id": "anon-id-new",
+            "library": "rudderstack",
+            "event_properties": {
+              "prop1": "5",
+              "name": "Screen View"
+            },
+            "event_type": "Viewed Screen View Screen",
+            "time": 1580602989544,
+            "user_id": "identified user id",
+            "user_properties": {},
+            "session_id": -1,
+            "ip": "14.5.67.21"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "anon-id-new"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api2.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "device_id": "anon-id-new",
+            "library": "rudderstack",
+            "event_properties": {
+              "prop1": "5",
+              "name": "Screen same as event"
+            },
+            "event_type": "Screen same as event",
+            "time": 1580602989544,
+            "user_id": "identified user id",
+            "user_properties": {},
+            "session_id": -1,
+            "ip": "14.5.67.21"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "anon-id-new"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api2.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "device_id": "anon-id-new",
+            "library": "rudderstack",
+            "event_properties": {
+              "prop1": "5",
+              "name": "Screen"
+            },
+            "event_type": "Screen",
+            "time": 1580602989544,
+            "user_id": "identified user id",
+            "user_properties": {},
+            "session_id": -1,
+            "ip": "14.5.67.21"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "anon-id-new"
   }
 ]

@@ -4842,5 +4842,105 @@
         "userProvidedPageEventString": "Viewed {{context.page.title}} event."
       }
     }
+  },
+  {
+    "message": {
+      "type": "screen",
+      "userId": "identified user id",
+      "anonymousId": "anon-id-new",
+      "event": "Screen View",
+      "properties": {
+        "prop1": "5"
+      },
+      "context": {
+        "ip": "14.5.67.21",
+        "library": {
+          "name": "http"
+        }
+      },
+      "timestamp": "2020-02-02T00:23:09.544Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "useUserDefinedScreenEventName": true,
+        "userProvidedScreenEventString": "My {{ event }} event."
+      }
+    }
+  },
+  {
+    "message": {
+      "type": "screen",
+      "userId": "identified user id",
+      "anonymousId": "anon-id-new",
+      "event": "Screen View",
+      "properties": {
+        "prop1": "5"
+      },
+      "context": {
+        "ip": "14.5.67.21",
+        "library": {
+          "name": "http"
+        }
+      },
+      "timestamp": "2020-02-02T00:23:09.544Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "useUserDefinedScreenEventName": false,
+        "userProvidedScreenEventString": "My {{ event }} event."
+      }
+    }
+  },
+  {
+    "message": {
+      "type": "screen",
+      "userId": "identified user id",
+      "anonymousId": "anon-id-new",
+      "event": "Screen same as event",
+      "properties": {
+        "prop1": "5"
+      },
+      "context": {
+        "ip": "14.5.67.21",
+        "library": {
+          "name": "http"
+        }
+      },
+      "timestamp": "2020-02-02T00:23:09.544Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "useUserDefinedScreenEventName": true,
+        "userProvidedScreenEventString": "{{ event }}"
+      }
+    }
+  },
+  {
+    "message": {
+      "type": "screen",
+      "userId": "identified user id",
+      "anonymousId": "anon-id-new",
+      "name": "Screen",
+      "properties": {
+        "prop1": "5"
+      },
+      "context": {
+        "ip": "14.5.67.21",
+        "library": {
+          "name": "http"
+        }
+      },
+      "timestamp": "2020-02-02T00:23:09.544Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "useUserDefinedScreenEventName": true,
+        "userProvidedScreenEventString": ""
+      }
+    }
   }
 ]

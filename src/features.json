@@ -25,6 +25,7 @@
     "PINTEREST_TAG": true,
     "PROFITWELL": true,
     "SALESFORCE": true,
+    "SALESFORCE_OAUTH": true,
     "SFMC": true,
     "SNAPCHAT_CONVERSION": true,
     "TIKTOK_ADS": true,

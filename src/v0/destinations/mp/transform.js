@@ -41,6 +41,7 @@ const { CommonUtils } = require('../../../util/common');
 
 // ref: https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel
 const mPEventPropertiesConfigJson = mappingConfig[ConfigCategory.EVENT_PROPERTIES.name];
+const mPIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 
 const setImportCredentials = (destConfig) => {
   const endpoint =
@@ -234,9 +235,10 @@ const processTrack = (message, destination) => {
   return returnValue;
 };
 
-function trimTraits(traits, setOnceProperties) {
+function trimTraits(traits, contextTraits, setOnceProperties) {
   // Create a copy of the original traits object
   const traitsCopy = { ...traits };
+  const contextTraitsCopy = { ...contextTraits };
 
   // Initialize setOnce object
   const setOnce = {};
@@ -247,11 +249,20 @@ function trimTraits(traits, setOnceProperties) {
       setOnce[property] = traitsCopy[property];
       delete traitsCopy[property];
     }
+    if (contextTraitsCopy.hasOwnProperty(property)) {
+      if(!setOnce.hasOwnProperty(property)) {
+        setOnce[property] = contextTraitsCopy[property];
+      }
+      delete contextTraitsCopy[property];
+    }
   });
+
+  const sentOnceTransform = constructPayload(setOnce, mPIdentifyConfigJson);
 
   return {
     traits: traitsCopy,
-    setOnce,
+    contextTraits: contextTraitsCopy,
+    sentOnceTransform,
   };
 }
 
@@ -268,18 +279,21 @@ const processIdentifyEvents = async (message, type, destination) => {
   const messageClone = { ...message };
   let seggregatedTraits = {};
   const returnValue = [];
+  let setOnceProperties = [];
 
   // making payload for set_once properties
   if (
     destination.Config.setOnceProperties &&
     Object.keys(destination.Config.setOnceProperties).length > 0
   ) {
-    const setOnceProperties = parseConfigArray(destination.Config.setOnceProperties, 'property');
+    setOnceProperties = parseConfigArray(destination.Config.setOnceProperties, 'property');
     seggregatedTraits = trimTraits(
-      getFieldValueFromMessage(messageClone, 'traits'),
+      messageClone.traits,
+      messageClone.context.traits,
       setOnceProperties,
     );
     messageClone.traits = seggregatedTraits.traits;
+    messageClone.context.traits = seggregatedTraits.contextTraits;
     returnValue.push(
       createSetOnceResponse(messageClone, type, destination, seggregatedTraits.setOnce),
     );
@@ -287,7 +301,7 @@ const processIdentifyEvents = async (message, type, destination) => {
 
   // Creating the user profile
   // https://developer.mixpanel.com/reference/profile-set
-  returnValue.push(createIdentifyResponse(messageClone, type, destination, responseBuilderSimple));
+  returnValue.push(createIdentifyResponse(messageClone, type, destination, responseBuilderSimple, setOnceProperties));
 
   if (
     destination.Config?.identityMergeApi !== 'simplified' &&
@@ -496,7 +510,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
                 destination: event.destination,
               };
             }
-
+            // console.log('event', JSON.stringify(event));
             let processedEvents = await process(event);
             processedEvents = CommonUtils.toArray(processedEvents);
             return processedEvents.map((res) => ({

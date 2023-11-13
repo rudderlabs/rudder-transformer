@@ -20,4 +20,42 @@ const sampleDestination = {
   Transformations: [],
 };
 
-export { sampleDestination, defaultMockFns };
+const destinationWithSetOnceProperty = {
+  ID: '2Xz4szkZeBMJRgO5TfvLclsxkxz',
+  Name: 'Mixpanel Dev',
+  DestinationDefinition: {
+    ID: '2WcAA63MqbQVSIrgPR0mXuxF4ut',
+    Name: 'MP',
+    DisplayName: 'Mixpanel',
+    ResponseRules: {}
+  },
+  Config: {
+    apiSecret: 'dummySecret',
+    dataResidency: 'us',
+    eventDelivery: false,
+    eventDeliveryTS: 1699848284554,
+    identityMergeApi: 'simplified',
+    setOnceProperties: [
+      {
+        property: 'nationality'
+      }
+    ],
+    superProperties: [
+      {
+        property: 'random'
+      }
+    ],
+    token: 'dummyToken',
+    useNativeSDK: false,
+    useNewMapping: false,
+    userDeletionApi: 'engage',
+    whitelistedEvents: []
+  },
+  Enabled: true,
+  WorkspaceID: 123345,
+  Transformations: [],
+  IsProcessorEnabled: true,
+  RevisionID: 12345
+}
+
+export { sampleDestination, defaultMockFns, destinationWithSetOnceProperty };

@@ -13,7 +13,17 @@
   },
   {
     "destKey": "$first_name",
-    "sourceKeys": "firstName",
+    "sourceKeys": [
+      "firstName",
+      "firstname",
+      "first_name",
+      "traits.firstName",
+      "traits.firstname",
+      "traits.first_name",
+      "context.traits.firstName",
+      "context.traits.firstname",
+      "context.traits.first_name"
+    ],
     "required": false,
     "sourceFromGenericMap": true
   },

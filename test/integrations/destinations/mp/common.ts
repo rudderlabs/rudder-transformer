@@ -21,47 +21,41 @@ const sampleDestination = {
 };
 
 const destinationWithSetOnceProperty = {
-  ID: '2Xz4szkZeBMJRgO5TfvLclsxkxz',
-  Name: 'Mixpanel Dev',
-  DestinationDefinition: {
-    ID: '2WcAA63MqbQVSIrgPR0mXuxF4ut',
-    Name: 'MP',
-    DisplayName: 'Mixpanel',
-    ResponseRules: {}
-  },
   Config: {
     apiSecret: 'dummySecret',
     dataResidency: 'us',
-    eventDelivery: false,
-    eventDeliveryTS: 1699848284554,
     identityMergeApi: 'simplified',
     setOnceProperties: [
       {
-        property: 'nationality'
+        property: 'nationality',
       },
       {
-        property: 'firstName'
+        property: 'firstName',
       },
       {
-        property: 'address.city'
-      }
+        property: 'address.city',
+      },
     ],
     superProperties: [
       {
-        property: 'random'
-      }
+        property: 'random',
+      },
     ],
     token: 'dummyToken',
     useNativeSDK: false,
     useNewMapping: false,
     userDeletionApi: 'engage',
-    whitelistedEvents: []
+    whitelistedEvents: [],
+  },
+  DestinationDefinition: {
+    DisplayName: 'Kiss Metrics',
+    ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
+    Name: 'MIXPANEL',
   },
   Enabled: true,
-  WorkspaceID: 123345,
+  ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
+  Name: 'Kiss Metrics',
   Transformations: [],
-  IsProcessorEnabled: true,
-  RevisionID: 12345
-}
+};
 
 export { sampleDestination, defaultMockFns, destinationWithSetOnceProperty };

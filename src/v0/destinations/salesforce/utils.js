@@ -41,7 +41,7 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey, authori
       throw new RetryableError(
         `${DESTINATION} Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${sourceMessage}`,
         500,
-        response,
+        destResponse,
         authorizationFlow === LEGACY ? '' : getAuthErrCategoryFromStCode(status),
       );
     } else if (status === 403 && matchErrorCode('REQUEST_LIMIT_EXCEEDED')) {

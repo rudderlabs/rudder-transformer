@@ -11,7 +11,6 @@ const {
   identifyContactMappingJson,
   ignoredLeadTraits,
   ignoredContactTraits,
-  OAUTH,
 } = require('./config');
 const {
   removeUndefinedValues,
@@ -112,15 +111,11 @@ async function getSaleforceIdForRecord(
   authorizationFlow,
 ) {
   const objSearchUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${identifierValue}&sobject=${objectType}&in=${identifierType}&${objectType}.fields=id,${identifierType}`;
-  const finalHeader =
-    authorizationFlow === OAUTH
-      ? { Authorization: `Bearer ${authorizationData.token}` }
-      : { Authorization: authorizationData.token };
   const { processedResponse: processedsfSearchResponse } = await handleHttpRequest(
     'get',
     objSearchUrl,
     {
-      headers: finalHeader,
+      headers: getAuthHeader({ authorizationFlow, authorizationData }),
     },
     {
       destType: 'salesforce',
@@ -227,17 +222,13 @@ async function getSalesforceIdFromPayload(
       throw new InstrumentationError('Invalid Email address for Lead Objet');
     }
     const leadQueryUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${email}&sobject=Lead&Lead.fields=id,IsConverted,ConvertedContactId,IsDeleted`;
-    const finalHeader =
-      authorizationFlow === OAUTH
-        ? { Authorization: `Bearer ${authorizationData.token}` }
-        : { Authorization: authorizationData.token };
 
     // request configuration will be conditional
     const { processedResponse: processedLeadQueryResponse } = await handleHttpRequest(
       'get',
       leadQueryUrl,
       {
-        headers: finalHeader,
+        headers: getAuthHeader({ authorizationFlow, authorizationData }),
       },
       {
         destType: 'salesforce',

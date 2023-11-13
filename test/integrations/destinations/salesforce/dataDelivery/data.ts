@@ -122,12 +122,20 @@ export const data = [
             authErrorCategory: 'REFRESH_TOKEN',
             message:
               'Salesforce Request Failed - due to "INVALID_SESSION_ID", (Retryable) during Salesforce Response Handling',
-            destinationResponse: [
-              {
-                message: 'Session expired or invalid',
-                errorCode: 'INVALID_SESSION_ID',
+            destinationResponse: {
+              response: [
+                {
+                  message: 'Session expired or invalid',
+                  errorCode: 'INVALID_SESSION_ID',
+                },
+              ],
+              rudderJobMetadata: {
+                destInfo: {
+                  authKey: '2HezPl1w11opbFSxnLDEgZ7kWTf',
+                },
               },
-            ],
+              status: 401,
+            },
             statTags: {
               destType: 'SALESFORCE',
               errorCategory: 'network',

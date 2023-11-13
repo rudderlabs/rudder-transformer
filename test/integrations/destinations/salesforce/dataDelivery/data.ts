@@ -119,6 +119,7 @@ export const data = [
         body: {
           output: {
             status: 500,
+            authErrorCategory: 'REFRESH_TOKEN',
             message:
               'Salesforce Request Failed - due to "INVALID_SESSION_ID", (Retryable) during Salesforce Response Handling',
             destinationResponse: {
@@ -128,12 +129,12 @@ export const data = [
                   errorCode: 'INVALID_SESSION_ID',
                 },
               ],
-              status: 401,
               rudderJobMetadata: {
                 destInfo: {
                   authKey: '2HezPl1w11opbFSxnLDEgZ7kWTf',
                 },
               },
+              status: 401,
             },
             statTags: {
               destType: 'SALESFORCE',

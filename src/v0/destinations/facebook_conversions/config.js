@@ -1,7 +1,7 @@
 const { getMappingConfig } = require('../../util');
 
 const ENDPOINT = (datasetId, accessToken) =>
-  `https://graph.facebook.com/v17.0/${datasetId}/events?access_token=${accessToken}`;
+  `https://graph.facebook.com/v18.0/${datasetId}/events?access_token=${accessToken}`;
 
 const CONFIG_CATEGORIES = {
   USERDATA: {

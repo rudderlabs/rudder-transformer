@@ -65,13 +65,9 @@ export function getCachedWorkflowEngine(
 }
 
 export async function executeWorkflow(workflowEngine: WorkflowEngine, parsedEvent: FixMe) {
-  try {
-    const result = await workflowEngine.execute(parsedEvent);
-    // TODO: Handle remaining output scenarios
-    return result.output;
-  } catch (error) {
-    throw getErrorInfo(error, isCdkV2Destination(parsedEvent), defTags);
-  }
+  const result = await workflowEngine.execute(parsedEvent);
+  // TODO: Handle remaining output scenarios
+  return result.output;
 }
 
 export async function processCdkV2Workflow(

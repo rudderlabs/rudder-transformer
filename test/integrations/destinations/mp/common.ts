@@ -38,6 +38,12 @@ const destinationWithSetOnceProperty = {
     setOnceProperties: [
       {
         property: 'nationality'
+      },
+      {
+        property: 'firstName'
+      },
+      {
+        property: 'address.city'
       }
     ],
     superProperties: [

@@ -1,15 +1,13 @@
 [
   {
     "destKey": "$created",
-    "sourceKeys": "createdAtOnly",
-    "required": false,
-    "sourceFromGenericMap": true
+    "sourceKeys": ["createdAt","traits.createdAt", "context.traits.createdAt"],
+    "required": false
   },
   {
     "destKey": "$email",
-    "sourceKeys": "email",
-    "required": false,
-    "sourceFromGenericMap": true
+    "sourceKeys": ["email","traits.email", "context.traits.email", "properties.email", "context.externalId.0.id"],
+    "required": false
   },
   {
     "destKey": "$first_name",
@@ -24,24 +22,33 @@
       "context.traits.firstname",
       "context.traits.first_name"
     ],
-    "required": false,
-    "sourceFromGenericMap": true
+    "required": false
   },
   {
     "destKey": "$last_name",
-    "sourceKeys": "lastName",
-    "required": false,
-    "sourceFromGenericMap": true
+    "sourceKeys": [
+      "lastName",
+      "lastname",
+      "last_name",
+      "traits.lastName",
+      "traits.lastname",
+      "traits.last_name",
+      "context.traits.lastName",
+      "context.traits.lastname",
+      "context.traits.last_name"
+    ],
+    "required": false
   },
   {
     "destKey": "$name",
-    "sourceKeys": "name",
-    "required": false,
-    "sourceFromGenericMap": true
+    "sourceKeys": ["name","traits.name", "context.traits.name"],
+    "required": false
   },
   {
     "destKey": "$username",
     "sourceKeys": [
+      "username",
+      "userName",
       "traits.username",
       "context.traits.username",
       "traits.userName",
@@ -51,18 +58,19 @@
   },
   {
     "destKey": "$phone",
-    "sourceKeys": "phone",
-    "required": false,
-    "sourceFromGenericMap": true
+    "sourceKeys": ["phone","traits.phone", "context.traits.phone"],
+    "required": false
   },
   {
     "destKey": "$avatar",
-    "sourceKeys": ["traits.avatar", "context.traits.avatar"],
+    "sourceKeys": ["avatar","traits.avatar", "context.traits.avatar"],
     "required": false
   },
   {
     "destKey": "$country_code",
     "sourceKeys": [
+      "country",
+      "address.country",
       "traits.address.country",
       "context.traits.address.country",
       "traits.country",
@@ -74,6 +82,8 @@
   {
     "destKey": "$city",
     "sourceKeys": [
+      "city",
+      "address.city",
       "traits.city",
       "context.traits.city",
       "traits.address.city",
@@ -85,6 +95,9 @@
   {
     "destKey": "$region",
     "sourceKeys": [
+      "state",
+      "address.state",
+      "location.region",
       "traits.state",
       "context.traits.state",
       "traits.address.state",
@@ -95,7 +108,7 @@
   },
   {
     "destKey": "$geo_source",
-    "sourceKeys": "context.location.geoSource",
+    "sourceKeys": ["location.geoSource","context.location.geoSource"],
     "required": false
   },
   {
@@ -145,7 +158,7 @@
   },
   {
     "destKey": "$unsubscribed",
-    "sourceKeys": ["traits.unsubscribed", "context.traits.unsubscribed", "properties.unsubscribed"],
+    "sourceKeys": ["unsubscribed","traits.unsubscribed", "context.traits.unsubscribed", "properties.unsubscribed"],
     "required": false
   },
   {

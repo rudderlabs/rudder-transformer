@@ -17,6 +17,7 @@ const {
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
   groupEventsByType,
+  extractCustomFields,
 } = require('../../util');
 const {
   ConfigCategory,
@@ -27,6 +28,7 @@ const {
   TRACK_MAX_BATCH_SIZE,
   ENGAGE_MAX_BATCH_SIZE,
   GROUPS_MAX_BATCH_SIZE,
+  MP_IDENTIFY_EXCLUSION_LIST,
 } = require('./config');
 const {
   createIdentifyResponse,
@@ -241,28 +243,37 @@ function trimTraits(traits, contextTraits, setOnceProperties) {
   const contextTraitsCopy = { ...contextTraits };
 
   // Initialize setOnce object
-  const setOnce = {};
+  const setOnceEligible = {};
 
-  // Iterate over setOnceProperties and move corresponding properties to setOnce
-  setOnceProperties.forEach((property) => {
-    if (traitsCopy.hasOwnProperty(property)) {
-      setOnce[property] = traitsCopy[property];
-      delete traitsCopy[property];
+  // Step 1: find the k-v pairs of setOnceProperties in traits and contextTraits
+
+  setOnceProperties.forEach((propertyPath) => {
+    const pathSegments = propertyPath.split('.');
+    const propName = pathSegments[pathSegments.length - 1];
+
+    if (Object.keys(traitsCopy).length > 0 && get(traitsCopy, propertyPath)) {
+      setOnceEligible[propName] = get(traitsCopy, propertyPath);
+      lodash.unset(traitsCopy, propertyPath);
     }
-    if (contextTraitsCopy.hasOwnProperty(property)) {
-      if(!setOnce.hasOwnProperty(property)) {
-        setOnce[property] = contextTraitsCopy[property];
+    if (Object.keys(contextTraits).length > 0 && get(contextTraitsCopy, propertyPath)) {
+      if(!setOnceEligible.hasOwnProperty(propName)) {
+        setOnceEligible[propName] = get(contextTraitsCopy, propertyPath);
       }
-      delete contextTraitsCopy[property];
+      lodash.unset(contextTraitsCopy, propertyPath);
     }
   });
+  // Step 2: transform properties eligible as per rudderstack declared identify event mapping
+  // setOnce should have all traits from message.traits and message.context.traits by now
+  let sentOnceTransform = constructPayload(setOnceEligible, mPIdentifyConfigJson);
 
-  const sentOnceTransform = constructPayload(setOnce, mPIdentifyConfigJson);
+  // Step 3: combine the transformed and custom setOnce traits
+
+  sentOnceTransform = extractCustomFields(setOnceEligible, sentOnceTransform, 'root', MP_IDENTIFY_EXCLUSION_LIST);
 
   return {
     traits: traitsCopy,
     contextTraits: contextTraitsCopy,
-    sentOnceTransform,
+    setOnce: sentOnceTransform,
   };
 }
 

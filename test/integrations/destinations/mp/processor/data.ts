@@ -5992,7 +5992,7 @@ export const data = [
       request: {
         body: [
           {
-            description: 'Alias: with property beyond exclusion list',
+            description: 'Alias: with property beyond and within exclusion list',
             destination: destinationWithSetOnceProperty,
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
@@ -6018,7 +6018,9 @@ export const data = [
                   density: 2
                 },
                 traits: {
-                  city: 'Disney',
+                  address: {
+                    city: 'Disney',
+                  },
                   country: 'USA',
                   email: 'TestSanity@disney.com',
                   firstName: 'Mickey test',
@@ -6072,7 +6074,7 @@ export const data = [
                 FORM: {},
                 JSON: {},
                 JSON_ARRAY: {
-                  batch: "[{\"$set_once\":{\"nationality\":\"USA\"},\"$token\":\"dummyToken\",\"$distinct_id\":\"Santiy\"}]",
+                  batch: "[{\"$set_once\":{\"$first_name\":\"Mickey test\",\"$city\":\"Disney\",\"nationality\":\"USA\"},\"$token\":\"dummyToken\",\"$distinct_id\":\"Santiy\"}]",
                 },
                 XML: {},
               },
@@ -6093,7 +6095,7 @@ export const data = [
                 FORM: {},
                 JSON: {},
                 JSON_ARRAY: {
-                  batch: "[{\"$set\":{\"$created\":\"2020-01-23T08:54:02.362Z\",\"$email\":\"TestSanity@disney.com\",\"$country_code\":\"USA\",\"$city\":\"Disney\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"$name\":\"Mickey test VarChange\",\"random\":\"superProp\",\"$firstName\":\"Mickey test\",\"$lastName\":\"VarChange\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"dummyToken\",\"$distinct_id\":\"Santiy\",\"$ip\":\"0.0.0.0\",\"$time\":null}]",
+                  "batch": "[{\"$set\":{\"$created\":\"2020-01-23T08:54:02.362Z\",\"$email\":\"TestSanity@disney.com\",\"$country_code\":\"USA\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"random\":\"superProp\",\"$lastName\":\"VarChange\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"dummyToken\",\"$distinct_id\":\"Santiy\",\"$ip\":\"0.0.0.0\",\"$time\":null}]"
                 },
                 XML: {},
               },

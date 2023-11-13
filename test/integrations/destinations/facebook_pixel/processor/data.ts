@@ -6203,4 +6203,260 @@ export const data = [
       },
     },
   },
+  {
+    name: 'facebook_pixel',
+    description: 'Test 49',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              channel: 'mobile',
+              destination_props: {
+                Fb: {
+                  app_id: 'RudderFbApp',
+                },
+              },
+              context: {
+                device: {
+                  id: 'df16bffa-5c3d-4fbb-9bce-3bab098129a7R',
+                  manufacturer: 'Xiaomi',
+                  model: 'Redmi 6',
+                  name: 'xiaomi',
+                },
+                network: {
+                  carrier: 'Banglalink',
+                },
+                os: {
+                  name: 'android',
+                  version: '8.1.0',
+                },
+                screen: {
+                  height: '100',
+                  density: 50,
+                },
+                traits: {
+                  email: '    aBc@gmail.com   ',
+                  address: {
+                    zip: 1234,
+                  },
+                  anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+                },
+              },
+              event: 'spin_result',
+              integrations: {
+                All: true,
+              },
+              message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
+              properties: {
+                revenue: 400,
+                additional_bet_index: 0,
+                content_ids: ['prod1', 'prod2'],
+              },
+              timestamp: '2023-10-14T00:00:00.693229+05:30',
+              type: 'track',
+            },
+            destination: {
+              Config: {
+                limitedDataUsage: true,
+                blacklistPiiProperties: [
+                  {
+                    blacklistPiiProperties: '',
+                    blacklistPiiHash: false,
+                  },
+                ],
+                accessToken: '09876',
+                pixelId: 'dummyPixelId',
+                eventsToEvents: [
+                  {
+                    from: '',
+                    to: '',
+                  },
+                ],
+                eventCustomProperties: [
+                  {
+                    eventCustomProperties: '',
+                  },
+                ],
+                removeExternalId: true,
+                valueFieldIdentifier: '',
+                advancedMapping: false,
+                whitelistPiiProperties: [
+                  {
+                    whitelistPiiProperties: '',
+                  },
+                ],
+              },
+              Enabled: true,
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://graph.facebook.com/v17.0/dummyPixelId/events?access_token=09876',
+              headers: {},
+              params: {},
+              body: {
+                JSON: {},
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {
+                  data: [
+                    '{"user_data":{"em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08","zp":"03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"},"event_name":"spin_result","event_time":1697221800,"action_source":"app","custom_data":{"additional_bet_index":0,"value":400,"content_ids":["prod1","prod2"]}}',
+                  ],
+                },
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'facebook_pixel',
+    description: 'Test 50',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              channel: 'mobile',
+              destination_props: {
+                Fb: {
+                  app_id: 'RudderFbApp',
+                },
+              },
+              context: {
+                device: {
+                  id: 'df16bffa-5c3d-4fbb-9bce-3bab098129a7R',
+                  manufacturer: 'Xiaomi',
+                  model: 'Redmi 6',
+                  name: 'xiaomi',
+                },
+                network: {
+                  carrier: 'Banglalink',
+                },
+                os: {
+                  name: 'android',
+                  version: '8.1.0',
+                },
+                screen: {
+                  height: '100',
+                  density: 50,
+                },
+                traits: {
+                  email: '    aBc@gmail.com   ',
+                  address: {
+                    zip: 1234,
+                  },
+                  anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+                },
+              },
+              event: 'spin_result',
+              integrations: {
+                All: true,
+              },
+              message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
+              properties: {
+                revenue: 400,
+                additional_bet_index: 0,
+                contents: [
+                  {
+                    id: 'prod1',
+                    quantity: 5,
+                    item_price: 55,
+                  },
+                ],
+              },
+              timestamp: '2023-10-14T00:00:00.693229+05:30',
+              type: 'track',
+            },
+            destination: {
+              Config: {
+                limitedDataUsage: true,
+                blacklistPiiProperties: [
+                  {
+                    blacklistPiiProperties: '',
+                    blacklistPiiHash: false,
+                  },
+                ],
+                accessToken: '09876',
+                pixelId: 'dummyPixelId',
+                eventsToEvents: [
+                  {
+                    from: '',
+                    to: '',
+                  },
+                ],
+                eventCustomProperties: [
+                  {
+                    eventCustomProperties: '',
+                  },
+                ],
+                removeExternalId: true,
+                valueFieldIdentifier: '',
+                advancedMapping: false,
+                whitelistPiiProperties: [
+                  {
+                    whitelistPiiProperties: '',
+                  },
+                ],
+              },
+              Enabled: true,
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://graph.facebook.com/v17.0/dummyPixelId/events?access_token=09876',
+              headers: {},
+              params: {},
+              body: {
+                JSON: {},
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {
+                  data: [
+                    '{"user_data":{"em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08","zp":"03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"},"event_name":"spin_result","event_time":1697221800,"action_source":"app","custom_data":{"additional_bet_index":0,"value":400,"contents":[{"id":"prod1","quantity":5,"item_price":55}]}}',
+                  ],
+                },
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ].map((d) => ({ ...d, mockFns }));

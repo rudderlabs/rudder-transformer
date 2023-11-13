@@ -1,11 +1,11 @@
 const { NetworkError, AbortedError } = require('@rudderstack/integrations-lib');
-const myAxios = require('../../../util/myAxios');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const logger = require('../../../logger');
-const { constructPayload, isDefinedAndNotNull } = require('../../util');
+const { constructPayload, isDefinedAndNotNull, isHttpStatusSuccess } = require('../../util');
 const { ENDPOINT, productMapping } = require('./config');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { handleHttpRequest } = require('../../../adapters/network');
 
 const isValidEmail = (email) => {
   const re =
@@ -21,9 +21,9 @@ const isValidTimestamp = (timestamp) => {
 
 const userExists = async (Config, id) => {
   const basicAuth = Buffer.from(Config.apiKey).toString('base64');
-  let response;
   try {
-    response = await myAxios.get(
+    const { processedResponse: processedResponseDrip } = await handleHttpRequest(
+      'get',
       `${ENDPOINT}/v2/${Config.accountId}/subscribers/${id}`,
       {
         headers: {
@@ -33,17 +33,20 @@ const userExists = async (Config, id) => {
       },
       { destType: 'drip', feature: 'transformation' },
     );
-    if (response && response.status) {
-      return response.status === 200;
+
+    if (!isHttpStatusSuccess(processedResponseDrip.status)) {
+      throw new NetworkError(
+        'Invalid response.',
+        processedResponseDrip.status,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedResponseDrip.status),
+        },
+        processedResponseDrip.response,
+      );
     }
-    throw new NetworkError(
-      'Invalid response.',
-      response?.status,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(response?.status),
-      },
-      response,
-    );
+    if (processedResponseDrip?.status) {
+      return processedResponseDrip.status === 200;
+    }
   } catch (error) {
     let errMsg = '';
     let errStatus = 400;
@@ -57,11 +60,12 @@ const userExists = async (Config, id) => {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errStatus),
     });
   }
+  return false;
 };
 
 const createUpdateUser = async (finalpayload, Config, basicAuth) => {
-  try {
-    const response = await myAxios.post(
+    const { processedResponse: processedResponseDrip } = await handleHttpRequest(
+      'post',
       `${ENDPOINT}/v2/${Config.accountId}/subscribers`,
       finalpayload,
       {
@@ -72,17 +76,16 @@ const createUpdateUser = async (finalpayload, Config, basicAuth) => {
       },
       { destType: 'drip', feature: 'transformation' },
     );
-    if (response) {
-      return response.status === 200 || response.status === 201;
+
+    if (processedResponseDrip) {
+      return processedResponseDrip.status === 200 || processedResponseDrip.status === 201;
     }
-    throw new AbortedError('Invalid response.');
-  } catch (error) {
+
     let errMsg = '';
-    if (error.response && error.response.data) {
-      errMsg = JSON.stringify(error.response.data);
+    if (processedResponseDrip.response) {
+      errMsg = JSON.stringify(processedResponseDrip.response);
     }
     throw new AbortedError(`Error occurred while creating or updating user : ${errMsg}`);
-  }
 };
 
 const createList = (productList) => {

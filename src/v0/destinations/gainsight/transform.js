@@ -103,7 +103,7 @@ const groupResponseBuilder = async (message, { Config }) => {
   payload = removeUndefinedAndNullValues(payload);
 
   let groupGsid;
-  if (resp.data.data.records.length === 0) {
+  if (resp?.data?.records?.length === 0) {
     groupGsid = await createGroup(payload, Config);
   } else {
     groupGsid = await updateGroup(payload, Config);

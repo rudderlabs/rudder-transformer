@@ -1,9 +1,9 @@
 const { NetworkError } = require('@rudderstack/integrations-lib');
-const myAxios = require('../../../util/myAxios');
 const { ENDPOINTS } = require('./config');
 const tags = require('../../util/tags');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { handleHttpRequest } = require('../../../adapters/network');
 
 const handleErrorResponse = (error, customErrMessage, expectedErrStatus, defaultStatus = 400) => {
   let errMessage = '';
@@ -46,9 +46,9 @@ const objectExists = async (id, Config, objectType) => {
     err = 'invalid response while searching account';
   }
 
-  let response;
   try {
-    response = await myAxios.get(
+    const { processedResponse: processedResponseGs } = await handleHttpRequest(
+      'get',
       url,
       {
         headers: {
@@ -58,18 +58,18 @@ const objectExists = async (id, Config, objectType) => {
       },
       { destType: 'gainsight_px', feature: 'transformation' },
     );
-    if (response && response.status === 200) {
+    if (processedResponseGs?.status === 200) {
       return { success: true, err: null };
     }
     const defStatus = 400;
-    const status = response ? response.status || defStatus : defStatus;
+    const status = processedResponseGs.status || defStatus;
     throw new NetworkError(
       err,
       status,
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
       },
-      response,
+      processedResponseGs.response,
     );
   } catch (error) {
     return handleErrorResponse(error, `error while fetching ${objectType}`, 404);
@@ -77,9 +77,9 @@ const objectExists = async (id, Config, objectType) => {
 };
 
 const createAccount = async (payload, Config) => {
-  let response;
   try {
-    response = await myAxios.post(
+    const { processedResponse: processedResponseGs } = await handleHttpRequest(
+      'post',
       ENDPOINTS.ACCOUNTS_ENDPOINT,
       payload,
       {
@@ -90,19 +90,17 @@ const createAccount = async (payload, Config) => {
       },
       { destType: 'gainsight_px', feature: 'transformation' },
     );
-    if (response && response.status === 201) {
+    if (processedResponseGs?.status === 200) {
       return { success: true, err: null };
     }
-
-    const defStatus = 400;
-    const status = response ? response.status || defStatus : defStatus;
+    const status = processedResponseGs.status || 400 ;
     throw new NetworkError(
       'invalid response while creating account',
       status,
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
       },
-      response,
+      processedResponseGs.response,
     );
   } catch (error) {
     return handleErrorResponse(error, 'error while creating account', 400);
@@ -110,9 +108,9 @@ const createAccount = async (payload, Config) => {
 };
 
 const updateAccount = async (accountId, payload, Config) => {
-  let response;
   try {
-    response = await myAxios.put(
+    const { processedResponse: processedResponseGs } = await handleHttpRequest(
+      'put',
       `${ENDPOINTS.ACCOUNTS_ENDPOINT}/${accountId}`,
       payload,
       {
@@ -123,18 +121,22 @@ const updateAccount = async (accountId, payload, Config) => {
       },
       { destType: 'gainsight_px', feature: 'transformation' },
     );
-    if (response && response.status === 204) {
+    if (processedResponseGs?.status === 200) {
       return { success: true, err: null };
     }
-    const defStatus = 400;
-    const status = response ? response.status || defStatus : defStatus;
+
+    if (processedResponseGs.status === 404 && processedResponseGs?.response?.externalapierror?.status === 'NOT_FOUND') {
+      return { success: false, err: null };
+    }
+
+    const status = processedResponseGs.status || 400;
     throw new NetworkError(
       'invalid response while updating account',
       status,
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
       },
-      response,
+      processedResponseGs.response,
     );
   } catch (error) {
     // it will only occur if the user does not exist

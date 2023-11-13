@@ -3,11 +3,11 @@ const lodash = require('lodash');
 const set = require('set-value');
 const get = require('get-value');
 const { NetworkError, AbortedError } = require('@rudderstack/integrations-lib');
-const myAxios = require('../../../util/myAxios');
 const { DEFAULT_BASE_ENDPOINT } = require('./config');
 const { getType, isDefinedAndNotNull, isObject } = require('../../util');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
+const { handleHttpRequest } = require('../../../adapters/network');
 
 /**
  * RegExp to test a string for a ISO 8601 Date spec
@@ -130,9 +130,10 @@ const handleResponse = (response) => {
 };
 
 const fetchKustomer = async (url, destination) => {
-  let response;
+  let { processedResponse: processedResponseGs };
   try {
-    response = await myAxios.get(
+     processedResponseGs = await handleHttpRequest(
+      'get',
       url,
       {
         headers: {
@@ -147,7 +148,7 @@ const fetchKustomer = async (url, destination) => {
     }
     throw new AbortedError(err.message);
   }
-  return handleResponse(response);
+  return handleResponse(processedResponseGs.response);
 };
 
 module.exports = {

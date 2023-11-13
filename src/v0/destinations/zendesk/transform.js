@@ -5,8 +5,6 @@ const {
   InstrumentationError,
   NetworkError,
 } = require('@rudderstack/integrations-lib');
-const myAxios = require('../../../util/myAxios');
-
 const { EventType } = require('../../../constants');
 const {
   ConfigCategory,
@@ -30,7 +28,7 @@ const {
 } = require('../../util');
 const { getSourceName } = require('./util');
 const logger = require('../../../logger');
-const { httpGET } = require('../../../adapters/network');
+const { httpGET, handleHttpRequest } = require('../../../adapters/network');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
@@ -144,11 +142,11 @@ async function createUserFields(url, config, newFields, fieldJson) {
       };
 
       try {
-        const response = await myAxios.post(url, fieldData, config, {
+        const { processedResponse: processedResponseZn } = await handleHttpRequest('post', url, fieldData, config, {
           destType: 'zendesk',
           feature: 'transformation',
         });
-        if (response.status !== 201) {
+        if (processedResponseZn.status !== 201) {
           logger.debug(`${NAME}:: Failed to create User Field : `, field);
         }
       } catch (error) {
@@ -173,12 +171,12 @@ async function checkAndCreateUserFields(
   const config = { headers };
 
   try {
-    const response = await myAxios.get(url, config, {
+    const { processedResponse: processedResponseZn } = await handleHttpRequest('get', url, config, {
       destType: 'zendesk',
       feature: 'transformation',
     });
-    const fields = get(response.data, fieldJson);
-    if (response.data && fields) {
+    const fields = get(processedResponseZn.response?.data, fieldJson);
+    if (processedResponseZn.response?.data && fields) {
       // get existing user_fields and concatenate them with default fields
       let existingKeys = fields.map((field) => field.key);
       existingKeys = existingKeys.concat(defaultFields[fieldJson]);
@@ -280,16 +278,16 @@ async function getUserId(message, headers, baseEndpoint, type) {
   const config = { headers };
 
   try {
-    const resp = await myAxios.get(url, config, {
+    const { processedResponse: processedResponseZn } = await handleHttpRequest('get', url, config, {
       destType: 'zendesk',
       feature: 'transformation',
     });
-    if (!resp || !resp.data || resp.data.count === 0) {
+    if (!processedResponseZn.response || processedResponseZn.response.count === 0) {
       logger.debug(`${NAME}:: User not found`);
       return undefined;
     }
 
-    const zendeskUserId = resp?.data?.users?.[0]?.id;
+    const zendeskUserId = processedResponseZn?.response?.users?.[0]?.id;
     return zendeskUserId;
   } catch (error) {
     // logger.debug(
@@ -304,11 +302,11 @@ async function isUserAlreadyAssociated(userId, orgId, headers, baseEndpoint) {
   const url = `${baseEndpoint}/users/${userId}/organization_memberships.json`;
   const config = { headers };
   try {
-    const response = await myAxios.get(url, config, {
+    const { processedResponse: processedResponseZn } = await handleHttpRequest('get', url, config, {
       destType: 'zendesk',
       feature: 'transformation',
     });
-    if (response?.data?.organization_memberships?.[0]?.organization_id === orgId) {
+    if (processedResponseZn.response?.organization_memberships?.[0]?.organization_id === orgId) {
       return true;
     }
   } catch (error) {
@@ -336,18 +334,18 @@ async function createUser(message, headers, destinationConfig, baseEndpoint, typ
   const payload = { user: userObject };
 
   try {
-    const resp = await myAxios.post(url, payload, config, {
+    const { processedResponse: processedResponseZn } = await handleHttpRequest('post', url, payload, config, {
       destType: 'zendesk',
       feature: 'transformation',
     });
 
-    if (!resp.data || !resp.data.user || !resp.data.user.id) {
+    if (!processedResponseZn.response || !processedResponseZn.response?.user || !processedResponseZn.response?.user?.id) {
       logger.debug(`${NAME}:: Couldn't create User: ${name}`);
       throw new NetworkInstrumentationError('user not found');
     }
 
-    const userID = resp?.data?.user?.id;
-    const userEmail = resp?.data?.user.email;
+    const userID = processedResponseZn.response?.user?.id;
+    const userEmail = processedResponseZn.response?.user?.email;
     return { zendeskUserId: userID, email: userEmail };
   } catch (error) {
     logger.debug(error);
@@ -417,17 +415,17 @@ async function createOrganization(message, category, headers, destinationConfig,
   const config = { headers };
 
   try {
-    const resp = await myAxios.post(url, payload, config, {
+    const { processedResponse: processedResponseZn } = await handleHttpRequest('post', url, payload, config, {
       destType: 'zendesk',
       feature: 'transformation',
     });
 
-    if (!resp.data || !resp.data.organization) {
+    if (!processedResponseZn.response || !processedResponseZn.response?.organization) {
       logger.debug(`${NAME}:: Couldn't create Organization: ${message.traits.name}`);
       return undefined;
     }
 
-    const orgId = resp?.data?.organization?.id;
+    const orgId = processedResponseZn.response?.organization?.id;
     return orgId;
   } catch (error) {
     logger.debug(`${NAME}:: Couldn't create Organization: ${message.traits.name}`);
@@ -485,17 +483,17 @@ async function processIdentify(message, destinationConfig, headers, baseEndpoint
       const membershipUrl = `${baseEndpoint}users/${userId}/organization_memberships.json`;
       try {
         const config = { headers };
-        const response = await myAxios.get(membershipUrl, config, {
+        const { processedResponse: processedResponseZn } = await handleHttpRequest('get', membershipUrl, config, {
           destType: 'zendesk',
           feature: 'transformation',
         });
         if (
-          response.data &&
-          response.data.organization_memberships &&
-          response.data.organization_memberships.length > 0 &&
-          orgId === response.data.organization_memberships[0].organization_id
+          processedResponseZn.response &&
+          processedResponseZn.response.organization_memberships &&
+          processedResponseZn.response.organization_memberships.length > 0 &&
+          orgId === processedResponseZn.response.organization_memberships[0].organization_id
         ) {
-          const membershipId = response.data.organization_memberships[0]?.id;
+          const membershipId = processedResponseZn.response.organization_memberships[0]?.id;
           const deleteResponse = defaultRequestConfig();
 
           deleteResponse.endpoint = `${baseEndpoint}users/${userId}/organization_memberships/${membershipId}.json`;
@@ -532,11 +530,11 @@ async function processTrack(message, destinationConfig, headers, baseEndpoint) {
   const url = `${baseEndpoint}users/search.json?query=${userEmail}`;
   const config = { headers };
   try {
-    const userResponse = await myAxios.get(url, config, {
+    const { processedResponse: processedResponseZn } = await handleHttpRequest('get', url, config, {
       destType: 'zendesk',
       feature: 'transformation',
     });
-    if (!get(userResponse, 'data.users.0.id') || userResponse.data.count === 0) {
+    if (!get(processedResponseZn.response, 'data.users.0.id') || processedResponseZn.response.count === 0) {
       const { zendeskUserId, email } = await createUser(
         message,
         headers,
@@ -552,7 +550,7 @@ async function processTrack(message, destinationConfig, headers, baseEndpoint) {
       zendeskUserID = zendeskUserId;
       userEmail = email;
     }
-    zendeskUserID = zendeskUserID || userResponse?.data?.users?.[0]?.id;
+    zendeskUserID = zendeskUserID || processedResponseZn.response?.users?.[0]?.id;
   } catch (error) {
     throw new NetworkError(
       `Failed to fetch user with email: ${userEmail} due to ${error.message}`,

@@ -9,7 +9,6 @@ const {
   InstrumentationError,
   NetworkInstrumentationError,
 } = require('@rudderstack/integrations-lib');
-const myAxios = require('../../../util/myAxios');
 const { EventType } = require('../../../constants');
 const { EndPoints, BASE_URL } = require('./config');
 const {
@@ -27,6 +26,7 @@ const {
 const tags = require('../../util/tags');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { handleHttpRequest } = require('../../../adapters/network');
 
 /**
  *
@@ -81,9 +81,10 @@ const validate = (email, phone, channelIdentifier) => {
  * In case no contact is founf for a particular identifer it returns -1
  */
 const lookupContact = async (term, destination) => {
-  let res;
+  let { processedResponse: processedResponseTrengo };
   try {
-    res = await myAxios.get(
+    processedResponseTrengo = await handleHttpRequest(
+      'get',
       `${BASE_URL}/contacts?page=1&term=${term}`,
       {
         headers: {
@@ -98,15 +99,14 @@ const lookupContact = async (term, destination) => {
     throw new NetworkError(
       `Inside lookupContact, failed to make request: ${err.response?.statusText}`,
       status,
-
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
       },
       err.response,
     );
   }
-  if (res && res.status === 200 && res.data && res.data.data && Array.isArray(res.data.data)) {
-    const { data } = res.data;
+  if (processedResponseTrengo.status === 200 && processedResponseTrengo.response?.data && Array.isArray(processedResponseTrengo.response.data)) {
+    const { data } = processedResponseTrengo.response;
     if (data.length > 1) {
       throw new NetworkInstrumentationError(
         `Inside lookupContact, duplicates present for identifier : ${term}`,

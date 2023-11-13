@@ -8,7 +8,6 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
 } = require('../../util');
-// const { InstrumentationError } = require("../../util/errorTypes");
 
 const filterConfigTopics = (message, destination) => {
   const { Config } = destination;

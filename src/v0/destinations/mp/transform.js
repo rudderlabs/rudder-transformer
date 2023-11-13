@@ -1,5 +1,6 @@
 const lodash = require('lodash');
 const get = require('get-value');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   base64Convertor,
@@ -35,7 +36,6 @@ const {
   groupEventsByEndpoint,
   batchEvents,
 } = require('./util');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 const { CommonUtils } = require('../../../util/common');
 
 // ref: https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel

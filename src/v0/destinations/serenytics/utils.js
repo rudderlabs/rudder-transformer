@@ -1,10 +1,10 @@
+const { ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
   constructPayload,
   extractCustomFields,
   defaultRequestConfig,
   defaultPostRequestConfig,
 } = require('../../util');
-const { ConfigurationError } = require('../../util/errorTypes');
 const { MAPPING_CONFIG } = require('./config');
 
 const checkStorageUrl = (STORAGE_URL, messageType) => {

@@ -1,4 +1,8 @@
 const get = require('get-value');
+const {
+  InstrumentationError,
+  NetworkInstrumentationError,
+} = require('@rudderstack/integrations-lib');
 const { httpGET } = require('../../../adapters/network');
 const {
   toUnixTimestamp,
@@ -11,7 +15,6 @@ const {
   constructPayload,
 } = require('../../util');
 const { BASE_ENDPOINT, createPayloadMapping, updatePayloadMapping } = require('./config');
-const { InstrumentationError, NetworkInstrumentationError } = require('../../util/errorTypes');
 
 const CURRENCY_CODES = [
   'aed',

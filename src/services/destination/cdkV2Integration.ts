@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable class-methods-use-this */
 import groupBy from 'lodash/groupBy';
+import { TransformationError } from '@rudderstack/integrations-lib';
 import { processCdkV2Workflow } from '../../cdk/v2/handler';
 import IntegrationDestinationService from '../../interfaces/DestinationService';
 import {
@@ -15,7 +16,6 @@ import {
   UserDeletionRequest,
   UserDeletionResponse,
 } from '../../types/index';
-import { TransformationError } from '../../v0/util/errorTypes';
 import tags from '../../v0/util/tags';
 import DestinationPostTransformationService from './postTransformation';
 import stats from '../../util/stats';

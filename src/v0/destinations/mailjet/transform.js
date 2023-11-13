@@ -1,4 +1,5 @@
 const lodash = require('lodash');
+const { TransformationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
   getErrorRespEvents,
   getSuccessRespEvents,
@@ -12,7 +13,6 @@ const {
 const { MAX_BATCH_SIZE } = require('./config');
 const { EventType } = require('../../../constants');
 const { createOrUpdateContactResponseBuilder } = require('./utils');
-const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (payload) => {

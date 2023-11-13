@@ -177,7 +177,7 @@ describe('Destination api tests', () => {
 
 describe('Source api tests', () => {
   test('(shopify) successful source transform', async () => {
-    const data = getDataFromPath('./data_scenarios/source/successful.json');
+    const data = getDataFromPath('./data_scenarios/source/v0/successful.json');
     const response = await request(server)
       .post('/v0/sources/shopify')
       .set('Accept', 'application/json')
@@ -189,7 +189,7 @@ describe('Source api tests', () => {
   });
 
   test('(shopify) failure source transform (shopify)', async () => {
-    const data = getDataFromPath('./data_scenarios/source/failure.json');
+    const data = getDataFromPath('./data_scenarios/source/v0/failure.json');
     const response = await request(server)
       .post('/v0/sources/shopify')
       .set('Accept', 'application/json')
@@ -199,9 +199,41 @@ describe('Source api tests', () => {
   });
 
   test('(shopify) success source transform (monday)', async () => {
-    const data = getDataFromPath('./data_scenarios/source/response_to_caller.json');
+    const data = getDataFromPath('./data_scenarios/source/v0/response_to_caller.json');
     const response = await request(server)
       .post('/v0/sources/monday')
+      .set('Accept', 'application/json')
+      .send(data.input);
+    expect(response.status).toEqual(200);
+    expect(JSON.parse(response.text)).toEqual(data.output);
+  });
+
+  test('(webhook) successful source transform for source present in v1 and server providing v0 endpoint', async () => {
+    const data = getDataFromPath('./data_scenarios/source/v1/successful.json');
+    const response = await request(server)
+      .post('/v1/sources/webhook')
+      .set('Accept', 'application/json')
+      .send(data.input);
+    const parsedResp = JSON.parse(response.text);
+    delete parsedResp[0].output.batch[0].anonymousId;
+    expect(response.status).toEqual(200);
+    expect(parsedResp).toEqual(data.output);
+  });
+
+  test('(NA_SOURCE) failure source transform ', async () => {
+    const data = getDataFromPath('./data_scenarios/source/v1/failure.json');
+    const response = await request(server)
+      .post('/v0/sources/NA_SOURCE')
+      .set('Accept', 'application/json')
+      .send(data.input);
+    expect(response.status).toEqual(200);
+    expect(JSON.parse(response.text)).toEqual(data.output);
+  });
+
+  test('(pipedream) success source transform for source present in v0 and server providing v1 endpoint', async () => {
+    const data = getDataFromPath('./data_scenarios/source/v1/pipedream.json');
+    const response = await request(server)
+      .post('/v1/sources/pipedream')
       .set('Accept', 'application/json')
       .send(data.input);
     expect(response.status).toEqual(200);

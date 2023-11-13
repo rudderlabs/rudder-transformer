@@ -1,4 +1,4 @@
-const { ConfigurationError } = require('../../util/errorTypes');
+const { ConfigurationError } = require('@rudderstack/integrations-lib');
 
 /**
  * Get source name from config or return 'Rudder' as default source name

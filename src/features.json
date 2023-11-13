@@ -62,5 +62,6 @@
     "GLADLY": true,
     "ONE_SIGNAL": true,
     "TIKTOK_AUDIENCE": true
-  }
+  },
+  "supportSourceTransformV1": true
 }

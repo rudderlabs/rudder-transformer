@@ -1,4 +1,5 @@
 const { set } = require('lodash');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
   defaultRequestConfig,
   removeUndefinedAndNullValues,
@@ -8,7 +9,6 @@ const {
 const { configCategories } = require('./config');
 const { buildLeadPayload, getIdentifyTraits } = require('./util');
 const { EventType } = require('../../../constants');
-const { InstrumentationError } = require('../../util/errorTypes');
 
 const responseBuilder = (payload, endpoint, method, Config) => {
   const { apiKey } = Config;

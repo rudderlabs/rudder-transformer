@@ -64,21 +64,21 @@ export function getCachedWorkflowEngine(
   return workflowEnginePromiseMap[destName][feature];
 }
 
-export async function executeWorkflow(workflowEngine: WorkflowEngine, parsedEvent: FixMe, requestMetadata:  NonNullable<unknown>){
-  try {
-    const result = await workflowEngine.execute(parsedEvent, {requestMetadata});
-    // TODO: Handle remaining output scenarios
-    return result.output;
-  } catch (error) {
-    throw getErrorInfo(error, isCdkV2Destination(parsedEvent), defTags);
-  }
+export async function executeWorkflow(
+  workflowEngine: WorkflowEngine,
+  parsedEvent: FixMe,
+  requestMetadata: NonNullable<unknown>,
+) {
+  const result = await workflowEngine.execute(parsedEvent, { requestMetadata });
+  // TODO: Handle remaining output scenarios
+  return result.output;
 }
 
 export async function processCdkV2Workflow(
   destType: string,
   parsedEvent: FixMe,
   feature: string,
-  requestMetadata:  NonNullable<unknown> = {},
+  requestMetadata: NonNullable<unknown> = {},
   bindings: Record<string, FixMe> = {},
 ) {
   try {

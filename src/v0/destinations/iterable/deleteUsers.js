@@ -1,8 +1,8 @@
+const { NetworkError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { httpDELETE } = require('../../../adapters/network');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const { isHttpStatusSuccess } = require('../../util');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
-const { NetworkError, ConfigurationError } = require('../../util/errorTypes');
 const { executeCommonValidations } = require('../../util/regulation-api');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');

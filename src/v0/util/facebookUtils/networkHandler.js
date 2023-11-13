@@ -1,11 +1,11 @@
 const { isEmpty } = require('lodash');
 const get = require('get-value');
+const { NetworkError } = require('@rudderstack/integrations-lib');
 const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
-const { NetworkError } = require('../errorTypes');
 const tags = require('../tags');
 const { ErrorDetailsExtractorBuilder } = require('../../../util/error-extractor');
 

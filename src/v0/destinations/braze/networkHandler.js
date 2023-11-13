@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+const { NetworkError } = require('@rudderstack/integrations-lib');
 const { isHttpStatusSuccess } = require('../../util/index');
 const { proxyRequest, prepareProxyRequest } = require('../../../adapters/network');
 const {
@@ -6,7 +7,6 @@ const {
   processAxiosResponse,
 } = require('../../../adapters/utils/networkUtils');
 const { DESTINATION } = require('./config');
-const { NetworkError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 const stats = require('../../../util/stats');
 

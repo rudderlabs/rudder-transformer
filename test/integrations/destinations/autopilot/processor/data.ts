@@ -17,7 +17,7 @@ export const data = [
                 Name: 'AUTOPILOT',
                 DisplayName: 'Autopilot',
                 Config: {
-                  cdkEnabled: true,
+                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -85,6 +85,10 @@ export const data = [
               type: 'identify',
               userId: 'user12345',
             },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -123,6 +127,10 @@ export const data = [
               userId: 'ac7722c2-ccb6-4ae2-baf6-1effe861f4cd',
             },
             statusCode: 200,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -146,7 +154,7 @@ export const data = [
                 Name: 'AUTOPILOT',
                 DisplayName: 'Autopilot',
                 Config: {
-                  cdkEnabled: true,
+                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -219,6 +227,10 @@ export const data = [
               type: 'track',
               userId: 'user12345',
             },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -255,6 +267,10 @@ export const data = [
               userId: 'ac7722c2-ccb6-4ae2-baf6-1effe861f4cd',
             },
             statusCode: 200,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
       },
@@ -278,7 +294,7 @@ export const data = [
                 Name: 'AUTOPILOT',
                 DisplayName: 'Autopilot',
                 Config: {
-                  cdkEnabled: true,
+                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -365,7 +381,8 @@ export const data = [
         body: [
           {
             statusCode: 400,
-            error: 'Bad event. Original error: message type "page" not supported for "autopilot"',
+            error:
+              'message type page is not supported: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: message type page is not supported',
             metadata: {
               destinationId: 'destId',
               workspaceId: 'wspId',
@@ -375,7 +392,7 @@ export const data = [
               errorType: 'instrumentation',
               destType: 'AUTOPILOT',
               module: 'destination',
-              implementation: 'cdkV1',
+              implementation: 'cdkV2',
               feature: 'processor',
               destinationId: 'destId',
               workspaceId: 'wspId',
@@ -403,7 +420,7 @@ export const data = [
                 Name: 'AUTOPILOT',
                 DisplayName: 'Autopilot',
                 Config: {
-                  cdkEnabled: true,
+                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -489,16 +506,18 @@ export const data = [
         body: [
           {
             statusCode: 400,
-            error: 'Unknown error occurred. Original error: Email is required for track calls',
+            error:
+              'Email is required for track calls: Workflow: procWorkflow, Step: preparePayloadForTrack, ChildStep: undefined, OriginalError: Email is required for track calls',
             metadata: {
               destinationId: 'destId',
               workspaceId: 'wspId',
             },
             statTags: {
-              errorCategory: 'transformation',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
               destType: 'AUTOPILOT',
               module: 'destination',
-              implementation: 'cdkV1',
+              implementation: 'cdkV2',
               feature: 'processor',
               destinationId: 'destId',
               workspaceId: 'wspId',
@@ -526,7 +545,7 @@ export const data = [
                 Name: 'AUTOPILOT',
                 DisplayName: 'Autopilot',
                 Config: {
-                  cdkEnabled: true,
+                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -612,16 +631,17 @@ export const data = [
           {
             statusCode: 400,
             error:
-              'Unknown error occurred. Original error: "type" is a required field and it must be a string',
+              'message Type is not present. Aborting message.: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: message Type is not present. Aborting message.',
             metadata: {
               destinationId: 'destId',
               workspaceId: 'wspId',
             },
             statTags: {
-              errorCategory: 'transformation',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
               destType: 'AUTOPILOT',
               module: 'destination',
-              implementation: 'cdkV1',
+              implementation: 'cdkV2',
               destinationId: 'destId',
               workspaceId: 'wspId',
               feature: 'processor',
@@ -649,7 +669,7 @@ export const data = [
                 Name: 'AUTOPILOT',
                 DisplayName: 'Autopilot',
                 Config: {
-                  cdkEnabled: true,
+                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -736,7 +756,8 @@ export const data = [
         body: [
           {
             statusCode: 400,
-            error: 'Bad event. Original error: message type "group" not supported for "autopilot"',
+            error:
+              'message type group is not supported: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: message type group is not supported',
             metadata: {
               destinationId: 'destId',
               workspaceId: 'wspId',
@@ -746,7 +767,7 @@ export const data = [
               errorType: 'instrumentation',
               destType: 'AUTOPILOT',
               module: 'destination',
-              implementation: 'cdkV1',
+              implementation: 'cdkV2',
               destinationId: 'destId',
               workspaceId: 'wspId',
               feature: 'processor',
@@ -774,7 +795,7 @@ export const data = [
                 Name: 'AUTOPILOT',
                 DisplayName: 'Autopilot',
                 Config: {
-                  cdkEnabled: true,
+                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -906,7 +927,7 @@ export const data = [
                 Name: 'AUTOPILOT',
                 DisplayName: 'Autopilot',
                 Config: {
-                  cdkEnabled: true,
+                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -993,16 +1014,17 @@ export const data = [
           {
             statusCode: 400,
             error:
-              'Unknown error occurred. Original error: "type" is a required field and it must be a string',
+              'message Type is not present. Aborting message.: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: message Type is not present. Aborting message.',
             metadata: {
               destinationId: 'destId',
               workspaceId: 'wspId',
             },
             statTags: {
-              errorCategory: 'transformation',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
               destType: 'AUTOPILOT',
               module: 'destination',
-              implementation: 'cdkV1',
+              implementation: 'cdkV2',
               destinationId: 'destId',
               workspaceId: 'wspId',
               feature: 'processor',
@@ -1030,7 +1052,7 @@ export const data = [
                 Name: 'AUTOPILOT',
                 DisplayName: 'Autopilot',
                 Config: {
-                  cdkEnabled: true,
+                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -1110,7 +1132,8 @@ export const data = [
         body: [
           {
             statusCode: 400,
-            error: 'Bad event. Original error: message type "group" not supported for "autopilot"',
+            error:
+              'message type group is not supported: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: message type group is not supported',
             metadata: {
               destinationId: 'destId',
               workspaceId: 'wspId',
@@ -1120,7 +1143,7 @@ export const data = [
               errorType: 'instrumentation',
               destType: 'AUTOPILOT',
               module: 'destination',
-              implementation: 'cdkV1',
+              implementation: 'cdkV2',
               destinationId: 'destId',
               workspaceId: 'wspId',
               feature: 'processor',
@@ -1148,7 +1171,7 @@ export const data = [
                 Name: 'AUTOPILOT',
                 DisplayName: 'Autopilot',
                 Config: {
-                  cdkEnabled: true,
+                  cdkV2Enabled: true,
                   excludeKeys: [],
                   includeKeys: [],
                 },
@@ -1228,7 +1251,8 @@ export const data = [
         body: [
           {
             statusCode: 400,
-            error: 'Bad event. Original error: message type "Tals" not supported for "autopilot"',
+            error:
+              'message type Tals is not supported: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: message type Tals is not supported',
             metadata: {
               destinationId: 'destId',
               workspaceId: 'wspId',
@@ -1238,7 +1262,7 @@ export const data = [
               errorType: 'instrumentation',
               destType: 'AUTOPILOT',
               module: 'destination',
-              implementation: 'cdkV1',
+              implementation: 'cdkV2',
               destinationId: 'destId',
               workspaceId: 'wspId',
               feature: 'processor',

@@ -18,6 +18,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Bug Fixes
 
+* source_transform_error stat label correction ([#2825](https://github.com/rudderlabs/rudder-transformer/issues/2825)) ([f3bcd7c](https://github.com/rudderlabs/rudder-transformer/commit/f3bcd7c9338ef96267be84f845c63f5234d37e33))
 * shopify redis metric when there is no data returned for a key ([#2811](https://github.com/rudderlabs/rudder-transformer/issues/2811)) ([c02370e](https://github.com/rudderlabs/rudder-transformer/commit/c02370e38fabb581698baa00e1ddd3da93dc07fa))
 
 ### [1.49.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.49.0...v1.49.1) (2023-11-10)

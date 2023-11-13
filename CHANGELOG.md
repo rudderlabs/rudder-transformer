@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.50.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.49.1...v1.50.0) (2023-11-13)
+
+
+### Features
+
+* add clickId support for tiktok and pinterest destination ([#2784](https://github.com/rudderlabs/rudder-transformer/issues/2784)) ([0e14296](https://github.com/rudderlabs/rudder-transformer/commit/0e1429663d167a2c5cded0d9130374eb586a18c0))
+* add delivery_category as part of contents, remove flattening custom_data in FB conversions ([#2812](https://github.com/rudderlabs/rudder-transformer/issues/2812)) ([e82cef8](https://github.com/rudderlabs/rudder-transformer/commit/e82cef88e154d47519f0deeb60f55773f25fd3ad))
+* add delivery_category as part of contents, update flattening custom_data in FB Pixel ([#2816](https://github.com/rudderlabs/rudder-transformer/issues/2816)) ([ee1f473](https://github.com/rudderlabs/rudder-transformer/commit/ee1f4733e82291375d85a6de8b8626ffdc8907b1))
+* adding support for future oauth facility in salesforce ([#2746](https://github.com/rudderlabs/rudder-transformer/issues/2746)) ([916ea4c](https://github.com/rudderlabs/rudder-transformer/commit/916ea4c8d08f69b68b7795dd513a25a3cded55fa))
+* introduce v1/source/sourceType endpoint ([#2722](https://github.com/rudderlabs/rudder-transformer/issues/2722)) ([0996e81](https://github.com/rudderlabs/rudder-transformer/commit/0996e816d3671c3e25561f76e3219be99225f24b))
+* move cdkV1 to cdkv2 component tests ([#2804](https://github.com/rudderlabs/rudder-transformer/issues/2804)) ([195b48a](https://github.com/rudderlabs/rudder-transformer/commit/195b48ac0f438a200933e4bbb956fcc3941b7aed))
+* use custom screen name amplitude ([#2823](https://github.com/rudderlabs/rudder-transformer/issues/2823)) ([93a82bd](https://github.com/rudderlabs/rudder-transformer/commit/93a82bd4856b462768d0213ae3de8b9b78e9858c))
+
+
+### Bug Fixes
+
+* shopify redis metric when there is no data returned for a key ([#2811](https://github.com/rudderlabs/rudder-transformer/issues/2811)) ([c02370e](https://github.com/rudderlabs/rudder-transformer/commit/c02370e38fabb581698baa00e1ddd3da93dc07fa))
+
 ### [1.49.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.49.0...v1.49.1) (2023-11-10)
 
 

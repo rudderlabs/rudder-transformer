@@ -2,11 +2,9 @@ const get = require('get-value');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
   base64Convertor,
-  isNewStatusCodesAccepted,
   getDestinationExternalID,
 } = require('../../../../v0/util');
 const { MappedToDestinationKey } = require('../../../../constants');
-const { HTTP_STATUS_CODES } = require('../../../../v0/util/constant');
 
 const reservedCustomAttributes = [
   'email',
@@ -139,20 +137,28 @@ const validatePayload = (payload) => {
   }
 };
 
-const getStatusCode = (requestMetadata, statusCode) => {
-  if (isNewStatusCodesAccepted(requestMetadata) && statusCode === 200) {
-    return HTTP_STATUS_CODES.SUPPRESS_EVENTS;
+const getQueryParams = (payload) => {
+  if (payload.emails && payload.emails.length > 0) {
+    return `email=${encodeURIComponent(payload.emails[0].original)}`
   }
-  if(statusCode === 409)return 200;
-  return statusCode;
-};
+
+  if (payload.phones && payload.phones.length > 0) {
+    return `phoneNumber=${encodeURIComponent(payload.phones[0].original)}`
+  }
+
+  if (payload.externalCustomerId) {
+    return `externalCustomerId=${encodeURIComponent(payload.externalCustomerId)}`
+  }
+
+  return undefined;
+}
 
 module.exports = {
   getHeaders,
   getEndpoint,
   formatField,
-  getStatusCode,
   getCustomerId,
+  getQueryParams,
   validatePayload,
   getCustomAttributes,
   getExternalCustomerId

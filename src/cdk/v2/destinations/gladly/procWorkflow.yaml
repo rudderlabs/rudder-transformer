@@ -9,7 +9,7 @@ bindings:
     path: ../../../../v0/util
   - name: getDestinationExternalID
     path: ../../../../v0/util
-  - name: httpPOST
+  - name: httpGET
     path: ../../../../adapters/network
   - name: processAxiosResponse
     path: ../../../../adapters/utils/networkUtils
@@ -54,26 +54,36 @@ steps:
     template: |
       $.validatePayload($.context.payload)
 
-  - name: createUser
-    description: Prepare create user payload
+  - name: findCustomer
+    description: Find if customer is exist or not based on email, phone or externalCustomerId
     template: |
       const requestOptions = {
         headers: $.getHeaders(.destination)
       }
-      const requestPayload = $.context.payload
-      const endpoint = $.getEndpoint(.destination)
-      const rawResponse = await $.httpPOST(endpoint, requestPayload, requestOptions)
+      const endpoint = $.getEndpoint(.destination) + "?" + $.getQueryParams($.context.payload);
+      const rawResponse = await $.httpGET(endpoint,requestOptions)
       const processedResponse = $.processAxiosResponse(rawResponse)
-      processedResponse.status == 400 ? $.assertHttpResp(processedResponse, "Unable to create or update user due to " + JSON.stringify(processedResponse.response));
       processedResponse
 
-  - name: buildResponseForProcessTransformation
-    description: build response for updateUser
+  - name: createCustomer
+    description: Build response for create customer
+    condition: $.outputs.findCustomer.status === 400 || ($.outputs.findCustomer.status === 200 && $.outputs.findCustomer.response.length === 0)
+    template: |
+      const response = $.defaultRequestConfig()
+      response.body.JSON = $.removeUndefinedAndNullValues($.context.payload)
+      response.endpoint = $.getEndpoint(.destination)
+      response.method = "POST"
+      response.headers = $.getHeaders(.destination)
+      console.log("res", $.outputs.findCustomer);
+      response
+
+  - name: updateCustomer
+    description: Build response for update customer
+    condition: $.outputs.findCustomer.status === 200 && $.outputs.findCustomer.response.length > 0
     template: |
       const response = $.defaultRequestConfig()
       response.body.JSON = $.removeUndefinedAndNullValues($.context.payload.{~["id"]})
-      response.endpoint = $.getEndpoint(.destination) + "/" + $.context.payload.id
+      response.endpoint = $.getEndpoint(.destination) + "/" + $.outputs.findCustomer.response[0].id
       response.method = "PATCH"
       response.headers = $.getHeaders(.destination)
-      response.status = $.outputs.createUser.status
       response

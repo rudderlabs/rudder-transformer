@@ -2,11 +2,10 @@ import { Context, Next } from 'koa';
 import {
   ProcessorTransformationRequest,
   RouterTransformationRequest,
+  DTRequest,
   RouterTransformationRequestData,
 } from '../types';
 import GeoLocationHelper from '../helpers/geoLocation';
-
-export type DTRequest = RouterTransformationRequest | ProcessorTransformationRequest[];
 
 export default class GeoEnricher {
   private static enrichWithGeoInfo(

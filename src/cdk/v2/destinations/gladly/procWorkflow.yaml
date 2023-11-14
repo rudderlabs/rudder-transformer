@@ -76,14 +76,13 @@ steps:
       response.method = "POST"
       response.headers = $.getHeaders(.destination)
       response
-
-  - name: updateCustomer
-    description: Build response for update customer
-    condition: $.outputs.findCustomer.status === 200 && $.outputs.findCustomer.response.length > 0
-    template: |
-      const response = $.defaultRequestConfig()
-      response.body.JSON = $.removeUndefinedAndNullValues($.context.payload.{~["id"]})
-      response.endpoint = $.getEndpoint(.destination) + "/" + $.outputs.findCustomer.response[0].id
-      response.method = "PATCH"
-      response.headers = $.getHeaders(.destination)
-      response
+    else:
+      name: updateCustomer
+      description: Build response for update customer
+      template: |
+        const response = $.defaultRequestConfig()
+        response.body.JSON = $.removeUndefinedAndNullValues($.context.payload.{~["id"]})
+        response.endpoint = $.getEndpoint(.destination) + "/" + $.outputs.findCustomer.response[0].id
+        response.method = "PATCH"
+        response.headers = $.getHeaders(.destination)
+        response

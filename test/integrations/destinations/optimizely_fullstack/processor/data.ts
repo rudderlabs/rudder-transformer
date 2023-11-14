@@ -55,7 +55,8 @@ export const data = [
               'Data File Url is not present. Aborting: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: Data File Url is not present. Aborting',
             statTags: {
               destType: 'OPTIMIZELY_FULLSTACK',
-              errorCategory: 'platform',
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',
@@ -121,7 +122,8 @@ export const data = [
               'Variation ID is not present in the integrations object: Workflow: procWorkflow, Step: validateInputForIdentify, ChildStep: undefined, OriginalError: Variation ID is not present in the integrations object',
             statTags: {
               destType: 'OPTIMIZELY_FULLSTACK',
-              errorCategory: 'platform',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',
@@ -186,7 +188,8 @@ export const data = [
               'Account ID is not present. Aborting: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: Account ID is not present. Aborting',
             statTags: {
               destType: 'OPTIMIZELY_FULLSTACK',
-              errorCategory: 'platform',
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',
@@ -251,7 +254,8 @@ export const data = [
               'Campaign ID is not present. Aborting: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: Campaign ID is not present. Aborting',
             statTags: {
               destType: 'OPTIMIZELY_FULLSTACK',
-              errorCategory: 'platform',
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',
@@ -316,7 +320,8 @@ export const data = [
               'Experiment ID is not present. Aborting: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: Experiment ID is not present. Aborting',
             statTags: {
               destType: 'OPTIMIZELY_FULLSTACK',
-              errorCategory: 'platform',
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',
@@ -388,7 +393,8 @@ export const data = [
               "Both 'Track Categorized Pages' and 'Track Named Pages' toggles are disabled in webapp. Please enable at one of them to send page/screen events to Optimizely.: Workflow: procWorkflow, Step: validateInputForPageAndScreen, ChildStep: undefined, OriginalError: Both 'Track Categorized Pages' and 'Track Named Pages' toggles are disabled in webapp. Please enable at one of them to send page/screen events to Optimizely.",
             statTags: {
               destType: 'OPTIMIZELY_FULLSTACK',
-              errorCategory: 'platform',
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',
@@ -467,7 +473,8 @@ export const data = [
               "UserId is required for event tracking when the 'Track Known Users' setting is enabled. Please include a 'userId' in your event payload: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: UserId is required for event tracking when the 'Track Known Users' setting is enabled. Please include a 'userId' in your event payload",
             statTags: {
               destType: 'OPTIMIZELY_FULLSTACK',
-              errorCategory: 'platform',
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',
@@ -530,7 +537,8 @@ export const data = [
               'Event is not present. Aborting.: Workflow: procWorkflow, Step: validateInputForTrack, ChildStep: undefined, OriginalError: Event is not present. Aborting.',
             statTags: {
               destType: 'OPTIMIZELY_FULLSTACK',
-              errorCategory: 'platform',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',
@@ -591,15 +599,16 @@ export const data = [
         body: [
           {
             error:
-              '{"message":"Data File Lookup Failed due to {\\"code\\":\\"document_not_found\\",\\"message\\":\\"document_not_found\\"}: Workflow: procWorkflow, Step: dataFile, ChildStep: undefined, OriginalError: Data File Lookup Failed due to {\\"code\\":\\"document_not_found\\",\\"message\\":\\"document_not_found\\"}","destinationResponse":{"code":"document_not_found","message":"document_not_found"}}',
+              '{"message":"{\\"message\\":\\"Data File Lookup Failed due to {\\\\\\"code\\\\\\":\\\\\\"document_not_found\\\\\\",\\\\\\"message\\\\\\":\\\\\\"document_not_found\\\\\\"}: Workflow: procWorkflow, Step: dataFile, ChildStep: undefined, OriginalError: Data File Lookup Failed due to {\\\\\\"code\\\\\\":\\\\\\"document_not_found\\\\\\",\\\\\\"message\\\\\\":\\\\\\"document_not_found\\\\\\"}\\",\\"destinationResponse\\":{\\"code\\":\\"document_not_found\\",\\"message\\":\\"document_not_found\\"}}","destinationResponse":{"code":"document_not_found","message":"document_not_found"}}',
             statTags: {
               destType: 'OPTIMIZELY_FULLSTACK',
-              errorCategory: 'platform',
+              errorCategory: 'network',
+              errorType: 'aborted',
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',
             },
-            statusCode: 400,
+            statusCode: 404,
             metadata: {
               jobId: 10,
             },
@@ -670,7 +679,8 @@ export const data = [
               "Event 'product_added' is not present in data file. Make sure event exists in Optimizely.: Workflow: procWorkflow, Step: prepareTrackPayload, ChildStep: optimizelyEvent, OriginalError: Event 'product_added' is not present in data file. Make sure event exists in Optimizely.",
             statTags: {
               destType: 'OPTIMIZELY_FULLSTACK',
-              errorCategory: 'platform',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',
@@ -1162,7 +1172,8 @@ export const data = [
             metadata: { jobId: 15 },
             statTags: {
               destType: 'OPTIMIZELY_FULLSTACK',
-              errorCategory: 'platform',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
               feature: 'processor',
               implementation: 'cdkV2',
               module: 'destination',

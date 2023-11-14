@@ -1,5 +1,10 @@
 const get = require('get-value');
 const set = require('set-value');
+const {
+  NetworkInstrumentationError,
+  InstrumentationError,
+  NetworkError,
+} = require('@rudderstack/integrations-lib');
 const myAxios = require('../../../util/myAxios');
 
 const { EventType } = require('../../../constants');
@@ -26,11 +31,6 @@ const {
 const { getSourceName } = require('./util');
 const logger = require('../../../logger');
 const { httpGET } = require('../../../adapters/network');
-const {
-  NetworkInstrumentationError,
-  InstrumentationError,
-  NetworkError,
-} = require('../../util/errorTypes');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');

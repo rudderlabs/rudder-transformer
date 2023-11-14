@@ -1,4 +1,5 @@
 const lodash = require('lodash');
+const { ConfigurationError, NetworkError } = require('@rudderstack/integrations-lib');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util');
 const {
@@ -7,7 +8,6 @@ const {
   DISTINCT_ID_MAX_BATCH_SIZE,
 } = require('./config');
 const { executeCommonValidations } = require('../../util/regulation-api');
-const { ConfigurationError, NetworkError } = require('../../util/errorTypes');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');

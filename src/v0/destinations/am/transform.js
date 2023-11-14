@@ -4,6 +4,7 @@
 const cloneDeep = require('lodash/cloneDeep');
 const get = require('get-value');
 const set = require('set-value');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
   EventType,
   SpecedTraits,
@@ -44,7 +45,7 @@ const tags = require('../../util/tags');
 const AMUtils = require('./utils');
 
 const logger = require('../../../logger');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
+
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const EVENTS_KEY_PATH = 'body.JSON.events';
@@ -590,7 +591,8 @@ const processSingleMessage = (message, destination) => {
   const { name, event, properties } = message;
   const messageType = message.type.toLowerCase();
   const CATEGORY_KEY = 'properties.category';
-  const { useUserDefinedPageEventName, userProvidedPageEventString } = destination.Config;
+  const { useUserDefinedPageEventName, userProvidedPageEventString,
+    useUserDefinedScreenEventName, userProvidedScreenEventString } = destination.Config;
   switch (messageType) {
     case EventType.IDENTIFY:
       payloadObjectName = 'events'; // identify same as events
@@ -600,17 +602,17 @@ const processSingleMessage = (message, destination) => {
     case EventType.PAGE:
       if (useUserDefinedPageEventName) {
         const getMessagePath = userProvidedPageEventString
-          .substring(
-            userProvidedPageEventString.indexOf('{') + 2,
-            userProvidedPageEventString.indexOf('}'),
-          )
-          .trim();
+            .substring(
+                userProvidedPageEventString.indexOf('{') + 2,
+                userProvidedPageEventString.indexOf('}'),
+            )
+            .trim();
         evType =
-          userProvidedPageEventString.trim() === ''
-            ? name
-            : userProvidedPageEventString
-                .trim()
-                .replaceAll(/{{([^{}]+)}}/g, get(message, getMessagePath));
+            userProvidedPageEventString.trim() === ''
+                ? name
+                : userProvidedPageEventString
+                    .trim()
+                    .replaceAll(/{{([^{}]+)}}/g, get(message, getMessagePath));
       } else {
         evType = `Viewed ${name || get(message, CATEGORY_KEY) || ''} Page`;
       }
@@ -623,10 +625,25 @@ const processSingleMessage = (message, destination) => {
     case EventType.SCREEN:
       {
         const { eventType, updatedProperties } = getScreenevTypeAndUpdatedProperties(
-          message,
-          CATEGORY_KEY,
+            message,
+            CATEGORY_KEY,
         );
-        evType = eventType;
+        let customScreenEv = '';
+        if (useUserDefinedScreenEventName) {
+          const getMessagePath = userProvidedScreenEventString
+              .substring(
+                  userProvidedScreenEventString.indexOf('{') + 2,
+                  userProvidedScreenEventString.indexOf('}'),
+              )
+              .trim();
+          customScreenEv =
+              userProvidedScreenEventString.trim() === ''
+                  ? name
+                  : userProvidedScreenEventString
+                      .trim()
+                      .replaceAll(/{{([^{}]+)}}/g, get(message, getMessagePath));
+        }
+        evType =useUserDefinedScreenEventName ? customScreenEv : eventType;
         message.properties = updatedProperties;
         category = ConfigCategory.SCREEN;
       }

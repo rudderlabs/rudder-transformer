@@ -1,3 +1,8 @@
+const {
+  InstrumentationError,
+  ConfigurationError,
+  NetworkInstrumentationError,
+} = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   getDestinationExternalID,
@@ -31,11 +36,6 @@ const {
   createUpdateUser,
   createList,
 } = require('./util');
-const {
-  InstrumentationError,
-  ConfigurationError,
-  NetworkInstrumentationError,
-} = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const identifyResponseBuilder = async (message, { Config }) => {

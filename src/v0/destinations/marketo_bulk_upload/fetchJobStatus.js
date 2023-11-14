@@ -1,8 +1,8 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-prototype-builtins */
+const { PlatformError } = require('@rudderstack/integrations-lib');
 const { getAccessToken } = require('./util');
 const { handleHttpRequest } = require('../../../adapters/network');
-const { PlatformError } = require('../../util/errorTypes');
 const stats = require('../../../util/stats');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const {

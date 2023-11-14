@@ -1,0 +1,49 @@
+{
+  "input": [
+    {
+      "event": {
+        "anonymousId": "63767499ca6fb1b7c988d5bb",
+        "artist": "Gautam",
+        "genre": "Jazz",
+        "song": "Take Five"
+      },
+      "source": {
+        "id": "source_id",
+        "config": {
+          "configField1": "configVal1"
+        }
+      }
+    }
+  ],
+  "output": [
+    {
+      "output": {
+        "batch": [
+          {
+            "event": "pipedream_source_event",
+            "anonymousId": "63767499ca6fb1b7c988d5bb",
+            "context": {
+              "integration": {
+                "name": "PIPEDREAM"
+              },
+              "library": {
+                "name": "unknown",
+                "version": "unknown"
+              }
+            },
+            "integrations": {
+              "PIPEDREAM": false
+            },
+            "type": "track",
+            "properties": {
+              "anonymousId": "63767499ca6fb1b7c988d5bb",
+              "artist": "Gautam",
+              "genre": "Jazz",
+              "song": "Take Five"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

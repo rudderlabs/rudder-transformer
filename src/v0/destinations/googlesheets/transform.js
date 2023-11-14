@@ -1,12 +1,12 @@
 /* eslint-disable no-nested-ternary */
 const get = require('get-value');
+const { ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
   getValueFromMessage,
   getSuccessRespEvents,
   handleRtTfSingleEventError,
   checkInvalidRtTfEvents,
 } = require('../../util');
-const { ConfigurationError } = require('../../util/errorTypes');
 
 const SOURCE_KEYS = ['properties', 'traits', 'context.traits'];
 

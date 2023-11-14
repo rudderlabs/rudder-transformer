@@ -5,6 +5,7 @@ const {
   removeUndefinedAndNullValues,
   isDefinedAndNotNull,
 } = require('rudder-transformer-cdk/build/utils');
+const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
   getIntegrationsObj,
   isEmpty,
@@ -14,7 +15,6 @@ const {
 } = require('../../../v0/util');
 const { GENERIC_TRUE_VALUES, GENERIC_FALSE_VALUES } = require('../../../constants');
 const { BASE_URL, BLACKLISTED_CHARACTERS } = require('./config');
-const { ConfigurationError, InstrumentationError } = require('../../../v0/util/errorTypes');
 
 // append properties to endpoint
 // eg: ${BASE_URL}key1=value1;key2=value2;....

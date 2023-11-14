@@ -3,7 +3,7 @@ const {
   InstrumentationError,
   ConfigurationError,
   NetworkError,
-} = require('../../../v0/util/errorTypes');
+} = require('@rudderstack/integrations-lib');
 const { isHttpStatusSuccess } = require('../../../v0/util');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../../v0/util/tags');

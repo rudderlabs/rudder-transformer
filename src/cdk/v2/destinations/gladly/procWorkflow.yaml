@@ -56,6 +56,7 @@ steps:
 
   - name: findCustomer
     description: Find if customer is exist or not based on email, phone or externalCustomerId
+    condition: $.getQueryParams($.context.payload) !== undefined
     template: |
       const requestOptions = {
         headers: $.getHeaders(.destination)
@@ -67,14 +68,13 @@ steps:
 
   - name: createCustomer
     description: Build response for create customer
-    condition: $.outputs.findCustomer.status === 400 || ($.outputs.findCustomer.status === 200 && $.outputs.findCustomer.response.length === 0)
+    condition: $.outputs.findCustomer.status === 400 || ($.outputs.findCustomer.status === 200 && $.outputs.findCustomer.response.length === 0) || $.getQueryParams($.context.payload) === undefined
     template: |
       const response = $.defaultRequestConfig()
       response.body.JSON = $.removeUndefinedAndNullValues($.context.payload)
       response.endpoint = $.getEndpoint(.destination)
       response.method = "POST"
       response.headers = $.getHeaders(.destination)
-      console.log("res", $.outputs.findCustomer);
       response
 
   - name: updateCustomer

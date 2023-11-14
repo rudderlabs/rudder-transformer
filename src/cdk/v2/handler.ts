@@ -67,7 +67,7 @@ export function getCachedWorkflowEngine(
 export async function executeWorkflow(
   workflowEngine: WorkflowEngine,
   parsedEvent: FixMe,
-  requestMetadata: NonNullable<unknown>,
+  requestMetadata: NonNullable<unknown> = {},
 ) {
   const result = await workflowEngine.execute(parsedEvent, { requestMetadata });
   // TODO: Handle remaining output scenarios

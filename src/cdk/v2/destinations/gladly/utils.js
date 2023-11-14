@@ -44,26 +44,31 @@ const getFieldValue = (field) => {
   return undefined;
 }
 
-const formatField = (message, fieldName) => {
-  let field;
-  const mappedToDestination = get(message, MappedToDestinationKey);
-  // for rETL
-  if (mappedToDestination) {
-    const identifierType = get(message, identifierTypeKey);
-    if (identifierType && identifierType === fieldName) {
-      field = get(message, externalIdKey);
-      if (field) {
-        return [{ original: field }];
-      }
+const formatFieldForRETl = (message, fieldName) => {
+  const identifierType = get(message, identifierTypeKey);
+  if (identifierType && identifierType === fieldName) {
+    const field = get(message, externalIdKey);
+    if (field) {
+      return [{ original: field }];
     }
-    const key = fieldName === 'email' ? 'emails' : 'phones';
-    field = get(message, `traits.${key}`);
-    return getFieldValue(field);
   }
-
-  // for event stream
-  field = get(message, `context.traits.${fieldName}`);
+  const key = fieldName === 'email' ? 'emails' : 'phones';
+  const field = get(message, `traits.${key}`);
   return getFieldValue(field);
+};
+
+const formatFieldForEventStream = (message, fieldName) => {
+  const field = get(message, `context.traits.${fieldName}`);
+  return getFieldValue(field);
+};
+
+const formatField = (message, fieldName) => {
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  if (mappedToDestination) {
+    return formatFieldForRETl(message, fieldName);
+  }
+  return formatFieldForEventStream(message, fieldName);
+
 };
 
 const getCustomAttributes = (message) => {
@@ -71,19 +76,19 @@ const getCustomAttributes = (message) => {
   // for rETL
   if (mappedToDestination) {
     if (message?.traits?.customAttributes && typeof message.traits.customAttributes === 'object') {
-      return message.traits.customAttributes;
+      return Object.keys(message.traits.customAttributes).length > 0 ? message.traits.customAttributes : undefined;
     }
     return undefined;
   }
 
   // for event stream
-  const customAttributes = message.context.traits || {};
+  const customAttributes = message.context?.traits || {};
   reservedCustomAttributes.forEach((customAttribute) => {
     if (customAttributes[customAttribute]) {
       delete customAttributes[customAttribute];
     }
   });
-  return customAttributes;
+  return Object.keys(customAttributes).length > 0 ? customAttributes : undefined;
 };
 
 const getExternalCustomerId = (message) => {
@@ -132,8 +137,8 @@ const getCustomerId = (message) => {
 };
 
 const validatePayload = (payload) => {
-  if (!(payload.phones || payload.emails || payload.id || payload.externalCustomerId)) {
-    throw new InstrumentationError('One of phone, email, id or externalCustomerId is required for an identify call');
+  if (!(payload?.phones || payload?.emails || payload?.id || payload?.externalCustomerId)) {
+    throw new InstrumentationError('One of phone, email, userId or GladlyCustomerId is required for an identify call');
   }
 };
 
@@ -157,9 +162,12 @@ module.exports = {
   getHeaders,
   getEndpoint,
   formatField,
+  getFieldValue,
   getCustomerId,
   getQueryParams,
   validatePayload,
+  formatFieldForRETl,
   getCustomAttributes,
-  getExternalCustomerId
+  getExternalCustomerId,
+  formatFieldForEventStream
 };

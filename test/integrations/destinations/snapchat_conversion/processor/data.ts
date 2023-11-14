@@ -4291,6 +4291,315 @@ export const data = [
       },
     },
   },
+  {
+    name: 'snapchat_conversion',
+    description: 'Test Case for Order Completed event category',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              messageId: 'ec5481b6-a926-4d2e-b293-0b3a77c4d3be',
+              originalTimestamp: '2022-04-22T10:57:58Z',
+              channel: 'mobile',
+              anonymousId: 'ea5cfab2-3961-4d8a-8187-3d1858c99090',
+              context: {
+                traits: {
+                  email: 'test@email.com',
+                  phone: '+91 2111111 ',
+                },
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                device: {
+                  advertisingId: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
+                  id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
+                  manufacturer: 'Google',
+                  name: 'generic_x86_arm',
+                  type: 'ios',
+                  attTrackingStatus: 3,
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                locale: 'en-US',
+                os: {
+                  name: 'iOS',
+                  version: '14.4.1',
+                },
+                screen: {
+                  density: 2,
+                },
+                externalId: [
+                  {
+                    type: 'ga4AppInstanceId',
+                    id: 'f0dd99v4f979fb997ce453373900f891',
+                  },
+                ],
+                userAgent:
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
+              },
+              type: 'track',
+              event: 'Order Completed',
+              properties: {
+                brands: ['brand01', 'brand02'],
+                products: [
+                  {
+                    product_id: '123',
+                    price: '14',
+                    quantity: 1,
+                  },
+                  {
+                    product_id: '124',
+                    price: 14,
+                    quantity: 3,
+                  },
+                ],
+                category: 'shoes'
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2022-04-22T10:57:58Z',
+            },
+            destination: {
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: false,
+                },
+              },
+              Config: {
+                apiKey: 'dummyApiKey',
+                pixelId: 'dummyPixelId',
+                appId: 'dhfeih44f',
+                snapAppId: 'hfhdhfd',
+              },
+            },
+            metadata: {
+              jobId: 31,
+              destinationId: 'd2',
+              workspaceId: 'w2',
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: {
+              jobId: 31,
+              destinationId: 'd2',
+              workspaceId: 'w2',
+            },
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://tr.snapchat.com/v2/conversion',
+              headers: {
+                Authorization: 'Bearer dummyApiKey',
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  event_type: 'PURCHASE',
+                  item_ids: ['123', '124'],
+                  brands: ['brand01', 'brand02'],
+                  item_category: "shoes",
+                  price: '56',
+                  hashed_email: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                  hashed_phone_number:
+                      'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                  hashed_mobile_ad_id:
+                      'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
+                  hashed_idfv: '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
+                  user_agent:
+                      'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
+                  timestamp: '1650625078',
+                  event_conversion_type: 'MOBILE_APP',
+                  snap_app_id: 'hfhdhfd',
+                  app_id: 'dhfeih44f',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'snapchat_conversion',
+    description: 'Test Case for Order Completed event with both category and item_category',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              messageId: 'ec5481b6-a926-4d2e-b293-0b3a77c4d3be',
+              originalTimestamp: '2022-04-22T10:57:58Z',
+              channel: 'mobile',
+              anonymousId: 'ea5cfab2-3961-4d8a-8187-3d1858c99090',
+              context: {
+                traits: {
+                  email: 'test@email.com',
+                  phone: '+91 2111111 ',
+                },
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                device: {
+                  advertisingId: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
+                  id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
+                  manufacturer: 'Google',
+                  name: 'generic_x86_arm',
+                  type: 'ios',
+                  attTrackingStatus: 3,
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                locale: 'en-US',
+                os: {
+                  name: 'iOS',
+                  version: '14.4.1',
+                },
+                screen: {
+                  density: 2,
+                },
+                externalId: [
+                  {
+                    type: 'ga4AppInstanceId',
+                    id: 'f0dd99v4f979fb997ce453373900f891',
+                  },
+                ],
+                userAgent:
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
+              },
+              type: 'track',
+              event: 'Order Completed',
+              properties: {
+                brands: ['brand01', 'brand02'],
+                products: [
+                  {
+                    product_id: '123',
+                    price: '14',
+                    quantity: 1,
+                  },
+                  {
+                    product_id: '124',
+                    price: 14,
+                    quantity: 3,
+                  },
+                ],
+                category: 'shoes',
+                item_category: 'glass'
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2022-04-22T10:57:58Z',
+            },
+            destination: {
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: false,
+                },
+              },
+              Config: {
+                apiKey: 'dummyApiKey',
+                pixelId: 'dummyPixelId',
+                appId: 'dhfeih44f',
+                snapAppId: 'hfhdhfd',
+              },
+            },
+            metadata: {
+              jobId: 31,
+              destinationId: 'd2',
+              workspaceId: 'w2',
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: {
+              jobId: 31,
+              destinationId: 'd2',
+              workspaceId: 'w2',
+            },
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://tr.snapchat.com/v2/conversion',
+              headers: {
+                Authorization: 'Bearer dummyApiKey',
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  event_type: 'PURCHASE',
+                  item_ids: ['123', '124'],
+                  brands: ['brand01', 'brand02'],
+                  item_category: "glass",
+                  price: '56',
+                  hashed_email: '73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2',
+                  hashed_phone_number:
+                      'bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492',
+                  hashed_mobile_ad_id:
+                      'f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2',
+                  hashed_idfv: '54bd0b26a3d39dad90f5149db49b9fd9ba885f8e35d1d94cae69273f5e657b9f',
+                  user_agent:
+                      'mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36',
+                  timestamp: '1650625078',
+                  event_conversion_type: 'MOBILE_APP',
+                  snap_app_id: 'hfhdhfd',
+                  app_id: 'dhfeih44f',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  }
 ].map((tc) => ({
   ...tc,
   mockFns: (_) => {

@@ -22,9 +22,11 @@ const identifierTypeKey = 'context.externalId.0.identifierType';
 
 const getHeaders = (destination) => {
   const { apiToken, userName } = destination.Config;
+  const credentials = `${userName}:${apiToken}`;
+  const base64Credentials = base64Convertor(credentials);
   return {
     'Content-Type': 'application/json',
-    Authorization: `Basic ${base64Convertor(`${userName}:${apiToken}`)}`,
+    Authorization: `Basic ${base64Credentials}`,
   };
 };
 

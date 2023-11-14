@@ -64,19 +64,19 @@ describe('getRearrangedEvents', () => {
           ],
         },
       ],
-        [
-          {
-           batched: false,
-           destination:  {},
-           error: "Invalid payload for the destination",
-           metadata:  [
-              {
-               jobId: 5,
-               userId: "user12345",
-             },
-           ],
-         },
-       ],
+      [
+        {
+          batched: false,
+          destination: {},
+          error: 'Invalid payload for the destination',
+          metadata: [
+            {
+              jobId: 5,
+              userId: 'user12345',
+            },
+          ],
+        },
+      ],
     ];
     const result = getRearrangedEvents(eachUserSuccessEventslist, eachUserErrorEventsList);
     expect(result).toEqual(expected);
@@ -106,7 +106,7 @@ describe('getRearrangedEvents', () => {
       [
         { message: { type: 'track' }, metadata: [{ jobId: 1 }] },
         { message: { type: 'track' }, metadata: [{ jobId: 3 }] },
-        { message: { type: 'track' }, metadata: [{ jobId: 5 }] }
+        { message: { type: 'track' }, metadata: [{ jobId: 5 }] },
       ],
       [
         {
@@ -147,54 +147,54 @@ describe('getRearrangedEvents', () => {
     const expected = [
       [
         {
-          "message": {
-            "type": "track"
+          message: {
+            type: 'track',
           },
-          "metadata": [
+          metadata: [
             {
-              "jobId": 1
-            }
-          ]
+              jobId: 1,
+            },
+          ],
         },
         {
-          "message": {
-            "type": "track"
+          message: {
+            type: 'track',
           },
-          "metadata": [
+          metadata: [
             {
-              "jobId": 2
-            }
-          ]
+              jobId: 2,
+            },
+          ],
         },
         {
-          "message": {
-            "type": "track"
+          message: {
+            type: 'track',
           },
-          "metadata": [
+          metadata: [
             {
-              "jobId": 5
-            }
-          ]
-        }
+              jobId: 5,
+            },
+          ],
+        },
       ],
       [
         {
-          "batched": false,
-          "destination": {},
-          "error": "Invalid payload for the destination",
-          "metadata": [
+          batched: false,
+          destination: {},
+          error: 'Invalid payload for the destination',
+          metadata: [
             {
-              "jobId": 3,
-              "userId": "user12345"
+              jobId: 3,
+              userId: 'user12345',
             },
             {
-              "jobId": 4,
-              "userId": "user12345"
-            }
-          ]
-        }
-      ]
-    ]
+              jobId: 4,
+              userId: 'user12345',
+            },
+          ],
+        },
+      ],
+    ];
     const result = getRearrangedEvents(successEventslist, errorEventsList);
     console.log(JSON.stringify(result));
     expect(result).toEqual(expected);
@@ -222,48 +222,46 @@ describe('getRearrangedEvents', () => {
     const expected = [
       [
         {
-          "message": {
-            "type": "track"
+          message: {
+            type: 'track',
           },
-          "metadata": [
+          metadata: [
             {
-              "jobId": 2
-            }
-          ]
+              jobId: 2,
+            },
+          ],
         },
         {
-          "message": {
-            "type": "track"
+          message: {
+            type: 'track',
           },
-          "metadata": [
+          metadata: [
             {
-              "jobId": 3
-            }
-          ]
-        }
+              jobId: 3,
+            },
+          ],
+        },
       ],
       [
         {
-          "batched": false,
-          "destination": {},
-          "error": "Invalid payload for the destination",
-          "metadata": [
+          batched: false,
+          destination: {},
+          error: 'Invalid payload for the destination',
+          metadata: [
             {
-              "jobId": 1,
-              "userId": "user12345"
+              jobId: 1,
+              userId: 'user12345',
             },
             {
-              "jobId": 4,
-              "userId": "user12345"
-            }
-          ]
-        }
-      ]
-    ]
+              jobId: 4,
+              userId: 'user12345',
+            },
+          ],
+        },
+      ],
+    ];
     const result = getRearrangedEvents(successEventslist, errorEventsList);
     console.log(JSON.stringify(result));
     expect(result).toEqual(expected);
   });
-
 });
-

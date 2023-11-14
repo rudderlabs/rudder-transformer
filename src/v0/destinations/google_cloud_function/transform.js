@@ -1,4 +1,4 @@
-const _ = require('lodash');
+const lodash = require('lodash');
 const {
   getSuccessRespEvents,
   checkInvalidRtTfEvents,
@@ -22,7 +22,7 @@ function batchEvents(successRespList, maxBatchSize = 10) {
   const batchedResponseList = [];
 
   // arrayChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
-  const arrayChunks = _.chunk(successRespList, maxBatchSize);
+  const arrayChunks = lodash.chunk(successRespList, maxBatchSize);
   arrayChunks.forEach((chunk) => {
     const batchEventResponse = generateBatchedPayload(chunk);
     batchedResponseList.push(

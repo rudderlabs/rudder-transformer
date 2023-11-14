@@ -1,10 +1,10 @@
-const { handleHttpRequest } = require('../../../adapters/network');
 const {
   AbortedError,
   RetryableError,
   NetworkError,
   TransformationError,
-} = require('../../util/errorTypes');
+} = require('@rudderstack/integrations-lib');
+const { handleHttpRequest } = require('../../../adapters/network');
 const tags = require('../../util/tags');
 const { isHttpStatusSuccess, generateUUID } = require('../../util');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
@@ -410,8 +410,9 @@ const getFieldSchemaMap = async (accessToken, munchkinId) => {
 const checkEventStatusViaSchemaMatching = (event, fieldMap) => {
   const mismatchedFields = {};
   const events = event.input;
-  events.forEach((event) => {
-    const { message, metadata } = event;
+  events.forEach((ev) => {
+    const { message, metadata } = ev;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const { job_id } = metadata;
 
     Object.entries(message).forEach(([paramName, paramValue]) => {

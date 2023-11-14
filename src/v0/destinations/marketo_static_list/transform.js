@@ -1,5 +1,6 @@
-const _ = require('lodash');
+const lodash = require('lodash');
 const cloneDeep = require('lodash/cloneDeep');
+const { InstrumentationError, UnauthorizedError } = require('@rudderstack/integrations-lib');
 const {
   defaultPostRequestConfig,
   defaultDeleteRequestConfig,
@@ -16,7 +17,6 @@ const {
 const { formatConfig, MAX_LEAD_IDS_SIZE } = require('./config');
 const Cache = require('../../util/cache');
 const { getAuthToken } = require('../marketo/transform');
-const { InstrumentationError, UnauthorizedError } = require('../../util/errorTypes');
 
 const authCache = new Cache(AUTH_CACHE_TTL); // 1 hr
 
@@ -50,7 +50,7 @@ const batchResponseBuilder = (message, Config, token, leadIds, operation) => {
     throw new InstrumentationError('No static listId is provided');
   }
   const response = [];
-  const leadIdsChunks = _.chunk(leadIds, MAX_LEAD_IDS_SIZE);
+  const leadIdsChunks = lodash.chunk(leadIds, MAX_LEAD_IDS_SIZE);
   leadIdsChunks.forEach((ids) => {
     response.push(responseBuilder(endpoint, ids, operation, token));
   });

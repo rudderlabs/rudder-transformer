@@ -36,30 +36,6 @@
     "destKey": "$screen_dpi"
   },
   {
-    "sourceKeys": "context.campaign.name",
-    "destKey": "utm_campaign"
-  },
-  {
-    "sourceKeys": "context.campaign.source",
-    "destKey": "utm_source"
-  },
-  {
-    "sourceKeys": "context.campaign.medium",
-    "destKey": "utm_medium"
-  },
-  {
-    "sourceKeys": "context.campaign.term",
-    "destKey": "utm_term"
-  },
-  {
-    "sourceKeys": "context.campaign.content",
-    "destKey": "utm_content"
-  },
-  {
-    "sourceKeys": "context.campaign.test",
-    "destKey": "utm_test"
-  },
-  {
     "sourceKeys": "context.network.carrier",
     "destKey": "$carrier"
   },

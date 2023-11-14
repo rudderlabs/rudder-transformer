@@ -1,5 +1,6 @@
 const set = require('set-value');
 const get = require('get-value');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
   isDefined,
   constructPayload,
@@ -11,6 +12,8 @@ const {
   batchMultiplexedEvents,
   getSuccessRespEvents,
   defaultBatchRequestConfig,
+  IsGzipSupported,
+  isObject,
 } = require('../../util');
 const {
   ConfigCategory,
@@ -18,7 +21,6 @@ const {
   GEO_SOURCE_ALLOWED_VALUES,
   mappingConfig,
 } = require('./config');
-const { InstrumentationError } = require('../../util/errorTypes');
 const { CommonUtils } = require('../../../util/common');
 
 const mPIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
@@ -143,6 +145,7 @@ const isImportAuthCredentialsAvailable = (destination) =>
 const findExistingBatch = (batch, metadataMap) => {
   let existingBatch = null;
 
+  // eslint-disable-next-line no-restricted-syntax
   for (const metadataItem of batch.metadata) {
     if (metadataMap.has(metadataItem.jobId)) {
       existingBatch = metadataMap.get(metadataItem.jobId);
@@ -158,8 +161,9 @@ const findExistingBatch = (batch, metadataMap) => {
  * @param {*} mergedBatches An array of merged batch objects.
  */
 const removeDuplicateMetadata = (mergedBatches) => {
-  for (const batch of mergedBatches) {
+  mergedBatches.forEach((batch) => {
     const metadataSet = new Set();
+    // eslint-disable-next-line no-param-reassign
     batch.metadata = batch.metadata.filter((metadataItem) => {
       if (!metadataSet.has(metadataItem.jobId)) {
         metadataSet.add(metadataItem.jobId);
@@ -167,7 +171,36 @@ const removeDuplicateMetadata = (mergedBatches) => {
       }
       return false;
     });
+  });
+};
+
+/**
+ * Builds UTM parameters from a campaign object.
+ *
+ * @param {Object} campaign - The campaign object containing the campaign details.
+ * @returns {Object} - The object containing the UTM parameters extracted from the campaign object.
+ *
+ * @example
+ * const campaign = {
+ *   name: 'summer_sale',
+ *   source: 'newsletter',
+ *   medium: 'email'
+ * };
+ * { utm_campaign: 'summer_sale', utm_source: 'newsletter', utm_medium: 'email' }
+ */
+const buildUtmParams = (campaign) => {
+  const utmParams = {};
+  if (isObject(campaign)) {
+    Object.keys(campaign).forEach((key) => {
+      if (key === 'name') {
+        utmParams.utm_campaign = campaign[key];
+      } else {
+        utmParams[`utm_${key}`] = campaign[key];
+      }
+    });
   }
+
+  return utmParams;
 };
 
 /**
@@ -210,20 +243,29 @@ const groupEventsByEndpoint = (events) => {
   };
 };
 
-const generateBatchedPayloadForArray = (events) => {
+const generateBatchedPayloadForArray = (events, reqMetadata) => {
   const { batchedRequest } = defaultBatchRequestConfig();
+  const firstEvent = events[0];
+  batchedRequest.endpoint = firstEvent.endpoint;
+  batchedRequest.headers = firstEvent.headers;
+  batchedRequest.params = firstEvent.params;
+
   const batchResponseList = events.flatMap((event) => JSON.parse(event.body.JSON_ARRAY.batch));
-  batchedRequest.body.JSON_ARRAY = { batch: JSON.stringify(batchResponseList) };
-  batchedRequest.endpoint = events[0].endpoint;
-  batchedRequest.headers = events[0].headers;
-  batchedRequest.params = events[0].params;
+
+  if (IsGzipSupported(reqMetadata) && firstEvent.endpoint.includes('import')) {
+    // Gzipping the payload for /import endpoint
+    batchedRequest.body.GZIP = { payload: JSON.stringify(batchResponseList) };
+  } else {
+    batchedRequest.body.JSON_ARRAY = { batch: JSON.stringify(batchResponseList) };
+  }
+
   return batchedRequest;
 };
 
-const batchEvents = (successRespList, maxBatchSize) => {
+const batchEvents = (successRespList, maxBatchSize, reqMetadata) => {
   const batchedEvents = batchMultiplexedEvents(successRespList, maxBatchSize);
   return batchedEvents.map((batch) => {
-    const batchedRequest = generateBatchedPayloadForArray(batch.events);
+    const batchedRequest = generateBatchedPayloadForArray(batch.events, reqMetadata);
     return getSuccessRespEvents(batchedRequest, batch.metadata, batch.destination, true);
   });
 };
@@ -283,7 +325,9 @@ const combineBatchRequestsWithSameJobIds = (inputBatches) => {
 module.exports = {
   createIdentifyResponse,
   isImportAuthCredentialsAvailable,
+  buildUtmParams,
   groupEventsByEndpoint,
+  generateBatchedPayloadForArray,
   batchEvents,
   combineBatchRequestsWithSameJobIds,
 };

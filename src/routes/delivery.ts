@@ -17,4 +17,5 @@ router.post(
   DeliveryController.testDestinationDelivery,
 );
 
-export const proxyRoutes = router.routes();
+const proxyRoutes = router.routes();
+export default proxyRoutes;

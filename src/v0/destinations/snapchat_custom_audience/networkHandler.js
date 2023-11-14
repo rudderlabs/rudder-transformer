@@ -1,15 +1,13 @@
+const { NetworkError, RetryableError, AbortedError } = require('@rudderstack/integrations-lib');
 const { removeUndefinedValues, getAuthErrCategoryFromErrDetailsAndStCode } = require('../../util');
 const { prepareProxyRequest, getPayloadData, httpSend } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util/index');
-const {
-  REFRESH_TOKEN,
-} = require('../../../adapters/networkhandler/authConstants');
+const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
 const tags = require('../../util/tags');
 const {
   getDynamicErrorType,
   processAxiosResponse,
 } = require('../../../adapters/utils/networkUtils');
-const { NetworkError, RetryableError, AbortedError } = require('../../util/errorTypes');
 const { HTTP_STATUS_CODES } = require('../../util/constant');
 
 const prepareProxyReq = (request) => {

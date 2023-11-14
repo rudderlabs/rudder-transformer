@@ -1,3 +1,4 @@
+const { AbortedError, RetryableError, NetworkError } = require('@rudderstack/integrations-lib');
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../util/index');
 
@@ -5,7 +6,6 @@ const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
-const { AbortedError, RetryableError, NetworkError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 
 function checkIfFailuresAreRetryable(response) {

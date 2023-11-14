@@ -418,27 +418,27 @@ export const data = [
                 Name: 'bqstream test',
               },
 
-              error: "Message Type not supported: identify",
+              error: 'Message Type not supported: identify',
               metadata: [
                 {
                   jobId: 3,
-                  userId: "user12345"
+                  userId: 'user12345',
                 },
                 {
                   jobId: 9,
-                  userId: "user125"
-                }
+                  userId: 'user125',
+                },
               ],
               statTags: {
-                destType: "BQSTREAM",
-                errorCategory: "dataValidation",
-                errorType: "instrumentation",
-                feature: "router",
-                implementation: "native",
-                module: "destination"
+                destType: 'BQSTREAM',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
               },
-              statusCode: 400
-            }
+              statusCode: 400,
+            },
           ],
         },
       },

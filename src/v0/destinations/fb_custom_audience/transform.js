@@ -1,5 +1,10 @@
-const _ = require('lodash');
+const lodash = require('lodash');
 const get = require('get-value');
+const {
+  InstrumentationError,
+  TransformationError,
+  ConfigurationError,
+} = require('@rudderstack/integrations-lib');
 const {
   defaultRequestConfig,
   defaultPostRequestConfig,
@@ -26,11 +31,6 @@ const {
 } = require('./config');
 
 const { MappedToDestinationKey } = require('../../../constants');
-const {
-  InstrumentationError,
-  TransformationError,
-  ConfigurationError,
-} = require('../../util/errorTypes');
 
 const responseBuilderSimple = (payload, audienceId) => {
   if (payload) {
@@ -62,7 +62,7 @@ const preparePayload = (
   disableFormat,
   destinationId,
 ) => {
-  const prepareFinalPayload = _.cloneDeep(paramsPayload);
+  const prepareFinalPayload = lodash.cloneDeep(paramsPayload);
   if (Array.isArray(userSchema)) {
     prepareFinalPayload.schema = userSchema;
   } else {

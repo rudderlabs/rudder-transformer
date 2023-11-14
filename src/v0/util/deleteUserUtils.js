@@ -1,4 +1,4 @@
-const _ = require('lodash');
+const lodash = require('lodash');
 /**
  * Takes the userAttributes array fetches userIds at root level of each element
  * and make batches of Ids accoring to MAX_BATCH_SIZE
@@ -14,7 +14,7 @@ const getUserIdBatches = (userAttributes, MAX_BATCH_SIZE) => {
       userIds.push(userAttribute.userId);
     }
   });
-  const userIdBatches = _.chunk(userIds, MAX_BATCH_SIZE);
+  const userIdBatches = lodash.chunk(userIds, MAX_BATCH_SIZE);
   return userIdBatches;
 };
 

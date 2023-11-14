@@ -1,8 +1,10 @@
 /* eslint-disable camelcase */
+/* eslint-disable @typescript-eslint/naming-convention */
 const _ = require('lodash');
 const { SHA256 } = require('crypto-js');
 const get = require('get-value');
 const set = require('set-value');
+const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   constructPayload,
@@ -28,7 +30,6 @@ const {
   MAX_BATCH_SIZE,
   PARTNER_NAME,
 } = require('./config');
-const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const USER_EMAIL_KEY_PATH = 'context.user.email';

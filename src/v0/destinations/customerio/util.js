@@ -1,8 +1,8 @@
 const get = require('get-value');
 const set = require('set-value');
 const truncate = require('truncate-utf8-bytes');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { MAX_BATCH_SIZE, configFieldsToCheck } = require('./config');
-const logger = require('../../../logger');
 const {
   constructPayload,
   defaultPutRequestConfig,
@@ -28,8 +28,6 @@ const {
   DEVICE_DELETE_ENDPOINT,
   DEVICE_REGISTER_ENDPOINT,
 } = require('./config');
-
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
 const deviceRelatedEventNames = [
   'Application Installed',
@@ -102,7 +100,7 @@ const isdeviceRelatedEventName = (eventName, destination) =>
 const identifyResponseBuilder = (userId, message) => {
   const rawPayload = {};
   // if userId is not there simply drop the payload
-  const id = userId || getFieldValueFromMessage(message, "email");
+  const id = userId || getFieldValueFromMessage(message, 'email');
   if (!id) {
     throw new InstrumentationError('userId or email is not present');
   }
@@ -177,6 +175,7 @@ const aliasResponseBuilder = (message, userId) => {
   if (validateEmail(userId)) {
     cioProperty = 'email';
   }
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   let prev_cioProperty = 'id';
   if (validateEmail(message.previousId)) {
     prev_cioProperty = 'email';
@@ -229,12 +228,11 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
   let requestConfig = defaultPostRequestConfig;
   // any other event type except identify
   const token = get(message, 'context.device.token');
-  const id = userId || getFieldValueFromMessage(message, "email");
+  const id = userId || getFieldValueFromMessage(message, 'email');
   // use this if only top level keys are to be sent
   // DEVICE DELETE from CustomerIO
   const isDeviceDeleteEvent = deviceDeleteRelatedEventName === evName;
   if (isDeviceDeleteEvent) {
-
     if (!id || !token) {
       throw new InstrumentationError('userId/email or device_token not present');
     }
@@ -253,7 +251,7 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
       last_used: Math.floor(new Date(timestamp).getTime() / 1000),
     };
     const deviceType = get(message, 'context.device.type');
-    if (deviceType && typeof deviceType === "string") {
+    if (deviceType && typeof deviceType === 'string') {
       // Ref - https://www.customer.io/docs/api/#operation/add_device
       // supported platform are "ios", "android"
       devProps.platform = isAppleFamily(deviceType) ? 'ios' : deviceType.toLowerCase();
@@ -288,10 +286,6 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
       // 100 - len(`Viewed  Screen`) = 86
       trimmedEvName = `Viewed ${truncate(message.event || message.properties.name, 86)} Screen`;
     } else {
-      if (!evName) {
-        logger.error(`Could not determine event name`);
-        throw new InstrumentationError(`Could not determine event name`);
-      }
       trimmedEvName = truncate(evName, 100);
     }
     // anonymous_id needs to be sent for anon track calls to provide information on which anon user is being tracked
@@ -306,9 +300,9 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
   return { rawPayload, endpoint, requestConfig };
 };
 
-const validateConfigFields = destination => {
+const validateConfigFields = (destination) => {
   const { Config } = destination;
-  configFieldsToCheck.forEach(configProperty => {
+  configFieldsToCheck.forEach((configProperty) => {
     if (!Config[configProperty]) {
       throw new ConfigurationError(`${configProperty} not found in Configs`);
     }
@@ -323,5 +317,5 @@ module.exports = {
   defaultResponseBuilder,
   populateSpecedTraits,
   isdeviceRelatedEventName,
-  validateConfigFields
+  validateConfigFields,
 };

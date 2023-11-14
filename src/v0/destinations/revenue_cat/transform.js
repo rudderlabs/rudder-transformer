@@ -1,5 +1,10 @@
 const set = require('set-value');
 const { defaultRequestConfig } = require('rudder-transformer-cdk/build/utils');
+const {
+  ConfigurationError,
+  TransformationError,
+  InstrumentationError,
+} = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   constructPayload,
@@ -15,11 +20,6 @@ const {
   REVENUE_CAT_IDENTIFY_EXCLUSION,
   BASE_URL,
 } = require('./config');
-const {
-  ConfigurationError,
-  TransformationError,
-  InstrumentationError,
-} = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const trackResponseBuilder = async (message, category, { Config }) => {

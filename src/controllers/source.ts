@@ -12,14 +12,19 @@ export default class SourceController {
       JSON.stringify(ctx.request.body),
     );
     const requestMetadata = MiscService.getRequestMetadata(ctx);
-    const events = ctx.request.body as Object[];
+    const events = ctx.request.body as object[];
     const { version, source }: { version: string; source: string } = ctx.params;
     const integrationService = ServiceSelector.getNativeSourceService();
     try {
-      const resplist = await integrationService.sourceTransformRoutine(
-        events,
+      const { implementationVersion, input } = ControllerUtility.adaptInputToVersion(
         source,
         version,
+        events,
+      );
+      const resplist = await integrationService.sourceTransformRoutine(
+        input,
+        source,
+        implementationVersion,
         requestMetadata,
       );
       ctx.body = resplist;

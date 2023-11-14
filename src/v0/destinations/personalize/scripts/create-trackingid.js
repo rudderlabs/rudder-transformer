@@ -11,7 +11,7 @@ const { fromEnv } = require('@aws-sdk/credential-providers');
 
 const readline = require('readline');
 
-require('dotenv').config()
+require('dotenv').config();
 
 async function promtForInput(rl, questionText) {
   return new Promise((resolve) => {
@@ -33,7 +33,8 @@ async function collectInputs(rl) {
   await checkEnvAndpromtForInput(rl, 'AWS Secret Access Key: ', 'AWS_SECRET_ACCESS_KEY');
   await checkEnvAndpromtForInput(rl, 'AWS REGION: ', 'AWS_REGION');
   await checkEnvAndpromtForInput(rl, 'Name of Dataset Group: ', 'DATASET_GROUP_NAME');
-  await checkEnvAndpromtForInput(rl,
+  await checkEnvAndpromtForInput(
+    rl,
     'Number of fields in Schema in addition to USER_ID, TIMESTAMP, ITEM_ID: ',
     'NUMBER_OF_FIELDS',
   );
@@ -55,13 +56,11 @@ async function collectFileds(rl) {
 
   for (let i = 4; i <= noOfFields + 3; i += 1) {
     const fieldName = await promtForInput(rl, `Name of field no. ${i}: `);
-    const typeName = await promtForInput(rl, `Type of field ${fieldName}: `)
+    const typeName = await promtForInput(rl, `Type of field ${fieldName}: `);
     schema.fields.push({ name: fieldName, type: typeName });
-
   }
   return schema;
 }
-
 
 (async function () {
   let rl = readline.createInterface(process.stdin, process.stdout);

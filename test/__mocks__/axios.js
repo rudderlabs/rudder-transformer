@@ -56,7 +56,6 @@ const urlDirectoryMap = {
   "api.sendinblue.com": "sendinblue",
   "api.criteo.com": "criteo_audience",
   "api.courier.com": "courier",
-  "cdn.optimizely.com": "optimizely_fullstack",
 };
 
 const fs = require("fs");

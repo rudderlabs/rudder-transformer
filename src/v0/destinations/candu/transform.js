@@ -1,3 +1,4 @@
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   defaultRequestConfig,
@@ -6,7 +7,6 @@ const {
   simpleProcessRouterDest,
 } = require('../../util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 const { endpoint, identifyDataMapping, trackDataMapping } = require('./config');
 
 const responseBuilder = (body, { Config }) => {

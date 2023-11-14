@@ -3,6 +3,11 @@
 /* eslint-disable no-use-before-define */
 const get = require('get-value');
 const cloneDeep = require('lodash/cloneDeep');
+const {
+  InstrumentationError,
+  ConfigurationError,
+  UnauthorizedError,
+} = require('@rudderstack/integrations-lib');
 const stats = require('../../../util/stats');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 const {
@@ -38,11 +43,6 @@ const {
   getResponseHandlerData,
 } = require('./util');
 const logger = require('../../../logger');
-const {
-  InstrumentationError,
-  ConfigurationError,
-  UnauthorizedError,
-} = require('../../util/errorTypes');
 
 const userIdLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
 const emailLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day

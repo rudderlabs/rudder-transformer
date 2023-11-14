@@ -23,8 +23,11 @@
   },
   {
     "destKey": "id",
-    "sourceKeys": ["properties.id", "properties.event_id"],
-    "required": false
+    "sourceKeys": "properties.event_id",
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
   },
   {
     "destKey": "eventName",

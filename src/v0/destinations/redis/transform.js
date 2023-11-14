@@ -1,9 +1,9 @@
-const _ = require('lodash');
+const lodash = require('lodash');
 const flatten = require('flat');
 
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { isEmpty, isObject } = require('../../util');
 const { EventType } = require('../../../constants');
-const { InstrumentationError } = require('../../util/errorTypes');
 
 // processValues:
 // 1. removes keys with empty values or still an object(empty) after flattening
@@ -17,7 +17,7 @@ const processValues = (obj) => {
     }
     const val = obj[key];
     // eslint-disable-next-line no-param-reassign
-    obj[key] = _.isArray(val) ? JSON.stringify(val) : _.toString(val);
+    obj[key] = lodash.isArray(val) ? JSON.stringify(val) : lodash.toString(val);
   });
 };
 
@@ -51,7 +51,7 @@ const process = (event) => {
   const messageType = message && message.type && message.type.toLowerCase();
 
   if (messageType !== EventType.IDENTIFY) {
-    return [];
+    throw new InstrumentationError('Only Identify calls are supported');
   }
 
   if (isEmpty(message.userId)) {
@@ -68,7 +68,7 @@ const process = (event) => {
   }
 
   const hmap = {
-    key: `${keyPrefix}user:${_.toString(message.userId)}`,
+    key: `${keyPrefix}user:${lodash.toString(message.userId)}`,
     fields: {},
   };
 

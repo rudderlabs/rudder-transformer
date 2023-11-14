@@ -1,6 +1,10 @@
 const sha256 = require('sha256');
 const { get, set, cloneDeep } = require('lodash');
-const moment = require('moment');
+const {
+  AbortedError,
+  ConfigurationError,
+  InstrumentationError,
+} = require('@rudderstack/integrations-lib');
 const { httpPOST } = require('../../../adapters/network');
 const {
   isHttpStatusSuccess,
@@ -25,11 +29,7 @@ const {
 } = require('./config');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const Cache = require('../../util/cache');
-const {
-  AbortedError,
-  ConfigurationError,
-  InstrumentationError,
-} = require('../../util/errorTypes');
+const helper = require('./helper');
 
 const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
 
@@ -80,7 +80,9 @@ const getConversionActionId = async (headers, params) => {
       'response.0.results.0.conversionAction.resourceName',
     );
     if (!conversionAction) {
-      throw new AbortedError(`Unable to find conversionActionId for conversion:${params.event}`);
+      throw new AbortedError(
+        `Unable to find conversionActionId for conversion:${params.event}. Most probably the conversion name in Google dashboard and Rudderstack dashboard are not same.`,
+      );
     }
     return conversionAction;
   });
@@ -176,7 +178,7 @@ const requestBuilder = (
       const filteredLoginCustomerId = removeHyphens(loginCustomerId);
       response.headers['login-customer-id'] = filteredLoginCustomerId;
     } else {
-      throw new ConfigurationError(`loginCustomerId is required as subAccount is enabled`);
+      throw new ConfigurationError(`"Login Customer ID" is required as "Sub Account" is enabled`);
     }
   }
   return response;
@@ -226,9 +228,7 @@ const getAddConversionPayload = (message, Config) => {
   // transform originalTimestamp to format (yyyy-mm-dd hh:mm:ss+|-hh:mm)
   // e.g 2019-10-14T11:15:18.299Z -> 2019-10-14 16:10:29+0530
   const timestamp = payload.operations.create.transaction_attribute.transaction_date_time;
-  const convertedDateTime = moment(timestamp)
-    .utcOffset(moment(timestamp).utcOffset())
-    .format('YYYY-MM-DD HH:mm:ssZ');
+  const convertedDateTime = helper.formatTimestamp(timestamp);
   payload.operations.create.transaction_attribute.transaction_date_time = convertedDateTime;
   // mapping custom_key that should be predefined in google Ui and mentioned when new job is created
   if (properties.custom_key && properties[properties.custom_key]) {

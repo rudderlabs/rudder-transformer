@@ -1,4 +1,10 @@
 const get = require('get-value');
+const {
+  NetworkInstrumentationError,
+  InstrumentationError,
+  ConfigurationError,
+  NetworkError,
+} = require('@rudderstack/integrations-lib');
 const { httpGET, httpPOST } = require('../../../adapters/network');
 const {
   processAxiosResponse,
@@ -12,12 +18,6 @@ const {
   getDestinationExternalIDInfoForRetl,
   getValueFromMessage,
 } = require('../../util');
-const {
-  NetworkInstrumentationError,
-  InstrumentationError,
-  ConfigurationError,
-  NetworkError,
-} = require('../../util/errorTypes');
 const {
   CONTACT_PROPERTY_MAP_ENDPOINT,
   IDENTIFY_CRM_SEARCH_CONTACT,
@@ -176,6 +176,18 @@ const validatePayloadDataTypes = (propertyMap, hsSupportedKey, value, traitsKey)
 };
 
 /**
+ * Converts date to UTC Midnight TimeStamp
+ * @param {*} propValue
+ * @returns
+ */
+const getUTCMidnightTimeStampValue = (propValue) => {
+  const time = propValue;
+  const date = new Date(time);
+  date.setUTCHours(0, 0, 0, 0);
+  return date.getTime();
+};
+
+/**
  * add addtional properties in the payload that is provided in traits
  * only when it matches with HS properties (pre-defined/created from dashboard)
  * @param {*} message
@@ -204,10 +216,7 @@ const getTransformedJSON = async (message, destination, propertyMap) => {
       if (!rawPayload[traitsKey] && propertyMap[hsSupportedKey]) {
         let propValue = traits[traitsKey];
         if (propertyMap[hsSupportedKey] === 'date') {
-          const time = propValue;
-          const date = new Date(time);
-          date.setUTCHours(0, 0, 0, 0);
-          propValue = date.getTime();
+          propValue = getUTCMidnightTimeStampValue(propValue);
         }
 
         rawPayload[hsSupportedKey] = validatePayloadDataTypes(
@@ -459,7 +468,7 @@ const getEventAndPropertiesFromConfig = (message, destination, payload) => {
  */
 const getExistingData = async (inputs, destination) => {
   const { Config } = destination;
-  const values = [];
+  let values = [];
   let searchResponse;
   let updateHubspotIds = [];
   const firstMessage = inputs[0].message;
@@ -478,8 +487,10 @@ const getExistingData = async (inputs, destination) => {
   inputs.map(async (input) => {
     const { message } = input;
     const { destinationExternalId } = getDestinationExternalIDInfoForRetl(message, DESTINATION);
-    values.push(destinationExternalId);
+    values.push(destinationExternalId.toString().toLowerCase());
   });
+
+  values = Array.from(new Set(values));
   const requestData = {
     filterGroups: [
       {
@@ -596,7 +607,7 @@ const splitEventsForCreateUpdate = async (inputs, destination) => {
     const { destinationExternalId } = getDestinationExternalIDInfoForRetl(message, DESTINATION);
 
     const filteredInfo = updateHubspotIds.filter(
-      (update) => update.property.toString() === destinationExternalId.toString(),
+      (update) => update.property.toString().toLowerCase() === destinationExternalId.toString().toLowerCase(),
     );
 
     if (filteredInfo.length > 0) {
@@ -626,6 +637,31 @@ const getHsSearchId = (message) => {
   return { hsSearchId };
 };
 
+/**
+ * returns updated traits
+ * @param {*} propertyMap
+ * @param {*} traits
+ * @param {*} destination
+ */
+const populateTraits = async (propertyMap, traits, destination) => {
+  const populatedTraits = traits;
+  let propertyToTypeMap = propertyMap;
+  if (!propertyToTypeMap) {
+    // fetch HS properties
+    propertyToTypeMap = await getProperties(destination);
+  }
+
+  const keys = Object.keys(populatedTraits);
+  keys.forEach((key) => {
+    const value = populatedTraits[key];
+    if (propertyToTypeMap[key] === 'date') {
+      populatedTraits[key] = getUTCMidnightTimeStampValue(value);
+    }
+  });
+
+  return populatedTraits;
+};
+
 module.exports = {
   validateDestinationConfig,
   formatKey,
@@ -639,4 +675,6 @@ module.exports = {
   splitEventsForCreateUpdate,
   getHsSearchId,
   validatePayloadDataTypes,
+  getUTCMidnightTimeStampValue,
+  populateTraits,
 };

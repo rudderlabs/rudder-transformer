@@ -1,3 +1,5 @@
+import { mockFns } from '../processor/data';
+
 export const data = [
   {
     name: 'yahoo_dsp',
@@ -144,5 +146,6 @@ export const data = [
         },
       },
     },
+    mockFns,
   },
 ];

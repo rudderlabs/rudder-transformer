@@ -1,5 +1,5 @@
+const { ConfigurationError } = require('@rudderstack/integrations-lib');
 const { removeUndefinedAndNullValues, simpleProcessRouterDest } = require('../../util');
-const { ConfigurationError } = require('../../util/errorTypes');
 
 function getResouceList(config) {
   let resource;

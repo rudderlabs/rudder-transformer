@@ -1,6 +1,6 @@
-/* eslint-disable no-nested-ternary */
-/* eslint-disable no-prototype-builtins */
+/* eslint-disable no-nested-ternary, no-restricted-syntax, no-prototype-builtins */
 const Handlebars = require('handlebars');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   stringifyJSON,
@@ -18,7 +18,6 @@ const {
   simpleProcessRouterDest,
   isDefinedAndNotNull,
 } = require('../../util');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
 // build the response to be sent to backend, url encoded header is required as slack accepts payload in this format
 // add the username and image for Rudder

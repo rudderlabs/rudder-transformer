@@ -5,6 +5,8 @@ import ServiceSelector from '../helpers/serviceSelector';
 import tags from '../v0/util/tags';
 import stats from '../util/stats';
 import PostTransformationDestinationService from '../services/destination/postTransformation';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { CatchErr } from '../util/types';
 
 // TODO: refactor this class to new format
 export default class RegulationController {
@@ -34,13 +36,14 @@ export default class RegulationController {
       );
       ctx.body = resplist;
       ctx.status = resplist[0].statusCode;
-    } catch (error: any) {
+    } catch (error: CatchErr) {
       const metaTO = integrationService.getTags(
         userDeletionRequests[0].destType,
         'unknown',
         'unknown',
         tags.FEATURES.USER_DELETION,
       );
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const errResp = PostTransformationDestinationService.handleUserDeletionFailureEvents(
         error,
         metaTO,
@@ -50,7 +53,7 @@ export default class RegulationController {
     }
     stats.timing('dest_transform_request_latency', startTime, {
       feature: tags.FEATURES.USER_DELETION,
-      version:"v0",
+      version: 'v0',
     });
     return ctx;
   }

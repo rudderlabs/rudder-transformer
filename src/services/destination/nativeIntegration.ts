@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import groupBy from 'lodash/groupBy';
-import cloneDeep from 'lodash/cloneDeep'
+import cloneDeep from 'lodash/cloneDeep';
 import IntegrationDestinationService from '../../interfaces/DestinationService';
 import {
   DeliveryResponse,
@@ -49,7 +50,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
     events: ProcessorTransformationRequest[],
     destinationType: string,
     version: string,
-    _requestMetadata: Object,
+    requestMetadata: NonNullable<unknown>,
   ): Promise<ProcessorTransformationResponse[]> {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
     const respList: ProcessorTransformationResponse[][] = await Promise.all(
@@ -57,7 +58,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
         try {
           const transformedPayloads:
             | ProcessorTransformationOutput
-            | ProcessorTransformationOutput[] = await destHandler.process(event);
+            | ProcessorTransformationOutput[] = await destHandler.process(event, requestMetadata);
           return DestinationPostTransformationService.handleProcessorTransformSucessEvents(
             event,
             transformedPayloads,
@@ -87,10 +88,10 @@ export default class NativeIntegrationDestinationService implements IntegrationD
     events: RouterTransformationRequestData[],
     destinationType: string,
     version: string,
-    _requestMetadata: Object,
+    requestMetadata: NonNullable<unknown>,
   ): Promise<RouterTransformationResponse[]> {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
-    const allDestEvents: Object = groupBy(
+    const allDestEvents: NonNullable<unknown> = groupBy(
       events,
       (ev: RouterTransformationRequestData) => ev.destination?.ID,
     );
@@ -105,7 +106,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
         );
         try {
           const doRouterTransformationResponse: RouterTransformationResponse[] =
-            await destHandler.processRouterDest(cloneDeep(destInputArray));
+            await destHandler.processRouterDest(cloneDeep(destInputArray), requestMetadata);
           metaTO.metadata = destInputArray[0].metadata;
           return DestinationPostTransformationService.handleRouterTransformSuccessEvents(
             doRouterTransformationResponse,
@@ -131,20 +132,23 @@ export default class NativeIntegrationDestinationService implements IntegrationD
     events: RouterTransformationRequestData[],
     destinationType: string,
     version: any,
-    _requestMetadata: Object,
+    requestMetadata: NonNullable<unknown>,
   ): RouterTransformationResponse[] {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
     if (!destHandler.batch) {
       throw new Error(`${destinationType} does not implement batch`);
     }
-    const allDestEvents: Object = groupBy(
+    const allDestEvents: NonNullable<unknown> = groupBy(
       events,
       (ev: RouterTransformationRequestData) => ev.destination?.ID,
     );
     const groupedEvents: RouterTransformationRequestData[][] = Object.values(allDestEvents);
     const response = groupedEvents.map((destEvents) => {
       try {
-        const destBatchedRequests: RouterTransformationResponse[] = destHandler.batch(destEvents);
+        const destBatchedRequests: RouterTransformationResponse[] = destHandler.batch(
+          destEvents,
+          requestMetadata,
+        );
         return destBatchedRequests;
       } catch (error: any) {
         const metaTO = this.getTags(
@@ -167,7 +171,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
   public async deliver(
     destinationRequest: ProcessorTransformationOutput,
     destinationType: string,
-    _requestMetadata: Object,
+    _requestMetadata: NonNullable<unknown>,
   ): Promise<DeliveryResponse> {
     try {
       const networkHandler = networkHandlerFactory.getNetworkHandler(destinationType);

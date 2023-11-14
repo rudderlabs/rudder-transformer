@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const { getErrorRespEvents, getSuccessRespEvents } = require('../../util');
-const { ConfigurationError } = require('../../util/errorTypes');
+const { ConfigurationError } = require('@rudderstack/integrations-lib');
 
 const DEFAULT_INVOCATION_TYPE = 'Event'; // asynchronous invocation
 const MAX_PAYLOAD_SIZE_IN_KB = 256; // only for asynchronous invocation

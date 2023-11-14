@@ -28,6 +28,7 @@
     "build:ci": "tsc -p tsconfig.json",
     "build:swagger": "npm run build && npm run setup:swagger",
     "build": "npm run build:ci && npm run copy",
+    "clean:build": "npm run clean && npm run build",
     "build:clean": "npm run clean && npm run build",
     "verify": "eslint . || exit 1; npm run test:js || exit 1",
     "test:testRouter": "jest testRouter --detectOpenHandles --coverage --notify --watchAll=false",

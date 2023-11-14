@@ -18,7 +18,7 @@ const destinationFilterList = process.env.DESTINATION_FILTER_LIST?.toLocaleLower
 const sourceFilteList = process.env.SOURCE_FILTER_LIST?.toLocaleLowerCase();
 const deliveryFilterList = process.env.DESTINATION_DELIVERY_FILTER_LIST?.toLocaleLowerCase();
 
-export default class RouteActivationMiddleware {
+export class RouteActivationMiddleware {
   private static executeActivationRule(ctx: Context, next: Next, shouldActivate: boolean) {
     if (shouldActivate) {
       return next();

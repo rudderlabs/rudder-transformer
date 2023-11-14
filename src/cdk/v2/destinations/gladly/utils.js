@@ -13,7 +13,7 @@ const reservedCustomAttributes = [
   'name',
   'avatar',
   'firstName',
-  'lstName',
+  'lastName',
   'userId',
 ];
 

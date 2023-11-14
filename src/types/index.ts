@@ -1,6 +1,8 @@
 import { CatchErr, FixMe } from '../util/types';
 
-export type DTRequest = RouterTransformationRequest | ProcessorTransformationRequest[];
+export type DestinationTransformationRequest =
+  | RouterTransformationRequest
+  | ProcessorTransformationRequest[];
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type ProcessorTransformationOutput = {

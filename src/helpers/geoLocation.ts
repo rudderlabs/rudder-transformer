@@ -38,7 +38,7 @@ export default class GeoLocationHelper {
 
     const mappedAddress = Object.entries(addressFieldToGeoFieldMap).reduce(
       (agg, [addressFieldKey, geoFieldKey]) => {
-        if (!address?.[addressFieldKey] && msg?.context?.geo?.[geoFieldKey]) {
+        if (!address?.[addressFieldKey] && msg.context.geo?.[geoFieldKey]) {
           return { [addressFieldKey]: msg.context.geo[geoFieldKey], ...agg };
         }
         return agg;

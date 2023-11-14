@@ -2,7 +2,7 @@ import { Context, Next } from 'koa';
 import {
   ProcessorTransformationRequest,
   RouterTransformationRequest,
-  DTRequest,
+  DestinationTransformationRequest,
   RouterTransformationRequestData,
 } from '../types';
 import GeoLocationHelper from '../helpers/geoLocation';
@@ -27,7 +27,7 @@ export default class GeoEnricher {
 
   public static async enrich(ctx: Context, next: Next) {
     const transformationRequest = ctx.request.body;
-    let transformationReq: DTRequest;
+    let transformationReq: DestinationTransformationRequest;
     let reqBody: unknown;
     const isRouterTransform = Array.isArray(
       (transformationRequest as RouterTransformationRequest)?.input,

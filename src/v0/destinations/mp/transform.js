@@ -110,13 +110,6 @@ const responseBuilderSimple = (payload, message, eventType, destConfig) => {
         strict: credentials.params.strict,
       };
       break;
-    // case 'setOnce':
-    //   response.endpoint =  dataResidency === 'eu' ? `${BASE_ENDPOINT_EU}/engage#profile-set-once` : `${BASE_ENDPOINT}/engage#profile-set-once`;
-    //   response.headers = {
-    //     'Content-Type': 'application/json',
-    //     'accept': 'text/plain',
-    //   };
-    //   break;
     default:
       response.endpoint =
         dataResidency === 'eu' ? `${BASE_ENDPOINT_EU}/engage/` : `${BASE_ENDPOINT}/engage/`;
@@ -256,7 +249,7 @@ function trimTraits(traits, contextTraits, setOnceProperties) {
       lodash.unset(traitsCopy, propertyPath);
     }
     if (Object.keys(contextTraits).length > 0 && get(contextTraitsCopy, propertyPath)) {
-      if(!setOnceEligible.hasOwnProperty(propName)) {
+      if (!setOnceEligible.hasOwnProperty(propName)) {
         setOnceEligible[propName] = get(contextTraitsCopy, propertyPath);
       }
       lodash.unset(contextTraitsCopy, propertyPath);
@@ -268,7 +261,12 @@ function trimTraits(traits, contextTraits, setOnceProperties) {
 
   // Step 3: combine the transformed and custom setOnce traits
 
-  sentOnceTransform = extractCustomFields(setOnceEligible, sentOnceTransform, 'root', MP_IDENTIFY_EXCLUSION_LIST);
+  sentOnceTransform = extractCustomFields(
+    setOnceEligible,
+    sentOnceTransform,
+    'root',
+    MP_IDENTIFY_EXCLUSION_LIST,
+  );
 
   return {
     traits: traitsCopy,
@@ -312,7 +310,7 @@ const processIdentifyEvents = async (message, type, destination) => {
 
   // Creating the user profile
   // https://developer.mixpanel.com/reference/profile-set
-  returnValue.push(createIdentifyResponse(messageClone, type, destination, responseBuilderSimple, setOnceProperties));
+  returnValue.push(createIdentifyResponse(messageClone, type, destination, responseBuilderSimple));
 
   if (
     destination.Config?.identityMergeApi !== 'simplified' &&

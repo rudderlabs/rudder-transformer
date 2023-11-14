@@ -34,7 +34,7 @@ const mPProfileIosConfigJson = mappingConfig[ConfigCategory.PROFILE_IOS.name];
  * @param {*} useNewMapping a variable to support backward compatibility
  * @returns
  */
-const getTransformedJSON = (message, mappingJson, useNewMapping, setOnceProperties) => {
+const getTransformedJSON = (message, mappingJson, useNewMapping) => {
   let rawPayload = constructPayload(message, mappingJson);
   if (
     isDefined(rawPayload.$geo_source) &&
@@ -47,16 +47,11 @@ const getTransformedJSON = (message, mappingJson, useNewMapping, setOnceProperti
     set(rawPayload, '$name', getFullName(message));
   }
 
-  let newExclusionList = [...MP_IDENTIFY_EXCLUSION_LIST];
-  if (setOnceProperties.length > 0) {
-    newExclusionList = [...newExclusionList, ...setOnceProperties];
-  }
-
   rawPayload = extractCustomFields(
     message,
     rawPayload,
     ['traits', 'context.traits'],
-    newExclusionList,
+    MP_IDENTIFY_EXCLUSION_LIST,
   );
 
   /*
@@ -104,11 +99,11 @@ const getTransformedJSON = (message, mappingJson, useNewMapping, setOnceProperti
  * @param {*} responseBuilderSimple function to generate response
  * @returns
  */
-const createIdentifyResponse = (message, type, destination, responseBuilderSimple, setOnceProperties) => {
+const createIdentifyResponse = (message, type, destination, responseBuilderSimple) => {
   // this variable is used for supporting backward compatibility
   const { useNewMapping, token } = destination.Config;
   // user payload created
-  const properties = getTransformedJSON(message, mPIdentifyConfigJson, useNewMapping, setOnceProperties);
+  const properties = getTransformedJSON(message, mPIdentifyConfigJson, useNewMapping);
 
   const payload = {
     $set: properties,

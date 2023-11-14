@@ -618,7 +618,7 @@ export const data = [
                 },
                 JSON: {},
               },
-              endpoint: 'https://graph.facebook.com/v17.0/RudderFbApp/activities',
+              endpoint: 'https://graph.facebook.com/v18.0/RudderFbApp/activities',
               files: {},
               headers: {
                 'x-forwarded-for': '1.2.3.4',
@@ -803,7 +803,7 @@ export const data = [
                 },
                 JSON: {},
               },
-              endpoint: 'https://graph.facebook.com/v17.0/RudderFbApp/activities',
+              endpoint: 'https://graph.facebook.com/v18.0/RudderFbApp/activities',
               files: {},
               headers: {
                 'x-forwarded-for': '1.2.3.4',
@@ -893,7 +893,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://graph.facebook.com/v17.0/RudderFbApp/activities',
+              endpoint: 'https://graph.facebook.com/v18.0/RudderFbApp/activities',
               headers: {},
               params: {},
               body: {
@@ -993,7 +993,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://graph.facebook.com/v17.0/RudderFbApp/activities',
+              endpoint: 'https://graph.facebook.com/v18.0/RudderFbApp/activities',
               headers: {},
               params: {},
               body: {
@@ -1177,7 +1177,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://graph.facebook.com/v17.0/RudderFbApp/activities',
+              endpoint: 'https://graph.facebook.com/v18.0/RudderFbApp/activities',
               headers: {},
               params: {},
               body: {
@@ -1277,7 +1277,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://graph.facebook.com/v17.0/RudderFbApp/activities',
+              endpoint: 'https://graph.facebook.com/v18.0/RudderFbApp/activities',
               headers: {},
               params: {},
               body: {
@@ -1377,7 +1377,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://graph.facebook.com/v17.0/RudderFbApp/activities',
+              endpoint: 'https://graph.facebook.com/v18.0/RudderFbApp/activities',
               headers: {},
               params: {},
               body: {
@@ -1551,7 +1551,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://graph.facebook.com/v17.0/RudderFbApp/activities',
+              endpoint: 'https://graph.facebook.com/v18.0/RudderFbApp/activities',
               headers: {},
               params: {},
               body: {
@@ -1731,7 +1731,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://graph.facebook.com/v17.0/RudderFbApp/activities',
+              endpoint: 'https://graph.facebook.com/v18.0/RudderFbApp/activities',
               headers: {},
               params: {},
               body: {
@@ -1831,7 +1831,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://graph.facebook.com/v17.0/RudderFbApp/activities',
+              endpoint: 'https://graph.facebook.com/v18.0/RudderFbApp/activities',
               headers: {
                 'x-forwarded-for': '2.3.4.5',
               },
@@ -2153,7 +2153,7 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://graph.facebook.com/v17.0/RudderFbApp/activities',
+              endpoint: 'https://graph.facebook.com/v18.0/RudderFbApp/activities',
               headers: {},
               params: {},
               body: {

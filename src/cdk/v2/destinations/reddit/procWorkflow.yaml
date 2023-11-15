@@ -1,0 +1,79 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+    exportAll: true
+  - path: ./config
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+
+steps:
+  - name: validateInput
+    template: |
+      let messageType = .message.type;
+      $.assert(.message.type, "message Type is not present. Aborting message.");
+      $.assert(.message.type.toLowerCase() ==='track', "Event type " + .message.type.toLowerCase() + " is not supported. Aborting message.");
+      $.assert(.message.event, "Event is not present. Aborting message.");
+
+  - name: prepareTrackPayload
+    condition: $.outputs.messageType === {{$.EventType.TRACK}}
+    steps:
+      - name: prepareUserObject
+        template: |
+          let user = .message.().({
+            "email": {{{{$.getGenericPaths("email")}}}},  
+            "external_id": {{{{$.getGenericPaths("userId")}}}},
+            "ip_address": .context.ip || .request_ip,
+            "uuid": .context.traits.language || .context.locale,
+            "user_agent": {"n": {{{{$.getGenericPaths("phone")}}}}},
+            "idfa": $.isAppleFamily(.context.os)? .context.device.advertisingId: null,
+            "aaid": .context.os==="android"? .context.device.advertisingId: null,
+            "opt_out": .context.traits.smsConsent || false,
+            "screen_dimensions": {"width": context.screen.width, "height":  context.screen.height},
+          });
+
+      - name: prepareEventMetadata
+        condition: Array.isArray(.message.properties.products)
+        template: |
+          let products = .message.properties@prop.products.({
+                "id": .productId ?? prop.productId,
+                "category": .category?? prop.category,
+                "name": .name?? prop.name,
+              })
+          {
+            "currency": .message.properties.currency,
+            "item_count": .message.properties.products.size(),
+            "value": .message.properties.revenue,
+            "value_decimal": .message.properties.revenue/100,
+            "conversion_id": .message.properties.conversionId || messageId,
+            "products": products
+          }
+      
+      - name: prepareFinalPayload
+        template: |
+          {
+            "click_id": .message.properties.clickId,
+            "event_at": .message.timestamp || .message.originalTimestamp,
+            "user": $.outputs.prepareTrackPayload.prepareUserObject,
+            "event_metadata": $.outputs.prepareTrackPayload.prepareEventMetadata,
+          }
+
+   - name: payload
+    condition: $.outputs.messageType === {{$.EventType.TRACK}}
+    template: |
+      const outputPayload = $.outputs.prepareTrackPayload
+
+  - name: buildResponseForProcessTransformation
+    description: build response
+    template: |
+      const accessToken = .metadata.secret.accessToken
+      const response = $.defaultRequestConfig();
+      response.body.JSON = $.outputs.payload;
+      response.endpoint = $.ENDPOINT+.destination.Config.accountId;
+      response.headers = {
+          "Authorization: accessToken,
+          "Content-Type": "application/json"
+        };
+      finalResponse = response;

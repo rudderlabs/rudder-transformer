@@ -9,7 +9,7 @@ const {
   handleRtTfSingleEventError,
 } = require('../../util');
 const { AUTH_CACHE_TTL, JSON_MIME_TYPE } = require('../../util/constant');
-const { getIds, validateMessageType, transformForRecordEvent } = require('./util');
+const { getIds, validateMessageType } = require('./util');
 const {
   getDestinationExternalID,
   defaultRequestConfig,
@@ -19,6 +19,7 @@ const { formatConfig, MAX_LEAD_IDS_SIZE } = require('./config');
 const Cache = require('../../util/cache');
 const { getAuthToken } = require('../marketo/transform');
 const { InstrumentationError, UnauthorizedError } = require('../../util/errorTypes');
+const { processRecordInputs } = require('./transformV2');
 
 const authCache = new Cache(AUTH_CACHE_TTL); // 1 hr
 
@@ -156,20 +157,36 @@ const processRouterDest = async (inputs, reqMetadata) => {
   // sent with status code 500 to the router to be retried.
   const tokenisedInputs = inputs.map((input) => ({ ...input, token }));
   // use lodash.groupby to group the inputs based on message type
-  let transformedRecordEvent = [];
+  const transformedRecordEvent = [];
   let transformedAudienceEvent = [];
   const groupedInputs = lodash.groupBy(tokenisedInputs, (input) => input.message.type);
 
   const respList = [];
+  // process record events
   if (groupedInputs.record && groupedInputs.record.length > 0) {
-    const recordToAudienceTransformationOutput = transformForRecordEvent(groupedInputs.record);
-    respList.push(...recordToAudienceTransformationOutput.errorArr);
-    transformedRecordEvent = await triggerProcess(
-      recordToAudienceTransformationOutput.transformedAudienceEvent,
-      processEvent,
-      reqMetadata,
+    const groupedRecordInputs = groupedInputs.record;
+    const { staticListId } = groupedRecordInputs[0].destination.Config;
+    const externalIdGroupedRecordInputs = lodash.groupBy(
+      groupedRecordInputs,
+      (input) =>
+        getDestinationExternalID(input.message, 'MARKETO_STATIC_LIST-leadId') || staticListId,
     );
+    Object.keys(externalIdGroupedRecordInputs).forEach((key) => {
+      const transformedGroupedRecordEvent = processRecordInputs(externalIdGroupedRecordInputs[key]);
+      transformedRecordEvent.push(transformedGroupedRecordEvent);
+    });
+
+    // old modular code
+    // transformedRecordEvent = processRecordInputs(groupedInputs.record, reqMetadata);
+    // const recordToAudienceTransformationOutput = transformForRecordEvent(groupedInputs.record);
+    // respList.push(...recordToAudienceTransformationOutput.errorArr);
+    // transformedRecordEvent = await triggerProcess(
+    //   recordToAudienceTransformationOutput.transformedAudienceEvent,
+    //   processEvent,
+    //   reqMetadata,
+    // );
   }
+  // process audiencelist events
   if (groupedInputs.audiencelist && groupedInputs.audiencelist.length > 0) {
     transformedAudienceEvent = await triggerProcess(
       groupedInputs.audiencelist,
@@ -198,7 +215,10 @@ function processMetadataForRouter(output) {
 
 module.exports = {
   process,
+  processEvent,
   processRouterDest,
   processMetadataForRouter,
   authCache,
+  triggerProcess,
+  batchResponseBuilder,
 };

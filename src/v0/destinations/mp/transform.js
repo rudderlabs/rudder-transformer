@@ -261,9 +261,11 @@ const processIdentifyEvents = async (message, type, destination) => {
     );
     messageClone.traits = seggregatedTraits.traits;
     messageClone.context.traits = seggregatedTraits.contextTraits;
-    returnValue.push(
-      createSetOnceResponse(messageClone, type, destination, seggregatedTraits.setOnce),
-    );
+    if (Object.keys(seggregatedTraits.setOnce).length > 0) {
+      returnValue.push(
+        createSetOnceResponse(messageClone, type, destination, seggregatedTraits.setOnce),
+      );
+    }
   }
 
   // Creating the user profile

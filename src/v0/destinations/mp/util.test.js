@@ -652,17 +652,6 @@ describe('Mixpanel utils test', () => {
       });
     });
 
-    // Given a null traits object and contextTraits object, and a valid setOnceProperties array, the function should throw an error.
-    it('should throw an error when given a null traits object and contextTraits object', () => {
-      const traits = null;
-      const contextTraits = null;
-      const setOnceProperties = ['name', 'email'];
-
-      expect(() => {
-        trimTraits(traits, contextTraits, setOnceProperties);
-      }).toThrow();
-    });
-
     // Given a setOnceProperties array containing properties that do not exist in either traits or contextTraits objects, the function should not add the property to the setOnce property.
     it('should not add properties to the setOnce property when given setOnceProperties array with non-existent properties', () => {
       const traits = { name: 'John', age: 30 };

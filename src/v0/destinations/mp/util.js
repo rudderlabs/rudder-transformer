@@ -15,6 +15,7 @@ const {
   defaultBatchRequestConfig,
   IsGzipSupported,
   isObject,
+  isDefinedAndNotNullAndNotEmpty,
 } = require('../../util');
 const {
   ConfigCategory,
@@ -348,6 +349,7 @@ const parseConfigArray = (arr, key) => {
  * // Output: { traits: { age: 30 }, contextTraits: { language: 'English' }, setOnce: { $name: 'John', $country_code: 'USA', city: 'New York'} }
  */
 function trimTraits(traits, contextTraits, setOnceProperties) {
+  let sentOnceTransform;
   // Create a copy of the original traits object
   const traitsCopy = { ...traits };
   const contextTraitsCopy = { ...contextTraits };
@@ -358,37 +360,41 @@ function trimTraits(traits, contextTraits, setOnceProperties) {
   // Step 1: find the k-v pairs of setOnceProperties in traits and contextTraits
 
   setOnceProperties.forEach((propertyPath) => {
-    const pathSegments = propertyPath.split('.');
-    const propName = pathSegments[pathSegments.length - 1];
+    const propName = lodash.last(propertyPath.split('.'));
 
-    if (Object.keys(traitsCopy).length > 0 && get(traitsCopy, propertyPath)) {
-      setOnceEligible[propName] = get(traitsCopy, propertyPath);
+    const traitsValue = get(traitsCopy, propertyPath);
+    const contextTraitsValue = get(contextTraitsCopy, propertyPath);
+
+    if (isDefinedAndNotNullAndNotEmpty(traitsValue)) {
+      setOnceEligible[propName] = traitsValue;
       lodash.unset(traitsCopy, propertyPath);
     }
-    if (Object.keys(contextTraits).length > 0 && get(contextTraitsCopy, propertyPath)) {
+    if (isDefinedAndNotNullAndNotEmpty(contextTraitsValue)) {
       if (!setOnceEligible.hasOwnProperty(propName)) {
-        setOnceEligible[propName] = get(contextTraitsCopy, propertyPath);
+        setOnceEligible[propName] = contextTraitsValue;
       }
       lodash.unset(contextTraitsCopy, propertyPath);
     }
   });
-  // Step 2: transform properties eligible as per rudderstack declared identify event mapping
-  // setOnce should have all traits from message.traits and message.context.traits by now
-  let sentOnceTransform = constructPayload(setOnceEligible, mPIdentifyConfigJson);
 
-  // Step 3: combine the transformed and custom setOnce traits
+  if (setOnceEligible && Object.keys(setOnceEligible).length > 0) {
+    // Step 2: transform properties eligible as per rudderstack declared identify event mapping
+    // setOnce should have all traits from message.traits and message.context.traits by now
+    sentOnceTransform = constructPayload(setOnceEligible, mPIdentifyConfigJson);
 
-  sentOnceTransform = extractCustomFields(
-    setOnceEligible,
-    sentOnceTransform,
-    'root',
-    MP_IDENTIFY_EXCLUSION_LIST,
-  );
+    // Step 3: combine the transformed and custom setOnce traits
+    sentOnceTransform = extractCustomFields(
+      setOnceEligible,
+      sentOnceTransform,
+      'root',
+      MP_IDENTIFY_EXCLUSION_LIST,
+    );
+  }
 
   return {
     traits: traitsCopy,
     contextTraits: contextTraitsCopy,
-    setOnce: sentOnceTransform,
+    setOnce: sentOnceTransform || {},
   };
 }
 

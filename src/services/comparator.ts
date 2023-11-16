@@ -1,4 +1,4 @@
-/* eslint-disable import/prefer-default-export */
+/* eslint-disable class-methods-use-this */
 import { Destination } from '@rudderstack/integrations-lib';
 import { DestinationService } from '../interfaces/DestinationService';
 import {

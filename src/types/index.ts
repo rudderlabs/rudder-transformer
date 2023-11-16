@@ -21,7 +21,15 @@ type ProcessorTransformationOutput = {
   metadata?: Metadata;
 };
 
-type TransformedOutput = ProcessorTransformationOutput;
+type MessageIdMetadataMap = {
+  [key: string]: Metadata;
+};
+
+type UserTransformationInput = {
+  VersionID: string;
+  ID: string;
+  Config: object;
+};
 
 type UserTransformationLibrary = {
   VersionID: string;
@@ -80,8 +88,8 @@ type SourceTransformationResponse = {
 type DeliveryResponse = {
   status: number;
   message: string;
-  destinationResponse: object;
-  statTags?: object;
+  destinationResponse: any;
+  statTags: object;
   authErrorCategory?: string;
 };
 
@@ -167,8 +175,36 @@ type ComparatorInput = {
   requestMetadata: object;
   feature: string;
 };
+type SourceDefinition = {
+  ID: string;
+  Name: string;
+  Category: string;
+  Type: string;
+};
 
+type Source = {
+  ID: string;
+  OriginalID: string;
+  Name: string;
+  SourceDefinition: SourceDefinition;
+  Config: object;
+  Enabled: boolean;
+  WorkspaceID: string;
+  WriteKey: string;
+  Transformations?: UserTransformationInput[];
+  RevisionID?: string;
+  Destinations?: Destination[];
+  Transient: boolean;
+  EventSchemasEnabled: boolean;
+  DgSourceTrackingPlanConfig: object;
+};
+
+type SourceInput = {
+  event: NonNullable<unknown>[];
+  source?: Source;
+};
 export {
+  MessageIdMetadataMap,
   UserTransformationLibrary,
   ProcessorTransformationRequest,
   ProcessorTransformationResponse,
@@ -186,5 +222,8 @@ export {
   UserDeletionRequest,
   UserDeletionResponse,
   ComparatorInput,
-  TransformedOutput,
+  SourceInput,
+  Source,
 };
+
+export { Metadata } from '@rudderstack/integrations-lib';

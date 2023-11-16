@@ -16,6 +16,7 @@ const {
   isDefinedAndNotNull,
   isDefinedAndNotNullAndNotEmpty,
   getIntegrationsObj,
+  removeUndefinedAndNullValues,
   simpleProcessRouterDest,
 } = require('../../util');
 
@@ -394,7 +395,7 @@ const handleTrack = (message, destinationConfig) => {
       break;
   }
 
-  return payload;
+  return removeUndefinedAndNullValues(payload);
 };
 
 const process = async (event) => {

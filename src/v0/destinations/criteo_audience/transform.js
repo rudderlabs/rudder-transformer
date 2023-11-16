@@ -1,4 +1,5 @@
 const get = require('get-value');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { BASE_ENDPOINT, operation } = require('./config');
 const {
   defaultRequestConfig,
@@ -9,7 +10,6 @@ const {
   getEventType,
   getDestinationExternalIDInfoForRetl,
 } = require('../../util');
-const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { MappedToDestinationKey } = require('../../../constants');
 const { preparePayload } = require('./util');
 

@@ -1,5 +1,6 @@
 const { defaultRequestConfig } = require('rudder-transformer-cdk/build/utils');
 const lodash = require('lodash');
+const { NetworkError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { WhiteListedTraits } = require('../../../constants');
 
 const {
@@ -12,14 +13,11 @@ const {
   getSuccessRespEvents,
   defaultPatchRequestConfig,
 } = require('../../util');
-
-const { BASE_ENDPOINT, MAPPING_CONFIG, CONFIG_CATEGORIES, MAX_BATCH_SIZE } = require('./config');
-const { JSON_MIME_TYPE } = require('../../util/constant');
-const { NetworkError, InstrumentationError } = require('@rudderstack/integrations-lib');
-const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 const { handleHttpRequest } = require('../../../adapters/network');
-const { client: errNotificationClient } = require('../../../util/errorNotifier');
+const { JSON_MIME_TYPE, HTTP_STATUS_CODES } = require('../../util/constant');
+const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
+const { BASE_ENDPOINT, MAPPING_CONFIG, CONFIG_CATEGORIES, MAX_BATCH_SIZE } = require('./config');
 
 const REVISION_CONSTANT = '2023-02-22';
 
@@ -35,6 +33,7 @@ const REVISION_CONSTANT = '2023-02-22';
  * @returns
  */
 const getIdFromNewOrExistingProfile = async (endpoint, payload, requestOptions) => {
+  let response;
   let profileId;
   const endpointPath = '/api/profiles';
   const { processedResponse: resp } = await handleHttpRequest(
@@ -48,25 +47,27 @@ const getIdFromNewOrExistingProfile = async (endpoint, payload, requestOptions) 
       endpointPath,
     },
   );
-  if (resp.status === 201) {
+
+  /**
+   * 201 - profile is created with updated payload no need to update it again (suppress event with 299 status code)
+   * 409 - profile is already exist, it needs to get updated
+   */
+  if (resp.status === HTTP_STATUS_CODES.CREATED) {
     profileId = resp.response?.data?.id;
-  } else if (resp.status === 409) {
+    const { data } = resp.response;
+    response = { id: data.id, attributes: data.attributes };
+  } else if (resp.status === HTTP_STATUS_CODES.CONFLICT) {
     const { errors } = resp.response;
     profileId = errors?.[0]?.meta?.duplicate_profile_id;
   }
 
   if (profileId) {
-    return profileId;
+    return { profileId, response, statusCode: resp.status };
   }
 
   let statusCode = resp.status;
   if (resp.status === 201 || resp.status === 409) {
     // retryable error if the profile id is not found in the response
-    errNotificationClient.notify(
-      new Error('Klaviyo: ProfileId not found'),
-      'Profile Id not Found in the response',
-      JSON.stringify(resp.response),
-    );
     statusCode = 500;
   }
 
@@ -80,6 +81,14 @@ const getIdFromNewOrExistingProfile = async (endpoint, payload, requestOptions) 
   );
 };
 
+/**
+ * Update profile response builder
+ * @param {*} payload
+ * @param {*} profileId
+ * @param {*} category
+ * @param {*} privateApiKey
+ * @returns
+ */
 const profileUpdateResponseBuilder = (payload, profileId, category, privateApiKey) => {
   const updatedPayload = payload;
   const identifyResponse = defaultRequestConfig();
@@ -238,7 +247,7 @@ const generateBatchedPaylaodForArray = (events) => {
  * @param {*} subscribeResponseList
  * @returns
  */
-const groupSubsribeResponsesUsingListId = (subscribeResponseList) => {
+const groupSubscribeResponsesUsingListId = (subscribeResponseList) => {
   const subscribeEventGroups = lodash.groupBy(
     subscribeResponseList,
     (event) => event.message.body.JSON.data.attributes.list_id,
@@ -262,9 +271,13 @@ const getBatchedResponseList = (subscribeEventGroups, identifyResponseList) => {
     });
     batchedResponseList = [...batchedResponseList, ...batchedResponse];
   });
-  identifyResponseList.forEach((response) => {
-    batchedResponseList[0].batchedRequest.push(response);
-  });
+
+  if (identifyResponseList.length > 0) {
+    identifyResponseList.forEach((response) => {
+      batchedResponseList[0].batchedRequest.push(response);
+    });
+  }
+
   return batchedResponseList;
 };
 
@@ -272,6 +285,7 @@ const batchSubscribeEvents = (subscribeRespList) => {
   const identifyResponseList = [];
   subscribeRespList.forEach((event) => {
     const processedEvent = event;
+    // for group and identify events (it will contain only subscribe response)
     if (processedEvent.message.length === 2) {
       // the array will contain one update profile reponse and one subscribe reponse
       identifyResponseList.push(event.message[0]);
@@ -282,7 +296,7 @@ const batchSubscribeEvents = (subscribeRespList) => {
     }
   });
 
-  const subscribeEventGroups = groupSubsribeResponsesUsingListId(subscribeRespList);
+  const subscribeEventGroups = groupSubscribeResponsesUsingListId(subscribeRespList);
 
   const batchedResponseList = getBatchedResponseList(subscribeEventGroups, identifyResponseList);
 
@@ -295,6 +309,6 @@ module.exports = {
   populateCustomFieldsFromTraits,
   generateBatchedPaylaodForArray,
   batchSubscribeEvents,
-  getIdFromNewOrExistingProfile,
   profileUpdateResponseBuilder,
+  getIdFromNewOrExistingProfile,
 };

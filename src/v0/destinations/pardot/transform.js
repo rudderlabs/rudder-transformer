@@ -34,10 +34,7 @@
  */
 
 const get = require('get-value');
-const {
-  ConfigurationError,
-  InstrumentationError,
-} = require('@rudderstack/integrations-lib');
+const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { identifyConfig, DESTINATION } = require('./config');
 const logger = require('../../../logger');
 const {

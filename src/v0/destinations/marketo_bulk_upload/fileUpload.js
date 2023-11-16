@@ -4,8 +4,8 @@ const fs = require('fs');
 const {
   NetworkError,
   ConfigurationError,
-  TransformationError,
   RetryableError,
+  TransformationError,
 } = require('@rudderstack/integrations-lib');
 const {
   getAccessToken,
@@ -23,7 +23,6 @@ const {
   isDefinedAndNotNullAndNotEmpty,
 } = require('../../util');
 const { handleHttpRequest } = require('../../../adapters/network');
-require('../../../adapters/utils/networkUtils');
 const stats = require('../../../util/stats');
 
 const fetchFieldSchemaNames = async (config, accessToken) => {

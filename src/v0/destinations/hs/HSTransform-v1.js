@@ -5,6 +5,11 @@ const {
   TransformationError,
 } = require('@rudderstack/integrations-lib');
 const lodash = require('lodash');
+const {
+  InstrumentationError,
+  ConfigurationError,
+  TransformationError,
+} = require('@rudderstack/integrations-lib');
 const { MappedToDestinationKey, GENERIC_TRUE_VALUES } = require('../../../constants');
 const {
   defaultGetRequestConfig,
@@ -34,6 +39,7 @@ const {
   getEmailAndUpdatedProps,
   formatPropertyValueForIdentify,
   getHsSearchId,
+  populateTraits,
 } = require('./util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -52,7 +58,7 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
  */
 const processLegacyIdentify = async (message, destination, propertyMap) => {
   const { Config } = destination;
-  const traits = getFieldValueFromMessage(message, 'traits');
+  let traits = getFieldValueFromMessage(message, 'traits');
   const mappedToDestination = get(message, MappedToDestinationKey);
   const operation = get(message, 'context.hubspotOperation');
   // if mappedToDestination is set true, then add externalId to traits
@@ -80,6 +86,8 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
       )}/${hsSearchId}`;
       response.method = defaultPatchRequestConfig.requestMethod;
     }
+
+    traits = await populateTraits(propertyMap, traits, destination);
     response.body.JSON = removeUndefinedAndNullValues({ properties: traits });
     response.source = 'rETL';
     response.operation = operation;

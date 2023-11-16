@@ -1,6 +1,5 @@
 import { Context } from 'koa';
 import { MiscService } from '../services/misc';
-import { PreTransformationDestinationService } from '../services/destination/preTransformation';
 import { DestinationPostTransformationService } from '../services/destination/postTransformation';
 import {
   ProcessorTransformationRequest,
@@ -14,7 +13,7 @@ import stats from '../util/stats';
 import logger from '../logger';
 import { getIntegrationVersion } from '../util/utils';
 import tags from '../v0/util/tags';
-import DynamicConfigParser from '../util/dynamicConfigParser';
+import { DynamicConfigParser } from '../util/dynamicConfigParser';
 
 export class DestinationController {
   public static async destinationTransformAtProcessor(ctx: Context) {
@@ -36,7 +35,7 @@ export class DestinationController {
     const integrationService = ServiceSelector.getDestinationService(events);
     try {
       integrationService.init();
-      events = PreTransformationDestinationService.preProcess(
+      events = DestinationPreTransformationService.preProcess(
         events,
         ctx,
       ) as ProcessorTransformationRequest[];
@@ -110,7 +109,7 @@ export class DestinationController {
     const integrationService = ServiceSelector.getDestinationService(events);
     let resplist: RouterTransformationResponse[];
     try {
-      events = PreTransformationDestinationService.preProcess(events, ctx);
+      events = DestinationPreTransformationService.preProcess(events, ctx);
       const timestampCorrectEvents = ControllerUtility.handleTimestampInEvents(events);
       events = DynamicConfigParser.process(timestampCorrectEvents);
       resplist = await integrationService.doRouterTransformation(
@@ -165,7 +164,7 @@ export class DestinationController {
     let events = routerRequest.input;
     const integrationService = ServiceSelector.getDestinationService(events);
     try {
-      events = PreTransformationDestinationService.preProcess(events, ctx);
+      events = DestinationPreTransformationService.preProcess(events, ctx);
       const timestampCorrectEvents = ControllerUtility.handleTimestampInEvents(events);
       const resplist = integrationService.doBatchTransformation(
         timestampCorrectEvents,

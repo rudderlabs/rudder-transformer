@@ -16,9 +16,7 @@
           "attributes": {
             "operation": "remove",
             "identifierType": "gum",
-            "identifiers": [
-              "sample_gum3"
-            ],
+            "identifiers": ["sample_gum3"],
             "internalIdentifiers": false,
             "gumCallerId": "329739"
           }
@@ -50,11 +48,7 @@
           "attributes": {
             "operation": "add",
             "identifierType": "madid",
-            "identifiers": [
-              "sample_madid",
-              "sample_madid_1",
-              "sample_madid_2"
-            ],
+            "identifiers": ["sample_madid", "sample_madid_1", "sample_madid_2"],
             "internalIdentifiers": false
           }
         }
@@ -85,11 +79,7 @@
           "attributes": {
             "operation": "add",
             "identifierType": "madid",
-            "identifiers": [
-              "sample_madid",
-              "sample_madid_1",
-              "sample_madid_2"
-            ],
+            "identifiers": ["sample_madid", "sample_madid_1", "sample_madid_2"],
             "internalIdentifiers": false
           }
         }
@@ -120,11 +110,7 @@
           "attributes": {
             "operation": "add",
             "identifierType": "madid",
-            "identifiers": [
-              "sample_madid",
-              "sample_madid_1",
-              "sample_madid_2"
-            ],
+            "identifiers": ["sample_madid", "sample_madid_1", "sample_madid_2"],
             "internalIdentifiers": false
           }
         }
@@ -155,11 +141,7 @@
           "attributes": {
             "operation": "add",
             "identifierType": "madid",
-            "identifiers": [
-              "sample_madid",
-              "sample_madid_1",
-              "sample_madid_2"
-            ],
+            "identifiers": ["sample_madid", "sample_madid_1", "sample_madid_2"],
             "internalIdentifiers": false
           }
         }
@@ -190,11 +172,7 @@
           "attributes": {
             "operation": "add",
             "identifierType": "madid",
-            "identifiers": [
-              "sample_madid",
-              "sample_madid_1",
-              "sample_madid_2"
-            ],
+            "identifiers": ["sample_madid", "sample_madid_1", "sample_madid_2"],
             "internalIdentifiers": false
           }
         }
@@ -225,11 +203,7 @@
           "attributes": {
             "operation": "add",
             "identifierType": "madid",
-            "identifiers": [
-              "sample_madid",
-              "sample_madid_1",
-              "sample_madid_2"
-            ],
+            "identifiers": ["sample_madid", "sample_madid_1", "sample_madid_2"],
             "internalIdentifiers": false
           }
         }

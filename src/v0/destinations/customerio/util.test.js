@@ -112,17 +112,17 @@ describe('Unit test cases for customerio identifyResponseBuilder', () => {
     expect(identifyResponseBuilder('user1', getTestMessage())).toEqual(expectedOutput);
   });
   it('No Identifier to send for Identify Call', async () => {
-    let expectedOutput = "userId or email is not present";
+    let expectedOutput = 'userId or email is not present';
     try {
-      identifyResponseBuilder(null, getIdentifyTestMessage())
+      identifyResponseBuilder(null, getIdentifyTestMessage());
     } catch (error) {
       expect(error.message).toEqual(expectedOutput);
     }
   });
   it('No Identifier to send for Identify Call', async () => {
-    let expectedOutput = "userId or email is not present";
+    let expectedOutput = 'userId or email is not present';
     try {
-      identifyResponseBuilder('', getIdentifyTestMessage())
+      identifyResponseBuilder('', getIdentifyTestMessage());
     } catch (error) {
       expect(error.message).toEqual(expectedOutput);
     }
@@ -141,26 +141,28 @@ describe('Unit test cases for customerio aliasResponseBuilder', () => {
   it('Merging happending with previous_id as email and present one as id', async () => {
     let expectedOutput = {
       endpoint: 'https://track.customer.io/api/v1/merge_customers',
-      rawPayload: { primary: { id: 'user1' }, secondary: { email: "abc@test.com" } },
+      rawPayload: { primary: { id: 'user1' }, secondary: { email: 'abc@test.com' } },
       requestConfig: { requestFormat: 'JSON', requestMethod: 'POST' },
     };
-    expect(aliasResponseBuilder({ previousId: "abc@test.com" }, "user1")).toEqual(expectedOutput);
+    expect(aliasResponseBuilder({ previousId: 'abc@test.com' }, 'user1')).toEqual(expectedOutput);
   });
   it('Merging happending with userId as email and present one as id', async () => {
     let expectedOutput = {
       endpoint: 'https://track.customer.io/api/v1/merge_customers',
-      rawPayload: { secondary: { id: 'user1' }, primary: { email: "abc@test.com" } },
+      rawPayload: { secondary: { id: 'user1' }, primary: { email: 'abc@test.com' } },
       requestConfig: { requestFormat: 'JSON', requestMethod: 'POST' },
     };
-    expect(aliasResponseBuilder({ previousId: "user1" }, "abc@test.com")).toEqual(expectedOutput);
+    expect(aliasResponseBuilder({ previousId: 'user1' }, 'abc@test.com')).toEqual(expectedOutput);
   });
   it('Merging happending with userId as email and present one as id', async () => {
     let expectedOutput = {
       endpoint: 'https://track.customer.io/api/v1/merge_customers',
-      rawPayload: { secondary: { email: 'user1@test.com' }, primary: { email: "abc@test.com" } },
+      rawPayload: { secondary: { email: 'user1@test.com' }, primary: { email: 'abc@test.com' } },
       requestConfig: { requestFormat: 'JSON', requestMethod: 'POST' },
     };
-    expect(aliasResponseBuilder({ previousId: "user1@test.com" }, "abc@test.com")).toEqual(expectedOutput);
+    expect(aliasResponseBuilder({ previousId: 'user1@test.com' }, 'abc@test.com')).toEqual(
+      expectedOutput,
+    );
   });
 });
 

@@ -1,4 +1,5 @@
 const get = require('get-value');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
   isEmpty,
   constructPayload,
@@ -7,7 +8,6 @@ const {
   extractCustomFields,
   isDefinedAndNotNull,
 } = require('../../util');
-const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { mappingConfig, ConfigCategory } = require('./config');
 
 /**

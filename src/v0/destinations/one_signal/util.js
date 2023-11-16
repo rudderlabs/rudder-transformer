@@ -1,5 +1,5 @@
-const { getIntegrationsObj, getFieldValueFromMessage, getBrowserInfo } = require('../../util');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const { getIntegrationsObj, getFieldValueFromMessage, getBrowserInfo } = require('../../util');
 
 // For mapping device_type value
 const deviceTypeMapping = {

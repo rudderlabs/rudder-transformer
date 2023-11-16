@@ -1,6 +1,6 @@
 const lodash = require('lodash');
-const { isDefinedAndNotNullAndNotEmpty } = require('../../util');
 const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
+const { isDefinedAndNotNullAndNotEmpty } = require('../../util');
 const { MAX_IDENTIFIERS } = require('./config');
 
 const populateIdentifiers = (audienceList, audienceType) => {

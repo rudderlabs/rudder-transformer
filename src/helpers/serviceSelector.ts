@@ -1,5 +1,3 @@
-/* eslint-disable import/prefer-default-export */
-import dotenv from 'dotenv';
 import { PlatformError } from '@rudderstack/integrations-lib';
 import { ProcessorTransformationRequest, RouterTransformationRequestData } from '../types/index';
 import { INTEGRATION_SERVICE } from '../routes/utils/constants';
@@ -10,10 +8,8 @@ import { NativeIntegrationDestinationService } from '../services/destination/nat
 import { SourceService } from '../interfaces/SourceService';
 import { NativeIntegrationSourceService } from '../services/source/nativeIntegration';
 import { ComparatorService } from '../services/comparator';
-import { PluginIntegrationService } from '../services/destination/pluginIntegration';
 import { FixMe } from '../util/types';
-
-dotenv.config();
+import { PluginIntegrationService } from '../services/destination/pluginIntegration';
 
 export class ServiceSelector {
   private static serviceMap: Map<string, any> = new Map();

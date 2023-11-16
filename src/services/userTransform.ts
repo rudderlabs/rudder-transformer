@@ -7,6 +7,7 @@ import {
   ProcessorTransformationResponse,
   UserTransformationResponse,
   UserTransformationServiceResponse,
+  MessageIdMetadataMap,
 } from '../types/index';
 import {
   RespStatusError,
@@ -17,12 +18,16 @@ import { getMetadata, isNonFuncObject } from '../v0/util';
 import { SUPPORTED_FUNC_NAMES } from '../util/ivmFactory';
 import logger from '../logger';
 import stats from '../util/stats';
+import { CommonUtils } from '../util/common';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CatchErr, FixMe } from '../util/types';
+import { FeatureFlags, FEATURE_FILTER_CODE } from '../middlewares/featureFlag';
+import { HTTP_CUSTOM_STATUS_CODES } from '../constants';
 
 export class UserTransformService {
   public static async transformRoutine(
     events: ProcessorTransformationRequest[],
+    features: FeatureFlags = {},
   ): Promise<UserTransformationServiceResponse> {
     let retryStatus = 200;
     const groupedEvents: NonNullable<unknown> = groupBy(
@@ -41,12 +46,20 @@ export class UserTransformService {
       );
     }
     const responses = await Promise.all<FixMe>(
-      Object.entries(groupedEvents).map(async ([dest, destEvents]) => {
-        logger.debug(`dest: ${dest}`);
-        const eventsToProcess = destEvents as any;
+      Object.entries(groupedEvents).map(async ([, destEvents]) => {
+        const eventsToProcess = destEvents as ProcessorTransformationRequest[];
         const transformationVersionId =
-          eventsToProcess[0].destination?.Transformations[0]?.VersionID;
-        const messageIds = eventsToProcess.map((ev) => ev.metadata?.messageId);
+          eventsToProcess[0]?.destination?.Transformations[0]?.VersionID;
+        const messageIds: string[] = [];
+        const messageIdsSet = new Set<string>();
+        const messageIdMetadataMap: MessageIdMetadataMap = {};
+        eventsToProcess.forEach((ev) => {
+          messageIds.push(ev.metadata?.messageId);
+          messageIdsSet.add(ev.metadata?.messageId);
+          messageIdMetadataMap[ev.metadata?.messageId] = ev.metadata;
+        });
+
+        const messageIdsInOutputSet = new Set<string>();
 
         const commonMetadata = {
           sourceId: eventsToProcess[0]?.metadata?.sourceId,
@@ -72,39 +85,60 @@ export class UserTransformService {
         }
         const userFuncStartTime = new Date();
         try {
-          stats.counter('user_transform_function_input_events', eventsToProcess.length, {
-            ...metaTags,
-          });
           const destTransformedEvents: UserTransformationResponse[] = await userTransformHandler()(
             eventsToProcess,
             transformationVersionId,
             librariesVersionIDs,
           );
-          transformedEvents.push(
-            ...destTransformedEvents.map((ev) => {
-              if (ev.error) {
-                return {
-                  statusCode: 400,
-                  error: ev.error,
-                  metadata: isEmpty(ev.metadata) ? commonMetadata : ev.metadata,
-                } as unknown as ProcessorTransformationResponse;
-              }
-              if (!isNonFuncObject(ev.transformedEvent)) {
-                return {
-                  statusCode: 400,
-                  error: `returned event in events from user transformation is not an object. transformationVersionId:${transformationVersionId} and returned event: ${JSON.stringify(
-                    ev.transformedEvent,
-                  )}`,
-                  metadata: isEmpty(ev.metadata) ? commonMetadata : ev.metadata,
-                } as ProcessorTransformationResponse;
-              }
-              return {
-                output: ev.transformedEvent,
+
+          const transformedEventsWithMetadata: ProcessorTransformationResponse[] = [];
+          destTransformedEvents.forEach((ev) => {
+            // add messageId to output set
+            if (ev.metadata?.messageId) {
+              messageIdsInOutputSet.add(ev.metadata.messageId);
+            } else if (ev.metadata?.messageIds) {
+              ev.metadata.messageIds.forEach((id) => messageIdsInOutputSet.add(id));
+            }
+            if (ev.error) {
+              transformedEventsWithMetadata.push({
+                statusCode: 400,
+                error: ev.error,
                 metadata: isEmpty(ev.metadata) ? commonMetadata : ev.metadata,
-                statusCode: 200,
-              } as ProcessorTransformationResponse;
-            }),
-          );
+              } as unknown as ProcessorTransformationResponse);
+              return;
+            }
+            if (!isNonFuncObject(ev.transformedEvent)) {
+              transformedEventsWithMetadata.push({
+                statusCode: 400,
+                error: `returned event in events from user transformation is not an object. transformationVersionId:${transformationVersionId} and returned event: ${JSON.stringify(
+                  ev.transformedEvent,
+                )}`,
+                metadata: isEmpty(ev.metadata) ? commonMetadata : ev.metadata,
+              } as ProcessorTransformationResponse);
+              return;
+            }
+            transformedEventsWithMetadata.push({
+              output: ev.transformedEvent,
+              metadata: isEmpty(ev.metadata) ? commonMetadata : ev.metadata,
+              statusCode: 200,
+            } as ProcessorTransformationResponse);
+          });
+
+          if (features[FEATURE_FILTER_CODE]) {
+            // find difference between input and output messageIds
+            const messageIdsNotInOutput = CommonUtils.setDiff(messageIdsSet, messageIdsInOutputSet);
+            const droppedEvents = messageIdsNotInOutput.map((id) => ({
+              statusCode: HTTP_CUSTOM_STATUS_CODES.FILTERED,
+              metadata: {
+                ...(isEmpty(messageIdMetadataMap[id]) ? commonMetadata : messageIdMetadataMap[id]),
+                messageId: id,
+                messageIds: null,
+              },
+            }));
+            transformedEvents.push(...droppedEvents);
+          }
+
+          transformedEvents.push(...transformedEventsWithMetadata);
         } catch (error: CatchErr) {
           logger.error(error);
           let status = 400;

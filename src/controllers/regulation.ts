@@ -9,7 +9,6 @@ import { DestinationPostTransformationService } from '../services/destination/po
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CatchErr } from '../util/types';
 
-// TODO: refactor this class to new format
 export class RegulationController {
   public static async deleteUsers(ctx: Context) {
     logger.debug(

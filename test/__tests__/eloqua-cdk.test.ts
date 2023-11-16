@@ -1,8 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import {
-  processCdkV2Workflow
-} from '../../src/cdk/v2/handler';
+import { processCdkV2Workflow } from '../../src/cdk/v2/handler';
 import tags from '../../src/v0/util/tags';
 
 const integration = 'eloqua';

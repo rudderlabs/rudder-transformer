@@ -1,7 +1,7 @@
 const { v4: uuidv4 } = require('uuid');
 const crypto = require('crypto');
 const NodeCache = require('node-cache');
-const { getMetadata } = require('../v0/util');
+const { getMetadata, getTransformationMetadata } = require('../v0/util');
 const stats = require('./stats');
 const {
   setupFaasFunction,
@@ -24,8 +24,8 @@ function generateFunctionName(userTransformation, libraryVersionIds, testMode) {
   const ids = [userTransformation.workspaceId, userTransformation.versionId].concat(
     (libraryVersionIds || []).sort(),
   );
-  const hash = crypto.createHash('md5').update(`${ids}`).digest('hex');
 
+  const hash = crypto.createHash('md5').update(`${ids}`).digest('hex');
   return `fn-${userTransformation.workspaceId}-${hash}`.substring(0, 63).toLowerCase();
 }
 
@@ -82,10 +82,10 @@ async function setOpenFaasUserTransform(
   libraryVersionIds,
   pregeneratedFnName,
   testMode = false,
+  trMetadata = {},
 ) {
   const tags = {
     transformerVersionId: userTransformation.versionId,
-    language: userTransformation.language,
     identifier: 'openfaas',
     testMode,
   };
@@ -106,6 +106,7 @@ async function setOpenFaasUserTransform(
       testMode,
     ),
     testMode,
+    trMetadata,
   );
 
   stats.timing('creation_time', setupTime, tags);
@@ -126,24 +127,21 @@ async function runOpenFaasUserTransform(
   if (events.length === 0) {
     throw new Error('Invalid payload. No events');
   }
-  const metaTags = events[0].metadata ? getMetadata(events[0].metadata) : {};
-  const tags = {
-    transformerVersionId: userTransformation.versionId,
-    language: userTransformation.language,
-    identifier: 'openfaas',
-    testMode,
-    ...metaTags,
-  };
 
+  const trMetadata = events[0].metadata ? getTransformationMetadata(events[0].metadata) : {};
   // check and deploy faas function if not exists
   const functionName = generateFunctionName(userTransformation, libraryVersionIds, testMode);
   if (testMode) {
-    await setOpenFaasUserTransform(userTransformation, libraryVersionIds, functionName, testMode);
+    await setOpenFaasUserTransform(
+      userTransformation,
+      libraryVersionIds,
+      functionName,
+      testMode,
+      trMetadata,
+    );
   }
 
-  const invokeTime = new Date();
-  stats.counter('events_to_process', events.length, tags);
-  const result = await executeFaasFunction(
+  return await executeFaasFunction(
     functionName,
     events,
     userTransformation.versionId,
@@ -156,9 +154,8 @@ async function runOpenFaasUserTransform(
       testMode,
     ),
     testMode,
+    trMetadata,
   );
-  stats.timing('run_time', invokeTime, tags);
-  return result;
 }
 
 module.exports = {

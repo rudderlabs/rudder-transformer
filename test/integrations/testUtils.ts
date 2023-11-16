@@ -3,18 +3,16 @@ import { join } from 'path';
 import { MockHttpCallsData, TestCaseData } from './testTypes';
 import MockAdapter from 'axios-mock-adapter';
 import isMatch from 'lodash/isMatch';
+import { OptionValues } from 'commander';
 
-export const getTestDataFilePaths = (
-  dirPath: string,
-  destination: string = '',
-  feature: string = 'processor',
-): string[] => {
+export const getTestDataFilePaths = (dirPath: string, opts: OptionValues): string[] => {
   const globPattern = join(dirPath, '**', 'data.ts');
   let testFilePaths = globSync(globPattern);
-  if (destination) {
-    testFilePaths = testFilePaths.filter(
-      (testFile) => testFile.includes(destination) && testFile.includes(feature),
-    );
+  if (opts.destination) {
+    testFilePaths = testFilePaths.filter((testFile) => testFile.includes(opts.destination));
+  }
+  if (opts.feature) {
+    testFilePaths = testFilePaths.filter((testFile) => testFile.includes(opts.feature));
   }
   return testFilePaths;
 };
@@ -70,4 +68,9 @@ export const addMock = (mock: MockAdapter, axiosMock: MockHttpCallsData) => {
     default:
       break;
   }
+};
+export const overrideDestination = (destination, overrideConfigValues) => {
+  return Object.assign({}, destination, {
+    Config: { ...destination.Config, ...overrideConfigValues },
+  });
 };

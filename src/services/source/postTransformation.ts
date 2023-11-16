@@ -3,7 +3,7 @@ import { CatchErr } from '../../util/types';
 import { generateErrorObject } from '../../v0/util';
 import { ErrorReportingService } from '../errorReporting';
 
-export class PostTransformationSourceService {
+export class SourcePostTransformationService {
   public static handleFailureEventsSource(
     error: CatchErr,
     metaTO: MetaTransferObject,

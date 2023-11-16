@@ -1,5 +1,6 @@
 import Router from '@koa/router';
 import { RouteActivationMiddleware } from '../middlewares/routeActivation';
+import { FeatureFlagMiddleware } from '../middlewares/featureFlag';
 import { UserTransformController } from '../controllers/userTransform';
 
 const router = new Router();
@@ -7,6 +8,7 @@ const router = new Router();
 router.post(
   '/customTransform',
   RouteActivationMiddleware.isUserTransformRouteActive,
+  FeatureFlagMiddleware.handle,
   UserTransformController.transform,
 );
 router.post(

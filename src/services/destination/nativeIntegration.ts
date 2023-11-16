@@ -1,6 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import groupBy from 'lodash/groupBy';
+import cloneDeep from 'lodash/cloneDeep';
 import { DestinationService } from '../../interfaces/DestinationService';
 import {
   DeliveryResponse,
@@ -50,7 +51,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
     events: ProcessorTransformationRequest[],
     destinationType: string,
     version: string,
-    _requestMetadata: NonNullable<unknown>,
+    requestMetadata: NonNullable<unknown>,
   ): Promise<ProcessorTransformationResponse[]> {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
     const respList: ProcessorTransformationResponse[][] = await Promise.all(
@@ -58,7 +59,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
         try {
           const transformedPayloads:
             | ProcessorTransformationOutput
-            | ProcessorTransformationOutput[] = await destHandler.process(event);
+            | ProcessorTransformationOutput[] = await destHandler.process(event, requestMetadata);
           return DestinationPostTransformationService.handleProcessorTransformSucessEvents(
             event,
             transformedPayloads,
@@ -88,7 +89,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
     events: RouterTransformationRequestData[],
     destinationType: string,
     version: string,
-    _requestMetadata: NonNullable<unknown>,
+    requestMetadata: NonNullable<unknown>,
   ): Promise<RouterTransformationResponse[]> {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
     const allDestEvents: NonNullable<unknown> = groupBy(
@@ -106,7 +107,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
         );
         try {
           const doRouterTransformationResponse: RouterTransformationResponse[] =
-            await destHandler.processRouterDest(destInputArray);
+            await destHandler.processRouterDest(cloneDeep(destInputArray), requestMetadata);
           metaTO.metadata = destInputArray[0].metadata;
           return DestinationPostTransformationService.handleRouterTransformSuccessEvents(
             doRouterTransformationResponse,
@@ -132,7 +133,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
     events: RouterTransformationRequestData[],
     destinationType: string,
     version: any,
-    _requestMetadata: NonNullable<unknown>,
+    requestMetadata: NonNullable<unknown>,
   ): RouterTransformationResponse[] {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
     if (!destHandler.batch) {
@@ -145,7 +146,10 @@ export class NativeIntegrationDestinationService implements DestinationService {
     const groupedEvents: RouterTransformationRequestData[][] = Object.values(allDestEvents);
     const response = groupedEvents.map((destEvents) => {
       try {
-        const destBatchedRequests: RouterTransformationResponse[] = destHandler.batch(destEvents);
+        const destBatchedRequests: RouterTransformationResponse[] = destHandler.batch(
+          destEvents,
+          requestMetadata,
+        );
         return destBatchedRequests;
       } catch (error: any) {
         const metaTO = this.getTags(

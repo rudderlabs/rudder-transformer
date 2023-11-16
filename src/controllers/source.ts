@@ -3,7 +3,7 @@ import { MiscService } from '../services/misc';
 import { ServiceSelector } from '../helpers/serviceSelector';
 import { ControllerUtility } from './util';
 import logger from '../logger';
-import { PostTransformationSourceService } from '../services/source/postTransformation';
+import { SourcePostTransformationService } from '../services/source/postTransformation';
 
 export class SourceController {
   public static async sourceTransform(ctx: Context) {
@@ -16,16 +16,21 @@ export class SourceController {
     const { version, source }: { version: string; source: string } = ctx.params;
     const integrationService = ServiceSelector.getNativeSourceService();
     try {
-      const resplist = await integrationService.sourceTransformRoutine(
-        events,
+      const { implementationVersion, input } = ControllerUtility.adaptInputToVersion(
         source,
         version,
+        events,
+      );
+      const resplist = await integrationService.sourceTransformRoutine(
+        input,
+        source,
+        implementationVersion,
         requestMetadata,
       );
       ctx.body = resplist;
     } catch (err: any) {
       const metaTO = integrationService.getTags();
-      const resp = PostTransformationSourceService.handleFailureEventsSource(err, metaTO);
+      const resp = SourcePostTransformationService.handleFailureEventsSource(err, metaTO);
       ctx.body = [resp];
     }
     ControllerUtility.postProcess(ctx);

@@ -20,7 +20,7 @@ export class EventTestController {
       };
       ctx.status = 400;
     }
-    ctx.set('apiVersion', this.API_VERSION);
+    ctx.set('apiVersion', EventTestController.API_VERSION);
   }
 
   public static status(ctx: Context) {

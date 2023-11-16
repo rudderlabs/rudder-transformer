@@ -1,6 +1,8 @@
 /* eslint-disable no-nested-ternary,no-param-reassign */
 const lodash = require('lodash');
 const get = require('get-value');
+const { InstrumentationError, NetworkError } = require('@rudderstack/integrations-lib');
+const { FilteredEventsError } = require('../../util/errorTypes');
 const {
   BrazeDedupUtility,
   CustomAttributeOperationUtil,
@@ -22,8 +24,8 @@ const {
   isHttpStatusSuccess,
   simpleProcessRouterDestSync,
   simpleProcessRouterDest,
+  isNewStatusCodesAccepted,
 } = require('../../util');
-const { InstrumentationError, NetworkError } = require('@rudderstack/integrations-lib');
 const {
   ConfigCategory,
   mappingConfig,
@@ -213,7 +215,7 @@ async function processIdentify(message, destination) {
   );
   if (!isHttpStatusSuccess(brazeIdentifyResp.status)) {
     throw new NetworkError(
-      'Braze identify failed',
+      `Braze identify failed - ${JSON.stringify(brazeIdentifyResp.response)}`,
       brazeIdentifyResp.status,
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(brazeIdentifyResp.status),
@@ -223,7 +225,13 @@ async function processIdentify(message, destination) {
   }
 }
 
-function processTrackWithUserAttributes(message, destination, mappingJson, processParams) {
+function processTrackWithUserAttributes(
+  message,
+  destination,
+  mappingJson,
+  processParams,
+  reqMetadata,
+) {
   let payload = getUserAttributesObject(message, mappingJson);
   if (payload && Object.keys(payload).length > 0) {
     payload = setExternalIdOrAliasObject(payload, message);
@@ -236,6 +244,10 @@ function processTrackWithUserAttributes(message, destination, mappingJson, proce
       );
       if (dedupedAttributePayload) {
         requestJson.attributes = [dedupedAttributePayload];
+      } else if (isNewStatusCodesAccepted(reqMetadata)) {
+        throw new FilteredEventsError(
+          '[Braze Deduplication]: Duplicate user detected, the user is dropped',
+        );
       } else {
         throw new InstrumentationError(
           '[Braze Deduplication]: Duplicate user detected, the user is dropped',
@@ -444,7 +456,7 @@ function processAlias(message, destination) {
   );
 }
 
-async function process(event, processParams = { userStore: new Map() }) {
+async function process(event, processParams = { userStore: new Map() }, reqMetadata = {}) {
   let response;
   const { message, destination } = event;
   const messageType = message.type.toLowerCase();
@@ -490,6 +502,7 @@ async function process(event, processParams = { userStore: new Map() }) {
         destination,
         mappingConfig[category.name],
         processParams,
+        reqMetadata,
       );
       break;
     case EventType.GROUP:

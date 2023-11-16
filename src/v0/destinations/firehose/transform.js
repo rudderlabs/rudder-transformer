@@ -1,6 +1,6 @@
 const isString = require('lodash/isString');
-const { getHashFromArray, simpleProcessRouterDest } = require('../../util');
 const { ConfigurationError } = require('@rudderstack/integrations-lib');
+const { getHashFromArray, simpleProcessRouterDest } = require('../../util');
 
 function getDeliveryStreamMapTo(event) {
   const { message, destination } = event;

@@ -11,7 +11,6 @@ import {
 } from '../types/index';
 
 export interface DestinationService {
-
   getName(): string;
 
   init(): void;

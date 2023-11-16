@@ -1,5 +1,6 @@
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const lodash = require('lodash');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
   defaultPutRequestConfig,
   handleRtTfSingleEventError,
@@ -62,7 +63,10 @@ const trackResponseBuilder = (message, { Config }) => {
   if (processedPayload?.properties) {
     processedPayload.properties = stringifyPropertiesValues(processedPayload.properties);
   }
-  if (processedPayload.name && !(processedPayload.name.length >= 2 && processedPayload.name.length <= 30)) {
+  if (
+    processedPayload.name &&
+    !(processedPayload.name.length >= 2 && processedPayload.name.length <= 30)
+  ) {
     throw new InstrumentationError('Event name should be between 2 and 30 characters');
   }
   processedPayload.name = processedPayload.name.trim().replace(/\s+/g, '_');

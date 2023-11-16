@@ -1,10 +1,8 @@
 const { get, set } = require('lodash');
 const sha256 = require('sha256');
+const { NetworkError, NetworkInstrumentationError } = require('@rudderstack/integrations-lib');
 const { prepareProxyRequest, handleHttpRequest } = require('../../../adapters/network');
-const {
-  isHttpStatusSuccess,
-  getAuthErrCategoryFromErrDetailsAndStCode,
-} = require('../../util/index');
+const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../util/index');
 const { CONVERSION_ACTION_ID_CACHE_TTL } = require('./config');
 const Cache = require('../../util/cache');
 
@@ -15,7 +13,6 @@ const {
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 const { BASE_ENDPOINT } = require('./config');
-const { NetworkError, NetworkInstrumentationError } = require('@rudderstack/integrations-lib');
 const tags = require('../../util/tags');
 
 const ERROR_MSG_PATH = 'response[0].error.message';
@@ -60,10 +57,7 @@ const getConversionActionId = async (method, headers, params) => {
           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(gaecConversionActionIdResponse.status),
         },
         gaecConversionActionIdResponse.response,
-        getAuthErrCategoryFromErrDetailsAndStCode(
-          get(gaecConversionActionIdResponse, 'status'),
-          get(gaecConversionActionIdResponse, ERROR_MSG_PATH),
-        ),
+        getAuthErrCategoryFromStCode(gaecConversionActionIdResponse.status),
       );
     }
     const conversionActionId = get(
@@ -142,7 +136,7 @@ const responseHandler = (destinationResponse) => {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },
     response,
-    getAuthErrCategoryFromErrDetailsAndStCode(status, response),
+    getAuthErrCategoryFromStCode(status),
   );
 };
 

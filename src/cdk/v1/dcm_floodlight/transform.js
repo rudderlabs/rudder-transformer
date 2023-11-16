@@ -5,7 +5,7 @@ const {
   removeUndefinedAndNullValues,
   isDefinedAndNotNull,
 } = require('rudder-transformer-cdk/build/utils');
-const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
+const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
   getIntegrationsObj,
   isEmpty,

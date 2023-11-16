@@ -1,5 +1,10 @@
 const get = require('get-value');
 const lodash = require('lodash');
+const {
+  TransformationError,
+  ConfigurationError,
+  InstrumentationError,
+} = require('@rudderstack/integrations-lib');
 const { MappedToDestinationKey, GENERIC_TRUE_VALUES } = require('../../../constants');
 const {
   defaultPostRequestConfig,
@@ -16,11 +21,6 @@ const {
   getDestinationExternalIDInfoForRetl,
   getDestinationExternalIDObjectForRetl,
 } = require('../../util');
-const {
-  TransformationError,
-  ConfigurationError,
-  InstrumentationError,
-} = require('@rudderstack/integrations-lib');
 const {
   IDENTIFY_CRM_UPDATE_CONTACT,
   IDENTIFY_CRM_CREATE_NEW_CONTACT,
@@ -41,6 +41,7 @@ const {
   searchContacts,
   getEventAndPropertiesFromConfig,
   getHsSearchId,
+  populateTraits,
 } = require('./util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -69,7 +70,7 @@ const addHsAuthentication = (response, Config) => {
  */
 const processIdentify = async (message, destination, propertyMap) => {
   const { Config } = destination;
-  const traits = getFieldValueFromMessage(message, 'traits');
+  let traits = getFieldValueFromMessage(message, 'traits');
   const mappedToDestination = get(message, MappedToDestinationKey);
   const operation = get(message, 'context.hubspotOperation');
   const externalIdObj = getDestinationExternalIDObjectForRetl(message, 'HS');
@@ -124,6 +125,7 @@ const processIdentify = async (message, destination, propertyMap) => {
       response.method = defaultPatchRequestConfig.requestMethod;
     }
 
+    traits = await populateTraits(propertyMap, traits, destination);
     response.body.JSON = removeUndefinedAndNullValues({ properties: traits });
     response.source = 'rETL';
     response.operation = operation;

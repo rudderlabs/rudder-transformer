@@ -28,9 +28,7 @@
     "sourceFromGenericMap": true,
     "required": false,
     "metadata": {
-      "excludes": [
-        "groupId"
-      ]
+      "excludes": ["groupId"]
     }
   },
   {
@@ -38,13 +36,7 @@
     "sourceKeys": "context",
     "required": false,
     "metadata": {
-      "excludes": [
-        "page",
-        "traits",
-        "sessionId",
-        "sessionStart",
-        "consentManagement"
-      ]
+      "excludes": ["page", "traits", "sessionId", "sessionStart", "consentManagement"]
     }
   }
 ]

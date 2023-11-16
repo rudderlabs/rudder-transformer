@@ -1,9 +1,3 @@
-const { httpGET, httpPOST } = require('../../../adapters/network');
-const {
-  getDynamicErrorType,
-  processAxiosResponse,
-} = require('../../../adapters/utils/networkUtils');
-const { isHttpStatusSuccess } = require('../../util/index');
 const {
   NetworkError,
   AbortedError,
@@ -12,6 +6,12 @@ const {
   UnhandledStatusCodeError,
   InstrumentationError,
 } = require('@rudderstack/integrations-lib');
+const { httpGET, httpPOST } = require('../../../adapters/network');
+const {
+  getDynamicErrorType,
+  processAxiosResponse,
+} = require('../../../adapters/utils/networkUtils');
+const { isHttpStatusSuccess } = require('../../util/index');
 const tags = require('../../util/tags');
 
 /**

@@ -59,7 +59,15 @@ const keysFromJsonPaths = (jsonPaths) => {
   const jsonPathKeys = {};
   const jsonLegacyPathKeys = {};
 
-  const supportedEventPrefixes = ['track.', 'identify.', 'page.', 'screen.', 'alias.', 'group.', 'extract.'];
+  const supportedEventPrefixes = [
+    'track.',
+    'identify.',
+    'page.',
+    'screen.',
+    'alias.',
+    'group.',
+    'extract.',
+  ];
 
   jsonPaths.forEach((jsonPath) => {
     const trimmedJSONPath = jsonPath.trim();
@@ -71,13 +79,13 @@ const keysFromJsonPaths = (jsonPaths) => {
     const key = paths.join('_');
     const pos = paths.length - 1;
 
-    if (supportedEventPrefixes.some(prefix => trimmedJSONPath.startsWith(prefix))) {
+    if (supportedEventPrefixes.some((prefix) => trimmedJSONPath.startsWith(prefix))) {
       jsonPathKeys[key] = pos;
       return;
     }
     jsonLegacyPathKeys[key] = pos;
   });
-  return {jsonPathKeys, jsonLegacyPathKeys};
+  return { jsonPathKeys, jsonLegacyPathKeys };
 };
 
 // https://www.myintervals.com/blog/2009/05/20/iso-8601-date-validation-that-doesnt-suck/

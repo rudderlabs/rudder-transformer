@@ -52,7 +52,7 @@ export class CDKV2DestinationService implements DestinationService {
     events: ProcessorTransformationRequest[],
     destinationType: string,
     _version: string,
-    _requestMetadata: NonNullable<unknown>,
+    requestMetadata: NonNullable<unknown>,
   ): Promise<ProcessorTransformationResponse[]> {
     // TODO: Change the promise type
     const respList: ProcessorTransformationResponse[][] = await Promise.all(
@@ -64,6 +64,7 @@ export class CDKV2DestinationService implements DestinationService {
             destinationType,
             event,
             tags.FEATURES.PROCESSOR,
+            requestMetadata
           );
 
           stats.increment('event_transform_success', {
@@ -108,7 +109,7 @@ export class CDKV2DestinationService implements DestinationService {
     events: RouterTransformationRequestData[],
     destinationType: string,
     _version: string,
-    _requestMetadata: NonNullable<unknown>,
+    requestMetadata: NonNullable<unknown>,
   ): Promise<RouterTransformationResponse[]> {
     const allDestEvents: object = groupBy(
       events,
@@ -126,7 +127,7 @@ export class CDKV2DestinationService implements DestinationService {
           metaTo.metadata = destInputArray[0].metadata;
           try {
             const doRouterTransformationResponse: RouterTransformationResponse[] =
-              await processCdkV2Workflow(destinationType, destInputArray, tags.FEATURES.ROUTER);
+              await processCdkV2Workflow(destinationType, destInputArray, tags.FEATURES.ROUTER, requestMetadata);
             return DestinationPostTransformationService.handleRouterTransformSuccessEvents(
               doRouterTransformationResponse,
               undefined,

@@ -571,14 +571,9 @@ if (startDestTransformer) {
             destEvents.length > 0 && destEvents[0].metadata
               ? getMetadata(destEvents[0].metadata)
               : {};
-          const userFuncStartTime = new Date();
           if (transformationVersionId) {
             let destTransformedEvents;
             try {
-              stats.counter('user_transform_function_input_events', destEvents.length, {
-                processSessions,
-                ...metaTags,
-              });
               destTransformedEvents = await userTransformHandler()(
                 destEvents,
                 transformationVersionId,
@@ -626,12 +621,6 @@ if (startDestTransformer) {
               }));
               transformedEvents.push(...destTransformedEvents);
               stats.counter('user_transform_errors', destEvents.length, {
-                transformationVersionId,
-                processSessions,
-                ...metaTags,
-              });
-            } finally {
-              stats.timing('user_transform_function_latency', userFuncStartTime, {
                 transformationVersionId,
                 processSessions,
                 ...metaTags,

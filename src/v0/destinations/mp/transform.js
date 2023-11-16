@@ -17,7 +17,6 @@ const {
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
   groupEventsByType,
-  extractCustomFields,
 } = require('../../util');
 const {
   ConfigCategory,
@@ -28,7 +27,6 @@ const {
   TRACK_MAX_BATCH_SIZE,
   ENGAGE_MAX_BATCH_SIZE,
   GROUPS_MAX_BATCH_SIZE,
-  MP_IDENTIFY_EXCLUSION_LIST,
 } = require('./config');
 const {
   createIdentifyResponse,
@@ -38,12 +36,12 @@ const {
   groupEventsByEndpoint,
   batchEvents,
   parseConfigArray,
+  trimTraits,
 } = require('./util');
 const { CommonUtils } = require('../../../util/common');
 
 // ref: https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel
 const mPEventPropertiesConfigJson = mappingConfig[ConfigCategory.EVENT_PROPERTIES.name];
-const mPIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 
 const setImportCredentials = (destConfig) => {
   const endpoint =
@@ -229,51 +227,6 @@ const processTrack = (message, destination) => {
   returnValue.push(getEventValueForTrackEvent(message, destination));
   return returnValue;
 };
-
-function trimTraits(traits, contextTraits, setOnceProperties) {
-  // Create a copy of the original traits object
-  const traitsCopy = { ...traits };
-  const contextTraitsCopy = { ...contextTraits };
-
-  // Initialize setOnce object
-  const setOnceEligible = {};
-
-  // Step 1: find the k-v pairs of setOnceProperties in traits and contextTraits
-
-  setOnceProperties.forEach((propertyPath) => {
-    const pathSegments = propertyPath.split('.');
-    const propName = pathSegments[pathSegments.length - 1];
-
-    if (Object.keys(traitsCopy).length > 0 && get(traitsCopy, propertyPath)) {
-      setOnceEligible[propName] = get(traitsCopy, propertyPath);
-      lodash.unset(traitsCopy, propertyPath);
-    }
-    if (Object.keys(contextTraits).length > 0 && get(contextTraitsCopy, propertyPath)) {
-      if (!setOnceEligible.hasOwnProperty(propName)) {
-        setOnceEligible[propName] = get(contextTraitsCopy, propertyPath);
-      }
-      lodash.unset(contextTraitsCopy, propertyPath);
-    }
-  });
-  // Step 2: transform properties eligible as per rudderstack declared identify event mapping
-  // setOnce should have all traits from message.traits and message.context.traits by now
-  let sentOnceTransform = constructPayload(setOnceEligible, mPIdentifyConfigJson);
-
-  // Step 3: combine the transformed and custom setOnce traits
-
-  sentOnceTransform = extractCustomFields(
-    setOnceEligible,
-    sentOnceTransform,
-    'root',
-    MP_IDENTIFY_EXCLUSION_LIST,
-  );
-
-  return {
-    traits: traitsCopy,
-    contextTraits: contextTraitsCopy,
-    setOnce: sentOnceTransform,
-  };
-}
 
 const createSetOnceResponse = (message, type, destination, setOnce) => {
   const payload = {

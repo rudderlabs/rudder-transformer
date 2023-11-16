@@ -1,3 +1,4 @@
+const lodash = require('lodash');
 const set = require('set-value');
 const get = require('get-value');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
@@ -329,6 +330,68 @@ const parseConfigArray = (arr, key) => {
   return arr.map((item) => item[key]);
 };
 
+/**
+ * Trims the traits and contextTraits objects based on the setOnceProperties array and returns an object containing the modified traits, contextTraits, and setOnce properties.
+ *
+ * @param {object} traits - An object representing the traits.
+ * @param {object} contextTraits - An object representing the context traits.
+ * @param {string[]} setOnceProperties - An array of property paths to be considered for the setOnce transformation.
+ * @returns {object} - An object containing the modified traits, contextTraits, and setOnce properties.
+ *
+ * @example
+ * const traits = { name: 'John', age: 30 };
+ * const contextTraits = { country: 'USA', language: 'English', address: { city: 'New York', state: 'NY' }}};
+ * const setOnceProperties = ['name', 'country', 'address.city'];
+ *
+ * const result = trimTraits(traits, contextTraits, setOnceProperties);
+ * console.log(result);
+ * // Output: { traits: { age: 30 }, contextTraits: { language: 'English' }, setOnce: { $name: 'John', $country_code: 'USA', city: 'New York'} }
+ */
+function trimTraits(traits, contextTraits, setOnceProperties) {
+  // Create a copy of the original traits object
+  const traitsCopy = { ...traits };
+  const contextTraitsCopy = { ...contextTraits };
+
+  // Initialize setOnce object
+  const setOnceEligible = {};
+
+  // Step 1: find the k-v pairs of setOnceProperties in traits and contextTraits
+
+  setOnceProperties.forEach((propertyPath) => {
+    const pathSegments = propertyPath.split('.');
+    const propName = pathSegments[pathSegments.length - 1];
+
+    if (Object.keys(traitsCopy).length > 0 && get(traitsCopy, propertyPath)) {
+      setOnceEligible[propName] = get(traitsCopy, propertyPath);
+      lodash.unset(traitsCopy, propertyPath);
+    }
+    if (Object.keys(contextTraits).length > 0 && get(contextTraitsCopy, propertyPath)) {
+      if (!setOnceEligible.hasOwnProperty(propName)) {
+        setOnceEligible[propName] = get(contextTraitsCopy, propertyPath);
+      }
+      lodash.unset(contextTraitsCopy, propertyPath);
+    }
+  });
+  // Step 2: transform properties eligible as per rudderstack declared identify event mapping
+  // setOnce should have all traits from message.traits and message.context.traits by now
+  let sentOnceTransform = constructPayload(setOnceEligible, mPIdentifyConfigJson);
+
+  // Step 3: combine the transformed and custom setOnce traits
+
+  sentOnceTransform = extractCustomFields(
+    setOnceEligible,
+    sentOnceTransform,
+    'root',
+    MP_IDENTIFY_EXCLUSION_LIST,
+  );
+
+  return {
+    traits: traitsCopy,
+    contextTraits: contextTraitsCopy,
+    setOnce: sentOnceTransform,
+  };
+}
+
 module.exports = {
   createIdentifyResponse,
   isImportAuthCredentialsAvailable,
@@ -338,4 +401,5 @@ module.exports = {
   batchEvents,
   combineBatchRequestsWithSameJobIds,
   parseConfigArray,
+  trimTraits,
 };

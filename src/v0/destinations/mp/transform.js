@@ -477,7 +477,6 @@ const processRouterDest = async (inputs, reqMetadata) => {
                 destination: event.destination,
               };
             }
-            // console.log('event', JSON.stringify(event));
             let processedEvents = await process(event);
             processedEvents = CommonUtils.toArray(processedEvents);
             return processedEvents.map((res) => ({

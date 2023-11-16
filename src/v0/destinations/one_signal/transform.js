@@ -1,4 +1,9 @@
 const get = require('get-value');
+const {
+  ConfigurationError,
+  TransformationError,
+  InstrumentationError,
+} = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const { ConfigCategory, mappingConfig, BASE_URL, ENDPOINTS } = require('./config');
 const {
@@ -13,11 +18,6 @@ const {
   defaultPutRequestConfig,
 } = require('../../util');
 const { populateDeviceType, populateTags } = require('./util');
-const {
-  ConfigurationError,
-  TransformationError,
-  InstrumentationError,
-} = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (payload, endpoint, eventType) => {

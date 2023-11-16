@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-nested-ternary */
 const get = require('get-value');
+const { InstrumentationError, TransformationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   getEndpoint,
@@ -25,7 +26,6 @@ const {
 } = require('../../util');
 const { generateClevertapBatchedPayload } = require('./utils');
 
-const { InstrumentationError, TransformationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const TIMESTAMP_KEY_PATH = 'context.traits.ts';
@@ -419,7 +419,7 @@ const processRouterDest = (inputs, reqMetadata) => {
     batchedEvents.forEach((batch) => {
       const batchedRequest = generateClevertapBatchedPayload(batch.events, batch.destination);
       batchResponseList.push(
-        getSuccessRespEvents(batchedRequest, batch.metadata, batch.destination, reqMetadata),
+        getSuccessRespEvents(batchedRequest, batch.metadata, batch.destination),
       );
     });
   }

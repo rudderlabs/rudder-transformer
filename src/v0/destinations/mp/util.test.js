@@ -2,7 +2,10 @@ const {
   combineBatchRequestsWithSameJobIds,
   groupEventsByEndpoint,
   batchEvents,
+  generateBatchedPayloadForArray,
+  buildUtmParams,
 } = require('./util');
+const { FEATURE_GZIP_SUPPORT } = require('../../util/constant');
 
 const destinationMock = {
   Config: {
@@ -456,6 +459,118 @@ describe('Mixpanel utils test', () => {
         },
       ];
       expect(combineBatchRequestsWithSameJobIds(input)).toEqual(expectedOutput);
+    });
+  });
+
+  describe('Unit test cases for generateBatchedPayloadForArray', () => {
+    it('should generate a batched payload with GZIP payload for /import endpoint when given an array of events', () => {
+      const events = [
+        {
+          body: { JSON_ARRAY: { batch: '[{"event": "event1"}]' } },
+          endpoint: '/import',
+          headers: { 'Content-Type': 'application/json' },
+          params: {},
+        },
+        {
+          body: { JSON_ARRAY: { batch: '[{"event": "event2"}]' } },
+          endpoint: '/import',
+          headers: { 'Content-Type': 'application/json' },
+          params: {},
+        },
+      ];
+      const expectedBatchedRequest = {
+        body: {
+          FORM: {},
+          JSON: {},
+          JSON_ARRAY: {},
+          XML: {},
+          GZIP: {
+            payload: '[{"event":"event1"},{"event":"event2"}]',
+          },
+        },
+        endpoint: '/import',
+        files: {},
+        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',
+        params: {},
+        type: 'REST',
+        version: '1',
+      };
+
+      const result = generateBatchedPayloadForArray(events, {
+        features: { [FEATURE_GZIP_SUPPORT]: true },
+      });
+
+      expect(result).toEqual(expectedBatchedRequest);
+    });
+
+    it('should generate a batched payload with JSON_ARRAY body when given an array of events', () => {
+      const events = [
+        {
+          body: { JSON_ARRAY: { batch: '[{"event": "event1"}]' } },
+          endpoint: '/endpoint',
+          headers: { 'Content-Type': 'application/json' },
+          params: {},
+        },
+        {
+          body: { JSON_ARRAY: { batch: '[{"event": "event2"}]' } },
+          endpoint: '/endpoint',
+          headers: { 'Content-Type': 'application/json' },
+          params: {},
+        },
+      ];
+      const expectedBatchedRequest = {
+        body: {
+          FORM: {},
+          JSON: {},
+          JSON_ARRAY: { batch: '[{"event":"event1"},{"event":"event2"}]' },
+          XML: {},
+        },
+        endpoint: '/endpoint',
+        files: {},
+        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',
+        params: {},
+        type: 'REST',
+        version: '1',
+      };
+
+      const result = generateBatchedPayloadForArray(events, {
+        features: { [FEATURE_GZIP_SUPPORT]: true },
+      });
+
+      expect(result).toEqual(expectedBatchedRequest);
+    });
+  });
+
+  describe('Unit test cases for buildUtmParams', () => {
+    it('should return an empty object when campaign is undefined', () => {
+      const campaign = undefined;
+      const result = buildUtmParams(campaign);
+      expect(result).toEqual({});
+    });
+
+    it('should return an empty object when campaign is an empty object', () => {
+      const campaign = {};
+      const result = buildUtmParams(campaign);
+      expect(result).toEqual({});
+    });
+
+    it('should return an empty object when campaign is not an object', () => {
+      const campaign = [{ name: 'test' }];
+      const result = buildUtmParams(campaign);
+      expect(result).toEqual({});
+    });
+
+    it('should handle campaign object with null/undefined values', () => {
+      const campaign = { name: null, source: 'rudder', medium: 'rudder', test: undefined };
+      const result = buildUtmParams(campaign);
+      expect(result).toEqual({
+        utm_campaign: null,
+        utm_source: 'rudder',
+        utm_medium: 'rudder',
+        test: undefined,
+      });
     });
   });
 });

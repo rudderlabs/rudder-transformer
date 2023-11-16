@@ -6,7 +6,7 @@ import { DestHandlerMap } from '../constants/destinationCanonicalNames';
 import { Metadata } from '../types';
 import { getCPUProfile, getHeapProfile } from '../middleware';
 
-export default class MiscService {
+export class MiscService {
   public static getDestHandler(dest: string, version: string) {
     if (DestHandlerMap.hasOwnProperty(dest)) {
       return require(`../${version}/destinations/${DestHandlerMap[dest]}/transform`);
@@ -30,6 +30,7 @@ export default class MiscService {
     return {
       namespace: 'Unknown',
       cluster: 'Unknown',
+      features: ctx.state?.features || {},
     };
   }
 

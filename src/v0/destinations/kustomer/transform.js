@@ -1,5 +1,6 @@
 /* eslint-disable no-nested-ternary */
 const get = require('get-value');
+const { TransformationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG, DEFAULT_BASE_ENDPOINT } = require('./config');
 const {
@@ -13,7 +14,6 @@ const {
   simpleProcessRouterDest,
 } = require('../../util');
 const { fetchKustomer, handleAdvancedtransformations } = require('./util');
-const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 // Function responsible for constructing the Kustomer (User) Payload for identify

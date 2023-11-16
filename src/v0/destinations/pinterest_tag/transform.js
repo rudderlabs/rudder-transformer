@@ -1,4 +1,5 @@
 const { get } = require('lodash');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   defaultRequestConfig,
@@ -28,7 +29,6 @@ const {
   getV5EventsEndpoint,
   API_VERSION,
 } = require('./config');
-const { InstrumentationError } = require('../../util/errorTypes');
 
 const responseBuilderSimple = (finalPayload, { Config }) => {
   const { apiVersion = API_VERSION.v3, adAccountId, conversionToken, sendAsTestEvent } = Config;

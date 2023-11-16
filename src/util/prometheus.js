@@ -229,7 +229,13 @@ class Prometheus {
         name: 'tp_errors',
         help: 'tp_errors',
         type: 'counter',
-        labelNames: ['sourceType', 'destinationType', 'k8_namespace', 'workspaceId', 'trackingPlanId'],
+        labelNames: [
+          'sourceType',
+          'destinationType',
+          'k8_namespace',
+          'workspaceId',
+          'trackingPlanId',
+        ],
       },
       {
         name: 'tp_events_count',
@@ -242,12 +248,6 @@ class Prometheus {
         help: 'user_transform_function_group_size',
         type: 'counter',
         labelNames: ['processSessions'],
-      },
-      {
-        name: 'user_transform_function_input_events',
-        help: 'user_transform_function_input_events',
-        type: 'counter',
-        labelNames: ['processSessions', 'sourceType', 'destinationType', 'k8_namespace'],
       },
       {
         name: 'user_transform_errors',
@@ -500,20 +500,6 @@ class Prometheus {
         labelNames: ['writeKey', 'source'],
       },
       {
-        name: 'events_to_process',
-        help: 'events_to_process',
-        type: 'counter',
-        labelNames: [
-          'transformerVersionId',
-          'language',
-          'identifier',
-          'testMode',
-          'sourceType',
-          'destinationType',
-          'k8_namespace',
-        ],
-      },
-      {
         name: 'get_transformation_code',
         help: 'get_transformation_code',
         type: 'counter',
@@ -551,6 +537,24 @@ class Prometheus {
         type: 'gauge',
         labelNames: ['destType', 'feature'],
       },
+      {
+        name: 'braze_batch_attributes_pack_size',
+        help: 'braze_batch_attributes_pack_size',
+        type: 'gauge',
+        labelNames: ['destination_id'],
+      },
+      {
+        name: 'braze_batch_events_pack_size',
+        help: 'braze_batch_events_pack_size',
+        type: 'gauge',
+        labelNames: ['destination_id'],
+      },
+      {
+        name: 'braze_batch_purchase_pack_size',
+        help: 'braze_batch_purchase_pack_size',
+        type: 'gauge',
+        labelNames: ['destination_id'],
+      },
 
       // Histograms
       {
@@ -575,7 +579,13 @@ class Prometheus {
         name: 'tp_request_latency',
         help: 'tp_request_latency',
         type: 'histogram',
-        labelNames: ['sourceType', 'destinationType', 'k8_namespace', 'workspaceId', 'trackingPlanId'],
+        labelNames: [
+          'sourceType',
+          'destinationType',
+          'k8_namespace',
+          'workspaceId',
+          'trackingPlanId',
+        ],
       },
       {
         name: 'cdk_events_latency',
@@ -637,21 +647,6 @@ class Prometheus {
         help: 'creation_time',
         type: 'histogram',
         labelNames: ['transformerVersionId', 'language', 'identifier', 'publish', 'testMode'],
-      },
-      {
-        name: 'run_time',
-        help: 'run_time',
-        type: 'histogram',
-        labelNames: [
-          'transformerVersionId',
-          'language',
-          'identifier',
-          'publish',
-          'testMode',
-          'sourceType',
-          'destinationType',
-          'k8_namespace',
-        ],
       },
       { name: 'get_tracking_plan', help: 'get_tracking_plan', type: 'histogram', labelNames: [] },
       { name: 'createivm_duration', help: 'createivm_duration', type: 'histogram', labelNames: [] },
@@ -910,7 +905,38 @@ class Prometheus {
         type: 'histogram',
         labelNames: [],
       },
-
+      {
+        name: 'user_transform_function_input_events',
+        help: 'user_transform_function_input_events',
+        type: 'counter',
+        labelNames: [
+          'identifier',
+          'testMode',
+          'sourceType',
+          'destinationType',
+          'k8_namespace',
+          'errored',
+          'statusCode',
+          'transformationId',
+          'workspaceId',
+        ],
+      },
+      {
+        name: 'user_transform_function_latency',
+        help: 'user_transform_function_latency',
+        type: 'histogram',
+        labelNames: [
+          'identifier',
+          'testMode',
+          'sourceType',
+          'destinationType',
+          'k8_namespace',
+          'errored',
+          'statusCode',
+          'transformationId',
+          'workspaceId',
+        ],
+      },
     ];
 
     metrics.forEach((metric) => {

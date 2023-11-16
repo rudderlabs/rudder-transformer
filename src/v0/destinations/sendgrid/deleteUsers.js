@@ -1,3 +1,4 @@
+const { NetworkError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { httpDELETE } = require('../../../adapters/network');
 const { delIdUrlLimit, DELETE_CONTACTS_ENDPOINT } = require('./config');
 const {
@@ -5,7 +6,6 @@ const {
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 const { isHttpStatusSuccess } = require('../../util');
-const { NetworkError, ConfigurationError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 const { executeCommonValidations } = require('../../util/regulation-api');
 

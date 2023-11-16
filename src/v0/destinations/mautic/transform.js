@@ -1,4 +1,9 @@
 const {
+  TransformationError,
+  InstrumentationError,
+  ConfigurationError,
+} = require('@rudderstack/integrations-lib');
+const {
   defaultRequestConfig,
   constructPayload,
   removeUndefinedAndNullValues,
@@ -20,11 +25,6 @@ const {
 const { EventType } = require('../../../constants');
 const { mappingConfig, ConfigCategories } = require('./config');
 
-const {
-  TransformationError,
-  InstrumentationError,
-  ConfigurationError,
-} = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = async (payload, endpoint, method, messageType, Config) => {

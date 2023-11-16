@@ -16,22 +16,24 @@ const uaParser = require('ua-parser-js');
 const moment = require('moment-timezone');
 const sha256 = require('sha256');
 const crypto = require('crypto');
-const logger = require('../../logger');
-const stats = require('../../util/stats');
-const { DestCanonicalNames, DestHandlerMap } = require('../../constants/destinationCanonicalNames');
 const {
   InstrumentationError,
   BaseError,
   PlatformError,
   TransformationError,
   OAuthSecretError,
-} = require('./errorTypes');
+} = require('@rudderstack/integrations-lib');
+const logger = require('../../logger');
+const stats = require('../../util/stats');
+const { DestCanonicalNames, DestHandlerMap } = require('../../constants/destinationCanonicalNames');
 const { client: errNotificationClient } = require('../../util/errorNotifier');
 const { HTTP_STATUS_CODES } = require('./constant');
 const {
   REFRESH_TOKEN,
   AUTH_STATUS_INACTIVE,
 } = require('../../adapters/networkhandler/authConstants');
+const { FEATURE_FILTER_CODE, FEATURE_GZIP_SUPPORT } = require('./constant');
+
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -76,6 +78,14 @@ const stripTrailingSlash = (str) => (str && str.endsWith('/') ? str.slice(0, -1)
 const isPrimitive = (arg) => {
   const type = typeof arg;
   return arg == null || (type !== 'object' && type !== 'function');
+};
+
+const isNewStatusCodesAccepted = (reqMetadata = {}) => {
+  if (reqMetadata && typeof reqMetadata === 'object' && !Array.isArray(reqMetadata)) {
+    const { features } = reqMetadata;
+    return !!(features && features[FEATURE_FILTER_CODE]);
+  }
+  return false;
 };
 
 /**
@@ -363,6 +373,9 @@ const hashToSha256 = (value) => sha256(value);
 
 // Check what type of gender and convert to f or m
 const getFbGenderVal = (gender) => {
+  if (typeof gender !== 'string') {
+    return null;
+  }
   if (
     gender.toUpperCase() === 'FEMALE' ||
     gender.toUpperCase() === 'F' ||
@@ -454,11 +467,17 @@ const defaultBatchRequestConfig = () => ({
 
 // Router transformer
 // Success responses
-const getSuccessRespEvents = (message, metadata, destination, batched = false) => ({
+const getSuccessRespEvents = (
+  message,
+  metadata,
+  destination,
+  batched = false,
+  statusCode = 200,
+) => ({
   batchedRequest: message,
   metadata,
   batched,
-  statusCode: 200,
+  statusCode,
   destination,
 });
 
@@ -804,6 +823,13 @@ function formatValues(formattedVal, formattingType, typeFormat, integrationsObj)
       if (!(typeof formattedVal === 'boolean')) {
         logger.debug('Boolean value missing, so dropping it');
         curFormattedVal = false;
+      }
+    },
+    IsArray: () => {
+      curFormattedVal = formattedVal;
+      if (!Array.isArray(formattedVal)) {
+        logger.debug('Array value missing, so dropping it');
+        curFormattedVal = undefined;
       }
     },
     trim: () => {
@@ -1377,6 +1403,12 @@ const getMetadata = (metadata) => ({
   destinationType: metadata.destinationType,
   k8_namespace: metadata.namespace,
 });
+
+const getTransformationMetadata = (metadata) => ({
+  transformationId: metadata.transformationId,
+  workspaceId: metadata.workspaceId,
+});
+
 // checks if array 2 is a subset of array 1
 function checkSubsetOfArray(array1, array2) {
   const result = array2.every((val) => array1.includes(val));
@@ -1447,13 +1479,22 @@ const getErrorStatusCode = (error, defaultStatusCode = HTTP_STATUS_CODES.INTERNA
 /**
  * Used for generating error response with stats from native and built errors
  */
-function generateErrorObject(error, defTags = {}, shouldEnrichErrorMessage = false) {
-  let errObject = error;
+function generateErrorObject(error, defTags = {}, shouldEnrichErrorMessage = true) {
+  let errObject = new BaseError(
+    error.message,
+    getErrorStatusCode(error),
+    {
+      ...error.statTags,
+      ...defTags,
+    },
+    error.destinationResponse,
+    error.authErrorCategory,
+  );
   let errorMessage = error.message;
   if (shouldEnrichErrorMessage) {
     if (error.destinationResponse) {
       errorMessage = JSON.stringify({
-        message: error.message,
+        message: errorMessage,
         destinationResponse: error.destinationResponse,
       });
     }
@@ -1462,13 +1503,6 @@ function generateErrorObject(error, defTags = {}, shouldEnrichErrorMessage = fal
   if (!(error instanceof BaseError)) {
     errObject = new TransformationError(errorMessage, getErrorStatusCode(error));
   }
-
-  // Add higher level default tags
-  errObject.statTags = {
-    ...errObject.statTags,
-    ...defTags,
-  };
-
   return errObject;
 }
 /**
@@ -1704,7 +1738,7 @@ const simpleProcessRouterDestSync = async (inputs, singleTfFunc, reqMetadata, pr
       // transform if not already done
       if (!input.message.statusCode) {
         // eslint-disable-next-line no-await-in-loop
-        resp = await singleTfFunc(input, processParams);
+        resp = await singleTfFunc(input, processParams, reqMetadata);
       }
       respList.push(getSuccessRespEvents(resp, [input.metadata], input.destination));
     } catch (error) {
@@ -2025,6 +2059,30 @@ const getAuthErrCategoryFromStCode = (status) => {
   return '';
 };
 
+const isValidInteger = (value) => {
+  if (Number.isNaN(value) || !isDefinedAndNotNull(value)) {
+    return false;
+  }
+  if (typeof value === 'number' && value % 1 === 0) {
+    return true;
+  }
+  // Use a regular expression to check if the string is a valid integer or a valid floating-point number
+  return typeof value === 'string' ? /^-?\d+$/.test(value) : false;
+};
+const validateEventName = (event) => {
+  if (!event || typeof event !== 'string') {
+    throw new InstrumentationError('Event is a required field and should be a string');
+  }
+};
+
+const IsGzipSupported = (reqMetadata = {}) => {
+  if (reqMetadata && typeof reqMetadata === 'object' && !Array.isArray(reqMetadata)) {
+    const { features } = reqMetadata;
+    return !!features?.[FEATURE_GZIP_SUPPORT];
+  }
+  return false;
+};
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -2071,6 +2129,7 @@ module.exports = {
   getIntegrationsObj,
   getMappingConfig,
   getMetadata,
+  getTransformationMetadata,
   getParsedIP,
   getStringValueOfJSON,
   getSuccessRespEvents,
@@ -2118,6 +2177,7 @@ module.exports = {
   getDestAuthCacheInstance,
   refinePayload,
   validateEmail,
+  validateEventName,
   validatePhoneWithCountryCode,
   getEventReqMetadata,
   isHybridModeEnabled,
@@ -2129,4 +2189,7 @@ module.exports = {
   hasCircularReference,
   getAuthErrCategoryFromErrDetailsAndStCode,
   getAuthErrCategoryFromStCode,
+  isValidInteger,
+  isNewStatusCodesAccepted,
+  IsGzipSupported,
 };

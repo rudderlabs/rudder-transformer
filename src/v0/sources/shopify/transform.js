@@ -173,7 +173,11 @@ const processEvent = async (inputEvent, metricMetadata) => {
     }
   }
   if (message.type !== EventType.IDENTIFY) {
-    const { anonymousId, sessionId } = await getAnonymousIdAndSessionId(message, metricMetadata, redisData);
+    const { anonymousId, sessionId } = await getAnonymousIdAndSessionId(
+      message,
+      metricMetadata,
+      redisData,
+    );
     if (isDefinedAndNotNull(anonymousId)) {
       message.setProperty('anonymousId', anonymousId);
     } else if (!message.userId) {
@@ -198,7 +202,8 @@ const processEvent = async (inputEvent, metricMetadata) => {
   message = removeUndefinedAndNullValues(message);
   return message;
 };
-const isIdentifierEvent = (event) => ['rudderIdentifier', 'rudderSessionIdentifier'].includes(event?.event);
+const isIdentifierEvent = (event) =>
+  ['rudderIdentifier', 'rudderSessionIdentifier'].includes(event?.event);
 const processIdentifierEvent = async (event, metricMetadata) => {
   if (useRedisDatabase) {
     let value;
@@ -241,7 +246,6 @@ const processIdentifierEvent = async (event, metricMetadata) => {
         ...metricMetadata,
       });
     }
-
   }
   const result = {
     outputToSource: {

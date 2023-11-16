@@ -2,6 +2,12 @@
 const FormData = require('form-data');
 const fs = require('fs');
 const {
+  NetworkError,
+  ConfigurationError,
+  RetryableError,
+  TransformationError,
+} = require('@rudderstack/integrations-lib');
+const {
   getAccessToken,
   getMarketoFilePath,
   handleFileUploadResponse,
@@ -16,12 +22,6 @@ const {
   isDefinedAndNotNullAndNotEmpty,
 } = require('../../util');
 const { handleHttpRequest } = require('../../../adapters/network');
-const {
-  NetworkError,
-  ConfigurationError,
-  RetryableError,
-  TransformationError,
-} = require('../../util/errorTypes');
 const { client } = require('../../../util/errorNotifier');
 const stats = require('../../../util/stats');
 

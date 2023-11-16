@@ -1,14 +1,11 @@
+const { NetworkError } = require('@rudderstack/integrations-lib');
 const { httpSend, prepareProxyRequest } = require('../../../adapters/network');
-const {
-  isHttpStatusSuccess,
-  getAuthErrCategoryFromErrDetailsAndStCode,
-} = require('../../util/index');
+const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../util/index');
 
 const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
-const { NetworkError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 /**
  * This function helps to create a offlineUserDataJobs
@@ -144,7 +141,7 @@ const gaAudienceRespHandler = (destResponse, stageMsg) => {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },
     response,
-    getAuthErrCategoryFromErrDetailsAndStCode(status, response),
+    getAuthErrCategoryFromStCode(status),
   );
 };
 

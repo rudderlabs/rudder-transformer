@@ -3,7 +3,7 @@ const { setOpenFaasUserTransform, runOpenFaasUserTransform } = require('./custom
 const { userTransformHandlerV1, setUserTransformHandlerV1 } = require('./customTransformer-v1');
 
 const UserTransformHandlerFactory = (userTransformation) => {
-  const transformHandler = {
+  return {
     setUserTransform: async (libraryVersionIds) => {
       switch (userTransformation.language) {
         case 'pythonfaas':
@@ -18,12 +18,12 @@ const UserTransformHandlerFactory = (userTransformation) => {
         case 'pythonfaas':
         case 'python':
           return runOpenFaasUserTransform(events, userTransformation, libraryVersionIds, testMode);
+
         default:
           return userTransformHandlerV1(events, userTransformation, libraryVersionIds, testMode);
       }
     },
   };
-  return transformHandler;
 };
 
 exports.UserTransformHandlerFactory = UserTransformHandlerFactory;

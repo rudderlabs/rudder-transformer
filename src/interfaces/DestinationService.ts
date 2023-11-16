@@ -10,7 +10,7 @@ import {
   UserDeletionResponse,
 } from '../types/index';
 
-export default interface DestinationService {
+export interface DestinationService {
   getName(): string;
 
   init(): void;

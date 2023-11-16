@@ -1,6 +1,20 @@
 [
   [
     {
+      "batched": false,
+      "error": "Both userId and deviceId cannot be undefined",
+      "metadata": {
+        "job_id": 1
+      },
+      "statTags": {
+        "errorCategory": "dataValidation",
+        "errorType": "instrumentation"
+      },
+      "statusCode": 400
+    }
+  ],
+  [
+    {
       "batchedRequest": {
         "body": {
           "XML": {},

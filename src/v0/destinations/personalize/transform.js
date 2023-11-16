@@ -1,4 +1,5 @@
 const lodash = require('lodash');
+const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { KEY_CHECK_LIST, MANDATORY_PROPERTIES } = require('./config');
 const { EventType } = require('../../../constants');
 const {
@@ -9,7 +10,6 @@ const {
   isDefined,
   simpleProcessRouterDest,
 } = require('../../util');
-const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 
 const putEventsHandler = (message, destination) => {
   const { properties, anonymousId, event, messageId, context } = message;
@@ -54,7 +54,9 @@ const putEventsHandler = (message, destination) => {
       if (!(key.toUpperCase() === 'IMPRESSION' || key.toUpperCase() === 'EVENT_VALUE'))
         outputEvent[lodash.camelCase(key)] = String(value);
       else if (key.toUpperCase() === 'IMPRESSION') {
-        outputEvent[lodash.camelCase(key)] = Array.isArray(value) ? value.map(String) : [String(value)];
+        outputEvent[lodash.camelCase(key)] = Array.isArray(value)
+          ? value.map(String)
+          : [String(value)];
         outputEvent[lodash.camelCase(key)] = lodash.without(
           outputEvent[lodash.camelCase(key)],
           undefined,

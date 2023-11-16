@@ -234,6 +234,11 @@ const createSetOnceResponse = (message, type, destination, setOnce) => {
     $token: destination.Config.token,
     $distinct_id: message.userId || message.anonymousId,
   };
+
+  if (destination?.Config.identityMergeApi === 'simplified') {
+    payload.$distinct_id = message.userId || `$device:${message.anonymousId}`;
+  }
+
   return responseBuilderSimple(payload, message, type, destination.Config);
 };
 

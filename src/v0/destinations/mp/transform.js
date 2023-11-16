@@ -43,17 +43,19 @@ const mPEventPropertiesConfigJson = mappingConfig[ConfigCategory.EVENT_PROPERTIE
 const setImportCredentials = (destConfig) => {
   const endpoint =
     destConfig.dataResidency === 'eu' ? `${BASE_ENDPOINT_EU}/import/` : `${BASE_ENDPOINT}/import/`;
-  const headers = { 'Content-Type': 'application/json' };
   const params = { strict: destConfig.strictMode ? 1 : 0 };
   const { serviceAccountUserName, serviceAccountSecret, projectId, token } = destConfig;
+  let credentials;
   if (serviceAccountUserName && serviceAccountSecret && projectId) {
-    headers.Authorization = `Basic ${base64Convertor(
-      `${serviceAccountUserName}:${serviceAccountSecret}`,
-    )}`;
+    credentials = `${serviceAccountUserName}:${serviceAccountSecret}`;
     params.projectId = projectId;
   } else {
-    headers.Authorization = `Basic ${base64Convertor(`${token}:`)}`;
+    credentials = `${token}:`;
   }
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: `Basic ${base64Convertor(credentials)}`,
+  };
   return { endpoint, headers, params };
 };
 

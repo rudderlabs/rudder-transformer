@@ -24,7 +24,6 @@ const {
   BASE_ENDPOINT,
   BASE_ENDPOINT_EU,
   IMPORT_MAX_BATCH_SIZE,
-  TRACK_MAX_BATCH_SIZE,
   ENGAGE_MAX_BATCH_SIZE,
   GROUPS_MAX_BATCH_SIZE,
 } = require('./config');
@@ -44,21 +43,19 @@ const mPEventPropertiesConfigJson = mappingConfig[ConfigCategory.EVENT_PROPERTIE
 const setImportCredentials = (destConfig) => {
   const endpoint =
     destConfig.dataResidency === 'eu' ? `${BASE_ENDPOINT_EU}/import/` : `${BASE_ENDPOINT}/import/`;
-  const headers = { 'Content-Type': 'application/json' };
   const params = { strict: destConfig.strictMode ? 1 : 0 };
-  const { apiSecret, serviceAccountUserName, serviceAccountSecret, projectId } = destConfig;
-  if (apiSecret) {
-    headers.Authorization = `Basic ${base64Convertor(`${apiSecret}:`)}`;
-  } else if (serviceAccountUserName && serviceAccountSecret && projectId) {
-    headers.Authorization = `Basic ${base64Convertor(
-      `${serviceAccountUserName}:${serviceAccountSecret}`,
-    )}`;
+  const { serviceAccountUserName, serviceAccountSecret, projectId, token } = destConfig;
+  let credentials;
+  if (serviceAccountUserName && serviceAccountSecret && projectId) {
+    credentials = `${serviceAccountUserName}:${serviceAccountSecret}`;
     params.projectId = projectId;
   } else {
-    throw new InstrumentationError(
-      'Event timestamp is older than 5 days and no API secret or service account credentials (i.e. username, secret and projectId) are provided in destination configuration',
-    );
+    credentials = `${token}:`;
   }
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: `Basic ${base64Convertor(credentials)}`,
+  };
   return { endpoint, headers, params };
 };
 
@@ -67,35 +64,25 @@ const responseBuilderSimple = (payload, message, eventType, destConfig) => {
   response.method = defaultPostRequestConfig.requestMethod;
   response.userId = message.userId || message.anonymousId;
   response.body.JSON_ARRAY = { batch: JSON.stringify([removeUndefinedValues(payload)]) };
-  const { apiSecret, serviceAccountUserName, serviceAccountSecret, projectId, dataResidency } =
-    destConfig;
+  const { dataResidency } = destConfig;
   const duration = getTimeDifference(message.timestamp);
   switch (eventType) {
     case EventType.ALIAS:
     case EventType.TRACK:
     case EventType.SCREEN:
-    case EventType.PAGE:
-      if (
-        !apiSecret &&
-        !(serviceAccountUserName && serviceAccountSecret && projectId) &&
-        duration.days <= 5
-      ) {
-        response.endpoint =
-          dataResidency === 'eu' ? `${BASE_ENDPOINT_EU}/track/` : `${BASE_ENDPOINT}/track/`;
-        response.headers = {};
-      } else if (duration.years > 5) {
+    case EventType.PAGE: {
+      if (duration.years > 5) {
         throw new InstrumentationError('Event timestamp should be within last 5 years');
-      } else {
-        const credentials = setImportCredentials(destConfig);
-        response.endpoint = credentials.endpoint;
-        response.headers = credentials.headers;
-        response.params = {
-          project_id: credentials.params?.projectId,
-          strict: credentials.params.strict,
-        };
-        break;
       }
+      const credentials = setImportCredentials(destConfig);
+      response.endpoint = credentials.endpoint;
+      response.headers = credentials.headers;
+      response.params = {
+        project_id: credentials.params?.projectId,
+        strict: credentials.params.strict,
+      };
       break;
+    }
     case 'merge':
       // eslint-disable-next-line no-case-declarations
       const credentials = setImportCredentials(destConfig);
@@ -455,19 +442,13 @@ const processRouterDest = async (inputs, reqMetadata) => {
       );
 
       transformedPayloads = lodash.flatMap(transformedPayloads);
-      const { engageEvents, groupsEvents, trackEvents, importEvents, batchErrorRespList } =
+      const { engageEvents, groupsEvents, importEvents, batchErrorRespList } =
         groupEventsByEndpoint(transformedPayloads);
 
       const engageRespList = batchEvents(engageEvents, ENGAGE_MAX_BATCH_SIZE, reqMetadata);
       const groupsRespList = batchEvents(groupsEvents, GROUPS_MAX_BATCH_SIZE, reqMetadata);
-      const trackRespList = batchEvents(trackEvents, TRACK_MAX_BATCH_SIZE, reqMetadata);
       const importRespList = batchEvents(importEvents, IMPORT_MAX_BATCH_SIZE, reqMetadata);
-      const batchSuccessRespList = [
-        ...engageRespList,
-        ...groupsRespList,
-        ...trackRespList,
-        ...importRespList,
-      ];
+      const batchSuccessRespList = [...engageRespList, ...groupsRespList, ...importRespList];
 
       return [...batchSuccessRespList, ...batchErrorRespList];
     }),

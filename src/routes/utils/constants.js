@@ -6,9 +6,10 @@ const INTEGRATION_SERVICE = {
   CDK_V2_DEST: 'cdkv2_dest',
   NATIVE_DEST: 'native_dest',
   NATIVE_SOURCE: 'native_source',
+  PLUGIN_DEST: 'plugin_dest',
 };
-const CHANNELS= {
-  sources: 'sources'
+const CHANNELS = {
+  sources: 'sources',
 };
 
 const RETL_TIMESTAMP = 'timestamp';

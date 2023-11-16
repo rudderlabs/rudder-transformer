@@ -2,8 +2,8 @@
 import fs from 'fs';
 import path from 'path';
 import { Context } from 'koa';
+import { Metadata } from '@rudderstack/integrations-lib';
 import { DestHandlerMap } from '../constants/destinationCanonicalNames';
-import { Metadata } from '../types';
 import { getCPUProfile, getHeapProfile } from '../middleware';
 
 export class MiscService {

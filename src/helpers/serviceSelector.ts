@@ -8,6 +8,7 @@ import { NativeIntegrationDestinationService } from '../services/destination/nat
 import { SourceService } from '../interfaces/SourceService';
 import { NativeIntegrationSourceService } from '../services/source/nativeIntegration';
 import { ComparatorService } from '../services/comparator';
+import { PluginIntegrationService } from '../services/destination/pluginIntegration';
 import { FixMe } from '../util/types';
 
 export class ServiceSelector {
@@ -17,6 +18,7 @@ export class ServiceSelector {
     [INTEGRATION_SERVICE.CDK_V1_DEST]: CDKV1DestinationService,
     [INTEGRATION_SERVICE.CDK_V2_DEST]: CDKV2DestinationService,
     [INTEGRATION_SERVICE.NATIVE_DEST]: NativeIntegrationDestinationService,
+    [INTEGRATION_SERVICE.PLUGIN_DEST]: PluginIntegrationService,
     [INTEGRATION_SERVICE.NATIVE_SOURCE]: NativeIntegrationSourceService,
   };
 
@@ -26,6 +28,10 @@ export class ServiceSelector {
 
   private static isCdkV2Destination(destinationDefinitionConfig: FixMe) {
     return Boolean(destinationDefinitionConfig?.cdkV2Enabled);
+  }
+
+  private static isPluginDestination(destinationDefinitionConfig: FixMe) {
+    return !!destinationDefinitionConfig?.isPlugin;
   }
 
   private static isComparatorEnabled(destinationDefinitionConfig: FixMe): boolean {
@@ -68,6 +74,12 @@ export class ServiceSelector {
   ): DestinationService {
     const destinationDefinitionConfig: FixMe =
       events[0]?.destination?.DestinationDefinition?.Config;
+
+    if (this.isPluginDestination(destinationDefinitionConfig)) {
+      return this.fetchCachedService(INTEGRATION_SERVICE.PLUGIN_DEST);
+    }
+    // Legacy Services
+
     if (this.isCdkDestination(destinationDefinitionConfig)) {
       return this.fetchCachedService(INTEGRATION_SERVICE.CDK_V1_DEST);
     }

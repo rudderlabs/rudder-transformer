@@ -1,5 +1,4 @@
 /* eslint-disable no-param-reassign */
-import cloneDeep from 'lodash/cloneDeep';
 import isObject from 'lodash/isObject';
 import isEmpty from 'lodash/isEmpty';
 import {
@@ -69,9 +68,15 @@ export class DestinationPostTransformationService {
     implementation: string,
     destinationType: string,
   ): RouterTransformationResponse[] {
-    const resultantPayloads: RouterTransformationResponse[] = cloneDeep(transformedPayloads);
+    const resultantPayloads: RouterTransformationResponse[] = transformedPayloads;
     resultantPayloads.forEach((resultantPayload) => {
-      if (resultantPayload.batchedRequest && resultantPayload.batchedRequest.userId) {
+      if (Array.isArray(resultantPayload.batchedRequest)) {
+        resultantPayload.batchedRequest.forEach((batchedRequest) => {
+          if (batchedRequest.userId) {
+            batchedRequest.userId = `${batchedRequest.userId}`;
+          }
+        });
+      } else if (resultantPayload.batchedRequest && resultantPayload.batchedRequest.userId) {
         resultantPayload.batchedRequest.userId = `${resultantPayload.batchedRequest.userId}`;
       }
     });

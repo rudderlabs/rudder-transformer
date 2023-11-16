@@ -1,3 +1,4 @@
+import { Destination, Metadata } from '@rudderstack/integrations-lib';
 import { CatchErr, FixMe } from '../util/types';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -19,38 +20,7 @@ type ProcessorTransformationOutput = {
   metadata?: Metadata;
 };
 
-type Metadata = {
-  sourceId: string;
-  workspaceId: string;
-  namespace: string;
-  instanceId: string;
-  sourceType: string;
-  sourceCategory: string;
-  trackingPlanId: string;
-  trackingPlanVersion: number;
-  sourceTpConfig: object;
-  mergedTpConfig: object;
-  destinationId: string;
-  jobRunId: string;
-  jobId: number;
-  sourceBatchId: string;
-  sourceJobId: string;
-  sourceJobRunId: string;
-  sourceTaskId: string;
-  sourceTaskRunId: string;
-  recordId: object;
-  destinationType: string;
-  messageId: string;
-  oauthAccessToken: string;
-  messageIds: string[];
-  rudderId: string;
-  receivedAt: string;
-  eventName: string;
-  eventType: string;
-  sourceDefinitionId: string;
-  destinationDefinitionId: string;
-  transformationId: string;
-};
+type TransformedOutput = ProcessorTransformationOutput;
 
 type MessageIdMetadataMap = {
   [key: string]: Metadata;
@@ -60,24 +30,6 @@ type UserTransformationInput = {
   VersionID: string;
   ID: string;
   Config: object;
-};
-
-type DestinationDefinition = {
-  ID: string;
-  Name: string;
-  DisplayName: string;
-  Config: FixMe;
-};
-
-type Destination = {
-  ID: string;
-  Name: string;
-  DestinationDefinition: DestinationDefinition;
-  Config: FixMe;
-  Enabled: boolean;
-  WorkspaceID: string;
-  Transformations: UserTransformationInput[];
-  RevisionID?: string;
 };
 
 type UserTransformationLibrary = {
@@ -109,17 +61,17 @@ type ProcessorTransformationResponse = {
   metadata: Metadata;
   statusCode: number;
   error?: string;
-  statTags: object;
+  statTags?: object;
 };
 
 type RouterTransformationResponse = {
-  batchedRequest?: ProcessorTransformationOutput;
+  batchedRequest?: ProcessorTransformationOutput | ProcessorTransformationOutput[];
   metadata: Metadata[];
   destination: Destination;
   batched: boolean;
   statusCode: number;
-  error: string;
-  statTags: object;
+  error?: string;
+  statTags?: object;
 };
 
 type SourceTransformationOutput = {
@@ -130,8 +82,8 @@ type SourceTransformationResponse = {
   output: SourceTransformationOutput;
   error: CatchErr;
   statusCode: number;
-  outputToSource: object;
-  statTags: object;
+  outputToSource?: object;
+  statTags?: object;
 };
 
 type DeliveryResponse = {
@@ -253,7 +205,6 @@ type SourceInput = {
   source?: Source;
 };
 export {
-  Metadata,
   MessageIdMetadataMap,
   UserTransformationLibrary,
   ProcessorTransformationRequest,
@@ -271,8 +222,8 @@ export {
   MetaTransferObject,
   UserDeletionRequest,
   UserDeletionResponse,
-  Destination,
   ComparatorInput,
   SourceInput,
   Source,
+  TransformedOutput,
 };

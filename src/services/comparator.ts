@@ -1,8 +1,8 @@
 /* eslint-disable class-methods-use-this */
+import { Destination } from '@rudderstack/integrations-lib';
 import { DestinationService } from '../interfaces/DestinationService';
 import {
   DeliveryResponse,
-  Destination,
   ErrorDetailer,
   MetaTransferObject,
   ProcessorTransformationOutput,
@@ -60,7 +60,10 @@ export class ComparatorService implements DestinationService {
   }
 
   private getTestThreshold(destination: Destination) {
-    return destination.DestinationDefinition?.Config?.camparisonTestThreshold || 0;
+    const config = destination.DestinationDefinition?.Config as {
+      camparisonTestThreshold?: number;
+    };
+    return config?.camparisonTestThreshold || 0;
   }
 
   private getComparisonLogs(

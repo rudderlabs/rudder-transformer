@@ -21,6 +21,8 @@ import tags from '../../src/v0/util/tags';
 import { Server } from 'http';
 import { appendFileSync } from 'fs';
 import { responses } from '../testHelper';
+import { mockAxiosFromLib } from '@rudderstack/integrations-lib/mock';
+import { set } from '@rudderstack/integrations-lib';
 
 // To run single destination test cases
 // npm run test:ts -- component  --destination=adobe_analytics
@@ -50,6 +52,8 @@ if (opts.generate === 'true') {
 
 let server: Server;
 
+const pluginDestinations = ['webhook'];
+
 beforeAll(async () => {
   const app = new Koa();
   app.use(
@@ -77,8 +81,11 @@ let mockAdapter;
 if (!opts.generate || opts.generate === 'false') {
   // unmock already existing axios-mocking
   mockAdapter = new MockAxiosAdapter(axios, { onNoMatch: 'throwException' });
-  const registerAxiosMocks = (axiosMocks: MockHttpCallsData[]) => {
-    axiosMocks.forEach((axiosMock) => addMock(mockAdapter, axiosMock));
+  const registerAxiosMocks = (
+    axiosMocks: MockHttpCallsData[],
+    mockAxiosAdapter: MockAxiosAdapter,
+  ) => {
+    axiosMocks.forEach((axiosMock) => addMock(mockAxiosAdapter, axiosMock));
   };
 
   // // all the axios requests will be stored in this map
@@ -89,13 +96,30 @@ if (!opts.generate || opts.generate === 'false') {
       return mockNetworkCallsData;
     })
     .flat();
-  registerAxiosMocks(allAxiosRequests);
+  registerAxiosMocks(allAxiosRequests, mockAdapter);
+  registerAxiosMocks(allAxiosRequests, mockAxiosFromLib);
 }
 
 // END
 const rootDir = __dirname;
 const allTestDataFilePaths = getTestDataFilePaths(rootDir, opts);
 const DEFAULT_VERSION = 'v0';
+
+const updateTCDataForPluginDests = (tcData: TestCaseData) => {
+  if (tcData.feature === tags.FEATURES.PROCESSOR) {
+    tcData.input.request.body.forEach((event) => {
+      set(event, 'destination.DestinationDefinition.Config.isPlugin', true);
+    });
+  }
+  if (tcData.feature === tags.FEATURES.ROUTER) {
+    tcData.input.request.body.input.forEach((event) => {
+      set(event, 'destination.DestinationDefinition.Config.isPlugin', true);
+    });
+    tcData.output.response?.body.output.forEach((payload) => {
+      set(payload, 'destination.DestinationDefinition.Config.isPlugin', true);
+    });
+  }
+};
 
 const testRoute = async (route, tcData: TestCaseData) => {
   const inputReq = tcData.input.request;
@@ -135,6 +159,9 @@ const testRoute = async (route, tcData: TestCaseData) => {
 
 const destinationTestHandler = async (tcData: TestCaseData) => {
   let route;
+  if (pluginDestinations.includes(tcData.name)) {
+    updateTCDataForPluginDests(tcData);
+  }
   switch (tcData.feature) {
     case tags.FEATURES.ROUTER:
       route = `/routerTransform`;

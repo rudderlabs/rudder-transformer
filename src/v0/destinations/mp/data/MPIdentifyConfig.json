@@ -1,54 +1,33 @@
 [
   {
     "destKey": "$created",
-    "sourceKeys": ["traits.createdAt", "context.traits.createdAt", "createdAt"],
-    "required": false
+    "sourceKeys": "createdAtOnly",
+    "required": false,
+    "sourceFromGenericMap": true
   },
   {
     "destKey": "$email",
-    "sourceKeys": [
-      "traits.email",
-      "context.traits.email",
-      "properties.email",
-      "context.externalId.0.id",
-      "email"
-    ],
-    "required": false
+    "sourceKeys": "email",
+    "required": false,
+    "sourceFromGenericMap": true
   },
   {
     "destKey": "$first_name",
-    "sourceKeys": [
-      "traits.firstName",
-      "traits.firstname",
-      "traits.first_name",
-      "context.traits.firstName",
-      "context.traits.firstname",
-      "context.traits.first_name",
-      "firstName",
-      "firstname",
-      "first_name"
-    ],
-    "required": false
+    "sourceKeys": "firstName",
+    "required": false,
+    "sourceFromGenericMap": true
   },
   {
     "destKey": "$last_name",
-    "sourceKeys": [
-      "traits.lastName",
-      "traits.lastname",
-      "traits.last_name",
-      "context.traits.lastName",
-      "context.traits.lastname",
-      "context.traits.last_name",
-      "lastName",
-      "lastname",
-      "last_name"
-    ],
-    "required": false
+    "sourceKeys": "lastName",
+    "required": false,
+    "sourceFromGenericMap": true
   },
   {
     "destKey": "$name",
-    "sourceKeys": ["traits.name", "context.traits.name", "name"],
-    "required": false
+    "sourceKeys": "name",
+    "required": false,
+    "sourceFromGenericMap": true
   },
   {
     "destKey": "$username",
@@ -56,20 +35,19 @@
       "traits.username",
       "context.traits.username",
       "traits.userName",
-      "context.traits.userName",
-      "username",
-      "userName"
+      "context.traits.userName"
     ],
     "required": false
   },
   {
     "destKey": "$phone",
-    "sourceKeys": ["traits.phone", "context.traits.phone", "phone"],
-    "required": false
+    "sourceKeys": "phone",
+    "required": false,
+    "sourceFromGenericMap": true
   },
   {
     "destKey": "$avatar",
-    "sourceKeys": ["traits.avatar", "context.traits.avatar", "avatar"],
+    "sourceKeys": ["traits.avatar", "context.traits.avatar"],
     "required": false
   },
   {
@@ -79,9 +57,7 @@
       "context.traits.address.country",
       "traits.country",
       "context.traits.country",
-      "context.location.country",
-      "country",
-      "address.country"
+      "context.location.country"
     ],
     "required": false
   },
@@ -92,9 +68,7 @@
       "context.traits.city",
       "traits.address.city",
       "context.traits.address.city",
-      "context.location.city",
-      "city",
-      "address.city"
+      "context.location.city"
     ],
     "required": false
   },
@@ -105,16 +79,13 @@
       "context.traits.state",
       "traits.address.state",
       "context.traits.address.state",
-      "context.location.region",
-      "state",
-      "address.state",
-      "location.region"
+      "context.location.region"
     ],
     "required": false
   },
   {
     "destKey": "$geo_source",
-    "sourceKeys": ["location.geoSource", "context.location.geoSource"],
+    "sourceKeys": "context.location.geoSource",
     "required": false
   },
   {
@@ -164,12 +135,7 @@
   },
   {
     "destKey": "$unsubscribed",
-    "sourceKeys": [
-      "traits.unsubscribed",
-      "context.traits.unsubscribed",
-      "properties.unsubscribed",
-      "unsubscribed"
-    ],
+    "sourceKeys": ["traits.unsubscribed", "context.traits.unsubscribed", "properties.unsubscribed"],
     "required": false
   },
   {

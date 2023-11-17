@@ -1,0 +1,62 @@
+[
+  {
+    "destKey": "$created",
+    "sourceKeys": "createdAt",
+    "required": false
+  },
+  {
+    "destKey": "$email",
+    "sourceKeys": "email",
+    "required": false
+  },
+  {
+    "destKey": "$first_name",
+    "sourceKeys": ["firstName", "firstname", "first_name"],
+    "required": false
+  },
+  {
+    "destKey": "$last_name",
+    "sourceKeys": ["lastName", "lastname", "last_name"],
+    "required": false
+  },
+  {
+    "destKey": "$name",
+    "sourceKeys": "name",
+    "required": false
+  },
+  {
+    "destKey": "$username",
+    "sourceKeys": ["username", "userName"],
+    "required": false
+  },
+  {
+    "destKey": "$phone",
+    "sourceKeys": "phone",
+    "required": false
+  },
+  {
+    "destKey": "$avatar",
+    "sourceKeys": "avatar",
+    "required": false
+  },
+  {
+    "destKey": "$country_code",
+    "sourceKeys": ["country", "address.country"],
+    "required": false
+  },
+  {
+    "destKey": "$city",
+    "sourceKeys": ["city", "address.city"],
+    "required": false
+  },
+  {
+    "destKey": "$region",
+    "sourceKeys": ["state", "address.state", "location.region"],
+    "required": false
+  },
+  {
+    "destKey": "$unsubscribed",
+    "sourceKeys": ["unsubscribed"],
+    "required": false
+  }
+]

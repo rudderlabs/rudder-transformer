@@ -28,6 +28,7 @@ const { CommonUtils } = require('../../../util/common');
 const mPIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 const mPProfileAndroidConfigJson = mappingConfig[ConfigCategory.PROFILE_ANDROID.name];
 const mPProfileIosConfigJson = mappingConfig[ConfigCategory.PROFILE_IOS.name];
+const mPSetOnceConfigJson = mappingConfig[ConfigCategory.SET_ONCE.name];
 
 /**
  * this function has been used to create
@@ -380,7 +381,7 @@ function trimTraits(traits, contextTraits, setOnceProperties) {
   if (setOnceEligible && Object.keys(setOnceEligible).length > 0) {
     // Step 2: transform properties eligible as per rudderstack declared identify event mapping
     // setOnce should have all traits from message.traits and message.context.traits by now
-    sentOnceTransform = constructPayload(setOnceEligible, mPIdentifyConfigJson);
+    sentOnceTransform = constructPayload(setOnceEligible, mPSetOnceConfigJson);
 
     // Step 3: combine the transformed and custom setOnce traits
     sentOnceTransform = extractCustomFields(

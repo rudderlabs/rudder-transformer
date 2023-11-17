@@ -4,9 +4,7 @@ const {
   defaultPostRequestConfig,
   defaultDeleteRequestConfig,
   generateErrorObject,
-  checkInvalidRtTfEvents,
-  getSuccessRespEvents,
-  handleRtTfSingleEventError,
+  simpleProcessRouterDest,
 } = require('../../util');
 const { AUTH_CACHE_TTL, JSON_MIME_TYPE } = require('../../util/constant');
 const { getIds, validateMessageType } = require('./util');
@@ -108,38 +106,13 @@ const process = async (event, _processParams) => {
   return response;
 };
 
-const triggerProcess = async (inputs, reqMetadata, processParams) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
-
-  const respList = await Promise.all(
-    inputs.map(async (input) => {
-      try {
-        let resp = input.message;
-        // transform if not already done
-        if (!input.message.statusCode) {
-          resp = await process(input, processParams);
-        }
-        if (Array.isArray(input.metadata)) {
-          return getSuccessRespEvents(resp, [...input.metadata], input.destination);
-        }
-        return getSuccessRespEvents(resp, [input.metadata], input.destination);
-      } catch (error) {
-        return handleRtTfSingleEventError(input, error, reqMetadata);
-      }
-    }),
-  );
-  return respList;
-};
-
 const processRouterDest = async (inputs, reqMetadata) => {
   // Token needs to be generated for marketo which will be done on input level.
   // If destination information is not present Error should be thrown
-  let token;
+
+  const { destination } = inputs[0];
   try {
-    token = await getAuthToken(formatConfig(inputs[0].destination));
+    const token = await getAuthToken(formatConfig(destination));
     if (!token) {
       throw new UnauthorizedError('Could not retrieve authorisation token');
     }
@@ -152,45 +125,38 @@ const processRouterDest = async (inputs, reqMetadata) => {
     return errResponses;
   }
 
-  // Checking previous status Code. Initially setting to false.
-  // If true then previous status is 500 and every subsequent event output should be
-  // sent with status code 500 to the router to be retried.
-  const tokenisedInputs = inputs.map((input) => ({ ...input, token }));
   // use lodash.groupby to group the inputs based on message type
   const transformedRecordEvent = [];
   let transformedAudienceEvent = [];
-  const groupedInputs = lodash.groupBy(tokenisedInputs, (input) => input.message.type);
+  const groupedInputs = lodash.groupBy(inputs, (input) => input.message.type);
 
   const respList = [];
   // process record events
-  if (groupedInputs.record && groupedInputs.record.length > 0) {
+  if (Array.isArray(groupedInputs.record) && groupedInputs.record.length > 0) {
     const groupedRecordInputs = groupedInputs.record;
-    const { staticListId } = groupedRecordInputs[0].destination.Config;
+    const { staticListId } = destination.Config;
     const externalIdGroupedRecordInputs = lodash.groupBy(
       groupedRecordInputs,
       (input) =>
         getDestinationExternalID(input.message, 'MARKETO_STATIC_LIST-leadId') || staticListId,
     );
-    Object.keys(externalIdGroupedRecordInputs).forEach((key) => {
-      const transformedGroupedRecordEvent = processRecordInputs(externalIdGroupedRecordInputs[key]);
-      transformedRecordEvent.push(transformedGroupedRecordEvent);
-    });
+    const alltransformedGroupedRecordEvent = await Promise.all(
+      Object.keys(externalIdGroupedRecordInputs).map(async (key) => {
+        const transformedGroupedRecordEvent = await processRecordInputs(
+          externalIdGroupedRecordInputs[key],
+          destination,
+        );
+        return transformedGroupedRecordEvent;
+      }),
+    );
 
-    // old modular code
-    // transformedRecordEvent = processRecordInputs(groupedInputs.record, reqMetadata);
-    // const recordToAudienceTransformationOutput = transformForRecordEvent(groupedInputs.record);
-    // respList.push(...recordToAudienceTransformationOutput.errorArr);
-    // transformedRecordEvent = await triggerProcess(
-    //   recordToAudienceTransformationOutput.transformedAudienceEvent,
-    //   processEvent,
-    //   reqMetadata,
-    // );
+    transformedRecordEvent.push(alltransformedGroupedRecordEvent.flat());
   }
   // process audiencelist events
   if (groupedInputs.audiencelist && groupedInputs.audiencelist.length > 0) {
-    transformedAudienceEvent = await triggerProcess(
+    transformedAudienceEvent = await simpleProcessRouterDest(
       groupedInputs.audiencelist,
-      processEvent,
+      process,
       reqMetadata,
     );
   }

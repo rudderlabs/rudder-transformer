@@ -5,10 +5,15 @@ const {
   getDestinationExternalID,
   defaultRequestConfig,
   getSuccessRespEvents,
+  isDefinedAndNotNull,
+  generateErrorObject,
+  getErrorRespEvents,
 } = require('../../util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { MAX_LEAD_IDS_SIZE } = require('./config');
-const { InstrumentationError } = require('../../util/errorTypes');
+const { InstrumentationError, UnauthorizedError } = require('../../util/errorTypes');
+const { getAuthToken } = require('../marketo/transform');
+const { formatConfig } = require('../marketo/config');
 
 /**
  * Generates the final response structure to be sent to the destination
@@ -49,14 +54,9 @@ const responseBuilder = (endPoint, leadIds, operation, token) => {
  * @param {*} operation
  * @returns an array of response objects, where each object represents a batched response for a chunk of lead IDs.
  */
-const batchResponseBuilder = (groupedRecordInputs, Config, token, leadIds, operation) => {
-  const { accountId, staticListId } = Config;
-  const { message } = groupedRecordInputs[0];
-  const listId = getDestinationExternalID(message, 'MARKETO_STATIC_LIST-leadId') || staticListId;
+const batchResponseBuilder = (listId, Config, token, leadIds, operation) => {
+  const { accountId } = Config;
   const endpoint = `https://${accountId}.mktorest.com/rest/v1/lists/${listId}/leads.json?`;
-  if (!listId) {
-    throw new InstrumentationError('No static listId is provided');
-  }
   const response = [];
   const leadIdsChunks = lodash.chunk(leadIds, MAX_LEAD_IDS_SIZE);
   leadIdsChunks.forEach((ids) => {
@@ -71,39 +71,63 @@ const batchResponseBuilder = (groupedRecordInputs, Config, token, leadIds, opera
  * @param {*} groupedRecordInputs
  * @returns An array containing the batched responses for the insert and delete actions along with the metadata.
  */
-function processRecordInputs(groupedRecordInputs) {
+async function processRecordInputs(groupedRecordInputs, destination) {
+  const token = await getAuthToken(formatConfig(destination));
+  if (!token) {
+    throw new UnauthorizedError('Authorization failed');
+  }
+  const { Config } = destination;
+  const listId =
+    getDestinationExternalID(groupedRecordInputs[0].message, 'MARKETO_STATIC_LIST-leadId') ||
+    Config.staticListId;
+
   // iterate through each input and group field id based on action
   const insertFields = [];
   const deleteFields = [];
-  const finalMetadata = [];
-  const { Config } = groupedRecordInputs[0].destination;
+  const successMetadataForInsert = [];
+  const successMetadataForDelete = [];
+  const errorMetadata = [];
+
   groupedRecordInputs.forEach((input) => {
     const { fields, action } = input.message;
-    const fieldsId = fields.id;
-    if (action === 'insert') {
-      insertFields.push(fieldsId);
-      finalMetadata.push(input.metadata);
-    } else if (action === 'delete') {
-      deleteFields.push(fieldsId);
-      finalMetadata.push(input.metadata);
+    const fieldId = fields.id;
+    if (action === 'insert' && isDefinedAndNotNull(fieldId)) {
+      insertFields.push(fieldId);
+      successMetadataForInsert.push(input.metadata);
+    } else if (action === 'delete' && isDefinedAndNotNull(fieldId)) {
+      deleteFields.push(fieldId);
+      successMetadataForDelete.push(input.metadata);
+    } else {
+      errorMetadata.push(input.metadata);
     }
   });
-  const deleteResponse = batchResponseBuilder(
-    groupedRecordInputs,
-    Config,
-    groupedRecordInputs[0].token,
-    deleteFields,
-    'delete',
+  const deletePayloads = batchResponseBuilder(listId, Config, token, deleteFields, 'delete');
+
+  const deleteResponse = getSuccessRespEvents(
+    deletePayloads,
+    successMetadataForDelete,
+    destination,
+    true,
   );
-  const insertResponse = batchResponseBuilder(
-    groupedRecordInputs,
-    Config,
-    groupedRecordInputs[0].token,
-    insertFields,
-    'insert',
+
+  const insertPayloads = batchResponseBuilder(listId, Config, token, insertFields, 'insert');
+
+  const insertResponse = getSuccessRespEvents(
+    insertPayloads,
+    successMetadataForInsert,
+    destination,
+    true,
   );
-  const batchedResponse = [...deleteResponse, ...insertResponse];
-  return getSuccessRespEvents(batchedResponse, finalMetadata, groupedRecordInputs[0].destination);
+
+  const error = new InstrumentationError(
+    'Invalid leadIds format or no leadIds found neither to add nor to remove',
+  );
+  const errorObj = generateErrorObject(error);
+  const errorResponseList = errorMetadata.map((metadata) =>
+    getErrorRespEvents(metadata, errorObj.status, errorObj.message, errorObj.statTags),
+  );
+
+  return [deleteResponse, insertResponse, ...errorResponseList];
 }
 
 module.exports = {

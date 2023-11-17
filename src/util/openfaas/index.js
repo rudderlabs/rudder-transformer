@@ -277,7 +277,7 @@ const executeFaasFunction = async (
     }
 
     if (error.statusCode === 504) {
-      throw new RespStatusError(`${name} timed out`);
+      throw new RespStatusError(`${name} timed out`, 504);
     }
 
     throw error;

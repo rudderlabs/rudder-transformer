@@ -1,16 +1,16 @@
 import { PlatformError } from '@rudderstack/integrations-lib';
 import { ProcessorTransformationRequest, RouterTransformationRequestData } from '../types/index';
 import { INTEGRATION_SERVICE } from '../routes/utils/constants';
-import CDKV1DestinationService from '../services/destination/cdkV1Integration';
-import CDKV2DestinationService from '../services/destination/cdkV2Integration';
-import DestinationService from '../interfaces/DestinationService';
-import NativeIntegrationDestinationService from '../services/destination/nativeIntegration';
-import SourceService from '../interfaces/SourceService';
-import NativeIntegrationSourceService from '../services/source/nativeIntegration';
-import ComparatorService from '../services/comparator';
+import { CDKV1DestinationService } from '../services/destination/cdkV1Integration';
+import { CDKV2DestinationService } from '../services/destination/cdkV2Integration';
+import { DestinationService } from '../interfaces/DestinationService';
+import { NativeIntegrationDestinationService } from '../services/destination/nativeIntegration';
+import { SourceService } from '../interfaces/SourceService';
+import { NativeIntegrationSourceService } from '../services/source/nativeIntegration';
+import { ComparatorService } from '../services/comparator';
 import { FixMe } from '../util/types';
 
-export default class ServiceSelector {
+export class ServiceSelector {
   private static serviceMap: Map<string, any> = new Map();
 
   private static services = {

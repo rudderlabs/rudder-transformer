@@ -12,11 +12,11 @@ import {
   UserDeletionResponse,
 } from '../../types/index';
 import { generateErrorObject } from '../../v0/util';
-import ErrorReportingService from '../errorReporting';
+import { ErrorReportingService } from '../errorReporting';
 import tags from '../../v0/util/tags';
 import stats from '../../util/stats';
 
-export default class DestinationPostTransformationService {
+export class DestinationPostTransformationService {
   public static handleProcessorTransformSucessEvents(
     event: ProcessorTransformationRequest,
     transformedPayloads: ProcessorTransformationOutput | ProcessorTransformationOutput[],

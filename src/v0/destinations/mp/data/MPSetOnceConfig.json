@@ -56,7 +56,67 @@
   },
   {
     "destKey": "$unsubscribed",
-    "sourceKeys": ["unsubscribed"],
+    "sourceKeys": "unsubscribed",
+    "required": false
+  },
+  {
+    "destKey": "$geo_source",
+    "sourceKeys": "location.geoSource",
+    "required": false
+  },
+  {
+    "destKey": "$timezone",
+    "sourceKeys": "location.timezone",
+    "required": false
+  },
+  {
+    "destKey": "$latitude",
+    "sourceKeys": "location.latitude",
+    "required": false
+  },
+  {
+    "destKey": "$longitude",
+    "sourceKeys": "location.longitude",
+    "required": false
+  },
+  {
+    "destKey": "$carrier",
+    "sourceKeys": "network.carrier",
+    "required": false
+  },
+  {
+    "destKey": "$manufacturer",
+    "sourceKeys": "device.manufacturer",
+    "required": false
+  },
+  {
+    "destKey": "$model",
+    "sourceKeys": "device.model",
+    "required": false
+  },
+  {
+    "destKey": "$screen_height",
+    "sourceKeys": "screen.height",
+    "required": false
+  },
+  {
+    "destKey": "$screen_width",
+    "sourceKeys": "screen.width",
+    "required": false
+  },
+  {
+    "destKey": "$wifi",
+    "sourceKeys": "network.wifi",
+    "required": false
+  },
+  {
+    "destKey": "$initial_referrer",
+    "sourceKeys": "page.initial_referrer",
+    "required": false
+  },
+  {
+    "destKey": "$initial_referring_domain",
+    "sourceKeys": ["page.initial_referring_domain", "page.initialReferringDomain"],
     "required": false
   }
 ]

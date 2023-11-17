@@ -3,7 +3,7 @@
 import groupBy from 'lodash/groupBy';
 import { TransformationError } from '@rudderstack/integrations-lib';
 import { processCdkV2Workflow } from '../../cdk/v2/handler';
-import IntegrationDestinationService from '../../interfaces/DestinationService';
+import { DestinationService } from '../../interfaces/DestinationService';
 import {
   DeliveryResponse,
   ErrorDetailer,
@@ -17,11 +17,11 @@ import {
   UserDeletionResponse,
 } from '../../types/index';
 import tags from '../../v0/util/tags';
-import DestinationPostTransformationService from './postTransformation';
+import { DestinationPostTransformationService } from './postTransformation';
 import stats from '../../util/stats';
 import { CatchErr } from '../../util/types';
 
-export default class CDKV2DestinationService implements IntegrationDestinationService {
+export class CDKV2DestinationService implements DestinationService {
   public init() {}
 
   public getName(): string {
@@ -52,7 +52,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
     events: ProcessorTransformationRequest[],
     destinationType: string,
     _version: string,
-    _requestMetadata: NonNullable<unknown>,
+    requestMetadata: NonNullable<unknown>,
   ): Promise<ProcessorTransformationResponse[]> {
     // TODO: Change the promise type
     const respList: ProcessorTransformationResponse[][] = await Promise.all(
@@ -64,6 +64,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
             destinationType,
             event,
             tags.FEATURES.PROCESSOR,
+            requestMetadata
           );
 
           stats.increment('event_transform_success', {
@@ -108,7 +109,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
     events: RouterTransformationRequestData[],
     destinationType: string,
     _version: string,
-    _requestMetadata: NonNullable<unknown>,
+    requestMetadata: NonNullable<unknown>,
   ): Promise<RouterTransformationResponse[]> {
     const allDestEvents: object = groupBy(
       events,
@@ -126,7 +127,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
           metaTo.metadata = destInputArray[0].metadata;
           try {
             const doRouterTransformationResponse: RouterTransformationResponse[] =
-              await processCdkV2Workflow(destinationType, destInputArray, tags.FEATURES.ROUTER);
+              await processCdkV2Workflow(destinationType, destInputArray, tags.FEATURES.ROUTER, requestMetadata);
             return DestinationPostTransformationService.handleRouterTransformSuccessEvents(
               doRouterTransformationResponse,
               undefined,

@@ -7,7 +7,7 @@ import stats from '../../util/stats';
 import logger from '../../logger';
 import tags from '../../v0/util/tags';
 
-export default class DeliveryTestService {
+export class DeliveryTestService {
   public static async doTestDelivery(
     destination: string,
     routerDestReqPayload: any,

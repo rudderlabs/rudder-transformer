@@ -643,7 +643,7 @@ const processSingleMessage = (message, destination) => {
                       .trim()
                       .replaceAll(/{{([^{}]+)}}/g, get(message, getMessagePath));
         }
-        evType =useUserDefinedScreenEventName ? customScreenEv : eventType;
+        evType = customScreenEv || eventType;
         message.properties = updatedProperties;
         category = ConfigCategory.SCREEN;
       }

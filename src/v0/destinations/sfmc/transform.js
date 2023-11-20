@@ -224,17 +224,23 @@ const responseBuilderSimple = async (message, category, destination) => {
     throw new ConfigurationError('Creating or updating contacts is disabled');
   }
 
-  if (category.type === 'track' && hashMapExternalKey[message.event.toLowerCase()]) {
-    return responseBuilderForInsertData(
-      message,
-      hashMapExternalKey[message.event.toLowerCase()],
-      subDomain,
-      category,
-      authToken,
-      'track',
-      hashMapPrimaryKey[message.event.toLowerCase()] || CONTACT_KEY_KEY,
-      hashMapUUID[message.event.toLowerCase()],
-    );
+  if (category.type === 'track') {
+    if (!message.event) {
+      throw new InstrumentationError('Event name is required');
+    }
+
+    if (hashMapExternalKey[message.event.toLowerCase()]) {
+      return responseBuilderForInsertData(
+        message,
+        hashMapExternalKey[message.event.toLowerCase()],
+        subDomain,
+        category,
+        authToken,
+        'track',
+        hashMapPrimaryKey[message.event.toLowerCase()] || CONTACT_KEY_KEY,
+        hashMapUUID[message.event.toLowerCase()],
+      );
+    }
   }
 
   throw new ConfigurationError('Event not mapped for this track call');

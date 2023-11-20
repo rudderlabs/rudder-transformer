@@ -150,7 +150,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
       }),
     );
 
-    transformedRecordEvent.push(alltransformedGroupedRecordEvent.flat());
+    transformedRecordEvent.push(...alltransformedGroupedRecordEvent.flat());
   }
   // process audiencelist events
   if (groupedInputs.audiencelist && groupedInputs.audiencelist.length > 0) {
@@ -185,6 +185,5 @@ module.exports = {
   processRouterDest,
   processMetadataForRouter,
   authCache,
-  triggerProcess,
   batchResponseBuilder,
 };

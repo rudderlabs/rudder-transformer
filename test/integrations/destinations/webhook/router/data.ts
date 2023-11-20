@@ -370,12 +370,12 @@ export const data = [
                     },
                   ],
                 },
-              },
-              DestinationDefinition: {
-                Config: {
-                  cdkV2Enabled: true,
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: true,
+                  },
                 },
-              },
+              }
             },
             {
               batchedRequest: {

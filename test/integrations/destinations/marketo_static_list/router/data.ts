@@ -1,7 +1,7 @@
 export const data = [
   {
     name: 'marketo_static_list',
-    description: 'Test 0',
+    description: 'Test 0: Test audiencelist event with add and remove',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -1334,7 +1334,7 @@ export const data = [
   },
   {
     name: 'marketo_static_list',
-    description: 'Test 1',
+    description: 'Test 1: Test record and audiencelist events in a single batch',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -2837,6 +2837,52 @@ export const data = [
                   },
                   files: {},
                 },
+              ],
+              metadata: [
+                {
+                  jobId: 4,
+                  destInfo: {
+                    authKey: '1zwa1wKshSt81YksKmUdJnr4IOK',
+                  },
+                },
+                {
+                  jobId: 5,
+                  destInfo: {
+                    authKey: '1zwa1wKshSt81YksKmUdJnr4IOK',
+                  },
+                },
+                {
+                  jobId: 6,
+                  destInfo: {
+                    authKey: '1zwa1wKshSt81YksKmUdJnr4IOK',
+                  },
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                ID: '1zwa1wKshSt81YksKmUdJnr4IOK',
+                Name: 'test_marketo_rc',
+                DestinationDefinition: {
+                  ID: '1iVQvTRMsPPyJzwol0ifH93QTQ6',
+                  Name: 'MARKETO',
+                  DisplayName: 'Marketo',
+                  transformAt: 'processor',
+                  transformAtV1: 'processor',
+                },
+                Config: {
+                  clientId: 'marketo_client_id_success',
+                  clientSecret: 'marketo_client_secret_success',
+                  accountId: 'marketo_acct_id_success',
+                  staticListId: 1122,
+                },
+                Enabled: true,
+                Transformations: [],
+                IsProcessorEnabled: true,
+              },
+            },
+            {
+              batchedRequest: [
                 {
                   version: '1',
                   type: 'REST',
@@ -2876,26 +2922,8 @@ export const data = [
                     authKey: '1zwa1wKshSt81YksKmUdJnr4IOK',
                   },
                 },
-                {
-                  jobId: 4,
-                  destInfo: {
-                    authKey: '1zwa1wKshSt81YksKmUdJnr4IOK',
-                  },
-                },
-                {
-                  jobId: 5,
-                  destInfo: {
-                    authKey: '1zwa1wKshSt81YksKmUdJnr4IOK',
-                  },
-                },
-                {
-                  jobId: 6,
-                  destInfo: {
-                    authKey: '1zwa1wKshSt81YksKmUdJnr4IOK',
-                  },
-                },
               ],
-              batched: false,
+              batched: true,
               statusCode: 200,
               destination: {
                 ID: '1zwa1wKshSt81YksKmUdJnr4IOK',
@@ -3056,6 +3084,556 @@ export const data = [
                   clientSecret: 'marketo_client_secret_success',
                   accountId: 'marketo_acct_id_success',
                   staticListId: 1234,
+                },
+                Enabled: true,
+                Transformations: [],
+                IsProcessorEnabled: true,
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'marketo_static_list',
+    description: 'Test 2: Test record evemts',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          destType: 'marketo_static_list',
+          input: [
+            {
+              destination: {
+                ID: '1zwa1wKshSt81YksKmUdJnr4IOK',
+                Name: 'test_marketo_rc',
+                DestinationDefinition: {
+                  ID: '1iVQvTRMsPPyJzwol0ifH93QTQ6',
+                  Name: 'MARKETO',
+                  DisplayName: 'Marketo',
+                  transformAt: 'processor',
+                  transformAtV1: 'processor',
+                },
+                Config: {
+                  clientId: 'marketo_client_id_success',
+                  clientSecret: 'marketo_client_secret_success',
+                  accountId: 'marketo_acct_id_success',
+                  staticListId: 1122,
+                },
+                Enabled: true,
+                Transformations: [],
+                IsProcessorEnabled: true,
+              },
+              message: {
+                type: 'record',
+                action: 'insert',
+                fields: {
+                  id: 1001,
+                },
+                channel: 'sources',
+                context: {
+                  sources: {
+                    job_id: '2VsZs4hyPpq7f1p8igrpmHsibHl',
+                    version: 'feat.mirrorRetlEvent',
+                    job_run_id: 'ck99nbd2kqiljdihhkh0',
+                    task_run_id: 'ck99nbd2kqiljdihhkhg',
+                  },
+                  externalId: [
+                    {
+                      type: 'MARKETO_STATIC_LIST-leadId',
+                      id: 'id001',
+                    },
+                  ],
+                  destinationFields: 'id',
+                  mappedToDestination: 'true',
+                },
+                recordId: '3',
+              },
+              metadata: {
+                jobId: 1,
+              },
+            },
+            {
+              destination: {
+                ID: '1zwa1wKshSt81YksKmUdJnr4IOK',
+                Name: 'test_marketo_rc',
+                DestinationDefinition: {
+                  ID: '1iVQvTRMsPPyJzwol0ifH93QTQ6',
+                  Name: 'MARKETO',
+                  DisplayName: 'Marketo',
+                  transformAt: 'processor',
+                  transformAtV1: 'processor',
+                },
+                Config: {
+                  clientId: 'marketo_client_id_success',
+                  clientSecret: 'marketo_client_secret_success',
+                  accountId: 'marketo_acct_id_success',
+                  staticListId: 1122,
+                },
+                Enabled: true,
+                Transformations: [],
+                IsProcessorEnabled: true,
+              },
+              message: {
+                type: 'record',
+                action: 'insert',
+                fields: {
+                  id: 1002,
+                },
+                channel: 'sources',
+                context: {
+                  sources: {
+                    job_id: '2VsZs4hyPpq7f1p8igrpmHsibHl',
+                    version: 'feat.mirrorRetlEvent',
+                    job_run_id: 'ck99nbd2kqiljdihhkh0',
+                    task_run_id: 'ck99nbd2kqiljdihhkhg',
+                  },
+                  externalId: [
+                    {
+                      type: 'MARKETO_STATIC_LIST-leadId',
+                      id: 'id002',
+                    },
+                  ],
+                  destinationFields: 'id',
+                  mappedToDestination: 'true',
+                },
+                recordId: '3',
+              },
+              metadata: {
+                jobId: 2,
+              },
+            },
+            {
+              destination: {
+                ID: '1zwa1wKshSt81YksKmUdJnr4IOK',
+                Name: 'test_marketo_rc',
+                DestinationDefinition: {
+                  ID: '1iVQvTRMsPPyJzwol0ifH93QTQ6',
+                  Name: 'MARKETO',
+                  DisplayName: 'Marketo',
+                  transformAt: 'processor',
+                  transformAtV1: 'processor',
+                },
+                Config: {
+                  clientId: 'marketo_client_id_success',
+                  clientSecret: 'marketo_client_secret_success',
+                  accountId: 'marketo_acct_id_success',
+                  staticListId: 1122,
+                },
+                Enabled: true,
+                Transformations: [],
+                IsProcessorEnabled: true,
+              },
+              message: {
+                type: 'record',
+                action: 'insert',
+                fields: {
+                  id: 1003,
+                },
+                channel: 'sources',
+                context: {
+                  sources: {
+                    job_id: '2VsZs4hyPpq7f1p8igrpmHsibHl',
+                    version: 'feat.mirrorRetlEvent',
+                    job_run_id: 'ck99nbd2kqiljdihhkh0',
+                    task_run_id: 'ck99nbd2kqiljdihhkhg',
+                  },
+                  externalId: [
+                    {
+                      type: 'MARKETO_STATIC_LIST-leadId',
+                      id: 'id001',
+                    },
+                  ],
+                  destinationFields: 'id',
+                  mappedToDestination: 'true',
+                },
+                recordId: '3',
+              },
+              metadata: {
+                jobId: 3,
+              },
+            },
+            {
+              destination: {
+                ID: '1zwa1wKshSt81YksKmUdJnr4IOK',
+                Name: 'test_marketo_rc',
+                DestinationDefinition: {
+                  ID: '1iVQvTRMsPPyJzwol0ifH93QTQ6',
+                  Name: 'MARKETO',
+                  DisplayName: 'Marketo',
+                  transformAt: 'processor',
+                  transformAtV1: 'processor',
+                },
+                Config: {
+                  clientId: 'marketo_client_id_success',
+                  clientSecret: 'marketo_client_secret_success',
+                  accountId: 'marketo_acct_id_success',
+                  staticListId: 1122,
+                },
+                Enabled: true,
+                Transformations: [],
+                IsProcessorEnabled: true,
+              },
+              message: {
+                action: 'delete',
+                context: {
+                  destinationFields: 'id',
+                  externalId: [
+                    {
+                      id: 'id002',
+                      type: 'MARKETO_STATIC_LIST-leadId',
+                    },
+                  ],
+                  mappedToDestination: 'true',
+                  sources: {
+                    job_id: 'sf',
+                    job_run_id: 'ck985bve58cvnti48120',
+                    task_run_id: 'ck985bve58cvnti4812g',
+                    version: '',
+                  },
+                },
+                recordId: '2',
+                rudderId: '2',
+                fields: {
+                  id: '2001',
+                },
+                type: 'record',
+              },
+              metadata: {
+                jobId: 4,
+              },
+            },
+            {
+              destination: {
+                ID: '1zwa1wKshSt81YksKmUdJnr4IOK',
+                Name: 'test_marketo_rc',
+                DestinationDefinition: {
+                  ID: '1iVQvTRMsPPyJzwol0ifH93QTQ6',
+                  Name: 'MARKETO',
+                  DisplayName: 'Marketo',
+                  transformAt: 'processor',
+                  transformAtV1: 'processor',
+                },
+                Config: {
+                  clientId: 'marketo_client_id_success',
+                  clientSecret: 'marketo_client_secret_success',
+                  accountId: 'marketo_acct_id_success',
+                  staticListId: 1122,
+                },
+                Enabled: true,
+                Transformations: [],
+                IsProcessorEnabled: true,
+              },
+              message: {
+                action: 'delete',
+                context: {
+                  destinationFields: 'id',
+                  externalId: [
+                    {
+                      id: 'id001',
+                      type: 'MARKETO_STATIC_LIST-leadId',
+                    },
+                  ],
+                  mappedToDestination: 'true',
+                  sources: {
+                    job_id: 'sf',
+                    job_run_id: 'ck985bve58cvnti48120',
+                    task_run_id: 'ck985bve58cvnti4812g',
+                    version: '',
+                  },
+                },
+                recordId: '2',
+                rudderId: '2',
+                fields: {
+                  id: '2002',
+                },
+                type: 'record',
+              },
+              metadata: {
+                jobId: 5,
+              },
+            },
+            {
+              destination: {
+                ID: '1zwa1wKshSt81YksKmUdJnr4IOK',
+                Name: 'test_marketo_rc',
+                DestinationDefinition: {
+                  ID: '1iVQvTRMsPPyJzwol0ifH93QTQ6',
+                  Name: 'MARKETO',
+                  DisplayName: 'Marketo',
+                  transformAt: 'processor',
+                  transformAtV1: 'processor',
+                },
+                Config: {
+                  clientId: 'marketo_client_id_success',
+                  clientSecret: 'marketo_client_secret_success',
+                  accountId: 'marketo_acct_id_success',
+                  staticListId: 1122,
+                },
+                Enabled: true,
+                Transformations: [],
+                IsProcessorEnabled: true,
+              },
+              message: {
+                action: 'delete',
+                context: {
+                  destinationFields: 'id',
+                  externalId: [
+                    {
+                      id: 'id002',
+                      type: 'MARKETO_STATIC_LIST-leadId',
+                    },
+                  ],
+                  mappedToDestination: 'true',
+                  sources: {
+                    job_id: 'sf',
+                    job_run_id: 'ck985bve58cvnti48120',
+                    task_run_id: 'ck985bve58cvnti4812g',
+                    version: '',
+                  },
+                },
+                recordId: '2',
+                rudderId: '2',
+                fields: {
+                  id: '2003',
+                },
+                type: 'record',
+              },
+              metadata: {
+                jobId: 6,
+              },
+            },
+          ],
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'DELETE',
+                  endpoint:
+                    'https://marketo_acct_id_success.mktorest.com/rest/v1/lists/id001/leads.json?id=2002',
+                  headers: {
+                    Authorization: 'Bearer access_token_success',
+                    'Content-Type': 'application/json',
+                  },
+                  params: {},
+                  body: {
+                    JSON: {},
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+              ],
+              metadata: [
+                {
+                  jobId: 5,
+                  destInfo: {
+                    authKey: '1zwa1wKshSt81YksKmUdJnr4IOK',
+                  },
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                ID: '1zwa1wKshSt81YksKmUdJnr4IOK',
+                Name: 'test_marketo_rc',
+                DestinationDefinition: {
+                  ID: '1iVQvTRMsPPyJzwol0ifH93QTQ6',
+                  Name: 'MARKETO',
+                  DisplayName: 'Marketo',
+                  transformAt: 'processor',
+                  transformAtV1: 'processor',
+                },
+                Config: {
+                  clientId: 'marketo_client_id_success',
+                  clientSecret: 'marketo_client_secret_success',
+                  accountId: 'marketo_acct_id_success',
+                  staticListId: 1122,
+                },
+                Enabled: true,
+                Transformations: [],
+                IsProcessorEnabled: true,
+              },
+            },
+            {
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint:
+                    'https://marketo_acct_id_success.mktorest.com/rest/v1/lists/id001/leads.json?id=1001&id=1003',
+                  headers: {
+                    Authorization: 'Bearer access_token_success',
+                    'Content-Type': 'application/json',
+                  },
+                  params: {},
+                  body: {
+                    JSON: {},
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+              ],
+              metadata: [
+                {
+                  jobId: 1,
+                  destInfo: {
+                    authKey: '1zwa1wKshSt81YksKmUdJnr4IOK',
+                  },
+                },
+                {
+                  jobId: 3,
+                  destInfo: {
+                    authKey: '1zwa1wKshSt81YksKmUdJnr4IOK',
+                  },
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                ID: '1zwa1wKshSt81YksKmUdJnr4IOK',
+                Name: 'test_marketo_rc',
+                DestinationDefinition: {
+                  ID: '1iVQvTRMsPPyJzwol0ifH93QTQ6',
+                  Name: 'MARKETO',
+                  DisplayName: 'Marketo',
+                  transformAt: 'processor',
+                  transformAtV1: 'processor',
+                },
+                Config: {
+                  clientId: 'marketo_client_id_success',
+                  clientSecret: 'marketo_client_secret_success',
+                  accountId: 'marketo_acct_id_success',
+                  staticListId: 1122,
+                },
+                Enabled: true,
+                Transformations: [],
+                IsProcessorEnabled: true,
+              },
+            },
+            {
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'DELETE',
+                  endpoint:
+                    'https://marketo_acct_id_success.mktorest.com/rest/v1/lists/id002/leads.json?id=2001&id=2003',
+                  headers: {
+                    Authorization: 'Bearer access_token_success',
+                    'Content-Type': 'application/json',
+                  },
+                  params: {},
+                  body: {
+                    JSON: {},
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+              ],
+              metadata: [
+                {
+                  jobId: 4,
+                  destInfo: {
+                    authKey: '1zwa1wKshSt81YksKmUdJnr4IOK',
+                  },
+                },
+                {
+                  jobId: 6,
+                  destInfo: {
+                    authKey: '1zwa1wKshSt81YksKmUdJnr4IOK',
+                  },
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                ID: '1zwa1wKshSt81YksKmUdJnr4IOK',
+                Name: 'test_marketo_rc',
+                DestinationDefinition: {
+                  ID: '1iVQvTRMsPPyJzwol0ifH93QTQ6',
+                  Name: 'MARKETO',
+                  DisplayName: 'Marketo',
+                  transformAt: 'processor',
+                  transformAtV1: 'processor',
+                },
+                Config: {
+                  clientId: 'marketo_client_id_success',
+                  clientSecret: 'marketo_client_secret_success',
+                  accountId: 'marketo_acct_id_success',
+                  staticListId: 1122,
+                },
+                Enabled: true,
+                Transformations: [],
+                IsProcessorEnabled: true,
+              },
+            },
+            {
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint:
+                    'https://marketo_acct_id_success.mktorest.com/rest/v1/lists/id002/leads.json?id=1002',
+                  headers: {
+                    Authorization: 'Bearer access_token_success',
+                    'Content-Type': 'application/json',
+                  },
+                  params: {},
+                  body: {
+                    JSON: {},
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+              ],
+              metadata: [
+                {
+                  jobId: 2,
+                  destInfo: {
+                    authKey: '1zwa1wKshSt81YksKmUdJnr4IOK',
+                  },
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                ID: '1zwa1wKshSt81YksKmUdJnr4IOK',
+                Name: 'test_marketo_rc',
+                DestinationDefinition: {
+                  ID: '1iVQvTRMsPPyJzwol0ifH93QTQ6',
+                  Name: 'MARKETO',
+                  DisplayName: 'Marketo',
+                  transformAt: 'processor',
+                  transformAtV1: 'processor',
+                },
+                Config: {
+                  clientId: 'marketo_client_id_success',
+                  clientSecret: 'marketo_client_secret_success',
+                  accountId: 'marketo_acct_id_success',
+                  staticListId: 1122,
                 },
                 Enabled: true,
                 Transformations: [],

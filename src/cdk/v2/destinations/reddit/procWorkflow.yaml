@@ -8,6 +8,8 @@ bindings:
     path: ../../../../v0/util
   - name: defaultRequestConfig
     path: ../../../../v0/util
+  - name: isAppleFamily
+    path: ../../../../v0/util/index
 
 steps:
   - name: validateInput
@@ -17,50 +19,84 @@ steps:
       $.assert(.message.type.toLowerCase() ==='track', "Event type " + .message.type.toLowerCase() + " is not supported. Aborting message.");
       $.assert(.message.event, "Event is not present. Aborting message.");
 
+  - name: messageType
+    template: |
+      .message.type.toLowerCase()
+
   - name: prepareTrackPayload
     condition: $.outputs.messageType === {{$.EventType.TRACK}}
     steps:
       - name: prepareUserObject
         template: |
+          const os = .message.context.os.name;
           let user = .message.().({
             "email": {{{{$.getGenericPaths("email")}}}},  
             "external_id": {{{{$.getGenericPaths("userId")}}}},
             "ip_address": .context.ip || .request_ip,
-            "uuid": .context.traits.language || .context.locale,
-            "user_agent": {"n": {{{{$.getGenericPaths("phone")}}}}},
-            "idfa": $.isAppleFamily(.context.os)? .context.device.advertisingId: null,
-            "aaid": .context.os==="android"? .context.device.advertisingId: null,
-            "opt_out": .context.traits.smsConsent || false,
-            "screen_dimensions": {"width": context.screen.width, "height":  context.screen.height},
+            "uuid": .properties.uuid,
+            "user_agent": .context.userAgent,
+            "idfa": $.isAppleFamily(os)? .context.device.advertisingId: null,
+            "aaid": os?.toLowerCase() ==="android"? .context.device.advertisingId: null,
+            "opt_out": .properties.optOut,
+            "screen_dimensions": {"width": .context.screen.width, "height":  .context.screen.height},
           });
 
-      - name: prepareEventMetadata
-        condition: Array.isArray(.message.properties.products)
+      - name: customFields
         template: |
-          let products = .message.properties@prop.products.({
-                "id": .productId ?? prop.productId,
-                "category": .category?? prop.category,
-                "name": .name?? prop.name,
-              })
+          const customFields = .message.().({
+            "currency": .properties.currency,
+              "value": .properties.revenue !== undefined ? Number(.properties.revenue) : undefined,
+            "item_count": .properties.itemCount && Number(.properties.numOfItems),
+            "value_decimal": .properties.revenue !== undefined ? Number(.properties.revenue)/100 : undefined,
+            "conversion_id": .properties.conversionId || .messageId,
+          });
+          $.removeUndefinedAndNullValues(customFields)
+
+      - name: eventType
+        template: |
+          console.log(.message.event)
+          let eventNames = .destination.Config.eventsMapping.(){.from === .message.event}.to[] ?? [];
+          console.log(eventNames)
+
+      - name: productFields
+        condition: .message.properties.products
+        description: When event contains multiple products
+        template: |
+          let products = .message.properties.products;
           {
-            "currency": .message.properties.currency,
-            "item_count": .message.properties.products.size(),
-            "value": .message.properties.revenue,
-            "value_decimal": .message.properties.revenue/100,
-            "conversion_id": .message.properties.conversionId || messageId,
-            "products": products
+            "item_count": $.sum(products.quantity.(Number(.))[]) || 0,
+            "products": .message.properties@prop.products.({
+              "id": .product_id ?? prop.product_id,
+              "name": .name ?? prop.name,
+              "category": .category ?? prop.category,
+            })[]
           }
-      
+        else:
+          name: singleProductFields
+          template: |
+            const props = .message.properties;
+            const output = {
+              "item_count": Number(props.quantity) || 0,
+              "products": {
+                "id": props.product_id,
+                "name": props.name,
+                "category": props.category,
+              }[]
+            };
+      - name: combineAllEcomFields
+        template: |
+          {...$.outputs.prepareTrackPayload.productFields, ...$.outputs.prepareTrackPayload.customFields}
+
       - name: prepareFinalPayload
         template: |
           {
             "click_id": .message.properties.clickId,
             "event_at": .message.timestamp || .message.originalTimestamp,
             "user": $.outputs.prepareTrackPayload.prepareUserObject,
-            "event_metadata": $.outputs.prepareTrackPayload.prepareEventMetadata,
+            "event_metadata": $.outputs.prepareTrackPayload.combineAllEcomFields,
           }
 
-   - name: payload
+  - name: payload
     condition: $.outputs.messageType === {{$.EventType.TRACK}}
     template: |
       const outputPayload = $.outputs.prepareTrackPayload
@@ -68,12 +104,8 @@ steps:
   - name: buildResponseForProcessTransformation
     description: build response
     template: |
-      const accessToken = .metadata.secret.accessToken
+      const accessToken = ".metadata.secret.accessToken"
       const response = $.defaultRequestConfig();
       response.body.JSON = $.outputs.payload;
       response.endpoint = $.ENDPOINT+.destination.Config.accountId;
-      response.headers = {
-          "Authorization: accessToken,
-          "Content-Type": "application/json"
-        };
       finalResponse = response;

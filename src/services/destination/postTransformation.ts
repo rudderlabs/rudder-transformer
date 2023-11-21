@@ -25,7 +25,7 @@ type ErrorResponse = {
   response?: object | undefined;
 };
 
-export default class DestinationPostTransformationService {
+export class DestinationPostTransformationService {
   public static handleProcessorTransformSucessEvents(
     event: ProcessorTransformationRequest,
     transformedPayloads: ProcessorTransformationOutput | ProcessorTransformationOutput[],
@@ -159,7 +159,7 @@ export default class DestinationPostTransformationService {
       statTags: errObj.statTags,
       ...(errObj.authErrorCategory && {
         authErrorCategory: errObj.authErrorCategory,
-      })
+      }),
     } as DeliveryResponse;
 
     // for transformer-proxy to maintain contract

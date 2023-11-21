@@ -1,9 +1,11 @@
 const fs = require('fs');
 const path = require('path');
-const version = 'v0';
 const { RedisDB } = require('./redisConnector');
 jest.mock('ioredis', () => require('../../../test/__mocks__/redis'));
-const sourcesList = ['shopify'];
+const sourcesList = [
+  { fileName: 'shopify', name: 'shopify', sourceEndpointVersion: 'v0' },
+  { fileName: 'shopify_v1', name: 'shopify', sourceEndpointVersion: 'v1' },
+];
 process.env.USE_REDIS_DB = 'true';
 
 const timeoutPromise = () =>
@@ -43,16 +45,17 @@ describe('checkAndConnectConnection', () => {
     expect(RedisDB.client.status).toBe('ready');
   });
 });
+
 describe(`Source Tests`, () => {
   sourcesList.forEach((source) => {
     const testDataFile = fs.readFileSync(
-      path.resolve(__dirname, `./testData/${source}_source.json`),
+      path.resolve(__dirname, `./testData/${source.fileName}_source.json`),
     );
     const data = JSON.parse(testDataFile);
-    const transformer = require(`../../${version}/sources/${source}/transform`);
+    const transformer = require(`../../${source.sourceEndpointVersion}/sources/${source.name}/transform`);
 
     data.forEach((dataPoint, index) => {
-      it(`${index}. ${source} - ${dataPoint.description}`, async () => {
+      it(`${index}. ${source.fileName} - ${dataPoint.description}`, async () => {
         try {
           const output = await transformer.process(dataPoint.input);
           expect(output).toEqual(dataPoint.output);
@@ -70,7 +73,7 @@ describe(`Redis Class Get Tests`, () => {
   data.forEach((dataPoint, index) => {
     it(`${index}. Redis Get- ${dataPoint.description}`, async () => {
       try {
-        const output = await RedisDB.getVal(dataPoint.input.value, (isObjExpected = false));
+        const output = await RedisDB.getVal(dataPoint.input.value, false);
         expect(output).toEqual(dataPoint.output);
       } catch (error) {
         expect(error.message).toEqual(dataPoint.output.error);

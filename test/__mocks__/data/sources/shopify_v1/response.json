@@ -1,0 +1,38 @@
+{
+  "shopify_v1_test1": {
+    "anonymousId": "anon_shopify_v1_test1",
+    "lineItems": "EMPTY"
+  },
+  "shopify_v1_test3": {
+    "anonymousId": "anon_shopify_v1_test1",
+    "sessionId": "session_id_1",
+    "lineItems": "EMPTY"
+  },
+  "shopify_v1_test2": {
+    "anonymousId": "anon_shopify_v1_test2",
+    "sessionId": "session_id_2",
+    "lineItems": "EMPTY"
+  },
+  "shopify_v1_test_cart": {
+    "anonymousId": "anon_shopify_v1_test1",
+    "lineItems": "EMPTY"
+  },
+  "shopify_v1_test_duplicate_cart": {
+    "anonymousId": "anon_shopify_v1_test1",
+    "lineItems": "H4sIAAAAAAAAA6tWMjQyVrKqViosTcwrySypVLIy0lEqSyzKBHLjM1OUrExMzXSUslOBEkrF+bmpViCmjlJBUWZyKlDI2EDPwADMz08pTYbosLQw11Eqzi4FSgNlgIbmgFQGZ2QWlSgYKegq+DgGubsCZcpS81Lyi4BSJanFJY55QAuVamsB0AEE35EAAAA="
+  },
+  "shopify_v1_test_set_item_fail": {
+    "anonymousId": "anon_shopify_v1_test_set_fail"
+  },
+  "shopify_v1_test_only_anon_id": {
+    "anonymousId": "anon_shopify_v1_test_only_anon_id"
+  },
+  "shopify_v1_test_set_redis_error": {
+    "lineItems": "EMPTY"
+  },
+  "shopify_v1_test5": {
+    "anonymousId": "anon_id_5",
+    "sessionId": "session_id_5",
+    "lineItems": "H4sIAAAAAAAAA6tWMjQyVrKqViosTcwrySypVLIy0lEqSyzKBHLjM1OUrExMzXSUslOBEkrF+bmpViCmjlJBUWZyKlDI2EDPwADMz08pTYbosLQw11Eqzi4FSgNlgIbmgFQGZ2QWlSgYKegq+DgGubsCZcpS81Lyi4BSJanFJY55QAuVamsB0AEE35EAAAA="
+  }
+}

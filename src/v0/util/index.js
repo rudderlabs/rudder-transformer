@@ -614,6 +614,25 @@ const handleSourceKeysOperation = ({ message, operationObject }) => {
         }
       }
       return result;
+    case 'additionInArray': {
+      result = 0;
+      const { propertyKey, arrayKey } = args[0];
+      const arrayValues = get(message, arrayKey);
+      if (lodash.isArray(arrayValues) && isNotEmpty(arrayValues)) {
+        result = arrayValues.reduce((acc, item) => acc + get(item, propertyKey, 0), 0);
+        return result;
+      }
+      return null;
+    }
+    case 'concatenationInArray': {
+      const { propertyKey, arrayKey } = args[0];
+      const arrayValues = get(message, arrayKey);
+      if (lodash.isArray(arrayValues) && isNotEmpty(arrayValues)) {
+        result = arrayValues.map((item) => get(item, propertyKey, '')).join(', ');
+        return result;
+      }
+      return null;
+    }
     default:
       return null;
   }

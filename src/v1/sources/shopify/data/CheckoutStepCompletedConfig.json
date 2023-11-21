@@ -1,0 +1,17 @@
+[
+  {
+    "sourceKeys": "id",
+    "destKey": "checkout_id",
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
+    "sourceKeys": "shipping_lines.0.title",
+    "destKey": "shipping_method"
+  },
+  {
+    "sourceKeys": "gateway",
+    "destKey": "payment_method"
+  }
+]

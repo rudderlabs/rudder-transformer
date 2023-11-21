@@ -22,6 +22,7 @@ const {
   getDestinationExternalID,
   getStringValueOfJSON,
   ErrorMessage,
+  isHttpStatusSuccess,
 } = require('../../util');
 const tags = require('../../util/tags');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
@@ -81,32 +82,33 @@ const validate = (email, phone, channelIdentifier) => {
  * In case no contact is founf for a particular identifer it returns -1
  */
 const lookupContact = async (term, destination) => {
-  let { processedResponse: processedResponseTrengo };
-  try {
-    processedResponseTrengo = await handleHttpRequest(
-      'get',
-      `${BASE_URL}/contacts?page=1&term=${term}`,
-      {
-        headers: {
-          Authorization: `Bearer ${destination.Config.apiToken}`,
-        },
+  const { processedResponse: processedsfSearchResponse } = await handleHttpRequest(
+    'get',
+    `${BASE_URL}/contacts?page=1&term=${term}`,
+    {
+      headers: {
+        Authorization: `Bearer ${destination.Config.apiToken}`,
       },
-      { destType: 'trengo', feature: 'transformation' },
-    );
-  } catch (err) {
-    // check if exists err.response && err.response.status else 500
-    const status = err.response?.status || 400;
+    },
+    { destType: 'trengo', feature: 'transformation' },
+  );
+
+  if (!isHttpStatusSuccess(processedsfSearchResponse.status)) {
     throw new NetworkError(
-      `Inside lookupContact, failed to make request: ${err.response?.statusText}`,
-      status,
+      `Inside lookupContact, failed to make request: ${processedsfSearchResponse.response}`,
+      processedsfSearchResponse.status,
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedsfSearchResponse.status),
       },
-      err.response,
+      processedsfSearchResponse.response,
     );
   }
-  if (processedResponseTrengo.status === 200 && processedResponseTrengo.response?.data && Array.isArray(processedResponseTrengo.response.data)) {
-    const { data } = processedResponseTrengo.response;
+
+  if (
+    processedsfSearchResponse.status === 200 &&
+    Array.isArray(processedsfSearchResponse.response?.data)
+  ) {
+    const { data } = processedsfSearchResponse.response;
     if (data.length > 1) {
       throw new NetworkInstrumentationError(
         `Inside lookupContact, duplicates present for identifier : ${term}`,

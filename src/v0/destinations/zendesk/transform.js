@@ -142,10 +142,16 @@ async function createUserFields(url, config, newFields, fieldJson) {
       };
 
       try {
-        const { processedResponse: processedResponseZn } = await handleHttpRequest('post', url, fieldData, config, {
-          destType: 'zendesk',
-          feature: 'transformation',
-        });
+        const { processedResponse: processedResponseZn } = await handleHttpRequest(
+          'post',
+          url,
+          fieldData,
+          config,
+          {
+            destType: 'zendesk',
+            feature: 'transformation',
+          },
+        );
         if (processedResponseZn.status !== 201) {
           logger.debug(`${NAME}:: Failed to create User Field : `, field);
         }
@@ -334,12 +340,22 @@ async function createUser(message, headers, destinationConfig, baseEndpoint, typ
   const payload = { user: userObject };
 
   try {
-    const { processedResponse: processedResponseZn } = await handleHttpRequest('post', url, payload, config, {
-      destType: 'zendesk',
-      feature: 'transformation',
-    });
+    const { processedResponse: processedResponseZn } = await handleHttpRequest(
+      'post',
+      url,
+      payload,
+      config,
+      {
+        destType: 'zendesk',
+        feature: 'transformation',
+      },
+    );
 
-    if (!processedResponseZn.response || !processedResponseZn.response?.user || !processedResponseZn.response?.user?.id) {
+    if (
+      !processedResponseZn.response ||
+      !processedResponseZn.response?.user ||
+      !processedResponseZn.response?.user?.id
+    ) {
       logger.debug(`${NAME}:: Couldn't create User: ${name}`);
       throw new NetworkInstrumentationError('user not found');
     }
@@ -415,10 +431,16 @@ async function createOrganization(message, category, headers, destinationConfig,
   const config = { headers };
 
   try {
-    const { processedResponse: processedResponseZn } = await handleHttpRequest('post', url, payload, config, {
-      destType: 'zendesk',
-      feature: 'transformation',
-    });
+    const { processedResponse: processedResponseZn } = await handleHttpRequest(
+      'post',
+      url,
+      payload,
+      config,
+      {
+        destType: 'zendesk',
+        feature: 'transformation',
+      },
+    );
 
     if (!processedResponseZn.response || !processedResponseZn.response?.organization) {
       logger.debug(`${NAME}:: Couldn't create Organization: ${message.traits.name}`);
@@ -483,10 +505,15 @@ async function processIdentify(message, destinationConfig, headers, baseEndpoint
       const membershipUrl = `${baseEndpoint}users/${userId}/organization_memberships.json`;
       try {
         const config = { headers };
-        const { processedResponse: processedResponseZn } = await handleHttpRequest('get', membershipUrl, config, {
-          destType: 'zendesk',
-          feature: 'transformation',
-        });
+        const { processedResponse: processedResponseZn } = await handleHttpRequest(
+          'get',
+          membershipUrl,
+          config,
+          {
+            destType: 'zendesk',
+            feature: 'transformation',
+          },
+        );
         if (
           processedResponseZn.response &&
           processedResponseZn.response.organization_memberships &&
@@ -534,7 +561,10 @@ async function processTrack(message, destinationConfig, headers, baseEndpoint) {
       destType: 'zendesk',
       feature: 'transformation',
     });
-    if (!get(processedResponseZn.response, 'data.users.0.id') || processedResponseZn.response.count === 0) {
+    if (
+      !get(processedResponseZn.response, 'users.0.id') ||
+      processedResponseZn.response.count === 0
+    ) {
       const { zendeskUserId, email } = await createUser(
         message,
         headers,

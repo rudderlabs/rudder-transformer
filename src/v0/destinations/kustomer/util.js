@@ -4,7 +4,7 @@ const set = require('set-value');
 const get = require('get-value');
 const { NetworkError, AbortedError } = require('@rudderstack/integrations-lib');
 const { DEFAULT_BASE_ENDPOINT } = require('./config');
-const { getType, isDefinedAndNotNull, isObject } = require('../../util');
+const { getType, isDefinedAndNotNull, isObject, isHttpStatusSuccess } = require('../../util');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 const { handleHttpRequest } = require('../../../adapters/network');
@@ -97,18 +97,18 @@ const handleAdvancedtransformations = (event) => {
   return cloneEvent;
 };
 
-const handleResponse = (response) => {
-  const { status, data } = response;
+const handleResponse = (response, status) => {
+  const { data } = response;
   switch (status) {
     case 200:
-      if (data && data.data && data.data.id) {
+      if (data.id) {
         return {
           userExists: true,
-          targetUrl: `${DEFAULT_BASE_ENDPOINT}/v1/customers/${data.data.id}?replace=false`,
+          targetUrl: `${DEFAULT_BASE_ENDPOINT}/v1/customers/${data.id}?replace=false`,
         };
       }
       throw new NetworkError(
-        `Error while lookingUp Kustomer ${data.data ? JSON.stringify(data.data) : ''}`,
+        `Error while lookingUp Kustomer ${data ? JSON.stringify(data) : ''}`,
         status,
         {
           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
@@ -130,25 +130,25 @@ const handleResponse = (response) => {
 };
 
 const fetchKustomer = async (url, destination) => {
-  let { processedResponse: processedResponseGs };
-  try {
-     processedResponseGs = await handleHttpRequest(
-      'get',
-      url,
-      {
-        headers: {
-          Authorization: `Bearer ${destination.Config.apiKey}`,
-        },
+  const { processedResponse: processedResponseGs } = await handleHttpRequest(
+    'get',
+    url,
+    {
+      headers: {
+        Authorization: `Bearer ${destination.Config.apiKey}`,
       },
-      { destType: 'kustomer', feature: 'transformation' },
-    );
-  } catch (err) {
-    if (err.response) {
-      return handleResponse(err.response);
-    }
-    throw new AbortedError(err.message);
+    },
+    { destType: 'kustomer', feature: 'transformation' },
+  );
+
+  if (isHttpStatusSuccess(processedResponseGs.status)) {
+    return handleResponse(processedResponseGs.response, processedResponseGs.status);
   }
-  return handleResponse(processedResponseGs.response);
+
+  if (!isHttpStatusSuccess(processedResponseGs.status)) {
+    return handleResponse(processedResponseGs.response, processedResponseGs.status);
+  }
+  throw new AbortedError(processedResponseGs);
 };
 
 module.exports = {

@@ -9,14 +9,14 @@ const handleErrorResponse = (error, customErrMessage, expectedErrStatus, default
   let errMessage = '';
   let errorStatus = defaultStatus;
 
-  if (error.response && error.response.data) {
-    errMessage = error.response.data.externalapierror
-      ? JSON.stringify(error.response.data.externalapierror)
-      : JSON.stringify(error.response.data);
+  if (error.response) {
+    errMessage = error.response.externalapierror
+      ? JSON.stringify(error.response.externalapierror)
+      : JSON.stringify(error.response);
 
-    errorStatus = error.response.status;
+    errorStatus = error.status;
 
-    if (error.response.status === expectedErrStatus) {
+    if (error.status === expectedErrStatus) {
       return { success: false, err: errMessage };
     }
   }
@@ -45,109 +45,67 @@ const objectExists = async (id, Config, objectType) => {
     url = `${ENDPOINTS.ACCOUNTS_ENDPOINT}/${id}`;
     err = 'invalid response while searching account';
   }
-
-  try {
-    const { processedResponse: processedResponseGs } = await handleHttpRequest(
-      'get',
-      url,
-      {
-        headers: {
-          'X-APTRINSIC-API-KEY': Config.apiKey,
-          'Content-Type': JSON_MIME_TYPE,
-        },
+  const { processedResponse: processedResponseGs } = await handleHttpRequest(
+    'get',
+    url,
+    {
+      headers: {
+        'X-APTRINSIC-API-KEY': Config.apiKey,
+        'Content-Type': JSON_MIME_TYPE,
       },
-      { destType: 'gainsight_px', feature: 'transformation' },
-    );
-    if (processedResponseGs?.status === 200) {
-      return { success: true, err: null };
-    }
-    const defStatus = 400;
-    const status = processedResponseGs.status || defStatus;
-    throw new NetworkError(
-      err,
-      status,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
-      },
-      processedResponseGs.response,
-    );
-  } catch (error) {
-    return handleErrorResponse(error, `error while fetching ${objectType}`, 404);
+    },
+    { destType: 'gainsight_px', feature: 'transformation' },
+  );
+  if (processedResponseGs?.status === 200) {
+    return { success: true, err: null };
   }
+  return handleErrorResponse(processedResponseGs || err, `error while fetching ${objectType}`, 404);
 };
 
 const createAccount = async (payload, Config) => {
-  try {
-    const { processedResponse: processedResponseGs } = await handleHttpRequest(
-      'post',
-      ENDPOINTS.ACCOUNTS_ENDPOINT,
-      payload,
-      {
-        headers: {
-          'X-APTRINSIC-API-KEY': Config.apiKey,
-          'Content-Type': JSON_MIME_TYPE,
-        },
+  const { processedResponse: processedResponseGs } = await handleHttpRequest(
+    'post',
+    ENDPOINTS.ACCOUNTS_ENDPOINT,
+    payload,
+    {
+      headers: {
+        'X-APTRINSIC-API-KEY': Config.apiKey,
+        'Content-Type': JSON_MIME_TYPE,
       },
-      { destType: 'gainsight_px', feature: 'transformation' },
-    );
-    if (processedResponseGs?.status === 200) {
-      return { success: true, err: null };
-    }
-    const status = processedResponseGs.status || 400 ;
-    throw new NetworkError(
-      'invalid response while creating account',
-      status,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
-      },
-      processedResponseGs.response,
-    );
-  } catch (error) {
-    return handleErrorResponse(error, 'error while creating account', 400);
+    },
+    { destType: 'gainsight_px', feature: 'transformation' },
+  );
+  if (processedResponseGs?.status === 200) {
+    return { success: true, err: null };
   }
+  return handleErrorResponse(processedResponseGs, 'error while creating account', 400);
 };
 
 const updateAccount = async (accountId, payload, Config) => {
-  try {
-    const { processedResponse: processedResponseGs } = await handleHttpRequest(
-      'put',
-      `${ENDPOINTS.ACCOUNTS_ENDPOINT}/${accountId}`,
-      payload,
-      {
-        headers: {
-          'X-APTRINSIC-API-KEY': Config.apiKey,
-          'Content-Type': JSON_MIME_TYPE,
-        },
+  const { processedResponse: processedResponseGs } = await handleHttpRequest(
+    'put',
+    `${ENDPOINTS.ACCOUNTS_ENDPOINT}/${accountId}`,
+    payload,
+    {
+      headers: {
+        'X-APTRINSIC-API-KEY': Config.apiKey,
+        'Content-Type': JSON_MIME_TYPE,
       },
-      { destType: 'gainsight_px', feature: 'transformation' },
-    );
-    if (processedResponseGs?.status === 200) {
-      return { success: true, err: null };
-    }
-
-    if (processedResponseGs.status === 404 && processedResponseGs?.response?.externalapierror?.status === 'NOT_FOUND') {
-      return { success: false, err: null };
-    }
-
-    const status = processedResponseGs.status || 400;
-    throw new NetworkError(
-      'invalid response while updating account',
-      status,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
-      },
-      processedResponseGs.response,
-    );
-  } catch (error) {
-    // it will only occur if the user does not exist
-    if (
-      error.response?.status === 404 &&
-      error.response?.data?.externalapierror?.status === 'NOT_FOUND'
-    ) {
-      return { success: false, err: null };
-    }
-    return handleErrorResponse(error, 'error while updating account', 400);
+    },
+    { destType: 'gainsight_px', feature: 'transformation' },
+  );
+  if (processedResponseGs?.status === 204) {
+    return { success: true, err: null };
   }
+
+  if (
+    processedResponseGs.status === 404 &&
+    processedResponseGs?.response?.externalapierror?.status === 'NOT_FOUND'
+  ) {
+    return { success: false, err: null };
+  }
+
+  return handleErrorResponse(processedResponseGs.response, `error while updating account`, 400);
 };
 
 /**

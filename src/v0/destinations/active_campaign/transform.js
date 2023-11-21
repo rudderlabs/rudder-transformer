@@ -4,7 +4,7 @@ const get = require('get-value');
 const {
   InstrumentationError,
   TransformationError,
-  NetworkError,
+  // NetworkError,
 } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG, getHeader } = require('./config');
@@ -17,8 +17,8 @@ const {
 } = require('../../util');
 const { errorHandler } = require('./util');
 const { httpGET, httpPOST } = require('../../../adapters/network');
-const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
-const tags = require('../../util/tags');
+// const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
+// const tags = require('../../util/tags');
 
 const TOTAL_RECORDS_KEY = 'response.data.meta.total';
 const EVENT_DATA_KEY = 'properties.eventData';
@@ -72,14 +72,7 @@ const syncContact = async (contactPayload, category, destination) => {
   }
   const createdContact = get(res, 'response.data.contact'); // null safe
   if (!createdContact) {
-    throw new NetworkError(
-      'Unable to Create Contact',
-      res.response?.status,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(res.response?.status),
-      },
-      res.response,
-    );
+    errorHandler(res.response, 'Failed to create new contact');
   }
   return createdContact.id;
 };
@@ -421,14 +414,7 @@ const screenRequestHandler = async (message, category, destination) => {
   }
 
   if (res?.response?.status !== 200) {
-    throw new NetworkError(
-      'Unable to create event',
-      res.response?.status,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(res.response?.status),
-      },
-      res.response,
-    );
+    errorHandler(res.response, 'Unable to create event');
   }
 
   const storedEventsArr = res.response?.data?.eventTrackingEvents;
@@ -455,14 +441,7 @@ const screenRequestHandler = async (message, category, destination) => {
     }
 
     if (res.response.status !== 201) {
-      throw new NetworkError(
-        'Unable to create event',
-        res.response.status,
-        {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(res.response.status),
-        },
-        res?.response,
-      );
+      errorHandler(res.response, 'Unable to create event');
     }
   }
   // Previous operations successfull then
@@ -499,14 +478,7 @@ const trackRequestHandler = async (message, category, destination) => {
   }
 
   if (res.response.status !== 200) {
-    throw new NetworkError(
-      'Unable to fetch events. Aborting',
-      res.response.status,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(res.response.status),
-      },
-      res?.response,
-    );
+    errorHandler(res.response, 'Unable to fetch events. Aborting');
   }
 
   const storedEventsArr = res.response?.data?.eventTrackingEvents;
@@ -529,14 +501,7 @@ const trackRequestHandler = async (message, category, destination) => {
       feature: 'transformation',
     });
     if (res.response?.status !== 201) {
-      throw new NetworkError(
-        'Unable to create event. Aborting',
-        res.response.status,
-        {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(res.response.status),
-        },
-        res.response,
-      );
+      errorHandler(res.response, "Unable to create event. Aborting");
     }
   }
 

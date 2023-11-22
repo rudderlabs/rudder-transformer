@@ -224,16 +224,17 @@ const responseBuilderSimple = async (message, category, destination) => {
     throw new ConfigurationError('Creating or updating contacts is disabled');
   }
 
-  if (category.type === 'track' && hashMapExternalKey[message.event.toLowerCase()]) {
+  const lowerCasedEvent = message?.event?.toLowerCase();
+  if (category.type === 'track' && hashMapExternalKey[lowerCasedEvent]) {
     return responseBuilderForInsertData(
       message,
-      hashMapExternalKey[message.event.toLowerCase()],
+      hashMapExternalKey[lowerCasedEvent],
       subDomain,
       category,
       authToken,
       'track',
-      hashMapPrimaryKey[message.event.toLowerCase()] || CONTACT_KEY_KEY,
-      hashMapUUID[message.event.toLowerCase()],
+      hashMapPrimaryKey[lowerCasedEvent] || CONTACT_KEY_KEY,
+      hashMapUUID[lowerCasedEvent],
     );
   }
 

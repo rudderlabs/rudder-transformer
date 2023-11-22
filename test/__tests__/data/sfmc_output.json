@@ -307,5 +307,8 @@
     },
     "version": "1",
     "endpoint": "https://vcn7AQ2W9GGIAZSsN6Mfq.rest.marketingcloudapis.com/hub/v1/dataevents/key:C500FD37-155C-49BD-A21B-AFCEF3D1A9CB/rows/Guest Key:2323-34343-3434,Contact Key:12345"
+  },
+  {
+    "error": "Event not mapped for this track call"
   }
 ]

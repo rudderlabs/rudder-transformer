@@ -438,7 +438,6 @@ const audiencelistInputs = [
         enablePartialFailure: true,
       },
       context: {
-        ip: '14.5.67.21',
         library: {
           name: 'http',
         },
@@ -1536,7 +1535,6 @@ const audiencelistInputs = [
         enablePartialFailure: true,
       },
       context: {
-        ip: '14.5.67.21',
         library: {
           name: 'http',
         },

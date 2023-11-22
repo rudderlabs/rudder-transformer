@@ -1,28 +1,16 @@
-const LEAD_ID = 'MARKETO_STATIC_LIST-leadId';
-const TOKEN = 'Bearer access_token_success';
-const CONTENT_TYPE = 'application/json';
+const {
+  EXTERNAL_ID,
+  TOKEN,
+  CONTENT_TYPE,
+  DEST_OBJECT,
+  DEST_DEFINITION,
+  MESSAGE_SOURCES_CONTEXT,
+  DEST_CONFIG,
+} = require('./constants');
+
 const recordInputs = [
   {
-    destination: {
-      ID: '1zwa1wKshSt81YksKmUdJnr4IOK',
-      Name: 'test_marketo_rc',
-      DestinationDefinition: {
-        ID: '1iVQvTRMsPPyJzwol0ifH93QTQ6',
-        Name: 'MARKETO',
-        DisplayName: 'Marketo',
-        transformAt: 'processor',
-        transformAtV1: 'processor',
-      },
-      Config: {
-        clientId: 'marketo_client_id_success',
-        clientSecret: 'marketo_client_secret_success',
-        accountId: 'marketo_acct_id_success',
-        staticListId: 1122,
-      },
-      Enabled: true,
-      Transformations: [],
-      IsProcessorEnabled: true,
-    },
+    destination: DEST_OBJECT,
     message: {
       type: 'record',
       action: 'insert',
@@ -31,14 +19,10 @@ const recordInputs = [
       },
       channel: 'sources',
       context: {
-        sources: {
-          job_id: '2VsZs4hyPpq7f1p8igrpmHsibHl',
-          job_run_id: 'ck99nbd2kqiljdihhkh0',
-          task_run_id: 'ck99nbd2kqiljdihhkhg',
-        },
+        sources: MESSAGE_SOURCES_CONTEXT,
         externalId: [
           {
-            type: LEAD_ID,
+            type: EXTERNAL_ID,
             id: 'id001',
           },
         ],
@@ -52,26 +36,7 @@ const recordInputs = [
     },
   },
   {
-    destination: {
-      ID: '1zwa1wKshSt81YksKmUdJnr4IOK',
-      Name: 'test_marketo_rc',
-      DestinationDefinition: {
-        ID: '1iVQvTRMsPPyJzwol0ifH93QTQ6',
-        Name: 'MARKETO',
-        DisplayName: 'Marketo',
-        transformAt: 'processor',
-        transformAtV1: 'processor',
-      },
-      Config: {
-        clientId: 'marketo_client_id_success',
-        clientSecret: 'marketo_client_secret_success',
-        accountId: 'marketo_acct_id_success',
-        staticListId: 1122,
-      },
-      Enabled: true,
-      Transformations: [],
-      IsProcessorEnabled: true,
-    },
+    destination: DEST_OBJECT,
     message: {
       type: 'record',
       action: 'insert',
@@ -80,14 +45,10 @@ const recordInputs = [
       },
       channel: 'sources',
       context: {
-        sources: {
-          job_id: '2VsZs4hyPpq7f1p8igrpmHsibHl',
-          job_run_id: 'ck99nbd2kqiljdihhkh0',
-          task_run_id: 'ck99nbd2kqiljdihhkhg',
-        },
+        sources: MESSAGE_SOURCES_CONTEXT,
         externalId: [
           {
-            type: LEAD_ID,
+            type: EXTERNAL_ID,
             id: 'id002',
           },
         ],
@@ -101,26 +62,7 @@ const recordInputs = [
     },
   },
   {
-    destination: {
-      ID: '1zwa1wKshSt81YksKmUdJnr4IOK',
-      Name: 'test_marketo_rc',
-      DestinationDefinition: {
-        ID: '1iVQvTRMsPPyJzwol0ifH93QTQ6',
-        Name: 'MARKETO',
-        DisplayName: 'Marketo',
-        transformAt: 'processor',
-        transformAtV1: 'processor',
-      },
-      Config: {
-        clientId: 'marketo_client_id_success',
-        clientSecret: 'marketo_client_secret_success',
-        accountId: 'marketo_acct_id_success',
-        staticListId: 1122,
-      },
-      Enabled: true,
-      Transformations: [],
-      IsProcessorEnabled: true,
-    },
+    destination: DEST_OBJECT,
     message: {
       type: 'record',
       action: 'insert',
@@ -129,14 +71,10 @@ const recordInputs = [
       },
       channel: 'sources',
       context: {
-        sources: {
-          job_id: '2VsZs4hyPpq7f1p8igrpmHsibHl',
-          job_run_id: 'ck99nbd2kqiljdihhkh0',
-          task_run_id: 'ck99nbd2kqiljdihhkhg',
-        },
+        sources: MESSAGE_SOURCES_CONTEXT,
         externalId: [
           {
-            type: LEAD_ID,
+            type: EXTERNAL_ID,
             id: 'id001',
           },
         ],
@@ -150,26 +88,7 @@ const recordInputs = [
     },
   },
   {
-    destination: {
-      ID: '1zwa1wKshSt81YksKmUdJnr4IOK',
-      Name: 'test_marketo_rc',
-      DestinationDefinition: {
-        ID: '1iVQvTRMsPPyJzwol0ifH93QTQ6',
-        Name: 'MARKETO',
-        DisplayName: 'Marketo',
-        transformAt: 'processor',
-        transformAtV1: 'processor',
-      },
-      Config: {
-        clientId: 'marketo_client_id_success',
-        clientSecret: 'marketo_client_secret_success',
-        accountId: 'marketo_acct_id_success',
-        staticListId: 1122,
-      },
-      Enabled: true,
-      Transformations: [],
-      IsProcessorEnabled: true,
-    },
+    destination: DEST_OBJECT,
     message: {
       action: 'delete',
       context: {
@@ -177,7 +96,7 @@ const recordInputs = [
         externalId: [
           {
             id: 'id002',
-            type: LEAD_ID,
+            type: EXTERNAL_ID,
           },
         ],
         mappedToDestination: 'true',
@@ -207,26 +126,7 @@ const recordOutput = [
     metadata: [],
     batched: true,
     statusCode: 200,
-    destination: {
-      ID: '1zwa1wKshSt81YksKmUdJnr4IOK',
-      Name: 'test_marketo_rc',
-      DestinationDefinition: {
-        ID: '1iVQvTRMsPPyJzwol0ifH93QTQ6',
-        Name: 'MARKETO',
-        DisplayName: 'Marketo',
-        transformAt: 'processor',
-        transformAtV1: 'processor',
-      },
-      Config: {
-        clientId: 'marketo_client_id_success',
-        clientSecret: 'marketo_client_secret_success',
-        accountId: 'marketo_acct_id_success',
-        staticListId: 1122,
-      },
-      Enabled: true,
-      Transformations: [],
-      IsProcessorEnabled: true,
-    },
+    destination: DEST_OBJECT,
   },
   {
     batchedRequest: [
@@ -260,26 +160,7 @@ const recordOutput = [
     ],
     batched: true,
     statusCode: 200,
-    destination: {
-      ID: '1zwa1wKshSt81YksKmUdJnr4IOK',
-      Name: 'test_marketo_rc',
-      DestinationDefinition: {
-        ID: '1iVQvTRMsPPyJzwol0ifH93QTQ6',
-        Name: 'MARKETO',
-        DisplayName: 'Marketo',
-        transformAt: 'processor',
-        transformAtV1: 'processor',
-      },
-      Config: {
-        clientId: 'marketo_client_id_success',
-        clientSecret: 'marketo_client_secret_success',
-        accountId: 'marketo_acct_id_success',
-        staticListId: 1122,
-      },
-      Enabled: true,
-      Transformations: [],
-      IsProcessorEnabled: true,
-    },
+    destination: DEST_OBJECT,
   },
   {
     batchedRequest: [
@@ -310,26 +191,7 @@ const recordOutput = [
     ],
     batched: true,
     statusCode: 200,
-    destination: {
-      ID: '1zwa1wKshSt81YksKmUdJnr4IOK',
-      Name: 'test_marketo_rc',
-      DestinationDefinition: {
-        ID: '1iVQvTRMsPPyJzwol0ifH93QTQ6',
-        Name: 'MARKETO',
-        DisplayName: 'Marketo',
-        transformAt: 'processor',
-        transformAtV1: 'processor',
-      },
-      Config: {
-        clientId: 'marketo_client_id_success',
-        clientSecret: 'marketo_client_secret_success',
-        accountId: 'marketo_acct_id_success',
-        staticListId: 1122,
-      },
-      Enabled: true,
-      Transformations: [],
-      IsProcessorEnabled: true,
-    },
+    destination: DEST_OBJECT,
   },
   {
     batchedRequest: [
@@ -360,26 +222,7 @@ const recordOutput = [
     ],
     batched: true,
     statusCode: 200,
-    destination: {
-      ID: '1zwa1wKshSt81YksKmUdJnr4IOK',
-      Name: 'test_marketo_rc',
-      DestinationDefinition: {
-        ID: '1iVQvTRMsPPyJzwol0ifH93QTQ6',
-        Name: 'MARKETO',
-        DisplayName: 'Marketo',
-        transformAt: 'processor',
-        transformAtV1: 'processor',
-      },
-      Config: {
-        clientId: 'marketo_client_id_success',
-        clientSecret: 'marketo_client_secret_success',
-        accountId: 'marketo_acct_id_success',
-        staticListId: 1122,
-      },
-      Enabled: true,
-      Transformations: [],
-      IsProcessorEnabled: true,
-    },
+    destination: DEST_OBJECT,
   },
 ];
 
@@ -388,19 +231,8 @@ const audiencelistInputs = [
     destination: {
       ID: '1zia9wKshXt80YksLmUdJnr7IHI',
       Name: 'test_marketo',
-      DestinationDefinition: {
-        ID: '1iVQvTRMsPPyJzwol0ifH93QTQ6',
-        Name: 'MARKETO',
-        DisplayName: 'Marketo',
-        transformAt: 'processor',
-        transformAtV1: 'processor',
-      },
-      Config: {
-        clientId: 'marketo_client_id_success',
-        clientSecret: 'marketo_client_secret_success',
-        accountId: 'marketo_acct_id_success',
-        staticListId: 1234,
-      },
+      DestinationDefinition: DEST_DEFINITION,
+      Config: DEST_CONFIG,
       Enabled: true,
       Transformations: [],
       IsProcessorEnabled: true,
@@ -452,19 +284,8 @@ const audiencelistInputs = [
     destination: {
       ID: '1zia9wKshXt80YksLmUdJnr7IHI',
       Name: 'test_marketo',
-      DestinationDefinition: {
-        ID: '1iVQvTRMsPPyJzwol0ifH93QTQ6',
-        Name: 'MARKETO',
-        DisplayName: 'Marketo',
-        transformAt: 'processor',
-        transformAtV1: 'processor',
-      },
-      Config: {
-        clientId: 'marketo_client_id_success',
-        clientSecret: 'marketo_client_secret_success',
-        accountId: 'marketo_acct_id_success',
-        staticListId: 1234,
-      },
+      DestinationDefinition: DEST_DEFINITION,
+      Config: DEST_CONFIG,
       Enabled: true,
       Transformations: [],
       IsProcessorEnabled: true,
@@ -1880,26 +1701,7 @@ const largeRecordOutput = [
     ],
     batched: true,
     statusCode: 200,
-    destination: {
-      ID: '1zwa1wKshSt81YksKmUdJnr4IOK',
-      Name: 'test_marketo_rc',
-      DestinationDefinition: {
-        ID: '1iVQvTRMsPPyJzwol0ifH93QTQ6',
-        Name: 'MARKETO',
-        DisplayName: 'Marketo',
-        transformAt: 'processor',
-        transformAtV1: 'processor',
-      },
-      Config: {
-        clientId: 'marketo_client_id_success',
-        clientSecret: 'marketo_client_secret_success',
-        accountId: 'marketo_acct_id_success',
-        staticListId: 1122,
-      },
-      Enabled: true,
-      Transformations: [],
-      IsProcessorEnabled: true,
-    },
+    destination: DEST_OBJECT,
   },
   {
     batchedRequest: [
@@ -2996,26 +2798,7 @@ const largeRecordOutput = [
     ],
     batched: true,
     statusCode: 200,
-    destination: {
-      ID: '1zwa1wKshSt81YksKmUdJnr4IOK',
-      Name: 'test_marketo_rc',
-      DestinationDefinition: {
-        ID: '1iVQvTRMsPPyJzwol0ifH93QTQ6',
-        Name: 'MARKETO',
-        DisplayName: 'Marketo',
-        transformAt: 'processor',
-        transformAtV1: 'processor',
-      },
-      Config: {
-        clientId: 'marketo_client_id_success',
-        clientSecret: 'marketo_client_secret_success',
-        accountId: 'marketo_acct_id_success',
-        staticListId: 1122,
-      },
-      Enabled: true,
-      Transformations: [],
-      IsProcessorEnabled: true,
-    },
+    destination: DEST_OBJECT,
   },
 ];
 
@@ -3076,26 +2859,7 @@ const mixedBatchOutput = [
     ],
     batched: true,
     statusCode: 200,
-    destination: {
-      ID: '1zwa1wKshSt81YksKmUdJnr4IOK',
-      Name: 'test_marketo_rc',
-      DestinationDefinition: {
-        ID: '1iVQvTRMsPPyJzwol0ifH93QTQ6',
-        Name: 'MARKETO',
-        DisplayName: 'Marketo',
-        transformAt: 'processor',
-        transformAtV1: 'processor',
-      },
-      Config: {
-        clientId: 'marketo_client_id_success',
-        clientSecret: 'marketo_client_secret_success',
-        accountId: 'marketo_acct_id_success',
-        staticListId: 1122,
-      },
-      Enabled: true,
-      Transformations: [],
-      IsProcessorEnabled: true,
-    },
+    destination: DEST_OBJECT,
   },
   {
     batchedRequest: [
@@ -3153,26 +2917,7 @@ const mixedBatchOutput = [
     ],
     batched: true,
     statusCode: 200,
-    destination: {
-      ID: '1zwa1wKshSt81YksKmUdJnr4IOK',
-      Name: 'test_marketo_rc',
-      DestinationDefinition: {
-        ID: '1iVQvTRMsPPyJzwol0ifH93QTQ6',
-        Name: 'MARKETO',
-        DisplayName: 'Marketo',
-        transformAt: 'processor',
-        transformAtV1: 'processor',
-      },
-      Config: {
-        clientId: 'marketo_client_id_success',
-        clientSecret: 'marketo_client_secret_success',
-        accountId: 'marketo_acct_id_success',
-        staticListId: 1122,
-      },
-      Enabled: true,
-      Transformations: [],
-      IsProcessorEnabled: true,
-    },
+    destination: DEST_OBJECT,
   },
   {
     batchedRequest: [
@@ -3225,19 +2970,8 @@ const mixedBatchOutput = [
     destination: {
       ID: '1zia9wKshXt80YksLmUdJnr7IHI',
       Name: 'test_marketo',
-      DestinationDefinition: {
-        ID: '1iVQvTRMsPPyJzwol0ifH93QTQ6',
-        Name: 'MARKETO',
-        DisplayName: 'Marketo',
-        transformAt: 'processor',
-        transformAtV1: 'processor',
-      },
-      Config: {
-        clientId: 'marketo_client_id_success',
-        clientSecret: 'marketo_client_secret_success',
-        accountId: 'marketo_acct_id_success',
-        staticListId: 1234,
-      },
+      DestinationDefinition: DEST_DEFINITION,
+      Config: DEST_CONFIG,
       Enabled: true,
       Transformations: [],
       IsProcessorEnabled: true,
@@ -3294,19 +3028,8 @@ const mixedBatchOutput = [
     destination: {
       ID: '1zia9wKshXt80YksLmUdJnr7IHI',
       Name: 'test_marketo',
-      DestinationDefinition: {
-        ID: '1iVQvTRMsPPyJzwol0ifH93QTQ6',
-        Name: 'MARKETO',
-        DisplayName: 'Marketo',
-        transformAt: 'processor',
-        transformAtV1: 'processor',
-      },
-      Config: {
-        clientId: 'marketo_client_id_success',
-        clientSecret: 'marketo_client_secret_success',
-        accountId: 'marketo_acct_id_success',
-        staticListId: 1234,
-      },
+      DestinationDefinition: DEST_DEFINITION,
+      Config: DEST_CONFIG,
       Enabled: true,
       Transformations: [],
       IsProcessorEnabled: true,
@@ -3320,13 +3043,7 @@ const recordEventGenerator = (id, action, externalId) => {
     destination: {
       ID: '1zwa1wKshSt81YksKmUdJnr4IOK',
       Name: 'test_marketo_rc',
-      DestinationDefinition: {
-        ID: '1iVQvTRMsPPyJzwol0ifH93QTQ6',
-        Name: 'MARKETO',
-        DisplayName: 'Marketo',
-        transformAt: 'processor',
-        transformAtV1: 'processor',
-      },
+      DestinationDefinition: DEST_DEFINITION,
       Config: {
         clientId: 'marketo_client_id_success',
         clientSecret: 'marketo_client_secret_success',
@@ -3345,14 +3062,10 @@ const recordEventGenerator = (id, action, externalId) => {
       },
       channel: 'sources',
       context: {
-        sources: {
-          job_id: '2VsZs4hyPpq7f1p8igrpmHsibHl',
-          job_run_id: 'ck99nbd2kqiljdihhkh0',
-          task_run_id: 'ck99nbd2kqiljdihhkhg',
-        },
+        sources: MESSAGE_SOURCES_CONTEXT,
         externalId: [
           {
-            type: LEAD_ID,
+            type: EXTERNAL_ID,
             id: externalId,
           },
         ],

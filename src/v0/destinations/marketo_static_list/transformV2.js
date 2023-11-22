@@ -78,7 +78,7 @@ async function processRecordInputs(groupedRecordInputs, destination) {
   }
   const { Config } = destination;
   const listId =
-    getDestinationExternalID(groupedRecordInputs[0].message, 'MARKETO_STATIC_LIST-leadId') ||
+    getDestinationExternalID(groupedRecordInputs[0].message, 'marketoStaticListId') ||
     Config.staticListId;
 
   // iterate through each input and group field id based on action

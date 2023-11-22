@@ -137,8 +137,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
     const { staticListId } = destination.Config;
     const externalIdGroupedRecordInputs = lodash.groupBy(
       groupedRecordInputs,
-      (input) =>
-        getDestinationExternalID(input.message, 'MARKETO_STATIC_LIST-leadId') || staticListId,
+      (input) => getDestinationExternalID(input.message, 'marketoStaticListId') || staticListId,
     );
     const alltransformedGroupedRecordEvent = await Promise.all(
       Object.keys(externalIdGroupedRecordInputs).map(async (key) => {

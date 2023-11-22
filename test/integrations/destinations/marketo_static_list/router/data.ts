@@ -1379,7 +1379,7 @@ export const data = [
                   },
                   externalId: [
                     {
-                      type: 'MARKETO_STATIC_LIST-leadId',
+                      type: 'marketoStaticListId',
                       identifierType: 'id',
                     },
                   ],
@@ -1429,7 +1429,7 @@ export const data = [
                   },
                   externalId: [
                     {
-                      type: 'MARKETO_STATIC_LIST-leadId',
+                      type: 'marketoStaticListId',
                       identifierType: 'id',
                     },
                   ],
@@ -1479,7 +1479,7 @@ export const data = [
                   },
                   externalId: [
                     {
-                      type: 'MARKETO_STATIC_LIST-leadId',
+                      type: 'marketoStaticListId',
                       identifierType: 'id',
                     },
                   ],
@@ -1520,7 +1520,7 @@ export const data = [
                   externalId: [
                     {
                       identifierType: 'id',
-                      type: 'MARKETO_STATIC_LIST-leadId',
+                      type: 'marketoStaticListId',
                     },
                   ],
                   mappedToDestination: 'true',
@@ -1570,7 +1570,7 @@ export const data = [
                   externalId: [
                     {
                       identifierType: 'id',
-                      type: 'MARKETO_STATIC_LIST-leadId',
+                      type: 'marketoStaticListId',
                     },
                   ],
                   mappedToDestination: 'true',
@@ -1620,7 +1620,7 @@ export const data = [
                   externalId: [
                     {
                       identifierType: 'id',
-                      type: 'MARKETO_STATIC_LIST-leadId',
+                      type: 'marketoStaticListId',
                     },
                   ],
                   mappedToDestination: 'true',
@@ -3143,7 +3143,7 @@ export const data = [
                   },
                   externalId: [
                     {
-                      type: 'MARKETO_STATIC_LIST-leadId',
+                      type: 'marketoStaticListId',
                       id: 'id001',
                     },
                   ],
@@ -3193,7 +3193,7 @@ export const data = [
                   },
                   externalId: [
                     {
-                      type: 'MARKETO_STATIC_LIST-leadId',
+                      type: 'marketoStaticListId',
                       id: 'id002',
                     },
                   ],
@@ -3243,7 +3243,7 @@ export const data = [
                   },
                   externalId: [
                     {
-                      type: 'MARKETO_STATIC_LIST-leadId',
+                      type: 'marketoStaticListId',
                       id: 'id001',
                     },
                   ],
@@ -3284,7 +3284,7 @@ export const data = [
                   externalId: [
                     {
                       id: 'id002',
-                      type: 'MARKETO_STATIC_LIST-leadId',
+                      type: 'marketoStaticListId',
                     },
                   ],
                   mappedToDestination: 'true',
@@ -3334,7 +3334,7 @@ export const data = [
                   externalId: [
                     {
                       id: 'id001',
-                      type: 'MARKETO_STATIC_LIST-leadId',
+                      type: 'marketoStaticListId',
                     },
                   ],
                   mappedToDestination: 'true',
@@ -3384,7 +3384,7 @@ export const data = [
                   externalId: [
                     {
                       id: 'id002',
-                      type: 'MARKETO_STATIC_LIST-leadId',
+                      type: 'marketoStaticListId',
                     },
                   ],
                   mappedToDestination: 'true',

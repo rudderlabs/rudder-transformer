@@ -346,11 +346,10 @@ const parseConfigArray = (arr, key) => {
  * const setOnceProperties = ['name', 'country', 'address.city'];
  *
  * const result = trimTraits(traits, contextTraits, setOnceProperties);
- * console.log(result);
  * // Output: { traits: { age: 30 }, contextTraits: { language: 'English' }, setOnce: { $name: 'John', $country_code: 'USA', city: 'New York'} }
  */
 function trimTraits(traits, contextTraits, setOnceProperties) {
-  let sentOnceTransform;
+  let sentOnceTransformedPayload;
   // Create a copy of the original traits object
   const traitsCopy = { ...traits };
   const contextTraitsCopy = { ...contextTraits };
@@ -381,12 +380,12 @@ function trimTraits(traits, contextTraits, setOnceProperties) {
   if (setOnceEligible && Object.keys(setOnceEligible).length > 0) {
     // Step 2: transform properties eligible as per rudderstack declared identify event mapping
     // setOnce should have all traits from message.traits and message.context.traits by now
-    sentOnceTransform = constructPayload(setOnceEligible, mPSetOnceConfigJson);
+    sentOnceTransformedPayload = constructPayload(setOnceEligible, mPSetOnceConfigJson);
 
     // Step 3: combine the transformed and custom setOnce traits
-    sentOnceTransform = extractCustomFields(
+    sentOnceTransformedPayload = extractCustomFields(
       setOnceEligible,
-      sentOnceTransform,
+      sentOnceTransformedPayload,
       'root',
       MP_IDENTIFY_EXCLUSION_LIST,
     );
@@ -395,7 +394,7 @@ function trimTraits(traits, contextTraits, setOnceProperties) {
   return {
     traits: traitsCopy,
     contextTraits: contextTraitsCopy,
-    setOnce: sentOnceTransform || {},
+    setOnce: sentOnceTransformedPayload || {},
   };
 }
 

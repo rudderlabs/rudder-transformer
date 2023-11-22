@@ -249,10 +249,7 @@ const processIdentifyEvents = async (message, type, destination) => {
   let setOnceProperties = [];
 
   // making payload for set_once properties
-  if (
-    destination.Config.setOnceProperties &&
-    Object.keys(destination.Config.setOnceProperties).length > 0
-  ) {
+  if (destination.Config.setOnceProperties && destination.Config.setOnceProperties.length > 0) {
     setOnceProperties = parseConfigArray(destination.Config.setOnceProperties, 'property');
     seggregatedTraits = trimTraits(
       messageClone.traits,

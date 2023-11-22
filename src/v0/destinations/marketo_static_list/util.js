@@ -35,47 +35,7 @@ const validateMessageType = (message, allowedTypes) => {
   }
 };
 
-function transformForRecordEvent(inputs, leadIdObj) {
-  const finalMetadata = [];
-  // iterate through each inputs metadata and create a final metadata
-  const tokenisedInputs = inputs.map((input) => {
-    const { message } = input;
-    const { metadata } = input;
-    finalMetadata.push(metadata);
-    const { fields, action, type } = message;
-    if (type !== 'record') {
-      throw new InstrumentationError('Invalid message type, Supported message type is record.');
-    }
-    const { properties } = message;
-    if (!properties) {
-      message.properties = {};
-    }
-    message.properties.listData = message?.properties.listData || { add: [], remove: [] };
-    const fieldsId = fields?.id;
-    if (fieldsId === undefined) {
-      throw new InstrumentationError('No lead id passed in the payload.');
-    }
-    if (action === 'insert') {
-      leadIdObj.insert.push({ id: fieldsId });
-      message.properties.listData.add.push({ id: fieldsId });
-    } else if (action === 'delete') {
-      leadIdObj.delete.push({ id: fieldsId });
-      message.properties.listData.remove.push({ id: fieldsId });
-    } else {
-      throw new InstrumentationError('Invalid action type');
-    }
-    return input;
-  });
-  const finalInput = [tokenisedInputs[0]];
-  finalInput[0].metadata = finalMetadata;
-  finalInput[0].message.properties.listData.add = leadIdObj.insert;
-  finalInput[0].message.properties.listData.remove = leadIdObj.delete;
-
-  return finalInput;
-}
-
 module.exports = {
   getIds,
   validateMessageType,
-  transformForRecordEvent,
 };

@@ -4,19 +4,20 @@ const {
   defaultPostRequestConfig,
   defaultDeleteRequestConfig,
   generateErrorObject,
+  simpleProcessRouterDest,
 } = require('../../util');
 const { AUTH_CACHE_TTL, JSON_MIME_TYPE } = require('../../util/constant');
-const { getIds, validateMessageType, transformForRecordEvent } = require('./util');
+const { getIds, validateMessageType } = require('./util');
 const {
   getDestinationExternalID,
   defaultRequestConfig,
   getErrorRespEvents,
-  simpleProcessRouterDest,
 } = require('../../util');
 const { formatConfig, MAX_LEAD_IDS_SIZE } = require('./config');
 const Cache = require('../../util/cache');
 const { getAuthToken } = require('../marketo/transform');
 const { InstrumentationError, UnauthorizedError } = require('../../util/errorTypes');
+const { processRecordInputs } = require('./transformV2');
 
 const authCache = new Cache(AUTH_CACHE_TTL); // 1 hr
 
@@ -57,10 +58,10 @@ const batchResponseBuilder = (message, Config, token, leadIds, operation) => {
   return response;
 };
 
-const processEvent = (input) => {
-  const { token, message, destination } = input;
+const processEvent = (event) => {
+  const { token, message, destination } = event;
   const { Config } = destination;
-  validateMessageType(message, ['audiencelist', 'record']);
+  validateMessageType(message, ['audiencelist']);
   const response = [];
   let toAdd;
   let toRemove;
@@ -94,66 +95,71 @@ const processEvent = (input) => {
   return response;
 };
 
-const process = async (event) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const process = async (event, _processParams) => {
   const token = await getAuthToken(formatConfig(event.destination));
-
   if (!token) {
     throw new UnauthorizedError('Authorization failed');
   }
-  const response = processEvent({ ...event, token });
+  const updatedEvent = { ...event, token };
+  const response = processEvent(updatedEvent);
   return response;
 };
 
 const processRouterDest = async (inputs, reqMetadata) => {
   // Token needs to be generated for marketo which will be done on input level.
   // If destination information is not present Error should be thrown
-  let token;
+
+  const { destination } = inputs[0];
   try {
-    token = await getAuthToken(formatConfig(inputs[0].destination));
+    const token = await getAuthToken(formatConfig(destination));
     if (!token) {
       throw new UnauthorizedError('Could not retrieve authorisation token');
     }
   } catch (error) {
-    // Not using handleRtTfSingleEventError here as this is for multiple events
-    const errObj = generateErrorObject(error);
-    const respEvents = getErrorRespEvents(
-      inputs.map((input) => input.metadata),
-      errObj.status,
-      errObj.message,
-      errObj.statTags,
+    const errorObj = generateErrorObject(error);
+    const errResponses = inputs.map((input) =>
+      getErrorRespEvents(input.metadata, errorObj.status, errorObj.message, errorObj.statTags),
     );
-    return [{ ...respEvents, destination: inputs?.[0]?.destination }];
+
+    return errResponses;
   }
 
-  // Checking previous status Code. Initially setting to false.
-  // If true then previous status is 500 and every subsequent event output should be
-  // sent with status code 500 to the router to be retried.
-  const tokenisedInputs = inputs.map((input) => ({ ...input, token }));
-  const leadIdObj = {
-    insert: [],
-    delete: [],
-  };
   // use lodash.groupby to group the inputs based on message type
-  let transformedRecordEvent = [];
+  const transformedRecordEvent = [];
   let transformedAudienceEvent = [];
-  const groupedInputs = lodash.groupBy(tokenisedInputs, (input) => input.message.type);
+  const groupedInputs = lodash.groupBy(inputs, (input) => input.message.type);
 
-  if (groupedInputs.record && groupedInputs.record.length > 0) {
-    const finalInputForRecordEvent = transformForRecordEvent(groupedInputs.record, leadIdObj);
-    transformedRecordEvent = await simpleProcessRouterDest(
-      finalInputForRecordEvent,
-      processEvent,
-      reqMetadata,
+  const respList = [];
+  // process record events
+  if (Array.isArray(groupedInputs.record) && groupedInputs.record.length > 0) {
+    const groupedRecordInputs = groupedInputs.record;
+    const { staticListId } = destination.Config;
+    const externalIdGroupedRecordInputs = lodash.groupBy(
+      groupedRecordInputs,
+      (input) => getDestinationExternalID(input.message, 'marketoStaticListId') || staticListId,
     );
+    const alltransformedGroupedRecordEvent = await Promise.all(
+      Object.keys(externalIdGroupedRecordInputs).map(async (key) => {
+        const transformedGroupedRecordEvent = await processRecordInputs(
+          externalIdGroupedRecordInputs[key],
+          destination,
+        );
+        return transformedGroupedRecordEvent;
+      }),
+    );
+
+    transformedRecordEvent.push(...alltransformedGroupedRecordEvent.flat());
   }
+  // process audiencelist events
   if (groupedInputs.audiencelist && groupedInputs.audiencelist.length > 0) {
     transformedAudienceEvent = await simpleProcessRouterDest(
       groupedInputs.audiencelist,
-      processEvent,
+      process,
       reqMetadata,
     );
   }
-  const respList = [...transformedRecordEvent, ...transformedAudienceEvent];
+  respList.push(...transformedRecordEvent, ...transformedAudienceEvent);
   return respList;
 };
 
@@ -164,23 +170,19 @@ const processRouterDest = async (inputs, reqMetadata) => {
  */
 function processMetadataForRouter(output) {
   const { metadata, destination } = output;
-  // check if metadata[0] is an array or not
-  let clonedMetadata;
-  if (Array.isArray(metadata[0])) {
-    [clonedMetadata] = cloneDeep(metadata);
-  } else {
-    clonedMetadata = cloneDeep(metadata);
-  }
+  const clonedMetadata = cloneDeep(metadata);
   clonedMetadata.forEach((metadataElement) => {
     // eslint-disable-next-line no-param-reassign
-    metadataElement.destInfo = { authKey: destination.ID };
+    metadataElement.destInfo = { authKey: destination?.ID };
   });
   return clonedMetadata;
 }
 
 module.exports = {
   process,
+  processEvent,
   processRouterDest,
   processMetadataForRouter,
   authCache,
+  batchResponseBuilder,
 };

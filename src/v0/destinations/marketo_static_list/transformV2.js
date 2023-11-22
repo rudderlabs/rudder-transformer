@@ -126,8 +126,18 @@ async function processRecordInputs(groupedRecordInputs, destination) {
   const errorResponseList = errorMetadata.map((metadata) =>
     getErrorRespEvents(metadata, errorObj.status, errorObj.message, errorObj.statTags),
   );
-
-  return [deleteResponse, insertResponse, ...errorResponseList];
+  const finalResponse = [];
+  if (deleteResponse.batchedRequest.length > 0) {
+    finalResponse.push(deleteResponse);
+  }
+  if (insertResponse.batchedRequest.length > 0) {
+    finalResponse.push(insertResponse);
+  }
+  if (errorResponseList.length > 0) {
+    finalResponse.push(...errorResponseList);
+  }
+  return finalResponse;
+  // return [deleteResponse, insertResponse, ...errorResponseList];
 }
 
 module.exports = {

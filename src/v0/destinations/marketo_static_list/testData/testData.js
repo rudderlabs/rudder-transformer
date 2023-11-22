@@ -122,13 +122,6 @@ const recordInputs = [
 
 const recordOutput = [
   {
-    batchedRequest: [],
-    metadata: [],
-    batched: true,
-    statusCode: 200,
-    destination: DEST_OBJECT,
-  },
-  {
     batchedRequest: [
       {
         version: '1',

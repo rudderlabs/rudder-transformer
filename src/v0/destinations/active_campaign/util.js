@@ -5,12 +5,11 @@ const {
 } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 
-const errorHandler = (err, message) => {
-  const {response, status} = processAxiosResponse(err);
-  const stringifiedResponse = JSON.stringify(response);
-  let msg = `${message} ${stringifiedResponse}`;
+const errorHandler = (httpCallError, message) => {
+  const {response, status} = processAxiosResponse(httpCallError);
+  let msg = message;
   if (response) {
-    msg = `${message} (${err.response?.statusText},${stringifiedResponse})`;
+    msg = `${message} (${httpCallError.response?.statusText},${JSON.stringify(response)})`;
   }
   throw new NetworkError(
     msg,
@@ -18,7 +17,7 @@ const errorHandler = (err, message) => {
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },
-    response?.data,
+    response,
   );
 };
 

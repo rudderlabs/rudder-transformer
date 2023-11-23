@@ -1,4 +1,5 @@
 const lodash = require('lodash');
+const { InstrumentationError, UnauthorizedError } = require('@rudderstack/integrations-lib');
 const {
   defaultPostRequestConfig,
   defaultDeleteRequestConfig,
@@ -11,7 +12,6 @@ const {
 } = require('../../util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { MAX_LEAD_IDS_SIZE } = require('./config');
-const { InstrumentationError, UnauthorizedError } = require('../../util/errorTypes');
 const { getAuthToken } = require('../marketo/transform');
 const { formatConfig } = require('../marketo/config');
 

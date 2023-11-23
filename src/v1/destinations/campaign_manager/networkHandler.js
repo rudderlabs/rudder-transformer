@@ -11,42 +11,6 @@ const {
 // const { TransformerProxyError } = require('../../util/errorTypes');
 const tags = require('../../../v0/util/tags');
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function checkIfFailuresAreRetryable(response, proxyOutputObj) {
-  const { status } = response;
-  try {
-    if (Array.isArray(status)) {
-      // iterate over each status, and if found retryable in conversations ..retry else discard
-      /* status : [{
-        "conversion": {
-          object (Conversion)
-        },
-        "errors": [
-          {
-            object (ConversionError)
-          }
-        ],
-        "kind": string
-      }] */
-      for (const st of status) {
-        for (const err of st.errors) {
-          // if code is any of these, event is not retryable
-          if (
-            err.code === 'PERMISSION_DENIED' ||
-            err.code === 'INVALID_ARGUMENT' ||
-            err.code === 'NOT_FOUND'
-          ) {
-            return false;
-          }
-        }
-      }
-    }
-    return true;
-  } catch (e) {
-    return false;
-  }
-}
-
 function isEventRetryable(element, proxyOutputObj) {
   let flag = false;
   let errorMsg = '';

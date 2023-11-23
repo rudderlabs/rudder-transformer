@@ -47,6 +47,7 @@ export interface DestinationService {
     event: ProcessorTransformationOutput,
     destinationType: string,
     requestMetadata: NonNullable<unknown>,
+    version: string,
   ): Promise<DeliveryResponse>;
 
   processUserDeletion(

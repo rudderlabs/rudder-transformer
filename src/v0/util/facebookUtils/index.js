@@ -1,4 +1,5 @@
 const sha256 = require('sha256');
+const { InstrumentationError, TransformationError } = require('@rudderstack/integrations-lib');
 const {
   isObject,
   getIntegrationsObj,
@@ -9,7 +10,6 @@ const {
   getFieldValueFromMessage,
   formatTimeStamp,
 } = require('../index');
-const { InstrumentationError, TransformationError } = require('../errorTypes');
 
 /** This function transforms the payloads according to the config settings and adds, removes or hashes pii data.
  @param message --> the rudder payload

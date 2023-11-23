@@ -7,6 +7,7 @@ const { UserTransformHandlerFactory } = require('./customTransformerFactory');
 const { parserForImport } = require('./parser');
 const stats = require('./stats');
 const { fetchWithDnsWrapper } = require('./utils');
+const { getMetadata, getTransformationMetadata } = require('../v0/util');
 
 const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
 const GEOLOCATION_TIMEOUT_IN_MS = parseInt(process.env.GEOLOCATION_TIMEOUT_IN_MS || '1000', 10);
@@ -19,10 +20,6 @@ async function runUserTransform(
   versionId,
   testMode = false,
 ) {
-  const tags = {
-    transformerVersionId: versionId,
-    identifier: 'v0',
-  };
   // TODO: Decide on the right value for memory limit
   const isolate = new ivm.Isolate({ memoryLimit: ISOLATE_VM_MEMORY });
   const context = await isolate.createContext();
@@ -214,9 +211,6 @@ async function runUserTransform(
   const customScript = await isolate.compileScript(`${code}`);
   await customScript.run(context);
   const fnRef = await jail.get('transform', { reference: true });
-  // stat
-  stats.counter('events_to_process', events.length, tags);
-  // TODO : check if we can resolve this
   // eslint-disable-next-line no-async-promise-executor
   const executionPromise = new Promise(async (resolve, reject) => {
     const sharedMessagesList = new ivm.ExternalCopy(events).copyInto({
@@ -233,6 +227,7 @@ async function runUserTransform(
     }
   });
   let result;
+  let transformationError;
   const invokeTime = new Date();
   try {
     const timeoutPromise = new Promise((resolve) => {
@@ -245,8 +240,8 @@ async function runUserTransform(
     if (result === 'Timedout') {
       throw new Error('Timed out');
     }
-    stats.timing('run_time', invokeTime, tags);
   } catch (error) {
+    transformationError = error;
     throw error;
   } finally {
     // release function, script, context and isolate
@@ -255,6 +250,16 @@ async function runUserTransform(
     bootstrapScriptResult.release();
     context.release();
     isolate.dispose();
+
+    const tags = {
+      identifier: 'v0',
+      errored: transformationError ? true : false,
+      ...events.length && events[0].metadata ? getMetadata(events[0].metadata) : {},
+      ...events.length && events[0].metadata ? getTransformationMetadata(events[0].metadata) : {}
+    }
+
+    stats.counter('user_transform_function_input_events', events.length, tags);
+    stats.timing('user_transform_function_latency', invokeTime, tags);
   }
 
   return {

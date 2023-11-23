@@ -1,12 +1,18 @@
+const { RetryableError, ThrottledError, AbortedError } = require('@rudderstack/integrations-lib');
 const { handleHttpRequest } = require('../../../adapters/network');
-const { isHttpStatusSuccess } = require('../../util');
+const {
+  isHttpStatusSuccess,
+  getAuthErrCategoryFromStCode,
+  isDefinedAndNotNull,
+} = require('../../util');
 const Cache = require('../../util/cache');
-const { RetryableError, ThrottledError, AbortedError } = require('../../util/errorTypes');
 const {
   ACCESS_TOKEN_CACHE_TTL,
   SF_TOKEN_REQUEST_URL_SANDBOX,
   SF_TOKEN_REQUEST_URL,
   DESTINATION,
+  LEGACY,
+  OAUTH,
 } = require('./config');
 
 const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
@@ -19,7 +25,7 @@ const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
  * @param {*} stage
  * @param {String} authKey
  */
-const salesforceResponseHandler = (destResponse, sourceMessage, authKey) => {
+const salesforceResponseHandler = (destResponse, sourceMessage, authKey, authorizationFlow) => {
   const { status, response } = destResponse;
 
   // if the response from destination is not a success case build an explicit error
@@ -27,13 +33,16 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey) => {
     const matchErrorCode = (errorCode) =>
       response && Array.isArray(response) && response.some((resp) => resp?.errorCode === errorCode);
     if (status === 401 && authKey && matchErrorCode('INVALID_SESSION_ID')) {
-      // checking for invalid/expired token errors and evicting cache in that case
-      // rudderJobMetadata contains some destination info which is being used to evict the cache
-      ACCESS_TOKEN_CACHE.del(authKey);
+      if (authorizationFlow === LEGACY) {
+        // checking for invalid/expired token errors and evicting cache in that case
+        // rudderJobMetadata contains some destination info which is being used to evict the cache
+        ACCESS_TOKEN_CACHE.del(authKey);
+      }
       throw new RetryableError(
         `${DESTINATION} Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${sourceMessage}`,
         500,
         destResponse,
+        authorizationFlow === LEGACY ? '' : getAuthErrCategoryFromStCode(status),
       );
     } else if (status === 403 && matchErrorCode('REQUEST_LIMIT_EXCEEDED')) {
       // If the error code is REQUEST_LIMIT_EXCEEDED, you’ve exceeded API request limits in your org.
@@ -89,6 +98,11 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey) => {
  * @param {*} destination
  * @returns
  */
+const getAccessTokenOauth = (metadata) => ({
+  token: metadata.secret?.access_token,
+  instanceUrl: metadata.secret?.instance_url,
+});
+
 const getAccessToken = async (destination) => {
   const accessTokenKey = destination.ID;
 
@@ -122,6 +136,7 @@ const getAccessToken = async (destination) => {
         processedResponse,
         `:- authentication failed during fetching access token.`,
         accessTokenKey,
+        LEGACY,
       );
     }
     const token = httpResponse.response.data;
@@ -131,6 +146,7 @@ const getAccessToken = async (destination) => {
         processedResponse,
         `:- authentication failed could not retrieve authorization token.`,
         accessTokenKey,
+        LEGACY,
       );
     }
     return {
@@ -140,4 +156,30 @@ const getAccessToken = async (destination) => {
   });
 };
 
-module.exports = { getAccessToken, salesforceResponseHandler };
+const collectAuthorizationInfo = async (event) => {
+  let authorizationFlow;
+  let authorizationData;
+  if (isDefinedAndNotNull(event.metadata?.secret)) {
+    authorizationFlow = OAUTH;
+    authorizationData = getAccessTokenOauth(event.metadata);
+  } else {
+    authorizationFlow = LEGACY;
+    authorizationData = await getAccessToken(event.destination);
+  }
+  return { authorizationFlow, authorizationData };
+};
+
+const getAuthHeader = (authInfo) => {
+  const { authorizationFlow, authorizationData } = authInfo;
+  return authorizationFlow === OAUTH
+    ? { Authorization: `Bearer ${authorizationData.token}` }
+    : { Authorization: authorizationData.token };
+};
+
+module.exports = {
+  getAccessTokenOauth,
+  salesforceResponseHandler,
+  getAccessToken,
+  collectAuthorizationInfo,
+  getAuthHeader,
+};

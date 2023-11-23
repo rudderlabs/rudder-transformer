@@ -325,13 +325,6 @@ const combineBatchRequestsWithSameJobIds = (inputBatches) => {
   return combineBatches(combineBatches(inputBatches));
 };
 
-const parseConfigArray = (arr, key) => {
-  if (!arr) {
-    return [];
-  }
-  return arr.map((item) => item[key]);
-};
-
 /**
  * Trims the traits and contextTraits objects based on the setOnceProperties array and returns an object containing the modified traits, contextTraits, and setOnce properties.
  *
@@ -406,6 +399,5 @@ module.exports = {
   generateBatchedPayloadForArray,
   batchEvents,
   combineBatchRequestsWithSameJobIds,
-  parseConfigArray,
   trimTraits,
 };

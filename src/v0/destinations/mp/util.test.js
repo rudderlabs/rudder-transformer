@@ -683,14 +683,14 @@ describe('Mixpanel utils test', () => {
     });
 
     it('should add properties to the setOnce property when given setOnceProperties array with existent nested properties', () => {
-      const traits = { name: 'John', age: 30, address: { city: 'kolkata' } };
+      const traits = { name: 'John', age: 30, address: { city: 'kolkata' }, isAdult: false };
       const contextTraits = { email: 'john@example.com' };
       const setOnceProperties = ['name', 'email', 'address.city'];
 
       const result = trimTraits(traits, contextTraits, setOnceProperties);
 
       expect(result).toEqual({
-        traits: { age: 30, address: {} },
+        traits: { age: 30, address: {}, isAdult: false },
         contextTraits: {},
         setOnce: { $name: 'John', $email: 'john@example.com', $city: 'kolkata' },
       });

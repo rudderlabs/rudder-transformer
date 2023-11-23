@@ -17,6 +17,7 @@ const {
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
   groupEventsByType,
+  parseConfigArray,
 } = require('../../util');
 const {
   ConfigCategory,
@@ -35,7 +36,6 @@ const {
   combineBatchRequestsWithSameJobIds,
   groupEventsByEndpoint,
   batchEvents,
-  parseConfigArray,
   trimTraits,
 } = require('./util');
 const { CommonUtils } = require('../../../util/common');

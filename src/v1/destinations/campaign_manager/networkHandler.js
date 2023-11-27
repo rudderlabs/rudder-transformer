@@ -1,6 +1,6 @@
-const { NetworkError } = require('@rudderstack/integrations-lib');
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-restricted-syntax */
+const { NetworkError } = require('@rudderstack/integrations-lib');
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../../v0/util/index');
 
@@ -8,34 +8,33 @@ const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
-// const { TransformerProxyError } = require('../../util/errorTypes');
 const tags = require('../../../v0/util/tags');
 
-function isEventRetryable(element, proxyOutputObj) {
-  let flag = false;
+function isEventRetryableAndExtractErrMsg(element, proxyOutputObj) {
+  let isRetryable = false;
   let errorMsg = '';
   // success event
   if (!element.errors) {
-    return flag;
+    return isRetryable;
   }
   for (const err of element.errors) {
     errorMsg += `${err.message}, `;
     if (err.code === 'INTERNAL') {
-      flag = true;
+      isRetryable = true;
     }
   }
   if (errorMsg) {
     proxyOutputObj.error = errorMsg;
   }
-  return flag;
+  return isRetryable;
 }
 
-function isEventAbortable(element, proxyOutputObj) {
-  let flag = false;
+function isEventAbortableAndExtractErrMsg(element, proxyOutputObj) {
+  let isAbortable = false;
   let errorMsg = '';
   // success event
   if (!element.errors) {
-    return flag;
+    return isAbortable;
   }
   for (const err of element.errors) {
     errorMsg += `${err.message}, `;
@@ -45,17 +44,17 @@ function isEventAbortable(element, proxyOutputObj) {
       err.code === 'INVALID_ARGUMENT' ||
       err.code === 'NOT_FOUND'
     ) {
-      flag = true;
+      isAbortable = true;
     }
   }
   if (errorMsg) {
     proxyOutputObj.error = errorMsg;
   }
-  return flag;
+  return isAbortable;
 }
 
 const responseHandler = (destinationResponse) => {
-  const message = `[CAMPAIGN_MANAGER Response Handler] - Request Processed Successfully`;
+  const message = `[CAMPAIGN_MANAGER Response V1 Handler] - Request Processed Successfully`;
   const responseWithIndividualEvents = [];
   const { response, status, rudderJobMetadata } = destinationResponse;
 
@@ -70,9 +69,9 @@ const responseHandler = (destinationResponse) => {
         error: 'success',
       };
       // update status of partial event as per retriable or abortable
-      if (isEventRetryable(element, proxyOutputObj)) {
+      if (isEventRetryableAndExtractErrMsg(element, proxyOutputObj)) {
         proxyOutputObj.statusCode = 500;
-      } else if (isEventAbortable(element, proxyOutputObj)) {
+      } else if (isEventAbortableAndExtractErrMsg(element, proxyOutputObj)) {
         proxyOutputObj.statusCode = 400;
       }
       responseWithIndividualEvents.push(proxyOutputObj);
@@ -97,7 +96,7 @@ const responseHandler = (destinationResponse) => {
   }
 
   throw new NetworkError(
-    `Campaign Manager: Error proxy during CAMPAIGN_MANAGER response transformation`,
+    `Campaign Manager: Error proxy v1 during CAMPAIGN_MANAGER response transformation`,
     500,
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),

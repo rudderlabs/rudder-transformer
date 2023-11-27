@@ -232,6 +232,9 @@ const responseBuilderSimple = async (message, category, destination) => {
     if (!isDefinedAndNotNull(hashMapExternalKey[message.event.toLowerCase()])) {
       throw new ConfigurationError('Event not mapped for this track call');
     }
+    if (typeof message.event !== 'string') {
+      throw new ConfigurationError('Event name must be a string');
+    }
     return responseBuilderForInsertData(
       message,
       hashMapExternalKey[message.event.toLowerCase()],

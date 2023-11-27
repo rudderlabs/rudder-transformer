@@ -11,6 +11,9 @@ const ConfigCategory = {
   IDENTIFY: {
     name: 'MPIdentifyConfig',
   },
+  SET_ONCE: {
+    name: 'MPSetOnceConfig',
+  },
   PROFILE_ANDROID: {
     name: 'MPProfilePropertiesAndroid',
   },

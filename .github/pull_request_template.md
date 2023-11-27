@@ -2,7 +2,7 @@
 
 Write a brief explainer on your code changes.
 
-## Please explain the objectives of your changes below:
+## Please explain the objectives of your changes below
 
 Put down any required details on the broader aspect of your changes. If there are any dependent changes, **mandatorily** mention them here
 
@@ -17,29 +17,40 @@ If the pull request is a **new feature**,
 
 ### Any technical or performance related pointers to consider with the change?
 
+N/A
+
 ### Any new dependencies introduced with this change?
 
-Any new generic utility introduced or modified. Please explain the changes.
+N/A
+
+### Any new generic utility introduced or modified. Please explain the changes.
+
+N/A
 
 ### If the PR has changes in more than 5 files, please mention why the changes were not split into multiple PRs.
 
---
+N/A
 
-### If there are multiple linear items associated with the PR changes, please elaborate on the reason:
+### If multiple linear items are associated with the PR changes, please elaborate on the reason:
 
---
+N/A
 
 <hr>
 
 ### Developer checklist
 
-[ ] **Please confirm if there are no breaking changes being introduced.**
+[ ] **No breaking changes are being introduced.**
+
 [ ] Are all related docs linked with the PR?
-[ ] Are all changes tested?
-[ ] Does this change require any RudderStack documentation changes?
+
+[ ] Are all changes manually tested?
+
+[ ] Does this change require any documentation changes?
+
 [ ] Are relevant unit and component test-cases added?
 
 ### Reviewer checklist
 
-[ ] Is the PR tagged correctly as per the changes?
-[ ] Verified if there are no security credentials or confidential information in the changes.
+[ ] Is the type of change in the PR title appropriate as per the changes?
+
+[ ] Verified that there are no credentials or confidential data exposed with the changes.

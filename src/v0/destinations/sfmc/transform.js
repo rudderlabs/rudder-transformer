@@ -3,6 +3,8 @@ const {
   NetworkError,
   ConfigurationError,
   InstrumentationError,
+  isDefinedAndNotNull,
+  isEmpty,
 } = require('@rudderstack/integrations-lib');
 const myAxios = require('../../../util/myAxios');
 const { EventType } = require('../../../constants');
@@ -17,7 +19,6 @@ const {
   flattenJson,
   toTitleCase,
   getHashFromArray,
-  isEmpty,
   simpleProcessRouterDest,
 } = require('../../util');
 const {
@@ -224,7 +225,13 @@ const responseBuilderSimple = async (message, category, destination) => {
     throw new ConfigurationError('Creating or updating contacts is disabled');
   }
 
-  if (category.type === 'track' && hashMapExternalKey[message.event.toLowerCase()]) {
+  if (category.type === 'track') {
+    if (isEmpty(message.event)) {
+      throw new ConfigurationError('Event name is required for this track events');
+    }
+    if (!isDefinedAndNotNull(hashMapExternalKey[message.event.toLowerCase()])) {
+      throw new ConfigurationError('Event not mapped for this track call');
+    }
     return responseBuilderForInsertData(
       message,
       hashMapExternalKey[message.event.toLowerCase()],
@@ -237,7 +244,7 @@ const responseBuilderSimple = async (message, category, destination) => {
     );
   }
 
-  throw new ConfigurationError('Event not mapped for this track call');
+  throw new ConfigurationError('Event type not supported');
 };
 
 const processEvent = async (message, destination) => {

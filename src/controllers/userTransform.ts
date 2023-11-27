@@ -1,15 +1,15 @@
 import { Context } from 'koa';
 import { ProcessorTransformationRequest, UserTransformationServiceResponse } from '../types/index';
-import UserTransformService from '../services/userTransform';
+import { UserTransformService } from '../services/userTransform';
 import logger from '../logger';
 import {
   setupUserTransformHandler,
   extractLibraries,
   validateCode,
 } from '../util/customTransformer';
-import ControllerUtility from './util';
+import { ControllerUtility } from './util';
 
-export default class UserTransformController {
+export class UserTransformController {
   public static async transform(ctx: Context) {
     logger.debug(
       '(User transform - router:/customTransform ):: Request to transformer',

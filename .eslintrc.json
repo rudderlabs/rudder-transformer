@@ -54,7 +54,7 @@
     "@typescript-eslint/no-explicit-any": "off",
     "class-methods-use-this": "off",
     "@typescript-eslint/return-await": "error",
-    "import/prefer-default-export": "error",
+    "import/prefer-default-export": "off",
     "sonarjs/no-ignored-return": "error",
     "no-new": "error",
     "@typescript-eslint/no-shadow": "error",

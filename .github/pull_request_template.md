@@ -9,9 +9,10 @@ Put down any required details on the broader aspect of your changes. If there ar
 ### Type of change
 
 If the pull request is a **bug-fix**, **enhancement** or a **refactor**, please fill in the details on the changes made.
-| Current changes | New changes |
-|--|--|
-| | |
+
+- Existing capabilities/behavior
+
+- New capabilities/behavior
 
 If the pull request is a **new feature**,
 

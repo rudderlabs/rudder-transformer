@@ -128,7 +128,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
 
   const respList = [];
   // process record events
-  if (Array.isArray(groupedInputs.record) && groupedInputs.record.length > 0) {
+  if (groupedInputs.record) {
     const groupedRecordInputs = groupedInputs.record;
     const { staticListId } = destination.Config;
     const externalIdGroupedRecordInputs = lodash.groupBy(
@@ -140,6 +140,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
         const transformedGroupedRecordEvent = await processRecordInputs(
           externalIdGroupedRecordInputs[key],
           destination,
+          key,
         );
         return transformedGroupedRecordEvent;
       }),
@@ -148,7 +149,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
     transformedRecordEvent.push(...alltransformedGroupedRecordEvent.flat());
   }
   // process audiencelist events
-  if (groupedInputs.audiencelist && groupedInputs.audiencelist.length > 0) {
+  if (groupedInputs.audiencelist) {
     transformedAudienceEvent = await simpleProcessRouterDest(
       groupedInputs.audiencelist,
       process,

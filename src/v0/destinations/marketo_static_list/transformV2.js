@@ -3,7 +3,6 @@ const { InstrumentationError, UnauthorizedError } = require('@rudderstack/integr
 const {
   defaultPostRequestConfig,
   defaultDeleteRequestConfig,
-  getDestinationExternalID,
   defaultRequestConfig,
   getSuccessRespEvents,
   isDefinedAndNotNull,
@@ -69,17 +68,16 @@ const batchResponseBuilder = (listId, Config, token, leadIds, operation) => {
  * A function that processes a list of grouped record inputs.
  * It iterates through each input and groups the field IDs based on the action.
  * @param {*} groupedRecordInputs
+ * @param {*} destination
+ * @param {*} listId
  * @returns An array containing the batched responses for the insert and delete actions along with the metadata.
  */
-async function processRecordInputs(groupedRecordInputs, destination) {
+async function processRecordInputs(groupedRecordInputs, destination, listId) {
   const token = await getAuthToken(formatConfig(destination));
   if (!token) {
     throw new UnauthorizedError('Authorization failed');
   }
   const { Config } = destination;
-  const listId =
-    getDestinationExternalID(groupedRecordInputs[0].message, 'marketoStaticListId') ||
-    Config.staticListId;
 
   // iterate through each input and group field id based on action
   const insertFields = [];

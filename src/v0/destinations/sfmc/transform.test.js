@@ -10,6 +10,18 @@ beforeAll(() => {
 });
 
 describe('responseBuilderSimple', () => {
+  const destination = {
+    Config: {
+      clientId: 'yourClientId',
+      clientSecret: 'yourClientSecret',
+      subDomain: 'yourSubDomain',
+      createOrUpdateContacts: false,
+      externalKey: 'yourExternalKey',
+      eventToExternalKey: [{ from: 'purchase', to: 'purchaseKey' }],
+      eventToPrimaryKey: [{ from: 'purchase', to: 'primaryKey' }],
+      eventToUUID: [{ event: 'purchase', uuid: true }],
+    },
+  };
   it('should return an array of two payloads for identify calls when createOrUpdateContacts is false', async () => {
     const message = {
       type: 'identify',
@@ -19,19 +31,6 @@ describe('responseBuilderSimple', () => {
     const category = {
       type: 'identify',
       name: 'Identify',
-    };
-
-    const destination = {
-      Config: {
-        clientId: 'yourClientId',
-        clientSecret: 'yourClientSecret',
-        subDomain: 'yourSubDomain',
-        createOrUpdateContacts: false,
-        externalKey: 'yourExternalKey',
-        eventToExternalKey: [{ from: 'purchase', to: 'purchaseKey' }],
-        eventToPrimaryKey: [{ from: 'purchase', to: 'primaryKey' }],
-        eventToUUID: [{ event: 'purchase', uuid: true }],
-      },
     };
 
     const response = await responseBuilderSimple(message, category, destination);
@@ -58,19 +57,6 @@ describe('responseBuilderSimple', () => {
       name: 'Track',
     };
 
-    const destination = {
-      Config: {
-        clientId: 'yourClientId',
-        clientSecret: 'yourClientSecret',
-        subDomain: 'yourSubDomain',
-        createOrUpdateContacts: false,
-        externalKey: 'yourExternalKey',
-        eventToExternalKey: [{ from: 'purchase', to: 'purchaseKey' }],
-        eventToPrimaryKey: [{ from: 'purchase', to: 'primaryKey' }],
-        eventToUUID: [{ event: 'purchase', uuid: true }],
-      },
-    };
-
     try {
       await responseBuilderSimple(message, category, destination);
     } catch (e) {
@@ -90,20 +76,6 @@ describe('responseBuilderSimple', () => {
       type: 'track',
       name: 'Track',
     };
-
-    const destination = {
-      Config: {
-        clientId: 'yourClientId',
-        clientSecret: 'yourClientSecret',
-        subDomain: 'yourSubDomain',
-        createOrUpdateContacts: false,
-        externalKey: 'yourExternalKey',
-        eventToExternalKey: [{ from: 'purchase', to: 'purchaseKey' }],
-        eventToPrimaryKey: [{ from: 'purchase', to: 'primaryKey' }],
-        eventToUUID: [{ event: 'purchase', uuid: true }],
-      },
-    };
-
     try {
       await responseBuilderSimple(message, category, destination);
     } catch (e) {
@@ -121,19 +93,6 @@ describe('responseBuilderSimple', () => {
     const category = {
       type: 'unsupported',
       name: 'Unsupported',
-    };
-
-    const destination = {
-      Config: {
-        clientId: 'yourClientId',
-        clientSecret: 'yourClientSecret',
-        subDomain: 'yourSubDomain',
-        createOrUpdateContacts: false,
-        externalKey: 'yourExternalKey',
-        eventToExternalKey: [{ from: 'purchase', to: 'purchaseKey' }],
-        eventToPrimaryKey: [{ from: 'purchase', to: 'primaryKey' }],
-        eventToUUID: [{ event: 'purchase', uuid: true }],
-      },
     };
 
     try {
@@ -155,19 +114,6 @@ describe('responseBuilderSimple', () => {
     const category = {
       type: 'track',
       name: 'Track',
-    };
-
-    const destination = {
-      Config: {
-        clientId: 'yourClientId',
-        clientSecret: 'yourClientSecret',
-        subDomain: 'yourSubDomain',
-        createOrUpdateContacts: true,
-        externalKey: 'yourExternalKey',
-        eventToExternalKey: [{ from: 'purchase', to: 'purchaseKey' }],
-        eventToPrimaryKey: [{ from: 'purchase', to: 'primaryKey' }],
-        eventToUUID: [{ event: 'purchase', uuid: true }],
-      },
     };
 
     const response = await responseBuilderSimple(message, category, destination);

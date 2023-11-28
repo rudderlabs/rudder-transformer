@@ -28,7 +28,7 @@ N/A
 
 N/A
 
-### If the PR has changes in more than 5 files, please mention why the changes were not split into multiple PRs.
+### If the PR has changes in more than 10 files, please mention why the changes were not split into multiple PRs.
 
 N/A
 

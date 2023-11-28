@@ -27,6 +27,7 @@ const {
   handleList,
   handleCustomProperties,
   stringifyValueAndJoinWithDelimiter,
+  escapeToHTML,
 } = require('./utils');
 /*
   Configuration variables documentation: https://experienceleague.adobe.com/docs/analytics/implementation/vars/config-vars/configuration-variables.html?lang=en
@@ -76,6 +77,7 @@ const responseBuilderSimple = async (message, destinationConfig, basicPayload) =
     }
     payload.linkURL =
       adobeIntegrationsObject?.linkURL || context?.page?.url || 'No linkURL provided';
+    payload.linkURL = escapeToHTML(payload.linkURL);
   }
   // handle hier
   if (overrideHiers) {
@@ -97,7 +99,7 @@ const responseBuilderSimple = async (message, destinationConfig, basicPayload) =
     const propertiesPageUrl = properties?.pageUrl;
     const pageUrl = contextPageUrl || propertiesPageUrl;
     if (isDefinedAndNotNullAndNotEmpty(pageUrl)) {
-      payload.pageUrl = pageUrl;
+      payload.pageUrl = escapeToHTML(pageUrl);
     }
     if (trackPageName) {
       // better handling possible here, both error and implementation wise

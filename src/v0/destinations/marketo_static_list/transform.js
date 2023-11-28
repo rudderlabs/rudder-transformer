@@ -71,26 +71,22 @@ const processEvent = (event) => {
   if (message.properties?.listData?.remove) {
     toRemove = getIds(message.properties.listData.remove);
   }
-  if (
-    (!Array.isArray(toAdd) || toAdd.length === 0) &&
-    (!Array.isArray(toRemove) || toRemove.length === 0)
-  ) {
+  if (Array.isArray(toRemove) && toRemove.length > 0) {
+    const payload = batchResponseBuilder(message, Config, token, toRemove, 'remove');
+    if (payload) {
+      response.push(...payload);
+    }
+  }
+  if (Array.isArray(toAdd) && toAdd.length > 0) {
+    const payload = batchResponseBuilder(message, Config, token, toAdd, 'add');
+    if (payload) {
+      response.push(...payload);
+    }
+  }
+  if (response.length === 0) {
     throw new InstrumentationError(
       'Invalid leadIds format or no leadIds found neither to add nor to remove',
     );
-  } else {
-    if (Array.isArray(toRemove) && toRemove.length > 0) {
-      const payload = batchResponseBuilder(message, Config, token, toRemove, 'remove');
-      if (payload) {
-        response.push(...payload);
-      }
-    }
-    if (Array.isArray(toAdd) && toAdd.length > 0) {
-      const payload = batchResponseBuilder(message, Config, token, toAdd, 'add');
-      if (payload) {
-        response.push(...payload);
-      }
-    }
   }
   return response;
 };

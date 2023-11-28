@@ -32,7 +32,7 @@ N/A
 
 N/A
 
-### If multiple linear items are associated with the PR changes, please elaborate on the reason:
+### If multiple linear tasks are associated with the PR changes, please elaborate on the reason:
 
 N/A
 

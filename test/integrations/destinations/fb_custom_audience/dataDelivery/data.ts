@@ -502,4 +502,72 @@ export const data = [
       },
     },
   },
+  {
+    name: 'fb_custom_audience',
+    description: 'user having permission issue while updating audience',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          version: '1',
+          type: 'REST',
+          method: 'DELETE',
+          endpoint: 'https://graph.facebook.com/v18.0/aud1/users',
+          headers: {
+            'test-dest-response-key': 'code200PermissionError',
+          },
+          params: {
+            access_token: 'ABC',
+            payload: {
+              is_raw: true,
+              data_source: {
+                sub_type: 'ANYTHING',
+              },
+              schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
+              data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
+            },
+          },
+          body: {
+            JSON: {},
+            XML: {},
+            JSON_ARRAY: {},
+            FORM: {},
+          },
+          files: {},
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 403,
+        body: {
+          output: {
+            destinationResponse: {
+              error: {
+                code: 200,
+                fbtrace_id: 'AFfWqjY-_y2Q92DsyJ4DQ6f',
+                message: '(#200) The current user can not update audience 23861283180290489',
+                type: 'OAuthException',
+              },
+              status: 403,
+            },
+            message: '(#200) The current user can not update audience 23861283180290489',
+            statTags: {
+              destType: 'FB_CUSTOM_AUDIENCE',
+              destinationId: 'Non-determininable',
+              errorCategory: 'network',
+              errorType: 'aborted',
+              feature: 'dataDelivery',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'Non-determininable',
+            },
+            status: 403,
+          },
+        },
+      },
+    },
+  },
 ];

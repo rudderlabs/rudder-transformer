@@ -411,4 +411,71 @@ export const networkCallsData = [
       status: 429,
     },
   },
+  {
+    httpReq: {
+      version: '1',
+      type: 'REST',
+      method: 'DELETE',
+      endpoint: 'https://graph.facebook.com/v18.0/aud1/users',
+      headers: {
+        'test-dest-response-key': 'code200PermissionError',
+      },
+      params: {
+        access_token: 'ABC',
+        payload: {
+          is_raw: true,
+          data_source: {
+            sub_type: 'ANYTHING',
+          },
+          schema: [
+            'EMAIL',
+            'DOBM',
+            'DOBD',
+            'DOBY',
+            'PHONE',
+            'GEN',
+            'FI',
+            'MADID',
+            'ZIP',
+            'ST',
+            'COUNTRY',
+          ],
+          data: [
+            [
+              'shrouti@abc.com',
+              '2',
+              '13',
+              '2013',
+              '@09432457768',
+              'f',
+              'Ms.',
+              'ABC',
+              'ZIP ',
+              '123abc ',
+              'IN',
+            ],
+          ],
+        },
+      },
+      userId: '',
+      body: {
+        JSON: {},
+        XML: {},
+        JSON_ARRAY: {},
+        FORM: {},
+      },
+      files: {},
+    },
+    httpRes: {
+      data: {
+        error: {
+          code: 200,
+          fbtrace_id: 'AFfWqjY-_y2Q92DsyJ4DQ6f',
+          message: '(#200) The current user can not update audience 23861283180290489',
+          type: 'OAuthException',
+        },
+      },
+      status: 403,
+    },
+  },
 ];

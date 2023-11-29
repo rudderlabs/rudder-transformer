@@ -40,18 +40,18 @@ N/A
 
 ### Developer checklist
 
-[ ] **No breaking changes are being introduced.**
+- [ ] **No breaking changes are being introduced.**
 
-[ ] Are all related docs linked with the PR?
+- [ ] Are all related docs linked with the PR?
 
-[ ] Are all changes manually tested?
+- [ ] Are all changes manually tested?
 
-[ ] Does this change require any documentation changes?
+- [ ] Does this change require any documentation changes?
 
-[ ] Are relevant unit and component test-cases added?
+- [ ] Are relevant unit and component test-cases added?
 
 ### Reviewer checklist
 
-[ ] Is the type of change in the PR title appropriate as per the changes?
+- [ ] Is the type of change in the PR title appropriate as per the changes?
 
-[ ] Verified that there are no credentials or confidential data exposed with the changes.
+- [ ] Verified that there are no credentials or confidential data exposed with the changes.

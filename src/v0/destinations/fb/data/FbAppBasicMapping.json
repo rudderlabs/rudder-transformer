@@ -76,7 +76,7 @@
     "destKey": "extinfo.14"
   },
   {
-    "sourceKeys": "context.timezone",
+    "sourceKeys": ["context.timezone", "context.geo.timezone"],
     "destKey": "extinfo.15"
   },
   {
@@ -104,15 +104,15 @@
     "destKey": "ud[db]"
   },
   {
-    "sourceKeys": ["traits.city", "context.traits.city"],
+    "sourceKeys": ["traits.city", "context.traits.city", "context.geo.city"],
     "destKey": "ud[ct]"
   },
   {
-    "sourceKeys": ["traits.state", "context.traits.state"],
+    "sourceKeys": ["traits.state", "context.traits.state", "context.geo.region"],
     "destKey": "ud[st]"
   },
   {
-    "sourceKeys": ["traits.zip", "context.traits.zip"],
+    "sourceKeys": ["traits.zip", "context.traits.zip", "context.geo.postal"],
     "destKey": "ud[zp]"
   },
   {

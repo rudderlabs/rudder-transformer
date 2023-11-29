@@ -86,7 +86,7 @@
   },
   {
     "destKey": "ct",
-    "sourceKeys": ["traits.address.city", "context.traits.address.city"],
+    "sourceKeys": ["traits.address.city", "context.traits.address.city", "context.geo.city"],
     "required": false,
     "metadata": {
       "type": ["toLower", "hashToSha256"]
@@ -94,7 +94,7 @@
   },
   {
     "destKey": "st",
-    "sourceKeys": ["traits.address.state", "context.traits.address.state"],
+    "sourceKeys": ["traits.address.state", "context.traits.address.state", "context.geo.region"],
     "required": false,
     "metadata": {
       "type": ["toLower", "hashToSha256"]
@@ -106,7 +106,8 @@
       "traits.address.zip",
       "context.traits.address.zip",
       "traits.address.postalCode",
-      "context.traits.address.postalCode"
+      "context.traits.address.postalCode",
+      "context.geo.postal"
     ],
     "required": false,
     "metadata": {

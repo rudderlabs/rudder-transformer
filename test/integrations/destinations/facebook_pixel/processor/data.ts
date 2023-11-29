@@ -6459,4 +6459,138 @@ export const data = [
       },
     },
   },
+
+  {
+    name: 'facebook_pixel',
+    description:
+      'Test 51: should populate from context.geo when address is not available in traits/context.traits',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              channel: 'mobile',
+              destination_props: {
+                Fb: {
+                  app_id: 'RudderFbApp',
+                },
+              },
+              context: {
+                ip: '223.190.82.63',
+                geo: {
+                  city: 'Gurugram',
+                  country: 'IN',
+                  ip: '223.190.82.63',
+                  location: '28.459700,77.028200',
+                  postal: '122001',
+                  region: 'Haryana',
+                  timezone: 'Asia/Kolkata',
+                },
+                device: {
+                  id: 'df16bffa-5c3d-4fbb-9bce-3bab098129a7R',
+                  manufacturer: 'Xiaomi',
+                  model: 'Redmi 6',
+                  name: 'xiaomi',
+                },
+                network: {
+                  carrier: 'Banglalink',
+                },
+                os: {
+                  name: 'android',
+                  version: '8.1.0',
+                },
+                screen: {
+                  height: '100',
+                  density: 50,
+                },
+                traits: {
+                  email: '    aBc@gmail.com   ',
+                  anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+                },
+              },
+              event: 'spin_result',
+              integrations: {
+                All: true,
+              },
+              message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
+              properties: {
+                revenue: 400,
+                additional_bet_index: 0,
+                content_ids: ['prod1', 'prod2'],
+              },
+              timestamp: '2023-10-14T00:00:00.693229+05:30',
+              type: 'track',
+            },
+            destination: {
+              Config: {
+                limitedDataUsage: true,
+                blacklistPiiProperties: [
+                  {
+                    blacklistPiiProperties: '',
+                    blacklistPiiHash: false,
+                  },
+                ],
+                accessToken: '09876',
+                pixelId: 'dummyPixelId',
+                eventsToEvents: [
+                  {
+                    from: '',
+                    to: '',
+                  },
+                ],
+                eventCustomProperties: [
+                  {
+                    eventCustomProperties: '',
+                  },
+                ],
+                removeExternalId: true,
+                valueFieldIdentifier: '',
+                advancedMapping: false,
+                whitelistPiiProperties: [
+                  {
+                    whitelistPiiProperties: '',
+                  },
+                ],
+              },
+              Enabled: true,
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://graph.facebook.com/v17.0/dummyPixelId/events?access_token=09876',
+              headers: {},
+              params: {},
+              body: {
+                JSON: {},
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {
+                  data: [
+                    '{"user_data":{"em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08","ct":"a59f6598a62478c05e206d83593f510080816c99f4d0a3c90c59b2567d3f758a","st":"92db9c574d420b2437b29d898d55604f61df6c17f5163e53337f2169dd70d38d","zp":"298a8ea2e8e6ca9168b40659e8240af20b78c8b10a07fd514a4956d78ea1ad54","client_ip_address":"223.190.82.63"},"event_name":"spin_result","event_time":1697221800,"action_source":"app","custom_data":{"additional_bet_index":0,"value":400,"content_ids":["prod1","prod2"]}}',
+                  ],
+                },
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ].map((d) => ({ ...d, mockFns }));

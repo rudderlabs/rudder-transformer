@@ -73,10 +73,10 @@
     "context.traits.DOB"
   ],
 
-  "state": ["traits.state", "context.traits.state"],
+  "state": ["traits.state", "context.traits.state", "context.geo.region"],
   "country": ["traits.country", "context.traits.country"],
-  "region": ["traits.region", "context.traits.region"],
-  "city": ["traits.address.city", "context.traits.address.city"],
+  "region": ["traits.region", "context.traits.region", "context.geo.region"],
+  "city": ["traits.address.city", "context.traits.address.city", "context.geo.city"],
 
   "avatar": [
     "traits.avatar",
@@ -114,7 +114,8 @@
     "context.traits.address.zipCode",
     "context.traits.address.postalcode",
     "context.traits.address.postal_code",
-    "context.traits.address.postalCode"
+    "context.traits.address.postalCode",
+    "context.geo.postal"
   ],
   "sessionId": ["session_id", "context.sessionId"]
 }

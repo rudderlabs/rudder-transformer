@@ -2169,5 +2169,102 @@
       "source_job_run_id": "",
       "source_task_run_id": ""
     }
+  },
+  {
+    "description": "Group call incl geo location information: user email is missing",
+    "input": {
+      "destination": {
+        "Config": {
+          "apiKey": "dummyApiKey",
+          "domain": "domain-rudder.myfreshworks.com"
+        }
+      },
+      "message": {
+        "messageId": "sadjb-1e2r3fhgb-12bvbbj",
+        "originalTimestamp": "2022-06-22T10:57:58Z",
+        "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+        "context": {
+          "geo": {
+            "city": "Gurugram",
+            "country": "IN",
+            "ip": "223.190.82.63",
+            "location": "28.459700,77.028200",
+            "postal": "122001",
+            "region": "Haryana",
+            "timezone": "Asia/Kolkata"
+          },
+          "app": {
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK",
+            "namespace": "com.rudderlabs.javascript",
+            "version": "1.0.0"
+          },
+          "device": {
+            "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+            "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+            "manufacturer": "Google",
+            "model": "AOSP on IA Emulator",
+            "name": "generic_x86_arm",
+            "type": "ios",
+            "attTrackingStatus": 3
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.0.0"
+          },
+          "locale": "en-US",
+          "os": {
+            "name": "iOS",
+            "version": "14.4.1"
+          },
+          "screen": {
+            "density": 2
+          },
+          "traits": {}
+        },
+        "traits": {
+          "groupType": "accounts",
+          "name": "div-quer",
+          "phone": "919191919191",
+          "numberOfEmployees": 51,
+          "annualRevenue": 1000
+        },
+        "type": "group",
+        "sentAt": "2022-04-22T10:57:58Z"
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://domain-rudder.myfreshworks.com/crm/sales/api/sales_accounts/upsert",
+      "headers": {
+        "Authorization": "Token token=dummyApiKey",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "unique_identifier": {
+            "name": "div-quer"
+          },
+          "sales_account": {
+            "name": "div-quer",
+            "phone": "919191919191",
+            "number_of_employees": 51,
+            "annual_revenue": 1000,
+            "city": "Gurugram",
+            "state": "Haryana",
+            "zipcode": "122001",
+            "created_at": "2022-06-22T10:57:58Z",
+            "updated_at": "2022-06-22T10:57:58Z"
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
   }
 ]

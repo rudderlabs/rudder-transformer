@@ -61,7 +61,7 @@ describe('responseBuilderSimple', () => {
       await responseBuilderSimple(message, category, destination);
     } catch (e) {
       expect(e).toBeInstanceOf(ConfigurationError);
-      expect(e.message).toBe('Event name is required for this track events');
+      expect(e.message).toBe('Event name is required for track events');
     }
   });
 
@@ -99,7 +99,7 @@ describe('responseBuilderSimple', () => {
       await responseBuilderSimple(message, category, destination);
     } catch (e) {
       expect(e).toBeInstanceOf(ConfigurationError);
-      expect(e.message).toBe('Event type not supported');
+      expect(e.message).toBe("Event type 'unsupported' not supported");
     }
   });
 

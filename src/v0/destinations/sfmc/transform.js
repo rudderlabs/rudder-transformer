@@ -222,12 +222,14 @@ const responseBuilderSimple = async (message, category, destination) => {
   }
 
   if (category.type === 'identify' && createOrUpdateContacts) {
-    throw new ConfigurationError('Creating or updating contacts is disabled');
+    throw new ConfigurationError(
+      'Creating or updating contacts is disabled to enable this feature set "Do Not Create or Update Contacts" to false',
+    );
   }
 
   if (category.type === 'track') {
     if (isEmpty(message.event)) {
-      throw new ConfigurationError('Event name is required for this track events');
+      throw new ConfigurationError('Event name is required for track events');
     }
     if (typeof message.event !== 'string') {
       throw new ConfigurationError('Event name must be a string');
@@ -248,7 +250,7 @@ const responseBuilderSimple = async (message, category, destination) => {
     );
   }
 
-  throw new ConfigurationError('Event type not supported');
+  throw new ConfigurationError(`Event type '${category.type}' not supported`);
 };
 
 const processEvent = async (message, destination) => {

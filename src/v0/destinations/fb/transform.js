@@ -14,6 +14,7 @@ const {
 } = require('../../util');
 
 const {
+  VERSION,
   baseMapping,
   eventNameMapping,
   eventPropsMapping,
@@ -250,7 +251,7 @@ function responseBuilderSimple(message, payload, destination) {
 
   // "https://graph.facebook.com/v13.0/644748472345539/activities"
 
-  const endpoint = `https://graph.facebook.com/v17.0/${appID}/activities`;
+  const endpoint = `https://graph.facebook.com/${VERSION}/${appID}/activities`;
 
   const response = defaultRequestConfig();
   response.endpoint = endpoint;

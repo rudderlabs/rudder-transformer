@@ -2,6 +2,7 @@ import { cloneDeep } from 'lodash';
 import { getFormData } from '../../../../src/adapters/network';
 import * as fbPixelNw from '../facebook_pixel/network';
 import { data } from './dataDelivery/data';
+import { VERSION } from '../../../../src/v0/destinations/fb/config';
 
 const fbPixelTcs = data
   .filter((_, i) => [2, 3, 4].includes(i))
@@ -19,7 +20,7 @@ const fbPixelTcs = data
 export const networkCallsData = [
   {
     httpReq: {
-      url: 'https://graph.facebook.com/v17.0/RudderFbApp/activities?access_token=invalid_access_token',
+      url: `https://graph.facebook.com/${VERSION}/RudderFbApp/activities?access_token=invalid_access_token`,
       data: getFormData(data[0].input.request.body.body.FORM).toString(),
       params: { destination: 'fb' },
       headers: { 'User-Agent': 'RudderLabs' },
@@ -39,7 +40,7 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://graph.facebook.com/v17.0/RudderFbApp/activities?access_token=my_access_token',
+      url: `https://graph.facebook.com/${VERSION}/RudderFbApp/activities?access_token=my_access_token`,
       data: getFormData(data[1].input.request.body.body.FORM).toString(),
       params: { destination: 'fb' },
       headers: { 'x-forwarded-for': '1.2.3.4', 'User-Agent': 'RudderLabs' },

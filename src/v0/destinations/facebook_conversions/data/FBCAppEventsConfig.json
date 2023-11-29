@@ -76,7 +76,7 @@
   },
   {
     "destKey": "extinfo.15",
-    "sourceKeys": "context.timezone"
+    "sourceKeys": ["context.timezone", "context.geo.timezone"]
   },
   {
     "destKey": "campaign_ids",

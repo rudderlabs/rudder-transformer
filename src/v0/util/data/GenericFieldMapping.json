@@ -74,7 +74,7 @@
   ],
 
   "state": ["traits.state", "context.traits.state", "context.geo.region"],
-  "country": ["traits.country", "context.traits.country"],
+  "country": ["traits.country", "context.traits.country", "context.geo.country"],
   "region": ["traits.region", "context.traits.region", "context.geo.region"],
   "city": ["traits.address.city", "context.traits.address.city", "context.geo.city"],
 

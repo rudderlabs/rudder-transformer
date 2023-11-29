@@ -634,6 +634,10 @@ function getPurchaseObjs(message) {
       parseInt(quantity, 10),
       timestamp,
     );
+    const extraProperties = _.omit(product, ['product_id', 'sku', 'price', 'quantity', 'currency']);
+    if (Object.keys(extraProperties).length > 0) {
+      purchaseObj = { ...purchaseObj, properties: extraProperties };
+    }
     purchaseObj = setExternalIdOrAliasObject(purchaseObj, message);
     purchaseObjs.push(purchaseObj);
   });

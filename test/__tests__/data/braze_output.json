@@ -396,6 +396,12 @@
             "currency": "USD",
             "price": 0,
             "product_id": "507f1f77bcf86cd799439011",
+            "properties": {
+              "category": "Games",
+              "image_url": "https:///www.example.com/product/path.jpg",
+              "name": "Monopoly: 3rd Edition",
+              "url": "https://www.example.com/product/path"
+            },
             "quantity": 1,
             "time": "2020-01-24T11:59:02.402+05:30",
             "user_alias": {
@@ -408,6 +414,10 @@
             "currency": "USD",
             "price": 0,
             "product_id": "505bd76785ebb509fc183733",
+            "properties": {
+              "category": "Games",
+              "name": "Uno Card Game"
+            },
             "quantity": 2,
             "time": "2020-01-24T11:59:02.402+05:30",
             "user_alias": {
@@ -457,6 +467,12 @@
             "currency": "USD",
             "price": 0,
             "product_id": "507f1f77bcf86cd799439011",
+            "properties": {
+              "category": "Games",
+              "image_url": "https:///www.example.com/product/path.jpg",
+              "name": "Monopoly: 3rd Edition",
+              "url": "https://www.example.com/product/path"
+            },
             "quantity": 1,
             "time": "2020-01-24T11:59:02.402+05:30",
             "user_alias": {
@@ -469,6 +485,10 @@
             "currency": "USD",
             "price": 10,
             "product_id": "505bd76785ebb509fc183733",
+            "properties": {
+              "category": "Games",
+              "name": "Uno Card Game"
+            },
             "quantity": 2,
             "time": "2020-01-24T11:59:02.402+05:30",
             "user_alias": {
@@ -855,6 +875,12 @@
         "purchases": [
           {
             "product_id": "507f1f77bcf86cd799439011",
+            "properties": {
+              "category": "Games",
+              "image_url": "https:///www.example.com/product/path.jpg",
+              "name": "Monopoly: 3rd Edition",
+              "url": "https://www.example.com/product/path"
+            },
             "price": 0,
             "currency": "USD",
             "quantity": 1,

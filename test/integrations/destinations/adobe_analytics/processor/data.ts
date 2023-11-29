@@ -31,7 +31,7 @@ export const data = [
                   referring_domain: 'google.com',
                   search: 'estore bestseller',
                   title: 'The best sellers offered by EStore',
-                  url: 'https://www.estore.com/best-seller/1?ik=123&ij=456',
+                  url: 'https://www.estore.com/best-seller/News & Sports?ik=123&ij=456',
                   name: 'Best Seller',
                 },
                 screen: {
@@ -170,7 +170,7 @@ export const data = [
                 JSON_ARRAY: {},
                 XML: {
                   payload:
-                    '<?xml version="1.0" encoding="utf-8"?><request><browserHeight>1794</browserHeight><browserWidth>1080</browserWidth><campaign>sales campaign</campaign><channel>web</channel><currencyCode>USD</currencyCode><ipaddress>127.0.0.1</ipaddress><language>en-US</language><userAgent>Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)</userAgent><referrer>https://www.google.com/search?q=estore+bestseller</referrer><contextData><tt01>t01</tt01><tt02>t02</tt02><roott01>roottval001</roott01></contextData><eVar5>Kolkata</eVar5><eVar4>9935400932</eVar4><eVar6>RudderLabs JavaScript SDK</eVar6><list1>r15,faze90R</list1><list2>ciaz,hummer,thar</list2><pageUrl>https://www.estore.com/best-seller/1?ik=123&amp;ij=456</pageUrl><pageName>Best Seller</pageName><prop1>custompropval1</prop1><prop2>custompropval2</prop2><timestamp>2020-01-09T10:01:53.558Z</timestamp><marketingcloudorgid>mktcloudid001</marketingcloudorgid><events>prodView</events><products>Games;Game;11;148.39</products><reportSuiteID>footlockerrudderstackpoc</reportSuiteID></request>',
+                    '<?xml version="1.0" encoding="utf-8"?><request><browserHeight>1794</browserHeight><browserWidth>1080</browserWidth><campaign>sales campaign</campaign><channel>web</channel><currencyCode>USD</currencyCode><ipaddress>127.0.0.1</ipaddress><language>en-US</language><userAgent>Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)</userAgent><referrer>https://www.google.com/search?q=estore+bestseller</referrer><contextData><tt01>t01</tt01><tt02>t02</tt02><roott01>roottval001</roott01></contextData><eVar5>Kolkata</eVar5><eVar4>9935400932</eVar4><eVar6>RudderLabs JavaScript SDK</eVar6><list1>r15,faze90R</list1><list2>ciaz,hummer,thar</list2><pageUrl>https://www.estore.com/best-seller/News%20&%20Sports?ik=123&ij=456</pageUrl><pageName>Best Seller</pageName><prop1>custompropval1</prop1><prop2>custompropval2</prop2><timestamp>2020-01-09T10:01:53.558Z</timestamp><marketingcloudorgid>mktcloudid001</marketingcloudorgid><events>prodView</events><products>Games;Game;11;148.39</products><reportSuiteID>footlockerrudderstackpoc</reportSuiteID></request>',
                 },
                 FORM: {},
               },

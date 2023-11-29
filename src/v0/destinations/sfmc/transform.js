@@ -223,7 +223,7 @@ const responseBuilderSimple = async (message, category, destination) => {
 
   if (category.type === 'identify' && createOrUpdateContacts) {
     throw new ConfigurationError(
-      'Creating or updating contacts is disabled to enable this feature set "Do Not Create or Update Contacts" to false',
+      'Creating or updating contacts is disabled. To enable this feature set "Do Not Create or Update Contacts" to false',
     );
   }
 

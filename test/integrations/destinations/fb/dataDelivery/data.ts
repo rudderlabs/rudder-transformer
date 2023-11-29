@@ -1,3 +1,5 @@
+import { VERSION } from '../../../../../src/v0/destinations/fb/config';
+
 export const data = [
   {
     name: 'fb',
@@ -29,8 +31,7 @@ export const data = [
             },
             JSON: {},
           },
-          endpoint:
-            'https://graph.facebook.com/v18.0/RudderFbApp/activities?access_token=invalid_access_token',
+          endpoint: `https://graph.facebook.com/${VERSION}/RudderFbApp/activities?access_token=invalid_access_token`,
           files: {},
           headers: {
             'x-forwarded-for': '1.2.3.4',
@@ -108,8 +109,7 @@ export const data = [
             },
             JSON: {},
           },
-          endpoint:
-            'https://graph.facebook.com/v18.0/RudderFbApp/activities?access_token=my_access_token',
+          endpoint: `https://graph.facebook.com/${VERSION}/RudderFbApp/activities?access_token=my_access_token`,
           files: {},
           headers: {
             'x-forwarded-for': '1.2.3.4',
@@ -173,8 +173,7 @@ export const data = [
             },
             JSON: {},
           },
-          endpoint:
-            'https://graph.facebook.com/v18.0/1234567891234567/events?access_token=invalid_timestamp_correct_access_token',
+          endpoint: `https://graph.facebook.com/${VERSION}/1234567891234567/events?access_token=invalid_timestamp_correct_access_token`,
           files: {},
           headers: {
             'x-forwarded-for': '1.2.3.4',
@@ -239,8 +238,7 @@ export const data = [
           version: '1',
           type: 'REST',
           method: 'POST',
-          endpoint:
-            'https://graph.facebook.com/v18.0/1234567891234567/events?access_token=throttled_valid_access_token',
+          endpoint: `https://graph.facebook.com/${VERSION}/1234567891234567/events?access_token=throttled_valid_access_token`,
           headers: {},
           body: {
             JSON: {},
@@ -310,8 +308,7 @@ export const data = [
           version: '1',
           type: 'REST',
           method: 'POST',
-          endpoint:
-            'https://graph.facebook.com/v18.0/1234567891234567/events?access_token=invalid_account_id_valid_access_token',
+          endpoint: `https://graph.facebook.com/${VERSION}/1234567891234567/events?access_token=invalid_account_id_valid_access_token`,
           headers: {},
           body: {
             JSON: {},

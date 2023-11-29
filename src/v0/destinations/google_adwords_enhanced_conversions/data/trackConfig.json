@@ -87,7 +87,7 @@
   },
   {
     "destKey": "conversionAdjustments[0].userIdentifiers[2].addressInfo.state",
-    "sourceKeys": ["context.traits.state", "context.traits.address.state"],
+    "sourceKeys": ["context.traits.state", "context.traits.address.state", "context.geo.region"],
     "required": false,
     "metadata": {
       "type": "toString"
@@ -95,7 +95,7 @@
   },
   {
     "destKey": "conversionAdjustments[0].userIdentifiers[2].addressInfo.city",
-    "sourceKeys": ["context.traits.city", "context.traits.address.city"],
+    "sourceKeys": ["context.traits.city", "context.traits.address.city", "context.geo.city"],
     "required": false,
     "metadata": {
       "type": "toString"
@@ -107,7 +107,8 @@
       "context.traits.countryCode",
       "context.traits.country",
       "context.traits.address.countryCode",
-      "context.traits.address.country"
+      "context.traits.address.country",
+      "context.geo.country"
     ],
     "required": false,
     "metadata": {
@@ -116,7 +117,11 @@
   },
   {
     "destKey": "conversionAdjustments[0].userIdentifiers[2].addressInfo.postalCode",
-    "sourceKeys": ["context.traits.postalCode", "context.traits.address.postalCode"],
+    "sourceKeys": [
+      "context.traits.postalCode",
+      "context.traits.address.postalCode",
+      "context.geo.postal"
+    ],
     "required": false,
     "metadata": {
       "type": "toString"

@@ -5312,4 +5312,216 @@ export const data = [
     },
     mockFns: timestampMock,
   },
+  {
+    name: 'google_adwords_offline_conversions',
+    description: 'Test 26 - GeoLocationEnrichment',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              channel: 'web',
+              context: {
+                geo: {
+                  city: 'Gurugram',
+                  country: 'IN',
+                  ip: '122.111.111.11',
+                  location: '28.459700,77.028200',
+                  postal: '122001',
+                  region: 'Haryana',
+                  timezone: 'Asia/Kolkata',
+                },
+                ip: '122.111.11.11',
+                traits: {
+                  firstName: 'John',
+                },
+              },
+              event: 'Product Clicked',
+              type: 'track',
+              messageId: '5e10d13a-bf9a-44bf-b884-43a9e591ea71',
+              originalTimestamp: '2019-10-14T11:15:18.299Z',
+              anonymousId: '00000000000000000000000000',
+              userId: '12345',
+              properties: {
+                loyaltyFraction: 1,
+                order_id: 'order id',
+                currency: 'INR',
+                revenue: '100',
+                store_code: 'store code',
+                email: 'alex@example.com',
+                gclid: 'gclid',
+                product_id: '123445',
+                custom_key: 'CUSTOM_KEY',
+                CUSTOM_KEY: 'CUSTOM_VALUE',
+                quantity: 123,
+              },
+              integrations: {
+                All: true,
+              },
+              name: 'ApplicationLoaded',
+              sentAt: '2019-10-14T11:15:53.296Z',
+            },
+            metadata: {
+              secret: {
+                access_token: 'abcd1234',
+                refresh_token: 'efgh5678',
+                developer_token: 'ijkl91011',
+              },
+            },
+            destination: {
+              Config: {
+                customerId: '111-222-3333',
+                subAccount: true,
+                loginCustomerId: 'login-customer-id',
+                eventsToOfflineConversionsTypeMapping: [
+                  {
+                    from: 'Sign up completed',
+                    to: 'click',
+                  },
+                  {
+                    from: 'Download',
+                    to: 'call',
+                  },
+                  {
+                    from: 'Product Clicked',
+                    to: 'store',
+                  },
+                  {
+                    from: 'Product Searched',
+                    to: 'call',
+                  },
+                ],
+                eventsToConversionsNamesMapping: [
+                  {
+                    from: 'Sign up completed',
+                    to: 'Sign-up - click',
+                  },
+                  {
+                    from: 'Download',
+                    to: 'Page view',
+                  },
+                  {
+                    from: 'Product Clicked',
+                    to: 'Sign-up - click',
+                  },
+                  {
+                    from: 'Product Searched',
+                    to: 'search',
+                  },
+                ],
+                customVariables: [
+                  {
+                    from: 'value',
+                    to: 'revenue',
+                  },
+                  {
+                    from: 'total',
+                    to: 'cost',
+                  },
+                ],
+                UserIdentifierSource: 'phone',
+                conversionEnvironment: 'WEB',
+                hashUserIdentifier: false,
+                defaultUserIdentifier: 'address',
+                validateOnly: false,
+                rudderAccountId: '2EOknn1JNH7WK1MfNku4fGYKkRK',
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint:
+                'https://googleads.googleapis.com/v14/customers/1112223333/offlineUserDataJobs',
+              headers: {
+                Authorization: 'Bearer abcd1234',
+                'Content-Type': 'application/json',
+                'developer-token': 'ijkl91011',
+                'login-customer-id': 'logincustomerid',
+              },
+              params: {
+                event: 'Sign-up - click',
+                customerId: '1112223333',
+              },
+              body: {
+                JSON: {
+                  event: '1112223333',
+                  isStoreConversion: true,
+                  createJobPayload: {
+                    job: {
+                      storeSalesMetadata: {
+                        loyaltyFraction: 1,
+                        custom_key: 'CUSTOM_KEY',
+                        transaction_upload_fraction: '1',
+                      },
+                      type: 'STORE_SALES_UPLOAD_FIRST_PARTY',
+                    },
+                  },
+                  addConversionPayload: {
+                    operations: {
+                      create: {
+                        transaction_attribute: {
+                          store_attribute: {
+                            store_code: 'store code',
+                          },
+                          transaction_amount_micros: '100000000',
+                          order_id: 'order id',
+                          currency_code: 'INR',
+                          transaction_date_time: '2019-10-14 16:45:18+05:30',
+                          CUSTOM_KEY: 'CUSTOM_VALUE',
+                        },
+                        userIdentifiers: [
+                          {
+                            address_info: {
+                              city: 'Gurugram',
+                              country_code: 'IN',
+                              hashed_first_name: 'john',
+                              postal_code: '122001',
+                              state: 'Haryana',
+                            },
+                          },
+                        ],
+                      },
+                    },
+                    enable_partial_failure: false,
+                    enable_warnings: false,
+                    validate_only: false,
+                  },
+                  executeJobPayload: {
+                    validate_only: false,
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            metadata: {
+              secret: {
+                access_token: 'abcd1234',
+                refresh_token: 'efgh5678',
+                developer_token: 'ijkl91011',
+              },
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+    mockFns: timestampMock,
+  },
 ];

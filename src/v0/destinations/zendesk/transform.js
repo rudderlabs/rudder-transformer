@@ -442,7 +442,7 @@ async function createOrganization(message, category, headers, destinationConfig,
       },
     );
 
-    if (!processedResponseZn.response || !processedResponseZn.response?.organization) {
+    if (!processedResponseZn.response?.organization) {
       logger.debug(`${NAME}:: Couldn't create Organization: ${message.traits.name}`);
       return undefined;
     }
@@ -515,9 +515,7 @@ async function processIdentify(message, destinationConfig, headers, baseEndpoint
           },
         );
         if (
-          processedResponseZn.response &&
-          processedResponseZn.response.organization_memberships &&
-          processedResponseZn.response.organization_memberships.length > 0 &&
+          processedResponseZn?.response?.organization_memberships?.length > 0 &&
           orgId === processedResponseZn.response.organization_memberships[0].organization_id
         ) {
           const membershipId = processedResponseZn.response.organization_memberships[0]?.id;

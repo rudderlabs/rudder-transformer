@@ -2777,4 +2777,105 @@ export const data = [
       },
     },
   },
+  {
+    name: 'moengage',
+    description:
+      'when identify is sent without context, the event should not throw internal server error',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'identify',
+              event: 'identify',
+              sentAt: '2023-11-22T03:42:40.346Z',
+              userId: 'userId16',
+              channel: 'mobile',
+              rudderId: 'dummy-rudderId',
+              timestamp: '2023-11-22T03:42:31.470Z',
+              receivedAt: '2023-11-22T03:42:43.281Z',
+              request_ip: '114.122.233.48',
+              anonymousId: 'anon-dummyId-1',
+              integrations: {
+                All: true,
+              },
+              originalTimestamp: '2023-11-22T03:42:28.535Z',
+            },
+            destination: {
+              ID: '1iuTZs6eEZVMm6GjRBe6bNShaL3',
+              Name: 'MoEngage Testing',
+              DestinationDefinition: {
+                ID: '1iu4802Tx27kNC4KNYYou6D8jzL',
+                Name: 'MOENGAGE',
+                DisplayName: 'MoEngage',
+                Config: {
+                  destConfig: { defaultConfig: ['apiId', 'apiKey', 'region'] },
+                  excludeKeys: [],
+                  includeKeys: [],
+                  supportedSourceTypes: [
+                    'android',
+                    'ios',
+                    'web',
+                    'unity',
+                    'amp',
+                    'cloud',
+                    'reactnative',
+                  ],
+                },
+              },
+              Config: {
+                apiId: 'W0ZHNMPI2O4KHJ48ZILZACRA',
+                apiKey: 'dummyApiKey',
+                eventDelivery: false,
+                eventDeliveryTS: 1602757086384,
+                region: 'US',
+              },
+              Enabled: true,
+              Transformations: [],
+              IsProcessorEnabled: true,
+            },
+          },
+        ],
+        method: 'POST',
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              body: {
+                FORM: {},
+                JSON: {
+                  attributes: {},
+                  customer_id: 'userId16',
+                  type: 'customer',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+              },
+              endpoint: 'https://api-01.moengage.com/v1/customer/W0ZHNMPI2O4KHJ48ZILZACRA',
+              files: {},
+              headers: {
+                Authorization: 'Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOmR1bW15QXBpS2V5',
+                'Content-Type': 'application/json',
+                'MOE-APPKEY': 'W0ZHNMPI2O4KHJ48ZILZACRA',
+              },
+              method: 'POST',
+              params: {},
+              type: 'REST',
+              userId: 'anon-dummyId-1',
+              version: '1',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];

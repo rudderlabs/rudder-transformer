@@ -172,9 +172,10 @@ export class NativeIntegrationDestinationService implements DestinationService {
     destinationRequest: ProcessorTransformationOutput,
     destinationType: string,
     _requestMetadata: NonNullable<unknown>,
+    version: string,
   ): Promise<DeliveryResponse> {
     try {
-      const networkHandler = networkHandlerFactory.getNetworkHandler(destinationType);
+      const networkHandler = networkHandlerFactory.getNetworkHandler(destinationType, version);
       const rawProxyResponse = await networkHandler.proxy(destinationRequest, destinationType);
       const processedProxyResponse = networkHandler.processAxiosResponse(rawProxyResponse);
       return networkHandler.responseHandler(

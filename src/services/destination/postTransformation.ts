@@ -16,6 +16,15 @@ import { ErrorReportingService } from '../errorReporting';
 import tags from '../../v0/util/tags';
 import stats from '../../util/stats';
 
+type ErrorResponse = {
+  status?: number;
+  message?: string;
+  destinationResponse?: object;
+  statTags?: object;
+  authErrorCategory?: string | undefined;
+  response?: object | undefined;
+};
+
 export class DestinationPostTransformationService {
   public static handleProcessorTransformSucessEvents(
     event: ProcessorTransformationRequest,
@@ -139,7 +148,7 @@ export class DestinationPostTransformationService {
   }
 
   public static handleDeliveryFailureEvents(
-    error: NonNullable<unknown>,
+    error: ErrorResponse,
     metaTo: MetaTransferObject,
   ): DeliveryResponse {
     const errObj = generateErrorObject(error, metaTo.errorDetails, false);
@@ -152,6 +161,12 @@ export class DestinationPostTransformationService {
         authErrorCategory: errObj.authErrorCategory,
       }),
     } as DeliveryResponse;
+
+    // for transformer-proxy to maintain contract
+    const { response } = error;
+    if (response) {
+      resp.response = response;
+    }
     ErrorReportingService.reportError(error, metaTo.errorContext, resp);
     return resp;
   }

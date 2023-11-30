@@ -188,10 +188,11 @@ const TrackLayer = {
   async generateProductAddedAndRemovedEvents(event, dbData, metricMetadata) {
     const events = [];
     const prevLineItems = dbData?.lineItems;
+    const cartToken = event.id || event.token;
     // if no prev cart is found we trigger product added event for every line_item present
     if (!prevLineItems) {
       event.line_items.forEach((product) => {
-        const updatedProduct = this.getUpdatedProductProperties(product, event.id || event.token);
+        const updatedProduct = this.getUpdatedProductProperties(product, cartToken);
         events.push(this.ecomPayloadBuilder(updatedProduct, 'product_added'));
       });
       return events;
@@ -206,7 +207,7 @@ const TrackLayer = {
         const updatedQuantity = Math.abs(currentQuantity - prevQuantity);
         const updatedProduct = this.getUpdatedProductProperties(
           product,
-          event.id || event.token,
+          cartToken,
           updatedQuantity,
         );
         // TODO1: map extra properties from axios call
@@ -227,7 +228,7 @@ const TrackLayer = {
     if (prevLineItems !== 'EMPTY') {
       Object.keys(prevLineItems).forEach((lineItemID) => {
         const product = prevLineItems[lineItemID];
-        const updatedProduct = this.getUpdatedProductProperties(product, event.id || event.token);
+        const updatedProduct = this.getUpdatedProductProperties(product, cartToken);
         updatedProduct.id = lineItemID;
         events.push(this.ecomPayloadBuilder(updatedProduct, 'product_removed'));
       });
@@ -235,7 +236,7 @@ const TrackLayer = {
     if (events.length > 0) {
       await this.updateCartState(
         getLineItemsToStore(event),
-        event.id || event.token,
+        cartToken,
         metricMetadata,
       );
     }

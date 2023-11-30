@@ -368,11 +368,13 @@ export class ComparatorService implements DestinationService {
     event: ProcessorTransformationOutput,
     destinationType: string,
     requestMetadata: NonNullable<unknown>,
+    version: string,
   ): Promise<DeliveryResponse> {
     const primaryResplist = await this.primaryService.deliver(
       event,
       destinationType,
       requestMetadata,
+      version,
     );
     logger.error('[LIVE_COMPARE_TEST] not implemented for delivery routine');
 

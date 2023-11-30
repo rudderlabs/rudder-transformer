@@ -620,10 +620,9 @@ const handleSourceKeysOperation = ({ message, operationObject }) => {
       const arrayValues = get(message, arrayKey);
       if (lodash.isArray(arrayValues) && isNotEmpty(arrayValues)) {
         result = arrayValues.reduce((acc, item) => {
-          const value = get(item, propertyKey, 0);
-
+          const value = parseFloat(get(item, propertyKey, 0));
           if (!Number.isNaN(value)) {
-            return acc + parseFloat(value);
+            return acc + value;
           }
 
           return acc;

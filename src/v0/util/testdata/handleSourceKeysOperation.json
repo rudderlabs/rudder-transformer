@@ -137,5 +137,104 @@
       }
     },
     "output": null
+  },
+  {
+    "description": "additionInArray with valid values",
+    "input": {
+      "message": {
+        "shipping": [
+          {
+            "price": 1
+          },
+          {
+            "price": "2.6"
+          }
+        ]
+      },
+      "operationObject": {
+        "operation": "additionInArray",
+        "args": [
+          {
+            "propertyKey": "price",
+            "arrayKey": "shipping"
+          }
+        ]
+      }
+    },
+    "output": 3.6
+  },
+  {
+    "description": "additionInArray with invalid values",
+    "input": {
+      "message": {
+        "shipping": [
+          {
+            "price": 1
+          },
+          {
+            "price": "2.6"
+          },
+          {
+            "price": "abc"
+          }
+        ]
+      },
+      "operationObject": {
+        "operation": "additionInArray",
+        "args": [
+          {
+            "propertyKey": "price",
+            "arrayKey": "shipping"
+          }
+        ]
+      }
+    },
+    "output": 3.6
+  },
+  {
+    "description": "additionInArray with empty array",
+    "input": {
+      "message": {
+        "shipping": []
+      },
+      "operationObject": {
+        "operation": "additionInArray",
+        "args": [
+          {
+            "propertyKey": "price",
+            "arrayKey": "shipping"
+          }
+        ]
+      }
+    },
+    "output": null
+  },
+  {
+    "description": "concatenationInArray with different types",
+    "input": {
+      "message": {
+        "discount_codes": [
+          {
+            "codes": "abc"
+          },
+          {
+            "codes": "def"
+          },
+          {
+            "codes": 1
+          }
+        ]
+      },
+      "operationObject": {
+        "operation": "concatenationInArray",
+        "args": [
+          {
+            "propertyKey": "codes",
+            "arrayKey": "discount_codes"
+          }
+        ]
+      }
+    },
+    "output": "abc, def, 1"
   }
 ]

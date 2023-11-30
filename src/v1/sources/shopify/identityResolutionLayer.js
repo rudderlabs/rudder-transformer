@@ -18,15 +18,15 @@ const idResolutionLayer = {
   },
 
   /**
-   * This function retrieves anonymousId and sessionId in folowing steps:
+   * This function retrieves anonymousId and sessionId in the following steps:
    * 1. Checks for `rudderAnonymousId`and `rudderSessionId in `note_atrributes`
    * 2. Checks in dbData
    * 3. This means we don't have `anonymousId` and hence events CAN NOT be stitched and we check for cartToken
    *    a. if cartToken is available we return its hash value
-   *    b. else we check if the event is an SHOPIFY_ADMIN_ONLY_EVENT
+   *    b. else we check if the event is a SHOPIFY_ADMIN_ONLY_EVENT
    *       -> if true we return `null`;
-   *       -> else we don't have any identifer (very edge case) we return `random anonymousId`
-   *    No Random SessionId is generated as its not a required field
+   *       -> else we don't have any identifier (very edge case) we return `random anonymousId`
+   *    No Random SessionId is generated as it's not a required field
    * @param {*} message
    * @param {*} metricMetadata
    * @returns

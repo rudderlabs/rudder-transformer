@@ -76,6 +76,25 @@ function handleContextData(payload, destinationConfig, message) {
 }
 
 /**
+ * This function is used for replacing '&', '<' and '>' with their respective HTML entities
+ * @param {*} inputString
+ * @returns string with HTML entities replaced
+ *
+ */
+
+function escapeToHTML(inputString) {
+  return inputString.replace(
+    /[&<>]/g,
+    (match) =>
+      ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+      }[match]),
+  );
+}
+
+/**
  * This function is used for populating the eVars and hVars in the payload
  * @param {*} destVarMapping
  * @param {*} message
@@ -90,16 +109,16 @@ function rudderPropToDestMap(destVarMapping, message, payload, destVarStrPrefix)
     let val = get(message, `properties.${key}`);
     if (isDefinedAndNotNull(val)) {
       const destVarKey = destVarStrPrefix + destVarMapping[key];
-      mappedVar[destVarKey] = val;
+      mappedVar[destVarKey] = escapeToHTML(val);
     } else {
       SOURCE_KEYS.some((sourceKey) => {
         val = getMappingFieldValueFormMessage(message, sourceKey, key);
         if (isDefinedAndNotNull(val)) {
-          mappedVar[`${destVarStrPrefix}${[destVarMapping[key]]}`] = val;
+          mappedVar[`${destVarStrPrefix}${[destVarMapping[key]]}`] = escapeToHTML(val);
         } else {
           val = getValueByPath(message, key);
           if (isDefinedAndNotNull(val)) {
-            mappedVar[`${destVarStrPrefix}${[destVarMapping[key]]}`] = val;
+            mappedVar[`${destVarStrPrefix}${[destVarMapping[key]]}`] = escapeToHTML(val);
           }
         }
       });
@@ -200,4 +219,5 @@ module.exports = {
   handleList,
   handleCustomProperties,
   stringifyValueAndJoinWithDelimiter,
+  escapeToHTML,
 };

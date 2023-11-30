@@ -96,7 +96,7 @@ const responseHandler = (destinationResponse) => {
   }
 
   throw new NetworkError(
-    `Campaign Manager: Error proxy v1 during CAMPAIGN_MANAGER response transformation`,
+    `Campaign Manager: Error transformer proxy v1 during CAMPAIGN_MANAGER response transformation`,
     500,
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),

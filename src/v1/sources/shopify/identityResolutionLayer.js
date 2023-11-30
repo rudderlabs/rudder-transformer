@@ -19,7 +19,7 @@ const idResolutionLayer = {
 
   /**
    * This function retrieves anonymousId and sessionId in the following steps:
-   * 1. Checks for `rudderAnonymousId`and `rudderSessionId in `note_atrributes`
+   * 1. Checks for `rudderAnonymousId`and `rudderSessionId in `note_attributes`
    * 2. Checks in dbData
    * 3. This means we don't have `anonymousId` and hence events CAN NOT be stitched and we check for cartToken
    *    a. if cartToken is available we return its hash value

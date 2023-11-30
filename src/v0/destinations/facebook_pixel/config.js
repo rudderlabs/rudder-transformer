@@ -1,5 +1,7 @@
 const { getMappingConfig } = require('../../util');
 
+const VERSION = 'v18.0';
+
 const CONFIG_CATEGORIES = {
   USERDATA: {
     standard: false,
@@ -106,6 +108,7 @@ const STANDARD_ECOMM_EVENTS_TYPE = [
 ];
 
 module.exports = {
+  VERSION,
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   ACTION_SOURCES_VALUES,

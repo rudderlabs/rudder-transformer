@@ -1,7 +1,7 @@
 export const data = [
   {
     name: 'adobe_analytics',
-    description: 'Test 0',
+    description: 'Test 0: [ECom]: Product Viewed',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -31,7 +31,7 @@ export const data = [
                   referring_domain: 'google.com',
                   search: 'estore bestseller',
                   title: 'The best sellers offered by EStore',
-                  url: 'https://www.estore.com/best-seller/1',
+                  url: 'https://www.estore.com/best-seller/News & Sports?ik=123&ij=456',
                   name: 'Best Seller',
                 },
                 screen: {
@@ -61,7 +61,7 @@ export const data = [
                 coupon: 'DISC21',
                 currency: 'USD',
                 position: 1,
-                url: 'https://www.website.com/product/path',
+                url: 'https://www.website.com/product/path?ik=123&ij=456',
                 image_url: 'https://www.website.com/product/path.png',
                 currencyMerch: 25,
                 addressMerch: 'Delhi',
@@ -170,7 +170,7 @@ export const data = [
                 JSON_ARRAY: {},
                 XML: {
                   payload:
-                    '<?xml version="1.0" encoding="utf-8"?><request><browserHeight>1794</browserHeight><browserWidth>1080</browserWidth><campaign>sales campaign</campaign><channel>web</channel><currencyCode>USD</currencyCode><ipaddress>127.0.0.1</ipaddress><language>en-US</language><userAgent>Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)</userAgent><referrer>https://www.google.com/search?q=estore+bestseller</referrer><contextData><tt01>t01</tt01><tt02>t02</tt02><roott01>roottval001</roott01></contextData><eVar5>Kolkata</eVar5><eVar4>9935400932</eVar4><eVar6>RudderLabs JavaScript SDK</eVar6><list1>r15,faze90R</list1><list2>ciaz,hummer,thar</list2><pageUrl>https://www.estore.com/best-seller/1</pageUrl><pageName>Best Seller</pageName><prop1>custompropval1</prop1><prop2>custompropval2</prop2><timestamp>2020-01-09T10:01:53.558Z</timestamp><marketingcloudorgid>mktcloudid001</marketingcloudorgid><events>prodView</events><products>Games;Game;11;148.39</products><reportSuiteID>footlockerrudderstackpoc</reportSuiteID></request>',
+                    '<?xml version="1.0" encoding="utf-8"?><request><browserHeight>1794</browserHeight><browserWidth>1080</browserWidth><campaign>sales campaign</campaign><channel>web</channel><currencyCode>USD</currencyCode><ipaddress>127.0.0.1</ipaddress><language>en-US</language><userAgent>Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)</userAgent><referrer>https://www.google.com/search?q=estore+bestseller</referrer><contextData><tt01>t01</tt01><tt02>t02</tt02><roott01>roottval001</roott01></contextData><eVar5>Kolkata</eVar5><eVar4>9935400932</eVar4><eVar6>RudderLabs JavaScript SDK</eVar6><list1>r15,faze90R</list1><list2>ciaz,hummer,thar</list2><pageUrl>https://www.estore.com/best-seller/News%20&%20Sports?ik=123&ij=456</pageUrl><pageName>Best Seller</pageName><prop1>custompropval1</prop1><prop2>custompropval2</prop2><timestamp>2020-01-09T10:01:53.558Z</timestamp><marketingcloudorgid>mktcloudid001</marketingcloudorgid><events>prodView</events><products>Games;Game;11;148.39</products><reportSuiteID>footlockerrudderstackpoc</reportSuiteID></request>',
                 },
                 FORM: {},
               },
@@ -185,7 +185,7 @@ export const data = [
   },
   {
     name: 'adobe_analytics',
-    description: 'Test 1',
+    description: 'Test 1: [ECom]: Product Added',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -356,7 +356,7 @@ export const data = [
   },
   {
     name: 'adobe_analytics',
-    description: 'Test 2',
+    description: 'Test 2: [ECom]: Product Removed',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -527,7 +527,7 @@ export const data = [
   },
   {
     name: 'adobe_analytics',
-    description: 'Test 3',
+    description: 'Test 3: [ECom]: Cart Viewed',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -708,7 +708,7 @@ export const data = [
   },
   {
     name: 'adobe_analytics',
-    description: 'Test 4',
+    description: 'Test 4: [ECom]: Checkout started',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -896,7 +896,7 @@ export const data = [
   },
   {
     name: 'adobe_analytics',
-    description: 'Test 5',
+    description: 'Test 5: [ECom]: Order Completed',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1085,7 +1085,7 @@ export const data = [
   },
   {
     name: 'adobe_analytics',
-    description: 'Test 6',
+    description: 'Test 6: Cart Opened',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1265,7 +1265,7 @@ export const data = [
   },
   {
     name: 'adobe_analytics',
-    description: 'Test 7',
+    description: 'Test 7: [Custom] Watched Video',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1285,7 +1285,7 @@ export const data = [
                   term: 'event data',
                   content: 'Make sense of the modern data stack',
                 },
-                library: { name: 'RudderLabs JavaScript SDK', version: '2.9.1' },
+                library: { name: 'RudderLabs JavaScript SDK <Custom>', version: '2.9.1' },
                 locale: 'en-US',
                 page: {
                   path: '/best-seller/1',
@@ -1311,7 +1311,7 @@ export const data = [
               traits: { roott01: 'roottval001' },
               event: 'Watched Video',
               integrations: { All: true },
-              properties: { plan: 'growth', video: 'TEDxGROWTH' },
+              properties: { plan: 'growth', video: 'TEDxGROWTH&MARKETING' },
               originalTimestamp: '2020-01-09T10:01:53.558Z',
               type: 'track',
               sentAt: '2020-01-09T10:02:03.257Z',
@@ -1412,7 +1412,7 @@ export const data = [
                 JSON_ARRAY: {},
                 XML: {
                   payload:
-                    '<?xml version="1.0" encoding="utf-8"?><request><browserHeight>1794</browserHeight><browserWidth>1080</browserWidth><campaign>sales campaign</campaign><channel>web</channel><ipaddress>127.0.0.1</ipaddress><language>en-US</language><userAgent>Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)</userAgent><referrer>https://www.google.com/search?q=estore+bestseller</referrer><contextData><roott01>roottval001</roott01></contextData><eVar6>RudderLabs JavaScript SDK</eVar6><eVar2>TEDxGROWTH</eVar2><linkType>o</linkType><linkName>Watched Video</linkName><linkURL>https://www.estore.com/best-seller/1</linkURL><prop2>growth</prop2><timestamp>2020-01-09T10:01:53.558Z</timestamp><marketingcloudorgid>mktcloudid001</marketingcloudorgid><events>event1</events><products/><reportSuiteID>footlockerrudderstackpoc</reportSuiteID></request>',
+                    '<?xml version="1.0" encoding="utf-8"?><request><browserHeight>1794</browserHeight><browserWidth>1080</browserWidth><campaign>sales campaign</campaign><channel>web</channel><ipaddress>127.0.0.1</ipaddress><language>en-US</language><userAgent>Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)</userAgent><referrer>https://www.google.com/search?q=estore+bestseller</referrer><contextData><roott01>roottval001</roott01></contextData><eVar6>RudderLabs JavaScript SDK &lt;Custom&gt;</eVar6><eVar2>TEDxGROWTH&amp;MARKETING</eVar2><linkType>o</linkType><linkName>Watched Video</linkName><linkURL>https://www.estore.com/best-seller/1</linkURL><prop2>growth</prop2><timestamp>2020-01-09T10:01:53.558Z</timestamp><marketingcloudorgid>mktcloudid001</marketingcloudorgid><events>event1</events><products/><reportSuiteID>footlockerrudderstackpoc</reportSuiteID></request>',
                 },
                 FORM: {},
               },
@@ -1427,7 +1427,7 @@ export const data = [
   },
   {
     name: 'adobe_analytics',
-    description: 'Test 8',
+    description: 'Test 8: Common Page Call',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1597,7 +1597,7 @@ export const data = [
   },
   {
     name: 'adobe_analytics',
-    description: 'Test 9',
+    description: 'Test 9: Currency test event',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1789,7 +1789,7 @@ export const data = [
   },
   {
     name: 'adobe_analytics',
-    description: 'Test 10',
+    description: 'Test 10: Override feature test',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1988,7 +1988,7 @@ export const data = [
   },
   {
     name: 'adobe_analytics',
-    description: 'Test 11',
+    description: 'Test 11: Override hiers test',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -2188,7 +2188,7 @@ export const data = [
   },
   {
     name: 'adobe_analytics',
-    description: 'Test 12',
+    description: 'Test 12: product level eVaR',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -2390,7 +2390,7 @@ export const data = [
   },
   {
     name: 'adobe_analytics',
-    description: 'Test 13',
+    description: 'Test 13: [ERROR]: Invalid message type: Identify',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -2523,7 +2523,7 @@ export const data = [
   },
   {
     name: 'adobe_analytics',
-    description: 'Test 14',
+    description: 'Test 14: [ERROR]: Message Type is not present.',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -2697,7 +2697,8 @@ export const data = [
   },
   {
     name: 'adobe_analytics',
-    description: 'Test 15',
+    description:
+      'Test 15: [ERROR]: The event is not a supported ECOM event or a mapped custom event.',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -2872,7 +2873,7 @@ export const data = [
   },
   {
     name: 'adobe_analytics',
-    description: 'Test 16',
+    description: 'Test 16: Test overrideEventName property',
     feature: 'processor',
     module: 'destination',
     version: 'v0',

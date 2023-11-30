@@ -135,14 +135,14 @@ export const data = [
     },
     output: {
       response: {
-        status: 500,
+        status: 400,
         body: {
           output: {
-            status: 500,
-            message: 'Campaign Manager: Retrying during CAMPAIGN_MANAGER response transformation',
+            status: 400,
+            message: 'Campaign Manager: Aborting during CAMPAIGN_MANAGER response transformation',
             statTags: {
               errorCategory: 'network',
-              errorType: 'retryable',
+              errorType: 'aborted',
               destType: 'CAMPAIGN_MANAGER',
               module: 'destination',
               implementation: 'native',

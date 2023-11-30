@@ -54,9 +54,11 @@ steps:
 
       - name: eventType
         template: |
-          console.log(.message.event)
-          let eventNames = .destination.Config.eventsMapping.(){.from === .message.event}.to[] ?? [];
-          console.log(eventNames)
+          let event = .message.event;
+          let eventInLowerCase = event.toLowerCase();
+          let eventNames = .destination.Config.eventsMapping.(){.from === event}.to[] ?? [];
+          eventNames.length === 0 ? eventNames = $.ecomEventMaps.(){eventInLowerCase in .src}.dest[] ?? [];
+          const event_type = eventNames.length === 0 ? ({"tracking_type": "Custom", "custom_event_name": event}): ({tracking_type: eventNames[0]});
 
       - name: productFields
         condition: .message.properties.products
@@ -92,6 +94,7 @@ steps:
           {
             "click_id": .message.properties.clickId,
             "event_at": .message.timestamp || .message.originalTimestamp,
+            "event_type": $.outputs.prepareTrackPayload.eventType,
             "user": $.outputs.prepareTrackPayload.prepareUserObject,
             "event_metadata": $.outputs.prepareTrackPayload.combineAllEcomFields,
           }

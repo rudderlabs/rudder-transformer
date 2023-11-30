@@ -1,7 +1,7 @@
 export const data = [
   {
     name: 'campaign_manager',
-    description: 'Sucess insert request',
+    description: 'Sucess insert request V0',
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v0',

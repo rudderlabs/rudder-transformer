@@ -1,7 +1,6 @@
 {
   "routerTransform": {
     "ACTIVE_CAMPAIGN": true,
-    "ADOBE_ANALYTICS": true,
     "ALGOLIA": true,
     "CANDU": true,
     "DELIGHTED": true,

@@ -1,55 +1,38 @@
-const { NetworkError } = require('@rudderstack/integrations-lib');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { proxyRequest, prepareProxyRequest } = require('../../../adapters/network');
 const {
-  getDynamicErrorType,
   processAxiosResponse,
 } = require('../../../adapters/utils/networkUtils');
 const { DESTINATION } = require('./config');
-const { isDefinedAndNotNull, isDefined, isHttpStatusSuccess } = require('../../util');
 
-const tags = require('../../util/tags');
+
+/**
+ * Extract data inside different tags from an xml payload
+ * @param {*} xml 
+ * @param {*} tagName 
+ * @returns data inside the tagName
+ */
+function extractContent(xmlPayload, tagName) {
+  const pattern = new RegExp(`<${tagName}>(.*?)</${tagName}>`);
+  const match = xmlPayload.match(pattern);
+  return match ? match[1] : null;
+}
 
 const responseHandler = (destinationResponse, dest) => {
   const message = `[${DESTINATION}] - Request Processed Successfully`;
-  let { status, reason } = destinationResponse;
-  const { response } = destinationResponse;
-  if (status === 204) {
-    // GA4 always returns a 204 response, other than in case of
-    // validation endpoint.
-    status = 200;
-  } else if (
-    status === 200 &&
-    isDefinedAndNotNull(response) &&
-    isDefined(response.validationMessages)
-  ) {
-    // for GA4 debug validation endpoint, status is always 200
-    // validationMessages[] is empty, thus event is valid
-    if (response.validationMessages?.length === 0) {
-      status = 200;
-    } else {
-      // Build the error in case the validationMessages[] is non-empty
-      const { description, validationCode, fieldPath } = response.validationMessages[0];
-      throw new NetworkError(
-        `Validation Server Response Handler:: Validation Error for ${dest} of field path :${fieldPath} | ${validationCode}-${description}`,
-        status,
-        {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
-        },
-        response?.validationMessages[0]?.description,
-      );
-    }
-  }
+  const { response, status } = destinationResponse;
 
-  // if the response from destination is not a success case build an explicit error
-  if (!isHttpStatusSuccess(status)) {
-    throw new NetworkError(
-      `[GA4 Response Handler] Request failed for destination ${dest} with status: ${status}`,
-      status,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
-      },
-      destinationResponse,
-    );
+  // Extract values between different tags
+  const responseStatus = extractContent(response, 'status');
+  const reason = extractContent(response, 'reason');
+
+  // if the status tag in XML contains FAILURE, we build and throw an explicit error
+  if (responseStatus === 'FAILURE') {
+    if (reason) {
+      throw new InstrumentationError(`[${DESTINATION} Response Handler] Request failed for destination ${dest} : ${reason}` )
+    } else {
+      throw new InstrumentationError(`[${DESTINATION} Response Handler] Request failed for destination ${dest} with a general error`)
+    }
   }
 
   return {

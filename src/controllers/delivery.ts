@@ -16,9 +16,15 @@ export class DeliveryController {
     const requestMetadata = MiscService.getRequestMetadata(ctx);
     const event = ctx.request.body as ProcessorTransformationOutput;
     const { destination }: { destination: string } = ctx.params;
+    const { version }: { version: string } = ctx.params;
     const integrationService = ServiceSelector.getNativeDestinationService();
     try {
-      deliveryResponse = await integrationService.deliver(event, destination, requestMetadata);
+      deliveryResponse = await integrationService.deliver(
+        event,
+        destination,
+        requestMetadata,
+        version,
+      );
     } catch (error: any) {
       const metaTO = integrationService.getTags(
         destination,

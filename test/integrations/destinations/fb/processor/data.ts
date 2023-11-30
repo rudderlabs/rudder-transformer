@@ -2361,7 +2361,7 @@ export const data = [
                 },
                 JSON: {},
               },
-              endpoint: 'https://graph.facebook.com/v17.0/RudderFbApp/activities',
+              endpoint: `https://graph.facebook.com/${VERSION}/RudderFbApp/activities`,
               files: {},
               headers: {
                 'x-forwarded-for': '223.190.82.63',

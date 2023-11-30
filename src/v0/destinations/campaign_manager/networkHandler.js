@@ -9,8 +9,7 @@ const {
 } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function checkIfFailuresAreRetryable(response, proxyOutputObj) {
+function checkIfFailuresAreRetryable(response) {
   const { status } = response;
   try {
     if (Array.isArray(status)) {

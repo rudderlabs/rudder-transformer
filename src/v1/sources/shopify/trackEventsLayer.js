@@ -175,6 +175,15 @@ const TrackLayer = {
     return updatedCartProperties;
   },
 
+  /**
+   * We are fetching the line_items from dbData giving us the previous cartState and then compare it with with current one as follows
+   * First we are checking for the commmon ones and comparing the quantity to decide if its `Product Added or Product Removed` then we deleting that id from prev cart state  (L190-l213)
+    Then we are checking for the items that were present in the previous cart only as common ones are already deleted from previous step (Product Removed)
+   * @param {*} event 
+   * @param {*} dbData 
+   * @param {*} metricMetadata 
+   * @returns List of Product Added Or Product Removed Events
+   */
   async generateProductAddedAndRemovedEvents(event, dbData, metricMetadata) {
     const events = [];
     const prevLineItems = dbData?.lineItems;

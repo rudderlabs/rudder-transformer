@@ -21,7 +21,7 @@ const getDataFromRedis = async (key, metricMetadata) => {
       ...metricMetadata,
     });
     const dbData = await RedisDB.getVal(key);
-    if (dbData === null) {
+    if (dbData === null || typeof dbData === "object" && Object.keys(dbData).length === 0) {
       stats.increment('shopify_redis_no_val', {
         ...metricMetadata,
       });
@@ -76,14 +76,14 @@ const getLineItems = (cartEvent) => {
     const { line_items } = cartEvent;
     line_items.forEach((element) => {
       lineItems[element.id] = {
-        quantity: element?.quantity,
-        variant_id: element?.variant_id,
-        key: element?.key,
-        price: element?.price,
-        product_id: element?.product_id,
-        sku: element?.sku,
-        title: element?.title,
-        vendor: element?.vendor,
+        quantity: element.quantity,
+        variant_id: element.variant_id,
+        key: element.key,
+        price: element.price,
+        product_id: element.product_id,
+        sku: element.sku,
+        title: element.title,
+        vendor: element.vendor,
       };
     });
     return lineItems;

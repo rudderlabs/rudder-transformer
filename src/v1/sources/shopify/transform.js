@@ -13,26 +13,26 @@ const { IDENTIFY_TOPICS, INTEGRATION } = require('./config');
 const { process: processV0 } = require('../../../v0/sources/shopify/transform');
 
 const processEvent = async (inputEvent, metricMetadata) => {
-  let message;
+  let messages;
   let dbData = null;
   const shopifyEvent = { ...inputEvent };
   const shopifyTopic = getShopifyTopic(shopifyEvent);
   delete shopifyEvent.query_parameters;
   if (IDENTIFY_TOPICS.includes(shopifyTopic)) {
-    message = [identifyLayer.identifyPayloadBuilder(shopifyEvent)];
+    messages = [identifyLayer.identifyPayloadBuilder(shopifyEvent)];
   } else {
     const cartToken = getCartToken(shopifyEvent, shopifyTopic);
     if (isDefinedAndNotNull(cartToken)) {
       dbData = await getDataFromRedis(cartToken, metricMetadata);
     }
-    message = await TrackLayer.processTrackEvent(
+    messages = await TrackLayer.processTrackEvent(
       shopifyEvent,
       shopifyTopic,
       dbData,
       metricMetadata,
     );
   }
-  message.forEach((event) => {
+  messages.forEach((event) => {
     // check for if message is NO_OPERATION_SUCCESS Payload
     if (event.outputToSource) {
       return event;
@@ -63,7 +63,7 @@ const processEvent = async (inputEvent, metricMetadata) => {
     event = removeUndefinedAndNullValues(event);
     return event;
   });
-  return message;
+  return messages;
 };
 
 const process = async (inputEvent) => {
@@ -73,6 +73,7 @@ const process = async (inputEvent) => {
   }
   const metricMetadata = {
     writeKey: event.query_parameters?.writeKey?.[0],
+    sourceId: source.ID,
     source: 'SHOPIFY',
   };
   if (IdentifierEventLayer.isIdentifierEvent(event)) {

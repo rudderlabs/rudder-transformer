@@ -5,17 +5,17 @@ const { RedisDB } = require('../../../util/redis/redisConnector');
 const logger = require('../../../logger');
 
 const IdentifierEventLayer = {
-  isIdentifierEvent(event) {
-    return IDENTIFIER_EVENTS.includes(event?.event);
+  isIdentifierEvent(message) {
+    return IDENTIFIER_EVENTS.includes(message?.event);
   },
 
-  async processIdentifierEvent(event, metricMetadata) {
+  async processIdentifierEvent(message, metricMetadata) {
     let value;
     let field;
-    if (event.event === 'rudderIdentifier') {
+    if (message.event === 'rudderIdentifier') {
       field = 'anonymousId';
-      const lineItemshash = getLineItemsToStore(event.cart);
-      value = ['anonymousId', event.anonymousId, 'lineItems', lineItemshash];
+      const lineItemshash = getLineItemsToStore(message.cart);
+      value = ['anonymousId', message.anonymousId, 'lineItems', lineItemshash];
       stats.increment('shopify_redis_calls', {
         type: 'set',
         field: 'lineItems',
@@ -28,7 +28,7 @@ const IdentifierEventLayer = {
       */
     } else {
       field = 'sessionId';
-      value = ['sessionId', event.sessionId];
+      value = ['sessionId', message.sessionId];
       /* cart_token: {
           anonymousId:'anon_id1',
           lineItemshash:'90fg348fg83497u',
@@ -42,7 +42,7 @@ const IdentifierEventLayer = {
         field,
         ...metricMetadata,
       });
-      await RedisDB.setVal(`${event.cartToken}`, value);
+      await RedisDB.setVal(`${message.cartToken}`, value);
     } catch (e) {
       logger.debug(`{{SHOPIFY::}} cartToken map set call Failed due redis error ${e}`);
       stats.increment('shopify_redis_failures', {

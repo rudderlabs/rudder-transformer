@@ -35,7 +35,7 @@ const enrichPayload = {
       });
     } catch (e) {
       logger.debug(
-        `${shopifyTopic} is either not an ecom event or does not have mapping json-> ${e}`,
+        `${shopifyTopic} is either not an ecom event or does not have mapping json-> ${e.message}`,
       );
       return updatedMessage;
     }

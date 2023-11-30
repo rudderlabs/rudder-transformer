@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import groupBy from 'lodash/groupBy';
 import cloneDeep from 'lodash/cloneDeep';
-import IntegrationDestinationService from '../../interfaces/DestinationService';
+import { DestinationService } from '../../interfaces/DestinationService';
 import {
   DeliveryResponse,
   ErrorDetailer,
@@ -14,12 +14,12 @@ import {
   UserDeletionRequest,
   UserDeletionResponse,
 } from '../../types/index';
-import DestinationPostTransformationService from './postTransformation';
+import { DestinationPostTransformationService } from './postTransformation';
 import networkHandlerFactory from '../../adapters/networkHandlerFactory';
-import FetchHandler from '../../helpers/fetchHandlers';
+import { FetchHandler } from '../../helpers/fetchHandlers';
 import tags from '../../v0/util/tags';
 
-export default class NativeIntegrationDestinationService implements IntegrationDestinationService {
+export class NativeIntegrationDestinationService implements DestinationService {
   public init() {}
 
   public getName(): string {
@@ -172,9 +172,10 @@ export default class NativeIntegrationDestinationService implements IntegrationD
     destinationRequest: ProcessorTransformationOutput,
     destinationType: string,
     _requestMetadata: NonNullable<unknown>,
+    version: string,
   ): Promise<DeliveryResponse> {
     try {
-      const networkHandler = networkHandlerFactory.getNetworkHandler(destinationType);
+      const networkHandler = networkHandlerFactory.getNetworkHandler(destinationType, version);
       const rawProxyResponse = await networkHandler.proxy(destinationRequest, destinationType);
       const processedProxyResponse = networkHandler.processAxiosResponse(rawProxyResponse);
       return networkHandler.responseHandler(

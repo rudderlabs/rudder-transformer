@@ -1,5 +1,6 @@
 const set = require('set-value');
 const get = require('get-value');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
   defaultRequestConfig,
   constructPayload,
@@ -11,7 +12,6 @@ const {
 } = require('../../util');
 const { EventType } = require('../../../constants');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
 // This function handles the common response payload for the supported calls
 const responseBuilderSimple = (message, category, destination) => {

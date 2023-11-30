@@ -1,5 +1,10 @@
 /* eslint-disable no-param-reassign */
 const get = require('get-value');
+const {
+  InstrumentationError,
+  NetworkInstrumentationError,
+  NetworkError,
+} = require('@rudderstack/integrations-lib');
 const logger = require('../../../logger');
 const { httpPOST, httpGET } = require('../../../adapters/network');
 const {
@@ -13,11 +18,6 @@ const {
   getFieldValueFromMessage,
 } = require('../../util');
 const { CONFIG_CATEGORIES, LIFECYCLE_STAGE_ENDPOINT } = require('./config');
-const {
-  InstrumentationError,
-  NetworkInstrumentationError,
-  NetworkError,
-} = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 

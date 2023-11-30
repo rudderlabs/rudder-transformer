@@ -1,3 +1,10 @@
+const {
+  NetworkError,
+  ThrottledError,
+  NetworkInstrumentationError,
+  AbortedError,
+  RetryableError,
+} = require('@rudderstack/integrations-lib');
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util/index');
 const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
@@ -6,13 +13,6 @@ const {
   getDynamicErrorType,
   processAxiosResponse,
 } = require('../../../adapters/utils/networkUtils');
-const {
-  NetworkError,
-  ThrottledError,
-  NetworkInstrumentationError,
-  AbortedError,
-  RetryableError,
-} = require('../../util/errorTypes');
 
 //  https://developers.criteo.com/marketing-solutions/v2021.01/docs/how-to-handle-api-errors#:~:text=the%20response%20body.-,401,-Authentication%20error
 // Following fucntion tells us if there is a particular error code in the response.

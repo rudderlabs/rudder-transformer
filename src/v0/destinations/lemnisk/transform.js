@@ -1,3 +1,8 @@
+const {
+  ConfigurationError,
+  TransformationError,
+  InstrumentationError,
+} = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   CONFIG_CATEGORIES,
@@ -14,11 +19,6 @@ const {
   isDefinedAndNotNullAndNotEmpty,
 } = require('../../util');
 const { fetchPlatform } = require('./utils');
-const {
-  ConfigurationError,
-  TransformationError,
-  InstrumentationError,
-} = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (message, category, destination, platform) => {

@@ -1,3 +1,4 @@
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   CONFIG_CATEGORIES,
@@ -14,7 +15,6 @@ const {
   flattenJson,
   simpleProcessRouterDest,
 } = require('../../util');
-const { InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilderSimple = (message, category, destination) => {

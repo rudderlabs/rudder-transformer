@@ -9,7 +9,7 @@ const idResolutionLayer = {
    * returns null if not present or found
    * @param {*} message
    */
-  getRudderIdFromNoteAtrributes(noteAttributes, field) {
+  getRudderIdFromNoteAttributes(noteAttributes, field) {
     const rudderIdObj = noteAttributes.find((obj) => obj.name === field);
     if (isDefinedAndNotNull(rudderIdObj)) {
       return rudderIdObj.value;

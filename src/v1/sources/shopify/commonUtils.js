@@ -71,7 +71,7 @@ const getShopifyTopic = (event) => {
  */
 const getLineItems = (cartEvent) => {
   const lineItems = {};
-  if (cartEvent?.line_items?.length > 0) {
+  if (cartEvent.line_items?.length > 0) {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { line_items } = cartEvent;
     line_items.forEach((element) => {

@@ -1,5 +1,6 @@
 const get = require('get-value');
 const moment = require('moment');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
   SEVERITIES,
   EVENT_ACTIONS,
@@ -9,7 +10,6 @@ const {
   DEFAULT_EVENT_ACTION,
 } = require('./config');
 const { constructPayload, getIntegrationsObj } = require('../../util');
-const { InstrumentationError } = require('../../util/errorTypes');
 
 /**
  * Validates the timestamp

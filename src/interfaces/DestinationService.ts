@@ -10,7 +10,7 @@ import {
   UserDeletionResponse,
 } from '../types/index';
 
-export default interface DestinationService {
+export interface DestinationService {
   getName(): string;
 
   init(): void;
@@ -47,6 +47,7 @@ export default interface DestinationService {
     event: ProcessorTransformationOutput,
     destinationType: string,
     requestMetadata: NonNullable<unknown>,
+    version: string,
   ): Promise<DeliveryResponse>;
 
   processUserDeletion(

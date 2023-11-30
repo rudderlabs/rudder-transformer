@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ConfigFactory, Executor, RudderBaseConfig } from 'rudder-transformer-cdk';
 import path from 'path';
-import IntegrationDestinationService from '../../interfaces/DestinationService';
+import { TransformationError } from '@rudderstack/integrations-lib';
+import { DestinationService } from '../../interfaces/DestinationService';
 import {
   DeliveryResponse,
   ErrorDetailer,
@@ -14,13 +15,12 @@ import {
   UserDeletionRequest,
   UserDeletionResponse,
 } from '../../types/index';
-import { TransformationError } from '../../v0/util/errorTypes';
-import DestinationPostTransformationService from './postTransformation';
+import { DestinationPostTransformationService } from './postTransformation';
 import tags from '../../v0/util/tags';
 import { getErrorInfo } from '../../cdk/v1/handler';
 import { CatchErr } from '../../util/types';
 
-export default class CDKV1DestinationService implements IntegrationDestinationService {
+export class CDKV1DestinationService implements DestinationService {
   public init() {
     ConfigFactory.init({
       basePath: path.resolve(__dirname, '../../cdk/v1'),

@@ -16,16 +16,16 @@ const uaParser = require('ua-parser-js');
 const moment = require('moment-timezone');
 const sha256 = require('sha256');
 const crypto = require('crypto');
-const logger = require('../../logger');
-const stats = require('../../util/stats');
-const { DestCanonicalNames, DestHandlerMap } = require('../../constants/destinationCanonicalNames');
 const {
   InstrumentationError,
   BaseError,
   PlatformError,
   TransformationError,
   OAuthSecretError,
-} = require('./errorTypes');
+} = require('@rudderstack/integrations-lib');
+const logger = require('../../logger');
+const stats = require('../../util/stats');
+const { DestCanonicalNames, DestHandlerMap } = require('../../constants/destinationCanonicalNames');
 const { client: errNotificationClient } = require('../../util/errorNotifier');
 const { HTTP_STATUS_CODES } = require('./constant');
 const {
@@ -2083,6 +2083,31 @@ const IsGzipSupported = (reqMetadata = {}) => {
   return false;
 };
 
+/**
+ * Returns an array containing the values of the specified key from each object in the input array.
+ * If the input array is falsy (null, undefined, empty array), an empty array is returned.
+ *
+ * @param {Array} arr - The input array from which values will be extracted.
+ * @param {string} key - The key of the property whose values will be extracted from each object in the input array.
+ * @returns {Array} - A new array containing the values of the specified key from each object in the input array.
+ *
+ * @example
+ * const configArray = [
+ *   { name: 'John', age: 25 },
+ *   { name: 'Jane', age: 30 },
+ *   { name: 'Bob', age: 35 }
+ * ];
+ *
+ * const result = parseConfigArray(configArray, 'name');
+ *  Output: ['John', 'Jane', 'Bob']
+ */
+const parseConfigArray = (arr, key) => {
+  if (!arr) {
+    return [];
+  }
+  return arr.map((item) => item[key]);
+};
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -2192,4 +2217,5 @@ module.exports = {
   isValidInteger,
   isNewStatusCodesAccepted,
   IsGzipSupported,
+  parseConfigArray,
 };

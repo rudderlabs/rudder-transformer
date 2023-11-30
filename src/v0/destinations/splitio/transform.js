@@ -1,3 +1,4 @@
+const { TransformationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
@@ -18,7 +19,6 @@ const {
   simpleProcessRouterDest,
   ErrorMessage,
 } = require('../../util');
-const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function responseBuilderSimple(payload, category, destination) {

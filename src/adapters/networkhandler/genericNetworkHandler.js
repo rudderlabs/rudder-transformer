@@ -1,7 +1,7 @@
+const { NetworkError } = require('@rudderstack/integrations-lib');
 const { isHttpStatusSuccess } = require('../../v0/util/index');
 const { proxyRequest, prepareProxyRequest } = require('../network');
 const { getDynamicErrorType, processAxiosResponse } = require('../utils/networkUtils');
-const { NetworkError } = require('../../v0/util/errorTypes');
 const tags = require('../../v0/util/tags');
 
 /**

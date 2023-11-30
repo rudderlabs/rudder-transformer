@@ -1,6 +1,7 @@
 /* eslint-disable no-nested-ternary */
 const get = require('get-value');
 const md5 = require('md5');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 const { Event, GA_ENDPOINT, ConfigCategory, mappingConfig, nameToEventMap } = require('./config');
 const { setContextualFields } = require('./utils');
@@ -19,7 +20,6 @@ const {
 } = require('../../util');
 
 const { isDefinedAndNotNull } = require('../../util');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
 const gaDisplayName = 'Google Analytics';
 

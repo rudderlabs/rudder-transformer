@@ -1,6 +1,8 @@
 /* eslint-disable no-nested-ternary,no-param-reassign */
 const lodash = require('lodash');
 const get = require('get-value');
+const { InstrumentationError, NetworkError } = require('@rudderstack/integrations-lib');
+const { FilteredEventsError } = require('../../util/errorTypes');
 const {
   BrazeDedupUtility,
   CustomAttributeOperationUtil,
@@ -24,11 +26,6 @@ const {
   simpleProcessRouterDest,
   isNewStatusCodesAccepted,
 } = require('../../util');
-const {
-  InstrumentationError,
-  NetworkError,
-  FilteredEventsError,
-} = require('../../util/errorTypes');
 const {
   ConfigCategory,
   mappingConfig,

@@ -1,4 +1,5 @@
 /* eslint-disable no-nested-ternary */
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   isEmptyObject,
@@ -29,7 +30,6 @@ const {
   groupMapping,
   identifyMapping,
 } = require('./config');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**

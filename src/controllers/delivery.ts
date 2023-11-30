@@ -1,24 +1,30 @@
 import { Context } from 'koa';
-import MiscService from '../services/misc';
+import { MiscService } from '../services/misc';
 import { DeliveryResponse, ProcessorTransformationOutput } from '../types/index';
-import ServiceSelector from '../helpers/serviceSelector';
-import DeliveryTestService from '../services/delivertTest/deliveryTest';
-import ControllerUtility from './util';
+import { ServiceSelector } from '../helpers/serviceSelector';
+import { DeliveryTestService } from '../services/delivertTest/deliveryTest';
+import { ControllerUtility } from './util';
 import logger from '../logger';
-import DestinationPostTransformationService from '../services/destination/postTransformation';
+import { DestinationPostTransformationService } from '../services/destination/postTransformation';
 import tags from '../v0/util/tags';
 import { FixMe } from '../util/types';
 
-export default class DeliveryController {
+export class DeliveryController {
   public static async deliverToDestination(ctx: Context) {
     logger.debug('Native(Delivery):: Request to transformer::', JSON.stringify(ctx.request.body));
     let deliveryResponse: DeliveryResponse;
     const requestMetadata = MiscService.getRequestMetadata(ctx);
     const event = ctx.request.body as ProcessorTransformationOutput;
     const { destination }: { destination: string } = ctx.params;
+    const { version }: { version: string } = ctx.params;
     const integrationService = ServiceSelector.getNativeDestinationService();
     try {
-      deliveryResponse = await integrationService.deliver(event, destination, requestMetadata);
+      deliveryResponse = await integrationService.deliver(
+        event,
+        destination,
+        requestMetadata,
+        version,
+      );
     } catch (error: any) {
       const metaTO = integrationService.getTags(
         destination,

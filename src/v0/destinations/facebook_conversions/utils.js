@@ -1,3 +1,4 @@
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
   CONFIG_CATEGORIES,
   OTHER_STANDARD_EVENTS,
@@ -8,7 +9,6 @@ const {
 } = require('./config');
 const { constructPayload, isObject, isAppleFamily } = require('../../util');
 const { getContentType, getContentCategory } = require('../../util/facebookUtils');
-const { InstrumentationError } = require('../../util/errorTypes');
 
 const getActionSource = (payload, fallbackActionSource) => {
   let actionSource = fallbackActionSource;
@@ -44,7 +44,11 @@ const getCategoryFromEvent = (eventName) => {
   return category;
 };
 
-const populateContentsAndContentIDs = (productPropertiesArray, fallbackQuantity) => {
+const populateContentsAndContentIDs = (
+  productPropertiesArray,
+  fallbackQuantity,
+  fallbackDeliveryCategory,
+) => {
   const contentIds = [];
   const contents = [];
   if (Array.isArray(productPropertiesArray)) {
@@ -57,6 +61,7 @@ const populateContentsAndContentIDs = (productPropertiesArray, fallbackQuantity)
             id: productId,
             quantity: productProps.quantity || fallbackQuantity || 1,
             item_price: productProps.price,
+            delivery_category: productProps.delivery_category || fallbackDeliveryCategory,
           });
         }
       }
@@ -142,6 +147,7 @@ const populateCustomDataBasedOnCategory = (customData, message, category, catego
       const { contentIds, contents } = populateContentsAndContentIDs(
         message.properties?.products,
         message.properties?.quantity,
+        message.properties?.delivery_category,
       );
 
       const contentCategory = eventTypeCustomData.content_category;

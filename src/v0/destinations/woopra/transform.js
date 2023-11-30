@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 const { set, get } = require('lodash');
+const { TransformationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
   defaultRequestConfig,
   constructPayload,
@@ -12,7 +13,6 @@ const {
 const { EventType } = require('../../../constants');
 const { BASE_URL, mappingConfig, ConfigCategories } = require('./config');
 const { refinePayload, getEvent } = require('./utils');
-const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
 
 const responseBuilder = (payload, endpoint, method, projectName) => {
   if (!payload) {

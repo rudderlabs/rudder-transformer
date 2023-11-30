@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 const get = require('get-value');
 const moment = require('moment');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
@@ -13,7 +14,6 @@ const { EventType } = require('../../../constants');
 const {
   constructPayload,
   extractCustomFields,
-  flattenJson,
   getIntegrationsObj,
   getValidDynamicFormConfig,
   simpleProcessRouterDest,
@@ -33,8 +33,6 @@ const {
   fetchUserData,
   formingFinalResponse,
 } = require('../../util/facebookUtils');
-
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
 const responseBuilderSimple = (message, category, destination) => {
   const { Config, ID } = destination;
@@ -74,8 +72,11 @@ const responseBuilderSimple = (message, category, destination) => {
   commonData.action_source = getActionSource(commonData, actionSource);
 
   let customData = {};
-  customData = flattenJson(
-    extractCustomFields(message, customData, ['properties'], FB_CONVERSIONS_DEFAULT_EXCLUSION),
+  customData = extractCustomFields(
+    message,
+    customData,
+    ['properties'],
+    FB_CONVERSIONS_DEFAULT_EXCLUSION,
   );
 
   customData = transformedPayloadData(

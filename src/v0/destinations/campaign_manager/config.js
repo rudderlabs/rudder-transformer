@@ -9,6 +9,8 @@ const ConfigCategories = {
   },
 };
 
+const MAX_BATCH_CONVERSATIONS_SIZE = 1000;
+
 const EncryptionEntityType = [
   'ENCRYPTION_ENTITY_TYPE_UNKNOWN',
   'DCM_ACCOUNT',
@@ -28,4 +30,5 @@ module.exports = {
   BASE_URL,
   EncryptionEntityType,
   EncryptionSource,
+  MAX_BATCH_CONVERSATIONS_SIZE,
 };

@@ -1,3 +1,4 @@
+const { TransformationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   defaultRequestConfig,
@@ -19,7 +20,6 @@ const {
   createDeclinePayloadBuilder,
 } = require('./util');
 const { PROPERTIES, END_USER_PROPERTIES } = require('./config');
-const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
 
 const responseBuilder = async (payload, endpoint, method, accessToken) => {
   if (payload) {

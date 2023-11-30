@@ -1,3 +1,4 @@
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const { ConfigCategory, mappingConfig, ENDPOINT, API_VERSION } = require('./config');
 const {
@@ -7,7 +8,6 @@ const {
   constructPayload,
   simpleProcessRouterDest,
 } = require('../../util');
-const { InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function preparePayload(message, name, destination) {

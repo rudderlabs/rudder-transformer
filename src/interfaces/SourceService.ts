@@ -1,6 +1,6 @@
 import { MetaTransferObject, SourceTransformationResponse } from '../types/index';
 
-export default interface SourceService {
+export interface SourceService {
   getTags(): MetaTransferObject;
 
   sourceTransformRoutine(

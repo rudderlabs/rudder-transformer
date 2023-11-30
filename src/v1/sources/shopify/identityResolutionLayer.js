@@ -37,8 +37,8 @@ const idResolutionLayer = {
     const noteAttributes = message.properties?.note_attributes;
     // Giving Priority to note_attributes to fetch rudderAnonymousId over Redis due to better efficiency
     if (isDefinedAndNotNull(noteAttributes)) {
-      anonymousId = this.getRudderIdFromNoteAtrributes(noteAttributes, 'rudderAnonymousId');
-      sessionId = this.getRudderIdFromNoteAtrributes(noteAttributes, 'rudderSessionId');
+      anonymousId = this.getRudderIdFromNoteAttributes(noteAttributes, 'rudderAnonymousId');
+      sessionId = this.getRudderIdFromNoteAttributes(noteAttributes, 'rudderSessionId');
       if (anonymousId && sessionId) {
         return { anonymousId, sessionId };
       }

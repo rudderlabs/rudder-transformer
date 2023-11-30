@@ -213,6 +213,70 @@
         },
         "output": {
             "context": {
+                "traits": {
+                    "email": "anuraj@rudderstack.com",
+                    "firstName": "Anuraj",
+                    "lastName": "Guha",
+                    "phone": "+919876543210",
+                    "addressList": [
+                        {
+                            "id": 6947581821116,
+                            "customer_id": 5747017285820,
+                            "first_name": "Anuraj",
+                            "last_name": "Guha",
+                            "company": "Rudderstack",
+                            "address1": "Home",
+                            "address2": "Apartment",
+                            "city": "Kolkata",
+                            "province": "West Bengal",
+                            "country": "India",
+                            "zip": "708091",
+                            "phone": "+919876543210",
+                            "name": "Anuraj Guha",
+                            "province_code": "WB",
+                            "country_code": "IN",
+                            "country_name": "India",
+                            "default": true
+                        }
+                    ],
+                    "address": {
+                        "id": 6947581821116,
+                        "customer_id": 5747017285820,
+                        "first_name": "Anuraj",
+                        "last_name": "Guha",
+                        "company": "Rudderstack",
+                        "address1": "Home",
+                        "address2": "Apartment",
+                        "city": "Kolkata",
+                        "province": "West Bengal",
+                        "country": "India",
+                        "zip": "708091",
+                        "phone": "+919876543210",
+                        "name": "Anuraj Guha",
+                        "province_code": "WB",
+                        "country_code": "IN",
+                        "country_name": "India",
+                        "default": true
+                    },
+                    "acceptsMarketing": false,
+                    "orderCount": 0,
+                    "state": "disabled",
+                    "totalSpent": "0.00",
+                    "note": "",
+                    "verifiedEmail": true,
+                    "taxExempt": false,
+                    "tags": "",
+                    "currency": "INR",
+                    "taxExemptions": [],
+                    "smsMarketingConsent": {
+                        "state": "not_subscribed",
+                        "opt_in_level": "single_opt_in",
+                        "consent_updated_at": null,
+                        "consent_collected_from": "SHOPIFY"
+                    },
+                    "adminGraphqlApiId": "gid://shopify/Customer/5747017285820",
+                    "acceptsMarketingUpdatedAt": "2021-12-29T15:15:20+05:30"
+                },
                 "library": {
                     "name": "RudderStack Shopify Cloud",
                     "version": "1.0.0"
@@ -831,6 +895,71 @@
         "output": [
             {
                 "context": {
+                    "traits": {
+                        "email": "anuraj@rudderstack.com",
+                        "firstName": "Anuraj",
+                        "lastName": "Guha",
+                        "phone": "+919876543210",
+                        "addressList": [
+                            {
+                                "id": 6947581821116,
+                                "customer_id": 5747017285820,
+                                "first_name": "Anuraj",
+                                "last_name": "Guha",
+                                "company": "Rudderstack",
+                                "address1": "Home",
+                                "address2": "Apartment",
+                                "email": "anuraj@rudderstack.com",
+                                "city": "Kolkata",
+                                "province": "West Bengal",
+                                "country": "India",
+                                "zip": "708091",
+                                "phone": "+919876543210",
+                                "name": "Anuraj Guha",
+                                "province_code": "WB",
+                                "country_code": "IN",
+                                "country_name": "India",
+                                "default": true
+                            }
+                        ],
+                        "address": {
+                            "id": 6947581821116,
+                            "customer_id": 5747017285820,
+                            "first_name": "Anuraj",
+                            "last_name": "Guha",
+                            "company": "Rudderstack",
+                            "address1": "Home",
+                            "address2": "Apartment",
+                            "city": "Kolkata",
+                            "province": "West Bengal",
+                            "country": "India",
+                            "zip": "708091",
+                            "phone": "+919876543210",
+                            "name": "Anuraj Guha",
+                            "province_code": "WB",
+                            "country_code": "IN",
+                            "country_name": "India",
+                            "default": true
+                        },
+                        "acceptsMarketing": false,
+                        "orderCount": 0,
+                        "state": "disabled",
+                        "totalSpent": "0.00",
+                        "note": "",
+                        "verifiedEmail": true,
+                        "taxExempt": false,
+                        "tags": "",
+                        "currency": "INR",
+                        "taxExemptions": [],
+                        "smsMarketingConsent": {
+                            "state": "not_subscribed",
+                            "opt_in_level": "single_opt_in",
+                            "consent_updated_at": null,
+                            "consent_collected_from": "SHOPIFY"
+                        },
+                        "adminGraphqlApiId": "gid://shopify/Customer/5747017285820",
+                        "acceptsMarketingUpdatedAt": "2021-12-29T15:15:20+05:30"
+                    },
                     "library": {
                         "name": "RudderStack Shopify Cloud",
                         "version": "1.0.0"
@@ -2292,7 +2421,73 @@
         },
         "output": [
             {
-                "context": {
+                "context": {"traits": {
+                    "firstName": "John",
+                    "lastName": "Doe",
+                    "phone": "+919999999999",
+                    "address": {
+                        "id": null,
+                        "customer_id": 7005105389843,
+                        "first_name": "John",
+                        "last_name": "Doe",
+                        "company": null,
+                        "address1": "London Bridge",
+                        "address2": null,
+                        "city": "London",
+                        "province": "England",
+                        "country": "United Kingdom",
+                        "zip": "EC4R 9HA",
+                        "phone": null,
+                        "name": "John Doe",
+                        "province_code": "ENG",
+                        "country_code": "GB",
+                        "country_name": "United Kingdom",
+                        "default": true
+                    },
+                    "acceptsMarketing": false,
+                    "orderCount": 0,
+                    "state": "disabled",
+                    "totalSpent": "0.00",
+                    "verifiedEmail": true,
+                    "taxExempt": false,
+                    "tags": "",
+                    "currency": "GBP",
+                    "adminGraphqlApiId": "gid://shopify/Customer/7005105389843",
+                    "shippingAddress": {
+                        "first_name": "John",
+                        "address1": "London Bridge",
+                        "phone": null,
+                        "city": "London",
+                        "zip": "EC4R 9HA",
+                        "province": "England",
+                        "country": "United Kingdom",
+                        "last_name": "Doe",
+                        "address2": null,
+                        "company": null,
+                        "latitude": null,
+                        "longitude": null,
+                        "name": "John Doe",
+                        "country_code": "GB",
+                        "province_code": "ENG"
+                    },
+                    "billingAddress": {
+                        "first_name": "John",
+                        "address1": "London Bridge",
+                        "phone": null,
+                        "city": "London",
+                        "zip": "EC4R 9HA",
+                        "province": "England",
+                        "country": "United Kingdom",
+                        "last_name": "Doe",
+                        "address2": null,
+                        "company": null,
+                        "latitude": null,
+                        "longitude": null,
+                        "name": "John Doe",
+                        "country_code": "GB",
+                        "province_code": "ENG"
+                    }
+                },
                     "library": {
                         "name": "RudderStack Shopify Cloud",
                         "version": "1.0.0"
@@ -2888,6 +3083,81 @@
         "output": [
             {
                 "context": {
+                    "traits": {
+                        "firstName": "John",
+                        "lastName": "Doe",
+                        "phone": "+919999999999",
+                        "address": {
+                            "id": 9250144026899,
+                            "customer_id": 7005105389843,
+                            "first_name": "John",
+                            "last_name": "Doe",
+                            "company": null,
+                            "address1": "abc",
+                            "address2": "Unit 34 Knightsbridge House",
+                            "city": "London",
+                            "province": "England",
+                            "country": "United Kingdom",
+                            "zip": "PO31 8EF",
+                            "phone": null,
+                            "name": "John Doe",
+                            "province_code": "ENG",
+                            "country_code": "GB",
+                            "country_name": "United Kingdom",
+                            "default": true
+                        },
+                        "acceptsMarketing": false,
+                        "orderCount": 0,
+                        "state": "disabled",
+                        "totalSpent": "0.00",
+                        "verifiedEmail": true,
+                        "taxExempt": false,
+                        "tags": "",
+                        "currency": "GBP",
+                        "taxExemptions": [],
+                        "smsMarketingConsent": {
+                            "state": "not_subscribed",
+                            "opt_in_level": "single_opt_in",
+                            "consent_updated_at": null,
+                            "consent_collected_from": "SHOPIFY"
+                        },
+                        "adminGraphqlApiId": "gid://shopify/Customer/7005105389843",
+                        "acceptsMarketingUpdatedAt": "2023-07-02T11:07:37-04:00",
+                        "shippingAddress": {
+                            "first_name": "John",
+                            "address1": "abc",
+                            "phone": null,
+                            "city": "London",
+                            "zip": "PO31 8EF",
+                            "province": "England",
+                            "country": "United Kingdom",
+                            "last_name": "Doe",
+                            "address2": "Unit 34 Knightsbridge House",
+                            "company": null,
+                            "latitude": 50.76175989999999,
+                            "longitude": -1.3211169,
+                            "name": "John Doe",
+                            "country_code": "GB",
+                            "province_code": "ENG"
+                        },
+                        "billingAddress": {
+                            "first_name": "John",
+                            "address1": "abc",
+                            "phone": null,
+                            "city": "London",
+                            "zip": "PO31 8EF",
+                            "province": "England",
+                            "country": "United Kingdom",
+                            "last_name": "Doe",
+                            "address2": "Unit 34 Knightsbridge House",
+                            "company": null,
+                            "latitude": 50.76175989999999,
+                            "longitude": -1.3211169,
+                            "name": "John Doe",
+                            "country_code": "GB",
+                            "province_code": "ENG"
+                        }
+                    },
                     "library": {
                         "name": "RudderStack Shopify Cloud",
                         "version": "1.0.0"
@@ -3659,6 +3929,81 @@
         "output": [
             {
                 "context": {
+                    "traits": {
+                        "firstName": "John",
+                        "lastName": "Doe",
+                        "phone": "+919999999999",
+                        "address": {
+                            "id": 9250144026899,
+                            "customer_id": 7005105389843,
+                            "first_name": "John",
+                            "last_name": "Doe",
+                            "company": null,
+                            "address1": "abc",
+                            "address2": "Unit 34 Knightsbridge House",
+                            "city": "London",
+                            "province": "England",
+                            "country": "United Kingdom",
+                            "zip": "PO31 8EF",
+                            "phone": null,
+                            "name": "John Doe",
+                            "province_code": "ENG",
+                            "country_code": "GB",
+                            "country_name": "United Kingdom",
+                            "default": true
+                        },
+                        "acceptsMarketing": false,
+                        "orderCount": 0,
+                        "state": "disabled",
+                        "totalSpent": "0.00",
+                        "verifiedEmail": true,
+                        "taxExempt": false,
+                        "tags": "",
+                        "currency": "GBP",
+                        "taxExemptions": [],
+                        "smsMarketingConsent": {
+                            "state": "not_subscribed",
+                            "opt_in_level": "single_opt_in",
+                            "consent_updated_at": null,
+                            "consent_collected_from": "SHOPIFY"
+                        },
+                        "adminGraphqlApiId": "gid://shopify/Customer/7005105389843",
+                        "acceptsMarketingUpdatedAt": "2023-07-02T11:07:37-04:00",
+                        "shippingAddress": {
+                            "first_name": "John",
+                            "address1": "abc",
+                            "phone": null,
+                            "city": "London",
+                            "zip": "PO31 8EF",
+                            "province": "England",
+                            "country": "United Kingdom",
+                            "last_name": "Doe",
+                            "address2": "Unit 34 Knightsbridge House",
+                            "company": null,
+                            "latitude": 50.76175989999999,
+                            "longitude": -1.3211169,
+                            "name": "John Doe",
+                            "country_code": "GB",
+                            "province_code": "ENG"
+                        },
+                        "billingAddress": {
+                            "first_name": "John",
+                            "address1": "abc",
+                            "phone": null,
+                            "city": "London",
+                            "zip": "PO31 8EF",
+                            "province": "England",
+                            "country": "United Kingdom",
+                            "last_name": "Doe",
+                            "address2": "Unit 34 Knightsbridge House",
+                            "company": null,
+                            "latitude": 50.76175989999999,
+                            "longitude": -1.3211169,
+                            "name": "John Doe",
+                            "country_code": "GB",
+                            "province_code": "ENG"
+                        }
+                    },
                     "library": {
                         "name": "RudderStack Shopify Cloud",
                         "version": "1.0.0"
@@ -4610,6 +4955,75 @@
         "output": [
             {
                 "context": {
+                    "traits": {
+                        "email": "test@example.com",
+                        "lastName": "Person",
+                        "address": {
+                            "id": 9236307083539,
+                            "customer_id": 6783286247699,
+                            "first_name": null,
+                            "last_name": "Person",
+                            "company": null,
+                            "address1": "2ff",
+                            "address2": null,
+                            "city": "ny",
+                            "province": "England",
+                            "country": "United Kingdom",
+                            "zip": "PO16 7GZ",
+                            "phone": null,
+                            "name": "Person",
+                            "province_code": "ENG",
+                            "country_code": "GB",
+                            "country_name": "United Kingdom",
+                            "default": true
+                        },
+                        "acceptsMarketing": true,
+                        "orderCount": 0,
+                        "state": "disabled",
+                        "totalSpent": "0.00",
+                        "verifiedEmail": true,
+                        "taxExempt": false,
+                        "tags": "newsletter",
+                        "currency": "GBP",
+                        "marketingOptInLevel": "single_opt_in",
+                        "taxExemptions": [],
+                        "adminGraphqlApiId": "gid://shopify/Customer/6783286247699",
+                        "acceptsMarketingUpdatedAt": "2023-05-26T07:11:41-04:00",
+                        "shippingAddress": {
+                            "first_name": null,
+                            "address1": "2ff",
+                            "phone": null,
+                            "city": "ny",
+                            "zip": "PO16 7GZ",
+                            "province": "England",
+                            "country": "United Kingdom",
+                            "last_name": "Person",
+                            "address2": null,
+                            "company": null,
+                            "latitude": null,
+                            "longitude": null,
+                            "name": "Person",
+                            "country_code": "GB",
+                            "province_code": "ENG"
+                        },
+                        "billingAddress": {
+                            "first_name": null,
+                            "address1": "2ff",
+                            "phone": null,
+                            "city": "ny",
+                            "zip": "PO16 7GZ",
+                            "province": "England",
+                            "country": "United Kingdom",
+                            "last_name": "Person",
+                            "address2": null,
+                            "company": null,
+                            "latitude": null,
+                            "longitude": null,
+                            "name": "Person",
+                            "country_code": "GB",
+                            "province_code": "ENG"
+                        }
+                    },
                     "library": {
                         "name": "RudderStack Shopify Cloud",
                         "version": "1.0.0"

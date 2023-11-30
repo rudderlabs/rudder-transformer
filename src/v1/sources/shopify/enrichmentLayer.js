@@ -12,7 +12,7 @@ const enrichPayload = {
    * @returns
    */
   setExtraNonEcomProperties(message, event, shopifyTopic) {
-    const updatedMessage = {...message};
+    const updatedMessage = { ...message };
     try {
       const mappingFields = JSON.parse(
         fs.readFileSync(

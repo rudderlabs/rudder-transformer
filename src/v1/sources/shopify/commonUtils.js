@@ -21,12 +21,12 @@ const getDataFromRedis = async (key, metricMetadata) => {
       ...metricMetadata,
     });
     const dbData = await RedisDB.getVal(key);
-    if (dbData === null || typeof dbData === "object" && Object.keys(dbData).length === 0) {
+    if (dbData === null || (typeof dbData === 'object' && Object.keys(dbData).length === 0)) {
       stats.increment('shopify_redis_no_val', {
         ...metricMetadata,
       });
     }
-    if (dbData?.lineItems !== 'EMPTY') {
+    if (dbData.lineItems && dbData.lineItems !== 'EMPTY') {
       const decodedData = Buffer.from(dbData.lineItems, 'base64');
       const decompressedData = zlib.gunzipSync(decodedData).toString();
       dbData.lineItems = JSON.parse(decompressedData);
@@ -90,7 +90,13 @@ const getLineItems = (cartEvent) => {
   }
   return 'EMPTY';
 };
-
+/**
+ * This fucntion generates the line items that we want to store in db.
+ * If it is EMPTY we store it as it is otherwise we compress the line_itmes using zipping and base64 encoding
+ * and return to let redis take less space to store this data
+ * @param {*} cart
+ * @returns
+ */
 const getLineItemsToStore = (cart) => {
   const lineItems = getLineItems(cart);
   if (lineItems === 'EMPTY') {

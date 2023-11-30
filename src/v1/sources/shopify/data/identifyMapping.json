@@ -5,108 +5,170 @@
   },
   {
     "sourceKeys": "email",
-    "destKeys": "traits.email"
+    "destKeys": [
+      "traits.email",
+      "context.traits.email"
+    ]
   },
-
   {
     "sourceKeys": "first_name",
-    "destKeys": "traits.firstName"
+    "destKeys": [
+      "traits.firstName",
+      "context.traits.firstName"
+    ]
   },
-
   {
     "sourceKeys": "last_name",
-    "destKeys": "traits.lastName"
+    "destKeys": [
+      "traits.lastName",
+      "context.traits.lastName"
+    ]
   },
-
   {
     "sourceKeys": "phone",
-    "destKeys": "traits.phone"
+    "destKeys": [
+      "traits.phone",
+      "context.traits.phone"
+    ]
   },
-
   {
     "sourceKeys": "addresses",
-    "destKeys": "traits.addressList"
+    "destKeys": [
+      "traits.addressList",
+      "context.traits.addressList"
+    ]
   },
-
   {
     "sourceKeys": "default_address",
-    "destKeys": "traits.address"
+    "destKeys": [
+      "traits.address",
+      "context.traits.address"
+    ]
   },
-
   {
     "sourceKeys": "shipping_address",
-    "destKeys": "traits.shippingAddress"
+    "destKeys": [
+      "traits.shippingAddress",
+      "context.traits.shippingAddress"
+    ]
   },
-
   {
     "sourceKeys": "billing_address",
-    "destKeys": "traits.billingAddress"
+    "destKeys": [
+      "traits.billingAddress",
+      "context.traits.billingAddress"
+    ]
   },
-
   {
     "sourceKeys": "accepts_marketing",
-    "destKeys": "traits.acceptsMarketing"
+    "destKeys": [
+      "traits.acceptsMarketing",
+      "context.traits.acceptsMarketing"
+    ]
   },
-
   {
     "sourceKeys": "orders_count",
-    "destKeys": "traits.orderCount"
+    "destKeys": [
+      "traits.orderCount",
+      "context.traits.orderCount"
+    ]
   },
-
   {
     "sourceKeys": "state",
-    "destKeys": "traits.state"
+    "destKeys": [
+      "traits.state",
+      "context.traits.state"
+    ]
   },
   {
     "sourceKeys": "total_spent",
-    "destKeys": "traits.totalSpent"
+    "destKeys": [
+      "traits.totalSpent",
+      "context.traits.totalSpent"
+    ]
   },
   {
     "sourceKeys": "note",
-    "destKeys": "traits.note"
+    "destKeys": [
+      "traits.note",
+      "context.traits.note"
+    ]
   },
   {
     "sourceKeys": "verified_email",
-    "destKeys": "traits.verifiedEmail"
+    "destKeys": [
+      "traits.verifiedEmail",
+      "context.traits.verifiedEmail"
+    ]
   },
   {
     "sourceKeys": "multipass_identifier",
-    "destKeys": "traits.multipassIdentifier"
+    "destKeys": [
+      "traits.multipassIdentifier",
+      "context.traits.multipassIdentifier"
+    ]
   },
   {
     "sourceKeys": "tax_exempt",
-    "destKeys": "traits.taxExempt"
+    "destKeys": [
+      "traits.taxExempt",
+      "context.traits.taxExempt"
+    ]
   },
   {
     "sourceKeys": "tags",
-    "destKeys": "traits.tags"
+    "destKeys": [
+      "traits.tags",
+      "context.traits.tags"
+    ]
   },
   {
     "sourceKeys": "last_order_name",
-    "destKeys": "traits.lastOrderName"
+    "destKeys": [
+      "traits.lastOrderName",
+      "context.traits.lastOrderName"
+    ]
   },
   {
     "sourceKeys": "currency",
-    "destKeys": "traits.currency"
+    "destKeys": [
+      "traits.currency",
+      "context.traits.currency"
+    ]
   },
   {
     "sourceKeys": "marketing_opt_in_level",
-    "destKeys": "traits.marketingOptInLevel"
+    "destKeys": [
+      "traits.marketingOptInLevel",
+      "context.traits.marketingOptInLevel"
+    ]
   },
   {
     "sourceKeys": "tax_exemptions",
-    "destKeys": "traits.taxExemptions"
+    "destKeys": [
+      "traits.taxExemptions",
+      "context.traits.taxExemptions"
+    ]
   },
   {
     "sourceKeys": "sms_marketing_consent",
-    "destKeys": "traits.smsMarketingConsent"
+    "destKeys": [
+      "traits.smsMarketingConsent",
+      "context.traits.smsMarketingConsent"
+    ]
   },
   {
     "sourceKeys": "admin_graphql_api_id",
-    "destKeys": "traits.adminGraphqlApiId"
+    "destKeys": [
+      "traits.adminGraphqlApiId",
+      "context.traits.adminGraphqlApiId"
+    ]
   },
   {
     "sourceKeys": "accepts_marketing_updated_at",
-    "destKeys": "traits.acceptsMarketingUpdatedAt"
+    "destKeys": [
+      "traits.acceptsMarketingUpdatedAt",
+      "context.traits.acceptsMarketingUpdatedAt"
+    ]
   }
 ]

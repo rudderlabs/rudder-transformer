@@ -5,6 +5,11 @@ const { RedisDB } = require('../../../util/redis/redisConnector');
 const logger = require('../../../logger');
 
 const IdentifierEventLayer = {
+  /**
+   * Checks if the given message is an identifier event.
+   * @param {Object} message - The message to check.
+   * @returns {boolean} - True if the message is an identifier event, false otherwise.
+   */
   isIdentifierEvent(message) {
     return IDENTIFIER_EVENTS.includes(message?.event);
   },

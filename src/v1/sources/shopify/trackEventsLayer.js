@@ -155,6 +155,7 @@ const TrackLayer = {
     if (!payload.userId && event.user_id) {
       updatedPayload.setProperty('userId', event.user_id);
     }
+    updatedPayload.setProperty('context.traits', updatedPayload.traits);
     updatedPayload = idResolutionLayer.resolveId(updatedPayload, dbData, eventName);
     return updatedPayload;
   },
@@ -189,25 +190,23 @@ const TrackLayer = {
     const prevLineItems = dbData?.lineItems;
     // if no prev cart is found we trigger product added event for every line_item present
     if (!prevLineItems) {
-      event?.line_items.forEach((product) => {
-        const updatedProduct = this.getUpdatedProductProperties(product, event?.id || event?.token);
+      event.line_items.forEach((product) => {
+        const updatedProduct = this.getUpdatedProductProperties(product, event.id || event.token);
         events.push(this.ecomPayloadBuilder(updatedProduct, 'product_added'));
       });
       return events;
     }
     // This will compare current cartSate with previous cartState
-    event?.line_items.forEach((product) => {
+    event.line_items.forEach((product) => {
       const key = product.id;
       const currentQuantity = product.quantity;
-      const prevQuantity = prevLineItems?.[key]?.quantity;
-      if (prevQuantity) {
-        delete prevLineItems[key];
-      }
+      const prevQuantity = prevLineItems[key]?.quantity;
+
       if (currentQuantity !== prevQuantity) {
         const updatedQuantity = Math.abs(currentQuantity - prevQuantity);
         const updatedProduct = this.getUpdatedProductProperties(
           product,
-          event?.id || event?.token,
+          event.id || event.token,
           updatedQuantity,
         );
         // TODO1: map extra properties from axios call
@@ -219,12 +218,16 @@ const TrackLayer = {
           events.push(this.ecomPayloadBuilder(updatedProduct, 'product_removed'));
         }
       }
+      // This will delete the common line_items from prevLineItems
+      if (prevQuantity) {
+        delete prevLineItems[key];
+      }
     });
     // We also want to see what prevLineItems are not present in the currentCart to trigger Product Removed Event for them
     if (prevLineItems !== 'EMPTY') {
       Object.keys(prevLineItems).forEach((lineItemID) => {
         const product = prevLineItems[lineItemID];
-        const updatedProduct = this.getUpdatedProductProperties(product, event?.id || event?.token);
+        const updatedProduct = this.getUpdatedProductProperties(product, event.id || event.token);
         updatedProduct.id = lineItemID;
         events.push(this.ecomPayloadBuilder(updatedProduct, 'product_removed'));
       });

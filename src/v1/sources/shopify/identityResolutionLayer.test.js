@@ -22,11 +22,7 @@ describe(' Test Cases -> set AnonymousId and sessionId without using Redis', () 
       properties: {},
     };
     const dbData = {};
-    const output = idResolutionLayer.getAnonymousIdAndSessionId(
-      input,
-      'customer_enabled',
-      dbData,
-    );
+    const output = idResolutionLayer.getAnonymousIdAndSessionId(input, 'customer_enabled', dbData);
     expect(output).toEqual(output); // since it will be random
   });
 
@@ -66,11 +62,7 @@ describe(' Test Cases -> set AnonymousId and sessionId without using Redis', () 
     };
     const dbData = {};
     const expectedOutput = { anonymousId: 'RUDDER_ANONYMOUSID', sessionId: 'RUDDER_SESSIONID' };
-    const output = idResolutionLayer.getAnonymousIdAndSessionId(
-      input,
-      'checkout_created',
-      dbData,
-    );
+    const output = idResolutionLayer.getAnonymousIdAndSessionId(input, 'checkout_created', dbData);
     expect(output).toEqual(expectedOutput);
   });
 });
@@ -160,4 +152,3 @@ describe('set AnonymousId and sesssionId with Redis Data Test Cases', () => {
     expect(output).toEqual(expectedOutput);
   });
 });
-

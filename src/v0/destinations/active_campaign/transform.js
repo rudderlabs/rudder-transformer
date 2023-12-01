@@ -1,11 +1,7 @@
 /* eslint-disable  array-callback-return */
 /* eslint-disable  no-empty */
 const get = require('get-value');
-const {
-  InstrumentationError,
-  TransformationError,
-  // NetworkError,
-} = require('@rudderstack/integrations-lib');
+const { InstrumentationError, TransformationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG, getHeader } = require('./config');
 const {
@@ -17,8 +13,6 @@ const {
 } = require('../../util');
 const { errorHandler } = require('./util');
 const { httpGET, httpPOST } = require('../../../adapters/network');
-// const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
-// const tags = require('../../util/tags');
 
 const TOTAL_RECORDS_KEY = 'response.data.meta.total';
 const EVENT_DATA_KEY = 'properties.eventData';
@@ -501,7 +495,7 @@ const trackRequestHandler = async (message, category, destination) => {
       feature: 'transformation',
     });
     if (res.response?.status !== 201) {
-      errorHandler(res.response, "Unable to create event. Aborting");
+      errorHandler(res.response, 'Unable to create event. Aborting');
     }
   }
 

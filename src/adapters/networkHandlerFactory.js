@@ -39,7 +39,7 @@ SUPPORTED_VERSIONS.forEach((version) => {
 const getNetworkHandler = (type, version) => {
   let NetworkHandler = handlers[version][type] || handlers.generic;
   if (version === "v1" && NetworkHandler === handlers.generic) {
-    NetworkHandler = handlers.v0[type];
+    NetworkHandler = handlers.v0[type] || handlers.generic;
   }
   return new NetworkHandler();
 };

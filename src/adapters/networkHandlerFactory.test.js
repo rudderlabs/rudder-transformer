@@ -20,6 +20,8 @@ describe(`Network Handler Tests`, () => {
 
   it('Should return genericHandler if v1 proxy and handler is not present for destination', () => {
     let proxyHandler = getNetworkHandler('braze', `v1`);
-    expect(proxyHandler).toEqual(new GenericNetworkHandler());
+    const brazeProxy = require(`../v0/destinations/braze/networkHandler`).networkHandler;
+    expect(proxyHandler).toEqual(new brazeProxy());
+    // expect(proxyHandler).toEqual(new GenericNetworkHandler());
   });
 });

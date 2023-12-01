@@ -10,25 +10,6 @@ const {
 } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../../v0/util/tags');
 
-function isEventRetryableAndExtractErrMsg(element, proxyOutputObj) {
-  let isRetryable = false;
-  let errorMsg = '';
-  // success event
-  if (!element.errors) {
-    return isRetryable;
-  }
-  for (const err of element.errors) {
-    errorMsg += `${err.message}, `;
-    if (err.code === 'INTERNAL') {
-      isRetryable = true;
-    }
-  }
-  if (errorMsg) {
-    proxyOutputObj.error = errorMsg;
-  }
-  return isRetryable;
-}
-
 function isEventAbortableAndExtractErrMsg(element, proxyOutputObj) {
   let isAbortable = false;
   let errorMsg = '';
@@ -68,10 +49,8 @@ const responseHandler = (destinationResponse) => {
         metadata: rudderJobMetadata[idx],
         error: 'success',
       };
-      // update status of partial event as per retriable or abortable
-      if (isEventRetryableAndExtractErrMsg(element, proxyOutputObj)) {
-        proxyOutputObj.statusCode = 500;
-      } else if (isEventAbortableAndExtractErrMsg(element, proxyOutputObj)) {
+      // update status of partial event if abortable
+      if (isEventAbortableAndExtractErrMsg(element, proxyOutputObj)) {
         proxyOutputObj.statusCode = 400;
       }
       responseWithIndividualEvents.push(proxyOutputObj);

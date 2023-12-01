@@ -116,7 +116,11 @@
   },
   {
     "destKey": "country",
-    "sourceKeys": ["traits.address.country", "context.traits.address.country"],
+    "sourceKeys": [
+      "traits.address.country",
+      "context.traits.address.country",
+      "context.geo.country"
+    ],
     "required": false,
     "metadata": {
       "type": ["toLower", "hashToSha256"]

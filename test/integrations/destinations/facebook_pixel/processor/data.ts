@@ -6581,7 +6581,7 @@ export const data = [
                 XML: {},
                 FORM: {
                   data: [
-                    '{"user_data":{"em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08","ct":"a59f6598a62478c05e206d83593f510080816c99f4d0a3c90c59b2567d3f758a","st":"92db9c574d420b2437b29d898d55604f61df6c17f5163e53337f2169dd70d38d","zp":"298a8ea2e8e6ca9168b40659e8240af20b78c8b10a07fd514a4956d78ea1ad54","client_ip_address":"223.190.82.63"},"event_name":"spin_result","event_time":1697221800,"action_source":"app","custom_data":{"additional_bet_index":0,"value":400,"content_ids":["prod1","prod2"]}}',
+                    '{"user_data":{"em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08","ct":"a59f6598a62478c05e206d83593f510080816c99f4d0a3c90c59b2567d3f758a","st":"92db9c574d420b2437b29d898d55604f61df6c17f5163e53337f2169dd70d38d","zp":"298a8ea2e8e6ca9168b40659e8240af20b78c8b10a07fd514a4956d78ea1ad54","country":"582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf","client_ip_address":"223.190.82.63"},"event_name":"spin_result","event_time":1697221800,"action_source":"app","custom_data":{"additional_bet_index":0,"value":400,"content_ids":["prod1","prod2"]}}',
                   ],
                 },
               },

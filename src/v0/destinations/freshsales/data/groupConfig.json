@@ -74,7 +74,8 @@
       "traits.address.country",
       "traits.country",
       "context.traits.address.country",
-      "context.traits.country"
+      "context.traits.country",
+      "context.geo.country"
     ]
   },
   {

@@ -57,16 +57,7 @@ describe('Enrichment Layer Tests', () => {
       const message = { properties: { existingKey: 'existingValue' } };
       const event = { key1: 'value1', key2: 'value2', key3: 'value3' };
       const shopifyTopic = 'checkout_step_viewed';
-
-      const fsMock = {
-        readFileSync: jest.fn(() =>
-          JSON.stringify([{ sourceKeys: 'key1' }, { sourceKeys: 'key2' }]),
-        ),
-      };
-      jest.mock('fs', () => fsMock);
-
       const result = enrichPayload.setExtraNonEcomProperties(message, event, shopifyTopic);
-
       expect(result.properties).toBe(message.properties);
     });
 
@@ -75,14 +66,6 @@ describe('Enrichment Layer Tests', () => {
       const message = { properties: { existingKey: 'existingValue' } };
       const event = { key1: 'value1', key2: 'value2', key3: 'value3' };
       const shopifyTopic = 'orders_fulfilled';
-
-      const fsMock = {
-        readFileSync: jest.fn(() => {
-          throw new Error('File not found');
-        }),
-      };
-      jest.mock('fs', () => fsMock);
-
       const result = enrichPayload.setExtraNonEcomProperties(message, event, shopifyTopic);
 
       expect(result.properties).toBe(message.properties);
@@ -93,14 +76,6 @@ describe('Enrichment Layer Tests', () => {
       const message = { properties: { existingKey: 'existingValue' } };
       const event = { key1: 'value1', key2: 'value2', key3: 'value3' };
       const shopifyTopic = 'checkouts_create';
-
-      const fsMock = {
-        readFileSync: jest.fn(() =>
-          JSON.stringify([{ sourceKeys: 'key1' }, { sourceKeys: 'key2' }]),
-        ),
-      };
-      jest.mock('fs', () => fsMock);
-
       const result = enrichPayload.setExtraNonEcomProperties(message, event, shopifyTopic);
 
       expect(result).toEqual({

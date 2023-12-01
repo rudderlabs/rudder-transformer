@@ -168,7 +168,7 @@ const TrackLayer = {
    * @returns
    */
   getUpdatedProductProperties(product, cart_token, updatedQuantity = null) {
-    const updatedCartProperties = product;
+    const updatedCartProperties = { ...product };
     if (updatedQuantity) {
       updatedCartProperties.quantity = updatedQuantity;
     }
@@ -233,7 +233,7 @@ const TrackLayer = {
         events.push(this.ecomPayloadBuilder(updatedProduct, 'product_removed'));
       });
     }
-    if (cart.length > 0) {
+    if (cart.line_items.length > 0) {
       await this.updateCartState(getLineItemsToStore(cart), cartToken, metricMetadata);
     }
     return events;

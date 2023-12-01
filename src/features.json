@@ -65,5 +65,5 @@
     "TIKTOK_AUDIENCE": true
   },
   "supportSourceTransformV1": true,
-  "transformerProxyV1": true
+  "supportTransformerProxyV1": true
 }

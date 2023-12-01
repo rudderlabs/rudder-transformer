@@ -539,7 +539,7 @@ function addMandatoryPurchaseProperties(productId, price, currencyCode, quantity
   };
 }
 
-function getPurchaseObjs(message) {
+function getPurchaseObjs(message, Config) {
   // ref:https://www.braze.com/docs/api/objects_filters/purchase_object/
   const validateForPurchaseEvent = (message) => {
     const { properties } = message;
@@ -635,7 +635,7 @@ function getPurchaseObjs(message) {
       timestamp,
     );
     const extraProperties = _.omit(product, ['product_id', 'sku', 'price', 'quantity', 'currency']);
-    if (Object.keys(extraProperties).length > 0) {
+    if (Object.keys(extraProperties).length > 0 && Config.sendPurchaseEventWithExtraProperties) {
       purchaseObj = { ...purchaseObj, properties: extraProperties };
     }
     purchaseObj = setExternalIdOrAliasObject(purchaseObj, message);

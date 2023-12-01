@@ -140,7 +140,7 @@ const DestCanonicalNames = {
     'twitter_ads',
     'TWITTER_ADS',
   ],
-  BRAZE: ['BRAZE', 'Braze', 'braze'],
+  BRAZE: ['BRAZE', 'Braze', 'braze']
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

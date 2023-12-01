@@ -185,20 +185,20 @@ const TrackLayer = {
    * @param {*} metricMetadata 
    * @returns List of Product Added Or Product Removed Events
    */
-  async generateProductAddedAndRemovedEvents(event, dbData, metricMetadata) {
+  async generateProductAddedAndRemovedEvents(cart, dbData, metricMetadata) {
     const events = [];
     const prevLineItems = dbData?.lineItems;
-    const cartToken = event.id || event.token;
+    const cartToken = cart.id || cart.token;
     // if no prev cart is found we trigger product added event for every line_item present
     if (!prevLineItems) {
-      event.line_items.forEach((product) => {
+      cart.line_items.forEach((product) => {
         const updatedProduct = this.getUpdatedProductProperties(product, cartToken);
         events.push(this.ecomPayloadBuilder(updatedProduct, 'product_added'));
       });
       return events;
     }
     // This will compare current cartSate with previous cartState
-    event.line_items.forEach((product) => {
+    cart.line_items.forEach((product) => {
       const key = product.id;
       const currentQuantity = product.quantity;
       const prevQuantity = prevLineItems[key]?.quantity;
@@ -233,12 +233,8 @@ const TrackLayer = {
         events.push(this.ecomPayloadBuilder(updatedProduct, 'product_removed'));
       });
     }
-    if (events.length > 0) {
-      await this.updateCartState(
-        getLineItemsToStore(event),
-        cartToken,
-        metricMetadata,
-      );
+    if (cart.length > 0) {
+      await this.updateCartState(getLineItemsToStore(cart), cartToken, metricMetadata);
     }
     return events;
   },

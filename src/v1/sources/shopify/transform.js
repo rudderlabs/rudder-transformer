@@ -72,7 +72,7 @@ const process = async (inputEvent) => {
     return processV0(event);
   }
   const metricMetadata = {
-    writeKey: event.query_parameters?.writeKey?.[0],
+    writeKey: source.writeKey,
     sourceId: source.ID,
     source: 'SHOPIFY',
   };

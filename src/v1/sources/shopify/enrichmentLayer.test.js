@@ -51,5 +51,66 @@ describe('Enrichment Layer Tests', () => {
       );
       expect(output).toEqual(expectedOutput);
     });
+
+    // The specified shopifyTopic does not exist in the RUDDER_ECOM_MAP, and the function returns the original message.
+    it('should return original message when shopifyTopic does not exist in RUDDER_ECOM_MAP', () => {
+      const message = { properties: { existingKey: 'existingValue' } };
+      const event = { key1: 'value1', key2: 'value2', key3: 'value3' };
+      const shopifyTopic = 'checkout_step_viewed';
+
+      const fsMock = {
+        readFileSync: jest.fn(() =>
+          JSON.stringify([{ sourceKeys: 'key1' }, { sourceKeys: 'key2' }]),
+        ),
+      };
+      jest.mock('fs', () => fsMock);
+
+      const result = enrichPayload.setExtraNonEcomProperties(message, event, shopifyTopic);
+
+      expect(result.properties).toBe(message.properties);
+    });
+
+    // The specified shopifyTopic is not an ecom event or does not have a mapping JSON file, and the function returns the updated message without any added properties.
+    it('should return updated message without added properties when shopifyTopic is not an ecom event or does not have mapping JSON file', () => {
+      const message = { properties: { existingKey: 'existingValue' } };
+      const event = { key1: 'value1', key2: 'value2', key3: 'value3' };
+      const shopifyTopic = 'orders_fulfilled';
+
+      const fsMock = {
+        readFileSync: jest.fn(() => {
+          throw new Error('File not found');
+        }),
+      };
+      jest.mock('fs', () => fsMock);
+
+      const result = enrichPayload.setExtraNonEcomProperties(message, event, shopifyTopic);
+
+      expect(result.properties).toBe(message.properties);
+    });
+
+    // The function returns the updated message with the added properties.
+    it('should return updated message with added properties', () => {
+      const message = { properties: { existingKey: 'existingValue' } };
+      const event = { key1: 'value1', key2: 'value2', key3: 'value3' };
+      const shopifyTopic = 'checkouts_create';
+
+      const fsMock = {
+        readFileSync: jest.fn(() =>
+          JSON.stringify([{ sourceKeys: 'key1' }, { sourceKeys: 'key2' }]),
+        ),
+      };
+      jest.mock('fs', () => fsMock);
+
+      const result = enrichPayload.setExtraNonEcomProperties(message, event, shopifyTopic);
+
+      expect(result).toEqual({
+        properties: {
+          existingKey: 'existingValue',
+          key1: 'value1',
+          key2: 'value2',
+          key3: 'value3',
+        },
+      });
+    });
   });
 });

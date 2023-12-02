@@ -15,9 +15,9 @@ const formatConfig = (destination) => ({
   ID: destination.ID,
   ...destination.Config,
   customActivityEventMap: getHashFromArray(
-    destination.Config.customActivityEventMap,
-    'from',
-    'to',
+    destination.Config.rudderEventsMapping,
+    'event',
+    'marketoActivityId',
     false,
   ),
   customActivityPropertyMap: getHashFromArray(
@@ -27,9 +27,9 @@ const formatConfig = (destination) => ({
     false,
   ),
   customActivityPrimaryKeyMap: getHashFromArray(
-    destination.Config.customActivityPrimaryKeyMap,
-    'from',
-    'to',
+    destination.Config.rudderEventsMapping,
+    'event',
+    'marketoPrimarykey',
     false,
   ),
   leadTraitMapping: getHashFromArray(destination.Config.leadTraitMapping, 'from', 'to', false),

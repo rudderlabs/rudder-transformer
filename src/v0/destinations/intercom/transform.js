@@ -4,6 +4,7 @@ const {
   flattenJson,
   isDefinedAndNotNull,
   defaultRequestConfig,
+  simpleProcessRouterDest,
   getFieldValueFromMessage,
   removeUndefinedAndNullValues,
 } = require('../../util');
@@ -19,7 +20,7 @@ const {
   filterCustomAttributes,
   separateReservedAndRestMetadata,
 } = require('./util');
-const { InstrumentationError, NetworkError } = require('../../util/errorTypes');
+const { InstrumentationError, NetworkError } = require('@rudderstack/integrations-lib');
 
 const responseBuilder = (payload, endpoint, requestMethod, destination) => {
   const response = defaultRequestConfig();
@@ -141,4 +142,9 @@ const process = async (event) => {
   return response;
 };
 
-module.exports = { process };
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

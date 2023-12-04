@@ -61,7 +61,8 @@
     "CLEVERTAP": true,
     "ORTTO": true,
     "ONE_SIGNAL": true,
-    "TIKTOK_AUDIENCE": true
+    "TIKTOK_AUDIENCE": true,
+    "INTERCOM": true
   },
   "supportSourceTransformV1": true
 }

@@ -27,7 +27,7 @@ const { MetadataTypes } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { httpPOST } = require('../../../adapters/network');
 const { MappedToDestinationKey } = require('../../../constants');
-const { InstrumentationError, NetworkError } = require('../../util/errorTypes');
+const { InstrumentationError, NetworkError } = require('@rudderstack/integrations-lib');
 
 /**
  * Validated identify call payload

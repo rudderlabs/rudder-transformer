@@ -26,4 +26,11 @@ describe(`Network Handler Tests`, () => {
     console.log(networkHandler);
     expect(networkHandler).toEqual(new brazeProxy());
   });
+
+  it('Should return generic handler', () => {
+    const { networkHandler, handlerVersion } = getNetworkHandler('abc', `v1`);
+    const brazeProxy = require(`../v0/destinations/braze/networkHandler`).networkHandler;
+    console.log(networkHandler);
+    expect(networkHandler).toEqual(new GenericNetworkHandler());
+  });
 });

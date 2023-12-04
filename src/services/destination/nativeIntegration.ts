@@ -229,6 +229,21 @@ export class NativeIntegrationDestinationService implements DestinationService {
         tags.FEATURES.DATA_DELIVERY,
       );
       metaTO.metadata = destinationRequest.metadata[0];
+
+      // if error is thrown and response is not in error, build response as per transformer proxy v1
+      if (version === 'v1' && !err.response) {
+        const responseWithIndividualEvents: { statusCode: number; metadata: any; error: string }[] =
+          [];
+        // eslint-disable-next-line no-restricted-syntax
+        for (const metadata of destinationRequest.metadata) {
+          responseWithIndividualEvents.push({
+            statusCode: err.status,
+            metadata,
+            error: err.message,
+          });
+        }
+        err.response = responseWithIndividualEvents;
+      }
       return DestinationPostTransformationService.handleDeliveryFailureEvents(err, metaTO);
     }
   }

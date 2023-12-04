@@ -107,8 +107,12 @@ steps:
   - name: buildResponseForProcessTransformation
     description: build response
     template: |
-      const accessToken = ".metadata.secret.accessToken"
+      const accessToken = .metadata.secret.accessToken
       const response = $.defaultRequestConfig();
       response.body.JSON = $.outputs.payload;
+      response.headers = {
+        "Authorization": "Bearer "+ accessToken,
+        "Content-Type": "application/json"
+        }
       response.endpoint = $.ENDPOINT+.destination.Config.accountId;
       finalResponse = response;

@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-restricted-syntax */
-const { NetworkError } = require('@rudderstack/integrations-lib');
+const { TransformerProxyError } = require('../../../v0/util/errorTypes');
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../../v0/util/index');
 
@@ -74,16 +74,16 @@ const responseHandler = (destinationResponse) => {
     });
   }
 
-  throw new NetworkError(
-    `Campaign Manager: Error transformer proxy v1 during CAMPAIGN_MANAGER response transformation`,
-    500,
-    {
-      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
-    },
-    destinationResponse,
-    getAuthErrCategoryFromStCode(status),
-    responseWithIndividualEvents,
-  );
+  throw new TransformerProxyError(
+      `Campaign Manager: Error transformer proxy v1 during CAMPAIGN_MANAGER response transformation`,
+      500,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+      },
+      destinationResponse,
+      getAuthErrCategoryFromStCode(status),
+      responseWithIndividualEvents,
+    );
 };
 
 function networkHandler() {

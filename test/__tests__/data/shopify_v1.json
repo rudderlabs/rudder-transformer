@@ -3234,7 +3234,7 @@
           "tax_lines": [],
           "taxes_included": true,
           "test": true,
-          "token": "test_token",
+          "order_token": "test_token",
           "total_discounts_set": {
             "shop_money": {
               "amount": "0.00",
@@ -4071,7 +4071,7 @@
           "tax_lines": [],
           "taxes_included": true,
           "test": true,
-          "token": "test_token",
+          "order_token": "test_token",
           "total_discounts_set": {
             "shop_money": {
               "amount": "0.00",
@@ -5085,7 +5085,7 @@
           "tax_lines": [],
           "taxes_included": true,
           "test": true,
-          "token": "test_token",
+          "order_token": "test_token",
           "total_discounts_set": {
             "shop_money": {
               "amount": "0.00",

@@ -14,6 +14,10 @@
     }
   },
   {
+    "sourceKeys": "token",
+    "destKey": "order_token"
+  },
+  {
     "sourceKeys": "subtotal_price",
     "destKey": "subtotal",
     "metadata": {

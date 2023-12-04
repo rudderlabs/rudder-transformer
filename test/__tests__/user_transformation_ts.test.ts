@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import UserTransformService from '../../src/services/userTransform';
+import { UserTransformService } from '../../src/services/userTransform';
 import { FeatureFlags, FEATURE_FILTER_CODE } from '../../src/middlewares/featureFlag';
 jest.mock('node-fetch', () => jest.fn());
 

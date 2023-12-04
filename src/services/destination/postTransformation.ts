@@ -12,11 +12,20 @@ import {
   UserDeletionResponse,
 } from '../../types/index';
 import { generateErrorObject } from '../../v0/util';
-import ErrorReportingService from '../errorReporting';
+import { ErrorReportingService } from '../errorReporting';
 import tags from '../../v0/util/tags';
 import stats from '../../util/stats';
 
-export default class DestinationPostTransformationService {
+type ErrorResponse = {
+  status?: number;
+  message?: string;
+  destinationResponse?: object;
+  statTags?: object;
+  authErrorCategory?: string | undefined;
+  response?: object | undefined;
+};
+
+export class DestinationPostTransformationService {
   public static handleProcessorTransformSucessEvents(
     event: ProcessorTransformationRequest,
     transformedPayloads: ProcessorTransformationOutput | ProcessorTransformationOutput[],
@@ -139,7 +148,7 @@ export default class DestinationPostTransformationService {
   }
 
   public static handleDeliveryFailureEvents(
-    error: NonNullable<unknown>,
+    error: ErrorResponse,
     metaTo: MetaTransferObject,
   ): DeliveryResponse {
     const errObj = generateErrorObject(error, metaTo.errorDetails, false);
@@ -152,6 +161,12 @@ export default class DestinationPostTransformationService {
         authErrorCategory: errObj.authErrorCategory,
       }),
     } as DeliveryResponse;
+
+    // for transformer-proxy to maintain contract
+    const { response } = error;
+    if (response) {
+      resp.response = response;
+    }
     ErrorReportingService.reportError(error, metaTo.errorContext, resp);
     return resp;
   }

@@ -32,7 +32,10 @@ const getDataFromRedis = async (key, metricMetadata) => {
       ...metricMetadata,
     });
     const redisData = await RedisDB.getVal(key);
-    if (redisData === null || (typeof redisData === "object" && Object.keys(redisData).length === 0)) {
+    if (
+      redisData === null ||
+      (typeof redisData === 'object' && Object.keys(redisData).length === 0)
+    ) {
       stats.increment('shopify_redis_no_val', {
         ...metricMetadata,
       });

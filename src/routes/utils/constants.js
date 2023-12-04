@@ -1,4 +1,4 @@
-const SUPPORTED_VERSIONS = ['v0'];
+const SUPPORTED_VERSIONS = ['v0', 'v1'];
 const API_VERSION = '2';
 const INTEGRATION_SERVICE = {
   COMPARATOR: 'comparator',
@@ -7,8 +7,8 @@ const INTEGRATION_SERVICE = {
   NATIVE_DEST: 'native_dest',
   NATIVE_SOURCE: 'native_source',
 };
-const CHANNELS= {
-  sources: 'sources'
+const CHANNELS = {
+  sources: 'sources',
 };
 
 const RETL_TIMESTAMP = 'timestamp';

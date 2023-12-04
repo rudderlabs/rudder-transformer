@@ -1,5 +1,5 @@
 import { ProcessorTransformationRequest, RouterTransformationRequestData } from '../../src/types';
-import ControllerUtility from '../../src/controllers/util';
+import { ControllerUtility } from '../../src/controllers/util';
 
 type timestampTestCases = {
   caseName: string;

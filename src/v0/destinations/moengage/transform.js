@@ -119,7 +119,7 @@ const processEvent = (message, destination) => {
       response = responseBuilderSimple(message, category, destination);
       // only if device information is present device info will be added/updated
       // with an identify call otherwise only user info will be added/updated
-      if (message.context.device && message.context.device.type && message.context.device.token) {
+      if (message?.context?.device?.type && message?.context?.device?.token) {
         // build the response
         response = [
           // user api payload (output for identify)

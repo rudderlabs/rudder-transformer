@@ -4,6 +4,7 @@ const {
   batchEvents,
   generateBatchedPayloadForArray,
   buildUtmParams,
+  trimTraits,
 } = require('./util');
 const { FEATURE_GZIP_SUPPORT } = require('../../util/constant');
 
@@ -599,6 +600,99 @@ describe('Mixpanel utils test', () => {
         utm_source: 'rudder',
         utm_medium: 'rudder',
         test: undefined,
+      });
+    });
+  });
+  describe('Unit test cases for trimTraits', () => {
+    // Given a valid traits object and contextTraits object, and a valid setOnceProperties array, the function should return an object containing traits, contextTraits, and setOnce properties.
+    it('should return an object containing traits, contextTraits, and setOnce properties when given valid inputs', () => {
+      const traits = { name: 'John', age: 30 };
+      const contextTraits = { email: 'john@example.com' };
+      const setOnceProperties = ['name', 'email'];
+
+      const result = trimTraits(traits, contextTraits, setOnceProperties);
+      console.log(result);
+
+      expect(result).toEqual({
+        traits: {
+          age: 30,
+        },
+        contextTraits: {},
+        setOnce: { $name: 'John', $email: 'john@example.com' },
+      });
+    });
+
+    // Given an empty traits object and contextTraits object, and a valid setOnceProperties array, the function should return an object containing empty traits and contextTraits, and an empty setOnce property.
+    it('should return an object containing empty traits and contextTraits, and an empty setOnce property when given empty traits and contextTraits objects', () => {
+      const traits = {};
+      const contextTraits = {};
+      const setOnceProperties = ['name', 'email'];
+
+      const result = trimTraits(traits, contextTraits, setOnceProperties);
+
+      expect(result).toEqual({
+        traits: {},
+        contextTraits: {},
+        setOnce: {},
+      });
+    });
+
+    // Given an empty setOnceProperties array, the function should return an object containing the original traits and contextTraits objects, and an empty setOnce property.
+    it('should return an object containing the original traits and contextTraits objects, and an empty setOnce property when given an empty setOnceProperties array', () => {
+      const traits = { name: 'John', age: 30 };
+      const contextTraits = { email: 'john@example.com' };
+      const setOnceProperties = [];
+
+      const result = trimTraits(traits, contextTraits, setOnceProperties);
+
+      expect(result).toEqual({
+        traits: { name: 'John', age: 30 },
+        contextTraits: { email: 'john@example.com' },
+        setOnce: {},
+      });
+    });
+
+    // Given a setOnceProperties array containing properties that do not exist in either traits or contextTraits objects, the function should not add the property to the setOnce property.
+    it('should not add properties to the setOnce property when given setOnceProperties array with non-existent properties', () => {
+      const traits = { name: 'John', age: 30 };
+      const contextTraits = { email: 'john@example.com' };
+      const setOnceProperties = ['name', 'email', 'address'];
+
+      const result = trimTraits(traits, contextTraits, setOnceProperties);
+
+      expect(result).toEqual({
+        traits: { age: 30 },
+        contextTraits: {},
+        setOnce: { $name: 'John', $email: 'john@example.com' },
+      });
+    });
+
+    // Given a setOnceProperties array containing properties with nested paths that do not exist in either traits or contextTraits objects, the function should not add the property to the setOnce property.
+    it('should not add properties to the setOnce property when given setOnceProperties array with non-existent nested properties', () => {
+      const traits = { name: 'John', age: 30, address: 'kolkata' };
+      const contextTraits = { email: 'john@example.com' };
+      const setOnceProperties = ['name', 'email', 'address.city'];
+
+      const result = trimTraits(traits, contextTraits, setOnceProperties);
+
+      expect(result).toEqual({
+        traits: { age: 30, address: 'kolkata' },
+        contextTraits: {},
+        setOnce: { $name: 'John', $email: 'john@example.com' },
+      });
+    });
+
+    it('should add properties to the setOnce property when given setOnceProperties array with existent nested properties', () => {
+      const traits = { name: 'John', age: 30, address: { city: 'kolkata' }, isAdult: false };
+      const contextTraits = { email: 'john@example.com' };
+      const setOnceProperties = ['name', 'email', 'address.city'];
+
+      const result = trimTraits(traits, contextTraits, setOnceProperties);
+
+      expect(result).toEqual({
+        traits: { age: 30, address: {}, isAdult: false },
+        contextTraits: {},
+        setOnce: { $name: 'John', $email: 'john@example.com', $city: 'kolkata' },
       });
     });
   });

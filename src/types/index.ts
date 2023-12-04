@@ -16,8 +16,33 @@ type ProcessorTransformationOutput = {
     FORM?: Record<string, unknown>;
   };
   files?: Record<string, unknown>;
-  metadata?: Metadata;
 };
+
+// type ProcessorTransformationOutput = {
+//   version: string;
+//   type: string;
+//   method: string;
+//   endpoint: string;
+//   userId: string;
+//   headers?: Record<string, unknown>;
+//   params?: Record<string, unknown>;
+//   body?: {
+//     JSON?: Record<string, unknown>;
+//     JSON_ARRAY?: Record<string, unknown>;
+//     XML?: Record<string, unknown>;
+//     FORM?: Record<string, unknown>;
+//   };
+//   files?: Record<string, unknown>;
+//   metadata?: Metadata;
+// };
+
+type ProcessorTransformationOutputWithMetaData = {
+  metadata?: Metadata;
+} & ProcessorTransformationOutput;
+
+type ProcessorTransformationOutputWithMetaDataArray = {
+  metadata?: Metadata[];
+} & ProcessorTransformationOutput;
 
 type Metadata = {
   sourceId: string;
@@ -276,4 +301,6 @@ export {
   ComparatorInput,
   SourceInput,
   Source,
+  ProcessorTransformationOutputWithMetaData,
+  ProcessorTransformationOutputWithMetaDataArray,
 };

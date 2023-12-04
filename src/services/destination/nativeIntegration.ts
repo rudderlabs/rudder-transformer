@@ -1,3 +1,5 @@
+/* eslint-disable prefer-destructuring */
+/* eslint-disable sonarjs/no-duplicate-string */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import groupBy from 'lodash/groupBy';
 import cloneDeep from 'lodash/cloneDeep';
@@ -13,11 +15,14 @@ import {
   ProcessorTransformationOutput,
   UserDeletionRequest,
   UserDeletionResponse,
+  ProcessorTransformationOutputWithMetaData,
+  ProcessorTransformationOutputWithMetaDataArray,
 } from '../../types/index';
 import { DestinationPostTransformationService } from './postTransformation';
 import networkHandlerFactory from '../../adapters/networkHandlerFactory';
 import { FetchHandler } from '../../helpers/fetchHandlers';
 import tags from '../../v0/util/tags';
+import { ControllerUtility } from '../../controllers/util';
 
 export class NativeIntegrationDestinationService implements DestinationService {
   public init() {}
@@ -169,15 +174,48 @@ export class NativeIntegrationDestinationService implements DestinationService {
   }
 
   public async deliver(
-    destinationRequest: ProcessorTransformationOutput,
+    destinationRequest:
+      | ProcessorTransformationOutputWithMetaData
+      | ProcessorTransformationOutputWithMetaDataArray,
     destinationType: string,
     _requestMetadata: NonNullable<unknown>,
     version: string,
   ): Promise<DeliveryResponse> {
     try {
-      const networkHandler = networkHandlerFactory.getNetworkHandler(destinationType, version);
+      const { networkHandler, handlerVersion } = networkHandlerFactory.getNetworkHandler(
+        destinationType,
+        version,
+      );
       const rawProxyResponse = await networkHandler.proxy(destinationRequest, destinationType);
       const processedProxyResponse = networkHandler.processAxiosResponse(rawProxyResponse);
+      if (
+        handlerVersion === 'v0' &&
+        version === 'v1' &&
+        Array.isArray(destinationRequest.metadata)
+      ) {
+        const [metadataZero] = destinationRequest.metadata;
+        const handlerResponse = networkHandler.responseHandler(
+          {
+            ...processedProxyResponse,
+            rudderJobMetadata: metadataZero,
+          },
+          destinationType,
+        ) as DeliveryResponse;
+
+        const responseWithIndividualEvents: { statusCode: number; metadata: any; error: string }[] =
+          [];
+        // eslint-disable-next-line no-restricted-syntax
+        for (const metadata of destinationRequest.metadata) {
+          responseWithIndividualEvents.push({
+            statusCode: handlerResponse.status,
+            metadata,
+            error: handlerResponse.message,
+          });
+        }
+        handlerResponse.response = responseWithIndividualEvents;
+        return handlerResponse;
+      }
+
       return networkHandler.responseHandler(
         {
           ...processedProxyResponse,
@@ -186,13 +224,23 @@ export class NativeIntegrationDestinationService implements DestinationService {
         destinationType,
       ) as DeliveryResponse;
     } catch (err: any) {
+      if (!Array.isArray(destinationRequest.metadata)) {
+        const metaTO = this.getTags(
+          destinationType,
+          destinationRequest.metadata?.destinationId || 'Non-determininable',
+          destinationRequest.metadata?.workspaceId || 'Non-determininable',
+          tags.FEATURES.DATA_DELIVERY,
+        );
+        metaTO.metadata = destinationRequest.metadata;
+        return DestinationPostTransformationService.handleDeliveryFailureEvents(err, metaTO);
+      }
       const metaTO = this.getTags(
         destinationType,
-        destinationRequest.metadata?.destinationId || 'Non-determininable',
-        destinationRequest.metadata?.workspaceId || 'Non-determininable',
+        destinationRequest.metadata[0].destinationId || 'Non-determininable',
+        destinationRequest.metadata[0].workspaceId || 'Non-determininable',
         tags.FEATURES.DATA_DELIVERY,
       );
-      metaTO.metadata = destinationRequest.metadata;
+      metaTO.metadata = destinationRequest.metadata[0];
       return DestinationPostTransformationService.handleDeliveryFailureEvents(err, metaTO);
     }
   }

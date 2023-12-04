@@ -1391,7 +1391,7 @@
               "properties": null
             }
           ],
-          "token": "test_token",
+          "checkout_token": "test_token",
           "cart_token": "test_cart_token",
           "email": null,
           "gateway": null,
@@ -1554,7 +1554,7 @@
         "event": "Checkout Step Viewed",
         "properties": {
           "checkout_id": "36816304308499",
-          "token": "test_token",
+          "checkout_token": "test_token",
           "cart_token": "test_cart_token",
           "email": null,
           "gateway": null,
@@ -1933,7 +1933,7 @@
           "shipping_method": "Standard",
           "payment_method": "bogus",
           "name": "#36800494043411",
-          "token": "test_token",
+          "checkout_token": "test_token",
           "cart_token": "test_cart_token",
           "email": null,
           "phone": "+919834383894",
@@ -2405,7 +2405,7 @@
           "checkout_id": "36800770375955",
           "shipping_method": "Standard",
           "payment_method": "bogus",
-          "token": "test_token",
+          "checkout_token": "test_token",
           "cart_token": "test_cart_token",
           "email": null,
           "buyer_accepts_marketing": false,

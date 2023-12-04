@@ -7,6 +7,10 @@
     }
   },
   {
+    "sourceKeys": "token",
+    "destKey": "checkout_token"
+  },
+  {
     "sourceKeys": "shipping_lines.0.title",
     "destKey": "shipping_method"
   }

@@ -7,6 +7,10 @@
     }
   },
   {
+    "sourceKeys": "token",
+    "destKey": "checkout_token"
+  },
+  {
     "sourceKeys": "total_price",
     "destKey": "value",
     "metadata": {

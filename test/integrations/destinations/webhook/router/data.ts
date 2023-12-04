@@ -117,6 +117,11 @@ export const data = [
                     },
                   ],
                 },
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: true,
+                  },
+                },
               },
             },
             {
@@ -216,6 +221,11 @@ export const data = [
               destination: {
                 Config: {
                   webhookUrl: 'https://6b0e6a60.ngrok.io/n',
+                },
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: true,
+                  },
                 },
               },
             },
@@ -360,7 +370,12 @@ export const data = [
                     },
                   ],
                 },
-              },
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: true,
+                  },
+                },
+              }
             },
             {
               batchedRequest: {
@@ -480,6 +495,11 @@ export const data = [
               destination: {
                 Config: {
                   webhookUrl: 'https://6b0e6a60.ngrok.io/n',
+                },
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: true,
+                  },
                 },
               },
             },

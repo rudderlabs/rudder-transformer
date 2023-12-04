@@ -239,7 +239,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
           responseWithIndividualEvents.push({
             statusCode: err.status,
             metadata,
-            error: err.message,
+            error: JSON.stringify(err.destinationResponse.response) || err.message,
           });
         }
         err.response = responseWithIndividualEvents;

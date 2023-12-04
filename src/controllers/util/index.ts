@@ -127,7 +127,8 @@ export class ControllerUtility {
       responseWithIndividualEvents.push({
         statusCode: handlerResponse.status,
         metadata,
-        error: handlerResponse.message,
+        error:
+          JSON.stringify(handlerResponse.destinationResponse.response) || handlerResponse.message,
       });
     }
     handlerResponse.response = responseWithIndividualEvents;

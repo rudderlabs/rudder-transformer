@@ -188,32 +188,20 @@ export class NativeIntegrationDestinationService implements DestinationService {
       );
       const rawProxyResponse = await networkHandler.proxy(destinationRequest, destinationType);
       const processedProxyResponse = networkHandler.processAxiosResponse(rawProxyResponse);
+
       if (
         handlerVersion === 'v0' &&
         version === 'v1' &&
         Array.isArray(destinationRequest.metadata)
       ) {
-        const [metadataZero] = destinationRequest.metadata;
-        const handlerResponse = networkHandler.responseHandler(
-          {
-            ...processedProxyResponse,
-            rudderJobMetadata: metadataZero,
-          },
+        return ControllerUtility.convertV1ProxyPayloadToV0(
+          destinationRequest as ProcessorTransformationOutputWithMetaDataArray,
+          processedProxyResponse,
+          handlerVersion,
+          version,
+          networkHandler,
           destinationType,
-        ) as DeliveryResponse;
-
-        const responseWithIndividualEvents: { statusCode: number; metadata: any; error: string }[] =
-          [];
-        // eslint-disable-next-line no-restricted-syntax
-        for (const metadata of destinationRequest.metadata) {
-          responseWithIndividualEvents.push({
-            statusCode: handlerResponse.status,
-            metadata,
-            error: handlerResponse.message,
-          });
-        }
-        handlerResponse.response = responseWithIndividualEvents;
-        return handlerResponse;
+        );
       }
 
       return networkHandler.responseHandler(

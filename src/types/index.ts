@@ -18,30 +18,12 @@ type ProcessorTransformationOutput = {
   files?: Record<string, unknown>;
 };
 
-// type ProcessorTransformationOutput = {
-//   version: string;
-//   type: string;
-//   method: string;
-//   endpoint: string;
-//   userId: string;
-//   headers?: Record<string, unknown>;
-//   params?: Record<string, unknown>;
-//   body?: {
-//     JSON?: Record<string, unknown>;
-//     JSON_ARRAY?: Record<string, unknown>;
-//     XML?: Record<string, unknown>;
-//     FORM?: Record<string, unknown>;
-//   };
-//   files?: Record<string, unknown>;
-//   metadata?: Metadata;
-// };
-
 type ProcessorTransformationOutputWithMetaData = {
   metadata?: Metadata;
 } & ProcessorTransformationOutput;
 
 type ProcessorTransformationOutputWithMetaDataArray = {
-  metadata?: Metadata[];
+  metadata: Metadata[];
 } & ProcessorTransformationOutput;
 
 type Metadata = {

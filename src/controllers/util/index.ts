@@ -6,6 +6,8 @@ import get from 'get-value';
 import { API_VERSION, CHANNELS, RETL_TIMESTAMP } from '../../routes/utils/constants';
 import { getCompatibleStatusCode } from '../../adapters/utils/networkUtils';
 import {
+  DeliveryResponse,
+  ProcessorTransformationOutputWithMetaDataArray,
   ProcessorTransformationRequest,
   RouterTransformationRequestData,
   RudderMessage,
@@ -100,5 +102,35 @@ export class ControllerUtility {
       }
       return { ...event, message: newMsg };
     });
+  }
+
+  public static convertV1ProxyPayloadToV0(
+    destinationRequest: ProcessorTransformationOutputWithMetaDataArray,
+    processedProxyResponse: any,
+    handlerVersion: any,
+    version: string,
+    networkHandler: any,
+    destinationType: string,
+  ) {
+    const [metadataZero] = destinationRequest.metadata;
+    const handlerResponse = networkHandler.responseHandler(
+      {
+        ...processedProxyResponse,
+        rudderJobMetadata: metadataZero,
+      },
+      destinationType,
+    ) as DeliveryResponse;
+
+    const responseWithIndividualEvents: { statusCode: number; metadata: any; error: string }[] = [];
+    // eslint-disable-next-line no-restricted-syntax
+    for (const metadata of destinationRequest.metadata) {
+      responseWithIndividualEvents.push({
+        statusCode: handlerResponse.status,
+        metadata,
+        error: handlerResponse.message,
+      });
+    }
+    handlerResponse.response = responseWithIndividualEvents;
+    return handlerResponse;
   }
 }

@@ -44,12 +44,10 @@ const TrackLayer = {
       message,
       ECOM_MAPPING_JSON[RUDDER_ECOM_MAP[shopifyTopic].name],
     );
-    if (RUDDER_ECOM_MAP[shopifyTopic].lineItems) {
-      const { line_items: lineItems } = message;
-      const productsList = this.getProductsListFromLineItems(lineItems);
-      mappedPayload.products = productsList;
-    }
 
+    const { line_items: lineItems } = message;
+    const productsList = this.getProductsListFromLineItems(lineItems);
+    mappedPayload.products = productsList;
     return mappedPayload;
   },
 

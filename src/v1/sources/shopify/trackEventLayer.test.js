@@ -64,6 +64,7 @@ describe('Track Event Layer Tests', () => {
       const expectedOutput = {
         checkout_id: '1234',
         shipping_method: 'Standard',
+        products,
       };
 
       expect(
@@ -77,6 +78,7 @@ describe('Track Event Layer Tests', () => {
         checkout_id: '1234',
         shipping_method: 'Standard',
         payment_method: 'cash',
+        products,
       };
 
       expect(
@@ -90,6 +92,7 @@ describe('Track Event Layer Tests', () => {
         checkout_id: '1234',
         shipping_method: 'Standard',
         payment_method: 'cash',
+        products,
       };
 
       expect(
@@ -261,6 +264,7 @@ describe('Track Event Layer Tests', () => {
             price: 30,
             quantity: 5,
             id: 123456,
+            products: [],
             properties: null,
             key: '123456:7891112',
             discounted_price: '30.00',
@@ -406,6 +410,7 @@ describe('Track Event Layer Tests', () => {
             price: 30,
             quantity: 5,
             id: 123456,
+            products: [],
             properties: null,
             key: '123456:7891112',
             discounted_price: '30.00',
@@ -441,6 +446,7 @@ describe('Track Event Layer Tests', () => {
             name: 'Shirt 2 - LARGE',
             brand: 'example',
             price: 30,
+            products: [],
             quantity: 5,
             id: 'id2',
             properties: null,
@@ -548,6 +554,7 @@ describe('Track Event Layer Tests', () => {
             name: 'Shirt 2 - LARGE',
             brand: 'example',
             price: 30,
+            products: [],
             quantity: 5,
             id: 'new prod',
             properties: null,
@@ -587,6 +594,7 @@ describe('Track Event Layer Tests', () => {
             price: 30,
             quantity: 5,
             id: 'id2',
+            products: [],
             properties: null,
             key: 'some:key',
             discounted_price: '30.00',
@@ -670,6 +678,7 @@ describe('Track Event Layer Tests', () => {
             product_id: '9876543',
             name: 'Shirt 2 - LARGE',
             brand: 'example',
+            products: [],
             properties: null,
             price: 30,
             quantity: 2,
@@ -699,6 +708,7 @@ describe('Track Event Layer Tests', () => {
             name: 'Shirt 2 - Medium',
             brand: 'example',
             price: 10,
+            products: [],
             quantity: 2,
           },
         },
@@ -714,6 +724,7 @@ describe('Track Event Layer Tests', () => {
         checkout_id: '1234',
         shipping_method: 'Standard',
         payment_method: 'cash',
+        products,
       };
 
       expect(

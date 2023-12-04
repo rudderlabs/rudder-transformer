@@ -21,7 +21,6 @@ const RUDDER_ECOM_MAP = {
   checkouts_create: {
     event: 'Checkout Started',
     name: 'CheckoutStartedConfig',
-    lineItems: true,
   },
   // Shopify checkout_update topic mapped with RudderStack Checkout Step Viewed, Checkout Step Completed and Payment Info Entered events
   checkout_step_viewed: { event: 'Checkout Step Viewed', name: 'CheckoutStepViewedConfig' },
@@ -30,12 +29,11 @@ const RUDDER_ECOM_MAP = {
     name: 'CheckoutStepCompletedConfig',
   },
   payment_info_entered: { event: 'Payment Info Entered', name: 'PaymentInfoEnteredConfig' },
-  orders_updated: { event: 'Order Updated', name: 'OrderUpdatedConfig', lineItems: true },
-  orders_paid: { event: 'Order Completed', name: 'OrderCompletedConfig', lineItems: true },
+  orders_updated: { event: 'Order Updated', name: 'OrderUpdatedConfig' },
+  orders_paid: { event: 'Order Completed', name: 'OrderCompletedConfig' },
   orders_cancelled: {
     event: 'Order Cancelled',
     name: 'OrderCancelledConfig',
-    lineItems: true,
   },
   product_added: {
     event: 'Product Added',
@@ -97,7 +95,12 @@ const LINE_ITEM_EXCLUSION_FIELDS = [
   'variant_title',
 ];
 
-const PROPERTIES_MAPPING_EXCLUSION_FIELDS = ['customer', 'shipping_address', 'billing_address'];
+const PROPERTIES_MAPPING_EXCLUSION_FIELDS = [
+  'customer',
+  'shipping_address',
+  'billing_address',
+  'line_items',
+];
 
 const maxTimeToIdentifyRSGeneratedCall = 10000; // in ms
 

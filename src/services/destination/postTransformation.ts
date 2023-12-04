@@ -148,7 +148,7 @@ export class DestinationPostTransformationService {
   }
 
   public static handleDeliveryFailureEvents(
-    error: ErrorResponse,
+    error: NonNullable<unknown>,
     metaTo: MetaTransferObject,
   ): DeliveryResponse {
     const errObj = generateErrorObject(error, metaTo.errorDetails, false);
@@ -161,12 +161,6 @@ export class DestinationPostTransformationService {
         authErrorCategory: errObj.authErrorCategory,
       }),
     } as DeliveryResponse;
-
-    // for transformer-proxy to maintain contract
-    const { response } = error;
-    if (response) {
-      resp.response = response;
-    }
     ErrorReportingService.reportError(error, metaTo.errorContext, resp);
     return resp;
   }

@@ -936,6 +936,39 @@ class Prometheus {
           'transformationId',
           'workspaceId'
         ],
+      },
+      {
+        name: 'tp_validation_latency',
+        help: 'tp_validation_latency',
+        type: 'histogram',
+        labelNames: [
+          'eventName',
+          'sourceType',
+          'destinationType',
+          'k8_namespace',
+        ],
+      },
+      {
+        name: 'tp_ajv_validation_latency',
+        help: 'tp_ajv_validation_latency',
+        type: 'histogram',
+        labelNames: [
+          'eventName',
+          'sourceType',
+          'destinationType',
+          'k8_namespace',
+        ],
+      },
+      {
+        name: 'tp_ajv_caching_latency',
+        help: 'tp_ajv_caching_latency',
+        type: 'histogram',
+        labelNames: [
+          'eventName',
+          'sourceType',
+          'destinationType',
+          'k8_namespace',
+        ],
       }
     ];
 

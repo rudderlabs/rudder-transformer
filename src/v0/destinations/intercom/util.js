@@ -86,8 +86,8 @@ const getBaseEndpoint = (destination) => {
  * @returns
  */
 const filterCustomAttributes = (payload, ReservedAttributes) => {
-  const { custom_attributes } = payload;
-  let customAttributes = cloneDeep(custom_attributes) || {};
+  let { custom_attributes: customAttributes  } = payload;
+  customAttributes = cloneDeep(customAttributes) || {};
   if (customAttributes) {
     ReservedAttributes.forEach((trait) => {
       delete customAttributes[trait];

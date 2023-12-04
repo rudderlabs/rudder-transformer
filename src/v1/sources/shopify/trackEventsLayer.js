@@ -22,6 +22,7 @@ const {
   removeUndefinedAndNullValues,
   constructPayload,
   extractCustomFields,
+  isDefinedAndNotNull,
 } = require('../../../v0/util');
 
 const TrackLayer = {
@@ -169,7 +170,7 @@ const TrackLayer = {
    */
   getUpdatedProductProperties(product, cart_token, updatedQuantity = null) {
     const updatedCartProperties = { ...product };
-    if (updatedQuantity) {
+    if (isDefinedAndNotNull(updatedQuantity)) {
       updatedCartProperties.quantity = updatedQuantity;
     }
     updatedCartProperties.cart_id = cart_token;
@@ -189,52 +190,51 @@ const TrackLayer = {
     const events = [];
     const prevLineItems = dbData?.lineItems;
     const cartToken = cart.id || cart.token;
+    if (cart.line_items.length > 0) {
+      await this.updateCartState(getLineItemsToStore(cart), cartToken, metricMetadata);
+    }
     // if no prev cart is found we trigger product added event for every line_item present
-    if (!prevLineItems) {
+    if (!prevLineItems || prevLineItems === 'EMPTY') {
       cart.line_items.forEach((product) => {
         const updatedProduct = this.getUpdatedProductProperties(product, cartToken);
         events.push(this.ecomPayloadBuilder(updatedProduct, 'product_added'));
       });
-      return events;
-    }
-    // This will compare current cartSate with previous cartState
-    cart.line_items.forEach((product) => {
-      const key = product.id;
-      const currentQuantity = product.quantity;
-      const prevQuantity = prevLineItems[key]?.quantity;
+    } else {
+      // This will compare current cartSate with previous cartState
+      cart.line_items.forEach((product) => {
+        const key = product.id;
+        const currentQuantity = product.quantity;
+        const prevQuantity = prevLineItems[key]?.quantity;
 
-      if (currentQuantity !== prevQuantity) {
-        const updatedQuantity = Math.abs(currentQuantity - prevQuantity);
-        const updatedProduct = this.getUpdatedProductProperties(
-          product,
-          cartToken,
-          updatedQuantity,
-        );
-        // TODO1: map extra properties from axios call
+        if (currentQuantity !== prevQuantity) {
+          const quantityUpdated = currentQuantity - prevQuantity;
+          const updatedQuantity = quantityUpdated > 0 ? quantityUpdated : quantityUpdated * -1;
+          const updatedProduct = this.getUpdatedProductProperties(
+            product,
+            cartToken,
+            updatedQuantity,
+          );
+          // TODO1: map extra properties from axios call
 
-        // This means either this Product is Added or Removed
-        if (!prevQuantity || currentQuantity > prevQuantity) {
-          events.push(this.ecomPayloadBuilder(updatedProduct, 'product_added'));
-        } else {
-          events.push(this.ecomPayloadBuilder(updatedProduct, 'product_removed'));
+          // This means either this Product is Added or Removed
+          if (!prevQuantity || quantityUpdated > 0) {
+            events.push(this.ecomPayloadBuilder(updatedProduct, 'product_added'));
+          } else {
+            events.push(this.ecomPayloadBuilder(updatedProduct, 'product_removed'));
+          }
         }
-      }
-      // This will delete the common line_items from prevLineItems
-      if (prevQuantity) {
-        delete prevLineItems[key];
-      }
-    });
-    // We also want to see what prevLineItems are not present in the currentCart to trigger Product Removed Event for them
-    if (prevLineItems !== 'EMPTY') {
+        // This will delete the common line_items from prevLineItems
+        if (prevQuantity) {
+          delete prevLineItems[key];
+        }
+      });
+      // We also want to see what prevLineItems are not present in the currentCart to trigger Product Removed Event for them
       Object.keys(prevLineItems).forEach((lineItemID) => {
         const product = prevLineItems[lineItemID];
         const updatedProduct = this.getUpdatedProductProperties(product, cartToken);
         updatedProduct.id = lineItemID;
         events.push(this.ecomPayloadBuilder(updatedProduct, 'product_removed'));
       });
-    }
-    if (cart.line_items.length > 0) {
-      await this.updateCartState(getLineItemsToStore(cart), cartToken, metricMetadata);
     }
     return events;
   },

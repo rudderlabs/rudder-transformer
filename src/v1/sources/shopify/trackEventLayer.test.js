@@ -461,6 +461,150 @@ describe('Track Event Layer Tests', () => {
         expectedOutput,
       );
     });
+    it('New Product Added event with  prev_cart', async () => {
+      const input = {
+        id: 'cart_id',
+        line_items: [
+          {
+            id: 'new prod',
+            properties: null,
+            quantity: 5,
+            variant_id: 123456,
+            key: '123456:7891112',
+            discounted_price: '30.00',
+            discounts: [],
+            gift_card: false,
+            grams: 0,
+            line_price: '60.00',
+            original_line_price: '60.00',
+            original_price: '30.00',
+            price: '30.00',
+            product_id: 9876543,
+            sku: '',
+            taxable: true,
+            title: 'Shirt 2 - LARGE',
+            total_discount: '0.00',
+            vendor: 'example',
+          },
+          {
+            id: 'id2',
+            properties: null,
+            quantity: 5,
+            variant_id: 'variant_id',
+            key: 'some:key',
+            discounted_price: '30.00',
+            discounts: [],
+            gift_card: false,
+            grams: 0,
+            line_price: '60.00',
+            original_line_price: '60.00',
+            original_price: '30.00',
+            price: '30.00',
+            product_id: 9876543,
+            sku: '',
+            taxable: true,
+            title: 'Shirt 2 - LARGE',
+            total_discount: '0.00',
+            vendor: 'example',
+          },
+        ],
+        note: null,
+        updated_at: '2023-02-10T12:05:07.251Z',
+        created_at: '2023-02-10T12:04:04.402Z',
+      };
+      const dbData = {
+        lineItems: {
+          id2: {
+            quantity: 5,
+            variant_id: 321,
+            price: '10.00',
+            product_id: 3476,
+            sku: '',
+            title: 'Shirt 2 - Medium',
+            vendor: 'example',
+          },
+        },
+      };
+      const expectedOutput = [
+        {
+          context: {
+            integration: {
+              name: 'SHOPIFY',
+            },
+            library: {
+              name: 'unknown',
+              version: 'unknown',
+            },
+          },
+          integrations: {
+            SHOPIFY: false,
+          },
+          type: 'track',
+          event: 'Product Added',
+          properties: {
+            cart_id: 'cart_id',
+            variant_id: 123456,
+            product_id: '9876543',
+            name: 'Shirt 2 - LARGE',
+            brand: 'example',
+            price: 30,
+            quantity: 5,
+            id: 'new prod',
+            properties: null,
+            key: '123456:7891112',
+            discounted_price: '30.00',
+            discounts: [],
+            gift_card: false,
+            grams: 0,
+            line_price: '60.00',
+            original_line_price: '60.00',
+            original_price: '30.00',
+            taxable: true,
+            total_discount: '0.00',
+          },
+        },
+        {
+          context: {
+            integration: {
+              name: 'SHOPIFY',
+            },
+            library: {
+              name: 'unknown',
+              version: 'unknown',
+            },
+          },
+          integrations: {
+            SHOPIFY: false,
+          },
+          type: 'track',
+          event: 'Product Added',
+          properties: {
+            cart_id: 'cart_id',
+            variant_id: 'variant_id',
+            product_id: '9876543',
+            name: 'Shirt 2 - LARGE',
+            brand: 'example',
+            price: 30,
+            quantity: 5,
+            id: 'id2',
+            properties: null,
+            key: 'some:key',
+            discounted_price: '30.00',
+            discounts: [],
+            gift_card: false,
+            grams: 0,
+            line_price: '60.00',
+            original_line_price: '60.00',
+            original_price: '30.00',
+            taxable: true,
+            total_discount: '0.00',
+          },
+        },
+      ];
+      expect(await TrackLayer.generateProductAddedAndRemovedEvents(input, {})).toEqual(
+        expectedOutput,
+      );
+    });
 
     it('Multiple Product Removed event with lesser quantity and no quantity', async () => {
       const dbData = {

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.50.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.50.0...v1.50.1) (2023-12-05)
+
+
+### Bug Fixes
+
+* salesforce transformer proxy response handling issue for authorization flow ([#2873](https://github.com/rudderlabs/rudder-transformer/issues/2873)) ([4cec65e](https://github.com/rudderlabs/rudder-transformer/commit/4cec65e4103e99021f5108fcc7c557b952f1c5eb))
+
 ## [1.50.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.49.1...v1.50.0) (2023-11-13)
 
 

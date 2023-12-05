@@ -122,10 +122,38 @@ const extractEmailFromPayload = (event) => {
   return email;
 };
 
+const sanitizePayload = (obj) => {
+  const objWithNonNullValues = JSON.parse(
+    JSON.stringify(obj, (key, value) => {
+      if (value === null) {
+        return undefined;
+      }
+      const regexForPrice = /price/i;
+      if (regexForPrice.test(key) && typeof value === 'string') {
+        // Try parsing as float
+        const floatResult = parseFloat(value) * 1.0;
+
+        // Check if either parsing resulted in a valid number
+        if (!Number.isNaN(floatResult)) {
+          return floatResult;
+        }
+        // Try parsing as integer
+        const intResult = parseInt(value, 10);
+        if (!Number.isNaN(intResult)) {
+          return intResult;
+        }
+      }
+      return value;
+    }),
+  );
+  return objWithNonNullValues;
+};
+
 module.exports = {
   getCartToken,
   getShopifyTopic,
   extractEmailFromPayload,
   getLineItemsToStore,
   getDataFromRedis,
+  sanitizePayload,
 };

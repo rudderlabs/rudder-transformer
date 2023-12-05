@@ -4,6 +4,7 @@ const {
   getDataFromRedis,
   getCartToken,
   extractEmailFromPayload,
+  sanitizePayload,
 } = require('./commonUtils');
 const { identifyLayer } = require('./identifyEventsLayer');
 const { TrackLayer } = require('./trackEventsLayer');
@@ -15,7 +16,8 @@ const { process: processV0 } = require('../../../v0/sources/shopify/transform');
 const processEvent = async (inputEvent, metricMetadata) => {
   let messages;
   let dbData = null;
-  const shopifyEvent = { ...inputEvent };
+  // removing all the null values
+  const shopifyEvent = sanitizePayload(inputEvent);
   const shopifyTopic = getShopifyTopic(shopifyEvent);
   delete shopifyEvent.query_parameters;
   if (IDENTIFY_TOPICS.includes(shopifyTopic)) {

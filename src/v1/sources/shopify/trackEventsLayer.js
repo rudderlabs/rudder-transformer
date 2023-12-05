@@ -44,10 +44,12 @@ const TrackLayer = {
       message,
       ECOM_MAPPING_JSON[RUDDER_ECOM_MAP[shopifyTopic].name],
     );
-
-    const { line_items: lineItems } = message;
-    const productsList = this.getProductsListFromLineItems(lineItems);
-    mappedPayload.products = productsList;
+    // we don't want to consider products array from line_items for product_added and product_removed event as those are themselves built from line_items only
+    if (!['product_added', 'product_removed'].includes(shopifyTopic)) {
+      const { line_items: lineItems } = message;
+      const productsList = this.getProductsListFromLineItems(lineItems);
+      mappedPayload.products = productsList;
+    }
     return mappedPayload;
   },
 
@@ -192,41 +194,42 @@ const TrackLayer = {
       await this.updateCartState(getLineItemsToStore(cart), cartToken, metricMetadata);
     }
     // if no prev cart is found we trigger product added event for every line_item present
-    if (!prevLineItems || prevLineItems === 'EMPTY') {
+    if (!prevLineItems) {
       cart.line_items.forEach((product) => {
         const updatedProduct = this.getUpdatedProductProperties(product, cartToken);
         events.push(this.ecomPayloadBuilder(updatedProduct, 'product_added'));
       });
-    } else {
-      // This will compare current cartSate with previous cartState
-      cart.line_items.forEach((product) => {
-        const key = product.id;
-        const currentQuantity = product.quantity;
-        const prevQuantity = prevLineItems[key]?.quantity;
+      return events;
+    }
+    // This will compare current cartSate with previous cartState
+    cart.line_items.forEach((product) => {
+      const key = product.id;
+      const currentQuantity = product.quantity;
+      const prevQuantity = prevLineItems[key]?.quantity || 0;
 
-        if (currentQuantity !== prevQuantity) {
-          const quantityUpdated = currentQuantity - prevQuantity;
-          const updatedQuantity = quantityUpdated > 0 ? quantityUpdated : quantityUpdated * -1;
-          const updatedProduct = this.getUpdatedProductProperties(
-            product,
-            cartToken,
-            updatedQuantity,
-          );
-          // TODO1: map extra properties from axios call
+      if (currentQuantity !== prevQuantity) {
+        const updatedQuantity = Math.abs(currentQuantity - prevQuantity);
+        const updatedProduct = this.getUpdatedProductProperties(
+          product,
+          cartToken,
+          updatedQuantity,
+        );
+        // TODO1: map extra properties from axios call
 
-          // This means either this Product is Added or Removed
-          if (!prevQuantity || quantityUpdated > 0) {
-            events.push(this.ecomPayloadBuilder(updatedProduct, 'product_added'));
-          } else {
-            events.push(this.ecomPayloadBuilder(updatedProduct, 'product_removed'));
-          }
+        // This means either this Product is Added or Removed
+        if (!prevQuantity || currentQuantity > prevQuantity) {
+          events.push(this.ecomPayloadBuilder(updatedProduct, 'product_added'));
+        } else {
+          events.push(this.ecomPayloadBuilder(updatedProduct, 'product_removed'));
         }
-        // This will delete the common line_items from prevLineItems
-        if (prevQuantity) {
-          delete prevLineItems[key];
-        }
-      });
-      // We also want to see what prevLineItems are not present in the currentCart to trigger Product Removed Event for them
+      }
+      // This will delete the common line_items from prevLineItems
+      if (prevQuantity) {
+        delete prevLineItems[key];
+      }
+    });
+    // We also want to see what prevLineItems are not present in the currentCart to trigger Product Removed Event for them
+    if (prevLineItems !== 'EMPTY') {
       Object.keys(prevLineItems).forEach((lineItemID) => {
         const product = prevLineItems[lineItemID];
         const updatedProduct = this.getUpdatedProductProperties(product, cartToken);

@@ -9,7 +9,6 @@
         },
         "token": "shopify_test3",
         "line_items": [],
-        "note": null,
         "updated_at": "2023-02-10T12:16:07.251Z",
         "created_at": "2023-02-10T12:05:04.402Z"
       },
@@ -370,14 +369,14 @@
               "province_code": "WB",
               "zip": "700052"
             },
-            "price": "5000.00",
+            "price": "5000.92",
             "price_set": {
               "presentment_money": {
-                "amount": "5000.00",
+                "amount": "5000.92",
                 "currency_code": "INR"
               },
               "shop_money": {
-                "amount": "5000.00",
+                "amount": "5000.92",
                 "currency_code": "INR"
               }
             },
@@ -390,10 +389,10 @@
             "tax_lines": [
               {
                 "channel_liable": false,
-                "price": "900.00",
+                "price": "900.10",
                 "price_set": {
                   "presentment_money": {
-                    "amount": "900.00",
+                    "amount": "900.10",
                     "currency_code": "INR"
                   },
                   "shop_money": {
@@ -491,7 +490,7 @@
             "product_id": 7510929801472,
             "sku": "15",
             "title": "p1",
-            "price": "5000.00",
+            "price": "5000.92",
             "brand": "rudderstack-store",
             "quantity": 1,
             "admin_graphql_api_id": "gid://shopify/LineItem/11896203149568",
@@ -515,11 +514,11 @@
             },
             "price_set": {
               "presentment_money": {
-                "amount": "5000.00",
+                "amount": "5000.92",
                 "currency_code": "INR"
               },
               "shop_money": {
-                "amount": "5000.00",
+                "amount": "5000.92",
                 "currency_code": "INR"
               }
             },
@@ -529,10 +528,10 @@
             "tax_lines": [
               {
                 "channel_liable": false,
-                "price": "900.00",
+                "price": "900.10",
                 "price_set": {
                   "presentment_money": {
-                    "amount": "900.00",
+                    "amount": "900.10",
                     "currency_code": "INR"
                   },
                   "shop_money": {
@@ -582,7 +581,6 @@
         },
         "token": "shopify_test3",
         "line_items": [],
-        "note": null,
         "updated_at": "2023-02-10T12:16:07.251Z",
         "created_at": "2023-02-10T12:05:04.402Z"
       },
@@ -828,7 +826,6 @@
             "smsMarketingConsent": {
               "state": "not_subscribed",
               "opt_in_level": "single_opt_in",
-              "consent_updated_at": null,
               "consent_collected_from": "SHOPIFY"
             },
             "adminGraphqlApiId": "gid://shopify/Customer/5747017285820",
@@ -907,7 +904,6 @@
           "smsMarketingConsent": {
             "state": "not_subscribed",
             "opt_in_level": "single_opt_in",
-            "consent_updated_at": null,
             "consent_collected_from": "SHOPIFY"
           },
           "adminGraphqlApiId": "gid://shopify/Customer/5747017285820",
@@ -1124,16 +1120,13 @@
         "properties": {
           "admin_graphql_api_id": "gid://shopify/Fulfillment/4124667937024",
           "created_at": "2022-01-05T18:13:02+05:30",
-          "destination": null,
           "email": "test_person@email.com",
           "id": 4124667937024,
           "location_id": 66855371008,
           "name": "#1002.1",
           "order_id": 4617255092480,
-          "origin_address": null,
           "receipt": {},
           "service": "manual",
-          "shipment_status": null,
           "status": "success",
           "tracking_company": "Amazon Logistics UK",
           "tracking_number": "Sample001test",
@@ -1186,7 +1179,7 @@
               "tax_lines": [
                 {
                   "channel_liable": false,
-                  "price": "900.00",
+                  "price": 900,
                   "price_set": {
                     "presentment_money": {
                       "amount": "900.00",
@@ -1252,7 +1245,6 @@
         "created_at": "2023-06-26T11:42:27+00:00",
         "updated_at": "2023-06-26T07:42:28-04:00",
         "landing_site": "/password",
-        "note": null,
         "note_attributes": [
           {
             "name": "random",
@@ -1373,35 +1365,20 @@
               "tax_lines": [],
               "taxable": true,
               "variant_id": 44323300999443,
-              "variant_price": "30.00",
-              "unit_price_measurement": {
-                "measured_type": null,
-                "quantity_value": null,
-                "quantity_unit": null,
-                "reference_value": null,
-                "reference_unit": null
-              },
-              "compare_at_price": "35.00",
-              "line_price": "60.00",
-              "applied_discounts": [],
-              "destination_location_id": null,
-              "user_id": null,
-              "rank": null,
-              "origin_location_id": null,
-              "properties": null
+              "variant_price": 30,
+              "unit_price_measurement": {},
+              "compare_at_price": 35,
+              "line_price": 60,
+              "applied_discounts": []
             }
           ],
           "checkout_token": "test_token",
           "cart_token": "test_cart_token",
-          "email": null,
-          "gateway": null,
           "buyer_accepts_marketing": false,
           "buyer_accepts_sms_marketing": false,
-          "sms_marketing_phone": null,
           "created_at": "2023-06-26T11:42:27+00:00",
           "updated_at": "2023-06-26T07:42:28-04:00",
           "landing_site": "/password",
-          "note": null,
           "note_attributes": [
             {
               "name": "random",
@@ -1412,8 +1389,6 @@
           "shipping_lines": [],
           "taxes_included": true,
           "total_weight": 0,
-          "completed_at": null,
-          "phone": null,
           "customer_locale": "en-GB",
           "name": "#36784183345427",
           "abandoned_checkout_url": "https://example-checkout-url",
@@ -1421,15 +1396,8 @@
           "tax_lines": [],
           "presentment_currency": "GBP",
           "source_name": "web",
-          "total_line_items_price": "60.00",
-          "total_duties": "0.00",
-          "device_id": null,
-          "user_id": null,
-          "location_id": null,
-          "source_identifier": null,
-          "source_url": null,
-          "source": null,
-          "closed_at": null
+          "total_line_items_price": 60,
+          "total_duties": "0.00"
         },
         "timestamp": "2023-06-26T11:42:28.000Z",
         "anonymousId": "48a01d71-7c79-5301-9401-a7fc80e1ae88"
@@ -1556,11 +1524,8 @@
           "checkout_id": "36816304308499",
           "checkout_token": "test_token",
           "cart_token": "test_cart_token",
-          "email": null,
-          "gateway": null,
           "buyer_accepts_marketing": false,
           "buyer_accepts_sms_marketing": false,
-          "sms_marketing_phone": null,
           "created_at": "2023-07-04T06:12:29+00:00",
           "updated_at": "2023-07-04T02:12:51-04:00",
           "landing_site": "/password",
@@ -1576,8 +1541,6 @@
           "taxes_included": true,
           "total_weight": 0,
           "currency": "GBP",
-          "completed_at": null,
-          "phone": null,
           "customer_locale": "en-GB",
           "products": [
             {
@@ -1595,24 +1558,13 @@
               "name": "Shirt 2",
               "variant_id": 44323300999443,
               "variant": "LARGE",
-              "variant_price": "30.00",
+              "variant_price": 30,
               "brand": "test_vendor",
-              "unit_price_measurement": {
-                "measured_type": null,
-                "quantity_value": null,
-                "quantity_unit": null,
-                "reference_value": null,
-                "reference_unit": null
-              },
-              "compare_at_price": "35.00",
-              "line_price": "30.00",
+              "unit_price_measurement": {},
+              "compare_at_price": 35,
+              "line_price": 30,
               "price": 30.0,
-              "applied_discounts": [],
-              "destination_location_id": null,
-              "user_id": null,
-              "rank": null,
-              "origin_location_id": null,
-              "properties": null
+              "applied_discounts": []
             }
           ],
           "name": "#36816304308499",
@@ -1621,19 +1573,12 @@
           "tax_lines": [],
           "presentment_currency": "GBP",
           "source_name": "web",
-          "total_line_items_price": "30.00",
+          "total_line_items_price": 30,
           "total_tax": "0.00",
           "total_discounts": "0.00",
-          "subtotal_price": "30.00",
-          "total_price": "30.00",
-          "total_duties": "0.00",
-          "device_id": null,
-          "user_id": null,
-          "location_id": null,
-          "source_identifier": null,
-          "source_url": null,
-          "source": null,
-          "closed_at": null
+          "subtotal_price": 30,
+          "total_price": 30,
+          "total_duties": "0.00"
         },
         "timestamp": "2023-07-04T06:12:51.000Z",
         "anonymousId": "48a01d71-7c79-5301-9401-a7fc80e1ae88"
@@ -1664,7 +1609,6 @@
         "updated_at": "2023-06-28T07:08:14-04:00",
         "completed_at": "2023-06-28T11:08:14+00:00",
         "landing_site": "/password",
-        "note": null,
         "note_attributes": [
           {
             "name": "random",
@@ -1805,7 +1749,6 @@
           "state": "disabled",
           "total_spent": "0.00",
           "last_order_id": null,
-          "note": null,
           "verified_email": true,
           "multipass_identifier": null,
           "tax_exempt": false,
@@ -1851,22 +1794,8 @@
             "lastName": "Doe",
             "phone": "+919834383894",
             "address": {
-              "id": null,
               "customer_id": 7005059186963,
-              "first_name": null,
-              "last_name": null,
-              "company": null,
-              "address1": null,
-              "address2": null,
-              "city": null,
-              "province": null,
-              "country": null,
-              "zip": null,
-              "phone": null,
               "name": " ",
-              "province_code": null,
-              "country_code": null,
-              "country_name": null,
               "default": true
             },
             "acceptsMarketing": false,
@@ -1881,16 +1810,12 @@
             "shippingAddress": {
               "first_name": "John",
               "address1": "Upminster",
-              "phone": null,
               "city": "London",
               "zip": "PO16 7GZ",
               "province": "England",
               "country": "United Kingdom",
               "last_name": "Doe",
               "address2": "434",
-              "company": null,
-              "latitude": null,
-              "longitude": null,
               "name": "John Doe",
               "country_code": "GB",
               "province_code": "ENG"
@@ -1898,16 +1823,12 @@
             "billingAddress": {
               "first_name": "John",
               "address1": "Upminster",
-              "phone": null,
               "city": "London",
               "zip": "PO16 7GZ",
               "province": "England",
               "country": "United Kingdom",
               "last_name": "Doe",
               "address2": "434",
-              "company": null,
-              "latitude": null,
-              "longitude": null,
               "name": "John Doe",
               "country_code": "GB",
               "province_code": "ENG"
@@ -1935,17 +1856,14 @@
           "name": "#36800494043411",
           "checkout_token": "test_token",
           "cart_token": "test_cart_token",
-          "email": null,
           "phone": "+919834383894",
           "customer_locale": "en-GB",
           "buyer_accepts_marketing": false,
           "buyer_accepts_sms_marketing": false,
-          "sms_marketing_phone": null,
           "created_at": "2023-06-28T11:06:13+00:00",
           "updated_at": "2023-06-28T07:08:14-04:00",
           "completed_at": "2023-06-28T11:08:14+00:00",
           "landing_site": "/password",
-          "note": null,
           "note_attributes": [
             {
               "name": "random",
@@ -1973,42 +1891,27 @@
               "name": "Shirt 2",
               "variant_id": 44323300999443,
               "variant": "LARGE",
-              "variant_price": "30.00",
+              "variant_price": 30,
               "brand": "test_vendor",
-              "unit_price_measurement": {
-                "measured_type": null,
-                "quantity_value": null,
-                "quantity_unit": null,
-                "reference_value": null,
-                "reference_unit": null
-              },
-              "compare_at_price": "35.00",
-              "line_price": "30.00",
-              "price": 30.0,
-              "applied_discounts": [],
-              "destination_location_id": null,
-              "user_id": null,
-              "rank": null,
-              "origin_location_id": null,
-              "properties": null
+              "unit_price_measurement": {},
+              "compare_at_price": 35,
+              "line_price": 30,
+              "price": 30,
+              "applied_discounts": []
             }
           ],
           "tax_lines": [],
           "shipping_lines": [
             {
               "code": "Standard",
-              "price": "5.99",
-              "original_shop_price": "5.99",
+              "price": 5.99,
+              "original_shop_price": 5.99,
               "original_shop_markup": "0.00",
               "source": "shopify",
               "title": "Standard",
               "presentment_title": "Standard",
-              "phone": null,
               "tax_lines": [],
-              "custom_tax_lines": null,
               "markup": "0.00",
-              "carrier_identifier": null,
-              "carrier_service_id": null,
               "api_client_id": "580111",
               "delivery_option_group": {
                 "token": "f4cb9c3f91b37ab6edfce339defa9307",
@@ -2016,29 +1919,18 @@
               },
               "delivery_expectation_range": [172800, 345600],
               "delivery_expectation_type": "shipping",
-              "id": null,
-              "requested_fulfillment_service_id": null,
-              "delivery_category": null,
-              "validation_context": null,
               "applied_discounts": []
             }
           ],
           "discount_codes": [],
           "abandoned_checkout_url": "https://example-checkout-url",
           "source_name": "web",
-          "total_line_items_price": "30.00",
+          "total_line_items_price": 30,
           "total_tax": "0.00",
           "total_discounts": "0.00",
-          "subtotal_price": "35.99",
-          "total_price": "35.99",
-          "total_duties": "0.00",
-          "device_id": null,
-          "user_id": null,
-          "location_id": null,
-          "source_identifier": null,
-          "source_url": null,
-          "source": null,
-          "closed_at": null
+          "subtotal_price": 35.99,
+          "total_price": 35.99,
+          "total_duties": "0.00"
         },
         "timestamp": "2023-06-28T11:08:14.000Z",
         "userId": "7005059186963",
@@ -2047,22 +1939,8 @@
           "lastName": "Doe",
           "phone": "+919834383894",
           "address": {
-            "id": null,
             "customer_id": 7005059186963,
-            "first_name": null,
-            "last_name": null,
-            "company": null,
-            "address1": null,
-            "address2": null,
-            "city": null,
-            "province": null,
-            "country": null,
-            "zip": null,
-            "phone": null,
             "name": " ",
-            "province_code": null,
-            "country_code": null,
-            "country_name": null,
             "default": true
           },
           "acceptsMarketing": false,
@@ -2077,16 +1955,12 @@
           "shippingAddress": {
             "first_name": "John",
             "address1": "Upminster",
-            "phone": null,
             "city": "London",
             "zip": "PO16 7GZ",
             "province": "England",
             "country": "United Kingdom",
             "last_name": "Doe",
             "address2": "434",
-            "company": null,
-            "latitude": null,
-            "longitude": null,
             "name": "John Doe",
             "country_code": "GB",
             "province_code": "ENG"
@@ -2094,16 +1968,12 @@
           "billingAddress": {
             "first_name": "John",
             "address1": "Upminster",
-            "phone": null,
             "city": "London",
             "zip": "PO16 7GZ",
             "province": "England",
             "country": "United Kingdom",
             "last_name": "Doe",
             "address2": "434",
-            "company": null,
-            "latitude": null,
-            "longitude": null,
             "name": "John Doe",
             "country_code": "GB",
             "province_code": "ENG"
@@ -2133,7 +2003,6 @@
         "created_at": "2023-06-28T12:46:40+00:00",
         "updated_at": "2023-06-28T09:27:52-04:00",
         "landing_site": "/password",
-        "note": null,
         "note_attributes": [
           {
             "name": "random",
@@ -2278,7 +2147,6 @@
           "state": "disabled",
           "total_spent": "0.00",
           "last_order_id": null,
-          "note": null,
           "verified_email": true,
           "multipass_identifier": null,
           "tax_exempt": false,
@@ -2324,18 +2192,14 @@
             "lastName": "Doe",
             "phone": "+919999999999",
             "address": {
-              "id": null,
               "customer_id": 7005105389843,
               "first_name": "John",
               "last_name": "Doe",
-              "company": null,
               "address1": "London Bridge",
-              "address2": null,
               "city": "London",
               "province": "England",
               "country": "United Kingdom",
               "zip": "EC4R 9HA",
-              "phone": null,
               "name": "John Doe",
               "province_code": "ENG",
               "country_code": "GB",
@@ -2354,16 +2218,11 @@
             "shippingAddress": {
               "first_name": "John",
               "address1": "London Bridge",
-              "phone": null,
               "city": "London",
               "zip": "EC4R 9HA",
               "province": "England",
               "country": "United Kingdom",
               "last_name": "Doe",
-              "address2": null,
-              "company": null,
-              "latitude": null,
-              "longitude": null,
               "name": "John Doe",
               "country_code": "GB",
               "province_code": "ENG"
@@ -2371,16 +2230,11 @@
             "billingAddress": {
               "first_name": "John",
               "address1": "London Bridge",
-              "phone": null,
               "city": "London",
               "zip": "EC4R 9HA",
               "province": "England",
               "country": "United Kingdom",
               "last_name": "Doe",
-              "address2": null,
-              "company": null,
-              "latitude": null,
-              "longitude": null,
               "name": "John Doe",
               "country_code": "GB",
               "province_code": "ENG"
@@ -2407,14 +2261,11 @@
           "payment_method": "bogus",
           "checkout_token": "test_token",
           "cart_token": "test_cart_token",
-          "email": null,
           "buyer_accepts_marketing": false,
           "buyer_accepts_sms_marketing": false,
-          "sms_marketing_phone": null,
           "created_at": "2023-06-28T12:46:40+00:00",
           "updated_at": "2023-06-28T09:27:52-04:00",
           "landing_site": "/password",
-          "note": null,
           "note_attributes": [
             {
               "name": "random",
@@ -2425,18 +2276,14 @@
           "shipping_lines": [
             {
               "code": "Standard",
-              "price": "5.99",
-              "original_shop_price": "5.99",
+              "price": 5.99,
+              "original_shop_price": 5.99,
               "original_shop_markup": "0.00",
               "source": "shopify",
               "title": "Standard",
               "presentment_title": "Standard",
-              "phone": null,
               "tax_lines": [],
-              "custom_tax_lines": null,
               "markup": "0.00",
-              "carrier_identifier": null,
-              "carrier_service_id": null,
               "api_client_id": "580111",
               "delivery_option_group": {
                 "token": "f1c7bdd30fc7f11305592099bfea5b50",
@@ -2444,17 +2291,12 @@
               },
               "delivery_expectation_range": [172800, 345600],
               "delivery_expectation_type": "shipping",
-              "id": null,
-              "requested_fulfillment_service_id": null,
-              "delivery_category": null,
-              "validation_context": null,
               "applied_discounts": []
             }
           ],
           "taxes_included": true,
           "total_weight": 0,
           "currency": "GBP",
-          "completed_at": null,
           "phone": "+919999999999",
           "customer_locale": "en-GB",
           "products": [
@@ -2473,24 +2315,13 @@
               "name": "Shirt 2",
               "variant_id": 44323300999443,
               "variant": "LARGE",
-              "variant_price": "30.00",
+              "variant_price": 30,
               "brand": "test_vendor",
-              "unit_price_measurement": {
-                "measured_type": null,
-                "quantity_value": null,
-                "quantity_unit": null,
-                "reference_value": null,
-                "reference_unit": null
-              },
-              "compare_at_price": "35.00",
-              "line_price": "30.00",
-              "price": 30.0,
-              "applied_discounts": [],
-              "destination_location_id": null,
-              "user_id": null,
-              "rank": null,
-              "origin_location_id": null,
-              "properties": null
+              "unit_price_measurement": {},
+              "compare_at_price": 35,
+              "line_price": 30,
+              "price": 30,
+              "applied_discounts": []
             }
           ],
           "name": "#36800770375955",
@@ -2499,19 +2330,12 @@
           "tax_lines": [],
           "presentment_currency": "GBP",
           "source_name": "web",
-          "total_line_items_price": "30.00",
+          "total_line_items_price": 30,
           "total_tax": "0.00",
           "total_discounts": "0.00",
-          "subtotal_price": "30.00",
-          "total_price": "35.99",
-          "total_duties": "0.00",
-          "device_id": null,
-          "user_id": null,
-          "location_id": null,
-          "source_identifier": null,
-          "source_url": null,
-          "source": null,
-          "closed_at": null
+          "subtotal_price": 30,
+          "total_price": 35.99,
+          "total_duties": "0.00"
         },
         "timestamp": "2023-06-28T13:27:52.000Z",
         "userId": "7005105389843",
@@ -2520,18 +2344,14 @@
           "lastName": "Doe",
           "phone": "+919999999999",
           "address": {
-            "id": null,
             "customer_id": 7005105389843,
             "first_name": "John",
             "last_name": "Doe",
-            "company": null,
             "address1": "London Bridge",
-            "address2": null,
             "city": "London",
             "province": "England",
             "country": "United Kingdom",
             "zip": "EC4R 9HA",
-            "phone": null,
             "name": "John Doe",
             "province_code": "ENG",
             "country_code": "GB",
@@ -2550,16 +2370,11 @@
           "shippingAddress": {
             "first_name": "John",
             "address1": "London Bridge",
-            "phone": null,
             "city": "London",
             "zip": "EC4R 9HA",
             "province": "England",
             "country": "United Kingdom",
             "last_name": "Doe",
-            "address2": null,
-            "company": null,
-            "latitude": null,
-            "longitude": null,
             "name": "John Doe",
             "country_code": "GB",
             "province_code": "ENG"
@@ -2567,16 +2382,11 @@
           "billingAddress": {
             "first_name": "John",
             "address1": "London Bridge",
-            "phone": null,
             "city": "London",
             "zip": "EC4R 9HA",
             "province": "England",
             "country": "United Kingdom",
             "last_name": "Doe",
-            "address2": null,
-            "company": null,
-            "latitude": null,
-            "longitude": null,
             "name": "John Doe",
             "country_code": "GB",
             "province_code": "ENG"
@@ -2675,7 +2485,6 @@
         "landing_site_ref": null,
         "location_id": null,
         "name": "#1053",
-        "note": null,
         "note_attributes": [],
         "number": 53,
         "order_number": 1053,
@@ -2796,7 +2605,6 @@
           "state": "disabled",
           "total_spent": "0.00",
           "last_order_id": null,
-          "note": null,
           "verified_email": true,
           "multipass_identifier": null,
           "tax_exempt": false,
@@ -2978,14 +2786,12 @@
               "customer_id": 7005105389843,
               "first_name": "John",
               "last_name": "Doe",
-              "company": null,
               "address1": "abc",
               "address2": "Unit 34 Knightsbridge House",
               "city": "London",
               "province": "England",
               "country": "United Kingdom",
               "zip": "PO31 8EF",
-              "phone": null,
               "name": "John Doe",
               "province_code": "ENG",
               "country_code": "GB",
@@ -3004,7 +2810,6 @@
             "smsMarketingConsent": {
               "state": "not_subscribed",
               "opt_in_level": "single_opt_in",
-              "consent_updated_at": null,
               "consent_collected_from": "SHOPIFY"
             },
             "adminGraphqlApiId": "gid://shopify/Customer/7005105389843",
@@ -3012,14 +2817,12 @@
             "shippingAddress": {
               "first_name": "John",
               "address1": "abc",
-              "phone": null,
               "city": "London",
               "zip": "PO31 8EF",
               "province": "England",
               "country": "United Kingdom",
               "last_name": "Doe",
               "address2": "Unit 34 Knightsbridge House",
-              "company": null,
               "latitude": 50.76175989999999,
               "longitude": -1.3211169,
               "name": "John Doe",
@@ -3029,14 +2832,12 @@
             "billingAddress": {
               "first_name": "John",
               "address1": "abc",
-              "phone": null,
               "city": "London",
               "zip": "PO31 8EF",
               "province": "England",
               "country": "United Kingdom",
               "last_name": "Doe",
               "address2": "Unit 34 Knightsbridge House",
-              "company": null,
               "latitude": 50.76175989999999,
               "longitude": -1.3211169,
               "name": "John Doe",
@@ -3082,7 +2883,6 @@
               "admin_graphql_api_id": "gid://shopify/LineItem/13986389164307",
               "fulfillable_quantity": 1,
               "fulfillment_service": "manual",
-              "fulfillment_status": null,
               "gift_card": false,
               "grams": 0,
               "origin_location": {
@@ -3131,23 +2931,16 @@
           "app_id": 580111,
           "browser_ip": "171.61.11.169",
           "buyer_accepts_marketing": false,
-          "cancel_reason": null,
-          "cancelled_at": null,
           "cart_token": "test_cart_token",
           "checkout_token": "test_checkout_token",
           "client_details": {
             "accept_language": "en-GB",
-            "browser_height": null,
             "browser_ip": "171.61.11.169",
-            "browser_width": null,
-            "session_hash": null,
             "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
           },
-          "closed_at": null,
           "confirmed": true,
-          "contact_email": null,
           "created_at": "2023-07-02T11:07:37-04:00",
-          "current_subtotal_price": "30.00",
+          "current_subtotal_price": 30,
           "current_subtotal_price_set": {
             "shop_money": {
               "amount": "30.00",
@@ -3169,8 +2962,7 @@
               "currency_code": "GBP"
             }
           },
-          "current_total_duties_set": null,
-          "current_total_price": "30.00",
+          "current_total_price": 30,
           "current_total_price_set": {
             "shop_money": {
               "amount": "30.00",
@@ -3193,23 +2985,17 @@
             }
           },
           "customer_locale": "en-GB",
-          "device_id": null,
           "discount_codes": [],
           "email": "",
           "estimated_taxes": false,
           "financial_status": "paid",
-          "fulfillment_status": null,
           "gateway": "bogus",
           "landing_site": "/password",
-          "landing_site_ref": null,
-          "location_id": null,
           "name": "#1053",
-          "note": null,
           "note_attributes": [],
           "number": 53,
           "order_number": 1053,
           "order_status_url": "https://example-order-url",
-          "original_total_duties_set": null,
           "payment_gateway_names": ["bogus"],
           "phone": "+919999999999",
           "presentment_currency": "GBP",
@@ -3219,7 +3005,6 @@
           "referring_site": "",
           "source_identifier": "0d7ef59a6e8419b1ec7e5fe60c165a7a",
           "source_name": "web",
-          "source_url": null,
           "subtotal_price_set": {
             "shop_money": {
               "amount": "30.00",
@@ -3245,7 +3030,7 @@
               "currency_code": "GBP"
             }
           },
-          "total_line_items_price": "30.00",
+          "total_line_items_price": 30,
           "total_line_items_price_set": {
             "shop_money": {
               "amount": "30.00",
@@ -3267,7 +3052,7 @@
               "currency_code": "GBP"
             }
           },
-          "total_price_usd": "37.68",
+          "total_price_usd": 37.68,
           "total_shipping_price_set": {
             "shop_money": {
               "amount": "0.00",
@@ -3291,26 +3076,20 @@
           "total_tip_received": "0.00",
           "total_weight": 0,
           "updated_at": "2023-07-02T11:07:38-04:00",
-          "user_id": null,
           "discount_applications": [],
           "fulfillments": [],
           "payment_details": {
             "credit_card_bin": "1",
-            "avs_result_code": null,
-            "cvv_result_code": null,
             "credit_card_number": "•••• •••• •••• 1",
-            "credit_card_company": "Bogus",
-            "buyer_action_info": null
+            "credit_card_company": "Bogus"
           },
-          "payment_terms": null,
           "refunds": [],
           "shipping_lines": [
             {
               "id": 4407897456915,
               "carrier_identifier": "650f1a14fa979ec5c74d063e968411d4",
               "code": "Standard",
-              "delivery_category": null,
-              "discounted_price": "0.00",
+              "discounted_price": 0,
               "discounted_price_set": {
                 "shop_money": {
                   "amount": "0.00",
@@ -3321,8 +3100,7 @@
                   "currency_code": "GBP"
                 }
               },
-              "phone": null,
-              "price": "0.00",
+              "price": 0,
               "price_set": {
                 "shop_money": {
                   "amount": "0.00",
@@ -3333,7 +3111,6 @@
                   "currency_code": "GBP"
                 }
               },
-              "requested_fulfillment_service_id": null,
               "source": "shopify",
               "title": "Standard",
               "tax_lines": [],
@@ -3352,14 +3129,12 @@
             "customer_id": 7005105389843,
             "first_name": "John",
             "last_name": "Doe",
-            "company": null,
             "address1": "abc",
             "address2": "Unit 34 Knightsbridge House",
             "city": "London",
             "province": "England",
             "country": "United Kingdom",
             "zip": "PO31 8EF",
-            "phone": null,
             "name": "John Doe",
             "province_code": "ENG",
             "country_code": "GB",
@@ -3378,7 +3153,6 @@
           "smsMarketingConsent": {
             "state": "not_subscribed",
             "opt_in_level": "single_opt_in",
-            "consent_updated_at": null,
             "consent_collected_from": "SHOPIFY"
           },
           "adminGraphqlApiId": "gid://shopify/Customer/7005105389843",
@@ -3386,14 +3160,12 @@
           "shippingAddress": {
             "first_name": "John",
             "address1": "abc",
-            "phone": null,
             "city": "London",
             "zip": "PO31 8EF",
             "province": "England",
             "country": "United Kingdom",
             "last_name": "Doe",
             "address2": "Unit 34 Knightsbridge House",
-            "company": null,
             "latitude": 50.76175989999999,
             "longitude": -1.3211169,
             "name": "John Doe",
@@ -3403,14 +3175,12 @@
           "billingAddress": {
             "first_name": "John",
             "address1": "abc",
-            "phone": null,
             "city": "London",
             "zip": "PO31 8EF",
             "province": "England",
             "country": "United Kingdom",
             "last_name": "Doe",
             "address2": "Unit 34 Knightsbridge House",
-            "company": null,
             "latitude": 50.76175989999999,
             "longitude": -1.3211169,
             "name": "John Doe",
@@ -3511,7 +3281,6 @@
         "landing_site_ref": null,
         "location_id": null,
         "name": "#1053",
-        "note": null,
         "note_attributes": [],
         "number": 53,
         "order_number": 1053,
@@ -3632,7 +3401,6 @@
           "state": "disabled",
           "total_spent": "0.00",
           "last_order_id": null,
-          "note": null,
           "verified_email": true,
           "multipass_identifier": null,
           "tax_exempt": false,
@@ -3814,14 +3582,12 @@
               "customer_id": 7005105389843,
               "first_name": "John",
               "last_name": "Doe",
-              "company": null,
               "address1": "abc",
               "address2": "Unit 34 Knightsbridge House",
               "city": "London",
               "province": "England",
               "country": "United Kingdom",
               "zip": "PO31 8EF",
-              "phone": null,
               "name": "John Doe",
               "province_code": "ENG",
               "country_code": "GB",
@@ -3840,7 +3606,6 @@
             "smsMarketingConsent": {
               "state": "not_subscribed",
               "opt_in_level": "single_opt_in",
-              "consent_updated_at": null,
               "consent_collected_from": "SHOPIFY"
             },
             "adminGraphqlApiId": "gid://shopify/Customer/7005105389843",
@@ -3848,14 +3613,12 @@
             "shippingAddress": {
               "first_name": "John",
               "address1": "abc",
-              "phone": null,
               "city": "London",
               "zip": "PO31 8EF",
               "province": "England",
               "country": "United Kingdom",
               "last_name": "Doe",
               "address2": "Unit 34 Knightsbridge House",
-              "company": null,
               "latitude": 50.76175989999999,
               "longitude": -1.3211169,
               "name": "John Doe",
@@ -3865,14 +3628,12 @@
             "billingAddress": {
               "first_name": "John",
               "address1": "abc",
-              "phone": null,
               "city": "London",
               "zip": "PO31 8EF",
               "province": "England",
               "country": "United Kingdom",
               "last_name": "Doe",
               "address2": "Unit 34 Knightsbridge House",
-              "company": null,
               "latitude": 50.76175989999999,
               "longitude": -1.3211169,
               "name": "John Doe",
@@ -3919,7 +3680,6 @@
               "admin_graphql_api_id": "gid://shopify/LineItem/13986389164307",
               "fulfillable_quantity": 1,
               "fulfillment_service": "manual",
-              "fulfillment_status": null,
               "gift_card": false,
               "grams": 0,
               "origin_location": {
@@ -3968,23 +3728,16 @@
           "app_id": 580111,
           "browser_ip": "171.61.11.169",
           "buyer_accepts_marketing": false,
-          "cancel_reason": null,
-          "cancelled_at": null,
           "cart_token": "test_cart_token",
           "checkout_token": "test_checkout_token",
           "client_details": {
             "accept_language": "en-GB",
-            "browser_height": null,
             "browser_ip": "171.61.11.169",
-            "browser_width": null,
-            "session_hash": null,
             "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
           },
-          "closed_at": null,
           "confirmed": true,
-          "contact_email": null,
           "created_at": "2023-07-02T11:07:37-04:00",
-          "current_subtotal_price": "30.00",
+          "current_subtotal_price": 30,
           "current_subtotal_price_set": {
             "shop_money": {
               "amount": "30.00",
@@ -4006,8 +3759,7 @@
               "currency_code": "GBP"
             }
           },
-          "current_total_duties_set": null,
-          "current_total_price": "30.00",
+          "current_total_price": 30,
           "current_total_price_set": {
             "shop_money": {
               "amount": "30.00",
@@ -4030,23 +3782,17 @@
             }
           },
           "customer_locale": "en-GB",
-          "device_id": null,
           "discount_codes": [],
           "email": "",
           "estimated_taxes": false,
           "financial_status": "paid",
-          "fulfillment_status": null,
           "gateway": "bogus",
           "landing_site": "/password",
-          "landing_site_ref": null,
-          "location_id": null,
           "name": "#1053",
-          "note": null,
           "note_attributes": [],
           "number": 53,
           "order_number": 1053,
           "order_status_url": "https://example-order-url",
-          "original_total_duties_set": null,
           "payment_gateway_names": ["bogus"],
           "phone": "+919999999999",
           "presentment_currency": "GBP",
@@ -4056,7 +3802,6 @@
           "referring_site": "",
           "source_identifier": "0d7ef59a6e8419b1ec7e5fe60c165a7a",
           "source_name": "web",
-          "source_url": null,
           "subtotal_price_set": {
             "shop_money": {
               "amount": "30.00",
@@ -4082,7 +3827,7 @@
               "currency_code": "GBP"
             }
           },
-          "total_line_items_price": "30.00",
+          "total_line_items_price": 30,
           "total_line_items_price_set": {
             "shop_money": {
               "amount": "30.00",
@@ -4104,7 +3849,7 @@
               "currency_code": "GBP"
             }
           },
-          "total_price_usd": "37.68",
+          "total_price_usd": 37.68,
           "total_shipping_price_set": {
             "shop_money": {
               "amount": "0.00",
@@ -4128,26 +3873,20 @@
           "total_tip_received": "0.00",
           "total_weight": 0,
           "updated_at": "2023-07-02T11:07:38-04:00",
-          "user_id": null,
           "discount_applications": [],
           "fulfillments": [],
           "payment_details": {
             "credit_card_bin": "1",
-            "avs_result_code": null,
-            "cvv_result_code": null,
             "credit_card_number": "•••• •••• •••• 1",
-            "credit_card_company": "Bogus",
-            "buyer_action_info": null
+            "credit_card_company": "Bogus"
           },
-          "payment_terms": null,
           "refunds": [],
           "shipping_lines": [
             {
               "id": 4407897456915,
               "carrier_identifier": "650f1a14fa979ec5c74d063e968411d4",
               "code": "Standard",
-              "delivery_category": null,
-              "discounted_price": "0.00",
+              "discounted_price": 0,
               "discounted_price_set": {
                 "shop_money": {
                   "amount": "0.00",
@@ -4158,8 +3897,7 @@
                   "currency_code": "GBP"
                 }
               },
-              "phone": null,
-              "price": "0.00",
+              "price": 0,
               "price_set": {
                 "shop_money": {
                   "amount": "0.00",
@@ -4170,7 +3908,6 @@
                   "currency_code": "GBP"
                 }
               },
-              "requested_fulfillment_service_id": null,
               "source": "shopify",
               "title": "Standard",
               "tax_lines": [],
@@ -4189,14 +3926,12 @@
             "customer_id": 7005105389843,
             "first_name": "John",
             "last_name": "Doe",
-            "company": null,
             "address1": "abc",
             "address2": "Unit 34 Knightsbridge House",
             "city": "London",
             "province": "England",
             "country": "United Kingdom",
             "zip": "PO31 8EF",
-            "phone": null,
             "name": "John Doe",
             "province_code": "ENG",
             "country_code": "GB",
@@ -4215,7 +3950,6 @@
           "smsMarketingConsent": {
             "state": "not_subscribed",
             "opt_in_level": "single_opt_in",
-            "consent_updated_at": null,
             "consent_collected_from": "SHOPIFY"
           },
           "adminGraphqlApiId": "gid://shopify/Customer/7005105389843",
@@ -4223,14 +3957,12 @@
           "shippingAddress": {
             "first_name": "John",
             "address1": "abc",
-            "phone": null,
             "city": "London",
             "zip": "PO31 8EF",
             "province": "England",
             "country": "United Kingdom",
             "last_name": "Doe",
             "address2": "Unit 34 Knightsbridge House",
-            "company": null,
             "latitude": 50.76175989999999,
             "longitude": -1.3211169,
             "name": "John Doe",
@@ -4240,14 +3972,12 @@
           "billingAddress": {
             "first_name": "John",
             "address1": "abc",
-            "phone": null,
             "city": "London",
             "zip": "PO31 8EF",
             "province": "England",
             "country": "United Kingdom",
             "last_name": "Doe",
             "address2": "Unit 34 Knightsbridge House",
-            "company": null,
             "latitude": 50.76175989999999,
             "longitude": -1.3211169,
             "name": "John Doe",
@@ -4396,7 +4126,7 @@
             "currency_code": "GBP"
           }
         },
-        "total_line_items_price": "30.00",
+        "total_line_items_price": 30,
         "total_line_items_price_set": {
           "shop_money": {
             "amount": "30.00",
@@ -4474,7 +4204,6 @@
           "state": "disabled",
           "total_spent": "0.00",
           "last_order_id": null,
-          "note": null,
           "verified_email": true,
           "multipass_identifier": null,
           "tax_exempt": false,
@@ -4587,7 +4316,6 @@
             "id": 951216668947,
             "admin_graphql_api_id": "gid://shopify/Refund/951216668947",
             "created_at": "2023-06-25T00:39:52-04:00",
-            "note": null,
             "order_id": 5389487866131,
             "processed_at": "2023-06-25T00:39:52-04:00",
             "restock": true,
@@ -4781,7 +4509,7 @@
             "carrier_identifier": "650f1a14fa979ec5c74d063e968411d4",
             "code": "Standard",
             "delivery_category": null,
-            "discounted_price": "5.99",
+            "discounted_price": 5.99,
             "discounted_price_set": {
               "shop_money": {
                 "amount": "5.99",
@@ -4827,16 +4555,12 @@
             "address": {
               "id": 9236307083539,
               "customer_id": 6783286247699,
-              "first_name": null,
               "last_name": "Person",
-              "company": null,
               "address1": "2ff",
-              "address2": null,
               "city": "ny",
               "province": "England",
               "country": "United Kingdom",
               "zip": "PO16 7GZ",
-              "phone": null,
               "name": "Person",
               "province_code": "ENG",
               "country_code": "GB",
@@ -4856,35 +4580,23 @@
             "adminGraphqlApiId": "gid://shopify/Customer/6783286247699",
             "acceptsMarketingUpdatedAt": "2023-05-26T07:11:41-04:00",
             "shippingAddress": {
-              "first_name": null,
               "address1": "2ff",
-              "phone": null,
               "city": "ny",
               "zip": "PO16 7GZ",
               "province": "England",
               "country": "United Kingdom",
               "last_name": "Person",
-              "address2": null,
-              "company": null,
-              "latitude": null,
-              "longitude": null,
               "name": "Person",
               "country_code": "GB",
               "province_code": "ENG"
             },
             "billingAddress": {
-              "first_name": null,
               "address1": "2ff",
-              "phone": null,
               "city": "ny",
               "zip": "PO16 7GZ",
               "province": "England",
               "country": "United Kingdom",
               "last_name": "Person",
-              "address2": null,
-              "company": null,
-              "latitude": null,
-              "longitude": null,
               "name": "Person",
               "country_code": "GB",
               "province_code": "ENG"
@@ -4928,7 +4640,6 @@
               "admin_graphql_api_id": "gid://shopify/LineItem/13964814876947",
               "fulfillable_quantity": 0,
               "fulfillment_service": "manual",
-              "fulfillment_status": null,
               "gift_card": false,
               "grams": 0,
               "origin_location": {
@@ -4983,17 +4694,14 @@
           "checkout_token": "test_checkout_token",
           "client_details": {
             "accept_language": "en-GB",
-            "browser_height": null,
             "browser_ip": "122.161.69.251",
-            "browser_width": null,
-            "session_hash": null,
             "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
           },
           "closed_at": "2023-06-25T00:39:53-04:00",
           "confirmed": true,
           "contact_email": "test@example.com",
           "created_at": "2023-06-19T09:49:07-04:00",
-          "current_subtotal_price": "0.00",
+          "current_subtotal_price": 0,
           "current_subtotal_price_set": {
             "shop_money": {
               "amount": "0.00",
@@ -5015,8 +4723,7 @@
               "currency_code": "GBP"
             }
           },
-          "current_total_duties_set": null,
-          "current_total_price": "0.00",
+          "current_total_price": 0,
           "current_total_price_set": {
             "shop_money": {
               "amount": "0.00",
@@ -5039,16 +4746,12 @@
             }
           },
           "customer_locale": "en-GB",
-          "device_id": null,
           "discount_codes": [],
           "email": "test@example.com",
           "estimated_taxes": false,
           "financial_status": "refunded",
-          "fulfillment_status": null,
           "gateway": "bogus",
           "landing_site": "/password",
-          "landing_site_ref": null,
-          "location_id": null,
           "name": "#1035",
           "note": "random",
           "note_attributes": [
@@ -5060,9 +4763,7 @@
           "number": 35,
           "order_number": 1035,
           "order_status_url": "https://example-order-url",
-          "original_total_duties_set": null,
           "payment_gateway_names": ["bogus"],
-          "phone": null,
           "presentment_currency": "GBP",
           "processed_at": "2023-06-19T09:49:05-04:00",
           "processing_method": "direct",
@@ -5070,7 +4771,6 @@
           "referring_site": "",
           "source_identifier": "8d3a7927bc8ca1f2597f48f28bcfb270",
           "source_name": "web",
-          "source_url": null,
           "subtotal_price_set": {
             "shop_money": {
               "amount": "30.00",
@@ -5096,7 +4796,7 @@
               "currency_code": "GBP"
             }
           },
-          "total_line_items_price": "30.00",
+          "total_line_items_price": 30,
           "total_line_items_price_set": {
             "shop_money": {
               "amount": "30.00",
@@ -5118,7 +4818,7 @@
               "currency_code": "GBP"
             }
           },
-          "total_price_usd": "45.20",
+          "total_price_usd": 45.2,
           "total_shipping_price_set": {
             "shop_money": {
               "amount": "5.99",
@@ -5142,24 +4842,18 @@
           "total_tip_received": "0.00",
           "total_weight": 0,
           "updated_at": "2023-06-25T00:39:53-04:00",
-          "user_id": null,
           "discount_applications": [],
           "fulfillments": [],
           "payment_details": {
             "credit_card_bin": "1",
-            "avs_result_code": null,
-            "cvv_result_code": null,
             "credit_card_number": "•••• •••• •••• 1",
-            "credit_card_company": "Bogus",
-            "buyer_action_info": null
+            "credit_card_company": "Bogus"
           },
-          "payment_terms": null,
           "refunds": [
             {
               "id": 951216668947,
               "admin_graphql_api_id": "gid://shopify/Refund/951216668947",
               "created_at": "2023-06-25T00:39:52-04:00",
-              "note": null,
               "order_id": 5389487866131,
               "processed_at": "2023-06-25T00:39:52-04:00",
               "restock": true,
@@ -5210,14 +4904,10 @@
                   "id": 6584521589011,
                   "admin_graphql_api_id": "gid://shopify/OrderTransaction/6584521589011",
                   "amount": "35.99",
-                  "authorization": null,
                   "created_at": "2023-06-25T00:39:52-04:00",
                   "currency": "GBP",
-                  "device_id": null,
-                  "error_code": null,
                   "gateway": "bogus",
                   "kind": "refund",
-                  "location_id": null,
                   "message": "Bogus Gateway: Forced success",
                   "order_id": 5389487866131,
                   "parent_id": 6578419695891,
@@ -5228,14 +4918,10 @@
                   "source_name": "1830279",
                   "status": "success",
                   "test": true,
-                  "user_id": null,
                   "payment_details": {
                     "credit_card_bin": "1",
-                    "avs_result_code": null,
-                    "cvv_result_code": null,
                     "credit_card_number": "•••• •••• •••• 1",
-                    "credit_card_company": "Bogus",
-                    "buyer_action_info": null
+                    "credit_card_company": "Bogus"
                   }
                 }
               ],
@@ -5273,7 +4959,6 @@
                     "admin_graphql_api_id": "gid://shopify/LineItem/13964814876947",
                     "fulfillable_quantity": 0,
                     "fulfillment_service": "manual",
-                    "fulfillment_status": null,
                     "gift_card": false,
                     "grams": 0,
                     "name": "Shirt 2 - LARGE",
@@ -5287,7 +4972,7 @@
                       "city": "",
                       "zip": ""
                     },
-                    "price": "30.00",
+                    "price": 30,
                     "price_set": {
                       "shop_money": {
                         "amount": "30.00",
@@ -5335,8 +5020,7 @@
               "id": 4400118104339,
               "carrier_identifier": "650f1a14fa979ec5c74d063e968411d4",
               "code": "Standard",
-              "delivery_category": null,
-              "discounted_price": "5.99",
+              "discounted_price": 5.99,
               "discounted_price_set": {
                 "shop_money": {
                   "amount": "5.99",
@@ -5347,8 +5031,7 @@
                   "currency_code": "GBP"
                 }
               },
-              "phone": null,
-              "price": "5.99",
+              "price": 5.99,
               "price_set": {
                 "shop_money": {
                   "amount": "5.99",
@@ -5359,7 +5042,6 @@
                   "currency_code": "GBP"
                 }
               },
-              "requested_fulfillment_service_id": null,
               "source": "shopify",
               "title": "Standard",
               "tax_lines": [],
@@ -5374,16 +5056,12 @@
           "address": {
             "id": 9236307083539,
             "customer_id": 6783286247699,
-            "first_name": null,
             "last_name": "Person",
-            "company": null,
             "address1": "2ff",
-            "address2": null,
             "city": "ny",
             "province": "England",
             "country": "United Kingdom",
             "zip": "PO16 7GZ",
-            "phone": null,
             "name": "Person",
             "province_code": "ENG",
             "country_code": "GB",
@@ -5403,35 +5081,23 @@
           "adminGraphqlApiId": "gid://shopify/Customer/6783286247699",
           "acceptsMarketingUpdatedAt": "2023-05-26T07:11:41-04:00",
           "shippingAddress": {
-            "first_name": null,
             "address1": "2ff",
-            "phone": null,
             "city": "ny",
             "zip": "PO16 7GZ",
             "province": "England",
             "country": "United Kingdom",
             "last_name": "Person",
-            "address2": null,
-            "company": null,
-            "latitude": null,
-            "longitude": null,
             "name": "Person",
             "country_code": "GB",
             "province_code": "ENG"
           },
           "billingAddress": {
-            "first_name": null,
             "address1": "2ff",
-            "phone": null,
             "city": "ny",
             "zip": "PO16 7GZ",
             "province": "England",
             "country": "United Kingdom",
             "last_name": "Person",
-            "address2": null,
-            "company": null,
-            "latitude": null,
-            "longitude": null,
             "name": "Person",
             "country_code": "GB",
             "province_code": "ENG"

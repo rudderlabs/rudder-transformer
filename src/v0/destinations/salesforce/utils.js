@@ -33,7 +33,7 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey, authori
     const matchErrorCode = (errorCode) =>
       response && Array.isArray(response) && response.some((resp) => resp?.errorCode === errorCode);
     if (status === 401 && authKey && matchErrorCode('INVALID_SESSION_ID')) {
-      if (authorizationFlow === OAUTH)  {
+      if (authorizationFlow === OAUTH) {
         throw new RetryableError(
           `${DESTINATION} Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${sourceMessage}`,
           500,
@@ -41,8 +41,8 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey, authori
           getAuthErrCategoryFromStCode(status),
         );
       }
-        // checking for invalid/expired token errors and evicting cache in that case
-        // rudderJobMetadata contains some destination info which is being used to evict the cache
+      // checking for invalid/expired token errors and evicting cache in that case
+      // rudderJobMetadata contains some destination info which is being used to evict the cache
       ACCESS_TOKEN_CACHE.del(authKey);
       throw new RetryableError(
         `${DESTINATION} Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${sourceMessage}`,

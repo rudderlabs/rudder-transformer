@@ -11,9 +11,9 @@ import {
   ProcessorTransformationResponse,
   RouterTransformationRequestData,
   RouterTransformationResponse,
-  ProcessorTransformationOutput,
   UserDeletionRequest,
   UserDeletionResponse,
+  ProxyRequest,
 } from '../../types/index';
 import { DestinationPostTransformationService } from './postTransformation';
 import tags from '../../v0/util/tags';
@@ -117,7 +117,7 @@ export class CDKV1DestinationService implements DestinationService {
   }
 
   public deliver(
-    _event: ProcessorTransformationOutput,
+    _event: ProxyRequest,
     _destinationType: string,
     _requestMetadata: NonNullable<unknown>,
   ): Promise<DeliveryResponse> {

@@ -13,6 +13,9 @@ import {
   ProcessorTransformationOutput,
   UserDeletionRequest,
   UserDeletionResponse,
+  ProxyRequest,
+  ProxyDeliveriesRequest,
+  ProxyDeliveryRequest,
 } from '../../types/index';
 import { DestinationPostTransformationService } from './postTransformation';
 import networkHandlerFactory from '../../adapters/networkHandlerFactory';
@@ -169,30 +172,45 @@ export class NativeIntegrationDestinationService implements DestinationService {
   }
 
   public async deliver(
-    destinationRequest: ProcessorTransformationOutput,
+    deliveryRequest: ProxyRequest,
     destinationType: string,
     _requestMetadata: NonNullable<unknown>,
     version: string,
   ): Promise<DeliveryResponse> {
     try {
-      const networkHandler = networkHandlerFactory.getNetworkHandler(destinationType, version);
-      const rawProxyResponse = await networkHandler.proxy(destinationRequest, destinationType);
+      const { networkHandler, handlerVersion } = networkHandlerFactory.getNetworkHandler(
+        destinationType,
+        version,
+      );
+      const rawProxyResponse = await networkHandler.proxy(deliveryRequest, destinationType);
       const processedProxyResponse = networkHandler.processAxiosResponse(rawProxyResponse);
+      const rudderJobMetadata =
+        handlerVersion.toLowerCase() === 'v1'
+          ? (deliveryRequest as ProxyDeliveriesRequest).metadata
+          : (deliveryRequest as ProxyDeliveryRequest).metadata;
+
       return networkHandler.responseHandler(
         {
           ...processedProxyResponse,
-          rudderJobMetadata: destinationRequest.metadata,
+          rudderJobMetadata,
         },
         destinationType,
       ) as DeliveryResponse;
     } catch (err: any) {
+      const metadata = Array.isArray(deliveryRequest.metadata)
+        ? deliveryRequest.metadata[0]
+        : deliveryRequest.metadata;
       const metaTO = this.getTags(
         destinationType,
-        destinationRequest.metadata?.destinationId || 'Non-determininable',
-        destinationRequest.metadata?.workspaceId || 'Non-determininable',
+        metadata?.destinationId || 'Non-determininable',
+        metadata?.workspaceId || 'Non-determininable',
         tags.FEATURES.DATA_DELIVERY,
       );
-      metaTO.metadata = destinationRequest.metadata;
+      if (version.toLowerCase() === 'v1') {
+        metaTO.metadatas = (deliveryRequest as ProxyDeliveriesRequest).metadata;
+      } else {
+        metaTO.metadata = (deliveryRequest as ProxyDeliveryRequest).metadata;
+      }
       return DestinationPostTransformationService.handleDeliveryFailureEvents(err, metaTO);
     }
   }

@@ -5,9 +5,9 @@ import {
   Destination,
   ErrorDetailer,
   MetaTransferObject,
-  ProcessorTransformationOutput,
   ProcessorTransformationRequest,
   ProcessorTransformationResponse,
+  ProxyRequest,
   RouterTransformationRequestData,
   RouterTransformationResponse,
   UserDeletionRequest,
@@ -365,7 +365,7 @@ export class ComparatorService implements DestinationService {
   }
 
   public async deliver(
-    event: ProcessorTransformationOutput,
+    event: ProxyRequest,
     destinationType: string,
     requestMetadata: NonNullable<unknown>,
     version: string,

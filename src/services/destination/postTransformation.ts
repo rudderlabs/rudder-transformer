@@ -2,6 +2,7 @@
 import cloneDeep from 'lodash/cloneDeep';
 import isObject from 'lodash/isObject';
 import isEmpty from 'lodash/isEmpty';
+import { PlatformError } from '@rudderstack/integrations-lib';
 import {
   ProcessorTransformationRequest,
   ProcessorTransformationResponse,
@@ -10,20 +11,13 @@ import {
   DeliveryResponse,
   MetaTransferObject,
   UserDeletionResponse,
+  DeliveriesResponse,
+  DeliveryJobState,
 } from '../../types/index';
 import { generateErrorObject } from '../../v0/util';
 import { ErrorReportingService } from '../errorReporting';
 import tags from '../../v0/util/tags';
 import stats from '../../util/stats';
-
-type ErrorResponse = {
-  status?: number;
-  message?: string;
-  destinationResponse?: object;
-  statTags?: object;
-  authErrorCategory?: string | undefined;
-  response?: object | undefined;
-};
 
 export class DestinationPostTransformationService {
   public static handleProcessorTransformSucessEvents(
@@ -148,7 +142,7 @@ export class DestinationPostTransformationService {
   }
 
   public static handleDeliveryFailureEvents(
-    error: ErrorResponse,
+    error: NonNullable<unknown>,
     metaTo: MetaTransferObject,
   ): DeliveryResponse {
     const errObj = generateErrorObject(error, metaTo.errorDetails, false);
@@ -161,12 +155,34 @@ export class DestinationPostTransformationService {
         authErrorCategory: errObj.authErrorCategory,
       }),
     } as DeliveryResponse;
+    ErrorReportingService.reportError(error, metaTo.errorContext, resp);
+    return resp;
+  }
 
-    // for transformer-proxy to maintain contract
-    const { response } = error;
-    if (response) {
-      resp.response = response;
+  public static handlevV1DeliveriesFailureEvents(
+    error: NonNullable<unknown>,
+    metaTo: MetaTransferObject,
+  ): DeliveriesResponse {
+    const errObj = generateErrorObject(error, metaTo.errorDetails, false);
+    const metadataArray = metaTo.metadatas;
+    if (!Array.isArray(metadataArray)) {
+      // Panic
+      throw new PlatformError('Proxy v1 endpoint error : metadataArray is not an array');
     }
+    const responses = metadataArray.map((metadata) => {
+      const resp = {
+        error: errObj.message || '[Delivery] Error occured while processing payload',
+        statusCode: errObj.status,
+        metadata,
+      } as DeliveryJobState;
+      return resp;
+    });
+
+    const resp = {
+      responses,
+      statTags: errObj.statTags,
+    } as DeliveriesResponse;
+
     ErrorReportingService.reportError(error, metaTo.errorContext, resp);
     return resp;
   }

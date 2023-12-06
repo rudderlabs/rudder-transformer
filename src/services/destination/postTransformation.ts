@@ -16,15 +16,6 @@ import { ErrorReportingService } from '../errorReporting';
 import tags from '../../v0/util/tags';
 import stats from '../../util/stats';
 
-type ErrorResponse = {
-  status?: number;
-  message?: string;
-  destinationResponse?: object;
-  statTags?: object;
-  authErrorCategory?: string | undefined;
-  response?: object | undefined;
-};
-
 export class DestinationPostTransformationService {
   public static handleProcessorTransformSucessEvents(
     event: ProcessorTransformationRequest,

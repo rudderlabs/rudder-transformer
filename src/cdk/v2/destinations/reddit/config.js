@@ -1,4 +1,5 @@
 const ENDPOINT = 'https://ads-api.reddit.com/api/v2.0/conversions/events/';
+const maxBatchSize = 1000;
 
 const ecomEventMaps = [
   {
@@ -25,5 +26,6 @@ const ecomEventMaps = [
 
 module.exports = {
   ENDPOINT,
+  maxBatchSize,
   ecomEventMaps,
 };

@@ -30,16 +30,17 @@ steps:
         template: |
           const os = .message.context.os.name;
           let user = .message.().({
-            "email": {{{{$.getGenericPaths("email")}}}},  
-            "external_id": {{{{$.getGenericPaths("userId")}}}},
-            "ip_address": .context.ip || .request_ip,
+            "email": $.SHA256({{{{$.getGenericPaths("email")}}}}),  
+            "external_id": $.SHA256({{{{$.getGenericPaths("userId")}}}}),
+            "ip_address": $.SHA256(.context.ip || .request_ip),
             "uuid": .properties.uuid,
             "user_agent": .context.userAgent,
-            "idfa": $.isAppleFamily(os)? .context.device.advertisingId: null,
-            "aaid": os?.toLowerCase() ==="android"? .context.device.advertisingId: null,
+            "idfa": $.isAppleFamily(os)? $.SHA256(.context.device.advertisingId): null,
+            "aaid": os?.toLowerCase() ==="android"? $.SHA256(.context.device.advertisingId): null,
             "opt_out": .properties.optOut,
             "screen_dimensions": {"width": .context.screen.width, "height":  .context.screen.height},
           });
+          $.removeUndefinedAndNullValues(user)
 
       - name: customFields
         template: |
@@ -91,12 +92,14 @@ steps:
 
       - name: prepareFinalPayload
         template: |
-          {
+          { 
+            events: [{
             "click_id": .message.properties.clickId,
             "event_at": .message.timestamp || .message.originalTimestamp,
             "event_type": $.outputs.prepareTrackPayload.eventType,
             "user": $.outputs.prepareTrackPayload.prepareUserObject,
             "event_metadata": $.outputs.prepareTrackPayload.combineAllEcomFields,
+            }]
           }
 
   - name: payload

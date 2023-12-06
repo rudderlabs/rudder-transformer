@@ -2,25 +2,26 @@ const lodash = require('lodash');
 const { maxBatchSize } = require('./config');
 
 const batchEventChunks = (events) => {
-  const batchedPersonEvents = [];
+  const batchedEvents = [];
   if (Array.isArray(events)) {
     events.forEach((chunk) => {
       const response = { destination: chunk[0].destination };
 
       chunk.forEach((event, index) => {
         if (index === 0) {
-          response.message = event.message;
+          const [firstMessage] = event.message;
+          response.message = firstMessage;
           response.destination = event.destination;
           response.metadata = [event.metadata];
         } else {
-          response.message.body.JSON.events.push(...event.message.body.JSON.events);
+          response.message.body.JSON.events.push(...event.message[0].body.JSON.events);
           response.metadata.push(event.metadata);
         }
       });
-      batchedPersonEvents.push(response);
+      batchedEvents.push(response);
     });
   }
-  return batchedPersonEvents;
+  return batchedEvents;
 };
 
 const batchEvents = (successfulEvents) => {

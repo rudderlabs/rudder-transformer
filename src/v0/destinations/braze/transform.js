@@ -315,7 +315,7 @@ function processTrackEvent(messageType, message, destination, mappingJson, proce
     typeof eventName === 'string' &&
     eventName.toLowerCase() === 'order completed'
   ) {
-    const purchaseObjs = getPurchaseObjs(message);
+    const purchaseObjs = getPurchaseObjs(message, destination.Config);
 
     // del used properties
     delete properties.products;

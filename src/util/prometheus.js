@@ -936,7 +936,7 @@ class Prometheus {
           'transformationId',
           'workspaceId'
         ],
-      },
+      }
     ];
 
     metrics.forEach((metric) => {

@@ -170,11 +170,16 @@
           }
         ],
         "createIfNotExist": true,
-        "rudderEventsMapping": [
+        "customActivityPrimaryKeyMap": [
           {
-            "event": "Product Clicked",
-            "marketoPrimarykey": "name",
-            "marketoActivityId": "100001"
+            "from": "Product Clicked",
+            "to": "name"
+          }
+        ],
+        "customActivityEventMap": [
+          {
+            "from": "Product Clicked",
+            "to": "100001"
           }
         ]
       }

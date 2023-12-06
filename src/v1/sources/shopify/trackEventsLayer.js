@@ -309,6 +309,9 @@ const TrackLayer = {
       });
       return [NO_OPERATION_SUCCESS];
     }
+    if (payload.properties?.cart_token) {
+      payload.properties.cart_id = payload.properties.cart_token;
+    }
     return [this.mapCustomerDetails(payload, event, dbData, eventName)];
   },
 };

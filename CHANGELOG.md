@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.51.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.50.1...v1.51.0) (2023-12-06)
+
+
+### Features
+
+* cm360 router batching ([#2836](https://github.com/rudderlabs/rudder-transformer/issues/2836)) ([4b260e4](https://github.com/rudderlabs/rudder-transformer/commit/4b260e4ec6d25875903830004b3e4975b3402b2d))
+* cm360 transformerproxy V1 flag ([#2848](https://github.com/rudderlabs/rudder-transformer/issues/2848)) ([27f0797](https://github.com/rudderlabs/rudder-transformer/commit/27f0797c6dcd626a713c11a48c6e85a69e0a4963))
+* **INT-305:** onboard gladly destination ([#2786](https://github.com/rudderlabs/rudder-transformer/issues/2786)) ([ff80b88](https://github.com/rudderlabs/rudder-transformer/commit/ff80b885fe0507c137b3c9eacffcef331010da0c))
+* marketo: migrate config fields and fix test cases ([#2789](https://github.com/rudderlabs/rudder-transformer/issues/2789)) ([7910dba](https://github.com/rudderlabs/rudder-transformer/commit/7910dba2318f92cec3be1b7c7aa6b00428ecae94))
+* mixpanel set once feature onboard ([#2820](https://github.com/rudderlabs/rudder-transformer/issues/2820)) ([9eda50e](https://github.com/rudderlabs/rudder-transformer/commit/9eda50e850c5a1ccb46f1b54c3d176edb915eb27))
+* onboard webhook to component tests ([#2837](https://github.com/rudderlabs/rudder-transformer/issues/2837)) ([284d141](https://github.com/rudderlabs/rudder-transformer/commit/284d1411514c26dda2403a4a18967e5f40e255ea))
+* update facebook destinations API version to v18.0 ([#2828](https://github.com/rudderlabs/rudder-transformer/issues/2828)) ([3127a1c](https://github.com/rudderlabs/rudder-transformer/commit/3127a1ca8dc1b887f9158a1d839c5504f40c4678))
+
+
+### Bug Fixes
+
+* add support for custom properties for braze purchase events ([#2856](https://github.com/rudderlabs/rudder-transformer/issues/2856)) ([be6ef26](https://github.com/rudderlabs/rudder-transformer/commit/be6ef2605f04e9182534b9633eeec1091cf7a431))
+* bugsnag issue in moengage identify event ([#2845](https://github.com/rudderlabs/rudder-transformer/issues/2845)) ([0e7adc6](https://github.com/rudderlabs/rudder-transformer/commit/0e7adc66ff88d9510e48a5651460b4e02cc57c78))
+* encode &, < and > to html counterparts in adobe analytics ([#2854](https://github.com/rudderlabs/rudder-transformer/issues/2854)) ([571dbf5](https://github.com/rudderlabs/rudder-transformer/commit/571dbf5bd65e7d0e261562ff3da3b393f27f27b6))
+* error handling in active_campaign ([#2843](https://github.com/rudderlabs/rudder-transformer/issues/2843)) ([a015460](https://github.com/rudderlabs/rudder-transformer/commit/a015460f0a6d2d5320f633abc151febf22561b6b))
+* make supportTransformerProxyV1 false ([#2861](https://github.com/rudderlabs/rudder-transformer/issues/2861)) ([80cf69d](https://github.com/rudderlabs/rudder-transformer/commit/80cf69dc40bb4dc7c0a6d516814f36d962018745))
+* remove errorCategory for braze dedup error ([#2850](https://github.com/rudderlabs/rudder-transformer/issues/2850)) ([91d4cd1](https://github.com/rudderlabs/rudder-transformer/commit/91d4cd16f9839b0be5a663ca5010bdd72cff9bdc))
+* sfmc bug fix for track event validations ([#2852](https://github.com/rudderlabs/rudder-transformer/issues/2852)) ([cd9a046](https://github.com/rudderlabs/rudder-transformer/commit/cd9a046f66eab8363373cb9a0fa1afeef3137d78))
+* unhandled error code in facebook_custom_audience ([#2853](https://github.com/rudderlabs/rudder-transformer/issues/2853)) ([8c02b8c](https://github.com/rudderlabs/rudder-transformer/commit/8c02b8ccb2101147ac84b4555e7fd07235ebf9fc))
+* updated transformerProxyV1 name ([#2859](https://github.com/rudderlabs/rudder-transformer/issues/2859)) ([1a8d825](https://github.com/rudderlabs/rudder-transformer/commit/1a8d825ccbb87d34d8ae5ff2cb02f4be9700eee6))
+
 ### [1.50.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.50.0...v1.50.1) (2023-12-05)
 
 

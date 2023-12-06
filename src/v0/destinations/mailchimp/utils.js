@@ -22,7 +22,6 @@ const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { handleHttpRequest } = require('../../../adapters/network');
 
-
 const ADDRESS_MANDATORY_FIELDS = ['addr1', 'city', 'state', 'zip'];
 
 const MAILCHIMP_IDENTIFY_EXCLUSION = [
@@ -43,8 +42,6 @@ const MAILCHIMP_IDENTIFY_EXCLUSION = [
   'addressLine2',
   'birthday',
 ];
-
-
 
 /**
  * Returns common endpoint for mailchimp
@@ -190,23 +187,27 @@ const checkIfMailExists = async (apiKey, datacenterId, audienceId, email) => {
 const checkIfDoubleOptIn = async (apiKey, datacenterId, audienceId) => {
   const url = `${getMailChimpBaseEndpoint(datacenterId, audienceId)}`;
   const basicAuth = Buffer.from(`apiKey:${apiKey}`).toString('base64');
-    const { processedResponse: processedResponseMailChip } = await handleHttpRequest(
-      'get',
-      url,
-      {
-        headers: {
-          Authorization: `Basic ${basicAuth}`,
-        },
+  const { processedResponse: processedResponseMailChip } = await handleHttpRequest(
+    'get',
+    url,
+    {
+      headers: {
+        Authorization: `Basic ${basicAuth}`,
       },
-      { destType: 'mailchimp', feature: 'transformation' },
-    );
+    },
+    { destType: 'mailchimp', feature: 'transformation' },
+  );
 
-    if (!isHttpStatusSuccess(processedResponseMailChip.status)) {
-      throw new NetworkError('User does not have access to the requested operation', processedResponseMailChip.status, {
+  if (!isHttpStatusSuccess(processedResponseMailChip.status)) {
+    throw new NetworkError(
+      'User does not have access to the requested operation',
+      processedResponseMailChip.status,
+      {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedResponseMailChip.status),
-      });
-    }
-    
+      },
+    );
+  }
+
   return !!processedResponseMailChip.response.double_optin;
 };
 

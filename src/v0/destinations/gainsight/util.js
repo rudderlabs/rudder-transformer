@@ -12,112 +12,154 @@ const { handleHttpRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util');
 
 const searchGroup = async (groupName, Config) => {
-    const { processedResponse: processedResponseGs } = await handleHttpRequest(
-      'post',
-      `${ENDPOINTS.groupSearchEndpoint(Config.domain)}`,
-      getLookupPayload(groupName),
-      {
-        headers: {
-          Accesskey: Config.accessKey,
-          'Content-Type': JSON_MIME_TYPE,
-        },
+  const { processedResponse: processedResponseGs } = await handleHttpRequest(
+    'post',
+    `${ENDPOINTS.groupSearchEndpoint(Config.domain)}`,
+    getLookupPayload(groupName),
+    {
+      headers: {
+        Accesskey: Config.accessKey,
+        'Content-Type': JSON_MIME_TYPE,
       },
-      { destType: 'gainsight', feature: 'transformation' },
-    );
+    },
+    { destType: 'gainsight', feature: 'transformation' },
+  );
 
-    if (!isHttpStatusSuccess(processedResponseGs.status) && processedResponseGs >= 400 && processedResponseGs < 500) {
-      let errMessage = '';
-      let errorStatus = 500;
-      if (processedResponseGs.response) {
-        errMessage = processedResponseGs.response.errorDesc;
-        errorStatus = processedResponseGs.status;
-      }
-      throw new NetworkError(`failed to search group ${errMessage}`, errorStatus, {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errorStatus),
-      }, processedResponseGs.response);
-    }
-
-  if (processedResponseGs.status !== 200) {
-    throw new RetryableError('failed to search group',  processedResponseGs.status, {
-      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedResponseGs.status),
-    }, processedResponseGs.response);
-  }
-  return processedResponseGs.response;
-};
-
-const createGroup = async (payload, Config) => {
-    const { processedResponse: processedResponseGs } = await handleHttpRequest(
-      'post',
-      `${ENDPOINTS.groupCreateEndpoint(Config.domain)}`,
-      {
-        records: [payload],
-      },
-      {
-        headers: {
-          Accesskey: Config.accessKey,
-          'Content-Type': JSON_MIME_TYPE,
-        },
-      },
-      { destType: 'gainsight', feature: 'transformation' },
-    );
-
-  if (!isHttpStatusSuccess(processedResponseGs.status) && processedResponseGs >= 400 && processedResponseGs < 500) {
+  if (
+    !isHttpStatusSuccess(processedResponseGs.status) &&
+    processedResponseGs.status >= 400 &&
+    processedResponseGs.status < 500
+  ) {
     let errMessage = '';
     let errorStatus = 500;
     if (processedResponseGs.response) {
       errMessage = processedResponseGs.response.errorDesc;
       errorStatus = processedResponseGs.status;
     }
-    throw new NetworkError(`failed to create group ${errMessage}`, errorStatus, {
-      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errorStatus),
-    }, processedResponseGs.response);
+    throw new NetworkError(
+      `failed to search group ${errMessage}`,
+      errorStatus,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errorStatus),
+      },
+      processedResponseGs.response,
+    );
   }
 
   if (processedResponseGs.status !== 200) {
-    throw new RetryableError('failed to create group',  processedResponseGs.status, {
-      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedResponseGs.status),
-    }, processedResponseGs.response);
+    throw new RetryableError(
+      'failed to search group',
+      processedResponseGs.status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedResponseGs.status),
+      },
+      processedResponseGs.response,
+    );
+  }
+  return processedResponseGs.response;
+};
+
+const createGroup = async (payload, Config) => {
+  const { processedResponse: processedResponseGs } = await handleHttpRequest(
+    'post',
+    `${ENDPOINTS.groupCreateEndpoint(Config.domain)}`,
+    {
+      records: [payload],
+    },
+    {
+      headers: {
+        Accesskey: Config.accessKey,
+        'Content-Type': JSON_MIME_TYPE,
+      },
+    },
+    { destType: 'gainsight', feature: 'transformation' },
+  );
+
+  if (
+    !isHttpStatusSuccess(processedResponseGs.status) &&
+    processedResponseGs.status >= 400 &&
+    processedResponseGs.status < 500
+  ) {
+    let errMessage = '';
+    let errorStatus = 500;
+    if (processedResponseGs.response) {
+      errMessage = processedResponseGs.response.errorDesc;
+      errorStatus = processedResponseGs.status;
+    }
+    throw new NetworkError(
+      `failed to create group ${errMessage}`,
+      errorStatus,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errorStatus),
+      },
+      processedResponseGs.response,
+    );
+  }
+
+  if (processedResponseGs.status !== 200) {
+    throw new RetryableError(
+      'failed to create group',
+      processedResponseGs.status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedResponseGs.status),
+      },
+      processedResponseGs.response,
+    );
   }
   return processedResponseGs.response?.data?.records[0].Gsid;
 };
 
 const updateGroup = async (payload, Config) => {
-    const { processedResponse: processedResponseGs } = await handleHttpRequest(
-      'put',
-      `${ENDPOINTS.groupUpdateEndpoint(Config.domain)}`,
-      {
-        records: [payload],
+  const { processedResponse: processedResponseGs } = await handleHttpRequest(
+    'put',
+    `${ENDPOINTS.groupUpdateEndpoint(Config.domain)}`,
+    {
+      records: [payload],
+    },
+    {
+      headers: {
+        Accesskey: Config.accessKey,
+        'Content-Type': JSON_MIME_TYPE,
       },
-      {
-        headers: {
-          Accesskey: Config.accessKey,
-          'Content-Type': JSON_MIME_TYPE,
-        },
-        params: {
-          keys: 'Name',
-        },
+      params: {
+        keys: 'Name',
       },
-      { destType: 'gainsight', feature: 'transformation' },
-    );
+    },
+    { destType: 'gainsight', feature: 'transformation' },
+  );
 
-    if (!isHttpStatusSuccess(processedResponseGs.status) && processedResponseGs >= 400 && processedResponseGs < 500) {
-      let errMessage = '';
-      let errorStatus = 500;
-      if (processedResponseGs.response) {
-        errMessage = processedResponseGs.response.errorDesc;
-        errorStatus = processedResponseGs.status;
-      }
-      throw new NetworkError(`failed to create group ${errMessage}`, errorStatus, {
+  if (
+    !isHttpStatusSuccess(processedResponseGs.status) &&
+    processedResponseGs.status >= 400 &&
+    processedResponseGs.status < 500
+  ) {
+    let errMessage = '';
+    let errorStatus = 500;
+    if (processedResponseGs.response) {
+      errMessage = processedResponseGs.response.errorDesc;
+      errorStatus = processedResponseGs.status;
+    }
+    throw new NetworkError(
+      `failed to update group ${errMessage}`,
+      errorStatus,
+      {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errorStatus),
-      }, processedResponseGs.response);
-    }
-  
-    if (processedResponseGs.status !== 200) {
-      throw new RetryableError('failed to create group',  processedResponseGs.status, {
+      },
+      processedResponseGs.response,
+    );
+  }
+
+  if (processedResponseGs.status !== 200) {
+    throw new RetryableError(
+      'failed to update group',
+      processedResponseGs.status,
+      {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedResponseGs.status),
-      }, processedResponseGs.response);
-    }
-    return processedResponseGs.response?.data?.records[0].Gsid;
+      },
+      processedResponseGs.response,
+    );
+  }
+  return processedResponseGs.response?.data?.records[0].Gsid;
 };
 
 /**

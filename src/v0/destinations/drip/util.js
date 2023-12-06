@@ -64,28 +64,28 @@ const userExists = async (Config, id) => {
 };
 
 const createUpdateUser = async (finalpayload, Config, basicAuth) => {
-    const { processedResponse: processedResponseDrip } = await handleHttpRequest(
-      'post',
-      `${ENDPOINT}/v2/${Config.accountId}/subscribers`,
-      finalpayload,
-      {
-        headers: {
-          Authorization: `Basic ${basicAuth}`,
-          'Content-Type': JSON_MIME_TYPE,
-        },
+  const { processedResponse: processedResponseDrip } = await handleHttpRequest(
+    'post',
+    `${ENDPOINT}/v2/${Config.accountId}/subscribers`,
+    finalpayload,
+    {
+      headers: {
+        Authorization: `Basic ${basicAuth}`,
+        'Content-Type': JSON_MIME_TYPE,
       },
-      { destType: 'drip', feature: 'transformation' },
-    );
+    },
+    { destType: 'drip', feature: 'transformation' },
+  );
 
-    if (processedResponseDrip) {
-      return processedResponseDrip.status === 200 || processedResponseDrip.status === 201;
-    }
+  if (processedResponseDrip) {
+    return processedResponseDrip.status === 200 || processedResponseDrip.status === 201;
+  }
 
-    let errMsg = '';
-    if (processedResponseDrip.response) {
-      errMsg = JSON.stringify(processedResponseDrip.response);
-    }
-    throw new AbortedError(`Error occurred while creating or updating user : ${errMsg}`);
+  let errMsg = '';
+  if (processedResponseDrip?.response) {
+    errMsg = JSON.stringify(processedResponseDrip.response);
+  }
+  throw new AbortedError(`Error occurred while creating or updating user : ${errMsg}`);
 };
 
 const createList = (productList) => {

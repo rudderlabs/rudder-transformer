@@ -105,7 +105,7 @@ const updateAccount = async (accountId, payload, Config) => {
     return { success: false, err: null };
   }
 
-  return handleErrorResponse(processedResponseGs.response, `error while updating account`, 400);
+  return handleErrorResponse(processedResponseGs, `error while updating account`, 400);
 };
 
 /**

@@ -9,13 +9,12 @@ const NodeCache = require('node-cache');
 const hash = require('object-hash');
 const logger = require('../logger');
 const trackingPlan = require('./trackingPlan');
-const stats = require('./stats');
 
 const SECONDS_IN_DAY = 60 * 60 * 24 * 1;
 const eventSchemaCache = new NodeCache();
 const ajv19Cache = new NodeCache({ useClones: false, stdTTL: SECONDS_IN_DAY });
 const ajv4Cache = new NodeCache({ useClones: false, stdTTL: SECONDS_IN_DAY });
-const { isEmptyObject, getMetadata } = require('../v0/util');
+const { isEmptyObject } = require('../v0/util');
 
 const defaultOptions = {
   strictRequired: true,
@@ -182,24 +181,13 @@ async function validate(event) {
       }
     }
 
-    let start = new Date();
     let validateEvent = eventSchemaCache.get(schemaHash);
     if (!validateEvent) {
       validateEvent = ajv.compile(eventSchema);
       eventSchemaCache.set(schemaHash, validateEvent);
     }
-    stats.timing(`tp_ajv_caching_latency`, start, {
-      eventName: event.event || event.type,
-      ...getMetadata(event.metadata)
-    });
 
-    start = new Date();
     const valid = validateEvent(event.message);
-    stats.timing(`tp_ajv_validation_latency`, start, {
-      eventName: event.event || event.type,
-      ...getMetadata(event.metadata)
-    });
-
     if (valid) {
       return [];
     }
@@ -367,13 +355,7 @@ async function handleValidation(event) {
       };
     }
 
-    let start = new Date();
     const validationErrors = await validate(event);
-    stats.timing(`tp_validation_latency`, start, {
-      eventName: event.event || event.type,
-      ...getMetadata(event.metadata)
-    });
-
     if (validationErrors.length === 0) {
       return {
         dropEvent,

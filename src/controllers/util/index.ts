@@ -15,7 +15,7 @@ import { getValueFromMessage } from '../../v0/util';
 import genericFieldMap from '../../v0/util/data/GenericFieldMapping.json';
 import { EventType, MappedToDestinationKey } from '../../constants';
 
-export default class ControllerUtility {
+export class ControllerUtility {
   private static sourceVersionMap: Map<string, string> = new Map();
 
   public static timestampValsMap: Record<string, string[]> = {

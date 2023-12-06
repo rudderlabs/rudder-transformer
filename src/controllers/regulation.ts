@@ -1,15 +1,14 @@
 import { Context } from 'koa';
 import logger from '../logger';
 import { UserDeletionRequest, UserDeletionResponse } from '../types';
-import ServiceSelector from '../helpers/serviceSelector';
+import { ServiceSelector } from '../helpers/serviceSelector';
 import tags from '../v0/util/tags';
 import stats from '../util/stats';
-import PostTransformationDestinationService from '../services/destination/postTransformation';
+import { DestinationPostTransformationService } from '../services/destination/postTransformation';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CatchErr } from '../util/types';
 
-// TODO: refactor this class to new format
-export default class RegulationController {
+export class RegulationController {
   public static async deleteUsers(ctx: Context) {
     logger.debug(
       'Native(Process-Transform):: Requst to transformer::',
@@ -44,7 +43,7 @@ export default class RegulationController {
         tags.FEATURES.USER_DELETION,
       );
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const errResp = PostTransformationDestinationService.handleUserDeletionFailureEvents(
+      const errResp = DestinationPostTransformationService.handleUserDeletionFailureEvents(
         error,
         metaTO,
       );

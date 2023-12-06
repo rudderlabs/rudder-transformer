@@ -140,6 +140,7 @@ type DeliveryResponse = {
   destinationResponse: any;
   statTags: object;
   authErrorCategory?: string;
+  response?: object;
 };
 
 enum MessageType {

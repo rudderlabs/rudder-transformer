@@ -1,31 +1,24 @@
 const { NetworkError } = require('@rudderstack/integrations-lib');
 const {
-  nodeSysErrorToStatus,
   getDynamicErrorType,
+  processAxiosResponse,
 } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 
-const errorHandler = (err, message) => {
-  if (err.response) {
-    throw new NetworkError(
-      `${message} (${err.response?.statusText},${JSON.stringify(err.response?.data)})`,
-      err.status,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(err.status),
-      },
-      err,
-    );
-  } else {
-    const httpError = nodeSysErrorToStatus(err.code);
-    throw new NetworkError(
-      `${message} ${httpError.message}`,
-      httpError.status,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(httpError.status),
-      },
-      err,
-    );
+const errorHandler = (httpCallError, message) => {
+  const {response, status} = processAxiosResponse(httpCallError);
+  let msg = message;
+  if (response) {
+    msg = `${message} (${httpCallError.response?.statusText},${JSON.stringify(response)})`;
   }
+  throw new NetworkError(
+    msg,
+    status,
+    {
+      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+    },
+    response,
+  );
 };
 
 const offsetLimitVarPath = 'response.data.meta.total';

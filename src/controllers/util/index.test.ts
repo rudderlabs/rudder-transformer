@@ -1,4 +1,4 @@
-import ControllerUtility from './index';
+import { ControllerUtility } from './index';
 
 describe('adaptInputToVersion', () => {
   it('should return the input unchanged when the implementation version is not found', () => {

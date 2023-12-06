@@ -24,7 +24,7 @@ import { CatchErr, FixMe } from '../util/types';
 import { FeatureFlags, FEATURE_FILTER_CODE } from '../middlewares/featureFlag';
 import { HTTP_CUSTOM_STATUS_CODES } from '../constants';
 
-export default class UserTransformService {
+export class UserTransformService {
   public static async transformRoutine(
     events: ProcessorTransformationRequest[],
     features: FeatureFlags = {},

@@ -168,10 +168,12 @@ const processRouterDest = async (inputs, reqMetadata) => {
 function processMetadataForRouter(output) {
   const { metadata, destination } = output;
   const clonedMetadata = cloneDeep(metadata);
-  clonedMetadata.forEach((metadataElement) => {
-    // eslint-disable-next-line no-param-reassign
-    metadataElement.destInfo = { authKey: destination?.ID };
-  });
+  if (Array.isArray(clonedMetadata)) {
+    clonedMetadata.forEach((metadataElement) => {
+      // eslint-disable-next-line no-param-reassign
+      metadataElement.destInfo = { authKey: destination?.ID };
+    });
+  }
   return clonedMetadata;
 }
 

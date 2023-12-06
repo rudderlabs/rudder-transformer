@@ -88,7 +88,7 @@ async function processRecordInputs(groupedRecordInputs, destination, listId) {
 
   groupedRecordInputs.forEach((input) => {
     const { fields, action } = input.message;
-    const fieldId = fields.id;
+    const fieldId = fields?.id;
     if (action === 'insert' && isDefinedAndNotNull(fieldId)) {
       insertFields.push(fieldId);
       successMetadataForInsert.push(input.metadata);
@@ -118,7 +118,7 @@ async function processRecordInputs(groupedRecordInputs, destination, listId) {
   );
 
   const error = new InstrumentationError(
-    'Invalid leadIds format or no leadIds found neither to add nor to remove',
+    'Invalid action type or no leadIds found neither to add nor to remove',
   );
   const errorObj = generateErrorObject(error);
   const errorResponseList = errorMetadata.map((metadata) =>

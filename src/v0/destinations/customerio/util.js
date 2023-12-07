@@ -104,10 +104,13 @@ const identifyResponseBuilder = (userId, message) => {
   if (!id) {
     throw new InstrumentationError('userId or email is not present');
   }
+  rawPayload.identifiers = { id };
+
+  const attributes = {};
 
   // populate speced traits
   const identityTrailts = getFieldValueFromMessage(message, 'traits') || {};
-  populateSpecedTraits(rawPayload, message);
+  populateSpecedTraits(attributes, message);
 
   if (Object.keys(identityTrailts).length > 0) {
     const traits = Object.keys(identityTrailts);
@@ -123,17 +126,8 @@ const identifyResponseBuilder = (userId, message) => {
         trait !== 'anonymousId'
       ) {
         const dotEscapedTrait = trait.replace('.', '\\.');
-        set(rawPayload, dotEscapedTrait, get(message, `${pathToTraits}.${trait}`));
+        set(attributes, dotEscapedTrait, get(message, `${pathToTraits}.${trait}`));
       }
-    });
-  }
-
-  // populate user_properties (DEPRECATED)
-  if (message.user_properties) {
-    const userProps = Object.keys(message.user_properties);
-    userProps.forEach((prop) => {
-      const val = get(message, `user_properties.${prop}`);
-      set(rawPayload, prop, val);
     });
   }
 
@@ -141,13 +135,13 @@ const identifyResponseBuilder = (userId, message) => {
   const createAt = getFieldValueFromMessage(message, 'createdAtOnly');
   // set the created_at field if traits.createAt or context.traits.createAt is passed
   if (createAt) {
-    set(rawPayload, 'created_at', Math.floor(new Date(createAt).getTime() / 1000));
+    set(attributes, 'created_at', Math.floor(new Date(createAt).getTime() / 1000));
   }
 
   // Impportant for historical import
   if (getFieldValueFromMessage(message, 'historicalTimestamp')) {
     set(
-      rawPayload,
+      attributes,
       '_timestamp',
       Math.floor(
         new Date(getFieldValueFromMessage(message, 'historicalTimestamp')).getTime() / 1000,
@@ -156,10 +150,13 @@ const identifyResponseBuilder = (userId, message) => {
   }
   // anonymous_id needs to be sent for identify calls to merge with any previous anon track calls
   if (message?.anonymousId) {
-    set(rawPayload, 'anonymous_id', message.anonymousId);
+    set(attributes, 'anonymous_id', message.anonymousId);
   }
+  rawPayload.attributes = attributes;
   const endpoint = IDENTITY_ENDPOINT.replace(':id', id);
   const requestConfig = defaultPutRequestConfig;
+  rawPayload.type = 'person';
+  rawPayload.action = 'identify';
 
   return { rawPayload, endpoint, requestConfig };
 };
@@ -188,6 +185,8 @@ const aliasResponseBuilder = (message, userId) => {
       [prev_cioProperty]: message.previousId,
     },
   };
+  rawPayload.type = 'person';
+  rawPayload.action = 'merge';
 
   return { rawPayload, endpoint, requestConfig };
 };
@@ -238,6 +237,8 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
     }
     endpoint = DEVICE_DELETE_ENDPOINT.replace(':id', id).replace(':device_id', token);
     requestConfig = defaultDeleteRequestConfig;
+    rawPayload.action = 'delete_device';
+    rawPayload.type = 'person';
     return { rawPayload, endpoint, requestConfig };
   }
 
@@ -279,6 +280,12 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
       isDeviceRelatedEvent && token
         ? DEVICE_REGISTER_ENDPOINT.replace(':id', id)
         : USER_EVENT_ENDPOINT.replace(':id', id);
+    if (endpoint.includes(DEVICE_REGISTER_ENDPOINT)) {
+      rawPayload.action = 'add_device';
+    } else {
+      rawPayload.action = 'event';
+    }
+    rawPayload.type = 'person';
   } else {
     endpoint = ANON_EVENT_ENDPOINT;
     // CustomerIO supports 100byte of event name for anonymous users

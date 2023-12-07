@@ -56,6 +56,7 @@ const BRAZE_NON_BILLABLE_ATTRIBUTES = [
   'subscription_groups',
 ];
 
+const BRAZE_PURCHASE_STANDARD_PROPERTIES = ['product_id', 'sku', 'price', 'quantity', 'currency'];
 module.exports = {
   ConfigCategory,
   mappingConfig,
@@ -64,6 +65,7 @@ module.exports = {
   getSubscriptionGroupEndPoint,
   getAliasMergeEndPoint,
   BRAZE_PARTNER_NAME,
+  BRAZE_PURCHASE_STANDARD_PROPERTIES,
   TRACK_BRAZE_MAX_REQ_COUNT,
   IDENTIFY_BRAZE_MAX_REQ_COUNT,
   DESTINATION,
@@ -71,5 +73,5 @@ module.exports = {
   DEL_MAX_BATCH_SIZE,
   BRAZE_NON_BILLABLE_ATTRIBUTES,
   ALIAS_BRAZE_MAX_REQ_COUNT,
-  SUBSCRIPTION_BRAZE_MAX_REQ_COUNT
+  SUBSCRIPTION_BRAZE_MAX_REQ_COUNT,
 };

@@ -488,6 +488,12 @@ class Prometheus {
         labelNames: ['type', 'writeKey', 'source'],
       },
       {
+        name: 'shopify_anon_id_resolve',
+        help: 'shopify_anon_id_resolve',
+        type: 'counter',
+        labelNames: ['method', 'writeKey', 'shopifyTopic'],
+      },
+      {
         name: 'shopify_redis_calls',
         help: 'shopify_redis_calls',
         type: 'counter',

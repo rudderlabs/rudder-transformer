@@ -29,7 +29,10 @@ const userDeletionHandler = async (userAttributes, config) => {
     'Content-Type': JSON_MIME_TYPE,
     Authorization: `API-Key ${apiKey}`,
   };
-  // userIdBatches = [[u1,u2,u3,...batchSize],[u1,u2,u3,...batchSize]...]
+  /**
+   * userIdBatches = [[u1,u2,u3,...batchSize],[u1,u2,u3,...batchSize]...]
+   * Ref doc : https://docs.sprig.com/reference/post-v2-purge-visitors-1
+   */
   const userIdBatches = getUserIdBatches(userAttributes, 100);
   // Note: The logic here intentionally avoided to use Promise.all
   // eslint-disable-next-line no-restricted-syntax

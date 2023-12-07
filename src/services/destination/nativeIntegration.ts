@@ -16,6 +16,8 @@ import {
   ProxyRequest,
   ProxyDeliveriesRequest,
   ProxyDeliveryRequest,
+  DeliveriesResponse,
+  DeliveryJobState,
 } from '../../types/index';
 import { DestinationPostTransformationService } from './postTransformation';
 import networkHandlerFactory from '../../adapters/networkHandlerFactory';
@@ -176,7 +178,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
     destinationType: string,
     _requestMetadata: NonNullable<unknown>,
     version: string,
-  ): Promise<DeliveryResponse> {
+  ): Promise<DeliveryResponse | DeliveriesResponse> {
     try {
       const { networkHandler, handlerVersion } = networkHandlerFactory.getNetworkHandler(
         destinationType,
@@ -189,13 +191,29 @@ export class NativeIntegrationDestinationService implements DestinationService {
           ? (deliveryRequest as ProxyDeliveriesRequest).metadata
           : (deliveryRequest as ProxyDeliveryRequest).metadata;
 
-      return networkHandler.responseHandler(
+      let response = networkHandler.responseHandler(
         {
           ...processedProxyResponse,
           rudderJobMetadata,
         },
         destinationType,
-      ) as DeliveryResponse;
+      );
+      // Adaption Logic for V0 to V1
+      if (handlerVersion.toLowerCase() === 'v0' && version.toLowerCase() === 'v1') {
+        const v0Response = response as DeliveryResponse;
+        const jobStates = (deliveryRequest as ProxyDeliveriesRequest).metadata.map(
+          (metadata) =>
+            ({
+              error: JSON.stringify(v0Response.destinationResponse),
+              statusCode: v0Response.status,
+              metadata,
+            } as DeliveryJobState),
+        );
+        response = {
+          responses: jobStates,
+        } as DeliveriesResponse;
+      }
+      return response;
     } catch (err: any) {
       const metadata = Array.isArray(deliveryRequest.metadata)
         ? deliveryRequest.metadata[0]
@@ -208,9 +226,9 @@ export class NativeIntegrationDestinationService implements DestinationService {
       );
       if (version.toLowerCase() === 'v1') {
         metaTO.metadatas = (deliveryRequest as ProxyDeliveriesRequest).metadata;
-      } else {
-        metaTO.metadata = (deliveryRequest as ProxyDeliveryRequest).metadata;
+        return DestinationPostTransformationService.handlevV1DeliveriesFailureEvents(err, metaTO);
       }
+      metaTO.metadata = (deliveryRequest as ProxyDeliveryRequest).metadata;
       return DestinationPostTransformationService.handleDeliveryFailureEvents(err, metaTO);
     }
   }

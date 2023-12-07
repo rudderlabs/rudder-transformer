@@ -1,6 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import { DestinationService } from '../interfaces/DestinationService';
 import {
+  DeliveriesResponse,
   DeliveryResponse,
   Destination,
   ErrorDetailer,
@@ -369,7 +370,7 @@ export class ComparatorService implements DestinationService {
     destinationType: string,
     requestMetadata: NonNullable<unknown>,
     version: string,
-  ): Promise<DeliveryResponse> {
+  ): Promise<DeliveryResponse | DeliveriesResponse> {
     const primaryResplist = await this.primaryService.deliver(
       event,
       destinationType,
@@ -377,7 +378,6 @@ export class ComparatorService implements DestinationService {
       version,
     );
     logger.error('[LIVE_COMPARE_TEST] not implemented for delivery routine');
-
     return primaryResplist;
   }
 

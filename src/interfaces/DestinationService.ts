@@ -8,6 +8,7 @@ import {
   UserDeletionRequest,
   UserDeletionResponse,
   ProxyRequest,
+  DeliveriesResponse,
 } from '../types/index';
 
 export interface DestinationService {
@@ -48,7 +49,7 @@ export interface DestinationService {
     destinationType: string,
     requestMetadata: NonNullable<unknown>,
     version: string,
-  ): Promise<DeliveryResponse>;
+  ): Promise<DeliveryResponse | DeliveriesResponse>;
 
   processUserDeletion(
     requests: UserDeletionRequest[],

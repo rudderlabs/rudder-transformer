@@ -55,7 +55,7 @@ const identifyResponseBuilder = (message, { Config }) => {
   response.method = CONFIG_CATEGORIES.IDENTIFY.method;
   response.body.JSON = {
     contact: payload,
-    unique_identifier: { emails: payload.emails },
+    unique_identifier: { emails: payload.email },
   };
   return response;
 };

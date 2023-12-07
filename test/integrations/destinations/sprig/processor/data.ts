@@ -14,9 +14,9 @@ export const data = [
               channel: 'web',
               context: {
                 traits: {
-                  email: 'rajesh@gmail.com',
-                  firstName: 'Rajesh',
-                  lastName: 'Lodha',
+                  email: 'test@gmail.com',
+                  firstName: 'Test',
+                  lastName: 'Ruddelabs',
                 },
               },
               originalTimestamp: '2023-11-10T14:42:44.724Z',
@@ -80,9 +80,9 @@ export const data = [
               channel: 'web',
               context: {
                 traits: {
-                  email: 'rajesh@gmail.com',
-                  firstName: 'Rajesh',
-                  lastName: 'Lodha',
+                  email: 'test@gmail.com',
+                  firstName: 'Test',
+                  lastName: 'Rudderstack',
                 },
               },
               traits: {},
@@ -147,9 +147,9 @@ export const data = [
               channel: 'web',
               context: {
                 traits: {
-                  email: 'rajesh@gmail.com',
-                  firstName: 'Rajesh',
-                  lastName: 'Lodha',
+                  email: 'test@gmail.com',
+                  firstName: 'Test',
+                  lastName: 'Rudderstack',
                 },
               },
               type: 'identify',
@@ -211,9 +211,9 @@ export const data = [
               anonymousId: 'anon@1',
               context: {
                 traits: {
-                  email: 'rajesh@gmail.com',
-                  firstName: 'Rajesh',
-                  lastName: 'Lodha',
+                  email: 'test@gmail.com',
+                  firstName: 'Test',
+                  lastName: 'Rudderlabs',
                 },
               },
               type: 'identify',
@@ -277,9 +277,9 @@ export const data = [
               userId: 'user@1',
               context: {
                 traits: {
-                  email: 'rajesh@gmail.com',
-                  firstName: 'Rajesh',
-                  lastName: 'Lodha',
+                  email: 'test@gmail.com',
+                  firstName: 'Test',
+                  lastName: 'Rudderlabs',
                 },
               },
               type: 'identify',
@@ -323,11 +323,11 @@ export const data = [
               body: {
                 JSON: {
                   attributes: {
-                    email: 'rajesh@gmail.com',
-                    firstName: 'Rajesh',
-                    lastName: 'Lodha',
+                    email: 'test@gmail.com',
+                    firstName: 'Test',
+                    lastName: 'Rudderlabs',
                   },
-                  emailAddress: 'rajesh@gmail.com',
+                  emailAddress: 'test@gmail.com',
                   userId: 'user@1',
                 },
                 XML: {},
@@ -361,9 +361,9 @@ export const data = [
               userId: 'user@1',
               context: {
                 traits: {
-                  email: 'rajesh@gmail.com',
-                  firstName: 'Rajesh',
-                  lastName: 'Lodha',
+                  email: 'test@gmail.com',
+                  firstName: 'Test',
+                  lastName: 'Rudderlabs',
                 },
               },
               properties: {},
@@ -429,9 +429,9 @@ export const data = [
               userId: 'user@1',
               context: {
                 traits: {
-                  email: 'rajesh@gmail.com',
-                  firstName: 'Rajesh',
-                  lastName: 'Lodha',
+                  email: 'test@gmail.com',
+                  firstName: 'Test',
+                  lastName: 'Rudderlabs',
                 },
               },
               properties: {},
@@ -476,7 +476,7 @@ export const data = [
               },
               body: {
                 JSON: {
-                  emailAddress: 'rajesh@gmail.com',
+                  emailAddress: 'test@gmail.com',
                   userId: 'user@1',
                   events: [
                     {

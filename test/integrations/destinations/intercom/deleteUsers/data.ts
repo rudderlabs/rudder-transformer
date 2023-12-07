@@ -19,7 +19,7 @@ export const data = [
               },
             ],
             config: {
-              apiKey: 'API_KEY',
+              accessToken: 'API_KEY',
             },
           },
         ],
@@ -57,7 +57,7 @@ export const data = [
               },
             ],
             config: {
-              apiKey: 'API_KEY',
+              accessToken: 'API_KEY',
             },
           },
         ],
@@ -140,7 +140,7 @@ export const data = [
         body: [
           {
             statusCode: 400,
-            error: 'api key for deletion not present',
+            error: 'access token for deletion not present',
           },
         ],
       },
@@ -159,7 +159,7 @@ export const data = [
             destType: 'INTERCOM',
             userAttributes: [{}],
             config: {
-              apiKey: 'a=',
+              accessToken: 'a=',
             },
           },
         ],

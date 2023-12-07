@@ -95,7 +95,7 @@ steps:
           { 
             events: [{
             "click_id": .message.properties.clickId,
-            "event_at": .message.timestamp || .message.originalTimestamp,
+            "event_at": .message.().({{{{$.getGenericPaths("timestamp")}}}}),
             "event_type": $.outputs.prepareTrackPayload.eventType,
             "user": $.outputs.prepareTrackPayload.prepareUserObject,
             "event_metadata": $.outputs.prepareTrackPayload.combineAllEcomFields,

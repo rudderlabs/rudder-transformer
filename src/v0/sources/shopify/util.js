@@ -164,6 +164,10 @@ const getAnonymousIdAndSessionId = async (message, metricMetadata, redisData = n
   }
   // falling back to cartToken mapping or its hash in case no rudderAnonymousId or rudderSessionId is found
   if (isDefinedAndNotNull(anonymousId) && isDefinedAndNotNull(sessionId)) {
+    stats.increment('shopify_anon_id_resolve', {
+      method: 'note_attributes',
+      ...metricMetadata,
+    });
     return { anonymousId, sessionId };
   }
   const cartToken = getCartToken(message);
@@ -189,6 +193,13 @@ const getAnonymousIdAndSessionId = async (message, metricMetadata, redisData = n
     Hash the id and use it as anonymousId (limiting 256 -> 36 chars) and sessionId is not sent as its not required field
     */
     anonymousId = v5(cartToken, v5.URL);
+  } else {
+    // This metric let us know how many events based on event name used redis for anonId resolution
+    // and for how many
+    stats.increment('shopify_anon_id_resolve', {
+      method: 'database',
+      ...metricMetadata,
+    });
   }
   return { anonymousId, sessionId };
 };

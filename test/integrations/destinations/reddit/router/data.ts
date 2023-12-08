@@ -1,6 +1,6 @@
 export const data = [
   {
-    name: 'ortto',
+    name: 'reddit',
     description: 'Track Events',
     feature: 'router',
     module: 'destination',
@@ -244,9 +244,6 @@ export const data = [
                               category: 'Games',
                             },
                           ],
-                          currency: 'USD',
-                          value: 15,
-                          value_decimal: 0.15,
                         },
                       },
                       {
@@ -371,7 +368,7 @@ export const data = [
     },
   },
   {
-    name: 'ortto',
+    name: 'reddit',
     description: 'Track Events with no event name',
     feature: 'router',
     module: 'destination',

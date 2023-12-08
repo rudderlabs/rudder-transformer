@@ -1,12 +1,11 @@
 const lodash = require('lodash');
 const { maxBatchSize } = require('./config');
 
-const batchEventChunks = (events) => {
+const batchEventChunks = (eventChunks) => {
   const batchedEvents = [];
-  if (Array.isArray(events)) {
-    events.forEach((chunk) => {
+  if (Array.isArray(eventChunks)) {
+    eventChunks.forEach((chunk) => {
       const response = { destination: chunk[0].destination };
-
       chunk.forEach((event, index) => {
         if (index === 0) {
           const [firstMessage] = event.message;

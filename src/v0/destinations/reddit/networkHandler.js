@@ -11,12 +11,11 @@ const {
 const redditRespHandler = (destResponse) => {
   const { status, response } = destResponse;
 
-  const errorMessage = response?.invalid_events[0]?.errorMessage;
   // to handle the case when authorization-token is invalid
   if (status === 401) {
     throw new RetryableError(
-      `Request failed due to ${errorMessage}`,
-      status,
+      `Request failed due to ${response} 'during reddit response transformation'`,
+      500,
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
       },

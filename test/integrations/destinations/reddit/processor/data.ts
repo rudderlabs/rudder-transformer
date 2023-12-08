@@ -17,6 +17,12 @@ export const data = [
                 userAgent:
                   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                 ip: '54.100.200.255',
+                device: {
+                  advertisingId: 'asfds7fdsihf734b34j43f',
+                },
+                os: {
+                  name: 'android',
+                },
               },
               type: 'track',
               session_id: '16733896350494',
@@ -64,6 +70,7 @@ export const data = [
             destination: {
               Config: {
                 accountId: 'a2_fsddXXXfsfd',
+                hashData: true,
                 eventsMapping: [
                   {
                     from: 'Order Completed',
@@ -108,6 +115,7 @@ export const data = [
                         tracking_type: 'Purchase',
                       },
                       user: {
+                        aaid: 'c12d34889302d3c656b5699fa9190b51c50d6f62fce57e13bd56b503d66c487a',
                         email: 'ac144532d9e4efeab19475d9253a879173ea12a3d2238d1cb8a332a7b3a105f2',
                         external_id:
                           '7b023241a3132b792a5a33915a5afb3133cbb1e13d72879689bf6504de3b036d',
@@ -211,6 +219,7 @@ export const data = [
             destination: {
               Config: {
                 accountId: 'a2_fsddXXXfsfd',
+                hashData: false,
                 eventsMapping: [
                   {
                     from: 'Order Completed',
@@ -255,11 +264,9 @@ export const data = [
                         tracking_type: 'ViewContent',
                       },
                       user: {
-                        email: 'ac144532d9e4efeab19475d9253a879173ea12a3d2238d1cb8a332a7b3a105f2',
-                        external_id:
-                          '7b023241a3132b792a5a33915a5afb3133cbb1e13d72879689bf6504de3b036d',
-                        ip_address:
-                          'e80bd55a3834b7c2a34ade23c7ecb54d2a49838227080f50716151e765a619db',
+                        email: 'testone@gmail.com',
+                        external_id: 'testuserId1',
+                        ip_address: '54.100.200.255',
                         user_agent:
                           'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                         screen_dimensions: {},
@@ -348,6 +355,7 @@ export const data = [
             destination: {
               Config: {
                 accountId: 'a2_fsddXXXfsfd',
+                hashData: true,
                 eventsMapping: [
                   {
                     from: 'Order Completed',
@@ -480,6 +488,7 @@ export const data = [
             destination: {
               Config: {
                 accountId: 'a2_fsddXXXfsfd',
+                hashData: true,
                 eventsMapping: [
                   {
                     from: 'Order Completed',
@@ -612,6 +621,7 @@ export const data = [
             destination: {
               Config: {
                 accountId: 'a2_fsddXXXfsfd',
+                hashData: true,
                 eventsMapping: [
                   {
                     from: 'Products Searched',
@@ -754,6 +764,7 @@ export const data = [
             destination: {
               Config: {
                 accountId: 'a2_fsddXXXfsfd',
+                hashData: true,
                 eventsMapping: [
                   {
                     from: 'Order Completed',
@@ -901,6 +912,7 @@ export const data = [
             destination: {
               Config: {
                 accountId: 'a2_fsddXXXfsfd',
+                hashData: true,
                 eventsMapping: [
                   {
                     from: 'Order Completed',
@@ -1153,6 +1165,7 @@ export const data = [
             destination: {
               Config: {
                 accountId: 'a2_fsddXXXfsfd',
+                hashData: true,
                 eventsMapping: [
                   {
                     from: 'Order Completed',
@@ -1258,6 +1271,7 @@ export const data = [
             destination: {
               Config: {
                 accountId: 'a2_fsddXXXfsfd',
+                hashData: true,
                 eventsMapping: [
                   {
                     from: 'Order Completed',
@@ -1362,6 +1376,7 @@ export const data = [
             destination: {
               Config: {
                 accountId: 'a2_fsddXXXfsfd',
+                hashData: true,
                 eventsMapping: [
                   {
                     from: 'Order Completed',
@@ -1467,6 +1482,7 @@ export const data = [
             destination: {
               Config: {
                 accountId: 'a2_fsddXXXfsfd',
+                hashData: true,
                 eventsMapping: [
                   {
                     from: 'Order Completed',

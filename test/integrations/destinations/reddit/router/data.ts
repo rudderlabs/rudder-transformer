@@ -65,6 +65,7 @@ export const data = [
               destination: {
                 Config: {
                   accountId: 'a2_fsddXXXfsfd',
+                  hashData: true,
                   eventsMapping: [
                     {
                       from: 'Order Completed',
@@ -129,6 +130,7 @@ export const data = [
               destination: {
                 Config: {
                   accountId: 'a2_fsddXXXfsfd',
+                  hashData: true,
                   eventsMapping: [
                     {
                       from: 'Order Completed',
@@ -183,6 +185,7 @@ export const data = [
               destination: {
                 Config: {
                   accountId: 'a2_fsddXXXfsfd',
+                  hashData: true,
                   eventsMapping: [
                     {
                       from: 'Order Completed',
@@ -348,6 +351,7 @@ export const data = [
               destination: {
                 Config: {
                   accountId: 'a2_fsddXXXfsfd',
+                  hashData: true,
                   eventsMapping: [
                     {
                       from: 'Order Completed',

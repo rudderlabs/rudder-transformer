@@ -200,5 +200,50 @@
         "userId": "5b6a3426dba2cb24e4f0aeec43bee9d7"
       }
     }
+  },
+  {
+    "description": "MailJet when no email is present",
+    "input": {
+      "event": "bounce",
+      "time": 1664444170,
+      "MessageID": 56013522696710744,
+      "Message_GUID": "dbe4f0a3-4a5a-4784-a724-a9794d3c0444",
+      "mj_campaign_id": 108892,
+      "mj_contact_id": 373142182,
+      "customcampaign": "mj.nl=58486",
+      "blocked": false,
+      "hard_bounce": false,
+      "error_related_to": "system",
+      "error": "connection issue"
+    },
+    "output": {
+      "Message": {
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "MailJet"
+          },
+          "externalId": [
+            {
+              "type": "mailjetContactId",
+              "id": 373142182
+            }
+          ]
+        },
+        "integrations": {
+          "MailJet": false
+        },
+        "type": "track",
+        "event": "bounce",
+        "properties": {
+          "customcampaign": "mj.nl=58486",
+          "mj_campaign_id": 108892
+        },
+        "originalTimestamp": "2022-09-29T09:36:10.000Z"
+      }
+    }
   }
 ]

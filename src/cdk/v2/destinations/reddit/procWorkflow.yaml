@@ -10,14 +10,18 @@ bindings:
     path: ../../../../v0/util
   - name: isAppleFamily
     path: ../../../../v0/util/index
+  - name: OAuthSecretError
+    path: '@rudderstack/integrations-lib'
 
 steps:
   - name: validateInput
     template: |
       let messageType = .message.type;
+      $.assertConfig(.destination.Config.accountId, "Account is not present. Aborting message.");
       $.assert(.message.type, "message Type is not present. Aborting message.");
       $.assert(.message.type.toLowerCase() ==='track', "Event type " + .message.type.toLowerCase() + " is not supported. Aborting message.");
       $.assert(.message.event, "Event is not present. Aborting message.");
+      $.assert(.message.().({{{{$.getGenericPaths("timestamp")}}}}), "Timestamp is not present. Aborting message.");
 
   - name: messageType
     template: |
@@ -56,7 +60,7 @@ steps:
       - name: eventType
         template: |
           let event = .message.event;
-          let eventInLowerCase = event.toLowerCase();
+          let eventInLowerCase = event.trim().toLowerCase();;
           let eventNames = .destination.Config.eventsMapping.(){.from === event}.to[] ?? [];
           eventNames.length === 0 ? eventNames = $.ecomEventMaps.(){eventInLowerCase in .src}.dest[] ?? [];
           const event_type = (eventNames.length === 0 || eventNames[0]==="") ? ({"tracking_type": "Custom", "custom_event_name": event}): ({tracking_type: eventNames[0]});
@@ -110,6 +114,7 @@ steps:
   - name: buildResponseForProcessTransformation
     description: build response
     template: |
+      $.assertThrow((.metadata.secret && .metadata.secret.accessToken), new $.OAuthSecretError("Secret or accessToken is not present in the metadata"))
       const accessToken = .metadata.secret.accessToken
       const response = $.defaultRequestConfig();
       response.body.JSON = $.outputs.payload;

@@ -11,11 +11,11 @@ const ecomEventMaps = [
     dest: 'AddToCart',
   },
   {
-    src: ['Product Added to Wishlist'],
+    src: ['product added to wishlist'],
     dest: 'AddToWishlist',
   },
   {
-    src: ['Order Completed'],
+    src: ['order completed'],
     dest: 'Purchase',
   },
   {

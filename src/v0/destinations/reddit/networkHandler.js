@@ -12,7 +12,7 @@ const redditRespHandler = (destResponse) => {
   const { status, response } = destResponse;
 
   // to handle the case when authorization-token is invalid
-  if (status === 401) {
+  if (status === 401 && response.includes('Authorization Required')) {
     throw new RetryableError(
       `Request failed due to ${response} 'during reddit response transformation'`,
       500,
@@ -31,11 +31,17 @@ const responseHandler = (destinationResponse) => {
     // if error, successfully return status, message and original destination response
     redditRespHandler(destinationResponse);
   }
+  const { response } = destinationResponse;
+  const errorMessage =
+    response.invalid_events && Array.isArray(response.invalid_events)
+      ? response?.invalid_events[0]?.error_message
+      : null;
+  const destResp = errorMessage || destinationResponse;
   // Mostly any error will not have a status of 2xx
   return {
     status,
     message,
-    destinationResponse,
+    destResp,
   };
 };
 // eslint-disable-next-line @typescript-eslint/naming-convention

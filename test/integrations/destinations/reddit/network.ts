@@ -95,6 +95,6 @@ export const networkCallsData = [
       },
       method: 'POST',
     },
-    httpRes: { data: 'unauthorized', status: 401, statusText: 'Unauthorized' },
+    httpRes: { data: 'Authorization Required', status: 401, statusText: 'Unauthorized' },
   },
 ];

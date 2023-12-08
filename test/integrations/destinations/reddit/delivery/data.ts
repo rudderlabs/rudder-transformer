@@ -67,7 +67,7 @@ export const data = [
         status: 200,
         body: {
           output: {
-            destinationResponse: {
+            destResp: {
               response: {
                 message: 'Successfully processed 1 conversion events.',
               },
@@ -149,13 +149,14 @@ export const data = [
         body: {
           output: {
             authErrorCategory: {
-              response: 'unauthorized',
+              response: 'Authorization Required',
               status: 401,
             },
             destinationResponse: {
               errorType: 'aborted',
             },
-            message: "Request failed due to unauthorized 'during reddit response transformation'",
+            message:
+              "Request failed due to Authorization Required 'during reddit response transformation'",
             statTags: {
               destType: 'REDDIT',
               destinationId: 'Non-determininable',

@@ -18,6 +18,7 @@ import { DestinationPostTransformationService } from './postTransformation';
 import networkHandlerFactory from '../../adapters/networkHandlerFactory';
 import { FetchHandler } from '../../helpers/fetchHandlers';
 import tags from '../../v0/util/tags';
+import stats from '../../util/stats';
 
 export class NativeIntegrationDestinationService implements DestinationService {
   public init() {}
@@ -203,6 +204,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
   ): Promise<UserDeletionResponse[]> {
     const response = await Promise.all(
       requests.map(async (request) => {
+        const startTime = new Date();
         const { destType } = request;
         const destUserDeletionHandler: any = FetchHandler.getDeletionHandler(
           destType.toLowerCase(),
@@ -218,6 +220,11 @@ export class NativeIntegrationDestinationService implements DestinationService {
           const result: UserDeletionResponse = await destUserDeletionHandler.processDeleteUsers({
             ...request,
             rudderDestInfo,
+          });
+          stats.timing('regulation_worker_requests_dest_latency', startTime, {
+            feature: tags.FEATURES.USER_DELETION,
+            implementation: tags.IMPLEMENTATIONS.NATIVE,
+            destType,
           });
           return result;
         } catch (error: any) {

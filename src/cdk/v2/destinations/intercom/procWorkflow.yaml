@@ -3,8 +3,6 @@ bindings:
     path: ../../../../constants
   - path: ./utils
     exportAll: true
-  - path: ./config
-    exportAll: true
   - path: ../../bindings/jsontemplate
     exportAll: true
   - name: defaultRequestConfig
@@ -61,11 +59,11 @@ steps:
         role: .traits.role || .context.traits.role,
         signed_up_at: $.toSeconds(.traits.createdAt || .context.traits.createdAt),
         owner_id: .traits.ownerId || .context.traits.ownerId ? Number(.traits.ownerId || .context.traits.ownerId) : undefined,
-        unsubscribed_from_emails: .traits.unsubscribedFromEmails || .context.traits.unsubscribedFromEmails,
-        custom_attributes: .context.traits || .traits
+        unsubscribed_from_emails: .traits.unsubscribedFromEmails || .context.traits.unsubscribedFromEmails
       })
       payload.name = $.getName(.message);
-      payload.custom_attributes = $.getCustomAttributes(payload, $.ReservedUserAttributes);
+      payload.custom_attributes = .message.context.traits || {};
+      payload.custom_attributes = $.filterCustomAttributes(payload, "user");
       payload.external_id = !(payload.external_id) && .destination.Config.sendAnonymousId && .message.anonymousId ? .message.anonymousId : payload.external_id;
       payload;
 
@@ -123,10 +121,10 @@ steps:
         size: Number(.traits.size || .context.traits.size),
         industry: .traits.industry || .context.traits.industry,
         monthly_spend: .traits.monthlySpend || .context.traits.monthlySpend ? Number(.traits.monthlySpend || .context.traits.monthlySpend) : undefined,
-        remote_created_at: .traits.remoteCreatedAt || .context.traits.remoteCreatedAt ? Number(.traits.remoteCreatedAt || .context.traits.remoteCreatedAt) : undefined,
-        custom_attributes: .traits
+        remote_created_at: .traits.remoteCreatedAt || .context.traits.remoteCreatedAt ? Number(.traits.remoteCreatedAt || .context.traits.remoteCreatedAt) : undefined
       })
-      payload.custom_attributes = $.getCustomAttributes(payload, $.ReservedCompanyAttributes);
+      payload.custom_attributes = .message.traits || {};
+      payload.custom_attributes = $.filterCustomAttributes(payload, "company");
       payload;
 
   - name: prepareAddUserToCompanyPayload
@@ -150,7 +148,7 @@ steps:
       let payload = {
         requestBodyJson: .message.context.mappedToDestination === true ? $.outputs.rEtlPayload : $.outputs.groupEtlPayload
       }
-      payload.endpoint =  $.getBaseEndpoint(.destination) + "/" + $.CREATE_OR_UPDATE_COMPANY_ENDPOINT;
+      payload.endpoint =  $.getBaseEndpoint(.destination) + "/" + "companies";
       payload;
 
   - name: prepareGroupPayload

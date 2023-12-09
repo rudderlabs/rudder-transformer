@@ -19,7 +19,9 @@ const {
   MetadataTypes,
   BASE_EU_ENDPOINT,
   BASE_AU_ENDPOINT,
+  ReservedUserAttributes,
   SEARCH_CONTACT_ENDPOINT,
+  ReservedCompanyAttributes,
   CREATE_OR_UPDATE_COMPANY_ENDPOINT,
 } = require('./config');
 
@@ -88,12 +90,13 @@ const getName = (message) => {
 /**
  * Returns custom attributes for identify and group calls (for contact and company in intercom)
  * @param {*} payload
- * @param {*} ReservedAttributes
+ * @param {*} type
  * @returns
  */
-const getCustomAttributes = (payload, ReservedAttributes) => {
+const filterCustomAttributes = (payload, type) => {
+  const ReservedAttributes = type === 'user' ? ReservedUserAttributes : ReservedCompanyAttributes;
   let { custom_attributes: customAttributes } = payload;
-  if (customAttributes && typeof customAttributes === 'object') {
+  if (customAttributes) {
     ReservedAttributes.forEach((trait) => {
       if (customAttributes[trait]) delete customAttributes[trait];
     });
@@ -161,7 +164,7 @@ const searchContact = async (message, destination) => {
  * @returns
  */
 const createOrUpdateCompany = async (payload, destination) => {
-  const headers = getHeaders(destination);
+    const headers = getHeaders(destination);
   const finalPayload = JSON.stringify(removeUndefinedAndNullValues(payload));
   const baseEndPoint = getBaseEndpoint(destination);
   const endpoint = `${baseEndPoint}/${CREATE_OR_UPDATE_COMPANY_ENDPOINT}`;
@@ -175,7 +178,7 @@ const createOrUpdateCompany = async (payload, destination) => {
   if (isHttpStatusSuccess(processedResponse.status)) {
     return processedResponse.response?.id;
   }
-
+  
   throw new NetworkError(
     `Unable to Create or Update Company due to : ${JSON.stringify(
       processedResponse?.response?.errors,
@@ -242,8 +245,8 @@ module.exports = {
   searchContact,
   getLookUpField,
   getBaseEndpoint,
-  getCustomAttributes,
   addMetadataToPayload,
   createOrUpdateCompany,
+  filterCustomAttributes,
   separateReservedAndRestMetadata,
 };

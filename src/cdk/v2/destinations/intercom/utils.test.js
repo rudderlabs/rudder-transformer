@@ -5,9 +5,9 @@ const {
   searchContact,
   getLookUpField,
   getBaseEndpoint,
-  getCustomAttributes,
   addMetadataToPayload,
   createOrUpdateCompany,
+  filterCustomAttributes,
   separateReservedAndRestMetadata,
 } = require('./utils');
 const { BASE_ENDPOINT, BASE_EU_ENDPOINT, BASE_AU_ENDPOINT } = require('./config');
@@ -299,27 +299,24 @@ describe('getName utility test', () => {
   });
 });
 
-describe('getCustomAttributes utility test', () => {
+describe('filterCustomAttributes utility test', () => {
   it('Should return an empty object when all custom attributes are reserved attributes', () => {
-    const payload = { custom_attributes: { attribute1: 'value1', attribute2: 'value2' } };
-    const ReservedAttributes = ['attribute1', 'attribute2'];
-    const result = getCustomAttributes(payload, ReservedAttributes);
+    const payload = { custom_attributes: { email: 'test@rudder.com', name: 'rudder test' } };
+    const result = filterCustomAttributes(payload, 'user');
     expect(result).toEqual({});
   });
 
   it('Should return a flattened object when custom attributes are not null, not reserved attributes and nested', () => {
     const payload = {
-      custom_attributes: { attribute1: 'value1', attribute2: { nestedAttribute: 'nestedValue' } },
+      custom_attributes: { source: 'rudder-js-sdk', data: { nestedAttribute: 'nestedValue' } },
     };
-    const ReservedAttributes = ['attribute3'];
-    const result = getCustomAttributes(payload, ReservedAttributes);
-    expect(result).toEqual({ attribute1: 'value1', 'attribute2.nestedAttribute': 'nestedValue' });
+    const result = filterCustomAttributes(payload, 'user');
+    expect(result).toEqual({ source: 'rudder-js-sdk', 'data.nestedAttribute': 'nestedValue' });
   });
 
   it('Should return null when custom_attributes is null', () => {
     const payload = { custom_attributes: null };
-    const ReservedAttributes = [];
-    const result = getCustomAttributes(payload, ReservedAttributes);
+    const result = filterCustomAttributes(payload, 'company');
     expect(result).toBeNull();
   });
 });

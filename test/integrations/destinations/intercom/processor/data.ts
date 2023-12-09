@@ -531,7 +531,7 @@ export const data = [
             },
             statusCode: 401,
             error:
-              '{"message":"{\\"message\\":\\"Unable to search contact due to : undefined: Workflow: procWorkflow, Step: searchContact, ChildStep: undefined, OriginalError: Unable to search contact due to : undefined\\",\\"destinationResponse\\":{\\"response\\":{\\"type\\":\\"error.list\\",\\"request_id\\":\\"request_1\\",\\"errors\\":[{\\"code\\":\\"unauthorized\\",\\"message\\":\\"Access Token Invalid\\"}]},\\"status\\":401}}","destinationResponse":{"response":{"type":"error.list","request_id":"request_1","errors":[{"code":"unauthorized","message":"Access Token Invalid"}]},"status":401}}',
+              '{"message":"{\\"message\\":\\"Unable to search contact due to : [{\\\\\\"code\\\\\\":\\\\\\"unauthorized\\\\\\",\\\\\\"message\\\\\\":\\\\\\"Access Token Invalid\\\\\\"}]: Workflow: procWorkflow, Step: searchContact, ChildStep: undefined, OriginalError: Unable to search contact due to : [{\\\\\\"code\\\\\\":\\\\\\"unauthorized\\\\\\",\\\\\\"message\\\\\\":\\\\\\"Access Token Invalid\\\\\\"}]\\",\\"destinationResponse\\":{\\"response\\":{\\"type\\":\\"error.list\\",\\"request_id\\":\\"request_1\\",\\"errors\\":[{\\"code\\":\\"unauthorized\\",\\"message\\":\\"Access Token Invalid\\"}]},\\"status\\":401}}","destinationResponse":{"response":{"type":"error.list","request_id":"request_1","errors":[{"code":"unauthorized","message":"Access Token Invalid"}]},"status":401}}',
             statTags: {
               errorCategory: 'network',
               errorType: 'aborted',

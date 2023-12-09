@@ -1,13 +1,18 @@
+const axios = require('axios');
 const {
   getName,
   getHeaders,
+  searchContact,
   getLookUpField,
   getBaseEndpoint,
   getCustomAttributes,
   addMetadataToPayload,
+  createOrUpdateCompany,
   separateReservedAndRestMetadata,
 } = require('./utils');
 const { BASE_ENDPOINT, BASE_EU_ENDPOINT, BASE_AU_ENDPOINT } = require('./config');
+
+jest.mock('axios');
 
 describe('separateReservedAndRestMetadata utility test', () => {
   it('separate reserved and rest metadata', () => {
@@ -346,5 +351,238 @@ describe('addMetadataToPayload utility test', () => {
         'restData.source': 'rudderStack',
       },
     });
+  });
+});
+
+describe('searchContact utility test', () => {
+  it('Should successfully search contact by email', async () => {
+    const message = { context: { traits: { email: 'test@rudderlabs.com' } } };
+    const destination = { Config: { apiKey: 'testApiKey', apiServer: 'us' } };
+    axios.post.mockResolvedValue({
+      status: 200,
+      data: {
+        type: 'list',
+        total_count: 1,
+        pages: {
+          type: 'pages',
+          page: 1,
+          per_page: 50,
+          total_pages: 1,
+        },
+        data: [
+          {
+            type: 'contact',
+            id: '1',
+            email: 'test@rudderlabs.com',
+          },
+        ],
+      },
+    });
+
+    const result = await searchContact(message, destination);
+    expect(result).toEqual('1');
+  });
+
+  it('Should return first contact id if multiple contact exist with give search field', async () => {
+    const message = {
+      context: {
+        traits: { email: 'test@rudderlabs.com', phone: '+91 9999999999' },
+        integrations: { INTERCOM: { lookup: 'phone' } },
+      },
+    };
+    const destination = { Config: { apiKey: 'testApiKey', apiServer: 'us' } };
+    axios.post.mockResolvedValue({
+      status: 200,
+      data: {
+        type: 'list',
+        total_count: 1,
+        pages: {
+          type: 'pages',
+          page: 1,
+          per_page: 50,
+          total_pages: 1,
+        },
+        data: [
+          {
+            type: 'contact',
+            id: '1',
+            email: 'test@rudderlabs.com',
+            phone: '+91 9999999999',
+          },
+          {
+            type: 'contact',
+            id: '2',
+            email: 'test+1@rudderlabs.com',
+            phone: '+91 9999999999',
+          },
+        ],
+      },
+    });
+
+    const result = await searchContact(message, destination);
+    expect(result).toEqual('1');
+  });
+
+  it('Should return null if no contact is found', async () => {
+    const message = {
+      context: {
+        traits: { email: 'test+10@rudderlabs.com', phone: '+91 9999999999' },
+        integrations: { INTERCOM: { lookup: 'email' } },
+      },
+    };
+    const destination = { Config: { apiKey: 'testApiKey', apiServer: 'us' } };
+    axios.post.mockResolvedValue({
+      status: 200,
+      data: {
+        type: 'list',
+        total_count: 0,
+        pages: {
+          type: 'pages',
+          page: 1,
+          per_page: 50,
+          total_pages: 0,
+        },
+        data: [],
+      },
+    });
+
+    const result = await searchContact(message, destination);
+    expect(result).toBeNull();
+  });
+
+  it('Should throw an error in case if axios calls returns an error', async () => {
+    const message = {
+      context: {
+        traits: { email: 'test+3@rudderlabs.com', phone: '+91 9999999999' },
+        integrations: { INTERCOM: { lookup: 'email' } },
+      },
+    };
+    const destination = { Config: { apiKey: 'invalidTestApiKey', apiServer: 'us' } };
+    axios.post.mockRejectedValue({
+      status: 401,
+      data: {
+        type: 'error.list',
+        request_id: 'request_400',
+        errors: [
+          {
+            code: 'unauthorized',
+            message: 'Access Token Invalid',
+          },
+        ],
+      },
+    });
+
+    try {
+      const result = await searchContact(message, destination);
+      expect(result).toEqual('');
+    } catch (error) {
+      expect(error.message).toEqual(
+        'Unable to search contact due to : [{"code":"unauthorized","message":"Access Token Invalid"}]',
+      );
+    }
+  });
+});
+
+describe('createOrUpdateCompany utility test', () => {
+  it('Should successfully create company', async () => {
+    const payload = {
+      company_id: 'rudderlabs',
+      name: 'RudderStack',
+      website: 'www.rudderstack.com',
+      plan: 'enterprise',
+      size: 500,
+      industry: 'CDP',
+      custom_attributes: {},
+    };
+    const destination = { Config: { apiKey: 'testApiKey', apiServer: 'us' } };
+    axios.post.mockResolvedValue({
+      status: 200,
+      data: {
+        type: 'company',
+        company_id: 'rudderlabs',
+        id: '1',
+        name: 'RudderStack',
+        website: 'www.rudderstack.com',
+        plan: 'enterprise',
+        size: 500,
+        industry: 'CDP',
+        remote_created_at: 1374138000,
+        created_at: 1701930212,
+        updated_at: 1701930212,
+      },
+    });
+
+    const result = await createOrUpdateCompany(payload, destination);
+    expect(result).toEqual('1');
+  });
+
+  it('Should throw an error in case if axios calls returns an error', async () => {
+    const payload = {
+      company_id: 'rudderlabs',
+      name: 'RudderStack',
+      website: 'www.rudderstack.com',
+      plan: 'enterprise',
+      size: 500,
+      industry: 'CDP',
+      testData: true,
+    };
+    const destination = { Config: { apiKey: 'testApiKey', apiServer: 'us' } };
+    axios.post.mockRejectedValue({
+      status: 400,
+      data: {
+        type: 'error.list',
+        request_id: 'request_400',
+        errors: [
+          {
+            code: 'bad_request',
+            message: "bad 'testData' parameter",
+          },
+        ],
+      },
+    });
+
+    try {
+      const result = await createOrUpdateCompany(payload, destination);
+      expect(result).toEqual('');
+    } catch (error) {
+      expect(error.message).toEqual(
+        'Unable to Create or Update Company due to : [{"code":"bad_request","message":"bad \'testData\' parameter"}]',
+      );
+    }
+  });
+
+  it('Should throw an error in case if axios calls returns an error', async () => {
+    const payload = {
+      company_id: 'rudderlabs',
+      name: 'RudderStack',
+      website: 'www.rudderstack.com',
+      plan: 'enterprise',
+      size: 500,
+      industry: 'CDP',
+      testData: true,
+    };
+    const destination = { Config: { apiKey: 'invalidTestApiKey', apiServer: 'us' } };
+    axios.post.mockRejectedValue({
+      status: 400,
+      data: {
+        type: 'error.list',
+        request_id: 'request_400',
+        errors: [
+          {
+            code: 'unauthorized',
+            message: 'Access Token Invalid',
+          },
+        ],
+      },
+    });
+
+    try {
+      const result = await createOrUpdateCompany(payload, destination);
+      expect(result).toEqual('');
+    } catch (error) {
+      expect(error.message).toEqual(
+        'Unable to Create or Update Company due to : [{"code":"unauthorized","message":"Access Token Invalid"}]',
+      );
+    }
   });
 });

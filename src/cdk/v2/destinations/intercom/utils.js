@@ -144,7 +144,7 @@ const searchContact = async (message, destination) => {
   }
 
   throw new NetworkError(
-    `Unable to search contact due to : ${JSON.stringify(processedUserResponse?.response?.data)}`,
+    `Unable to search contact due to : ${JSON.stringify(processedUserResponse?.response?.errors)}`,
     processedUserResponse?.status,
     {
       [tags]: getDynamicErrorType(processedUserResponse?.status),
@@ -163,7 +163,6 @@ const searchContact = async (message, destination) => {
 const createOrUpdateCompany = async (payload, destination) => {
   const headers = getHeaders(destination);
   const finalPayload = JSON.stringify(removeUndefinedAndNullValues(payload));
-
   const baseEndPoint = getBaseEndpoint(destination);
   const endpoint = `${baseEndPoint}/${CREATE_OR_UPDATE_COMPANY_ENDPOINT}`;
   const response = await httpPOST(endpoint, finalPayload, {

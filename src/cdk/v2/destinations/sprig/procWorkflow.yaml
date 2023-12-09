@@ -19,6 +19,12 @@ steps:
       $.assert(messageType in {{$.EventType.([.IDENTIFY, .TRACK])}}, "message type " + messageType + " is not supported");
       $.assertConfig(.destination.Config.apiKey, "API Key is not present. Aborting");
 
+  - name: validateIdentifyPayload
+    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
+    template: |
+      const userId = .message.({{{{$.getGenericPaths("userIdOnly")}}}});;
+      $.assert(userId, "userId is required");
+
   - name: prepareIdentifyPayload
     condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
     template: |
@@ -28,11 +34,13 @@ steps:
         attributes: .context.traits
       });
       $.context.payload = $.removeUndefinedAndNullValues($.context.payload);
-  
-  - name: validateIdentifyPayload
-    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
+
+  - name: validateTrackPayload
+    condition: $.outputs.messageType === {{$.EventType.TRACK}}
     template: |
-      $.assert($.context.payload.userId, "userId is required");
+      const userId = .message.({{{{$.getGenericPaths("userIdOnly")}}}});;
+      $.assert(userId, "userId is required");
+      $.assert(.message.event, "event name is required");
 
   - name: prepareTrackPayload
     condition: $.outputs.messageType === {{$.EventType.TRACK}}
@@ -49,12 +57,6 @@ steps:
       ]
       $.context.payload.events = events;
       $.context.payload = $.removeUndefinedAndNullValues($.context.payload);
-
-  - name: validateTrackPayload
-    condition: $.outputs.messageType === {{$.EventType.TRACK}}
-    template: |
-      $.assert($.context.payload.userId, "userId is required");
-      $.assert($.context.payload.events[0].event, "event name is required");
 
   - name: buildResponse
     template: |

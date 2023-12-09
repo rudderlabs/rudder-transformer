@@ -33,7 +33,7 @@ export const data = [
                 },
               },
               Config: {
-                accessToken: 'testAccessToken',
+                apiKey: 'testApiKey',
                 apiServer: 'standard',
                 sendAnonymousId: false,
               },
@@ -105,7 +105,7 @@ export const data = [
                 },
               },
               Config: {
-                accessToken: 'testAccessToken',
+                apiKey: 'testApiKey',
                 apiServer: 'standard',
                 sendAnonymousId: false,
               },
@@ -244,7 +244,7 @@ export const data = [
                 },
               },
               Config: {
-                accessToken: 'testAccessToken',
+                apiKey: 'testApiKey',
                 apiServer: 'standard',
                 sendAnonymousId: false,
               },
@@ -282,7 +282,7 @@ export const data = [
               },
               endpoint: 'https://api.intercom.io/contacts',
               headers: {
-                Authorization: 'Bearer testAccessToken',
+                Authorization: 'Bearer testApiKey',
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
                 'Intercom-Version': '2.10',
@@ -335,7 +335,7 @@ export const data = [
                 },
               },
               Config: {
-                accessToken: 'testAccessToken',
+                apiKey: 'testApiKey',
                 apiServer: 'standard',
                 sendAnonymousId: false,
               },
@@ -372,7 +372,7 @@ export const data = [
               },
               endpoint: 'https://api.intercom.io/contacts/7070129940741e45d040',
               headers: {
-                Authorization: 'Bearer testAccessToken',
+                Authorization: 'Bearer testApiKey',
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
                 'Intercom-Version': '2.10',
@@ -431,7 +431,7 @@ export const data = [
                 },
               },
               Config: {
-                accessToken: 'testAccessToken',
+                apiKey: 'testApiKey',
                 apiServer: 'standard',
                 sendAnonymousId: false,
               },
@@ -508,7 +508,7 @@ export const data = [
                 },
               },
               Config: {
-                accessToken: 'invalidTestAccessToken',
+                apiKey: 'invalidApiKey',
                 apiServer: 'standard',
                 sendAnonymousId: false,
               },
@@ -590,7 +590,7 @@ export const data = [
                 },
               },
               Config: {
-                accessToken: 'testAccessToken',
+                apiKey: 'testApiKey',
                 apiServer: 'standard',
                 sendAnonymousId: false,
               },
@@ -673,7 +673,7 @@ export const data = [
                 },
               },
               Config: {
-                accessToken: 'testAccessToken',
+                apiKey: 'testApiKey',
                 apiServer: 'standard',
                 sendAnonymousId: false,
               },
@@ -717,7 +717,7 @@ export const data = [
               endpoint: 'https://api.intercom.io/events',
               headers: {
                 Accept: 'application/json',
-                Authorization: 'Bearer testAccessToken',
+                Authorization: 'Bearer testApiKey',
                 'Content-Type': 'application/json',
                 'Intercom-Version': '2.10',
               },
@@ -777,7 +777,7 @@ export const data = [
                 },
               },
               Config: {
-                accessToken: 'testAccessToken',
+                apiKey: 'testApiKey',
                 apiServer: 'standard',
                 sendAnonymousId: false,
               },
@@ -855,7 +855,7 @@ export const data = [
                 },
               },
               Config: {
-                accessToken: 'testAccessToken',
+                apiKey: 'testApiKey',
                 apiServer: 'standard',
                 sendAnonymousId: false,
               },
@@ -891,7 +891,7 @@ export const data = [
               endpoint: 'https://api.intercom.io/companies',
               headers: {
                 Accept: 'application/json',
-                Authorization: 'Bearer testAccessToken',
+                Authorization: 'Bearer testApiKey',
                 'Content-Type': 'application/json',
                 'Intercom-Version': '2.10',
               },
@@ -952,7 +952,7 @@ export const data = [
                 },
               },
               Config: {
-                accessToken: 'testAccessToken',
+                apiKey: 'testApiKey',
                 apiServer: 'standard',
                 sendAnonymousId: false,
               },
@@ -982,7 +982,7 @@ export const data = [
               endpoint: 'https://api.intercom.io/contacts/70701240741e45d040/companies',
               headers: {
                 Accept: 'application/json',
-                Authorization: 'Bearer testAccessToken',
+                Authorization: 'Bearer testApiKey',
                 'Content-Type': 'application/json',
                 'Intercom-Version': '2.10',
               },
@@ -1035,7 +1035,7 @@ export const data = [
                 },
               },
               Config: {
-                accessToken: 'testAccessToken',
+                apiKey: 'testApiKey',
                 apiServer: 'standard',
                 sendAnonymousId: false,
               },
@@ -1067,7 +1067,7 @@ export const data = [
               },
               endpoint: 'https://api.intercom.io/contacts',
               headers: {
-                Authorization: 'Bearer testAccessToken',
+                Authorization: 'Bearer testApiKey',
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
                 'Intercom-Version': '2.10',
@@ -1127,7 +1127,7 @@ export const data = [
                 },
               },
               Config: {
-                accessToken: 'testAccessToken',
+                apiKey: 'testApiKey',
                 apiServer: 'standard',
                 sendAnonymousId: false,
               },
@@ -1166,7 +1166,7 @@ export const data = [
               },
               endpoint: 'https://api.intercom.io/events',
               headers: {
-                Authorization: 'Bearer testAccessToken',
+                Authorization: 'Bearer testApiKey',
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
                 'Intercom-Version': '2.10',

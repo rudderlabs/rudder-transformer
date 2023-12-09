@@ -30,7 +30,7 @@ const {
  */
 const getHeaders = (destination) => ({
   'Content-Type': JSON_MIME_TYPE,
-  Authorization: `Bearer ${destination.Config.accessToken}`,
+  Authorization: `Bearer ${destination.Config.apiKey}`,
   Accept: JSON_MIME_TYPE,
   'Intercom-Version': '2.10',
 });

@@ -19,7 +19,7 @@ export const data = [
               },
             ],
             config: {
-              accessToken: 'API_KEY',
+              apiKey: 'testApiKey',
             },
           },
         ],
@@ -57,7 +57,7 @@ export const data = [
               },
             ],
             config: {
-              accessToken: 'API_KEY',
+              apiKey: 'testApiKey',
             },
           },
         ],
@@ -159,7 +159,7 @@ export const data = [
             destType: 'INTERCOM',
             userAttributes: [{}],
             config: {
-              accessToken: 'a=',
+              apiKey: 'a=',
             },
           },
         ],

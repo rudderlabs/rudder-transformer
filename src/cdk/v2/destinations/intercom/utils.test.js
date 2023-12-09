@@ -230,13 +230,13 @@ describe('getHeaders utility test', () => {
   it('Should return an object with the correct headers', () => {
     const destination = {
       Config: {
-        accessToken: 'testAccessToken',
+        apiKey: 'testApiKey',
       },
     };
 
     const expectedHeaders = {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${destination.Config.accessToken}`,
+      Authorization: `Bearer ${destination.Config.apiKey}`,
       Accept: 'application/json',
       'Intercom-Version': '2.10',
     };

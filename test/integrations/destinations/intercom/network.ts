@@ -8,7 +8,7 @@ const deleteNwData = [
       },
       headers: {
         Accept: 'application/json',
-        Authorization: 'Bearer API_KEY',
+        Authorization: 'Bearer testApiKey',
         'Content-Type': 'application/json',
       },
     },
@@ -35,7 +35,7 @@ const deleteNwData = [
       },
       headers: {
         Accept: 'application/json',
-        Authorization: 'Bearer API_KEY',
+        Authorization: 'Bearer testApiKey',
         'Content-Type': 'application/json',
       },
     },
@@ -56,7 +56,7 @@ const deleteNwData = [
       },
       headers: {
         Accept: 'application/json',
-        Authorization: 'Bearer API_KEY',
+        Authorization: 'Bearer testApiKey',
         'Content-Type': 'application/json',
       },
     },
@@ -77,7 +77,7 @@ const deleteNwData = [
       },
       headers: {
         Accept: 'application/json',
-        Authorization: 'Bearer API_KEY',
+        Authorization: 'Bearer testApiKey',
         'Content-Type': 'application/json',
       },
     },
@@ -101,7 +101,7 @@ const deleteNwData = [
       },
       headers: {
         Accept: 'application/json',
-        Authorization: 'Bearer testAccessToken',
+        Authorization: 'Bearer testApiKey',
         'Content-Type': 'application/json',
       },
     },
@@ -133,7 +133,7 @@ const deleteNwData = [
       },
       headers: {
         Accept: 'application/json',
-        Authorization: 'Bearer testAccessToken',
+        Authorization: 'Bearer testApiKey',
         'Content-Type': 'application/json',
       },
     },
@@ -174,7 +174,7 @@ const deleteNwData = [
       },
       headers: {
         Accept: 'application/json',
-        Authorization: 'Bearer testAccessToken',
+        Authorization: 'Bearer testApiKey',
         'Content-Type': 'application/json',
       },
     },
@@ -215,7 +215,7 @@ const deleteNwData = [
       },
       headers: {
         Accept: 'application/json',
-        Authorization: 'Bearer testAccessToken',
+        Authorization: 'Bearer testApiKey',
         'Content-Type': 'application/json',
       },
     },
@@ -256,7 +256,7 @@ const deleteNwData = [
       },
       headers: {
         Accept: 'application/json',
-        Authorization: 'Bearer testAccessToken',
+        Authorization: 'Bearer testApiKey',
         'Content-Type': 'application/json',
       },
     },
@@ -288,7 +288,7 @@ const deleteNwData = [
       },
       headers: {
         Accept: 'application/json',
-        Authorization: 'Bearer invalidTestAccessToken',
+        Authorization: 'Bearer invalidApiKey',
         'Content-Type': 'application/json',
       },
     },
@@ -321,7 +321,7 @@ const deleteNwData = [
       },
       headers: {
         Accept: 'application/json',
-        Authorization: 'Bearer testAccessToken',
+        Authorization: 'Bearer testApiKey',
         'Content-Type': 'application/json',
       },
     },

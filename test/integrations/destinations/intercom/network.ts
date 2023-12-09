@@ -342,6 +342,39 @@ const deleteNwData = [
       },
     },
   },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.intercom.io/companies',
+      data: {
+        company_id: 'rudderlabs',
+        name: 'RudderStack',
+        website: 'www.rudderstack.com',
+        plan: 'enterprise',
+        size: 500,
+        industry: 'CDP',
+        custom_attributes: { isOpenSource: true },
+      },
+      headers: {
+        Accept: 'application/json',
+        Authorization: 'Bearer testApiKey',
+        'Content-Type': 'application/json',
+      },
+    },
+    httpRes: {
+      status: 401,
+      data: {
+        type: 'error.list',
+        request_id: 'request_1',
+        errors: [
+          {
+            code: 'parameter_invalid',
+            message: "Custom attribute 'isOpenSource' does not exist",
+          },
+        ],
+      },
+    },
+  },
 ];
 const deliveryCallsData = [
   {

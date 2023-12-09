@@ -131,6 +131,48 @@ export const data = [
                 jobId: 3,
               },
             },
+            {
+              message: {
+                userId: 'user@6',
+                groupId: 'rudderlabs',
+                channel: 'web',
+                context: {
+                  traits: {
+                    email: 'test+5@rudderlabs.com',
+                    phone: '+91 9599999999',
+                    firstName: 'John',
+                    lastName: 'Snow',
+                    ownerId: '17',
+                  },
+                },
+                traits: {
+                  name: 'RudderStack',
+                  size: 500,
+                  website: 'www.rudderstack.com',
+                  industry: 'CDP',
+                  plan: 'enterprise',
+                  isOpenSource: true,
+                },
+                type: 'group',
+                originalTimestamp: '2023-11-10T14:42:44.724Z',
+                timestamp: '2023-11-22T10:12:44.757+05:30',
+              },
+              destination: {
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: true,
+                  },
+                },
+                Config: {
+                  apiKey: 'testApiKey',
+                  apiServer: 'standard',
+                  sendAnonymousId: false,
+                },
+              },
+              metadata: {
+                jobId: 4,
+              },
+            },
           ],
           destType: 'intercom',
         },
@@ -293,6 +335,37 @@ export const data = [
                 },
               ],
               statusCode: 200,
+            },
+            {
+              batched: false,
+              error:
+                '{"message":"Unable to Create or Update Company due to : [{\\"code\\":\\"parameter_invalid\\",\\"message\\":\\"Custom attribute \'isOpenSource\' does not exist\\"}]","destinationResponse":{"response":{"type":"error.list","request_id":"request_1","errors":[{"code":"parameter_invalid","message":"Custom attribute \'isOpenSource\' does not exist"}]},"status":401}}',
+              statTags: {
+                destType: 'INTERCOM',
+                errorCategory: 'network',
+                errorType: 'aborted',
+                feature: 'router',
+                implementation: 'cdkV2',
+                module: 'destination',
+              },
+              destination: {
+                Config: {
+                  apiKey: 'testApiKey',
+                  apiServer: 'standard',
+                  sendAnonymousId: false,
+                },
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: true,
+                  },
+                },
+              },
+              metadata: [
+                {
+                  jobId: 4,
+                },
+              ],
+              statusCode: 401,
             },
           ],
         },

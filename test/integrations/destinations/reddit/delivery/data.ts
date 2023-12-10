@@ -148,12 +148,10 @@ export const data = [
         status: 500,
         body: {
           output: {
-            authErrorCategory: {
+            authErrorCategory: 'REFRESH_TOKEN',
+            destinationResponse: {
               response: 'Authorization Required',
               status: 401,
-            },
-            destinationResponse: {
-              errorType: 'aborted',
             },
             message:
               "Request failed due to Authorization Required 'during reddit response transformation'",

@@ -2,11 +2,8 @@ const { RetryableError } = require('@rudderstack/integrations-lib');
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util/index');
 const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
-const tags = require('../../util/tags');
-const {
-  getDynamicErrorType,
-  processAxiosResponse,
-} = require('../../../adapters/utils/networkUtils');
+
+const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 
 const redditRespHandler = (destResponse) => {
   const { status, response } = destResponse;
@@ -16,9 +13,6 @@ const redditRespHandler = (destResponse) => {
     throw new RetryableError(
       `Request failed due to ${response} 'during reddit response transformation'`,
       500,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
-      },
       destResponse,
       REFRESH_TOKEN,
     );

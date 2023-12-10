@@ -166,7 +166,7 @@ export class DestinationPostTransformationService {
     metaTo: MetaTransferObject,
   ): UserDeletionResponse {
     const errObj = generateErrorObject(error, metaTo.errorDetails, false);
-    // TODO: Add stat tags here
+    stats.increment('regulation_worker_user_deletion_failure', metaTo.errorDetails);
     const resp = {
       statusCode: errObj.status,
       error: errObj.message,

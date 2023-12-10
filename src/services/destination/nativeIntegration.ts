@@ -15,14 +15,16 @@ import {
   ProcessorTransformationOutput,
   UserDeletionRequest,
   UserDeletionResponse,
-  ProcessorTransformationOutputWithMetaData,
-  ProcessorTransformationOutputWithMetaDataArray,
+  ProxyRequest,
+  ProxyDeliveriesRequest,
+  ProxyDeliveryRequest,
+  DeliveriesResponse,
+  DeliveryJobState,
 } from '../../types/index';
 import { DestinationPostTransformationService } from './postTransformation';
 import networkHandlerFactory from '../../adapters/networkHandlerFactory';
 import { FetchHandler } from '../../helpers/fetchHandlers';
 import tags from '../../v0/util/tags';
-import { ControllerUtility } from '../../controllers/util';
 import stats from '../../util/stats';
 
 export class NativeIntegrationDestinationService implements DestinationService {
@@ -175,76 +177,82 @@ export class NativeIntegrationDestinationService implements DestinationService {
   }
 
   public async deliver(
-    destinationRequest:
-      | ProcessorTransformationOutputWithMetaData
-      | ProcessorTransformationOutputWithMetaDataArray,
+    deliveryRequest: ProxyRequest,
     destinationType: string,
     _requestMetadata: NonNullable<unknown>,
     version: string,
-  ): Promise<DeliveryResponse> {
+  ): Promise<DeliveryResponse | DeliveriesResponse> {
     try {
       const { networkHandler, handlerVersion } = networkHandlerFactory.getNetworkHandler(
         destinationType,
         version,
       );
-      const rawProxyResponse = await networkHandler.proxy(destinationRequest, destinationType);
+      const rawProxyResponse = await networkHandler.proxy(deliveryRequest, destinationType);
       const processedProxyResponse = networkHandler.processAxiosResponse(rawProxyResponse);
+      let rudderJobMetadata =
+        version.toLowerCase() === 'v1'
+          ? (deliveryRequest as ProxyDeliveriesRequest).metadata
+          : (deliveryRequest as ProxyDeliveryRequest).metadata;
 
-      if (
-        handlerVersion === 'v0' &&
-        version === 'v1' &&
-        Array.isArray(destinationRequest.metadata)
-      ) {
-        return ControllerUtility.convertV1ProxyPayloadToV0(
-          destinationRequest as ProcessorTransformationOutputWithMetaDataArray,
-          processedProxyResponse,
-          handlerVersion,
-          version,
-          networkHandler,
-          destinationType,
-        );
+      if (version.toLowerCase() === 'v1' && handlerVersion.toLowerCase() === 'v0') {
+        rudderJobMetadata = rudderJobMetadata[0];
       }
 
-      return networkHandler.responseHandler(
+      let responseProxy = networkHandler.responseHandler(
         {
           ...processedProxyResponse,
-          rudderJobMetadata: destinationRequest.metadata,
+          rudderJobMetadata,
         },
         destinationType,
-      ) as DeliveryResponse;
-    } catch (err: any) {
-      if (!Array.isArray(destinationRequest.metadata)) {
-        const metaTO = this.getTags(
-          destinationType,
-          destinationRequest.metadata?.destinationId || 'Non-determininable',
-          destinationRequest.metadata?.workspaceId || 'Non-determininable',
-          tags.FEATURES.DATA_DELIVERY,
+      );
+      // Adaption Logic for V0 to V1
+      if (handlerVersion.toLowerCase() === 'v0' && version.toLowerCase() === 'v1') {
+        const v0Response = responseProxy as DeliveryResponse;
+        const jobStates = (deliveryRequest as ProxyDeliveriesRequest).metadata.map(
+          (metadata) =>
+            ({
+              error: JSON.stringify(v0Response.destinationResponse?.response),
+              statusCode: v0Response.status,
+              metadata,
+            } as DeliveryJobState),
         );
-        metaTO.metadata = destinationRequest.metadata;
-        return DestinationPostTransformationService.handleDeliveryFailureEvents(err, metaTO);
+        responseProxy = {
+          ...responseProxy,
+          response: jobStates,
+        } as DeliveriesResponse;
       }
+      return responseProxy;
+    } catch (err: any) {
+      const metadata = Array.isArray(deliveryRequest.metadata)
+        ? deliveryRequest.metadata[0]
+        : deliveryRequest.metadata;
       const metaTO = this.getTags(
         destinationType,
-        destinationRequest.metadata[0].destinationId || 'Non-determininable',
-        destinationRequest.metadata[0].workspaceId || 'Non-determininable',
+        metadata?.destinationId || 'Non-determininable',
+        metadata?.workspaceId || 'Non-determininable',
         tags.FEATURES.DATA_DELIVERY,
       );
-      metaTO.metadata = destinationRequest.metadata[0];
 
       // if error is thrown and response is not in error, build response as per transformer proxy v1
-      if (version === 'v1' && !err.response) {
+      if (version === 'v1' && !err.response && Array.isArray(metadata)) {
         const responseWithIndividualEvents: { statusCode: number; metadata: any; error: string }[] =
           [];
         // eslint-disable-next-line no-restricted-syntax
-        for (const metadata of destinationRequest.metadata) {
+        for (const meta of metadata) {
           responseWithIndividualEvents.push({
             statusCode: err.status,
-            metadata,
+            metadata: meta,
             error: JSON.stringify(err.destinationResponse.response) || err.message,
           });
         }
         err.response = responseWithIndividualEvents;
       }
+
+      if (version.toLowerCase() === 'v1') {
+        metaTO.metadatas = (deliveryRequest as ProxyDeliveriesRequest).metadata;
+        return DestinationPostTransformationService.handlevV1DeliveriesFailureEvents(err, metaTO);
+      }
+      metaTO.metadata = (deliveryRequest as ProxyDeliveryRequest).metadata;
       return DestinationPostTransformationService.handleDeliveryFailureEvents(err, metaTO);
     }
   }

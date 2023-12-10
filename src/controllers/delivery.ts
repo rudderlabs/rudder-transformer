@@ -3,10 +3,11 @@
 import { Context } from 'koa';
 import { MiscService } from '../services/misc';
 import {
+  DeliveriesResponse,
   DeliveryResponse,
   ProcessorTransformationOutput,
-  ProcessorTransformationOutputWithMetaData,
-  ProcessorTransformationOutputWithMetaDataArray,
+  ProxyDeliveriesRequest,
+  ProxyDeliveryRequest,
 } from '../types/index';
 import { ServiceSelector } from '../helpers/serviceSelector';
 import { DeliveryTestService } from '../services/delivertTest/deliveryTest';
@@ -16,58 +17,75 @@ import { DestinationPostTransformationService } from '../services/destination/po
 import tags from '../v0/util/tags';
 import { FixMe } from '../util/types';
 
+const NON_DETERMINABLE = 'Non-determinable';
+
 export class DeliveryController {
   public static async deliverToDestination(ctx: Context) {
     logger.debug('Native(Delivery):: Request to transformer::', JSON.stringify(ctx.request.body));
     let deliveryResponse: DeliveryResponse;
     const requestMetadata = MiscService.getRequestMetadata(ctx);
-    const { version }: { version: string } = ctx.params;
-    let event:
-      | ProcessorTransformationOutputWithMetaData
-      | ProcessorTransformationOutputWithMetaDataArray;
-    if (version === 'v0') {
-      event = ctx.request.body as ProcessorTransformationOutputWithMetaData;
-    } else {
-      event = ctx.request.body as ProcessorTransformationOutputWithMetaDataArray;
-    }
+    const deliveryRequest = ctx.request.body as ProxyDeliveryRequest;
     const { destination }: { destination: string } = ctx.params;
     const integrationService = ServiceSelector.getNativeDestinationService();
     try {
-      deliveryResponse = await integrationService.deliver(
-        event,
+      deliveryResponse = (await integrationService.deliver(
+        deliveryRequest,
         destination,
         requestMetadata,
-        version,
-      );
+        'v0',
+      )) as DeliveryResponse;
     } catch (error: any) {
-      if (!Array.isArray(event.metadata)) {
-        const metaTO = integrationService.getTags(
-          destination,
-          event.metadata?.destinationId || 'Non-determininable',
-          event.metadata?.workspaceId || 'Non-determininable',
-          tags.FEATURES.DATA_DELIVERY,
-        );
-        metaTO.metadata = event.metadata;
-        deliveryResponse = DestinationPostTransformationService.handleDeliveryFailureEvents(
-          error,
-          metaTO,
-        );
-      } else {
-        const metaTO = integrationService.getTags(
-          destination,
-          event.metadata[0]?.destinationId || 'Non-determininable',
-          event.metadata[0]?.workspaceId || 'Non-determininable',
-          tags.FEATURES.DATA_DELIVERY,
-        );
-        metaTO.metadata = event.metadata[0];
-        deliveryResponse = DestinationPostTransformationService.handleDeliveryFailureEvents(
-          error,
-          metaTO,
-        );
-      }
+      const { metadata } = deliveryRequest;
+      const metaTO = integrationService.getTags(
+        destination,
+        metadata?.destinationId || NON_DETERMINABLE,
+        metadata?.workspaceId || NON_DETERMINABLE,
+        tags.FEATURES.DATA_DELIVERY,
+      );
+      metaTO.metadata = metadata;
+      deliveryResponse = DestinationPostTransformationService.handleDeliveryFailureEvents(
+        error,
+        metaTO,
+      );
     }
     ctx.body = { output: deliveryResponse };
     ControllerUtility.deliveryPostProcess(ctx, deliveryResponse.status);
+
+    logger.debug('Native(Delivery):: Response from transformer::', JSON.stringify(ctx.body));
+    return ctx;
+  }
+
+  public static async deliverToDestinationV1(ctx: Context) {
+    logger.debug('Native(Delivery):: Request to transformer::', JSON.stringify(ctx.request.body));
+    let deliveryResponse: DeliveriesResponse;
+    const requestMetadata = MiscService.getRequestMetadata(ctx);
+    const deliveryRequest = ctx.request.body as ProxyDeliveriesRequest;
+    const { destination }: { destination: string } = ctx.params;
+    const integrationService = ServiceSelector.getNativeDestinationService();
+    try {
+      deliveryResponse = (await integrationService.deliver(
+        deliveryRequest,
+        destination,
+        requestMetadata,
+        'v1',
+      )) as DeliveriesResponse;
+    } catch (error: any) {
+      const { metadata } = deliveryRequest;
+      const metaTO = integrationService.getTags(
+        destination,
+        metadata[0].destinationId || NON_DETERMINABLE,
+        metadata[0].workspaceId || NON_DETERMINABLE,
+        tags.FEATURES.DATA_DELIVERY,
+      );
+      metaTO.metadatas = metadata;
+      deliveryResponse = DestinationPostTransformationService.handlevV1DeliveriesFailureEvents(
+        error,
+        metaTO,
+      );
+    }
+    ctx.body = { output: deliveryResponse };
+    ControllerUtility.deliveryPostProcess(ctx);
+
     logger.debug('Native(Delivery):: Response from transformer::', JSON.stringify(ctx.body));
     return ctx;
   }

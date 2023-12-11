@@ -40,7 +40,7 @@ export const data = [
           module: 'destination',
           implementation: 'native',
           feature: 'dataDelivery',
-          destinationId: '2S3s0dFD0DqL7m0UkfBwyblDrzs',
+          destinationId: '2S3s0dXXXXXX7m0UfBwyblDrzs',
           workspaceId: '1pKWrE6GwAvFwKBikka1SbRgrSN',
         },
         destinationResponse: '',

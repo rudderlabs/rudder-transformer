@@ -32,7 +32,7 @@ export const data = [
     },
     output: {
       response: {
-        status: 500,
+        status: 400,
         statTags: {
           errorCategory: 'dataValidation',
           errorType: 'instrumentation',

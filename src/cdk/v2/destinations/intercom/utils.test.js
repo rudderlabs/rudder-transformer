@@ -12,7 +12,10 @@ const {
 } = require('./utils');
 const { BASE_ENDPOINT, BASE_EU_ENDPOINT, BASE_AU_ENDPOINT } = require('./config');
 
-jest.mock('axios');
+jest.mock('axios', () => ({
+  ...jest.requireActual('axios'),
+  post: jest.fn(),
+}));
 
 describe('separateReservedAndRestMetadata utility test', () => {
   it('separate reserved and rest metadata', () => {

@@ -140,7 +140,7 @@ export const data = [
         body: [
           {
             statusCode: 400,
-            error: 'access token for deletion not present',
+            error: 'The access token is not available',
           },
         ],
       },

@@ -1,5 +1,5 @@
 import { overrideDestination } from '../../../testUtils';
-import { sampleDestination, defaultMockFns } from '../common';
+import { sampleDestination, defaultMockFns, destinationWithSetOnceProperty } from '../common';
 
 export const data = [
   {
@@ -5847,6 +5847,275 @@ export const data = [
               module: 'destination',
             },
             statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'mp',
+    description: 'Test Set Once Property',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            description: 'Alias: with property beyond and within exclusion list',
+            destination: destinationWithSetOnceProperty,
+            message: {
+              anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.5',
+                },
+                ip: '0.0.0.0',
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.5',
+                },
+                locale: 'en-GB',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                screen: {
+                  density: 2,
+                },
+                traits: {
+                  address: {
+                    city: 'Disney',
+                  },
+                  country: 'USA',
+                  email: 'TestSanity@disney.com',
+                  firstName: 'Mickey test',
+                  lastName: 'VarChange',
+                  createdAt: '2020-01-23T08:54:02.362Z',
+                  nationality: 'USA',
+                  random: 'superProp',
+                },
+                page: {
+                  path: '/destinations/mixpanel',
+                  referrer: '',
+                  search: '',
+                  title: '',
+                  url: 'https://docs.rudderstack.com/destinations/mixpanel',
+                  category: 'destination',
+                  initial_referrer: 'https://docs.rudderstack.com',
+                  initial_referring_domain: 'docs.rudderstack.com',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36',
+              },
+              integrations: {
+                All: true,
+              },
+              page: {
+                path: '/destinations/mixpanel',
+                referrer: '',
+                search: '',
+                title: '',
+                url: 'https://docs.rudderstack.com/destinations/mixpanel',
+                category: 'destination',
+                initial_referrer: 'https://docs.rudderstack.com',
+                initial_referring_domain: 'docs.rudderstack.com',
+              },
+              request_ip: '[::1]:53709',
+              type: 'identify',
+              userId: 'Santiy',
+            },
+          },
+        ],
+        method: 'POST',
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.mixpanel.com/engage/',
+              headers: {},
+              params: {},
+              body: {
+                JSON: {},
+                JSON_ARRAY: {
+                  batch:
+                    '[{"$set_once":{"$first_name":"Mickey test","$city":"Disney","nationality":"USA"},"$token":"dummyToken","$distinct_id":"Santiy"}]',
+                },
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: 'Santiy',
+            },
+            statusCode: 200,
+          },
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.mixpanel.com/engage/',
+              headers: {},
+              params: {},
+              body: {
+                JSON: {},
+                JSON_ARRAY: {
+                  batch:
+                    '[{"$set":{"$created":"2020-01-23T08:54:02.362Z","$email":"TestSanity@disney.com","$country_code":"USA","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","random":"superProp","$lastName":"VarChange","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"dummyToken","$distinct_id":"Santiy","$ip":"0.0.0.0","$time":null}]',
+                },
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: 'Santiy',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'mp',
+    description: 'Test Set Once Property with anonymousId',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            description: 'Alias: with property beyond and within exclusion list',
+            destination: destinationWithSetOnceProperty,
+            message: {
+              anonymousId: 'dummyAnnonymousId',
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.5',
+                },
+                ip: '0.0.0.0',
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.5',
+                },
+                locale: 'en-GB',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                screen: {
+                  density: 2,
+                },
+                traits: {
+                  address: {
+                    city: 'Disney',
+                  },
+                  country: 'USA',
+                  email: 'TestSanity@disney.com',
+                  firstName: 'Mickey test',
+                  lastName: 'VarChange',
+                  createdAt: '2020-01-23T08:54:02.362Z',
+                  nationality: 'USA',
+                  random: 'superProp',
+                },
+                page: {
+                  path: '/destinations/mixpanel',
+                  referrer: '',
+                  search: '',
+                  title: '',
+                  url: 'https://docs.rudderstack.com/destinations/mixpanel',
+                  category: 'destination',
+                  initial_referrer: 'https://docs.rudderstack.com',
+                  initial_referring_domain: 'docs.rudderstack.com',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36',
+              },
+              integrations: {
+                All: true,
+              },
+              page: {
+                path: '/destinations/mixpanel',
+                referrer: '',
+                search: '',
+                title: '',
+                url: 'https://docs.rudderstack.com/destinations/mixpanel',
+                category: 'destination',
+                initial_referrer: 'https://docs.rudderstack.com',
+                initial_referring_domain: 'docs.rudderstack.com',
+              },
+              request_ip: '[::1]:53709',
+              type: 'identify',
+            },
+          },
+        ],
+        method: 'POST',
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.mixpanel.com/engage/',
+              headers: {},
+              params: {},
+              body: {
+                JSON: {},
+                JSON_ARRAY: {
+                  batch:
+                    '[{"$set_once":{"$first_name":"Mickey test","$city":"Disney","nationality":"USA"},"$token":"dummyToken","$distinct_id":"$device:dummyAnnonymousId"}]',
+                },
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: 'dummyAnnonymousId',
+            },
+            statusCode: 200,
+          },
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.mixpanel.com/engage/',
+              headers: {},
+              params: {},
+              body: {
+                JSON: {},
+                JSON_ARRAY: {
+                  batch:
+                    '[{"$set":{"$created":"2020-01-23T08:54:02.362Z","$email":"TestSanity@disney.com","$country_code":"USA","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","random":"superProp","$lastName":"VarChange","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"dummyToken","$distinct_id":"$device:dummyAnnonymousId","$ip":"0.0.0.0","$time":null}]',
+                },
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: 'dummyAnnonymousId',
+            },
+            statusCode: 200,
           },
         ],
       },

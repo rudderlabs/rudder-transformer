@@ -2,12 +2,13 @@
 import { Destination } from '@rudderstack/integrations-lib';
 import { DestinationService } from '../interfaces/DestinationService';
 import {
+  DeliveriesResponse,
   DeliveryResponse,
   ErrorDetailer,
   MetaTransferObject,
-  ProcessorTransformationOutput,
   ProcessorTransformationRequest,
   ProcessorTransformationResponse,
+  ProxyRequest,
   RouterTransformationRequestData,
   RouterTransformationResponse,
   UserDeletionRequest,
@@ -368,17 +369,18 @@ export class ComparatorService implements DestinationService {
   }
 
   public async deliver(
-    event: ProcessorTransformationOutput,
+    event: ProxyRequest,
     destinationType: string,
     requestMetadata: NonNullable<unknown>,
-  ): Promise<DeliveryResponse> {
+    version: string,
+  ): Promise<DeliveryResponse | DeliveriesResponse> {
     const primaryResplist = await this.primaryService.deliver(
       event,
       destinationType,
       requestMetadata,
+      version,
     );
     logger.error('[LIVE_COMPARE_TEST] not implemented for delivery routine');
-
     return primaryResplist;
   }
 

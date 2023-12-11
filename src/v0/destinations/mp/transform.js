@@ -17,6 +17,7 @@ const {
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
   groupEventsByType,
+  parseConfigArray,
 } = require('../../util');
 const {
   ConfigCategory,
@@ -35,6 +36,7 @@ const {
   combineBatchRequestsWithSameJobIds,
   groupEventsByEndpoint,
   batchEvents,
+  trimTraits,
 } = require('./util');
 const { CommonUtils } = require('../../../util/common');
 
@@ -226,17 +228,51 @@ const processTrack = (message, destination) => {
   return returnValue;
 };
 
+const createSetOnceResponse = (message, type, destination, setOnce) => {
+  const payload = {
+    $set_once: setOnce,
+    $token: destination.Config.token,
+    $distinct_id: message.userId || message.anonymousId,
+  };
+
+  if (destination?.Config.identityMergeApi === 'simplified') {
+    payload.$distinct_id = message.userId || `$device:${message.anonymousId}`;
+  }
+
+  return responseBuilderSimple(payload, message, type, destination.Config);
+};
+
 const processIdentifyEvents = async (message, type, destination) => {
+  const messageClone = { ...message };
+  let seggregatedTraits = {};
   const returnValue = [];
+  let setOnceProperties = [];
+
+  // making payload for set_once properties
+  if (destination.Config.setOnceProperties && destination.Config.setOnceProperties.length > 0) {
+    setOnceProperties = parseConfigArray(destination.Config.setOnceProperties, 'property');
+    seggregatedTraits = trimTraits(
+      messageClone.traits,
+      messageClone.context.traits,
+      setOnceProperties,
+    );
+    messageClone.traits = seggregatedTraits.traits;
+    messageClone.context.traits = seggregatedTraits.contextTraits;
+    if (Object.keys(seggregatedTraits.setOnce).length > 0) {
+      returnValue.push(
+        createSetOnceResponse(messageClone, type, destination, seggregatedTraits.setOnce),
+      );
+    }
+  }
 
   // Creating the user profile
   // https://developer.mixpanel.com/reference/profile-set
-  returnValue.push(createIdentifyResponse(message, type, destination, responseBuilderSimple));
+  returnValue.push(createIdentifyResponse(messageClone, type, destination, responseBuilderSimple));
 
   if (
     destination.Config?.identityMergeApi !== 'simplified' &&
-    message.userId &&
-    message.anonymousId &&
+    messageClone.userId &&
+    messageClone.anonymousId &&
     isImportAuthCredentialsAvailable(destination)
   ) {
     // If userId and anonymousId both are present and required credentials for /import
@@ -245,13 +281,13 @@ const processIdentifyEvents = async (message, type, destination) => {
     const trackPayload = {
       event: '$merge',
       properties: {
-        $distinct_ids: [message.userId, message.anonymousId],
+        $distinct_ids: [messageClone.userId, messageClone.anonymousId],
         token: destination.Config.token,
       },
     };
     const identifyTrackResponse = responseBuilderSimple(
       trackPayload,
-      message,
+      messageClone,
       'merge',
       destination.Config,
     );
@@ -440,7 +476,6 @@ const processRouterDest = async (inputs, reqMetadata) => {
                 destination: event.destination,
               };
             }
-
             let processedEvents = await process(event);
             processedEvents = CommonUtils.toArray(processedEvents);
             return processedEvents.map((res) => ({

@@ -17,10 +17,47 @@ type ProcessorTransformationOutput = {
     FORM?: Record<string, unknown>;
   };
   files?: Record<string, unknown>;
-  metadata?: Metadata;
 };
 
 type TransformedOutput = ProcessorTransformationOutput;
+
+type ProxyDeliveryRequest = {
+  version: string;
+  type: string;
+  method: string;
+  endpoint: string;
+  userId: string;
+  headers?: Record<string, unknown>;
+  params?: Record<string, unknown>;
+  body?: {
+    JSON?: Record<string, unknown>;
+    JSON_ARRAY?: Record<string, unknown>;
+    XML?: Record<string, unknown>;
+    FORM?: Record<string, unknown>;
+  };
+  files?: Record<string, unknown>;
+  metadata: Metadata;
+};
+
+type ProxyDeliveriesRequest = {
+  version: string;
+  type: string;
+  method: string;
+  endpoint: string;
+  userId: string;
+  headers?: Record<string, unknown>;
+  params?: Record<string, unknown>;
+  body?: {
+    JSON?: Record<string, unknown>;
+    JSON_ARRAY?: Record<string, unknown>;
+    XML?: Record<string, unknown>;
+    FORM?: Record<string, unknown>;
+  };
+  files?: Record<string, unknown>;
+  metadata: Metadata[];
+};
+
+type ProxyRequest = ProxyDeliveryRequest | ProxyDeliveriesRequest;
 
 type MessageIdMetadataMap = {
   [key: string]: Metadata;
@@ -92,6 +129,20 @@ type DeliveryResponse = {
   destinationResponse: any;
   statTags: object;
   authErrorCategory?: string;
+};
+
+type DeliveryJobState = {
+  error: string;
+  statusCode: number;
+  metadata: Metadata;
+};
+
+type DeliveriesResponse = {
+  status?: number;
+  message?: string;
+  statTags?: object;
+  authErrorCategory?: string;
+  response: DeliveryJobState[];
 };
 
 enum MessageType {
@@ -204,26 +255,32 @@ type SourceInput = {
   event: NonNullable<unknown>[];
   source?: Source;
 };
+
 export {
+  ComparatorInput,
+  DeliveryJobState,
+  DeliveryResponse,
+  DeliveriesResponse,
+  ErrorDetailer,
   MessageIdMetadataMap,
-  UserTransformationLibrary,
+  MetaTransferObject,
+  ProcessorTransformationOutput,
   ProcessorTransformationRequest,
   ProcessorTransformationResponse,
+  ProxyDeliveriesRequest,
+  ProxyDeliveryRequest,
+  ProxyRequest,
   RouterTransformationRequest,
   RouterTransformationRequestData,
   RouterTransformationResponse,
   RudderMessage,
-  ProcessorTransformationOutput,
   SourceTransformationResponse,
-  DeliveryResponse,
-  ErrorDetailer,
-  UserTransformationResponse,
-  UserTransformationServiceResponse,
-  MetaTransferObject,
   UserDeletionRequest,
   UserDeletionResponse,
-  ComparatorInput,
   SourceInput,
   Source,
   TransformedOutput,
+  UserTransformationLibrary,
+  UserTransformationResponse,
+  UserTransformationServiceResponse,
 };

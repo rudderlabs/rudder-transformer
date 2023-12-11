@@ -14,6 +14,8 @@ const DEVICE_DELETE_ENDPOINT = 'https://track.customer.io/api/v1/customers/:id/d
 
 const OBJECT_EVENT_ENDPOINT = 'https://track.customer.io/api/v2/batch';
 
+const PERSON_SINGLE_EVENT_ENDPOINT = 'https://track.customer.io/api/v2/entity';
+
 const CONFIG_CATEGORIES = {
   OBJECT_EVENTS: {
     type: 'group',
@@ -42,5 +44,6 @@ module.exports = {
   DEFAULT_OBJECT_ACTION,
   DEVICE_DELETE_ENDPOINT,
   DEVICE_REGISTER_ENDPOINT,
+  PERSON_SINGLE_EVENT_ENDPOINT,
   configFieldsToCheck,
 };

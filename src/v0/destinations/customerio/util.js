@@ -19,14 +19,10 @@ const {
   MAPPING_CONFIG,
   OBJECT_ACTIONS,
   CONFIG_CATEGORIES,
-  IDENTITY_ENDPOINT,
-  MERGE_USER_ENDPOINT,
-  USER_EVENT_ENDPOINT,
+  PERSON_SINGLE_EVENT_ENDPOINT,
   ANON_EVENT_ENDPOINT,
   OBJECT_EVENT_ENDPOINT,
   DEFAULT_OBJECT_ACTION,
-  DEVICE_DELETE_ENDPOINT,
-  DEVICE_REGISTER_ENDPOINT,
 } = require('./config');
 
 const deviceRelatedEventNames = [
@@ -104,7 +100,8 @@ const identifyResponseBuilder = (userId, message) => {
   if (!id) {
     throw new InstrumentationError('userId or email is not present');
   }
-  rawPayload.identifiers = { id };
+
+  rawPayload.identifiers = userId ? { id } : { email: id };
 
   const attributes = {};
 
@@ -153,7 +150,7 @@ const identifyResponseBuilder = (userId, message) => {
     set(attributes, 'anonymous_id', message.anonymousId);
   }
   rawPayload.attributes = attributes;
-  const endpoint = IDENTITY_ENDPOINT.replace(':id', id);
+  const endpoint = PERSON_SINGLE_EVENT_ENDPOINT;
   const requestConfig = defaultPutRequestConfig;
   rawPayload.type = 'person';
   rawPayload.action = 'identify';
@@ -166,7 +163,7 @@ const aliasResponseBuilder = (message, userId) => {
   if (!userId && !message.previousId) {
     throw new InstrumentationError('Both userId and previousId is mandatory for merge operation');
   }
-  const endpoint = MERGE_USER_ENDPOINT;
+  const endpoint = PERSON_SINGLE_EVENT_ENDPOINT;
   const requestConfig = defaultPostRequestConfig;
   let cioProperty = 'id';
   if (validateEmail(userId)) {
@@ -228,6 +225,7 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
   // any other event type except identify
   const token = get(message, 'context.device.token');
   const id = userId || getFieldValueFromMessage(message, 'email');
+  rawPayload.identifiers = userId ? { id } : { email: id };
   // use this if only top level keys are to be sent
   // DEVICE DELETE from CustomerIO
   const isDeviceDeleteEvent = deviceDeleteRelatedEventName === evName;
@@ -235,7 +233,8 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
     if (!id || !token) {
       throw new InstrumentationError('userId/email or device_token not present');
     }
-    endpoint = DEVICE_DELETE_ENDPOINT.replace(':id', id).replace(':device_id', token);
+    rawPayload.device = { token };
+    endpoint = PERSON_SINGLE_EVENT_ENDPOINT;
     requestConfig = defaultDeleteRequestConfig;
     rawPayload.action = 'delete_device';
     rawPayload.type = 'person';
@@ -248,7 +247,7 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
     const timestamp = message.timestamp || message.originalTimestamp;
     const devProps = {
       ...message.properties,
-      id: token,
+      token,
       last_used: Math.floor(new Date(timestamp).getTime() / 1000),
     };
     const deviceType = get(message, 'context.device.type');
@@ -261,7 +260,7 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
     requestConfig = defaultPutRequestConfig;
   } else {
     rawPayload.data = {};
-    set(rawPayload, 'data', message.properties);
+    set(rawPayload, 'attributes', message.properties);
     set(rawPayload, 'name', evName);
     set(rawPayload, 'type', evType);
     if (getFieldValueFromMessage(message, 'historicalTimestamp')) {
@@ -276,15 +275,8 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
   }
 
   if (id) {
-    endpoint =
-      isDeviceRelatedEvent && token
-        ? DEVICE_REGISTER_ENDPOINT.replace(':id', id)
-        : USER_EVENT_ENDPOINT.replace(':id', id);
-    if (endpoint.includes(DEVICE_REGISTER_ENDPOINT)) {
-      rawPayload.action = 'add_device';
-    } else {
-      rawPayload.action = 'event';
-    }
+    rawPayload.action = isDeviceRelatedEvent && token ? 'add_device' : 'event';
+    endpoint = PERSON_SINGLE_EVENT_ENDPOINT;
     rawPayload.type = 'person';
   } else {
     endpoint = ANON_EVENT_ENDPOINT;

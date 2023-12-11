@@ -874,8 +874,12 @@ export const data = [
                         {
                             "error": "[Braze Deduplication]: Duplicate user detected, the user is dropped",
                             "statTags": {
+                                "destType": "BRAZE",
                                 "errorCategory": "dataValidation",
-                                "errorType": "instrumentation"
+                                "errorType": "instrumentation",
+                                "feature": "router",
+                                "implementation": "native",
+                                "module": "destination",
                             },
                             "statusCode": 400,
                             "batched": false,

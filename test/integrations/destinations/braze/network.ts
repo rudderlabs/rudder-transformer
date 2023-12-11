@@ -389,6 +389,18 @@ const deleteNwData = [
       status: 200,
       statusText: 'OK',
     }
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://rest.iad-03.braze.com/users/identify',
+    },
+    httpRes: {
+      "response": {},
+      "message": "success",
+      status: 200,
+      statusText: 'OK',
+    }
   }
 ];
 export const networkCallsData = [...deleteNwData, ...dataDeliveryMocksData];

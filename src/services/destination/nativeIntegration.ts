@@ -217,7 +217,6 @@ export class NativeIntegrationDestinationService implements DestinationService {
             } as DeliveryJobState),
         );
         responseProxy = {
-          ...responseProxy,
           response: jobStates,
         } as DeliveriesResponse;
       }
@@ -232,21 +231,6 @@ export class NativeIntegrationDestinationService implements DestinationService {
         metadata?.workspaceId || 'Non-determininable',
         tags.FEATURES.DATA_DELIVERY,
       );
-
-      // if error is thrown and response is not in error, build response as per transformer proxy v1
-      if (version === 'v1' && !err.response && Array.isArray(metadata)) {
-        const responseWithIndividualEvents: { statusCode: number; metadata: any; error: string }[] =
-          [];
-        // eslint-disable-next-line no-restricted-syntax
-        for (const meta of metadata) {
-          responseWithIndividualEvents.push({
-            statusCode: err.status,
-            metadata: meta,
-            error: JSON.stringify(err.destinationResponse.response) || err.message,
-          });
-        }
-        err.response = responseWithIndividualEvents;
-      }
 
       if (version.toLowerCase() === 'v1') {
         metaTO.metadatas = (deliveryRequest as ProxyDeliveriesRequest).metadata;

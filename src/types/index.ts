@@ -187,8 +187,6 @@ type DeliveryJobState = {
 };
 
 type DeliveriesResponse = {
-  status?: number;
-  message?: string;
   statTags?: object;
   authErrorCategory?: string;
   response: DeliveryJobState[];

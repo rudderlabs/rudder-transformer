@@ -15,6 +15,8 @@ import {
   ProcessorTransformationOutput,
   UserDeletionRequest,
   UserDeletionResponse,
+  ProxyRequest,
+  DeliveriesResponse,
 } from '../../types/index';
 import tags from '../../v0/util/tags';
 import { DestinationPostTransformationService } from './postTransformation';
@@ -64,7 +66,7 @@ export class CDKV2DestinationService implements DestinationService {
             destinationType,
             event,
             tags.FEATURES.PROCESSOR,
-            requestMetadata
+            requestMetadata,
           );
 
           stats.increment('event_transform_success', {
@@ -127,7 +129,12 @@ export class CDKV2DestinationService implements DestinationService {
           metaTo.metadata = destInputArray[0].metadata;
           try {
             const doRouterTransformationResponse: RouterTransformationResponse[] =
-              await processCdkV2Workflow(destinationType, destInputArray, tags.FEATURES.ROUTER, requestMetadata);
+              await processCdkV2Workflow(
+                destinationType,
+                destInputArray,
+                tags.FEATURES.ROUTER,
+                requestMetadata,
+              );
             return DestinationPostTransformationService.handleRouterTransformSuccessEvents(
               doRouterTransformationResponse,
               undefined,
@@ -160,10 +167,10 @@ export class CDKV2DestinationService implements DestinationService {
   }
 
   public deliver(
-    _event: ProcessorTransformationOutput,
+    _event: ProxyRequest,
     _destinationType: string,
     _requestMetadata: NonNullable<unknown>,
-  ): Promise<DeliveryResponse> {
+  ): Promise<DeliveryResponse | DeliveriesResponse> {
     throw new TransformationError('CDKV2 Does not Implement Delivery Routine');
   }
 

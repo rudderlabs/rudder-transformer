@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-restricted-syntax */
-const { NetworkError } = require('@rudderstack/integrations-lib');
+const { TransformerProxyError } = require('../../../v0/util/errorTypes');
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../../v0/util/index');
 
@@ -9,25 +9,6 @@ const {
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../../v0/util/tags');
-
-function isEventRetryableAndExtractErrMsg(element, proxyOutputObj) {
-  let isRetryable = false;
-  let errorMsg = '';
-  // success event
-  if (!element.errors) {
-    return isRetryable;
-  }
-  for (const err of element.errors) {
-    errorMsg += `${err.message}, `;
-    if (err.code === 'INTERNAL') {
-      isRetryable = true;
-    }
-  }
-  if (errorMsg) {
-    proxyOutputObj.error = errorMsg;
-  }
-  return isRetryable;
-}
 
 function isEventAbortableAndExtractErrMsg(element, proxyOutputObj) {
   let isAbortable = false;
@@ -68,10 +49,8 @@ const responseHandler = (destinationResponse) => {
         metadata: rudderJobMetadata[idx],
         error: 'success',
       };
-      // update status of partial event as per retriable or abortable
-      if (isEventRetryableAndExtractErrMsg(element, proxyOutputObj)) {
-        proxyOutputObj.statusCode = 500;
-      } else if (isEventAbortableAndExtractErrMsg(element, proxyOutputObj)) {
+      // update status of partial event if abortable
+      if (isEventAbortableAndExtractErrMsg(element, proxyOutputObj)) {
         proxyOutputObj.statusCode = 400;
       }
       responseWithIndividualEvents.push(proxyOutputObj);
@@ -95,16 +74,16 @@ const responseHandler = (destinationResponse) => {
     });
   }
 
-  throw new NetworkError(
-    `Campaign Manager: Error transformer proxy v1 during CAMPAIGN_MANAGER response transformation`,
-    500,
-    {
-      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
-    },
-    destinationResponse,
-    getAuthErrCategoryFromStCode(status),
-    responseWithIndividualEvents,
-  );
+  throw new TransformerProxyError(
+      `Campaign Manager: Error transformer proxy v1 during CAMPAIGN_MANAGER response transformation`,
+      500,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+      },
+      destinationResponse,
+      getAuthErrCategoryFromStCode(status),
+      responseWithIndividualEvents,
+    );
 };
 
 function networkHandler() {

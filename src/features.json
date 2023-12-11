@@ -63,7 +63,8 @@
     "GLADLY": true,
     "ONE_SIGNAL": true,
     "TIKTOK_AUDIENCE": true,
-    "INTERCOM": true
+    "INTERCOM": true,
+    "REDDIT": true
   },
   "supportSourceTransformV1": true,
   "supportTransformerProxyV1": false

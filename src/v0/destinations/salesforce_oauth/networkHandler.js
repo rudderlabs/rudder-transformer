@@ -10,7 +10,7 @@ const responseHandler = (destinationResponse, destType) => {
     destinationResponse,
     'during Salesforce Response Handling',
     destinationResponse?.rudderJobMetadata?.destInfo?.authKey,
-    OAUTH
+    OAUTH,
   );
 
   // else successfully return status as 200, message and original destination response

@@ -12,12 +12,13 @@ export class DeliveryTestService {
     destination: string,
     routerDestReqPayload: any,
     routerDeliveryPayload: any,
+    version,
   ) {
     let response: any;
     try {
-      const destNetworkHandler = networkHandlerFactory.getNetworkHandler(destination);
+      const { networkHandler } = networkHandlerFactory.getNetworkHandler(destination, version);
 
-      const proxyDestReqPayload = destNetworkHandler.prepareProxy(routerDeliveryPayload);
+      const proxyDestReqPayload = networkHandler.prepareProxy(routerDeliveryPayload);
       response = {
         destinationRequestPayload: proxyDestReqPayload,
       };

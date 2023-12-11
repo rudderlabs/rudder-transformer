@@ -1,13 +1,14 @@
 /* eslint-disable class-methods-use-this */
 import { DestinationService } from '../interfaces/DestinationService';
 import {
+  DeliveriesResponse,
   DeliveryResponse,
   Destination,
   ErrorDetailer,
   MetaTransferObject,
-  ProcessorTransformationOutput,
   ProcessorTransformationRequest,
   ProcessorTransformationResponse,
+  ProxyRequest,
   RouterTransformationRequestData,
   RouterTransformationResponse,
   UserDeletionRequest,
@@ -365,11 +366,11 @@ export class ComparatorService implements DestinationService {
   }
 
   public async deliver(
-    event: ProcessorTransformationOutput,
+    event: ProxyRequest,
     destinationType: string,
     requestMetadata: NonNullable<unknown>,
     version: string,
-  ): Promise<DeliveryResponse> {
+  ): Promise<DeliveryResponse | DeliveriesResponse> {
     const primaryResplist = await this.primaryService.deliver(
       event,
       destinationType,
@@ -377,7 +378,6 @@ export class ComparatorService implements DestinationService {
       version,
     );
     logger.error('[LIVE_COMPARE_TEST] not implemented for delivery routine');
-
     return primaryResplist;
   }
 

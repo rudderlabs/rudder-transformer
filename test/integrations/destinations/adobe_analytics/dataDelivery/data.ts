@@ -41,7 +41,7 @@ export const data = [
           implementation: 'native',
           feature: 'dataDelivery',
           destinationId: '2S3s0dXXXXXX7m0UfBwyblDrzs',
-          workspaceId: '1pKWrE6GwAvFwKBikka1SbRgrSN',
+          workspaceId: '1pKWrE6GXXXXXKBikka1SbRgrSN',
         },
         destinationResponse: '',
         authErrorCategory: '',

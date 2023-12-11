@@ -4,6 +4,7 @@ const moment = require('moment');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const stats = require('../../../util/stats');
 const {
+  VERSION,
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   FB_PIXEL_DEFAULT_EXCLUSION,
@@ -65,7 +66,7 @@ const responseBuilderSimple = (message, category, destination) => {
   } = Config;
   const integrationsObj = getIntegrationsObj(message, 'fb_pixel');
 
-  const endpoint = `https://graph.facebook.com/v17.0/${pixelId}/events?access_token=${accessToken}`;
+  const endpoint = `https://graph.facebook.com/${VERSION}/${pixelId}/events?access_token=${accessToken}`;
 
   const userData = fetchUserData(
     message,

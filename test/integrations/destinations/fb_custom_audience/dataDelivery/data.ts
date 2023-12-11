@@ -1,3 +1,5 @@
+import { getEndPoint } from '../../../../../src/v0/destinations/fb_custom_audience/config';
+
 export const data = [
   {
     name: 'fb_custom_audience',
@@ -11,7 +13,7 @@ export const data = [
           version: '1',
           type: 'REST',
           method: 'DELETE',
-          endpoint: 'https://graph.facebook.com/v17.0/aud1/users',
+          endpoint: getEndPoint('aud1'),
           headers: {
             'test-dest-response-key': 'successResponse',
           },
@@ -94,7 +96,7 @@ export const data = [
           version: '1',
           type: 'REST',
           method: 'POST',
-          endpoint: 'https://graph.facebook.com/v17.0/aud1/users',
+          endpoint: getEndPoint('aud1'),
           headers: {
             'test-dest-response-key': 'permissionMissingError',
           },
@@ -176,7 +178,7 @@ export const data = [
           version: '1',
           type: 'REST',
           method: 'DELETE',
-          endpoint: 'https://graph.facebook.com/v17.0/aud1/users',
+          endpoint: getEndPoint('aud1'),
           headers: {
             'test-dest-response-key': 'audienceUnavailableError',
           },
@@ -245,7 +247,7 @@ export const data = [
           version: '1',
           type: 'REST',
           method: 'DELETE',
-          endpoint: 'https://graph.facebook.com/v17.0/aud1/users',
+          endpoint: getEndPoint('aud1'),
           headers: {
             'test-dest-response-key': 'audienceDeletedError',
           },
@@ -312,7 +314,7 @@ export const data = [
           version: '1',
           type: 'REST',
           method: 'DELETE',
-          endpoint: 'https://graph.facebook.com/v17.0/aud1/users',
+          endpoint: getEndPoint('aud1'),
           headers: {
             'test-dest-response-key': 'failedToUpdateAudienceError',
           },
@@ -380,7 +382,7 @@ export const data = [
           version: '1',
           type: 'REST',
           method: 'DELETE',
-          endpoint: 'https://graph.facebook.com/v17.0/aud1/users',
+          endpoint: getEndPoint('aud1'),
           headers: {
             'test-dest-response-key': 'parameterExceededError',
           },
@@ -447,7 +449,7 @@ export const data = [
           version: '1',
           type: 'REST',
           method: 'DELETE',
-          endpoint: 'https://graph.facebook.com/v17.0/aud1/users',
+          endpoint: getEndPoint('aud1'),
           headers: {
             'test-dest-response-key': 'tooManyCallsError',
           },
@@ -514,7 +516,7 @@ export const data = [
           version: '1',
           type: 'REST',
           method: 'DELETE',
-          endpoint: 'https://graph.facebook.com/v17.0/aud1/users',
+          endpoint: getEndPoint('aud1'),
           headers: {
             'test-dest-response-key': 'code200PermissionError',
           },

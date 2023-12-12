@@ -95,7 +95,10 @@ function populateCustomAttributesWithOperation(
     // add,update,remove on json attributes
     if (enableNestedArrayOperations) {
       Object.keys(traits)
-        .filter((key) => typeof traits[key] === 'object' && !Array.isArray(traits[key]))
+        .filter(
+          (key) =>
+            traits[key] !== null && typeof traits[key] === 'object' && !Array.isArray(traits[key]),
+        )
         .forEach((key) => {
           if (traits[key][CustomAttributeOperationTypes.UPDATE]) {
             CustomAttributeOperationUtil.customAttributeUpdateOperation(

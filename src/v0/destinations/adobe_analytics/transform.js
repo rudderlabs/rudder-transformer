@@ -346,6 +346,9 @@ const processTrackEvent = (message, adobeEventName, destinationConfig, extras = 
 const handleTrack = (message, destinationConfig) => {
   const ORDER_ID_KEY = 'properties.order_id';
   const { event: rawEvent, properties } = message;
+  if (!rawEvent) {
+    throw new InstrumentationError('Event name is not present. Aborting message.');
+  }
   let payload = null;
   // handle ecommerce events separately
   // generic events should go to the default

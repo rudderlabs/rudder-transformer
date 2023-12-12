@@ -22,6 +22,7 @@ const {
   getFieldValueFromMessage,
   removeUndefinedValues,
   isHttpStatusSuccess,
+  isDefinedAndNotNull,
   simpleProcessRouterDestSync,
   simpleProcessRouterDest,
   isNewStatusCodesAccepted,
@@ -153,7 +154,7 @@ function getUserAttributesObject(message, mappingJson, destination) {
       // handle gender special case
       if (destKey === 'gender') {
         value = formatGender(value);
-      } else if (destKey === 'email' && value !== null) {
+      } else if (destKey === 'email' && isDefinedAndNotNull(value)) {
         value = value?.toString().toLowerCase();
       }
       data[destKey] = value;

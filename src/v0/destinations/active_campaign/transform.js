@@ -62,11 +62,11 @@ const syncContact = async (contactPayload, category, destination) => {
     feature: 'transformation',
   });
   if (res.success === false) {
-    errorHandler(res.response, 'Failed to create new contact');
+    errorHandler(res, 'Failed to create new contact');
   }
   const createdContact = get(res, 'response.data.contact'); // null safe
   if (!createdContact) {
-    errorHandler(res.response, 'Failed to create new contact');
+    errorHandler(res, 'Failed to create new contact');
   }
   return createdContact.id;
 };
@@ -404,11 +404,11 @@ const screenRequestHandler = async (message, category, destination) => {
     feature: 'transformation',
   });
   if (res.success === false) {
-    errorHandler(res.response, 'Failed to retrieve events');
+    errorHandler(res, 'Failed to retrieve events');
   }
 
   if (res?.response?.status !== 200) {
-    errorHandler(res.response, 'Unable to create event');
+    errorHandler(res, 'Unable to create event');
   }
 
   const storedEventsArr = res.response?.data?.eventTrackingEvents;

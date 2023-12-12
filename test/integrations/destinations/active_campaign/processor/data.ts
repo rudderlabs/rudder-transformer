@@ -1,3 +1,6 @@
+import MockAdapter from 'axios-mock-adapter';
+import { isMatch } from 'lodash';
+
 export const data = [
   {
     name: 'active_campaign',
@@ -763,6 +766,127 @@ export const data = [
           },
         ],
       },
+    },
+  },
+
+  {
+    name: 'active_campaign',
+    description:
+      'Test 7: node error(ECONNABORTED) where there is no response coming from dest. server',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                apiKey: 'dummyApiKey',
+                apiUrl: 'https://active.campaigns.dumber.com',
+                actid: '476550467',
+                eventKey: 'f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03',
+              },
+            },
+            message: {
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                locale: 'en-US',
+                ip: '0.0.0.0',
+                os: { name: '', version: '' },
+                screen: { density: 2 },
+              },
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
+              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+              originalTimestamp: '2019-10-14T09:03:17.562Z',
+              anonymousId: 'anon_id',
+              userId: '123456',
+              type: 'identify',
+              traits: {
+                anonymousId: 'anon_id',
+                email: 'patjane@gmail.com',
+                phone: '92374162213',
+                tags: ['Test_User', 'Interested_User', 'DIY_Hobby'],
+                fieldInfo: {
+                  Office: 'Trastkiv',
+                  Country: 'Russia',
+                  Likes: ['Potato', 'Onion'],
+                  Random: 'random',
+                },
+                lists: [
+                  { id: 2, status: 'subscribe' },
+                  { id: 3, status: 'unsubscribe' },
+                  { id: 3, status: 'unsubscribexyz' },
+                ],
+                address: {
+                  city: 'kolkata',
+                  country: 'India',
+                  postalCode: 789223,
+                  state: 'WB',
+                  street: '',
+                },
+              },
+              integrations: { All: true },
+              sentAt: '2019-10-14T09:03:22.563Z',
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              '{"message":"Failed to create new contact (undefined,\\"[ECONNABORTED] :: Connection aborted\\")","destinationResponse":"[ECONNABORTED] :: Connection aborted"}',
+            statTags: {
+              destType: 'ACTIVE_CAMPAIGN',
+              errorCategory: 'network',
+              errorType: 'retryable',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+            },
+            statusCode: 500,
+          },
+        ],
+      },
+    },
+    mockFns: (mockAdapter: MockAdapter) => {
+      mockAdapter
+        .onPost(
+          'https://active.campaigns.dumber.com/api/3/contact/sync',
+          {
+            asymmetricMatch: (actual) => {
+              return isMatch(actual, {
+                contact: {
+                  email: 'patjane@gmail.com',
+                  phone: '92374162213',
+                },
+              });
+            },
+          },
+          {
+            asymmetricMatch: (actual) => {
+              return isMatch(actual, {
+                'Api-Token': 'dummyApiKey',
+                'Content-Type': 'application/json',
+              });
+            },
+          },
+        )
+        .abortRequest();
     },
   },
 ];

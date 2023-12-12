@@ -30,7 +30,11 @@ export class ServiceSelector {
     return Boolean(destinationDefinitionConfig?.cdkV2Enabled);
   }
 
-  private static isPluginDestination(destinationDefinitionConfig: FixMe) {
+  private static isPluginDestination(destinationDefinitionConfig: FixMe, destinationName: string) {
+    const pluginDestinationList = process.env.PLUGIN_DESTINATION_LIST?.split(',') || [];
+    if (pluginDestinationList.includes(destinationName)) {
+      return true;
+    }
     return !!destinationDefinitionConfig?.isPlugin;
   }
 
@@ -72,10 +76,15 @@ export class ServiceSelector {
   private static getPrimaryDestinationService(
     events: ProcessorTransformationRequest[] | RouterTransformationRequestData[],
   ): DestinationService {
-    const destinationDefinitionConfig: FixMe =
-      events[0]?.destination?.DestinationDefinition?.Config;
+    const destinationDefinition = events[0]?.destination?.DestinationDefinition;
+    const destinationDefinitionConfig: FixMe = destinationDefinition?.Config;
 
-    if (this.isPluginDestination(destinationDefinitionConfig)) {
+    if (
+      this.isPluginDestination(
+        destinationDefinitionConfig,
+        destinationDefinition?.Name?.toLowerCase(),
+      )
+    ) {
       return this.fetchCachedService(INTEGRATION_SERVICE.PLUGIN_DEST);
     }
     // Legacy Services

@@ -154,7 +154,7 @@ function getUserAttributesObject(message, mappingJson, destination) {
       if (destKey === 'gender') {
         value = formatGender(value);
       } else if (destKey === 'email' && value !== null) {
-        value = value?.toString()?.toLowerCase();
+        value = value?.toString().toLowerCase();
       }
       data[destKey] = value;
     }

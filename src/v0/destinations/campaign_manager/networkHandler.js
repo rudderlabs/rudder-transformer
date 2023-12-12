@@ -76,7 +76,7 @@ const responseHandler = (destinationResponse) => {
 
   throw new NetworkError(
     `Campaign Manager: ${response.error?.message} during CAMPAIGN_MANAGER response transformation 3`,
-    status,
+    500,
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },

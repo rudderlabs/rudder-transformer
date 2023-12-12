@@ -15,6 +15,8 @@ import {
   ProcessorTransformationOutput,
   UserDeletionRequest,
   UserDeletionResponse,
+  ProxyRequest,
+  DeliveriesResponse,
 } from '../../types/index';
 import tags from '../../v0/util/tags';
 import { DestinationPostTransformationService } from './postTransformation';
@@ -165,10 +167,10 @@ export class CDKV2DestinationService implements DestinationService {
   }
 
   public deliver(
-    _event: ProcessorTransformationOutput,
+    _event: ProxyRequest,
     _destinationType: string,
     _requestMetadata: NonNullable<unknown>,
-  ): Promise<DeliveryResponse> {
+  ): Promise<DeliveryResponse | DeliveriesResponse> {
     throw new TransformationError('CDKV2 Does not Implement Delivery Routine');
   }
 

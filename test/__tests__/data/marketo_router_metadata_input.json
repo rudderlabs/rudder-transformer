@@ -46,10 +46,25 @@
       "clientId": "marketo_client_id_success",
       "clientSecret": "marketo_client_secret_success",
       "trackAnonymousEvents": true,
-      "customActivityEventMap": [{ "from": "Product Clicked", "to": "100001" }],
-      "customActivityPropertyMap": [{ "from": "name", "to": "productName" }],
-      "customActivityPrimaryKeyMap": [{ "from": "Product Clicked", "to": "name" }],
-      "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }]
+      "customActivityPropertyMap": [
+        {
+          "from": "name",
+          "to": "productName"
+        }
+      ],
+      "rudderEventsMapping": [
+        {
+          "event": "Product Clicked",
+          "marketoPrimarykey": "name",
+          "marketoActivityId": "100001"
+        }
+      ],
+      "leadTraitMapping": [
+        {
+          "from": "leadScore",
+          "to": "customLeadScore"
+        }
+      ]
     },
     "secretConfig": {},
     "ID": "1mMy5cqbtfuaKZv1IhVQKnBdVwe",
@@ -67,36 +82,81 @@
             "clientId",
             "clientSecret",
             "trackAnonymousEvents",
-            "customActivityEventMap",
             "customActivityPropertyMap",
-            "customActivityPrimaryKeyMap",
+            "rudderEventsMapping",
             "leadTraitMapping"
           ]
         },
-        "secretKeys": ["clientSecret"],
+        "secretKeys": [
+          "clientSecret"
+        ],
         "excludeKeys": [],
         "includeKeys": [],
         "routerTransform": true,
-        "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"]
+        "supportedSourceTypes": [
+          "android",
+          "ios",
+          "web",
+          "unity",
+          "amp",
+          "cloud",
+          "reactnative"
+        ]
       },
       "responseRules": {
         "responseType": "JSON",
         "rules": {
           "retryable": [
-            { "success": "false", "errors.0.code": 600 },
-            { "success": "false", "errors.0.code": 601 },
-            { "success": "false", "errors.0.code": 602 },
-            { "success": "false", "errors.0.code": 604 },
-            { "success": "false", "errors.0.code": 606 },
-            { "success": "false", "errors.0.code": 607 },
-            { "success": "false", "errors.0.code": 608 },
-            { "success": "false", "errors.0.code": 611 }
+            {
+              "success": "false",
+              "errors.0.code": 600
+            },
+            {
+              "success": "false",
+              "errors.0.code": 601
+            },
+            {
+              "success": "false",
+              "errors.0.code": 602
+            },
+            {
+              "success": "false",
+              "errors.0.code": 604
+            },
+            {
+              "success": "false",
+              "errors.0.code": 606
+            },
+            {
+              "success": "false",
+              "errors.0.code": 607
+            },
+            {
+              "success": "false",
+              "errors.0.code": 608
+            },
+            {
+              "success": "false",
+              "errors.0.code": 611
+            }
           ],
           "abortable": [
-            { "success": "false", "errors.0.code": 603 },
-            { "success": "false", "errors.0.code": 605 },
-            { "success": "false", "errors.0.code": 609 },
-            { "success": "false", "errors.0.code": 610 }
+            {
+              "success": "false",
+              "errors.0.code": 603
+            },
+            {
+              "success": "false",
+              "errors.0.code": 605
+            },
+            {
+              "success": "false",
+              "errors.0.code": 609
+            },
+            {
+              "success": "false",
+              "errors.0.code": 610
+            }
           ]
         }
       },

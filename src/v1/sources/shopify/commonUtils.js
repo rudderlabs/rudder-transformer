@@ -13,6 +13,12 @@ const getCartToken = (message, shopifyTopic) => {
   return message.cart_token || message.properties?.cart_token || null;
 };
 
+/**
+ * This fucntion fetches the data from redis for a particular key and  w.r.t. shopify integration
+ * @param {*} key 
+ * @param {*} metricMetadata 
+ * @returns 
+ */
 const getDataFromRedis = async (key, metricMetadata) => {
   try {
     stats.increment('shopify_redis_calls', {
@@ -149,6 +155,41 @@ const sanitizePayload = (obj) => {
   return objWithNonNullValues;
 };
 
+/**
+* This function sets the updated cart stae in redis in the form 
+* newCartItemsHash = [{
+   id: "some_id",
+   quantity: 2,
+   variant_id: "vairnat_id",
+   key: 'some:key',
+   price: '30.00',
+   product_id: 1234,
+   sku: '40',
+   title: 'Product Title',
+   vendor: 'example',
+ }]
+* @param {*} updatedCartState
+* @param {*} cart_token
+* @param {*} metricMetadata
+*/
+const updateCartState = async (updatedCartState, cart_token, metricMetadata) => {
+  if (cart_token) {
+    try {
+      stats.increment('shopify_redis_calls', {
+        type: 'set',
+        field: 'lineItems',
+        ...metricMetadata,
+      });
+      await RedisDB.setVal(`${cart_token}`, ['lineItems', updatedCartState]);
+    } catch (e) {
+      logger.debug(`{{SHOPIFY::}} cartToken map set call Failed due redis error ${e}`);
+      stats.increment('shopify_redis_failures', {
+        type: 'set',
+        ...metricMetadata,
+      });
+    }
+  }
+};
 module.exports = {
   getCartToken,
   getShopifyTopic,
@@ -156,4 +197,5 @@ module.exports = {
   getLineItemsToStore,
   getDataFromRedis,
   sanitizePayload,
+  updateCartState,
 };

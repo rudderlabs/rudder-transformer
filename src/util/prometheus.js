@@ -449,13 +449,13 @@ class Prometheus {
         name: 'shopify_client_side_identifier_event',
         help: 'shopify_client_side_identifier_event',
         type: 'counter',
-        labelNames: ['writeKey', 'timestamp'],
+        labelNames: ['writeKey', 'timestamp', 'sourceId'],
       },
       {
         name: 'shopify_server_side_identifier_event',
         help: 'shopify_server_side_identifier_event',
         type: 'counter',
-        labelNames: ['writeKey', 'timestamp'],
+        labelNames: ['writeKey', 'timestamp', 'sourceId'],
       },
       {
         name: 'fb_pixel_timestamp_error',
@@ -485,19 +485,19 @@ class Prometheus {
         name: 'shopify_redis_failures',
         help: 'shopify_redis_failures',
         type: 'counter',
-        labelNames: ['type', 'writeKey', 'source'],
+        labelNames: ['type', 'writeKey', 'source', 'sourceId'],
       },
       {
         name: 'shopify_redis_calls',
         help: 'shopify_redis_calls',
         type: 'counter',
-        labelNames: ['type', 'writeKey', 'source', 'field'],
+        labelNames: ['type', 'writeKey', 'source', 'field', 'sourceId'],
       },
       {
         name: 'shopify_redis_no_val',
         help: 'shopify_redis_no_val',
         type: 'counter',
-        labelNames: ['writeKey', 'source'],
+        labelNames: ['writeKey', 'source', 'sourceId'],
       },
       {
         name: 'get_transformation_code',
@@ -515,7 +515,7 @@ class Prometheus {
         name: 'invalid_shopify_event',
         help: 'invalid_shopify_event',
         type: 'counter',
-        labelNames: ['writeKey', 'source', 'shopifyTopic'],
+        labelNames: ['writeKey', 'source', 'shopifyTopic', 'sourceId'],
       },
       {
         name: 'outgoing_request_count',
@@ -562,6 +562,18 @@ class Prometheus {
         help: 'Outgoing HTTP requests duration in seconds',
         type: 'histogram',
         labelNames: ['feature', 'destType', 'endpointPath'],
+      },
+      {
+        name: 'shopify_store_data_latency',
+        help: 'shopify_store_data_latency',
+        type: 'histogram',
+        labelNames: ['writeKey', 'sourceId', 'source'],
+      },
+      {
+        name: 'shopify_fetch_data_latency',
+        help: 'shopify_fetch_data_latency',
+        type: 'histogram',
+        labelNames: ['writeKey', 'sourceId', 'source'],
       },
       {
         name: 'http_request_duration',
@@ -918,7 +930,7 @@ class Prometheus {
           'errored',
           'statusCode',
           'transformationId',
-          'workspaceId'
+          'workspaceId',
         ],
       },
       {
@@ -934,9 +946,9 @@ class Prometheus {
           'errored',
           'statusCode',
           'transformationId',
-          'workspaceId'
+          'workspaceId',
         ],
-      }
+      },
     ];
 
     metrics.forEach((metric) => {

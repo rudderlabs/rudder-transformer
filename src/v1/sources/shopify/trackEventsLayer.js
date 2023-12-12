@@ -10,14 +10,13 @@ const {
   lineItemsMappingJSON,
   LINE_ITEM_EXCLUSION_FIELDS,
 } = require('./config');
-const { RedisDB } = require('../../../util/redis/redisConnector');
-const logger = require('../../../logger');
+
 const { idResolutionLayer } = require('./identityResolutionLayer');
 const { enrichPayload } = require('./enrichmentLayer');
 const Message = require('../../../v0/sources/message');
 const { EventType } = require('../../../constants');
 const stats = require('../../../util/stats');
-const { extractEmailFromPayload, getLineItemsToStore } = require('./commonUtils');
+const { extractEmailFromPayload } = require('./commonUtils');
 const {
   removeUndefinedAndNullValues,
   constructPayload,
@@ -186,13 +185,10 @@ const TrackLayer = {
    * @param {*} metricMetadata 
    * @returns List of Product Added Or Product Removed Events
    */
-  async generateProductAddedAndRemovedEvents(cart, dbData, metricMetadata) {
+  async generateProductAddedAndRemovedEvents(cart, dbData) {
     const events = [];
     const prevLineItems = dbData?.lineItems;
     const cartToken = cart.id || cart.token;
-    if (cart.line_items.length > 0) {
-      await this.updateCartState(getLineItemsToStore(cart), cartToken, metricMetadata);
-    }
     // if no prev cart is found we trigger product added event for every line_item present
     if (!prevLineItems) {
       cart.line_items.forEach((product) => {
@@ -240,42 +236,6 @@ const TrackLayer = {
     return events;
   },
 
-  /**
-   * This function sets the updated cart stae in redis in the form 
-   * newCartItemsHash = [{
-      id: "some_id",
-      quantity: 2,
-      variant_id: "vairnat_id",
-      key: 'some:key',
-      price: '30.00',
-      product_id: 1234,
-      sku: '40',
-      title: 'Product Title',
-      vendor: 'example',
-    }]
-   * @param {*} updatedCartState
-   * @param {*} cart_token
-   * @param {*} metricMetadata
-   */
-  async updateCartState(updatedCartState, cart_token, metricMetadata) {
-    if (cart_token) {
-      try {
-        stats.increment('shopify_redis_calls', {
-          type: 'set',
-          field: 'lineItems',
-          ...metricMetadata,
-        });
-        await RedisDB.setVal(`${cart_token}`, ['lineItems', updatedCartState]);
-      } catch (e) {
-        logger.debug(`{{SHOPIFY::}} cartToken map set call Failed due redis error ${e}`);
-        stats.increment('shopify_redis_failures', {
-          type: 'set',
-          ...metricMetadata,
-        });
-      }
-    }
-  },
-
   async processTrackEvent(event, eventName, dbData, metricMetadata) {
     let updatedEventName = eventName;
     let payload;
@@ -286,7 +246,6 @@ const TrackLayer = {
       let productAddedOrRemovedEvents = await this.generateProductAddedAndRemovedEvents(
         event,
         dbData,
-        metricMetadata,
       );
       if (productAddedOrRemovedEvents.length === 0) return [NO_OPERATION_SUCCESS];
       productAddedOrRemovedEvents = productAddedOrRemovedEvents.map((productEvent) =>

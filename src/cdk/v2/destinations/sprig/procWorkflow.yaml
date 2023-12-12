@@ -1,0 +1,73 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+
+steps:
+  - name: messageType
+    template: |
+      .message.type.toLowerCase();
+
+  - name: validateInput
+    template: |
+      let messageType = $.outputs.messageType;
+      $.assert(messageType, "message Type is not present. Aborting");
+      $.assert(messageType in {{$.EventType.([.IDENTIFY, .TRACK])}}, "message type " + messageType + " is not supported");
+      $.assertConfig(.destination.Config.apiKey, "API Key is not present. Aborting");
+
+  - name: validateIdentifyPayload
+    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
+    template: |
+      const userId = .message.({{{{$.getGenericPaths("userIdOnly")}}}});;
+      $.assert(userId, "userId is required");
+
+  - name: prepareIdentifyPayload
+    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
+    template: |
+      $.context.payload = .message.({
+        userId: {{{{$.getGenericPaths("userIdOnly")}}}},
+        emailAddress: {{{{$.getGenericPaths("email")}}}},
+        attributes: .context.traits
+      });
+      $.context.payload = $.removeUndefinedAndNullValues($.context.payload);
+
+  - name: validateTrackPayload
+    condition: $.outputs.messageType === {{$.EventType.TRACK}}
+    template: |
+      const userId = .message.({{{{$.getGenericPaths("userIdOnly")}}}});;
+      $.assert(userId, "userId is required");
+      $.assert(.message.event, "event name is required");
+
+  - name: prepareTrackPayload
+    condition: $.outputs.messageType === {{$.EventType.TRACK}}
+    template: |
+      $.context.payload = .message.({
+        userId: {{{{$.getGenericPaths("userIdOnly")}}}},
+        emailAddress: {{{{$.getGenericPaths("email")}}}}
+      });
+      const events = [
+        {
+          event: .message.event,
+          timestamp: $.toMilliseconds(.message.().({{{{$.getGenericPaths("timestamp")}}}}))
+        }
+      ]
+      $.context.payload.events = events;
+      $.context.payload = $.removeUndefinedAndNullValues($.context.payload);
+
+  - name: buildResponse
+    template: |
+      const response = $.defaultRequestConfig();
+      response.body.JSON = $.context.payload;
+      response.endpoint = "https://api.sprig.com/v2/users";
+      response.headers = {
+        "accept": "application/json",
+        "content-type": "application/json",
+        "authorization": "API-Key " + .destination.Config.apiKey
+      };
+      response
+
+  

@@ -96,7 +96,10 @@ function populateCustomAttributesWithOperation(
     // add,update,remove on json attributes
     if (enableNestedArrayOperations) {
       Object.keys(traits)
-        .filter((key) => typeof traits[key] === 'object' && !Array.isArray(traits[key]))
+        .filter(
+          (key) =>
+            traits[key] !== null && typeof traits[key] === 'object' && !Array.isArray(traits[key]),
+        )
         .forEach((key) => {
           if (traits[key][CustomAttributeOperationTypes.UPDATE]) {
             CustomAttributeOperationUtil.customAttributeUpdateOperation(
@@ -316,7 +319,7 @@ function processTrackEvent(messageType, message, destination, mappingJson, proce
     typeof eventName === 'string' &&
     eventName.toLowerCase() === 'order completed'
   ) {
-    const purchaseObjs = getPurchaseObjs(message);
+    const purchaseObjs = getPurchaseObjs(message, destination.Config);
 
     // del used properties
     delete properties.products;

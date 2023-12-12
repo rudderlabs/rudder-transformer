@@ -21,6 +21,7 @@ const {
   SUBSCRIPTION_BRAZE_MAX_REQ_COUNT,
   ALIAS_BRAZE_MAX_REQ_COUNT,
   TRACK_BRAZE_MAX_REQ_COUNT,
+  BRAZE_PURCHASE_STANDARD_PROPERTIES,
 } = require('./config');
 const { JSON_MIME_TYPE, HTTP_STATUS_CODES } = require('../../util/constant');
 const { isObject } = require('../../util');
@@ -539,7 +540,7 @@ function addMandatoryPurchaseProperties(productId, price, currencyCode, quantity
   };
 }
 
-function getPurchaseObjs(message) {
+function getPurchaseObjs(message, config) {
   // ref:https://www.braze.com/docs/api/objects_filters/purchase_object/
   const validateForPurchaseEvent = (message) => {
     const { properties } = message;
@@ -634,6 +635,10 @@ function getPurchaseObjs(message) {
       parseInt(quantity, 10),
       timestamp,
     );
+    const extraProperties = _.omit(product, BRAZE_PURCHASE_STANDARD_PROPERTIES);
+    if (Object.keys(extraProperties).length > 0 && config.sendPurchaseEventWithExtraProperties) {
+      purchaseObj = { ...purchaseObj, properties: extraProperties };
+    }
     purchaseObj = setExternalIdOrAliasObject(purchaseObj, message);
     purchaseObjs.push(purchaseObj);
   });

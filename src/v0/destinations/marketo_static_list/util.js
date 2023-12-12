@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/consistent-destructuring */
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 
 /**

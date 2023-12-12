@@ -1074,9 +1074,7 @@
           "CHILD_KEY_102": "value_103"
         },
         "name_trait": "Company",
-        "value_trait": [
-          "ABC"
-        ]
+        "value_trait": ["ABC"]
       },
       "sentAt": "2020-10-20T07:54:58.983Z"
     },
@@ -4313,8 +4311,7 @@
         "All": true
       },
       "messageId": "1662393883248-509420bf-b812-4f8d-bdb2-8c811bfde87f",
-      "properties": {
-      },
+      "properties": {},
       "originalTimestamp": "2022-09-05T16:04:43.250Z",
       "type": "screen",
       "userId": "User Android"

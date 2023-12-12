@@ -175,7 +175,7 @@ const processEvent = async (inputEvent, metricMetadata) => {
   if (message.type !== EventType.IDENTIFY) {
     const { anonymousId, sessionId } = await getAnonymousIdAndSessionId(
       message,
-      metricMetadata,
+      { shopifyTopic, ...metricMetadata },
       redisData,
     );
     if (isDefinedAndNotNull(anonymousId)) {

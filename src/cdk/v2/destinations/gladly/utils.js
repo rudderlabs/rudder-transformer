@@ -1,9 +1,6 @@
 const get = require('get-value');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
-const {
-  base64Convertor,
-  getDestinationExternalID,
-} = require('../../../../v0/util');
+const { base64Convertor, getDestinationExternalID } = require('../../../../v0/util');
 const { MappedToDestinationKey } = require('../../../../constants');
 
 const reservedCustomAttributes = [
@@ -35,7 +32,6 @@ const getEndpoint = (destination) => {
   return `https://${domain}/api/v1/customer-profiles`;
 };
 
-
 const getFieldValue = (field) => {
   if (field) {
     if (Array.isArray(field)) {
@@ -44,7 +40,7 @@ const getFieldValue = (field) => {
     return [{ original: field }];
   }
   return undefined;
-}
+};
 
 const formatFieldForRETl = (message, fieldName) => {
   const identifierType = get(message, identifierTypeKey);
@@ -70,7 +66,6 @@ const formatField = (message, fieldName) => {
     return formatFieldForRETl(message, fieldName);
   }
   return formatFieldForEventStream(message, fieldName);
-
 };
 
 const getCustomAttributes = (message) => {
@@ -78,7 +73,9 @@ const getCustomAttributes = (message) => {
   // for rETL
   if (mappedToDestination) {
     if (message?.traits?.customAttributes && typeof message.traits.customAttributes === 'object') {
-      return Object.keys(message.traits.customAttributes).length > 0 ? message.traits.customAttributes : undefined;
+      return Object.keys(message.traits.customAttributes).length > 0
+        ? message.traits.customAttributes
+        : undefined;
     }
     return undefined;
   }
@@ -140,25 +137,27 @@ const getCustomerId = (message) => {
 
 const validatePayload = (payload) => {
   if (!(payload?.phones || payload?.emails || payload?.id || payload?.externalCustomerId)) {
-    throw new InstrumentationError('One of phone, email, userId or GladlyCustomerId is required for an identify call');
+    throw new InstrumentationError(
+      'One of phone, email, userId or GladlyCustomerId is required for an identify call',
+    );
   }
 };
 
 const getQueryParams = (payload) => {
   if (payload.emails && payload.emails.length > 0) {
-    return `email=${encodeURIComponent(payload.emails[0].original)}`
+    return `email=${encodeURIComponent(payload.emails[0].original)}`;
   }
 
   if (payload.phones && payload.phones.length > 0) {
-    return `phoneNumber=${encodeURIComponent(payload.phones[0].original)}`
+    return `phoneNumber=${encodeURIComponent(payload.phones[0].original)}`;
   }
 
   if (payload.externalCustomerId) {
-    return `externalCustomerId=${encodeURIComponent(payload.externalCustomerId)}`
+    return `externalCustomerId=${encodeURIComponent(payload.externalCustomerId)}`;
   }
 
   return undefined;
-}
+};
 
 module.exports = {
   getHeaders,
@@ -171,5 +170,5 @@ module.exports = {
   formatFieldForRETl,
   getCustomAttributes,
   getExternalCustomerId,
-  formatFieldForEventStream
+  formatFieldForEventStream,
 };

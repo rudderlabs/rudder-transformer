@@ -327,6 +327,35 @@ const deleteNwData = [
   },
   {
     httpReq: {
+      url: 'https://rest.iad-03.braze.com/users/identify/testV1',
+      data: {
+        aliases_to_identify: [
+          {
+            external_id: 'gabi_userId_45',
+            user_alias: { alias_label: 'rudder_id', alias_name: 'gabi_anonId_45' },
+          },
+        ],
+      },
+      params: { destination: 'braze' },
+      headers: {
+        Accept: 'application/json',
+        Authorization: 'Bearer api_key',
+        'Content-Type': 'application/json',
+        'User-Agent': 'RudderLabs',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        code: 400,
+        message: 'Bad Req',
+        status: 'Fail Case',
+      },
+      status: 401,
+    },
+  },
+  {
+    httpReq: {
       method: 'post',
       data: { "external_ids": ["braze_test_user", "user@50"], "user_aliases": [{ "alias_name": "77e278c9-e984-4cdd-950c-cd0b61befd03", "alias_label": "rudder_id" }, { "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca", "alias_label": "rudder_id" }] },
       headers: { "Authorization": "Bearer dummyApiKey" },

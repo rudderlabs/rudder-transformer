@@ -23,6 +23,8 @@ const outputRouterDataFile = fs.readFileSync(
 const inputRouterData = JSON.parse(inputRouterDataFile);
 const expectedRouterData = JSON.parse(outputRouterDataFile);
 
+Date.now = jest.fn(() => new Date("2023-11-12T15:46:51.000Z")); // 2023-11-12T15:46:51.693229+05:30
+
 describe(`${name} Tests`, () => {
   describe("Processor", () => {
     testData.forEach((dataPoint, index) => {
@@ -36,7 +38,7 @@ describe(`${name} Tests`, () => {
       });
     });
   });
-
+  
   describe("Router Tests", () => {
     it("Payload", async () => {
       const routerOutput = await transformer.processRouterDest(inputRouterData);

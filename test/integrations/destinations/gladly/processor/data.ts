@@ -780,7 +780,7 @@ export const data = [
               body: {
                 JSON: {
                   address: 'Pakistan',
-                  emails: [{original: 'abc'}],
+                  emails: [{ original: 'abc' }],
                   id: 'user@10',
                 },
                 XML: {},

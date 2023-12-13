@@ -18,15 +18,25 @@ export const data = [
                   model: 'Redmi 6',
                   name: 'xiaomi',
                 },
-                network: { carrier: 'Banglalink' },
-                os: { name: 'android', version: '8.1.0' },
+                network: {
+                  carrier: 'Banglalink',
+                },
+                os: {
+                  name: 'android',
+                  version: '8.1.0',
+                },
                 traits: {
-                  address: { city: 'Dhaka', country: 'Bangladesh' },
+                  address: {
+                    city: 'Dhaka',
+                    country: 'Bangladesh',
+                  },
                   anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                 },
               },
               event: 'spin_result',
-              integrations: { All: true },
+              integrations: {
+                All: true,
+              },
               message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
               properties: {
                 additional_bet_index: 0,
@@ -93,14 +103,28 @@ export const data = [
               Config: {
                 webhookUrl: 'http://6b0e6a60.ngrok.io',
                 headers: [
-                  { from: '', to: '' },
-                  { from: 'test2', to: 'value2' },
+                  {
+                    from: '',
+                    to: '',
+                  },
+                  {
+                    from: 'test2',
+                    to: 'value2',
+                  },
                 ],
               },
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                },
+              },
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -110,98 +134,115 @@ export const data = [
           {
             output: {
               body: {
-                XML: {},
-                JSON_ARRAY: {},
                 JSON: {
-                  timestamp: '2019-09-01T15:46:51.693229+05:30',
-                  user_properties: {
-                    total_payments: 0,
-                    internetReachability: 'ReachableViaLocalAreaNetwork',
-                    level: 6,
-                    userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-                    coin_balance: 9466052,
-                    player_total_shields: 0,
-                    isLowEndDevice: false,
-                    game_fps: 30,
-                    idfa: '2bf99787-33d2-4ae2-a76a-c49672f97252',
-                    graphicsQuality: 'HD',
-                    current_module_name: 'CasinoGameModule',
-                    player_total_battles: 0,
-                    lifetime_gem_balance: 0,
-                    gem_balance: 0,
-                    fb_profile: '0',
-                    start_date: '2019-08-01',
-                    versionSessionCount: 2,
-                    game_name: 'FireEagleSlots',
-                  },
-                  integrations: { All: true },
-                  event: 'spin_result',
-                  message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
                   anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                   context: {
                     device: {
-                      model: 'Redmi 6',
-                      manufacturer: 'Xiaomi',
                       id: 'df16bffa-5c3d-4fbb-9bce-3bab098129a7R',
+                      manufacturer: 'Xiaomi',
+                      model: 'Redmi 6',
                       name: 'xiaomi',
                     },
-                    traits: {
-                      anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-                      address: { city: 'Dhaka', country: 'Bangladesh' },
+                    network: {
+                      carrier: 'Banglalink',
                     },
-                    os: { version: '8.1.0', name: 'android' },
-                    network: { carrier: 'Banglalink' },
+                    os: {
+                      name: 'android',
+                      version: '8.1.0',
+                    },
+                    traits: {
+                      address: {
+                        city: 'Dhaka',
+                        country: 'Bangladesh',
+                      },
+                      anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+                    },
                   },
-                  type: 'track',
+                  event: 'spin_result',
+                  integrations: {
+                    All: true,
+                  },
+                  message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
                   properties: {
-                    userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-                    jackpot_win_type: 'Silver',
-                    coin_balance: 9466052,
-                    bet_level: 1,
-                    ishighroller: 'False',
-                    tournament_id: 'T1561970819',
+                    additional_bet_index: 0,
                     battle_id: 'N/A',
                     bet_amount: 9,
-                    fb_profile: '0',
-                    player_total_shields: 0,
-                    is_turbo: 'False',
-                    player_total_battles: 0,
+                    bet_level: 1,
                     bet_multiplier: 1,
-                    start_date: '2019-08-01',
-                    versionSessionCount: 2,
-                    graphicsQuality: 'HD',
-                    is_auto_spin: 'False',
-                    days_in_game: 0,
-                    additional_bet_index: 0,
-                    isLowEndDevice: 'False',
-                    game_fps: 30,
-                    extra_param: 'N/A',
-                    idfa: '2bf99787-33d2-4ae2-a76a-c49672f97252',
+                    coin_balance: 9466052,
                     current_module_name: 'CasinoGameModule',
-                    game_id: 'fireEagleBase',
+                    days_in_game: 0,
+                    extra_param: 'N/A',
+                    fb_profile: '0',
                     featureGameType: 'N/A',
-                    gem_balance: 0,
-                    internetReachability: 'ReachableViaLocalAreaNetwork',
-                    total_payments: 0,
-                    level: 6,
-                    win_amount: 0,
-                    no_of_spin: 1,
+                    game_fps: 30,
+                    game_id: 'fireEagleBase',
                     game_name: 'FireEagleSlots',
-                    jackpot_win_amount: 90,
-                    lifetime_gem_balance: 0,
+                    gem_balance: 0,
+                    graphicsQuality: 'HD',
+                    idfa: '2bf99787-33d2-4ae2-a76a-c49672f97252',
+                    internetReachability: 'ReachableViaLocalAreaNetwork',
+                    isLowEndDevice: 'False',
+                    is_auto_spin: 'False',
+                    is_turbo: 'False',
                     isf: 'False',
+                    ishighroller: 'False',
+                    jackpot_win_amount: 90,
+                    jackpot_win_type: 'Silver',
+                    level: 6,
+                    lifetime_gem_balance: 0,
+                    no_of_spin: 1,
+                    player_total_battles: 0,
+                    player_total_shields: 0,
+                    start_date: '2019-08-01',
+                    total_payments: 0,
+                    tournament_id: 'T1561970819',
+                    userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+                    versionSessionCount: 2,
+                    win_amount: 0,
+                  },
+                  timestamp: '2019-09-01T15:46:51.693229+05:30',
+                  type: 'track',
+                  user_properties: {
+                    coin_balance: 9466052,
+                    current_module_name: 'CasinoGameModule',
+                    fb_profile: '0',
+                    game_fps: 30,
+                    game_name: 'FireEagleSlots',
+                    gem_balance: 0,
+                    graphicsQuality: 'HD',
+                    idfa: '2bf99787-33d2-4ae2-a76a-c49672f97252',
+                    internetReachability: 'ReachableViaLocalAreaNetwork',
+                    isLowEndDevice: false,
+                    level: 6,
+                    lifetime_gem_balance: 0,
+                    player_total_battles: 0,
+                    player_total_shields: 0,
+                    start_date: '2019-08-01',
+                    total_payments: 0,
+                    userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+                    versionSessionCount: 2,
                   },
                 },
+                JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
-              files: {},
-              endpoint: 'http://6b0e6a60.ngrok.io',
-              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-              headers: { 'content-type': 'application/json', test2: 'value2' },
               version: '1',
-              params: {},
+              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               type: 'REST',
               method: 'POST',
+              endpoint: 'http://6b0e6a60.ngrok.io',
+              headers: {
+                'content-type': 'application/json',
+                test2: 'value2',
+              },
+              params: {},
+              files: {},
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
             statusCode: 200,
           },
@@ -228,15 +269,25 @@ export const data = [
                   model: 'Redmi 6',
                   name: 'xiaomi',
                 },
-                network: { carrier: 'Banglalink' },
-                os: { name: 'android', version: '8.1.0' },
+                network: {
+                  carrier: 'Banglalink',
+                },
+                os: {
+                  name: 'android',
+                  version: '8.1.0',
+                },
                 traits: {
-                  address: { city: 'Dhaka', country: 'Bangladesh' },
+                  address: {
+                    city: 'Dhaka',
+                    country: 'Bangladesh',
+                  },
                   anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                 },
               },
               event: 'spin_result',
-              integrations: { All: true },
+              integrations: {
+                All: true,
+              },
               message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
               properties: {
                 additional_bet_index: 0,
@@ -299,10 +350,22 @@ export const data = [
                 versionSessionCount: 2,
               },
             },
-            destination: { Config: { webhookUrl: 'https://6b0e6a60.ngrok.io/n' } },
+            destination: {
+              Config: {
+                webhookUrl: 'https://6b0e6a60.ngrok.io/n',
+              },
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                },
+              },
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -312,98 +375,114 @@ export const data = [
           {
             output: {
               body: {
-                XML: {},
-                JSON_ARRAY: {},
                 JSON: {
-                  timestamp: '2019-09-01T15:46:51.693229+05:30',
-                  user_properties: {
-                    total_payments: 0,
-                    internetReachability: 'ReachableViaLocalAreaNetwork',
-                    level: 6,
-                    userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-                    coin_balance: 9466052,
-                    player_total_shields: 0,
-                    isLowEndDevice: false,
-                    game_fps: 30,
-                    idfa: '2bf99787-33d2-4ae2-a76a-c49672f97252',
-                    graphicsQuality: 'HD',
-                    current_module_name: 'CasinoGameModule',
-                    player_total_battles: 0,
-                    lifetime_gem_balance: 0,
-                    gem_balance: 0,
-                    fb_profile: '0',
-                    start_date: '2019-08-01',
-                    versionSessionCount: 2,
-                    game_name: 'FireEagleSlots',
-                  },
-                  integrations: { All: true },
-                  event: 'spin_result',
-                  message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
                   anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                   context: {
                     device: {
-                      model: 'Redmi 6',
-                      manufacturer: 'Xiaomi',
                       id: 'df16bffa-5c3d-4fbb-9bce-3bab098129a7R',
+                      manufacturer: 'Xiaomi',
+                      model: 'Redmi 6',
                       name: 'xiaomi',
                     },
-                    traits: {
-                      anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-                      address: { city: 'Dhaka', country: 'Bangladesh' },
+                    network: {
+                      carrier: 'Banglalink',
                     },
-                    os: { version: '8.1.0', name: 'android' },
-                    network: { carrier: 'Banglalink' },
+                    os: {
+                      name: 'android',
+                      version: '8.1.0',
+                    },
+                    traits: {
+                      address: {
+                        city: 'Dhaka',
+                        country: 'Bangladesh',
+                      },
+                      anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+                    },
                   },
-                  type: 'track',
+                  event: 'spin_result',
+                  integrations: {
+                    All: true,
+                  },
+                  message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
                   properties: {
-                    userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-                    jackpot_win_type: 'Silver',
-                    coin_balance: 9466052,
-                    bet_level: 1,
-                    ishighroller: 'False',
-                    tournament_id: 'T1561970819',
+                    additional_bet_index: 0,
                     battle_id: 'N/A',
                     bet_amount: 9,
-                    fb_profile: '0',
-                    player_total_shields: 0,
-                    is_turbo: 'False',
-                    player_total_battles: 0,
+                    bet_level: 1,
                     bet_multiplier: 1,
-                    start_date: '2019-08-01',
-                    versionSessionCount: 2,
-                    graphicsQuality: 'HD',
-                    is_auto_spin: 'False',
-                    days_in_game: 0,
-                    additional_bet_index: 0,
-                    isLowEndDevice: 'False',
-                    game_fps: 30,
-                    extra_param: 'N/A',
-                    idfa: '2bf99787-33d2-4ae2-a76a-c49672f97252',
+                    coin_balance: 9466052,
                     current_module_name: 'CasinoGameModule',
-                    game_id: 'fireEagleBase',
+                    days_in_game: 0,
+                    extra_param: 'N/A',
+                    fb_profile: '0',
                     featureGameType: 'N/A',
-                    gem_balance: 0,
-                    internetReachability: 'ReachableViaLocalAreaNetwork',
-                    total_payments: 0,
-                    level: 6,
-                    win_amount: 0,
-                    no_of_spin: 1,
+                    game_fps: 30,
+                    game_id: 'fireEagleBase',
                     game_name: 'FireEagleSlots',
-                    jackpot_win_amount: 90,
-                    lifetime_gem_balance: 0,
+                    gem_balance: 0,
+                    graphicsQuality: 'HD',
+                    idfa: '2bf99787-33d2-4ae2-a76a-c49672f97252',
+                    internetReachability: 'ReachableViaLocalAreaNetwork',
+                    isLowEndDevice: 'False',
+                    is_auto_spin: 'False',
+                    is_turbo: 'False',
                     isf: 'False',
+                    ishighroller: 'False',
+                    jackpot_win_amount: 90,
+                    jackpot_win_type: 'Silver',
+                    level: 6,
+                    lifetime_gem_balance: 0,
+                    no_of_spin: 1,
+                    player_total_battles: 0,
+                    player_total_shields: 0,
+                    start_date: '2019-08-01',
+                    total_payments: 0,
+                    tournament_id: 'T1561970819',
+                    userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+                    versionSessionCount: 2,
+                    win_amount: 0,
+                  },
+                  timestamp: '2019-09-01T15:46:51.693229+05:30',
+                  type: 'track',
+                  user_properties: {
+                    coin_balance: 9466052,
+                    current_module_name: 'CasinoGameModule',
+                    fb_profile: '0',
+                    game_fps: 30,
+                    game_name: 'FireEagleSlots',
+                    gem_balance: 0,
+                    graphicsQuality: 'HD',
+                    idfa: '2bf99787-33d2-4ae2-a76a-c49672f97252',
+                    internetReachability: 'ReachableViaLocalAreaNetwork',
+                    isLowEndDevice: false,
+                    level: 6,
+                    lifetime_gem_balance: 0,
+                    player_total_battles: 0,
+                    player_total_shields: 0,
+                    start_date: '2019-08-01',
+                    total_payments: 0,
+                    userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+                    versionSessionCount: 2,
                   },
                 },
+                JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
-              files: {},
-              endpoint: 'https://6b0e6a60.ngrok.io/n',
-              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-              headers: { 'content-type': 'application/json' },
               version: '1',
-              params: {},
+              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               type: 'REST',
               method: 'POST',
+              endpoint: 'https://6b0e6a60.ngrok.io/n',
+              headers: {
+                'content-type': 'application/json',
+              },
+              params: {},
+              files: {},
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
             statusCode: 200,
           },
@@ -430,15 +509,25 @@ export const data = [
                   model: 'Redmi 6',
                   name: 'xiaomi',
                 },
-                network: { carrier: 'Banglalink' },
-                os: { name: 'android', version: '8.1.0' },
+                network: {
+                  carrier: 'Banglalink',
+                },
+                os: {
+                  name: 'android',
+                  version: '8.1.0',
+                },
                 traits: {
-                  address: { city: 'Dhaka', country: 'Bangladesh' },
+                  address: {
+                    city: 'Dhaka',
+                    country: 'Bangladesh',
+                  },
                   anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                 },
               },
               event: 'spin_result',
-              integrations: { All: true },
+              integrations: {
+                All: true,
+              },
               message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
               properties: {
                 additional_bet_index: 0,
@@ -501,10 +590,22 @@ export const data = [
                 versionSessionCount: 2,
               },
             },
-            destination: { Config: { webhookUrl: 'https://6b0e6a60.' } },
+            destination: {
+              Config: {
+                webhookUrl: 'https://6b0e6a60.',
+              },
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                },
+              },
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -514,98 +615,114 @@ export const data = [
           {
             output: {
               body: {
-                XML: {},
-                JSON_ARRAY: {},
                 JSON: {
-                  timestamp: '2019-09-01T15:46:51.693229+05:30',
-                  user_properties: {
-                    total_payments: 0,
-                    internetReachability: 'ReachableViaLocalAreaNetwork',
-                    level: 6,
-                    userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-                    coin_balance: 9466052,
-                    player_total_shields: 0,
-                    isLowEndDevice: false,
-                    game_fps: 30,
-                    idfa: '2bf99787-33d2-4ae2-a76a-c49672f97252',
-                    graphicsQuality: 'HD',
-                    current_module_name: 'CasinoGameModule',
-                    player_total_battles: 0,
-                    lifetime_gem_balance: 0,
-                    gem_balance: 0,
-                    fb_profile: '0',
-                    start_date: '2019-08-01',
-                    versionSessionCount: 2,
-                    game_name: 'FireEagleSlots',
-                  },
-                  integrations: { All: true },
-                  event: 'spin_result',
-                  message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
                   anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                   context: {
                     device: {
-                      model: 'Redmi 6',
-                      manufacturer: 'Xiaomi',
                       id: 'df16bffa-5c3d-4fbb-9bce-3bab098129a7R',
+                      manufacturer: 'Xiaomi',
+                      model: 'Redmi 6',
                       name: 'xiaomi',
                     },
-                    traits: {
-                      anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-                      address: { city: 'Dhaka', country: 'Bangladesh' },
+                    network: {
+                      carrier: 'Banglalink',
                     },
-                    os: { version: '8.1.0', name: 'android' },
-                    network: { carrier: 'Banglalink' },
+                    os: {
+                      name: 'android',
+                      version: '8.1.0',
+                    },
+                    traits: {
+                      address: {
+                        city: 'Dhaka',
+                        country: 'Bangladesh',
+                      },
+                      anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+                    },
                   },
-                  type: 'track',
+                  event: 'spin_result',
+                  integrations: {
+                    All: true,
+                  },
+                  message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
                   properties: {
-                    userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-                    jackpot_win_type: 'Silver',
-                    coin_balance: 9466052,
-                    bet_level: 1,
-                    ishighroller: 'False',
-                    tournament_id: 'T1561970819',
+                    additional_bet_index: 0,
                     battle_id: 'N/A',
                     bet_amount: 9,
-                    fb_profile: '0',
-                    player_total_shields: 0,
-                    is_turbo: 'False',
-                    player_total_battles: 0,
+                    bet_level: 1,
                     bet_multiplier: 1,
-                    start_date: '2019-08-01',
-                    versionSessionCount: 2,
-                    graphicsQuality: 'HD',
-                    is_auto_spin: 'False',
-                    days_in_game: 0,
-                    additional_bet_index: 0,
-                    isLowEndDevice: 'False',
-                    game_fps: 30,
-                    extra_param: 'N/A',
-                    idfa: '2bf99787-33d2-4ae2-a76a-c49672f97252',
+                    coin_balance: 9466052,
                     current_module_name: 'CasinoGameModule',
-                    game_id: 'fireEagleBase',
+                    days_in_game: 0,
+                    extra_param: 'N/A',
+                    fb_profile: '0',
                     featureGameType: 'N/A',
-                    gem_balance: 0,
-                    internetReachability: 'ReachableViaLocalAreaNetwork',
-                    total_payments: 0,
-                    level: 6,
-                    win_amount: 0,
-                    no_of_spin: 1,
+                    game_fps: 30,
+                    game_id: 'fireEagleBase',
                     game_name: 'FireEagleSlots',
-                    jackpot_win_amount: 90,
-                    lifetime_gem_balance: 0,
+                    gem_balance: 0,
+                    graphicsQuality: 'HD',
+                    idfa: '2bf99787-33d2-4ae2-a76a-c49672f97252',
+                    internetReachability: 'ReachableViaLocalAreaNetwork',
+                    isLowEndDevice: 'False',
+                    is_auto_spin: 'False',
+                    is_turbo: 'False',
                     isf: 'False',
+                    ishighroller: 'False',
+                    jackpot_win_amount: 90,
+                    jackpot_win_type: 'Silver',
+                    level: 6,
+                    lifetime_gem_balance: 0,
+                    no_of_spin: 1,
+                    player_total_battles: 0,
+                    player_total_shields: 0,
+                    start_date: '2019-08-01',
+                    total_payments: 0,
+                    tournament_id: 'T1561970819',
+                    userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+                    versionSessionCount: 2,
+                    win_amount: 0,
+                  },
+                  timestamp: '2019-09-01T15:46:51.693229+05:30',
+                  type: 'track',
+                  user_properties: {
+                    coin_balance: 9466052,
+                    current_module_name: 'CasinoGameModule',
+                    fb_profile: '0',
+                    game_fps: 30,
+                    game_name: 'FireEagleSlots',
+                    gem_balance: 0,
+                    graphicsQuality: 'HD',
+                    idfa: '2bf99787-33d2-4ae2-a76a-c49672f97252',
+                    internetReachability: 'ReachableViaLocalAreaNetwork',
+                    isLowEndDevice: false,
+                    level: 6,
+                    lifetime_gem_balance: 0,
+                    player_total_battles: 0,
+                    player_total_shields: 0,
+                    start_date: '2019-08-01',
+                    total_payments: 0,
+                    userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+                    versionSessionCount: 2,
                   },
                 },
+                JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
-              files: {},
-              endpoint: 'https://6b0e6a60.',
-              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-              headers: { 'content-type': 'application/json' },
               version: '1',
-              params: {},
+              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               type: 'REST',
               method: 'POST',
+              endpoint: 'https://6b0e6a60.',
+              headers: {
+                'content-type': 'application/json',
+              },
+              params: {},
+              files: {},
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
             statusCode: 200,
           },
@@ -632,17 +749,35 @@ export const data = [
                   model: 'Redmi 6',
                   name: 'xiaomi',
                 },
-                network: { carrier: 'Banglalink' },
-                os: { name: 'android', version: '8.1.0' },
+                network: {
+                  carrier: 'Banglalink',
+                },
+                os: {
+                  name: 'android',
+                  version: '8.1.0',
+                },
                 traits: {
-                  address: { city: 'Dhaka', country: 'Bangladesh' },
+                  address: {
+                    city: 'Dhaka',
+                    country: 'Bangladesh',
+                  },
                   anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                 },
               },
               event: 'spin_result',
-              integrations: { All: true },
+              integrations: {
+                All: true,
+              },
               message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
-              properties: { k1: 'v1', k2: { k3: 'c3', k4: { k5: 'c5' } } },
+              properties: {
+                k1: 'v1',
+                k2: {
+                  k3: 'c3',
+                  k4: {
+                    k5: 'c5',
+                  },
+                },
+              },
               timestamp: '2019-09-01T15:46:51.693229+05:30',
               type: 'track',
             },
@@ -650,12 +785,25 @@ export const data = [
               Config: {
                 webhookUrl: 'https://6b0e6a60.',
                 webhookMethod: 'GET',
-                headers: [{ from: 'X-customHeader', to: 'customHeaderVal' }],
+                headers: [
+                  {
+                    from: 'X-customHeader',
+                    to: 'customHeaderVal',
+                  },
+                ],
               },
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                },
+              },
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -664,15 +812,30 @@ export const data = [
         body: [
           {
             output: {
+              body: {
+                JSON: {},
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
               version: '1',
+              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               type: 'REST',
               method: 'GET',
               endpoint: 'https://6b0e6a60.',
-              headers: { 'x-customheader': 'customHeaderVal' },
-              params: { k1: 'v1', 'k2.k3': 'c3', 'k2.k4.k5': 'c5' },
-              body: { JSON: {}, XML: {}, JSON_ARRAY: {}, FORM: {} },
+              headers: {
+                'x-customheader': 'customHeaderVal',
+              },
+              params: {
+                k1: 'v1',
+                'k2.k3': 'c3',
+                'k2.k4.k5': 'c5',
+              },
               files: {},
-              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
             statusCode: 200,
           },
@@ -699,24 +862,55 @@ export const data = [
                   model: 'Redmi 6',
                   name: 'xiaomi',
                 },
-                network: { carrier: 'Banglalink' },
-                os: { name: 'android', version: '8.1.0' },
+                network: {
+                  carrier: 'Banglalink',
+                },
+                os: {
+                  name: 'android',
+                  version: '8.1.0',
+                },
                 traits: {
-                  address: { city: 'Dhaka', country: 'Bangladesh' },
+                  address: {
+                    city: 'Dhaka',
+                    country: 'Bangladesh',
+                  },
                   anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                 },
               },
               event: 'spin_result',
-              integrations: { All: true },
+              integrations: {
+                All: true,
+              },
               message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
-              properties: { k1: 'v1', k2: { k3: 'c3', k4: { k5: 'c5' } } },
+              properties: {
+                k1: 'v1',
+                k2: {
+                  k3: 'c3',
+                  k4: {
+                    k5: 'c5',
+                  },
+                },
+              },
               timestamp: '2019-09-01T15:46:51.693229+05:30',
               type: 'track',
             },
-            destination: { Config: { webhookUrl: 'https://6b0e6a60.', webhookMethod: 'GET' } },
+            destination: {
+              Config: {
+                webhookUrl: 'https://6b0e6a60.',
+                webhookMethod: 'GET',
+              },
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                },
+              },
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -725,15 +919,28 @@ export const data = [
         body: [
           {
             output: {
+              body: {
+                JSON: {},
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
               version: '1',
+              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               type: 'REST',
               method: 'GET',
               endpoint: 'https://6b0e6a60.',
               headers: {},
-              params: { k1: 'v1', 'k2.k3': 'c3', 'k2.k4.k5': 'c5' },
-              body: { JSON: {}, XML: {}, JSON_ARRAY: {}, FORM: {} },
+              params: {
+                k1: 'v1',
+                'k2.k3': 'c3',
+                'k2.k4.k5': 'c5',
+              },
               files: {},
-              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
             statusCode: 200,
           },
@@ -760,15 +967,25 @@ export const data = [
                   model: 'Redmi 6',
                   name: 'xiaomi',
                 },
-                network: { carrier: 'Banglalink' },
-                os: { name: 'android', version: '8.1.0' },
+                network: {
+                  carrier: 'Banglalink',
+                },
+                os: {
+                  name: 'android',
+                  version: '8.1.0',
+                },
                 traits: {
-                  address: { city: 'Dhaka', country: 'Bangladesh' },
+                  address: {
+                    city: 'Dhaka',
+                    country: 'Bangladesh',
+                  },
                   anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                 },
               },
               event: 'spin_result',
-              integrations: { All: true },
+              integrations: {
+                All: true,
+              },
               message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
               properties: {
                 additional_bet_index: 0,
@@ -816,14 +1033,28 @@ export const data = [
               Config: {
                 webhookUrl: 'http://6b0e6a60.ngrok.io',
                 header: [
-                  { from: 'test1', to: 'value1' },
-                  { from: 'test2', to: 'value2' },
+                  {
+                    from: 'test1',
+                    to: 'value1',
+                  },
+                  {
+                    from: 'test2',
+                    to: 'value2',
+                  },
                 ],
               },
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                },
+              },
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -832,12 +1063,6 @@ export const data = [
         body: [
           {
             output: {
-              version: '1',
-              type: 'REST',
-              method: 'POST',
-              endpoint: 'http://6b0e6a60.ngrok.io',
-              headers: { 'content-type': 'application/json' },
-              params: {},
               body: {
                 JSON: {
                   anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
@@ -848,16 +1073,26 @@ export const data = [
                       model: 'Redmi 6',
                       name: 'xiaomi',
                     },
-                    network: { carrier: 'Banglalink' },
-                    os: { name: 'android', version: '8.1.0' },
+                    network: {
+                      carrier: 'Banglalink',
+                    },
+                    os: {
+                      name: 'android',
+                      version: '8.1.0',
+                    },
                     traits: {
-                      address: { city: 'Dhaka', country: 'Bangladesh' },
+                      address: {
+                        city: 'Dhaka',
+                        country: 'Bangladesh',
+                      },
                       anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                     },
                     ip: '127.0.0.1',
                   },
                   event: 'spin_result',
-                  integrations: { All: true },
+                  integrations: {
+                    All: true,
+                  },
                   message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
                   properties: {
                     additional_bet_index: 0,
@@ -901,12 +1136,24 @@ export const data = [
                   type: 'track',
                   request_ip: '127.0.0.1',
                 },
-                XML: {},
                 JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
-              files: {},
+              version: '1',
               userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'http://6b0e6a60.ngrok.io',
+              headers: {
+                'content-type': 'application/json',
+              },
+              params: {},
+              files: {},
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
             statusCode: 200,
           },
@@ -933,15 +1180,25 @@ export const data = [
                   model: 'Redmi 6',
                   name: 'xiaomi',
                 },
-                network: { carrier: 'Banglalink' },
-                os: { name: 'android', version: '8.1.0' },
+                network: {
+                  carrier: 'Banglalink',
+                },
+                os: {
+                  name: 'android',
+                  version: '8.1.0',
+                },
                 traits: {
-                  address: { city: 'Dhaka', country: 'Bangladesh' },
+                  address: {
+                    city: 'Dhaka',
+                    country: 'Bangladesh',
+                  },
                   anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                 },
               },
               event: 'spin_result',
-              integrations: { All: true },
+              integrations: {
+                All: true,
+              },
               message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
               properties: {
                 additional_bet_index: 0,
@@ -989,14 +1246,28 @@ export const data = [
               Config: {
                 webhookUrl: 'http://6b0e6a60.ngrok.io',
                 headers: [
-                  { from: 'Content-Type', to: 'application/xml' },
-                  { from: 'test2', to: 'value2' },
+                  {
+                    from: 'Content-Type',
+                    to: 'application/xml',
+                  },
+                  {
+                    from: 'test2',
+                    to: 'value2',
+                  },
                 ],
               },
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                },
+              },
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -1005,12 +1276,6 @@ export const data = [
         body: [
           {
             output: {
-              version: '1',
-              type: 'REST',
-              method: 'POST',
-              endpoint: 'http://6b0e6a60.ngrok.io',
-              headers: { 'content-type': 'application/xml', test2: 'value2' },
-              params: {},
               body: {
                 JSON: {
                   anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
@@ -1021,16 +1286,26 @@ export const data = [
                       model: 'Redmi 6',
                       name: 'xiaomi',
                     },
-                    network: { carrier: 'Banglalink' },
-                    os: { name: 'android', version: '8.1.0' },
+                    network: {
+                      carrier: 'Banglalink',
+                    },
+                    os: {
+                      name: 'android',
+                      version: '8.1.0',
+                    },
                     traits: {
-                      address: { city: 'Dhaka', country: 'Bangladesh' },
+                      address: {
+                        city: 'Dhaka',
+                        country: 'Bangladesh',
+                      },
                       anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                     },
                     ip: '127.0.0.1',
                   },
                   event: 'spin_result',
-                  integrations: { All: true },
+                  integrations: {
+                    All: true,
+                  },
                   message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
                   properties: {
                     additional_bet_index: 0,
@@ -1074,12 +1349,25 @@ export const data = [
                   type: 'track',
                   request_ip: '127.0.0.1',
                 },
-                XML: {},
                 JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
-              files: {},
+              version: '1',
               userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'http://6b0e6a60.ngrok.io',
+              headers: {
+                'content-type': 'application/xml',
+                test2: 'value2',
+              },
+              params: {},
+              files: {},
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
             statusCode: 200,
           },
@@ -1100,7 +1388,9 @@ export const data = [
             message: {
               anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               event: 'spin_result',
-              integrations: { All: true },
+              integrations: {
+                All: true,
+              },
               message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
               properties: {
                 additional_bet_index: 0,
@@ -1147,14 +1437,28 @@ export const data = [
               Config: {
                 webhookUrl: 'http://6b0e6a60.ngrok.io',
                 headers: [
-                  { from: 'Content-Type', to: 'application/xml' },
-                  { from: 'test2', to: 'value2' },
+                  {
+                    from: 'Content-Type',
+                    to: 'application/xml',
+                  },
+                  {
+                    from: 'test2',
+                    to: 'value2',
+                  },
                 ],
               },
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                },
+              },
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -1163,17 +1467,13 @@ export const data = [
         body: [
           {
             output: {
-              version: '1',
-              type: 'REST',
-              method: 'POST',
-              endpoint: 'http://6b0e6a60.ngrok.io',
-              headers: { 'content-type': 'application/xml', test2: 'value2' },
-              params: {},
               body: {
                 JSON: {
                   anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                   event: 'spin_result',
-                  integrations: { All: true },
+                  integrations: {
+                    All: true,
+                  },
                   message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
                   properties: {
                     additional_bet_index: 0,
@@ -1216,12 +1516,25 @@ export const data = [
                   timestamp: '2019-09-01T15:46:51.693229+05:30',
                   type: 'track',
                 },
-                XML: {},
                 JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
-              files: {},
+              version: '1',
               userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'http://6b0e6a60.ngrok.io',
+              headers: {
+                'content-type': 'application/xml',
+                test2: 'value2',
+              },
+              params: {},
+              files: {},
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
             statusCode: 200,
           },
@@ -1248,15 +1561,25 @@ export const data = [
                   model: 'Redmi 6',
                   name: 'xiaomi',
                 },
-                network: { carrier: 'Banglalink' },
-                os: { name: 'android', version: '8.1.0' },
+                network: {
+                  carrier: 'Banglalink',
+                },
+                os: {
+                  name: 'android',
+                  version: '8.1.0',
+                },
                 traits: {
-                  address: { city: 'Dhaka', country: 'Bangladesh' },
+                  address: {
+                    city: 'Dhaka',
+                    country: 'Bangladesh',
+                  },
                   anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                 },
               },
               event: 'spin_result',
-              integrations: { All: true },
+              integrations: {
+                All: true,
+              },
               message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
               properties: {
                 additional_bet_index: 0,
@@ -1269,7 +1592,9 @@ export const data = [
               header: {
                 dynamic_header_key_string: 'dynamic_header_value_string',
                 dynamic_header_key_num: 10,
-                dynamic_header_key_object: { k1: 'v1' },
+                dynamic_header_key_object: {
+                  k1: 'v1',
+                },
               },
               appendPath: '/product/search?string=value',
             },
@@ -1277,14 +1602,28 @@ export const data = [
               Config: {
                 webhookUrl: 'http://6b0e6a60.ngrok.io',
                 headers: [
-                  { from: '', to: '' },
-                  { from: 'test2', to: 'value2' },
+                  {
+                    from: '',
+                    to: '',
+                  },
+                  {
+                    from: 'test2',
+                    to: 'value2',
+                  },
                 ],
               },
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                },
+              },
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -1294,8 +1633,6 @@ export const data = [
           {
             output: {
               body: {
-                XML: {},
-                JSON_ARRAY: {},
                 JSON: {
                   anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                   context: {
@@ -1305,15 +1642,25 @@ export const data = [
                       model: 'Redmi 6',
                       name: 'xiaomi',
                     },
-                    network: { carrier: 'Banglalink' },
-                    os: { name: 'android', version: '8.1.0' },
+                    network: {
+                      carrier: 'Banglalink',
+                    },
+                    os: {
+                      name: 'android',
+                      version: '8.1.0',
+                    },
                     traits: {
-                      address: { city: 'Dhaka', country: 'Bangladesh' },
+                      address: {
+                        city: 'Dhaka',
+                        country: 'Bangladesh',
+                      },
                       anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                     },
                   },
                   event: 'spin_result',
-                  integrations: { All: true },
+                  integrations: {
+                    All: true,
+                  },
                   message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
                   properties: {
                     additional_bet_index: 0,
@@ -1324,20 +1671,26 @@ export const data = [
                   timestamp: '2019-09-01T15:46:51.693229+05:30',
                   type: 'track',
                 },
+                JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
-              files: {},
-              endpoint: 'http://6b0e6a60.ngrok.io/product/search?string=value',
+              version: '1',
               userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'http://6b0e6a60.ngrok.io/product/search?string=value',
               headers: {
                 'content-type': 'application/json',
                 test2: 'value2',
                 dynamic_header_key_string: 'dynamic_header_value_string',
               },
-              version: '1',
               params: {},
-              type: 'REST',
-              method: 'POST',
+              files: {},
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
             statusCode: 200,
           },
@@ -1364,15 +1717,25 @@ export const data = [
                   model: 'Redmi 6',
                   name: 'xiaomi',
                 },
-                network: { carrier: 'Banglalink' },
-                os: { name: 'android', version: '8.1.0' },
+                network: {
+                  carrier: 'Banglalink',
+                },
+                os: {
+                  name: 'android',
+                  version: '8.1.0',
+                },
                 traits: {
-                  address: { city: 'Dhaka', country: 'Bangladesh' },
+                  address: {
+                    city: 'Dhaka',
+                    country: 'Bangladesh',
+                  },
                   anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                 },
               },
               event: 'spin_result',
-              integrations: { All: true },
+              integrations: {
+                All: true,
+              },
               message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
               properties: {
                 additional_bet_index: 0,
@@ -1388,14 +1751,28 @@ export const data = [
               Config: {
                 webhookUrl: 'http://6b0e6a60.ngrok.io',
                 headers: [
-                  { from: '', to: '' },
-                  { from: 'test2', to: 'value2' },
+                  {
+                    from: '',
+                    to: '',
+                  },
+                  {
+                    from: 'test2',
+                    to: 'value2',
+                  },
                 ],
               },
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                },
+              },
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -1405,8 +1782,6 @@ export const data = [
           {
             output: {
               body: {
-                XML: {},
-                JSON_ARRAY: {},
                 JSON: {
                   anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                   context: {
@@ -1416,15 +1791,25 @@ export const data = [
                       model: 'Redmi 6',
                       name: 'xiaomi',
                     },
-                    network: { carrier: 'Banglalink' },
-                    os: { name: 'android', version: '8.1.0' },
+                    network: {
+                      carrier: 'Banglalink',
+                    },
+                    os: {
+                      name: 'android',
+                      version: '8.1.0',
+                    },
                     traits: {
-                      address: { city: 'Dhaka', country: 'Bangladesh' },
+                      address: {
+                        city: 'Dhaka',
+                        country: 'Bangladesh',
+                      },
                       anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                     },
                   },
                   event: 'spin_result',
-                  integrations: { All: true },
+                  integrations: {
+                    All: true,
+                  },
                   message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
                   properties: {
                     additional_bet_index: 0,
@@ -1435,16 +1820,25 @@ export const data = [
                   timestamp: '2019-09-01T15:46:51.693229+05:30',
                   type: 'track',
                 },
+                JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
-              files: {},
-              endpoint: 'https://www.google.com',
-              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-              headers: { 'content-type': 'application/json', test2: 'value2' },
               version: '1',
-              params: {},
+              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               type: 'REST',
               method: 'POST',
+              endpoint: 'https://www.google.com',
+              headers: {
+                'content-type': 'application/json',
+                test2: 'value2',
+              },
+              params: {},
+              files: {},
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
             statusCode: 200,
           },
@@ -1471,15 +1865,25 @@ export const data = [
                   model: 'Redmi 6',
                   name: 'xiaomi',
                 },
-                network: { carrier: 'Banglalink' },
-                os: { name: 'android', version: '8.1.0' },
+                network: {
+                  carrier: 'Banglalink',
+                },
+                os: {
+                  name: 'android',
+                  version: '8.1.0',
+                },
                 traits: {
-                  address: { city: 'Dhaka', country: 'Bangladesh' },
+                  address: {
+                    city: 'Dhaka',
+                    country: 'Bangladesh',
+                  },
                   anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                 },
               },
               event: 'spin_result',
-              integrations: { All: true },
+              integrations: {
+                All: true,
+              },
               message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
               properties: {
                 additional_bet_index: 0,
@@ -1496,14 +1900,28 @@ export const data = [
               Config: {
                 webhookUrl: 'http://6b0e6a60.ngrok.io',
                 headers: [
-                  { from: '', to: '' },
-                  { from: 'test2', to: 'value2' },
+                  {
+                    from: '',
+                    to: '',
+                  },
+                  {
+                    from: 'test2',
+                    to: 'value2',
+                  },
                 ],
               },
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                },
+              },
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -1513,8 +1931,6 @@ export const data = [
           {
             output: {
               body: {
-                XML: {},
-                JSON_ARRAY: {},
                 JSON: {
                   anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                   context: {
@@ -1524,15 +1940,25 @@ export const data = [
                       model: 'Redmi 6',
                       name: 'xiaomi',
                     },
-                    network: { carrier: 'Banglalink' },
-                    os: { name: 'android', version: '8.1.0' },
+                    network: {
+                      carrier: 'Banglalink',
+                    },
+                    os: {
+                      name: 'android',
+                      version: '8.1.0',
+                    },
                     traits: {
-                      address: { city: 'Dhaka', country: 'Bangladesh' },
+                      address: {
+                        city: 'Dhaka',
+                        country: 'Bangladesh',
+                      },
                       anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                     },
                   },
                   event: 'spin_result',
-                  integrations: { All: true },
+                  integrations: {
+                    All: true,
+                  },
                   message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
                   properties: {
                     additional_bet_index: 0,
@@ -1543,16 +1969,25 @@ export const data = [
                   timestamp: '2019-09-01T15:46:51.693229+05:30',
                   type: 'track',
                 },
+                JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
-              files: {},
-              endpoint: 'https://www.google.com/?searchTerms=cats',
-              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-              headers: { 'content-type': 'application/json', test2: 'value2' },
               version: '1',
-              params: {},
+              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               type: 'REST',
               method: 'POST',
+              endpoint: 'https://www.google.com/?searchTerms=cats',
+              headers: {
+                'content-type': 'application/json',
+                test2: 'value2',
+              },
+              params: {},
+              files: {},
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
             statusCode: 200,
           },
@@ -1579,15 +2014,25 @@ export const data = [
                   model: 'Redmi 6',
                   name: 'xiaomi',
                 },
-                network: { carrier: 'Banglalink' },
-                os: { name: 'android', version: '8.1.0' },
+                network: {
+                  carrier: 'Banglalink',
+                },
+                os: {
+                  name: 'android',
+                  version: '8.1.0',
+                },
                 traits: {
-                  address: { city: 'Dhaka', country: 'Bangladesh' },
+                  address: {
+                    city: 'Dhaka',
+                    country: 'Bangladesh',
+                  },
                   anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                 },
               },
               event: 'spin_result',
-              integrations: { All: true },
+              integrations: {
+                All: true,
+              },
               message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
               properties: {
                 additional_bet_index: 0,
@@ -1605,14 +2050,28 @@ export const data = [
                 webhookUrl: 'http://6b0e6a60.ngrok.io',
                 webhookMethod: 'PUT',
                 headers: [
-                  { from: '', to: '' },
-                  { from: 'test2', to: 'value2' },
+                  {
+                    from: '',
+                    to: '',
+                  },
+                  {
+                    from: 'test2',
+                    to: 'value2',
+                  },
                 ],
               },
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                },
+              },
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -1622,8 +2081,6 @@ export const data = [
           {
             output: {
               body: {
-                XML: {},
-                JSON_ARRAY: {},
                 JSON: {
                   anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                   context: {
@@ -1633,15 +2090,25 @@ export const data = [
                       model: 'Redmi 6',
                       name: 'xiaomi',
                     },
-                    network: { carrier: 'Banglalink' },
-                    os: { name: 'android', version: '8.1.0' },
+                    network: {
+                      carrier: 'Banglalink',
+                    },
+                    os: {
+                      name: 'android',
+                      version: '8.1.0',
+                    },
                     traits: {
-                      address: { city: 'Dhaka', country: 'Bangladesh' },
+                      address: {
+                        city: 'Dhaka',
+                        country: 'Bangladesh',
+                      },
                       anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                     },
                   },
                   event: 'spin_result',
-                  integrations: { All: true },
+                  integrations: {
+                    All: true,
+                  },
                   message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
                   properties: {
                     additional_bet_index: 0,
@@ -1652,16 +2119,25 @@ export const data = [
                   timestamp: '2019-09-01T15:46:51.693229+05:30',
                   type: 'track',
                 },
+                JSON_ARRAY: {},
+                XML: {},
                 FORM: {},
               },
-              files: {},
-              endpoint: 'https://www.google.com/?searchTerms=cats',
-              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-              headers: { 'content-type': 'application/json', test2: 'value2' },
               version: '1',
-              params: {},
+              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               type: 'REST',
               method: 'PUT',
+              endpoint: 'https://www.google.com/?searchTerms=cats',
+              headers: {
+                'content-type': 'application/json',
+                test2: 'value2',
+              },
+              params: {},
+              files: {},
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
             statusCode: 200,
           },
@@ -1688,15 +2164,25 @@ export const data = [
                   model: 'Redmi 6',
                   name: 'xiaomi',
                 },
-                network: { carrier: 'Banglalink' },
-                os: { name: 'android', version: '8.1.0' },
+                network: {
+                  carrier: 'Banglalink',
+                },
+                os: {
+                  name: 'android',
+                  version: '8.1.0',
+                },
                 traits: {
-                  address: { city: 'Dhaka', country: 'Bangladesh' },
+                  address: {
+                    city: 'Dhaka',
+                    country: 'Bangladesh',
+                  },
                   anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                 },
               },
               event: 'spin_result',
-              integrations: { All: true },
+              integrations: {
+                All: true,
+              },
               message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
               properties: {
                 additional_bet_index: 0,
@@ -1714,14 +2200,28 @@ export const data = [
                 webhookUrl: 'http://6b0e6a60.ngrok.io',
                 webhookMethod: 'DELETE',
                 headers: [
-                  { from: '', to: '' },
-                  { from: 'test2', to: 'value2' },
+                  {
+                    from: '',
+                    to: '',
+                  },
+                  {
+                    from: 'test2',
+                    to: 'value2',
+                  },
                 ],
               },
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                },
+              },
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -1730,20 +2230,31 @@ export const data = [
         body: [
           {
             output: {
-              body: { XML: {}, JSON_ARRAY: {}, JSON: {}, FORM: {} },
-              files: {},
-              endpoint: 'https://www.google.com/?searchTerms=cats',
-              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-              headers: { test2: 'value2' },
+              body: {
+                JSON: {},
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
               version: '1',
+              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              type: 'REST',
+              method: 'DELETE',
+              endpoint: 'https://www.google.com/?searchTerms=cats',
+              headers: {
+                test2: 'value2',
+              },
               params: {
                 additional_bet_index: 0,
                 battle_id: 'N/A',
                 featureGameType: 'N/A',
                 win_amount: 0,
               },
-              type: 'REST',
-              method: 'DELETE',
+              files: {},
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
             statusCode: 200,
           },
@@ -1770,15 +2281,25 @@ export const data = [
                   model: 'Redmi 6',
                   name: 'xiaomi',
                 },
-                network: { carrier: 'Banglalink' },
-                os: { name: 'android', version: '8.1.0' },
+                network: {
+                  carrier: 'Banglalink',
+                },
+                os: {
+                  name: 'android',
+                  version: '8.1.0',
+                },
                 traits: {
-                  address: { city: 'Dhaka', country: 'Bangladesh' },
+                  address: {
+                    city: 'Dhaka',
+                    country: 'Bangladesh',
+                  },
                   anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                 },
               },
               event: 'spin_result',
-              integrations: { All: true },
+              integrations: {
+                All: true,
+              },
               message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
               properties: {
                 additional_bet_index: 0,
@@ -1845,12 +2366,25 @@ export const data = [
               Config: {
                 webhookUrl: 'http://6b0e6a60.ngrok.io',
                 webhookMethod: 'POST',
-                headers: [{ from: 'test2', to: 'value2' }],
+                headers: [
+                  {
+                    from: 'test2',
+                    to: 'value2',
+                  },
+                ],
               },
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                },
+              },
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -1860,7 +2394,6 @@ export const data = [
           {
             output: {
               body: {
-                FORM: {},
                 JSON: {
                   anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                   context: {
@@ -1870,15 +2403,25 @@ export const data = [
                       model: 'Redmi 6',
                       name: 'xiaomi',
                     },
-                    network: { carrier: 'Banglalink' },
-                    os: { name: 'android', version: '8.1.0' },
+                    network: {
+                      carrier: 'Banglalink',
+                    },
+                    os: {
+                      name: 'android',
+                      version: '8.1.0',
+                    },
                     traits: {
-                      address: { city: 'Dhaka', country: 'Bangladesh' },
+                      address: {
+                        city: 'Dhaka',
+                        country: 'Bangladesh',
+                      },
                       anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                     },
                   },
                   event: 'spin_result',
-                  integrations: { All: true },
+                  integrations: {
+                    All: true,
+                  },
                   message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
                   properties: {
                     additional_bet_index: 0,
@@ -1943,15 +2486,23 @@ export const data = [
                 },
                 JSON_ARRAY: {},
                 XML: {},
+                FORM: {},
               },
-              endpoint: 'http://6b0e6a60.ngrok.io',
-              files: {},
-              headers: { 'content-type': 'application/json', test2: 'value2' },
-              method: 'POST',
-              params: {},
-              type: 'REST',
-              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               version: '1',
+              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'http://6b0e6a60.ngrok.io',
+              headers: {
+                'content-type': 'application/json',
+                test2: 'value2',
+              },
+              params: {},
+              files: {},
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
             statusCode: 200,
           },
@@ -1978,15 +2529,25 @@ export const data = [
                   model: 'Redmi 6',
                   name: 'xiaomi',
                 },
-                network: { carrier: 'Banglalink' },
-                os: { name: 'android', version: '8.1.0' },
+                network: {
+                  carrier: 'Banglalink',
+                },
+                os: {
+                  name: 'android',
+                  version: '8.1.0',
+                },
                 traits: {
-                  address: { city: 'Dhaka', country: 'Bangladesh' },
+                  address: {
+                    city: 'Dhaka',
+                    country: 'Bangladesh',
+                  },
                   anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                 },
               },
               event: 'spin_result',
-              integrations: { All: true },
+              integrations: {
+                All: true,
+              },
               message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
               properties: {
                 additional_bet_index: 0,
@@ -2053,12 +2614,25 @@ export const data = [
               Config: {
                 webhookUrl: 'http://6b0e6a60.ngrok.io',
                 webhookMethod: 'PATCH',
-                headers: [{ from: 'test2', to: 'value2' }],
+                headers: [
+                  {
+                    from: 'test2',
+                    to: 'value2',
+                  },
+                ],
               },
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                },
+              },
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
           },
         ],
-        method: 'POST',
       },
     },
     output: {
@@ -2068,7 +2642,6 @@ export const data = [
           {
             output: {
               body: {
-                FORM: {},
                 JSON: {
                   anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                   context: {
@@ -2078,15 +2651,25 @@ export const data = [
                       model: 'Redmi 6',
                       name: 'xiaomi',
                     },
-                    network: { carrier: 'Banglalink' },
-                    os: { name: 'android', version: '8.1.0' },
+                    network: {
+                      carrier: 'Banglalink',
+                    },
+                    os: {
+                      name: 'android',
+                      version: '8.1.0',
+                    },
                     traits: {
-                      address: { city: 'Dhaka', country: 'Bangladesh' },
+                      address: {
+                        city: 'Dhaka',
+                        country: 'Bangladesh',
+                      },
                       anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                     },
                   },
                   event: 'spin_result',
-                  integrations: { All: true },
+                  integrations: {
+                    All: true,
+                  },
                   message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
                   properties: {
                     additional_bet_index: 0,
@@ -2151,15 +2734,23 @@ export const data = [
                 },
                 JSON_ARRAY: {},
                 XML: {},
+                FORM: {},
               },
-              endpoint: 'http://6b0e6a60.ngrok.io',
-              files: {},
-              headers: { 'content-type': 'application/json', test2: 'value2' },
-              method: 'PATCH',
-              params: {},
-              type: 'REST',
-              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               version: '1',
+              userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              type: 'REST',
+              method: 'PATCH',
+              endpoint: 'http://6b0e6a60.ngrok.io',
+              headers: {
+                'content-type': 'application/json',
+                test2: 'value2',
+              },
+              params: {},
+              files: {},
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
             },
             statusCode: 200,
           },

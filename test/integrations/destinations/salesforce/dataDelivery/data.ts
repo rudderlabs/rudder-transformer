@@ -119,7 +119,6 @@ export const data = [
         body: {
           output: {
             status: 500,
-            authErrorCategory: 'REFRESH_TOKEN',
             message:
               'Salesforce Request Failed - due to "INVALID_SESSION_ID", (Retryable) during Salesforce Response Handling',
             destinationResponse: {

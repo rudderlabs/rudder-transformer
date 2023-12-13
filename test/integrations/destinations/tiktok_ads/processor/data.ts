@@ -4660,4 +4660,296 @@ export const data = [
       },
     },
   },
+  {
+    name: 'tiktok_ads',
+    description: 'Test 29 -> custom_event Pass',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: '21e13f4bc7ceddad',
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                userAgent:
+                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                ip: '13.57.97.131',
+                locale: 'en-US',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                screen: {
+                  density: 2,
+                },
+                externalId: [
+                  {
+                    type: 'tiktokExternalId',
+                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                  },
+                ],
+              },
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
+              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+              originalTimestamp: '2019-10-14T09:03:17.562Z',
+              timestamp: '2020-09-17T19:49:27Z',
+              type: 'track',
+              event: 'custom_event',
+              properties: {
+                eventId: '1616318632825_357',
+                contents: [
+                  {
+                    price: 8,
+                    quantity: 2,
+                    content_type: 'socks',
+                    content_id: '1077218',
+                  },
+                  {
+                    price: 30,
+                    quantity: 1,
+                    content_type: 'dress',
+                    content_id: '1197218',
+                  },
+                ],
+                clickId: 'dummyclickId',
+                currency: 'USD',
+                value: 46,
+                context: {
+                  ad: {
+                    callback: '123ATXSfe',
+                  },
+                  page: {
+                    url: 'http://demo.mywebsite.com/purchase',
+                    referrer: 'http://demo.mywebsite.com',
+                  },
+                  user: {
+                    phone_number:
+                      '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
+                    email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
+                  },
+                },
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T09:03:22.563Z',
+            },
+            destination: {
+              Config: {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'A1T8T4UYGVIQA8ORZMX9',
+                hashUserProperties: false,
+                sendCustomEvents: true,
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+              headers: {
+                'Access-Token': 'dummyAccessToken',
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
+                  event: 'custom_event',
+                  event_id: '1616318632825_357',
+                  timestamp: '2020-09-17T19:49:27Z',
+                  properties: {
+                    contents: [
+                      {
+                        price: 8,
+                        quantity: 2,
+                        content_type: 'socks',
+                        content_id: '1077218',
+                      },
+                      {
+                        price: 30,
+                        quantity: 1,
+                        content_type: 'dress',
+                        content_id: '1197218',
+                      },
+                    ],
+                    currency: 'USD',
+                    value: 46,
+                  },
+                  context: {
+                    ad: {
+                      callback: 'dummyclickId',
+                    },
+                    page: {
+                      url: 'http://demo.mywebsite.com/purchase',
+                      referrer: 'http://demo.mywebsite.com',
+                    },
+                    user: {
+                      phone_number:
+                        '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
+                      email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
+                      external_id:
+                        'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                    },
+                    ip: '13.57.97.131',
+                    user_agent:
+                      'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                  },
+                  partner_name: 'RudderStack',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'tiktok_ads',
+    description: 'Test 30 -> custom_event Failure case for flag set as false',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: '21e13f4bc7ceddad',
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                userAgent:
+                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                ip: '13.57.97.131',
+                locale: 'en-US',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                screen: {
+                  density: 2,
+                },
+                externalId: [
+                  {
+                    type: 'tiktokExternalId',
+                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                  },
+                ],
+              },
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
+              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+              originalTimestamp: '2019-10-14T09:03:17.562Z',
+              timestamp: '2020-09-17T19:49:27Z',
+              type: 'track',
+              event: 'custom_event',
+              properties: {
+                eventId: '1616318632825_357',
+                contents: [
+                  {
+                    price: 8,
+                    quantity: 2,
+                    content_type: 'socks',
+                    content_id: '1077218',
+                  },
+                  {
+                    price: 30,
+                    quantity: 1,
+                    content_type: 'dress',
+                    content_id: '1197218',
+                  },
+                ],
+                clickId: 'dummyclickId',
+                currency: 'USD',
+                value: 46,
+                context: {
+                  ad: {
+                    callback: '123ATXSfe',
+                  },
+                  page: {
+                    url: 'http://demo.mywebsite.com/purchase',
+                    referrer: 'http://demo.mywebsite.com',
+                  },
+                  user: {
+                    phone_number:
+                      '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
+                    email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
+                  },
+                },
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T09:03:22.563Z',
+            },
+            destination: {
+              Config: {
+                accessToken: 'dummyAccessToken',
+                pixelCode: 'A1T8T4UYGVIQA8ORZMX9',
+                hashUserProperties: false,
+                sendCustomEvents: false,
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            statusCode: 400,
+            error:
+              'Event name (custom_event) is not valid, must be mapped to one of standard events',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'TIKTOK_ADS',
+              module: 'destination',
+              implementation: 'native',
+              feature: 'processor',
+            },
+          },
+        ],
+      },
+    },
+  },
 ];

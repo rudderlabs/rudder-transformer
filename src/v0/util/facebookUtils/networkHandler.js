@@ -195,6 +195,9 @@ const errorDetailsMap = {
       .setMessage('There have been too many calls to this ad-account.')
       .build(),
   },
+  200: {
+    default: new ErrorDetailsExtractorBuilder().setStatus(403).setMessageField('message').build(),
+  },
 };
 
 const getErrorDetailsFromErrorMap = (error) => {

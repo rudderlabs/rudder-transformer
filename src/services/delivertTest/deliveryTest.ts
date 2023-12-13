@@ -7,17 +7,18 @@ import stats from '../../util/stats';
 import logger from '../../logger';
 import tags from '../../v0/util/tags';
 
-export default class DeliveryTestService {
+export class DeliveryTestService {
   public static async doTestDelivery(
     destination: string,
     routerDestReqPayload: any,
     routerDeliveryPayload: any,
+    version,
   ) {
     let response: any;
     try {
-      const destNetworkHandler = networkHandlerFactory.getNetworkHandler(destination);
+      const { networkHandler } = networkHandlerFactory.getNetworkHandler(destination, version);
 
-      const proxyDestReqPayload = destNetworkHandler.prepareProxy(routerDeliveryPayload);
+      const proxyDestReqPayload = networkHandler.prepareProxy(routerDeliveryPayload);
       response = {
         destinationRequestPayload: proxyDestReqPayload,
       };

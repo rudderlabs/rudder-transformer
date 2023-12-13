@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { ConfigFactory, Executor, RudderBaseConfig } from 'rudder-transformer-cdk';
 import path from 'path';
-import IntegrationDestinationService from '../../interfaces/DestinationService';
+import { TransformationError } from '@rudderstack/integrations-lib';
+import { DestinationService } from '../../interfaces/DestinationService';
 import {
   DeliveryResponse,
   ErrorDetailer,
@@ -10,17 +11,17 @@ import {
   ProcessorTransformationResponse,
   RouterTransformationRequestData,
   RouterTransformationResponse,
-  ProcessorTransformationOutput,
   UserDeletionRequest,
   UserDeletionResponse,
+  ProxyRequest,
+  DeliveriesResponse,
 } from '../../types/index';
-import { TransformationError } from '../../v0/util/errorTypes';
-import DestinationPostTransformationService from './postTransformation';
+import { DestinationPostTransformationService } from './postTransformation';
 import tags from '../../v0/util/tags';
 import { getErrorInfo } from '../../cdk/v1/handler';
 import { CatchErr } from '../../util/types';
 
-export default class CDKV1DestinationService implements IntegrationDestinationService {
+export class CDKV1DestinationService implements DestinationService {
   public init() {
     ConfigFactory.init({
       basePath: path.resolve(__dirname, '../../cdk/v1'),
@@ -117,10 +118,10 @@ export default class CDKV1DestinationService implements IntegrationDestinationSe
   }
 
   public deliver(
-    _event: ProcessorTransformationOutput,
+    _event: ProxyRequest,
     _destinationType: string,
     _requestMetadata: NonNullable<unknown>,
-  ): Promise<DeliveryResponse> {
+  ): Promise<DeliveryResponse | DeliveriesResponse> {
     throw new TransformationError('CDV1 Does not Implement Delivery Routine');
   }
 

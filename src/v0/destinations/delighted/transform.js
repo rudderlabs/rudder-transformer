@@ -1,3 +1,8 @@
+const {
+  InstrumentationError,
+  ConfigurationError,
+  NetworkInstrumentationError,
+} = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   getFieldValueFromMessage,
@@ -20,11 +25,6 @@ const {
   userValidity,
 } = require('./util');
 const { ENDPOINT, TRACKING_EXCLUSION_FIELDS, identifyMapping } = require('./config');
-const {
-  InstrumentationError,
-  ConfigurationError,
-  NetworkInstrumentationError,
-} = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const identifyResponseBuilder = (message, { Config }) => {

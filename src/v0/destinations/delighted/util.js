@@ -1,11 +1,11 @@
-const myAxios = require('../../../util/myAxios');
-const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
-const { getValueFromMessage } = require('../../util');
 const {
   NetworkInstrumentationError,
   InstrumentationError,
   NetworkError,
-} = require('../../util/errorTypes');
+} = require('@rudderstack/integrations-lib');
+const myAxios = require('../../../util/myAxios');
+const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
+const { getValueFromMessage } = require('../../util');
 const { ENDPOINT } = require('./config');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');

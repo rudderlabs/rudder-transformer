@@ -1,13 +1,14 @@
 /* eslint-disable class-methods-use-this */
-import IntegrationDestinationService from '../interfaces/DestinationService';
+import { DestinationService } from '../interfaces/DestinationService';
 import {
+  DeliveriesResponse,
   DeliveryResponse,
   Destination,
   ErrorDetailer,
   MetaTransferObject,
-  ProcessorTransformationOutput,
   ProcessorTransformationRequest,
   ProcessorTransformationResponse,
+  ProxyRequest,
   RouterTransformationRequestData,
   RouterTransformationResponse,
   UserDeletionRequest,
@@ -20,15 +21,12 @@ import { CommonUtils } from '../util/common';
 
 const NS_PER_SEC = 1e9;
 
-export default class ComparatorService implements IntegrationDestinationService {
-  secondaryService: IntegrationDestinationService;
+export class ComparatorService implements DestinationService {
+  secondaryService: DestinationService;
 
-  primaryService: IntegrationDestinationService;
+  primaryService: DestinationService;
 
-  constructor(
-    primaryService: IntegrationDestinationService,
-    secondaryService: IntegrationDestinationService,
-  ) {
+  constructor(primaryService: DestinationService, secondaryService: DestinationService) {
     this.primaryService = primaryService;
     this.secondaryService = secondaryService;
   }
@@ -368,17 +366,18 @@ export default class ComparatorService implements IntegrationDestinationService 
   }
 
   public async deliver(
-    event: ProcessorTransformationOutput,
+    event: ProxyRequest,
     destinationType: string,
     requestMetadata: NonNullable<unknown>,
-  ): Promise<DeliveryResponse> {
+    version: string,
+  ): Promise<DeliveryResponse | DeliveriesResponse> {
     const primaryResplist = await this.primaryService.deliver(
       event,
       destinationType,
       requestMetadata,
+      version,
     );
     logger.error('[LIVE_COMPARE_TEST] not implemented for delivery routine');
-
     return primaryResplist;
   }
 

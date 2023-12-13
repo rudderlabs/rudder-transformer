@@ -16,16 +16,16 @@ const uaParser = require('ua-parser-js');
 const moment = require('moment-timezone');
 const sha256 = require('sha256');
 const crypto = require('crypto');
-const logger = require('../../logger');
-const stats = require('../../util/stats');
-const { DestCanonicalNames, DestHandlerMap } = require('../../constants/destinationCanonicalNames');
 const {
   InstrumentationError,
   BaseError,
   PlatformError,
   TransformationError,
   OAuthSecretError,
-} = require('./errorTypes');
+} = require('@rudderstack/integrations-lib');
+const logger = require('../../logger');
+const stats = require('../../util/stats');
+const { DestCanonicalNames, DestHandlerMap } = require('../../constants/destinationCanonicalNames');
 const { client: errNotificationClient } = require('../../util/errorNotifier');
 const { HTTP_STATUS_CODES } = require('./constant');
 const {
@@ -83,7 +83,7 @@ const isPrimitive = (arg) => {
 const isNewStatusCodesAccepted = (reqMetadata = {}) => {
   if (reqMetadata && typeof reqMetadata === 'object' && !Array.isArray(reqMetadata)) {
     const { features } = reqMetadata;
-    return !!(features && features[FEATURE_FILTER_CODE]);
+    return !!features?.[FEATURE_FILTER_CODE];
   }
   return false;
 };
@@ -1403,6 +1403,12 @@ const getMetadata = (metadata) => ({
   destinationType: metadata.destinationType,
   k8_namespace: metadata.namespace,
 });
+
+const getTransformationMetadata = (metadata) => ({
+  transformationId: metadata.transformationId,
+  workspaceId: metadata.workspaceId,
+});
+
 // checks if array 2 is a subset of array 1
 function checkSubsetOfArray(array1, array2) {
   const result = array2.every((val) => array1.includes(val));
@@ -2053,7 +2059,17 @@ const getAuthErrCategoryFromStCode = (status) => {
   return '';
 };
 
-const validateEventType = (event) => {
+const isValidInteger = (value) => {
+  if (Number.isNaN(value) || !isDefinedAndNotNull(value)) {
+    return false;
+  }
+  if (typeof value === 'number' && value % 1 === 0) {
+    return true;
+  }
+  // Use a regular expression to check if the string is a valid integer or a valid floating-point number
+  return typeof value === 'string' ? /^-?\d+$/.test(value) : false;
+};
+const validateEventName = (event) => {
   if (!event || typeof event !== 'string') {
     throw new InstrumentationError('Event is a required field and should be a string');
   }
@@ -2065,6 +2081,31 @@ const IsGzipSupported = (reqMetadata = {}) => {
     return !!features?.[FEATURE_GZIP_SUPPORT];
   }
   return false;
+};
+
+/**
+ * Returns an array containing the values of the specified key from each object in the input array.
+ * If the input array is falsy (null, undefined, empty array), an empty array is returned.
+ *
+ * @param {Array} arr - The input array from which values will be extracted.
+ * @param {string} key - The key of the property whose values will be extracted from each object in the input array.
+ * @returns {Array} - A new array containing the values of the specified key from each object in the input array.
+ *
+ * @example
+ * const configArray = [
+ *   { name: 'John', age: 25 },
+ *   { name: 'Jane', age: 30 },
+ *   { name: 'Bob', age: 35 }
+ * ];
+ *
+ * const result = parseConfigArray(configArray, 'name');
+ *  Output: ['John', 'Jane', 'Bob']
+ */
+const parseConfigArray = (arr, key) => {
+  if (!arr) {
+    return [];
+  }
+  return arr.map((item) => item[key]);
 };
 
 // ========================================================================
@@ -2113,6 +2154,7 @@ module.exports = {
   getIntegrationsObj,
   getMappingConfig,
   getMetadata,
+  getTransformationMetadata,
   getParsedIP,
   getStringValueOfJSON,
   getSuccessRespEvents,
@@ -2160,7 +2202,7 @@ module.exports = {
   getDestAuthCacheInstance,
   refinePayload,
   validateEmail,
-  validateEventType,
+  validateEventName,
   validatePhoneWithCountryCode,
   getEventReqMetadata,
   isHybridModeEnabled,
@@ -2172,6 +2214,8 @@ module.exports = {
   hasCircularReference,
   getAuthErrCategoryFromErrDetailsAndStCode,
   getAuthErrCategoryFromStCode,
+  isValidInteger,
   isNewStatusCodesAccepted,
   IsGzipSupported,
+  parseConfigArray,
 };

@@ -1,11 +1,14 @@
 /* eslint-disable no-param-reassign */
 const get = require('get-value');
 const moment = require('moment');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const stats = require('../../../util/stats');
 const {
+  VERSION,
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   FB_PIXEL_DEFAULT_EXCLUSION,
+  FB_PIXEL_CUSTOM_DATA_EXCLUDE_FLATTENING,
   STANDARD_ECOMM_EVENTS_TYPE,
 } = require('./config');
 const { EventType } = require('../../../constants');
@@ -36,8 +39,6 @@ const {
   formingFinalResponse,
 } = require('../../util/facebookUtils');
 
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
-
 const responseBuilderSimple = (message, category, destination) => {
   const { Config, ID } = destination;
   const { pixelId, accessToken } = Config;
@@ -65,7 +66,7 @@ const responseBuilderSimple = (message, category, destination) => {
   } = Config;
   const integrationsObj = getIntegrationsObj(message, 'fb_pixel');
 
-  const endpoint = `https://graph.facebook.com/v17.0/${pixelId}/events?access_token=${accessToken}`;
+  const endpoint = `https://graph.facebook.com/${VERSION}/${pixelId}/events?access_token=${accessToken}`;
 
   const userData = fetchUserData(
     message,
@@ -85,7 +86,12 @@ const responseBuilderSimple = (message, category, destination) => {
 
   if (category.type !== 'identify') {
     customData = flattenJson(
-      extractCustomFields(message, customData, ['properties'], FB_PIXEL_DEFAULT_EXCLUSION),
+      extractCustomFields(
+        message,
+        customData,
+        ['properties'],
+        [...FB_PIXEL_DEFAULT_EXCLUSION, ...FB_PIXEL_CUSTOM_DATA_EXCLUDE_FLATTENING],
+      ),
     );
     if (standardPageCall && category.type === 'page') {
       category.standard = true;
@@ -125,6 +131,11 @@ const responseBuilderSimple = (message, category, destination) => {
       if (type === 'simple track') {
         customData.value = message.properties?.revenue;
         delete customData.revenue;
+        FB_PIXEL_CUSTOM_DATA_EXCLUDE_FLATTENING.forEach((customDataParameter) => {
+          if (message.properties?.[customDataParameter]) {
+            customData[customDataParameter] = message.properties[customDataParameter];
+          }
+        });
       }
     }
   } else {

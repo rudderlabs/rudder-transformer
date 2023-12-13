@@ -16,8 +16,45 @@ type ProcessorTransformationOutput = {
     FORM?: Record<string, unknown>;
   };
   files?: Record<string, unknown>;
-  metadata?: Metadata;
 };
+
+type ProxyDeliveryRequest = {
+  version: string;
+  type: string;
+  method: string;
+  endpoint: string;
+  userId: string;
+  headers?: Record<string, unknown>;
+  params?: Record<string, unknown>;
+  body?: {
+    JSON?: Record<string, unknown>;
+    JSON_ARRAY?: Record<string, unknown>;
+    XML?: Record<string, unknown>;
+    FORM?: Record<string, unknown>;
+  };
+  files?: Record<string, unknown>;
+  metadata: Metadata;
+};
+
+type ProxyDeliveriesRequest = {
+  version: string;
+  type: string;
+  method: string;
+  endpoint: string;
+  userId: string;
+  headers?: Record<string, unknown>;
+  params?: Record<string, unknown>;
+  body?: {
+    JSON?: Record<string, unknown>;
+    JSON_ARRAY?: Record<string, unknown>;
+    XML?: Record<string, unknown>;
+    FORM?: Record<string, unknown>;
+  };
+  files?: Record<string, unknown>;
+  metadata: Metadata[];
+};
+
+type ProxyRequest = ProxyDeliveryRequest | ProxyDeliveriesRequest;
 
 type Metadata = {
   sourceId: string;
@@ -50,6 +87,7 @@ type Metadata = {
   sourceDefinitionId: string;
   destinationDefinitionId: string;
   transformationId: string;
+  dontBatch?: boolean;
 };
 
 type MessageIdMetadataMap = {
@@ -142,6 +180,20 @@ type DeliveryResponse = {
   authErrorCategory?: string;
 };
 
+type DeliveryJobState = {
+  error: string;
+  statusCode: number;
+  metadata: Metadata;
+};
+
+type DeliveriesResponse = {
+  status?: number;
+  message?: string;
+  statTags?: object;
+  authErrorCategory?: string;
+  response: DeliveryJobState[];
+};
+
 enum MessageType {
   IDENTIFY = 'identify',
   TRACK = 'track',
@@ -224,26 +276,60 @@ type ComparatorInput = {
   requestMetadata: object;
   feature: string;
 };
+type SourceDefinition = {
+  ID: string;
+  Name: string;
+  Category: string;
+  Type: string;
+};
 
+type Source = {
+  ID: string;
+  OriginalID: string;
+  Name: string;
+  SourceDefinition: SourceDefinition;
+  Config: object;
+  Enabled: boolean;
+  WorkspaceID: string;
+  WriteKey: string;
+  Transformations?: UserTransformationInput[];
+  RevisionID?: string;
+  Destinations?: Destination[];
+  Transient: boolean;
+  EventSchemasEnabled: boolean;
+  DgSourceTrackingPlanConfig: object;
+};
+
+type SourceInput = {
+  event: NonNullable<unknown>[];
+  source?: Source;
+};
 export {
-  Metadata,
+  ComparatorInput,
+  DeliveryJobState,
+  DeliveryResponse,
+  DeliveriesResponse,
+  Destination,
+  ErrorDetailer,
   MessageIdMetadataMap,
-  UserTransformationLibrary,
+  MetaTransferObject,
+  Metadata,
+  ProcessorTransformationOutput,
   ProcessorTransformationRequest,
   ProcessorTransformationResponse,
+  ProxyDeliveriesRequest,
+  ProxyDeliveryRequest,
+  ProxyRequest,
   RouterTransformationRequest,
   RouterTransformationRequestData,
   RouterTransformationResponse,
   RudderMessage,
-  ProcessorTransformationOutput,
   SourceTransformationResponse,
-  DeliveryResponse,
-  ErrorDetailer,
-  UserTransformationResponse,
-  UserTransformationServiceResponse,
-  MetaTransferObject,
   UserDeletionRequest,
   UserDeletionResponse,
-  Destination,
-  ComparatorInput,
+  SourceInput,
+  Source,
+  UserTransformationLibrary,
+  UserTransformationResponse,
+  UserTransformationServiceResponse,
 };

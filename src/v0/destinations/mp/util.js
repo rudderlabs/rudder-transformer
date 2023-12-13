@@ -1,5 +1,7 @@
+const lodash = require('lodash');
 const set = require('set-value');
 const get = require('get-value');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
   isDefined,
   constructPayload,
@@ -13,6 +15,7 @@ const {
   defaultBatchRequestConfig,
   IsGzipSupported,
   isObject,
+  isDefinedAndNotNullAndNotEmpty,
 } = require('../../util');
 const {
   ConfigCategory,
@@ -20,12 +23,12 @@ const {
   GEO_SOURCE_ALLOWED_VALUES,
   mappingConfig,
 } = require('./config');
-const { InstrumentationError } = require('../../util/errorTypes');
 const { CommonUtils } = require('../../../util/common');
 
 const mPIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 const mPProfileAndroidConfigJson = mappingConfig[ConfigCategory.PROFILE_ANDROID.name];
 const mPProfileIosConfigJson = mappingConfig[ConfigCategory.PROFILE_IOS.name];
+const mPSetOnceConfigJson = mappingConfig[ConfigCategory.SET_ONCE.name];
 
 /**
  * this function has been used to create
@@ -322,6 +325,72 @@ const combineBatchRequestsWithSameJobIds = (inputBatches) => {
   return combineBatches(combineBatches(inputBatches));
 };
 
+/**
+ * Trims the traits and contextTraits objects based on the setOnceProperties array and returns an object containing the modified traits, contextTraits, and setOnce properties.
+ *
+ * @param {object} traits - An object representing the traits.
+ * @param {object} contextTraits - An object representing the context traits.
+ * @param {string[]} setOnceProperties - An array of property paths to be considered for the setOnce transformation.
+ * @returns {object} - An object containing the modified traits, contextTraits, and setOnce properties.
+ *
+ * @example
+ * const traits = { name: 'John', age: 30 };
+ * const contextTraits = { country: 'USA', language: 'English', address: { city: 'New York', state: 'NY' }}};
+ * const setOnceProperties = ['name', 'country', 'address.city'];
+ *
+ * const result = trimTraits(traits, contextTraits, setOnceProperties);
+ * // Output: { traits: { age: 30 }, contextTraits: { language: 'English' }, setOnce: { $name: 'John', $country_code: 'USA', city: 'New York'} }
+ */
+function trimTraits(traits, contextTraits, setOnceProperties) {
+  let sentOnceTransformedPayload;
+  // Create a copy of the original traits object
+  const traitsCopy = { ...traits };
+  const contextTraitsCopy = { ...contextTraits };
+
+  // Initialize setOnce object
+  const setOnceEligible = {};
+
+  // Step 1: find the k-v pairs of setOnceProperties in traits and contextTraits
+
+  setOnceProperties.forEach((propertyPath) => {
+    const propName = lodash.last(propertyPath.split('.'));
+
+    const traitsValue = get(traitsCopy, propertyPath);
+    const contextTraitsValue = get(contextTraitsCopy, propertyPath);
+
+    if (isDefinedAndNotNullAndNotEmpty(traitsValue)) {
+      setOnceEligible[propName] = traitsValue;
+      lodash.unset(traitsCopy, propertyPath);
+    }
+    if (isDefinedAndNotNullAndNotEmpty(contextTraitsValue)) {
+      if (!setOnceEligible.hasOwnProperty(propName)) {
+        setOnceEligible[propName] = contextTraitsValue;
+      }
+      lodash.unset(contextTraitsCopy, propertyPath);
+    }
+  });
+
+  if (setOnceEligible && Object.keys(setOnceEligible).length > 0) {
+    // Step 2: transform properties eligible as per rudderstack declared identify event mapping
+    // setOnce should have all traits from message.traits and message.context.traits by now
+    sentOnceTransformedPayload = constructPayload(setOnceEligible, mPSetOnceConfigJson);
+
+    // Step 3: combine the transformed and custom setOnce traits
+    sentOnceTransformedPayload = extractCustomFields(
+      setOnceEligible,
+      sentOnceTransformedPayload,
+      'root',
+      MP_IDENTIFY_EXCLUSION_LIST,
+    );
+  }
+
+  return {
+    traits: traitsCopy,
+    contextTraits: contextTraitsCopy,
+    setOnce: sentOnceTransformedPayload || {},
+  };
+}
+
 module.exports = {
   createIdentifyResponse,
   isImportAuthCredentialsAvailable,
@@ -330,4 +399,5 @@ module.exports = {
   generateBatchedPayloadForArray,
   batchEvents,
   combineBatchRequestsWithSameJobIds,
+  trimTraits,
 };

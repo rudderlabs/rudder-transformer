@@ -1,5 +1,7 @@
+const { TAG_NAMES } = require('@rudderstack/integrations-lib');
 const utilities = require('.');
 const { getFuncTestData } = require('../../../test/testHelper');
+const { FilteredEventsError } = require('./errorTypes');
 const { hasCircularReference, flattenJson } = require('./index');
 
 // Names of the utility functions to test
@@ -13,6 +15,7 @@ const functionNames = [
   'batchMultiplexedEvents',
   'removeUndefinedNullValuesAndEmptyObjectArray',
   'groupEventsByType',
+  'isValidInteger',
 ];
 
 // Names of the utility functions to test which expects multiple arguments as values and not objects
@@ -113,5 +116,13 @@ describe('flattenJson', () => {
     expect(() => flattenJson(data)).toThrow(
       "Event has circular reference. Can't flatten the event",
     );
+  });
+});
+
+describe('tests for generateErrorObject', () => {
+  test('test-0', () => {
+    const myErr = new FilteredEventsError('error-1');
+    const outputErrObj = utilities.generateErrorObject(myErr);
+    expect(outputErrObj.statTags).toEqual({});
   });
 });

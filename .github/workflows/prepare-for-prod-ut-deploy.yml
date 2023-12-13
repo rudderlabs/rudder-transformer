@@ -1,4 +1,4 @@
-name: Prepare for Production Environment Deployment
+name: Prepare for UT Production Environment Deployment
 
 on:
   push:

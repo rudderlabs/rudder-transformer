@@ -13,7 +13,6 @@ steps:
     loopOverInput: true
 
   - name: successfulEvents
-    debug: true
     template: |
       $.outputs.transform#idx{"output" in .}.({
           "batchedRequest": .output,

@@ -5,6 +5,7 @@ const {
   defaultPostRequestConfig,
   defaultDeleteRequestConfig,
   generateErrorObject,
+  simpleProcessRouterDest,
 } = require('../../util');
 const { AUTH_CACHE_TTL, JSON_MIME_TYPE } = require('../../util/constant');
 const { getIds, validateMessageType } = require('./util');
@@ -12,11 +13,11 @@ const {
   getDestinationExternalID,
   defaultRequestConfig,
   getErrorRespEvents,
-  simpleProcessRouterDest,
 } = require('../../util');
 const { formatConfig, MAX_LEAD_IDS_SIZE } = require('./config');
 const Cache = require('../../util/cache');
 const { getAuthToken } = require('../marketo/transform');
+const { processRecordInputs } = require('./transformV2');
 
 const authCache = new Cache(AUTH_CACHE_TTL); // 1 hr
 
@@ -57,8 +58,8 @@ const batchResponseBuilder = (message, Config, token, leadIds, operation) => {
   return response;
 };
 
-const processEvent = (input) => {
-  const { token, message, destination } = input;
+const processEvent = (event) => {
+  const { token, message, destination } = event;
   const { Config } = destination;
   validateMessageType(message, ['audiencelist']);
   const response = [];
@@ -70,77 +71,92 @@ const processEvent = (input) => {
   if (message.properties?.listData?.remove) {
     toRemove = getIds(message.properties.listData.remove);
   }
-  if (
-    (Array.isArray(toAdd) && toAdd.length > 0) ||
-    (Array.isArray(toRemove) && toRemove.length > 0)
-  ) {
-    if (Array.isArray(toAdd) && toAdd.length > 0) {
-      const payload = batchResponseBuilder(message, Config, token, toAdd, 'add');
-      if (payload) {
-        response.push(...payload);
-      }
+  if (Array.isArray(toRemove) && toRemove.length > 0) {
+    const payload = batchResponseBuilder(message, Config, token, toRemove, 'remove');
+    if (payload) {
+      response.push(...payload);
     }
-    if (Array.isArray(toRemove) && toRemove.length > 0) {
-      const payload = batchResponseBuilder(message, Config, token, toRemove, 'remove');
-      if (payload) {
-        response.push(...payload);
-      }
+  }
+  if (Array.isArray(toAdd) && toAdd.length > 0) {
+    const payload = batchResponseBuilder(message, Config, token, toAdd, 'add');
+    if (payload) {
+      response.push(...payload);
     }
-  } else {
+  }
+  if (response.length === 0) {
     throw new InstrumentationError(
       'Invalid leadIds format or no leadIds found neither to add nor to remove',
     );
   }
   return response;
 };
-const process = async (event) => {
-  const token = await getAuthToken(formatConfig(event.destination));
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const process = async (event, _processParams) => {
+  const token = await getAuthToken(formatConfig(event.destination));
   if (!token) {
     throw new UnauthorizedError('Authorization failed');
   }
-  const response = processEvent({ ...event, token });
+  const updatedEvent = { ...event, token };
+  const response = processEvent(updatedEvent);
   return response;
 };
 
 const processRouterDest = async (inputs, reqMetadata) => {
   // Token needs to be generated for marketo which will be done on input level.
   // If destination information is not present Error should be thrown
-  let token;
+
+  const { destination } = inputs[0];
   try {
-    token = await getAuthToken(formatConfig(inputs[0].destination));
+    const token = await getAuthToken(formatConfig(destination));
     if (!token) {
-      const errResp = {
-        status: 400,
-        message: 'Authorisation failed',
-        responseTransformFailure: true,
-        statTags: {},
-      };
-      const respEvents = getErrorRespEvents(
-        inputs.map((input) => input.metadata),
-        errResp.status,
-        errResp.message,
-        errResp.statTags,
-      );
-      return [{ ...respEvents, destination: inputs?.[0]?.destination }];
+      throw new UnauthorizedError('Could not retrieve authorisation token');
     }
   } catch (error) {
-    // Not using handleRtTfSingleEventError here as this is for multiple events
-    const errObj = generateErrorObject(error);
-    const respEvents = getErrorRespEvents(
-      inputs.map((input) => input.metadata),
-      errObj.status,
-      errObj.message,
-      errObj.statTags,
+    const errorObj = generateErrorObject(error);
+    const errResponses = inputs.map((input) =>
+      getErrorRespEvents(input.metadata, errorObj.status, errorObj.message, errorObj.statTags),
     );
-    return [{ ...respEvents, destination: inputs?.[0]?.destination }];
+
+    return errResponses;
   }
 
-  // Checking previous status Code. Initially setting to false.
-  // If true then previous status is 500 and every subsequent event output should be
-  // sent with status code 500 to the router to be retried.
-  const tokenisedInputs = inputs.map((input) => ({ ...input, token }));
-  const respList = await simpleProcessRouterDest(tokenisedInputs, processEvent, reqMetadata);
+  // use lodash.groupby to group the inputs based on message type
+  const transformedRecordEvent = [];
+  let transformedAudienceEvent = [];
+  const groupedInputs = lodash.groupBy(inputs, (input) => input.message.type?.toLowerCase());
+
+  const respList = [];
+  // process record events
+  if (groupedInputs.record) {
+    const groupedRecordInputs = groupedInputs.record;
+    const { staticListId } = destination.Config;
+    const externalIdGroupedRecordInputs = lodash.groupBy(
+      groupedRecordInputs,
+      (input) => getDestinationExternalID(input.message, 'marketoStaticListId') || staticListId,
+    );
+    const alltransformedGroupedRecordEvent = await Promise.all(
+      Object.keys(externalIdGroupedRecordInputs).map(async (key) => {
+        const transformedGroupedRecordEvent = await processRecordInputs(
+          externalIdGroupedRecordInputs[key],
+          destination,
+          key,
+        );
+        return transformedGroupedRecordEvent;
+      }),
+    );
+
+    transformedRecordEvent.push(...alltransformedGroupedRecordEvent.flat());
+  }
+  // process audiencelist events
+  if (groupedInputs.audiencelist) {
+    transformedAudienceEvent = await simpleProcessRouterDest(
+      groupedInputs.audiencelist,
+      process,
+      reqMetadata,
+    );
+  }
+  respList.push(...transformedRecordEvent, ...transformedAudienceEvent);
   return respList;
 };
 
@@ -152,16 +168,20 @@ const processRouterDest = async (inputs, reqMetadata) => {
 function processMetadataForRouter(output) {
   const { metadata, destination } = output;
   const clonedMetadata = cloneDeep(metadata);
-  clonedMetadata.forEach((metadataElement) => {
-    // eslint-disable-next-line no-param-reassign
-    metadataElement.destInfo = { authKey: destination.ID };
-  });
+  if (Array.isArray(clonedMetadata)) {
+    clonedMetadata.forEach((metadataElement) => {
+      // eslint-disable-next-line no-param-reassign
+      metadataElement.destInfo = { authKey: destination?.ID };
+    });
+  }
   return clonedMetadata;
 }
 
 module.exports = {
   process,
+  processEvent,
   processRouterDest,
   processMetadataForRouter,
   authCache,
+  batchResponseBuilder,
 };

@@ -1669,6 +1669,45 @@ describe("Python transformations", () => {
     );
   });
 
+  it("Simple transformation run - service not found", async () => {
+    const inputData = require(`./data/${integration}_input.json`);
+
+    const versionId = randomID();
+    const respBody = pyTrRevCode(versionId);
+    const funcName = pyfaasFuncName(respBody.workspaceId, respBody.versionId);
+
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+    when(fetch)
+      .calledWith(transformerUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+
+    axios.post
+      .mockRejectedValueOnce({
+        response: { status: 503, data: `No endpoints available for: ${funcName}` } // invoke function service not found
+      });
+
+    axios.delete.mockResolvedValue({}); // deleteFunction()
+
+    await expect(async () => {
+      await userTransformHandler(inputData, versionId, []);
+    }).rejects.toThrow(RetryRequestError);
+
+    expect(axios.post).toHaveBeenCalledTimes(1);
+    expect(axios.post).toHaveBeenCalledWith(
+      `${OPENFAAS_GATEWAY_URL}/function/${funcName}`,
+      inputData
+    );
+
+    expect(axios.delete).toHaveBeenCalledTimes(1);
+    expect(axios.delete).toHaveBeenCalledWith(
+      `${OPENFAAS_GATEWAY_URL}/system/functions`,
+      { "data" : { functionName: funcName } }
+    );
+  });
+
   it("Simple transformation run - error requests", async () => {
     const inputData = require(`./data/${integration}_input.json`);
 

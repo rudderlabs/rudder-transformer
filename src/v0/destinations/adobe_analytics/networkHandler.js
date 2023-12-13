@@ -1,15 +1,12 @@
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { proxyRequest, prepareProxyRequest } = require('../../../adapters/network');
-const {
-  processAxiosResponse,
-} = require('../../../adapters/utils/networkUtils');
+const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const { DESTINATION } = require('./config');
-
 
 /**
  * Extract data inside different tags from an xml payload
- * @param {*} xml 
- * @param {*} tagName 
+ * @param {*} xml
+ * @param {*} tagName
  * @returns data inside the tagName
  */
 function extractContent(xmlPayload, tagName) {
@@ -29,9 +26,13 @@ const responseHandler = (destinationResponse, dest) => {
   // if the status tag in XML contains FAILURE, we build and throw an explicit error
   if (responseStatus === 'FAILURE') {
     if (reason) {
-      throw new InstrumentationError(`[${DESTINATION} Response Handler] Request failed for destination ${dest} : ${reason}` )
+      throw new InstrumentationError(
+        `[${DESTINATION} Response Handler] Request failed for destination ${dest} : ${reason}`,
+      );
     } else {
-      throw new InstrumentationError(`[${DESTINATION} Response Handler] Request failed for destination ${dest} with a general error`)
+      throw new InstrumentationError(
+        `[${DESTINATION} Response Handler] Request failed for destination ${dest} with a general error`,
+      );
     }
   }
 

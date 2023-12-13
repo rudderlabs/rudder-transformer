@@ -1,4 +1,4 @@
-const { BaseError } = require('./base');
+const { BaseError } = require('@rudderstack/integrations-lib');
 const { HTTP_STATUS_CODES } = require('../constant');
 
 class FilteredEventsError extends BaseError {

@@ -87,21 +87,11 @@
             "leadTraitMapping"
           ]
         },
-        "secretKeys": [
-          "clientSecret"
-        ],
+        "secretKeys": ["clientSecret"],
         "excludeKeys": [],
         "includeKeys": [],
         "routerTransform": true,
-        "supportedSourceTypes": [
-          "android",
-          "ios",
-          "web",
-          "unity",
-          "amp",
-          "cloud",
-          "reactnative"
-        ]
+        "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"]
       },
       "responseRules": {
         "responseType": "JSON",

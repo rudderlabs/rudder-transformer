@@ -5,9 +5,10 @@ import {
   ProcessorTransformationResponse,
   RouterTransformationRequestData,
   RouterTransformationResponse,
-  ProcessorTransformationOutput,
   UserDeletionRequest,
   UserDeletionResponse,
+  ProxyRequest,
+  DeliveriesResponse,
 } from '../types/index';
 
 export interface DestinationService {
@@ -44,11 +45,11 @@ export interface DestinationService {
   ): RouterTransformationResponse[];
 
   deliver(
-    event: ProcessorTransformationOutput,
+    event: ProxyRequest,
     destinationType: string,
     requestMetadata: NonNullable<unknown>,
     version: string,
-  ): Promise<DeliveryResponse>;
+  ): Promise<DeliveryResponse | DeliveriesResponse>;
 
   processUserDeletion(
     requests: UserDeletionRequest[],

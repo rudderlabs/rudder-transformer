@@ -55,12 +55,7 @@
           "includeKeys": [],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": [
-            "identify",
-            "page",
-            "screen",
-            "track"
-          ],
+          "supportedMessageTypes": ["identify", "page", "screen", "track"],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -1125,12 +1120,7 @@
           "includeKeys": [],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": [
-            "identify",
-            "page",
-            "screen",
-            "track"
-          ],
+          "supportedMessageTypes": ["identify", "page", "screen", "track"],
           "supportedSourceTypes": [
             "android",
             "ios",

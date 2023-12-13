@@ -841,9 +841,7 @@
         },
         {
           "error": "[Braze Deduplication]: Duplicate user detected, the user is dropped",
-          "statTags": {
-            "errorCategory": "transformation"
-          },
+          "statTags": {},
           "statusCode": 298,
           "batched": false,
           "metadata": [

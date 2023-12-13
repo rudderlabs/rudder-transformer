@@ -375,7 +375,7 @@ export const data = [
                     cdkV2Enabled: true,
                   },
                 },
-              }
+              },
             },
             {
               batchedRequest: {

@@ -62,11 +62,11 @@ const syncContact = async (contactPayload, category, destination) => {
     feature: 'transformation',
   });
   if (res.success === false) {
-    errorHandler(res.response, 'Failed to create new contact');
+    errorHandler(res, 'Failed to create new contact');
   }
   const createdContact = get(res, 'response.data.contact'); // null safe
   if (!createdContact) {
-    errorHandler(res.response, 'Failed to create new contact');
+    errorHandler(res, 'Failed to create new contact');
   }
   return createdContact.id;
 };
@@ -98,7 +98,7 @@ const customTagProcessor = async (message, category, destination, contactId) => 
     feature: 'transformation',
   });
   if (res.success === false) {
-    errorHandler(res.response, 'Failed to fetch already created tags');
+    errorHandler(res, 'Failed to fetch already created tags');
   }
 
   const storedTags = {};
@@ -169,7 +169,7 @@ const customTagProcessor = async (message, category, destination, contactId) => 
           feature: 'transformation',
         });
         if (res.success === false) {
-          errorHandler(res.response, 'Failed to create new tag');
+          errorHandler(res, 'Failed to create new tag');
           // For each tags successfully created the response id is pushed to tagIds
         }
         if (res.response.status === 201) tagIds.push(res.response.data.tag.id);
@@ -201,7 +201,7 @@ const customTagProcessor = async (message, category, destination, contactId) => 
   );
   responsesArr.forEach((respItem) => {
     if (respItem.success === false)
-      errorHandler(respItem.response, 'Failed to merge created contact with created tags');
+      errorHandler(respItem, 'Failed to merge created contact with created tags');
   });
 };
 
@@ -219,7 +219,7 @@ const customFieldProcessor = async (message, category, destination) => {
   // Step - 2
   // Get the existing field data from dest and store it in responseStaging
   // Ref - https://developers.activecampaign.com/reference/retrieve-fields
-  let endpoint = `${destination.Config.apiUrl}${`${category.fieldEndPoint}?limit=100`}`;
+  let endpoint = `${destination.Config.apiUrl}${category.fieldEndPoint}?limit=100`;
   const requestOptions = {
     headers: {
       'Api-Token': destination.Config.apiKey,
@@ -230,7 +230,7 @@ const customFieldProcessor = async (message, category, destination) => {
     feature: 'transformation',
   });
   if (res.success === false) {
-    errorHandler(res.response, 'Failed to get existing field data');
+    errorHandler(res, 'Failed to get existing field data');
   }
   responseStaging.push(res.response.status === 200 ? res.response.data.fields : []);
 
@@ -257,7 +257,7 @@ const customFieldProcessor = async (message, category, destination) => {
       if (resp.success === true && resp.response.status === 200) {
         responseStaging.push(resp.response.data.fields);
       } else {
-        errorHandler(resp.response, 'Failed to get existing field data');
+        errorHandler(resp, 'Failed to get existing field data');
       }
     });
   }
@@ -352,7 +352,7 @@ const customListProcessor = async (message, category, destination, contactId) =>
   const responses = await Promise.all(promises);
   responses.forEach((respItem) => {
     if (respItem.success === false) {
-      errorHandler(respItem.response, 'Failed to map created contact with the list');
+      errorHandler(respItem, 'Failed to map created contact with the list');
     }
   });
 };
@@ -404,11 +404,11 @@ const screenRequestHandler = async (message, category, destination) => {
     feature: 'transformation',
   });
   if (res.success === false) {
-    errorHandler(res.response, 'Failed to retrieve events');
+    errorHandler(res, 'Failed to retrieve events');
   }
 
   if (res?.response?.status !== 200) {
-    errorHandler(res.response, 'Unable to create event');
+    errorHandler(res, 'Unable to create event');
   }
 
   const storedEventsArr = res.response?.data?.eventTrackingEvents;
@@ -431,11 +431,11 @@ const screenRequestHandler = async (message, category, destination) => {
       feature: 'transformation',
     });
     if (res.success === false) {
-      errorHandler(res.response, 'Failed to create event');
+      errorHandler(res, 'Failed to create event');
     }
 
     if (res.response.status !== 201) {
-      errorHandler(res.response, 'Unable to create event');
+      errorHandler(res, 'Unable to create event');
     }
   }
   // Previous operations successfull then
@@ -468,11 +468,11 @@ const trackRequestHandler = async (message, category, destination) => {
   });
 
   if (res.success === false) {
-    errorHandler(res.response, 'Failed to retrieve events');
+    errorHandler(res, 'Failed to retrieve events');
   }
 
   if (res.response.status !== 200) {
-    errorHandler(res.response, 'Unable to fetch events. Aborting');
+    errorHandler(res, 'Unable to fetch events. Aborting');
   }
 
   const storedEventsArr = res.response?.data?.eventTrackingEvents;
@@ -495,7 +495,7 @@ const trackRequestHandler = async (message, category, destination) => {
       feature: 'transformation',
     });
     if (res.response?.status !== 201) {
-      errorHandler(res.response, 'Unable to create event. Aborting');
+      errorHandler(res, 'Unable to create event. Aborting');
     }
   }
 

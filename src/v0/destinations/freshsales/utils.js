@@ -1,5 +1,10 @@
 /* eslint-disable no-param-reassign */
 const get = require('get-value');
+const {
+  NetworkInstrumentationError,
+  InstrumentationError,
+  NetworkError,
+} = require('@rudderstack/integrations-lib');
 const { httpPOST, httpGET } = require('../../../adapters/network');
 const {
   processAxiosResponse,
@@ -10,11 +15,6 @@ const {
   defaultPostRequestConfig,
   getFieldValueFromMessage,
 } = require('../../util');
-const {
-  NetworkInstrumentationError,
-  InstrumentationError,
-  NetworkError,
-} = require('../../util/errorTypes');
 const { CONFIG_CATEGORIES, LIFECYCLE_STAGE_ENDPOINT } = require('./config');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');

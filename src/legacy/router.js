@@ -7,6 +7,7 @@ const Router = require('@koa/router');
 const lodash = require('lodash');
 const fs = require('fs');
 const path = require('path');
+const { PlatformError } = require('@rudderstack/integrations-lib');
 const logger = require('../logger');
 const stats = require('../util/stats');
 const { SUPPORTED_VERSIONS, API_VERSION } = require('../routes/utils/constants');
@@ -35,7 +36,6 @@ const {
   sendViolationMetrics,
   constructValidationErrors,
 } = require('../util/utils');
-const { PlatformError } = require('../v0/util/errorTypes');
 const { processCdkV1 } = require('../cdk/v1/handler');
 const { extractLibraries } = require('../util/customTransformer');
 const { getCompatibleStatusCode } = require('../adapters/utils/networkUtils');
@@ -571,14 +571,9 @@ if (startDestTransformer) {
             destEvents.length > 0 && destEvents[0].metadata
               ? getMetadata(destEvents[0].metadata)
               : {};
-          const userFuncStartTime = new Date();
           if (transformationVersionId) {
             let destTransformedEvents;
             try {
-              stats.counter('user_transform_function_input_events', destEvents.length, {
-                processSessions,
-                ...metaTags,
-              });
               destTransformedEvents = await userTransformHandler()(
                 destEvents,
                 transformationVersionId,
@@ -626,12 +621,6 @@ if (startDestTransformer) {
               }));
               transformedEvents.push(...destTransformedEvents);
               stats.counter('user_transform_errors', destEvents.length, {
-                transformationVersionId,
-                processSessions,
-                ...metaTags,
-              });
-            } finally {
-              stats.timing('user_transform_function_latency', userFuncStartTime, {
                 transformationVersionId,
                 processSessions,
                 ...metaTags,

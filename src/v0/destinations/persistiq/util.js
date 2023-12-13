@@ -1,4 +1,5 @@
 const { get } = require('lodash');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
   getFieldValueFromMessage,
   getHashFromArray,
@@ -6,7 +7,6 @@ const {
   flattenMultilevelPayload,
 } = require('../../util');
 const { identifySourceKeys, fileConfigCategories, mappingConfig } = require('./config');
-const { InstrumentationError } = require('../../util/errorTypes');
 
 /**
  * Returns the remaining keys from traits

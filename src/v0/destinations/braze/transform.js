@@ -1,6 +1,8 @@
 /* eslint-disable no-nested-ternary,no-param-reassign */
 const lodash = require('lodash');
 const get = require('get-value');
+const { InstrumentationError, NetworkError } = require('@rudderstack/integrations-lib');
+const { FilteredEventsError } = require('../../util/errorTypes');
 const {
   BrazeDedupUtility,
   CustomAttributeOperationUtil,
@@ -20,15 +22,11 @@ const {
   getFieldValueFromMessage,
   removeUndefinedValues,
   isHttpStatusSuccess,
+  isDefinedAndNotNull,
   simpleProcessRouterDestSync,
   simpleProcessRouterDest,
   isNewStatusCodesAccepted,
 } = require('../../util');
-const {
-  InstrumentationError,
-  NetworkError,
-  FilteredEventsError,
-} = require('../../util/errorTypes');
 const {
   ConfigCategory,
   mappingConfig,
@@ -98,7 +96,10 @@ function populateCustomAttributesWithOperation(
     // add,update,remove on json attributes
     if (enableNestedArrayOperations) {
       Object.keys(traits)
-        .filter((key) => typeof traits[key] === 'object' && !Array.isArray(traits[key]))
+        .filter(
+          (key) =>
+            traits[key] !== null && typeof traits[key] === 'object' && !Array.isArray(traits[key]),
+        )
         .forEach((key) => {
           if (traits[key][CustomAttributeOperationTypes.UPDATE]) {
             CustomAttributeOperationUtil.customAttributeUpdateOperation(
@@ -153,11 +154,16 @@ function getUserAttributesObject(message, mappingJson, destination) {
   Object.keys(mappingJson).forEach((destKey) => {
     let value = get(traits, mappingJson[destKey]);
     if (value || (value === null && reservedKeys.includes(destKey))) {
+      // if email is not string remove it from attributes
+      if (destKey === 'email' && typeof value !== 'string') {
+        throw new InstrumentationError('Invalid email, email must be a valid string');
+      }
+
       // handle gender special case
       if (destKey === 'gender') {
         value = formatGender(value);
-      } else if (destKey === 'email' && value !== null) {
-        value = value?.toLowerCase();
+      } else if (destKey === 'email' && isDefinedAndNotNull(value)) {
+        value = value.toString().toLowerCase();
       }
       data[destKey] = value;
     }
@@ -318,7 +324,7 @@ function processTrackEvent(messageType, message, destination, mappingJson, proce
     typeof eventName === 'string' &&
     eventName.toLowerCase() === 'order completed'
   ) {
-    const purchaseObjs = getPurchaseObjs(message);
+    const purchaseObjs = getPurchaseObjs(message, destination.Config);
 
     // del used properties
     delete properties.products;

@@ -1,8 +1,8 @@
 import { Context } from 'koa';
-import TrackingPlanservice from '../services/trackingPlan';
-import ControllerUtility from './util';
+import { TrackingPlanservice } from '../services/trackingPlan';
+import { ControllerUtility } from './util';
 
-export default class TrackingPlanController {
+export class TrackingPlanController {
   public static async validateTrackingPlan(ctx: Context) {
     const events = ctx.request.body;
     const requestSize = Number(ctx.request.get('content-length'));

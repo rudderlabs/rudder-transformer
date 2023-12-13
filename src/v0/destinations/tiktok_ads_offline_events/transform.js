@@ -1,6 +1,7 @@
 const { SHA256 } = require('crypto-js');
 const set = require('set-value');
 const lodash = require('lodash');
+const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   constructPayload,
@@ -21,7 +22,6 @@ const {
   EVENT_NAME_MAPPING,
   PARTNER_NAME,
 } = require('./config');
-const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const getContents = (message) => {

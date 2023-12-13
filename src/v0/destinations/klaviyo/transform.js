@@ -2,6 +2,7 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable  array-callback-return */
 const get = require('get-value');
+const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType, WhiteListedTraits, MappedToDestinationKey } = require('../../../constants');
 const {
   CONFIG_CATEGORIES,
@@ -36,7 +37,6 @@ const {
   flattenJson,
   isNewStatusCodesAccepted,
 } = require('../../util');
-const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE, HTTP_STATUS_CODES } = require('../../util/constant');
 
 /**
@@ -93,6 +93,10 @@ const identifyRequestHandler = async (message, category, destination, reqMetadat
   data.attributes.properties = flattenProperties
     ? flattenJson(data.attributes.properties, '.', 'normal', false)
     : data.attributes.properties;
+
+  if (isEmptyObject(data.attributes.properties)) {
+    delete data.attributes.properties;
+  }
   const payload = {
     data: removeUndefinedAndNullValues(data),
   };
@@ -373,8 +377,9 @@ const processRouterDest = async (inputs, reqMetadata) => {
           eventDestination,
           false,
           HTTP_STATUS_CODES.SUPPRESS_EVENTS,
-        ), error
-      }
+        ),
+        error,
+      };
     }
     return getSuccessRespEvents(message, [metadata], eventDestination);
   });

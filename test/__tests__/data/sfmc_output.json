@@ -1,6 +1,6 @@
 [
   {
-    "error": "Creating or updating contacts is disabled"
+    "error": "Creating or updating contacts is disabled. To enable this feature set \"Do Not Create or Update Contacts\" to false"
   },
   [
     {

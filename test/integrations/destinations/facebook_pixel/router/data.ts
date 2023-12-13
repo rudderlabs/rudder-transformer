@@ -1,3 +1,5 @@
+import { VERSION } from '../../../../../src/v0/destinations/facebook_pixel/config';
+
 export const mockFns = (_) => {
   // @ts-ignore
   jest.useFakeTimers().setSystemTime(new Date('2023-10-15'));
@@ -193,7 +195,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://graph.facebook.com/v17.0/dummyPixelId/events?access_token=09876',
+                endpoint: `https://graph.facebook.com/${VERSION}/dummyPixelId/events?access_token=09876`,
                 headers: {},
                 params: {},
                 body: {
@@ -254,7 +256,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://graph.facebook.com/v17.0/dummyPixelId/events?access_token=09876',
+                endpoint: `https://graph.facebook.com/${VERSION}/dummyPixelId/events?access_token=09876`,
                 headers: {},
                 params: {},
                 body: {

@@ -1,6 +1,6 @@
 {
   "name": "rudder-transformer",
-  "version": "1.51.1",
+  "version": "1.52.0",
   "description": "",
   "homepage": "https://github.com/rudderlabs/rudder-transformer#readme",
   "bugs": {
@@ -23,7 +23,7 @@
     "lint:fix": "eslint . --fix",
     "lint:fix:json": "eslint --ext .json --fix .",
     "check:merge": "npm run verify || exit 1; codecov",
-    "start": "node ./dist/src/index.js",
+    "start": "cd dist;node ./src/index.js;cd ..",
     "build:start": "npm run build && npm run start",
     "build:ci": "tsc -p tsconfig.json",
     "build:swagger": "npm run build && npm run setup:swagger",

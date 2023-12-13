@@ -757,9 +757,7 @@
         "JSON_ARRAY": {},
         "FORM": {
           "api_key": "abcde",
-          "identification": [
-            "{\"group_type\":\"Company\",\"group_value\":\"ABC\"}"
-          ]
+          "identification": ["{\"group_type\":\"Company\",\"group_value\":\"ABC\"}"]
         }
       },
       "files": {},

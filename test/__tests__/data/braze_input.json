@@ -1910,5 +1910,50 @@
       "type": "track",
       "userId": ""
     }
+  },
+  {
+    "destination": {
+      "Config": {
+        "restApiKey": "dummyApiKey",
+        "prefixProperties": true,
+        "useNativeSDK": false,
+        "dataCenter": "us-01"
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Braze",
+        "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+        "Name": "BRAZE"
+      },
+      "Enabled": true,
+      "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+      "Name": "Braze",
+      "Transformations": []
+    },
+    "message": {
+      "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+      "channel": "web",
+      "context": {
+        "traits": {
+          "city": "Disney",
+          "country": "USA",
+          "email": 123,
+          "firstname": "Mickey",
+          "closed_at": null,
+          "orderTotal": 0
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
+      },
+      "integrations": {
+        "All": true
+      },
+      "messageId": "2536eda4-d638-4c93-8014-8ffe3f083214",
+      "originalTimestamp": "2020-01-24T06:29:02.362Z",
+      "receivedAt": "2020-01-24T11:59:02.403+05:30",
+      "request_ip": "[::1]:53709",
+      "sentAt": "2020-01-24T06:29:02.363Z",
+      "timestamp": "2020-01-24T11:59:02.402+05:30",
+      "type": "identify",
+      "userId": ""
+    }
   }
 ]

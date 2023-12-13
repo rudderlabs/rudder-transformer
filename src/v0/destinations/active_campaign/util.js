@@ -6,7 +6,7 @@ const {
 const tags = require('../../util/tags');
 
 const errorHandler = (httpCallError, message) => {
-  const {response, status} = processAxiosResponse(httpCallError);
+  const { response, status } = processAxiosResponse(httpCallError);
   let msg = message;
   if (response) {
     msg = `${message} (${httpCallError.response?.statusText},${JSON.stringify(response)})`;

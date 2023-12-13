@@ -322,7 +322,7 @@ export const data = [
                       identifierType: 'externalCustomerId',
                     },
                   ],
-                  mappedToDestination: true
+                  mappedToDestination: true,
                 },
                 traits: {
                   id: 'user@1',

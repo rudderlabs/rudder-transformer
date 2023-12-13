@@ -637,6 +637,150 @@
     ]
   },
   {
+    "description": "Identify call without user custom Properties",
+    "input": {
+      "destination": {
+        "Config": {
+          "publicApiKey": "dummyPublicApiKey",
+          "privateApiKey": "dummyPrivateApiKey",
+          "enforceEmailAsPrimary": false
+        }
+      },
+      "message": {
+        "type": "identify",
+        "sentAt": "2021-01-03T17:02:53.195Z",
+        "userId": "user@1",
+        "channel": "web",
+        "context": {
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "app": {
+            "name": "RudderLabs JavaScript SDK",
+            "build": "1.0.0",
+            "version": "1.1.11",
+            "namespace": "com.rudderlabs.javascript"
+          },
+          "traits": {
+            "firstName": "Test",
+            "lastName": "Rudderlabs",
+            "email": "test@rudderstack.com",
+            "phone": "+12 345 578 900",
+            "userId": "user@1",
+            "title": "Developer",
+            "organization": "Rudder",
+            "city": "Tokyo",
+            "region": "Kanto",
+            "country": "JP",
+            "zip": "100-0001",
+            "properties": {
+              "listId": "XUepkK",
+              "subscribe": true,
+              "consent": ["email", "sms"]
+            }
+          },
+          "locale": "en-US",
+          "screen": {
+            "density": 2
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.1.11"
+          },
+          "campaign": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0"
+        },
+        "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+        "integrations": {
+          "All": true
+        },
+        "originalTimestamp": "2021-01-03T17:02:53.193Z"
+      }
+    },
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "PATCH",
+        "endpoint": "https://a.klaviyo.com/api/profiles/01GW3PHVY0MTCDGS0A1612HARX",
+        "headers": {
+          "Authorization": "Klaviyo-API-Key dummyPrivateApiKey",
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "revision": "2023-02-22"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "data": {
+              "type": "profile",
+              "attributes": {
+                "email": "test@rudderstack.com",
+                "first_name": "Test",
+                "last_name": "Rudderlabs",
+                "phone_number": "+12 345 578 900",
+                "external_id": "user@1",
+                "title": "Developer",
+                "organization": "Rudder",
+                "location": {
+                  "city": "Tokyo",
+                  "region": "Kanto",
+                  "country": "JP",
+                  "zip": "100-0001"
+                }
+              },
+              "id": "01GW3PHVY0MTCDGS0A1612HARX"
+            }
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      },
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs",
+        "headers": {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": "Klaviyo-API-Key dummyPrivateApiKey",
+          "revision": "2023-02-22"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "data": {
+              "type": "profile-subscription-bulk-create-job",
+              "attributes": {
+                "list_id": "XUepkK",
+                "subscriptions": [
+                  {
+                    "email": "test@rudderstack.com",
+                    "phone_number": "+12 345 578 900",
+                    "channels": {
+                      "email": ["MARKETING"],
+                      "sms": ["MARKETING"]
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ]
+  },
+  {
     "description": "Identify call without email and phone & enforceEmailAsPrimary enabled from UI",
     "input": {
       "destination": {

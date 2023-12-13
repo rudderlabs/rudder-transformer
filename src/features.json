@@ -62,8 +62,9 @@
     "ORTTO": true,
     "GLADLY": true,
     "ONE_SIGNAL": true,
-    "TIKTOK_AUDIENCE": true
+    "TIKTOK_AUDIENCE": true,
+    "REDDIT": true
   },
   "supportSourceTransformV1": true,
-  "supportTransformerProxyV1": false
+  "supportTransformerProxyV1": true
 }

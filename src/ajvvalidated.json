@@ -1,0 +1,239 @@
+[
+  {
+    "instancePath": "/properties",
+    "schemaPath": "#/properties/properties/required",
+    "keyword": "required",
+    "params": { "missingProperty": "product_id" },
+    "message": "must have required property 'product_id'",
+    "schema": ["product_id", "price"],
+    "parentSchema": {
+      "type": "object",
+      "required": ["product_id", "price"],
+      "properties": {
+        "sku": { "type": ["string"], "description": "Sku of the product" },
+        "url": {
+          "type": ["string"],
+          "description": "URL of the product page for product"
+        },
+        "name": { "type": ["string"], "description": "Name of the product" },
+        "brand": { "type": ["string"], "description": "Brand of the product" },
+        "price": { "type": ["number"], "description": "Price of the product" },
+        "coupon": {
+          "type": ["string"],
+          "description": "Coupon code associated with the product"
+        },
+        "cart_id": {
+          "type": ["string"],
+          "description": "Cart ID associated with the product displayed"
+        },
+        "variant": {
+          "type": ["string"],
+          "description": "Variant of the product"
+        },
+        "category": {
+          "type": ["string"],
+          "description": "Product category being viewed"
+        },
+        "position": {
+          "type": ["integer"],
+          "description": "Position of product in the list"
+        },
+        "quantity": {
+          "type": ["integer"],
+          "description": "Quantity of the product"
+        },
+        "image_url": {
+          "type": ["string"],
+          "description": "Image url of the product"
+        },
+        "product_id": {
+          "type": ["string"],
+          "description": "Database ID of the product"
+        }
+      },
+      "additionalProperties": false
+    },
+    "data": { "a": 2, "abcd": 1, "b": 3, "price": "19.99" }
+  },
+  {
+    "instancePath": "/properties",
+    "schemaPath": "#/properties/properties/additionalProperties",
+    "keyword": "additionalProperties",
+    "params": { "additionalProperty": "a" },
+    "message": "must NOT have additional properties",
+    "schema": false,
+    "parentSchema": {
+      "type": "object",
+      "required": ["product_id", "price"],
+      "properties": {
+        "sku": { "type": ["string"], "description": "Sku of the product" },
+        "url": {
+          "type": ["string"],
+          "description": "URL of the product page for product"
+        },
+        "name": { "type": ["string"], "description": "Name of the product" },
+        "brand": { "type": ["string"], "description": "Brand of the product" },
+        "price": { "type": ["number"], "description": "Price of the product" },
+        "coupon": {
+          "type": ["string"],
+          "description": "Coupon code associated with the product"
+        },
+        "cart_id": {
+          "type": ["string"],
+          "description": "Cart ID associated with the product displayed"
+        },
+        "variant": {
+          "type": ["string"],
+          "description": "Variant of the product"
+        },
+        "category": {
+          "type": ["string"],
+          "description": "Product category being viewed"
+        },
+        "position": {
+          "type": ["integer"],
+          "description": "Position of product in the list"
+        },
+        "quantity": {
+          "type": ["integer"],
+          "description": "Quantity of the product"
+        },
+        "image_url": {
+          "type": ["string"],
+          "description": "Image url of the product"
+        },
+        "product_id": {
+          "type": ["string"],
+          "description": "Database ID of the product"
+        }
+      },
+      "additionalProperties": false
+    },
+    "data": { "a": 2, "abcd": 1, "b": 3, "price": "19.99" }
+  },
+  {
+    "instancePath": "/properties",
+    "schemaPath": "#/properties/properties/additionalProperties",
+    "keyword": "additionalProperties",
+    "params": { "additionalProperty": "abcd" },
+    "message": "must NOT have additional properties",
+    "schema": false,
+    "parentSchema": {
+      "type": "object",
+      "required": ["product_id", "price"],
+      "properties": {
+        "sku": { "type": ["string"], "description": "Sku of the product" },
+        "url": {
+          "type": ["string"],
+          "description": "URL of the product page for product"
+        },
+        "name": { "type": ["string"], "description": "Name of the product" },
+        "brand": { "type": ["string"], "description": "Brand of the product" },
+        "price": { "type": ["number"], "description": "Price of the product" },
+        "coupon": {
+          "type": ["string"],
+          "description": "Coupon code associated with the product"
+        },
+        "cart_id": {
+          "type": ["string"],
+          "description": "Cart ID associated with the product displayed"
+        },
+        "variant": {
+          "type": ["string"],
+          "description": "Variant of the product"
+        },
+        "category": {
+          "type": ["string"],
+          "description": "Product category being viewed"
+        },
+        "position": {
+          "type": ["integer"],
+          "description": "Position of product in the list"
+        },
+        "quantity": {
+          "type": ["integer"],
+          "description": "Quantity of the product"
+        },
+        "image_url": {
+          "type": ["string"],
+          "description": "Image url of the product"
+        },
+        "product_id": {
+          "type": ["string"],
+          "description": "Database ID of the product"
+        }
+      },
+      "additionalProperties": false
+    },
+    "data": { "a": 2, "abcd": 1, "b": 3, "price": "19.99" }
+  },
+  {
+    "instancePath": "/properties",
+    "schemaPath": "#/properties/properties/additionalProperties",
+    "keyword": "additionalProperties",
+    "params": { "additionalProperty": "b" },
+    "message": "must NOT have additional properties",
+    "schema": false,
+    "parentSchema": {
+      "type": "object",
+      "required": ["product_id", "price"],
+      "properties": {
+        "sku": { "type": ["string"], "description": "Sku of the product" },
+        "url": {
+          "type": ["string"],
+          "description": "URL of the product page for product"
+        },
+        "name": { "type": ["string"], "description": "Name of the product" },
+        "brand": { "type": ["string"], "description": "Brand of the product" },
+        "price": { "type": ["number"], "description": "Price of the product" },
+        "coupon": {
+          "type": ["string"],
+          "description": "Coupon code associated with the product"
+        },
+        "cart_id": {
+          "type": ["string"],
+          "description": "Cart ID associated with the product displayed"
+        },
+        "variant": {
+          "type": ["string"],
+          "description": "Variant of the product"
+        },
+        "category": {
+          "type": ["string"],
+          "description": "Product category being viewed"
+        },
+        "position": {
+          "type": ["integer"],
+          "description": "Position of product in the list"
+        },
+        "quantity": {
+          "type": ["integer"],
+          "description": "Quantity of the product"
+        },
+        "image_url": {
+          "type": ["string"],
+          "description": "Image url of the product"
+        },
+        "product_id": {
+          "type": ["string"],
+          "description": "Database ID of the product"
+        }
+      },
+      "additionalProperties": false
+    },
+    "data": { "a": 2, "abcd": 1, "b": 3, "price": "19.99" }
+  },
+  {
+    "instancePath": "/properties/price",
+    "schemaPath": "#/properties/properties/properties/price/type",
+    "keyword": "type",
+    "params": { "type": ["number"] },
+    "message": "must be number",
+    "schema": ["number"],
+    "parentSchema": {
+      "type": ["number"],
+      "description": "Price of the product"
+    },
+    "data": "19.99"
+  }
+]

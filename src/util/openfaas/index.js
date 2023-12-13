@@ -256,6 +256,15 @@ const executeFaasFunction = async (
       await setupFaasFunction(name, null, versionId, libraryVersionIDs, testMode, trMetadata);
       throw new RetryRequestError(`${name} not found`);
     }
+    // faas service is deleted but deployment is still there
+    // deleting setup to recreate faas function
+    if (error.statusCode === 503 && error.message.includes(`No endpoints available for: ${name}`)) {
+      removeFunctionFromCache(name);
+      deleteFunction(name).catch((err) =>
+        logger.info(`[Faas] Error while deleting ${name}: ${err.message}`),
+      );
+      throw new RetryRequestError(`${name} not found`);
+    }
 
     if (error.statusCode === 429) {
       throw new RetryRequestError(`Rate limit exceeded for ${name}`);

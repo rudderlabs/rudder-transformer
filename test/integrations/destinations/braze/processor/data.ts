@@ -125,7 +125,7 @@ export const data = [
   },
   {
     name: 'braze',
-    description: 'Test 1',
+    description: 'Test 1: ERROR - No attributes found to update the user profile',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -2580,7 +2580,7 @@ export const data = [
   },
   {
     name: 'braze',
-    description: 'Test 18',
+    description: 'Test 18: ERROR - previousId is required for alias call',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -2663,7 +2663,7 @@ export const data = [
   },
   {
     name: 'braze',
-    description: 'Test 19',
+    description: 'Test 19: ERROR - userId is required for alias call',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -3615,7 +3615,7 @@ export const data = [
   },
   {
     name: 'braze',
-    description: 'Test 25',
+    description: 'Test 25: ERROR - Invalid email, email must be a valid string',
     feature: 'processor',
     module: 'destination',
     version: 'v0',

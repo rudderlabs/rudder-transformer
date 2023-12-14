@@ -124,7 +124,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
   // use lodash.groupby to group the inputs based on message type
   const transformedRecordEvent = [];
   let transformedAudienceEvent = [];
-  const groupedInputs = lodash.groupBy(inputs, (input) => input.message.type);
+  const groupedInputs = lodash.groupBy(inputs, (input) => input.message.type?.toLowerCase());
 
   const respList = [];
   // process record events

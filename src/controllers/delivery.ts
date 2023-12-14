@@ -84,7 +84,7 @@ export class DeliveryController {
       );
     }
     ctx.body = { output: deliveryResponse };
-    ControllerUtility.deliveryPostProcess(ctx);
+    ControllerUtility.deliveryPostProcess(ctx, deliveryResponse.status);
 
     logger.debug('Native(Delivery):: Response from transformer::', JSON.stringify(ctx.body));
     return ctx;

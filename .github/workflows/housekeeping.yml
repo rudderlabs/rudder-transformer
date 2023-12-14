@@ -4,6 +4,7 @@ on:
   schedule:
     # Run everyday at 1 AM
     - cron: '0 1 * * *'
+  workflow_dispatch:
 
 jobs:
   prs:
@@ -41,5 +42,5 @@ jobs:
           date: '3 months ago'
           dry_run: false
           delete_tags: false
-          extra_protected_branch_regex: ^(main|release/.*|develop|hotfix/.*|hotfix-release/.*)$
+          extra_protected_branch_regex: ^(main|develop)$
           exclude_open_pr_branches: true

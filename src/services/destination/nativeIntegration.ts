@@ -218,6 +218,9 @@ export class NativeIntegrationDestinationService implements DestinationService {
         );
         responseProxy = {
           response: jobStates,
+          status: v0Response.status,
+          message: v0Response.message,
+          authErrorCategory: v0Response.authErrorCategory,
         } as DeliveriesResponse;
       }
       return responseProxy;

@@ -1477,6 +1477,7 @@ export const data = [
               userId: '12345',
               properties: {
                 gclid: 'gclid1234',
+                jobId: '1',
                 conversionDateTime: '2022-01-01 12:32:45-08:00',
                 adjustedValue: '10',
                 currency: 'INR',
@@ -1565,6 +1566,7 @@ export const data = [
                       adjustmentType: 'ENHANCEMENT',
                     },
                   ],
+                  jobId: 1,
                   partialFailure: true,
                 },
                 JSON_ARRAY: {},

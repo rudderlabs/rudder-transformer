@@ -79,6 +79,7 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
+                consent: {},
               },
               body: {
                 JSON: {
@@ -212,6 +213,7 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
+                consent: {},
               },
               body: {
                 JSON: {
@@ -330,6 +332,7 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
+                consent: {},
               },
               body: {
                 JSON: {
@@ -1431,6 +1434,7 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
+                consent: {},
               },
               body: {
                 JSON: {
@@ -2825,6 +2829,7 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
+                consent: {},
               },
               body: {
                 JSON: {
@@ -2904,6 +2909,7 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
+                consent: {},
               },
               body: {
                 JSON: {
@@ -4116,6 +4122,7 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
+                consent: {},
               },
               body: {
                 JSON: {
@@ -5415,6 +5422,7 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
+                consent: {},
               },
               body: {
                 JSON: {
@@ -6791,6 +6799,7 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
+                consent: {},
               },
               body: {
                 JSON: {
@@ -8100,6 +8109,7 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
+                consent: {},
               },
               body: {
                 JSON: {
@@ -9399,6 +9409,7 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
+                consent: {},
               },
               body: {
                 JSON: {
@@ -10793,6 +10804,7 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
+                consent: {},
               },
               body: {
                 JSON: {
@@ -10872,6 +10884,7 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
+                consent: {},
               },
               body: {
                 JSON: {
@@ -11046,6 +11059,7 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
+                consent: {},
               },
               body: {
                 JSON: {
@@ -11123,6 +11137,7 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
+                consent: {},
               },
               body: {
                 JSON: {
@@ -11266,6 +11281,7 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
+                consent: {},
               },
               body: {
                 JSON: {
@@ -11472,6 +11488,7 @@ export const data = [
               params: {
                 listId: 'aud1234',
                 customerId: '7693729833',
+                consent: {},
               },
               body: {
                 JSON: {
@@ -11610,6 +11627,7 @@ export const data = [
               params: {
                 listId: '830441345',
                 customerId: '7693729833',
+                consent: {},
               },
               body: {
                 JSON: {
@@ -11747,6 +11765,290 @@ export const data = [
               params: {
                 listId: '830441345',
                 customerId: '7693729833',
+                consent: {},
+              },
+              body: {
+                JSON: {
+                  operations: [
+                    {
+                      create: {
+                        userIdentifiers: [
+                          {
+                            hashedEmail:
+                              '78310d2dd727b704ff9d9c4742d01941b1217b89f45ab71d1e9bf5a010144048',
+                          },
+                          {
+                            hashedEmail:
+                              '34a6406a076b943abfb9e97a6761e0c6b8cf049ab15b013412c57cf8370b5436',
+                          },
+                          {
+                            hashedEmail:
+                              '8075d00e5f006b95eb090bf50f5246bc3c18c3d771fa1edf967b033b274b8d84',
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            metadata: {
+              secret: {
+                access_token: 'dummy-access',
+                refresh_token: 'dummy-refresh',
+                developer_token: 'dummy-dev-token',
+              },
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'google_adwords_remarketing_lists',
+    description: 'Test 20',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            metadata: {
+              secret: {
+                access_token: 'dummy-access',
+                refresh_token: 'dummy-refresh',
+                developer_token: 'dummy-dev-token',
+              },
+            },
+            destination: {
+              Config: {
+                rudderAccountId: 'rudder-acc-id',
+                customerId: '7693729833',
+                loginCustomerId: '',
+                subAccount: false,
+                userSchema: ['email', 'phone', 'addressInfo'],
+                isHashRequired: true,
+                typeOfList: 'General',
+              },
+            },
+            message: {
+              anonymousId: '24ed22ae-0681-4882-8c33-012e298e1c17',
+              channel: 'sources',
+              context: {
+                destinationFields: 'email',
+                externalId: [
+                  {
+                    identifierType: 'email',
+                    type: 'GOOGLE_ADWORDS_REMARKETING_LISTS-830441345',
+                  },
+                ],
+                mappedToDestination: 'true',
+                sources: {
+                  job_id: '2UcqQB4ygGtTBAvwCWl7xz8dJgt',
+                  job_run_id: 'cjmsdip7m95b7aee7tpg',
+                  task_run_id: 'cjmsdip7m95b7aee7tq0',
+                  version: 'master',
+                },
+              },
+              event: 'Add_Audience',
+              messageId: 'bd2d67ca-0c9a-4d3b-a2f8-35a3c3f75ba7',
+              properties: {
+                userDataConsent: 'UNSPECIFIED',
+                personalizationConsent: 'GRANTED',
+                listData: {
+                  add: [
+                    {
+                      email: 'test1@mail.com',
+                    },
+                    {
+                      email: 'test5@xmail.com',
+                    },
+                    {
+                      email: 'test3@mail.com',
+                    },
+                  ],
+                },
+              },
+              recordId: 'a071551c-87e0-48a7-aa5c-7c4144cec5cf/1/5',
+              rudderId: '5e9ada0e-5f50-4cb8-a015-f6842a7615fd',
+              sentAt: '2023-08-29 10:22:06.395377223 +0000 UTC',
+              type: 'audienceList',
+              userId: '23423423',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint:
+                'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+              headers: {
+                Authorization: 'Bearer dummy-access',
+                'Content-Type': 'application/json',
+                'developer-token': 'dummy-dev-token',
+              },
+              params: {
+                listId: '830441345',
+                customerId: '7693729833',
+                consent: {
+                  adUserData: 'UNSPECIFIED',
+                  adPersonalization: 'GRANTED',
+                },
+              },
+              body: {
+                JSON: {
+                  operations: [
+                    {
+                      create: {
+                        userIdentifiers: [
+                          {
+                            hashedEmail:
+                              '78310d2dd727b704ff9d9c4742d01941b1217b89f45ab71d1e9bf5a010144048',
+                          },
+                          {
+                            hashedEmail:
+                              '34a6406a076b943abfb9e97a6761e0c6b8cf049ab15b013412c57cf8370b5436',
+                          },
+                          {
+                            hashedEmail:
+                              '8075d00e5f006b95eb090bf50f5246bc3c18c3d771fa1edf967b033b274b8d84',
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            metadata: {
+              secret: {
+                access_token: 'dummy-access',
+                refresh_token: 'dummy-refresh',
+                developer_token: 'dummy-dev-token',
+              },
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'google_adwords_remarketing_lists',
+    description: 'Test 20',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            metadata: {
+              secret: {
+                access_token: 'dummy-access',
+                refresh_token: 'dummy-refresh',
+                developer_token: 'dummy-dev-token',
+              },
+            },
+            destination: {
+              Config: {
+                rudderAccountId: 'rudder-acc-id',
+                customerId: '7693729833',
+                loginCustomerId: '',
+                subAccount: false,
+                userSchema: ['email', 'phone', 'addressInfo'],
+                isHashRequired: true,
+                typeOfList: 'General',
+              },
+            },
+            message: {
+              anonymousId: '24ed22ae-0681-4882-8c33-012e298e1c17',
+              channel: 'sources',
+              context: {
+                destinationFields: 'email',
+                externalId: [
+                  {
+                    identifierType: 'email',
+                    type: 'GOOGLE_ADWORDS_REMARKETING_LISTS-830441345',
+                  },
+                ],
+                mappedToDestination: 'true',
+                sources: {
+                  job_id: '2UcqQB4ygGtTBAvwCWl7xz8dJgt',
+                  job_run_id: 'cjmsdip7m95b7aee7tpg',
+                  task_run_id: 'cjmsdip7m95b7aee7tq0',
+                  version: 'master',
+                },
+              },
+              event: 'Add_Audience',
+              messageId: 'bd2d67ca-0c9a-4d3b-a2f8-35a3c3f75ba7',
+              properties: {
+                userDataConsent: 'RANDOM',
+                personalizationConsent: 'RANDOM',
+                listData: {
+                  add: [
+                    {
+                      email: 'test1@mail.com',
+                    },
+                    {
+                      email: 'test5@xmail.com',
+                    },
+                    {
+                      email: 'test3@mail.com',
+                    },
+                  ],
+                },
+              },
+              recordId: 'a071551c-87e0-48a7-aa5c-7c4144cec5cf/1/5',
+              rudderId: '5e9ada0e-5f50-4cb8-a015-f6842a7615fd',
+              sentAt: '2023-08-29 10:22:06.395377223 +0000 UTC',
+              type: 'audienceList',
+              userId: '23423423',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint:
+                'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
+              headers: {
+                Authorization: 'Bearer dummy-access',
+                'Content-Type': 'application/json',
+                'developer-token': 'dummy-dev-token',
+              },
+              params: {
+                listId: '830441345',
+                customerId: '7693729833',
+                consent: {},
               },
               body: {
                 JSON: {

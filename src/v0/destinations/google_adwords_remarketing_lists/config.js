@@ -15,6 +15,7 @@ const TYPEOFLIST = Object.freeze({
   userID: 'thirdPartyUserId',
   mobileDeviceID: 'mobileId',
 });
+const ALLOWED_CONSENT_STATUS = ['UNSPECIFIED', 'UNKNOWN', 'GRANTED', 'DENIED'];
 
 module.exports = {
   BASE_ENDPOINT,
@@ -23,4 +24,5 @@ module.exports = {
   hashAttributes,
   offlineDataJobsMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.AUDIENCE_LIST.name],
   addressInfoMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.ADDRESSINFO.name],
+  ALLOWED_CONSENT_STATUS,
 };

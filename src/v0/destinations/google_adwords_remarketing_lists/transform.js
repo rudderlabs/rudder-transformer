@@ -22,6 +22,7 @@ const {
   attributeMapping,
   hashAttributes,
   TYPEOFLIST,
+  ALLOWED_CONSENT_STATUS,
 } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { MappedToDestinationKey } = require('../../../constants');
@@ -43,7 +44,7 @@ const hashEncrypt = (object) => {
  * @param {*} param2
  * @returns
  */
-const responseBuilder = (metadata, body, { Config }, message) => {
+const responseBuilder = (metadata, body, { Config }, message, consentBlock) => {
   const payload = body;
   const response = defaultRequestConfig();
   const filteredCustomerId = removeHyphens(Config.customerId);
@@ -62,7 +63,11 @@ const responseBuilder = (metadata, body, { Config }, message) => {
   if (!isDefinedAndNotNullAndNotEmpty(operationAudienceId)) {
     throw new ConfigurationError('List ID is a mandatory field');
   }
-  response.params = { listId: operationAudienceId, customerId: filteredCustomerId };
+  response.params = {
+    listId: operationAudienceId,
+    customerId: filteredCustomerId,
+    consent: consentBlock,
+  };
   response.headers = {
     Authorization: `Bearer ${accessToken}`,
     'Content-Type': JSON_MIME_TYPE,
@@ -191,6 +196,30 @@ const createPayload = (message, destination) => {
   return outputPayloads;
 };
 
+/**
+ * Populates the consent object based on the provided properties.
+ *
+ * @param {object} properties - message.properties containing properties related to consent.
+ * @returns {object} - An object containing consent information.
+ * ref : https://developers.google.com/google-ads/api/rest/reference/rest/v15/Consent
+ */
+const populateConsent = (properties) => {
+  const consent = {};
+
+  if (properties?.userDataConsent && ALLOWED_CONSENT_STATUS.includes(properties.userDataConsent)) {
+    consent.adUserData = properties.userDataConsent;
+  }
+
+  if (
+    properties?.personalizationConsent &&
+    ALLOWED_CONSENT_STATUS.includes(properties.personalizationConsent)
+  ) {
+    consent.adPersonalization = properties.personalizationConsent;
+  }
+
+  return consent;
+};
+
 const processEvent = async (metadata, message, destination) => {
   const response = [];
   if (!message.type) {
@@ -212,7 +241,8 @@ const processEvent = async (metadata, message, destination) => {
     }
 
     Object.values(createdPayload).forEach((data) => {
-      response.push(responseBuilder(metadata, data, destination, message));
+      const consentObj = populateConsent(message.properties);
+      response.push(responseBuilder(metadata, data, destination, message, consentObj));
     });
     return response;
   }

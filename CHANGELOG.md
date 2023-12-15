@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.52.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.52.0...v1.52.1) (2023-12-14)
+
+
+### Bug Fixes
+
+* update response handling for v1 proxy ([7d275ca](https://github.com/rudderlabs/rudder-transformer/commit/7d275ca1d58c38859fce95d7d0677e11342c662a))
+
 ## [1.52.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.51.1...v1.52.0) (2023-12-12)
 
 

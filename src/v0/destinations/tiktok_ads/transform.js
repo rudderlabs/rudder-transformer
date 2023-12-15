@@ -155,7 +155,7 @@ const trackResponseBuilder = async (message, { Config }) => {
     return responseList;
   }
   // Doc https://ads.tiktok.com/help/article/standard-events-parameters?lang=en
-  event = eventNameMapping[event] || event;
+  event = eventNameMapping[event] || message.event;
   // if there exists no event mapping we will build payload with custom event recieved
   responseList.push(getTrackResponse(message, Config, event));
 

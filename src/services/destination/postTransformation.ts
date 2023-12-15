@@ -188,7 +188,7 @@ export class DestinationPostTransformationService {
       statTags: errObj.statTags,
       authErrorCategory: errObj.authErrorCategory,
       message: errObj.message.toString(),
-      status: error.status,
+      status: errObj.status,
     } as DeliveriesResponse;
 
     ErrorReportingService.reportError(error, metaTo.errorContext, resp);

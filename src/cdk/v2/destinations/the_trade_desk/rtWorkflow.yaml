@@ -1,0 +1,12 @@
+bindings:
+  - name: processRouterDest
+    path: ./util
+
+steps:
+  - name: validateInput
+    template: |
+      $.assert(Array.isArray(^) && ^.length > 0, "Invalid event array")
+
+  - name: processRouterDest
+    template: |
+      $.processRouterDest(^)

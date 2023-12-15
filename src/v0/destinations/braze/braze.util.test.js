@@ -694,6 +694,44 @@ describe('dedup utility tests', () => {
       });
     });
 
+    test('deduplicates user data correctly 2', () => {
+      const userData = {
+        external_id: '123',
+        color: 'green',
+        age: 30,
+        gender: 'male',
+        language: 'en',
+        email_subscribe: true,
+        push_subscribe: false,
+        subscription_groups: ['group1', 'group2'],
+      };
+      const storeData = {
+        external_id: '123',
+        country: 'US',
+        language: 'en',
+        email_subscribe: true,
+        push_subscribe: false,
+        subscription_groups: ['group1', 'group2'],
+        custom_attributes: {
+          color: 'blue',
+          age: 25,
+        },
+      };
+      store.set('123', storeData);
+      const result = BrazeDedupUtility.deduplicate(userData, store);
+      expect(store.size).toBe(1);
+      expect(result).toEqual({
+        external_id: '123',
+        color: 'green',
+        age: 30,
+        gender: 'male',
+        language: 'en',
+        email_subscribe: true,
+        push_subscribe: false,
+        subscription_groups: ['group1', 'group2'],
+      });
+    });
+
     test('returns null if all keys are in BRAZE_NON_BILLABLE_ATTRIBUTES', () => {
       const userData = {
         external_id: '123',

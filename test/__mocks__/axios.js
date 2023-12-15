@@ -10,10 +10,8 @@ const {
 
 const kustomerGetRequestHandler = require("./kustomer.mock");
 const trengoGetRequestHandler = require("./trengo.mock");
-const gainsightRequestHandler = require("./gainsight.mock");
 const mailchimpGetRequestHandler = require("./mailchimp.mock");
 const yahooDspPostRequestHandler = require("./yahoo_dsp.mock");
-const { gainsightPXGetRequestHandler } = require("./gainsight_px.mock");
 const { hsGetRequestHandler, hsPostRequestHandler } = require("./hs.mock");
 const { delightedGetRequestHandler } = require("./delighted.mock");
 const { dripPostRequestHandler } = require("./drip.mock");
@@ -47,7 +45,6 @@ const urlDirectoryMap = {
   "salesforce.com": "salesforce",
   "mktorest.com": "marketo",
   "active.campaigns.rudder.com": "active_campaigns",
-  "api.aptrinsic.com": "gainsight_px",
   "api.profitwell.com": "profitwell",
   "ruddertest2.mautic.net": "mautic",
   "api.sendgrid.com": "sendgrid",
@@ -100,9 +97,6 @@ function get(url, options) {
     return new Promise((resolve, reject) => {
       resolve(mailchimpGetRequestHandler(url));
     });
-  }
-  if (url.includes("https://api.aptrinsic.com")) {
-    return gainsightPXGetRequestHandler(url, mockData);
   }
   if (url.includes("https://a.klaviyo.com/api/v2/people/search")) {
     return klaviyoGetRequestHandler(getParamEncodedUrl(url, options));
@@ -188,11 +182,6 @@ function post(url, payload) {
       resolve(klaviyoPostRequestHandler(url, payload));
     });
   }
-  if (url.includes("https://demo-domain.gainsightcloud.com")) {
-    return new Promise(resolve => {
-      resolve(gainsightRequestHandler(url, payload));
-    });
-  }
   if (url.includes("https://api.aptrinsic.com")) {
     return new Promise(resolve => {
       resolve({ status: 201 });
@@ -259,13 +248,6 @@ function post(url, payload) {
 
 function put(url, payload, options) {
   const mockData = getData(url);
-  if (url.includes("https://demo-domain.gainsightcloud.com")) {
-    return new Promise(resolve => {
-      resolve(
-        gainsightRequestHandler(getParamEncodedUrl(url, options), payload)
-      );
-    });
-  }
   if (url.includes("https://commander.user.com")) {
     return new Promise((resolve, reject) => {
       resolve(userPutRequestHandler(url));

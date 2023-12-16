@@ -155,8 +155,8 @@ function getUserAttributesObject(message, mappingJson, destination) {
     let value = get(traits, mappingJson[destKey]);
     if (value || (value === null && reservedKeys.includes(destKey))) {
       // if email is not string remove it from attributes
-      if (destKey === 'email' && typeof value !== 'string') {
-        throw new InstrumentationError('Invalid email, email must be a valid string');
+      if (destKey === 'email' && Number.isInteger(value)) {
+        throw new InstrumentationError('Invalid email, email must be a valid string or null');
       }
 
       // handle gender special case

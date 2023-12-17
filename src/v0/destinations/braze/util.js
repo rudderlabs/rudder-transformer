@@ -301,6 +301,14 @@ const BrazeDedupUtility = {
     };
     const identifier = external_id || user_alias?.alias_name;
     store.set(identifier, { ...storedUserData, ...deduplicatedUserData });
+
+    // add non billable attributes back to the deduplicated user object
+    BRAZE_NON_BILLABLE_ATTRIBUTES.forEach((key) => {
+      if (isDefinedAndNotNull(userData[key])) {
+        deduplicatedUserData[key] = userData[key];
+      }
+    });
+
     return removeUndefinedValues(deduplicatedUserData);
   },
 };

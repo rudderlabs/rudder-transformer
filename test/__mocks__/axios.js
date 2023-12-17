@@ -14,7 +14,7 @@ const gainsightRequestHandler = require("./gainsight.mock");
 const mailchimpGetRequestHandler = require("./mailchimp.mock");
 const yahooDspPostRequestHandler = require("./yahoo_dsp.mock");
 const { gainsightPXGetRequestHandler } = require("./gainsight_px.mock");
-const { hsGetRequestHandler, hsPostRequestHandler } = require("./hs.mock");
+
 const { delightedGetRequestHandler } = require("./delighted.mock");
 const { dripPostRequestHandler } = require("./drip.mock");
 const profitwellGetRequestHandler = require("./profitwell.mock");
@@ -42,7 +42,6 @@ const { courierGetRequestHandler } = require("./courier.mock");
 const { brazePostRequestHandler } = require("./braze.mock");
 
 const urlDirectoryMap = {
-  "api.hubapi.com": "hs",
   "zendesk.com": "zendesk",
   "salesforce.com": "salesforce",
   "mktorest.com": "marketo",
@@ -107,9 +106,7 @@ function get(url, options) {
   if (url.includes("https://a.klaviyo.com/api/v2/people/search")) {
     return klaviyoGetRequestHandler(getParamEncodedUrl(url, options));
   }
-  if (url.includes("https://api.hubapi.com")) {
-    return hsGetRequestHandler(url, mockData);
-  }
+  
   if (url.includes("https://api.delighted.com/v1/people.json")) {
     return delightedGetRequestHandler(options);
   }
@@ -210,9 +207,6 @@ function post(url, payload) {
     return new Promise((resolve, reject) => {
       resolve(cannyPostRequestHandler(url));
     });
-  }
-  if (url.includes("https://api.hubapi.com")) {
-    return hsPostRequestHandler(payload, mockData);
   }
   if (url.includes("https://api.wootric.com")) {
     return new Promise((resolve, reject) => {

@@ -1038,5 +1038,76 @@
   {
     "statusCode": 400,
     "message": "Invalid email, email must be a valid string"
+  },
+  {
+    "body": {
+      "FORM": {},
+      "JSON": {
+        "attributes": [
+          {
+            "_update_existing_only": false,
+            "city": "Disney",
+            "country": "USA",
+            "email": null,
+            "firstname": "Mickey",
+            "user_alias": {
+              "alias_label": "rudder_id",
+              "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+            }
+          }
+        ],
+        "partner": "RudderStack",
+        "purchases": [
+          {
+            "_update_existing_only": false,
+            "currency": "USD",
+            "price": 0,
+            "product_id": "507f1f77bcf86cd799439023",
+            "properties": {
+              "category": "Games",
+              "image_url": "https:///www.example.com/product/path.jpg",
+              "name": "Monopoly: 3rd Edition",
+              "url": "https://www.example.com/product/path"
+            },
+            "quantity": 1,
+            "time": "2020-01-24T11:59:02.402+05:30",
+            "user_alias": {
+              "alias_label": "rudder_id",
+              "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+            }
+          },
+          {
+            "_update_existing_only": false,
+            "currency": "USD",
+            "price": 0,
+            "product_id": "505bd76785ebb509fc183724",
+            "properties": {
+              "category": "Games",
+              "name": "Uno Card Game"
+            },
+            "quantity": 2,
+            "time": "2020-01-24T11:59:02.402+05:30",
+            "user_alias": {
+              "alias_label": "rudder_id",
+              "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {}
+    },
+    "endpoint": "https://rest.fra-01.braze.eu/users/track",
+    "files": {},
+    "headers": {
+      "Accept": "application/json",
+      "Authorization": "Bearer dummyApiKey",
+      "Content-Type": "application/json"
+    },
+    "method": "POST",
+    "params": {},
+    "type": "REST",
+    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+    "version": "1"
   }
 ]

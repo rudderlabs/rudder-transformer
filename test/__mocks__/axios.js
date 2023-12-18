@@ -20,10 +20,6 @@ const { dripPostRequestHandler } = require("./drip.mock");
 const profitwellGetRequestHandler = require("./profitwell.mock");
 const cannyPostRequestHandler = require("./canny.mock");
 const custifyPostRequestHandler = require("./custify.mock");
-const {
-  wootricGetRequestHandler,
-  wootricPostRequestHandler
-} = require("./wootric.mock");
 const { userGetRequestHandler, userPutRequestHandler } = require("./user.mock");
 const { mixpanelPostRequestHandler } = require("./mixpanel.mock");
 const { clickUpGetRequestHandler } = require("./clickup.mock");
@@ -127,11 +123,6 @@ function get(url, options) {
   ) {
     return Promise.reject({ status: 404 });
   }
-  if (url.includes("https://api.wootric.com")) {
-    return new Promise((resolve, reject) => {
-      resolve(wootricGetRequestHandler(url));
-    });
-  }
   if (url.includes("https://commander.user.com")) {
     return new Promise((resolve, reject) => {
       resolve(userGetRequestHandler(url));
@@ -206,11 +197,6 @@ function post(url, payload) {
   if (url.includes("https://canny.io/api/v1/users/retrieve")) {
     return new Promise((resolve, reject) => {
       resolve(cannyPostRequestHandler(url));
-    });
-  }
-  if (url.includes("https://api.wootric.com")) {
-    return new Promise((resolve, reject) => {
-      resolve(wootricPostRequestHandler(url, payload));
     });
   }
   if (

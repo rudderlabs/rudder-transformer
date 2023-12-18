@@ -5363,7 +5363,7 @@ export const data = [
                 product_id: '123445',
                 quantity: 123,
                 userDataConsent: 'UNKNOWN',
-                personalizationConsent: 'GRANTED'
+                personalizationConsent: 'GRANTED',
               },
               integrations: {
                 All: true,
@@ -5505,7 +5505,7 @@ export const data = [
                       consent: {
                         adPersonalization: 'GRANTED',
                         adUserData: 'UNKNOWN',
-                      }
+                      },
                     },
                   ],
                   partialFailure: true,
@@ -5765,6 +5765,8 @@ export const data = [
                   currency: 'GBP',
                   callerId: 'callerId',
                   callStartDateTime: '2022-08-28 15:01:30+05:30',
+                  personalizationConsent: 'GRANTED',
+                  userDataConsent: 'RANDOM',
                 },
               },
               body: {
@@ -5801,6 +5803,9 @@ export const data = [
                       conversionDateTime: '2022-01-01 12:32:45-08:00',
                       conversionValue: 1,
                       currencyCode: 'GBP',
+                      consent: {
+                        adPersonalization: 'GRANTED',
+                      },
                     },
                   ],
                   partialFailure: true,
@@ -5891,9 +5896,9 @@ export const data = [
                       conversionDateTime: '2022-01-01 12:32:45-08:00',
                       conversionValue: 1,
                       currencyCode: 'GBP',
-                      consent:  {
-                                       adPersonalization: 'GRANTED',
-                                     },
+                      consent: {
+                        adPersonalization: 'GRANTED',
+                      },
                     },
                   ],
                   partialFailure: true,
@@ -5917,5 +5922,5 @@ export const data = [
         ],
       },
     },
-  }
+  },
 ];

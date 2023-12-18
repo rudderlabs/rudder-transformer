@@ -175,7 +175,7 @@ steps:
       name: eventNamesForOthers
       template: |
         let event = .message.event ?? .message.name;
-        let eventInLowerCase = event.toLowerCase();
+        let eventInLowerCase = event.toString().toLowerCase();
         let eventNames = .destination.Config.eventsMapping.(){.from === event}.to[] ?? [];
         eventNames = $.convertToSnakeCase(eventNames);
         eventNames.length === 0 ? eventNames = $.ecomEventMaps.(){eventInLowerCase in .src}.dest[] ?? [];

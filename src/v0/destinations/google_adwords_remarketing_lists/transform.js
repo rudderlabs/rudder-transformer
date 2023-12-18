@@ -13,6 +13,7 @@ const {
   simpleProcessRouterDest,
   getDestinationExternalIDInfoForRetl,
   getAccessToken,
+  populateConsentForGoogleDestinations,
 } = require('../../util');
 
 const {
@@ -22,7 +23,6 @@ const {
   attributeMapping,
   hashAttributes,
   TYPEOFLIST,
-  ALLOWED_CONSENT_STATUS,
 } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { MappedToDestinationKey } = require('../../../constants');
@@ -196,30 +196,6 @@ const createPayload = (message, destination) => {
   return outputPayloads;
 };
 
-/**
- * Populates the consent object based on the provided properties.
- *
- * @param {object} properties - message.properties containing properties related to consent.
- * @returns {object} - An object containing consent information.
- * ref : https://developers.google.com/google-ads/api/rest/reference/rest/v15/Consent
- */
-const populateConsent = (properties) => {
-  const consent = {};
-
-  if (properties?.userDataConsent && ALLOWED_CONSENT_STATUS.includes(properties.userDataConsent)) {
-    consent.adUserData = properties.userDataConsent;
-  }
-
-  if (
-    properties?.personalizationConsent &&
-    ALLOWED_CONSENT_STATUS.includes(properties.personalizationConsent)
-  ) {
-    consent.adPersonalization = properties.personalizationConsent;
-  }
-
-  return consent;
-};
-
 const processEvent = async (metadata, message, destination) => {
   const response = [];
   if (!message.type) {
@@ -241,7 +217,7 @@ const processEvent = async (metadata, message, destination) => {
     }
 
     Object.values(createdPayload).forEach((data) => {
-      const consentObj = populateConsent(message.properties);
+      const consentObj = populateConsentForGoogleDestinations(message.properties);
       response.push(responseBuilder(metadata, data, destination, message, consentObj));
     });
     return response;

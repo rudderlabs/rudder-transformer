@@ -1037,7 +1037,7 @@
   },
   {
     "statusCode": 400,
-    "message": "Invalid email, email must be a valid string or null"
+    "message": "Invalid email, email must be a valid string"
   },
   {
     "body": {

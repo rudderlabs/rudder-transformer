@@ -8,6 +8,7 @@ const {
   isDefined,
   getHashFromArrayWithDuplicate,
   removeUndefinedAndNullValues,
+  validateEventName,
 } = require('../../util');
 const { COMMON_CONFIGS, CUSTOM_CONFIGS, API_VERSION } = require('./config');
 
@@ -166,10 +167,11 @@ const deduceTrackScreenEventName = (message, Config) => {
   let eventName;
   const { event, name } = message;
   const { eventsMapping, sendAsCustomEvent } = Config;
-  const trackEventOrScreenName = event.toString() || name.toString();
+  const trackEventOrScreenName = event || name;
   if (!trackEventOrScreenName) {
     throw new InstrumentationError('event_name could not be mapped. Aborting');
   }
+  validateEventName(trackEventOrScreenName);
 
   /*
   Step 1: If the event is not amongst the above list of ecommerce events, will look for

@@ -5312,4 +5312,610 @@ export const data = [
     },
     mockFns: timestampMock,
   },
+  {
+    name: 'google_adwords_offline_conversions',
+    description: 'Test 26',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                device: {},
+                traits: {
+                  email: 'alex@example.com',
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                locale: 'en-US',
+                ip: '0.0.0.0',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                screen: {
+                  density: 2,
+                },
+              },
+              event: 'Product Clicked',
+              type: 'track',
+              messageId: '5e10d13a-bf9a-44bf-b884-43a9e591ea71',
+              originalTimestamp: '2019-10-14T11:15:18.299Z',
+              anonymousId: '00000000000000000000000000',
+              userId: '12345',
+              properties: {
+                gclid: 'gclid',
+                conversionDateTime: '2022-01-01 12:32:45-08:00',
+                product_id: '123445',
+                quantity: 123,
+                userDataConsent: 'UNKNOWN',
+                personalizationConsent: 'GRANTED'
+              },
+              integrations: {
+                All: true,
+              },
+              name: 'ApplicationLoaded',
+              sentAt: '2019-10-14T11:15:53.296Z',
+            },
+            metadata: {
+              secret: {
+                access_token: 'abcd1234',
+                refresh_token: 'efgh5678',
+                developer_token: 'ijkl91011',
+              },
+            },
+            destination: {
+              Config: {
+                customerId: '962-581-2972',
+                subAccount: true,
+                loginCustomerId: '861-785-9087',
+                eventsToOfflineConversionsTypeMapping: [
+                  {
+                    from: 'Sign up completed',
+                    to: 'click',
+                  },
+                  {
+                    from: 'Download',
+                    to: 'call',
+                  },
+                  {
+                    from: 'Product Clicked',
+                    to: 'click',
+                  },
+                  {
+                    from: 'Product Searched',
+                    to: 'call',
+                  },
+                ],
+                eventsToConversionsNamesMapping: [
+                  {
+                    from: 'Sign up completed',
+                    to: 'Sign-up - click',
+                  },
+                  {
+                    from: 'Download',
+                    to: 'Page view',
+                  },
+                  {
+                    from: 'Product Clicked',
+                    to: 'Sign-up - click',
+                  },
+                  {
+                    from: 'Product Searched',
+                    to: 'search',
+                  },
+                ],
+                customVariables: [
+                  {
+                    from: 'value',
+                    to: 'revenue',
+                  },
+                  {
+                    from: 'total',
+                    to: 'cost',
+                  },
+                ],
+                UserIdentifierSource: 'THIRD_PARTY',
+                conversionEnvironment: 'WEB',
+                hashUserIdentifier: true,
+                defaultUserIdentifier: 'phone',
+                validateOnly: false,
+                rudderAccountId: '2EOknn1JNH7WK1MfNku4fGYKkRK',
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint:
+                'https://googleads.googleapis.com/v15/customers/9625812972:uploadClickConversions',
+              headers: {
+                Authorization: 'Bearer abcd1234',
+                'Content-Type': 'application/json',
+                'developer-token': 'ijkl91011',
+                'login-customer-id': '8617859087',
+              },
+              params: {
+                event: 'Sign-up - click',
+                customerId: '9625812972',
+                customVariables: [
+                  {
+                    from: 'value',
+                    to: 'revenue',
+                  },
+                  {
+                    from: 'total',
+                    to: 'cost',
+                  },
+                ],
+                properties: {
+                  gclid: 'gclid',
+                  conversionDateTime: '2022-01-01 12:32:45-08:00',
+                  product_id: '123445',
+                  quantity: 123,
+                  personalizationConsent: 'GRANTED',
+                  userDataConsent: 'UNKNOWN',
+                },
+              },
+              body: {
+                JSON: {
+                  conversions: [
+                    {
+                      cartData: {
+                        items: [
+                          {
+                            productId: '123445',
+                            quantity: 123,
+                          },
+                        ],
+                      },
+                      gclid: 'gclid',
+                      conversionDateTime: '2022-01-01 12:32:45-08:00',
+                      userIdentifiers: [
+                        {
+                          userIdentifierSource: 'THIRD_PARTY',
+                          hashedEmail:
+                            '6db61e6dcbcf2390e4a46af426f26a133a3bee45021422fc7ae86e9136f14110',
+                        },
+                      ],
+                      conversionEnvironment: 'WEB',
+                      consent: {
+                        adPersonalization: 'GRANTED',
+                        adUserData: 'UNKNOWN',
+                      }
+                    },
+                  ],
+                  partialFailure: true,
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            metadata: {
+              secret: {
+                access_token: 'abcd1234',
+                refresh_token: 'efgh5678',
+                developer_token: 'ijkl91011',
+              },
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'google_adwords_offline_conversions',
+    description: 'Test 27',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                device: {
+                  id: '0572f78fa49c648e',
+                  name: 'generic_x86_arm',
+                  type: 'Android',
+                  model: 'AOSP on IA Emulator',
+                  manufacturer: 'Google',
+                  adTrackingEnabled: true,
+                  advertisingId: '44c97318-9040-4361-8bc7-4eb30f665ca8',
+                },
+                traits: {
+                  phone: '+1-202-555-0146',
+                  firstName: 'John',
+                  lastName: 'Gomes',
+                  city: 'London',
+                  state: 'England',
+                  countryCode: 'GB',
+                  postalCode: 'EC3M',
+                  streetAddress: '71 Cherry Court SOUTHAMPTON SO53 5PD UK',
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                locale: 'en-US',
+                ip: '0.0.0.0',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                screen: {
+                  density: 2,
+                },
+              },
+              event: 'download',
+              type: 'track',
+              messageId: '5e10d13a-bf9a-44bf-b884-43a9e591ea71',
+              originalTimestamp: '2019-10-14T11:15:18.299Z',
+              anonymousId: '00000000000000000000000000',
+              userId: '12345',
+              properties: {
+                gbraid: 'gbraid',
+                wbraid: 'wbraid',
+                externalAttributionCredit: 10,
+                externalAttributionModel: 'externalAttributionModel',
+                conversionCustomVariable: 'conversionCustomVariable',
+                value: 'value',
+                merchantId: 'merchantId',
+                feedCountryCode: 'feedCountryCode',
+                feedLanguageCode: 'feedLanguageCode',
+                localTransactionCost: 20,
+                products: [
+                  {
+                    product_id: '507f1f77bcf86cd799439011',
+                    quantity: '2',
+                    price: '50',
+                    sku: '45790-32',
+                    name: 'Monopoly: 3rd Edition',
+                    position: '1',
+                    category: 'cars',
+                    url: 'https://www.example.com/product/path',
+                    image_url: 'https://www.example.com/product/path.jpg',
+                  },
+                ],
+                userIdentifierSource: 'FIRST_PARTY',
+                conversionEnvironment: 'WEB',
+                gclid: 'gclid',
+                conversionDateTime: '2022-01-01 12:32:45-08:00',
+                conversionValue: '1',
+                currency: 'GBP',
+                callerId: 'callerId',
+                callStartDateTime: '2022-08-28 15:01:30+05:30',
+                personalizationConsent: 'GRANTED',
+                userDataConsent: 'RANDOM',
+              },
+              integrations: {
+                All: true,
+              },
+              name: 'ApplicationLoaded',
+              sentAt: '2019-10-14T11:15:53.296Z',
+            },
+            metadata: {
+              secret: {
+                access_token: 'abcd1234',
+                refresh_token: 'efgh5678',
+                developer_token: 'ijkl91011',
+              },
+            },
+            destination: {
+              Config: {
+                customerId: '962-581-2972',
+                subAccount: false,
+                eventsToOfflineConversionsTypeMapping: [
+                  {
+                    from: 'Sign up completed',
+                    to: 'click',
+                  },
+                  {
+                    from: 'Download',
+                    to: 'click',
+                  },
+                  {
+                    from: 'Download',
+                    to: 'call',
+                  },
+                  {
+                    from: 'Promotion Clicked',
+                    to: 'click',
+                  },
+                  {
+                    from: 'Product Searched',
+                    to: 'call',
+                  },
+                ],
+                eventsToConversionsNamesMapping: [
+                  {
+                    from: 'Sign up completed',
+                    to: 'Sign-up - click',
+                  },
+                  {
+                    from: 'Download',
+                    to: 'Page view',
+                  },
+                  {
+                    from: 'Promotion Clicked',
+                    to: 'Sign-up - click',
+                  },
+                  {
+                    from: 'Product Searched',
+                    to: 'search',
+                  },
+                ],
+                customVariables: [
+                  {
+                    from: 'value',
+                    to: 'revenue',
+                  },
+                  {
+                    from: 'total',
+                    to: 'cost',
+                  },
+                ],
+                UserIdentifierSource: 'THIRD_PARTY',
+                conversionEnvironment: 'WEB',
+                hashUserIdentifier: true,
+                defaultUserIdentifier: 'phone',
+                validateOnly: false,
+                rudderAccountId: '2EOknn1JNH7WK1MfNku4fGYKkRK',
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint:
+                'https://googleads.googleapis.com/v15/customers/9625812972:uploadClickConversions',
+              headers: {
+                Authorization: 'Bearer abcd1234',
+                'Content-Type': 'application/json',
+                'developer-token': 'ijkl91011',
+              },
+              params: {
+                event: 'Page view',
+                customerId: '9625812972',
+                customVariables: [
+                  {
+                    from: 'value',
+                    to: 'revenue',
+                  },
+                  {
+                    from: 'total',
+                    to: 'cost',
+                  },
+                ],
+                properties: {
+                  gbraid: 'gbraid',
+                  wbraid: 'wbraid',
+                  externalAttributionCredit: 10,
+                  externalAttributionModel: 'externalAttributionModel',
+                  conversionCustomVariable: 'conversionCustomVariable',
+                  value: 'value',
+                  merchantId: 'merchantId',
+                  feedCountryCode: 'feedCountryCode',
+                  feedLanguageCode: 'feedLanguageCode',
+                  localTransactionCost: 20,
+                  products: [
+                    {
+                      product_id: '507f1f77bcf86cd799439011',
+                      quantity: '2',
+                      price: '50',
+                      sku: '45790-32',
+                      name: 'Monopoly: 3rd Edition',
+                      position: '1',
+                      category: 'cars',
+                      url: 'https://www.example.com/product/path',
+                      image_url: 'https://www.example.com/product/path.jpg',
+                    },
+                  ],
+                  userIdentifierSource: 'FIRST_PARTY',
+                  conversionEnvironment: 'WEB',
+                  gclid: 'gclid',
+                  conversionDateTime: '2022-01-01 12:32:45-08:00',
+                  conversionValue: '1',
+                  currency: 'GBP',
+                  callerId: 'callerId',
+                  callStartDateTime: '2022-08-28 15:01:30+05:30',
+                },
+              },
+              body: {
+                JSON: {
+                  conversions: [
+                    {
+                      gbraid: 'gbraid',
+                      wbraid: 'wbraid',
+                      externalAttributionData: {
+                        externalAttributionCredit: 10,
+                        externalAttributionModel: 'externalAttributionModel',
+                      },
+                      cartData: {
+                        feedCountryCode: 'feedCountryCode',
+                        feedLanguageCode: 'feedLanguageCode',
+                        localTransactionCost: 20,
+                        items: [
+                          {
+                            productId: '507f1f77bcf86cd799439011',
+                            quantity: 2,
+                            unitPrice: 50,
+                          },
+                        ],
+                      },
+                      userIdentifiers: [
+                        {
+                          userIdentifierSource: 'FIRST_PARTY',
+                          hashedPhoneNumber:
+                            '04e1dabb7c1348b72bfa87da179c9697c69af74827649266a5da8cdbb367abcd',
+                        },
+                      ],
+                      conversionEnvironment: 'WEB',
+                      gclid: 'gclid',
+                      conversionDateTime: '2022-01-01 12:32:45-08:00',
+                      conversionValue: 1,
+                      currencyCode: 'GBP',
+                    },
+                  ],
+                  partialFailure: true,
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            metadata: {
+              secret: {
+                access_token: 'abcd1234',
+                refresh_token: 'efgh5678',
+                developer_token: 'ijkl91011',
+              },
+            },
+            statusCode: 200,
+          },
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint:
+                'https://googleads.googleapis.com/v15/customers/9625812972:uploadCallConversions',
+              headers: {
+                Authorization: 'Bearer abcd1234',
+                'Content-Type': 'application/json',
+                'developer-token': 'ijkl91011',
+              },
+              params: {
+                event: 'Page view',
+                customerId: '9625812972',
+                customVariables: [
+                  {
+                    from: 'value',
+                    to: 'revenue',
+                  },
+                  {
+                    from: 'total',
+                    to: 'cost',
+                  },
+                ],
+                properties: {
+                  gbraid: 'gbraid',
+                  wbraid: 'wbraid',
+                  externalAttributionCredit: 10,
+                  externalAttributionModel: 'externalAttributionModel',
+                  conversionCustomVariable: 'conversionCustomVariable',
+                  value: 'value',
+                  merchantId: 'merchantId',
+                  feedCountryCode: 'feedCountryCode',
+                  feedLanguageCode: 'feedLanguageCode',
+                  localTransactionCost: 20,
+                  products: [
+                    {
+                      product_id: '507f1f77bcf86cd799439011',
+                      quantity: '2',
+                      price: '50',
+                      sku: '45790-32',
+                      name: 'Monopoly: 3rd Edition',
+                      position: '1',
+                      category: 'cars',
+                      url: 'https://www.example.com/product/path',
+                      image_url: 'https://www.example.com/product/path.jpg',
+                    },
+                  ],
+                  userIdentifierSource: 'FIRST_PARTY',
+                  conversionEnvironment: 'WEB',
+                  gclid: 'gclid',
+                  conversionDateTime: '2022-01-01 12:32:45-08:00',
+                  conversionValue: '1',
+                  currency: 'GBP',
+                  callerId: 'callerId',
+                  callStartDateTime: '2022-08-28 15:01:30+05:30',
+                  personalizationConsent: 'GRANTED',
+                  userDataConsent: 'RANDOM',
+                },
+              },
+              body: {
+                JSON: {
+                  conversions: [
+                    {
+                      callerId: 'callerId',
+                      callStartDateTime: '2022-08-28 15:01:30+05:30',
+                      conversionDateTime: '2022-01-01 12:32:45-08:00',
+                      conversionValue: 1,
+                      currencyCode: 'GBP',
+                      consent:  {
+                                       adPersonalization: 'GRANTED',
+                                     },
+                    },
+                  ],
+                  partialFailure: true,
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            metadata: {
+              secret: {
+                access_token: 'abcd1234',
+                refresh_token: 'efgh5678',
+                developer_token: 'ijkl91011',
+              },
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  }
 ];

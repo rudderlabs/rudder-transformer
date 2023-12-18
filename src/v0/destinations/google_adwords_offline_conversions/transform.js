@@ -10,6 +10,7 @@ const {
   defaultBatchRequestConfig,
   getSuccessRespEvents,
   checkInvalidRtTfEvents,
+  populateConsent,
 } = require('../../util');
 const {
   CALL_CONVERSION,
@@ -59,6 +60,10 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
     endpoint = CALL_CONVERSION.replace(':customerId', filteredCustomerId);
   }
 
+  const consentObject = populateConsent(properties);
+  if(Object.keys(consentObject).length > 0) {
+    payload.conversions[0].consent = populateConsent(properties);
+  }
   if (conversionType !== 'store') {
     // transform originalTimestamp to conversionDateTime format (yyyy-mm-dd hh:mm:ss+|-hh:mm)
     // e.g 2019-10-14T11:15:18.299Z -> 2019-10-14 16:10:29+0530

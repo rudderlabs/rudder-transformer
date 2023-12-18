@@ -1,6 +1,10 @@
 const sha256 = require('sha256');
 const { get, set, cloneDeep } = require('lodash');
-const moment = require('moment');
+const {
+  AbortedError,
+  ConfigurationError,
+  InstrumentationError,
+} = require('@rudderstack/integrations-lib');
 const { httpPOST } = require('../../../adapters/network');
 const {
   isHttpStatusSuccess,
@@ -11,8 +15,9 @@ const {
   getFieldValueFromMessage,
   isDefinedAndNotNullAndNotEmpty,
   isDefinedAndNotNull,
+  getAuthErrCategoryFromStCode,
+  getAccessToken,
 } = require('../../util');
-const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
 const {
   SEARCH_STREAM,
   CONVERSION_ACTION_ID_CACHE_TTL,
@@ -24,12 +29,7 @@ const {
 } = require('./config');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const Cache = require('../../util/cache');
-const {
-  AbortedError,
-  OAuthSecretError,
-  ConfigurationError,
-  InstrumentationError,
-} = require('../../util/errorTypes');
+const helper = require('./helper');
 
 const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
 
@@ -41,34 +41,6 @@ const validateDestinationConfig = ({ Config }) => {
   if (!Config.customerId) {
     throw new ConfigurationError('Customer ID not found. Aborting');
   }
-};
-
-/**
- * for OAuth destination
- * get access_token from metadata.secret{ ... }
- * @param {*} param0
- * @returns
- */
-const getAccessToken = ({ secret }) => {
-  if (!secret) {
-    throw new OAuthSecretError('OAuth - access token not found');
-  }
-  return secret.access_token;
-};
-
-/**
- * This function helps to determine the type of error occured. We set the authErrorCategory
- * as per the destination response that is received and take the decision whether
- * to refresh the access_token or disable the destination.
- * @param {*} status
- * @returns
- */
-const getAuthErrCategory = (status) => {
-  if (status === 401) {
-    // UNAUTHORIZED
-    return REFRESH_TOKEN;
-  }
-  return '';
 };
 
 /**
@@ -100,7 +72,7 @@ const getConversionActionId = async (headers, params) => {
         )} during google_ads_offline_conversions response transformation`,
         searchStreamResponse.status,
         searchStreamResponse.response,
-        getAuthErrCategory(get(searchStreamResponse, 'status')),
+        getAuthErrCategoryFromStCode(get(searchStreamResponse, 'status')),
       );
     }
     const conversionAction = get(
@@ -108,7 +80,9 @@ const getConversionActionId = async (headers, params) => {
       'response.0.results.0.conversionAction.resourceName',
     );
     if (!conversionAction) {
-      throw new AbortedError(`Unable to find conversionActionId for conversion:${params.event}`);
+      throw new AbortedError(
+        `Unable to find conversionActionId for conversion:${params.event}. Most probably the conversion name in Google dashboard and Rudderstack dashboard are not same.`,
+      );
     }
     return conversionAction;
   });
@@ -194,7 +168,7 @@ const requestBuilder = (
   }
   response.body.JSON = payload;
   response.headers = {
-    Authorization: `Bearer ${getAccessToken(metadata)}`,
+    Authorization: `Bearer ${getAccessToken(metadata, 'access_token')}`,
     'Content-Type': 'application/json',
     'developer-token': get(metadata, 'secret.developer_token'),
   };
@@ -204,7 +178,7 @@ const requestBuilder = (
       const filteredLoginCustomerId = removeHyphens(loginCustomerId);
       response.headers['login-customer-id'] = filteredLoginCustomerId;
     } else {
-      throw new ConfigurationError(`loginCustomerId is required as subAccount is enabled`);
+      throw new ConfigurationError(`"Login Customer ID" is required as "Sub Account" is enabled`);
     }
   }
   return response;
@@ -254,9 +228,7 @@ const getAddConversionPayload = (message, Config) => {
   // transform originalTimestamp to format (yyyy-mm-dd hh:mm:ss+|-hh:mm)
   // e.g 2019-10-14T11:15:18.299Z -> 2019-10-14 16:10:29+0530
   const timestamp = payload.operations.create.transaction_attribute.transaction_date_time;
-  const convertedDateTime = moment(timestamp)
-    .utcOffset(moment(timestamp).utcOffset())
-    .format('YYYY-MM-DD HH:mm:ssZ');
+  const convertedDateTime = helper.formatTimestamp(timestamp);
   payload.operations.create.transaction_attribute.transaction_date_time = convertedDateTime;
   // mapping custom_key that should be predefined in google Ui and mentioned when new job is created
   if (properties.custom_key && properties[properties.custom_key]) {
@@ -390,7 +362,6 @@ const getClickConversionPayloadAndEndpoint = (message, Config, filteredCustomerI
 module.exports = {
   validateDestinationConfig,
   generateItemListFromProducts,
-  getAccessToken,
   getConversionActionId,
   removeHashToSha256TypeFromMappingJson,
   getStoreConversionPayload,

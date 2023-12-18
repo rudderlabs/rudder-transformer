@@ -1,0 +1,135 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+    exportAll: true
+  - path: ./config
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+  - name: isAppleFamily
+    path: ../../../../v0/util/index
+  - name: OAuthSecretError
+    path: '@rudderstack/integrations-lib'
+
+steps:
+  - name: validateInput
+    template: |
+      let messageType = .message.type;
+      $.assertConfig(.destination.Config.accountId, "Account is not present. Aborting message.");
+      $.assert(.message.type, "message Type is not present. Aborting message.");
+      $.assert(.message.type.toLowerCase() ==='track', "Event type " + .message.type.toLowerCase() + " is not supported. Aborting message.");
+      $.assert(.message.event, "Event is not present. Aborting message.");
+      $.assert(.message.().({{{{$.getGenericPaths("timestamp")}}}}), "Timestamp is not present. Aborting message.");
+
+  - name: messageType
+    template: |
+      .message.type.toLowerCase()
+
+  - name: prepareTrackPayload
+    condition: $.outputs.messageType === {{$.EventType.TRACK}}
+    steps:
+      - name: prepareUserObject
+        template: |
+          const os = (.message.context.os.name)?  .message.context.os.name.toLowerCase(): null;
+          const hashData = .destination.Config.hashData;
+          let user = .message.().({
+            "email": hashData ? $.SHA256({{{{$.getGenericPaths("email")}}}}) : ({{{{$.getGenericPaths("email")}}}}),  
+            "external_id": hashData ? $.SHA256({{{{$.getGenericPaths("userId")}}}}) : ({{{{$.getGenericPaths("userId")}}}}),  
+            "ip_address": hashData? $.SHA256(.context.ip || .request_ip) : (.context.ip || .request_ip),
+            "uuid": .properties.uuid,
+            "user_agent": .context.userAgent,
+            "idfa": $.isAppleFamily(os)? (hashData? $.SHA256(.context.device.advertisingId): .context.device.advertisingId): null,
+            "aaid": os === "android" && .context.device ? (hashData? $.SHA256(.context.device.advertisingId): .context.device.advertisingId): null,
+            "opt_out": .properties.optOut,
+            "screen_dimensions": {"width": .context.screen.width, "height":  .context.screen.height},
+          });
+          $.removeUndefinedAndNullValues(user)
+
+      - name: eventType
+        template: |
+          let event = .message.event;
+          let eventInLowerCase = event.trim().toLowerCase();;
+          let eventNames = .destination.Config.eventsMapping? .destination.Config.eventsMapping.(){.from === event}.to[] ?? []: [];
+          eventNames.length === 0 ? eventNames = $.ecomEventMaps.(){eventInLowerCase in .src}.dest[] ?? [];
+          const event_type = (eventNames.length === 0 || eventNames[0]==="") ? ({"tracking_type": "Custom", "custom_event_name": event}): ({tracking_type: eventNames[0]});
+
+      - name: customFields
+        condition: $.outputs.eventType.tracking_type === "Purchase"
+        template: |
+          const customFields = .message.().({
+            "currency": .properties.currency,
+            "value": .properties.revenue !== undefined ? Number(.properties.revenue) : undefined,
+            "item_count": (Array.isArray(.properties.products) && .properties.products.length) || (.properties.itemCount && Number(.properties.itemCount)),
+            "value_decimal": .properties.revenue !== undefined ? Number(.properties.revenue)/100 : undefined,
+            "conversion_id": .properties.conversionId || .messageId,
+          });
+          $.removeUndefinedAndNullValues(customFields)
+        else:
+          name: nonRevenueTypeEvents
+          template: |
+            const customFields = .message.().({
+            "conversion_id": .properties.conversionId || .messageId,
+            });
+            $.removeUndefinedAndNullValues(customFields)
+
+      - name: productFields
+        condition: .message.properties.products
+        description: When event contains multiple products
+        template: |
+          let products = .message.properties.products;
+          {
+            "item_count": $.sum(products.quantity.(Number(.))[]) || 0,
+            "products": .message.properties@prop.products.({
+              "id": .product_id ?? prop.product_id,
+              "name": .name ?? prop.name,
+              "category": .category ?? prop.category,
+            })[]
+          }
+        else:
+          name: singleProductFields
+          template: |
+            const props = .message.properties;
+            const output = {
+              "item_count": Number(props.quantity) || 0,
+              "products": {
+                "id": props.product_id,
+                "name": props.name,
+                "category": props.category,
+              }[]
+            };
+      - name: combineAllEcomFields
+        template: |
+          {...$.outputs.prepareTrackPayload.productFields, ...$.outputs.prepareTrackPayload.customFields}
+
+      - name: prepareFinalPayload
+        template: |
+          { 
+            events: [{
+            "click_id": .message.properties.clickId,
+            "event_at": .message.().({{{{$.getGenericPaths("timestamp")}}}}),
+            "event_type": $.outputs.prepareTrackPayload.eventType,
+            "user": $.outputs.prepareTrackPayload.prepareUserObject,
+            "event_metadata": $.outputs.prepareTrackPayload.combineAllEcomFields,
+            }]
+          }
+
+  - name: payload
+    condition: $.outputs.messageType === {{$.EventType.TRACK}}
+    template: |
+      const outputPayload = $.outputs.prepareTrackPayload
+
+  - name: buildResponseForProcessTransformation
+    description: build response
+    template: |
+      $.assertThrow((.metadata.secret && .metadata.secret.accessToken), new $.OAuthSecretError("Secret or accessToken is not present in the metadata"))
+      const accessToken = .metadata.secret.accessToken
+      const response = $.defaultRequestConfig();
+      response.body.JSON = $.outputs.payload;
+      response.headers = {
+        "Authorization": "Bearer "+ accessToken,
+        "Content-Type": "application/json"
+        }
+      response.endpoint = $.ENDPOINT+.destination.Config.accountId;
+      finalResponse = response;

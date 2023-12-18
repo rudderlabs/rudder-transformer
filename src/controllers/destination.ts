@@ -1,22 +1,22 @@
 import { Context } from 'koa';
-import MiscService from '../services/misc';
-import PreTransformationDestinationService from '../services/destination/preTransformation';
-import PostTransformationDestinationService from '../services/destination/postTransformation';
+import { MiscService } from '../services/misc';
+import { DestinationPreTransformationService } from '../services/destination/preTransformation';
+import { DestinationPostTransformationService } from '../services/destination/postTransformation';
 import {
   ProcessorTransformationRequest,
   RouterTransformationRequest,
   ProcessorTransformationResponse,
   RouterTransformationResponse,
 } from '../types/index';
-import ServiceSelector from '../helpers/serviceSelector';
-import ControllerUtility from './util';
+import { ServiceSelector } from '../helpers/serviceSelector';
+import { ControllerUtility } from './util';
 import stats from '../util/stats';
 import logger from '../logger';
 import { getIntegrationVersion } from '../util/utils';
 import tags from '../v0/util/tags';
 import { DynamicConfigParser } from '../util/dynamicConfigParser';
 
-export default class DestinationController {
+export class DestinationController {
   public static async destinationTransformAtProcessor(ctx: Context) {
     const startTime = new Date();
     logger.debug(
@@ -36,12 +36,14 @@ export default class DestinationController {
     const integrationService = ServiceSelector.getDestinationService(events);
     try {
       integrationService.init();
-      events = PreTransformationDestinationService.preProcess(
+      events = DestinationPreTransformationService.preProcess(
         events,
         ctx,
       ) as ProcessorTransformationRequest[];
       const timestampCorrectEvents = ControllerUtility.handleTimestampInEvents(events);
-      events = DynamicConfigParser.process(timestampCorrectEvents) as ProcessorTransformationRequest[];
+      events = DynamicConfigParser.process(
+        timestampCorrectEvents,
+      ) as ProcessorTransformationRequest[];
       resplist = await integrationService.doProcessorTransformation(
         events,
         destination,
@@ -57,7 +59,7 @@ export default class DestinationController {
           tags.FEATURES.PROCESSOR,
         );
         metaTO.metadata = ev.metadata;
-        const errResp = PostTransformationDestinationService.handleProcessorTransformFailureEvents(
+        const errResp = DestinationPostTransformationService.handleProcessorTransformFailureEvents(
           error,
           metaTO,
         );
@@ -108,7 +110,7 @@ export default class DestinationController {
     const integrationService = ServiceSelector.getDestinationService(events);
     let resplist: RouterTransformationResponse[];
     try {
-      events = PreTransformationDestinationService.preProcess(events, ctx);
+      events = DestinationPreTransformationService.preProcess(events, ctx);
       const timestampCorrectEvents = ControllerUtility.handleTimestampInEvents(events);
       events = DynamicConfigParser.process(timestampCorrectEvents);
       resplist = await integrationService.doRouterTransformation(
@@ -125,7 +127,7 @@ export default class DestinationController {
         tags.FEATURES.ROUTER,
       );
       metaTO.metadatas = events.map((ev) => ev.metadata);
-      const errResp = PostTransformationDestinationService.handleRouterTransformFailureEvents(
+      const errResp = DestinationPostTransformationService.handleRouterTransformFailureEvents(
         error,
         metaTO,
       );
@@ -163,7 +165,7 @@ export default class DestinationController {
     let events = routerRequest.input;
     const integrationService = ServiceSelector.getDestinationService(events);
     try {
-      events = PreTransformationDestinationService.preProcess(events, ctx);
+      events = DestinationPreTransformationService.preProcess(events, ctx);
       const timestampCorrectEvents = ControllerUtility.handleTimestampInEvents(events);
       const resplist = integrationService.doBatchTransformation(
         timestampCorrectEvents,
@@ -180,7 +182,7 @@ export default class DestinationController {
         tags.FEATURES.BATCH,
       );
       metaTO.metadatas = events.map((ev) => ev.metadata);
-      const errResp = PostTransformationDestinationService.handleBatchTransformFailureEvents(
+      const errResp = DestinationPostTransformationService.handleBatchTransformFailureEvents(
         error,
         metaTO,
       );
@@ -194,7 +196,7 @@ export default class DestinationController {
     stats.timing('dest_transform_request_latency', startTime, {
       destination,
       feature: tags.FEATURES.BATCH,
-      version:"v0",
+      version: 'v0',
     });
     return ctx;
   }

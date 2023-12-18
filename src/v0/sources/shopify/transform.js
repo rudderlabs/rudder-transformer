@@ -1,4 +1,5 @@
-const _ = require('lodash');
+/* eslint-disable @typescript-eslint/naming-convention */
+const lodash = require('lodash');
 const get = require('get-value');
 const stats = require('../../../util/stats');
 const {
@@ -125,8 +126,8 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
 
 const processEvent = async (inputEvent, metricMetadata) => {
   let message;
+  const event = lodash.cloneDeep(inputEvent);
   let redisData;
-  const event = _.cloneDeep(inputEvent);
   const shopifyTopic = getShopifyTopic(event);
   delete event.query_parameters;
   switch (shopifyTopic) {
@@ -172,7 +173,11 @@ const processEvent = async (inputEvent, metricMetadata) => {
     }
   }
   if (message.type !== EventType.IDENTIFY) {
-    const { anonymousId, sessionId } = await getAnonymousIdAndSessionId(message, metricMetadata, redisData);
+    const { anonymousId, sessionId } = await getAnonymousIdAndSessionId(
+      message,
+      { shopifyTopic, ...metricMetadata },
+      redisData,
+    );
     if (isDefinedAndNotNull(anonymousId)) {
       message.setProperty('anonymousId', anonymousId);
     } else if (!message.userId) {
@@ -197,7 +202,8 @@ const processEvent = async (inputEvent, metricMetadata) => {
   message = removeUndefinedAndNullValues(message);
   return message;
 };
-const isIdentifierEvent = (event) => ['rudderIdentifier', 'rudderSessionIdentifier'].includes(event?.event);
+const isIdentifierEvent = (event) =>
+  ['rudderIdentifier', 'rudderSessionIdentifier'].includes(event?.event);
 const processIdentifierEvent = async (event, metricMetadata) => {
   if (useRedisDatabase) {
     let value;
@@ -240,7 +246,6 @@ const processIdentifierEvent = async (event, metricMetadata) => {
         ...metricMetadata,
       });
     }
-
   }
   const result = {
     outputToSource: {

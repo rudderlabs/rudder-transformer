@@ -25,6 +25,7 @@
     "PINTEREST_TAG": true,
     "PROFITWELL": true,
     "SALESFORCE": true,
+    "SALESFORCE_OAUTH": true,
     "SFMC": true,
     "SNAPCHAT_CONVERSION": true,
     "TIKTOK_ADS": true,
@@ -57,6 +58,13 @@
     "BRAZE": true,
     "OPTIMIZELY_FULLSTACK": true,
     "TWITTER_ADS": true,
-    "CLEVERTAP": true
-  }
+    "CLEVERTAP": true,
+    "ORTTO": true,
+    "GLADLY": true,
+    "ONE_SIGNAL": true,
+    "TIKTOK_AUDIENCE": true,
+    "REDDIT": true
+  },
+  "supportSourceTransformV1": true,
+  "supportTransformerProxyV1": true
 }

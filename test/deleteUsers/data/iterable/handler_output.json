@@ -1,0 +1,32 @@
+[
+  [
+    {
+      "statusCode": 400,
+      "error": "Config for deletion not present"
+    }
+  ],
+  [
+    {
+      "statusCode": 400,
+      "error": "api key for deletion not present"
+    }
+  ],
+  [
+    {
+      "statusCode": 400,
+      "error": "User deletion request failed for userIds : [{\"userId\":\"rudder2\",\"Reason\":\"User does not exist. Email:  UserId: rudder2\"}]"
+    }
+  ],
+  [
+    {
+      "error": "User deletion request failed : Invalid API key",
+      "statusCode": 401
+    }
+  ],
+  [
+    {
+      "statusCode": 200,
+      "status": "successful"
+    }
+  ]
+]

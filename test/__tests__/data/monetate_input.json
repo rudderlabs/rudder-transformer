@@ -750,7 +750,7 @@
           "density": 2.5
         },
         "traits": {
-          "email": "arucha@mysite.com"
+          "email": "rudder@mysite.com"
         },
         "userId": "user202",
         "library": {
@@ -815,7 +815,7 @@
           "density": 2.5
         },
         "traits": {
-          "email": "arucha@mysite.com"
+          "email": "rudder@mysite.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -885,7 +885,7 @@
           "density": 2.5
         },
         "traits": {
-          "email": "arucha@mysite.com"
+          "email": "rudder@mysite.com"
         },
         "userId": "user101",
         "library": {
@@ -943,7 +943,7 @@
           "density": 2.5
         },
         "traits": {
-          "email": "arucha@mysite.com"
+          "email": "rudder@mysite.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -1004,7 +1004,7 @@
           "density": 2.5
         },
         "traits": {
-          "email": "arucha@mysite.com"
+          "email": "rudder@mysite.com"
         },
         "userId": "user101",
         "library": {
@@ -1067,7 +1067,7 @@
           "density": 2.5
         },
         "traits": {
-          "email": "arucha@mysite.com"
+          "email": "rudder@mysite.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -1129,7 +1129,7 @@
           "density": 2.5
         },
         "traits": {
-          "email": "arucha@mysite.com"
+          "email": "rudder@mysite.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -1201,7 +1201,7 @@
           "density": 2.5
         },
         "traits": {
-          "email": "arucha@mysite.com"
+          "email": "rudder@mysite.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -1340,7 +1340,7 @@
         "traits": {
           "city": "Bangalore",
           "name": "Manashi",
-          "email": "arucha@mysite.com",
+          "email": "rudder@mysite.com",
           "country": "India"
         },
         "library": {
@@ -1394,7 +1394,7 @@
         "traits": {
           "city": "Bangalore",
           "name": "Manashi",
-          "email": "arucha@mysite.com",
+          "email": "rudder@mysite.com",
           "country": "India"
         },
         "library": {
@@ -1508,7 +1508,7 @@
           "density": 2.5
         },
         "traits": {
-          "email": "arucha@mysite.com"
+          "email": "rudder@mysite.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -1580,7 +1580,7 @@
           "density": 2.5
         },
         "traits": {
-          "email": "arucha@mysite.com"
+          "email": "rudder@mysite.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",

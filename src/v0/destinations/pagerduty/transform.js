@@ -1,3 +1,8 @@
+const {
+  ConfigurationError,
+  TransformationError,
+  InstrumentationError,
+} = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   defaultRequestConfig,
@@ -6,11 +11,6 @@ const {
   removeUndefinedAndNullValues,
 } = require('../../util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-const {
-  ConfigurationError,
-  TransformationError,
-  InstrumentationError,
-} = require('../../util/errorTypes');
 const { trackEventPayloadBuilder } = require('./util');
 
 const responseBuilder = (payload, endpoint) => {

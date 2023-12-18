@@ -191,8 +191,8 @@
             "name": "http"
           },
           "traits": {
-            "firstName": "Anant",
-            "lastName": "jain",
+            "firstName": "test",
+            "lastName": "rudderlabs",
             "role": "Manager",
             "address": "Flat No 58 ABC building XYZ Area near PQRS , 354408",
             "hasPurchased": "yes",

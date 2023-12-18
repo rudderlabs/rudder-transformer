@@ -1,5 +1,6 @@
 const get = require('get-value');
 const md5 = require('md5');
+const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const { Event, GA_ENDPOINT, ConfigCategory, mappingConfig, nameToEventMap } = require('./config');
 const {
@@ -12,7 +13,6 @@ const {
   getDestinationExternalID,
   simpleProcessRouterDest,
 } = require('../../util');
-const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 
 const gaDisplayName = 'Google Analytics';
 
@@ -401,7 +401,7 @@ function processRefundEvent(message, destination) {
   let { enhancedEcommerce } = destination.Config;
   enhancedEcommerce = enhancedEcommerce || false;
 
-  // eslint-disable-next-line camelcase
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   const { products, order_id } = message.properties;
   if (products && products.length > 0) {
     const productParams = setProductLevelProperties(
@@ -545,7 +545,7 @@ function processProductEvent(message, destination) {
     const customParamKeys = getCustomParamKeys(destination.Config);
     Object.assign(parameters, getProductLevelCustomParams(message.properties, 1, customParamKeys));
   }
-  // eslint-disable-next-line camelcase
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   const { sku, product_id } = message.properties;
   // eslint-disable-next-line camelcase
   const productId = product_id;

@@ -1,9 +1,9 @@
-const _ = require('lodash');
+const lodash = require('lodash');
 const flatten = require('flat');
 
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { isEmpty, isObject } = require('../../util');
 const { EventType } = require('../../../constants');
-const { InstrumentationError } = require('../../util/errorTypes');
 
 // processValues:
 // 1. removes keys with empty values or still an object(empty) after flattening
@@ -17,16 +17,41 @@ const processValues = (obj) => {
     }
     const val = obj[key];
     // eslint-disable-next-line no-param-reassign
-    obj[key] = _.isArray(val) ? JSON.stringify(val) : _.toString(val);
+    obj[key] = lodash.isArray(val) ? JSON.stringify(val) : lodash.toString(val);
   });
 };
 
+const isSubEventTypeProfiles = (message) => {
+  // check if profiles_model, profiles_entity, profiles_id_type are present in message.context.sources
+  const { context } = message;
+  if (!context?.sources) {
+    return false;
+  }
+  const { sources } = context;
+  return sources.profiles_entity && sources.profiles_id_type && sources.profiles_model;
+};
+
+const transformSubEventTypeProfiles = (message, workspaceId, destinationId) => {
+  // form the hash
+  const hash = `${workspaceId}:${destinationId}:${message.context.sources.profiles_entity}:${message.context.sources.profiles_id_type}:${message.userId}`;
+  const key = `${message.context.sources.profiles_model}`;
+  const value = JSON.stringify(message.traits);
+  return {
+    message: {
+      hash,
+      key,
+      value,
+    },
+    userId: message.userId,
+  };
+};
+
 const process = (event) => {
-  const { message, destination } = event;
+  const { message, destination, metadata } = event;
   const messageType = message && message.type && message.type.toLowerCase();
 
   if (messageType !== EventType.IDENTIFY) {
-    return [];
+    throw new InstrumentationError('Only Identify calls are supported');
   }
 
   if (isEmpty(message.userId)) {
@@ -34,10 +59,16 @@ const process = (event) => {
   }
 
   const { prefix } = destination.Config;
+  const destinationId = destination.ID;
   const keyPrefix = isEmpty(prefix) ? '' : `${prefix.trim()}:`;
 
+  if (isSubEventTypeProfiles(message)) {
+    const { workspaceId } = metadata;
+    return transformSubEventTypeProfiles(message, workspaceId, destinationId);
+  }
+
   const hmap = {
-    key: `${keyPrefix}user:${_.toString(message.userId)}`,
+    key: `${keyPrefix}user:${lodash.toString(message.userId)}`,
     fields: {},
   };
 

@@ -3139,5 +3139,47 @@
       },
       "Enabled": true
     }
+  },
+  {
+    "description": "[HS] (New API v3) - (newPrivateAppApi) sample track call when hubspotEvents is undefined",
+    "message": {
+      "type": "track",
+      "traits": {},
+      "context": {
+        "externalId": [
+          {
+            "id": "osvaldocostaferreira98@gmail.com",
+            "type": "HS-contacts",
+            "identifierType": "email"
+          }
+        ]
+      },
+      "event": "Purchase",
+      "properties": {
+        "Revenue": "name1"
+      }
+    },
+    "destination": {
+      "Config": {
+        "authorizationType": "newPrivateAppApi",
+        "hubID": "",
+        "apiKey": "",
+        "accessToken": "dummy-access-token",
+        "apiVersion": "newApi",
+        "lookupField": "lookupField",
+        "eventFilteringOption": "disable",
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
   }
 ]

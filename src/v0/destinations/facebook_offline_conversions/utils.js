@@ -1,5 +1,6 @@
 const sha256 = require('sha256');
 const get = require('get-value');
+const { ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
   isObject,
   formatTimeStamp,
@@ -22,7 +23,6 @@ const {
   eventToStandardMapping,
   MATCH_KEY_FIELD_TYPE_DICTIONARY,
 } = require('./config');
-const { ConfigurationError } = require('../../util/errorTypes');
 
 /**
  * @param {*} message

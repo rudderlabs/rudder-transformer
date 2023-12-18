@@ -1,11 +1,14 @@
 /* eslint-disable no-param-reassign */
 const get = require('get-value');
 const moment = require('moment');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const stats = require('../../../util/stats');
 const {
+  VERSION,
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   FB_PIXEL_DEFAULT_EXCLUSION,
+  FB_PIXEL_CUSTOM_DATA_EXCLUDE_FLATTENING,
   STANDARD_ECOMM_EVENTS_TYPE,
 } = require('./config');
 const { EventType } = require('../../../constants');
@@ -17,24 +20,32 @@ const {
   getIntegrationsObj,
   getValidDynamicFormConfig,
   simpleProcessRouterDest,
+  getHashFromArray,
 } = require('../../util');
 
 const {
-  transformedPayloadData,
   getActionSource,
-  fetchUserData,
   handleProduct,
   handleSearch,
   handleProductListViewed,
   handleOrder,
-  formingFinalResponse,
+  populateCustomDataBasedOnCategory,
+  getCategoryFromEvent,
 } = require('./utils');
 
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
+const {
+  transformedPayloadData,
+  fetchUserData,
+  formingFinalResponse,
+} = require('../../util/facebookUtils');
 
-const responseBuilderSimple = (message, category, destination, categoryToContent) => {
-  const { Config } = destination;
+const responseBuilderSimple = (message, category, destination) => {
+  const { Config, ID } = destination;
   const { pixelId, accessToken } = Config;
+  let { categoryToContent } = Config;
+  if (Array.isArray(categoryToContent)) {
+    categoryToContent = getValidDynamicFormConfig(categoryToContent, 'from', 'to', 'FB_PIXEL', ID);
+  }
 
   if (!pixelId) {
     throw new ConfigurationError('Pixel Id not found. Aborting');
@@ -55,19 +66,32 @@ const responseBuilderSimple = (message, category, destination, categoryToContent
   } = Config;
   const integrationsObj = getIntegrationsObj(message, 'fb_pixel');
 
-  const endpoint = `https://graph.facebook.com/v17.0/${pixelId}/events?access_token=${accessToken}`;
+  const endpoint = `https://graph.facebook.com/${VERSION}/${pixelId}/events?access_token=${accessToken}`;
 
-  const userData = fetchUserData(message, Config);
+  const userData = fetchUserData(
+    message,
+    Config,
+    MAPPING_CONFIG[CONFIG_CATEGORIES.USERDATA.name],
+    'fb_pixel',
+  );
+
+  const commonData = constructPayload(
+    message,
+    MAPPING_CONFIG[CONFIG_CATEGORIES.COMMON.name],
+    'fb_pixel',
+  );
+  commonData.action_source = getActionSource(commonData, message?.channel);
 
   let customData = {};
-  let commonData = {};
-
-  commonData = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.COMMON.name], 'fb_pixel');
-  commonData.action_source = getActionSource(commonData, message?.channel);
 
   if (category.type !== 'identify') {
     customData = flattenJson(
-      extractCustomFields(message, customData, ['properties'], FB_PIXEL_DEFAULT_EXCLUSION),
+      extractCustomFields(
+        message,
+        customData,
+        ['properties'],
+        [...FB_PIXEL_DEFAULT_EXCLUSION, ...FB_PIXEL_CUSTOM_DATA_EXCLUDE_FLATTENING],
+      ),
     );
     if (standardPageCall && category.type === 'page') {
       category.standard = true;
@@ -82,74 +106,20 @@ const responseBuilderSimple = (message, category, destination, categoryToContent
       customData,
       blacklistPiiProperties,
       whitelistPiiProperties,
-      category.standard,
       integrationsObj,
     );
     message.properties = message.properties || {};
     if (category.standard) {
-      switch (category.type) {
-        case 'product list viewed':
-          customData = {
-            ...customData,
-            ...handleProductListViewed(message, categoryToContent),
-          };
-          commonData.event_name = 'ViewContent';
-          break;
-        case 'product viewed':
-          customData = {
-            ...customData,
-            ...handleProduct(message, categoryToContent, valueFieldIdentifier),
-          };
-          commonData.event_name = 'ViewContent';
-          break;
-        case 'product added':
-          customData = {
-            ...customData,
-            ...handleProduct(message, categoryToContent, valueFieldIdentifier),
-          };
-          commonData.event_name = 'AddToCart';
-          break;
-        case 'order completed':
-          customData = {
-            ...customData,
-            ...handleOrder(message, categoryToContent),
-          };
-          commonData.event_name = 'Purchase';
-          break;
-        case 'products searched': {
-          customData = {
-            ...customData,
-            ...handleSearch(message),
-          };
-          commonData.event_name = 'Search';
-          break;
-        }
-        case 'checkout started': {
-          const orderPayload = handleOrder(message, categoryToContent);
-          delete orderPayload.content_name;
-          customData = {
-            ...customData,
-            ...orderPayload,
-          };
-          commonData.event_name = 'InitiateCheckout';
-          break;
-        }
-        case 'page_view': // executed when sending track calls but with standard type PageView
-        case 'page': // executed when page call is done with standard PageView turned on
-          customData = { ...customData };
-          commonData.event_name = 'PageView';
-          break;
-        case 'otherStandard':
-          customData = { ...customData };
-          commonData.event_name = category.event;
-          break;
-        default:
-          throw new InstrumentationError(
-            `${category.standard} type of standard event does not exist`,
-          );
-      }
+      commonData.event_name = category.eventName;
+      customData = populateCustomDataBasedOnCategory(
+        customData,
+        message,
+        category,
+        categoryToContent,
+        valueFieldIdentifier,
+      );
       customData.currency = STANDARD_ECOMM_EVENTS_TYPE.includes(category.type)
-        ? message.properties.currency || 'USD'
+        ? message.properties?.currency || 'USD'
         : undefined;
     } else {
       const { type } = category;
@@ -159,8 +129,13 @@ const responseBuilderSimple = (message, category, destination, categoryToContent
           : `Viewed a ${type}`;
       }
       if (type === 'simple track') {
-        customData.value = message.properties ? message.properties.revenue : undefined;
+        customData.value = message.properties?.revenue;
         delete customData.revenue;
+        FB_PIXEL_CUSTOM_DATA_EXCLUDE_FLATTENING.forEach((customDataParameter) => {
+          if (message.properties?.[customDataParameter]) {
+            customData[customDataParameter] = message.properties[customDataParameter];
+          }
+        });
       }
     }
   } else {
@@ -189,57 +164,6 @@ const responseBuilderSimple = (message, category, destination, categoryToContent
   );
 };
 
-function getCategoryFromEvent(checkEvent) {
-  let category;
-  switch (checkEvent) {
-    case CONFIG_CATEGORIES.PRODUCT_LIST_VIEWED.type:
-    case 'ViewContent':
-      category = CONFIG_CATEGORIES.PRODUCT_LIST_VIEWED;
-      break;
-    case CONFIG_CATEGORIES.PRODUCT_VIEWED.type:
-      category = CONFIG_CATEGORIES.PRODUCT_VIEWED;
-      break;
-    case CONFIG_CATEGORIES.PRODUCT_ADDED.type:
-    case 'AddToCart':
-      category = CONFIG_CATEGORIES.PRODUCT_ADDED;
-      break;
-    case CONFIG_CATEGORIES.ORDER_COMPLETED.type:
-    case 'Purchase':
-      category = CONFIG_CATEGORIES.ORDER_COMPLETED;
-      break;
-    case CONFIG_CATEGORIES.PRODUCTS_SEARCHED.type:
-    case 'Search':
-      category = CONFIG_CATEGORIES.PRODUCTS_SEARCHED;
-      break;
-    case CONFIG_CATEGORIES.CHECKOUT_STARTED.type:
-    case 'InitiateCheckout':
-      category = CONFIG_CATEGORIES.CHECKOUT_STARTED;
-      break;
-    case 'AddToWishlist':
-    case 'AddPaymentInfo':
-    case 'Lead':
-    case 'CompleteRegistration':
-    case 'Contact':
-    case 'CustomizeProduct':
-    case 'Donate':
-    case 'FindLocation':
-    case 'Schedule':
-    case 'StartTrial':
-    case 'SubmitApplication':
-    case 'Subscribe':
-      category = CONFIG_CATEGORIES.OTHER_STANDARD;
-      category.event = checkEvent;
-      break;
-    case 'PageView':
-      category = CONFIG_CATEGORIES.PAGE_VIEW;
-      break;
-    default:
-      category = CONFIG_CATEGORIES.SIMPLE_TRACK;
-      break;
-  }
-  return category;
-}
-
 const processEvent = (message, destination) => {
   if (!message.type) {
     throw new InstrumentationError("'type' is missing");
@@ -265,7 +189,7 @@ const processEvent = (message, destination) => {
   }
 
   let eventsToEvents;
-  if (destination.Config.eventsToEvents)
+  if (Array.isArray(destination.Config.eventsToEvents)) {
     eventsToEvents = getValidDynamicFormConfig(
       destination.Config.eventsToEvents,
       'from',
@@ -273,21 +197,12 @@ const processEvent = (message, destination) => {
       'FB_PIXEL',
       destination.ID,
     );
-  let categoryToContent;
-  if (destination.Config.categoryToContent)
-    categoryToContent = getValidDynamicFormConfig(
-      destination.Config.categoryToContent,
-      'from',
-      'to',
-      'FB_PIXEL',
-      destination.ID,
-    );
+  }
+
   const { advancedMapping } = destination.Config;
-  let standard;
-  let standardTo = '';
-  let checkEvent;
   const messageType = message.type.toLowerCase();
   let category;
+  let mappedEvent;
   switch (messageType) {
     case EventType.IDENTIFY:
       if (advancedMapping) {
@@ -309,24 +224,17 @@ const processEvent = (message, destination) => {
       if (typeof message.event !== 'string') {
         throw new InstrumentationError('event name should be string');
       }
-      standard = eventsToEvents;
-      if (standard) {
-        standardTo = standard.reduce((filtered, standards) => {
-          if (standards.from.toLowerCase() === message.event.toLowerCase()) {
-            filtered = standards.to;
-          }
-          return filtered;
-        }, '');
+      if (eventsToEvents) {
+        const eventMappingHash = getHashFromArray(eventsToEvents);
+        mappedEvent = eventMappingHash[message.event.toLowerCase()];
       }
-      checkEvent = standardTo !== '' ? standardTo : message.event.toLowerCase();
-
-      category = getCategoryFromEvent(checkEvent);
+      category = getCategoryFromEvent(mappedEvent || message.event.toLowerCase());
       break;
     default:
       throw new InstrumentationError(`Message type ${messageType} not supported`);
   }
   // build the response
-  return responseBuilderSimple(message, category, destination, categoryToContent);
+  return responseBuilderSimple(message, category, destination);
 };
 
 const process = (event) => processEvent(event.message, event.destination);

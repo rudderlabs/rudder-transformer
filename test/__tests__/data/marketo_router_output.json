@@ -30,7 +30,7 @@
     },
     "metadata": [
       {
-        "jobId": 2
+        "jobId": 1
       }
     ],
     "batched": false,
@@ -41,28 +41,23 @@
         "clientId": "marketo_client_id_success",
         "clientSecret": "marketo_client_secret_success",
         "trackAnonymousEvents": true,
-        "customActivityEventMap": [
-          {
-            "from": "Product Clicked",
-            "to": "100001"
-          }
-        ],
         "customActivityPropertyMap": [
           {
             "from": "name",
             "to": "productName"
           }
         ],
-        "customActivityPrimaryKeyMap": [
-          {
-            "from": "Product Clicked",
-            "to": "name"
-          }
-        ],
         "leadTraitMapping": [
           {
             "from": "leadScore",
             "to": "customLeadScore"
+          }
+        ],
+        "rudderEventsMapping": [
+          {
+            "event": "Product Clicked",
+            "marketoPrimarykey": "name",
+            "marketoActivityId": "100001"
           }
         ]
       },
@@ -82,9 +77,8 @@
               "clientId",
               "clientSecret",
               "trackAnonymousEvents",
-              "customActivityEventMap",
+              "rudderEventsMapping",
               "customActivityPropertyMap",
-              "customActivityPrimaryKeyMap",
               "leadTraitMapping"
             ]
           },
@@ -204,28 +198,23 @@
         "clientId": "marketo_client_id_success",
         "clientSecret": "marketo_client_secret_success",
         "trackAnonymousEvents": true,
-        "customActivityEventMap": [
-          {
-            "from": "Product Clicked",
-            "to": "100001"
-          }
-        ],
         "customActivityPropertyMap": [
           {
             "from": "name",
             "to": "productName"
           }
         ],
-        "customActivityPrimaryKeyMap": [
-          {
-            "from": "Product Clicked",
-            "to": "name"
-          }
-        ],
         "leadTraitMapping": [
           {
             "from": "leadScore",
             "to": "customLeadScore"
+          }
+        ],
+        "rudderEventsMapping": [
+          {
+            "event": "Product Clicked",
+            "marketoPrimarykey": "name",
+            "marketoActivityId": "100001"
           }
         ]
       },
@@ -245,9 +234,8 @@
               "clientId",
               "clientSecret",
               "trackAnonymousEvents",
-              "customActivityEventMap",
+              "rudderEventsMapping",
               "customActivityPropertyMap",
-              "customActivityPrimaryKeyMap",
               "leadTraitMapping"
             ]
           },
@@ -328,7 +316,7 @@
   {
     "batched": false,
     "statusCode": 400,
-    "error": "Request Failed for marketo, Lookup field 'userId' not found (Aborted).[Marketo Transformer]: During lead look up using email",
+    "error": "{\"message\":\"Request Failed for marketo, Lookup field 'userId' not found (Aborted).[Marketo Transformer]: During lead look up using email\",\"destinationResponse\":{\"response\":{\"requestId\":\"142e4#1835b117b76\",\"success\":false,\"errors\":[{\"code\":\"1006\",\"message\":\"Lookup field 'userId' not found\"}]},\"status\":200}}",
     "statTags": {
       "errorCategory": "network",
       "errorType": "aborted"
@@ -345,38 +333,38 @@
         "clientSecret": "3l3gJpzRsZagD6gu7tnTeKXz0bomLGnd",
         "trackAnonymousEvents": false,
         "createIfNotExist": true,
-        "customActivityEventMap": [
+        "rudderEventsMapping": [
           {
-            "from": "acq_signup_completed",
-            "to": "100026"
+            "event": "acq_signup_completed",
+            "marketoActivityId": "100026"
           },
           {
-            "from": "act_createwebinarform_submit",
-            "to": "100025"
+            "event": "act_createwebinarform_submit",
+            "marketoActivityId": "100025"
           },
           {
-            "from": "act_presentation_style",
-            "to": "100025"
+            "event": "act_presentation_style",
+            "marketoActivityId": "100025"
           },
           {
-            "from": "act_webinar_view",
-            "to": "100025"
+            "event": "act_webinar_view",
+            "marketoActivityId": "100025"
           },
           {
-            "from": "act_webinar_join",
-            "to": "100025"
+            "event": "act_webinar_join",
+            "marketoActivityId": "100025"
           },
           {
-            "from": "act_presentation_addteammember",
-            "to": "100025"
+            "event": "act_presentation_addteammember",
+            "marketoActivityId": "100025"
           },
           {
-            "from": "act_engagement_discussions_savediscussion",
-            "to": "100025"
+            "event": "act_engagement_discussions_savediscussion",
+            "marketoActivityId": "100025"
           },
           {
-            "to": "100025",
-            "from": "act_engagement_networking_savetime"
+            "event": "act_engagement_networking_savetime",
+            "marketoActivityId": "100025"
           }
         ]
       },
@@ -388,9 +376,8 @@
               "clientId",
               "clientSecret",
               "trackAnonymousEvents",
-              "customActivityEventMap",
+              "rudderEventsMapping",
               "customActivityPropertyMap",
-              "customActivityPrimaryKeyMap",
               "leadTraitMapping"
             ]
           },
@@ -479,7 +466,7 @@
   {
     "batched": false,
     "statusCode": 400,
-    "error": "Error occurred [Marketo Transformer]: During lead look up using email -> some other problem",
+    "error": "{\"message\":\"Error occurred [Marketo Transformer]: During lead look up using email -> some other problem\",\"destinationResponse\":{\"response\":{\"requestId\":\"142e4#1835b117b76\",\"success\":false,\"errors\":[{\"code\":\"random_marketo_code\",\"message\":\"some other problem\"}]},\"status\":200}}",
     "statTags": {
       "errorCategory": "network",
       "errorType": "aborted",
@@ -492,38 +479,38 @@
         "clientSecret": "3l3gJpzRsZagD6gu7tnTeKXz0bomLGnd",
         "trackAnonymousEvents": false,
         "createIfNotExist": true,
-        "customActivityEventMap": [
+        "rudderEventsMapping": [
           {
-            "from": "acq_signup_completed",
-            "to": "100026"
+            "event": "acq_signup_completed",
+            "marketoActivityId": "100026"
           },
           {
-            "from": "act_createwebinarform_submit",
-            "to": "100025"
+            "event": "act_createwebinarform_submit",
+            "marketoActivityId": "100025"
           },
           {
-            "from": "act_presentation_style",
-            "to": "100025"
+            "event": "act_presentation_style",
+            "marketoActivityId": "100025"
           },
           {
-            "from": "act_webinar_view",
-            "to": "100025"
+            "event": "act_webinar_view",
+            "marketoActivityId": "100025"
           },
           {
-            "from": "act_webinar_join",
-            "to": "100025"
+            "event": "act_webinar_join",
+            "marketoActivityId": "100025"
           },
           {
-            "from": "act_presentation_addteammember",
-            "to": "100025"
+            "event": "act_presentation_addteammember",
+            "marketoActivityId": "100025"
           },
           {
-            "from": "act_engagement_discussions_savediscussion",
-            "to": "100025"
+            "event": "act_engagement_discussions_savediscussion",
+            "marketoActivityId": "100025"
           },
           {
-            "to": "100025",
-            "from": "act_engagement_networking_savetime"
+            "event": "act_engagement_networking_savetime",
+            "marketoActivityId": "100025"
           }
         ]
       },
@@ -535,9 +522,8 @@
               "clientId",
               "clientSecret",
               "trackAnonymousEvents",
-              "customActivityEventMap",
+              "rudderEventsMapping",
               "customActivityPropertyMap",
-              "customActivityPrimaryKeyMap",
               "leadTraitMapping"
             ]
           },
@@ -673,38 +659,38 @@
         "clientSecret": "3l3gJpzRsZagD6gu7tnTeKXz0bomLGnd",
         "trackAnonymousEvents": false,
         "createIfNotExist": true,
-        "customActivityEventMap": [
+        "rudderEventsMapping": [
           {
-            "from": "acq_signup_completed",
-            "to": "100026"
+            "event": "acq_signup_completed",
+            "marketoActivityId": "100026"
           },
           {
-            "from": "act_createwebinarform_submit",
-            "to": "100025"
+            "event": "act_createwebinarform_submit",
+            "marketoActivityId": "100025"
           },
           {
-            "from": "act_presentation_style",
-            "to": "100025"
+            "event": "act_presentation_style",
+            "marketoActivityId": "100025"
           },
           {
-            "from": "act_webinar_view",
-            "to": "100025"
+            "event": "act_webinar_view",
+            "marketoActivityId": "100025"
           },
           {
-            "from": "act_webinar_join",
-            "to": "100025"
+            "event": "act_webinar_join",
+            "marketoActivityId": "100025"
           },
           {
-            "from": "act_presentation_addteammember",
-            "to": "100025"
+            "event": "act_presentation_addteammember",
+            "marketoActivityId": "100025"
           },
           {
-            "from": "act_engagement_discussions_savediscussion",
-            "to": "100025"
+            "event": "act_engagement_discussions_savediscussion",
+            "marketoActivityId": "100025"
           },
           {
-            "to": "100025",
-            "from": "act_engagement_networking_savetime"
+            "event": "act_engagement_networking_savetime",
+            "marketoActivityId": "100025"
           }
         ]
       },
@@ -716,9 +702,8 @@
               "clientId",
               "clientSecret",
               "trackAnonymousEvents",
-              "customActivityEventMap",
+              "rudderEventsMapping",
               "customActivityPropertyMap",
-              "customActivityPrimaryKeyMap",
               "leadTraitMapping"
             ]
           },

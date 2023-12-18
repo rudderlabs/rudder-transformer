@@ -1,0 +1,21 @@
+[
+  {
+    "destKey": "value",
+    "sourceKeys": [
+      "properties.revenue",
+      "properties.value",
+      "properties.price",
+      "properties.total"
+    ],
+    "metadata": {
+      "type": "numberForRevenue"
+    }
+  },
+  {
+    "destKey": "currency",
+    "sourceKeys": "properties.currency",
+    "metadata": {
+      "defaultValue": "USD"
+    }
+  }
+]

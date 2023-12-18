@@ -1,4 +1,9 @@
-const _ = require('lodash');
+const lodash = require('lodash');
+const {
+  ConfigurationError,
+  TransformationError,
+  InstrumentationError,
+} = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   ErrorMessage,
@@ -34,11 +39,6 @@ const {
   generatePayloadFromConfig,
   createOrUpdateContactPayloadBuilder,
 } = require('./util');
-const {
-  ConfigurationError,
-  TransformationError,
-  InstrumentationError,
-} = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (payload, method, endpoint, apiKey) => {
@@ -211,10 +211,13 @@ const batchEvents = (successRespList) => {
   "contactListIds3": [{message : {}, metadata : {}, destination: {}}],
   "contactListIds4": [{message : {}, metadata : {}, destination: {}}]
   */
-    const eventGroups = _.groupBy(identifyCalls, (event) => event.message.body.JSON.contactListIds);
+    const eventGroups = lodash.groupBy(
+      identifyCalls,
+      (event) => event.message.body.JSON.contactListIds,
+    );
 
     Object.keys(eventGroups).forEach((combination) => {
-      const eventChunks = _.chunk(eventGroups[combination], MAX_BATCH_SIZE);
+      const eventChunks = lodash.chunk(eventGroups[combination], MAX_BATCH_SIZE);
       // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
       eventChunks.forEach((chunk) => {
         const batchEventResponse = generateBatchedPaylaodForArray(chunk, combination);

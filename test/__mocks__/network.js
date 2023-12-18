@@ -23,7 +23,8 @@ const urlDirectoryMap = {
   "api.clevertap.com": "clevertap",
   "marketo_acct_id_success.mktorest.com": "marketo_static_list",
   "api.criteo.com": "criteo_audience",
-  "business-api.tiktok.com": "tiktok_ads"
+  "business-api.tiktok.com": "tiktok_ads",
+  "api.intercom.io": "intercom"
 };
 
 function getData(arg) {

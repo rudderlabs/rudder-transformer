@@ -1,8 +1,10 @@
 /* eslint-disable camelcase */
+/* eslint-disable @typescript-eslint/naming-convention */
 const _ = require('lodash');
 const { SHA256 } = require('crypto-js');
 const get = require('get-value');
 const set = require('set-value');
+const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   constructPayload,
@@ -28,7 +30,6 @@ const {
   MAX_BATCH_SIZE,
   PARTNER_NAME,
 } = require('./config');
-const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const USER_EMAIL_KEY_PATH = 'context.user.email';
@@ -127,7 +128,7 @@ const getTrackResponse = (message, Config, event) => {
 };
 
 const trackResponseBuilder = async (message, { Config }) => {
-  const { eventsToStandard } = Config;
+  const { eventsToStandard, sendCustomEvents } = Config;
 
   let event = message.event?.toLowerCase().trim();
   if (!event) {
@@ -136,7 +137,7 @@ const trackResponseBuilder = async (message, { Config }) => {
 
   const standardEventsMap = getHashFromArrayWithDuplicate(eventsToStandard);
 
-  if (eventNameMapping[event] === undefined && !standardEventsMap[event]) {
+  if (!sendCustomEvents && eventNameMapping[event] === undefined && !standardEventsMap[event]) {
     throw new InstrumentationError(
       `Event name (${event}) is not valid, must be mapped to one of standard events`,
     );
@@ -151,10 +152,12 @@ const trackResponseBuilder = async (message, { Config }) => {
         });
       }
     });
-  } else {
-    event = eventNameMapping[event];
-    responseList.push(getTrackResponse(message, Config, event));
+    return responseList;
   }
+  // Doc https://ads.tiktok.com/help/article/standard-events-parameters?lang=en
+  event = eventNameMapping[event] || event;
+  // if there exists no event mapping we will build payload with custom event recieved
+  responseList.push(getTrackResponse(message, Config, event));
 
   return responseList;
 };

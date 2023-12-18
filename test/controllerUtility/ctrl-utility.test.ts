@@ -1,5 +1,5 @@
 import { ProcessorTransformationRequest, RouterTransformationRequestData } from '../../src/types';
-import ControllerUtility from '../../src/controllers/util';
+import { ControllerUtility } from '../../src/controllers/util';
 
 type timestampTestCases = {
   caseName: string;
@@ -56,6 +56,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -119,6 +120,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -186,6 +188,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -249,6 +252,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -316,6 +320,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -379,6 +384,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -448,6 +454,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -509,6 +516,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -570,6 +578,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -631,6 +640,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -696,6 +706,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -757,6 +768,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -818,6 +830,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -879,6 +892,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -912,7 +926,7 @@ const timestampEventsCases: timestampTestCases[] = [
             traits: {
               timestamp: '2023-01-22T00:29:12.117+05:30',
             },
-            mappedToDestination: true
+            mappedToDestination: true,
           },
           sentAt: '2022-12-23T00:29:12.117+05:30',
           timestamp: '2022-11-22T00:29:10.188+05:30',
@@ -949,6 +963,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -1010,6 +1025,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string-2',
@@ -1034,7 +1050,7 @@ const timestampEventsCases: timestampTestCases[] = [
           originalTimestamp: '2022-12-23T00:29:12.117+05:30',
           channel: 'sources',
           context: {
-            mappedToDestination: true
+            mappedToDestination: true,
           },
           properties: {
             timestamp: '2023-01-13T00:29:12.117+05:30',
@@ -1074,6 +1090,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -1095,7 +1112,7 @@ const timestampEventsCases: timestampTestCases[] = [
           anonymousId: '2073232',
           event: 'Test',
           context: {
-            mappedToDestination: true
+            mappedToDestination: true,
           },
           messageId: 'e3a51e9a-6313-4389-ae73-07e487c8d9d0',
           originalTimestamp: '2022-12-23T00:29:12.117+05:30',
@@ -1138,6 +1155,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -1167,7 +1185,7 @@ const timestampEventsCases: timestampTestCases[] = [
             traits: {
               timestamp: '2023-01-22T00:29:12.117+05:30',
             },
-            mappedToDestination: true
+            mappedToDestination: true,
           },
           sentAt: '2022-12-23T00:29:12.117+05:30',
           timestamp: '2022-11-22T00:29:10.188+05:30',
@@ -1204,6 +1222,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -1265,6 +1284,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string-2',
@@ -1289,7 +1309,7 @@ const timestampEventsCases: timestampTestCases[] = [
           originalTimestamp: '2022-12-23T00:29:12.117+05:30',
           channel: 'sources',
           context: {
-            mappedToDestination: true
+            mappedToDestination: true,
           },
           properties: {
             timestamp: '2023-01-13T00:29:12.117+05:30',
@@ -1329,6 +1349,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',
@@ -1353,7 +1374,7 @@ const timestampEventsCases: timestampTestCases[] = [
           originalTimestamp: '2022-12-23T00:29:12.117+05:30',
           channel: 'sources',
           context: {
-            mappedToDestination: true
+            mappedToDestination: true,
           },
           properties: {
             timestamp: '2023-01-13T00:29:12.117+05:30',
@@ -1393,6 +1414,7 @@ const timestampEventsCases: timestampTestCases[] = [
           eventType: 'track',
           sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591',
           destinationDefinitionId: '',
+          transformationId: '',
         },
         destination: {
           ID: 'string',

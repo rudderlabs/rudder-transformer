@@ -40,7 +40,6 @@ const { sendgridGetRequestHandler } = require("./sendgrid.mock");
 const { sendinblueGetRequestHandler } = require("./sendinblue.mock");
 const { courierGetRequestHandler } = require("./courier.mock");
 const { brazePostRequestHandler } = require("./braze.mock");
-const {optimizelyFullStackGetRequestHandler} = require("./optimizely_fullstack.mock");
 
 const urlDirectoryMap = {
   "api.hubapi.com": "hs",
@@ -55,7 +54,6 @@ const urlDirectoryMap = {
   "api.sendinblue.com": "sendinblue",
   "api.criteo.com": "criteo_audience",
   "api.courier.com": "courier",
-  "cdn.optimizely.com": "optimizely_fullstack",
 };
 
 const fs = require("fs");
@@ -88,7 +86,7 @@ function getData(url) {
 
 function get(url, options) {
   const mockData = getData(url);
-  if (url.includes("https://api.kustomerapp.com")) {
+  if (url.includes("https://api.kustomerapp.com") || url.includes("https://api.prod2.kustomerapp.com")) {
     return new Promise((resolve, reject) => {
       resolve(kustomerGetRequestHandler(url));
     });

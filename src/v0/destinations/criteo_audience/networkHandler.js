@@ -1,3 +1,10 @@
+const {
+  NetworkError,
+  ThrottledError,
+  NetworkInstrumentationError,
+  AbortedError,
+  RetryableError,
+} = require('@rudderstack/integrations-lib');
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util/index');
 const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
@@ -6,13 +13,6 @@ const {
   getDynamicErrorType,
   processAxiosResponse,
 } = require('../../../adapters/utils/networkUtils');
-const {
-  NetworkError,
-  ThrottledError,
-  NetworkInstrumentationError,
-  AbortedError,
-  RetryableError,
-} = require('../../util/errorTypes');
 
 //  https://developers.criteo.com/marketing-solutions/v2021.01/docs/how-to-handle-api-errors#:~:text=the%20response%20body.-,401,-Authentication%20error
 // Following fucntion tells us if there is a particular error code in the response.
@@ -26,7 +26,11 @@ const criteoAudienceRespHandler = (destResponse, stageMsg) => {
 
   // https://developers.criteo.com/marketing-solutions/docs/api-error-types#error-category-types
   // to handle the case when authorization-token is invalid
-  if (status === 401 && matchErrorCode('authorization-token-invalid', response)) {
+  if (
+    status === 401 &&
+    (matchErrorCode('authorization-token-invalid', response) ||
+      matchErrorCode('authorization-token-expired', response))
+  ) {
     throw new NetworkError(
       `${response?.errors[0]?.title} ${stageMsg}`,
       status,
@@ -81,6 +85,7 @@ const responseHandler = (destinationResponse) => {
   };
 };
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 class networkHandler {
   constructor() {
     this.responseHandler = responseHandler;

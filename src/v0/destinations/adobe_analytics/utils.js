@@ -4,8 +4,8 @@
 /* eslint-disable unicorn/no-for-loop */
 /* eslint-disable no-restricted-syntax */
 const get = require('get-value');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { isDefinedAndNotNull, getValueFromMessage } = require('../../util');
-const { InstrumentationError } = require('../../util/errorTypes');
 
 const SOURCE_KEYS = ['properties', 'traits', 'context.traits', 'context'];
 
@@ -76,6 +76,28 @@ function handleContextData(payload, destinationConfig, message) {
 }
 
 /**
+ * This function is used for replacing '&', '<' and '>' with their respective HTML entities
+ * @param {*} inputString
+ * @returns string with HTML entities replaced
+ *
+ */
+
+function escapeToHTML(inputString) {
+  if (typeof inputString !== 'string') {
+    return inputString;
+  }
+  return inputString.replace(
+    /[&<>]/g,
+    (match) =>
+      ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+      }[match]),
+  );
+}
+
+/**
  * This function is used for populating the eVars and hVars in the payload
  * @param {*} destVarMapping
  * @param {*} message
@@ -90,16 +112,16 @@ function rudderPropToDestMap(destVarMapping, message, payload, destVarStrPrefix)
     let val = get(message, `properties.${key}`);
     if (isDefinedAndNotNull(val)) {
       const destVarKey = destVarStrPrefix + destVarMapping[key];
-      mappedVar[destVarKey] = val;
+      mappedVar[destVarKey] = escapeToHTML(val);
     } else {
       SOURCE_KEYS.some((sourceKey) => {
         val = getMappingFieldValueFormMessage(message, sourceKey, key);
         if (isDefinedAndNotNull(val)) {
-          mappedVar[`${destVarStrPrefix}${[destVarMapping[key]]}`] = val;
+          mappedVar[`${destVarStrPrefix}${[destVarMapping[key]]}`] = escapeToHTML(val);
         } else {
           val = getValueByPath(message, key);
           if (isDefinedAndNotNull(val)) {
-            mappedVar[`${destVarStrPrefix}${[destVarMapping[key]]}`] = val;
+            mappedVar[`${destVarStrPrefix}${[destVarMapping[key]]}`] = escapeToHTML(val);
           }
         }
       });
@@ -147,13 +169,13 @@ function rudderPropToDestMapWithDelimitter(mapping, delimMapping, message, prefi
           `${prefix} mapping properties variable is neither a string nor an array`,
         );
       }
-      
+
       if (typeof val === 'string') {
         /* following regex is used to find the one or more commas separated/padded by white spaces. 
         Example: val = 'r15,faze90R' , 'r1v, bvp, pol'
         */
-        val = val.replace(/\s*,+\s*/g, delimMapping[key]); 
-        // Above regex is good as for every comma with whitespace padding the no. of steps will increase by 4.  
+        val = val.replace(/\s*,+\s*/g, delimMapping[key]);
+        // Above regex is good as for every comma with whitespace padding the no. of steps will increase by 4.
       } else {
         val = val.join(delimMapping[key]);
       }
@@ -200,4 +222,5 @@ module.exports = {
   handleList,
   handleCustomProperties,
   stringifyValueAndJoinWithDelimiter,
+  escapeToHTML,
 };

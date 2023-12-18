@@ -1,6 +1,7 @@
-const _ = require('lodash');
+const lodash = require('lodash');
 const get = require('get-value');
 const { isEmpty } = require('lodash');
+const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const { ConfigCategory, IDENTIFY_MAX_BATCH_SIZE, mappingConfig, BASE_URL } = require('./config');
 const {
@@ -14,7 +15,6 @@ const {
   handleRtTfSingleEventError,
 } = require('../../util');
 const { deduceAddressFields, extractCustomProperties } = require('./utils');
-const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (responseConfgs) => {
@@ -112,7 +112,7 @@ const process = (event) => processEvent(event.message, event.destination);
 function batchEvents(eventsChunk) {
   const batchedResponseList = [];
 
-  const arrayChunks = _.chunk(eventsChunk, IDENTIFY_MAX_BATCH_SIZE);
+  const arrayChunks = lodash.chunk(eventsChunk, IDENTIFY_MAX_BATCH_SIZE);
 
   // list of chunks [ [..], [..] ]
   arrayChunks.forEach((chunk) => {

@@ -32,7 +32,7 @@
     "type": "track"
   },
   {
-    "anonymousId": "cd5dbd2727742c2957771e61eef4e296f3fb263294e184fcb8af98b7ccd372c7",
+    "anonymousId": "a80b34ec43ca959c7b8e5116ac626c3cf8561f62616e000a01729a8a900cc0a0",
     "context": {
       "integration": {
         "name": "Mailmodo",
@@ -43,7 +43,7 @@
         "version": "unknown"
       },
       "traits": {
-        "email": "sudip.paul21997@gmail.com"
+        "email": "test.rudderlabs21997@gmail.com"
       }
     },
     "event": "Form Submitted",
@@ -275,7 +275,7 @@
     "type": "track"
   },
   {
-    "anonymousId": "d6a9d06e8a464324d448003ff0467d971a55ca2950e11fc51faaec4e2850ecc6",
+    "anonymousId": "1c5e54849f5c711ce38fa60716fbbe44bff478f9ca250897b39cdfc2438cd1bd",
     "context": {
       "integration": {
         "name": "Mailmodo",
@@ -286,7 +286,7 @@
         "version": "unknown"
       },
       "traits": {
-        "email": "rohithkaza@rudderstack.com",
+        "email": "test@rudderstack.com",
         "first_name": "abcda"
       }
     },

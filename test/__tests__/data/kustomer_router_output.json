@@ -7,14 +7,14 @@
       "endpoint": "https://api.kustomerapp.com/v1/customers",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Bearer WJqij952gdy251"
+        "Authorization": "Bearer dummyApiKey"
       },
       "params": {},
       "body": {
         "JSON": {
-          "name": "Utsab Chowdhury",
-          "externalId": "utsabc",
-          "username": "utsabc47",
+          "name": "test Rudderlabs",
+          "externalId": "testc",
+          "username": "testc47",
           "company": "Rudderstack",
           "signedUpAt": "2015-04-17T12:37:42.146Z",
           "lastActivityAt": "2016-04-17T12:37:42.146Z",
@@ -29,22 +29,22 @@
               "verified": true,
               "userid": "100",
               "type": "twitter",
-              "username": "@utsabc",
-              "url": "http://twitter.com/utsabc"
+              "username": "@testc",
+              "url": "http://twitter.com/testc"
             },
             {
               "verified": false,
               "userid": "200",
               "type": "facebook",
-              "username": "utsabc",
-              "url": "http://facebook.com/utsabc"
+              "username": "testc",
+              "url": "http://facebook.com/testc"
             }
           ],
           "birthdayAt": "2005-01-01T23:28:56.782Z",
           "emails": [
             {
               "type": "home",
-              "email": "utsab@rudderstack.com"
+              "email": "test@rudderstack.com"
             }
           ],
           "phones": [
@@ -73,14 +73,14 @@
     },
     "metadata": [
       {
-        "jobId": 2
+        "jobId": 1
       }
     ],
     "batched": false,
     "statusCode": 200,
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251",
+        "apiKey": "dummyApiKey",
         "genericPage": false,
         "genericScreen": false
       }
@@ -94,7 +94,7 @@
       "endpoint": "https://api.kustomerapp.com/v1/tracking/identityEvent",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Bearer WJqij952gdy251"
+        "Authorization": "Bearer dummyApiKey"
       },
       "params": {},
       "body": {
@@ -127,7 +127,55 @@
     "statusCode": 200,
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251",
+        "apiKey": "dummyApiKey",
+        "genericPage": false,
+        "genericScreen": false
+      }
+    }
+  },
+  {
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.prod2.kustomerapp.com/v1/tracking/identityEvent",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer dummyApiKey"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "identity": {
+            "externalId": "user@doe"
+          },
+          "event": {
+            "name": "Tracking-Weekender",
+            "sessionId": "63nsa22",
+            "trackingId": "sahetwiac",
+            "meta": {
+              "YearServicedNum": 211,
+              "region": "strapis"
+            }
+          }
+        },
+        "XML": {},
+        "JSON_ARRAY": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "baseEndpoint": "https://api.prod2.kustomerapp.com",
+        "apiKey": "dummyApiKey",
         "genericPage": false,
         "genericScreen": false
       }

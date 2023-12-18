@@ -20,7 +20,7 @@ export const data = [
                   gender: 'male',
                   city: 'Kolkata',
                   country: 'india',
-                  phone: '9225467887',
+                  phone: '9876543210',
                   useroccupation: 'software engineer',
                   Snippet: 'extra value',
                   extra: 'extraVal',
@@ -43,7 +43,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: '2c646069cc5ae3f22cc0dab36cd060ad',
+                apiKey: 'dummyApiKey',
                 persistIqAttributesMapping: [
                   {
                     from: 'useroccupation',
@@ -75,7 +75,7 @@ export const data = [
                     Snippet: 'extra value',
                     last_name: 'rudderstack',
                     linkedin: 'www.google.com',
-                    phone: '9225467887',
+                    phone: '9876543210',
                     company_name: 'abc123',
                   },
                   status: 'open',
@@ -87,7 +87,7 @@ export const data = [
               files: {},
               userId: '',
               headers: {
-                'x-api-key': '2c646069cc5ae3f22cc0dab36cd060ad',
+                'x-api-key': 'dummyApiKey',
               },
               method: 'PATCH',
               params: {},
@@ -125,7 +125,7 @@ export const data = [
                   age: 15,
                   dup: 'update',
                   gender: 'male',
-                  phone: '9225467887',
+                  phone: '9876543210',
                   useroccupation: 'software engineer',
                   Snippet: 'extra value',
                   extra: 'extraVal',
@@ -140,7 +140,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: '2c646069cc5ae3f22cc0dab36cd060ad',
+                apiKey: 'dummyApiKey',
                 persistIqAttributesMapping: [
                   {
                     from: 'useroccupation',
@@ -175,7 +175,7 @@ export const data = [
                       Snippet: 'extra value',
                       last_name: 'rudderstack',
                       linkedin: 'www.google.com',
-                      phone: '9225467887',
+                      phone: '9876543210',
                       company_name: 'abc1234',
                       cityName: 'Delhi',
                       country: 'India',
@@ -189,7 +189,7 @@ export const data = [
               files: {},
               userId: '',
               headers: {
-                'x-api-key': '2c646069cc5ae3f22cc0dab36cd060ad',
+                'x-api-key': 'dummyApiKey',
               },
               method: 'POST',
               params: {},
@@ -224,7 +224,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: '262fbbda-b85b-48b8-a719-c2fceaf8afaf',
+                apiKey: 'dummyApiKey',
               },
             },
           },
@@ -276,7 +276,7 @@ export const data = [
                   city: 'Kalkata',
                   country: 'india',
                   tags: ['productuser'],
-                  phone: '9225467887',
+                  phone: '9876543210',
                 },
               },
               traits: {
@@ -285,7 +285,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: '262fbbda-b85b-48b8-a719-c2fceaf8afaf',
+                apiKey: 'dummyApiKey',
               },
             },
           },
@@ -339,7 +339,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: '262fbbda-b85b-48b8-a719-c2fceaf8afaf',
+                apiKey: 'dummyApiKey',
               },
             },
           },
@@ -400,7 +400,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: '2c646069cc5ae3f22cc0dab36cd060ad',
+                apiKey: 'dummyApiKey',
               },
             },
           },
@@ -429,7 +429,7 @@ export const data = [
               method: 'POST',
               params: {},
               headers: {
-                'x-api-key': '2c646069cc5ae3f22cc0dab36cd060ad',
+                'x-api-key': 'dummyApiKey',
               },
               version: '1',
               endpoint: 'https://api.persistiq.com/v1/campaigns/testgroup1/leads',
@@ -472,7 +472,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: '2c646069cc5ae3f22cc0dab36cd060ad',
+                apiKey: 'dummyApiKey',
               },
             },
           },
@@ -498,7 +498,7 @@ export const data = [
               method: 'DELETE',
               params: {},
               headers: {
-                'x-api-key': '2c646069cc5ae3f22cc0dab36cd060ad',
+                'x-api-key': 'dummyApiKey',
               },
               version: '1',
               endpoint: 'https://api.persistiq.com/v1/campaigns/testgroup1/leads/lel1c5u1wuk8',
@@ -533,7 +533,7 @@ export const data = [
                   age: 15,
                   dup: 'update',
                   gender: 'male',
-                  phone: '9225467887',
+                  phone: '9876543210',
                   useroccupation: 'software engineer',
                   Snippet: 'extra value',
                   extra: 'extraVal',
@@ -547,7 +547,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: '2c646069cc5ae3f22cc0dab36cd060ad',
+                apiKey: 'dummyApiKey',
                 persistIqAttributesMapping: [
                   {
                     from: 'useroccupation',

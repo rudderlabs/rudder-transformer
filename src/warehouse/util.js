@@ -3,7 +3,7 @@ const get = require('get-value');
 
 const v0 = require('./v0/util');
 const v1 = require('./v1/util');
-const { PlatformError, InstrumentationError } = require('../v0/util/errorTypes');
+const { PlatformError, InstrumentationError } = require('@rudderstack/integrations-lib');
 
 const minTimeInMs = Date.parse('0001-01-01T00:00:00Z');
 const maxTimeInMs = Date.parse('9999-12-31T23:59:59.999Z');
@@ -15,26 +15,77 @@ const isObject = (value) => {
   return value != null && (type === 'object' || type === 'function') && !Array.isArray(value);
 };
 
-const isValidJsonPathKey = (eventType, key, val, level, jsonKeys = {}) => {
+const isValidJsonPathKey = (key, level, jsonKeys = {}) => {
+  return jsonKeys[key] === level;
+};
+const isValidLegacyJsonPathKey = (eventType, key, level, jsonKeys = {}) => {
   return eventType === 'track' && jsonKeys[key] === level;
 };
 
 const isBlank = (value) => {
   return _.isEmpty(_.toString(value));
 };
+
 /*
- * input => ["a", "b.c"]
- * output => { "a": 0, "b_c": 1}
+This function takes in an array of json paths and returns an object with keys as the json path and value as the position of the key in the json path
+Example:
+Input:
+[
+  "a",
+  "b.c"
+]
+Output:
+{
+  "a": 0,
+  "b_c": 1
+}
+
+Input:
+[
+  "track.context.a",
+  "track.properties.b",
+  "pages.properties.c.d",
+  "groups.traits.e.f"
+]
+Output:
+{
+  "track_context_a": 2,
+  "track_properties_b": 2,
+  "pages_properties_c_d": 3,
+  "groups_traits_e_f": 3
+}
  */
-const getKeysFromJsonPaths = (jsonPaths) => {
-  const jsonKeys = {};
+const keysFromJsonPaths = (jsonPaths) => {
+  const jsonPathKeys = {};
+  const jsonLegacyPathKeys = {};
+
+  const supportedEventPrefixes = [
+    'track.',
+    'identify.',
+    'page.',
+    'screen.',
+    'alias.',
+    'group.',
+    'extract.',
+  ];
+
   jsonPaths.forEach((jsonPath) => {
-    if (jsonPath.trim()) {
-      const paths = jsonPath.trim().split('.');
-      jsonKeys[paths.join('_')] = paths.length - 1;
+    const trimmedJSONPath = jsonPath.trim();
+    if (!trimmedJSONPath) {
+      return;
     }
+
+    const paths = trimmedJSONPath.split('.');
+    const key = paths.join('_');
+    const pos = paths.length - 1;
+
+    if (supportedEventPrefixes.some((prefix) => trimmedJSONPath.startsWith(prefix))) {
+      jsonPathKeys[key] = pos;
+      return;
+    }
+    jsonLegacyPathKeys[key] = pos;
   });
-  return jsonKeys;
+  return { jsonPathKeys, jsonLegacyPathKeys };
 };
 
 // https://www.myintervals.com/blog/2009/05/20/iso-8601-date-validation-that-doesnt-suck/
@@ -98,7 +149,8 @@ module.exports = {
   isObject,
   isBlank,
   isValidJsonPathKey,
-  getKeysFromJsonPaths,
+  isValidLegacyJsonPathKey,
+  keysFromJsonPaths,
   timestampRegex,
   validTimestamp,
   getVersionedUtils,

@@ -100,7 +100,8 @@ steps:
         "hashed_maids": .context.device.advertisingId,
         "client_ip_address": .context.ip ?? .request_ip,
         "client_user_agent": .context.userAgent,
-        "external_id": {{{{$.getGenericPaths("userId")}}}}
+        "external_id": {{{{$.getGenericPaths("userId")}}}},
+        "click_id": .properties.clickId
       });
       !.destination.Config.sendExternalId ?  userFields = userFields{~["external_id"]} : null;
       userFields = $.removeUndefinedAndNullAndEmptyValues(userFields);
@@ -179,22 +180,19 @@ steps:
         eventNames = $.convertToSnakeCase(eventNames);
         eventNames.length === 0 ? eventNames = $.ecomEventMaps.(){eventInLowerCase in .src}.dest[] ?? [];
         (eventNames.length === 0 && .destination.Config.sendAsCustomEvent) ? eventNames = ["custom"];
-        (eventNames.length === 0 && $.outputs.apiVersion === {{$.API_VERSION.v3}}) ? eventNames = [event];
-        $.assertConfig(eventNames.length > 0, 
-              event + " is not mapped in UI. Make sure to map the event in UI or enable the 'send as custom event' setting")
-        eventNames
+        eventNames.length === 0 ? eventNames = [event];
+        eventNames;
 
   - name: payload
     template: |
       $.outputs.eventNames.().({...$.outputs.basePayload, event_name: .})[]
-    
+
   - name: checkSendTestEventConfig
     description: |
       If sendTestEvent is enabled, we send test event to the destination
       ref: https://help.pinterest.com/en/business/article/track-conversions-with-the-conversions-api
     template: |
-        ^.destination.Config.sendAsTestEvent ? {"test": true} : {}
-        
+      ^.destination.Config.sendAsTestEvent ? {"test": true} : {}
 
   - name: buildResponseForBatchMode
     description: In batchMode we return payload directly

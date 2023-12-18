@@ -9,7 +9,7 @@ Key aspects covered:
   2. Coud source event
       - same as above for nested property under level 3
       - Above level 3 are stringified and considered as string type
-  3. Introducing jsonKeys for BQ, PG, RS, SF
+  3. Introducing jsonLegacyPathKeys for BQ, PG, RS, SF
       - data types: int, float, string, json
       - number, string, array, objects fit under json data type, value is json stringified
       - in BQ, json type is just a string data type
@@ -83,8 +83,8 @@ describe("Flatten event properties", () => {
         expect(columnTypes).toEqual(expected.columnTypes);
       });
 
-      it("Should stringify properties of sample event if jsonKeys are present", () => {
-        options.jsonKeys = {
+      it("Should stringify properties of sample event if jsonLegacyPathKeys are present", () => {
+        options.jsonLegacyPathKeys = {
           arrayProp: 0,
           objectProp_firstLevelMap_secondLevelMap: 2
         };
@@ -98,14 +98,14 @@ describe("Flatten event properties", () => {
           columnTypes,
           options
         );
-        delete options.jsonKeys;
+        delete options.jsonLegacyPathKeys;
         const expected = fOutput("json_key_event", integrations[index]);
         expect(output).toEqual(expected.output);
         expect(columnTypes).toEqual(expected.columnTypes);
       });
 
-      it("Should stringify properties of sample event and jsonKeys has more priority than cloud source at level 3", () => {
-        options.jsonKeys = {
+      it("Should stringify properties of sample event and jsonLegacyPathKeys has more priority than cloud source at level 3", () => {
+        options.jsonLegacyPathKeys = {
           objectProp_firstLevelMap_secondLevelMap_thirdLevelMap: 3
         };
         options.sourceCategory = "cloud";
@@ -119,15 +119,15 @@ describe("Flatten event properties", () => {
           columnTypes,
           options
         );
-        delete options.jsonKeys;
+        delete options.jsonLegacyPathKeys;
         delete options.sourceCategory;
         const expected = fOutput("json_key_cloud_event", integrations[index]);
         expect(output).toEqual(expected.output);
         expect(columnTypes).toEqual(expected.columnTypes);
       });
 
-      it("Should stringify properties of nested event and jsonKeys is not applied for cloud source at level > 3", () => {
-        options.jsonKeys = {
+      it("Should stringify properties of nested event and jsonLegacyPathKeys is not applied for cloud source at level > 3", () => {
+        options.jsonLegacyPathKeys = {
           objectProp_firstLevelMap_secondLevelMap_thirdLevelMap_fourthLevelMap: 4,
           arrayProp: 0
         };
@@ -142,15 +142,15 @@ describe("Flatten event properties", () => {
           columnTypes,
           options
         );
-        delete options.jsonKeys;
+        delete options.jsonLegacyPathKeys;
         delete options.sourceCategory;
         const expected = fOutput("cloud_json_key_event", integrations[index]);
         expect(output).toEqual(expected.output);
         expect(columnTypes).toEqual(expected.columnTypes);
       });
 
-      it("Should flatten all properties of sample event and jsonkeys is not applicable other than track events", () => {
-        options.jsonKeys = { arrayProp: 0 };
+      it("Should flatten all properties of sample event and jsonLegacyPathKeys is not applicable other than track events", () => {
+        options.jsonLegacyPathKeys = { arrayProp: 0 };
         const output = {};
         const columnTypes = {};
         setDataFromInputAndComputeColumnTypes(
@@ -161,19 +161,19 @@ describe("Flatten event properties", () => {
           columnTypes,
           options
         );
-        delete options.jsonKeys;
+        delete options.jsonLegacyPathKeys;
         // Will be same as flattening all properties
         const expected = fOutput("sample_event", integrations[index]);
         expect(output).toEqual(expected.output);
         expect(columnTypes).toEqual(expected.columnTypes);
       });
 
-      it("Should flatten all properties of sample event and declared jsonKeys get stringified primitive values", () => {
+      it("Should flatten all properties of sample event and declared jsonLegacyPathKeys get stringified primitive values", () => {
         i.dateProp = "2022-01-01T00:00:00.000Z";
         i.objectProp.firstLevelDateProp = "2022-01-01T01:01:01.111Z";
         i.objectProp.firstLevelMap.secondLevelDateProp =
           "2022-01-01T02:02:02.222Z";
-        options.jsonKeys = {
+        options.jsonLegacyPathKeys = {
           nullProp: 0,
           blankProp: 0,
           floatProp: 0,
@@ -195,7 +195,7 @@ describe("Flatten event properties", () => {
           columnTypes,
           options
         );
-        delete options.jsonKeys;
+        delete options.jsonLegacyPathKeys;
         delete i.dateProp;
         delete i.objectProp.firstLevelDateProp;
         delete i.objectProp.firstLevelMap.secondLevelDateProp;
@@ -204,12 +204,12 @@ describe("Flatten event properties", () => {
         expect(columnTypes).toEqual(expected.columnTypes);
       });
 
-      it("Should ignore rudder reserved columns even though they are set as jsonKeys", () => {
+      it("Should ignore rudder reserved columns even though they are set as jsonLegacyPathKeys", () => {
         // setting two reserved columns as map
         i.anonymous_id = "ignored column";
         i.timestamp = "ignored column";
         // setting reserved colum paths as json keys
-        options.jsonKeys = { anonymous_id: 0, timestamp: 0 };
+        options.jsonLegacyPathKeys = { anonymous_id: 0, timestamp: 0 };
         const output = {};
         const columnTypes = {};
         setDataFromInputAndComputeColumnTypes(
@@ -220,19 +220,19 @@ describe("Flatten event properties", () => {
           columnTypes,
           options
         );
-        delete options.jsonKeys;
+        delete options.jsonLegacyPathKeys;
         // Will be same as flattening all properties with reserved columns being ignored
         const expected = fOutput("sample_event", integrations[index]);
         expect(output).toEqual(expected.output);
         expect(columnTypes).toEqual(expected.columnTypes);
       });
 
-      it("Should apply escaping on WH reserved columns even though they are set as jsonKeys", () => {
+      it("Should apply escaping on WH reserved columns even though they are set as jsonLegacyPathKeys", () => {
         // setting two reserved columns as map
         i.between = "escaped column";
         i.as = "escaped column";
         // setting reserved colum paths as json keys
-        options.jsonKeys = { between: 0, as: 0 };
+        options.jsonLegacyPathKeys = { between: 0, as: 0 };
         const output = {};
         const columnTypes = {};
         setDataFromInputAndComputeColumnTypes(
@@ -243,7 +243,7 @@ describe("Flatten event properties", () => {
           columnTypes,
           options
         );
-        delete options.jsonKeys;
+        delete options.jsonLegacyPathKeys;
         // Escaping is applied as usual for json keys too
         const expected = fOutput("escape_event", integrations[index]);
         expect(output).toEqual(expected.output);

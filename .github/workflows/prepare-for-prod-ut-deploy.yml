@@ -1,4 +1,4 @@
-name: Prepare for Production Environment Deployment
+name: Prepare for UT Production Environment Deployment
 
 on:
   push:
@@ -55,6 +55,7 @@ jobs:
       dockerfile: Dockerfile-ut-func
       load_target: development
       push_target: production
+      build_type: ut
     secrets:
       DOCKERHUB_PROD_TOKEN: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -112,7 +113,7 @@ jobs:
           git commit -m "chore: upgrade shared user-transformers to $UT_TAG_NAME"
           git push -u origin shared-user-transformer-$UT_TAG_NAME
 
-          hub pull-request -m "chore: upgrade shared user-transformers to $UT_TAG_NAME"
+          gh pr create --fill
 
       - name: Update Helm Chart and Raise Pull Request For Hosted Transformer
         env:
@@ -129,4 +130,4 @@ jobs:
           git commit -m "chore: upgrade hosted user-transformer to $UT_TAG_NAME"
           git push -u origin hosted-user-transformer-$UT_TAG_NAME
 
-          hub pull-request -m "chore: upgrade hosted user-transformer to $UT_TAG_NAME"
+          gh pr create --fill

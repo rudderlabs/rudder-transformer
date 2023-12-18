@@ -12,7 +12,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiKey: '34d8efa09c5b048bbacc6af157f2e687',
+                  apiKey: 'dummyApiKey',
                   appKey: 'O2YARRI15I',
                   dataCenter: false,
                 },
@@ -108,7 +108,7 @@ export const data = [
                   'Content-Type': 'application/json',
                   Accept: 'application/vnd.urbanairship+json; version=3',
                   'X-UA-Appkey': 'O2YARRI15I',
-                  Authorization: 'Bearer 34d8efa09c5b048bbacc6af157f2e687',
+                  Authorization: 'Bearer dummyApiKey',
                 },
                 params: {},
                 body: {
@@ -160,7 +160,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: '34d8efa09c5b048bbacc6af157f2e687',
+                  apiKey: 'dummyApiKey',
                   appKey: 'O2YARRI15I',
                   dataCenter: false,
                 },
@@ -184,7 +184,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiKey: '34d8efa09c5b048bbacc6af157f2e687',
+                  apiKey: 'dummyApiKey',
                   appKey: 'O2YARRI15I',
                   dataCenter: false,
                 },
@@ -250,7 +250,7 @@ export const data = [
                   headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/vnd.urbanairship+json; version=3',
-                    Authorization: 'Bearer 34d8efa09c5b048bbacc6af157f2e687',
+                    Authorization: 'Bearer dummyApiKey',
                   },
                   params: {},
                   body: {
@@ -279,7 +279,7 @@ export const data = [
                   headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/vnd.urbanairship+json; version=3',
-                    Authorization: 'Bearer 34d8efa09c5b048bbacc6af157f2e687',
+                    Authorization: 'Bearer dummyApiKey',
                   },
                   params: {},
                   body: {
@@ -363,7 +363,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: '34d8efa09c5b048bbacc6af157f2e687',
+                  apiKey: 'dummyApiKey',
                   appKey: 'O2YARRI15I',
                   dataCenter: false,
                 },
@@ -387,7 +387,7 @@ export const data = [
             {
               destination: {
                 Config: {
-                  apiKey: '34d8efa09c5b048bbacc6af157f2e687',
+                  apiKey: 'dummyApiKey',
                   dataCenter: false,
                 },
               },
@@ -452,7 +452,7 @@ export const data = [
                   headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/vnd.urbanairship+json; version=3',
-                    Authorization: 'Bearer 34d8efa09c5b048bbacc6af157f2e687',
+                    Authorization: 'Bearer dummyApiKey',
                   },
                   params: {},
                   body: {
@@ -481,7 +481,7 @@ export const data = [
                   headers: {
                     'Content-Type': 'application/json',
                     Accept: 'application/vnd.urbanairship+json; version=3',
-                    Authorization: 'Bearer 34d8efa09c5b048bbacc6af157f2e687',
+                    Authorization: 'Bearer dummyApiKey',
                   },
                   params: {},
                   body: {
@@ -565,7 +565,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: '34d8efa09c5b048bbacc6af157f2e687',
+                  apiKey: 'dummyApiKey',
                   dataCenter: false,
                 },
               },

@@ -1,16 +1,17 @@
-import IntegrationSourceService from '../../interfaces/SourceService';
+import { SourceService } from '../../interfaces/SourceService';
 import {
   ErrorDetailer,
   MetaTransferObject,
   RudderMessage,
   SourceTransformationResponse,
 } from '../../types/index';
-import PostTransformationServiceSource from './postTransformation';
-import FetchHandler from '../../helpers/fetchHandlers';
+import { FixMe } from '../../util/types';
+import { SourcePostTransformationService } from './postTransformation';
+import { FetchHandler } from '../../helpers/fetchHandlers';
 import tags from '../../v0/util/tags';
 import stats from '../../util/stats';
 
-export default class NativeIntegrationSourceService implements IntegrationSourceService {
+export class NativeIntegrationSourceService implements SourceService {
   public getTags(): MetaTransferObject {
     const metaTO = {
       errorDetails: {
@@ -25,25 +26,26 @@ export default class NativeIntegrationSourceService implements IntegrationSource
   }
 
   public async sourceTransformRoutine(
-    sourceEvents: Object[],
+    sourceEvents: NonNullable<unknown>[],
     sourceType: string,
     version: string,
-    _requestMetadata: Object,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _requestMetadata: NonNullable<unknown>,
   ): Promise<SourceTransformationResponse[]> {
     const sourceHandler = FetchHandler.getSourceHandler(sourceType, version);
-    const respList: SourceTransformationResponse[] = await Promise.all<any>(
+    const respList: SourceTransformationResponse[] = await Promise.all<FixMe>(
       sourceEvents.map(async (sourceEvent) => {
         try {
           const respEvents: RudderMessage | RudderMessage[] | SourceTransformationResponse =
             await sourceHandler.process(sourceEvent);
-          return PostTransformationServiceSource.handleSuccessEventsSource(respEvents);
-        } catch (error: any) {
+          return SourcePostTransformationService.handleSuccessEventsSource(respEvents);
+        } catch (error: FixMe) {
           const metaTO = this.getTags();
           stats.increment('source_transform_errors', {
-            sourceType,
+            source: sourceType,
             version,
           });
-          return PostTransformationServiceSource.handleFailureEventsSource(error, metaTO);
+          return SourcePostTransformationService.handleFailureEventsSource(error, metaTO);
         }
       }),
     );

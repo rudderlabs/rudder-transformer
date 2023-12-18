@@ -1,12 +1,12 @@
 /* eslint-disable eqeqeq */
-const _ = require('lodash');
+const lodash = require('lodash');
 const set = require('set-value');
 const get = require('get-value');
+const { NetworkError, AbortedError } = require('@rudderstack/integrations-lib');
 const myAxios = require('../../../util/myAxios');
-const { BASE_ENDPOINT } = require('./config');
+const { DEFAULT_BASE_ENDPOINT } = require('./config');
 const { getType, isDefinedAndNotNull, isObject } = require('../../util');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
-const { NetworkError, AbortedError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 
 /**
@@ -26,7 +26,7 @@ const ISO_8601 = /^\d{4}(-\d\d(-\d\d(t\d\d:\d\d(:\d\d)?(\.\d+)?(([+-]\d\d:\d\d)|
 const transformNumberField = (fieldName) => {
   const typeDelim = '';
   const transformedFieldName = fieldName.trim().replace(/\s+/g, '-');
-  if (_.endsWith(transformedFieldName, 'Num')) {
+  if (lodash.endsWith(transformedFieldName, 'Num')) {
     return transformedFieldName;
   }
   return `${transformedFieldName}${typeDelim}Num`;
@@ -35,7 +35,7 @@ const transformNumberField = (fieldName) => {
 const transformDateField = (fieldName) => {
   const typeDelim = '';
   const transformedFieldName = fieldName.trim().replace(/\s+/g, '-');
-  if (_.endsWith(transformedFieldName, 'At')) {
+  if (lodash.endsWith(transformedFieldName, 'At')) {
     return transformedFieldName;
   }
   return `${transformedFieldName}${typeDelim}At`;
@@ -62,7 +62,7 @@ const transformField = (fieldName) => {
 };
 
 const handleAdvancedtransformations = (event) => {
-  let cloneEvent = _.cloneDeep(event);
+  let cloneEvent = lodash.cloneDeep(event);
   const transformedMeta = {};
   let eventName = get(cloneEvent, 'name');
   const { meta } = cloneEvent;
@@ -104,7 +104,7 @@ const handleResponse = (response) => {
       if (data && data.data && data.data.id) {
         return {
           userExists: true,
-          targetUrl: `${BASE_ENDPOINT}/v1/customers/${data.data.id}?replace=false`,
+          targetUrl: `${DEFAULT_BASE_ENDPOINT}/v1/customers/${data.data.id}?replace=false`,
         };
       }
       throw new NetworkError(

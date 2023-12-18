@@ -44,7 +44,7 @@ export const data = [
               },
               destination: {
                 Config: {
-                  apiKey: '262fbbda-b85b-48b8-a719-c2fceaf8afaf',
+                  apiKey: 'dummyApiKey',
                   appSubdomain: 'commander',
                   userAttributesMapping: [{ from: 'useroccupation', to: 'occupation' }],
                   userEvents: [
@@ -90,7 +90,7 @@ export const data = [
                 headers: {
                   Accept: '*/*;version=2',
                   'Content-Type': 'application/json',
-                  Authorization: 'Token 262fbbda-b85b-48b8-a719-c2fceaf8afaf',
+                  Authorization: 'Token dummyApiKey',
                 },
                 version: '1',
                 endpoint: 'https://commander.user.com/api/public/companies/21/add_member/',
@@ -104,7 +104,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: '262fbbda-b85b-48b8-a719-c2fceaf8afaf',
+                  apiKey: 'dummyApiKey',
                   appSubdomain: 'commander',
                   userAttributesMapping: [{ from: 'useroccupation', to: 'occupation' }],
                   userEvents: [
@@ -150,7 +150,7 @@ export const data = [
                     status: 'visitor',
                     city: 'ahmedabad',
                     country: 'india',
-                    phone: '9225467887',
+                    phone: '9876543210',
                     useroccupation: 'mechanical engineer',
                   },
                 },
@@ -169,7 +169,7 @@ export const data = [
               },
               destination: {
                 Config: {
-                  apiKey: '262fbbda-b85b-48b8-a719-c2fceaf8afaf',
+                  apiKey: 'dummyApiKey',
                   appSubdomain: 'commander',
                   userAttributesMapping: [{ from: 'useroccupation', to: 'occupation' }],
                   userEvents: [
@@ -213,7 +213,7 @@ export const data = [
                     first_name: 'test',
                     google_url: 'www.google.com',
                     occupation: 'mechanical engineer',
-                    phone_number: '9225467887',
+                    phone_number: '9876543210',
                   },
                   JSON_ARRAY: {},
                 },
@@ -224,7 +224,7 @@ export const data = [
                 headers: {
                   Accept: '*/*;version=2',
                   'Content-Type': 'application/json',
-                  Authorization: 'Token 262fbbda-b85b-48b8-a719-c2fceaf8afaf',
+                  Authorization: 'Token dummyApiKey',
                 },
                 version: '1',
                 endpoint: 'https://commander.user.com/api/public/users/59/',
@@ -238,7 +238,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: '262fbbda-b85b-48b8-a719-c2fceaf8afaf',
+                  apiKey: 'dummyApiKey',
                   appSubdomain: 'commander',
                   userAttributesMapping: [{ from: 'useroccupation', to: 'occupation' }],
                   userEvents: [

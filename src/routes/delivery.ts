@@ -1,14 +1,21 @@
 import Router from '@koa/router';
-import DeliveryController from '../controllers/delivery';
-import RouteActivationMiddleware from '../middlewares/routeActivation';
+import { DeliveryController } from '../controllers/delivery';
+import { RouteActivationMiddleware } from '../middlewares/routeActivation';
 
 const router = new Router();
 
 router.post(
-  '/:version/destinations/:destination/proxy',
+  '/v0/destinations/:destination/proxy',
   RouteActivationMiddleware.isDeliveryRouteActive,
   RouteActivationMiddleware.destinationDeliveryFilter,
   DeliveryController.deliverToDestination,
+);
+
+router.post(
+  '/v1/destinations/:destination/proxy',
+  RouteActivationMiddleware.isDeliveryRouteActive,
+  RouteActivationMiddleware.destinationDeliveryFilter,
+  DeliveryController.deliverToDestinationV1,
 );
 
 router.post(
@@ -17,4 +24,5 @@ router.post(
   DeliveryController.testDestinationDelivery,
 );
 
-export const proxyRoutes = router.routes();
+const proxyRoutes = router.routes();
+export default proxyRoutes;

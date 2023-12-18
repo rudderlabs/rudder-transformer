@@ -7,17 +7,18 @@ import stats from '../../util/stats';
 import logger from '../../logger';
 import tags from '../../v0/util/tags';
 
-export default class DeliveryTestService {
+export class DeliveryTestService {
   public static async doTestDelivery(
     destination: string,
     routerDestReqPayload: any,
     routerDeliveryPayload: any,
+    version,
   ) {
     let response: any;
     try {
-      const destNetworkHandler = networkHandlerFactory.getNetworkHandler(destination);
+      const { networkHandler } = networkHandlerFactory.getNetworkHandler(destination, version);
 
-      const proxyDestReqPayload = destNetworkHandler.prepareProxy(routerDeliveryPayload);
+      const proxyDestReqPayload = networkHandler.prepareProxy(routerDeliveryPayload);
       response = {
         destinationRequestPayload: proxyDestReqPayload,
       };
@@ -29,6 +30,7 @@ export default class DeliveryTestService {
         // This is to make sure we encode `~` in the data coming from the router.
         // The data coming from the router is already a query parameter string
         const routerDataVal = new URLSearchParams(routerDestReqPayload.data);
+        // eslint-disable-next-line no-param-reassign
         routerDestReqPayload.data = routerDataVal;
 
         const proxyDataVal = new URLSearchParams();

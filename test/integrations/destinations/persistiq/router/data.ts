@@ -21,7 +21,7 @@ export const data = [
                     gender: 'male',
                     city: 'Kolkata',
                     country: 'india',
-                    phone: '9225467887',
+                    phone: '9876543210',
                     useroccupation: 'software engineer',
                     Snippet: 'extra value',
                     extra: 'extraVal',
@@ -44,7 +44,7 @@ export const data = [
               },
               destination: {
                 Config: {
-                  apiKey: '2c646069cc5ae3f22cc0dab36cd060ad',
+                  apiKey: 'dummyApiKey',
                   persistIqAttributesMapping: [
                     {
                       from: 'useroccupation',
@@ -81,7 +81,7 @@ export const data = [
                       last_name: 'rudderstack',
                       linkedin: 'www.google.com',
                       occupation: 'software engineer',
-                      phone: '9225467887',
+                      phone: '9876543210',
                     },
                     status: 'open',
                   },
@@ -90,7 +90,7 @@ export const data = [
                 },
                 endpoint: 'https://api.persistiq.com/v1/leads/lel1c5u1wuk8',
                 files: {},
-                headers: { 'x-api-key': '2c646069cc5ae3f22cc0dab36cd060ad' },
+                headers: { 'x-api-key': 'dummyApiKey' },
                 method: 'PATCH',
                 params: {},
                 type: 'REST',
@@ -98,7 +98,7 @@ export const data = [
               },
               destination: {
                 Config: {
-                  apiKey: '2c646069cc5ae3f22cc0dab36cd060ad',
+                  apiKey: 'dummyApiKey',
                   persistIqAttributesMapping: [{ from: 'useroccupation', to: 'occupation' }],
                 },
               },

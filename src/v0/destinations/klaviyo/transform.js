@@ -2,6 +2,7 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable  array-callback-return */
 const get = require('get-value');
+const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType, WhiteListedTraits, MappedToDestinationKey } = require('../../../constants');
 const {
   CONFIG_CATEGORIES,
@@ -34,25 +35,26 @@ const {
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
   flattenJson,
+  isNewStatusCodesAccepted,
 } = require('../../util');
-
-const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
-const { JSON_MIME_TYPE } = require('../../util/constant');
+const { JSON_MIME_TYPE, HTTP_STATUS_CODES } = require('../../util/constant');
 
 /**
  * Main Identify request handler func
  * The function is used to create/update new users and also for adding/subscribing
- * members to the list depending on conditons.If listId is there member is added to that list &
- * if subscribe is true member is subscribed to that list else not.
- * DOCS: https://www.klaviyo.com/docs/http-api
+ * users to the list.
+ * DOCS: 1. https://developers.klaviyo.com/en/v2023-02-22/reference/create_profile
+ *       2. https://developers.klaviyo.com/en/v2023-02-22/reference/update_profile
+ *       3. https://developers.klaviyo.com/en/v2023-02-22/reference/subscribe_profiles
  * @param {*} message
  * @param {*} category
  * @param {*} destination
+ * @param {*} reqMetadata
  * @returns
  */
-const identifyRequestHandler = async (message, category, destination) => {
+const identifyRequestHandler = async (message, category, destination, reqMetadata) => {
   // If listId property is present try to subscribe/member user in list
-  const { privateApiKey, enforceEmailAsPrimary, flattenProperties } = destination.Config;
+  const { privateApiKey, enforceEmailAsPrimary, listId, flattenProperties } = destination.Config;
   const mappedToDestination = get(message, MappedToDestinationKey);
   if (mappedToDestination) {
     addExternalIdToTraits(message);
@@ -91,6 +93,10 @@ const identifyRequestHandler = async (message, category, destination) => {
   data.attributes.properties = flattenProperties
     ? flattenJson(data.attributes.properties, '.', 'normal', false)
     : data.attributes.properties;
+
+  if (isEmptyObject(data.attributes.properties)) {
+    delete data.attributes.properties;
+  }
   const payload = {
     data: removeUndefinedAndNullValues(data),
   };
@@ -104,26 +110,46 @@ const identifyRequestHandler = async (message, category, destination) => {
     },
   };
 
-  const profileId = await getIdFromNewOrExistingProfile(endpoint, payload, requestOptions);
+  const { profileId, response, statusCode } = await getIdFromNewOrExistingProfile(
+    endpoint,
+    payload,
+    requestOptions,
+  );
 
-  // Update Profile
-  const responseArray = [profileUpdateResponseBuilder(payload, profileId, category, privateApiKey)];
+  const responseMap = {
+    profileUpdateResponse: profileUpdateResponseBuilder(
+      payload,
+      profileId,
+      category,
+      privateApiKey,
+    ),
+  };
 
   // check if user wants to subscribe profile or not and listId is present or not
-  if (
-    traitsInfo?.properties?.subscribe &&
-    (traitsInfo.properties?.listId || destination.Config?.listId)
-  ) {
-    responseArray.push(subscribeUserToList(message, traitsInfo, destination));
-    return responseArray;
+  if (traitsInfo?.properties?.subscribe && (traitsInfo.properties?.listId || listId)) {
+    responseMap.subscribeUserToListResponse = subscribeUserToList(message, traitsInfo, destination);
   }
-  return responseArray[0];
+
+  if (isNewStatusCodesAccepted(reqMetadata) && statusCode === HTTP_STATUS_CODES.CREATED) {
+    responseMap.suppressEventResponse = {
+      ...responseMap.profileUpdateResponse,
+      statusCode: HTTP_STATUS_CODES.SUPPRESS_EVENTS,
+      error: JSON.stringify(response),
+    };
+    return responseMap.subscribeUserToListResponse
+      ? [responseMap.subscribeUserToListResponse]
+      : responseMap.suppressEventResponse;
+  }
+
+  return responseMap.subscribeUserToListResponse
+    ? [responseMap.profileUpdateResponse, responseMap.subscribeUserToListResponse]
+    : responseMap.profileUpdateResponse;
 };
 
 // ----------------------
 // Main handler func for track request/screen request
 // User info needs to be mapped to a track event (mandatory)
-// DOCS: https://www.klaviyo.com/docs/http-api
+// DOCS: https://developers.klaviyo.com/en/v2023-02-22/reference/create_event
 // ----------------------
 
 const trackRequestHandler = (message, category, destination) => {
@@ -138,10 +164,6 @@ const trackRequestHandler = (message, category, destination) => {
     attributes.metric = { name: eventName };
     const categ = CONFIG_CATEGORIES[eventMap];
     attributes.properties = constructPayload(message.properties, MAPPING_CONFIG[categ.name]);
-    attributes.properties = {
-      ...attributes.properties,
-      ...populateCustomFieldsFromTraits(message),
-    };
 
     // products mapping using Items.json
     // mapping properties.items to payload.properties.items and using properties.products as a fallback to properties.items
@@ -191,17 +213,21 @@ const trackRequestHandler = (message, category, destination) => {
     if (value) {
       attributes.value = value;
     }
-    attributes.properties = {
-      ...attributes.properties,
-      ...populateCustomFieldsFromTraits(message),
-    };
   }
   // if flattenProperties is enabled from UI, flatten the event properties
   attributes.properties = flattenProperties
     ? flattenJson(attributes.properties, '.', 'normal', false)
     : attributes.properties;
   // Map user properties to profile object
-  attributes.profile = createCustomerProperties(message, destination.Config);
+  attributes.profile = {
+    ...createCustomerProperties(message, destination.Config),
+    ...populateCustomFieldsFromTraits(message),
+  };
+
+  attributes.profile = flattenProperties
+    ? flattenJson(attributes.profile, '.', 'normal', false)
+    : attributes.profile;
+
   if (message.timestamp) {
     attributes.time = message.timestamp;
   }
@@ -222,9 +248,9 @@ const trackRequestHandler = (message, category, destination) => {
 
 // ----------------------
 // Main handlerfunc for group request
-// we will map user to list (subscribe and/or member)
+// we will add/subscribe users to the list
 // based on property sent
-// DOCS: https://www.klaviyo.com/docs/api/v2/lists
+// DOCS: https://developers.klaviyo.com/en/v2023-02-22/reference/subscribe_profiles
 // ----------------------
 const groupRequestHandler = (message, category, destination) => {
   if (!message.groupId) {
@@ -243,7 +269,7 @@ const groupRequestHandler = (message, category, destination) => {
 };
 
 // Main event processor using specific handler funcs
-const processEvent = async (message, destination) => {
+const processEvent = async (message, destination, reqMetadata) => {
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
   }
@@ -257,7 +283,7 @@ const processEvent = async (message, destination) => {
   switch (messageType) {
     case EventType.IDENTIFY:
       category = CONFIG_CATEGORIES.IDENTIFY;
-      response = await identifyRequestHandler(message, category, destination);
+      response = await identifyRequestHandler(message, category, destination, reqMetadata);
       break;
     case EventType.SCREEN:
     case EventType.TRACK:
@@ -274,8 +300,8 @@ const processEvent = async (message, destination) => {
   return response;
 };
 
-const process = async (event) => {
-  const result = await processEvent(event.message, event.destination);
+const process = async (event, reqMetadata) => {
+  const result = await processEvent(event.message, event.destination, reqMetadata);
   return result;
 };
 
@@ -314,7 +340,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
           // if not transformed
           getEventChunks(
             {
-              message: await process(event),
+              message: await process(event, reqMetadata),
               metadata: event.metadata,
               destination,
             },
@@ -328,13 +354,36 @@ const processRouterDest = async (inputs, reqMetadata) => {
       }
     }),
   );
-  let batchedSubscribeResponseList = [];
+  const batchedSubscribeResponseList = [];
   if (subscribeRespList.length > 0) {
-    batchedSubscribeResponseList = batchSubscribeEvents(subscribeRespList);
+    const batchedResponseList = batchSubscribeEvents(subscribeRespList);
+    batchedSubscribeResponseList.push(...batchedResponseList);
   }
-  const nonSubscribeSuccessList = nonSubscribeRespList.map((resp) =>
-    getSuccessRespEvents(resp.message, [resp.metadata], resp.destination),
-  );
+  const nonSubscribeSuccessList = nonSubscribeRespList.map((resp) => {
+    const response = resp;
+    const { message, metadata, destination: eventDestination } = response;
+    if (
+      isNewStatusCodesAccepted(reqMetadata) &&
+      message?.statusCode &&
+      message.statusCode === HTTP_STATUS_CODES.SUPPRESS_EVENTS
+    ) {
+      const { error } = message;
+      delete message.error;
+      delete message.statusCode;
+      return {
+        ...getSuccessRespEvents(
+          message,
+          [metadata],
+          eventDestination,
+          false,
+          HTTP_STATUS_CODES.SUPPRESS_EVENTS,
+        ),
+        error,
+      };
+    }
+    return getSuccessRespEvents(message, [metadata], eventDestination);
+  });
+
   batchResponseList = [...batchedSubscribeResponseList, ...nonSubscribeSuccessList];
 
   return [...batchResponseList, ...batchErrorRespList];

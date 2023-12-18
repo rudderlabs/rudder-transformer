@@ -1,5 +1,6 @@
 const md5 = require('md5');
 const get = require('get-value');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 const {
   ConfigCategory,
@@ -18,7 +19,6 @@ const {
   flattenJson,
 } = require('../../util');
 const { separateReservedAndRestMetadata } = require('./util');
-const { InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function getCompanyAttribute(company) {
@@ -76,12 +76,12 @@ function validateIdentify(message, payload, config) {
 
     return finalPayload;
   }
-  throw new InstrumentationError('Email or userId is mandatory');
+  throw new InstrumentationError('Either of `email` or `userId` is required for Identify call');
 }
 
 function validateTrack(payload) {
   if (!payload.user_id && !payload.email) {
-    throw new InstrumentationError('Email or userId is mandatory');
+    throw new InstrumentationError('Either of `email` or `userId` is required for Track call');
   }
   // pass only string, number, boolean properties
   if (payload.metadata) {
@@ -94,16 +94,17 @@ function validateTrack(payload) {
 }
 
 const checkIfEmailOrUserIdPresent = (message, Config) => {
-  let user_id = message.userId;
-  if (Config.sendAnonymousId && !user_id) {
-    user_id = message.anonymousId;
+  const { context, anonymousId } = message;
+  let { userId } = message;
+  if (Config.sendAnonymousId && !userId) {
+    userId = anonymousId;
   }
-  return !!(user_id || message.context?.traits?.email);
+  return !!(userId || context.traits?.email);
 };
 
 function attachUserAndCompany(message, Config) {
   const email = message.context?.traits?.email;
-  const { userId, anonymousId } = message;
+  const { userId, anonymousId, traits, groupId } = message;
   const requestBody = {};
   if (userId) {
     requestBody.user_id = userId;
@@ -115,10 +116,10 @@ function attachUserAndCompany(message, Config) {
     requestBody.email = email;
   }
   const companyObj = {
-    company_id: message.groupId,
+    company_id: groupId,
   };
-  if (message.traits?.name) {
-    companyObj.name = message.traits.name;
+  if (traits?.name) {
+    companyObj.name = traits.name;
   }
   requestBody.companies = [companyObj];
   const response = defaultRequestConfig();

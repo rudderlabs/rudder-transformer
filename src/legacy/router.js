@@ -4,9 +4,10 @@
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */
 const Router = require('@koa/router');
-const _ = require('lodash');
+const lodash = require('lodash');
 const fs = require('fs');
 const path = require('path');
+const { PlatformError } = require('@rudderstack/integrations-lib');
 const logger = require('../logger');
 const stats = require('../util/stats');
 const { SUPPORTED_VERSIONS, API_VERSION } = require('../routes/utils/constants');
@@ -35,7 +36,6 @@ const {
   sendViolationMetrics,
   constructValidationErrors,
 } = require('../util/utils');
-const { PlatformError } = require('../v0/util/errorTypes');
 const { processCdkV1 } = require('../cdk/v1/handler');
 const { extractLibraries } = require('../util/customTransformer');
 const { getCompatibleStatusCode } = require('../adapters/utils/networkUtils');
@@ -89,7 +89,7 @@ const functionsEnabled = () => {
   return areFunctionsEnabled === 1;
 };
 
-// eslint-disable-next-line no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function getCommonMetadata(ctx) {
   // TODO: Parse information such as
   // cluster, namespace, etc information
@@ -361,7 +361,7 @@ async function routerHandleDest(ctx) {
       ctx.body = `${destType} doesn't support router transform`;
       return null;
     }
-    const allDestEvents = _.groupBy(input, (event) => event.destination.ID);
+    const allDestEvents = lodash.groupBy(input, (event) => event.destination.ID);
     await Promise.all(
       Object.values(allDestEvents).map(async (destInputArray) => {
         const newDestInputArray = processDynamicConfig(destInputArray, 'router');
@@ -392,7 +392,10 @@ async function routerHandleDest(ctx) {
 
     // Add default stat tags
     respEvents
-      .filter((resp) => 'error' in resp && _.isObject(resp.statTags) && !_.isEmpty(resp.statTags))
+      .filter(
+        (resp) =>
+          'error' in resp && lodash.isObject(resp.statTags) && !lodash.isEmpty(resp.statTags),
+      )
       .forEach((resp) => {
         // eslint-disable-next-line no-param-reassign
         resp.statTags = {
@@ -529,13 +532,13 @@ if (startDestTransformer) {
       });
       let groupedEvents;
       if (processSessions) {
-        groupedEvents = _.groupBy(events, (event) => {
+        groupedEvents = lodash.groupBy(events, (event) => {
           // to have the backward-compatibility and being extra careful. We need to remove this (message.anonymousId) in next release.
           const rudderId = event.metadata.rudderId || event.message.anonymousId;
           return `${event.destination.ID}_${event.metadata.sourceId}_${rudderId}`;
         });
       } else {
-        groupedEvents = _.groupBy(
+        groupedEvents = lodash.groupBy(
           events,
           (event) => `${event.metadata.destinationId}_${event.metadata.sourceId}`,
         );
@@ -571,14 +574,9 @@ if (startDestTransformer) {
             destEvents.length > 0 && destEvents[0].metadata
               ? getMetadata(destEvents[0].metadata)
               : {};
-          const userFuncStartTime = new Date();
           if (transformationVersionId) {
             let destTransformedEvents;
             try {
-              stats.counter('user_transform_function_input_events', destEvents.length, {
-                processSessions,
-                ...metaTags,
-              });
               destTransformedEvents = await userTransformHandler()(
                 destEvents,
                 transformationVersionId,
@@ -590,7 +588,7 @@ if (startDestTransformer) {
                     return {
                       statusCode: 400,
                       error: ev.error,
-                      metadata: _.isEmpty(ev.metadata) ? commonMetadata : ev.metadata,
+                      metadata: lodash.isEmpty(ev.metadata) ? commonMetadata : ev.metadata,
                     };
                   }
                   if (!isNonFuncObject(ev.transformedEvent)) {
@@ -599,12 +597,12 @@ if (startDestTransformer) {
                       error: `returned event in events from user transformation is not an object. transformationVersionId:${transformationVersionId} and returned event: ${JSON.stringify(
                         ev.transformedEvent,
                       )}`,
-                      metadata: _.isEmpty(ev.metadata) ? commonMetadata : ev.metadata,
+                      metadata: lodash.isEmpty(ev.metadata) ? commonMetadata : ev.metadata,
                     };
                   }
                   return {
                     output: ev.transformedEvent,
-                    metadata: _.isEmpty(ev.metadata) ? commonMetadata : ev.metadata,
+                    metadata: lodash.isEmpty(ev.metadata) ? commonMetadata : ev.metadata,
                     statusCode: 200,
                   };
                 }),
@@ -626,12 +624,6 @@ if (startDestTransformer) {
               }));
               transformedEvents.push(...destTransformedEvents);
               stats.counter('user_transform_errors', destEvents.length, {
-                transformationVersionId,
-                processSessions,
-                ...metaTags,
-              });
-            } finally {
-              stats.timing('user_transform_function_latency', userFuncStartTime, {
                 transformationVersionId,
                 processSessions,
                 ...metaTags,
@@ -998,7 +990,7 @@ const batchHandler = (ctx) => {
     ctx.body = `${destType} doesn't support batching`;
     return null;
   }
-  const allDestEvents = _.groupBy(input, (event) => event.destination.ID);
+  const allDestEvents = lodash.groupBy(input, (event) => event.destination.ID);
 
   const response = { batchedRequests: [], errors: [] };
   Object.entries(allDestEvents).forEach(([, destEvents]) => {

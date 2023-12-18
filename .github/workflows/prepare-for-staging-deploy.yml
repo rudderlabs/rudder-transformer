@@ -72,6 +72,7 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 
+
   create-pull-request:
     name: Update Helm Charts For Staging and Create Pull Request
     runs-on: ubuntu-latest
@@ -123,5 +124,5 @@ jobs:
 
             git commit -m "chore: upgrade staging env transformers to \"$TAG_NAME\""
             git push -u origin $BRANCH_NAME
-            hub pull-request -m "chore: upgrade staging env transformers to \"$TAG_NAME\""
+            gh pr create --fill
           fi

@@ -1,4 +1,5 @@
-const _ = require('lodash');
+const lodash = require('lodash');
+const { ConfigurationError, NetworkError } = require('@rudderstack/integrations-lib');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util');
 const {
@@ -7,7 +8,6 @@ const {
   DISTINCT_ID_MAX_BATCH_SIZE,
 } = require('./config');
 const { executeCommonValidations } = require('../../util/regulation-api');
-const { ConfigurationError, NetworkError } = require('../../util/errorTypes');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
@@ -18,6 +18,7 @@ const deleteProfile = async (userAttributes, config) => {
     config.dataResidency === 'eu'
       ? 'https://api-eu.mixpanel.com/engage'
       : 'https://api.mixpanel.com/engage';
+  const endpointPath = '/engage';
   const defaultValues = {
     $token: `${config.token}`,
     $delete: null,
@@ -36,7 +37,7 @@ const deleteProfile = async (userAttributes, config) => {
 
   // batchEvents = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
   // ref : https://developer.mixpanel.com/reference/delete-profile
-  const batchEvents = _.chunk(data, DEL_MAX_BATCH_SIZE);
+  const batchEvents = lodash.chunk(data, DEL_MAX_BATCH_SIZE);
   await Promise.all(
     batchEvents.map(async (batchEvent) => {
       const { processedResponse: handledDelResponse } = await handleHttpRequest(
@@ -47,6 +48,7 @@ const deleteProfile = async (userAttributes, config) => {
         {
           destType: 'mp',
           feature: 'deleteUsers',
+          endpointPath,
         },
       );
       if (!isHttpStatusSuccess(handledDelResponse.status)) {
@@ -68,7 +70,7 @@ const deleteProfile = async (userAttributes, config) => {
 };
 
 const createDeletionTask = async (userAttributes, config) => {
-  const { token, gdprApiToken } = config;
+  const { token, gdprApiToken, dataResidency } = config;
 
   if (!gdprApiToken) {
     throw new ConfigurationError(
@@ -77,11 +79,12 @@ const createDeletionTask = async (userAttributes, config) => {
   }
 
   const endpoint = getCreateDeletionTaskEndpoint(token);
+  const endpointPath = '/api/app/data-deletions/v3.0/';
   const headers = {
     'Content-Type': JSON_MIME_TYPE,
     Authorization: `Bearer ${gdprApiToken}`,
   };
-  const complianceType = config?.dataResidency === 'eu' ? 'GDPR' : 'CCPA';
+  const complianceType = dataResidency === 'eu' ? 'GDPR' : 'CCPA';
 
   // batchEvents = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
   // ref : https://developer.mixpanel.com/docs/privacy-security#create-a-deletion-task
@@ -100,6 +103,7 @@ const createDeletionTask = async (userAttributes, config) => {
         {
           destType: 'mp',
           feature: 'deleteUsers',
+          endpointPath,
         },
       );
       if (!isHttpStatusSuccess(handledDelResponse.status)) {

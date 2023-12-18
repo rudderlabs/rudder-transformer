@@ -1,6 +1,7 @@
 const { SHA256 } = require('crypto-js');
 const set = require('set-value');
-const _ = require('lodash');
+const lodash = require('lodash');
+const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   constructPayload,
@@ -21,7 +22,6 @@ const {
   EVENT_NAME_MAPPING,
   PARTNER_NAME,
 } = require('./config');
-const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const getContents = (message) => {
@@ -191,7 +191,7 @@ const batchEvents = (eventChunksArray) => {
   //    event_set_id1: [...events]
   //    event_set_id2: [...events]
   // }
-  const groupedEventChunks = _.groupBy(eventChunksArray, ({ message }) => {
+  const groupedEventChunks = lodash.groupBy(eventChunksArray, ({ message }) => {
     if (Array.isArray(message)) return message[0].event_set_id;
     return message.event_set_id;
   });

@@ -1,3 +1,4 @@
+const { NetworkError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EMAIL_SUFFIX, getContactDetailsEndpoint } = require('./config');
 const {
   getHashFromArray,
@@ -12,7 +13,6 @@ const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
-const { NetworkError, InstrumentationError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 

@@ -14,9 +14,9 @@
             {
               "email": "test@abc.com",
               "data": {
-                "name": "Rohith Kumar Kaza",
-                "first_name": "Rohith",
-                "last_name": "Kaza",
+                "name": "Rudder Test",
+                "first_name": "Test",
+                "last_name": "Rudderlabs",
                 "age": 21,
                 "phone": "9876543210",
                 "trait1": "new-val"
@@ -30,7 +30,7 @@
       "method": "POST",
       "params": {},
       "headers": {
-        "mmApiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+        "mmApiKey": "dummyApiKey",
         "Content-Type": "application/json"
       },
       "version": "1",
@@ -48,7 +48,7 @@
     "statusCode": 200,
     "destination": {
       "Config": {
-        "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+        "apiKey": "dummyApiKey",
         "listName": "abc"
       },
       "Enabled": true
@@ -76,7 +76,7 @@
       "method": "POST",
       "params": {},
       "headers": {
-        "mmApiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+        "mmApiKey": "dummyApiKey",
         "Content-Type": "application/json"
       },
       "version": "1",
@@ -91,7 +91,7 @@
     "statusCode": 200,
     "destination": {
       "Config": {
-        "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+        "apiKey": "dummyApiKey",
         "listName": "abc"
       },
       "Enabled": true
@@ -112,7 +112,7 @@
     "statusCode": 400,
     "destination": {
       "Config": {
-        "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+        "apiKey": "dummyApiKey",
         "listName": ""
       },
       "Enabled": true

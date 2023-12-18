@@ -514,8 +514,8 @@
             "id": "abc123"
           },
           "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
-          "email": "ruchira@gmail.com",
-          "name": "Ruchira Moitra",
+          "email": "rudderTest@gmail.com",
+          "name": "Rudder Test",
           "plan": "Enterprise"
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36"
@@ -543,8 +543,8 @@
       "timezone": "Asia/Kolkata",
       "traits.company.id": "abc123",
       "traits.createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
-      "traits.email": "ruchira@gmail.com",
-      "traits.name": "Ruchira Moitra",
+      "traits.email": "rudderTest@gmail.com",
+      "traits.name": "Rudder Test",
       "traits.plan": "Enterprise",
       "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36"
     }

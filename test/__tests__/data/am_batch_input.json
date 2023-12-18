@@ -12,6 +12,69 @@
                 "ip": "0.0.0.0",
                 "time": 1603132665557,
                 "os_name": "",
+                "app_name": "RudderLabs JavaScript SDK",
+                "language": "en-US",
+                "library": "rudderstack",
+                "event_type": "$identify",
+                "os_version": "",
+                "session_id": -1,
+                "app_version": "1.1.5",
+                "user_properties": {
+                  "name": "some campaign",
+                  "plan": "Open source",
+                  "term": "keyword",
+                  "test": "other value",
+                  "email": "test@rudderstack.com",
+                  "logins": 5,
+                  "medium": "medium",
+                  "source": "google",
+                  "content": "some content",
+                  "category": "SampleIdentify",
+                  "createdAt": 1599264000
+                }
+              }
+            ],
+            "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
+            "options": {
+              "min_id_length": 1
+            }
+          }
+        },
+        "type": "REST",
+        "files": {},
+        "method": "POST",
+        "params": {},
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "endpoint": "https://api.eu.amplitude.com/2/httpapi"
+      },
+      "metadata": {
+        "job_id": 1
+      },
+      "destination": {
+        "ID": "a",
+        "url": "a",
+        "Config": {
+          "residencyServer": "EU"
+        }
+      }
+    }
+  ],
+  [
+    {
+      "message": {
+        "body": {
+          "XML": {},
+          "JSON_ARRAY": {},
+          "FORM": {},
+          "JSON": {
+            "events": [
+              {
+                "ip": "0.0.0.0",
+                "time": 1603132665557,
+                "os_name": "",
                 "user_id": "123",
                 "app_name": "RudderLabs JavaScript SDK",
                 "language": "en-US",
@@ -26,7 +89,7 @@
                   "plan": "Open source",
                   "term": "keyword",
                   "test": "other value",
-                  "email": "chandra+r@rudderlabs.com",
+                  "email": "test@rudderstack.com",
                   "logins": 5,
                   "medium": "medium",
                   "source": "google",
@@ -37,7 +100,9 @@
               }
             ],
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
-            "options": { "min_id_length": 1 }
+            "options": {
+              "min_id_length": 1
+            }
           }
         },
         "type": "REST",
@@ -45,15 +110,21 @@
         "method": "POST",
         "params": {},
         "userId": "my-anonymous-id-new",
-        "headers": { "Content-Type": "application/json" },
+        "headers": {
+          "Content-Type": "application/json"
+        },
         "version": "1",
         "endpoint": "https://api.eu.amplitude.com/2/httpapi"
       },
-      "metadata": { "job_id": 1 },
+      "metadata": {
+        "job_id": 1
+      },
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "EU" }
+        "Config": {
+          "residencyServer": "EU"
+        }
       }
     },
     {
@@ -77,11 +148,15 @@
                 "os_version": "",
                 "session_id": -1,
                 "app_version": "1.1.5",
-                "event_properties": { "key": "val" }
+                "event_properties": {
+                  "key": "val"
+                }
               }
             ],
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
-            "options": { "min_id_length": 1 }
+            "options": {
+              "min_id_length": 1
+            }
           }
         },
         "type": "REST",
@@ -89,15 +164,21 @@
         "method": "POST",
         "params": {},
         "userId": "my-anonymous-id-new",
-        "headers": { "Content-Type": "application/json" },
+        "headers": {
+          "Content-Type": "application/json"
+        },
         "version": "1",
         "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
-      "metadata": { "job_id": 2 },
+      "metadata": {
+        "job_id": 2
+      },
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     },
     {
@@ -121,11 +202,15 @@
                 "os_version": "",
                 "session_id": -1,
                 "app_version": "1.1.5",
-                "event_properties": { "key": "val" }
+                "event_properties": {
+                  "key": "val"
+                }
               }
             ],
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
-            "options": { "min_id_length": 1 }
+            "options": {
+              "min_id_length": 1
+            }
           }
         },
         "type": "REST",
@@ -133,15 +218,21 @@
         "method": "POST",
         "params": {},
         "userId": "my-anonymous-id-new",
-        "headers": { "Content-Type": "application/json" },
+        "headers": {
+          "Content-Type": "application/json"
+        },
         "version": "1",
         "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
-      "metadata": { "job_id": 3 },
+      "metadata": {
+        "job_id": 3
+      },
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     },
     {
@@ -155,7 +246,9 @@
               {
                 "ip": "[::1]",
                 "time": 1603132726413,
-                "groups": { "Company": "Comapny-ABC" },
+                "groups": {
+                  "Company": "Comapny-ABC"
+                },
                 "os_name": "",
                 "user_id": "sampleusrRudder3",
                 "app_name": "RudderLabs JavaScript SDK",
@@ -166,11 +259,15 @@
                 "os_version": "",
                 "session_id": -1,
                 "app_version": "1.1.5",
-                "user_properties": { "Company": "Comapny-ABC" }
+                "user_properties": {
+                  "Company": "Comapny-ABC"
+                }
               }
             ],
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
-            "options": { "min_id_length": 1 }
+            "options": {
+              "min_id_length": 1
+            }
           }
         },
         "type": "REST",
@@ -178,15 +275,21 @@
         "method": "POST",
         "params": {},
         "userId": "my-anonymous-id-new",
-        "headers": { "Content-Type": "application/json" },
+        "headers": {
+          "Content-Type": "application/json"
+        },
         "version": "1",
         "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
-      "metadata": { "job_id": 4 },
+      "metadata": {
+        "job_id": 4
+      },
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     },
     {
@@ -200,7 +303,9 @@
               {
                 "ip": "[::1]",
                 "time": 1603132726413,
-                "groups": { "Company": "Comapny-ABC" },
+                "groups": {
+                  "Company": "Comapny-ABC"
+                },
                 "os_name": "",
                 "user_id": "sampleusrRudder3",
                 "app_name": "RudderLabs JavaScript SDK",
@@ -211,11 +316,15 @@
                 "os_version": "",
                 "session_id": -1,
                 "app_version": "1.1.5",
-                "user_properties": { "Company": "Comapny-ABC" }
+                "user_properties": {
+                  "Company": "Comapny-ABC"
+                }
               }
             ],
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
-            "options": { "min_id_length": 1 }
+            "options": {
+              "min_id_length": 1
+            }
           }
         },
         "type": "REST",
@@ -223,15 +332,21 @@
         "method": "POST",
         "params": {},
         "userId": "my-anonymous-id-new",
-        "headers": { "Content-Type": "application/json" },
+        "headers": {
+          "Content-Type": "application/json"
+        },
         "version": "1",
         "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
-      "metadata": { "job_id": 5 },
+      "metadata": {
+        "job_id": 5
+      },
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     },
     {
@@ -256,11 +371,15 @@
         "version": "1",
         "endpoint": "https://api2.amplitude.com/groupidentify"
       },
-      "metadata": { "job_id": 6 },
+      "metadata": {
+        "job_id": 6
+      },
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     },
     {
@@ -283,11 +402,15 @@
         "version": "1",
         "endpoint": "https://api2.amplitude.com/usermap"
       },
-      "metadata": { "job_id": 7 },
+      "metadata": {
+        "job_id": 7
+      },
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     }
   ],
@@ -317,7 +440,7 @@
                 "plan": "Open source",
                 "term": "keyword",
                 "test": "other value",
-                "email": "chandra+r@rudderlabs.com",
+                "email": "test@rudderstack.com",
                 "logins": 5,
                 "medium": "medium",
                 "source": "google",
@@ -327,7 +450,9 @@
               }
             },
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
-            "options": { "min_id_length": 1 }
+            "options": {
+              "min_id_length": 1
+            }
           }
         },
         "type": "REST",
@@ -335,15 +460,21 @@
         "method": "POST",
         "params": {},
         "userId": "my-anonymous-id-new",
-        "headers": { "Content-Type": "application/json" },
+        "headers": {
+          "Content-Type": "application/json"
+        },
         "version": "1",
         "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
-      "metadata": { "job_id": 1 },
+      "metadata": {
+        "job_id": 1
+      },
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     },
     {
@@ -366,10 +497,14 @@
               "os_version": "",
               "session_id": -1,
               "app_version": "1.1.5",
-              "event_properties": { "key": "val" }
+              "event_properties": {
+                "key": "val"
+              }
             },
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
-            "options": { "min_id_length": 1 }
+            "options": {
+              "min_id_length": 1
+            }
           }
         },
         "type": "REST",
@@ -377,15 +512,21 @@
         "method": "POST",
         "params": {},
         "userId": "my-anonymous-id-new",
-        "headers": { "Content-Type": "application/json" },
+        "headers": {
+          "Content-Type": "application/json"
+        },
         "version": "1",
         "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
-      "metadata": { "job_id": 2 },
+      "metadata": {
+        "job_id": 2
+      },
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     },
     {
@@ -408,10 +549,14 @@
               "os_version": "",
               "session_id": -1,
               "app_version": "1.1.5",
-              "event_properties": { "key": "val" }
+              "event_properties": {
+                "key": "val"
+              }
             },
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
-            "options": { "min_id_length": 1 }
+            "options": {
+              "min_id_length": 1
+            }
           }
         },
         "type": "REST",
@@ -419,15 +564,21 @@
         "method": "POST",
         "params": {},
         "userId": "my-anonymous-id-new",
-        "headers": { "Content-Type": "application/json" },
+        "headers": {
+          "Content-Type": "application/json"
+        },
         "version": "1",
         "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
-      "metadata": { "job_id": 3 },
+      "metadata": {
+        "job_id": 3
+      },
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     },
     {
@@ -440,7 +591,9 @@
             "events": {
               "ip": "[::1]",
               "time": 1603132726413,
-              "groups": { "Company": "Comapny-ABC" },
+              "groups": {
+                "Company": "Comapny-ABC"
+              },
               "os_name": "",
               "user_id": "sampleusrRudder3",
               "app_name": "RudderLabs JavaScript SDK",
@@ -451,10 +604,14 @@
               "os_version": "",
               "session_id": -1,
               "app_version": "1.1.5",
-              "user_properties": { "Company": "Comapny-ABC" }
+              "user_properties": {
+                "Company": "Comapny-ABC"
+              }
             },
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
-            "options": { "min_id_length": 1 }
+            "options": {
+              "min_id_length": 1
+            }
           }
         },
         "type": "REST",
@@ -462,15 +619,21 @@
         "method": "POST",
         "params": {},
         "userId": "my-anonymous-id-new",
-        "headers": { "Content-Type": "application/json" },
+        "headers": {
+          "Content-Type": "application/json"
+        },
         "version": "1",
         "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
-      "metadata": { "job_id": 4 },
+      "metadata": {
+        "job_id": 4
+      },
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     },
     {
@@ -483,7 +646,9 @@
             "events": {
               "ip": "[::1]",
               "time": 1603132726413,
-              "groups": { "Company": "Comapny-ABC" },
+              "groups": {
+                "Company": "Comapny-ABC"
+              },
               "os_name": "",
               "user_id": "sampleusrRudder3",
               "app_name": "RudderLabs JavaScript SDK",
@@ -494,10 +659,14 @@
               "os_version": "",
               "session_id": -1,
               "app_version": "1.1.5",
-              "user_properties": { "Company": "Comapny-ABC" }
+              "user_properties": {
+                "Company": "Comapny-ABC"
+              }
             },
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
-            "options": { "min_id_length": 1 }
+            "options": {
+              "min_id_length": 1
+            }
           }
         },
         "type": "REST",
@@ -505,15 +674,21 @@
         "method": "POST",
         "params": {},
         "userId": "my-anonymous-id-new",
-        "headers": { "Content-Type": "application/json" },
+        "headers": {
+          "Content-Type": "application/json"
+        },
         "version": "1",
         "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
-      "metadata": { "job_id": 5 },
+      "metadata": {
+        "job_id": 5
+      },
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     },
     {
@@ -538,11 +713,15 @@
         "version": "1",
         "endpoint": "https://api2.amplitude.com/groupidentify"
       },
-      "metadata": { "job_id": 6 },
+      "metadata": {
+        "job_id": 6
+      },
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     },
     {
@@ -565,15 +744,18 @@
         "version": "1",
         "endpoint": "https://api2.amplitude.com/usermap"
       },
-      "metadata": { "job_id": 7 },
+      "metadata": {
+        "job_id": 7
+      },
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     }
   ],
-
   [
     {
       "message": {
@@ -603,7 +785,9 @@
               "device_manufacturer": "Google"
             },
             "api_key": "afasf",
-            "options": { "min_id_length": 1 }
+            "options": {
+              "min_id_length": 1
+            }
           }
         },
         "type": "REST",
@@ -611,7 +795,9 @@
         "method": "POST",
         "params": {},
         "userId": "anon_id",
-        "headers": { "Content-Type": "application/json" },
+        "headers": {
+          "Content-Type": "application/json"
+        },
         "version": "1",
         "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
@@ -690,7 +876,9 @@
               "device_manufacturer": "Google"
             },
             "api_key": "afasf",
-            "options": { "min_id_length": 1 }
+            "options": {
+              "min_id_length": 1
+            }
           }
         },
         "type": "REST",
@@ -698,7 +886,9 @@
         "method": "POST",
         "params": {},
         "userId": "anon_id",
-        "headers": { "Content-Type": "application/json" },
+        "headers": {
+          "Content-Type": "application/json"
+        },
         "version": "1",
         "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
@@ -777,7 +967,9 @@
               "device_manufacturer": "Google"
             },
             "api_key": "afasf",
-            "options": { "min_id_length": 1 }
+            "options": {
+              "min_id_length": 1
+            }
           }
         },
         "type": "REST",
@@ -785,7 +977,9 @@
         "method": "POST",
         "params": {},
         "userId": "anon_id",
-        "headers": { "Content-Type": "application/json" },
+        "headers": {
+          "Content-Type": "application/json"
+        },
         "version": "1",
         "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
@@ -864,7 +1058,9 @@
               "device_manufacturer": "Google"
             },
             "api_key": "afasf",
-            "options": { "min_id_length": 1 }
+            "options": {
+              "min_id_length": 1
+            }
           }
         },
         "type": "REST",
@@ -872,7 +1068,9 @@
         "method": "POST",
         "params": {},
         "userId": "anon_id",
-        "headers": { "Content-Type": "application/json" },
+        "headers": {
+          "Content-Type": "application/json"
+        },
         "version": "1",
         "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
@@ -951,7 +1149,9 @@
               "device_manufacturer": "Google"
             },
             "api_key": "afasf",
-            "options": { "min_id_length": 1 }
+            "options": {
+              "min_id_length": 1
+            }
           }
         },
         "type": "REST",
@@ -959,7 +1159,9 @@
         "method": "POST",
         "params": {},
         "userId": "anon_id",
-        "headers": { "Content-Type": "application/json" },
+        "headers": {
+          "Content-Type": "application/json"
+        },
         "version": "1",
         "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
@@ -1011,7 +1213,6 @@
       }
     }
   ],
-
   [
     {
       "message": {
@@ -1039,7 +1240,7 @@
                   "plan": "Open source",
                   "term": "keyword",
                   "test": "other value",
-                  "email": "chandra+r@rudderlabs.com",
+                  "email": "test@rudderstack.com",
                   "logins": 5,
                   "medium": "medium",
                   "source": "google",
@@ -1050,7 +1251,9 @@
               }
             ],
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
-            "options": { "min_id_length": 1 }
+            "options": {
+              "min_id_length": 1
+            }
           }
         },
         "type": "REST",
@@ -1058,15 +1261,21 @@
         "method": "POST",
         "params": {},
         "userId": "my-anonymous-id-new",
-        "headers": { "Content-Type": "application/json" },
+        "headers": {
+          "Content-Type": "application/json"
+        },
         "version": "1",
         "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
-      "metadata": { "job_id": 1 },
+      "metadata": {
+        "job_id": 1
+      },
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     },
     {
@@ -1090,11 +1299,15 @@
                 "os_version": "",
                 "session_id": -1,
                 "app_version": "1.1.5",
-                "event_properties": { "key": "val" }
+                "event_properties": {
+                  "key": "val"
+                }
               }
             ],
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
-            "options": { "min_id_length": 1 }
+            "options": {
+              "min_id_length": 1
+            }
           }
         },
         "type": "REST",
@@ -1102,15 +1315,21 @@
         "method": "POST",
         "params": {},
         "userId": "my-anonymous-id-new",
-        "headers": { "Content-Type": "application/json" },
+        "headers": {
+          "Content-Type": "application/json"
+        },
         "version": "1",
         "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
-      "metadata": { "job_id": 2 },
+      "metadata": {
+        "job_id": 2
+      },
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     },
     {
@@ -1134,11 +1353,15 @@
                 "os_version": "",
                 "session_id": -1,
                 "app_version": "1.1.5",
-                "event_properties": { "key": "val" }
+                "event_properties": {
+                  "key": "val"
+                }
               }
             ],
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
-            "options": { "min_id_length": 1 }
+            "options": {
+              "min_id_length": 1
+            }
           }
         },
         "type": "REST",
@@ -1146,15 +1369,21 @@
         "method": "POST",
         "params": {},
         "userId": "my-anonymous-id-new",
-        "headers": { "Content-Type": "application/json" },
+        "headers": {
+          "Content-Type": "application/json"
+        },
         "version": "1",
         "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
-      "metadata": { "job_id": 3 },
+      "metadata": {
+        "job_id": 3
+      },
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     },
     {
@@ -1168,7 +1397,9 @@
               {
                 "ip": "[::1]",
                 "time": 1603132726413,
-                "groups": { "Company": "Comapny-ABC" },
+                "groups": {
+                  "Company": "Comapny-ABC"
+                },
                 "os_name": "",
                 "user_id": "sampleusrRudder3",
                 "app_name": "RudderLabs JavaScript SDK",
@@ -1179,11 +1410,15 @@
                 "os_version": "",
                 "session_id": -1,
                 "app_version": "1.1.5",
-                "user_properties": { "Company": "Comapny-ABC" }
+                "user_properties": {
+                  "Company": "Comapny-ABC"
+                }
               }
             ],
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
-            "options": { "min_id_length": 1 }
+            "options": {
+              "min_id_length": 1
+            }
           }
         },
         "type": "REST",
@@ -1191,15 +1426,21 @@
         "method": "POST",
         "params": {},
         "userId": "my-anonymous-id-new",
-        "headers": { "Content-Type": "application/json" },
+        "headers": {
+          "Content-Type": "application/json"
+        },
         "version": "1",
         "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
-      "metadata": { "job_id": 4 },
+      "metadata": {
+        "job_id": 4
+      },
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     },
     {
@@ -1213,7 +1454,9 @@
               {
                 "ip": "[::1]",
                 "time": 1603132726413,
-                "groups": { "Company": "Comapny-ABC" },
+                "groups": {
+                  "Company": "Comapny-ABC"
+                },
                 "os_name": "",
                 "user_id": "sampleusrRudder3",
                 "app_name": "RudderLabs JavaScript SDK",
@@ -1224,11 +1467,15 @@
                 "os_version": "",
                 "session_id": -1,
                 "app_version": "1.1.5",
-                "user_properties": { "Company": "Comapny-ABC" }
+                "user_properties": {
+                  "Company": "Comapny-ABC"
+                }
               }
             ],
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
-            "options": { "min_id_length": 1 }
+            "options": {
+              "min_id_length": 1
+            }
           }
         },
         "type": "REST",
@@ -1236,15 +1483,21 @@
         "method": "POST",
         "params": {},
         "userId": "my-anonymous-id-new",
-        "headers": { "Content-Type": "application/json" },
+        "headers": {
+          "Content-Type": "application/json"
+        },
         "version": "1",
         "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
-      "metadata": { "job_id": 5 },
+      "metadata": {
+        "job_id": 5
+      },
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     },
     {
@@ -1269,11 +1522,15 @@
         "version": "1",
         "endpoint": "https://api2.amplitude.com/groupidentify"
       },
-      "metadata": { "job_id": 6 },
+      "metadata": {
+        "job_id": 6
+      },
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     },
     {
@@ -1296,15 +1553,18 @@
         "version": "1",
         "endpoint": "https://api2.amplitude.com/usermap"
       },
-      "metadata": { "job_id": 7 },
+      "metadata": {
+        "job_id": 7
+      },
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     }
   ],
-
   [
     {
       "message": {
@@ -1331,7 +1591,7 @@
                   "plan": "Open source",
                   "term": "keyword",
                   "test": "other value",
-                  "email": "chandra+r@rudderlabs.com",
+                  "email": "test@rudderstack.com",
                   "logins": 5,
                   "medium": "medium",
                   "source": "google",
@@ -1342,7 +1602,9 @@
               }
             ],
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
-            "options": { "min_id_length": 1 }
+            "options": {
+              "min_id_length": 1
+            }
           }
         },
         "type": "REST",
@@ -1350,15 +1612,21 @@
         "method": "POST",
         "params": {},
         "userId": "my-anonymous-id-new",
-        "headers": { "Content-Type": "application/json" },
+        "headers": {
+          "Content-Type": "application/json"
+        },
         "version": "1",
         "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
-      "metadata": { "job_id": 1 },
+      "metadata": {
+        "job_id": 1
+      },
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     },
     {
@@ -1382,11 +1650,15 @@
                 "os_version": "",
                 "session_id": -1,
                 "app_version": "1.1.5",
-                "event_properties": { "key": "val" }
+                "event_properties": {
+                  "key": "val"
+                }
               }
             ],
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
-            "options": { "min_id_length": 1 }
+            "options": {
+              "min_id_length": 1
+            }
           }
         },
         "type": "REST",
@@ -1394,15 +1666,21 @@
         "method": "POST",
         "params": {},
         "userId": "my-anonymous-id-new",
-        "headers": { "Content-Type": "application/json" },
+        "headers": {
+          "Content-Type": "application/json"
+        },
         "version": "1",
         "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
-      "metadata": { "job_id": 2 },
+      "metadata": {
+        "job_id": 2
+      },
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     },
     {
@@ -1426,11 +1704,15 @@
                 "os_version": "",
                 "session_id": -1,
                 "app_version": "1.1.5",
-                "event_properties": { "key": "val" }
+                "event_properties": {
+                  "key": "val"
+                }
               }
             ],
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
-            "options": { "min_id_length": 1 }
+            "options": {
+              "min_id_length": 1
+            }
           }
         },
         "type": "REST",
@@ -1438,15 +1720,21 @@
         "method": "POST",
         "params": {},
         "userId": "my-anonymous-id-new",
-        "headers": { "Content-Type": "application/json" },
+        "headers": {
+          "Content-Type": "application/json"
+        },
         "version": "1",
         "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
-      "metadata": { "job_id": 3 },
+      "metadata": {
+        "job_id": 3
+      },
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     },
     {
@@ -1460,7 +1748,9 @@
               {
                 "ip": "[::1]",
                 "time": 1603132726413,
-                "groups": { "Company": "Comapny-ABC" },
+                "groups": {
+                  "Company": "Comapny-ABC"
+                },
                 "os_name": "",
                 "user_id": "sampleusrRudder3",
                 "app_name": "RudderLabs JavaScript SDK",
@@ -1471,11 +1761,15 @@
                 "os_version": "",
                 "session_id": -1,
                 "app_version": "1.1.5",
-                "user_properties": { "Company": "Comapny-ABC" }
+                "user_properties": {
+                  "Company": "Comapny-ABC"
+                }
               }
             ],
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
-            "options": { "min_id_length": 1 }
+            "options": {
+              "min_id_length": 1
+            }
           }
         },
         "type": "REST",
@@ -1483,15 +1777,21 @@
         "method": "POST",
         "params": {},
         "userId": "my-anonymous-id-new",
-        "headers": { "Content-Type": "application/json" },
+        "headers": {
+          "Content-Type": "application/json"
+        },
         "version": "1",
         "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
-      "metadata": { "job_id": 4 },
+      "metadata": {
+        "job_id": 4
+      },
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     },
     {
@@ -1505,7 +1805,9 @@
               {
                 "ip": "[::1]",
                 "time": 1603132726413,
-                "groups": { "Company": "Comapny-ABC" },
+                "groups": {
+                  "Company": "Comapny-ABC"
+                },
                 "os_name": "",
                 "user_id": "sampleusrRudder3",
                 "app_name": "RudderLabs JavaScript SDK",
@@ -1516,11 +1818,15 @@
                 "os_version": "",
                 "session_id": -1,
                 "app_version": "1.1.5",
-                "user_properties": { "Company": "Comapny-ABC" }
+                "user_properties": {
+                  "Company": "Comapny-ABC"
+                }
               }
             ],
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
-            "options": { "min_id_length": 1 }
+            "options": {
+              "min_id_length": 1
+            }
           }
         },
         "type": "REST",
@@ -1528,15 +1834,21 @@
         "method": "POST",
         "params": {},
         "userId": "my-anonymous-id-new",
-        "headers": { "Content-Type": "application/json" },
+        "headers": {
+          "Content-Type": "application/json"
+        },
         "version": "1",
         "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
-      "metadata": { "job_id": 5 },
+      "metadata": {
+        "job_id": 5
+      },
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     },
     {
@@ -1561,11 +1873,15 @@
         "version": "1",
         "endpoint": "https://api2.amplitude.com/groupidentify"
       },
-      "metadata": { "job_id": 6 },
+      "metadata": {
+        "job_id": 6
+      },
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     },
     {
@@ -1588,11 +1904,15 @@
         "version": "1",
         "endpoint": "https://api2.amplitude.com/usermap"
       },
-      "metadata": { "job_id": 7 },
+      "metadata": {
+        "job_id": 7
+      },
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     }
   ]

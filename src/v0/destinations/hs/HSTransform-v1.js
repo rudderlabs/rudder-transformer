@@ -1,5 +1,10 @@
 const get = require('get-value');
-const _ = require('lodash');
+const lodash = require('lodash');
+const {
+  InstrumentationError,
+  ConfigurationError,
+  TransformationError,
+} = require('@rudderstack/integrations-lib');
 const { MappedToDestinationKey, GENERIC_TRUE_VALUES } = require('../../../constants');
 const {
   defaultGetRequestConfig,
@@ -15,11 +20,6 @@ const {
   getDestinationExternalIDInfoForRetl,
 } = require('../../util');
 const {
-  InstrumentationError,
-  ConfigurationError,
-  TransformationError,
-} = require('../../util/errorTypes');
-const {
   BATCH_CONTACT_ENDPOINT,
   MAX_BATCH_SIZE,
   TRACK_ENDPOINT,
@@ -34,6 +34,7 @@ const {
   getEmailAndUpdatedProps,
   formatPropertyValueForIdentify,
   getHsSearchId,
+  populateTraits,
 } = require('./util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -52,7 +53,7 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
  */
 const processLegacyIdentify = async (message, destination, propertyMap) => {
   const { Config } = destination;
-  const traits = getFieldValueFromMessage(message, 'traits');
+  let traits = getFieldValueFromMessage(message, 'traits');
   const mappedToDestination = get(message, MappedToDestinationKey);
   const operation = get(message, 'context.hubspotOperation');
   // if mappedToDestination is set true, then add externalId to traits
@@ -80,6 +81,8 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
       )}/${hsSearchId}`;
       response.method = defaultPatchRequestConfig.requestMethod;
     }
+
+    traits = await populateTraits(propertyMap, traits, destination);
     response.body.JSON = removeUndefinedAndNullValues({ properties: traits });
     response.source = 'rETL';
     response.operation = operation;
@@ -286,9 +289,9 @@ const legacyBatchEvents = (destEvents) => {
       eventsChunk.push(event);
     }
   });
-  const arrayChunksIdentifyCreateObjects = _.chunk(createAllObjectsEventChunk, maxBatchSize);
+  const arrayChunksIdentifyCreateObjects = lodash.chunk(createAllObjectsEventChunk, maxBatchSize);
 
-  const arrayChunksIdentifyUpdateObjects = _.chunk(updateAllObjectsEventChunk, maxBatchSize);
+  const arrayChunksIdentifyUpdateObjects = lodash.chunk(updateAllObjectsEventChunk, maxBatchSize);
   // batching up 'create' all objects endpoint chunks
   if (arrayChunksIdentifyCreateObjects.length > 0) {
     batchedResponseList = batchIdentifyForrETL(
@@ -308,7 +311,7 @@ const legacyBatchEvents = (destEvents) => {
   }
 
   // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
-  const arrayChunksIdentify = _.chunk(eventsChunk, MAX_BATCH_SIZE);
+  const arrayChunksIdentify = lodash.chunk(eventsChunk, MAX_BATCH_SIZE);
 
   // list of chunks [ [..], [..] ]
   arrayChunksIdentify.forEach((chunk) => {

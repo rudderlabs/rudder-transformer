@@ -97,7 +97,7 @@
         "ResponseRules": {}
       },
       "Config": {
-        "apiKey": "4f9880adb424c5065df868a339b1c0e0",
+        "apiKey": "dummyApiKey",
         "allowMarketing": false,
         "allowTransactional": false,
         "marketingOptin": "EXPLICITLY_OPTEDOUT"
@@ -206,7 +206,7 @@
         "ResponseRules": {}
       },
       "Config": {
-        "apiKey": "4f9880adb424c5065df868a339b1c0e0",
+        "apiKey": "dummyApiKey",
         "allowMarketing": false,
         "allowTransactional": false,
         "marketingOptin": "EXPLICITLY_OPTEDOUT"

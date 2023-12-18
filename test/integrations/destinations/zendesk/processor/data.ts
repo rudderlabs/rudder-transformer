@@ -120,7 +120,7 @@ export const data = [
                 userAgent:
                   'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36',
               },
-              event: 'Abhishek Track me',
+              event: 'Rudderlabs Track me',
               integrations: { All: true },
               messageId: '017f5227-ead3-4b7d-9794-1465022327be',
               originalTimestamp: '2021-03-25T14:36:47.695Z',
@@ -186,7 +186,7 @@ export const data = [
                 apiToken: 'myDummyApiToken3',
                 createUsersAsVerified: true,
                 domain: 'rudderlabshelp',
-                email: 'abhishek@rudder.com',
+                email: 'test@rudder.com',
                 removeUsersFromOrganization: false,
                 sendGroupCallsWithoutUserId: false,
               },
@@ -909,7 +909,7 @@ export const data = [
                 apiToken: 'myDummyApiToken4',
                 createUsersAsVerified: false,
                 domain: 'rudderlabshelp',
-                email: 'abhishek@rudder.com',
+                email: 'test@rudder.com',
                 removeUsersFromOrganization: false,
                 sendGroupCallsWithoutUserId: false,
               },
@@ -935,7 +935,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://rudderlabshelp.zendesk.com/api/v2/users/create_or_update.json',
               headers: {
-                Authorization: 'Basic YWJoaXNoZWtAcnVkZGVyLmNvbS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+                Authorization: 'Basic dGVzdEBydWRkZXIuY29tL3Rva2VuOm15RHVtbXlBcGlUb2tlbjQ=',
                 'Content-Type': 'application/json',
                 'X-Zendesk-Marketplace-Name': 'RudderStack',
                 'X-Zendesk-Marketplace-Organization-Id': '3339',
@@ -1076,7 +1076,7 @@ export const data = [
                 apiToken: 'myDummyApiToken4',
                 createUsersAsVerified: false,
                 domain: 'rudderlabshelp',
-                email: 'abhishek@rudder.com',
+                email: 'test@rudder.com',
                 removeUsersFromOrganization: false,
                 sendGroupCallsWithoutUserId: false,
               },
@@ -1102,7 +1102,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://rudderlabshelp.zendesk.com/api/v2/users/create_or_update.json',
               headers: {
-                Authorization: 'Basic YWJoaXNoZWtAcnVkZGVyLmNvbS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+                Authorization: 'Basic dGVzdEBydWRkZXIuY29tL3Rva2VuOm15RHVtbXlBcGlUb2tlbjQ=',
                 'Content-Type': 'application/json',
                 'X-Zendesk-Marketplace-Name': 'RudderStack',
                 'X-Zendesk-Marketplace-Organization-Id': '3339',
@@ -1243,7 +1243,7 @@ export const data = [
                 apiToken: 'myDummyApiToken4',
                 createUsersAsVerified: true,
                 domain: 'rudderlabshelp',
-                email: 'abhishek@rudder.com',
+                email: 'test@rudder.com',
                 removeUsersFromOrganization: true,
                 sendGroupCallsWithoutUserId: true,
               },
@@ -1269,7 +1269,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://rudderlabshelp.zendesk.com/api/v2/users/create_or_update.json',
               headers: {
-                Authorization: 'Basic YWJoaXNoZWtAcnVkZGVyLmNvbS90b2tlbjpteUR1bW15QXBpVG9rZW40',
+                Authorization: 'Basic dGVzdEBydWRkZXIuY29tL3Rva2VuOm15RHVtbXlBcGlUb2tlbjQ=',
                 'Content-Type': 'application/json',
                 'X-Zendesk-Marketplace-Name': 'RudderStack',
                 'X-Zendesk-Marketplace-Organization-Id': '3339',
@@ -1351,7 +1351,7 @@ export const data = [
                 userAgent:
                   'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36',
               },
-              event: 'Abhishek Track me',
+              event: 'Rudderlabs Track me',
               integrations: { All: true },
               messageId: '017f5227-ead3-4b7d-9794-1465022327be',
               originalTimestamp: '2021-03-25T14:36:47.695Z',
@@ -1417,7 +1417,7 @@ export const data = [
                 apiToken: 'myDummyApiToken3',
                 createUsersAsVerified: true,
                 domain: 'rudderlabshelp',
-                email: 'abhishek@rudder.com',
+                email: 'test@rudder.com',
                 removeUsersFromOrganization: false,
                 sendGroupCallsWithoutUserId: false,
               },
@@ -1442,7 +1442,7 @@ export const data = [
                 FORM: {},
                 JSON: {
                   event: {
-                    description: 'Abhishek Track me',
+                    description: 'Rudderlabs Track me',
                     properties: {
                       category: 'category',
                       label: 'label',
@@ -1450,12 +1450,12 @@ export const data = [
                       value: 'value',
                     },
                     source: 'Rudder',
-                    type: 'Abhishek Track me',
+                    type: 'Rudderlabs Track me',
                   },
                   profile: {
                     identifiers: [{ type: 'email', value: 'example124@email.com' }],
                     source: 'Rudder',
-                    type: 'Abhishek Track me',
+                    type: 'Rudderlabs Track me',
                   },
                 },
                 XML: {},
@@ -1464,7 +1464,7 @@ export const data = [
               endpoint: 'https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events',
               files: {},
               headers: {
-                Authorization: 'Basic YWJoaXNoZWtAcnVkZGVyLmNvbS90b2tlbjpteUR1bW15QXBpVG9rZW4z',
+                Authorization: 'Basic dGVzdEBydWRkZXIuY29tL3Rva2VuOm15RHVtbXlBcGlUb2tlbjM=',
                 'Content-Type': 'application/json',
                 'X-Zendesk-Marketplace-App-Id': '263241',
                 'X-Zendesk-Marketplace-Name': 'RudderStack',
@@ -1534,7 +1534,7 @@ export const data = [
                 userAgent:
                   'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36',
               },
-              event: 'Abhishek Track me',
+              event: 'Rudderlabs Track me',
               integrations: { All: true },
               messageId: '611a63fc-acb5-4a76-b4c3-e9cba27ca554',
               originalTimestamp: '2021-03-25T14:50:39.716Z',
@@ -1600,7 +1600,7 @@ export const data = [
                 apiToken: 'myDummyApiToken3',
                 createUsersAsVerified: true,
                 domain: 'rudderlabshelp',
-                email: 'abhishek@rudder.com',
+                email: 'test@rudder.com',
                 removeUsersFromOrganization: true,
                 sendGroupCallsWithoutUserId: true,
               },
@@ -1625,7 +1625,7 @@ export const data = [
                 FORM: {},
                 JSON: {
                   event: {
-                    description: 'Abhishek Track me',
+                    description: 'Rudderlabs Track me',
                     properties: {
                       category: 'category',
                       label: 'label',
@@ -1633,12 +1633,12 @@ export const data = [
                       value: 'value',
                     },
                     source: 'Rudder',
-                    type: 'Abhishek Track me',
+                    type: 'Rudderlabs Track me',
                   },
                   profile: {
                     identifiers: [{ type: 'email', value: 'example124@email.com' }],
                     source: 'Rudder',
-                    type: 'Abhishek Track me',
+                    type: 'Rudderlabs Track me',
                   },
                 },
                 XML: {},
@@ -1647,7 +1647,7 @@ export const data = [
               endpoint: 'https://rudderlabshelp.zendesk.com/api/v2/users/900113780483/events',
               files: {},
               headers: {
-                Authorization: 'Basic YWJoaXNoZWtAcnVkZGVyLmNvbS90b2tlbjpteUR1bW15QXBpVG9rZW4z',
+                Authorization: 'Basic dGVzdEBydWRkZXIuY29tL3Rva2VuOm15RHVtbXlBcGlUb2tlbjM=',
                 'Content-Type': 'application/json',
                 'X-Zendesk-Marketplace-App-Id': '263241',
                 'X-Zendesk-Marketplace-Name': 'RudderStack',
@@ -2233,7 +2233,7 @@ export const data = [
               ID: 'xxxXXXXXXXXXXXxxxxxxxxxorpz',
               Name: 'Zendesk',
               Config: {
-                apiToken: 'yPJwcLTFSsvIkFhY23SzittHoYADJQ7eKDoxNu4x',
+                apiToken: 'dummyApiToken',
                 createUsersAsVerified: true,
                 domain: 'rudderlabtest1',
                 email: 'rudderlabtest1@email.com',
@@ -2278,8 +2278,7 @@ export const data = [
               endpoint: 'https://rudderlabtest1.zendesk.com/api/v2/users/900113780483/events',
               files: {},
               headers: {
-                Authorization:
-                  'Basic cnVkZGVybGFidGVzdDFAZW1haWwuY29tL3Rva2VuOnlQSndjTFRGU3N2SWtGaFkyM1N6aXR0SG9ZQURKUTdlS0RveE51NHg=',
+                Authorization: 'Basic cnVkZGVybGFidGVzdDFAZW1haWwuY29tL3Rva2VuOmR1bW15QXBpVG9rZW4=',
                 'Content-Type': 'application/json',
                 'X-Zendesk-Marketplace-App-Id': '263241',
                 'X-Zendesk-Marketplace-Name': 'RudderStack',
@@ -2337,7 +2336,7 @@ export const data = [
               ID: 'xxxXXXXXXXXXXXxxxxxxxxxorpz',
               Name: 'Zendesk',
               Config: {
-                apiToken: 'yPJwcLTFSsvIkFhY23SzittHoYADJQ7eKDoxNu4x',
+                apiToken: 'dummyApiToken',
                 createUsersAsVerified: true,
                 domain: 'rudderlabtest2',
                 email: 'rudderlabtest2@email.com',
@@ -2356,7 +2355,7 @@ export const data = [
         body: [
           {
             error:
-              "Failed to fetch user with email: testemail2@email due to Couldn't find user: John Wick",
+              '{"message":"Failed to fetch user with email: testemail2@email due to Couldn\'t find user: John Wick","destinationResponse":{"status":400,"statTags":{"errorCategory":"network","errorType":"aborted","meta":"instrumentation"},"destinationResponse":"","authErrorCategory":""}}',
             statTags: {
               destType: 'ZENDESK',
               errorCategory: 'network',

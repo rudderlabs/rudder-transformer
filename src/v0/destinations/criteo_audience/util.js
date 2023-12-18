@@ -1,6 +1,6 @@
-const _ = require('lodash');
+const lodash = require('lodash');
+const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { isDefinedAndNotNullAndNotEmpty } = require('../../util');
-const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 const { MAX_IDENTIFIERS } = require('./config');
 
 const populateIdentifiers = (audienceList, audienceType) => {
@@ -14,7 +14,7 @@ const populateIdentifiers = (audienceList, audienceType) => {
     }
     identifiers.push(userTraits[audienceType]);
   });
-  const identifierChunks = _.chunk(identifiers, MAX_IDENTIFIERS);
+  const identifierChunks = lodash.chunk(identifiers, MAX_IDENTIFIERS);
   return identifierChunks;
 };
 

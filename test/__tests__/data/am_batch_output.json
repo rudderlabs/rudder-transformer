@@ -1,6 +1,20 @@
 [
   [
     {
+      "batched": false,
+      "error": "Both userId and deviceId cannot be undefined",
+      "metadata": {
+        "job_id": 1
+      },
+      "statTags": {
+        "errorCategory": "dataValidation",
+        "errorType": "instrumentation"
+      },
+      "statusCode": 400
+    }
+  ],
+  [
+    {
       "batchedRequest": {
         "body": {
           "XML": {},
@@ -26,7 +40,7 @@
                   "plan": "Open source",
                   "term": "keyword",
                   "test": "other value",
-                  "email": "chandra+r@rudderlabs.com",
+                  "email": "test@rudderstack.com",
                   "logins": 5,
                   "medium": "medium",
                   "source": "google",
@@ -53,11 +67,17 @@
         "version": "1",
         "endpoint": "https://api.eu.amplitude.com/2/httpapi"
       },
-      "metadata": [{ "job_id": 1 }],
+      "metadata": [
+        {
+          "job_id": 1
+        }
+      ],
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "EU" }
+        "Config": {
+          "residencyServer": "EU"
+        }
       }
     },
     {
@@ -82,11 +102,17 @@
         "version": "1",
         "endpoint": "https://api2.amplitude.com/groupidentify"
       },
-      "metadata": [{ "job_id": 6 }],
+      "metadata": [
+        {
+          "job_id": 6
+        }
+      ],
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     },
     {
@@ -96,7 +122,9 @@
           "JSON_ARRAY": {},
           "FORM": {
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
-            "mapping": ["{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\"}"]
+            "mapping": [
+              "{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\"}"
+            ]
           },
           "JSON": {}
         },
@@ -109,11 +137,17 @@
         "version": "1",
         "endpoint": "https://api2.amplitude.com/usermap"
       },
-      "metadata": [{ "job_id": 7 }],
+      "metadata": [
+        {
+          "job_id": 7
+        }
+      ],
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     },
     {
@@ -213,11 +247,26 @@
         "version": "1",
         "endpoint": "https://api2.amplitude.com/batch"
       },
-      "metadata": [{ "job_id": 2 }, { "job_id": 3 }, { "job_id": 4 }, { "job_id": 5 }],
+      "metadata": [
+        {
+          "job_id": 2
+        },
+        {
+          "job_id": 3
+        },
+        {
+          "job_id": 4
+        },
+        {
+          "job_id": 5
+        }
+      ],
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     }
   ],
@@ -247,7 +296,7 @@
                 "plan": "Open source",
                 "term": "keyword",
                 "test": "other value",
-                "email": "chandra+r@rudderlabs.com",
+                "email": "test@rudderstack.com",
                 "logins": 5,
                 "medium": "medium",
                 "source": "google",
@@ -273,11 +322,17 @@
         "version": "1",
         "endpoint": "https://api2.amplitude.com/2/httpapi"
       },
-      "metadata": [{ "job_id": 1 }],
+      "metadata": [
+        {
+          "job_id": 1
+        }
+      ],
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     },
     {
@@ -302,11 +357,17 @@
         "version": "1",
         "endpoint": "https://api2.amplitude.com/groupidentify"
       },
-      "metadata": [{ "job_id": 6 }],
+      "metadata": [
+        {
+          "job_id": 6
+        }
+      ],
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     },
     {
@@ -316,7 +377,9 @@
           "JSON_ARRAY": {},
           "FORM": {
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
-            "mapping": ["{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\"}"]
+            "mapping": [
+              "{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\"}"
+            ]
           },
           "JSON": {}
         },
@@ -329,11 +392,17 @@
         "version": "1",
         "endpoint": "https://api2.amplitude.com/usermap"
       },
-      "metadata": [{ "job_id": 7 }],
+      "metadata": [
+        {
+          "job_id": 7
+        }
+      ],
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     },
     {
@@ -433,11 +502,26 @@
         "version": "1",
         "endpoint": "https://api2.amplitude.com/batch"
       },
-      "metadata": [{ "job_id": 2 }, { "job_id": 3 }, { "job_id": 4 }, { "job_id": 5 }],
+      "metadata": [
+        {
+          "job_id": 2
+        },
+        {
+          "job_id": 3
+        },
+        {
+          "job_id": 4
+        },
+        {
+          "job_id": 5
+        }
+      ],
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     }
   ],
@@ -621,14 +705,29 @@
           "DisplayName": "Braze",
           "Config": {
             "destConfig": {
-              "android": ["useNativeSDK"],
-              "defaultConfig": ["appKey", "dataCenter", "restApiKey"],
-              "ios": ["useNativeSDK"],
-              "web": ["useNativeSDK"]
+              "android": [
+                "useNativeSDK"
+              ],
+              "defaultConfig": [
+                "appKey",
+                "dataCenter",
+                "restApiKey"
+              ],
+              "ios": [
+                "useNativeSDK"
+              ],
+              "web": [
+                "useNativeSDK"
+              ]
             },
             "excludeKeys": [],
-            "includeKeys": ["appKey", "dataCenter"],
-            "secretKeys": ["restApiKey"],
+            "includeKeys": [
+              "appKey",
+              "dataCenter"
+            ],
+            "secretKeys": [
+              "restApiKey"
+            ],
             "supportedSourceTypes": [
               "android",
               "ios",
@@ -682,7 +781,9 @@
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     },
     {
@@ -692,7 +793,9 @@
           "JSON_ARRAY": {},
           "FORM": {
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
-            "mapping": ["{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\"}"]
+            "mapping": [
+              "{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\"}"
+            ]
           },
           "JSON": {}
         },
@@ -713,7 +816,9 @@
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     },
     {
@@ -741,7 +846,7 @@
                   "plan": "Open source",
                   "term": "keyword",
                   "test": "other value",
-                  "email": "chandra+r@rudderlabs.com",
+                  "email": "test@rudderstack.com",
                   "logins": 5,
                   "medium": "medium",
                   "source": "google",
@@ -859,7 +964,9 @@
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     }
   ],
@@ -889,7 +996,7 @@
                   "plan": "Open source",
                   "term": "keyword",
                   "test": "other value",
-                  "email": "chandra+r@rudderlabs.com",
+                  "email": "test@rudderstack.com",
                   "logins": 5,
                   "medium": "medium",
                   "source": "google",
@@ -924,7 +1031,9 @@
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     },
     {
@@ -957,7 +1066,9 @@
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     },
     {
@@ -967,7 +1078,9 @@
           "JSON_ARRAY": {},
           "FORM": {
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
-            "mapping": ["{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\"}"]
+            "mapping": [
+              "{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\"}"
+            ]
           },
           "JSON": {}
         },
@@ -988,7 +1101,9 @@
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     },
     {
@@ -1105,7 +1220,9 @@
       "destination": {
         "ID": "a",
         "url": "a",
-        "Config": { "residencyServer": "standard" }
+        "Config": {
+          "residencyServer": "standard"
+        }
       }
     }
   ]

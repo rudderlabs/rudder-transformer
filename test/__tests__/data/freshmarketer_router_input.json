@@ -2,8 +2,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "ugHZRFZjdLOa66ttyyewQ",
-        "domain": "rudderstack-476952domain3105"
+        "apiKey": "dummyApiKey",
+        "domain": "rudderstack-476952domain3105.myfreshworks.com"
       }
     },
     "metadata": {
@@ -58,8 +58,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "ugHZRFZjdLOa66ttyyewQ",
-        "domain": "rudderstack-476952domain3105"
+        "apiKey": "dummyApiKey",
+        "domain": "rudderstack-476952domain3105.myfreshworks.com"
       }
     },
     "metadata": {
@@ -114,8 +114,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "ugHZRFZjdLOarudder",
-        "domain": "domain-rudder"
+        "apiKey": "dummyApiKey",
+        "domain": "domain-rudder.myfreshworks.com"
       }
     },
     "metadata": {

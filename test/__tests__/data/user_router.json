@@ -36,19 +36,35 @@
         },
         "destination": {
           "Config": {
-            "apiKey": "262fbbda-b85b-48b8-a719-c2fceaf8afaf",
+            "apiKey": "dummyApiKey",
             "appSubdomain": "commander",
-            "userAttributesMapping": [{ "from": "useroccupation", "to": "occupation" }],
+            "userAttributesMapping": [
+              {
+                "from": "useroccupation",
+                "to": "occupation"
+              }
+            ],
             "userEvents": [
               {
                 "rsEventName": "login",
                 "userEventName": "product viewed",
-                "eventProperties": [{ "from": "count", "to": "productcount" }]
+                "eventProperties": [
+                  {
+                    "from": "count",
+                    "to": "productcount"
+                  }
+                ]
               }
             ],
             "companyAttributesMapping": [
-              { "from": "category", "to": "companycategory" },
-              { "from": "owner", "to": "companyowner" }
+              {
+                "from": "category",
+                "to": "companycategory"
+              },
+              {
+                "from": "owner",
+                "to": "companyowner"
+              }
             ]
           }
         }
@@ -86,19 +102,35 @@
         },
         "destination": {
           "Config": {
-            "apiKey": "262fbbda-b85b-48b8-a719-c2fceaf8afaf",
+            "apiKey": "dummyApiKey",
             "appSubdomain": "commander",
-            "userAttributesMapping": [{ "from": "useroccupation", "to": "occupation" }],
+            "userAttributesMapping": [
+              {
+                "from": "useroccupation",
+                "to": "occupation"
+              }
+            ],
             "userEvents": [
               {
                 "rsEventName": "login",
                 "userEventName": "product viewed",
-                "eventProperties": [{ "from": "count", "to": "productcount" }]
+                "eventProperties": [
+                  {
+                    "from": "count",
+                    "to": "productcount"
+                  }
+                ]
               }
             ],
             "companyAttributesMapping": [
-              { "from": "category", "to": "companycategory" },
-              { "from": "owner", "to": "companyowner" }
+              {
+                "from": "category",
+                "to": "companycategory"
+              },
+              {
+                "from": "owner",
+                "to": "companyowner"
+              }
             ]
           }
         }
@@ -123,7 +155,7 @@
           "headers": {
             "Accept": "*/*;version=2",
             "Content-Type": "application/json",
-            "Authorization": "Token 262fbbda-b85b-48b8-a719-c2fceaf8afaf"
+            "Authorization": "Token dummyApiKey"
           },
           "version": "1",
           "endpoint": "https://commander.user.com/api/public/companies/21/add_member/"
@@ -137,19 +169,35 @@
         "statusCode": 200,
         "destination": {
           "Config": {
-            "apiKey": "262fbbda-b85b-48b8-a719-c2fceaf8afaf",
+            "apiKey": "dummyApiKey",
             "appSubdomain": "commander",
-            "userAttributesMapping": [{ "from": "useroccupation", "to": "occupation" }],
+            "userAttributesMapping": [
+              {
+                "from": "useroccupation",
+                "to": "occupation"
+              }
+            ],
             "userEvents": [
               {
                 "rsEventName": "login",
                 "userEventName": "product viewed",
-                "eventProperties": [{ "from": "count", "to": "productcount" }]
+                "eventProperties": [
+                  {
+                    "from": "count",
+                    "to": "productcount"
+                  }
+                ]
               }
             ],
             "companyAttributesMapping": [
-              { "from": "category", "to": "companycategory" },
-              { "from": "owner", "to": "companyowner" }
+              {
+                "from": "category",
+                "to": "companycategory"
+              },
+              {
+                "from": "owner",
+                "to": "companyowner"
+              }
             ]
           }
         }
@@ -181,7 +229,7 @@
           "headers": {
             "Accept": "*/*;version=2",
             "Content-Type": "application/json",
-            "Authorization": "Token 262fbbda-b85b-48b8-a719-c2fceaf8afaf"
+            "Authorization": "Token dummyApiKey"
           },
           "version": "1",
           "endpoint": "https://commander.user.com/api/public/users/59/"
@@ -195,19 +243,35 @@
         "statusCode": 200,
         "destination": {
           "Config": {
-            "apiKey": "262fbbda-b85b-48b8-a719-c2fceaf8afaf",
+            "apiKey": "dummyApiKey",
             "appSubdomain": "commander",
-            "userAttributesMapping": [{ "from": "useroccupation", "to": "occupation" }],
+            "userAttributesMapping": [
+              {
+                "from": "useroccupation",
+                "to": "occupation"
+              }
+            ],
             "userEvents": [
               {
                 "rsEventName": "login",
                 "userEventName": "product viewed",
-                "eventProperties": [{ "from": "count", "to": "productcount" }]
+                "eventProperties": [
+                  {
+                    "from": "count",
+                    "to": "productcount"
+                  }
+                ]
               }
             ],
             "companyAttributesMapping": [
-              { "from": "category", "to": "companycategory" },
-              { "from": "owner", "to": "companyowner" }
+              {
+                "from": "category",
+                "to": "companycategory"
+              },
+              {
+                "from": "owner",
+                "to": "companyowner"
+              }
             ]
           }
         }

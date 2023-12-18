@@ -11,7 +11,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
+                apiKey: 'dummyApiKey',
                 sessionEventList: [
                   { sessionEventName: 'mysessionevent' },
                   { sessionEventName: 'randomuser' },
@@ -40,7 +40,7 @@ export const data = [
                   attStatus: true,
                   id: 'fc8d449516de0dfb',
                   adTrackingEnabled: true,
-                  token: 'bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1',
+                  token: 'testDeviceToken',
                 },
                 library: { name: 'com.rudderstack.android.sdk.core', version: '0.1.4' },
                 locale: 'en-US',
@@ -74,7 +74,7 @@ export const data = [
                 discount: 1.5,
                 coupon: 'ImagePro',
                 currency: 'USD',
-                fetch_token: '123asd23',
+                fetch_token: 'dummyFetchToken',
                 product_id: '123',
                 products: [
                   {
@@ -127,7 +127,7 @@ export const data = [
                 n: 'RudderAndroidClient',
                 utime: 1630511211,
                 cn: 'Android',
-                fcm: 'bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1',
+                fcm: 'testDeviceToken',
                 bd: '1',
                 install: 'SM-G935F',
                 aifa: '8ecd7512-2864-440c-93f3-a3cabe62525b',
@@ -135,7 +135,7 @@ export const data = [
                 install_time: 1630511211,
                 update_time: 1630511211,
                 ua: 'Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)',
-                a: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
+                a: 'dummyApiKey',
               },
               body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
               files: {},
@@ -159,7 +159,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
+                apiKey: 'dummyApiKey',
                 sessionEventList: [
                   { sessionEventName: 'mysessionevent' },
                   { sessionEventName: 'randomuser' },
@@ -188,7 +188,7 @@ export const data = [
                   attStatus: true,
                   id: 'fc8d449516de0dfb',
                   adTrackingEnabled: true,
-                  token: 'bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1',
+                  token: 'testDeviceToken',
                 },
                 library: { name: 'com.rudderstack.android.sdk.core', version: '0.1.4' },
                 locale: 'en-US',
@@ -222,7 +222,7 @@ export const data = [
                 discount: 1.5,
                 coupon: 'ImagePro',
                 currency: 'USD',
-                fetch_token: '123asd23',
+                fetch_token: 'dummyFetchToken',
                 product_id: '123',
                 products: [
                   {
@@ -273,7 +273,7 @@ export const data = [
                 receipt_signature: '1234dfghnh',
                 purchase_product_id: '789',
                 c: 'wifi',
-                a: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
+                a: 'dummyApiKey',
                 e: {
                   url: 'myapp%3A%2F%2Fhome%2Fpage%3Fqueryparam1%3Dvalue1',
                   install: 'SM-G935F',
@@ -288,7 +288,7 @@ export const data = [
                   tax: 1,
                   discount: 1.5,
                   coupon: 'ImagePro',
-                  fetch_token: '123asd23',
+                  fetch_token: 'dummyFetchToken',
                 },
               },
               body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
@@ -320,7 +320,7 @@ export const data = [
                 amt: 6.9,
                 asid: 'IISqwYJKoZIcNqts0jvcNvPc',
                 receipt_signature: '1234dfghnh',
-                a: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
+                a: 'dummyApiKey',
                 c: 'wifi',
                 e: {
                   url: 'myapp%3A%2F%2Fhome%2Fpage%3Fqueryparam1%3Dvalue1',
@@ -336,7 +336,7 @@ export const data = [
                   tax: 1,
                   discount: 1.5,
                   coupon: 'ImagePro',
-                  fetch_token: '123asd23',
+                  fetch_token: 'dummyFetchToken',
                 },
               },
               body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
@@ -361,7 +361,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
+                apiKey: 'dummyApiKey',
                 sessionEventList: [
                   { sessionEventName: 'mysessionevent' },
                   { sessionEventName: 'randomuser' },
@@ -389,7 +389,7 @@ export const data = [
                   attStatus: true,
                   id: 'fc8d449516de0dfb',
                   adTrackingEnabled: true,
-                  token: 'bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1',
+                  token: 'testDeviceToken',
                 },
                 library: { name: 'com.rudderstack.android.sdk.core', version: '0.1.4' },
                 locale: 'en-US',
@@ -423,7 +423,7 @@ export const data = [
                 discount: 1.5,
                 coupon: 'ImagePro',
                 currency: 'USD',
-                fetch_token: '123asd23',
+                fetch_token: 'dummyFetchToken',
                 product_id: '123',
                 sku: 'G-32',
                 name: 'Monopoly',
@@ -470,7 +470,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
+                apiKey: 'dummyApiKey',
                 sessionEventList: [
                   { sessionEventName: 'mysessionevent' },
                   { sessionEventName: 'randomuser' },
@@ -499,7 +499,7 @@ export const data = [
                   attStatus: true,
                   id: 'fc8d449516de0dfb',
                   adTrackingEnabled: true,
-                  token: 'bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1',
+                  token: 'testDeviceToken',
                 },
                 library: { name: 'com.rudderstack.android.sdk.core', version: '0.1.4' },
                 locale: 'en-US',
@@ -535,7 +535,7 @@ export const data = [
                 discount: 1.5,
                 coupon: 'ImagePro',
                 currency: 'USD',
-                fetch_token: '123asd23',
+                fetch_token: 'dummyFetchToken',
                 product_id: '123',
                 sku: 'G-32',
                 name: 'Monopoly',
@@ -575,7 +575,7 @@ export const data = [
                 custom_user_id: 'ruddersampleX5',
                 n: 'RudderAndroidClient',
                 cn: 'Android',
-                fcm: 'bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1',
+                fcm: 'testDeviceToken',
                 bd: '1',
                 install: 'SM-G935F',
                 aifa: '8ecd7512-2864-440c-93f3-a3cabe62525b',
@@ -588,7 +588,7 @@ export const data = [
                 openuri: 'myapp%3A%2F%2Fhome%2Fpage%3Fqueryparam1%3Dvalue1',
                 install_source: '',
                 c: 'wifi',
-                a: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
+                a: 'dummyApiKey',
               },
               body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
               files: {},
@@ -612,7 +612,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
+                apiKey: 'dummyApiKey',
                 sessionEventList: [
                   { sessionEventName: 'mysessionevent' },
                   { sessionEventName: 'randomuser' },
@@ -641,7 +641,7 @@ export const data = [
                   attStatus: true,
                   id: 'fc8d449516de0dfb',
                   adTrackingEnabled: true,
-                  token: 'bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1',
+                  token: 'testDeviceToken',
                 },
                 library: { name: 'com.rudderstack.android.sdk.core', version: '0.1.4' },
                 locale: 'en-US',
@@ -677,7 +677,7 @@ export const data = [
                 discount: 1.5,
                 coupon: 'ImagePro',
                 currency: 'USD',
-                fetch_token: '123asd23',
+                fetch_token: 'dummyFetchToken',
                 product_id: '123',
                 sku: 'G-32',
                 name: 'Monopoly',
@@ -721,7 +721,7 @@ export const data = [
                 receipt_signature: '1234dfghnh',
                 amt: 20,
                 is_revenue_event: true,
-                a: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
+                a: 'dummyApiKey',
                 c: 'wifi',
                 e: {
                   url: 'myapp%3A%2F%2Fhome%2Fpage%3Fqueryparam1%3Dvalue1',
@@ -736,7 +736,7 @@ export const data = [
                   tax: 1,
                   discount: 1.5,
                   coupon: 'ImagePro',
-                  fetch_token: '123asd23',
+                  fetch_token: 'dummyFetchToken',
                   name: 'Monopoly',
                   image_url: 'https://www.website.com/product/path.jpg',
                 },
@@ -763,7 +763,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
+                apiKey: 'dummyApiKey',
                 sessionEventList: [
                   { sessionEventName: 'mysessionevent' },
                   { sessionEventName: 'randomuser' },
@@ -792,7 +792,7 @@ export const data = [
                   attStatus: true,
                   id: 'fc8d449516de0dfb',
                   adTrackingEnabled: true,
-                  token: 'bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1',
+                  token: 'testDeviceToken',
                 },
                 library: { name: 'com.rudderstack.android.sdk.core', version: '0.1.4' },
                 locale: 'en-US',
@@ -828,7 +828,7 @@ export const data = [
                 discount: 1.5,
                 coupon: 'ImagePro',
                 currency: 'USD',
-                fetch_token: '123asd23',
+                fetch_token: 'dummyFetchToken',
                 product_id: '123',
                 sku: 'G-32',
                 name: 'Monopoly',
@@ -875,7 +875,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
+                apiKey: 'dummyApiKey',
                 sessionEventList: [
                   { sessionEventName: 'mysessionevent' },
                   { sessionEventName: 'randomuser' },
@@ -904,7 +904,7 @@ export const data = [
                   attStatus: true,
                   id: 'fc8d449516de0dfb',
                   adTrackingEnabled: true,
-                  token: 'bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1',
+                  token: 'testDeviceToken',
                 },
                 library: { name: 'com.rudderstack.android.sdk.core', version: '0.1.4' },
                 locale: 'en-US',
@@ -936,7 +936,7 @@ export const data = [
                 discount: 1.5,
                 coupon: 'ImagePro',
                 currency: 'USD',
-                fetch_token: '123asd23',
+                fetch_token: 'dummyFetchToken',
                 product_id: '123',
                 sku: 'G-32',
                 name: 'Monopoly',
@@ -980,7 +980,7 @@ export const data = [
                 n: 'RudderAndroidClient',
                 utime: 1630511211,
                 cn: 'Android',
-                fcm: 'bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1',
+                fcm: 'testDeviceToken',
                 bd: '1',
                 install: 'SM-G935F',
                 aifa: '8ecd7512-2864-440c-93f3-a3cabe62525b',
@@ -988,7 +988,7 @@ export const data = [
                 install_time: 1630511211,
                 update_time: 1630511211,
                 ua: 'Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)',
-                a: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
+                a: 'dummyApiKey',
               },
               body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
               files: {},
@@ -1012,7 +1012,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
+                apiKey: 'dummyApiKey',
                 sessionEventList: [
                   { sessionEventName: 'mysessionevent' },
                   { sessionEventName: 'randomuser' },
@@ -1041,7 +1041,7 @@ export const data = [
                   attStatus: true,
                   id: 'fc8d449516de0dfb',
                   adTrackingEnabled: true,
-                  token: 'bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1',
+                  token: 'testDeviceToken',
                 },
                 library: { name: 'com.rudderstack.android.sdk.core', version: '0.1.4' },
                 locale: 'en-US',
@@ -1073,7 +1073,7 @@ export const data = [
                 discount: 1.5,
                 coupon: 'ImagePro',
                 currency: 'USD',
-                fetch_token: '123asd23',
+                fetch_token: 'dummyFetchToken',
                 product_id: '123',
                 sku: 'G-32',
                 name: 'Monopoly',
@@ -1117,7 +1117,7 @@ export const data = [
                 n: 'RudderAndroidClient',
                 utime: 1630511211,
                 cn: 'Android',
-                fcm: 'bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1',
+                fcm: 'testDeviceToken',
                 bd: '1',
                 install: 'SM-G935F',
                 aifa: '8ecd7512-2864-440c-93f3-a3cabe62525b',
@@ -1125,7 +1125,7 @@ export const data = [
                 install_time: 1630511211,
                 update_time: 1630511211,
                 ua: 'Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)',
-                a: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
+                a: 'dummyApiKey',
               },
               body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
               files: {},
@@ -1149,7 +1149,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
+                apiKey: 'dummyApiKey',
                 sessionEventList: [
                   { sessionEventName: 'mysessionevent' },
                   { sessionEventName: 'randomuser' },
@@ -1178,7 +1178,7 @@ export const data = [
                   attStatus: true,
                   id: 'fc8d449516de0dfb',
                   adTrackingEnabled: true,
-                  token: 'bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1',
+                  token: 'testDeviceToken',
                 },
                 library: { name: 'com.rudderstack.android.sdk.core', version: '0.1.4' },
                 locale: 'en-US',
@@ -1210,7 +1210,7 @@ export const data = [
                 discount: 1.5,
                 coupon: 'ImagePro',
                 currency: 'USD',
-                fetch_token: '123asd23',
+                fetch_token: 'dummyFetchToken',
                 product_id: '123',
                 sku: 'G-32',
                 name: 'Monopoly',
@@ -1255,7 +1255,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
+                apiKey: 'dummyApiKey',
                 sessionEventList: [
                   { sessionEventName: 'mysessionevent' },
                   { sessionEventName: 'randomuser' },
@@ -1284,7 +1284,7 @@ export const data = [
                   attTrackingStatus: 3,
                   id: 'fc8d449516de0dfb',
                   adTrackingEnabled: true,
-                  token: 'bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1',
+                  token: 'testDeviceToken',
                 },
                 library: { name: 'com.rudderstack.android.sdk.core', version: '0.1.4' },
                 locale: 'en-US',
@@ -1321,7 +1321,7 @@ export const data = [
                 discount: 1.5,
                 coupon: 'ImagePro',
                 currency: 'USD',
-                fetch_token: '123asd23',
+                fetch_token: 'dummyFetchToken',
                 product_id: '123',
                 sku: 'G-32',
                 name: 'Monopoly',
@@ -1363,7 +1363,7 @@ export const data = [
                 n: 'RudderAndroidClient',
                 utime: 1630511211,
                 cn: 'iOS',
-                apns_token: 'bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1',
+                apns_token: 'testDeviceToken',
                 ua: 'Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)',
                 attribution_token: 'G9i5hC8lQJeGOfmS+MFycll/02...AAABBEQQBQS=',
                 skan_conversion_value: '2',
@@ -1376,7 +1376,7 @@ export const data = [
                 idfv: 'fc8d449516de0dfb',
                 install_time: 1630511211,
                 update_time: 1630511211,
-                a: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
+                a: 'dummyApiKey',
               },
               body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
               files: {},
@@ -1400,7 +1400,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
+                apiKey: 'dummyApiKey',
                 sessionEventList: [
                   { sessionEventName: 'mysessionevent' },
                   { sessionEventName: 'randomuser' },
@@ -1429,7 +1429,7 @@ export const data = [
                   attTrackingStatus: 3,
                   id: 'fc8d449516de0dfb',
                   adTrackingEnabled: true,
-                  token: 'bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1',
+                  token: 'testDeviceToken',
                 },
                 library: { name: 'com.rudderstack.android.sdk.core', version: '0.1.4' },
                 locale: 'en-US',
@@ -1466,7 +1466,7 @@ export const data = [
                 discount: 1.5,
                 coupon: 'ImagePro',
                 currency: 'USD',
-                fetch_token: '123asd23',
+                fetch_token: 'dummyFetchToken',
                 product_id: '123',
                 sku: 'G-32',
                 name: 'Monopoly',
@@ -1509,7 +1509,7 @@ export const data = [
                 purchase_transaction_id: '2134dfg',
                 idfa: '8ecd7512-2864-440c-93f3-a3cabe62525b',
                 idfv: 'fc8d449516de0dfb',
-                a: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
+                a: 'dummyApiKey',
                 c: 'carrier',
                 e: {
                   asid: 'IISqwYJKoZIcNqts0jvcNvPc',
@@ -1528,7 +1528,7 @@ export const data = [
                   tax: 1,
                   discount: 1.5,
                   coupon: 'ImagePro',
-                  fetch_token: '123asd23',
+                  fetch_token: 'dummyFetchToken',
                   name: 'Monopoly',
                 },
               },
@@ -1554,7 +1554,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
+                apiKey: 'dummyApiKey',
                 sessionEventList: [
                   { sessionEventName: 'mysessionevent' },
                   { sessionEventName: 'randomuser' },
@@ -1583,7 +1583,7 @@ export const data = [
                   attTrackingStatus: 3,
                   id: 'fc8d449516de0dfb',
                   adTrackingEnabled: true,
-                  token: 'bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1',
+                  token: 'testDeviceToken',
                 },
                 library: { name: 'com.rudderstack.android.sdk.core', version: '0.1.4' },
                 locale: 'en-US',
@@ -1617,7 +1617,7 @@ export const data = [
                 discount: 1.5,
                 coupon: 'ImagePro',
                 currency: 'USD',
-                fetch_token: '123asd23',
+                fetch_token: 'dummyFetchToken',
                 product_id: '123',
                 sku: 'G-32',
                 name: 'Monopoly',
@@ -1660,7 +1660,7 @@ export const data = [
                 n: 'RudderAndroidClient',
                 utime: 1630511211,
                 cn: 'iOS',
-                apns_token: 'bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1',
+                apns_token: 'testDeviceToken',
                 ua: 'Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)',
                 attribution_token: 'G9i5hC8lQJeGOfmS+MFycll/02...AAABBEQQBQS=',
                 bd: '1',
@@ -1669,7 +1669,7 @@ export const data = [
                 idfv: 'fc8d449516de0dfb',
                 install_time: 1630511211,
                 update_time: 1630511211,
-                a: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
+                a: 'dummyApiKey',
               },
               body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
               files: {},
@@ -1693,7 +1693,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
+                apiKey: 'dummyApiKey',
                 sessionEventList: [
                   { sessionEventName: 'mysessionevent' },
                   { sessionEventName: 'randomuser' },
@@ -1722,7 +1722,7 @@ export const data = [
                   attStatus: true,
                   id: 'fc8d449516de0dfb',
                   adTrackingEnabled: true,
-                  token: 'bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1',
+                  token: 'testDeviceToken',
                 },
                 library: { name: 'com.rudderstack.android.sdk.core', version: '0.1.4' },
                 locale: 'en-US',
@@ -1759,7 +1759,7 @@ export const data = [
                 discount: 1.5,
                 coupon: 'ImagePro',
                 currency: 'USD',
-                fetch_token: '123asd23',
+                fetch_token: 'dummyFetchToken',
                 product_id: '123',
                 sku: 'G-32',
                 name: 'Monopoly',
@@ -1804,7 +1804,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
+                apiKey: 'dummyApiKey',
                 sessionEventList: [
                   { sessionEventName: 'mysessionevent' },
                   { sessionEventName: 'randomuser' },
@@ -1833,7 +1833,7 @@ export const data = [
                   attStatus: true,
                   id: 'fc8d449516de0dfb',
                   adTrackingEnabled: true,
-                  token: 'bk3RNwTe3H0CI2k_ HHwgIpoDKCIZvvD MExUdFQ3P1',
+                  token: 'testDeviceToken',
                 },
                 library: { name: 'com.rudderstack.android.sdk.core', version: '0.1.4' },
                 locale: 'en-US',
@@ -1870,7 +1870,7 @@ export const data = [
                 discount: 1.5,
                 coupon: 'ImagePro',
                 currency: 'USD',
-                fetch_token: '123asd23',
+                fetch_token: 'dummyFetchToken',
                 product_id: '123',
                 sku: 'G-32',
                 name: 'Monopoly',

@@ -6,13 +6,13 @@ const path = require('path');
 const basePath = path.resolve(__dirname);
 ConfigFactory.init({ basePath, loggingMode: 'production' });
 
-const tags = require('../../v0/util/tags');
-const { generateErrorObject } = require('../../v0/util');
 const {
+  InstrumentationError,
   TransformationError,
   ConfigurationError,
-  InstrumentationError,
-} = require('../../v0/util/errorTypes');
+} = require('@rudderstack/integrations-lib');
+const tags = require('../../v0/util/tags');
+const { generateErrorObject } = require('../../v0/util');
 
 const defTags = {
   [tags.TAG_NAMES.IMPLEMENTATION]: tags.IMPLEMENTATIONS.CDK_V1,

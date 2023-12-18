@@ -1,0 +1,104 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+    exportAll: true
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+  
+steps:
+  - name: validateInput
+    template: |
+      $.assert(.message.type, "message Type is not present. Aborting message.");
+      $.assert(.message.type in {{$.EventType.([.TRACK, .IDENTIFY])}}, 
+        "message type " + .message.type + " is not supported");
+  - name: prepareContext
+    template: |
+      $.context.messageType = .message.type.toLowerCase();
+      $.context.payload = {};
+      $.context.finalHeaders = {
+          "authorization": "Basic " + .destination.Config.apiKey,
+          "content-type": "application/json"
+        };
+  - name: identifyPayload
+    condition: $.context.messageType == "identify"
+    template: |
+      $.context.endpoint = "https://api.fullstory.com/v2/users";
+      $.context.payload.properties = .message.traits ?? .message.context.traits;
+      $.context.payload.uid = .message.userId;
+      $.context.payload.email = .message.context.traits.email;
+      $.context.payload.display_name = .message.context.traits.name;
+  
+  - name: trackPayload
+    condition: $.context.messageType == "track"
+    template: |
+      $.context.endpoint = "https://api.fullstory.com/v2/events";
+      $.context.payload.name = .message.event;
+      $.context.payload.properties = .message.properties;
+      $.context.payload.timestamp = .message.originalTimestamp;
+      $.context.payload.context = {};
+
+  - name: validateEventName
+    condition: $.context.messageType == "track"
+    template: |
+      $.assert(.message.event, "event is required for track call")
+  
+  - name: mapContextFieldsForTrack
+    condition: $.context.messageType == "track" 
+    template: |
+      $.context.payload.context.browser = {
+        "url": .message.context.page.url,
+        "user_agent": .message.context.userAgent,
+        "initial_referrer": .message.context.page.initial_referrer,
+      };
+      $.context.payload.context.mobile = {
+        "app_name": .message.context.app.name,
+        "app_version": .message.context.app.version,
+      };
+      $.context.payload.context.device = {
+        "manufacturer": .message.context.device.manufacturer,
+        "model": .message.context.device.model,
+      };
+      $.context.payload.context.location = {
+        "ip_address": .message.context.ip,
+        "latitude": .message.properties.latitude,
+        "longitude": .message.properties.longitude,
+        "city": .message.properties.city,
+        "region": .message.properties.region,
+        "country": .message.properties.country,
+      };
+  
+  - name: mapIdsForTrack
+    condition: $.context.messageType == "track"
+    template: |
+      $.context.payload.session = {
+        "id": .message.properties.sessionId,
+        "use_most_recent": .message.properties.useMostRecent,
+      };
+      $.context.payload.user = {
+        "id": .message.properties.userId ?? .message.userId,
+      }
+
+  - name: cleanPayload
+    template: |
+      $.context.payload = $.removeUndefinedAndNullValues($.context.payload);
+  - name: buildResponseForProcessTransformation
+    template: |
+      $.context.payload.({
+         "body": {
+           "JSON": .,
+           "JSON_ARRAY": {},
+           "XML": {},
+           "FORM": {}
+         },
+         "version": "1",
+         "type": "REST",
+         "method": "POST",
+         "endpoint": $.context.endpoint,
+         "headers": $.context.finalHeaders,
+         "params": {},
+         "files": {}
+       })
+
+
+  

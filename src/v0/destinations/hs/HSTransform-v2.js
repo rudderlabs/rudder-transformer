@@ -1,5 +1,10 @@
 const get = require('get-value');
-const _ = require('lodash');
+const lodash = require('lodash');
+const {
+  TransformationError,
+  ConfigurationError,
+  InstrumentationError,
+} = require('@rudderstack/integrations-lib');
 const { MappedToDestinationKey, GENERIC_TRUE_VALUES } = require('../../../constants');
 const {
   defaultPostRequestConfig,
@@ -16,11 +21,6 @@ const {
   getDestinationExternalIDInfoForRetl,
   getDestinationExternalIDObjectForRetl,
 } = require('../../util');
-const {
-  TransformationError,
-  ConfigurationError,
-  InstrumentationError,
-} = require('../../util/errorTypes');
 const {
   IDENTIFY_CRM_UPDATE_CONTACT,
   IDENTIFY_CRM_CREATE_NEW_CONTACT,
@@ -41,6 +41,7 @@ const {
   searchContacts,
   getEventAndPropertiesFromConfig,
   getHsSearchId,
+  populateTraits,
 } = require('./util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -69,7 +70,7 @@ const addHsAuthentication = (response, Config) => {
  */
 const processIdentify = async (message, destination, propertyMap) => {
   const { Config } = destination;
-  const traits = getFieldValueFromMessage(message, 'traits');
+  let traits = getFieldValueFromMessage(message, 'traits');
   const mappedToDestination = get(message, MappedToDestinationKey);
   const operation = get(message, 'context.hubspotOperation');
   const externalIdObj = getDestinationExternalIDObjectForRetl(message, 'HS');
@@ -124,6 +125,7 @@ const processIdentify = async (message, destination, propertyMap) => {
       response.method = defaultPatchRequestConfig.requestMethod;
     }
 
+    traits = await populateTraits(propertyMap, traits, destination);
     response.body.JSON = removeUndefinedAndNullValues({ properties: traits });
     response.source = 'rETL';
     response.operation = operation;
@@ -417,23 +419,23 @@ const batchEvents = (destEvents) => {
     }
   });
 
-  const arrayChunksIdentifyCreateObjects = _.chunk(createAllObjectsEventChunk, maxBatchSize);
+  const arrayChunksIdentifyCreateObjects = lodash.chunk(createAllObjectsEventChunk, maxBatchSize);
 
-  const arrayChunksIdentifyUpdateObjects = _.chunk(updateAllObjectsEventChunk, maxBatchSize);
+  const arrayChunksIdentifyUpdateObjects = lodash.chunk(updateAllObjectsEventChunk, maxBatchSize);
 
   // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
   // CRM create contact endpoint chunks
-  const arrayChunksIdentifyCreateContact = _.chunk(
+  const arrayChunksIdentifyCreateContact = lodash.chunk(
     createContactEventsChunk,
     MAX_BATCH_SIZE_CRM_CONTACT,
   );
   // CRM update contact endpoint chunks
-  const arrayChunksIdentifyUpdateContact = _.chunk(
+  const arrayChunksIdentifyUpdateContact = lodash.chunk(
     updateContactEventsChunk,
     MAX_BATCH_SIZE_CRM_CONTACT,
   );
 
-  const arrayChunksIdentifyCreateAssociations = _.chunk(
+  const arrayChunksIdentifyCreateAssociations = lodash.chunk(
     associationObjectsEventChunk,
     MAX_BATCH_SIZE_CRM_OBJECT,
   );

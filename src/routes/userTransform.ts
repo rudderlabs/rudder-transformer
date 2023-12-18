@@ -1,33 +1,36 @@
 import Router from '@koa/router';
-import RouteActivationController from '../middlewares/routeActivation';
-import UserTransformController from '../controllers/userTransform';
+import { RouteActivationMiddleware } from '../middlewares/routeActivation';
+import { FeatureFlagMiddleware } from '../middlewares/featureFlag';
+import { UserTransformController } from '../controllers/userTransform';
 
 const router = new Router();
 
 router.post(
   '/customTransform',
-  RouteActivationController.isUserTransformRouteActive,
+  RouteActivationMiddleware.isUserTransformRouteActive,
+  FeatureFlagMiddleware.handle,
   UserTransformController.transform,
 );
 router.post(
   '/transformation/test',
-  RouteActivationController.isUserTransformTestRouteActive,
+  RouteActivationMiddleware.isUserTransformTestRouteActive,
   UserTransformController.testTransform,
 );
 router.post(
   '/transformationLibrary/test',
-  RouteActivationController.isUserTransformTestRouteActive,
+  RouteActivationMiddleware.isUserTransformTestRouteActive,
   UserTransformController.testTransformLibrary,
 );
 router.post(
   '/transformation/sethandle',
-  RouteActivationController.isUserTransformTestRouteActive,
+  RouteActivationMiddleware.isUserTransformTestRouteActive,
   UserTransformController.testTransformSethandle,
 );
 router.post(
   '/extractLibs',
-  RouteActivationController.isUserTransformRouteActive,
+  RouteActivationMiddleware.isUserTransformRouteActive,
   UserTransformController.extractLibhandle,
 );
 
-export const userTransformRoutes = router.routes();
+const userTransformRoutes = router.routes();
+export default userTransformRoutes;

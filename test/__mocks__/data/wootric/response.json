@@ -96,7 +96,7 @@
       "surveys_disabled_by_end_user": null
     }
   },
-  "https://api.wootric.com/oauth/token?account_token=NPS-1234567": {
+  "https://api.wootric.com/oauth/token?account_token=NPS-dummyToken": {
     "access_token": "2fe581c1c72851e73d60f4191f720be93e5d3e8a6147e37c4e8e852b1a8f506c",
     "token_type": "Bearer",
     "expires_in": 7200,

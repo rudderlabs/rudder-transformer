@@ -18,14 +18,14 @@ export const data = [
                     name: 'http',
                   },
                   traits: {
-                    firstName: 'Anant',
-                    lastName: 'jain',
+                    firstName: 'Test',
+                    lastName: 'Rudderlabs',
                     role: 'Manager',
                     address: 'Flat No 58 ABC building XYZ Area near PQRS , 354408',
                     hasPurchased: 'yes',
                     email: 'abc@xyz.com',
                     title: 'Mr',
-                    phone: '9876543212',
+                    phone: '9876543210',
                     state: 'Uttar Pradesh',
                     zipcode: '243001',
                     prospectOrCustomer: 'Prospect',
@@ -47,9 +47,9 @@ export const data = [
               destination: {
                 Config: {
                   lookUpField: 'email',
-                  password: 'm3dG325C51C1RPq',
+                  password: 'dummyPassword',
                   subDomainName: 'ruddertest2',
-                  userName: 'anantjain45823@gmail.com',
+                  userName: 'TestRudderlabs45823@gmail.com',
                 },
               },
               metadata: {
@@ -61,7 +61,6 @@ export const data = [
         },
         method: 'POST',
       },
-      pathSuffix: '',
     },
     output: {
       response: {
@@ -76,16 +75,17 @@ export const data = [
                 endpoint: 'https://ruddertest2.mautic.net/api/contacts/new',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Basic YW5hbnRqYWluNDU4MjNAZ21haWwuY29tOm0zZEczMjVDNTFDMVJQcQ==',
+                  Authorization:
+                    'Basic VGVzdFJ1ZGRlcmxhYnM0NTgyM0BnbWFpbC5jb206ZHVtbXlQYXNzd29yZA==',
                 },
                 params: {},
                 body: {
                   JSON: {
                     email: 'abc@xyz.com',
                     title: 'Mr',
-                    firstname: 'Anant',
-                    lastname: 'jain',
-                    phone: '9876543212',
+                    firstname: 'Test',
+                    lastname: 'Rudderlabs',
+                    phone: '9876543210',
                     website: 'abc.com',
                     state: 'Uttar Pradesh',
                     zipcode: '243001',
@@ -115,9 +115,9 @@ export const data = [
               destination: {
                 Config: {
                   lookUpField: 'email',
-                  password: 'm3dG325C51C1RPq',
+                  password: 'dummyPassword',
                   subDomainName: 'ruddertest2',
-                  userName: 'anantjain45823@gmail.com',
+                  userName: 'TestRudderlabs45823@gmail.com',
                 },
               },
             },
@@ -145,14 +145,14 @@ export const data = [
                     name: 'http',
                   },
                   traits: {
-                    firstName: 'Anant',
-                    lastName: 'jain',
+                    firstName: 'Test',
+                    lastName: 'Rudderlabs',
                     role: 'Manager',
                     address: 'Flat No 58 ABC building XYZ Area near PQRS , 354408',
                     hasPurchased: 'yes',
                     email: 'abc@xyz.com',
                     title: 'Mr',
-                    phone: '9876543212',
+                    phone: '9876543210',
                     state: 'Uttar Pradesh',
                     zipcode: '243001',
                     prospectOrCustomer: 'Prospect',
@@ -174,7 +174,7 @@ export const data = [
               destination: {
                 Config: {
                   lookUpField: 'email',
-                  password: 'abcdefghij1234',
+                  password: 'dummyPassword',
                   subDomainName: '',
                   domainName: '',
                   userName: 'abcdef',
@@ -189,7 +189,6 @@ export const data = [
         },
         method: 'POST',
       },
-      pathSuffix: '',
     },
     output: {
       response: {
@@ -214,7 +213,7 @@ export const data = [
                 Config: {
                   domainName: '',
                   lookUpField: 'email',
-                  password: 'abcdefghij1234',
+                  password: 'dummyPassword',
                   subDomainName: '',
                   userName: 'abcdef',
                 },
@@ -258,9 +257,9 @@ export const data = [
               destination: {
                 Config: {
                   lookUpField: 'lastName',
-                  password: 'm3dG325C51C1RPq',
+                  password: 'dummyPassword',
                   subDomainName: 'ruddertest2',
-                  userName: 'anantjain45823@gmail.com',
+                  userName: 'TestRudderlabs45823@gmail.com',
                 },
               },
               metadata: {
@@ -272,7 +271,6 @@ export const data = [
         },
         method: 'POST',
       },
-      pathSuffix: '',
     },
     output: {
       response: {
@@ -287,7 +285,8 @@ export const data = [
                 endpoint: 'https://ruddertest2.mautic.net/api/segments/17/contact/246/add',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Basic YW5hbnRqYWluNDU4MjNAZ21haWwuY29tOm0zZEczMjVDNTFDMVJQcQ==',
+                  Authorization:
+                    'Basic VGVzdFJ1ZGRlcmxhYnM0NTgyM0BnbWFpbC5jb206ZHVtbXlQYXNzd29yZA==',
                 },
                 params: {},
                 body: {
@@ -308,9 +307,9 @@ export const data = [
               destination: {
                 Config: {
                   lookUpField: 'lastName',
-                  password: 'm3dG325C51C1RPq',
+                  password: 'dummyPassword',
                   subDomainName: 'ruddertest2',
-                  userName: 'anantjain45823@gmail.com',
+                  userName: 'TestRudderlabs45823@gmail.com',
                 },
               },
             },

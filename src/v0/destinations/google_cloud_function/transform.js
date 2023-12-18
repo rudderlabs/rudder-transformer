@@ -1,29 +1,19 @@
-const _ = require('lodash');
+const lodash = require('lodash');
 const {
-  defaultRequestConfig,
-  defaultPostRequestConfig,
   getSuccessRespEvents,
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
 } = require('../../util');
 
-const { generateBatchedPayload, validateDestinationConfig, addHeader } = require('./util');
+const { generateBatchedPayload, validateDestinationConfig } = require('./util');
 
 // Main process Function to handle transformation
 function process(event) {
   const { message, destination } = event;
-  const { googleCloudFunctionUrl } = destination.Config;
-
   // Config Validation
   validateDestinationConfig(destination);
 
-  const response = defaultRequestConfig();
-  // adding header
-  addHeader(response, destination.Config);
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.body.JSON = message;
-  response.endpoint = googleCloudFunctionUrl;
-
+  const response = message;
   return response;
 }
 
@@ -32,12 +22,12 @@ function batchEvents(successRespList, maxBatchSize = 10) {
   const batchedResponseList = [];
 
   // arrayChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
-  const arrayChunks = _.chunk(successRespList, maxBatchSize);
+  const arrayChunks = lodash.chunk(successRespList, maxBatchSize);
   arrayChunks.forEach((chunk) => {
     const batchEventResponse = generateBatchedPayload(chunk);
     batchedResponseList.push(
       getSuccessRespEvents(
-        batchEventResponse.batchedRequest,
+        batchEventResponse.message,
         batchEventResponse.metadata,
         batchEventResponse.destination,
         true,

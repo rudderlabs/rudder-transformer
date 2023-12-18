@@ -112,7 +112,7 @@ export const data = [
                   },
                 },
                 Config: {
-                  appToken: 't1yurrb968zk',
+                  appToken: 'testAppToken',
                   customMappings: [
                     {
                       from: 'Application Installed',
@@ -120,7 +120,7 @@ export const data = [
                     },
                     {
                       from: 'First Investment',
-                      to: 'tf4gm5',
+                      to: 'testEventToken',
                     },
                   ],
                   environment: true,
@@ -161,8 +161,8 @@ export const data = [
                   currency: 'EUR',
                   s2s: 1,
                   ip_address: '[::1]',
-                  app_token: 't1yurrb968zk',
-                  event_token: 'tf4gm5',
+                  app_token: 'testAppToken',
+                  event_token: 'testEventToken',
                   environment: 'production',
                 },
                 body: {
@@ -201,7 +201,7 @@ export const data = [
                   },
                 },
                 Config: {
-                  appToken: 't1yurrb968zk',
+                  appToken: 'testAppToken',
                   customMappings: [
                     {
                       from: 'Application Installed',
@@ -209,7 +209,7 @@ export const data = [
                     },
                     {
                       from: 'First Investment',
-                      to: 'tf4gm5',
+                      to: 'testEventToken',
                     },
                   ],
                   environment: true,
@@ -337,7 +337,7 @@ export const data = [
                   },
                 },
                 Config: {
-                  appToken: 't1yurrb968zk',
+                  appToken: 'testAppToken',
                   customMappings: [
                     {
                       from: 'Application Installed',
@@ -345,7 +345,7 @@ export const data = [
                     },
                     {
                       from: 'First Investment',
-                      to: 'tf4gm5',
+                      to: 'testEventToken',
                     },
                   ],
                   environment: true,
@@ -386,8 +386,8 @@ export const data = [
                   currency: 'EUR',
                   s2s: 1,
                   ip_address: '[::1]',
-                  app_token: 't1yurrb968zk',
-                  event_token: 'tf4gm5',
+                  app_token: 'testAppToken',
+                  event_token: 'testEventToken',
                   environment: 'production',
                 },
                 body: {
@@ -426,7 +426,7 @@ export const data = [
                   },
                 },
                 Config: {
-                  appToken: 't1yurrb968zk',
+                  appToken: 'testAppToken',
                   customMappings: [
                     {
                       from: 'Application Installed',
@@ -434,7 +434,7 @@ export const data = [
                     },
                     {
                       from: 'First Investment',
-                      to: 'tf4gm5',
+                      to: 'testEventToken',
                     },
                   ],
                   environment: true,

@@ -43,6 +43,7 @@
   },
   {
     "output": {
+      "authErrorCategory": "AUTH_STATUS_INACTIVE",
       "status": 400,
       "destinationResponse": {
         "response": {

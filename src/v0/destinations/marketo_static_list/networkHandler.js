@@ -4,7 +4,6 @@ const v0Utils = require('../../util');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const { DESTINATION } = require('./config');
 
-// eslint-disable-next-line no-unused-vars
 const responseHandler = (destinationResponse, destType) => {
   const message = 'Request Processed Successfully';
   const { status, rudderJobMetadata } = destinationResponse;
@@ -25,6 +24,7 @@ const responseHandler = (destinationResponse, destType) => {
   };
 };
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 class networkHandler {
   constructor() {
     this.responseHandler = responseHandler;

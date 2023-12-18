@@ -126,6 +126,12 @@ const kustomerGetRequestHandler = url => {
     case "https://api.kustomerapp.com/v1/customers/externalId=annodD":
       //resolve with status 200
       return { data: storedPayload, status: 200 };
+    case "https://api.kustomerapp.com/v1/customers/externalId=58210c3db0f09110006b7953":
+      //resolve with status 200
+      return { data: storedPayload, status: 200 };
+    case "https://api.prod2.kustomerapp.com/v1/customers/externalId=58210c3db0f09110006b7953":
+      //resolve with status 200
+      return { data: storedPayload, status: 200 };
     default:
       return new Promise((resolve, reject) => {
         resolve({ error: "Request failed", status: 404 });

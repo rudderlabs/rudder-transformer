@@ -139,7 +139,7 @@
   },
   {
     "statusCode": 400,
-    "error": "Email or userId is mandatory"
+    "error": "Either of `email` or `userId` is required for Identify call"
   },
   {
     "version": "1",
@@ -341,7 +341,7 @@
   },
   {
     "statusCode": 400,
-    "error": "Email or userId is mandatory"
+    "error": "Either of `email` or `userId` is required for Track call"
   },
   {
     "version": "1",
@@ -408,7 +408,7 @@
   },
   {
     "statusCode": 400,
-    "error": "Email or userId is mandatory"
+    "error": "Either of `email` or `userId` is required for Identify call"
   },
   [
     {

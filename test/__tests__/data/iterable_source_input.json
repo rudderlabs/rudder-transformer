@@ -1,12 +1,12 @@
 [
   {
-    "email": "rohith@abcd.com",
+    "email": "test@rudderstack.com",
     "eventName": "emailSubscribe",
     "dataFields": {
       "profileUpdatedAt": "2022-04-19 03:33:50 +00:00",
       "publicIdString": "ad474bf7-e785-480f-b9d0-861b85ab5bf5",
       "signupSource": "WebForm",
-      "email": "rohith@abcd.com",
+      "email": "test@rudderstack.com",
       "createdAt": "2022-04-19 03:33:50 +00:00",
       "messageTypeIds": [],
       "emailListIds": [1589748],
@@ -27,7 +27,7 @@
     }
   },
   {
-    "email": "rohith@rudd.com",
+    "email": "test@ruddstack.com",
     "eventTitle": "smsReceived",
     "dataFields": {
       "fromPhoneNumber": "+16503926753",
@@ -38,15 +38,15 @@
     }
   },
   {
-    "email": "rohith@xyz.com",
+    "email": "test@rudderstack.com",
     "eventName": "inAppSendSkip"
   },
   {
-    "email": "rohith@iter.com",
+    "email": "test@rudderstack.com",
     "eventName": "emailSend",
     "dataFields": {
       "contentId": 331201,
-      "email": "rohith@iter.com",
+      "email": "test@rudderstack.com",
       "createdAt": "2016-12-02 20:21:04 +00:00",
       "campaignId": 59667,
       "templateId": 93849,
@@ -169,7 +169,7 @@
     }
   },
   {
-    "email": "rohith@abcd.com",
+    "email": "test@rudderstack.com",
     "eventName": "emailSubscribe",
     "dataFields": {
       "profileUpdatedAt": "2022-04-19 03:33:50 +00:00",

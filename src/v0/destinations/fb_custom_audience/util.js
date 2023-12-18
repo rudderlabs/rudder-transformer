@@ -1,12 +1,12 @@
-const _ = require('lodash');
+const lodash = require('lodash');
 const sha256 = require('sha256');
 const get = require('get-value');
 const jsonSize = require('json-size');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const stats = require('../../../util/stats');
 
 const { isDefinedAndNotNull } = require('../../util');
 const { maxPayloadSize } = require('./config');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
 /**
  * Example payload ={
@@ -20,7 +20,7 @@ const { InstrumentationError, ConfigurationError } = require('../../util/errorTy
             ],
             "data": [
               [
-                "shrouti@abc.com",
+                "test@abc.com",
                 "IN"
               ]
             ]
@@ -31,7 +31,7 @@ const batchingWithPayloadSize = (payload) => {
     const revisedPayloadArray = [];
     const noOfBatches = Math.ceil(payloadSize / maxPayloadSize);
     const revisedRecordsPerPayload = Math.floor(payload.data.length / noOfBatches);
-    const revisedDataArray = _.chunk(payload.data, revisedRecordsPerPayload);
+    const revisedDataArray = lodash.chunk(payload.data, revisedRecordsPerPayload);
     revisedDataArray.forEach((data) => {
       revisedPayloadArray.push({ ...payload, data });
     });

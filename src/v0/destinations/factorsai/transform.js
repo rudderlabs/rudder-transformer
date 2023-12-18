@@ -1,3 +1,4 @@
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 
 const {
@@ -9,7 +10,6 @@ const {
   simpleProcessRouterDest,
 } = require('../../util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-const { InstrumentationError } = require('../../util/errorTypes');
 
 const { ConfigCategories, mappingConfig, BASE_URL } = require('./config');
 
@@ -44,6 +44,7 @@ function processTrack(message, factorsAIApiKey) {
 // process Page Call
 function processPageAndGroup(message, factorsAIApiKey, category) {
   const requestJson = constructPayload(message, mappingConfig[category]);
+  requestJson.type = message.type;
   return buildResponse(requestJson, factorsAIApiKey);
 }
 

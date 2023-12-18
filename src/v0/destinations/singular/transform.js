@@ -1,3 +1,4 @@
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { BASE_URL } = require('./config');
 const {
   defaultRequestConfig,
@@ -10,7 +11,6 @@ const {
   generateRevenuePayloadArray,
   isSessionEvent,
 } = require('./util');
-const { InstrumentationError } = require('../../util/errorTypes');
 
 const responseBuilderSimple = (message, { Config }) => {
   const eventName = message.event;

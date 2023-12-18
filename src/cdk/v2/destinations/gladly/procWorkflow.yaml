@@ -1,0 +1,88 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ./utils
+    exportAll: true
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+  - name: getDestinationExternalID
+    path: ../../../../v0/util
+  - name: httpGET
+    path: ../../../../adapters/network
+  - name: processAxiosResponse
+    path: ../../../../adapters/utils/networkUtils
+  
+
+steps:
+  - name: checkIfProcessed
+    condition: .message.statusCode
+    template: |
+      $.batchMode ? .message.body.JSON : .message
+    onComplete: return
+
+  - name: messageType
+    template: |
+      .message.type.toLowerCase()
+
+  - name: validateInput
+    template: |
+      let messageType = $.outputs.messageType
+      $.assert(messageType, "message Type is not present. Aborting")
+      $.assert(messageType in {{$.EventType.([.IDENTIFY])}}, "message type " + messageType + " is not supported")
+      $.assertConfig(.destination.Config.apiToken, "API Token is not present. Aborting")
+      $.assertConfig(.destination.Config.domain, "Gladly domain is not present. Aborting")
+      $.assertConfig(.destination.Config.userName, "User Name is not present. Aborting")
+
+  - name: preparePayload
+    template: |
+      $.context.payload = {
+        name: .message.traits.name || .message.context.traits.name,
+        image: .message.traits.avatar || .message.context.traits.avatar,
+        address: .message.traits.address || .message.context.traits.address
+      }
+      $.context.payload.address && typeof $.context.payload.address === "object" ?  $.context.payload.address =  JSON.stringify($.context.payload.address)
+      $.context.payload.emails = $.formatField(.message, "email")
+      $.context.payload.phones = $.formatField(.message, "phone")
+      $.context.payload.customAttributes = $.getCustomAttributes(.message)
+      $.context.payload.externalCustomerId = $.getExternalCustomerId(.message)
+      $.context.payload.id = $.getCustomerId(.message)
+      $.context.payload = $.removeUndefinedAndNullValues($.context.payload)
+
+  - name: validatePayload
+    template: |
+      $.validatePayload($.context.payload)
+
+  - name: findCustomer
+    description: Find if customer is exist or not based on email, phone or externalCustomerId
+    condition: $.getQueryParams($.context.payload) !== undefined
+    template: |
+      const requestOptions = {
+        headers: $.getHeaders(.destination)
+      }
+      const endpoint = $.getEndpoint(.destination) + "?" + $.getQueryParams($.context.payload);
+      const rawResponse = await $.httpGET(endpoint,requestOptions)
+      const processedResponse = $.processAxiosResponse(rawResponse)
+      processedResponse
+
+  - name: createCustomer
+    description: Build response for create customer
+    condition: $.outputs.findCustomer.status === 400 || ($.outputs.findCustomer.status === 200 && $.outputs.findCustomer.response.length === 0) || $.getQueryParams($.context.payload) === undefined
+    template: |
+      const response = $.defaultRequestConfig()
+      response.body.JSON = $.removeUndefinedAndNullValues($.context.payload)
+      response.endpoint = $.getEndpoint(.destination)
+      response.method = "POST"
+      response.headers = $.getHeaders(.destination)
+      response
+    else:
+      name: updateCustomer
+      description: Build response for update customer
+      template: |
+        const response = $.defaultRequestConfig()
+        response.body.JSON = $.removeUndefinedAndNullValues($.context.payload.{~["id"]})
+        response.endpoint = $.getEndpoint(.destination) + "/" + $.outputs.findCustomer.response[0].id
+        response.method = "PATCH"
+        response.headers = $.getHeaders(.destination)
+        response

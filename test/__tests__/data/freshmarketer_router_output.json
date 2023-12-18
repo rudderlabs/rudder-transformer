@@ -6,7 +6,7 @@
       "method": "POST",
       "endpoint": "https://rudderstack-476952domain3105.myfreshworks.com/crm/sales/api/contacts/upsert",
       "headers": {
-        "Authorization": "Token token=ugHZRFZjdLOa66ttyyewQ",
+        "Authorization": "Token token=dummyApiKey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -42,8 +42,8 @@
     "statusCode": 200,
     "destination": {
       "Config": {
-        "apiKey": "ugHZRFZjdLOa66ttyyewQ",
-        "domain": "rudderstack-476952domain3105"
+        "apiKey": "dummyApiKey",
+        "domain": "rudderstack-476952domain3105.myfreshworks.com"
       }
     }
   },
@@ -54,7 +54,7 @@
       "method": "POST",
       "endpoint": "https://rudderstack-476952domain3105.myfreshworks.com/crm/sales/api/contacts/upsert",
       "headers": {
-        "Authorization": "Token token=ugHZRFZjdLOa66ttyyewQ",
+        "Authorization": "Token token=dummyApiKey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -90,8 +90,8 @@
     "statusCode": 200,
     "destination": {
       "Config": {
-        "apiKey": "ugHZRFZjdLOa66ttyyewQ",
-        "domain": "rudderstack-476952domain3105"
+        "apiKey": "dummyApiKey",
+        "domain": "rudderstack-476952domain3105.myfreshworks.com"
       }
     }
   },
@@ -141,7 +141,7 @@
       "params": {},
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Token token=ugHZRFZjdLOarudder"
+        "Authorization": "Token token=dummyApiKey"
       },
       "version": "1",
       "endpoint": "https://domain-rudder.myfreshworks.com/crm/sales/api/contacts/upsert"
@@ -155,8 +155,8 @@
     "statusCode": 200,
     "destination": {
       "Config": {
-        "apiKey": "ugHZRFZjdLOarudder",
-        "domain": "domain-rudder"
+        "apiKey": "dummyApiKey",
+        "domain": "domain-rudder.myfreshworks.com"
       }
     }
   }

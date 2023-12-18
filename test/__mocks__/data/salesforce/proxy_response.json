@@ -1,4 +1,14 @@
 {
+  "https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/101": {
+    "message": "Connection Aborted",
+    "name": "Error",
+    "code": "ECONNABORTED"
+  },
+  "https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/102": {
+    "message": "DNS not found",
+    "name": "Error",
+    "code": "EAI_AGAIN"
+  },
   "https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/1": {
     "response": {
       "data": {
@@ -69,7 +79,7 @@
       "status": 503
     }
   },
-  "https://rudderstack.my.salesforce.com/services/data/v50.0/parameterizedSearch/?q=external_id&sobject=object_name&in=External_ID__c&object_name.fields=id,External_ID__c": {
+  "https://rudderstack.my.salesforce.com/services/data/v50.0/parameterizedSearch/?q=123&sobject=object_name&in=External_ID__c&object_name.fields=id,External_ID__c": {
     "response": {
       "searchRecords": [
         {

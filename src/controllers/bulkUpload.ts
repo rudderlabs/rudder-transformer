@@ -45,7 +45,7 @@ export const fileUpload = async (ctx) => {
     return {};
   };
 
-  const { destType } = ctx.request.body;
+  const { destType }: { destType: string } = ctx.request.body;
   const destFileUploadHandler = getDestFileUploadHandler('v0', destType.toLowerCase());
 
   if (!destFileUploadHandler || !destFileUploadHandler.processFileData) {
@@ -82,7 +82,7 @@ export const pollStatus = async (ctx) => {
     JSON.stringify(ctx.request.body),
   );
 
-  const { destType } = ctx.request.body;
+  const { destType }: { destType: string } = ctx.request.body;
   const destFileUploadHandler = getPollStatusHandler('v0', destType.toLowerCase());
   let response;
   if (!destFileUploadHandler || !destFileUploadHandler.processPolling) {
@@ -117,7 +117,7 @@ export const getWarnJobStatus = async (ctx) => {
     JSON.stringify(ctx.request.body),
   );
 
-  const { destType } = ctx.request.body;
+  const { destType }: { destType: string } = ctx.request.body;
   const destFileUploadHandler = getJobStatusHandler('v0', destType.toLowerCase());
 
   if (!destFileUploadHandler || !destFileUploadHandler.processJobStatus) {
@@ -153,7 +153,7 @@ export const getFailedJobStatus = async (ctx) => {
     JSON.stringify(ctx.request.body),
   );
 
-  const { destType } = ctx.request.body;
+  const { destType }: { destType: string } = ctx.request.body;
   const destFileUploadHandler = getJobStatusHandler('v0', destType.toLowerCase());
 
   if (!destFileUploadHandler || !destFileUploadHandler.processJobStatus) {

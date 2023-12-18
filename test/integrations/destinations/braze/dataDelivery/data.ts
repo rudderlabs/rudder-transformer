@@ -544,6 +544,7 @@ export const data = [
         status: 200,
         body: {
           output: {
+            message: 'Request for braze Processed Successfully',
             response: [
               {
                 error: '{"aliases_processed":1,"message":"success"}',
@@ -563,6 +564,7 @@ export const data = [
                 },
               },
             ],
+            status: 201,
           },
         },
       },
@@ -627,9 +629,10 @@ export const data = [
     },
     output: {
       response: {
-        status: 200,
+        status: 401,
         body: {
           output: {
+            status: 401,
             response: [
               {
                 error: '{"code":400,"message":"Bad Req","status":"Fail Case"}',
@@ -659,6 +662,8 @@ export const data = [
               module: 'destination',
               workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
             },
+            authErrorCategory: '',
+            message: 'Request failed for braze with status: 401',
           },
         },
       },
@@ -765,9 +770,10 @@ export const data = [
     },
     output: {
       response: {
-        status: 200,
+        status: 401,
         body: {
           output: {
+            status: 401,
             response: [
               {
                 error:
@@ -834,6 +840,8 @@ export const data = [
               module: 'destination',
               workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
             },
+            authErrorCategory: '',
+            message: 'Request failed for braze with status: 401',
           },
         },
       },

@@ -166,7 +166,7 @@ const deduceTrackScreenEventName = (message, Config) => {
   let eventName;
   const { event, name } = message;
   const { eventsMapping, sendAsCustomEvent } = Config;
-  const trackEventOrScreenName = event || name;
+  const trackEventOrScreenName = event.toString() || name.toString();
   if (!trackEventOrScreenName) {
     throw new InstrumentationError('event_name could not be mapped. Aborting');
   }

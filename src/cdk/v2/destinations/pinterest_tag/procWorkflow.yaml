@@ -175,12 +175,13 @@ steps:
       name: eventNamesForOthers
       template: |
         let event = .message.event ?? .message.name;
-        let eventInLowerCase = event.toString().toLowerCase();
+        let stringifiedEvent = event.toString();
+        let eventInLowerCase = stringifiedEvent.toLowerCase();
         let eventNames = .destination.Config.eventsMapping.(){.from === event}.to[] ?? [];
         eventNames = $.convertToSnakeCase(eventNames);
         eventNames.length === 0 ? eventNames = $.ecomEventMaps.(){eventInLowerCase in .src}.dest[] ?? [];
         (eventNames.length === 0 && .destination.Config.sendAsCustomEvent) ? eventNames = ["custom"];
-        eventNames.length === 0 ? eventNames = [event];
+        eventNames.length === 0 ? eventNames = [event.toString()];
         eventNames;
 
   - name: payload
@@ -226,6 +227,7 @@ steps:
       name: buildResponseForProcessTransformationV5
       description: build response using V5 API
       template: |
+       console.log(JSON.stringify($.outputs.payload))
         $.outputs.payload.().({
           "body": {
             "JSON": .,

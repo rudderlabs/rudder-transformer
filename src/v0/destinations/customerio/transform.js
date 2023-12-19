@@ -24,6 +24,7 @@ const {
   groupResponseBuilder,
   defaultResponseBuilder,
   validateConfigFields,
+  convertTimestampsToUnix,
 } = require('./util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -75,7 +76,10 @@ function responseBuilder(message, evType, evName, destination, messageType) {
       break;
   }
 
-  const payload = removeUndefinedValues(temporaryResponseDetails.rawPayload);
+  let payload = removeUndefinedValues(temporaryResponseDetails.rawPayload);
+  if (destination.Config.convertToUnix) {
+    payload = convertTimestampsToUnix(payload);
+  }
   response.endpoint = temporaryResponseDetails.endpoint;
   response.method = temporaryResponseDetails.requestConfig.requestMethod;
   response.body.JSON = payload;

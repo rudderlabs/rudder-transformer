@@ -1,5 +1,6 @@
 const get = require('get-value');
 const set = require('set-value');
+const moment = require('moment');
 const truncate = require('truncate-utf8-bytes');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { MAX_BATCH_SIZE, configFieldsToCheck } = require('./config');
@@ -49,6 +50,29 @@ const getSizeInBytes = (obj) => {
   // Get the length of the Uint8Array
   const bytes = new TextEncoder().encode(str).length;
   return bytes;
+};
+
+const convertTimestampsToUnix = (payload) => {
+  // Iterate over root-level fields
+  const updatedPayload = payload;
+  // Iterate over root-level fields using Object.keys
+  function processObject(jsonPayload) {
+    const updatedJsonPayload = jsonPayload;
+    Object.keys(updatedJsonPayload).forEach((key) => {
+      const value = updatedJsonPayload[key];
+
+      // Check if the value is an object and process it recursively
+      if (typeof value === 'object' && value !== null) {
+        processObject(value);
+      } else if (typeof value === 'string' && moment(value, moment.ISO_8601, true).isValid()) {
+        // Convert the valid ISO 8601 date-time to Unix timestamp
+        updatedJsonPayload[key] = moment(value).unix();
+      }
+    });
+  }
+
+  processObject(updatedPayload);
+  return updatedPayload;
 };
 
 const getEventChunks = (groupEvents) => {
@@ -318,4 +342,5 @@ module.exports = {
   populateSpecedTraits,
   isdeviceRelatedEventName,
   validateConfigFields,
+  convertTimestampsToUnix,
 };

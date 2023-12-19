@@ -683,6 +683,7 @@ export const data = [
                 user_actual_role: 'system_admin',
                 user_actual_id: 12345,
                 user_time_spent: 50000,
+                customTimestamp: '2022-02-01T19:14:18.381Z',
               },
               integrations: {
                 All: true,
@@ -694,6 +695,7 @@ export const data = [
                 datacenter: 'US',
                 siteID: '46be54768e7d49ab2628',
                 apiKey: 'dummyApiKey',
+                convertToUnix: true,
               },
             },
           },
@@ -715,6 +717,7 @@ export const data = [
                     user_actual_id: 12345,
                     user_actual_role: 'system_admin',
                     user_time_spent: 50000,
+                    customTimestamp: 1643742858,
                   },
                   timestamp: 1571051718,
                   name: 'test track event',

@@ -62,7 +62,7 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
 
   const consentObject = populateConsentForGoogleDestinations(properties);
   if (Object.keys(consentObject).length > 0) {
-    payload.conversions[0].consent = populateConsentForGoogleDestinations(properties);
+    payload.conversions[0].consent = consentObject;
   }
   if (conversionType !== 'store') {
     // transform originalTimestamp to conversionDateTime format (yyyy-mm-dd hh:mm:ss+|-hh:mm)

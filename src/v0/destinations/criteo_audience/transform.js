@@ -15,6 +15,9 @@ const { preparePayload } = require('./util');
 
 const prepareResponse = (payload, audienceId, accessToken) => {
   const response = defaultRequestConfig();
+  if (!audienceId) {
+    throw new InstrumentationError('audienceId is not present. Aborting message.');
+  }
   response.endpoint = `${BASE_ENDPOINT}audiences/${audienceId}/contactlist`;
   response.body.JSON = removeUndefinedAndNullValues(payload);
   response.method = defaultPatchRequestConfig.requestMethod;

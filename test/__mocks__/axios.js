@@ -181,6 +181,11 @@ function post(url, payload) {
       resolve(mixpanelPostRequestHandler(url, payload));
     });
   }
+  if(url.includes("braze.com")) {
+    return new Promise((resolve, reject) => {
+      resolve(brazePostRequestHandler(url, payload));
+    });
+  }
   if (url.includes("https://domain-rudder.myfreshworks.com/crm/sales/api")) {
     return new Promise((resolve, reject) => {
       resolve(freshmarketerPostRequestHandler(url));

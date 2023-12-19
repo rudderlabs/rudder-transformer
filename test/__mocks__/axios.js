@@ -27,7 +27,6 @@ const { mondayPostRequestHandler } = require("./monday.mock");
 const { sendgridGetRequestHandler } = require("./sendgrid.mock");
 const { sendinblueGetRequestHandler } = require("./sendinblue.mock");
 const { courierGetRequestHandler } = require("./courier.mock");
-const { brazePostRequestHandler } = require("./braze.mock");
 
 const urlDirectoryMap = {
   "api.hubapi.com": "hs",
@@ -138,11 +137,6 @@ function post(url, payload) {
   if (url.includes("https://active.campaigns.rudder.com")) {
     return new Promise((resolve, reject) => {
       resolve(acPostRequestHandler(url, payload));
-    });
-  }
-  if(url.includes("braze.com")) {
-    return new Promise((resolve, reject) => {
-      resolve(brazePostRequestHandler(url, payload));
     });
   }
   if (url.includes("https://a.klaviyo.com")) {

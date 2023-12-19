@@ -1613,4 +1613,97 @@ export const data = [
       },
     },
   },
+  {
+    name: 'criteo_audience',
+    description: 'AudienceId not present',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            metadata: {
+              secret: {
+                accessToken: 'success_access_token',
+              },
+            },
+            message: {
+              userId: 'user 1',
+              type: 'audiencelist',
+              properties: {
+                listData: {
+                  add: [
+                    {
+                      madid: 'sample_madid',
+                      email: 'alex@email.com',
+                      identityLink: 'text.com',
+                      gum: 'sample_gum1',
+                    },
+                    {
+                      madid: 'sample_madid_1',
+                      email: 'amy@email.com',
+                      identityLink: 'yahoo.com',
+                      gum: 'sample_gum2',
+                    },
+                    {
+                      madid: 'sample_madid_2',
+                      email: 'van@email.com',
+                      identityLink: 'abc.com',
+                      gum: 'sample_gum3',
+                    },
+                  ],
+                  remove: [
+                    {
+                      madid: 'sample_madid',
+                      email: 'alex@email.com',
+                      identityLink: 'text.com',
+                      gum: 'sample_gum3',
+                    },
+                  ],
+                },
+              },
+              context: {
+                ip: '14.5.67.21',
+              },
+              timestamp: '2020-02-02T00:23:09.544Z',
+            },
+            destination: {
+              Config: {
+                clientId: 'abcdef8-f49-4cd6-b4c5-958b3d66d431',
+                clientSecret: 'sjhdkhfrz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFR4rXQg',
+                audienceType: 'gum',
+                gumCallerId: '329739',
+              },
+              ID: 'sample_destinationId',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: {
+              secret: {
+                accessToken: 'success_access_token',
+              },
+            },
+            statusCode: 400,
+            error: 'audienceId is not present. Aborting message.',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'CRITEO_AUDIENCE',
+              module: 'destination',
+              implementation: 'native',
+              feature: 'processor',
+            },
+          },
+        ],
+      },
+    },
+  },
 ];

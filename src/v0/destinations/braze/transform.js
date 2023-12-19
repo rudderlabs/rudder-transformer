@@ -154,16 +154,19 @@ function getUserAttributesObject(message, mappingJson, destination) {
   Object.keys(mappingJson).forEach((destKey) => {
     let value = get(traits, mappingJson[destKey]);
     if (value || (value === null && reservedKeys.includes(destKey))) {
-      // if email is not string remove it from attributes
-      if (destKey === 'email' && typeof value !== 'string') {
-        throw new InstrumentationError('Invalid email, email must be a valid string');
-      }
-
-      // handle gender special case
-      if (destKey === 'gender') {
-        value = formatGender(value);
-      } else if (destKey === 'email' && isDefinedAndNotNull(value)) {
-        value = value.toString().toLowerCase();
+      switch (destKey) {
+        case 'gender':
+          value = formatGender(value);
+          break;
+        case 'email':
+          if (typeof value === 'string') {
+            value = value.toLowerCase();
+          } else if (isDefinedAndNotNull(value)) {
+            throw new InstrumentationError('Invalid email, email must be a valid string');
+          }
+          break;
+        default:
+          break;
       }
       data[destKey] = value;
     }

@@ -1402,7 +1402,7 @@ export const data = [
   },
   {
     name: 'google_adwords_enhanced_conversions',
-    description: 'Test 9',
+    description: 'Test 9: adding jobId from the payload properties',
     feature: 'processor',
     module: 'destination',
     version: 'v0',

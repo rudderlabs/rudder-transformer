@@ -5532,7 +5532,7 @@ export const data = [
   },
   {
     name: 'google_adwords_offline_conversions',
-    description: 'Test 27',
+    description: 'Test 27: adding consent field for click conversion',
     feature: 'processor',
     module: 'destination',
     version: 'v0',

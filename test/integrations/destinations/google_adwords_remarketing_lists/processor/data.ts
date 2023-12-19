@@ -11812,7 +11812,7 @@ export const data = [
   },
   {
     name: 'google_adwords_remarketing_lists',
-    description: 'Test 20',
+    description: 'Test 20 : consent fields are added to the params object',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -11955,7 +11955,8 @@ export const data = [
   },
   {
     name: 'google_adwords_remarketing_lists',
-    description: 'Test 20',
+    description:
+      'Test 20 : consent field values other than allowed values generate empty consent object',
     feature: 'processor',
     module: 'destination',
     version: 'v0',

@@ -6,32 +6,14 @@ const acPostRequestHandler = require("./active_campaign.mock");
 
 const trengoGetRequestHandler = require("./trengo.mock");
 const yahooDspPostRequestHandler = require("./yahoo_dsp.mock");
-const { hsGetRequestHandler, hsPostRequestHandler } = require("./hs.mock");
-const { delightedGetRequestHandler } = require("./delighted.mock");
-const { dripPostRequestHandler } = require("./drip.mock");
 const cannyPostRequestHandler = require("./canny.mock");
-const custifyPostRequestHandler = require("./custify.mock");
-const {
-  wootricGetRequestHandler,
-  wootricPostRequestHandler
-} = require("./wootric.mock");
 const { userGetRequestHandler, userPutRequestHandler } = require("./user.mock");
 const { mixpanelPostRequestHandler } = require("./mixpanel.mock");
-const { clickUpGetRequestHandler } = require("./clickup.mock");
-const {
-  freshmarketerPostRequestHandler,
-  freshmarketerGetRequestHandler
-} = require("./freshmarketer.mock");
-const {
-  freshsalesGetRequestHandler,
-  freshsalesPostRequestHandler
-} = require("./freshsales.mock");
 const { sendgridGetRequestHandler } = require("./sendgrid.mock");
 const { courierGetRequestHandler } = require("./courier.mock");
 const { brazePostRequestHandler } = require("./braze.mock");
 
 const urlDirectoryMap = {
-  "api.hubapi.com": "hs",
   "zendesk.com": "zendesk",
   "salesforce.com": "salesforce",
   "mktorest.com": "marketo",
@@ -44,14 +26,6 @@ const urlDirectoryMap = {
 
 const fs = require("fs");
 const path = require("path");
-
-const getParamEncodedUrl = (url, options) => {
-  const { params } = options;
-  const paramString = Object.keys(params)
-    .map(key => `${key}=${params[key]}`)
-    .join("&");
-  return `${url}?${paramString}`;
-};
 
 function getData(url) {
   let directory = "";
@@ -77,44 +51,10 @@ function get(url, options) {
       resolve(trengoGetRequestHandler(url));
     });
   }
-  if (url.includes("https://api.hubapi.com")) {
-    return hsGetRequestHandler(url, mockData);
-  }
-  if (url.includes("https://api.delighted.com/v1/people.json")) {
-    return delightedGetRequestHandler(options);
-  }
-  if (
-    url.includes(
-      "https://api.getdrip.com/v2/1809802/subscribers/identified_user@gmail.com"
-    )
-  ) {
-    return Promise.resolve({ status: 200 });
-  }
-  if (
-    url.includes(
-      "https://api.getdrip.com/v2/1809802/subscribers/unidentified_user@gmail.com"
-    )
-  ) {
-    return Promise.reject({ status: 404 });
-  }
-  if (url.includes("https://api.wootric.com")) {
-    return new Promise((resolve, reject) => {
-      resolve(wootricGetRequestHandler(url));
-    });
-  }
   if (url.includes("https://commander.user.com")) {
     return new Promise((resolve, reject) => {
       resolve(userGetRequestHandler(url));
     });
-  }
-  if (url.includes("https://api.clickup.com")) {
-    return Promise.resolve(clickUpGetRequestHandler(url));
-  }
-  if (url.includes("https://domain-rudder.myfreshworks.com/crm/sales/api")) {
-    return Promise.resolve(freshmarketerGetRequestHandler(url));
-  }
-  if (url.includes("https://domain-rudder.myfreshworks.com/crm/sales/api")) {
-    return Promise.resolve(freshsalesGetRequestHandler(url));
   }
   if (url.includes("https://api.sendgrid.com/v3/marketing/field_definitions")) {
     return Promise.resolve(sendgridGetRequestHandler(url));
@@ -157,20 +97,9 @@ function post(url, payload) {
       resolve(yahooDspPostRequestHandler(url, payload));
     });
   }
-  if (url.includes("https://api.getdrip.com/v2/1809802/subscribers")) {
-    return dripPostRequestHandler(url, payload);
-  }
   if (url.includes("https://canny.io/api/v1/users/retrieve")) {
     return new Promise((resolve, reject) => {
       resolve(cannyPostRequestHandler(url));
-    });
-  }
-  if (url.includes("https://api.hubapi.com")) {
-    return hsPostRequestHandler(payload, mockData);
-  }
-  if (url.includes("https://api.wootric.com")) {
-    return new Promise((resolve, reject) => {
-      resolve(wootricPostRequestHandler(url, payload));
     });
   }
   if (
@@ -185,19 +114,6 @@ function post(url, payload) {
     return new Promise((resolve, reject) => {
       resolve(brazePostRequestHandler(url, payload));
     });
-  }
-  if (url.includes("https://domain-rudder.myfreshworks.com/crm/sales/api")) {
-    return new Promise((resolve, reject) => {
-      resolve(freshmarketerPostRequestHandler(url));
-    });
-  }
-  if (url.includes("https://domain-rudder.myfreshworks.com/crm/sales/api")) {
-    return new Promise((resolve, reject) => {
-      resolve(freshsalesPostRequestHandler(url));
-    });
-  }
-  if (url.includes("https://api.custify.com")) {
-    return Promise.resolve(custifyPostRequestHandler(url));
   }
   return new Promise((resolve, reject) => {
     if (mockData) {

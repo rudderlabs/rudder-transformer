@@ -3057,4 +3057,49 @@ export const data = [
       },
     },
   },
+  {
+    name: 'adobe_analytics',
+    description: 'Test 17: Event is missing for track',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: '78c53c15-32a1-4b65-adac-bec2d7bb8fab',
+              channel: 'web',
+              originalTimestamp: '2020-01-09T10:01:53.558Z',
+              type: 'track',
+              sentAt: '2020-01-09T10:02:03.257Z',
+            },
+            destination: {
+              Config: {},
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'Event name is not present. Aborting message.',
+            statTags: {
+              destType: 'ADOBE_ANALYTICS',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
 ];

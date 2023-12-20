@@ -93,6 +93,10 @@ const identifyRequestHandler = async (message, category, destination, reqMetadat
   data.attributes.properties = flattenProperties
     ? flattenJson(data.attributes.properties, '.', 'normal', false)
     : data.attributes.properties;
+
+  if (isEmptyObject(data.attributes.properties)) {
+    delete data.attributes.properties;
+  }
   const payload = {
     data: removeUndefinedAndNullValues(data),
   };

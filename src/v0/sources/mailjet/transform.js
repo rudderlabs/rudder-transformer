@@ -40,7 +40,7 @@ function process(event) {
   }
   message.context.externalId = externalId;
 
-  if (message.userId === null || message.userId === undefined) {
+  if (!message.userId && event.email) {
     // Treating userId as unique identifier
     // If userId is not present, then generating it from email using md5 hash function
     message.userId = md5(event.email);

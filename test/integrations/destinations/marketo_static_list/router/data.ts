@@ -1,7 +1,8 @@
 export const data = [
   {
     name: 'marketo_static_list',
-    description: 'Test 0: Test audiencelist event with add and remove',
+    description:
+      'Test 0: Test audiencelist event with add and remove: Test eventtype lowercase and uppercase',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -99,7 +100,7 @@ export const data = [
                 userId: 'user 1',
                 anonymousId: 'anon-id-new',
                 event: 'event1',
-                type: 'audiencelist',
+                type: 'audienceList',
                 properties: {
                   listData: {
                     add: [

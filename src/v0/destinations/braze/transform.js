@@ -22,6 +22,7 @@ const {
   getFieldValueFromMessage,
   removeUndefinedValues,
   isHttpStatusSuccess,
+  isDefinedAndNotNull,
   simpleProcessRouterDestSync,
   simpleProcessRouterDest,
   isNewStatusCodesAccepted,
@@ -153,11 +154,19 @@ function getUserAttributesObject(message, mappingJson, destination) {
   Object.keys(mappingJson).forEach((destKey) => {
     let value = get(traits, mappingJson[destKey]);
     if (value || (value === null && reservedKeys.includes(destKey))) {
-      // handle gender special case
-      if (destKey === 'gender') {
-        value = formatGender(value);
-      } else if (destKey === 'email' && value !== null) {
-        value = value?.toLowerCase();
+      switch (destKey) {
+        case 'gender':
+          value = formatGender(value);
+          break;
+        case 'email':
+          if (typeof value === 'string') {
+            value = value.toLowerCase();
+          } else if (isDefinedAndNotNull(value)) {
+            throw new InstrumentationError('Invalid email, email must be a valid string');
+          }
+          break;
+        default:
+          break;
       }
       data[destKey] = value;
     }

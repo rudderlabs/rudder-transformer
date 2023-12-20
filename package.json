@@ -1,6 +1,6 @@
 {
   "name": "rudder-transformer",
-  "version": "1.51.1",
+  "version": "1.52.3",
   "description": "",
   "homepage": "https://github.com/rudderlabs/rudder-transformer#readme",
   "bugs": {
@@ -23,7 +23,7 @@
     "lint:fix": "eslint . --fix",
     "lint:fix:json": "eslint --ext .json --fix .",
     "check:merge": "npm run verify || exit 1; codecov",
-    "start": "node ./dist/src/index.js",
+    "start": "cd dist;node ./src/index.js;cd ..",
     "build:start": "npm run build && npm run start",
     "build:ci": "tsc -p tsconfig.json",
     "build:swagger": "npm run build && npm run setup:swagger",
@@ -56,7 +56,7 @@
   "dependencies": {
     "@amplitude/ua-parser-js": "^0.7.24",
     "@aws-sdk/client-personalize": "^3.391.0",
-    "@aws-sdk/client-s3": "^3.370.0",
+    "@aws-sdk/client-s3": "^3.438.0",
     "@aws-sdk/credential-providers": "^3.391.0",
     "@aws-sdk/lib-storage": "^3.391.0",
     "@bugsnag/js": "^7.20.2",

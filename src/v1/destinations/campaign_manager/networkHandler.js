@@ -75,15 +75,15 @@ const responseHandler = (destinationResponse) => {
   }
 
   throw new TransformerProxyError(
-      `Campaign Manager: Error transformer proxy v1 during CAMPAIGN_MANAGER response transformation`,
-      500,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
-      },
-      destinationResponse,
-      getAuthErrCategoryFromStCode(status),
-      responseWithIndividualEvents,
-    );
+    `Campaign Manager: Error transformer proxy v1 during CAMPAIGN_MANAGER response transformation`,
+    500,
+    {
+      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+    },
+    destinationResponse,
+    getAuthErrCategoryFromStCode(status),
+    responseWithIndividualEvents,
+  );
 };
 
 function networkHandler() {

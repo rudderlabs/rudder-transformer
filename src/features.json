@@ -66,5 +66,5 @@
     "REDDIT": true
   },
   "supportSourceTransformV1": true,
-  "supportTransformerProxyV1": true
+  "supportTransformerProxyV1": false
 }

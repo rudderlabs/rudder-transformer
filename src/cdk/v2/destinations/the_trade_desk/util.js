@@ -9,7 +9,6 @@ const {
   removeUndefinedAndNullValues,
   handleRtTfSingleEventError,
 } = require('../../../../v0/util');
-const { JSON_MIME_TYPE } = require('../../../../v0/util/constant');
 const {
   DATA_PROVIDER_ID,
   MAX_REQUEST_SIZE_IN_BYTES,
@@ -35,12 +34,7 @@ const responseBuilder = (items, Config) => {
   response.endpoint = getFirstPartyEndpoint(dataServer);
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
-    TtdSignature: getSignatureHeader(payload, advertiserSecretKey),
-    'TtdSignature-dp': getSignatureHeader(
-      payload,
-      process.env.THE_TRADE_DESK_DATA_PROVIDER_SECRET_KEY,
-    ),
-    'Content-Type': JSON_MIME_TYPE,
+    secretKey: advertiserSecretKey,
   };
   response.body.JSON = removeUndefinedAndNullValues(payload);
   return response;
@@ -131,4 +125,4 @@ const processRouterDest = (inputs) => {
   return respList;
 };
 
-module.exports = { processRouterDest };
+module.exports = { getSignatureHeader, processRouterDest };

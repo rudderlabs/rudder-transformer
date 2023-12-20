@@ -248,10 +248,10 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "access_token": "access_token_success",
-        "expires_in": 3599,
-        "scope": "integrations@rudderstack.com",
-        "token_type": "bearer"
+        access_token: 'access_token_success',
+        expires_in: 3599,
+        scope: 'integrations@rudderstack.com',
+        token_type: 'bearer',
       },
       status: 200,
       statusText: 'OK',
@@ -264,10 +264,10 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "access_token": "access_token_expired",
-        "expires_in": 0,
-        "scope": "integrations@rudderstack.com",
-        "token_type": "bearer"
+        access_token: 'access_token_expired',
+        expires_in: 0,
+        scope: 'integrations@rudderstack.com',
+        token_type: 'bearer',
       },
       status: 200,
       statusText: 'OK',
@@ -280,14 +280,14 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "requestId": "7ab2#17672a46a99",
-        "result": [
+        requestId: '7ab2#17672a46a99',
+        result: [
           {
-            "id": 4,
-            "status": "created"
-          }
+            id: 4,
+            status: 'created',
+          },
         ],
-        "success": true
+        success: true,
       },
       status: 200,
       statusText: 'OK',
@@ -300,9 +300,9 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "requestId": "107#17672aeadba",
-        "result": [],
-        "success": true
+        requestId: '107#17672aeadba',
+        result: [],
+        success: true,
       },
       status: 200,
       statusText: 'OK',
@@ -315,19 +315,19 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "requestId": "12093#17672aeaee6",
-        "result": [
+        requestId: '12093#17672aeaee6',
+        result: [
           {
-            "createdAt": "2020-12-17T21:39:07Z",
-            "email": null,
-            "firstName": null,
-            "id": 4,
-            "lastName": null,
-            "updatedAt": "2020-12-17T21:39:07Z",
-            "userId": "test-user-6j55yr"
-          }
+            createdAt: '2020-12-17T21:39:07Z',
+            email: null,
+            firstName: null,
+            id: 4,
+            lastName: null,
+            updatedAt: '2020-12-17T21:39:07Z',
+            userId: 'test-user-6j55yr',
+          },
         ],
-        "success": true
+        success: true,
       },
       status: 200,
       statusText: 'OK',
@@ -340,13 +340,13 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "success": false,
-        "errors": [
+        success: false,
+        errors: [
           {
-            "code": "601",
-            "message": "Access Token Expired"
-          }
-        ]
+            code: '601',
+            message: 'Access Token Expired',
+          },
+        ],
       },
       status: 200,
       statusText: 'OK',
@@ -359,7 +359,7 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "access_token": "test_acess"
+        access_token: 'test_acess',
       },
       status: 200,
       statusText: 'OK',
@@ -372,7 +372,7 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "access_token": "test_access_token"
+        access_token: 'test_access_token',
       },
       status: 200,
       statusText: 'OK',
@@ -385,24 +385,24 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "requestId": "7fa1#17fd1da66fe",
-        "result": [
+        requestId: '7fa1#17fd1da66fe',
+        result: [
           {
-            "name": "API Lead",
-            "searchableFields": [["email"]],
-            "fields": [
+            name: 'API Lead',
+            searchableFields: [['email']],
+            fields: [
               {
-                "name": "email",
-                "displayName": "Email Address",
-                "dataType": "email",
-                "length": 255,
-                "updateable": true,
-                "crmManaged": false
-              }
-            ]
-          }
+                name: 'email',
+                displayName: 'Email Address',
+                dataType: 'email',
+                length: 255,
+                updateable: true,
+                crmManaged: false,
+              },
+            ],
+          },
         ],
-        "success": true
+        success: true,
       },
       status: 200,
       statusText: 'OK',
@@ -415,15 +415,15 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "requestId": "5bdd#17fd1ff88cd",
-        "result": [
+        requestId: '5bdd#17fd1ff88cd',
+        result: [
           {
-            "batchId": 2977,
-            "importId": "2977",
-            "status": "Queued"
-          }
+            batchId: 2977,
+            importId: '2977',
+            status: 'Queued',
+          },
         ],
-        "success": true
+        success: true,
       },
       status: 200,
       statusText: 'OK',
@@ -436,7 +436,7 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "access_token": "test_access_token"
+        access_token: 'test_access_token',
       },
       status: 200,
       statusText: 'OK',
@@ -449,7 +449,7 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "access_token": "test_access_token"
+        access_token: 'test_access_token',
       },
       status: 200,
       statusText: 'OK',
@@ -462,24 +462,24 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "requestId": "7fa1#17fd1da66fe",
-        "result": [
+        requestId: '7fa1#17fd1da66fe',
+        result: [
           {
-            "name": "API Lead",
-            "searchableFields": [["email"]],
-            "fields": [
+            name: 'API Lead',
+            searchableFields: [['email']],
+            fields: [
               {
-                "name": "email",
-                "displayName": "Email Address",
-                "dataType": "email",
-                "length": 255,
-                "updateable": true,
-                "crmManaged": false
-              }
-            ]
-          }
+                name: 'email',
+                displayName: 'Email Address',
+                dataType: 'email',
+                length: 255,
+                updateable: true,
+                crmManaged: false,
+              },
+            ],
+          },
         ],
-        "success": true
+        success: true,
       },
       status: 200,
       statusText: 'OK',
@@ -492,7 +492,7 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "access_token": "test_access_token"
+        access_token: 'test_access_token',
       },
       status: 200,
       statusText: 'OK',
@@ -505,12 +505,12 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "errors": [
+        errors: [
           {
-            "message": "Any 400 error",
-            "code": 1000
-          }
-        ]
+            message: 'Any 400 error',
+            code: 1000,
+          },
+        ],
       },
       status: 200,
       statusText: 'OK',
@@ -523,7 +523,7 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "access_token": "test_access_token"
+        access_token: 'test_access_token',
       },
       status: 200,
       statusText: 'OK',
@@ -536,7 +536,7 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "access_token": "test_access_token"
+        access_token: 'test_access_token',
       },
       status: 200,
       statusText: 'OK',
@@ -549,12 +549,12 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "errors": [
+        errors: [
           {
-            "message": "Any 500 error",
-            "code": 502
-          }
-        ]
+            message: 'Any 500 error',
+            code: 502,
+          },
+        ],
       },
       status: 200,
       statusText: 'OK',
@@ -566,7 +566,7 @@ export const networkCallsData = [
       method: 'GET',
     },
     httpRes: {
-      data: "data \n data",
+      data: 'data \n data',
       status: 200,
       statusText: 'OK',
     },
@@ -577,7 +577,7 @@ export const networkCallsData = [
       method: 'GET',
     },
     httpRes: {
-      data: "data \n data",
+      data: 'data \n data',
       status: 200,
       statusText: 'OK',
     },
@@ -589,10 +589,10 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "access_token": "access_token_success",
-        "expires_in": 3599,
-        "scope": "integrations@rudderstack.com",
-        "token_type": "bearer"
+        access_token: 'access_token_success',
+        expires_in: 3599,
+        scope: 'integrations@rudderstack.com',
+        token_type: 'bearer',
       },
       status: 200,
       statusText: 'OK',
@@ -605,24 +605,24 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "requestId": "7fa1#17fd1da66fe",
-        "result": [
+        requestId: '7fa1#17fd1da66fe',
+        result: [
           {
-            "name": "API Lead",
-            "searchableFields": [["email"]],
-            "fields": [
+            name: 'API Lead',
+            searchableFields: [['email']],
+            fields: [
               {
-                "name": "email",
-                "displayName": "Email Address",
-                "dataType": "email",
-                "length": 255,
-                "updateable": true,
-                "crmManaged": false
-              }
-            ]
-          }
+                name: 'email',
+                displayName: 'Email Address',
+                dataType: 'email',
+                length: 255,
+                updateable: true,
+                crmManaged: false,
+              },
+            ],
+          },
         ],
-        "success": true
+        success: true,
       },
       status: 200,
       statusText: 'OK',
@@ -635,12 +635,12 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "success": false,
-        "errors": [
+        success: false,
+        errors: [
           {
-            "code": 603
-          }
-        ]
+            code: 603,
+          },
+        ],
       },
       status: 200,
       statusText: 'OK',
@@ -653,10 +653,10 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "access_token": "access_token_success",
-        "expires_in": 3599,
-        "scope": "integrations@rudderstack.com",
-        "token_type": "bearer"
+        access_token: 'access_token_success',
+        expires_in: 3599,
+        scope: 'integrations@rudderstack.com',
+        token_type: 'bearer',
       },
       status: 200,
       statusText: 'OK',
@@ -669,24 +669,24 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "requestId": "7fa1#17fd1da66fe",
-        "result": [
+        requestId: '7fa1#17fd1da66fe',
+        result: [
           {
-            "name": "API Lead",
-            "searchableFields": [["email"]],
-            "fields": [
+            name: 'API Lead',
+            searchableFields: [['email']],
+            fields: [
               {
-                "name": "Email",
-                "displayName": "Email Address",
-                "dataType": "email",
-                "length": 255,
-                "updateable": true,
-                "crmManaged": false
-              }
-            ]
-          }
+                name: 'Email',
+                displayName: 'Email Address',
+                dataType: 'email',
+                length: 255,
+                updateable: true,
+                crmManaged: false,
+              },
+            ],
+          },
         ],
-        "success": true
+        success: true,
       },
       status: 200,
       statusText: 'OK',
@@ -699,12 +699,12 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "success": false,
-        "errors": [
+        success: false,
+        errors: [
           {
-            "message": "There are 10 imports currently being processed. Please try again later"
-          }
-        ]
+            message: 'There are 10 imports currently being processed. Please try again later',
+          },
+        ],
       },
       status: 200,
       statusText: 'OK',
@@ -717,24 +717,24 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "requestId": "7fa1#17fd1da66fe",
-        "result": [
+        requestId: '7fa1#17fd1da66fe',
+        result: [
           {
-            "name": "API Lead",
-            "searchableFields": [["email"]],
-            "fields": [
+            name: 'API Lead',
+            searchableFields: [['email']],
+            fields: [
               {
-                "name": "Email",
-                "displayName": "Email Address",
-                "dataType": "email",
-                "length": 255,
-                "updateable": true,
-                "crmManaged": false
-              }
-            ]
-          }
+                name: 'Email',
+                displayName: 'Email Address',
+                dataType: 'email',
+                length: 255,
+                updateable: true,
+                crmManaged: false,
+              },
+            ],
+          },
         ],
-        "success": true
+        success: true,
       },
       status: 200,
       statusText: 'OK',
@@ -747,12 +747,12 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "success": false,
-        "errors": [
+        success: false,
+        errors: [
           {
-            "message": "Empty file"
-          }
-        ]
+            message: 'Empty file',
+          },
+        ],
       },
       status: 200,
       statusText: 'OK',
@@ -765,24 +765,24 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "requestId": "7fa1#17fd1da66fe",
-        "result": [
+        requestId: '7fa1#17fd1da66fe',
+        result: [
           {
-            "name": "API Lead",
-            "searchableFields": [["email"]],
-            "fields": [
+            name: 'API Lead',
+            searchableFields: [['email']],
+            fields: [
               {
-                "name": "Email",
-                "displayName": "Email Address",
-                "dataType": "email",
-                "length": 255,
-                "updateable": true,
-                "crmManaged": false
-              }
-            ]
-          }
+                name: 'Email',
+                displayName: 'Email Address',
+                dataType: 'email',
+                length: 255,
+                updateable: true,
+                crmManaged: false,
+              },
+            ],
+          },
         ],
-        "success": true
+        success: true,
       },
       status: 200,
       statusText: 'OK',
@@ -795,12 +795,12 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "success": false,
-        "errors": [
+        success: false,
+        errors: [
           {
-            "message": "Any other error"
-          }
-        ]
+            message: 'Any other error',
+          },
+        ],
       },
       status: 200,
       statusText: 'OK',
@@ -813,10 +813,10 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "access_token": "access_token_success",
-        "expires_in": 3599,
-        "scope": "integrations@rudderstack.com",
-        "token_type": "bearer"
+        access_token: 'access_token_success',
+        expires_in: 3599,
+        scope: 'integrations@rudderstack.com',
+        token_type: 'bearer',
       },
       status: 200,
       statusText: 'OK',
@@ -829,9 +829,9 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "requestId": "12093#17672aeaee6",
-        "result": [],
-        "success": true
+        requestId: '12093#17672aeaee6',
+        result: [],
+        success: true,
       },
       status: 200,
       statusText: 'OK',
@@ -844,14 +844,14 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "requestId": "142e4#1835b117b76",
-        "success": false,
-        "errors": [
+        requestId: '142e4#1835b117b76',
+        success: false,
+        errors: [
           {
-            "code": "1006",
-            "message": "Lookup field 'userId' not found"
-          }
-        ]
+            code: '1006',
+            message: "Lookup field 'userId' not found",
+          },
+        ],
       },
       status: 200,
       statusText: 'OK',
@@ -864,10 +864,10 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "access_token": "access_token_success",
-        "expires_in": 3599,
-        "scope": "integrations@rudderstack.com",
-        "token_type": "bearer"
+        access_token: 'access_token_success',
+        expires_in: 3599,
+        scope: 'integrations@rudderstack.com',
+        token_type: 'bearer',
       },
       status: 200,
       statusText: 'OK',
@@ -880,9 +880,9 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "requestId": "12093#17672aeaee6",
-        "result": [],
-        "success": true
+        requestId: '12093#17672aeaee6',
+        result: [],
+        success: true,
       },
       status: 200,
       statusText: 'OK',
@@ -895,14 +895,14 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "requestId": "142e4#1835b117b76",
-        "success": false,
-        "errors": [
+        requestId: '142e4#1835b117b76',
+        success: false,
+        errors: [
           {
-            "code": "random_marketo_code",
-            "message": "some other problem"
-          }
-        ]
+            code: 'random_marketo_code',
+            message: 'some other problem',
+          },
+        ],
       },
       status: 200,
       statusText: 'OK',
@@ -915,10 +915,10 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "access_token": "access_token_success",
-        "expires_in": 3599,
-        "scope": "integrations@rudderstack.com",
-        "token_type": "bearer"
+        access_token: 'access_token_success',
+        expires_in: 3599,
+        scope: 'integrations@rudderstack.com',
+        token_type: 'bearer',
       },
       status: 200,
       statusText: 'OK',
@@ -931,14 +931,14 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "requestId": "7ab2#17672a46a99",
-        "result": [
+        requestId: '7ab2#17672a46a99',
+        result: [
           {
-            "id": 4,
-            "status": "created"
-          }
+            id: 4,
+            status: 'created',
+          },
         ],
-        "success": true
+        success: true,
       },
       status: 200,
       statusText: 'OK',
@@ -951,22 +951,22 @@ export const networkCallsData = [
     },
     httpRes: {
       data: {
-        "requestId": "12093#17672aeaee6",
-        "result": [
+        requestId: '12093#17672aeaee6',
+        result: [
           {
-            "createdAt": "2022-09-17T21:39:07Z",
-            "email": "0c7b8b80-9c43-4f8e-b2d2-5e2448a25040@j.mail",
-            "firstName": "random_first",
-            "id": 4,
-            "lastName": "random_last",
-            "updatedAt": "2022-09-20T21:48:07Z",
-            "userId": "test-user-957ue"
-          }
+            createdAt: '2022-09-17T21:39:07Z',
+            email: '0c7b8b80-9c43-4f8e-b2d2-5e2448a25040@j.mail',
+            firstName: 'random_first',
+            id: 4,
+            lastName: 'random_last',
+            updatedAt: '2022-09-20T21:48:07Z',
+            userId: 'test-user-957ue',
+          },
         ],
-        "success": true
+        success: true,
       },
       status: 200,
       statusText: 'OK',
     },
-  }
+  },
 ];

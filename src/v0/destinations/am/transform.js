@@ -297,6 +297,15 @@ const identifyBuilder = (message, destination, rawPayload) => {
       }
     });
   }
+  // update identify call request with unset fields
+  const fieldsToUnset = get(message, 'integrations.Amplitude.fieldsToUnset');
+  if (fieldsToUnset) {
+    const unsetObject = Object.fromEntries(fieldsToUnset.map((field) => [field, '-']));
+    // Example   unsetObject = {
+    //     "testObj.del1": "-"
+    // }
+    set(rawPayload, `user_properties.$unset`, unsetObject);
+  }
   return rawPayload;
 };
 
@@ -334,7 +343,7 @@ const getResponseData = (evType, destination, rawPayload, message, groupInfo) =>
     case EventType.IDENTIFY:
       // event_type for identify event is $identify
       rawPayload.event_type = IDENTIFY_AM;
-      identifyBuilder(message, destination, rawPayload);
+      rawPayload = identifyBuilder(message, destination, rawPayload);
       break;
     case EventType.GROUP:
       // event_type for identify event is $identify
@@ -453,6 +462,7 @@ const nonAliasResponsebuilder = (
     };
     respList.push(groupResponse);
   }
+
   return respList;
 };
 
@@ -488,6 +498,7 @@ const responseBuilderSimple = (
 
   // 2. get campaign info (only present for JS sdk and http calls)
   const campaign = get(message, 'context.campaign') || {};
+  //
   const initialRef = {
     initial_referrer: get(message, 'context.page.initial_referrer'),
     initial_referring_domain: get(message, 'context.page.initial_referring_domain'),

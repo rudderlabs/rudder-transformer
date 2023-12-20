@@ -44,13 +44,15 @@ const getHeaders = (destination) => ({
  */
 const getBaseEndpoint = (destination) => {
   const { apiServer } = destination.Config;
-  if (apiServer === 'eu') {
-    return BASE_EU_ENDPOINT;
+
+  switch (apiServer) {
+    case 'eu':
+      return BASE_EU_ENDPOINT;
+    case 'au':
+      return BASE_AU_ENDPOINT;
+    default:
+      return BASE_ENDPOINT;
   }
-  if (apiServer === 'au') {
-    return BASE_AU_ENDPOINT;
-  }
-  return BASE_ENDPOINT;
 };
 
 /**
@@ -178,7 +180,7 @@ const createOrUpdateCompany = async (payload, destination) => {
   if (isHttpStatusSuccess(processedResponse.status)) {
     return processedResponse.response?.id;
   }
-  
+
   throw new NetworkError(
     `Unable to Create or Update Company due to : ${JSON.stringify(
       processedResponse?.response?.errors,

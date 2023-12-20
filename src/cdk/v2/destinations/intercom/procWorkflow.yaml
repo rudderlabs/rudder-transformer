@@ -134,7 +134,7 @@ steps:
       let payload = .message.context.mappedToDestination === true ? $.outputs.rEtlPayload : $.outputs.groupEtlPayload;
       const contactId = $.outputs.searchContact;
       const companyId = await $.createOrUpdateCompany(payload, .destination);
-      $.assert(companyId, "Unable to add user to company");
+      $.assert(companyId, "Unable to create or update company");
       payload.requestBodyJson = {
         id: companyId
       }

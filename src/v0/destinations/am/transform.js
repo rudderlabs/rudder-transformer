@@ -498,7 +498,6 @@ const responseBuilderSimple = (
 
   // 2. get campaign info (only present for JS sdk and http calls)
   const campaign = get(message, 'context.campaign') || {};
-  //
   const initialRef = {
     initial_referrer: get(message, 'context.page.initial_referrer'),
     initial_referring_domain: get(message, 'context.page.initial_referring_domain'),

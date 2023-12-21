@@ -26,16 +26,13 @@ function getSignatureHeader(request, secretKey) {
 }
 
 const responseBuilder = (items, Config) => {
-  const { advertiserID, advertiserSecretKey, dataServer } = Config;
+  const { advertiserID, dataServer } = Config;
 
   const payload = { DataProviderId: DATA_PROVIDER_ID, AdvertiserId: advertiserID, Items: items };
 
   const response = defaultRequestConfig();
   response.endpoint = getFirstPartyEndpoint(dataServer);
   response.method = defaultPostRequestConfig.requestMethod;
-  response.headers = {
-    secretKey: advertiserSecretKey,
-  };
   response.body.JSON = removeUndefinedAndNullValues(payload);
   return response;
 };

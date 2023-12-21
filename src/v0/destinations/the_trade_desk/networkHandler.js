@@ -1,4 +1,4 @@
-const { NetworkError, AbortedError } = require('@rudderstack/integrations-lib');
+const { NetworkError, AbortedError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { httpSend, prepareProxyRequest } = require('../../../adapters/network');
 const {
   processAxiosResponse,
@@ -9,20 +9,27 @@ const { isHttpStatusSuccess } = require('../../util/index');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
+const getSecretKeyFromMetadata = (metadata, secretKey) => {
+  const { secret } = metadata[0];
+  if (!secret?.[secretKey]) {
+    throw new ConfigurationError(`${secretKey} is not present. Aborting}`);
+  }
+  return secret[secretKey];
+};
+
 const proxyRequest = async (request) => {
-  const { endpoint, data, method, params, headers } = prepareProxyRequest(request);
+  const { endpoint, data, method, params, headers, metadata } = prepareProxyRequest(request);
+  const advertiserSecretKey = getSecretKeyFromMetadata(metadata, 'advertiserSecretKey');
 
   const ProxyHeaders = {
     ...headers,
-    TtdSignature: getSignatureHeader(data, headers.secretKey),
+    TtdSignature: getSignatureHeader(data, advertiserSecretKey),
     'TtdSignature-dp': getSignatureHeader(
       data,
       process.env.THE_TRADE_DESK_DATA_PROVIDER_SECRET_KEY,
     ),
     'Content-Type': JSON_MIME_TYPE,
   };
-
-  delete ProxyHeaders.secretKey;
 
   const requestOptions = {
     url: endpoint,

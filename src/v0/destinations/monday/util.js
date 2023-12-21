@@ -189,6 +189,7 @@ const getBoardDetails = async (url, boardID, apiToken) => {
       headers: {
         'Content-Type': JSON_MIME_TYPE,
         Authorization: `${apiToken}`,
+        endpointPath: '/v2',
       },
     },
     {

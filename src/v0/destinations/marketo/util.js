@@ -262,6 +262,7 @@ const sendPostRequest = async (url, data, options) => {
   const clientResponse = await httpPOST(url, data, options, {
     destType: 'marketo',
     feature: 'transformation',
+    endpointPath: `/v1/leads`,
   });
   const processedResponse = processAxiosResponse(clientResponse);
   return processedResponse;

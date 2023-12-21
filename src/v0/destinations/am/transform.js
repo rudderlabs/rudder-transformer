@@ -462,7 +462,6 @@ const nonAliasResponsebuilder = (
     };
     respList.push(groupResponse);
   }
-
   return respList;
 };
 

@@ -298,9 +298,8 @@ const identifyBuilder = (message, destination, rawPayload) => {
     });
   }
   // update identify call request with unset fields
-  const fieldsToUnset = get(message, 'integrations.Amplitude.fieldsToUnset');
-  if (fieldsToUnset) {
-    const unsetObject = Object.fromEntries(fieldsToUnset.map((field) => [field, '-']));
+  const unsetObject = AMUtils.getUnsetObj(message);
+  if (unsetObject) {
     // Example   unsetObject = {
     //     "testObj.del1": "-"
     // }

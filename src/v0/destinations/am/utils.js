@@ -82,6 +82,31 @@ const getEventId = (payload, sourceKey) => {
   return undefined;
 };
 
+/**
+ * generates the unsetObject and returns it 
+ * @param {*} message 
+ * @returns 
+ * 
+ * Example message = {
+    integrations: {
+      Amplitude: { fieldsToUnset: ['Unset1', 'Unset2'] },
+      All: true,
+    },
+  };
+  return unsetObj = {
+        "Unset1": "-",
+        "Unset2": "-"
+      }
+ */
+const getUnsetObj = (message) => {
+  const fieldsToUnset = get(message, 'integrations.Amplitude.fieldsToUnset');
+  let unsetObject;
+  if (fieldsToUnset) {
+    unsetObject = Object.fromEntries(fieldsToUnset.map((field) => [field, '-']));
+  }
+
+  return unsetObject;
+};
 module.exports = {
   getOSName,
   getOSVersion,
@@ -90,4 +115,5 @@ module.exports = {
   getPlatform,
   getBrand,
   getEventId,
+  getUnsetObj,
 };

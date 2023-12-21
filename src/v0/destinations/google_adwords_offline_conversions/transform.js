@@ -10,7 +10,7 @@ const {
   defaultBatchRequestConfig,
   getSuccessRespEvents,
   checkInvalidRtTfEvents,
-  populateConsent,
+  populateConsentForGoogleDestinations,
 } = require('../../util');
 const {
   CALL_CONVERSION,
@@ -60,9 +60,9 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
     endpoint = CALL_CONVERSION.replace(':customerId', filteredCustomerId);
   }
 
-  const consentObject = populateConsent(properties);
-  if(Object.keys(consentObject).length > 0) {
-    payload.conversions[0].consent = populateConsent(properties);
+  const consentObject = populateConsentForGoogleDestinations(properties);
+  if (Object.keys(consentObject).length > 0) {
+    payload.conversions[0].consent = populateConsentForGoogleDestinations(properties);
   }
   if (conversionType !== 'store') {
     // transform originalTimestamp to conversionDateTime format (yyyy-mm-dd hh:mm:ss+|-hh:mm)

@@ -2110,10 +2110,13 @@ const parseConfigArray = (arr, key) => {
 
 const GOOGLE_ALLOWED_CONSENT_STATUS = ['UNSPECIFIED', 'UNKNOWN', 'GRANTED', 'DENIED'];
 
-const populateConsent = (properties) => {
+const populateConsentForGoogleDestinations = (properties) => {
   const consent = {};
 
-  if (properties?.userDataConsent && GOOGLE_ALLOWED_CONSENT_STATUS.includes(properties.userDataConsent)) {
+  if (
+    properties?.userDataConsent &&
+    GOOGLE_ALLOWED_CONSENT_STATUS.includes(properties.userDataConsent)
+  ) {
     consent.adUserData = properties.userDataConsent;
   }
 
@@ -2237,5 +2240,5 @@ module.exports = {
   isNewStatusCodesAccepted,
   IsGzipSupported,
   parseConfigArray,
-  populateConsent
+  populateConsentForGoogleDestinations,
 };

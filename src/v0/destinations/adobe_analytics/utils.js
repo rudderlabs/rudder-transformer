@@ -83,6 +83,9 @@ function handleContextData(payload, destinationConfig, message) {
  */
 
 function escapeToHTML(inputString) {
+  if (typeof inputString !== 'string') {
+    return inputString;
+  }
   return inputString.replace(
     /[&<>]/g,
     (match) =>

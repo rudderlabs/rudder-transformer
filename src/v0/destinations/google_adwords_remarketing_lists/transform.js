@@ -13,8 +13,9 @@ const {
   simpleProcessRouterDest,
   getDestinationExternalIDInfoForRetl,
   getAccessToken,
-  populateConsentForGoogleDestinations,
 } = require('../../util');
+
+const { populateConsentForGoogleDestinations } = require('../../util/googleUtils');
 
 const {
   offlineDataJobsMapping,

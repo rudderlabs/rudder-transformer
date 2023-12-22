@@ -102,7 +102,7 @@ const getEventId = (payload, sourceKey) => {
 const getUnsetObj = (message) => {
   const fieldsToUnset = get(message, 'integrations.Amplitude.fieldsToUnset');
   let unsetObject;
-  if (fieldsToUnset && Array.isArray(fieldsToUnset)) {
+  if (Array.isArray(fieldsToUnset)) {
     unsetObject = Object.fromEntries(fieldsToUnset.map((field) => [field, '-']));
   }
 

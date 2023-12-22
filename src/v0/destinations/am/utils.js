@@ -97,6 +97,7 @@ const getEventId = (payload, sourceKey) => {
         "Unset1": "-",
         "Unset2": "-"
       }
+  AM docs: https://www.docs.developers.amplitude.com/analytics/apis/http-v2-api/#keys-for-the-event-argument:~:text=exceed%2040%20layers.-,user_properties,-Optional.%20Object.%20A
  */
 const getUnsetObj = (message) => {
   const fieldsToUnset = get(message, 'integrations.Amplitude.fieldsToUnset');

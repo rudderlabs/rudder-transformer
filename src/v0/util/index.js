@@ -2108,28 +2108,6 @@ const parseConfigArray = (arr, key) => {
   return arr.map((item) => item[key]);
 };
 
-const GOOGLE_ALLOWED_CONSENT_STATUS = ['UNSPECIFIED', 'UNKNOWN', 'GRANTED', 'DENIED'];
-
-const populateConsentForGoogleDestinations = (properties) => {
-  const consent = {};
-
-  if (
-    properties?.userDataConsent &&
-    GOOGLE_ALLOWED_CONSENT_STATUS.includes(properties.userDataConsent)
-  ) {
-    consent.adUserData = properties.userDataConsent;
-  }
-
-  if (
-    properties?.personalizationConsent &&
-    GOOGLE_ALLOWED_CONSENT_STATUS.includes(properties.personalizationConsent)
-  ) {
-    consent.adPersonalization = properties.personalizationConsent;
-  }
-
-  return consent;
-};
-
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -2240,5 +2218,4 @@ module.exports = {
   isNewStatusCodesAccepted,
   IsGzipSupported,
   parseConfigArray,
-  populateConsentForGoogleDestinations,
 };

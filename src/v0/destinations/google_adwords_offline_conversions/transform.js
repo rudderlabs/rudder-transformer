@@ -10,8 +10,8 @@ const {
   defaultBatchRequestConfig,
   getSuccessRespEvents,
   checkInvalidRtTfEvents,
-  populateConsentForGoogleDestinations,
 } = require('../../util');
+const { populateConsentForGoogleDestinations } = require('../../util/googleUtils');
 const {
   CALL_CONVERSION,
   trackCallConversionsMapping,

@@ -17,16 +17,16 @@
             "laguage": "en-US",
             "created_at": 1609693373,
             "last_active": 1609693373,
-            "external_user_id": "ujjwal27",
+            "external_user_id": "user@27",
             "app_id": "random-818c-4a28-b98e-6cd8a994eb22",
             "device_type": 11,
-            "identifier": "ujjwal@rudderstack.com",
+            "identifier": "test@rudderstack.com",
             "tags": {
               "brand": "John Players",
               "price": "15000",
-              "firstName": "Ujjwal",
-              "email": "ujjwal@rudderstack.com",
-              "userId": "ujjwal27",
+              "firstName": "Test",
+              "email": "test@rudderstack.com",
+              "userId": "user@27",
               "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35"
             }
           },
@@ -52,16 +52,16 @@
             "laguage": "en-US",
             "created_at": 1609693373,
             "last_active": 1609693373,
-            "external_user_id": "ujjwal27",
+            "external_user_id": "user@27",
             "app_id": "random-818c-4a28-b98e-6cd8a994eb22",
             "device_type": 8,
             "identifier": "97c46c81-3140-456d-b2a9-690d70aaca35",
             "tags": {
               "brand": "John Players",
               "price": "15000",
-              "firstName": "Ujjwal",
-              "email": "ujjwal@rudderstack.com",
-              "userId": "ujjwal27",
+              "firstName": "Test",
+              "email": "test@rudderstack.com",
+              "userId": "user@27",
               "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35"
             }
           },
@@ -112,7 +112,7 @@
         "Content-Type": "application/json"
       },
       "version": "1",
-      "endpoint": "https://onesignal.com/api/v1/apps/random-818c-4a28-b98e-6cd8a994eb22/users/ujjwal27"
+      "endpoint": "https://onesignal.com/api/v1/apps/random-818c-4a28-b98e-6cd8a994eb22/users/user@27"
     },
     "metadata": [
       {

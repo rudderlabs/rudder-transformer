@@ -285,7 +285,7 @@ export const data = [
                 context: {
                   traits: {
                     name: 'Jimothy Halpert',
-                    email: 'jimbo@dunmiff.com',
+                    email: 'j@d.com',
                   },
                   ip: '14.5.67.21',
                   app: {
@@ -430,7 +430,7 @@ export const data = [
                 body: {
                   JSON: {
                     name: 'Jimothy Halpert',
-                    identifier: 'jimbo@dunmiff.com',
+                    identifier: 'j@d.com',
                     channel_id: 'trengo_email_channel',
                   },
                   XML: {},

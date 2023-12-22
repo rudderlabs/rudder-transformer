@@ -18,6 +18,34 @@
           {
             "traceIdentifier": "80a1a0ba3981b04da847d05700752c77",
             "type": "authorization",
+            "code": "authorization-token-expired",
+            "instance": "/2022-10/audiences/123/contactlist",
+            "title": "The authorization token has expired"
+          }
+        ]
+      },
+      "message": "The authorization token has expired during criteo_audience response transformation",
+      "statTags": {
+        "destType": "CRITEO_AUDIENCE",
+        "errorCategory": "network",
+        "destinationId": "Non-determininable",
+        "workspaceId": "Non-determininable",
+        "errorType": "aborted",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
+      }
+    }
+  },
+  {
+    "output": {
+      "status": 401,
+      "authErrorCategory": "REFRESH_TOKEN",
+      "destinationResponse": {
+        "errors": [
+          {
+            "traceIdentifier": "80a1a0ba3981b04da847d05700752c77",
+            "type": "authorization",
             "code": "authorization-token-invalid",
             "instance": "/2022-10/audiences/123/contactlist",
             "title": "The authorization header is invalid"

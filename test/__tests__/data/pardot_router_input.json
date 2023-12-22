@@ -45,6 +45,7 @@
       "Transformations": []
     },
     "metadata": {
+      "jobId": 1,
       "secret": {
         "access_token": "myToken",
         "refresh_token": "myRefreshToken"
@@ -167,6 +168,7 @@
       "Transformations": []
     },
     "metadata": {
+      "jobId": 2,
       "secret": {
         "access_token": "myToken",
         "refresh_token": "myRefreshToken"
@@ -283,6 +285,7 @@
       "Transformations": []
     },
     "metadata": {
+      "jobId": 3,
       "secret": {
         "access_token": "myToken",
         "refresh_token": "myRefreshToken"
@@ -405,6 +408,7 @@
       "Transformations": []
     },
     "metadata": {
+      "jobId": 4,
       "secret": {
         "access_token": "myExpiredToken",
         "refresh_token": "myRefreshToken"
@@ -521,6 +525,7 @@
       "Transformations": []
     },
     "metadata": {
+      "jobId": 5,
       "secret": null
     },
     "message": {

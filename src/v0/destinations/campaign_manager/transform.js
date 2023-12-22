@@ -1,12 +1,17 @@
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const lodash = require('lodash');
 const { EventType } = require('../../../constants');
-
 const {
   constructPayload,
   defaultRequestConfig,
   defaultPostRequestConfig,
+  defaultBatchRequestConfig,
   removeUndefinedAndNullValues,
+  getSuccessRespEvents,
   isDefinedAndNotNull,
-  simpleProcessRouterDest,
+  checkInvalidRtTfEvents,
+  handleRtTfSingleEventError,
+  getAccessToken,
 } = require('../../util');
 
 const {
@@ -15,17 +20,11 @@ const {
   BASE_URL,
   EncryptionEntityType,
   EncryptionSource,
+  MAX_BATCH_CONVERSATIONS_SIZE,
 } = require('./config');
 
-const { InstrumentationError, OAuthSecretError } = require('../../util/errorTypes');
+const { convertToMicroseconds } = require('./util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-
-const getAccessToken = ({ secret }) => {
-  if (!secret) {
-    throw new OAuthSecretError('[CAMPAIGN MANAGER (DCM)]:: OAuth - access token not found');
-  }
-  return secret.access_token;
-};
 
 function isEmptyObject(obj) {
   return Object.keys(obj).length === 0 && obj.constructor === Object;
@@ -36,7 +35,7 @@ function buildResponse(requestJson, metadata, endpointUrl, requestType, encrypti
   const response = defaultRequestConfig();
   response.endpoint = endpointUrl;
   response.headers = {
-    Authorization: `Bearer ${getAccessToken(metadata)}`,
+    Authorization: `Bearer ${getAccessToken(metadata, 'access_token')}`,
     'Content-Type': JSON_MIME_TYPE,
   };
   response.method = defaultPostRequestConfig.requestMethod;
@@ -78,7 +77,8 @@ function processTrack(message, metadata, destination) {
     delete requestJson.childDirectedTreatment;
     delete requestJson.limitAdTracking;
   }
-  requestJson.timestampMicros = requestJson.timestampMicros.toString();
+
+  requestJson.timestampMicros = convertToMicroseconds(requestJson.timestampMicros).toString();
 
   const encryptionInfo = {};
   // prepare encrptionInfo if encryptedUserId or encryptedUserIdCandidates is given
@@ -144,35 +144,17 @@ function postValidateRequest(response) {
     );
   }
 
-  let count = 0;
-
-  if (response.body.JSON.conversions[0].gclid) {
-    count += 1;
-  }
-
-  if (response.body.JSON.conversions[0].dclid) {
-    count += 1;
-  }
-
-  if (response.body.JSON.conversions[0].encryptedUserId) {
-    count += 1;
-  }
-
-  if (response.body.JSON.conversions[0].encryptedUserIdCandidates) {
-    count += 1;
-  }
-
-  if (response.body.JSON.conversions[0].mobileDeviceId) {
-    count += 1;
-  }
-
-  if (response.body.JSON.conversions[0].impressionId) {
-    count += 1;
-  }
-
-  if (count !== 1) {
+  if (
+    !response.body.JSON.conversions[0].gclid &&
+    !response.body.JSON.conversions[0].matchId &&
+    !response.body.JSON.conversions[0].dclid &&
+    !response.body.JSON.conversions[0].encryptedUserId &&
+    !response.body.JSON.conversions[0].encryptedUserIdCandidates &&
+    !response.body.JSON.conversions[0].mobileDeviceId &&
+    !response.body.JSON.conversions[0].impressionId
+  ) {
     throw new InstrumentationError(
-      '[CAMPAIGN MANAGER (DCM)]: For CM360 we need one of encryptedUserId,encryptedUserIdCandidates, matchId, mobileDeviceId, gclid, dclid, impressionId.',
+      '[CAMPAIGN MANAGER (DCM)]: Atleast one of encryptedUserId,encryptedUserIdCandidates, matchId, mobileDeviceId, gclid, dclid, impressionId.',
     );
   }
 }
@@ -200,9 +182,110 @@ function process(event) {
   return response;
 }
 
+const generateBatch = (eventKind, events) => {
+  const batchRequestObject = defaultBatchRequestConfig();
+  const conversions = [];
+  let encryptionInfo = {};
+  const metadata = [];
+  // extracting destination, message from the first event in a batch
+  const { destination, message } = events[0];
+  // Batch event into dest batch structure
+  events.forEach((ev) => {
+    conversions.push(...ev.message.body.JSON.conversions);
+    metadata.push(ev.metadata);
+    if (ev.message.body.JSON.encryptionInfo) {
+      encryptionInfo = ev.message.body.JSON.encryptionInfo;
+    }
+  });
+
+  batchRequestObject.batchedRequest.body.JSON = {
+    kind: eventKind,
+    conversions,
+  };
+
+  if (Object.keys(encryptionInfo).length > 0) {
+    batchRequestObject.batchedRequest.body.JSON.encryptionInfo = encryptionInfo;
+  }
+
+  batchRequestObject.batchedRequest.endpoint = message.endpoint;
+
+  batchRequestObject.batchedRequest.headers = message.headers;
+
+  return {
+    ...batchRequestObject,
+    metadata,
+    destination,
+  };
+};
+
+const batchEvents = (eventChunksArray) => {
+  const batchedResponseList = [];
+
+  // group batchInsert and batchUpdate payloads
+  const groupedEventChunks = lodash.groupBy(
+    eventChunksArray,
+    (event) => event.message.body.JSON.kind,
+  );
+  Object.keys(groupedEventChunks).forEach((eventKind) => {
+    // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
+    const eventChunks = lodash.chunk(groupedEventChunks[eventKind], MAX_BATCH_CONVERSATIONS_SIZE);
+    eventChunks.forEach((chunk) => {
+      const batchEventResponse = generateBatch(eventKind, chunk);
+      batchedResponseList.push(
+        getSuccessRespEvents(
+          batchEventResponse.batchedRequest,
+          batchEventResponse.metadata,
+          batchEventResponse.destination,
+          true,
+        ),
+      );
+    });
+  });
+  return batchedResponseList;
+};
+
 const processRouterDest = async (inputs, reqMetadata) => {
-  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
-  return respList;
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
+  }
+
+  const batchErrorRespList = [];
+  const eventChunksArray = [];
+  const { destination } = inputs[0];
+  await Promise.all(
+    inputs.map(async (event) => {
+      try {
+        if (event.message.statusCode) {
+          // already transformed event
+          eventChunksArray.push({
+            message: event.message,
+            metadata: event.metadata,
+            destination,
+          });
+        } else {
+          // if not transformed
+          const proccessedRespList = process(event);
+          const transformedPayload = {
+            message: proccessedRespList,
+            metadata: event.metadata,
+            destination,
+          };
+          eventChunksArray.push(transformedPayload);
+        }
+      } catch (error) {
+        const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
+        batchErrorRespList.push(errRespEvent);
+      }
+    }),
+  );
+
+  let batchResponseList = [];
+  if (eventChunksArray.length > 0) {
+    batchResponseList = batchEvents(eventChunksArray);
+  }
+
+  return [...batchResponseList, ...batchErrorRespList];
 };
 
 module.exports = { process, processRouterDest };

@@ -1,13 +1,11 @@
+const { NetworkError } = require('@rudderstack/integrations-lib');
 const { httpSend, prepareProxyRequest } = require('../../../adapters/network');
-const { isHttpStatusSuccess } = require('../../util/index');
-
-const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
+const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../util/index');
 
 const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
-const { NetworkError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 /**
  * This function helps to create a offlineUserDataJobs
@@ -98,8 +96,15 @@ const gaAudienceProxyRequest = async (request) => {
   // step1: offlineUserDataJobs creation
 
   const firstResponse = await createJob(endpoint, customerId, listId, headers, method);
-  if (!firstResponse.success && !isHttpStatusSuccess(firstResponse?.response?.response?.status)) {
+  if (!firstResponse.success && !isHttpStatusSuccess(firstResponse?.response?.status)) {
     return firstResponse;
+  }
+
+  if (isHttpStatusSuccess(firstResponse?.response?.status)) {
+    const { partialFailureError } = firstResponse.response.data;
+    if (partialFailureError && partialFailureError.code !== 0) {
+      return firstResponse;
+    }
   }
 
   // step2: putting users into the job
@@ -108,26 +113,20 @@ const gaAudienceProxyRequest = async (request) => {
     // eslint-disable-next-line prefer-destructuring
     jobId = firstResponse.response.data.resourceName.split('/')[3];
   const secondResponse = await addUserToJob(endpoint, headers, method, jobId, body);
-  if (!secondResponse.success && !isHttpStatusSuccess(secondResponse?.response?.response?.status)) {
+  if (!secondResponse.success && !isHttpStatusSuccess(secondResponse?.response?.status)) {
     return secondResponse;
+  }
+
+  if (isHttpStatusSuccess(secondResponse?.response?.status)) {
+    const { partialFailureError } = secondResponse.response.data;
+    if (partialFailureError && partialFailureError.code !== 0) {
+      return secondResponse;
+    }
   }
 
   // step3: running the job
   const thirdResponse = await runTheJob(endpoint, headers, method, jobId);
   return thirdResponse;
-};
-
-/**
- * This function helps to detarmine type of error occured. According to the response
- * we set authErrorCategory to take decision if we need to refresh the access_token
- * or need to disable the destination.
- * @param {*} code
- * @param {*} response
- * @returns
- */
-const getAuthErrCategory = (code, response) => {
-  if (code === 401 && !response.error.details) return REFRESH_TOKEN;
-  return '';
 };
 
 const gaAudienceRespHandler = (destResponse, stageMsg) => {
@@ -142,14 +141,31 @@ const gaAudienceRespHandler = (destResponse, stageMsg) => {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },
     response,
-    getAuthErrCategory(status, response),
+    getAuthErrCategoryFromStCode(status),
   );
 };
 
 const responseHandler = (destinationResponse) => {
   const message = `Request Processed Successfully`;
-  const { status } = destinationResponse;
+  const { status, response } = destinationResponse;
   if (isHttpStatusSuccess(status)) {
+    // for google ads offline conversions the partialFailureError returns with status 200
+    const { partialFailureError } = response;
+    // non-zero code signifies partialFailure
+    // Ref - https://github.com/googleapis/googleapis/blob/master/google/rpc/code.proto
+    if (partialFailureError && partialFailureError.code !== 0) {
+      throw new NetworkError(
+        `[Google Ads Re-marketing Lists]:: partialFailureError - ${JSON.stringify(
+          partialFailureError,
+        )}`,
+        400,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(400),
+        },
+        partialFailureError,
+      );
+    }
+
     // Mostly any error will not have a status of 2xx
     return {
       status,

@@ -4,8 +4,8 @@
       {
         "destination": {
           "Config": {
-            "apiKey": "607287ffadf52c4888101870b9e71c52",
-            "apiSecret": "ef428c15e2g8aeb6ebacfd1cfbf7bfd2",
+            "apiKey": "dummyApiKey",
+            "apiSecret": "dummyApiSecret",
             "listId": "58578",
             "contactPropertiesMapping": [{ "from": "userCountry", "to": "country" }]
           }
@@ -41,7 +41,7 @@
           "endpoint": "https://api.mailjet.com/v3/REST/contactslist/58578/managemanycontacts",
           "headers": {
             "Content-Type": "application/json",
-            "Authorization": "Basic NjA3Mjg3ZmZhZGY1MmM0ODg4MTAxODcwYjllNzFjNTI6ZWY0MjhjMTVlMmc4YWViNmViYWNmZDFjZmJmN2JmZDI="
+            "Authorization": "Basic ZHVtbXlBcGlLZXk6ZHVtbXlBcGlTZWNyZXQ="
           },
           "params": {},
           "body": {
@@ -69,8 +69,8 @@
         "statusCode": 200,
         "destination": {
           "Config": {
-            "apiKey": "607287ffadf52c4888101870b9e71c52",
-            "apiSecret": "ef428c15e2g8aeb6ebacfd1cfbf7bfd2",
+            "apiKey": "dummyApiKey",
+            "apiSecret": "dummyApiSecret",
             "listId": "58578",
             "contactPropertiesMapping": [
               {

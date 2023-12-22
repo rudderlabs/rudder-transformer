@@ -1,8 +1,16 @@
 /* eslint-disable camelcase */
+/* eslint-disable @typescript-eslint/naming-convention */
 const { v5 } = require('uuid');
 const sha256 = require('sha256');
+const { TransformationError } = require('@rudderstack/integrations-lib');
 const stats = require('../../../util/stats');
-const { constructPayload, extractCustomFields, flattenJson, generateUUID, isDefinedAndNotNull, } = require('../../util');
+const {
+  constructPayload,
+  extractCustomFields,
+  flattenJson,
+  generateUUID,
+  isDefinedAndNotNull,
+} = require('../../util');
 const { RedisDB } = require('../../../util/redis/redisConnector');
 const logger = require('../../../logger');
 const {
@@ -13,10 +21,8 @@ const {
   SHOPIFY_TRACK_MAP,
   SHOPIFY_ADMIN_ONLY_EVENTS,
   useRedisDatabase,
-  maxTimeToIdentifyRSGeneratedCall
+  maxTimeToIdentifyRSGeneratedCall,
 } = require('./config');
-const { TransformationError } = require('../../util/errorTypes');
-
 
 const getDataFromRedis = async (key, metricMetadata) => {
   try {
@@ -26,14 +32,16 @@ const getDataFromRedis = async (key, metricMetadata) => {
       ...metricMetadata,
     });
     const redisData = await RedisDB.getVal(key);
-    if (redisData === null) {
+    if (
+      redisData === null ||
+      (typeof redisData === 'object' && Object.keys(redisData).length === 0)
+    ) {
       stats.increment('shopify_redis_no_val', {
         ...metricMetadata,
       });
     }
     return redisData;
-  }
-  catch (e) {
+  } catch (e) {
     logger.debug(`{{SHOPIFY::}} Get call Failed due redis error ${e}`);
     stats.increment('shopify_redis_failures', {
       type: 'get',
@@ -112,11 +120,11 @@ const extractEmailFromPayload = (event) => {
 };
 
 const getCartToken = (message) => {
-  const { event } = message;
+  const { event, properties } = message;
   if (event === SHOPIFY_TRACK_MAP.carts_update) {
-    return message.properties?.id || message.properties?.token;
+    return properties?.id || properties?.token;
   }
-  return message.properties?.cart_token || null;
+  return properties?.cart_token || null;
 };
 
 /**
@@ -141,9 +149,9 @@ const getRudderIdFromNoteAtrributes = (noteAttributes, field) => {
  *       -> if true we return `null`;
  *       -> else we don't have any identifer (very edge case) we return `random anonymousId`
  *    No Random SessionId is generated as its not a required field
- * @param {*} message 
- * @param {*} metricMetadata 
- * @returns 
+ * @param {*} message
+ * @param {*} metricMetadata
+ * @returns
  */
 const getAnonymousIdAndSessionId = async (message, metricMetadata, redisData = null) => {
   let anonymousId;
@@ -151,11 +159,15 @@ const getAnonymousIdAndSessionId = async (message, metricMetadata, redisData = n
   const noteAttributes = message.properties?.note_attributes;
   // Giving Priority to note_attributes to fetch rudderAnonymousId over Redis due to better efficiency
   if (isDefinedAndNotNull(noteAttributes)) {
-    anonymousId = getRudderIdFromNoteAtrributes(noteAttributes, "rudderAnonymousId");
-    sessionId = getRudderIdFromNoteAtrributes(noteAttributes, "rudderSessionId");
+    anonymousId = getRudderIdFromNoteAtrributes(noteAttributes, 'rudderAnonymousId');
+    sessionId = getRudderIdFromNoteAtrributes(noteAttributes, 'rudderSessionId');
   }
   // falling back to cartToken mapping or its hash in case no rudderAnonymousId or rudderSessionId is found
   if (isDefinedAndNotNull(anonymousId) && isDefinedAndNotNull(sessionId)) {
+    stats.increment('shopify_anon_id_resolve', {
+      method: 'note_attributes',
+      ...metricMetadata,
+    });
     return { anonymousId, sessionId };
   }
   const cartToken = getCartToken(message);
@@ -163,7 +175,10 @@ const getAnonymousIdAndSessionId = async (message, metricMetadata, redisData = n
     if (SHOPIFY_ADMIN_ONLY_EVENTS.includes(message.event)) {
       return { anonymousId, sessionId };
     }
-    return { anonymousId: isDefinedAndNotNull(anonymousId) ? anonymousId : generateUUID(), sessionId };
+    return {
+      anonymousId: isDefinedAndNotNull(anonymousId) ? anonymousId : generateUUID(),
+      sessionId,
+    };
   }
   if (useRedisDatabase) {
     if (!isDefinedAndNotNull(redisData)) {
@@ -178,6 +193,13 @@ const getAnonymousIdAndSessionId = async (message, metricMetadata, redisData = n
     Hash the id and use it as anonymousId (limiting 256 -> 36 chars) and sessionId is not sent as its not required field
     */
     anonymousId = v5(cartToken, v5.URL);
+  } else {
+    // This metric let us know how many events based on event name used redis for anonId resolution
+    // and for how many
+    stats.increment('shopify_anon_id_resolve', {
+      method: 'database',
+      ...metricMetadata,
+    });
   }
   return { anonymousId, sessionId };
 };
@@ -196,8 +218,7 @@ const updateCartItemsInRedis = async (cartToken, newCartItemsHash, metricMetadat
       ...metricMetadata,
     });
     await RedisDB.setVal(`${cartToken}`, value);
-  }
-  catch (e) {
+  } catch (e) {
     logger.debug(`{{SHOPIFY::}} itemsHash set call Failed due redis error ${e}`);
     stats.increment('shopify_redis_failures', {
       type: 'set',
@@ -228,10 +249,10 @@ const checkAndUpdateCartItems = async (inputEvent, redisData, metricMetadata) =>
     }
     await updateCartItemsInRedis(cartToken, newCartItemsHash, metricMetadata);
   } else {
-    const { created_at, updated_at } = inputEvent;
+    const { created_at, updated_at, line_items } = inputEvent;
     const timeDifference = Date.parse(updated_at) - Date.parse(created_at);
     const isTimeWithinThreshold = timeDifference < maxTimeToIdentifyRSGeneratedCall;
-    const isLineItemsEmpty = inputEvent?.line_items?.length === 0;
+    const isLineItemsEmpty = line_items?.length === 0;
 
     if (isTimeWithinThreshold && isLineItemsEmpty) {
       return false;

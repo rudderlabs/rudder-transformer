@@ -2,6 +2,23 @@
   "https://api.criteo.com/2022-10/audiences/34894/contactlist": {
     "status": 200
   },
+  "https://api.criteo.com/2022-10/audiences/3485/contactlist": {
+    "code": "400",
+    "response": {
+      "data": {
+        "errors": [
+          {
+            "traceIdentifier": "80a1a0ba3981b04da847d05700752c77",
+            "type": "authorization",
+            "code": "authorization-token-expired",
+            "instance": "/2022-10/audiences/123/contactlist",
+            "title": "The authorization token has expired"
+          }
+        ]
+      },
+      "status": 401
+    }
+  },
   "https://api.criteo.com/2022-10/audiences/34895/contactlist": {
     "code": "400",
     "response": {

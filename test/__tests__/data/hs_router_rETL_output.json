@@ -20,6 +20,17 @@
                 "country": "India 1",
                 "email": "testhubspot@email.com"
               }
+            },
+            {
+              "properties": {
+                "firstname": "Test Hubspot",
+                "anonymousId": "123451",
+                "country": "India",
+                "email": "testhubspotdatetime@email.com",
+                "date_closed": 1697587200000,
+                "date_created": 1680134400000,
+                "date_submitted": 1695600000000
+              }
             }
           ]
         },
@@ -32,6 +43,9 @@
     "metadata": [
       {
         "jobId": 3
+      },
+      {
+        "jobId": 4
       }
     ],
     "batched": true,

@@ -30,7 +30,7 @@
             "eventDeliveryTS": 1668424218224,
             "eventNamesSettings": [{ "event": "open" }],
             "footer": false,
-            "fromEmail": "ankitcingh93@gmail.com",
+            "fromEmail": "a@g.com",
             "fromName": "",
             "ganalytics": false,
             "group": "",
@@ -56,7 +56,7 @@
             "traits": {
               "age": "30",
               "email": "user3@rudderlabs.com",
-              "phone": "+91 66788956789",
+              "phone": "+91 9876543210",
               "city": "Ahmedabad",
               "state": "Gujarat",
               "lastName": "gupta",
@@ -103,7 +103,7 @@
             "eventDeliveryTS": 1668424218224,
             "eventNamesSettings": [{ "event": "open" }],
             "footer": false,
-            "fromEmail": "ankitcingh93@gmail.com",
+            "fromEmail": "a@g.com",
             "fromName": "",
             "ganalytics": false,
             "group": "",
@@ -128,7 +128,7 @@
           "context": {
             "traits": {
               "email": "user4@rudderlabs.com",
-              "phone": "+91 66788956769",
+              "phone": "+91 9876543210",
               "userId": "sajal",
               "city": "Bombey",
               "state": "Maharastra",
@@ -176,7 +176,7 @@
             "eventDeliveryTS": 1668424218224,
             "eventNamesSettings": [{ "event": "open" }],
             "footer": false,
-            "fromEmail": "ankitcingh93@gmail.com",
+            "fromEmail": "a@g.com",
             "fromName": "",
             "ganalytics": false,
             "group": "",
@@ -201,7 +201,7 @@
           "context": {
             "traits": {
               "email": "user5@rudderlabs.com",
-              "phone": "+91 66788956769",
+              "phone": "+91 9876543210",
               "city": "Banglore",
               "lastName": "bhatt",
               "username": "kiran bhatt",
@@ -250,7 +250,7 @@
             "eventDeliveryTS": 1668424218224,
             "eventNamesSettings": [{ "event": "open" }],
             "footer": false,
-            "fromEmail": "ankitcingh93@gmail.com",
+            "fromEmail": "a@g.com",
             "fromName": "",
             "ganalytics": false,
             "group": "",
@@ -275,7 +275,7 @@
           "context": {
             "traits": {
               "email": "user6@rudderlabs.com",
-              "phone": "+91 66758956769",
+              "phone": "+91 9876543210",
               "city": "Los Angeles",
               "lastName": "doe",
               "name": "john doe",
@@ -325,7 +325,7 @@
             "eventDeliveryTS": 1668424218224,
             "eventNamesSettings": [{ "event": "open" }],
             "footer": false,
-            "fromEmail": "ankitcingh93@gmail.com",
+            "fromEmail": "a@g.com",
             "fromName": "",
             "ganalytics": false,
             "group": "",
@@ -350,7 +350,7 @@
           "context": {
             "traits": {
               "email": "user7@rudderlabs.com",
-              "phone": "+91 66958956769",
+              "phone": "+91 9876543210",
               "city": "Chicago",
               "lastName": "patel",
               "name": "reshma patel",
@@ -391,7 +391,7 @@
             "eventDeliveryTS": 1668424218224,
             "eventNamesSettings": [{ "event": "open" }],
             "footer": false,
-            "fromEmail": "ankitcingh93@gmail.com",
+            "fromEmail": "a@g.com",
             "fromName": "",
             "ganalytics": false,
             "group": "",
@@ -416,7 +416,7 @@
           "context": {
             "traits": {
               "email": "user8@rudderlabs.com",
-              "phone": "+91 76958956769",
+              "phone": "+91 9876543210",
               "city": "Chicago",
               "lastName": "patel",
               "name": "karishma patel",
@@ -459,7 +459,7 @@
               "contacts": [
                 {
                   "email": "user3@rudderlabs.com",
-                  "phone_number": "+91 66788956789",
+                  "phone_number": "+91 9876543210",
                   "first_name": "aman",
                   "last_name": "gupta",
                   "unique_name": "aman gupta",
@@ -503,7 +503,7 @@
             "eventDeliveryTS": 1668424218224,
             "eventNamesSettings": [{ "event": "open" }],
             "footer": false,
-            "fromEmail": "ankitcingh93@gmail.com",
+            "fromEmail": "a@g.com",
             "fromName": "",
             "ganalytics": false,
             "group": "",
@@ -540,7 +540,7 @@
               "contacts": [
                 {
                   "email": "user4@rudderlabs.com",
-                  "phone_number": "+91 66788956769",
+                  "phone_number": "+91 9876543210",
                   "first_name": "suresh",
                   "last_name": "gupta",
                   "custom_fields": {}
@@ -583,7 +583,7 @@
             "eventDeliveryTS": 1668424218224,
             "eventNamesSettings": [{ "event": "open" }],
             "footer": false,
-            "fromEmail": "ankitcingh93@gmail.com",
+            "fromEmail": "a@g.com",
             "fromName": "",
             "ganalytics": false,
             "group": "",
@@ -623,7 +623,7 @@
               "contacts": [
                 {
                   "email": "user5@rudderlabs.com",
-                  "phone_number": "+91 66788956769",
+                  "phone_number": "+91 9876543210",
                   "first_name": "kiran",
                   "last_name": "bhatt",
                   "custom_fields": {}
@@ -666,7 +666,7 @@
             "eventDeliveryTS": 1668424218224,
             "eventNamesSettings": [{ "event": "open" }],
             "footer": false,
-            "fromEmail": "ankitcingh93@gmail.com",
+            "fromEmail": "a@g.com",
             "fromName": "",
             "ganalytics": false,
             "group": "",
@@ -706,7 +706,7 @@
               "contacts": [
                 {
                   "email": "user6@rudderlabs.com",
-                  "phone_number": "+91 66758956769",
+                  "phone_number": "+91 9876543210",
                   "first_name": "john",
                   "last_name": "doe",
                   "unique_name": "john doe",
@@ -750,7 +750,7 @@
             "eventDeliveryTS": 1668424218224,
             "eventNamesSettings": [{ "event": "open" }],
             "footer": false,
-            "fromEmail": "ankitcingh93@gmail.com",
+            "fromEmail": "a@g.com",
             "fromName": "",
             "ganalytics": false,
             "group": "",
@@ -786,7 +786,7 @@
               "contacts": [
                 {
                   "email": "user7@rudderlabs.com",
-                  "phone_number": "+91 66958956769",
+                  "phone_number": "+91 9876543210",
                   "first_name": "reshma",
                   "last_name": "patel",
                   "unique_name": "reshma patel",
@@ -830,7 +830,7 @@
             "eventDeliveryTS": 1668424218224,
             "eventNamesSettings": [{ "event": "open" }],
             "footer": false,
-            "fromEmail": "ankitcingh93@gmail.com",
+            "fromEmail": "a@g.com",
             "fromName": "",
             "ganalytics": false,
             "group": "",
@@ -872,7 +872,7 @@
               "contacts": [
                 {
                   "email": "user8@rudderlabs.com",
-                  "phone_number": "+91 76958956769",
+                  "phone_number": "+91 9876543210",
                   "first_name": "karishma",
                   "last_name": "patel",
                   "unique_name": "karishma patel",
@@ -916,7 +916,7 @@
             "eventDeliveryTS": 1668424218224,
             "eventNamesSettings": [{ "event": "open" }],
             "footer": false,
-            "fromEmail": "ankitcingh93@gmail.com",
+            "fromEmail": "a@g.com",
             "fromName": "",
             "ganalytics": false,
             "group": "",

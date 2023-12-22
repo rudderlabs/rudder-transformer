@@ -1,12 +1,14 @@
-import IntegrationDestinationService from '../interfaces/DestinationService';
+/* eslint-disable class-methods-use-this */
+import { DestinationService } from '../interfaces/DestinationService';
 import {
+  DeliveriesResponse,
   DeliveryResponse,
   Destination,
   ErrorDetailer,
   MetaTransferObject,
-  ProcessorTransformationOutput,
   ProcessorTransformationRequest,
   ProcessorTransformationResponse,
+  ProxyRequest,
   RouterTransformationRequestData,
   RouterTransformationResponse,
   UserDeletionRequest,
@@ -19,15 +21,12 @@ import { CommonUtils } from '../util/common';
 
 const NS_PER_SEC = 1e9;
 
-export default class ComparatorService implements IntegrationDestinationService {
-  secondaryService: IntegrationDestinationService;
+export class ComparatorService implements DestinationService {
+  secondaryService: DestinationService;
 
-  primaryService: IntegrationDestinationService;
+  primaryService: DestinationService;
 
-  constructor(
-    primaryService: IntegrationDestinationService,
-    secondaryService: IntegrationDestinationService,
-  ) {
+  constructor(primaryService: DestinationService, secondaryService: DestinationService) {
     this.primaryService = primaryService;
     this.secondaryService = secondaryService;
   }
@@ -62,7 +61,7 @@ export default class ComparatorService implements IntegrationDestinationService 
   }
 
   private getTestThreshold(destination: Destination) {
-    return destination.DestinationDefinition?.Config['camparisonTestThreshold'] || 0;
+    return destination.DestinationDefinition?.Config?.camparisonTestThreshold || 0;
   }
 
   private getComparisonLogs(
@@ -81,6 +80,7 @@ export default class ComparatorService implements IntegrationDestinationService 
       return;
     }
 
+    // eslint-disable-next-line no-restricted-syntax
     for (const [index, element] of primaryResplist.entries()) {
       const objectDiff = CommonUtils.objectDiff(element, secondaryResplist[index]);
       if (Object.keys(objectDiff).length > 0) {
@@ -129,6 +129,7 @@ export default class ComparatorService implements IntegrationDestinationService 
     }
 
     let hasComparisonFailed = false;
+    // eslint-disable-next-line no-restricted-syntax
     for (const [index, element] of primaryResplist.entries()) {
       const objectDiff = CommonUtils.objectDiff(element, secondaryResplist[index]);
       if (Object.keys(objectDiff).length > 0) {
@@ -156,7 +157,7 @@ export default class ComparatorService implements IntegrationDestinationService 
     secondaryServiceCallback: any,
     destinationType: string,
     version: string,
-    requestMetadata: Object,
+    requestMetadata: NonNullable<unknown>,
     feature: string,
     destinationId: string,
   ): Promise<void> {
@@ -194,7 +195,7 @@ export default class ComparatorService implements IntegrationDestinationService 
     events: ProcessorTransformationRequest[],
     destinationType: string,
     version: string,
-    requestMetadata: Object,
+    requestMetadata: NonNullable<unknown>,
   ): Promise<ProcessorTransformationResponse[]> {
     const destinationId = events[0].destination.ID;
     const primaryStartTime = process.hrtime();
@@ -252,7 +253,7 @@ export default class ComparatorService implements IntegrationDestinationService 
     events: RouterTransformationRequestData[],
     destinationType: string,
     version: string,
-    requestMetadata: Object,
+    requestMetadata: NonNullable<unknown>,
   ): Promise<RouterTransformationResponse[]> {
     const destinationId = events[0].destination.ID;
     const primaryStartTime = process.hrtime();
@@ -310,7 +311,7 @@ export default class ComparatorService implements IntegrationDestinationService 
     events: RouterTransformationRequestData[],
     destinationType: string,
     version: string,
-    requestMetadata: Object,
+    requestMetadata: NonNullable<unknown>,
   ): RouterTransformationResponse[] {
     const destinationId = events[0].destination.ID;
     const primaryStartTime = process.hrtime();
@@ -365,17 +366,18 @@ export default class ComparatorService implements IntegrationDestinationService 
   }
 
   public async deliver(
-    event: ProcessorTransformationOutput,
+    event: ProxyRequest,
     destinationType: string,
-    requestMetadata: Object,
-  ): Promise<DeliveryResponse> {
+    requestMetadata: NonNullable<unknown>,
+    version: string,
+  ): Promise<DeliveryResponse | DeliveriesResponse> {
     const primaryResplist = await this.primaryService.deliver(
       event,
       destinationType,
       requestMetadata,
+      version,
     );
     logger.error('[LIVE_COMPARE_TEST] not implemented for delivery routine');
-
     return primaryResplist;
   }
 

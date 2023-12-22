@@ -1,10 +1,10 @@
+const { NetworkError, AbortedError } = require('@rudderstack/integrations-lib');
 const { isHttpStatusSuccess } = require('../../util/index');
 const { proxyRequest, prepareProxyRequest } = require('../../../adapters/network');
 const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
-const { NetworkError, AbortedError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 
 const responseHandler = (destinationResponse) => {
@@ -43,6 +43,7 @@ const responseHandler = (destinationResponse) => {
   };
 };
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 class networkHandler {
   constructor() {
     this.responseHandler = responseHandler;

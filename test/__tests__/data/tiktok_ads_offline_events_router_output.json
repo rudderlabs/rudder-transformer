@@ -7,7 +7,7 @@
       "method": "POST",
       "endpoint": "https://business-api.tiktok.com/open_api/v1.3/offline/batch/",
       "headers": {
-        "Access-Token": "fuwheirujkvjnkrtgkf",
+        "Access-Token": "dummyAccessToken",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -93,7 +93,7 @@
     },
     "destination": {
       "Config": {
-        "accessToken": "fuwheirujkvjnkrtgkf",
+        "accessToken": "dummyAccessToken",
         "hashUserProperties": true
       }
     },
@@ -115,7 +115,7 @@
       "method": "POST",
       "endpoint": "https://business-api.tiktok.com/open_api/v1.3/offline/batch/",
       "headers": {
-        "Access-Token": "fuwheirujkvjnkrtgkf",
+        "Access-Token": "dummyAccessToken",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -159,7 +159,7 @@
     },
     "destination": {
       "Config": {
-        "accessToken": "fuwheirujkvjnkrtgkf",
+        "accessToken": "dummyAccessToken",
         "hashUserProperties": true
       }
     },
@@ -173,7 +173,7 @@
   {
     "destination": {
       "Config": {
-        "accessToken": "fuwheirujkvjnkrtgkf",
+        "accessToken": "dummyAccessToken",
         "hashUserProperties": true
       }
     },

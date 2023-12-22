@@ -1,3 +1,8 @@
+const {
+  ConfigurationError,
+  TransformationError,
+  InstrumentationError,
+} = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const { BASE_URL } = require('./config');
 const { populatePayload } = require('./utils');
@@ -7,11 +12,6 @@ const {
   simpleProcessRouterDest,
   removeUndefinedAndNullAndEmptyValues,
 } = require('../../util');
-const {
-  ConfigurationError,
-  TransformationError,
-  InstrumentationError,
-} = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (payload, endpoint) => {

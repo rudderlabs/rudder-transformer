@@ -19,7 +19,7 @@
       "endpoint": "https://rudderstack.t.stormly.com/webhook/rudderstack/identify",
       "files": {},
       "headers": {
-        "Authorization": "Basic dea8bdce17cd64e25ac31768bba574e26",
+        "Authorization": "Basic dummyApiKey",
         "Content-Type": "application/json"
       },
       "method": "POST",
@@ -29,7 +29,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "dea8bdce17cd64e25ac31768bba574e26"
+        "apiKey": "dummyApiKey"
       },
       "ID": "stormly123"
     },
@@ -43,7 +43,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "dea8bdce17cd64e25ac31768bba574e26"
+        "apiKey": "dummyApiKey"
       },
       "ID": "stormly123"
     },

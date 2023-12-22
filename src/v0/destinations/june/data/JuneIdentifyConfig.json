@@ -18,10 +18,7 @@
   },
   {
     "destKey": "traits",
-    "sourceKeys": [
-      "context.traits",
-      "traits"
-    ],
+    "sourceKeys": ["context.traits", "traits"],
     "required": false
   },
   {
@@ -29,13 +26,7 @@
     "sourceKeys": "context",
     "required": false,
     "metadata": {
-      "excludes": [
-        "page",
-        "traits",
-        "sessionId",
-        "sessionStart",
-        "consentManagement"
-      ]
+      "excludes": ["page", "traits", "sessionId", "sessionStart", "consentManagement"]
     }
   }
 ]

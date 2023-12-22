@@ -1,4 +1,5 @@
 const get = require('get-value');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const { endpoints } = require('./config');
 const { categoriesList } = require('./data/eventMapping');
@@ -11,7 +12,6 @@ const {
   isAppleFamily,
   simpleProcessRouterDest,
 } = require('../../util');
-const { InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function responseBuilder(payload, message, destination, category) {
@@ -44,12 +44,18 @@ function getCategoryAndName(rudderEventName) {
   for (const category of categoriesList) {
     let requiredName = null;
     let requiredCategory = null;
-    // eslint-disable-next-line array-callback-return
+    // eslint-disable-next-line array-callback-return, sonarjs/no-ignored-return
     Object.keys(category.name).find((branchKey) => {
-      if (branchKey.toLowerCase() === rudderEventName.toLowerCase()) {
+      if (
+        typeof branchKey === 'string' &&
+        typeof rudderEventName === 'string' &&
+        branchKey.toLowerCase() === rudderEventName.toLowerCase()
+      ) {
         requiredName = category.name[branchKey];
         requiredCategory = category;
+        return true;
       }
+      return false;
     });
     if (requiredName != null && requiredCategory != null) {
       return { evName: requiredName, category: requiredCategory };
@@ -108,6 +114,7 @@ function mapPayload(category, rudderProperty, rudderPropertiesObj) {
 
   let valFound = false;
   if (category.content_items) {
+    // eslint-disable-next-line sonarjs/no-ignored-return
     Object.keys(category.content_items).find((branchMappingProperty) => {
       if (branchMappingProperty === rudderProperty) {
         const tmpKeyName = category.content_items[branchMappingProperty];
@@ -164,7 +171,7 @@ function getCommonPayload(message, category, evName) {
         productObj = {};
         for (let i = 0; i < rudderPropertiesObj.products.length; i += 1) {
           const product = rudderPropertiesObj.products[i];
-          // eslint-disable-next-line no-loop-func
+          // eslint-disable-next-line @typescript-eslint/no-loop-func
           Object.keys(product).forEach((productProp) => {
             const { contentItemsObj, eventDataObj, customDataObj } = mapPayload(
               category,

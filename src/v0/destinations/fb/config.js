@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
+const VERSION = 'v18.0';
+
 const getPath = (file) => path.resolve(__dirname, file);
 
 const baseMapping = JSON.parse(fs.readFileSync(getPath('./data/FbAppBasicMapping.json')));
@@ -20,6 +22,7 @@ const eventPropToTypeMapping = JSON.parse(
 );
 
 module.exports = {
+  VERSION,
   baseMapping,
   eventNameMapping,
   eventPropsMapping,

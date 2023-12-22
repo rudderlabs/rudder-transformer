@@ -1,4 +1,5 @@
-const _ = require('lodash');
+const lodash = require('lodash');
+const { TransformationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
@@ -20,7 +21,6 @@ const {
   isDefinedAndNotNull,
   isAppleFamily,
 } = require('../../util');
-const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
 
 /*
   All the fields listed inside properties which are not directly mapped, will be sent to 'e' as custom event attributes
@@ -75,7 +75,7 @@ const exclusionList = {
  * @param {*} eventName
  */
 const isSessionEvent = (Config, eventName) => {
-  const mappedSessionEvents = _.map(Config.sessionEventList, 'sessionEventName');
+  const mappedSessionEvents = lodash.map(Config.sessionEventList, 'sessionEventName');
   return mappedSessionEvents.includes(eventName) || SESSIONEVENTS.includes(eventName.toLowerCase());
 };
 

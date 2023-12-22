@@ -4,19 +4,18 @@ import gracefulShutdown from 'http-graceful-shutdown';
 import dotenv from 'dotenv';
 import logger from './logger';
 import cluster from './util/cluster';
-import { router } from './legacy/router';
-import { testRouter } from './testRouter';
 import { metricsRouter } from './routes/metricsRouter';
-import { addStatMiddleware, addRequestSizeMiddleware } from './middleware';
+import { addStatMiddleware, addRequestSizeMiddleware, initPyroscope } from './middleware';
 import { logProcessInfo } from './util/utils';
 import { applicationRoutes, addSwaggerRoutes } from './routes';
 import { RedisDB } from './util/redis/redisConnector';
 
 dotenv.config();
 const clusterEnabled = process.env.CLUSTER_ENABLED !== 'false';
-const useUpdatedRoutes = process.env.ENABLE_NEW_ROUTES !== 'false';
-const port = parseInt(process.env.PORT || '9090', 10);
+const port = parseInt(process.env.PORT ?? '9090', 10);
 const metricsPort = parseInt(process.env.METRICS_PORT || '9091', 10);
+
+initPyroscope();
 
 const app = new Koa();
 addStatMiddleware(app);
@@ -30,19 +29,11 @@ app.use(
     jsonLimit: '200mb',
   }),
 );
-
 addRequestSizeMiddleware(app);
 addSwaggerRoutes(app);
 
-if (useUpdatedRoutes) {
-  logger.info('Using new routes');
-  applicationRoutes(app);
-} else {
-  // To be depricated
-  logger.info('Using old routes');
-  app.use(router.routes()).use(router.allowedMethods());
-  app.use(testRouter.routes()).use(testRouter.allowedMethods());
-}
+logger.info('Using new routes');
+applicationRoutes(app);
 
 function finalFunction() {
   RedisDB.disconnect();

@@ -1,0 +1,67 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+    exportAll: true
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+  - name: removeUndefinedNullEmptyExclBoolInt
+    path: ../../../../v0/util
+  - path: ./config
+    exportAll: true
+  - path: ./utils
+    exportAll: true
+
+steps:
+  - name: validateInput
+    template: |
+      let messageType = .message.type;
+      $.assertConfig(.destination.Config.audienceId, "Audience Id is not present. Aborting");
+      $.assertConfig(.destination.Config.audienceName, "Audience Name is not present. Aborting");
+      $.assertConfig(.destination.Config.accessToken, "Access Token is not present. Aborting");
+      $.assertConfig(.destination.Config.clientSideId, "Launch Darkly Client Side is not present. Aborting");
+      $.assert(.message.type, "Message Type is not present. Aborting message.");
+      $.assert(.message.type.toLowerCase() === $.SUPPORTED_EVENT_TYPE, "Event type " + .message.type.toLowerCase() + " is not supported. Aborting message.");
+      $.assert(.message.properties, "Message properties is not present. Aborting message.");
+      $.assert(.message.properties.listData, "`listData` is not present inside properties. Aborting message.");
+      $.assert($.containsAll(Object.keys(.message.properties.listData), $.ACTION_TYPES), "Unsupported action type. Aborting message.")
+      $.assert(Object.keys(.message.properties.listData).length > 0, "`listData` is empty. Aborting message.")
+
+  - name: batchIdentifiersList
+    description: batch identifiers list
+    template: |
+      const batchedList = $.batchIdentifiersList(.message.properties.listData);
+      $.assert(batchedList.length > 0, "`listData` is empty. Aborting message.");
+      batchedList;
+
+  - name: prepareBasePayload
+    template: |
+      const payload = {
+        environmentId: .destination.Config.clientSideId, 
+        cohortId: .destination.Config.audienceId, 
+        cohortName: .destination.Config.audienceName, 
+        contextKind: .destination.Config.audienceType
+      };
+      $.removeUndefinedNullEmptyExclBoolInt(payload);
+
+  - name: buildResponseForProcessTransformation
+    description: build multiplexed response depending upon batch size
+    template: |
+      $.outputs.batchIdentifiersList.().({
+        "body": {
+          "JSON": {...$.outputs.prepareBasePayload, listData: .},
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": {{$.ENDPOINT}},
+        "headers": {
+          "Authorization": ^.destination.Config.accessToken,
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "files": {}
+      })[]

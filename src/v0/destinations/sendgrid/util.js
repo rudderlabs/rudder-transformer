@@ -1,4 +1,9 @@
 const get = require('get-value');
+const {
+  NetworkError,
+  ConfigurationError,
+  InstrumentationError,
+} = require('@rudderstack/integrations-lib');
 const logger = require('../../../logger');
 const {
   isEmpty,
@@ -21,7 +26,6 @@ const {
   processAxiosResponse,
 } = require('../../../adapters/utils/networkUtils');
 const { httpGET } = require('../../../adapters/network');
-const { NetworkError, ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 const { AUTH_CACHE_TTL, JSON_MIME_TYPE } = require('../../util/constant');
 const { MAPPING_CONFIG, CONFIG_CATEGORIES } = require('./config');
 

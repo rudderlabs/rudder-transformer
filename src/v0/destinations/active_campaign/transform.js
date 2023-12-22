@@ -1,6 +1,7 @@
 /* eslint-disable  array-callback-return */
 /* eslint-disable  no-empty */
 const get = require('get-value');
+const { InstrumentationError, TransformationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG, getHeader } = require('./config');
 const {
@@ -12,13 +13,6 @@ const {
 } = require('../../util');
 const { errorHandler } = require('./util');
 const { httpGET, httpPOST } = require('../../../adapters/network');
-const {
-  InstrumentationError,
-  TransformationError,
-  NetworkError,
-} = require('../../util/errorTypes');
-const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
-const tags = require('../../util/tags');
 
 const TOTAL_RECORDS_KEY = 'response.data.meta.total';
 const EVENT_DATA_KEY = 'properties.eventData';
@@ -68,18 +62,11 @@ const syncContact = async (contactPayload, category, destination) => {
     feature: 'transformation',
   });
   if (res.success === false) {
-    errorHandler(res.response, 'Failed to create new contact');
+    errorHandler(res, 'Failed to create new contact');
   }
   const createdContact = get(res, 'response.data.contact'); // null safe
   if (!createdContact) {
-    throw new NetworkError(
-      'Unable to Create Contact',
-      res.response?.status,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(res.response?.status),
-      },
-      res.response,
-    );
+    errorHandler(res, 'Failed to create new contact');
   }
   return createdContact.id;
 };
@@ -111,7 +98,7 @@ const customTagProcessor = async (message, category, destination, contactId) => 
     feature: 'transformation',
   });
   if (res.success === false) {
-    errorHandler(res.response, 'Failed to fetch already created tags');
+    errorHandler(res, 'Failed to fetch already created tags');
   }
 
   const storedTags = {};
@@ -130,7 +117,9 @@ const customTagProcessor = async (message, category, destination, contactId) => 
     if (parseInt(get(res, TOTAL_RECORDS_KEY), 10) > 100) {
       const limit = Math.floor(parseInt(get(res, TOTAL_RECORDS_KEY), 10) / 100);
       for (let i = 0; i < limit; i += 1) {
-        endpoint = `${destination.Config.apiUrl}${category.tagEndPoint}?limit=100&offset=${100 * (i + 1)}`;
+        endpoint = `${destination.Config.apiUrl}${category.tagEndPoint}?limit=100&offset=${
+          100 * (i + 1)
+        }`;
         requestOptions = {
           headers: getHeader(destination),
         };
@@ -180,7 +169,7 @@ const customTagProcessor = async (message, category, destination, contactId) => 
           feature: 'transformation',
         });
         if (res.success === false) {
-          errorHandler(res.response, 'Failed to create new tag');
+          errorHandler(res, 'Failed to create new tag');
           // For each tags successfully created the response id is pushed to tagIds
         }
         if (res.response.status === 201) tagIds.push(res.response.data.tag.id);
@@ -212,7 +201,7 @@ const customTagProcessor = async (message, category, destination, contactId) => 
   );
   responsesArr.forEach((respItem) => {
     if (respItem.success === false)
-      errorHandler(respItem.response, 'Failed to merge created contact with created tags');
+      errorHandler(respItem, 'Failed to merge created contact with created tags');
   });
 };
 
@@ -230,7 +219,7 @@ const customFieldProcessor = async (message, category, destination) => {
   // Step - 2
   // Get the existing field data from dest and store it in responseStaging
   // Ref - https://developers.activecampaign.com/reference/retrieve-fields
-  let endpoint = `${destination.Config.apiUrl}${`${category.fieldEndPoint}?limit=100`}`;
+  let endpoint = `${destination.Config.apiUrl}${category.fieldEndPoint}?limit=100`;
   const requestOptions = {
     headers: {
       'Api-Token': destination.Config.apiKey,
@@ -241,7 +230,7 @@ const customFieldProcessor = async (message, category, destination) => {
     feature: 'transformation',
   });
   if (res.success === false) {
-    errorHandler(res.response, 'Failed to get existing field data');
+    errorHandler(res, 'Failed to get existing field data');
   }
   responseStaging.push(res.response.status === 200 ? res.response.data.fields : []);
 
@@ -249,7 +238,9 @@ const customFieldProcessor = async (message, category, destination) => {
   const limit = Math.floor(parseInt(get(res, TOTAL_RECORDS_KEY), 10) / 100);
   if (parseInt(get(res, TOTAL_RECORDS_KEY), 10) > 100) {
     for (let i = 0; i < limit; i += 1) {
-      endpoint = `${destination.Config.apiUrl}${category.fieldEndPoint}?limit=100&offset=${100 * (i + 1)}`;
+      endpoint = `${destination.Config.apiUrl}${category.fieldEndPoint}?limit=100&offset=${
+        100 * (i + 1)
+      }`;
       const requestOpt = {
         headers: {
           'Api-Token': destination.Config.apiKey,
@@ -266,7 +257,7 @@ const customFieldProcessor = async (message, category, destination) => {
       if (resp.success === true && resp.response.status === 200) {
         responseStaging.push(resp.response.data.fields);
       } else {
-        errorHandler(resp.response, 'Failed to get existing field data');
+        errorHandler(resp, 'Failed to get existing field data');
       }
     });
   }
@@ -283,7 +274,7 @@ const customFieldProcessor = async (message, category, destination) => {
 
   const storedFields = Object.keys(fieldMap);
   const filteredFieldKeys = [];
-  fieldKeys.map((fieldKey) => {
+  fieldKeys.forEach((fieldKey) => {
     // If the field is present in fieldMap push it to filteredFieldKeys else ignore
     if (storedFields.includes(fieldKey)) {
       filteredFieldKeys.push(fieldKey);
@@ -297,7 +288,7 @@ const customFieldProcessor = async (message, category, destination) => {
   // Creating a field array list conating field id and field value which will be merged to the contact
   // Ref: https://developers.activecampaign.com/reference/sync-a-contacts-data
   const fieldsArrValues = [];
-  filteredFieldKeys.map((key) => {
+  filteredFieldKeys.forEach((key) => {
     let fPayload;
     if (Array.isArray(fieldInfo[key])) {
       fPayload = '||';
@@ -327,7 +318,7 @@ const customListProcessor = async (message, category, destination, contactId) =>
   // The list info is pushed into a list object array
   const listArr = [];
   if (Array.isArray(listInfo)) {
-    listInfo.map((list) => {
+    listInfo.forEach((list) => {
       listArr.push(list);
     });
   } else {
@@ -337,7 +328,8 @@ const customListProcessor = async (message, category, destination, contactId) =>
   // status information
   // Ref: https://developers.activecampaign.com/reference/update-list-status-for-contact/
   const promises = [];
-  listArr.map(async (li) => {
+  // eslint-disable-next-line no-restricted-syntax
+  for (const li of listArr) {
     if (li.status === 'subscribe' || li.status === 'unsubscribe') {
       const endpoint = `${destination.Config.apiUrl}${category.mergeListWithContactUrl}`;
       const requestData = {
@@ -356,11 +348,11 @@ const customListProcessor = async (message, category, destination, contactId) =>
       });
       promises.push(res);
     }
-  });
+  }
   const responses = await Promise.all(promises);
   responses.forEach((respItem) => {
     if (respItem.success === false) {
-      errorHandler(respItem.response, 'Failed to map created contact with the list');
+      errorHandler(respItem, 'Failed to map created contact with the list');
     }
   });
 };
@@ -412,18 +404,11 @@ const screenRequestHandler = async (message, category, destination) => {
     feature: 'transformation',
   });
   if (res.success === false) {
-    errorHandler(res.response, 'Failed to retrieve events');
+    errorHandler(res, 'Failed to retrieve events');
   }
 
   if (res?.response?.status !== 200) {
-    throw new NetworkError(
-      'Unable to create event',
-      res.response?.status,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(res.response?.status),
-      },
-      res.response,
-    );
+    errorHandler(res, 'Unable to create event');
   }
 
   const storedEventsArr = res.response?.data?.eventTrackingEvents;
@@ -446,18 +431,11 @@ const screenRequestHandler = async (message, category, destination) => {
       feature: 'transformation',
     });
     if (res.success === false) {
-      errorHandler(res.response, 'Failed to create event');
+      errorHandler(res, 'Failed to create event');
     }
 
     if (res.response.status !== 201) {
-      throw new NetworkError(
-        'Unable to create event',
-        res.response.status,
-        {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(res.response.status),
-        },
-        res?.response,
-      );
+      errorHandler(res, 'Unable to create event');
     }
   }
   // Previous operations successfull then
@@ -490,18 +468,11 @@ const trackRequestHandler = async (message, category, destination) => {
   });
 
   if (res.success === false) {
-    errorHandler(res.response, 'Failed to retrieve events');
+    errorHandler(res, 'Failed to retrieve events');
   }
 
   if (res.response.status !== 200) {
-    throw new NetworkError(
-      'Unable to fetch events. Aborting',
-      res.response.status,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(res.response.status),
-      },
-      res?.response,
-    );
+    errorHandler(res, 'Unable to fetch events. Aborting');
   }
 
   const storedEventsArr = res.response?.data?.eventTrackingEvents;
@@ -524,14 +495,7 @@ const trackRequestHandler = async (message, category, destination) => {
       feature: 'transformation',
     });
     if (res.response?.status !== 201) {
-      throw new NetworkError(
-        'Unable to create event. Aborting',
-        res.response.status,
-        {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(res.response.status),
-        },
-        res.response,
-      );
+      errorHandler(res, 'Unable to create event. Aborting');
     }
   }
 

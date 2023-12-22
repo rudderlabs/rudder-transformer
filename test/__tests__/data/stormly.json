@@ -4,7 +4,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "dea8bdce17cd64e25ac31768bba574e26"
+          "apiKey": "dummyApiKey"
         },
         "ID": "stormly123"
       },
@@ -31,7 +31,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "dea8bdce17cd64e25ac31768bba574e26"
+          "apiKey": "dummyApiKey"
         },
         "ID": "stormly123"
       },
@@ -59,7 +59,7 @@
       "endpoint": "https://rudderstack.t.stormly.com/webhook/rudderstack/identify",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Basic dea8bdce17cd64e25ac31768bba574e26"
+        "Authorization": "Basic dummyApiKey"
       },
       "params": {},
       "body": {
@@ -84,7 +84,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "dea8bdce17cd64e25ac31768bba574e26"
+          "apiKey": "dummyApiKey"
         },
         "ID": "stormly123"
       },
@@ -113,7 +113,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "dea8bdce17cd64e25ac31768bba574e26"
+          "apiKey": "dummyApiKey"
         },
         "ID": "stormly123"
       },
@@ -140,7 +140,7 @@
       "endpoint": "https://rudderstack.t.stormly.com/webhook/rudderstack/track",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Basic dea8bdce17cd64e25ac31768bba574e26"
+        "Authorization": "Basic dummyApiKey"
       },
       "params": {},
       "body": {
@@ -167,7 +167,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "dea8bdce17cd64e25ac31768bba574e26"
+          "apiKey": "dummyApiKey"
         },
         "ID": "stormly123"
       },
@@ -188,7 +188,7 @@
       "endpoint": "https://rudderstack.t.stormly.com/webhook/rudderstack/track",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Basic dea8bdce17cd64e25ac31768bba574e26"
+        "Authorization": "Basic dummyApiKey"
       },
       "params": {},
       "body": {
@@ -209,7 +209,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "dea8bdce17cd64e25ac31768bba574e26"
+          "apiKey": "dummyApiKey"
         },
         "ID": "stormly123"
       },
@@ -237,7 +237,7 @@
       "endpoint": "https://rudderstack.t.stormly.com/webhook/rudderstack/track",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Basic dea8bdce17cd64e25ac31768bba574e26"
+        "Authorization": "Basic dummyApiKey"
       },
       "params": {},
       "body": {
@@ -267,7 +267,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "dea8bdce17cd64e25ac31768bba574e26"
+          "apiKey": "dummyApiKey"
         },
         "ID": "stormly123"
       },
@@ -302,7 +302,7 @@
       "endpoint": "https://rudderstack.t.stormly.com/webhook/rudderstack/track",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Basic dea8bdce17cd64e25ac31768bba574e26"
+        "Authorization": "Basic dummyApiKey"
       },
       "params": {},
       "body": {
@@ -332,7 +332,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "dea8bdce17cd64e25ac31768bba574e26"
+          "apiKey": "dummyApiKey"
         },
         "ID": "stormly123"
       },
@@ -361,7 +361,7 @@
       "endpoint": "https://rudderstack.t.stormly.com/webhook/rudderstack/group",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Basic dea8bdce17cd64e25ac31768bba574e26"
+        "Authorization": "Basic dummyApiKey"
       },
       "params": {},
       "body": {

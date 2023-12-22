@@ -3,13 +3,13 @@ import { ProcessorTransformationRequest, RouterTransformationRequestData } from 
 import { DynamicConfigParser } from '../../util/dynamicConfigParser';
 import { oncehubTransformer } from '../../util/oncehub-custom-transformer';
 
-export default class PreTransformationDestinationService {
+export class DestinationPreTransformationService {
   public static preProcess(
     events: ProcessorTransformationRequest[] | RouterTransformationRequestData[],
     ctx: Context,
   ) {
     const reqParams = ctx.request.query;
-    events = events.map(
+    const eventsProcessed = events.map(
       (event: ProcessorTransformationRequest | RouterTransformationRequestData) => {
         // look for traits under every object in file v0\util\data\GenericFieldMapping.json like
         // "traits": ["traits", "context.traits"]
@@ -19,6 +19,6 @@ export default class PreTransformationDestinationService {
         return parsedEvent;
       },
     );
-    return events;
+    return eventsProcessed;
   }
 }

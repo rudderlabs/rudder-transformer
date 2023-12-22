@@ -7,7 +7,7 @@
       "endpoint": "https://us20.api.mailchimp.com/3.0/lists/1232yyqw22?skip_merge_validation=false&skip_duplicate_check=false",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Basic YXBpS2V5OmFwaUtleS11c1BR"
+        "Authorization": "Basic YXBpS2V5OmFwaUtleS1kdW1teUFwaUtleQ=="
       },
       "params": {},
       "body": {
@@ -59,7 +59,7 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "apiKey-usPQ",
+        "apiKey": "apiKey-dummyApiKey",
         "audienceId": "1232yyqw22",
         "datacenterId": "us20"
       },
@@ -77,7 +77,7 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "apiKey-usPQ",
+        "apiKey": "apiKey-dummyApiKey",
         "audienceId": "1232yyqw22",
         "datacenterId": "us20"
       },

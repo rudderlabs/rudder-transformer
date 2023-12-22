@@ -1,5 +1,5 @@
 const { set, get } = require('lodash');
-const moment = require('moment');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   getHashFromArrayWithDuplicate,
@@ -22,7 +22,7 @@ const {
   requestBuilder,
   getClickConversionPayloadAndEndpoint,
 } = require('./utils');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
+const helper = require('./helper');
 
 /**
  * get conversions depending on the type set from dashboard
@@ -65,9 +65,7 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
     // eslint-disable-next-line unicorn/consistent-destructuring
     if (!properties.conversionDateTime && (timestamp || originalTimestamp)) {
       const conversionTimestamp = timestamp || originalTimestamp;
-      const conversionDateTime = moment(conversionTimestamp)
-        .utcOffset(moment(conversionTimestamp).utcOffset())
-        .format('YYYY-MM-DD HH:mm:ssZ');
+      const conversionDateTime = helper.formatTimestamp(conversionTimestamp);
       set(payload, 'conversions[0].conversionDateTime', conversionDateTime);
     }
     payload.partialFailure = true;
@@ -100,7 +98,9 @@ const trackResponseBuilder = (message, metadata, destination) => {
 
   const responseList = [];
   if (!eventsToConversionsNamesMapping[event] || !eventsToOfflineConversionsTypeMapping[event]) {
-    throw new ConfigurationError(`Event name '${event}' is not valid`);
+    throw new ConfigurationError(
+      `Event name '${event}' is not present in the mapping provided in the dashboard.`,
+    );
   }
   const conversionTypes = Array.from(eventsToOfflineConversionsTypeMapping[event]);
   conversionTypes.forEach((conversionType) => {
@@ -139,6 +139,7 @@ const process = async (event) => {
 
 const getEventChunks = (event, storeSalesEvents, clickCallEvents) => {
   const { message, metadata, destination } = event;
+  // eslint-disable-next-line @typescript-eslint/no-shadow
   message.forEach((message) => {
     if (message.body.JSON?.isStoreConversion) {
       storeSalesEvents.push({ message, metadata, destination });
@@ -166,7 +167,7 @@ const batchEvents = (storeSalesEvents) => {
     if (index === 0) {
       return;
     }
-    batchEventResponse.batchedRequest?.body?.JSON['addConversionPayload']?.operations?.push(
+    batchEventResponse.batchedRequest?.body?.JSON.addConversionPayload?.operations?.push(
       storeSalesEvent.message?.body?.JSON?.addConversionPayload?.operations,
     );
     batchEventResponse.metadatas.push(storeSalesEvent.metadata);

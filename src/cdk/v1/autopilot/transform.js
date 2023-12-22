@@ -1,5 +1,5 @@
 const { Utils } = require('rudder-transformer-cdk');
-const { InstrumentationError } = require('../../../v0/util/errorTypes');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 
 function identifyPostMapper(event, mappedPayload) {
   const { message } = event;

@@ -1,11 +1,10 @@
 [
   {
-    "success": true,
+    "Complete": true,
     "statusCode": 200,
     "hasFailed": false,
-    "failedJobsURL": "/getFailedJobs",
-    "hasWarnings": false,
-    "warningJobsURL": "/getWarningJobs"
+    "InProgress": false,
+    "HasWarning": false
   },
   {
     "statusCode": 400,
@@ -13,6 +12,6 @@
   },
   {
     "statusCode": 400,
-    "error": "Any 500 error"
+    "error": "[Could not poll status]Error message: Any 500 error"
   }
 ]

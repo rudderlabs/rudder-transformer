@@ -20,8 +20,8 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "607287ffadf52c4888101870b9e71c52",
-          "apiSecret": "ef428c15e2g8aeb6ebacfd1cfbf7bfd2"
+          "apiKey": "dummyApiKey",
+          "apiSecret": "dummyApiSecret"
         }
       }
     },
@@ -52,8 +52,8 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "607287ffadf52c4888101870b9e71c52",
-          "apiSecret": "ef428c15e2g8aeb6ebacfd1cfbf7bfd2"
+          "apiKey": "dummyApiKey",
+          "apiSecret": "dummyApiSecret"
         }
       }
     },
@@ -83,8 +83,8 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "607287ffadf52c4888101870b9e71c52",
-          "apiSecret": "ef428c15e2g8aeb6ebacfd1cfbf7bfd2"
+          "apiKey": "dummyApiKey",
+          "apiSecret": "dummyApiSecret"
         }
       }
     },
@@ -114,8 +114,8 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "607287ffadf52c4888101870b9e71c52",
-          "apiSecret": "ef428c15e2g8aeb6ebacfd1cfbf7bfd2",
+          "apiKey": "dummyApiKey",
+          "apiSecret": "dummyApiSecret",
           "listId": "58578",
           "contactPropertiesMapping": [{ "from": "userCountry", "to": "country" }]
         }

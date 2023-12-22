@@ -3,6 +3,18 @@
     { "name": "company_size", "type": "string" },
     { "name": "date_of_birth", "type": "string" },
     { "name": "days_to_close", "type": "number" },
+    {
+      "name": "date_submitted",
+      "type": "date"
+    },
+    {
+      "name": "days_create",
+      "type": "date"
+    },
+    {
+      "name": "days_closed",
+      "type": "date"
+    },
     { "name": "degree", "type": "string" },
     { "name": "field_of_study", "type": "string" },
     { "name": "first_conversion_date", "type": "datetime" },
@@ -192,6 +204,18 @@
     { "name": "company_size", "type": "string" },
     { "name": "date_of_birth", "type": "string" },
     { "name": "days_to_close", "type": "number" },
+    {
+      "name": "date_submitted",
+      "type": "date"
+    },
+    {
+      "name": "date_created",
+      "type": "date"
+    },
+    {
+      "name": "date_closed",
+      "type": "date"
+    },
     { "name": "degree", "type": "string" },
     { "name": "field_of_study", "type": "string" },
     { "name": "first_conversion_date", "type": "datetime" },

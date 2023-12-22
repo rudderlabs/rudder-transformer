@@ -265,7 +265,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com"
+          "email": "test@rudderstack.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -531,7 +531,9 @@
         "app": {
           "namespace": "com.rudderlabs.javascript"
         },
-        "os": { "name": "android" },
+        "os": {
+          "name": "android"
+        },
         "traits": {
           "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
         },
@@ -611,7 +613,9 @@
         "app": {
           "namespace": "com.rudderlabs.javascript"
         },
-        "os": { "name": "android" },
+        "os": {
+          "name": "android"
+        },
         "traits": {
           "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
         },
@@ -671,7 +675,9 @@
         "app": {
           "namespace": "com.rudderlabs.javascript"
         },
-        "os": { "name": "android" },
+        "os": {
+          "name": "android"
+        },
         "traits": {
           "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
         },
@@ -716,7 +722,9 @@
         "app": {
           "namespace": "com.rudderlabs.javascript"
         },
-        "os": { "name": "android" },
+        "os": {
+          "name": "android"
+        },
         "traits": {
           "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
         },
@@ -796,7 +804,9 @@
         "app": {
           "namespace": "com.rudderlabs.javascript"
         },
-        "os": { "name": "android" },
+        "os": {
+          "name": "android"
+        },
         "traits": {
           "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1"
         },

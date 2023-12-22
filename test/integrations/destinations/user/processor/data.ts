@@ -22,7 +22,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: '262fbbda-b85b-48b8-a719-c2fceaf8afaf',
+                apiKey: 'dummyApiKey',
                 appSubdomain: 'commander',
                 userEvents: [{ rsEventName: 'login', userEventName: 'product viewed' }],
                 companyAttributesMapping: [
@@ -80,14 +80,14 @@ export const data = [
                   city: 'Kalkata',
                   country: 'india',
                   tags: ['productuser'],
-                  phone: '9225467887',
+                  phone: '9876543210',
                 },
                 externalId: [{ type: 'userKey', id: 'masncbjasbdljajdl' }],
               },
               traits: { googleUrl: 'www.google.com' },
             },
             destination: {
-              Config: { apiKey: '262fbbda-b85b-48b8-a719-c2fceaf8afaf', appSubdomain: 'commander' },
+              Config: { apiKey: 'dummyApiKey', appSubdomain: 'commander' },
             },
           },
         ],
@@ -133,7 +133,7 @@ export const data = [
               timestamp: '2020-02-02T00:23:09.544Z',
             },
             destination: {
-              Config: { apiKey: '262fbbda-b85b-48b8-a719-c2fceaf8afaf', appSubdomain: 'commander' },
+              Config: { apiKey: 'dummyApiKey', appSubdomain: 'commander' },
             },
           },
         ],
@@ -198,7 +198,7 @@ export const data = [
               userId: 'user@123',
             },
             destination: {
-              Config: { apiKey: '262fbbda-b85b-48b8-a719-c2fceaf8afaf', appSubdomain: 'commander' },
+              Config: { apiKey: 'dummyApiKey', appSubdomain: 'commander' },
             },
           },
         ],
@@ -249,7 +249,7 @@ export const data = [
                   city: 'Kalkata',
                   country: 'india',
                   tags: ['productuser'],
-                  phone: '9225467887',
+                  phone: '9876543210',
                   useroccupation: 'software engineer',
                 },
                 externalId: [{ type: 'userKey', id: 'lel1c5u1wuk8' }],
@@ -258,7 +258,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: '262fbbda-b85b-48b8-a719-c2fceaf8afaf',
+                apiKey: 'dummyApiKey',
                 appSubdomain: 'commander',
                 userAttributesMapping: [{ from: 'useroccupation', to: 'occupation' }],
               },
@@ -286,7 +286,7 @@ export const data = [
                   google_url: 'www.google.com',
                   last_name: 'rudderstack',
                   occupation: 'software engineer',
-                  phone_number: '9225467887',
+                  phone_number: '9876543210',
                   status: 2,
                   tags: ['productuser'],
                 },
@@ -297,7 +297,7 @@ export const data = [
               files: {},
               headers: {
                 Accept: '*/*;version=2',
-                Authorization: 'Token 262fbbda-b85b-48b8-a719-c2fceaf8afaf',
+                Authorization: 'Token dummyApiKey',
                 'Content-Type': 'application/json',
               },
               method: 'PUT',
@@ -335,7 +335,7 @@ export const data = [
                   status: 'visitor',
                   city: 'ahmedabad',
                   country: 'india',
-                  phone: '9225467887',
+                  phone: '9876543210',
                   useroccupation: 'mechanical engineer',
                 },
               },
@@ -344,7 +344,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: '262fbbda-b85b-48b8-a719-c2fceaf8afaf',
+                apiKey: 'dummyApiKey',
                 appSubdomain: 'commander',
                 userAttributesMapping: [{ from: 'useroccupation', to: 'occupation' }],
               },
@@ -374,7 +374,7 @@ export const data = [
                   first_name: 'test',
                   google_url: 'www.google.com',
                   occupation: 'mechanical engineer',
-                  phone_number: '9225467887',
+                  phone_number: '9876543210',
                 },
                 JSON_ARRAY: {},
               },
@@ -385,7 +385,7 @@ export const data = [
               headers: {
                 Accept: '*/*;version=2',
                 'Content-Type': 'application/json',
-                Authorization: 'Token 262fbbda-b85b-48b8-a719-c2fceaf8afaf',
+                Authorization: 'Token dummyApiKey',
               },
               version: '1',
               endpoint: 'https://commander.user.com/api/public/users/59/',
@@ -441,7 +441,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: '262fbbda-b85b-48b8-a719-c2fceaf8afaf',
+                apiKey: 'dummyApiKey',
                 appSubdomain: 'commander',
                 userAttributesMapping: [{ from: 'useroccupation', to: 'occupation' }],
                 userEvents: [
@@ -482,7 +482,7 @@ export const data = [
               headers: {
                 Accept: '*/*;version=2',
                 'Content-Type': 'application/json',
-                Authorization: 'Token 262fbbda-b85b-48b8-a719-c2fceaf8afaf',
+                Authorization: 'Token dummyApiKey',
               },
               version: '1',
               endpoint: 'https://commander.user.com/api/public/events/',
@@ -551,7 +551,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: '262fbbda-b85b-48b8-a719-c2fceaf8afaf',
+                apiKey: 'dummyApiKey',
                 appSubdomain: 'commander',
                 userAttributesMapping: [{ from: 'useroccupation', to: 'occupation' }],
                 userEvents: [
@@ -592,7 +592,7 @@ export const data = [
               headers: {
                 Accept: '*/*;version=2',
                 'Content-Type': 'application/json',
-                Authorization: 'Token 262fbbda-b85b-48b8-a719-c2fceaf8afaf',
+                Authorization: 'Token dummyApiKey',
               },
               version: '1',
               endpoint: 'https://commander.user.com/api/public/site-views/',
@@ -643,7 +643,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: '262fbbda-b85b-48b8-a719-c2fceaf8afaf',
+                apiKey: 'dummyApiKey',
                 appSubdomain: 'commander',
                 userAttributesMapping: [{ from: 'useroccupation', to: 'occupation' }],
                 userEvents: [
@@ -683,7 +683,7 @@ export const data = [
               headers: {
                 Accept: '*/*;version=2',
                 'Content-Type': 'application/json',
-                Authorization: 'Token 262fbbda-b85b-48b8-a719-c2fceaf8afaf',
+                Authorization: 'Token dummyApiKey',
               },
               version: '1',
               endpoint: 'https://commander.user.com/api/public/companies/21/add_member/',

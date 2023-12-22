@@ -1,8 +1,17 @@
 const DestHandlerMap = {
   ga360: 'ga',
+  salesforce_oauth: 'salesforce',
 };
 
 const DestCanonicalNames = {
+  facebook_conversions: [
+    'fb_conversions',
+    'fb conversions',
+    'FacebookConversions',
+    'Facebook Conversions',
+    'FB Conversions',
+    'Facebook_Conversions',
+  ],
   fb_pixel: [
     'fb_pixel',
     'fb pixel',
@@ -91,7 +100,7 @@ const DestCanonicalNames = {
   ],
   awin: ['awin', 'Awin', 'AWIN'],
   sendinblue: ['sendinblue', 'SENDINBLUE', 'Sendinblue', 'SendinBlue'],
-  ga4: ['GA4', 'ga4', 'Ga4', 'Google Analytics 4', 'googleAnalytics4'],
+  ga4: ['GA4', 'ga4', 'Ga4', 'Google Analytics 4', 'googleAnalytics4', 'Google Analytics 4 (GA4)'],
   pipedream: ['Pipedream', 'PipeDream', 'pipedream', 'PIPEDREAM'],
   pagerduty: ['pagerduty', 'PAGERDUTY', 'PagerDuty', 'Pagerduty', 'pagerDuty'],
   adobe_analytics: [

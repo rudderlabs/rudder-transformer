@@ -35,8 +35,8 @@
             "id": "abc123"
           },
           "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
-          "email": "ruchira@gmail.com",
-          "name": "Ruchira Moitra",
+          "email": "rudderTest@gmail.com",
+          "name": "Rudder Test",
           "plan": "Enterprise"
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36"
@@ -151,7 +151,7 @@
       "sentAt": "2020-10-16T08:10:12.783Z",
       "timestamp": "2020-10-16T13:40:12.791+05:30",
       "type": "track",
-      "userId": "ruchu123"
+      "userId": "rudder123"
     },
     "destination": {
       "ID": "1iuTZs6eEZVMm6GjRBe6bNShaL3",
@@ -171,7 +171,7 @@
       },
       "Config": {
         "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+        "apiKey": "dummyApiKey",
         "eventDelivery": false,
         "eventDeliveryTS": 1602757086384,
         "region": "US"
@@ -216,8 +216,8 @@
             "id": "abc123"
           },
           "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
-          "email": "ruchira@gmail.com",
-          "name": "Ruchira Moitra",
+          "email": "rudderTest@gmail.com",
+          "name": "Rudder Test",
           "plan": "Enterprise"
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36"
@@ -232,7 +232,7 @@
       "sentAt": "2020-10-16T08:26:14.939Z",
       "timestamp": "2020-10-16T13:56:14.944+05:30",
       "type": "identify",
-      "userId": "ruchu123"
+      "userId": "rudder123"
     },
     "destination": {
       "ID": "1iuTZs6eEZVMm6GjRBe6bNShaL3",
@@ -252,7 +252,7 @@
       },
       "Config": {
         "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+        "apiKey": "dummyApiKey",
         "eventDelivery": false,
         "eventDeliveryTS": 1602757086384,
         "region": "US"
@@ -329,7 +329,7 @@
       },
       "Config": {
         "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+        "apiKey": "dummyApiKey",
         "eventDelivery": false,
         "eventDeliveryTS": 1602757086384,
         "region": "US"
@@ -382,8 +382,8 @@
             "id": "abc123"
           },
           "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
-          "email": "ruchira@gmail.com",
-          "name": "Ruchira Moitra",
+          "email": "rudderTest@gmail.com",
+          "name": "Rudder Test",
           "plan": "Enterprise"
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36"
@@ -398,7 +398,7 @@
       "sentAt": "2020-10-16T08:53:29.387Z",
       "timestamp": "2020-10-16T14:23:29.401+05:30",
       "type": "identify",
-      "userId": "ruchu123"
+      "userId": "rudder123"
     },
     "destination": {
       "ID": "1iuTZs6eEZVMm6GjRBe6bNShaL3",
@@ -418,7 +418,7 @@
       },
       "Config": {
         "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+        "apiKey": "dummyApiKey",
         "eventDelivery": false,
         "eventDeliveryTS": 1602757086384,
         "region": "US"
@@ -463,8 +463,8 @@
             "id": "abc123"
           },
           "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
-          "email": "ruchira@gmail.com",
-          "name": "Ruchira Moitra",
+          "email": "rudderTest@gmail.com",
+          "name": "Rudder Test",
           "plan": "Enterprise"
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36"
@@ -479,7 +479,7 @@
       "sentAt": "2020-10-16T09:05:11.002Z",
       "timestamp": "2020-10-16T14:35:11.013+05:30",
       "type": "identify",
-      "userId": "ruchu123"
+      "userId": "rudder123"
     },
     "destination": {
       "ID": "1iuTZs6eEZVMm6GjRBe6bNShaL3",
@@ -499,7 +499,7 @@
       },
       "Config": {
         "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+        "apiKey": "dummyApiKey",
         "eventDelivery": false,
         "eventDeliveryTS": 1602757086384,
         "region": "EU"
@@ -544,8 +544,8 @@
             "id": "abc123"
           },
           "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
-          "email": "ruchira@gmail.com",
-          "name": "Ruchira Moitra",
+          "email": "rudderTest@gmail.com",
+          "name": "Rudder Test",
           "plan": "Enterprise"
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36"
@@ -560,7 +560,7 @@
       "sentAt": "2020-10-16T09:09:31.466Z",
       "timestamp": "2020-10-16T14:39:31.467+05:30",
       "type": "identify",
-      "userId": "ruchu123"
+      "userId": "rudder123"
     },
     "destination": {
       "ID": "1iuTZs6eEZVMm6GjRBe6bNShaL3",
@@ -580,7 +580,7 @@
       },
       "Config": {
         "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+        "apiKey": "dummyApiKey",
         "eventDelivery": false,
         "eventDeliveryTS": 1602757086384,
         "region": "IND"
@@ -625,8 +625,8 @@
             "id": "abc123"
           },
           "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
-          "email": "ruchira@gmail.com",
-          "name": "Ruchira Moitra",
+          "email": "rudderTest@gmail.com",
+          "name": "Rudder Test",
           "plan": "Enterprise"
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36"
@@ -641,7 +641,7 @@
       "sentAt": "2020-10-16T09:09:31.466Z",
       "timestamp": "2020-10-16T14:39:31.467+05:30",
       "type": "identify",
-      "userId": "ruchu123"
+      "userId": "rudder123"
     },
     "destination": {
       "ID": "1iuTZs6eEZVMm6GjRBe6bNShaL3",
@@ -661,7 +661,7 @@
       },
       "Config": {
         "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+        "apiKey": "dummyApiKey",
         "eventDelivery": false,
         "eventDeliveryTS": 1602757086384,
         "region": "AMA"
@@ -706,8 +706,8 @@
             "id": "abc123"
           },
           "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
-          "email": "ruchira@gmail.com",
-          "name": "Ruchira Moitra",
+          "email": "rudderTest@gmail.com",
+          "name": "Rudder Test",
           "plan": "Enterprise"
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36"
@@ -721,7 +721,7 @@
       "request_ip": "[::1]",
       "sentAt": "2020-10-16T09:09:31.466Z",
       "timestamp": "2020-10-16T14:39:31.467+05:30",
-      "userId": "ruchu123"
+      "userId": "rudder123"
     },
     "destination": {
       "ID": "1iuTZs6eEZVMm6GjRBe6bNShaL3",
@@ -741,7 +741,7 @@
       },
       "Config": {
         "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+        "apiKey": "dummyApiKey",
         "eventDelivery": false,
         "eventDeliveryTS": 1602757086384,
         "region": "IND"
@@ -786,8 +786,8 @@
             "id": "abc123"
           },
           "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
-          "email": "ruchira@gmail.com",
-          "name": "Ruchira Moitra",
+          "email": "rudderTest@gmail.com",
+          "name": "Rudder Test",
           "plan": "Enterprise"
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36"
@@ -802,7 +802,7 @@
       "sentAt": "2020-10-16T09:09:31.466Z",
       "timestamp": "2020-10-16T14:39:31.467+05:30",
       "type": "gone",
-      "userId": "ruchu123"
+      "userId": "rudder123"
     },
     "destination": {
       "ID": "1iuTZs6eEZVMm6GjRBe6bNShaL3",
@@ -822,7 +822,7 @@
       },
       "Config": {
         "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+        "apiKey": "dummyApiKey",
         "eventDelivery": false,
         "eventDeliveryTS": 1602757086384,
         "region": "IND"
@@ -867,8 +867,8 @@
             "id": "abc123"
           },
           "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
-          "email": "ruchira@gmail.com",
-          "name": "Ruchira Moitra",
+          "email": "rudderTest@gmail.com",
+          "name": "Rudder Test",
           "plan": "Enterprise"
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36"
@@ -983,7 +983,7 @@
       "sentAt": "2020-10-16T08:10:12.783Z",
       "timestamp": "2020-10-16T13:40:12.791+05:30",
       "type": "track",
-      "userId": "ruchu123"
+      "userId": "rudder123"
     },
     "destination": {
       "ID": "1iuTZs6eEZVMm6GjRBe6bNShaL3",
@@ -1003,7 +1003,7 @@
       },
       "Config": {
         "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+        "apiKey": "dummyApiKey",
         "eventDelivery": false,
         "eventDeliveryTS": 1602757086384,
         "region": "US"
@@ -1049,8 +1049,8 @@
             "id": "abc123"
           },
           "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
-          "email": "ruchira@gmail.com",
-          "name": "Ruchira Moitra",
+          "email": "rudderTest@gmail.com",
+          "name": "Rudder Test",
           "plan": "Enterprise"
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36"
@@ -1126,7 +1126,7 @@
       "sentAt": "2020-10-16T08:10:12.783Z",
       "timestamp": "2020-10-16T13:40:12.791+05:30",
       "type": "track",
-      "userId": "ruchu123"
+      "userId": "rudder123"
     },
     "destination": {
       "ID": "1iuTZs6eEZVMm6GjRBe6bNShaL3",
@@ -1146,7 +1146,7 @@
       },
       "Config": {
         "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+        "apiKey": "dummyApiKey",
         "eventDelivery": false,
         "eventDeliveryTS": 1602757086384,
         "region": "US"
@@ -1199,8 +1199,8 @@
             "id": "abc123"
           },
           "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
-          "email": "ruchira@gmail.com",
-          "name": "Ruchira Moitra",
+          "email": "rudderTest@gmail.com",
+          "name": "Rudder Test",
           "plan": "Enterprise"
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36"
@@ -1215,7 +1215,7 @@
       "sentAt": "2020-10-16T08:53:29.387Z",
       "timestamp": "2020-10-16T14:23:29.401+05:30",
       "type": "identify",
-      "userId": "ruchu123"
+      "userId": "rudder123"
     },
     "destination": {
       "ID": "1iuTZs6eEZVMm6GjRBe6bNShaL3",
@@ -1235,7 +1235,7 @@
       },
       "Config": {
         "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+        "apiKey": "dummyApiKey",
         "eventDelivery": false,
         "eventDeliveryTS": 1602757086384,
         "region": "US"
@@ -1289,8 +1289,8 @@
             "id": "abc123"
           },
           "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
-          "email": "ruchira@gmail.com",
-          "name": "Ruchira Moitra",
+          "email": "rudderTest@gmail.com",
+          "name": "Rudder Test",
           "plan": "Enterprise"
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36"
@@ -1380,7 +1380,7 @@
       "sentAt": "2020-10-16T08:10:12.783Z",
       "timestamp": "2020-10-16T13:40:12.791+05:30",
       "type": "track",
-      "userId": "ruchu123"
+      "userId": "rudder123"
     },
     "destination": {
       "ID": "1iuTZs6eEZVMm6GjRBe6bNShaL3",
@@ -1400,7 +1400,7 @@
       },
       "Config": {
         "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+        "apiKey": "dummyApiKey",
         "eventDelivery": false,
         "eventDeliveryTS": 1602757086384,
         "region": "US"
@@ -1454,8 +1454,8 @@
             "id": "abc123"
           },
           "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
-          "email": "ruchira@gmail.com",
-          "name": "Ruchira Moitra",
+          "email": "rudderTest@gmail.com",
+          "name": "Rudder Test",
           "plan": "Enterprise"
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36"
@@ -1547,7 +1547,7 @@
       "sentAt": "2020-10-16T08:10:12.783Z",
       "timestamp": "2020-10-16T13:40:12.791+05:30",
       "type": "track",
-      "userId": "ruchu123"
+      "userId": "rudder123"
     },
     "destination": {
       "ID": "1iuTZs6eEZVMm6GjRBe6bNShaL3",
@@ -1567,7 +1567,7 @@
       },
       "Config": {
         "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+        "apiKey": "dummyApiKey",
         "eventDelivery": false,
         "eventDeliveryTS": 1602757086384,
         "region": "US"
@@ -1608,7 +1608,7 @@
       },
       "Config": {
         "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+        "apiKey": "dummyApiKey",
         "eventDelivery": false,
         "eventDeliveryTS": 1602757086384,
         "region": "US"
@@ -1648,7 +1648,7 @@
       },
       "Config": {
         "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+        "apiKey": "dummyApiKey",
         "eventDelivery": false,
         "eventDeliveryTS": 1602757086384,
         "region": "US"

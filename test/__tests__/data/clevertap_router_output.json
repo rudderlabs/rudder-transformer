@@ -7,8 +7,8 @@
       "batched": true,
       "endpoint": "https://api.clevertap.com/1/upload",
       "headers": {
-        "X-CleverTap-Account-Id": "476550467",
-        "X-CleverTap-Passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "X-CleverTap-Account-Id": "dummyAccountId",
+        "X-CleverTap-Passcode": "dummypasscode",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -76,10 +76,31 @@
     "statusCode": 200,
     "destination": {
       "Config": {
-        "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-        "accountId": "476550467",
+        "passcode": "dummypasscode",
+        "accountId": "dummyAccountId",
         "trackAnonymous": true,
         "enableObjectIdMapping": true
+      }
+    }
+  },
+  {
+    "metadata": [
+      {
+        "jobId": 3
+      }
+    ],
+    "batched": false,
+    "statusCode": 400,
+    "error": "Message type not supported",
+    "statTags": {
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
+    },
+    "destination": {
+      "Config": {
+        "passcode": "dummypasscode",
+        "accountId": "dummyAccountId",
+        "trackAnonymous": true
       }
     }
   }

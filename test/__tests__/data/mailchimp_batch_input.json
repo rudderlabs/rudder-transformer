@@ -9,7 +9,7 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "apiKey-usPQ",
+        "apiKey": "apiKey-dummyApiKey",
         "audienceId": "1232yyqw22",
         "datacenterId": "us20"
       },
@@ -82,7 +82,7 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "apiKey-usPQ",
+        "apiKey": "apiKey-dummyApiKey",
         "audienceId": "1232yyqw22",
         "datacenterId": "us20"
       },
@@ -132,7 +132,7 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "apiKey-usPQ",
+        "apiKey": "apiKey-dummyApiKey",
         "audienceId": "1232yyqw22",
         "datacenterId": "us20"
       },
@@ -182,7 +182,7 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "apiKey-usPQ",
+        "apiKey": "apiKey-dummyApiKey",
         "audienceId": "1232yyqw22",
         "datacenterId": "us20"
       },

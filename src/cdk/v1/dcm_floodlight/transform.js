@@ -1,10 +1,11 @@
 /* eslint-disable no-param-reassign */
 const get = require('get-value');
-const _ = require('lodash');
+const lodash = require('lodash');
 const {
   removeUndefinedAndNullValues,
   isDefinedAndNotNull,
 } = require('rudder-transformer-cdk/build/utils');
+const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
   getIntegrationsObj,
   isEmpty,
@@ -14,7 +15,6 @@ const {
 } = require('../../../v0/util');
 const { GENERIC_TRUE_VALUES, GENERIC_FALSE_VALUES } = require('../../../constants');
 const { BASE_URL, BLACKLISTED_CHARACTERS } = require('./config');
-const { ConfigurationError, InstrumentationError } = require('../../../v0/util/errorTypes');
 
 // append properties to endpoint
 // eg: ${BASE_URL}key1=value1;key2=value2;....
@@ -44,7 +44,7 @@ const transformCustomVariable = (customFloodlightVariable, message) => {
 
     if (
       // the value is not null
-      !_.isNil(itemValue) &&
+      !lodash.isNil(itemValue) &&
       // the value is string and doesn't have any blacklisted characters
       !(
         typeof itemValue === 'string' && BLACKLISTED_CHARACTERS.some((k) => itemValue.includes(k))

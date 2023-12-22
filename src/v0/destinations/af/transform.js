@@ -1,6 +1,7 @@
 const get = require('get-value');
 const set = require('set-value');
 
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   removeUndefinedValues,
@@ -15,7 +16,6 @@ const {
   isDefinedAndNotNullAndNotEmpty,
   simpleProcessRouterDest,
 } = require('../../util');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
 const { Event, ENDPOINT, ConfigCategory, mappingConfig, nameToEventMap } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');

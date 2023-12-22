@@ -1,4 +1,4 @@
-/* eslint-disable camelcase */
+/* eslint-disable */
 const _ = require('lodash');
 const get = require('get-value');
 const stats = require('../../../util/stats');
@@ -21,11 +21,12 @@ const {
   SUBSCRIPTION_BRAZE_MAX_REQ_COUNT,
   ALIAS_BRAZE_MAX_REQ_COUNT,
   TRACK_BRAZE_MAX_REQ_COUNT,
+  BRAZE_PURCHASE_STANDARD_PROPERTIES,
 } = require('./config');
-const { JSON_MIME_TYPE } = require('../../util/constant');
+const { JSON_MIME_TYPE, HTTP_STATUS_CODES } = require('../../util/constant');
 const { isObject } = require('../../util');
 const { removeUndefinedValues, getIntegrationsObj } = require('../../util');
-const { InstrumentationError } = require('../../util/errorTypes');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 
 const getEndpointFromConfig = (destination) => {
   // Init -- mostly for test cases
@@ -298,7 +299,7 @@ const BrazeDedupUtility = {
       external_id,
       user_alias,
     };
-    const identifier = external_id || user_alias.alias_name;
+    const identifier = external_id || user_alias?.alias_name;
     store.set(identifier, { ...storedUserData, ...deduplicatedUserData });
     return removeUndefinedValues(deduplicatedUserData);
   },
@@ -363,11 +364,14 @@ const processBatch = (transformedEvents) => {
   const purchaseArray = [];
   const successMetadata = [];
   const failureResponses = [];
+  const filteredResponses = [];
   const subscriptionsArray = [];
   const mergeUsersArray = [];
   for (const transformedEvent of transformedEvents) {
     if (!isHttpStatusSuccess(transformedEvent?.statusCode)) {
       failureResponses.push(transformedEvent);
+    } else if (transformedEvent?.statusCode === HTTP_STATUS_CODES.FILTER_EVENTS) {
+      filteredResponses.push(transformedEvent);
     } else if (transformedEvent?.batchedRequest?.body?.JSON) {
       const { attributes, events, purchases, subscription_groups, merge_updates } =
         transformedEvent.batchedRequest.body.JSON;
@@ -416,6 +420,23 @@ const processBatch = (transformedEvents) => {
     const attributes = attributeArrayChunks[i];
     const events = eventsArrayChunks[i];
     const purchases = purchaseArrayChunks[i];
+
+    if (attributes) {
+      stats.gauge('braze_batch_attributes_pack_size', attributes.length, {
+        destination_id: destination.ID,
+      });
+    }
+    if (events) {
+      stats.gauge('braze_batch_events_pack_size', events.length, {
+        destination_id: destination.ID,
+      });
+    }
+    if (purchases) {
+      stats.gauge('braze_batch_purchase_pack_size', purchases.length, {
+        destination_id: destination.ID,
+      });
+    }
+
     const response = defaultRequestConfig();
     response.endpoint = endpoint;
     response.body.JSON = removeUndefinedAndNullValues({
@@ -444,6 +465,10 @@ const processBatch = (transformedEvents) => {
   }
   if (failureResponses.length > 0) {
     finalResponse.push(...failureResponses);
+  }
+
+  if (filteredResponses.length > 0) {
+    finalResponse.push(...filteredResponses);
   }
 
   return finalResponse;
@@ -515,7 +540,7 @@ function addMandatoryPurchaseProperties(productId, price, currencyCode, quantity
   };
 }
 
-function getPurchaseObjs(message) {
+function getPurchaseObjs(message, config) {
   // ref:https://www.braze.com/docs/api/objects_filters/purchase_object/
   const validateForPurchaseEvent = (message) => {
     const { properties } = message;
@@ -610,6 +635,10 @@ function getPurchaseObjs(message) {
       parseInt(quantity, 10),
       timestamp,
     );
+    const extraProperties = _.omit(product, BRAZE_PURCHASE_STANDARD_PROPERTIES);
+    if (Object.keys(extraProperties).length > 0 && config.sendPurchaseEventWithExtraProperties) {
+      purchaseObj = { ...purchaseObj, properties: extraProperties };
+    }
     purchaseObj = setExternalIdOrAliasObject(purchaseObj, message);
     purchaseObjs.push(purchaseObj);
   });

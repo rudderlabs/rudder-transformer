@@ -4,8 +4,8 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa66ttyyewQ",
-          "domain": "rudderstack-476952domain3105"
+          "apiKey": "dummyApiKey",
+          "domain": "rudderstack-476952domain3105.myfreshworks.com"
         }
       },
       "message": {
@@ -82,7 +82,7 @@
       "params": {},
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Token token=ugHZRFZjdLOa66ttyyewQ"
+        "Authorization": "Token token=dummyApiKey"
       },
       "version": "1",
       "endpoint": "https://rudderstack-476952domain3105.myfreshworks.com/crm/sales/api/contacts/upsert"
@@ -93,8 +93,8 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa66ttyyewQ",
-          "domain": "rudderstack-476952domain3105"
+          "apiKey": "dummyApiKey",
+          "domain": "rudderstack-476952domain3105.myfreshworks.com"
         }
       },
       "message": {
@@ -171,7 +171,7 @@
       "params": {},
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Token token=ugHZRFZjdLOa66ttyyewQ"
+        "Authorization": "Token token=dummyApiKey"
       },
       "version": "1",
       "endpoint": "https://rudderstack-476952domain3105.myfreshworks.com/crm/sales/api/contacts/upsert"
@@ -182,8 +182,8 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa66ttyyewQ",
-          "domain": "rudderstack-476952domain3105"
+          "apiKey": "dummyApiKey",
+          "domain": "rudderstack-476952domain3105.myfreshworks.com"
         }
       },
       "message": {
@@ -247,8 +247,8 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa66ttyyewQ",
-          "domain": "rudderstack-476952domain3105"
+          "apiKey": "dummyApiKey",
+          "domain": "rudderstack-476952domain3105.myfreshworks.com"
         }
       },
       "message": {
@@ -311,8 +311,8 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOarudder",
-          "domain": "domain-rudder"
+          "apiKey": "dummyApiKey",
+          "domain": "domain-rudder.myfreshworks.com"
         }
       },
       "message": {
@@ -410,7 +410,7 @@
       "params": {},
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Token token=ugHZRFZjdLOarudder"
+        "Authorization": "Token token=dummyApiKey"
       },
       "version": "1",
       "endpoint": "https://domain-rudder.myfreshworks.com/crm/sales/api/contacts/upsert"
@@ -421,8 +421,8 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOarudder",
-          "domain": "domain-rudder"
+          "apiKey": "dummyApiKey",
+          "domain": "domain-rudder.myfreshworks.com"
         }
       },
       "message": {
@@ -490,8 +490,8 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocwQ",
-          "domain": "domain-rudder"
+          "apiKey": "dummyApiKey",
+          "domain": "domain-rudder.myfreshworks.com"
         }
       },
       "message": {
@@ -557,8 +557,8 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocwQ",
-          "domain": "domain-rudder"
+          "apiKey": "dummyApiKey",
+          "domain": "domain-rudder.myfreshworks.com"
         }
       },
       "message": {
@@ -626,8 +626,8 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQQ",
-          "domain": "domain-rudder"
+          "apiKey": "dummyApiKey",
+          "domain": "domain-rudder.myfreshworks.com"
         }
       },
       "message": {
@@ -706,7 +706,7 @@
       "params": {},
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Token token=ugHZRFZjdLOa0W6ocJQQ"
+        "Authorization": "Token token=dummyApiKey"
       },
       "version": "1",
       "endpoint": "https://domain-rudder.myfreshworks.com/crm/sales/api/sales_accounts/upsert"
@@ -759,8 +759,8 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
-          "domain": "domain-rudder"
+          "apiKey": "dummyApiKey",
+          "domain": "domain-rudder.myfreshworks.com"
         }
       }
     },
@@ -790,7 +790,7 @@
           "traits": {
             "name": "Shehan Study",
             "category": "SampleIdentify",
-            "email": "chandra+r@rudderlabs.com",
+            "email": "test@rudderstack.com",
             "plan": "Open source",
             "logins": 5,
             "createdAt": 1599264000
@@ -842,8 +842,8 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
-          "domain": "domain-rudder"
+          "apiKey": "dummyApiKey",
+          "domain": "domain-rudder.myfreshworks.com"
         }
       }
     },
@@ -873,7 +873,7 @@
           "traits": {
             "name": "Shehan Study",
             "category": "SampleIdentify",
-            "email": "chandra+r@rudderlabs.com",
+            "email": "test@rudderstack.com",
             "plan": "Open source",
             "logins": 5,
             "createdAt": 1599264000
@@ -915,7 +915,7 @@
         "originalTimestamp": "2020-10-20T08:14:28.778Z",
         "anonymousId": "my-anonymous-id-new",
         "userId": "newUserIdAlias",
-        "email": "chandra+r@rudderlabs.com",
+        "email": "test@rudderstack.com",
         "properties": {
           "product_name": "Shirt",
           "brand": "Wrogn"
@@ -926,8 +926,8 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
-          "domain": "domain-rudder"
+          "apiKey": "dummyApiKey",
+          "domain": "domain-rudder.myfreshworks.com"
         }
       }
     },
@@ -957,7 +957,7 @@
           "traits": {
             "name": "Shehan Study",
             "category": "SampleIdentify",
-            "email": "chandra+r@rudderlabs.com",
+            "email": "test@rudderstack.com",
             "plan": "Open source",
             "logins": 5,
             "createdAt": 1599264000
@@ -1002,7 +1002,7 @@
         "originalTimestamp": "2020-10-20T08:14:28.778Z",
         "anonymousId": "my-anonymous-id-new",
         "userId": "newUserIdAlias",
-        "email": "chandra+r@rudderlabs.com",
+        "email": "test@rudderstack.com",
         "properties": {
           "product_name": "Shirt",
           "brand": "Wrogn",
@@ -1018,8 +1018,8 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
-          "domain": "domain-rudder"
+          "apiKey": "dummyApiKey",
+          "domain": "domain-rudder.myfreshworks.com"
         }
       }
     },
@@ -1049,7 +1049,7 @@
       "params": {},
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Token token=ugHZRFZjdLOa0W6ocJQewQ"
+        "Authorization": "Token token=dummyApiKey"
       },
       "version": "1",
       "endpoint": "https://domain-rudder.myfreshworks.com/crm/sales/api/sales_activities"
@@ -1126,8 +1126,8 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
-          "domain": "domain-rudder"
+          "apiKey": "dummyApiKey",
+          "domain": "domain-rudder.myfreshworks.com"
         }
       }
     },
@@ -1137,7 +1137,7 @@
       "method": "POST",
       "endpoint": "https://domain-rudder.myfreshworks.com/crm/sales/api/contacts/upsert",
       "headers": {
-        "Authorization": "Token token=ugHZRFZjdLOa0W6ocJQewQ",
+        "Authorization": "Token token=dummyApiKey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -1227,8 +1227,8 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
-          "domain": "domain-rudder"
+          "apiKey": "dummyApiKey",
+          "domain": "domain-rudder.myfreshworks.com"
         }
       }
     },
@@ -1258,7 +1258,7 @@
           "traits": {
             "name": "Shehan Study",
             "category": "SampleIdentify",
-            "email": "chandra+r@rudderlabs.com",
+            "email": "test@rudderstack.com",
             "plan": "Open source",
             "logins": 5,
             "createdAt": 1599264000
@@ -1314,8 +1314,8 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
-          "domain": "domain-rudder"
+          "apiKey": "dummyApiKey",
+          "domain": "domain-rudder.myfreshworks.com"
         }
       }
     },
@@ -1345,7 +1345,7 @@
           "traits": {
             "name": "Shehan Study",
             "category": "SampleIdentify",
-            "email": "chandra+r@rudderlabs.com",
+            "email": "test@rudderstack.com",
             "plan": "Open source",
             "logins": 5,
             "createdAt": 1599264000
@@ -1390,7 +1390,7 @@
         "originalTimestamp": "2020-10-20T08:14:28.778Z",
         "anonymousId": "my-anonymous-id-new",
         "userId": "newUserIdAlias",
-        "email": "chandra+r@rudderlabs.com",
+        "email": "test@rudderstack.com",
         "properties": {
           "product_name": "Shirt",
           "brand": "Wrogn",
@@ -1405,8 +1405,8 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
-          "domain": "domain-rudder"
+          "apiKey": "dummyApiKey",
+          "domain": "domain-rudder.myfreshworks.com"
         }
       }
     },
@@ -1495,8 +1495,8 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
-          "domain": "domain-rudder"
+          "apiKey": "dummyApiKey",
+          "domain": "domain-rudder.myfreshworks.com"
         }
       }
     },
@@ -1526,7 +1526,7 @@
           "traits": {
             "name": "Shehan Study",
             "category": "SampleIdentify",
-            "email": "chandra+r@rudderlabs.com",
+            "email": "test@rudderstack.com",
             "plan": "Open source",
             "logins": 5,
             "createdAt": 1599264000
@@ -1585,8 +1585,8 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
-          "domain": "domain-rudder"
+          "apiKey": "dummyApiKey",
+          "domain": "domain-rudder.myfreshworks.com"
         }
       }
     },
@@ -1615,7 +1615,7 @@
       "params": {},
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Token token=ugHZRFZjdLOa0W6ocJQewQ"
+        "Authorization": "Token token=dummyApiKey"
       },
       "version": "1",
       "endpoint": "https://domain-rudder.myfreshworks.com/crm/sales/api/sales_activities"
@@ -1636,7 +1636,7 @@
           "traits": {
             "name": "Shehan Study",
             "category": "SampleIdentify",
-            "email": "chandra+r@rudderlabs.com",
+            "email": "test@rudderstack.com",
             "plan": "Open source",
             "logins": 5,
             "createdAt": 1599264000
@@ -1695,8 +1695,8 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
-          "domain": "domain-rudder"
+          "apiKey": "dummyApiKey",
+          "domain": "domain-rudder.myfreshworks.com"
         }
       }
     },
@@ -1725,7 +1725,7 @@
       "params": {},
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Token token=ugHZRFZjdLOa0W6ocJQewQ"
+        "Authorization": "Token token=dummyApiKey"
       },
       "version": "1",
       "endpoint": "https://domain-rudder.myfreshworks.com/crm/sales/api/sales_activities"
@@ -1756,8 +1756,8 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
-          "domain": "domain-rudder"
+          "apiKey": "dummyApiKey",
+          "domain": "domain-rudder.myfreshworks.com"
         }
       }
     },
@@ -1787,8 +1787,8 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
-          "domain": "domain-rudder"
+          "apiKey": "dummyApiKey",
+          "domain": "domain-rudder.myfreshworks.com"
         }
       }
     },
@@ -1824,8 +1824,8 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
-          "domain": "domain-rudder"
+          "apiKey": "dummyApiKey",
+          "domain": "domain-rudder.myfreshworks.com"
         }
       }
     },
@@ -1891,8 +1891,8 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
-          "domain": "domain-rudder"
+          "apiKey": "dummyApiKey",
+          "domain": "domain-rudder.myfreshworks.com"
         }
       }
     },
@@ -1911,7 +1911,7 @@
       "params": {},
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Token token=ugHZRFZjdLOa0W6ocJQewQ"
+        "Authorization": "Token token=dummyApiKey"
       },
       "version": "1",
       "endpoint": "https://domain-rudder.myfreshworks.com/crm/sales/api/lists/70000059716/add_contacts"
@@ -1936,8 +1936,8 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
-          "domain": "domain-rudder"
+          "apiKey": "dummyApiKey",
+          "domain": "domain-rudder.myfreshworks.com"
         }
       }
     },
@@ -1975,8 +1975,8 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
-          "domain": "domain-rudder"
+          "apiKey": "dummyApiKey",
+          "domain": "domain-rudder.myfreshworks.com"
         }
       }
     },
@@ -2042,8 +2042,8 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
-          "domain": "domain-rudder"
+          "apiKey": "dummyApiKey",
+          "domain": "domain-rudder.myfreshworks.com"
         }
       }
     },
@@ -2062,7 +2062,7 @@
       "params": {},
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Token token=ugHZRFZjdLOa0W6ocJQewQ"
+        "Authorization": "Token token=dummyApiKey"
       },
       "version": "1",
       "endpoint": "https://domain-rudder.myfreshworks.com/crm/sales/api/lists/70000058627/add_contacts"
@@ -2083,7 +2083,7 @@
           "traits": {
             "name": "Shehan Study",
             "category": "SampleIdentify",
-            "email": "chandra+r@rudderlabs.com",
+            "email": "test@rudderstack.com",
             "plan": "Open source",
             "logins": 5,
             "createdAt": 1599264000
@@ -2128,7 +2128,7 @@
         "originalTimestamp": "2020-10-20T08:14:28.778Z",
         "anonymousId": "my-anonymous-id-new",
         "userId": "newUserIdAlias",
-        "email": "chandra+r@rudderlabs.com",
+        "email": "test@rudderstack.com",
         "properties": {
           "product_name": "Shirt",
           "brand": "Wrogn",
@@ -2144,8 +2144,8 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
-          "domain": "domain-rudder"
+          "apiKey": "dummyApiKey",
+          "domain": "domain-rudder.myfreshworks.com"
         }
       }
     },
@@ -2231,8 +2231,8 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
-          "domain": "domain-rudder"
+          "apiKey": "dummyApiKey",
+          "domain": "domain-rudder.myfreshworks.com"
         }
       }
     },
@@ -2256,7 +2256,7 @@
       "params": {},
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Token token=ugHZRFZjdLOa0W6ocJQewQ"
+        "Authorization": "Token token=dummyApiKey"
       },
       "version": "1",
       "endpoint": "https://domain-rudder.myfreshworks.com/crm/sales/api/contacts/upsert"
@@ -2333,8 +2333,8 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
-          "domain": "domain-rudder"
+          "apiKey": "dummyApiKey",
+          "domain": "domain-rudder.myfreshworks.com"
         }
       }
     },
@@ -2364,7 +2364,7 @@
           "traits": {
             "name": "Shehan Study",
             "category": "SampleIdentify",
-            "email": "chandra+r@rudderlabs.com",
+            "email": "test@rudderstack.com",
             "plan": "Open source",
             "logins": 5,
             "createdAt": 1599264000
@@ -2409,7 +2409,7 @@
         "originalTimestamp": "2020-10-20T08:14:28.778Z",
         "anonymousId": "my-anonymous-id-new",
         "userId": "newUserIdAlias",
-        "email": "chandra+r@rudderlabs.com",
+        "email": "test@rudderstack.com",
         "properties": {
           "product_name": "Shirt",
           "brand": "Wrogn",
@@ -2426,8 +2426,8 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
-          "domain": "domain-rudder",
+          "apiKey": "dummyApiKey",
+          "domain": "domain-rudder.myfreshworks.com",
           "rudderEventsToFreshmarketerEvents": [
             {
               "from": "test_activity",
@@ -2472,7 +2472,7 @@
         "params": {},
         "headers": {
           "Content-Type": "application/json",
-          "Authorization": "Token token=ugHZRFZjdLOa0W6ocJQewQ"
+          "Authorization": "Token token=dummyApiKey"
         },
         "version": "1",
         "endpoint": "https://domain-rudder.myfreshworks.com/crm/sales/api/sales_activities"
@@ -2484,7 +2484,7 @@
               "lifecycle_stage_id": "71012139273"
             },
             "unique_identifier": {
-              "emails": "chandra+r@rudderlabs.com"
+              "emails": "test@rudderstack.com"
             }
           },
           "JSON_ARRAY": {},
@@ -2494,10 +2494,9 @@
         "type": "REST",
         "files": {},
         "method": "POST",
-
         "params": {},
         "headers": {
-          "Authorization": "Token token=ugHZRFZjdLOa0W6ocJQewQ",
+          "Authorization": "Token token=dummyApiKey",
           "Content-Type": "application/json"
         },
         "version": "1",

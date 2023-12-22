@@ -1,7 +1,7 @@
 [
   {
     "destKey": "event_id",
-    "sourceKeys": "properties.eventId",
+    "sourceKeys": ["properties.eventId", "properties.event_id", "messageId"],
     "required": false
   },
   {
@@ -70,6 +70,11 @@
   {
     "destKey": "context.ad",
     "sourceKeys": ["properties.context.ad", "context.ad"],
+    "required": false
+  },
+  {
+    "destKey": "context.ad.callback",
+    "sourceKeys": "properties.clickId",
     "required": false
   },
   {

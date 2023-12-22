@@ -1,10 +1,13 @@
-const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
+const { NetworkError, InvalidAuthTokenError } = require('@rudderstack/integrations-lib');
+const {
+  REFRESH_TOKEN,
+  AUTH_STATUS_INACTIVE,
+} = require('../../../adapters/networkhandler/authConstants');
 const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 
-const { NetworkError, InvalidAuthTokenError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 
 /**
@@ -29,6 +32,18 @@ const gaResponseHandler = (gaResponse) => {
     if (isInvalidCredsError || response?.error?.status === 'UNAUTHENTICATED') {
       throw new InvalidAuthTokenError('invalid credentials', 500, response, REFRESH_TOKEN);
     }
+    const isInvalidGrantError =
+      response?.error.code === 403 &&
+      response.error?.errors?.some((errObj) => errObj.reason === 'insufficientPermissions');
+    if (isInvalidGrantError) {
+      throw new InvalidAuthTokenError(
+        response?.error?.message || 'insufficent permissions',
+        400,
+        response,
+        AUTH_STATUS_INACTIVE,
+      );
+    }
+
     throw new NetworkError(
       `Error occurred while completing deletion request: ${response.error?.message}`,
       status,

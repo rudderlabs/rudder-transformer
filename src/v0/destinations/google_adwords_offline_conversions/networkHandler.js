@@ -1,12 +1,17 @@
 const set = require('set-value');
 const get = require('get-value');
 const sha256 = require('sha256');
+const {
+  AbortedError,
+  NetworkInstrumentationError,
+  NetworkError,
+} = require('@rudderstack/integrations-lib');
 const { prepareProxyRequest, httpSend, httpPOST } = require('../../../adapters/network');
-const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
 const {
   isHttpStatusSuccess,
   getHashFromArray,
   isDefinedAndNotNullAndNotEmpty,
+  getAuthErrCategoryFromStCode,
 } = require('../../util');
 const { getConversionActionId } = require('./utils');
 const Cache = require('../../util/cache');
@@ -15,29 +20,9 @@ const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
-const {
-  AbortedError,
-  NetworkInstrumentationError,
-  NetworkError,
-} = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 
 const conversionCustomVariableCache = new Cache(CONVERSION_CUSTOM_VARIABLE_CACHE_TTL);
-
-/**
- * This function helps to determine the type of error occurred. We set the authErrorCategory
- * as per the destination response that is received and take the decision whether
- * to refresh the access_token or disable the destination.
- * @param {*} status
- * @returns
- */
-const getAuthErrCategory = (status) => {
-  if (status === 401) {
-    // UNAUTHORIZED
-    return REFRESH_TOKEN;
-  }
-  return '';
-};
 
 const createJob = async (endpoint, headers, payload) => {
   const endPoint = `${endpoint}:create`;
@@ -57,7 +42,7 @@ const createJob = async (endpoint, headers, payload) => {
       `[Google Ads Offline Conversions]:: ${response?.error?.message} during google_ads_offline_store_conversions Job Creation`,
       status,
       response,
-      getAuthErrCategory(status),
+      getAuthErrCategoryFromStCode(status),
     );
   }
   return response.resourceName.split('/')[3];
@@ -80,7 +65,7 @@ const addConversionToJob = async (endpoint, headers, jobId, payload) => {
       `[Google Ads Offline Conversions]:: ${addConversionToJobResponse.response?.error?.message} during google_ads_offline_store_conversions Add Conversion`,
       addConversionToJobResponse.status,
       addConversionToJobResponse.response,
-      getAuthErrCategory(get(addConversionToJobResponse, 'status')),
+      getAuthErrCategoryFromStCode(get(addConversionToJobResponse, 'status')),
     );
   }
   return true;
@@ -131,7 +116,7 @@ const getConversionCustomVariable = async (headers, params) => {
           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(searchStreamResponse.status),
         },
         searchStreamResponse?.response || searchStreamResponse,
-        getAuthErrCategory(searchStreamResponse.status),
+        getAuthErrCategoryFromStCode(searchStreamResponse.status),
       );
     }
     const conversionCustomVariable = get(searchStreamResponse, 'response.0.results');
@@ -175,6 +160,24 @@ const getConversionCustomVariableHashMap = (arrays) => {
 };
 
 /**
+ * Validates custom variable
+ * @param {*} customVariables
+ * @returns
+ */
+const isValidCustomVariables = (customVariables) => {
+  if (
+    isDefinedAndNotNullAndNotEmpty(customVariables) &&
+    Array.isArray(customVariables) &&
+    customVariables.length > 0
+  ) {
+    return customVariables.some(
+      (customVariable) => !!(customVariable.from !== '' && customVariable.to !== ''),
+    );
+  }
+  return false;
+};
+
+/**
  * collect conversionActionId for conversionAction parameter
  * @param {*} request
  * @returns
@@ -206,7 +209,7 @@ const ProxyRequest = async (request) => {
     set(body.JSON, 'conversions.0.conversionAction', conversionActionId);
   }
   // customVariables would be undefined in case of Store Conversions
-  if (isDefinedAndNotNullAndNotEmpty(params.customVariables)) {
+  if (isValidCustomVariables(params.customVariables)) {
     // fetch all conversion custom variable in google ads
     let conversionCustomVariable = await getConversionCustomVariable(headers, params);
 
@@ -252,9 +255,9 @@ const responseHandler = (destinationResponse) => {
     if (partialFailureError && partialFailureError.code !== 0) {
       throw new NetworkError(
         `[Google Ads Offline Conversions]:: partialFailureError - ${partialFailureError?.message}`,
-        status,
+        400,
         {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(400),
         },
         partialFailureError,
       );
@@ -274,7 +277,7 @@ const responseHandler = (destinationResponse) => {
     `[Google Ads Offline Conversions]:: ${response?.error?.message} during google_ads_offline_conversions response transformation`,
     status,
     response,
-    getAuthErrCategory(status),
+    getAuthErrCategoryFromStCode(status),
   );
 };
 

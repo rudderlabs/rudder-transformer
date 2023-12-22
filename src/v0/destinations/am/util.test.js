@@ -1,6 +1,15 @@
 const { getUnsetObj } = require('./utils');
 
 describe('getUnsetObj', () => {
+  it("should return undefined when 'message.integrations.Amplitude.fieldsToUnset' is not array", () => {
+    const message = {
+      integrations: {
+        Amplitude: { fieldsToUnset: 'field_name' },
+      },
+    };
+    const result = getUnsetObj(message);
+    expect(result).toBeUndefined();
+  });
   it("should return undefined when 'message.integrations.Amplitude.fieldsToUnset' is undefined", () => {
     const message = {
       integrations: {

@@ -240,6 +240,7 @@ const ProxyRequest = async (request) => {
   const response = await httpSend(requestBody, {
     feature: 'proxy',
     destType: 'gogole_adwords_offline_conversions',
+    endpointPath: `/proxy`,
   });
   return response;
 };

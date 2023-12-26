@@ -97,7 +97,6 @@ const runTheJob = async (endpoint, headers, method, jobId) => {
 const gaAudienceProxyRequest = async (request) => {
   const { body, method, params, endpoint } = request;
   const { headers } = request;
-  // const { customerId, listId, consent } = params;
 
   // step1: offlineUserDataJobs creation
 

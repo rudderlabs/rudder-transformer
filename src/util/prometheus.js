@@ -311,6 +311,12 @@ class Prometheus {
         labelNames: ['destination', 'success'],
       },
       {
+        name: 'hs_retl_batch_size',
+        help: 'hs_retl_batch_size',
+        type: 'counter',
+        labelNames: ['destination'],
+      },
+      {
         name: 'marketo_bulk_upload_upload_file_jobs',
         help: 'marketo_bulk_upload_upload_file_jobs',
         type: 'counter',

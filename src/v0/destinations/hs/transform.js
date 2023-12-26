@@ -7,6 +7,7 @@ const {
   getDestinationExternalIDInfoForRetl,
 } = require('../../util');
 const { API_VERSION } = require('./config');
+const stats = require('../../../util/stats');
 const {
   processLegacyIdentify,
   processLegacyTrack,
@@ -86,11 +87,17 @@ const processRouterDest = async (inputs, reqMetadata) => {
 
   try {
     if (mappedToDestination && GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())) {
+      // retl
+      // fire metric to get batch size
+      stats.histogram('hs_retl_batch_size', tempInputs.length, {
+        destination: 'HUBSPOT',
+      });
+
       // skip splitting the batches to inserts and updates if object it is an association
       if (objectType.toLowerCase() !== 'association') {
-        propertyMap = await getProperties(destination);
+        propertyMap = await getProperties(destination); // 1 for 100 events
         // get info about existing objects and splitting accordingly.
-        tempInputs = await splitEventsForCreateUpdate(tempInputs, destination);
+        tempInputs = await splitEventsForCreateUpdate(tempInputs, destination); // 1
       }
     } else {
       // reduce the no. of calls for properties endpoint

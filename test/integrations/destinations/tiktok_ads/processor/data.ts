@@ -4541,6 +4541,7 @@ export const data = [
                     category: 'Games',
                     url: 'https://www.website.com/product/path',
                     image_url: 'https://www.website.com/product/path.jpg',
+                    brand:"brand_name"
                   },
                   {
                     product_id: '345',
@@ -4618,6 +4619,7 @@ export const data = [
                         content_name: 'Monopoly',
                         price: 14,
                         quantity: 1,
+                        brand:"brand_name"
                       },
                       {
                         content_type: 'product_group',

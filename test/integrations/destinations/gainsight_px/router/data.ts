@@ -334,7 +334,6 @@ export const data = [
                     gender: 'MALE',
                     title: 'Director/Film Maker',
                     score: 100,
-                    createDate: 1624611592911,
                     location: {
                       countryName: 'USA',
                       countryCode: 'US',

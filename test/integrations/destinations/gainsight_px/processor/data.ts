@@ -515,7 +515,6 @@ export const data = [
                   firstName: 'Sample',
                   lastName: 'User',
                   signUpDate: 1624431528295,
-                  createDate: 1571043797562,
                   title: 'engineer',
                   propertyKeys: ['AP-XABC-123'],
                   location: {
@@ -1716,7 +1715,7 @@ export const data = [
   },
   {
     name: 'gainsight_px',
-    description: 'Test 14',
+    description: 'Test 14 : existing user with no createdAt field in traits but signUpDate exists',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1815,7 +1814,6 @@ export const data = [
                   firstName: 'Sample',
                   lastName: 'User',
                   signUpDate: 1624431528295,
-                  createDate: 1571043797562,
                   title: 'engineer',
                   propertyKeys: ['AP-XABC-123'],
                   location: {
@@ -1848,7 +1846,7 @@ export const data = [
   },
   {
     name: 'gainsight_px',
-    description: 'Test 15 : new user with no signUpDate in traits',
+    description: 'Test 15 : new user with no signUpDate and createDate in traits',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1978,7 +1976,7 @@ export const data = [
   },
   {
     name: 'gainsight_px',
-    description: 'Test 16 : existing user with no signUpDate in traits',
+    description: 'Test 16 : existing user with no signUpDate and createDate in traits',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -2140,7 +2138,6 @@ export const data = [
                   gender: 'MALE',
                   title: 'Director/Film Maker',
                   score: 100,
-                  createDate: 1624611592911,
                   location: {
                     countryName: 'USA',
                     countryCode: 'US',

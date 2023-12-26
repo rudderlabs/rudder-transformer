@@ -64,6 +64,12 @@ const identifyResponseBuilder = async (message, { Config }) => {
   if (!isPresent && !payload.signUpDate) {
     payload.signUpDate = formatTimeStamp(message.timestamp || message.originalTimestamp);
   }
+
+  // Only for the case of new user creation, if signUpDate is not provided in traits, timestamp / originalTimestamp is mapped
+  if (!isPresent && !payload.createDate) {
+    payload.createDate = formatTimeStamp(message.timestamp || message.originalTimestamp);
+  }
+
   let customAttributes = {};
   customAttributes = extractCustomFields(
     message,

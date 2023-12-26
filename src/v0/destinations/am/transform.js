@@ -297,6 +297,15 @@ const identifyBuilder = (message, destination, rawPayload) => {
       }
     });
   }
+  // update identify call request with unset fields
+  // AM docs https://www.docs.developers.amplitude.com/analytics/apis/http-v2-api/#keys-for-the-event-argument:~:text=exceed%2040%20layers.-,user_properties,-Optional.%20Object.%20A
+  const unsetObject = AMUtils.getUnsetObj(message);
+  if (unsetObject) {
+    // Example   unsetObject = {
+    //     "testObj.del1": "-"
+    // }
+    set(rawPayload, `user_properties.$unset`, unsetObject);
+  }
   return rawPayload;
 };
 
@@ -334,7 +343,7 @@ const getResponseData = (evType, destination, rawPayload, message, groupInfo) =>
     case EventType.IDENTIFY:
       // event_type for identify event is $identify
       rawPayload.event_type = IDENTIFY_AM;
-      identifyBuilder(message, destination, rawPayload);
+      rawPayload = identifyBuilder(message, destination, rawPayload);
       break;
     case EventType.GROUP:
       // event_type for identify event is $identify

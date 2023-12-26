@@ -221,6 +221,7 @@ async function getSalesforceIdFromPayload(
     if (!email) {
       throw new InstrumentationError('Invalid Email address for Lead Objet');
     }
+    // we need to make this url dynamic this is defaulting to lead.
     const leadQueryUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${email}&sobject=Lead&Lead.fields=id,IsConverted,ConvertedContactId,IsDeleted`;
 
     // request configuration will be conditional

@@ -55,12 +55,7 @@
   },
   {
     "destKey": "signUpDate",
-    "sourceKeys": [
-      "traits.signUpDate",
-      "context.traits.signUpDate",
-      "timestamp",
-      "originalTimestamp"
-    ],
+    "sourceKeys": ["traits.signUpDate", "context.traits.signUpDate"],
     "required": false,
     "metadata": {
       "type": "timestamp"

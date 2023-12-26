@@ -6,7 +6,10 @@ const isNull = (x) => {
 };
 
 const isBlank = (value) => {
-  return _.isEmpty(_.toString(value));
+  if (isNull(value) || value === '') {
+    return true;
+  }
+  return _.isEmpty(JSON.stringify(value))
 };
 
 const getFirstValidValue = (message, props) => {
@@ -27,6 +30,7 @@ function isDataLakeProvider(provider) {
 
 module.exports = {
   isNull,
+  isBlank,
   getFirstValidValue,
   isDataLakeProvider,
 };

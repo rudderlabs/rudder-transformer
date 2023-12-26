@@ -20,6 +20,7 @@ const {
 const {
   validTimestamp
 } = require("../../src/warehouse/util.js");
+const {isBlank} = require("../../src/warehouse/config/helpers.js");
 
 const version = "v0";
 const integrations = [
@@ -1138,12 +1139,55 @@ describe("validTimestamp", () => {
     {
       input: '05:23:59.244Z',
       expected: false,
+    },
+    {
+      input: {abc: 123},
+      expected: false,
+    },
+    {
+      input: {
+        toString: '2023-06-14T05:23:59.244Z'
+      },
+      expected: false,
     }
   ]
 
   for (const testCase of testCases) {
-    it(`should return ${testCase.expected} for ${testCase.input}`, () => {
+    it(`should return ${testCase.expected} for ${JSON.stringify(testCase.input)}`, () => {
       expect(validTimestamp(testCase.input)).toEqual(testCase.expected);
     });
   }
 });
+
+describe("isBlank", () => {
+  const testCases = [
+    {
+      input: null,
+      expected: true
+    },
+    {
+      input: "",
+      expected: true
+    },
+    {
+      input: "test",
+      expected: false
+    },
+    {
+      input: 1634762544,
+      expected: false
+    },
+    {
+      input: {
+        toString: '2023-06-14T05:23:59.244Z'
+      },
+      expected: false,
+    },
+  ]
+
+  for (const testCase of testCases) {
+    it(`should return ${testCase.expected} for ${JSON.stringify(testCase.input)}`, () => {
+      expect(isBlank(testCase.input)).toEqual(testCase.expected);
+    });
+  }
+})

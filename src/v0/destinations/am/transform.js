@@ -4,6 +4,7 @@
 const cloneDeep = require('lodash/cloneDeep');
 const get = require('get-value');
 const set = require('set-value');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
   EventType,
   SpecedTraits,
@@ -44,7 +45,7 @@ const tags = require('../../util/tags');
 const AMUtils = require('./utils');
 
 const logger = require('../../../logger');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
+
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const EVENTS_KEY_PATH = 'body.JSON.events';
@@ -194,9 +195,9 @@ const handleTraits = (messageTrait, destination) => {
 
 const getScreenevTypeAndUpdatedProperties = (message, CATEGORY_KEY) => {
   const name = message.name || message.event || get(message, CATEGORY_KEY);
-  const updatedName = name ? `${name} ` : '';
+
   return {
-    evType: `Viewed ${updatedName}Screen`,
+    eventType: `Viewed ${message.name || message.event || get(message, CATEGORY_KEY) || ''} Screen`,
     updatedProperties: {
       ...message.properties,
       name,
@@ -296,6 +297,15 @@ const identifyBuilder = (message, destination, rawPayload) => {
       }
     });
   }
+  // update identify call request with unset fields
+  // AM docs https://www.docs.developers.amplitude.com/analytics/apis/http-v2-api/#keys-for-the-event-argument:~:text=exceed%2040%20layers.-,user_properties,-Optional.%20Object.%20A
+  const unsetObject = AMUtils.getUnsetObj(message);
+  if (unsetObject) {
+    // Example   unsetObject = {
+    //     "testObj.del1": "-"
+    // }
+    set(rawPayload, `user_properties.$unset`, unsetObject);
+  }
   return rawPayload;
 };
 
@@ -333,7 +343,7 @@ const getResponseData = (evType, destination, rawPayload, message, groupInfo) =>
     case EventType.IDENTIFY:
       // event_type for identify event is $identify
       rawPayload.event_type = IDENTIFY_AM;
-      identifyBuilder(message, destination, rawPayload);
+      rawPayload = identifyBuilder(message, destination, rawPayload);
       break;
     case EventType.GROUP:
       // event_type for identify event is $identify
@@ -577,8 +587,6 @@ const getGroupInfo = (destination, groupInfo, groupTraits) => {
   }
   return groupInfo;
 };
-const getUpdatedPageNameWithoutUserDefinedPageEventName = (name, message, CATEGORY_KEY) =>
-  name || get(message, CATEGORY_KEY) ? `${name || get(message, CATEGORY_KEY)} ` : undefined;
 
 // Generic process function which invokes specific handler functions depending on message type
 // and event type where applicable
@@ -589,11 +597,15 @@ const processSingleMessage = (message, destination) => {
   // To be used for track/page calls to associate the event to a group in AM
   let groupInfo = get(message, 'integrations.Amplitude.groups') || undefined;
   let category = ConfigCategory.DEFAULT;
-  let { properties } = message;
-  const { name, event } = message;
+  const { name, event, properties } = message;
   const messageType = message.type.toLowerCase();
   const CATEGORY_KEY = 'properties.category';
-  const { useUserDefinedPageEventName, userProvidedPageEventString } = destination.Config;
+  const {
+    useUserDefinedPageEventName,
+    userProvidedPageEventString,
+    useUserDefinedScreenEventName,
+    userProvidedScreenEventString,
+  } = destination.Config;
   switch (messageType) {
     case EventType.IDENTIFY:
       payloadObjectName = 'events'; // identify same as events
@@ -615,26 +627,39 @@ const processSingleMessage = (message, destination) => {
                 .trim()
                 .replaceAll(/{{([^{}]+)}}/g, get(message, getMessagePath));
       } else {
-        const updatedName = getUpdatedPageNameWithoutUserDefinedPageEventName(
-          name,
-          message,
-          CATEGORY_KEY,
-        );
-        evType = `Viewed ${updatedName || ''}Page`;
+        evType = `Viewed ${name || get(message, CATEGORY_KEY) || ''} Page`;
       }
       message.properties = {
-        ...message.properties,
+        ...properties,
         name: name || get(message, CATEGORY_KEY),
       };
       category = ConfigCategory.PAGE;
       break;
     case EventType.SCREEN:
-      ({ evType, updatedProperties: properties } = getScreenevTypeAndUpdatedProperties(
-        message,
-        CATEGORY_KEY,
-      ));
-      message.properties = properties;
-      category = ConfigCategory.SCREEN;
+      {
+        const { eventType, updatedProperties } = getScreenevTypeAndUpdatedProperties(
+          message,
+          CATEGORY_KEY,
+        );
+        let customScreenEv = '';
+        if (useUserDefinedScreenEventName) {
+          const getMessagePath = userProvidedScreenEventString
+            .substring(
+              userProvidedScreenEventString.indexOf('{') + 2,
+              userProvidedScreenEventString.indexOf('}'),
+            )
+            .trim();
+          customScreenEv =
+            userProvidedScreenEventString.trim() === ''
+              ? name
+              : userProvidedScreenEventString
+                  .trim()
+                  .replaceAll(/{{([^{}]+)}}/g, get(message, getMessagePath));
+        }
+        evType = useUserDefinedScreenEventName ? customScreenEv : eventType;
+        message.properties = updatedProperties;
+        category = ConfigCategory.SCREEN;
+      }
       break;
     case EventType.GROUP:
       evType = 'group';
@@ -664,9 +689,9 @@ const processSingleMessage = (message, destination) => {
         throw new InstrumentationError('Event not present. Please send event field');
       }
       if (
-        message.properties &&
-        isDefinedAndNotNull(message.properties?.revenue) &&
-        isDefinedAndNotNull(message.properties?.revenue_type)
+        properties &&
+        isDefinedAndNotNull(properties?.revenue) &&
+        isDefinedAndNotNull(properties?.revenue_type)
       ) {
         // if properties has revenue and revenue_type fields
         // consider the event as revenue event directly

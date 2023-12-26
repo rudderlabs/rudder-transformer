@@ -1,3 +1,4 @@
+const { InstrumentationError, TransformationError } = require('@rudderstack/integrations-lib');
 const {
   defaultRequestConfig,
   simpleProcessRouterDest,
@@ -7,7 +8,6 @@ const {
 const { offlineConversionResponseBuilder, prepareUrls } = require('./utils');
 
 const { EventType } = require('../../../constants');
-const { InstrumentationError, TransformationError } = require('../../util/errorTypes');
 
 const responseBuilder = (endpoint) => {
   if (endpoint) {

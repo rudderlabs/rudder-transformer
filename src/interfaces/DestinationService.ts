@@ -5,12 +5,13 @@ import {
   ProcessorTransformationResponse,
   RouterTransformationRequestData,
   RouterTransformationResponse,
-  ProcessorTransformationOutput,
   UserDeletionRequest,
   UserDeletionResponse,
+  ProxyRequest,
+  DeliveriesResponse,
 } from '../types/index';
 
-export default interface DestinationService {
+export interface DestinationService {
   getName(): string;
 
   init(): void;
@@ -44,10 +45,11 @@ export default interface DestinationService {
   ): RouterTransformationResponse[];
 
   deliver(
-    event: ProcessorTransformationOutput,
+    event: ProxyRequest,
     destinationType: string,
     requestMetadata: NonNullable<unknown>,
-  ): Promise<DeliveryResponse>;
+    version: string,
+  ): Promise<DeliveryResponse | DeliveriesResponse>;
 
   processUserDeletion(
     requests: UserDeletionRequest[],

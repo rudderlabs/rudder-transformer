@@ -8,7 +8,6 @@ const Message = require('../message');
 
 const { mappingConfig } = require('./config');
 const { isDefinedAndNotNull } = require('../../util');
-// const { TransformationError } = require("../../util/errorTypes");
 
 function process(event) {
   const message = new Message(`Customer.io`);
@@ -34,7 +33,6 @@ function process(event) {
     message.setProperty('originalTimestamp', validTimestamp);
     message.setProperty('sentAt', validTimestamp);
   }
-
 
   // when customer.io does not pass an associated userId, set the email address as anonymousId
   if (

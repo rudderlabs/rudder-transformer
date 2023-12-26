@@ -660,9 +660,19 @@ describe('dedup utility tests', () => {
         color: 'green',
         age: 30,
         gender: 'male',
+        country: 'US',
+        language: 'en',
+        email_subscribe: true,
+        push_subscribe: false,
+        subscription_groups: ['group1', 'group2'],
       };
       const storeData = {
         external_id: '123',
+        country: 'US',
+        language: 'en',
+        email_subscribe: true,
+        push_subscribe: false,
+        subscription_groups: ['group1', 'group2'],
         custom_attributes: {
           color: 'blue',
           age: 25,
@@ -676,6 +686,49 @@ describe('dedup utility tests', () => {
         color: 'green',
         age: 30,
         gender: 'male',
+        country: 'US',
+        language: 'en',
+        email_subscribe: true,
+        push_subscribe: false,
+        subscription_groups: ['group1', 'group2'],
+      });
+    });
+
+    test('deduplicates user data correctly 2', () => {
+      const userData = {
+        external_id: '123',
+        color: 'green',
+        age: 30,
+        gender: 'male',
+        language: 'en',
+        email_subscribe: true,
+        push_subscribe: false,
+        subscription_groups: ['group1', 'group2'],
+      };
+      const storeData = {
+        external_id: '123',
+        country: 'US',
+        language: 'en',
+        email_subscribe: true,
+        push_subscribe: false,
+        subscription_groups: ['group1', 'group2'],
+        custom_attributes: {
+          color: 'blue',
+          age: 25,
+        },
+      };
+      store.set('123', storeData);
+      const result = BrazeDedupUtility.deduplicate(userData, store);
+      expect(store.size).toBe(1);
+      expect(result).toEqual({
+        external_id: '123',
+        color: 'green',
+        age: 30,
+        gender: 'male',
+        language: 'en',
+        email_subscribe: true,
+        push_subscribe: false,
+        subscription_groups: ['group1', 'group2'],
       });
     });
 
@@ -1218,5 +1271,146 @@ describe('getPurchaseObjs', () => {
         'Invalid Order Completed event: Properties object is missing in the message',
       );
     }
+  });
+
+  test('products having extra properties', () => {
+    const output = getPurchaseObjs(
+      {
+        properties: {
+          products: [
+            { product_id: '123', price: 10.99, quantity: 2, random_extra_property_a: 'abc' },
+            { product_id: '456', price: 5.49, quantity: 1, random_extra_property_b: 'efg' },
+            {
+              product_id: '789',
+              price: 15.49,
+              quantity: 1,
+              random_extra_property_a: 'abc',
+              random_extra_property_b: 'efg',
+              random_extra_property_c: 'hij',
+            },
+          ],
+          currency: 'USD',
+        },
+        timestamp: '2023-08-04T12:34:56Z',
+        anonymousId: 'abc',
+      },
+      {
+        sendPurchaseEventWithExtraProperties: true,
+      },
+    );
+    expect(output).toEqual([
+      {
+        product_id: '123',
+        price: 10.99,
+        currency: 'USD',
+        quantity: 2,
+        time: '2023-08-04T12:34:56Z',
+        properties: {
+          random_extra_property_a: 'abc',
+        },
+        _update_existing_only: false,
+        user_alias: {
+          alias_name: 'abc',
+          alias_label: 'rudder_id',
+        },
+      },
+      {
+        product_id: '456',
+        price: 5.49,
+        currency: 'USD',
+        quantity: 1,
+        time: '2023-08-04T12:34:56Z',
+        properties: {
+          random_extra_property_b: 'efg',
+        },
+        _update_existing_only: false,
+        user_alias: {
+          alias_name: 'abc',
+          alias_label: 'rudder_id',
+        },
+      },
+      {
+        product_id: '789',
+        price: 15.49,
+        currency: 'USD',
+        quantity: 1,
+        time: '2023-08-04T12:34:56Z',
+        properties: {
+          random_extra_property_a: 'abc',
+          random_extra_property_b: 'efg',
+          random_extra_property_c: 'hij',
+        },
+        _update_existing_only: false,
+        user_alias: {
+          alias_name: 'abc',
+          alias_label: 'rudder_id',
+        },
+      },
+    ]);
+  });
+
+  test('products having extra properties with sendPurchaseEventWithExtraProperties as false', () => {
+    const output = getPurchaseObjs(
+      {
+        properties: {
+          products: [
+            { product_id: '123', price: 10.99, quantity: 2, random_extra_property_a: 'abc' },
+            { product_id: '456', price: 5.49, quantity: 1, random_extra_property_b: 'efg' },
+            {
+              product_id: '789',
+              price: 15.49,
+              quantity: 1,
+              random_extra_property_a: 'abc',
+              random_extra_property_b: 'efg',
+              random_extra_property_c: 'hij',
+            },
+          ],
+          currency: 'USD',
+        },
+        timestamp: '2023-08-04T12:34:56Z',
+        anonymousId: 'abc',
+      },
+      {
+        sendPurchaseEventWithExtraProperties: false,
+      },
+    );
+    expect(output).toEqual([
+      {
+        product_id: '123',
+        price: 10.99,
+        currency: 'USD',
+        quantity: 2,
+        time: '2023-08-04T12:34:56Z',
+        _update_existing_only: false,
+        user_alias: {
+          alias_name: 'abc',
+          alias_label: 'rudder_id',
+        },
+      },
+      {
+        product_id: '456',
+        price: 5.49,
+        currency: 'USD',
+        quantity: 1,
+        time: '2023-08-04T12:34:56Z',
+        _update_existing_only: false,
+        user_alias: {
+          alias_name: 'abc',
+          alias_label: 'rudder_id',
+        },
+      },
+      {
+        product_id: '789',
+        price: 15.49,
+        currency: 'USD',
+        quantity: 1,
+        time: '2023-08-04T12:34:56Z',
+        _update_existing_only: false,
+        user_alias: {
+          alias_name: 'abc',
+          alias_label: 'rudder_id',
+        },
+      },
+    ]);
   });
 });

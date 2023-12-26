@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 const sha256 = require('sha256');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   constructPayload,
@@ -7,8 +8,8 @@ const {
   isDefined,
   getHashFromArrayWithDuplicate,
   removeUndefinedAndNullValues,
+  validateEventName,
 } = require('../../util');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 const { COMMON_CONFIGS, CUSTOM_CONFIGS, API_VERSION } = require('./config');
 
 const VALID_ACTION_SOURCES = ['app_android', 'app_ios', 'web', 'offline'];
@@ -170,6 +171,7 @@ const deduceTrackScreenEventName = (message, Config) => {
   if (!trackEventOrScreenName) {
     throw new InstrumentationError('event_name could not be mapped. Aborting');
   }
+  validateEventName(trackEventOrScreenName);
 
   /*
   Step 1: If the event is not amongst the above list of ecommerce events, will look for

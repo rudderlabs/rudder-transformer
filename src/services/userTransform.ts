@@ -24,7 +24,7 @@ import { CatchErr, FixMe } from '../util/types';
 import { FeatureFlags, FEATURE_FILTER_CODE } from '../middlewares/featureFlag';
 import { HTTP_CUSTOM_STATUS_CODES } from '../constants';
 
-export default class UserTransformService {
+export class UserTransformService {
   public static async transformRoutine(
     events: ProcessorTransformationRequest[],
     features: FeatureFlags = {},
@@ -65,6 +65,7 @@ export default class UserTransformService {
           sourceId: eventsToProcess[0]?.metadata?.sourceId,
           destinationId: eventsToProcess[0]?.metadata.destinationId,
           destinationType: eventsToProcess[0]?.metadata.destinationType,
+          workspaceId: eventsToProcess[0]?.metadata.workspaceId,
           messageIds,
         };
 
@@ -85,9 +86,6 @@ export default class UserTransformService {
         }
         const userFuncStartTime = new Date();
         try {
-          stats.counter('user_transform_function_input_events', eventsToProcess.length, {
-            ...metaTags,
-          });
           const destTransformedEvents: UserTransformationResponse[] = await userTransformHandler()(
             eventsToProcess,
             transformationVersionId,

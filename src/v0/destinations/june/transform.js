@@ -1,3 +1,4 @@
+const { TransformationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
   isEmptyObject,
   constructPayload,
@@ -10,7 +11,6 @@ const {
 const { EventType } = require('../../../constants');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
-const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
 
 const responseBuilder = (payload, endpoint, destination) => {
   const destPayload = payload;

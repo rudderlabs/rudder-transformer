@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 /* eslint-disable @typescript-eslint/naming-convention */
+const { TransformationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   defaultRequestConfig,
@@ -25,7 +26,6 @@ const {
   prepareTrackEventData,
   getListIds,
 } = require('./util');
-const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
 
 const responseBuilder = (
   payload,

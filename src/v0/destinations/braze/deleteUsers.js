@@ -1,3 +1,4 @@
+const { NetworkError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { httpPOST } = require('../../../adapters/network');
 const {
   processAxiosResponse,
@@ -8,7 +9,6 @@ const { isHttpStatusSuccess } = require('../../util');
 const { executeCommonValidations } = require('../../util/regulation-api');
 const { DEL_MAX_BATCH_SIZE } = require('./config');
 const { getUserIdBatches } = require('../../util/deleteUserUtils');
-const { NetworkError, ConfigurationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const userDeletionHandler = async (userAttributes, config) => {

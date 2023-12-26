@@ -1,7 +1,6 @@
+const { RetryableError } = require('@rudderstack/integrations-lib');
 const { proxyRequest, prepareProxyRequest } = require('../../../adapters/network');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
-
-const { RetryableError } = require('../../util/errorTypes');
 
 const errorResponseHandler = (destinationResponse, dest) => {
   const { status } = destinationResponse;

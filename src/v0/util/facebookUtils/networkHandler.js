@@ -1,11 +1,11 @@
 const { isEmpty } = require('lodash');
 const get = require('get-value');
+const { NetworkError } = require('@rudderstack/integrations-lib');
 const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
-const { NetworkError } = require('../errorTypes');
 const tags = require('../tags');
 const { ErrorDetailsExtractorBuilder } = require('../../../util/error-extractor');
 
@@ -194,6 +194,9 @@ const errorDetailsMap = {
       .setStatus(429)
       .setMessage('There have been too many calls to this ad-account.')
       .build(),
+  },
+  200: {
+    default: new ErrorDetailsExtractorBuilder().setStatus(403).setMessageField('message').build(),
   },
 };
 

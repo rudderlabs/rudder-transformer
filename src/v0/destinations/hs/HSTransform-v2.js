@@ -1,5 +1,10 @@
 const get = require('get-value');
 const lodash = require('lodash');
+const {
+  TransformationError,
+  ConfigurationError,
+  InstrumentationError,
+} = require('@rudderstack/integrations-lib');
 const { MappedToDestinationKey, GENERIC_TRUE_VALUES } = require('../../../constants');
 const {
   defaultPostRequestConfig,
@@ -16,11 +21,6 @@ const {
   getDestinationExternalIDInfoForRetl,
   getDestinationExternalIDObjectForRetl,
 } = require('../../util');
-const {
-  TransformationError,
-  ConfigurationError,
-  InstrumentationError,
-} = require('../../util/errorTypes');
 const {
   IDENTIFY_CRM_UPDATE_CONTACT,
   IDENTIFY_CRM_CREATE_NEW_CONTACT,

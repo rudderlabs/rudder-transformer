@@ -128,12 +128,12 @@ export const data = [
                   errorCode: 'INVALID_SESSION_ID',
                 },
               ],
-              status: 401,
               rudderJobMetadata: {
                 destInfo: {
                   authKey: '2HezPl1w11opbFSxnLDEgZ7kWTf',
                 },
               },
+              status: 401,
             },
             statTags: {
               destType: 'SALESFORCE',

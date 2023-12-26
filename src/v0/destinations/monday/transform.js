@@ -1,4 +1,9 @@
 const get = require('get-value');
+const {
+  ConfigurationError,
+  TransformationError,
+  InstrumentationError,
+} = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const { ENDPOINT } = require('./config');
 const { populatePayload, getBoardDetails, checkAllowedEventNameFromUI } = require('./util');
@@ -8,13 +13,8 @@ const {
   removeUndefinedAndNullValues,
   simpleProcessRouterDest,
   getDestinationExternalID,
-  validateEventType,
+  validateEventName,
 } = require('../../util');
-const {
-  ConfigurationError,
-  TransformationError,
-  InstrumentationError,
-} = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (payload, endpoint, apiToken) => {
@@ -42,7 +42,7 @@ const trackResponseBuilder = async (message, { Config }) => {
   const { apiToken } = Config;
   let boardId = getDestinationExternalID(message, 'boardId');
   const event = get(message, 'event');
-  validateEventType(event);
+  validateEventName(event);
   if (!boardId) {
     boardId = Config.boardId;
   }

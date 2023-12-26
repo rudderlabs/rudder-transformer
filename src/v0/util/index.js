@@ -83,7 +83,7 @@ const isPrimitive = (arg) => {
 const isNewStatusCodesAccepted = (reqMetadata = {}) => {
   if (reqMetadata && typeof reqMetadata === 'object' && !Array.isArray(reqMetadata)) {
     const { features } = reqMetadata;
-    return !!(features && features[FEATURE_FILTER_CODE]);
+    return !!features?.[FEATURE_FILTER_CODE];
   }
   return false;
 };

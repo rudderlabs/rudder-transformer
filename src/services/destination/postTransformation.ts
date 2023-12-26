@@ -17,6 +17,7 @@ import { generateErrorObject } from '../../v0/util';
 import { ErrorReportingService } from '../errorReporting';
 import tags from '../../v0/util/tags';
 import stats from '../../util/stats';
+import { FixMe } from '../../util/types';
 
 export class DestinationPostTransformationService {
   public static handleProcessorTransformSucessEvents(
@@ -166,7 +167,7 @@ export class DestinationPostTransformationService {
   }
 
   public static handlevV1DeliveriesFailureEvents(
-    error: NonNullable<unknown>,
+    error: FixMe,
     metaTo: MetaTransferObject,
   ): DeliveriesResponse {
     const errObj = generateErrorObject(error, metaTo.errorDetails, false);
@@ -177,7 +178,10 @@ export class DestinationPostTransformationService {
     }
     const responses = metadataArray.map((metadata) => {
       const resp = {
-        error: errObj.message || '[Delivery] Error occured while processing payload',
+        error:
+          JSON.stringify(error.destinationResponse?.response) ||
+          errObj.message ||
+          '[Delivery] Error occured while processing payload',
         statusCode: errObj.status,
         metadata,
       } as DeliveryJobState;
@@ -187,6 +191,9 @@ export class DestinationPostTransformationService {
     const resp = {
       response: responses,
       statTags: errObj.statTags,
+      authErrorCategory: errObj.authErrorCategory,
+      message: errObj.message.toString(),
+      status: errObj.status,
     } as DeliveriesResponse;
 
     ErrorReportingService.reportError(error, metaTo.errorContext, resp);

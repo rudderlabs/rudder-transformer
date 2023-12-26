@@ -2,6 +2,10 @@
 
 Write a brief explainer on your code changes.
 
+## What is the related Linear task?
+
+Link to linear ticket.
+
 ## Please explain the objectives of your changes below
 
 Put down any required details on the broader aspect of your changes. If there are any dependent changes, **mandatorily** mention them here
@@ -13,8 +17,6 @@ If the pull request is a **bug-fix**, **enhancement** or a **refactor**, please 
 - Existing capabilities/behavior
 
 - New capabilities/behavior
-
-If the pull request is a **new feature**,
 
 ### Any technical or performance related pointers to consider with the change?
 

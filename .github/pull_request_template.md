@@ -29,6 +29,7 @@ N/A
 <hr>
 
 ### Developer checklist
+- [ ] My code follows the style guidelines of this project
 
 - [ ] **No breaking changes are being introduced.**
 

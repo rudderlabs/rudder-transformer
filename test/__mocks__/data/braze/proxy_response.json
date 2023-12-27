@@ -1,0 +1,34 @@
+{
+  "https://rest.iad-03.braze.com/users/identify/test1": {
+    "data": {
+      "aliases_processed": 1,
+      "message": "success"
+    },
+    "status": 201
+  },
+  "https://rest.iad-03.braze.com/users/identify/test2": {
+    "data": {
+      "message": "success",
+      "errors": ["minor error message"]
+    },
+    "status": 201
+  },
+  "https://rest.iad-03.braze.com/users/identify/test3": {
+    "data": {
+      "message": "fatal error message",
+      "errors": ["minor error message"]
+    },
+    "status": 201
+  },
+  "https://rest.iad-03.braze.com/users/identify/test4": {
+    "data": "",
+    "status": 201
+  },
+  "https://rest.iad-03.braze.com/users/identify/test5": {},
+  "https://rest.iad-03.braze.com/users/identify/test6": {
+    "code": "[ENOTFOUND] :: DNS lookup failed"
+  },
+  "https://rest.iad-03.braze.com/users/identify/test7": {
+    "response": {}
+  }
+}

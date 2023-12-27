@@ -26,7 +26,23 @@ import { MappedToDestinationKey } from '../constants';
 export class PluginAdapter {
   private static pluginCache: Map<string, Integration> = new Map();
 
-  private static async getPlugin(
+  /**
+   *
+   * @param metadata Deduplicate metadata based on jobId
+   */
+  static deduplicateMetadata(metadata: Metadata[]) {
+    const jobIdMap = new Map();
+    const deduplicatedMetadata: Metadata[] = [];
+    for (const meta of metadata) {
+      if (!jobIdMap.has(meta.jobId)) {
+        jobIdMap.set(meta.jobId, 'exists');
+        deduplicatedMetadata.push(meta);
+      }
+    }
+    return deduplicatedMetadata;
+  }
+
+  static async getPlugin(
     integrationName: string,
     workflowType: WorkflowType,
   ): Promise<Integration> {
@@ -81,7 +97,7 @@ export class PluginAdapter {
             const errResponses = e.metadata.map((metadata) => ({
               metadata,
               response: generateErrorObject(e.error), // add further tags here
-              destination: e.destination,
+              destination,
             }));
             return errResponses;
           });
@@ -226,7 +242,8 @@ export class PluginAdapter {
           if (!isCurrentResponseAddedToFinalPayload) {
             finalResponse.push({
               payload: rankedResponse.payload.map((payload) => payload as TransformedOutput),
-              metadata: rankedResponse.metadata,
+              // only stored deduplicated metadata in the final response
+              metadata: PluginAdapter.deduplicateMetadata(rankedResponse.metadata),
               destination,
             });
             // update the jobIdPositionMap for all the jobIds in the rankedResponse

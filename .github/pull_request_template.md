@@ -2,21 +2,15 @@
 
 Write a brief explainer on your code changes.
 
+## What is the related Linear task?
+
+Resolves INT-XXX
+
 ## Please explain the objectives of your changes below
 
 Put down any required details on the broader aspect of your changes. If there are any dependent changes, **mandatorily** mention them here
 
-### Type of change
-
-If the pull request is a **bug-fix**, **enhancement** or a **refactor**, please fill in the details on the changes made.
-
-- Existing capabilities/behavior
-
-- New capabilities/behavior
-
-If the pull request is a **new feature**,
-
-### Any technical or performance related pointers to consider with the change?
+### Any changes to existing capabilities/behaviour, mention the reason & what are the changes ?
 
 N/A
 
@@ -28,11 +22,7 @@ N/A
 
 N/A
 
-### If the PR has changes in more than 10 files, please mention why the changes were not split into multiple PRs.
-
-N/A
-
-### If multiple linear tasks are associated with the PR changes, please elaborate on the reason:
+### Any technical or performance related pointers to consider with the change?
 
 N/A
 
@@ -40,13 +30,19 @@ N/A
 
 ### Developer checklist
 
+- [ ] My code follows the style guidelines of this project
+
 - [ ] **No breaking changes are being introduced.**
 
-- [ ] Are all related docs linked with the PR?
+- [ ] All related docs linked with the PR?
 
-- [ ] Are all changes manually tested?
+- [ ] All changes manually tested?
 
-- [ ] Does this change require any documentation changes?
+- [ ] Any documentation changes needed with this change?
+
+- [ ] Is the PR limited to 10 file changes?
+
+- [ ] Is the PR limited to one linear task?
 
 - [ ] Are relevant unit and component test-cases added?
 

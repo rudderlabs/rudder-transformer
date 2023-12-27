@@ -3701,81 +3701,82 @@ export const data = [
       request: {
         body: [
           {
-            "destination": {
-              "Config": {
-                "restApiKey": "dummyApiKey",
-                "prefixProperties": true,
-                "useNativeSDK": false,
-                "sendPurchaseEventWithExtraProperties": true
+            destination: {
+              Config: {
+                restApiKey: 'dummyApiKey',
+                prefixProperties: true,
+                useNativeSDK: false,
+                sendPurchaseEventWithExtraProperties: true,
               },
-              "DestinationDefinition": {
-                "DisplayName": "Braze",
-                "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
-                "Name": "BRAZE"
+              DestinationDefinition: {
+                DisplayName: 'Braze',
+                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
+                Name: 'BRAZE',
               },
-              "Enabled": true,
-              "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
-              "Name": "Braze",
-              "Transformations": []
+              Enabled: true,
+              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
+              Name: 'Braze',
+              Transformations: [],
             },
-            "message": {
-              "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-              "channel": "web",
-              "context": {
-                "traits": {
-                  "city": "Disney",
-                  "country": "USA",
-                  "email": null,
-                  "firstname": "Mickey"
+            message: {
+              anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
+              channel: 'web',
+              context: {
+                traits: {
+                  city: 'Disney',
+                  country: 'USA',
+                  email: null,
+                  firstname: 'Mickey',
                 },
-                "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36',
               },
-              "event": "Order Completed",
-              "integrations": {
-                "All": true
+              event: 'Order Completed',
+              integrations: {
+                All: true,
               },
-              "messageId": "aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a",
-              "originalTimestamp": "2020-01-24T06:29:02.367Z",
-              "properties": {
-                "affiliation": "Google Store",
-                "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
-                "coupon": "hasbros",
-                "currency": "USD",
-                "discount": 2.5,
-                "order_id": "50314b8e9bcf000000000000",
-                "products": [
+              messageId: 'aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a',
+              originalTimestamp: '2020-01-24T06:29:02.367Z',
+              properties: {
+                affiliation: 'Google Store',
+                checkout_id: 'fksdjfsdjfisjf9sdfjsd9f',
+                coupon: 'hasbros',
+                currency: 'USD',
+                discount: 2.5,
+                order_id: '50314b8e9bcf000000000000',
+                products: [
                   {
-                    "category": "Games",
-                    "image_url": "https:///www.example.com/product/path.jpg",
-                    "name": "Monopoly: 3rd Edition",
-                    "price": 0,
-                    "product_id": "507f1f77bcf86cd799439023",
-                    "quantity": 1,
-                    "sku": "45790-32",
-                    "url": "https://www.example.com/product/path"
+                    category: 'Games',
+                    image_url: 'https:///www.example.com/product/path.jpg',
+                    name: 'Monopoly: 3rd Edition',
+                    price: 0,
+                    product_id: '507f1f77bcf86cd799439023',
+                    quantity: 1,
+                    sku: '45790-32',
+                    url: 'https://www.example.com/product/path',
                   },
                   {
-                    "category": "Games",
-                    "name": "Uno Card Game",
-                    "price": 0,
-                    "product_id": "505bd76785ebb509fc183724",
-                    "quantity": 2,
-                    "sku": "46493-32"
-                  }
+                    category: 'Games',
+                    name: 'Uno Card Game',
+                    price: 0,
+                    product_id: '505bd76785ebb509fc183724',
+                    quantity: 2,
+                    sku: '46493-32',
+                  },
                 ],
-                "revenue": 25,
-                "shipping": 3,
-                "subtotal": 22.5,
-                "tax": 2,
-                "total": 27.5
+                revenue: 25,
+                shipping: 3,
+                subtotal: 22.5,
+                tax: 2,
+                total: 27.5,
               },
-              "receivedAt": "2020-01-24T11:59:02.403+05:30",
-              "request_ip": "[::1]:53712",
-              "sentAt": "2020-01-24T06:29:02.368Z",
-              "timestamp": "2020-01-24T11:59:02.402+05:30",
-              "type": "track",
-              "userId": ""
-            }
+              receivedAt: '2020-01-24T11:59:02.403+05:30',
+              request_ip: '[::1]:53712',
+              sentAt: '2020-01-24T06:29:02.368Z',
+              timestamp: '2020-01-24T11:59:02.402+05:30',
+              type: 'track',
+              userId: '',
+            },
           },
         ],
       },
@@ -3783,82 +3784,83 @@ export const data = [
     output: {
       response: {
         status: 200,
-        body: [{
-          output: {
-            "body": {
-              "FORM": {},
-              "JSON": {
-                "attributes": [
-                  {
-                    "_update_existing_only": false,
-                    "city": "Disney",
-                    "country": "USA",
-                    "email": null,
-                    "firstname": "Mickey",
-                    "user_alias": {
-                      "alias_label": "rudder_id",
-                      "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-                    }
-                  }
-                ],
-                "partner": "RudderStack",
-                "purchases": [
-                  {
-                    "_update_existing_only": false,
-                    "currency": "USD",
-                    "price": 0,
-                    "product_id": "507f1f77bcf86cd799439023",
-                    "properties": {
-                      "category": "Games",
-                      "image_url": "https:///www.example.com/product/path.jpg",
-                      "name": "Monopoly: 3rd Edition",
-                      "url": "https://www.example.com/product/path"
+        body: [
+          {
+            output: {
+              body: {
+                FORM: {},
+                JSON: {
+                  attributes: [
+                    {
+                      _update_existing_only: false,
+                      city: 'Disney',
+                      country: 'USA',
+                      email: null,
+                      firstname: 'Mickey',
+                      user_alias: {
+                        alias_label: 'rudder_id',
+                        alias_name: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
+                      },
                     },
-                    "quantity": 1,
-                    "time": "2020-01-24T11:59:02.402+05:30",
-                    "user_alias": {
-                      "alias_label": "rudder_id",
-                      "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-                    }
-                  },
-                  {
-                    "_update_existing_only": false,
-                    "currency": "USD",
-                    "price": 0,
-                    "product_id": "505bd76785ebb509fc183724",
-                    "properties": {
-                      "category": "Games",
-                      "name": "Uno Card Game"
+                  ],
+                  partner: 'RudderStack',
+                  purchases: [
+                    {
+                      _update_existing_only: false,
+                      currency: 'USD',
+                      price: 0,
+                      product_id: '507f1f77bcf86cd799439023',
+                      properties: {
+                        category: 'Games',
+                        image_url: 'https:///www.example.com/product/path.jpg',
+                        name: 'Monopoly: 3rd Edition',
+                        url: 'https://www.example.com/product/path',
+                      },
+                      quantity: 1,
+                      time: '2020-01-24T11:59:02.402+05:30',
+                      user_alias: {
+                        alias_label: 'rudder_id',
+                        alias_name: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
+                      },
                     },
-                    "quantity": 2,
-                    "time": "2020-01-24T11:59:02.402+05:30",
-                    "user_alias": {
-                      "alias_label": "rudder_id",
-                      "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-                    }
-                  }
-                ]
+                    {
+                      _update_existing_only: false,
+                      currency: 'USD',
+                      price: 0,
+                      product_id: '505bd76785ebb509fc183724',
+                      properties: {
+                        category: 'Games',
+                        name: 'Uno Card Game',
+                      },
+                      quantity: 2,
+                      time: '2020-01-24T11:59:02.402+05:30',
+                      user_alias: {
+                        alias_label: 'rudder_id',
+                        alias_name: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
+                      },
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
               },
-              "JSON_ARRAY": {},
-              "XML": {}
+              endpoint: 'https://rest.fra-01.braze.eu/users/track',
+              files: {},
+              headers: {
+                Accept: 'application/json',
+                Authorization: 'Bearer dummyApiKey',
+                'Content-Type': 'application/json',
+              },
+              method: 'POST',
+              params: {},
+              type: 'REST',
+              userId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
+              version: '1',
             },
-            "endpoint": "https://rest.fra-01.braze.eu/users/track",
-            "files": {},
-            "headers": {
-              "Accept": "application/json",
-              "Authorization": "Bearer dummyApiKey",
-              "Content-Type": "application/json"
-            },
-            "method": "POST",
-            "params": {},
-            "type": "REST",
-            "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-            "version": "1"
+            statusCode: 200,
           },
-          statusCode: 200,
-        },
         ],
       },
     },
-  }
+  },
 ];

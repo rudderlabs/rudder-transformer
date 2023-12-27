@@ -40,7 +40,7 @@ N/A
 
 - [ ] Is the PR limited to 10 file changes?
 
-- [ ] Are we limited to one linear task?
+- [ ] Is the PR limited to one linear task?
 
 - [ ] Are relevant unit and component test-cases added?
 

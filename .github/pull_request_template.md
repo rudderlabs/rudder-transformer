@@ -38,7 +38,7 @@ N/A
 
 - [ ] Any documentation changes needed with this change?
 
-- [ ] Are we limited to 10 file changes in the PR?
+- [ ] Is the PR limited to 10 file changes?
 
 - [ ] Are we limited to one linear task?
 

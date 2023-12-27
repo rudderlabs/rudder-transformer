@@ -62,9 +62,9 @@ export class ComparatorService implements DestinationService {
 
   private getTestThreshold(destination: Destination) {
     const config = destination.DestinationDefinition?.Config as {
-      camparisonTestThreshold?: number;
+      comparisonTestThreshold?: number;
     };
-    return config?.camparisonTestThreshold || 0;
+    return config?.comparisonTestThreshold || 0;
   }
 
   private getComparisonLogs(

@@ -4,15 +4,15 @@ Write a brief explainer on your code changes.
 
 ## What is the related Linear task?
 
-Resolves INT-<>
+Resolves INT-XXX
 
 ## Please explain the objectives of your changes below
 
 Put down any required details on the broader aspect of your changes. If there are any dependent changes, **mandatorily** mention them here
 
-### Type of change
+### Any changes to existing capabilities/behaviour, mention the reason & what are the changes ?
 
-<strong>Any changes to existing capabilities/behaviour, mention the reason & what are the changes ? </strong>
+N/A
 
 ### Any new dependencies introduced with this change?
 
@@ -29,6 +29,7 @@ N/A
 <hr>
 
 ### Developer checklist
+
 - [ ] My code follows the style guidelines of this project
 
 - [ ] **No breaking changes are being introduced.**

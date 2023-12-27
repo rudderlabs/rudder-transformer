@@ -1152,8 +1152,9 @@ describe("validTimestamp", () => {
     }
   ]
 
-  for (const testCase of testCases) {
-    it(`should return ${testCase.expected} for ${JSON.stringify(testCase.input)}`, () => {
+  for (let i = 0; i < testCases.length; i++) {
+    const testCase = testCases[i];
+    it(`should return ${testCase.expected} for testcase ${i + 1}`, () => {
       expect(validTimestamp(testCase.input)).toEqual(testCase.expected);
     });
   }
@@ -1185,8 +1186,9 @@ describe("isBlank", () => {
     },
   ]
 
-  for (const testCase of testCases) {
-    it(`should return ${testCase.expected} for ${JSON.stringify(testCase.input)}`, () => {
+  for (let i = 0; i < testCases.length; i++) {
+    const testCase = testCases[i];
+    it(`should return ${testCase.expected} for testcase ${i + 1}`, () => {
       expect(isBlank(testCase.input)).toEqual(testCase.expected);
     });
   }

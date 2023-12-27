@@ -2081,7 +2081,6 @@ const sampleEvents = {
               id: "string",
               user_id: "string",
               received_at: "datetime",
-              event: "string"
             },
             receivedAt: "2020-01-24T11:59:02.403+05:30"
           },
@@ -2149,7 +2148,6 @@ const sampleEvents = {
               id: "string",
               user_id: "string",
               received_at: "datetime",
-              event: "string",
               boolean_property: "boolean",
             },
             receivedAt: "2020-01-24T11:59:02.403+05:30"

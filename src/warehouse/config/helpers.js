@@ -6,10 +6,11 @@ const isNull = (x) => {
 };
 
 const isBlank = (value) => {
-  if (isNull(value) || value === '') {
-    return true;
+  try {
+    return _.isEmpty(_.toString(value));
+  } catch (e) {
+    return false;
   }
-  return _.isEmpty(JSON.stringify(value))
 };
 
 const getFirstValidValue = (message, props) => {

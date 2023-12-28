@@ -5,13 +5,22 @@
     "required": false
   },
   {
-    "destKey": "timestamp",
+    "destKey": "event_time",
     "sourceKeys": "timestamp",
-    "required": false
+    "sourceFromGenericMap": true,
+    "required": true,
+    "metadata": {
+      "type": "secondTimestamp"
+    }
   },
   {
     "destKey": "test_event_code",
     "sourceKeys": "properties.testEventCode",
+    "required": false
+  },
+  {
+    "destKey": "limited_data_use",
+    "sourceKeys": "properties.limited_data_use",
     "required": false
   },
   {
@@ -20,26 +29,10 @@
     "required": false
   },
   {
-    "destKey": "properties.content_category",
-    "sourceKeys": "properties.category",
-    "required": false
-  },
-  {
-    "destKey": "properties.status",
-    "sourceKeys": "properties.status",
-    "required": false
-  },
-  {
-    "destKey": "properties.content_name",
-    "sourceKeys": "properties.name",
-    "required": false
-  },
-  {
-    "destKey": "properties.content_id",
-    "sourceKeys": ["properties.product_id", "properties.productId"],
-    "required": false,
+    "destKey": "properties.content_type",
+    "sourceKeys": ["properties.contentType", "properties.content_type"],
     "metadata": {
-      "type": "toString"
+      "defaultValue": "product"
     }
   },
   {
@@ -57,11 +50,6 @@
     "metadata": {
       "type": "toString"
     }
-  },
-  {
-    "destKey": "properties.content_type",
-    "sourceKeys": ["properties.contentType", "properties.content_type"],
-    "required": false
   },
   {
     "destKey": "properties.currency",
@@ -84,32 +72,56 @@
     "required": false
   },
   {
-    "destKey": "context.ad",
-    "sourceKeys": ["properties.context.ad", "context.ad"],
+    "destKey": "page.url",
+    "sourceKeys": ["properties.url", "context.page.url"],
+    "required": true
+  },
+  {
+    "destKey": "page.referrer",
+    "sourceKeys": ["properties.referrer", "context.page.referrer"],
     "required": false
   },
   {
-    "destKey": "context.ad.callback",
-    "sourceKeys": "properties.clickId",
+    "destKey": "user.locale",
+    "sourceKeys": "context.locale",
     "required": false
   },
   {
-    "destKey": "context.page",
-    "sourceKeys": ["properties.context.page", "context.page"],
+    "destKey": "user.ttclid",
+    "sourceKeys": "properties.ttclid",
     "required": false
   },
   {
-    "destKey": "context.user",
-    "sourceKeys": "properties.context.user",
+    "destKey": "user.ttp",
+    "sourceKeys": "properties.ttp",
     "required": false
   },
   {
-    "destKey": "context.ip",
+    "destKey": "user.email",
+    "sourceKeys": [
+      "context.user.email",
+      "traits.email",
+      "context.traits.email",
+      "properties.email"
+    ],
+    "metadata": {
+      "type": ["trim", "toLower"]
+    },
+    "required": false
+  },
+  {
+    "destKey": "user.phone",
+    "sourceKeys": "phone",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "user.ip",
     "sourceKeys": ["context.ip", "request_ip"],
     "required": false
   },
   {
-    "destKey": "context.user_agent",
+    "destKey": "user.user_agent",
     "sourceKeys": "context.userAgent",
     "required": false
   }

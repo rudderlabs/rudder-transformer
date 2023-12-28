@@ -313,7 +313,7 @@ class Prometheus {
       {
         name: 'hs_retl_batch_size',
         help: 'hs_retl_batch_size',
-        type: 'counter',
+        type: 'histogram',
         labelNames: ['destination'],
       },
       {

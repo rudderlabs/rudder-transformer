@@ -15,10 +15,9 @@ const { ConfigCategories, mappingConfig, BASE_URL } = require('./config');
 
 function populateIpDetails(requestJson, message) {
   const payload = requestJson;
-  if (message.context && requestJson.context) {
-    payload.context.ip = message.context?.ip || message.request_ip;
+  if (message.context || message.request_ip) {
+    payload.context = { ...(payload.context || {}), ip: message.context?.ip || message.request_ip };
   }
-
   return payload;
 }
 

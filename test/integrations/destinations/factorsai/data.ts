@@ -737,4 +737,77 @@ export const data = [
       },
     },
   },
+  {
+    name: 'factorsai',
+    description: 'IP fetched from request_ip withput context in payload',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                factorsAIApiKey: 'sdgerghsdfhsdhsdh432141dfgdfsg',
+              },
+            },
+            message: {
+              event: 'finalPageTest',
+              properties: {
+                title: 'Intro to Test final segemt context page added context last',
+              },
+              userId: 'PageTestAnonymousUser',
+              type: 'track',
+              messageId: '3c0abc14-96a2-4aed-9dfc-ee463832cc24',
+              originalTimestamp: '2022-10-17T15:32:44.202+05:30',
+              request_ip: '1.1.1.1',
+            },
+          },
+        ],
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              body: {
+                XML: {},
+                FORM: {},
+                JSON: {
+                  type: 'track',
+                  event: 'finalPageTest',
+                  context: {
+                    ip: '1.1.1.1',
+                  },
+                  messageId: '3c0abc14-96a2-4aed-9dfc-ee463832cc24',
+                  timestamp: '2022-10-17T15:32:44.202+05:30',
+                  properties: {
+                    title: 'Intro to Test final segemt context page added context last',
+                  },
+                  userId: 'PageTestAnonymousUser',
+                },
+                JSON_ARRAY: {},
+              },
+              type: 'REST',
+              files: {},
+              userId: '',
+              method: 'POST',
+              params: {},
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Basic c2RnZXJnaHNkZmhzZGhzZGg0MzIxNDFkZmdkZnNnOg==',
+              },
+              version: '1',
+              endpoint: 'https://api.factors.ai/integrations/rudderstack_platform',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];

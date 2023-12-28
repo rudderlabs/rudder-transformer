@@ -287,7 +287,7 @@ function getFormData(payload) {
  * @returns
  */
 const prepareProxyRequest = (request) => {
-  const { body, method, params, endpoint, headers, metadata } = request;
+  const { body, method, params, endpoint, headers, config } = request;
   const { payload, payloadFormat } = getPayloadData(body);
   let data;
 
@@ -313,7 +313,7 @@ const prepareProxyRequest = (request) => {
   }
   // Ref: https://github.com/rudderlabs/rudder-server/blob/master/router/network.go#L164
   headers['User-Agent'] = 'RudderLabs';
-  return removeUndefinedValues({ endpoint, data, params, headers, method, metadata });
+  return removeUndefinedValues({ endpoint, data, params, headers, method, config });
 };
 
 /**

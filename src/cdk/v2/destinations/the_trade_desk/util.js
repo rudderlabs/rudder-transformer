@@ -92,7 +92,7 @@ const processRecordInputs = (inputs, destination) => {
       successMetadata.push(input.metadata);
       const data = [
         {
-          Name: Config.segmentName,
+          Name: Config.audienceId,
           TTLInMinutes: action === 'insert' ? ttlInMin(Config.ttlInDays) : 0,
         },
       ];

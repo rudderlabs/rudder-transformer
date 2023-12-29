@@ -4,7 +4,7 @@ const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
-const { getSignatureHeader } = require('../../../cdk/v2/destinations/the_trade_desk/util');
+const { getSignatureHeader } = require('../../../cdk/v2/destinations/the_trade_desk/utils');
 const { isHttpStatusSuccess } = require('../../util/index');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');

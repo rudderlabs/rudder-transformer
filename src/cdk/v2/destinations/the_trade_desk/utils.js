@@ -1,7 +1,7 @@
 const lodash = require('lodash');
 const CryptoJS = require('crypto-js');
 const jsonSize = require('json-size');
-const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const { InstrumentationError, AbortedError } = require('@rudderstack/integrations-lib');
 const {
   defaultPostRequestConfig,
   defaultRequestConfig,
@@ -19,11 +19,14 @@ const ttlInMin = (ttl) => parseInt(ttl, 10) * 1440;
 const getBaseEndpoint = (dataServer) => DATA_SERVERS_BASE_ENDPOINTS_MAP[dataServer];
 const getFirstPartyEndpoint = (dataServer) => `${getBaseEndpoint(dataServer)}/data/advertiser`;
 
-function getSignatureHeader(request, secretKey) {
+const getSignatureHeader = (request, secretKey) => {
+  if (!secretKey) {
+    throw new AbortedError('Secret key is missing. Aborting');
+  }
   const sha1 = CryptoJS.HmacSHA1(JSON.stringify(request), secretKey);
   const base = CryptoJS.enc.Base64.stringify(sha1);
   return base;
-}
+};
 
 const responseBuilder = (items, Config) => {
   const { advertiserID, dataServer } = Config;
@@ -38,6 +41,8 @@ const responseBuilder = (items, Config) => {
 };
 
 const splitItemsBasedOnMaxSizeInBytes = (items, maxSize) => {
+  if (!items || items.length === 0) return [];
+
   const itemsSize = jsonSize(items);
 
   if (itemsSize <= maxSize) {
@@ -122,4 +127,4 @@ const processRouterDest = (inputs) => {
   return respList;
 };
 
-module.exports = { getSignatureHeader, processRouterDest };
+module.exports = { getSignatureHeader, splitItemsBasedOnMaxSizeInBytes, processRouterDest };

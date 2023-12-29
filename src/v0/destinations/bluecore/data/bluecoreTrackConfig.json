@@ -1,0 +1,43 @@
+[
+  {
+    "destKey": "distinct_id",
+    "sourceKeys": ["userId", "anonymousId", "email"],
+    "required": true
+  },
+  {
+    "destKey": "customer.name",
+    "sourceKeys": "name",
+    "required": false
+  },
+  {
+    "destKey": "customer.age",
+    "sourceKeys": "age",
+    "required": false
+  },
+  {
+    "destKey": "customer.sex",
+    "sourceKeys": "sex",
+    "required": false
+  },
+  {
+    "destKey": "customer.address",
+    "sourceKeys": "address",
+    "required": false
+  },
+  {
+    "destKey": "customer.email",
+    "sourceKeys": "email",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "client",
+    "sourceKeys": "context.app.version",
+    "required": false
+  },
+  {
+    "destKey": "device",
+    "sourceKeys": "context.device.model",
+    "required": false
+  }
+]

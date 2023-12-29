@@ -1,0 +1,49 @@
+[
+  {
+    "destKey": "properties.distinct_id",
+    "sourceKeys": ["userId", "anonymousId", "email"],
+    "required": true
+  },
+  {
+    "destKey": "properties.custormer.name",
+    "sourceKeys": "name",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "properties.custormer.age",
+    "sourceKeys": "age",
+    "required": false
+  },
+  {
+    "destKey": "event",
+    "sourceKeys": "event",
+    "required": false
+  },
+  {
+    "destKey": "properties.custormer.sex",
+    "sourceKeys": "sex",
+    "required": false
+  },
+  {
+    "destKey": "properties.custormer.address",
+    "sourceKeys": "address",
+    "required": false
+  },
+  {
+    "destKey": "properties.custormer.email",
+    "sourceKeys": "email",
+    "required": true,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "client",
+    "sourceKeys": "context.app.version",
+    "required": false
+  },
+  {
+    "destKey": "properties.device",
+    "sourceKeys": "context.device.model",
+    "required": false
+  }
+]

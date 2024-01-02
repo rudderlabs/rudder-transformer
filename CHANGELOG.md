@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.52.4](https://github.com/rudderlabs/rudder-transformer/compare/v1.52.3...v1.52.4) (2023-12-27)
+
+
+### Bug Fixes
+
+* send empty string instead of null when the schema data is undefined ([#2955](https://github.com/rudderlabs/rudder-transformer/issues/2955)) ([511741e](https://github.com/rudderlabs/rudder-transformer/commit/511741ed356b365f52e0335ce6a1fc953ccbc465))
+
 ### [1.52.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.52.2...v1.52.3) (2023-12-18)
 
 

@@ -348,7 +348,7 @@ const customListProcessor = async (message, category, destination, contactId) =>
       const res = httpPOST(endpoint, requestData, requestOptions, {
         destType: 'active_campaign',
         feature: 'transformation',
-        mergeListWithContactUrl,
+        endpointPath: mergeListWithContactUrl,
       });
       promises.push(res);
     }

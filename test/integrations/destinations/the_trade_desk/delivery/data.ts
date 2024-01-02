@@ -229,7 +229,7 @@ export const data = [
         body: {
           output: {
             destinationResponse: '',
-            message: 'Advertiser secret key is missing. Aborting',
+            message: 'Advertiser secret key is missing in destination config. Aborting',
             statTags: {
               destType: destTypeInUpperCase,
               destinationId: 'Non-determininable',

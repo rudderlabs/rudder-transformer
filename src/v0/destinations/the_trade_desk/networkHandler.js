@@ -10,10 +10,11 @@ const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const proxyRequest = async (request) => {
+  console.log('request', JSON.stringify(request));
   const { endpoint, data, method, params, headers, config } = prepareProxyRequest(request);
 
   if (!config?.advertiserSecretKey) {
-    throw new AbortedError('Advertiser secret key is missing. Aborting');
+    throw new AbortedError('Advertiser secret key is missing in destination config. Aborting');
   }
 
   if (!process.env.THE_TRADE_DESK_DATA_PROVIDER_SECRET_KEY) {

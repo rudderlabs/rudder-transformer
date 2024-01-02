@@ -29,9 +29,9 @@ const getSignatureHeader = (request, secretKey) => {
 };
 
 const responseBuilder = (items, Config) => {
-  const { advertiserID, dataServer } = Config;
+  const { advertiserId, dataServer } = Config;
 
-  const payload = { DataProviderId: DATA_PROVIDER_ID, AdvertiserId: advertiserID, Items: items };
+  const payload = { DataProviderId: DATA_PROVIDER_ID, AdvertiserId: advertiserId, Items: items };
 
   const response = defaultRequestConfig();
   response.endpoint = getFirstPartyEndpoint(dataServer);

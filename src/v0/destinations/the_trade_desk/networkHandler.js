@@ -12,6 +12,14 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
 const proxyRequest = async (request) => {
   const { endpoint, data, method, params, headers, config } = prepareProxyRequest(request);
 
+  if (!config?.advertiserSecretKey) {
+    throw new AbortedError('Advertiser secret key is missing. Aborting');
+  }
+
+  if (!process.env.THE_TRADE_DESK_DATA_PROVIDER_SECRET_KEY) {
+    throw new AbortedError('Data provider secret key is missing. Aborting');
+  }
+
   const ProxyHeaders = {
     ...headers,
     TtdSignature: getSignatureHeader(data, config.advertiserSecretKey),

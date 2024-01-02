@@ -39,7 +39,6 @@ const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 // tiktok docs for max batch size for events 2.0: https://business-api.tiktok.com/portal/docs?id=1771100779668482
 const maxBatchSizeV2 = 1000;
 const trackEndpointV2 = 'https://business-api.tiktok.com/open_api/v1.3/event/track/';
-
 module.exports = {
   TRACK_ENDPOINT,
   BATCH_ENDPOINT,

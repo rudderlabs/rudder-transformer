@@ -5218,6 +5218,7 @@ export const data = [
                 JSON: {
                   event_source: 'web',
                   event_source_id: '{{PIXEL-CODE}}',
+                  partner_name: 'RudderStack',
                   data: [
                     {
                       event: 'customEvent',
@@ -5254,7 +5255,6 @@ export const data = [
                         user_agent:
                           'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
                       },
-                      partner_name: 'RudderStack',
                     },
                   ],
                 },
@@ -5379,6 +5379,7 @@ export const data = [
                 JSON: {
                   event_source: 'web',
                   event_source_id: '{{PIXEL-CODE}}',
+                  partner_name: 'RudderStack',
                   data: [
                     {
                       event: 'download',
@@ -5416,7 +5417,6 @@ export const data = [
                         user_agent:
                           'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
                       },
-                      partner_name: 'RudderStack',
                     },
                   ],
                 },
@@ -5544,6 +5544,7 @@ export const data = [
                 JSON: {
                   event_source: 'web',
                   event_source_id: '{{PIXEL-CODE}}',
+                  partner_name: 'RudderStack',
                   data: [
                     {
                       event: 'download',
@@ -5580,7 +5581,6 @@ export const data = [
                         user_agent:
                           'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
                       },
-                      partner_name: 'RudderStack',
                     },
                     {
                       event: 'AddToWishlist',
@@ -5617,7 +5617,6 @@ export const data = [
                         user_agent:
                           'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
                       },
-                      partner_name: 'RudderStack',
                     },
                   ],
                 },
@@ -5738,6 +5737,7 @@ export const data = [
                 JSON: {
                   event_source: 'web',
                   event_source_id: '{{PIXEL-CODE}}',
+                  partner_name: 'RudderStack',
                   data: [
                     {
                       event: 'download',
@@ -5774,7 +5774,6 @@ export const data = [
                         user_agent:
                           'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
                       },
-                      partner_name: 'RudderStack',
                     },
                     {
                       event: 'AddToWishlist',
@@ -5811,7 +5810,6 @@ export const data = [
                         user_agent:
                           'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
                       },
-                      partner_name: 'RudderStack',
                     },
                   ],
                 },
@@ -6280,6 +6278,7 @@ export const data = [
                 JSON: {
                   event_source: 'web',
                   event_source_id: '{{PIXEL-CODE}}',
+                  partner_name: 'RudderStack',
                   data: [
                     {
                       event: 'ViewContent',
@@ -6319,7 +6318,6 @@ export const data = [
                         user_agent:
                           'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
                       },
-                      partner_name: 'RudderStack',
                     }
                   ],
                 },
@@ -6453,6 +6451,7 @@ export const data = [
                 JSON: {
                   event_source: 'web',
                   event_source_id: '{{PIXEL-CODE}}',
+                  partner_name: 'RudderStack',
                   data: [
                     {
                       event: 'ViewContent',
@@ -6498,7 +6497,6 @@ export const data = [
                         user_agent:
                           'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
                       },
-                      partner_name: 'RudderStack',
                     }
                   ],
                 },

@@ -1,6 +1,5 @@
 /* eslint-disable camelcase */
 /* eslint-disable @typescript-eslint/naming-convention */
-const _ = require('lodash');
 const set = require('set-value');
 const { ConfigurationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
@@ -16,15 +15,12 @@ const {
   getHashFromArrayWithDuplicate,
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
-  batchMultiplexedEvents,
 } = require('../../util');
 const { getContents, hashUserField } = require('./util');
 const {
   trackMappingV2,
   trackEndpointV2,
-  BATCH_ENDPOINT,
   eventNameMapping,
-  MAX_BATCH_SIZE,
   PARTNER_NAME,
   maxBatchSizeV2,
 } = require('./config');
@@ -62,7 +58,6 @@ const getTrackResponsePayload = (message, Config, event) => {
     payload.user = hashUserField(payload.user);
   }
   payload.event = event;
-  payload.partner_name = PARTNER_NAME;
   // add partner name and return payload
   return removeUndefinedAndNullValues(payload);
 };
@@ -109,7 +104,11 @@ const trackResponseBuilder = async (message, { Config }) => {
     responseList.push(getTrackResponsePayload(message, Config, event));
   }
   // set event source and event_source_id
-  response.body.JSON = { event_source: 'web', event_source_id: pixelCode };
+  response.body.JSON = {
+    event_source: 'web',
+    event_source_id: pixelCode,
+    partner_name: PARTNER_NAME,
+  };
   response.body.JSON.data = responseList;
   return response;
 };
@@ -140,35 +139,224 @@ const process = async (event) => {
   return response;
 };
 
-const batchEvents = (eventsChunk) => {
-  const { destination, events } = eventsChunk;
-  const { accessToken, pixelCode } = destination.Config;
+/**
+ * it builds batch response for an event using defaultBatchRequestConfig() utility
+ * @param {*} eventsChunk
+ * @returns batchedRequest
+ *
+ * Example:
+ * inputEvent:
+ *{
+    event: {
+      pixelCode: "dummyPixelCode",
+      event_source: "web",
+      partner_name: "RudderStack",
+      data: [
+        {
+          event_id: "1616318632825_357",
+          event_time: 1600372167,
+          properties: {
+            contents: [
+              {
+                price: 8,
+                quantity: 2,
+                content_type: "socks",
+                content_id: "1077218",
+              },
+              {
+                price: 30,
+                quantity: 1,
+                content_type: "dress",
+                content_id: "1197218",
+              },
+            ],
+            content_type: "product",
+            currency: "USD",
+            value: 46,
+          },
+          page: {
+            url: "http://demo.mywebsite.com/purchase",
+            referrer: "http://demo.mywebsite.com",
+          },
+          user: {
+            locale: "en-US",
+            email: "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
+            phone: "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
+            ip: "13.57.97.131",
+            user_agent: "Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion",
+            external_id: "id5",
+          },
+          event: "CompletePayment",
+          partner_name: "RudderStack",
+        },
+        {
+          event_id: "1616318632825_357",
+          event_time: 1600372167,
+          properties: {
+            contents: [
+              {
+                price: 8,
+                quantity: 2,
+                content_type: "socks",
+                content_id: "1077218",
+              },
+              {
+                price: 30,
+                quantity: 1,
+                content_type: "dress",
+                content_id: "1197218",
+              },
+            ],
+            content_type: "product",
+            currency: "USD",
+            value: 46,
+          },
+          page: {
+            url: "http://demo.mywebsite.com/purchase",
+          },
+          user: {
+            locale: "en-US",
+            email: "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
+            phone: "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
+            ip: "13.57.97.131",
+            user_agent: "Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion",
+            external_id: "id1",
+          },
+          event: "CompletePayment",
+          partner_name: "RudderStack",
+        }
+      ],
+  },
+  metadata: [
+    {
+      jobId: 5,
+    },
+    {
+      jobId: 1,
+    }
+  ],
+  destination: {
+    Config: {
+      accessToken: "dummyAccessToken",
+      pixelCode: "dummyPixelCode",
+      hashUserProperties: false,
+      version: "v2",
+    },
+  },
+}
+ * returns:
+ *
+ {
+  version: "1",
+  type: "REST",
+  method: "POST",
+  endpoint: "https://business-api.tiktok.com/open_api/v1.3/event/track/",
+  headers: {
+    "Access-Token": "dummyAccessToken",
+    "Content-Type": "application/json",
+  },
+  params: {
+  },
+  body: {
+    JSON: {
+      pixelCode: "A1T8T4UYGVIQA8ORZMX9",
+      event_source: "web",
+      partner_name: "RudderStack",
+      data: [
+        {
+          event_id: "1616318632825_357",
+          event_time: 1600372167,
+          properties: {
+            contents: [
+              {
+                price: 8,
+                quantity: 2,
+                content_type: "socks",
+                content_id: "1077218",
+              },
+              {
+                price: 30,
+                quantity: 1,
+                content_type: "dress",
+                content_id: "1197218",
+              },
+            ],
+            content_type: "product",
+            currency: "USD",
+            value: 46,
+          },
+          page: {
+            url: "http://demo.mywebsite.com/purchase",
+            referrer: "http://demo.mywebsite.com",
+          },
+          user: {
+            locale: "en-US",
+            email: "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
+            phone: "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
+            ip: "13.57.97.131",
+            user_agent: "Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion",
+            external_id: "id5",
+          },
+          event: "CompletePayment",
+        },
+        {
+          event_id: "1616318632825_357",
+          event_time: 1600372167,
+          properties: {
+            contents: [
+              {
+                price: 8,
+                quantity: 2,
+                content_type: "socks",
+                content_id: "1077218",
+              },
+              {
+                price: 30,
+                quantity: 1,
+                content_type: "dress",
+                content_id: "1197218",
+              },
+            ],
+            content_type: "product",
+            currency: "USD",
+            value: 46,
+          },
+          page: {
+            url: "http://demo.mywebsite.com/purchase",
+          },
+          user: {
+            locale: "en-US",
+            email: "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
+            phone: "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
+            ip: "13.57.97.131",
+            user_agent: "Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion",
+            external_id: "id1",
+          },
+          event: "CompletePayment",
+        }
+      ],
+    },
+    JSON_ARRAY: {
+    },
+    XML: {
+    },
+    FORM: {
+    },
+  },
+  files: {
+  },
+}
+ */
+const buildBatchResponseForEvent = (inputEvent) => {
+  const { destination, event } = inputEvent;
+  const { accessToken } = destination.Config;
   const { batchedRequest } = defaultBatchRequestConfig();
-
-  const batchResponseList = [];
-  events.forEach((transformedEvent) => {
-    // extracting destination
-    // from the first event in a batch
-    const cloneTransformedEvent = _.clone(transformedEvent);
-    delete cloneTransformedEvent.body.JSON.pixelCode;
-    // Partner name must be added above "batch": [..]
-    delete cloneTransformedEvent.body.JSON.partner_name;
-    cloneTransformedEvent.body.JSON.type = 'track';
-    batchResponseList.push(cloneTransformedEvent.body.JSON);
-  });
-
-  batchedRequest.body.JSON = {
-    pixelCode: pixelCode,
-    partner_name: PARTNER_NAME,
-    batch: batchResponseList,
-  };
-
-  batchedRequest.endpoint = BATCH_ENDPOINT;
+  batchedRequest.body.JSON = event;
+  batchedRequest.endpoint = trackEndpointV2;
   batchedRequest.headers = {
     'Access-Token': accessToken,
     'Content-Type': 'application/json',
   };
-
   return batchedRequest;
 };
 
@@ -177,24 +365,337 @@ const getEventChunks = (event, trackResponseList, eventsChunk) => {
   // eslint-disable-next-line no-param-reassign
   event.message = Array.isArray(event.message) ? event.message : [event.message];
 
+  // not performing batching for test events as it is not supported
   if (event.message[0].body.JSON.test_event_code) {
     const { metadata, destination, message } = event;
     trackResponseList.push(getSuccessRespEvents(message, [metadata], destination));
   } else {
-    eventsChunk.push({
-      message: event.message,
-      metadata: event.metadata,
-      destination: event.destination,
-    });
+    eventsChunk.push({ ...event });
   }
 };
 
+/**
+ * This clubs eventsChunk request body and metadat based upon maxBatchSize
+ * @param {*} eventsChunk
+ * @param {*} maxBatchSize
+ * @returns array of objects as
+ * {
+ *  event, // Batched Event
+ *  metadata, // metadata of all the requests combined to form above event
+ *  destination, // destination object
+ * }
+ *
+ * Example:
+ *
+ * eventsChunk:[
+  {
+    message: [
+      {
+        version: "1",
+        type: "REST",
+        method: "POST",
+        endpoint: "https://business-api.tiktok.com/open_api/v1.3/event/track/",
+        headers: {
+          "Access-Token": "dummyAccessToken",
+          "Content-Type": "application/json",
+        },
+        params: {
+        },
+        body: {
+          JSON: {
+            event_source: "web",
+            event_source_id: "pixel_code",
+            data: [
+              {
+                event_id: "1616318632825_357",
+                event_time: 1600372167,
+                properties: {
+                  contents: [
+                    {
+                      price: 8,
+                      quantity: 2,
+                      content_type: "socks",
+                      content_id: "1077218",
+                    },
+                    {
+                      price: 30,
+                      quantity: 1,
+                      content_type: "dress",
+                      content_id: "1197218",
+                    },
+                  ],
+                  content_type: "product",
+                  currency: "USD",
+                  value: 46,
+                },
+                page: {
+                  url: "http://demo.mywebsite.com/purchase",
+                  referrer: "http://demo.mywebsite.com",
+                },
+                user: {
+                  locale: "en-US",
+                  email: "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
+                  phone: "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
+                  ip: "13.57.97.131",
+                  user_agent: "Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion",
+                  external_id: "id5",
+                },
+                event: "CompletePayment",
+                partner_name: "RudderStack",
+              },
+            ],
+          },
+          JSON_ARRAY: {
+          },
+          XML: {
+          },
+          FORM: {
+          },
+        },
+        files: {
+        },
+      },
+    ],
+    metadata: {
+      jobId: 5,
+    },
+    destination: {
+      Config: {
+        accessToken: "dummyAccessToken",
+        pixelCode: "pixel_code",
+        hashUserProperties: false,
+        version: "v2",
+      },
+    },
+  },
+  {
+    message: [
+      {
+        version: "1",
+        type: "REST",
+        method: "POST",
+        endpoint: "https://business-api.tiktok.com/open_api/v1.3/event/track/",
+        headers: {
+          "Access-Token": "dummyAccessToken",
+          "Content-Type": "application/json",
+        },
+        params: {
+        },
+        body: {
+          JSON: {
+            event_source: "web",
+            event_source_id: "pixel_code",
+            data: [
+              {
+                event_id: "1616318632825_357",
+                event_time: 1600372167,
+                properties: {
+                  contents: [
+                    {
+                      price: 8,
+                      quantity: 2,
+                      content_type: "socks",
+                      content_id: "1077218",
+                    },
+                    {
+                      price: 30,
+                      quantity: 1,
+                      content_type: "dress",
+                      content_id: "1197218",
+                    },
+                  ],
+                  content_type: "product",
+                  currency: "USD",
+                  value: 46,
+                },
+                page: {
+                  url: "http://demo.mywebsite.com/purchase",
+                },
+                user: {
+                  locale: "en-US",
+                  email: "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
+                  phone: "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
+                  ip: "13.57.97.131",
+                  user_agent: "Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion",
+                  external_id: "id1",
+                },
+                event: "CompletePayment",
+                partner_name: "RudderStack",
+              },
+            ],
+          },
+          JSON_ARRAY: {
+          },
+          XML: {
+          },
+          FORM: {
+          },
+        },
+        files: {
+        },
+      },
+    ],
+    metadata: {
+      jobId: 1,
+    },
+    destination: {
+      Config: {
+        accessToken: "dummyAccessToken",
+        pixelCode: "pixel_code",
+        hashUserProperties: false,
+        version: "v2",
+      },
+    },
+  }
+]
+ * maxBatchSize = 1000
+
+Returns 
+[
+  {
+    event: {
+      pixelCode: "dummyPixelCode",
+      event_source: "web",
+      partner_name: "RudderStack",
+      data: [
+        {
+          event_id: "1616318632825_357",
+          event_time: 1600372167,
+          properties: {
+            contents: [
+              {
+                price: 8,
+                quantity: 2,
+                content_type: "socks",
+                content_id: "1077218",
+              },
+              {
+                price: 30,
+                quantity: 1,
+                content_type: "dress",
+                content_id: "1197218",
+              },
+            ],
+            content_type: "product",
+            currency: "USD",
+            value: 46,
+          },
+          page: {
+            url: "http://demo.mywebsite.com/purchase",
+            referrer: "http://demo.mywebsite.com",
+          },
+          user: {
+            locale: "en-US",
+            email: "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
+            phone: "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
+            ip: "13.57.97.131",
+            user_agent: "Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion",
+            external_id: "id5",
+          },
+          event: "CompletePayment",
+          partner_name: "RudderStack",
+        },
+        {
+          event_id: "1616318632825_357",
+          event_time: 1600372167,
+          properties: {
+            contents: [
+              {
+                price: 8,
+                quantity: 2,
+                content_type: "socks",
+                content_id: "1077218",
+              },
+              {
+                price: 30,
+                quantity: 1,
+                content_type: "dress",
+                content_id: "1197218",
+              },
+            ],
+            content_type: "product",
+            currency: "USD",
+            value: 46,
+          },
+          page: {
+            url: "http://demo.mywebsite.com/purchase",
+          },
+          user: {
+            locale: "en-US",
+            email: "f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc",
+            phone: "2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea",
+            ip: "13.57.97.131",
+            user_agent: "Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion",
+            external_id: "id1",
+          },
+          event: "CompletePayment",
+          partner_name: "RudderStack",
+        }
+      ],
+    },
+    metadata: [
+      {
+        jobId: 5,
+      },
+      {
+        jobId: 1,
+      }
+    ],
+    destination: {
+      Config: {
+        accessToken: "dummyAccessToken",
+        pixelCode: "dummyPixelCode",
+        hashUserProperties: false,
+        version: "v2",
+      },
+    },
+  }
+]
+ */
+const batchEvents = (eventsChunk, maxBatchSize) => {
+  const events = [];
+  let data = [];
+  let metadata = [];
+  const { destination } = eventsChunk[0];
+  const { pixelCode } = destination.Config;
+  eventsChunk.forEach((event) => {
+    const eventData = event.message[0]?.body.JSON.data;
+    if (Array.isArray(eventData) && eventData?.length > maxBatchSize - data.length) {
+      // Partner name must be added above "data": [..];
+      events.push({
+        events: {
+          pixelCode,
+          event_source: 'web',
+          partner_name: PARTNER_NAME,
+          data: [...data],
+        },
+        metadata: [...metadata],
+        destination,
+      });
+      data = [];
+      metadata = [];
+    }
+    data.push(...eventData);
+    metadata.push(event.metadata);
+  });
+  // Partner name must be added above "data": [..];
+  events.push({
+    event: {
+      pixelCode,
+      event_source: 'web',
+      partner_name: PARTNER_NAME,
+      data: [...data],
+    },
+    metadata: [...metadata],
+    destination,
+  });
+  return events;
+};
 const processRouterDest = async (inputs, reqMetadata) => {
   const errorRespEvents = checkInvalidRtTfEvents(inputs);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
-
   const trackResponseList = []; // list containing single track event in batched format
   const eventsChunk = []; // temporary variable to divide payload into chunks
   const errorRespList = [];
@@ -225,9 +726,9 @@ const processRouterDest = async (inputs, reqMetadata) => {
 
   const batchedResponseList = [];
   if (eventsChunk.length > 0) {
-    const batchedEvents = batchMultiplexedEvents(eventsChunk, MAX_BATCH_SIZE);
+    const batchedEvents = batchEvents(eventsChunk, maxBatchSizeV2);
     batchedEvents.forEach((batch) => {
-      const batchedRequest = batchEvents(batch);
+      const batchedRequest = buildBatchResponseForEvent(batch);
       batchedResponseList.push(
         getSuccessRespEvents(batchedRequest, batch.metadata, batch.destination, true),
       );

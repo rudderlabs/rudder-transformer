@@ -61,7 +61,7 @@ const syncContact = async (contactPayload, category, destination) => {
   const res = await httpPOST(endpoint, requestData, requestOptions, {
     destType: 'active_campaign',
     feature: 'transformation',
-    endPoint,
+    endpointPath: endPoint,
   });
   if (res.success === false) {
     errorHandler(res, 'Failed to create new contact');

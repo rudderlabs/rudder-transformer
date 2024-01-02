@@ -287,7 +287,7 @@ function getFormData(payload) {
  * @returns
  */
 const prepareProxyRequest = (request) => {
-  const { body, method, params, endpoint, headers, config } = request;
+  const { body, method, params, endpoint, headers, destinationConfig: config } = request;
   const { payload, payloadFormat } = getPayloadData(body);
   let data;
 

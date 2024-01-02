@@ -110,7 +110,7 @@ export const data = [
                           UID2: 'test-uid2-2',
                           Data: [
                             {
-                              Name: 'test-segment',
+                              Name: segmentName,
                               TTLInMinutes: 43200,
                             },
                           ],
@@ -241,7 +241,7 @@ export const data = [
                           UID2: 'test-uid2-2',
                           Data: [
                             {
-                              Name: 'test-segment',
+                              Name: segmentName,
                               TTLInMinutes: 0,
                             },
                           ],

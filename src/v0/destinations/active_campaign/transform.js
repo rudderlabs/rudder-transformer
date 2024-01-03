@@ -128,6 +128,7 @@ const customTagProcessor = async (message, category, destination, contactId) => 
         const resp = httpGET(endpoint, requestOptions, {
           destType: 'active_campaign',
           feature: 'transformation',
+          endpointPath: `/api/3/tags`,
         });
         promises.push(resp);
       }
@@ -251,6 +252,7 @@ const customFieldProcessor = async (message, category, destination) => {
       const resp = httpGET(endpoint, requestOpt, {
         destType: 'active_campaign',
         feature: 'transformation',
+        endpointPath: `/api/3/fields`,
       });
       promises.push(resp);
     }
@@ -406,6 +408,7 @@ const screenRequestHandler = async (message, category, destination) => {
   res = await httpGET(endpoint, requestOptions, {
     destType: 'active_campaign',
     feature: 'transformation',
+    endpointPath: `/api/3/eventTrackingEvents`,
   });
   if (res.success === false) {
     errorHandler(res, 'Failed to retrieve events');
@@ -469,6 +472,7 @@ const trackRequestHandler = async (message, category, destination) => {
   let res = await httpGET(endpoint, requestOptions, {
     destType: 'active_campaign',
     feature: 'transformation',
+    endpointPath: `/api/3/eventTrackingEvents`,
   });
 
   if (res.success === false) {

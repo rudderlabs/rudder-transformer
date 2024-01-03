@@ -247,6 +247,7 @@ const sendGetRequest = async (url, options) => {
   const clientResponse = await httpGET(url, options, {
     destType: 'marketo',
     feature: 'transformation',
+    endpointPath: `/v1/leads`,
   });
   const processedResponse = processAxiosResponse(clientResponse);
   return processedResponse;

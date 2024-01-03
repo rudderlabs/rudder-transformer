@@ -3,3 +3,35 @@ coverage:
     patch:
       default:
         informational: true
+      # js:
+      #   target: auto
+      #   flags:
+      #     - js 
+      # ts:
+      #   informational: true
+      #   target: auto
+      #   flags:
+      #     - ts
+
+component_management:
+  individual_components:
+    - component_id: js  # this is an identifier that should not be changed
+      name: js  # this is a display name, and can be changed freely
+      statuses:
+        - type: project
+          target: auto
+          threshold: 1%
+        - type: patch
+          target: 80%
+      paths:
+        - "src/**/*.js"
+    - component_id: ts
+      statuses:
+        - type: project
+          target: auto
+          threshold: 1%
+        - type: patch
+          target: 90%
+      name: ts
+      paths:
+        - "src/**/*.ts"

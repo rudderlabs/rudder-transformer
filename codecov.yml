@@ -3,7 +3,7 @@ coverage:
     patch:
       default:
         target: 100%
-        threshold: 1%
+        threshold: 0.001%
       # js:
       #   target: auto
       #   flags:
@@ -21,18 +21,20 @@ component_management:
       statuses:
         - type: project
           target: auto
-          threshold: 1%
+          threshold: 0.001%%
         - type: patch
           target: 80%
+          threshold: 0.001%
       paths:
         - "src/**/*.js"
     - component_id: ts
       statuses:
         - type: project
           target: auto
-          threshold: 1%
+          threshold: 0.001%%
         - type: patch
           target: 90%
+          threshold: 0.001%
       name: ts
       paths:
         - "src/**/*.ts"

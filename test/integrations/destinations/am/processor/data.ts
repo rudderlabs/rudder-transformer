@@ -488,6 +488,10 @@ export const data = [
           {
             message: {
               channel: 'web',
+              integrations: {
+                Amplitude: { fieldsToUnset: ['email'] },
+                All: true,
+              },
               context: {
                 externalId: [
                   {
@@ -562,9 +566,6 @@ export const data = [
               originalTimestamp: '2019-10-14T09:03:17.562Z',
               anonymousId: '123456',
               userId: '123456',
-              integrations: {
-                All: true,
-              },
               sentAt: '2019-10-14T09:03:22.563Z',
             },
             metadata: {
@@ -616,6 +617,9 @@ export const data = [
                       insert_id: '84e26acc-56a5-4835-8233-591137fca468',
                       ip: '0.0.0.0',
                       user_properties: {
+                        $unset: {
+                          email: '-',
+                        },
                         initial_referrer: 'https://docs.rudderstack.com',
                         initial_referring_domain: 'docs.rudderstack.com',
                         anonymousId: '123456',
@@ -743,6 +747,7 @@ export const data = [
               anonymousId: '123456',
               userId: '123456',
               integrations: {
+                Amplitude: { fieldsToUnset: ['testObj.unsetField1'] },
                 All: true,
               },
               sentAt: '2019-10-14T09:03:22.563Z',
@@ -791,6 +796,9 @@ export const data = [
                       insert_id: '84e26acc-56a5-4835-8233-591137fca468',
                       ip: '0.0.0.0',
                       user_properties: {
+                        $unset: {
+                          'testObj.unsetField1': '-',
+                        },
                         initial_referrer: 'https://docs.rudderstack.com',
                         initial_referring_domain: 'docs.rudderstack.com',
                         anonymousId: '123456',

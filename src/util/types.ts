@@ -3,6 +3,9 @@ export type FixMe = any;
 
 export type CatchErr = any;
 
+export type ContextBodySimple = {
+  destType: string;
+};
 export interface Config {
   cdkEnabled?: boolean;
   cdkV2Enabled?: boolean;

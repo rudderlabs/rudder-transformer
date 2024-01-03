@@ -50,7 +50,8 @@ const responseBuilderSimple = (payload, category, destination) => {
 };
 
 const syncContact = async (contactPayload, category, destination) => {
-  const endpoint = `${destination.Config.apiUrl}${category.endPoint}`;
+  const { endPoint } = category;
+  const endpoint = `${destination.Config.apiUrl}${endPoint}`;
   const requestData = {
     contact: contactPayload,
   };
@@ -60,6 +61,7 @@ const syncContact = async (contactPayload, category, destination) => {
   const res = await httpPOST(endpoint, requestData, requestOptions, {
     destType: 'active_campaign',
     feature: 'transformation',
+    endpointPath: endPoint,
   });
   if (res.success === false) {
     errorHandler(res, 'Failed to create new contact');
@@ -78,6 +80,7 @@ const customTagProcessor = async (message, category, destination, contactId) => 
   let endpoint;
   let requestOptions;
   let requestData;
+  const { tagEndPoint, mergeTagWithContactUrl } = category;
   // Here we extract the tags which are to be mapped to the created contact from the message
   const msgTags = get(message?.context?.traits, 'tags') || get(message?.traits, 'tags');
 
@@ -89,13 +92,14 @@ const customTagProcessor = async (message, category, destination, contactId) => 
   // Step - 1
   // Fetch already created tags from dest, so that we avoid duplicate tag creation request
   // Ref - https://developers.activecampaign.com/reference/retrieve-all-tags
-  endpoint = `${destination.Config.apiUrl}${`${category.tagEndPoint}?limit=100`}`;
+  endpoint = `${destination.Config.apiUrl}${`${tagEndPoint}?limit=100`}`;
   requestOptions = {
     headers: getHeader(destination),
   };
   res = await httpGET(endpoint, requestOptions, {
     destType: 'active_campaign',
     feature: 'transformation',
+    tagEndPoint,
   });
   if (res.success === false) {
     errorHandler(res, 'Failed to fetch already created tags');
@@ -117,9 +121,7 @@ const customTagProcessor = async (message, category, destination, contactId) => 
     if (parseInt(get(res, TOTAL_RECORDS_KEY), 10) > 100) {
       const limit = Math.floor(parseInt(get(res, TOTAL_RECORDS_KEY), 10) / 100);
       for (let i = 0; i < limit; i += 1) {
-        endpoint = `${destination.Config.apiUrl}${category.tagEndPoint}?limit=100&offset=${
-          100 * (i + 1)
-        }`;
+        endpoint = `${destination.Config.apiUrl}${tagEndPoint}?limit=100&offset=${100 * (i + 1)}`;
         requestOptions = {
           headers: getHeader(destination),
         };
@@ -153,7 +155,7 @@ const customTagProcessor = async (message, category, destination, contactId) => 
   if (tagsToBeCreated.length > 0) {
     await Promise.all(
       tagsToBeCreated.map(async (tag) => {
-        endpoint = `${destination.Config.apiUrl}${category.tagEndPoint}`;
+        endpoint = `${destination.Config.apiUrl}${tagEndPoint}`;
         requestData = {
           tag: {
             tag,
@@ -182,7 +184,7 @@ const customTagProcessor = async (message, category, destination, contactId) => 
   // Ref - https://developers.activecampaign.com/reference/create-contact-tag
   const responsesArr = await Promise.all(
     tagIds.map(async (tagId) => {
-      endpoint = `${destination.Config.apiUrl}${category.mergeTagWithContactUrl}`;
+      endpoint = `${destination.Config.apiUrl}${mergeTagWithContactUrl}`;
       requestData = {
         contactTag: {
           contact: contactId,
@@ -207,6 +209,7 @@ const customTagProcessor = async (message, category, destination, contactId) => 
 
 const customFieldProcessor = async (message, category, destination) => {
   const responseStaging = [];
+  const { fieldEndPoint } = category;
   // Step - 1
   // Extract the custom field info from the message
   const fieldInfo = get(message?.context?.traits, 'fieldInfo') || get(message.traits, 'fieldInfo');
@@ -219,7 +222,7 @@ const customFieldProcessor = async (message, category, destination) => {
   // Step - 2
   // Get the existing field data from dest and store it in responseStaging
   // Ref - https://developers.activecampaign.com/reference/retrieve-fields
-  let endpoint = `${destination.Config.apiUrl}${category.fieldEndPoint}?limit=100`;
+  let endpoint = `${destination.Config.apiUrl}${fieldEndPoint}?limit=100`;
   const requestOptions = {
     headers: {
       'Api-Token': destination.Config.apiKey,
@@ -228,6 +231,7 @@ const customFieldProcessor = async (message, category, destination) => {
   const res = await httpGET(endpoint, requestOptions, {
     destType: 'active_campaign',
     feature: 'transformation',
+    fieldEndPoint,
   });
   if (res.success === false) {
     errorHandler(res, 'Failed to get existing field data');
@@ -238,9 +242,7 @@ const customFieldProcessor = async (message, category, destination) => {
   const limit = Math.floor(parseInt(get(res, TOTAL_RECORDS_KEY), 10) / 100);
   if (parseInt(get(res, TOTAL_RECORDS_KEY), 10) > 100) {
     for (let i = 0; i < limit; i += 1) {
-      endpoint = `${destination.Config.apiUrl}${category.fieldEndPoint}?limit=100&offset=${
-        100 * (i + 1)
-      }`;
+      endpoint = `${destination.Config.apiUrl}${fieldEndPoint}?limit=100&offset=${100 * (i + 1)}`;
       const requestOpt = {
         headers: {
           'Api-Token': destination.Config.apiKey,
@@ -308,6 +310,7 @@ const customFieldProcessor = async (message, category, destination) => {
 };
 
 const customListProcessor = async (message, category, destination, contactId) => {
+  const { mergeListWithContactUrl } = category;
   // Here we extract the list info from the message
   const listInfo = get(message?.context?.traits, 'lists')
     ? get(message.context.traits, 'lists')
@@ -331,7 +334,7 @@ const customListProcessor = async (message, category, destination, contactId) =>
   // eslint-disable-next-line no-restricted-syntax
   for (const li of listArr) {
     if (li.status === 'subscribe' || li.status === 'unsubscribe') {
-      const endpoint = `${destination.Config.apiUrl}${category.mergeListWithContactUrl}`;
+      const endpoint = `${destination.Config.apiUrl}${mergeListWithContactUrl}`;
       const requestData = {
         contactList: {
           list: li.id,
@@ -345,6 +348,7 @@ const customListProcessor = async (message, category, destination, contactId) =>
       const res = httpPOST(endpoint, requestData, requestOptions, {
         destType: 'active_campaign',
         feature: 'transformation',
+        endpointPath: mergeListWithContactUrl,
       });
       promises.push(res);
     }

@@ -2,7 +2,8 @@ coverage:
   status:
     patch:
       default:
-        informational: true
+        target: 100%
+        threshold: 1%
       # js:
       #   target: auto
       #   flags:

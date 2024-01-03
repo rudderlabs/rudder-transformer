@@ -2108,6 +2108,7 @@ const parseConfigArray = (arr, key) => {
   return arr.map((item) => item[key]);
 };
 
+const camelToSnakeCase = str => str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -2218,4 +2219,5 @@ module.exports = {
   isNewStatusCodesAccepted,
   IsGzipSupported,
   parseConfigArray,
+  camelToSnakeCase
 };

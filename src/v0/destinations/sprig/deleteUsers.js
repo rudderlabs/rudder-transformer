@@ -34,7 +34,7 @@ const userDeletionHandler = async (userAttributes, config) => {
    * Ref doc : https://docs.sprig.com/reference/post-v2-purge-visitors-1
    */
   const userIdBatches = getUserIdBatches(userAttributes, 100);
-  // Note: The logic here intentionally avoided to use Promise.all
+  // Note: we will only get 400 status code when no user deletion is present for given userIds so we will not throw error in that case
   // eslint-disable-next-line no-restricted-syntax
   for (const curBatch of userIdBatches) {
     // eslint-disable-next-line no-await-in-loop
@@ -52,7 +52,7 @@ const userDeletionHandler = async (userAttributes, config) => {
       },
     );
     const handledDelResponse = processAxiosResponse(deletionResponse);
-    if (!isHttpStatusSuccess(handledDelResponse.status)) {
+    if (!isHttpStatusSuccess(handledDelResponse.status) && handledDelResponse.status !== 400) {
       throw new NetworkError(
         'User deletion request failed',
         handledDelResponse.status,

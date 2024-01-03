@@ -65,10 +65,72 @@ export const data = [
     },
     output: {
       response: {
-        status: 401,
+        status: 403,
         body: [
           {
-            statusCode: 401,
+            statusCode: 403,
+            error: 'User deletion request failed',
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'sprig',
+    description: 'Too many requests',
+    feature: 'userDeletion',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destType: 'SPRIG',
+            userAttributes: [
+              {
+                userId: '1',
+              },
+              {
+                userId: '2',
+              },
+              {
+                userId: '3',
+              },
+              {
+                userId: '4',
+              },
+              {
+                userId: '5',
+              },
+              {
+                userId: '6',
+              },
+              {
+                userId: '7',
+              },
+              {
+                userId: '8',
+              },
+              {
+                userId: '9',
+              },
+              {
+                userId: '10',
+              },
+            ],
+            config: {
+              apiKey: 'testApiKey',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 429,
+        body: [
+          {
+            statusCode: 429,
             error: 'User deletion request failed',
           },
         ],
@@ -100,12 +162,13 @@ export const data = [
     },
     output: {
       response: {
-        status: 400,
+        status: 200,
         body: [
           {
-            statusCode: 400,
-            error: 'User deletion request failed',
+            statusCode: 200,
+            status: 'successful',
           },
+          ,
         ],
       },
     },

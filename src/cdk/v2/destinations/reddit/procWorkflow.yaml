@@ -51,7 +51,7 @@ steps:
         template: |
           let event = .message.event;
           let eventInLowerCase = event.trim().toLowerCase();;
-          let eventNames = .destination.Config.eventsMapping.(){.from === event}.to[] ?? [];
+          let eventNames = .destination.Config.eventsMapping? .destination.Config.eventsMapping.(){.from === event}.to[] ?? []: [];
           eventNames.length === 0 ? eventNames = $.ecomEventMaps.(){eventInLowerCase in .src}.dest[] ?? [];
           const event_type = (eventNames.length === 0 || eventNames[0]==="") ? ({"tracking_type": "Custom", "custom_event_name": event}): ({tracking_type: eventNames[0]});
 

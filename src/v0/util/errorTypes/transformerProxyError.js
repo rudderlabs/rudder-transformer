@@ -1,5 +1,5 @@
+const { BaseError } = require('@rudderstack/integrations-lib');
 const tags = require('../tags');
-const { BaseError } = require('./base');
 
 const errorTypes = Object.values(tags.ERROR_TYPES);
 const metaTypes = Object.values(tags.METADATA);

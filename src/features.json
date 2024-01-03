@@ -64,7 +64,8 @@
     "ONE_SIGNAL": true,
     "TIKTOK_AUDIENCE": true,
     "REDDIT": true,
-    "THE_TRADE_DESK": true
+    "THE_TRADE_DESK": true,
+    "INTERCOM": true
   },
   "supportSourceTransformV1": true,
   "supportTransformerProxyV1": true

@@ -247,24 +247,13 @@ const executeFaasFunction = async (
   try {
     if (testMode) await awaitFunctionReadiness(name);
     return await invokeFunction(name, events);
-
   } catch (error) {
     logger.error(`Error while invoking ${name}: ${error.message}`);
     errorRaised = error;
 
-    if (
-      error.statusCode === 404 &&
-      error.message.includes(`error finding function ${name}`)
-    ) {
+    if (error.statusCode === 404 && error.message.includes(`error finding function ${name}`)) {
       removeFunctionFromCache(name);
-      await setupFaasFunction(
-        name,
-        null,
-        versionId,
-        libraryVersionIDs,
-        testMode,
-        trMetadata,
-      );
+      await setupFaasFunction(name, null, versionId, libraryVersionIDs, testMode, trMetadata);
       throw new RetryRequestError(`${name} not found`);
     }
 
@@ -284,22 +273,23 @@ const executeFaasFunction = async (
   } finally {
     // delete the function created, if it's called as part of testMode
     if (testMode) {
-      deleteFunction(name).catch((err) => 
-        logger.error(`[Faas] Error while deleting ${name}: ${err.message}`))
+      deleteFunction(name).catch((err) =>
+        logger.error(`[Faas] Error while deleting ${name}: ${err.message}`),
+      );
     }
 
     // setup the tags for observability and then fire the stats
     const tags = {
-      identifier: "openfaas",
+      identifier: 'openfaas',
       testMode: testMode,
       errored: errorRaised ? true : false,
       statusCode: errorRaised ? errorRaised.statusCode : HTTP_STATUS_CODES.OK, // default statuscode is 200OK
-      ...events.length && events[0].metadata ? getMetadata(events[0].metadata) : {},
-      ...events.length && events[0].metadata ? getTransformationMetadata(events[0].metadata) : {},
-    }
+      ...(events.length && events[0].metadata ? getMetadata(events[0].metadata) : {}),
+      ...(events.length && events[0].metadata ? getTransformationMetadata(events[0].metadata) : {}),
+    };
 
-    stats.counter('user_transform_function_input_events', events.length, tags)
-    stats.timing('user_transform_function_latency', startTime, tags)
+    stats.counter('user_transform_function_input_events', events.length, tags);
+    stats.timing('user_transform_function_latency', startTime, tags);
   }
 };
 

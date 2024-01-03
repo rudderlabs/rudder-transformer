@@ -11812,7 +11812,7 @@ export const data = [
   },
   {
     name: 'google_adwords_remarketing_lists',
-    description: 'Test 20',
+    description: 'Test 20: adding consent object',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -11955,7 +11955,7 @@ export const data = [
   },
   {
     name: 'google_adwords_remarketing_lists',
-    description: 'Test 20',
+    description: 'Test 20 : consent field values are discarded if it does not match allowed values',
     feature: 'processor',
     module: 'destination',
     version: 'v0',

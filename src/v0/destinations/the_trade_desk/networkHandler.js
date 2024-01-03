@@ -10,7 +10,6 @@ const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const proxyRequest = async (request) => {
-  console.log('request', JSON.stringify(request));
   const { endpoint, data, method, params, headers, config } = prepareProxyRequest(request);
 
   if (!config?.advertiserSecretKey) {

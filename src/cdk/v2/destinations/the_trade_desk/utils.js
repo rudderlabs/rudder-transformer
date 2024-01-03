@@ -28,8 +28,8 @@ const getSignatureHeader = (request, secretKey) => {
   return base;
 };
 
-const responseBuilder = (items, Config) => {
-  const { advertiserId, dataServer } = Config;
+const responseBuilder = (items, config) => {
+  const { advertiserId, dataServer } = config;
 
   const payload = { DataProviderId: DATA_PROVIDER_ID, AdvertiserId: advertiserId, Items: items };
 
@@ -70,12 +70,12 @@ const splitItemsBasedOnMaxSizeInBytes = (items, maxSize) => {
   return batches;
 };
 
-const batchResponseBuilder = (items, Config) => {
+const batchResponseBuilder = (items, config) => {
   const response = [];
   const itemsChunks = splitItemsBasedOnMaxSizeInBytes(items, MAX_REQUEST_SIZE_IN_BYTES);
 
   itemsChunks.forEach((chunk) => {
-    response.push(responseBuilder(chunk, Config));
+    response.push(responseBuilder(chunk, config));
   });
 
   return response;

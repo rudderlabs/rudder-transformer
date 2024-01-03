@@ -190,9 +190,11 @@ const ProxyRequest = async (request) => {
     const addPayload = body.JSON.addConversionPayload;
     // Mapping Conversion Action
     const conversionId = await getConversionActionId(headers, params);
-    addPayload.operations.forEach((operation) => {
-      set(operation, 'create.transaction_attribute.conversion_action', conversionId);
-    });
+    if (Array.isArray(addPayload.operations)) {
+      addPayload.operations.forEach((operation) => {
+        set(operation, 'create.transaction_attribute.conversion_action', conversionId);
+      });
+    }
     await addConversionToJob(endpoint, headers, firstResponse, addPayload);
     const thirdResponse = await runTheJob(
       endpoint,

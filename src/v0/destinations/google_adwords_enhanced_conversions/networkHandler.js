@@ -44,6 +44,7 @@ const getConversionActionId = async (method, headers, params) => {
       {
         destType: 'google_adwords_enhanced_conversions',
         feature: 'proxy',
+        endpointPath: `/googleAds:searchStream`,
       },
     );
     if (!isHttpStatusSuccess(gaecConversionActionIdResponse.status)) {
@@ -96,6 +97,7 @@ const ProxyRequest = async (request) => {
   const { httpResponse: response } = await handleHttpRequest('constructor', requestBody, {
     destType: 'google_adwords_enhanced_conversions',
     feature: 'proxy',
+    endpointPath: `/googleAds:uploadOfflineUserData`,
   });
   return response;
 };

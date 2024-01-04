@@ -20,6 +20,7 @@ const {
 const {
   validTimestamp
 } = require("../../src/warehouse/util.js");
+const {isBlank} = require("../../src/warehouse/config/helpers.js");
 
 const version = "v0";
 const integrations = [
@@ -1096,54 +1097,117 @@ describe("Integration options", () => {
 describe("validTimestamp", () => {
   const testCases = [
     {
+      name: "undefined input should return false",
       input: undefined,
       expected: false,
     },
     {
+      name: "negative year and time input should return false #1",
       input: '-0001-11-30T00:00:00+0000',
       expected: false,
     },
     {
+      name: "negative year and time input should return false #2",
       input: '-2023-06-14T05:23:59.244Z',
       expected: false,
     },
     {
-      input: '+2023-06-14T05:23:59.244Z',
-      expected: false,
-    },
-    {
-      input: '2023-06-14T05:23:59.244Z',
-      expected: true,
-    },
-    {
+      name: "negative year and time input should return false #3",
       input: '-1900-06-14T05:23:59.244Z',
       expected: false,
     },
     {
+      name: "positive year and time input should return false",
+      input: '+2023-06-14T05:23:59.244Z',
+      expected: false,
+    },
+    {
+      name: "valid timestamp input should return true",
+      input: '2023-06-14T05:23:59.244Z',
+      expected: true,
+    },
+    {
+      name: "non-date string input should return false",
       input: 'abc',
       expected: false,
     },
     {
-      input: '%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216Windows%u2216win%u002ein',
+      name: "malicious string input should return false",
+      input: '%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216Windows%u2216win%u002ein',
       expected: false,
     },
     {
+      name: "empty string input should return false",
       input: '',
       expected: false,
     },
     {
+      name: "valid date input should return true",
       input: '2023-06-14',
       expected: true,
     },
     {
+      name: "time-only input should return false",
       input: '05:23:59.244Z',
       expected: false,
-    }
-  ]
+    },
+    {
+      name: "non-string input should return false",
+      input: { abc: 123 },
+      expected: false,
+    },
+    {
+      name: "object with toString method input should return false",
+      input: {
+        toString: '2023-06-14T05:23:59.244Z'
+      },
+      expected: false,
+    },
+  ];
 
   for (const testCase of testCases) {
-    it(`should return ${testCase.expected} for ${testCase.input}`, () => {
+    it(`should return ${testCase.expected} for ${testCase.name}`, () => {
       expect(validTimestamp(testCase.input)).toEqual(testCase.expected);
+    });
+  }
+});
+
+
+
+describe("isBlank", () => {
+  const testCases = [
+    {
+      name: "null",
+      input: null,
+      expected: true
+    },
+    {
+      name: "empty string",
+      input: "",
+      expected: true
+    },
+    {
+      name: "non-empty string",
+      input: "test",
+      expected: false
+    },
+    {
+      name: "numeric value",
+      input: 1634762544,
+      expected: false
+    },
+    {
+      name: "object with toString property",
+      input: {
+        toString: '2023-06-14T05:23:59.244Z'
+      },
+      expected: false
+    },
+  ];
+
+  for (const testCase of testCases) {
+    it(`should return ${testCase.expected} for ${testCase.name}`, () => {
+      expect(isBlank(testCase.input)).toEqual(testCase.expected);
     });
   }
 });

@@ -60,7 +60,17 @@ const sampleEvents = {
         originalTimestamp: "2020-01-24T06:29:02.364Z",
         properties: {
           currency: "USD",
-          revenue: 50
+          revenue: 50,
+          stack: {
+            history: {
+              errorDetails: [
+                {
+                  "message": "Cannot set headers after they are sent to the client",
+                  "toString": "[function]"
+                }
+              ]
+            }
+          }
         },
         receivedAt: "2020-01-24T11:59:02.403+05:30",
         request_ip: "[::1]:53708",
@@ -180,6 +190,12 @@ const sampleEvents = {
           data: {
             currency: "USD",
             revenue: 50,
+            stack_history_error_details: [
+              {
+                "message": "Cannot set headers after they are sent to the client",
+                "toString": "[function]"
+              }
+            ],
             context_app_build: "1.0.0",
             context_app_name: "RudderLabs JavaScript SDK",
             context_app_namespace: "com.rudderlabs.javascript",
@@ -314,6 +330,12 @@ const sampleEvents = {
           data: {
             CURRENCY: "USD",
             REVENUE: 50,
+            STACK_HISTORY_ERROR_DETAILS: [
+              {
+                "message": "Cannot set headers after they are sent to the client",
+                "toString": "[function]"
+              }
+            ],
             CONTEXT_APP_BUILD: "1.0.0",
             CONTEXT_APP_NAME: "RudderLabs JavaScript SDK",
             CONTEXT_APP_NAMESPACE: "com.rudderlabs.javascript",
@@ -340,7 +362,7 @@ const sampleEvents = {
             RECEIVED_AT: "2020-01-24T06:29:02.403Z",
             ORIGINAL_TIMESTAMP: "2020-01-24T06:29:02.364Z",
             CHANNEL: "web",
-            EVENT: "button_clicked"
+            EVENT: "button_clicked",
           }
         }
       ],
@@ -448,6 +470,12 @@ const sampleEvents = {
           data: {
             currency: "USD",
             revenue: 50,
+            stack_history_error_details: [
+              {
+                "message": "Cannot set headers after they are sent to the client",
+                "toString": "[function]"
+              }
+            ],
             context_app_build: "1.0.0",
             context_app_name: "RudderLabs JavaScript SDK",
             context_app_namespace: "com.rudderlabs.javascript",
@@ -2053,7 +2081,6 @@ const sampleEvents = {
               id: "string",
               user_id: "string",
               received_at: "datetime",
-              event: "string"
             },
             receivedAt: "2020-01-24T11:59:02.403+05:30"
           },
@@ -2121,7 +2148,6 @@ const sampleEvents = {
               id: "string",
               user_id: "string",
               received_at: "datetime",
-              event: "string",
               boolean_property: "boolean",
             },
             receivedAt: "2020-01-24T11:59:02.403+05:30"

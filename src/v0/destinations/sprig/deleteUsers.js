@@ -49,6 +49,7 @@ const userDeletionHandler = async (userAttributes, config) => {
       {
         destType: 'sprig',
         feature: 'deleteUsers',
+        endpointPath: 'api.sprig.com/v2/purge/visitors',
       },
     );
     const handledDelResponse = processAxiosResponse(deletionResponse);

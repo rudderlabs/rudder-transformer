@@ -1,5 +1,5 @@
 const { AbortedError } = require('@rudderstack/integrations-lib');
-const { getSignatureHeader, splitItemsBasedOnMaxSizeInBytes } = require('./utils');
+const { getSignatureHeader } = require('./utils');
 
 describe('getSignatureHeader', () => {
   it('should calculate the signature header for a valid request and secret key', () => {
@@ -45,47 +45,5 @@ describe('getSignatureHeader', () => {
     expect(() => {
       getSignatureHeader(request, secretKey);
     }).toThrow(AbortedError);
-  });
-});
-
-describe('splitItemsBasedOnMaxSizeInBytes', () => {
-  it('should return an array with a single element when the total size of the items is less than or equal to the maximum size', () => {
-    const items = [
-      { id: 1, name: 'item1' },
-      { id: 2, name: 'item2' },
-      { id: 3, name: 'item3' },
-    ];
-    const maxSize = 100;
-    const result = splitItemsBasedOnMaxSizeInBytes(items, maxSize);
-    expect(result).toEqual([items]);
-  });
-
-  it('should split the items into batches of maximum size and return an array of batches', () => {
-    // size of this items array is 121 bytes
-    const items = [
-      { id: 1, name: 'item1' },
-      { id: 2, name: 'item2' },
-      { id: 3, name: 'item3' },
-      { id: 4, name: 'item4' },
-      { id: 5, name: 'item5' },
-    ];
-    const maxSize = 100;
-    const result = splitItemsBasedOnMaxSizeInBytes(items, maxSize);
-    expect(result).toEqual([
-      [
-        { id: 1, name: 'item1' },
-        { id: 2, name: 'item2' },
-        { id: 3, name: 'item3' },
-        { id: 4, name: 'item4' },
-      ],
-      [{ id: 5, name: 'item5' }],
-    ]);
-  });
-
-  it('should return an empty array when the items array is empty', () => {
-    const items = [];
-    const maxSize = 100;
-    const result = splitItemsBasedOnMaxSizeInBytes(items, maxSize);
-    expect(result).toEqual([]);
   });
 });

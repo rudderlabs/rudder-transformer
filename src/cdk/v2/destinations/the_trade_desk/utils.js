@@ -1,6 +1,5 @@
 const lodash = require('lodash');
 const CryptoJS = require('crypto-js');
-const jsonSize = require('json-size');
 const { InstrumentationError, AbortedError } = require('@rudderstack/integrations-lib');
 const { BatchUtils } = require('@rudderstack/workflow-engine');
 const {
@@ -10,11 +9,9 @@ const {
   removeUndefinedAndNullValues,
   handleRtTfSingleEventError,
 } = require('../../../../v0/util');
-const {
-  DATA_PROVIDER_ID,
-  MAX_REQUEST_SIZE_IN_BYTES,
-  DATA_SERVERS_BASE_ENDPOINTS_MAP,
-} = require('./config');
+const tradeDeskConfig = require('./config');
+
+const { DATA_PROVIDER_ID, DATA_SERVERS_BASE_ENDPOINTS_MAP } = tradeDeskConfig;
 
 const ttlInMin = (ttl) => parseInt(ttl, 10) * 1440;
 const getBaseEndpoint = (dataServer) => DATA_SERVERS_BASE_ENDPOINTS_MAP[dataServer];
@@ -41,40 +38,12 @@ const responseBuilder = (items, config) => {
   return response;
 };
 
-const splitItemsBasedOnMaxSizeInBytes = (items, maxSize) => {
-  if (!items || items.length === 0) return [];
-
-  const itemsSize = jsonSize(items);
-
-  if (itemsSize <= maxSize) {
-    return [items];
-  }
-
-  const batches = [];
-  let currentBatch = [];
-
-  items.forEach((item) => {
-    const itemSize = jsonSize(item);
-
-    if (jsonSize(currentBatch) + itemSize <= maxSize) {
-      currentBatch.push(item);
-    } else {
-      batches.push([...currentBatch]);
-      currentBatch = [item];
-    }
-  });
-
-  if (currentBatch.length > 0) {
-    batches.push(currentBatch);
-  }
-
-  return batches;
-};
-
 const batchResponseBuilder = (items, config) => {
   const response = [];
   const itemsChunks = BatchUtils.chunkArrayBySizeAndLength(items, {
-    maxSizeInBytes: MAX_REQUEST_SIZE_IN_BYTES,
+    // TODO: use destructuring at the top of file once proper 'mocking' is implemented.
+    // eslint-disable-next-line unicorn/consistent-destructuring
+    maxSizeInBytes: tradeDeskConfig.MAX_REQUEST_SIZE_IN_BYTES,
   });
 
   itemsChunks.items.forEach((chunk) => {
@@ -104,8 +73,13 @@ const processRecordInputs = (inputs, destination) => {
           TTLInMinutes: action === 'insert' ? ttlInMin(Config.ttlInDays) : 0,
         },
       ];
+
       Object.keys(fields).forEach((id) => {
-        items.push({ [id]: fields[id], Data: data });
+        const value = fields[id];
+        if (value) {
+          // adding only non empty ID's
+          items.push({ [id]: value, Data: data });
+        }
       });
     } else {
       errorResponseList.push(handleRtTfSingleEventError(input, error, {}));
@@ -130,4 +104,4 @@ const processRouterDest = (inputs) => {
   return respList;
 };
 
-module.exports = { getSignatureHeader, splitItemsBasedOnMaxSizeInBytes, processRouterDest };
+module.exports = { getSignatureHeader, processRouterDest };

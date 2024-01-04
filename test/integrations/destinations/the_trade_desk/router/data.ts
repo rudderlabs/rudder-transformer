@@ -1,4 +1,5 @@
 import { overrideDestination } from '../../../testUtils';
+import { defaultMockFns } from '../mocks';
 import {
   destType,
   destTypeInUpperCase,
@@ -43,7 +44,7 @@ export const data = [
                 action: 'insert',
                 fields: {
                   DAID: 'test-daid-2',
-                  UID2: 'test-uid2-2',
+                  UID2: null,
                 },
                 channel: 'sources',
                 context: sampleContext,
@@ -106,15 +107,6 @@ export const data = [
                             },
                           ],
                         },
-                        {
-                          UID2: 'test-uid2-2',
-                          Data: [
-                            {
-                              Name: segmentName,
-                              TTLInMinutes: 43200,
-                            },
-                          ],
-                        },
                       ],
                     },
                     JSON_ARRAY: {},
@@ -140,10 +132,12 @@ export const data = [
         },
       },
     },
+    mockFns: defaultMockFns,
   },
   {
     name: destType,
-    description: 'Add/Remove IDs to/from the segment',
+    description:
+      'Add/Remove IDs to/from the segment and split into multiple requests based on size',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -237,6 +231,26 @@ export const data = [
                             },
                           ],
                         },
+                      ],
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://sin-data.adsrvr.org/data/advertiser',
+                  headers: {},
+                  params: {},
+                  body: {
+                    JSON: {
+                      DataProviderId: dataProviderId,
+                      AdvertiserId: advertiserId,
+                      Items: [
                         {
                           UID2: 'test-uid2-2',
                           Data: [
@@ -271,6 +285,7 @@ export const data = [
         },
       },
     },
+    mockFns: defaultMockFns,
   },
   {
     name: destType,

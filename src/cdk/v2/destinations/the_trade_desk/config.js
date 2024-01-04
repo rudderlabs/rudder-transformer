@@ -1,7 +1,6 @@
 const SUPPORTED_EVENT_TYPE = 'record';
 const ACTION_TYPES = ['insert', 'delete'];
 const DATA_PROVIDER_ID = 'rudderstack';
-const MAX_REQUEST_SIZE_IN_BYTES = 2500000;
 
 // ref:- https://partner.thetradedesk.com/v3/portal/data/doc/DataEnvironments
 const DATA_SERVERS_BASE_ENDPOINTS_MAP = {
@@ -17,6 +16,6 @@ module.exports = {
   SUPPORTED_EVENT_TYPE,
   ACTION_TYPES,
   DATA_PROVIDER_ID,
-  MAX_REQUEST_SIZE_IN_BYTES,
+  MAX_REQUEST_SIZE_IN_BYTES: 2500000,
   DATA_SERVERS_BASE_ENDPOINTS_MAP,
 };

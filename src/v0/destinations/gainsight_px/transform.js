@@ -51,7 +51,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
     'Content-Type': JSON_MIME_TYPE,
   };
 
-  const { success: isPresent } = await objectExists(userId, Config, 'user');
+  const { success: isUserPresent } = await objectExists(userId, Config, 'user');
 
   let payload = constructPayload(message, identifyMapping);
   const name = getValueFromMessage(message, ['traits.name', 'context.traits.name']);
@@ -61,12 +61,12 @@ const identifyResponseBuilder = async (message, { Config }) => {
     payload.lastName = lName;
   }
   // Only for the case of new user creation, if signUpDate is not provided in traits, timestamp / originalTimestamp is mapped
-  if (!isPresent && !payload.signUpDate) {
+  if (!isUserPresent && !payload.signUpDate) {
     payload.signUpDate = formatTimeStamp(message.timestamp || message.originalTimestamp);
   }
 
   // Only for the case of new user creation, if createDate is not provided in traits, timestamp / originalTimestamp is mapped
-  if (!isPresent && !payload.createDate) {
+  if (!isUserPresent && !payload.createDate) {
     payload.createDate = formatTimeStamp(message.timestamp || message.originalTimestamp);
   }
 
@@ -89,7 +89,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
     type: 'USER',
   };
 
-  if (isPresent) {
+  if (isUserPresent) {
     // update user
     response.method = defaultPutRequestConfig.requestMethod;
     response.endpoint = `${ENDPOINTS.USERS_ENDPOINT}/${userId}`;

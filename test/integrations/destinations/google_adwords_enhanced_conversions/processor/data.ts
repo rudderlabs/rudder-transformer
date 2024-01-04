@@ -1566,7 +1566,6 @@ export const data = [
                       adjustmentType: 'ENHANCEMENT',
                     },
                   ],
-                  jobId: 1,
                   partialFailure: true,
                 },
                 JSON_ARRAY: {},

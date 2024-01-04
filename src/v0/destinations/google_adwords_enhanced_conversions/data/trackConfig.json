@@ -129,13 +129,5 @@
     "metadata": {
       "type": "hashToSha256"
     }
-  },
-  {
-    "destKey": "jobId",
-    "sourceKeys": ["properties.jobId"],
-    "required": false,
-    "metadata": {
-      "type": "toInt"
-    }
   }
 ]

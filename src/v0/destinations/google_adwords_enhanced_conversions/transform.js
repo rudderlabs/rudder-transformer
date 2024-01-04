@@ -77,6 +77,8 @@ const processTrackEvent = async (metadata, message, destination) => {
   const payload = constructPayload(message, updatedMapping);
 
   payload.partialFailure = true;
+  // ref: https://developers.google.com/google-ads/api/docs/release-notes#:~:text=Added%20job_id%20as,UploadConversionAdjustmentsRequest
+  payload.jobId = metadata.jobId;
   if (!payload.conversionAdjustments[0]?.userIdentifiers) {
     throw new InstrumentationError(
       `Any of email, phone, firstName, lastName, city, street, countryCode, postalCode or streetAddress is required in traits.`,

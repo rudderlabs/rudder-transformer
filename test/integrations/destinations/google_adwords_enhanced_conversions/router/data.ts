@@ -304,6 +304,7 @@ export const data = [
                 params: { event: 'Page View', customerId: '1234567890' },
                 body: {
                   JSON: {
+                    jobId: 1,
                     partialFailure: true,
                     conversionAdjustments: [
                       {

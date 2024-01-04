@@ -2,6 +2,7 @@ const lodash = require('lodash');
 const CryptoJS = require('crypto-js');
 const jsonSize = require('json-size');
 const { InstrumentationError, AbortedError } = require('@rudderstack/integrations-lib');
+const { BatchUtils } = require('@rudderstack/workflow-engine');
 const {
   defaultPostRequestConfig,
   defaultRequestConfig,
@@ -72,9 +73,11 @@ const splitItemsBasedOnMaxSizeInBytes = (items, maxSize) => {
 
 const batchResponseBuilder = (items, config) => {
   const response = [];
-  const itemsChunks = splitItemsBasedOnMaxSizeInBytes(items, MAX_REQUEST_SIZE_IN_BYTES);
+  const itemsChunks = BatchUtils.chunkArrayBySizeAndLength(items, {
+    maxSizeInBytes: MAX_REQUEST_SIZE_IN_BYTES,
+  });
 
-  itemsChunks.forEach((chunk) => {
+  itemsChunks.items.forEach((chunk) => {
     response.push(responseBuilder(chunk, config));
   });
 

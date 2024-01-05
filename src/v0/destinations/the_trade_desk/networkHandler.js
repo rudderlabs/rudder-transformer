@@ -1,4 +1,4 @@
-const { NetworkError, AbortedError } = require('@rudderstack/integrations-lib');
+const { NetworkError, AbortedError, PlatformError } = require('@rudderstack/integrations-lib');
 const { httpSend, prepareProxyRequest } = require('../../../adapters/network');
 const {
   processAxiosResponse,
@@ -13,11 +13,11 @@ const proxyRequest = async (request) => {
   const { endpoint, data, method, params, headers, config } = prepareProxyRequest(request);
 
   if (!config?.advertiserSecretKey) {
-    throw new AbortedError('Advertiser secret key is missing in destination config. Aborting');
+    throw new PlatformError('Advertiser secret key is missing in destination config. Aborting');
   }
 
   if (!process.env.THE_TRADE_DESK_DATA_PROVIDER_SECRET_KEY) {
-    throw new AbortedError('Data provider secret key is missing. Aborting');
+    throw new PlatformError('Data provider secret key is missing. Aborting');
   }
 
   const ProxyHeaders = {

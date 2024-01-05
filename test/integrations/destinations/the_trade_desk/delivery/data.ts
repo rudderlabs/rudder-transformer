@@ -233,8 +233,7 @@ export const data = [
             statTags: {
               destType: destTypeInUpperCase,
               destinationId: 'Non-determininable',
-              errorCategory: 'network',
-              errorType: 'aborted',
+              errorCategory: 'platform',
               feature: 'dataDelivery',
               implementation: 'native',
               module: 'destination',

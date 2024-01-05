@@ -304,6 +304,14 @@ type SourceInput = {
   event: NonNullable<unknown>[];
   source?: Source;
 };
+type LoggableExtraData = {
+  destinationId: string;
+  workspaceId: string;
+  module: string;
+  implementation: string;
+  sourceId: string;
+  destType: string;
+};
 export {
   ComparatorInput,
   DeliveryJobState,
@@ -332,4 +340,5 @@ export {
   UserTransformationLibrary,
   UserTransformationResponse,
   UserTransformationServiceResponse,
+  LoggableExtraData,
 };

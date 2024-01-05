@@ -1,6 +1,6 @@
 /* eslint-disable global-require, import/no-dynamic-require, @typescript-eslint/no-unused-vars */
 import { client as errNotificationClient } from '../util/errorNotifier';
-import logger from '../logger';
+import logger from '../logger/structured-logger';
 import { CatchErr, ContextBodySimple } from '../util/types';
 // TODO: To be refactored and redisgned
 

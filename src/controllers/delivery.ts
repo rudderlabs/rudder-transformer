@@ -12,7 +12,7 @@ import {
 import { ServiceSelector } from '../helpers/serviceSelector';
 import { DeliveryTestService } from '../services/delivertTest/deliveryTest';
 import { ControllerUtility } from './util';
-import logger from '../logger';
+import logger from '../logger/structured-logger';
 import { DestinationPostTransformationService } from '../services/destination/postTransformation';
 import tags from '../v0/util/tags';
 import { FixMe } from '../util/types';

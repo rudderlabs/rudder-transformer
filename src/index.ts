@@ -2,7 +2,7 @@ import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
 import gracefulShutdown from 'http-graceful-shutdown';
 import dotenv from 'dotenv';
-import logger from './logger';
+import logger from './logger/structured-logger';
 import cluster from './util/cluster';
 import { metricsRouter } from './routes/metricsRouter';
 import { addStatMiddleware, addRequestSizeMiddleware, initPyroscope } from './middleware';

@@ -11,7 +11,7 @@ import {
 import { ServiceSelector } from '../helpers/serviceSelector';
 import { ControllerUtility } from './util';
 import stats from '../util/stats';
-import logger from '../logger';
+import logger from '../logger/structured-logger';
 import { getIntegrationVersion } from '../util/utils';
 import tags from '../v0/util/tags';
 import { DynamicConfigParser } from '../util/dynamicConfigParser';

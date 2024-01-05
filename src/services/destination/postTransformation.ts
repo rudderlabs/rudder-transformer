@@ -117,7 +117,6 @@ export class DestinationPostTransformationService {
           ...resp.statTags,
           ...metaTo.errorDetails,
         };
-        // Probably this will not get invoked :thinking_face:
         DestinationPostTransformationService.logError(
           resp.error || defaultErrorMessages.router,
           metaTo.errorDetails,

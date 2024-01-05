@@ -5,8 +5,13 @@ const { timestamp, combine, metadata, printf, align, errors, json } = format;
 
 const metadataKey = 'extraData';
 
+const { LOG_LEVEL } = process.env;
+
+const envLevelInt = parseInt(LOG_LEVEL || '1', 10);
+const winstonConfigLevel = ['debug', 'info', 'warn', 'error'];
+
 const logger = createLogger({
-  level: 'debug',
+  level: winstonConfigLevel[envLevelInt],
   format: combine(
     timestamp({
       format: 'MMM-DD-YYYY HH:mm:ss',

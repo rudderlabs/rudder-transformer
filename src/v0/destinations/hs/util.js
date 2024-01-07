@@ -100,6 +100,7 @@ const getProperties = async (destination) => {
     hubspotPropertyMapResponse = await httpGET(CONTACT_PROPERTY_MAP_ENDPOINT, requestOptions, {
       destType: 'hs',
       feature: 'transformation',
+      endpointPath: `/properties/v1/contacts/properties`,
     });
     hubspotPropertyMapResponse = processAxiosResponse(hubspotPropertyMapResponse);
   } else {
@@ -111,6 +112,7 @@ const getProperties = async (destination) => {
       {
         destType: 'hs',
         feature: 'transformation',
+        endpointPath: `/properties/v1/contacts/properties?hapikey`,
       },
     );
     hubspotPropertyMapResponse = processAxiosResponse(hubspotPropertyMapResponse);

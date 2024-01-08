@@ -1,13 +1,9 @@
-import { FEATURES, MODULES } from '../../../../../src/v0/util/tags';
-
-const DEST_TYPE = 'snapchat_custom_audience';
-
 export const data = [
   {
-    name: DEST_TYPE,
+    name: 'snapchat_custom_audience',
     description: 'Test 0',
-    feature: FEATURES.ROUTER,
-    module: MODULES.DESTINATION,
+    feature: 'router',
+    module: 'destination',
     version: 'v0',
     input: {
       request: {
@@ -20,14 +16,9 @@ export const data = [
                   refresh_token: 'dummyRefreshToken',
                   developer_token: 'dummyDeveloperToken',
                 },
+                userId: 'u1',
               },
-              destination: {
-                Config: {
-                  segmentId: '123',
-                  disableHashing: false,
-                  schema: 'email',
-                },
-              },
+              destination: { Config: { segmentId: '123', disableHashing: false, schema: 'email' } },
               message: {
                 userId: 'user 1',
                 anonymousId: 'anon-id-new',
@@ -48,17 +39,12 @@ export const data = [
                   },
                   enablePartialFailure: true,
                 },
-                context: {
-                  ip: '14.5.67.21',
-                  library: {
-                    name: 'http',
-                  },
-                },
+                context: { ip: '14.5.67.21', library: { name: 'http' } },
                 timestamp: '2020-02-02T00:23:09.544Z',
               },
             },
           ],
-          destType: DEST_TYPE,
+          destType: 'snapchat_custom_audience',
         },
       },
     },
@@ -104,17 +90,12 @@ export const data = [
                     developer_token: 'dummyDeveloperToken',
                     refresh_token: 'dummyRefreshToken',
                   },
+                  userId: 'u1',
                 },
               ],
               batched: false,
               statusCode: 200,
-              destination: {
-                Config: {
-                  disableHashing: false,
-                  schema: 'email',
-                  segmentId: '123',
-                },
-              },
+              destination: { Config: { disableHashing: false, schema: 'email', segmentId: '123' } },
             },
           ],
         },

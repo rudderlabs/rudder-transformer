@@ -32,21 +32,13 @@ export const data = [
                     ip: '0.0.0.0',
                     age: 26,
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-US',
                   ip: '0.0.0.0',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                   page: {
                     path: '/destinations/amplitude',
                     referrer: '',
@@ -64,20 +56,12 @@ export const data = [
                 originalTimestamp: '2019-10-14T09:03:17.562Z',
                 anonymousId: '123456',
                 userId: '123456',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               destination: {
-                Config: {
-                  apiKey: 'abcde',
-                  groupTypeTrait: 'email',
-                  groupValueTrait: 'age',
-                },
+                Config: { apiKey: 'abcde', groupTypeTrait: 'email', groupValueTrait: 'age' },
               },
             },
             {
@@ -90,24 +74,13 @@ export const data = [
                     namespace: 'com.rudderlabs.javascript',
                     version: '1.0.0',
                   },
-                  traits: {
-                    email: 'test@rudderstack.com',
-                    anonymousId: '12345',
-                  },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  traits: { email: 'test@rudderstack.com', anonymousId: '12345' },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-US',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                   page: {
                     path: '/destinations/amplitude',
                     referrer: '',
@@ -136,20 +109,12 @@ export const data = [
                   initial_referrer: 'https://docs.rudderstack.com',
                   initial_referring_domain: 'docs.rudderstack.com',
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 name: 'ApplicationLoaded',
                 sentAt: '2019-10-14T11:15:53.296Z',
               },
-              metadata: {
-                jobId: 2,
-              },
-              destination: {
-                Config: {
-                  apiKey: 'abcde',
-                },
-              },
+              metadata: { jobId: 2, userId: 'u1' },
+              destination: { Config: { apiKey: 'abcde' } },
             },
           ],
           destType: 'am',
@@ -169,9 +134,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://api2.amplitude.com/2/httpapi',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
+                  headers: { 'Content-Type': 'application/json' },
                   params: {},
                   body: {
                     JSON: {
@@ -208,9 +171,7 @@ export const data = [
                           ip: '0.0.0.0',
                         },
                       ],
-                      options: {
-                        min_id_length: 1,
-                      },
+                      options: { min_id_length: 1 },
                     },
                     XML: {},
                     JSON_ARRAY: {},
@@ -220,19 +181,11 @@ export const data = [
                   userId: '123456',
                 },
               ],
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
-                Config: {
-                  apiKey: 'abcde',
-                  groupTypeTrait: 'email',
-                  groupValueTrait: 'age',
-                },
+                Config: { apiKey: 'abcde', groupTypeTrait: 'email', groupValueTrait: 'age' },
               },
             },
             {
@@ -242,9 +195,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://api2.amplitude.com/2/httpapi',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
+                  headers: { 'Content-Type': 'application/json' },
                   params: {},
                   body: {
                     JSON: {
@@ -285,9 +236,7 @@ export const data = [
                           time: 1571051718299,
                         },
                       ],
-                      options: {
-                        min_id_length: 1,
-                      },
+                      options: { min_id_length: 1 },
                     },
                     XML: {},
                     JSON_ARRAY: {},
@@ -297,18 +246,10 @@ export const data = [
                   userId: '00000000000000000000000000',
                 },
               ],
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
-              destination: {
-                Config: {
-                  apiKey: 'abcde',
-                },
-              },
+              destination: { Config: { apiKey: 'abcde' } },
             },
           ],
         },

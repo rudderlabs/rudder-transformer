@@ -14,15 +14,8 @@ export const data = [
                 type: 'identify',
                 event: 'Email Opened',
                 sentAt: '2020-08-28T16:26:16.473Z',
-                context: {
-                  library: {
-                    name: 'analytics-node',
-                    version: '0.0.3',
-                  },
-                },
-                _metadata: {
-                  nodeVersion: '10.22.0',
-                },
+                context: { library: { name: 'analytics-node', version: '0.0.3' } },
+                _metadata: { nodeVersion: '10.22.0' },
                 messageId:
                   'node-570110489d3e99b234b18af9a9eca9d4-6009779e-82d7-469d-aaeb-5ccf162b0453',
                 properties: {
@@ -34,31 +27,16 @@ export const data = [
                 anonymousId: 'abcdeeeeeeeexxxx102',
                 originalTimestamp: '2020-08-28T16:26:06.468Z',
               },
-              metadata: {
-                jobId: 2,
-              },
-              destination: {
-                Config: {
-                  apiKey: 'dummyApiKey',
-                  listName: 'abc',
-                },
-                Enabled: true,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
+              destination: { Config: { apiKey: 'dummyApiKey', listName: 'abc' }, Enabled: true },
             },
             {
               message: {
                 type: 'track',
                 event: 'Email Opened',
                 sentAt: '2020-08-28T16:26:16.473Z',
-                context: {
-                  library: {
-                    name: 'analytics-node',
-                    version: '0.0.3',
-                  },
-                },
-                _metadata: {
-                  nodeVersion: '10.22.0',
-                },
+                context: { library: { name: 'analytics-node', version: '0.0.3' } },
+                _metadata: { nodeVersion: '10.22.0' },
                 messageId:
                   'node-570110489d3e99b234b18af9a9eca9d4-6009779e-82d7-469d-aaeb-5ccf162b0453',
                 properties: {
@@ -70,16 +48,8 @@ export const data = [
                 anonymousId: 'abcdeeeeeeeexxxx102',
                 originalTimestamp: '2020-08-28T16:26:06.468Z',
               },
-              metadata: {
-                jobId: 3,
-              },
-              destination: {
-                Config: {
-                  apiKey: 'dummyApiKey',
-                  listName: 'abc',
-                },
-                Enabled: true,
-              },
+              metadata: { jobId: 3, userId: 'u1' },
+              destination: { Config: { apiKey: 'dummyApiKey', listName: 'abc' }, Enabled: true },
             },
             {
               message: {
@@ -87,13 +57,9 @@ export const data = [
                 userId: 'identified user id',
                 anonymousId: 'anon-id-new',
                 context: {
-                  traits: {
-                    trait1: 'new-val',
-                  },
+                  traits: { trait1: 'new-val' },
                   ip: '14.5.67.21',
-                  library: {
-                    name: 'http',
-                  },
+                  library: { name: 'http' },
                 },
                 traits: {
                   email: 'test@abc.com',
@@ -105,31 +71,16 @@ export const data = [
                 },
                 timestamp: '2020-02-02T00:23:09.544Z',
               },
-              metadata: {
-                jobId: 4,
-              },
-              destination: {
-                Config: {
-                  apiKey: 'dummyApiKey',
-                  listName: 'abc',
-                },
-                Enabled: true,
-              },
+              metadata: { jobId: 4, userId: 'u1' },
+              destination: { Config: { apiKey: 'dummyApiKey', listName: 'abc' }, Enabled: true },
             },
             {
               message: {
                 type: 'identify',
                 event: 'Email Opened',
                 sentAt: '2020-08-28T16:26:16.473Z',
-                context: {
-                  library: {
-                    name: 'analytics-node',
-                    version: '0.0.3',
-                  },
-                },
-                _metadata: {
-                  nodeVersion: '10.22.0',
-                },
+                context: { library: { name: 'analytics-node', version: '0.0.3' } },
+                _metadata: { nodeVersion: '10.22.0' },
                 messageId:
                   'node-570110489d3e99b234b18af9a9eca9d4-6009779e-82d7-469d-aaeb-5ccf162b0453',
                 properties: {
@@ -140,16 +91,8 @@ export const data = [
                 anonymousId: 'abcdeeeeeeeexxxx102',
                 originalTimestamp: '2020-08-28T16:26:06.468Z',
               },
-              metadata: {
-                jobId: 5,
-              },
-              destination: {
-                Config: {
-                  apiKey: 'dummyApiKey',
-                  listName: '',
-                },
-                Enabled: true,
-              },
+              metadata: { jobId: 5, userId: 'u1' },
+              destination: { Config: { apiKey: 'dummyApiKey', listName: '' }, Enabled: true },
             },
           ],
           destType: 'mailmodo',
@@ -171,9 +114,7 @@ export const data = [
                   JSON: {
                     listName: 'abc',
                     values: [
-                      {
-                        email: 'test@abc.com',
-                      },
+                      { email: 'test@abc.com' },
                       {
                         email: 'test@abc.com',
                         data: {
@@ -192,30 +133,17 @@ export const data = [
                 files: {},
                 method: 'POST',
                 params: {},
-                headers: {
-                  mmApiKey: 'dummyApiKey',
-                  'Content-Type': 'application/json',
-                },
+                headers: { mmApiKey: 'dummyApiKey', 'Content-Type': 'application/json' },
                 version: '1',
                 endpoint: 'https://api.mailmodo.com/api/v1/addToList/batch',
               },
               metadata: [
-                {
-                  jobId: 2,
-                },
-                {
-                  jobId: 4,
-                },
+                { jobId: 2, userId: 'u1' },
+                { jobId: 4, userId: 'u1' },
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                Config: {
-                  apiKey: 'dummyApiKey',
-                  listName: 'abc',
-                },
-                Enabled: true,
-              },
+              destination: { Config: { apiKey: 'dummyApiKey', listName: 'abc' }, Enabled: true },
             },
             {
               batchedRequest: {
@@ -238,37 +166,20 @@ export const data = [
                 files: {},
                 method: 'POST',
                 params: {},
-                headers: {
-                  mmApiKey: 'dummyApiKey',
-                  'Content-Type': 'application/json',
-                },
+                headers: { mmApiKey: 'dummyApiKey', 'Content-Type': 'application/json' },
                 version: '1',
                 endpoint: 'https://api.mailmodo.com/api/v1/addEvent',
               },
-              metadata: [
-                {
-                  jobId: 3,
-                },
-              ],
+              metadata: [{ jobId: 3, userId: 'u1' }],
               batched: false,
               statusCode: 200,
-              destination: {
-                Config: {
-                  apiKey: 'dummyApiKey',
-                  listName: 'abc',
-                },
-                Enabled: true,
-              },
+              destination: { Config: { apiKey: 'dummyApiKey', listName: 'abc' }, Enabled: true },
             },
             {
               batched: false,
               error:
                 'Missing required value from ["traits.email","context.traits.email","properties.email"]',
-              metadata: [
-                {
-                  jobId: 5,
-                },
-              ],
+              metadata: [{ jobId: 5, userId: 'u1' }],
               statTags: {
                 destType: 'MAILMODO',
                 errorCategory: 'dataValidation',
@@ -278,13 +189,7 @@ export const data = [
                 module: 'destination',
               },
               statusCode: 400,
-              destination: {
-                Config: {
-                  apiKey: 'dummyApiKey',
-                  listName: '',
-                },
-                Enabled: true,
-              },
+              destination: { Config: { apiKey: 'dummyApiKey', listName: '' }, Enabled: true },
             },
           ],
         },

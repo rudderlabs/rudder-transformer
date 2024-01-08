@@ -63,7 +63,7 @@
       },
       "originalTimestamp": "2021-10-25T09:40:08.879Z"
     },
-    "metadata": { "jobId": 1 },
+    "metadata": { "jobId": 1, "userId": "u1" },
     "destination": {
       "ID": "1zzHtStW2ZPlullmz6L7DGnmk9V",
       "Name": "ometria-dev",
@@ -172,7 +172,7 @@
       },
       "originalTimestamp": "2021-10-25T09:40:08.879Z"
     },
-    "metadata": { "jobId": 2 },
+    "metadata": { "jobId": 2, "userId": "u1" },
     "destination": {
       "ID": "1zzHtStW2ZPlullmz6L7DGnmk9V",
       "Name": "ometria-dev",

@@ -49,7 +49,8 @@
           }
         },
         "metadata": {
-          "jobId": 1
+          "jobId": 1,
+          "userId": "u1"
         },
         "destination": {
           "Config": {
@@ -106,7 +107,8 @@
           }
         },
         "metadata": {
-          "jobId": 2
+          "jobId": 2,
+          "userId": "u1"
         },
         "destination": {
           "Config": {
@@ -164,7 +166,8 @@
           }
         },
         "metadata": {
-          "jobId": 3
+          "jobId": 3,
+          "userId": "u1"
         },
         "destination": {
           "Config": {
@@ -230,7 +233,7 @@
             "dedupKeyFieldIdentifier": "properties.dedupKey"
           }
         },
-        "metadata": [{ "jobId": 1 }],
+        "metadata": [{ "jobId": 1, "userId": "u1" }],
         "statusCode": 200
       },
       {
@@ -262,13 +265,13 @@
             "dedupKeyFieldIdentifier": "properties.dedupKey"
           }
         },
-        "metadata": [{ "jobId": 2 }],
+        "metadata": [{ "jobId": 2, "userId": "u1" }],
         "statusCode": 200
       },
       {
         "batched": false,
         "error": "Events must be sent within ninety days of their occurrence",
-        "metadata": [{ "jobId": 3 }],
+        "metadata": [{ "jobId": 3, "userId": "u1" }],
         "statusCode": 400,
         "statTags": {
           "errorCategory": "dataValidation",

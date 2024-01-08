@@ -16,39 +16,22 @@ export const data = [
                 properties: {
                   listData: {
                     add: [
-                      {
-                        EMAIL_SHA256: 'alex@email.com',
-                      },
-                      {
-                        EMAIL_SHA256: 'amy@abc.com',
-                      },
-                      {
-                        EMAIL_SHA256: 'van@abc.com',
-                      },
+                      { EMAIL_SHA256: 'alex@email.com' },
+                      { EMAIL_SHA256: 'amy@abc.com' },
+                      { EMAIL_SHA256: 'van@abc.com' },
                     ],
                     remove: [
-                      {
-                        EMAIL_SHA256: 'alex@email.com',
-                      },
-                      {
-                        EMAIL_SHA256: 'amy@abc.com',
-                      },
-                      {
-                        EMAIL_SHA256: 'van@abc.com',
-                      },
+                      { EMAIL_SHA256: 'alex@email.com' },
+                      { EMAIL_SHA256: 'amy@abc.com' },
+                      { EMAIL_SHA256: 'van@abc.com' },
                     ],
                   },
                 },
                 context: {
                   ip: '14.5.67.21',
-                  library: {
-                    name: 'http',
-                  },
+                  library: { name: 'http' },
                   externalId: [
-                    {
-                      type: 'TIKTOK_AUDIENCE-23856594064540489',
-                      identifierType: 'EMAIL_SHA256',
-                    },
+                    { type: 'TIKTOK_AUDIENCE-23856594064540489', identifierType: 'EMAIL_SHA256' },
                   ],
                   destinationFields: 'EMAIL_SHA256',
                 },
@@ -56,17 +39,11 @@ export const data = [
               },
               metadata: {
                 jobId: 1,
-                secret: {
-                  accessToken: 'dummyAccessToken',
-                  advertiserIds: ['dummyAdverTiserID'],
-                },
+                secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
+                userId: 'u1',
               },
               destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 Config: {
                   isHashRequired: true,
                   registerDeviceOrBrowserApiKey: true,
@@ -83,45 +60,22 @@ export const data = [
                 properties: {
                   listData: {
                     add: [
-                      {
-                        EMAIL_SHA256: 'alex@email.com',
-                        AAID_MD5: '1234567',
-                      },
-                      {
-                        EMAIL_SHA256: 'amy@abc.com',
-                        AAID_MD5: '1234568',
-                      },
-                      {
-                        EMAIL_SHA256: 'van@abc.com',
-                        AAID_MD5: '1234569',
-                      },
+                      { EMAIL_SHA256: 'alex@email.com', AAID_MD5: '1234567' },
+                      { EMAIL_SHA256: 'amy@abc.com', AAID_MD5: '1234568' },
+                      { EMAIL_SHA256: 'van@abc.com', AAID_MD5: '1234569' },
                     ],
                     remove: [
-                      {
-                        EMAIL_SHA256: 'alex@email.com',
-                        AAID_MD5: '1234570',
-                      },
-                      {
-                        EMAIL_SHA256: 'amy@abc.com',
-                        AAID_MD5: '1234571',
-                      },
-                      {
-                        EMAIL_SHA256: 'van@abc.com',
-                        AAID_MD5: '1234572',
-                      },
+                      { EMAIL_SHA256: 'alex@email.com', AAID_MD5: '1234570' },
+                      { EMAIL_SHA256: 'amy@abc.com', AAID_MD5: '1234571' },
+                      { EMAIL_SHA256: 'van@abc.com', AAID_MD5: '1234572' },
                     ],
                   },
                 },
                 context: {
                   ip: '14.5.67.21',
-                  library: {
-                    name: 'http',
-                  },
+                  library: { name: 'http' },
                   externalId: [
-                    {
-                      type: 'TIKTOK_AUDIENCE-23856594064540489',
-                      identifierType: 'EMAIL_SHA256',
-                    },
+                    { type: 'TIKTOK_AUDIENCE-23856594064540489', identifierType: 'EMAIL_SHA256' },
                   ],
                   destinationFields: 'EMAIL_SHA256, AAID_MD5',
                 },
@@ -129,17 +83,11 @@ export const data = [
               },
               metadata: {
                 jobId: 2,
-                secret: {
-                  accessToken: 'dummyAccessToken',
-                  advertiserIds: ['dummyAdverTiserID'],
-                },
+                secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
+                userId: 'u1',
               },
               destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 Config: {
                   isHashRequired: true,
                   registerDeviceOrBrowserApiKey: true,
@@ -177,14 +125,9 @@ export const data = [
                 },
                 context: {
                   ip: '14.5.67.21',
-                  library: {
-                    name: 'http',
-                  },
+                  library: { name: 'http' },
                   externalId: [
-                    {
-                      type: 'TIKTOK_AUDIENCE-23856594064540489',
-                      identifierType: 'EMAIL_SHA256',
-                    },
+                    { type: 'TIKTOK_AUDIENCE-23856594064540489', identifierType: 'EMAIL_SHA256' },
                   ],
                   destinationFields:
                     'EMAIL_SHA256, PHONE_SHA256, IDFA_SHA256, AAID_SHA256, AAID_MD, IDFA_MD5',
@@ -193,17 +136,11 @@ export const data = [
               },
               metadata: {
                 jobId: 3,
-                secret: {
-                  accessToken: 'dummyAccessToken',
-                  advertiserIds: ['dummyAdverTiserID'],
-                },
+                secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
+                userId: 'u1',
               },
               destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 Config: {
                   isHashRequired: true,
                   registerDeviceOrBrowserApiKey: true,
@@ -237,14 +174,9 @@ export const data = [
                 },
                 context: {
                   ip: '14.5.67.21',
-                  library: {
-                    name: 'http',
-                  },
+                  library: { name: 'http' },
                   externalId: [
-                    {
-                      type: 'TIKTOK_AUDIENCE-23856594064540489',
-                      identifierType: 'EMAIL_SHA256',
-                    },
+                    { type: 'TIKTOK_AUDIENCE-23856594064540489', identifierType: 'EMAIL_SHA256' },
                   ],
                   destinationFields:
                     'EMAIL_SHA256, PHONE_SHA256, IDFA_SHA256, AAID_SHA256, AAID_MD, IDFA_MD5',
@@ -253,17 +185,11 @@ export const data = [
               },
               metadata: {
                 jobId: 4,
-                secret: {
-                  accessToken: 'dummyAccessToken',
-                  advertiserIds: ['dummyAdverTiserID'],
-                },
+                secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
+                userId: 'u1',
               },
               destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 Config: {
                   isHashRequired: true,
                   registerDeviceOrBrowserApiKey: true,
@@ -296,14 +222,9 @@ export const data = [
                 },
                 context: {
                   ip: '14.5.67.21',
-                  library: {
-                    name: 'http',
-                  },
+                  library: { name: 'http' },
                   externalId: [
-                    {
-                      type: 'TIKTOK_AUDIENCE-23856594064540489',
-                      identifierType: 'EMAIL_SHA256',
-                    },
+                    { type: 'TIKTOK_AUDIENCE-23856594064540489', identifierType: 'EMAIL_SHA256' },
                   ],
                   destinationFields:
                     'EMAIL_SHA256, PHONE_SHA256, IDFA_SHA256, AAID_SHA256, AAID_MD, IDFA_MD5',
@@ -312,17 +233,11 @@ export const data = [
               },
               metadata: {
                 jobId: 1524545,
-                secret: {
-                  accessToken: 'dummyAccessToken',
-                  advertiserIds: ['dummyAdverTiserID'],
-                },
+                secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
+                userId: 'u1',
               },
               destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 Config: {
                   isHashRequired: true,
                   registerDeviceOrBrowserApiKey: true,
@@ -347,11 +262,7 @@ export const data = [
               error: 'message Type is not present. Aborting message.',
               batched: false,
               destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 Config: {
                   isHashRequired: true,
                   registerDeviceOrBrowserApiKey: true,
@@ -363,10 +274,8 @@ export const data = [
               metadata: [
                 {
                   jobId: 1524545,
-                  secret: {
-                    accessToken: 'dummyAccessToken',
-                    advertiserIds: ['dummyAdverTiserID'],
-                  },
+                  secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
+                  userId: 'u1',
                 },
               ],
               statTags: {
@@ -468,11 +377,7 @@ export const data = [
               ],
               batched: true,
               destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 Config: {
                   isHashRequired: true,
                   registerDeviceOrBrowserApiKey: true,
@@ -484,10 +389,8 @@ export const data = [
               metadata: [
                 {
                   jobId: 1,
-                  secret: {
-                    accessToken: 'dummyAccessToken',
-                    advertiserIds: ['dummyAdverTiserID'],
-                  },
+                  secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
+                  userId: 'u1',
                 },
               ],
               statusCode: 200,
@@ -605,11 +508,7 @@ export const data = [
               ],
               batched: true,
               destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 Config: {
                   isHashRequired: true,
                   registerDeviceOrBrowserApiKey: true,
@@ -621,10 +520,8 @@ export const data = [
               metadata: [
                 {
                   jobId: 2,
-                  secret: {
-                    accessToken: 'dummyAccessToken',
-                    advertiserIds: ['dummyAdverTiserID'],
-                  },
+                  secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
+                  userId: 'u1',
                 },
               ],
               statusCode: 200,
@@ -635,10 +532,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://business-api.tiktok.com/open_api/v1.3/segment/mapping/',
-                headers: {
-                  'Access-Token': 'dummyAccessToken',
-                  'Content-Type': 'application/json',
-                },
+                headers: { 'Access-Token': 'dummyAccessToken', 'Content-Type': 'application/json' },
                 params: {},
                 body: {
                   JSON: {
@@ -709,11 +603,7 @@ export const data = [
               },
               batched: true,
               destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 Config: {
                   isHashRequired: true,
                   registerDeviceOrBrowserApiKey: true,
@@ -725,10 +615,8 @@ export const data = [
               metadata: [
                 {
                   jobId: 3,
-                  secret: {
-                    accessToken: 'dummyAccessToken',
-                    advertiserIds: ['dummyAdverTiserID'],
-                  },
+                  secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
+                  userId: 'u1',
                 },
               ],
               statusCode: 200,
@@ -739,10 +627,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://business-api.tiktok.com/open_api/v1.3/segment/mapping/',
-                headers: {
-                  'Access-Token': 'dummyAccessToken',
-                  'Content-Type': 'application/json',
-                },
+                headers: { 'Access-Token': 'dummyAccessToken', 'Content-Type': 'application/json' },
                 params: {},
                 body: {
                   JSON: {
@@ -801,11 +686,7 @@ export const data = [
               },
               batched: true,
               destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 Config: {
                   isHashRequired: true,
                   registerDeviceOrBrowserApiKey: true,
@@ -817,10 +698,8 @@ export const data = [
               metadata: [
                 {
                   jobId: 4,
-                  secret: {
-                    accessToken: 'dummyAccessToken',
-                    advertiserIds: ['dummyAdverTiserID'],
-                  },
+                  secret: { accessToken: 'dummyAccessToken', advertiserIds: ['dummyAdverTiserID'] },
+                  userId: 'u1',
                 },
               ],
               statusCode: 200,

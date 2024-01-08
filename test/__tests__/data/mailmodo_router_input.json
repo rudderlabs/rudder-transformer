@@ -24,7 +24,8 @@
       "originalTimestamp": "2020-08-28T16:26:06.468Z"
     },
     "metadata": {
-      "jobId": 2
+      "jobId": 2,
+      "userId": "u1"
     },
     "destination": {
       "Config": {
@@ -59,7 +60,8 @@
       "originalTimestamp": "2020-08-28T16:26:06.468Z"
     },
     "metadata": {
-      "jobId": 3
+      "jobId": 3,
+      "userId": "u1"
     },
     "destination": {
       "Config": {
@@ -94,7 +96,8 @@
       "timestamp": "2020-02-02T00:23:09.544Z"
     },
     "metadata": {
-      "jobId": 4
+      "jobId": 4,
+      "userId": "u1"
     },
     "destination": {
       "Config": {
@@ -128,7 +131,8 @@
       "originalTimestamp": "2020-08-28T16:26:06.468Z"
     },
     "metadata": {
-      "jobId": 5
+      "jobId": 5,
+      "userId": "u1"
     },
     "destination": {
       "Config": {

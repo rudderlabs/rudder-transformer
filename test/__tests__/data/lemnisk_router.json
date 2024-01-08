@@ -81,7 +81,8 @@
           "isProcessorEnabled": true
         },
         "metadata": {
-          "jobId": 1
+          "jobId": 1,
+          "userId": "u1"
         }
       },
       {
@@ -176,7 +177,8 @@
           "destinationType": "DISCORD",
           "jobId": 123,
           "messageId": "4aaecff2-a513-4bbf-9824-c471f4ac9777",
-          "sourceId": "1YhwKyDcKstudlGxkeN5p2wgsrp"
+          "sourceId": "1YhwKyDcKstudlGxkeN5p2wgsrp",
+          "userId": "u1"
         }
       },
       {
@@ -294,7 +296,8 @@
           "destinationType": "DISCORD",
           "jobId": 129,
           "messageId": "8b8d5937-09bc-49dc-a35e-8cd6370575f8",
-          "sourceId": "1YhwKyDcKstudlGxkeN5p2wgsrp"
+          "sourceId": "1YhwKyDcKstudlGxkeN5p2wgsrp",
+          "userId": "u1"
         }
       }
     ],
@@ -369,7 +372,8 @@
         },
         "metadata": [
           {
-            "jobId": 1
+            "jobId": 1,
+            "userId": "u1"
           }
         ],
         "statTags": {
@@ -489,7 +493,8 @@
             "destinationType": "DISCORD",
             "jobId": 123,
             "messageId": "4aaecff2-a513-4bbf-9824-c471f4ac9777",
-            "sourceId": "1YhwKyDcKstudlGxkeN5p2wgsrp"
+            "sourceId": "1YhwKyDcKstudlGxkeN5p2wgsrp",
+            "userId": "u1"
           }
         ],
         "batched": false,
@@ -628,7 +633,8 @@
             "destinationType": "DISCORD",
             "jobId": 129,
             "messageId": "8b8d5937-09bc-49dc-a35e-8cd6370575f8",
-            "sourceId": "1YhwKyDcKstudlGxkeN5p2wgsrp"
+            "sourceId": "1YhwKyDcKstudlGxkeN5p2wgsrp",
+            "userId": "u1"
           }
         ],
         "batched": false,

@@ -18,18 +18,8 @@ export const data = [
                   impactAppId: '2323',
                   eventTypeId: '56446',
                   enableEmailHashing: true,
-                  rudderToImpactProperty: [
-                    {
-                      from: 'profit',
-                      to: 'Money1',
-                    },
-                  ],
-                  productsMapping: [
-                    {
-                      from: 'sku',
-                      to: 'ItemSku',
-                    },
-                  ],
+                  rudderToImpactProperty: [{ from: 'profit', to: 'Money1' }],
+                  productsMapping: [{ from: 'sku', to: 'ItemSku' }],
                   enableIdentifyEvents: true,
                   enablePageEvents: false,
                   enableScreenEvents: false,
@@ -37,40 +27,24 @@ export const data = [
                   installEventNames: [{ eventName: 'App Installed' }],
                 },
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               message: {
                 type: 'identify',
                 sentAt: '2021-01-03T17:02:53.195Z',
                 userId: 'user123',
                 channel: 'web',
                 context: {
-                  os: {
-                    name: 'android',
-                    version: '1.12.3',
-                  },
+                  os: { name: 'android', version: '1.12.3' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
                     version: '1.1.11',
                     namespace: 'com.rudderlabs.javascript',
                   },
-                  traits: {
-                    email: 'user123@email.com',
-                    phone: '+917836362334',
-                    userId: 'user123',
-                  },
+                  traits: { email: 'user123@email.com', phone: '+917836362334', userId: 'user123' },
                   locale: 'en-US',
-                  device: {
-                    token: 'token',
-                    id: 'id',
-                    type: 'ios',
-                  },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.1.11',
-                  },
+                  device: { token: 'token', id: 'id', type: 'ios' },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.1.11' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0',
                 },
@@ -103,10 +77,7 @@ export const data = [
                   ],
                 },
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -114,13 +85,8 @@ export const data = [
                     namespace: 'com.rudderlabs.javascript',
                   },
                   locale: 'en-US',
-                  screen: {
-                    density: 2,
-                  },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.1.11',
-                  },
+                  screen: { density: 2 },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.1.11' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0',
@@ -130,9 +96,7 @@ export const data = [
                 anonymousId: '97c46c81-3140-456d-b2a9-690d70aaca35',
                 originalTimestamp: 'NOW',
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               destination: {
                 Config: {
                   accountSID: 'dfsgertrtff3erfc34rfwf',
@@ -141,18 +105,8 @@ export const data = [
                   impactAppId: '2323',
                   eventTypeId: '56446',
                   enableEmailHashing: true,
-                  rudderToImpactProperty: [
-                    {
-                      from: 'properties.profit',
-                      to: 'Money1',
-                    },
-                  ],
-                  productsMapping: [
-                    {
-                      from: 'variant',
-                      to: 'ItemCategory',
-                    },
-                  ],
+                  rudderToImpactProperty: [{ from: 'properties.profit', to: 'Money1' }],
+                  productsMapping: [{ from: 'variant', to: 'ItemCategory' }],
                   enableIdentifyEvents: false,
                   enablePageEvents: false,
                   enableScreenEvents: false,
@@ -208,11 +162,7 @@ export const data = [
                 version: '1',
                 endpoint: 'https://trkapi.impact.com/PageLoad',
               },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -223,18 +173,8 @@ export const data = [
                   impactAppId: '2323',
                   eventTypeId: '56446',
                   enableEmailHashing: true,
-                  rudderToImpactProperty: [
-                    {
-                      from: 'profit',
-                      to: 'Money1',
-                    },
-                  ],
-                  productsMapping: [
-                    {
-                      from: 'sku',
-                      to: 'ItemSku',
-                    },
-                  ],
+                  rudderToImpactProperty: [{ from: 'profit', to: 'Money1' }],
+                  productsMapping: [{ from: 'sku', to: 'ItemSku' }],
                   enableIdentifyEvents: true,
                   enablePageEvents: false,
                   enableScreenEvents: false,
@@ -287,11 +227,7 @@ export const data = [
                   endpoint: 'https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions',
                 },
               ],
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -302,18 +238,8 @@ export const data = [
                   impactAppId: '2323',
                   eventTypeId: '56446',
                   enableEmailHashing: true,
-                  rudderToImpactProperty: [
-                    {
-                      from: 'properties.profit',
-                      to: 'Money1',
-                    },
-                  ],
-                  productsMapping: [
-                    {
-                      from: 'variant',
-                      to: 'ItemCategory',
-                    },
-                  ],
+                  rudderToImpactProperty: [{ from: 'properties.profit', to: 'Money1' }],
+                  productsMapping: [{ from: 'variant', to: 'ItemCategory' }],
                   enableIdentifyEvents: false,
                   enablePageEvents: false,
                   enableScreenEvents: false,

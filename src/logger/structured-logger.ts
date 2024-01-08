@@ -7,7 +7,7 @@ const metadataKey = 'extraData';
 
 const { LOG_LEVEL } = process.env;
 
-const envLevelInt = parseInt(LOG_LEVEL || '1', 10);
+const envLevelInt = parseInt(LOG_LEVEL ?? '1', 10);
 const winstonConfigLevel = ['debug', 'info', 'warn', 'error'];
 
 const logger = createLogger({

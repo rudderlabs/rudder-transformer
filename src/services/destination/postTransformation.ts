@@ -13,15 +13,13 @@ import {
   UserDeletionResponse,
   DeliveriesResponse,
   DeliveryJobState,
-  ErrorDetailer,
-  LoggableExtraData,
 } from '../../types/index';
 import { generateErrorObject } from '../../v0/util';
 import { ErrorReportingService } from '../errorReporting';
 import tags from '../../v0/util/tags';
 import stats from '../../util/stats';
 import { FixMe } from '../../util/types';
-import customLogger from '../../logger/structured-logger';
+import { MiscService } from '../misc';
 
 const defaultErrorMessages = {
   router: '[Router Transform] Error occurred while processing the payload.',
@@ -29,18 +27,6 @@ const defaultErrorMessages = {
 } as const;
 
 export class DestinationPostTransformationService {
-  public static logError(errorMessage: string, errorDetailer: ErrorDetailer) {
-    const loggableExtraData: Partial<LoggableExtraData> = {
-      ...(errorDetailer?.destinationId && { destinationId: errorDetailer.destinationId }),
-      ...(errorDetailer?.sourceId && { sourceId: errorDetailer.sourceId }),
-      ...(errorDetailer?.workspaceId && { workspaceId: errorDetailer.workspaceId }),
-      ...(errorDetailer?.destType && { destType: errorDetailer.destType }),
-      module: errorDetailer.module,
-      implementation: errorDetailer.implementation,
-    };
-    customLogger.errorw(errorMessage || '', loggableExtraData);
-  }
-
   public static handleProcessorTransformSucessEvents(
     event: ProcessorTransformationRequest,
     transformedPayloads: ProcessorTransformationOutput | ProcessorTransformationOutput[],
@@ -82,7 +68,7 @@ export class DestinationPostTransformationService {
       error: errObj.message || '[Processor Transform] Error occurred while processing the payload.',
       statTags: errObj.statTags,
     } as ProcessorTransformationResponse;
-    DestinationPostTransformationService.logError(
+    MiscService.logError(
       errObj.message || '[Processor Transform] Error occurred while processing the payload.',
       metaTo.errorDetails,
     );
@@ -117,10 +103,7 @@ export class DestinationPostTransformationService {
           ...resp.statTags,
           ...metaTo.errorDetails,
         };
-        DestinationPostTransformationService.logError(
-          resp.error || defaultErrorMessages.router,
-          metaTo.errorDetails,
-        );
+        MiscService.logError(resp.error || defaultErrorMessages.router, metaTo.errorDetails);
         stats.increment('event_transform_failure', metaTo.errorDetails);
       } else {
         stats.increment('event_transform_success', {
@@ -149,10 +132,7 @@ export class DestinationPostTransformationService {
       error: errObj.message || defaultErrorMessages.router,
       statTags: errObj.statTags,
     } as RouterTransformationResponse;
-    DestinationPostTransformationService.logError(
-      errObj.message || defaultErrorMessages.router,
-      metaTo.errorDetails,
-    );
+    MiscService.logError(errObj.message || defaultErrorMessages.router, metaTo.errorDetails);
     ErrorReportingService.reportError(error, metaTo.errorContext, resp);
     stats.increment('event_transform_failure', metaTo.errorDetails);
     return resp;
@@ -170,7 +150,7 @@ export class DestinationPostTransformationService {
       error: errObj.message || '[Batch Transform] Error occurred while processing payload.',
       statTags: errObj.statTags,
     } as RouterTransformationResponse;
-    DestinationPostTransformationService.logError(
+    MiscService.logError(
       errObj.message || '[Batch Transform] Error occurred while processing payload.',
       metaTo.errorDetails,
     );
@@ -192,10 +172,7 @@ export class DestinationPostTransformationService {
         authErrorCategory: errObj.authErrorCategory,
       }),
     } as DeliveryResponse;
-    DestinationPostTransformationService.logError(
-      errObj.message || defaultErrorMessages.delivery,
-      metaTo.errorDetails,
-    );
+    MiscService.logError(errObj.message || defaultErrorMessages.delivery, metaTo.errorDetails);
     ErrorReportingService.reportError(error, metaTo.errorContext, resp);
     return resp;
   }
@@ -207,7 +184,7 @@ export class DestinationPostTransformationService {
     const errObj = generateErrorObject(error, metaTo.errorDetails, false);
     const metadataArray = metaTo.metadatas;
     if (!Array.isArray(metadataArray)) {
-      DestinationPostTransformationService.logError(
+      MiscService.logError(
         'Proxy v1 endpoint error : metadataArray is not an array',
         metaTo.errorDetails,
       );
@@ -233,7 +210,7 @@ export class DestinationPostTransformationService {
       message: errObj.message.toString(),
       status: errObj.status,
     } as DeliveriesResponse;
-    DestinationPostTransformationService.logError(errObj.message, metaTo.errorDetails);
+    MiscService.logError(errObj.message, metaTo.errorDetails);
     ErrorReportingService.reportError(error, metaTo.errorContext, resp);
     return resp;
   }
@@ -251,7 +228,7 @@ export class DestinationPostTransformationService {
         authErrorCategory: errObj.authErrorCategory,
       }),
     } as UserDeletionResponse;
-    DestinationPostTransformationService.logError(errObj.message, metaTo.errorDetails);
+    MiscService.logError(errObj.message, metaTo.errorDetails);
     ErrorReportingService.reportError(error, metaTo.errorContext, resp);
     return resp;
   }

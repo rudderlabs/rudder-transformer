@@ -22,6 +22,7 @@ import tags from '../../v0/util/tags';
 import { DestinationPostTransformationService } from './postTransformation';
 import stats from '../../util/stats';
 import { CatchErr } from '../../util/types';
+import { MiscService } from '../misc';
 
 export class CDKV2DestinationService implements DestinationService {
   public init() {}
@@ -59,6 +60,17 @@ export class CDKV2DestinationService implements DestinationService {
     // TODO: Change the promise type
     const respList: ProcessorTransformationResponse[][] = await Promise.all(
       events.map(async (event) => {
+        const metaTo = this.getTags(
+          destinationType,
+          event.metadata.destinationId,
+          event.metadata.workspaceId,
+          tags.FEATURES.PROCESSOR,
+        );
+        metaTo.metadata = event.metadata;
+        const metadataWithSvcCtx = {
+          ...requestMetadata,
+          serviceContext: MiscService.getLoggableData(metaTo.errorDetails),
+        };
         try {
           const transformedPayloads:
             | ProcessorTransformationOutput
@@ -66,7 +78,7 @@ export class CDKV2DestinationService implements DestinationService {
             destinationType,
             event,
             tags.FEATURES.PROCESSOR,
-            requestMetadata,
+            metadataWithSvcCtx,
           );
 
           stats.increment('event_transform_success', {
@@ -85,13 +97,6 @@ export class CDKV2DestinationService implements DestinationService {
             undefined,
           );
         } catch (error: CatchErr) {
-          const metaTo = this.getTags(
-            destinationType,
-            event.metadata.destinationId,
-            event.metadata.workspaceId,
-            tags.FEATURES.PROCESSOR,
-          );
-          metaTo.metadata = event.metadata;
           const erroredResp =
             DestinationPostTransformationService.handleProcessorTransformFailureEvents(
               error,
@@ -127,13 +132,17 @@ export class CDKV2DestinationService implements DestinationService {
             tags.FEATURES.ROUTER,
           );
           metaTo.metadata = destInputArray[0].metadata;
+          const metadataWithSvcCtx = {
+            ...requestMetadata,
+            serviceContext: MiscService.getLoggableData(metaTo.errorDetails),
+          };
           try {
             const doRouterTransformationResponse: RouterTransformationResponse[] =
               await processCdkV2Workflow(
                 destinationType,
                 destInputArray,
                 tags.FEATURES.ROUTER,
-                requestMetadata,
+                metadataWithSvcCtx,
               );
             return DestinationPostTransformationService.handleRouterTransformSuccessEvents(
               doRouterTransformationResponse,

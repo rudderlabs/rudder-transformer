@@ -1,4 +1,4 @@
-import logger from '../logger';
+import logger from '../logger/structured-logger';
 import { RetryRequestError, RespStatusError, constructValidationErrors } from '../util/utils';
 import { getMetadata } from '../v0/util';
 import eventValidator from '../util/eventValidation';

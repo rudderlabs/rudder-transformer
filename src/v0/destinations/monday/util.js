@@ -194,6 +194,7 @@ const getBoardDetails = async (url, boardID, apiToken) => {
     {
       destType: 'monday',
       feature: 'transformation',
+      endpointPath: '/v2',
     },
   );
   const boardDetailsResponse = processAxiosResponse(clientResponse);

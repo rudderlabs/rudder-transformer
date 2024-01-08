@@ -20,6 +20,7 @@ const ReservedUserAttributes = [
   'firstname',
   'createdAt',
   'timestamp',
+  'lastSeenAt',
   'originalTimestamp',
   'unsubscribedFromEmails',
 ];

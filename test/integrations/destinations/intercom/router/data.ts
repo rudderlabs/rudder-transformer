@@ -22,6 +22,7 @@ export const data = [
                     lastName: 'Rudderlabs',
                     address: 'california usa',
                     ownerId: '13',
+                    lastSeenAt: '2023-11-10T14:42:44.724Z',
                   },
                 },
                 type: 'identify',
@@ -191,7 +192,7 @@ export const data = [
                   JSON: {
                     email: 'test@rudderlabs.com',
                     external_id: 'user@1',
-                    last_seen_at: 1700628164,
+                    last_seen_at: 1699627364,
                     name: 'Test Rudderlabs',
                     owner_id: 13,
                     phone: '+91 9999999999',

@@ -55,7 +55,7 @@ steps:
         email: {{{{$.getGenericPaths("email")}}}},
         phone: {{{{$.getGenericPaths("phone")}}}},
         avatar: {{{{$.getGenericPaths("avatar")}}}},
-        last_seen_at: $.toSeconds({{{{$.getGenericPaths("timestamp")}}}}),
+        last_seen_at: $.toSeconds(.context.traits.lastSeenAt),
         role: .traits.role || .context.traits.role,
         signed_up_at: $.toSeconds(.traits.createdAt || .context.traits.createdAt),
         owner_id: .traits.ownerId || .context.traits.ownerId ? Number(.traits.ownerId || .context.traits.ownerId) : undefined,

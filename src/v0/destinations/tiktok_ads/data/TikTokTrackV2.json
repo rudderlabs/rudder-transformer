@@ -14,11 +14,6 @@
     }
   },
   {
-    "destKey": "test_event_code",
-    "sourceKeys": "properties.testEventCode",
-    "required": false
-  },
-  {
     "destKey": "limited_data_use",
     "sourceKeys": "properties.limited_data_use",
     "required": false

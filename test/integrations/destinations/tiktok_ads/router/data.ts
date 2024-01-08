@@ -1085,7 +1085,7 @@ export const data = [
                 "params": {},
                 "body": {
                   "JSON": {
-                    "pixelCode": "dummyPixelCode",
+                    "event_source_id": "dummyPixelCode",
                     "event_source": "web",
                     "partner_name": "RudderStack",
                     "data": [

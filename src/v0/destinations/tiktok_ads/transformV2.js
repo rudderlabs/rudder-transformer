@@ -108,6 +108,7 @@ const trackResponseBuilder = async (message, { Config }) => {
     event_source: 'web',
     event_source_id: pixelCode,
     partner_name: PARTNER_NAME,
+    test_event_code: message.properties?.testEventCode,
   };
   response.body.JSON.data = responseList;
   return response;
@@ -148,7 +149,7 @@ const process = async (event) => {
  * inputEvent:
  *{
     event: {
-      pixelCode: "dummyPixelCode",
+      event_source_id: "dummyPixelCode",
       event_source: "web",
       partner_name: "RudderStack",
       data: [
@@ -259,7 +260,7 @@ const process = async (event) => {
   },
   body: {
     JSON: {
-      pixelCode: "A1T8T4UYGVIQA8ORZMX9",
+      event_source_id: "asdfg",
       event_source: "web",
       partner_name: "RudderStack",
       data: [
@@ -554,7 +555,7 @@ Returns
 [
   {
     event: {
-      pixelCode: "dummyPixelCode",
+      event_source_id: "dummyPixelCode",
       event_source: "web",
       partner_name: "RudderStack",
       data: [
@@ -663,8 +664,8 @@ const batchEvents = (eventsChunk, maxBatchSize) => {
     if (Array.isArray(eventData) && eventData?.length > maxBatchSize - data.length) {
       // Partner name must be added above "data": [..];
       events.push({
-        events: {
-          pixelCode,
+        event: {
+          event_source_id: pixelCode,
           event_source: 'web',
           partner_name: PARTNER_NAME,
           data: [...data],
@@ -681,7 +682,7 @@ const batchEvents = (eventsChunk, maxBatchSize) => {
   // Partner name must be added above "data": [..];
   events.push({
     event: {
-      pixelCode,
+      event_source_id: pixelCode,
       event_source: 'web',
       partner_name: PARTNER_NAME,
       data: [...data],

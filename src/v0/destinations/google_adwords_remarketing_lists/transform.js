@@ -15,6 +15,8 @@ const {
   getAccessToken,
 } = require('../../util');
 
+const { populateConsentForGoogleDestinations } = require('../../util/googleUtils');
+
 const {
   offlineDataJobsMapping,
   addressInfoMapping,
@@ -43,7 +45,7 @@ const hashEncrypt = (object) => {
  * @param {*} param2
  * @returns
  */
-const responseBuilder = (metadata, body, { Config }, message) => {
+const responseBuilder = (metadata, body, { Config }, message, consentBlock) => {
   const payload = body;
   const response = defaultRequestConfig();
   const filteredCustomerId = removeHyphens(Config.customerId);
@@ -62,7 +64,11 @@ const responseBuilder = (metadata, body, { Config }, message) => {
   if (!isDefinedAndNotNullAndNotEmpty(operationAudienceId)) {
     throw new ConfigurationError('List ID is a mandatory field');
   }
-  response.params = { listId: operationAudienceId, customerId: filteredCustomerId };
+  response.params = {
+    listId: operationAudienceId,
+    customerId: filteredCustomerId,
+    consent: consentBlock,
+  };
   response.headers = {
     Authorization: `Bearer ${accessToken}`,
     'Content-Type': JSON_MIME_TYPE,
@@ -212,7 +218,8 @@ const processEvent = async (metadata, message, destination) => {
     }
 
     Object.values(createdPayload).forEach((data) => {
-      response.push(responseBuilder(metadata, data, destination, message));
+      const consentObj = populateConsentForGoogleDestinations(message.properties);
+      response.push(responseBuilder(metadata, data, destination, message, consentObj));
     });
     return response;
   }

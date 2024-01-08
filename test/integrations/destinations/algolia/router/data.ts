@@ -17,10 +17,7 @@ export const data = [
                 userId: 'test-user-id1',
                 channel: 'web',
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -56,10 +53,7 @@ export const data = [
                     custom_date1: '2019-10-14T11:15:53.296Z',
                     custom_flavor: 'chocolate',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.2.1',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.2.1' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36',
@@ -71,27 +65,17 @@ export const data = [
                   index: 'products',
                   queryId: '43b15df305339e827f0ac0bdc5ebcaa7',
                   products: [
-                    {
-                      objectId: 'ecommerce-sample-data-919',
-                      position: 7,
-                    },
-                    {
-                      objectId: '9780439784542',
-                      position: 8,
-                    },
+                    { objectId: 'ecommerce-sample-data-919', position: 7 },
+                    { objectId: '9780439784542', position: 8 },
                   ],
                 },
                 receivedAt: '2021-10-25T15:10:08.889+05:30',
                 request_ip: '[::1]',
                 anonymousId: '7138f7d9-5dd2-4337-805d-ca17be59dc8e',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 originalTimestamp: '2021-10-25T09:40:08.879Z',
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               destination: {
                 ID: '1zzHtStW2ZPlullmz6L7DGnmk9V',
                 Name: 'algolia-dev',
@@ -100,9 +84,7 @@ export const data = [
                   Name: 'ALGOLIA',
                   DisplayName: 'Algolia',
                   Config: {
-                    destConfig: {
-                      defaultConfig: ['apiKey', 'applicationId', 'eventTypeSettings'],
-                    },
+                    destConfig: { defaultConfig: ['apiKey', 'applicationId', 'eventTypeSettings'] },
                     excludeKeys: [],
                     includeKeys: [],
                     saveDestinationResponse: true,
@@ -128,14 +110,8 @@ export const data = [
                   apiKey: 'apiKey',
                   applicationId: 'appId',
                   eventTypeSettings: [
-                    {
-                      from: 'product clicked',
-                      to: 'click',
-                    },
-                    {
-                      from: 'product list viewed',
-                      to: 'view',
-                    },
+                    { from: 'product clicked', to: 'click' },
+                    { from: 'product list viewed', to: 'view' },
                   ],
                 },
                 Enabled: true,
@@ -151,10 +127,7 @@ export const data = [
                 userId: 'test-user-id1',
                 channel: 'web',
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -190,10 +163,7 @@ export const data = [
                     custom_date1: '2019-10-14T11:15:53.296Z',
                     custom_flavor: 'chocolate',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.2.1',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.2.1' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36',
@@ -201,21 +171,14 @@ export const data = [
                 rudderId: 'e3e907f1-f79a-444b-b91d-da47488f8273',
                 messageId: '7b58e140-b66b-4e88-a5ec-bd6811fc3836',
                 timestamp: '2021-10-25T15:10:08.943+05:30',
-                properties: {
-                  index: 'products',
-                  filters: ['field1:hello', 'val1:val2'],
-                },
+                properties: { index: 'products', filters: ['field1:hello', 'val1:val2'] },
                 receivedAt: '2021-10-25T15:10:08.943+05:30',
                 request_ip: '[::1]',
                 anonymousId: '7138f7d9-5dd2-4337-805d-ca17be59dc8e',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 originalTimestamp: '2021-10-25T09:40:08.886Z',
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               destination: {
                 ID: '1zzHtStW2ZPlullmz6L7DGnmk9V',
                 Name: 'algolia-dev',
@@ -224,9 +187,7 @@ export const data = [
                   Name: 'ALGOLIA',
                   DisplayName: 'Algolia',
                   Config: {
-                    destConfig: {
-                      defaultConfig: ['apiKey', 'applicationId', 'eventTypeSettings'],
-                    },
+                    destConfig: { defaultConfig: ['apiKey', 'applicationId', 'eventTypeSettings'] },
                     excludeKeys: [],
                     includeKeys: [],
                     saveDestinationResponse: true,
@@ -252,14 +213,8 @@ export const data = [
                   apiKey: 'apiKey-2',
                   applicationId: 'appId-2',
                   eventTypeSettings: [
-                    {
-                      from: 'product clicked',
-                      to: 'click',
-                    },
-                    {
-                      from: 'product list viewed',
-                      to: 'view',
-                    },
+                    { from: 'product clicked', to: 'click' },
+                    { from: 'product list viewed', to: 'view' },
                   ],
                 },
                 Enabled: true,
@@ -277,26 +232,14 @@ export const data = [
                     namespace: 'com.rudderlabs.javascript',
                     version: '1.0.0',
                   },
-                  traits: {
-                    email: 'testone@gmail.com',
-                    firstName: 'test',
-                    lastName: 'one',
-                  },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  traits: { email: 'testone@gmail.com', firstName: 'test', lastName: 'one' },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-US',
                   ip: '0.0.0.0',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                   page: {
                     path: '/destinations/ometria',
                     referrer: '',
@@ -315,27 +258,16 @@ export const data = [
                 anonymousId: '123456',
                 event: 'product clicked',
                 userId: 'testuserId1',
-                properties: {
-                  filters: ['field1:hello', 'val1:val2'],
-                },
-                integrations: {
-                  All: true,
-                },
+                properties: { filters: ['field1:hello', 'val1:val2'] },
+                integrations: { All: true },
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
-              metadata: {
-                jobId: 3,
-              },
+              metadata: { jobId: 3, userId: 'u1' },
               destination: {
                 Config: {
                   apiKey: 'dummyApiKey',
                   applicationId: 'O2YARRI15I',
-                  eventTypeSettings: [
-                    {
-                      from: 'product clicked',
-                      to: 'cLick ',
-                    },
-                  ],
+                  eventTypeSettings: [{ from: 'product clicked', to: 'cLick ' }],
                 },
               },
             },
@@ -356,10 +288,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://insights.algolia.io/1/events',
-                headers: {
-                  'X-Algolia-Application-Id': 'appId',
-                  'X-Algolia-API-Key': 'apiKey',
-                },
+                headers: { 'X-Algolia-Application-Id': 'appId', 'X-Algolia-API-Key': 'apiKey' },
                 params: {},
                 body: {
                   JSON: {
@@ -388,12 +317,8 @@ export const data = [
                 files: {},
               },
               metadata: [
-                {
-                  jobId: 1,
-                },
-                {
-                  jobId: 2,
-                },
+                { jobId: 1, userId: 'u1' },
+                { jobId: 2, userId: 'u1' },
               ],
               batched: true,
               statusCode: 200,
@@ -405,9 +330,7 @@ export const data = [
                   Name: 'ALGOLIA',
                   DisplayName: 'Algolia',
                   Config: {
-                    destConfig: {
-                      defaultConfig: ['apiKey', 'applicationId', 'eventTypeSettings'],
-                    },
+                    destConfig: { defaultConfig: ['apiKey', 'applicationId', 'eventTypeSettings'] },
                     excludeKeys: [],
                     includeKeys: [],
                     saveDestinationResponse: true,
@@ -433,14 +356,8 @@ export const data = [
                   apiKey: 'apiKey',
                   applicationId: 'appId',
                   eventTypeSettings: [
-                    {
-                      from: 'product clicked',
-                      to: 'click',
-                    },
-                    {
-                      from: 'product list viewed',
-                      to: 'view',
-                    },
+                    { from: 'product clicked', to: 'click' },
+                    { from: 'product list viewed', to: 'view' },
                   ],
                 },
                 Enabled: true,
@@ -454,20 +371,11 @@ export const data = [
                 Config: {
                   apiKey: 'dummyApiKey',
                   applicationId: 'O2YARRI15I',
-                  eventTypeSettings: [
-                    {
-                      from: 'product clicked',
-                      to: 'cLick ',
-                    },
-                  ],
+                  eventTypeSettings: [{ from: 'product clicked', to: 'cLick ' }],
                 },
               },
               error: 'Missing required value from "properties.index"',
-              metadata: [
-                {
-                  jobId: 3,
-                },
-              ],
+              metadata: [{ jobId: 3, userId: 'u1' }],
               statTags: {
                 destType: 'ALGOLIA',
                 errorCategory: 'dataValidation',
@@ -501,10 +409,7 @@ export const data = [
                 userId: 'anonymous',
                 channel: 'web',
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     version: '2.35.0',
@@ -529,14 +434,8 @@ export const data = [
                     innerWidth: 2514,
                     innerHeight: 567,
                   },
-                  traits: {
-                    loggedIn: false,
-                    customerId: 'anonymous',
-                  },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '2.35.0',
-                  },
+                  traits: { loggedIn: false, customerId: 'anonymous' },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '2.35.0' },
                   campaign: {},
                   sessionId: 1687204412379,
                   userAgent:
@@ -2093,9 +1992,7 @@ export const data = [
                 receivedAt: '2023-06-19T22:22:32.431Z',
                 request_ip: '104.205.211.60',
                 anonymousId: '7b701174-5998-480e-a4df-b322d0ec9d1c',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 originalTimestamp: '2023-06-19T19:54:41.686Z',
               },
               destination: {
@@ -2104,35 +2001,17 @@ export const data = [
                   apiKey: 'apiKey',
                   applicationId: 'appId',
                   eventTypeSettings: [
-                    {
-                      from: 'productClicked',
-                      to: 'click',
-                    },
-                    {
-                      from: 'product list filtered',
-                      to: 'click',
-                    },
-                    {
-                      from: 'Product List Viewed',
-                      to: 'view',
-                    },
-                    {
-                      from: 'Order Completed',
-                      to: 'conversion',
-                    },
-                    {
-                      from: 'Product Added',
-                      to: 'click',
-                    },
+                    { from: 'productClicked', to: 'click' },
+                    { from: 'product list filtered', to: 'click' },
+                    { from: 'Product List Viewed', to: 'view' },
+                    { from: 'Order Completed', to: 'conversion' },
+                    { from: 'Product Added', to: 'click' },
                   ],
                   oneTrustCookieCategories: [],
                   eventDelivery: false,
                   eventDeliveryTS: 1687213909459,
                 },
-                liveEventsConfig: {
-                  eventDelivery: false,
-                  eventDeliveryTS: 1687213909459,
-                },
+                liveEventsConfig: { eventDelivery: false, eventDeliveryTS: 1687213909459 },
                 id: 'destId',
                 workspaceId: 'wspId',
                 DestinationDefinition: {
@@ -2192,6 +2071,7 @@ export const data = [
                 workspaceId: 'wspId',
                 destinationId: 'destId',
                 jobId: 12,
+                userId: 'u1',
               },
             },
           ],
@@ -2247,10 +2127,7 @@ export const data = [
                 },
                 endpoint: 'https://insights.algolia.io/1/events',
                 files: {},
-                headers: {
-                  'X-Algolia-API-Key': 'apiKey',
-                  'X-Algolia-Application-Id': 'appId',
-                },
+                headers: { 'X-Algolia-API-Key': 'apiKey', 'X-Algolia-Application-Id': 'appId' },
                 method: 'POST',
                 params: {},
                 type: 'REST',
@@ -2263,26 +2140,11 @@ export const data = [
                   eventDelivery: false,
                   eventDeliveryTS: 1687213909459,
                   eventTypeSettings: [
-                    {
-                      from: 'productClicked',
-                      to: 'click',
-                    },
-                    {
-                      from: 'product list filtered',
-                      to: 'click',
-                    },
-                    {
-                      from: 'Product List Viewed',
-                      to: 'view',
-                    },
-                    {
-                      from: 'Order Completed',
-                      to: 'conversion',
-                    },
-                    {
-                      from: 'Product Added',
-                      to: 'click',
-                    },
+                    { from: 'productClicked', to: 'click' },
+                    { from: 'product list filtered', to: 'click' },
+                    { from: 'Product List Viewed', to: 'view' },
+                    { from: 'Order Completed', to: 'conversion' },
+                    { from: 'Product Added', to: 'click' },
                   ],
                   oneTrustCookieCategories: [],
                 },
@@ -2333,10 +2195,7 @@ export const data = [
                 id: 'destId',
                 isConnectionEnabled: true,
                 isProcessorEnabled: true,
-                liveEventsConfig: {
-                  eventDelivery: false,
-                  eventDeliveryTS: 1687213909459,
-                },
+                liveEventsConfig: { eventDelivery: false, eventDeliveryTS: 1687213909459 },
                 name: 'my_algolia',
                 revisionId: 'revisionId1',
                 secretConfig: {},
@@ -2351,6 +2210,7 @@ export const data = [
                   workspaceId: 'wspId',
                   destinationId: 'destId',
                   jobId: 12,
+                  userId: 'u1',
                 },
               ],
               statusCode: 200,

@@ -69,7 +69,8 @@ export const data = [
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
               metadata: {
-                jobId: 5,
+                jobId: 1,
+                userId: 'u1',
               },
               destination: {
                 Config: {
@@ -136,7 +137,8 @@ export const data = [
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
               metadata: {
-                jobId: 1,
+                jobId: 2,
+                userId: 'u1',
               },
               destination: {
                 Config: {
@@ -206,7 +208,8 @@ export const data = [
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
               metadata: {
-                jobId: 2,
+                jobId: 3,
+                userId: 'u1',
               },
               destination: {
                 Config: {
@@ -277,6 +280,7 @@ export const data = [
               },
               metadata: {
                 jobId: 4,
+                userId: 'u1',
               },
               destination: {
                 Config: {
@@ -468,16 +472,20 @@ export const data = [
               },
               metadata: [
                 {
-                  jobId: 5,
-                },
-                {
                   jobId: 1,
+                  userId: 'u1',
                 },
                 {
                   jobId: 2,
+                  userId: 'u1',
+                },
+                {
+                  jobId: 3,
+                  userId: 'u1',
                 },
                 {
                   jobId: 4,
+                  userId: 'u1',
                 },
               ],
               batched: true,
@@ -558,6 +566,7 @@ export const data = [
               },
               metadata: {
                 jobId: 3,
+                userId: 'u1',
               },
               destination: {
                 Config: {
@@ -641,6 +650,7 @@ export const data = [
               metadata: [
                 {
                   jobId: 3,
+                  userId: 'u1',
                 },
               ],
               statusCode: 200,

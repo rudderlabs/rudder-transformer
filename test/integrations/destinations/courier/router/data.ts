@@ -15,28 +15,14 @@ export const data = [
                 channel: 'web',
                 event: 'Product Added',
                 userId: 'test123',
-                properties: {
-                  price: 999,
-                  quantity: 1,
-                },
-                context: {
-                  traits: {
-                    firstName: 'John',
-                    age: 27,
-                  },
-                },
+                properties: { price: 999, quantity: 1 },
+                context: { traits: { firstName: 'John', age: 27 } },
                 rudderId: '8f8fa6b5-8e24-489c-8e22-61f23f2e364f',
                 messageId: '2116ef8c-efc3-4ca4-851b-02ee60dad6ff',
                 anonymousId: '97c46c81-3140-456d-b2a9-690d70aaca35',
               },
-              destination: {
-                Config: {
-                  apiKey: 'dummyApiKey',
-                },
-              },
-              metadata: {
-                jobId: 1,
-              },
+              destination: { Config: { apiKey: 'dummyApiKey' } },
+              metadata: { jobId: 1, userId: 'u1' },
             },
             {
               message: {
@@ -59,9 +45,7 @@ export const data = [
                   trackNamedPages: true,
                 },
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
             },
           ],
           destType: 'courier',
@@ -92,16 +76,8 @@ export const data = [
                     channel: 'web',
                     event: 'Product Added',
                     userId: 'test123',
-                    properties: {
-                      price: 999,
-                      quantity: 1,
-                    },
-                    context: {
-                      traits: {
-                        firstName: 'John',
-                        age: 27,
-                      },
-                    },
+                    properties: { price: 999, quantity: 1 },
+                    context: { traits: { firstName: 'John', age: 27 } },
                     rudderId: '8f8fa6b5-8e24-489c-8e22-61f23f2e364f',
                     messageId: '2116ef8c-efc3-4ca4-851b-02ee60dad6ff',
                     anonymousId: '97c46c81-3140-456d-b2a9-690d70aaca35',
@@ -112,26 +88,14 @@ export const data = [
                 },
                 files: {},
               },
-              destination: {
-                Config: {
-                  apiKey: 'dummyApiKey',
-                },
-              },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              destination: { Config: { apiKey: 'dummyApiKey' } },
+              metadata: [{ jobId: 1, userId: 'u1' }],
               statusCode: 200,
             },
             {
               batched: false,
               error: 'apiKey is required',
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               statTags: {
                 destType: 'COURIER',
                 errorCategory: 'dataValidation',

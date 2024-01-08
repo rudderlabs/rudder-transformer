@@ -11,9 +11,7 @@ export const data = [
         body: {
           input: [
             {
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               message: {
                 anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                 channel: 'web',
@@ -24,74 +22,39 @@ export const data = [
                     model: 'Redmi 6',
                     name: 'xiaomi',
                   },
-                  network: {
-                    carrier: 'Banglalink',
-                  },
-                  os: {
-                    name: 'android',
-                    version: '8.1.0',
-                  },
-                  screen: {
-                    height: '100',
-                    density: 50,
-                  },
+                  network: { carrier: 'Banglalink' },
+                  os: { name: 'android', version: '8.1.0' },
+                  screen: { height: '100', density: 50 },
                   traits: {
                     email: '    aBc@gmail.com   ',
-                    address: {
-                      zip: 1234,
-                    },
+                    address: { zip: 1234 },
                     anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                   },
                 },
                 event: 'spin_result',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
-                properties: {
-                  revenue: 400,
-                  additional_bet_index: 0,
-                },
+                properties: { revenue: 400, additional_bet_index: 0 },
                 timestamp: '2023-11-12T15:46:51.693229+05:30',
                 type: 'track',
               },
               destination: {
                 Config: {
                   limitedDataUsage: true,
-                  blacklistPiiProperties: [
-                    {
-                      blacklistPiiProperties: '',
-                      blacklistPiiHash: false,
-                    },
-                  ],
+                  blacklistPiiProperties: [{ blacklistPiiProperties: '', blacklistPiiHash: false }],
                   accessToken: '09876',
                   datasetId: 'dummyID',
-                  eventsToEvents: [
-                    {
-                      from: '',
-                      to: '',
-                    },
-                  ],
-                  eventCustomProperties: [
-                    {
-                      eventCustomProperties: '',
-                    },
-                  ],
+                  eventsToEvents: [{ from: '', to: '' }],
+                  eventCustomProperties: [{ eventCustomProperties: '' }],
                   removeExternalId: true,
-                  whitelistPiiProperties: [
-                    {
-                      whitelistPiiProperties: '',
-                    },
-                  ],
+                  whitelistPiiProperties: [{ whitelistPiiProperties: '' }],
                   actionSource: 'website',
                 },
                 Enabled: true,
               },
             },
             {
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               message: {
                 anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                 channel: 'web',
@@ -102,65 +65,32 @@ export const data = [
                     model: 'Redmi 6',
                     name: 'xiaomi',
                   },
-                  network: {
-                    carrier: 'Banglalink',
-                  },
-                  os: {
-                    name: 'android',
-                    version: '8.1.0',
-                  },
-                  screen: {
-                    height: '100',
-                    density: 50,
-                  },
+                  network: { carrier: 'Banglalink' },
+                  os: { name: 'android', version: '8.1.0' },
+                  screen: { height: '100', density: 50 },
                   traits: {
                     email: '    aBc@gmail.com   ',
-                    address: {
-                      zip: 1234,
-                    },
+                    address: { zip: 1234 },
                     anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                   },
                 },
                 event: 'products searched',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
-                properties: {
-                  revenue: 400,
-                  additional_bet_index: 0,
-                },
+                properties: { revenue: 400, additional_bet_index: 0 },
                 timestamp: '2023-11-12T15:46:51.693229+05:30',
                 type: 'track',
               },
               destination: {
                 Config: {
                   limitedDataUsage: true,
-                  blacklistPiiProperties: [
-                    {
-                      blacklistPiiProperties: '',
-                      blacklistPiiHash: false,
-                    },
-                  ],
+                  blacklistPiiProperties: [{ blacklistPiiProperties: '', blacklistPiiHash: false }],
                   accessToken: '09876',
                   datasetId: 'dummyID',
-                  eventsToEvents: [
-                    {
-                      from: '',
-                      to: '',
-                    },
-                  ],
-                  eventCustomProperties: [
-                    {
-                      eventCustomProperties: '',
-                    },
-                  ],
+                  eventsToEvents: [{ from: '', to: '' }],
+                  eventCustomProperties: [{ eventCustomProperties: '' }],
                   removeExternalId: true,
-                  whitelistPiiProperties: [
-                    {
-                      whitelistPiiProperties: '',
-                    },
-                  ],
+                  whitelistPiiProperties: [{ whitelistPiiProperties: '' }],
                   actionSource: 'website',
                 },
                 Enabled: true,
@@ -197,41 +127,19 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
                 Config: {
                   limitedDataUsage: true,
-                  blacklistPiiProperties: [
-                    {
-                      blacklistPiiProperties: '',
-                      blacklistPiiHash: false,
-                    },
-                  ],
+                  blacklistPiiProperties: [{ blacklistPiiProperties: '', blacklistPiiHash: false }],
                   accessToken: '09876',
                   datasetId: 'dummyID',
-                  eventsToEvents: [
-                    {
-                      from: '',
-                      to: '',
-                    },
-                  ],
-                  eventCustomProperties: [
-                    {
-                      eventCustomProperties: '',
-                    },
-                  ],
+                  eventsToEvents: [{ from: '', to: '' }],
+                  eventCustomProperties: [{ eventCustomProperties: '' }],
                   removeExternalId: true,
-                  whitelistPiiProperties: [
-                    {
-                      whitelistPiiProperties: '',
-                    },
-                  ],
+                  whitelistPiiProperties: [{ whitelistPiiProperties: '' }],
                   actionSource: 'website',
                 },
                 Enabled: true,
@@ -257,41 +165,19 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
                 Config: {
                   limitedDataUsage: true,
-                  blacklistPiiProperties: [
-                    {
-                      blacklistPiiProperties: '',
-                      blacklistPiiHash: false,
-                    },
-                  ],
+                  blacklistPiiProperties: [{ blacklistPiiProperties: '', blacklistPiiHash: false }],
                   accessToken: '09876',
                   datasetId: 'dummyID',
-                  eventsToEvents: [
-                    {
-                      from: '',
-                      to: '',
-                    },
-                  ],
-                  eventCustomProperties: [
-                    {
-                      eventCustomProperties: '',
-                    },
-                  ],
+                  eventsToEvents: [{ from: '', to: '' }],
+                  eventCustomProperties: [{ eventCustomProperties: '' }],
                   removeExternalId: true,
-                  whitelistPiiProperties: [
-                    {
-                      whitelistPiiProperties: '',
-                    },
-                  ],
+                  whitelistPiiProperties: [{ whitelistPiiProperties: '' }],
                   actionSource: 'website',
                 },
                 Enabled: true,

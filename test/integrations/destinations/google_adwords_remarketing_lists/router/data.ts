@@ -17,6 +17,7 @@ export const data = [
                   developer_token: 'ijkl9101',
                 },
                 jobId: 1,
+                userId: 'u1',
               },
               destination: {
                 Config: {
@@ -50,12 +51,7 @@ export const data = [
                   },
                   enablePartialFailure: true,
                 },
-                context: {
-                  ip: '14.5.67.21',
-                  library: {
-                    name: 'http',
-                  },
-                },
+                context: { ip: '14.5.67.21', library: { name: 'http' } },
                 timestamp: '2020-02-02T00:23:09.544Z',
               },
             },
@@ -67,6 +63,7 @@ export const data = [
                   developer_token: 'ijkl9101',
                 },
                 jobId: 2,
+                userId: 'u1',
               },
               destination: {
                 Config: {
@@ -101,12 +98,7 @@ export const data = [
                   },
                   enablePartialFailure: true,
                 },
-                context: {
-                  ip: '14.5.67.21',
-                  library: {
-                    name: 'http',
-                  },
-                },
+                context: { ip: '14.5.67.21', library: { name: 'http' } },
                 timestamp: '2020-02-02T00:23:09.544Z',
               },
             },
@@ -118,6 +110,7 @@ export const data = [
                   developer_token: 'ijkl9101',
                 },
                 jobId: 3,
+                userId: 'u1',
               },
               destination: {
                 Config: {
@@ -151,12 +144,7 @@ export const data = [
                   },
                   enablePartialFailure: true,
                 },
-                context: {
-                  ip: '14.5.67.21',
-                  library: {
-                    name: 'http',
-                  },
-                },
+                context: { ip: '14.5.67.21', library: { name: 'http' } },
                 timestamp: '2020-02-02T00:23:09.544Z',
               },
             },
@@ -168,6 +156,7 @@ export const data = [
                   developer_token: 'ijkl9101',
                 },
                 jobId: 4,
+                userId: 'u1',
               },
               destination: {
                 Config: {
@@ -211,12 +200,7 @@ export const data = [
                   },
                   enablePartialFailure: true,
                 },
-                context: {
-                  ip: '14.5.67.21',
-                  library: {
-                    name: 'http',
-                  },
-                },
+                context: { ip: '14.5.67.21', library: { name: 'http' } },
                 timestamp: '2020-02-02T00:23:09.544Z',
               },
             },
@@ -290,6 +274,7 @@ export const data = [
                     developer_token: 'ijkl9101',
                   },
                   jobId: 1,
+                  userId: 'u1',
                 },
               ],
               batched: false,
@@ -325,15 +310,7 @@ export const data = [
                     JSON: {
                       enablePartialFailure: true,
                       operations: [
-                        {
-                          create: {
-                            userIdentifiers: [
-                              {
-                                thirdPartyUserId: 'useri1234',
-                              },
-                            ],
-                          },
-                        },
+                        { create: { userIdentifiers: [{ thirdPartyUserId: 'useri1234' }] } },
                       ],
                     },
                     JSON_ARRAY: {},
@@ -351,6 +328,7 @@ export const data = [
                     developer_token: 'ijkl9101',
                   },
                   jobId: 2,
+                  userId: 'u1',
                 },
               ],
               batched: false,
@@ -427,6 +405,7 @@ export const data = [
                     developer_token: 'ijkl9101',
                   },
                   jobId: 3,
+                  userId: 'u1',
                 },
               ],
               batched: false,
@@ -551,6 +530,7 @@ export const data = [
                     developer_token: 'ijkl9101',
                   },
                   jobId: 4,
+                  userId: 'u1',
                 },
               ],
               batched: false,

@@ -18,9 +18,7 @@ export const data = [
                   contactPropertiesMapping: [{ from: 'userCountry', to: 'country' }],
                 },
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               message: {
                 userId: 'user@45',
                 type: 'identify',
@@ -65,23 +63,14 @@ export const data = [
                   FORM: {},
                   JSON: {
                     Action: 'addnoforce',
-                    Contacts: [
-                      {
-                        email: 'test@user.com',
-                        properties: { country: 'india' },
-                      },
-                    ],
+                    Contacts: [{ email: 'test@user.com', properties: { country: 'india' } }],
                   },
                   JSON_ARRAY: {},
                   XML: {},
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               batched: true,
               statusCode: 200,
               destination: {
@@ -89,12 +78,7 @@ export const data = [
                   apiKey: 'dummyApiKey',
                   apiSecret: 'dummyApiSecret',
                   listId: '58578',
-                  contactPropertiesMapping: [
-                    {
-                      from: 'userCountry',
-                      to: 'country',
-                    },
-                  ],
+                  contactPropertiesMapping: [{ from: 'userCountry', to: 'country' }],
                 },
               },
             },

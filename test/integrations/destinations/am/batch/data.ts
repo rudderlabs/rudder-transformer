@@ -62,6 +62,7 @@ export const data = [
               },
               metadata: {
                 job_id: 1,
+                userId: 'u1',
               },
               destination: {
                 ID: 'a',
@@ -82,8 +83,10 @@ export const data = [
           {
             batched: false,
             error: 'Both userId and deviceId cannot be undefined',
+            //TODO fix this
             metadata: {
               job_id: 1,
+              userId: 'u1',
             },
             statTags: {
               errorCategory: 'dataValidation',
@@ -161,6 +164,7 @@ export const data = [
               },
               metadata: {
                 job_id: 1,
+                userId: 'u1',
               },
               destination: {
                 ID: 'a',
@@ -215,6 +219,7 @@ export const data = [
               },
               metadata: {
                 job_id: 2,
+                userId: 'u1',
               },
               destination: {
                 ID: 'a',
@@ -269,6 +274,7 @@ export const data = [
               },
               metadata: {
                 job_id: 3,
+                userId: 'u1',
               },
               destination: {
                 ID: 'a',
@@ -326,6 +332,7 @@ export const data = [
               },
               metadata: {
                 job_id: 4,
+                userId: 'u1',
               },
               destination: {
                 ID: 'a',
@@ -383,6 +390,7 @@ export const data = [
               },
               metadata: {
                 job_id: 5,
+                userId: 'u1',
               },
               destination: {
                 ID: 'a',
@@ -416,6 +424,7 @@ export const data = [
               },
               metadata: {
                 job_id: 6,
+                userId: 'u1',
               },
               destination: {
                 ID: 'a',
@@ -447,6 +456,7 @@ export const data = [
               },
               metadata: {
                 job_id: 7,
+                userId: 'u1',
               },
               destination: {
                 ID: 'a',
@@ -520,6 +530,7 @@ export const data = [
             metadata: [
               {
                 job_id: 1,
+                userId: 'u1',
               },
             ],
             destination: {
@@ -555,6 +566,7 @@ export const data = [
             metadata: [
               {
                 job_id: 6,
+                userId: 'u1',
               },
             ],
             destination: {
@@ -588,6 +600,7 @@ export const data = [
             metadata: [
               {
                 job_id: 7,
+                userId: 'u1',
               },
             ],
             destination: {
@@ -698,15 +711,19 @@ export const data = [
             metadata: [
               {
                 job_id: 2,
+                userId: 'u1',
               },
               {
                 job_id: 3,
+                userId: 'u1',
               },
               {
                 job_id: 4,
+                userId: 'u1',
               },
               {
                 job_id: 5,
+                userId: 'u1',
               },
             ],
             destination: {
@@ -785,6 +802,7 @@ export const data = [
               },
               metadata: {
                 job_id: 1,
+                userId: 'u1',
               },
               destination: {
                 ID: 'a',
@@ -837,6 +855,7 @@ export const data = [
               },
               metadata: {
                 job_id: 2,
+                userId: 'u1',
               },
               destination: {
                 ID: 'a',
@@ -889,6 +908,7 @@ export const data = [
               },
               metadata: {
                 job_id: 3,
+                userId: 'u1',
               },
               destination: {
                 ID: 'a',
@@ -944,6 +964,7 @@ export const data = [
               },
               metadata: {
                 job_id: 4,
+                userId: 'u1',
               },
               destination: {
                 ID: 'a',
@@ -999,6 +1020,7 @@ export const data = [
               },
               metadata: {
                 job_id: 5,
+                userId: 'u1',
               },
               destination: {
                 ID: 'a',
@@ -1032,6 +1054,7 @@ export const data = [
               },
               metadata: {
                 job_id: 6,
+                userId: 'u1',
               },
               destination: {
                 ID: 'a',
@@ -1063,6 +1086,7 @@ export const data = [
               },
               metadata: {
                 job_id: 7,
+                userId: 'u1',
               },
               destination: {
                 ID: 'a',
@@ -1134,6 +1158,7 @@ export const data = [
             metadata: [
               {
                 job_id: 1,
+                userId: 'u1',
               },
             ],
             destination: {
@@ -1169,6 +1194,7 @@ export const data = [
             metadata: [
               {
                 job_id: 6,
+                userId: 'u1',
               },
             ],
             destination: {
@@ -1202,6 +1228,7 @@ export const data = [
             metadata: [
               {
                 job_id: 7,
+                userId: 'u1',
               },
             ],
             destination: {
@@ -1312,15 +1339,19 @@ export const data = [
             metadata: [
               {
                 job_id: 2,
+                userId: 'u1',
               },
               {
                 job_id: 3,
+                userId: 'u1',
               },
               {
                 job_id: 4,
+                userId: 'u1',
               },
               {
                 job_id: 5,
+                userId: 'u1',
               },
             ],
             destination: {
@@ -2087,6 +2118,7 @@ export const data = [
               },
               metadata: {
                 job_id: 1,
+                userId: 'u1',
               },
               destination: {
                 ID: 'a',
@@ -2141,6 +2173,7 @@ export const data = [
               },
               metadata: {
                 job_id: 2,
+                userId: 'u1',
               },
               destination: {
                 ID: 'a',
@@ -2195,6 +2228,7 @@ export const data = [
               },
               metadata: {
                 job_id: 3,
+                userId: 'u1',
               },
               destination: {
                 ID: 'a',
@@ -2252,6 +2286,7 @@ export const data = [
               },
               metadata: {
                 job_id: 4,
+                userId: 'u1',
               },
               destination: {
                 ID: 'a',
@@ -2309,6 +2344,7 @@ export const data = [
               },
               metadata: {
                 job_id: 5,
+                userId: 'u1',
               },
               destination: {
                 ID: 'a',
@@ -2342,6 +2378,7 @@ export const data = [
               },
               metadata: {
                 job_id: 6,
+                userId: 'u1',
               },
               destination: {
                 ID: 'a',
@@ -2373,6 +2410,7 @@ export const data = [
               },
               metadata: {
                 job_id: 7,
+                userId: 'u1',
               },
               destination: {
                 ID: 'a',
@@ -2446,6 +2484,7 @@ export const data = [
             metadata: [
               {
                 job_id: 1,
+                userId: 'u1',
               },
             ],
             destination: {
@@ -2481,6 +2520,7 @@ export const data = [
             metadata: [
               {
                 job_id: 6,
+                userId: 'u1',
               },
             ],
             destination: {
@@ -2514,6 +2554,7 @@ export const data = [
             metadata: [
               {
                 job_id: 7,
+                userId: 'u1',
               },
             ],
             destination: {
@@ -2624,15 +2665,19 @@ export const data = [
             metadata: [
               {
                 job_id: 2,
+                userId: 'u1',
               },
               {
                 job_id: 3,
+                userId: 'u1',
               },
               {
                 job_id: 4,
+                userId: 'u1',
               },
               {
                 job_id: 5,
+                userId: 'u1',
               },
             ],
             destination: {
@@ -2712,6 +2757,7 @@ export const data = [
               },
               metadata: {
                 job_id: 1,
+                userId: 'u1',
               },
               destination: {
                 ID: 'a',
@@ -2766,6 +2812,7 @@ export const data = [
               },
               metadata: {
                 job_id: 2,
+                userId: 'u1',
               },
               destination: {
                 ID: 'a',
@@ -2820,6 +2867,7 @@ export const data = [
               },
               metadata: {
                 job_id: 3,
+                userId: 'u1',
               },
               destination: {
                 ID: 'a',
@@ -2877,6 +2925,7 @@ export const data = [
               },
               metadata: {
                 job_id: 4,
+                userId: 'u1',
               },
               destination: {
                 ID: 'a',
@@ -2934,6 +2983,7 @@ export const data = [
               },
               metadata: {
                 job_id: 5,
+                userId: 'u1',
               },
               destination: {
                 ID: 'a',
@@ -2967,6 +3017,7 @@ export const data = [
               },
               metadata: {
                 job_id: 6,
+                userId: 'u1',
               },
               destination: {
                 ID: 'a',
@@ -2998,6 +3049,7 @@ export const data = [
               },
               metadata: {
                 job_id: 7,
+                userId: 'u1',
               },
               destination: {
                 ID: 'a',
@@ -3070,6 +3122,7 @@ export const data = [
             metadata: [
               {
                 job_id: 1,
+                userId: 'u1',
               },
             ],
             destination: {
@@ -3105,6 +3158,7 @@ export const data = [
             metadata: [
               {
                 job_id: 6,
+                userId: 'u1',
               },
             ],
             destination: {
@@ -3138,6 +3192,7 @@ export const data = [
             metadata: [
               {
                 job_id: 7,
+                userId: 'u1',
               },
             ],
             destination: {
@@ -3248,15 +3303,19 @@ export const data = [
             metadata: [
               {
                 job_id: 2,
+                userId: 'u1',
               },
               {
                 job_id: 3,
+                userId: 'u1',
               },
               {
                 job_id: 4,
+                userId: 'u1',
               },
               {
                 job_id: 5,
+                userId: 'u1',
               },
             ],
             destination: {

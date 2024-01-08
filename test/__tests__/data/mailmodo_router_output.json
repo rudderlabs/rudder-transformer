@@ -38,10 +38,12 @@
     },
     "metadata": [
       {
-        "jobId": 2
+        "jobId": 2,
+        "userId": "u1"
       },
       {
-        "jobId": 4
+        "jobId": 4,
+        "userId": "u1"
       }
     ],
     "batched": true,
@@ -84,7 +86,8 @@
     },
     "metadata": [
       {
-        "jobId": 3
+        "jobId": 3,
+        "userId": "u1"
       }
     ],
     "batched": false,
@@ -102,7 +105,8 @@
     "error": "Missing required value from [\"traits.email\",\"context.traits.email\",\"properties.email\"]",
     "metadata": [
       {
-        "jobId": 5
+        "jobId": 5,
+        "userId": "u1"
       }
     ],
     "statTags": {

@@ -115,7 +115,8 @@
       "userId": "rudder123"
     },
     "metadata": {
-      "jobId": 1
+      "jobId": 1,
+      "userId": "u1"
     },
     "destination": {
       "ID": "1iuTZs6eEZVMm6GjRBe6bNShaL3",
@@ -199,7 +200,8 @@
       "userId": "rudder123"
     },
     "metadata": {
-      "jobId": 2
+      "jobId": 2,
+      "userId": "u1"
     },
     "destination": {
       "ID": "1iuTZs6eEZVMm6GjRBe6bNShaL3",

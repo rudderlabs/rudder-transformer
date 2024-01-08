@@ -7,6 +7,8 @@ const name = "Ometria";
 const version = "v0";
 
 const transformer = require(`../../src/${version}/destinations/${integration}/transform`);
+const { assertRouterOutput } = require('../testHelper');
+
 const inputDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}_input.json`)
 );
@@ -45,8 +47,7 @@ test("Batching", async () => {
   const batchInputData = JSON.parse(batchInputDataFile);
   const batchExpectedData = JSON.parse(batchOutputDataFile);
   const output = await transformer.processRouterDest(batchInputData);
-  // console.log(JSON.stringify(batchInputData));
-  // console.log(JSON.stringify(output));
+  assertRouterOutput(output, batchInputData);
   expect(Array.isArray(output)).toEqual(true);
   expect(output).toEqual(batchExpectedData);
 });

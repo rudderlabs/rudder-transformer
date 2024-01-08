@@ -6,6 +6,7 @@ const name = "SendGrid";
 const version = "v0";
 
 const transformer = require(`../../src/${version}/destinations/${integration}/transform`);
+const { assertRouterOutput } = require('../testHelper');
 
 const testDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}.json`)
@@ -42,6 +43,7 @@ describe(`${name} Tests`, () => {
     routerTestData.forEach(dataPoint => {
       it("SendGrid router test case", async () => {
         const output = await transformer.processRouterDest(dataPoint.input);
+        assertRouterOutput(output, dataPoint.input);
         expect(output).toEqual(dataPoint.output);
       });
     });
@@ -51,6 +53,7 @@ describe(`${name} Tests`, () => {
     batchData.forEach((dataPoint, index) => {
       it(`${index}. ${integration} - ${dataPoint.description}`, async () => {
         const output = await transformer.processRouterDest(dataPoint.input);
+        assertRouterOutput(output, dataPoint.input);
         expect(output).toEqual(dataPoint.output);
       });
     });

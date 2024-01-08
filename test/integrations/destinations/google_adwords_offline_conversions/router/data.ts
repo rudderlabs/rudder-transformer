@@ -41,21 +41,13 @@ export const data = [
                     postalCode: 'EC3M',
                     streetAddress: '71 Cherry Court SOUTHAMPTON SO53 5PD UK',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-US',
                   ip: '0.0.0.0',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                 },
                 event: 'Promotion Clicked',
                 type: 'track',
@@ -94,9 +86,7 @@ export const data = [
                   conversionValue: '1',
                   currency: 'GBP',
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 name: 'ApplicationLoaded',
                 sentAt: '2019-10-14T11:15:53.296Z',
               },
@@ -106,55 +96,26 @@ export const data = [
                   refresh_token: 'efgh5678',
                   developer_token: 'ijkl91011',
                 },
+                userId: 'u1',
               },
               destination: {
                 Config: {
                   customerId: '962-581-2972',
                   eventsToOfflineConversionsTypeMapping: [
-                    {
-                      from: 'Sign up completed',
-                      to: 'click',
-                    },
-                    {
-                      from: 'Download',
-                      to: 'call',
-                    },
-                    {
-                      from: 'Promotion Clicked',
-                      to: 'click',
-                    },
-                    {
-                      from: 'Product Searched',
-                      to: 'call',
-                    },
+                    { from: 'Sign up completed', to: 'click' },
+                    { from: 'Download', to: 'call' },
+                    { from: 'Promotion Clicked', to: 'click' },
+                    { from: 'Product Searched', to: 'call' },
                   ],
                   eventsToConversionsNamesMapping: [
-                    {
-                      from: 'Sign up completed',
-                      to: 'Sign-up - click',
-                    },
-                    {
-                      from: 'Download',
-                      to: 'Page view',
-                    },
-                    {
-                      from: 'Promotion Clicked',
-                      to: 'Sign-up - click',
-                    },
-                    {
-                      from: 'Product Searched',
-                      to: 'search',
-                    },
+                    { from: 'Sign up completed', to: 'Sign-up - click' },
+                    { from: 'Download', to: 'Page view' },
+                    { from: 'Promotion Clicked', to: 'Sign-up - click' },
+                    { from: 'Product Searched', to: 'search' },
                   ],
                   customVariables: [
-                    {
-                      from: 'value',
-                      to: 'revenue',
-                    },
-                    {
-                      from: 'total',
-                      to: 'cost',
-                    },
+                    { from: 'value', to: 'revenue' },
+                    { from: 'total', to: 'cost' },
                   ],
                   UserIdentifierSource: 'THIRD_PARTY',
                   conversionEnvironment: 'WEB',
@@ -195,21 +156,13 @@ export const data = [
                     postalCode: 'EC3M',
                     streetAddress: '71 Cherry Court SOUTHAMPTON SO53 5PD UK',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-US',
                   ip: '0.0.0.0',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                 },
                 event: 'Product Searched',
                 type: 'track',
@@ -240,19 +193,15 @@ export const data = [
                   userIdentifierSource: 'FIRST_PARTY',
                   conversionEnvironment: 'WEB',
                   gclid: 'gclid',
-
                   conversionCustomVariable: 'conversionCustomVariable',
                   value: 'value',
-
                   callerId: 'callerId',
                   callStartDateTime: '2022-08-28 15:01:30+05:30',
                   conversionDateTime: '2022-01-01 12:32:45-08:00',
                   conversionValue: '1',
                   currency: 'GBP',
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 name: 'ApplicationLoaded',
                 sentAt: '2019-10-14T11:15:53.296Z',
               },
@@ -262,55 +211,26 @@ export const data = [
                   refresh_token: 'efgh5678',
                   developer_token: 'ijkl91011',
                 },
+                userId: 'u1',
               },
               destination: {
                 Config: {
                   customerId: '962-581-2972',
                   eventsToOfflineConversionsTypeMapping: [
-                    {
-                      from: 'Sign up completed',
-                      to: 'click',
-                    },
-                    {
-                      from: 'Download',
-                      to: 'call',
-                    },
-                    {
-                      from: 'Promotion Clicked',
-                      to: 'click',
-                    },
-                    {
-                      from: 'Product Searched',
-                      to: 'call',
-                    },
+                    { from: 'Sign up completed', to: 'click' },
+                    { from: 'Download', to: 'call' },
+                    { from: 'Promotion Clicked', to: 'click' },
+                    { from: 'Product Searched', to: 'call' },
                   ],
                   eventsToConversionsNamesMapping: [
-                    {
-                      from: 'Sign up completed',
-                      to: 'Sign-up - click',
-                    },
-                    {
-                      from: 'Download',
-                      to: 'Page view',
-                    },
-                    {
-                      from: 'Promotion Clicked',
-                      to: 'Sign-up - click',
-                    },
-                    {
-                      from: 'Product Searched',
-                      to: 'search',
-                    },
+                    { from: 'Sign up completed', to: 'Sign-up - click' },
+                    { from: 'Download', to: 'Page view' },
+                    { from: 'Promotion Clicked', to: 'Sign-up - click' },
+                    { from: 'Product Searched', to: 'search' },
                   ],
                   customVariables: [
-                    {
-                      from: 'value',
-                      to: 'revenue',
-                    },
-                    {
-                      from: 'total',
-                      to: 'cost',
-                    },
+                    { from: 'value', to: 'revenue' },
+                    { from: 'total', to: 'cost' },
                   ],
                   UserIdentifierSource: 'THIRD_PARTY',
                   conversionEnvironment: 'WEB',
@@ -324,11 +244,7 @@ export const data = [
             {
               message: {
                 channel: 'web',
-                context: {
-                  traits: {
-                    firstName: 'John',
-                  },
-                },
+                context: { traits: { firstName: 'John' } },
                 event: 'Product Clicked',
                 type: 'track',
                 messageId: '5e10d13a-bf9a-44bf-b884-43a9e591ea71',
@@ -348,9 +264,7 @@ export const data = [
                   callerId: '1234',
                   callStartDateTime: '2019-10-14T11:15:18.299Z',
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 name: 'ApplicationLoaded',
                 sentAt: '2019-10-14T11:15:53.296Z',
               },
@@ -361,6 +275,7 @@ export const data = [
                   developer_token: 'ijkl91011',
                 },
                 jobId: 1,
+                userId: 'u1',
               },
               destination: {
                 Config: {
@@ -405,11 +320,7 @@ export const data = [
             {
               message: {
                 channel: 'web',
-                context: {
-                  traits: {
-                    firstName: 'John',
-                  },
-                },
+                context: { traits: { firstName: 'John' } },
                 event: 'Order Completed',
                 type: 'track',
                 messageId: '5e10d13a-bf9a-44bf-b884-43a9e591ea71',
@@ -429,9 +340,7 @@ export const data = [
                   callerId: '1234',
                   callStartDateTime: '2019-10-14T11:15:18.299Z',
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 name: 'ApplicationLoaded',
                 sentAt: '2019-10-14T11:15:53.296Z',
               },
@@ -442,6 +351,7 @@ export const data = [
                   developer_token: 'ijkl91011',
                 },
                 jobId: 2,
+                userId: 'u1',
               },
               destination: {
                 Config: {
@@ -486,11 +396,7 @@ export const data = [
             {
               message: {
                 channel: 'web',
-                context: {
-                  traits: {
-                    firstName: 'John',
-                  },
-                },
+                context: { traits: { firstName: 'John' } },
                 event: 'Order Completed',
                 type: 'track',
                 messageId: '5e10d13a-bf9a-44bf-b884-43a9e591ea71',
@@ -510,9 +416,7 @@ export const data = [
                   callerId: '1234',
                   callStartDateTime: '2019-10-14T11:15:18.299Z',
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 name: 'ApplicationLoaded',
                 sentAt: '2019-10-14T11:15:53.296Z',
               },
@@ -523,6 +427,7 @@ export const data = [
                   developer_token: 'ijkl91011',
                 },
                 jobId: 3,
+                userId: 'u1',
               },
               destination: {
                 Config: {
@@ -656,6 +561,7 @@ export const data = [
                     developer_token: 'ijkl91011',
                   },
                   jobId: 1,
+                  userId: 'u1',
                 },
                 {
                   secret: {
@@ -664,6 +570,7 @@ export const data = [
                     developer_token: 'ijkl91011',
                   },
                   jobId: 2,
+                  userId: 'u1',
                 },
               ],
               batched: true,
@@ -807,6 +714,7 @@ export const data = [
                     refresh_token: 'efgh5678',
                     developer_token: 'ijkl91011',
                   },
+                  userId: 'u1',
                 },
               ],
               batched: false,
@@ -916,6 +824,7 @@ export const data = [
                     refresh_token: 'efgh5678',
                     developer_token: 'ijkl91011',
                   },
+                  userId: 'u1',
                 },
               ],
               batched: false,
@@ -1005,6 +914,7 @@ export const data = [
                     developer_token: 'ijkl91011',
                   },
                   jobId: 2,
+                  userId: 'u1',
                 },
               ],
               batched: false,
@@ -1058,6 +968,7 @@ export const data = [
                     developer_token: 'ijkl91011',
                   },
                   jobId: 3,
+                  userId: 'u1',
                 },
               ],
               batched: false,

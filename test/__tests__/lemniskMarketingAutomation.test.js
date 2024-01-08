@@ -6,6 +6,7 @@ const fs = require("fs");
 const path = require("path");
 
 const transformer = require(`../../src/${version}/destinations/${integration}/transform`);
+const { assertRouterOutput } = require('../testHelper');
 
 // Processor Test Data
 const testDataFile = fs.readFileSync(
@@ -37,6 +38,7 @@ describe(`${name} Tests`, () => {
     routerTestData.forEach(dataPoint => {
       it("Payload", async () => {
         const output = await transformer.processRouterDest(dataPoint.input);
+        assertRouterOutput(output, dataPoint.input);
         expect(output).toEqual(dataPoint.output);
       });
     });

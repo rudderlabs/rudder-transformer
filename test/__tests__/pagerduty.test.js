@@ -6,6 +6,7 @@ const name = "PagerDuty";
 const version = "v0";
 
 const transformer = require(`../../src/${version}/destinations/${integration}/transform`);
+const { assertRouterOutput } = require('../testHelper');
 
 const testDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}.json`)
@@ -36,6 +37,7 @@ describe(`${name} Tests`, () => {
     routerTestData.forEach(dataPoint => {
       it("Payload", async () => {
         const output = await transformer.processRouterDest(dataPoint.input);
+        assertRouterOutput(output, dataPoint.input);
         expect(output).toEqual(dataPoint.output);
       });
     });

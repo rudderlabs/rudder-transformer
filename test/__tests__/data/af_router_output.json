@@ -29,7 +29,8 @@
     },
     "metadata": [
       {
-        "jobId": 1
+        "jobId": 1,
+        "userId": "u1"
       }
     ],
     "batched": false,
@@ -72,7 +73,8 @@
     },
     "metadata": [
       {
-        "jobId": 2
+        "jobId": 2,
+        "userId": "u1"
       }
     ],
     "batched": false,
@@ -116,7 +118,8 @@
     },
     "metadata": [
       {
-        "jobId": 3
+        "jobId": 3,
+        "userId": "u1"
       }
     ],
     "batched": false,

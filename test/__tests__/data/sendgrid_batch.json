@@ -72,7 +72,8 @@
           }
         },
         "metadata": {
-          "jobId": 1
+          "jobId": 1,
+          "userId": "u1"
         }
       },
       {
@@ -145,7 +146,8 @@
           }
         },
         "metadata": {
-          "jobId": 2
+          "jobId": 2,
+          "userId": "u1"
         }
       },
       {
@@ -219,7 +221,8 @@
           }
         },
         "metadata": {
-          "jobId": 3
+          "jobId": 3,
+          "userId": "u1"
         }
       },
       {
@@ -294,7 +297,8 @@
           }
         },
         "metadata": {
-          "jobId": 4
+          "jobId": 4,
+          "userId": "u1"
         }
       },
       {
@@ -360,7 +364,8 @@
           }
         },
         "metadata": {
-          "jobId": 5
+          "jobId": 5,
+          "userId": "u1"
         }
       },
       {
@@ -437,7 +442,8 @@
           }
         },
         "metadata": {
-          "jobId": 6
+          "jobId": 6,
+          "userId": "u1"
         }
       }
     ],
@@ -473,7 +479,7 @@
           },
           "files": {}
         },
-        "metadata": [{ "jobId": 1 }],
+        "metadata": [{ "jobId": 1, "userId": "u1" }],
         "batched": true,
         "statusCode": 200,
         "destination": {
@@ -553,7 +559,7 @@
           },
           "files": {}
         },
-        "metadata": [{ "jobId": 2 }],
+        "metadata": [{ "jobId": 2, "userId": "u1" }],
         "batched": true,
         "statusCode": 200,
         "destination": {
@@ -636,7 +642,7 @@
           },
           "files": {}
         },
-        "metadata": [{ "jobId": 3 }],
+        "metadata": [{ "jobId": 3, "userId": "u1" }],
         "batched": true,
         "statusCode": 200,
         "destination": {
@@ -720,7 +726,7 @@
           },
           "files": {}
         },
-        "metadata": [{ "jobId": 4 }],
+        "metadata": [{ "jobId": 4, "userId": "u1" }],
         "batched": true,
         "statusCode": 200,
         "destination": {
@@ -800,7 +806,7 @@
           },
           "files": {}
         },
-        "metadata": [{ "jobId": 5 }],
+        "metadata": [{ "jobId": 5, "userId": "u1" }],
         "batched": true,
         "statusCode": 200,
         "destination": {
@@ -886,7 +892,7 @@
           },
           "files": {}
         },
-        "metadata": [{ "jobId": 6 }],
+        "metadata": [{ "jobId": 6, "userId": "u1" }],
         "batched": true,
         "statusCode": 200,
         "destination": {

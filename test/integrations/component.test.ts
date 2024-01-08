@@ -20,7 +20,7 @@ import {
 import tags from '../../src/v0/util/tags';
 import { Server } from 'http';
 import { appendFileSync } from 'fs';
-import { responses } from '../testHelper';
+import { assertRouterOutput, responses } from '../testHelper';
 
 // To run single destination test cases
 // npm run test:ts -- component  --destination=adobe_analytics
@@ -122,6 +122,21 @@ const testRoute = async (route, tcData: TestCaseData) => {
     .query(params || {})
     .send(body);
   const outputResp = tcData.output.response || ({} as any);
+
+  if (tcData.feature === tags.FEATURES.BATCH || tcData.feature === tags.FEATURES.ROUTER) {
+    //TODO get rid of these skipped destinations after they are fixed
+    if (
+      tcData.name != 'marketo_static_list' &&
+      tcData.name != 'mailmodo' &&
+      tcData.name != 'hs' &&
+      tcData.name != 'iterable' &&
+      tcData.name != 'klaviyo' &&
+      tcData.name != 'google_adwords_offline_conversions'
+    ) {
+      assertRouterOutput(response.body.output, tcData.input.request.body.input);
+    }
+  }
+
   expect(response.status).toEqual(outputResp.status);
 
   if (outputResp?.body) {

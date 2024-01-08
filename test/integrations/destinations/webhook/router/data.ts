@@ -19,25 +19,15 @@ export const data = [
                     model: 'Redmi 6',
                     name: 'xiaomi',
                   },
-                  network: {
-                    carrier: 'Banglalink',
-                  },
-                  os: {
-                    name: 'android',
-                    version: '8.1.0',
-                  },
+                  network: { carrier: 'Banglalink' },
+                  os: { name: 'android', version: '8.1.0' },
                   traits: {
-                    address: {
-                      city: 'Dhaka',
-                      country: 'Bangladesh',
-                    },
+                    address: { city: 'Dhaka', country: 'Bangladesh' },
                     anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                   },
                 },
                 event: 'spin_result',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
                 properties: {
                   additional_bet_index: 0,
@@ -100,28 +90,16 @@ export const data = [
                   versionSessionCount: 2,
                 },
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               destination: {
                 Config: {
                   webhookUrl: 'http://6b0e6a60.ngrok.io',
                   headers: [
-                    {
-                      from: '',
-                      to: '',
-                    },
-                    {
-                      from: 'test2',
-                      to: 'value2',
-                    },
+                    { from: '', to: '' },
+                    { from: 'test2', to: 'value2' },
                   ],
                 },
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
               },
             },
             {
@@ -134,25 +112,15 @@ export const data = [
                     model: 'Redmi 6',
                     name: 'xiaomi',
                   },
-                  network: {
-                    carrier: 'Banglalink',
-                  },
-                  os: {
-                    name: 'android',
-                    version: '8.1.0',
-                  },
+                  network: { carrier: 'Banglalink' },
+                  os: { name: 'android', version: '8.1.0' },
                   traits: {
-                    address: {
-                      city: 'Dhaka',
-                      country: 'Bangladesh',
-                    },
+                    address: { city: 'Dhaka', country: 'Bangladesh' },
                     anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                   },
                 },
                 event: 'spin_result',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
                 properties: {
                   additional_bet_index: 0,
@@ -215,18 +183,10 @@ export const data = [
                   versionSessionCount: 2,
                 },
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 3, userId: 'u1' },
               destination: {
-                Config: {
-                  webhookUrl: 'https://6b0e6a60.ngrok.io/n',
-                },
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
+                Config: { webhookUrl: 'https://6b0e6a60.ngrok.io/n' },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
               },
             },
           ],
@@ -267,9 +227,7 @@ export const data = [
                       versionSessionCount: 2,
                       game_name: 'FireEagleSlots',
                     },
-                    integrations: {
-                      All: true,
-                    },
+                    integrations: { All: true },
                     event: 'spin_result',
                     message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
                     anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
@@ -282,18 +240,10 @@ export const data = [
                       },
                       traits: {
                         anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-                        address: {
-                          city: 'Dhaka',
-                          country: 'Bangladesh',
-                        },
+                        address: { city: 'Dhaka', country: 'Bangladesh' },
                       },
-                      os: {
-                        version: '8.1.0',
-                        name: 'android',
-                      },
-                      network: {
-                        carrier: 'Banglalink',
-                      },
+                      os: { version: '8.1.0', name: 'android' },
+                      network: { carrier: 'Banglalink' },
                     },
                     type: 'track',
                     properties: {
@@ -340,41 +290,24 @@ export const data = [
                 files: {},
                 endpoint: 'http://6b0e6a60.ngrok.io',
                 userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-                headers: {
-                  'content-type': 'application/json',
-                  test2: 'value2',
-                },
+                headers: { 'content-type': 'application/json', test2: 'value2' },
                 version: '1',
                 params: {},
                 type: 'REST',
                 method: 'POST',
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
                 Config: {
                   webhookUrl: 'http://6b0e6a60.ngrok.io',
                   headers: [
-                    {
-                      from: '',
-                      to: '',
-                    },
-                    {
-                      from: 'test2',
-                      to: 'value2',
-                    },
+                    { from: '', to: '' },
+                    { from: 'test2', to: 'value2' },
                   ],
                 },
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
               },
             },
             {
@@ -404,9 +337,7 @@ export const data = [
                       versionSessionCount: 2,
                       game_name: 'FireEagleSlots',
                     },
-                    integrations: {
-                      All: true,
-                    },
+                    integrations: { All: true },
                     event: 'spin_result',
                     message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
                     anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
@@ -419,18 +350,10 @@ export const data = [
                       },
                       traits: {
                         anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-                        address: {
-                          city: 'Dhaka',
-                          country: 'Bangladesh',
-                        },
+                        address: { city: 'Dhaka', country: 'Bangladesh' },
                       },
-                      os: {
-                        version: '8.1.0',
-                        name: 'android',
-                      },
-                      network: {
-                        carrier: 'Banglalink',
-                      },
+                      os: { version: '8.1.0', name: 'android' },
+                      network: { carrier: 'Banglalink' },
                     },
                     type: 'track',
                     properties: {
@@ -477,30 +400,18 @@ export const data = [
                 files: {},
                 endpoint: 'https://6b0e6a60.ngrok.io/n',
                 userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-                headers: {
-                  'content-type': 'application/json',
-                },
+                headers: { 'content-type': 'application/json' },
                 version: '1',
                 params: {},
                 type: 'REST',
                 method: 'POST',
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 3, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
-                Config: {
-                  webhookUrl: 'https://6b0e6a60.ngrok.io/n',
-                },
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
+                Config: { webhookUrl: 'https://6b0e6a60.ngrok.io/n' },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
               },
             },
           ],

@@ -10,14 +10,8 @@ export const data = [
         body: {
           input: [
             {
-              destination: {
-                Config: {
-                  privateApiKey: '9270161a8e5abaa0e56efddfd9dbcb62',
-                },
-              },
-              metadata: {
-                jobId: 2,
-              },
+              destination: { Config: { privateApiKey: '9270161a8e5abaa0e56efddfd9dbcb62' } },
+              metadata: { jobId: 2, userId: 'u1' },
               message: {
                 channel: 'web',
                 context: {
@@ -92,18 +86,10 @@ export const data = [
                 version: '1',
                 endpoint: 'https://api.profitwell.com/v2/subscriptions/',
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
-              destination: {
-                Config: {
-                  privateApiKey: '9270161a8e5abaa0e56efddfd9dbcb62',
-                },
-              },
+              destination: { Config: { privateApiKey: '9270161a8e5abaa0e56efddfd9dbcb62' } },
             },
           ],
         },

@@ -11,7 +11,8 @@
           }
         },
         "metadata": {
-          "jobId": 1
+          "jobId": 1,
+          "userId": "u1"
         },
         "message": {
           "userId": "user@45",
@@ -62,7 +63,8 @@
         },
         "metadata": [
           {
-            "jobId": 1
+            "jobId": 1,
+            "userId": "u1"
           }
         ],
         "batched": true,

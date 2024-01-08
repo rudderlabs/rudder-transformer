@@ -44,7 +44,8 @@
       }
     },
     "metadata": {
-      "jobId": 1
+      "jobId": 1,
+      "userId": "u1"
     },
     "destination": {
       "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
@@ -122,7 +123,8 @@
       }
     },
     "metadata": {
-      "jobId": 2
+      "jobId": 2,
+      "userId": "u1"
     },
     "destination": {
       "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",

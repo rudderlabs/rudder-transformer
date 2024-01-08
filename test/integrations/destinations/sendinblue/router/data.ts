@@ -18,18 +18,8 @@ export const data = [
                 properties: {
                   orderId: '1341394-3812392190',
                   products: [
-                    {
-                      product_id: 1234,
-                      product_name: 'Track Pants',
-                      amount: 1,
-                      price: 220,
-                    },
-                    {
-                      product_id: 5768,
-                      product_name: 'T-Shirt',
-                      amount: 5,
-                      price: 1058,
-                    },
+                    { product_id: 1234, product_name: 'Track Pants', amount: 1, price: 220 },
+                    { product_id: 5768, product_name: 'T-Shirt', amount: 5, price: 1058 },
                   ],
                 },
                 context: {
@@ -48,20 +38,13 @@ export const data = [
                 anonymousId: '97c46c81-3140-456d-b2a9-690d70aaca35',
                 originalTimestamp: '2021-01-03T17:02:53.193Z',
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               destination: {
                 Config: {
                   apiKey: 'apiKey123',
                   clientKey: 'clientKey123',
                   doi: false,
-                  contactAttributeMapping: [
-                    {
-                      from: 'location',
-                      to: 'LOCATION',
-                    },
-                  ],
+                  contactAttributeMapping: [{ from: 'location', to: 'LOCATION' }],
                   sendTraitsInTrack: true,
                 },
               },
@@ -72,14 +55,9 @@ export const data = [
                 sentAt: '2021-01-03T17:02:53.195Z',
                 channel: 'web',
                 name: 'New Page',
-                properties: {
-                  url: 'https://www.google.com/',
-                  title: 'Google home',
-                },
+                properties: { url: 'https://www.google.com/', title: 'Google home' },
                 context: {
-                  traits: {
-                    email: 'john_doe@example.com',
-                  },
+                  traits: { email: 'john_doe@example.com' },
                   page: {
                     url: 'http://127.0.0.1:7307/Testing/test/ourSdk.html',
                     path: '/Testing/test/ourSdk.html',
@@ -97,9 +75,7 @@ export const data = [
                 anonymousId: '97c46c81-3140-456d-b2a9-690d70aaca35',
                 originalTimestamp: '2021-01-03T17:02:53.193Z',
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               destination: {
                 Config: {
                   apiKey: 'apiKey123',
@@ -125,39 +101,20 @@ export const data = [
                   newEmail: 'alex_root@example.com',
                   role: 'SDE',
                 },
-                context: {
-                  externalId: [
-                    {
-                      type: 'sendinblueIncludeListIds',
-                      id: [1, 2],
-                    },
-                  ],
-                },
-                integrations: {
-                  All: true,
-                  sendinblue: {
-                    emailBlacklisted: true,
-                  },
-                },
+                context: { externalId: [{ type: 'sendinblueIncludeListIds', id: [1, 2] }] },
+                integrations: { All: true, sendinblue: { emailBlacklisted: true } },
                 rudderId: '8f8fa6b5-8e24-489c-8e22-61f23f2e364f',
                 messageId: '2116ef8c-efc3-4ca4-851b-02ee60dad6ff',
                 anonymousId: '97c46c81-3140-456d-b2a9-690d70aaca35',
                 originalTimestamp: '2021-01-03T17:02:53.193Z',
               },
-              metadata: {
-                jobId: 3,
-              },
+              metadata: { jobId: 3, userId: 'u1' },
               destination: {
                 Config: {
                   apiKey: 'apiKey123',
                   clientKey: 'clientKey123',
                   doi: false,
-                  contactAttributeMapping: [
-                    {
-                      from: 'location',
-                      to: 'LOCATION',
-                    },
-                  ],
+                  contactAttributeMapping: [{ from: 'location', to: 'LOCATION' }],
                 },
               },
             },
@@ -181,9 +138,7 @@ export const data = [
                 anonymousId: '97c46c81-3140-456d-b2a9-690d70aaca35',
                 originalTimestamp: '2021-01-03T17:02:53.193Z',
               },
-              metadata: {
-                jobId: 4,
-              },
+              metadata: { jobId: 4, userId: 'u1' },
               destination: {
                 Config: {
                   apiKey: 'apiKey123',
@@ -216,18 +171,8 @@ export const data = [
                       data: {
                         orderId: '1341394-3812392190',
                         products: [
-                          {
-                            amount: 1,
-                            price: 220,
-                            product_id: 1234,
-                            product_name: 'Track Pants',
-                          },
-                          {
-                            amount: 5,
-                            price: 1058,
-                            product_id: 5768,
-                            product_name: 'T-Shirt',
-                          },
+                          { amount: 1, price: 220, product_id: 1234, product_name: 'Track Pants' },
+                          { amount: 5, price: 1058, product_id: 5768, product_name: 'T-Shirt' },
                         ],
                       },
                       id: '2116ef8c-efc3-4ca4-851b-02ee60dad6ff',
@@ -246,10 +191,7 @@ export const data = [
                 },
                 endpoint: 'https://in-automate.sendinblue.com/api/v2/trackEvent',
                 files: {},
-                headers: {
-                  'Content-Type': 'application/json',
-                  'ma-key': 'clientKey123',
-                },
+                headers: { 'Content-Type': 'application/json', 'ma-key': 'clientKey123' },
                 method: 'POST',
                 params: {},
                 type: 'REST',
@@ -259,21 +201,12 @@ export const data = [
                 Config: {
                   apiKey: 'apiKey123',
                   clientKey: 'clientKey123',
-                  contactAttributeMapping: [
-                    {
-                      from: 'location',
-                      to: 'LOCATION',
-                    },
-                  ],
+                  contactAttributeMapping: [{ from: 'location', to: 'LOCATION' }],
                   doi: false,
                   sendTraitsInTrack: true,
                 },
               },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               statusCode: 200,
             },
             {
@@ -296,10 +229,7 @@ export const data = [
                 },
                 endpoint: 'https://in-automate.sendinblue.com/api/v2/trackPage',
                 files: {},
-                headers: {
-                  'Content-Type': 'application/json',
-                  'ma-key': 'clientKey123',
-                },
+                headers: { 'Content-Type': 'application/json', 'ma-key': 'clientKey123' },
                 method: 'POST',
                 params: {},
                 type: 'REST',
@@ -314,11 +244,7 @@ export const data = [
                   templateId: 3,
                 },
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               statusCode: 200,
             },
             {
@@ -346,10 +272,7 @@ export const data = [
                 },
                 endpoint: 'https://api.sendinblue.com/v3/contacts',
                 files: {},
-                headers: {
-                  'Content-Type': 'application/json',
-                  'api-key': 'apiKey123',
-                },
+                headers: { 'Content-Type': 'application/json', 'api-key': 'apiKey123' },
                 method: 'POST',
                 params: {},
                 type: 'REST',
@@ -359,30 +282,17 @@ export const data = [
                 Config: {
                   apiKey: 'apiKey123',
                   clientKey: 'clientKey123',
-                  contactAttributeMapping: [
-                    {
-                      from: 'location',
-                      to: 'LOCATION',
-                    },
-                  ],
+                  contactAttributeMapping: [{ from: 'location', to: 'LOCATION' }],
                   doi: false,
                 },
               },
-              metadata: [
-                {
-                  jobId: 3,
-                },
-              ],
+              metadata: [{ jobId: 3, userId: 'u1' }],
               statusCode: 200,
             },
             {
               batched: false,
               error: 'sendinblueIncludeListIds is required to create a contact using DOI',
-              metadata: [
-                {
-                  jobId: 4,
-                },
-              ],
+              metadata: [{ jobId: 4, userId: 'u1' }],
               statTags: {
                 destType: 'SENDINBLUE',
                 errorCategory: 'dataValidation',

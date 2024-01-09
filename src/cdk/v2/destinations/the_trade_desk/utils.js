@@ -59,13 +59,18 @@ const processRecordInputs = (inputs, destination) => {
   const successMetadata = [];
   const errorResponseList = [];
 
-  const error = new InstrumentationError('Invalid action type');
+  const invalidActionTypeError = new InstrumentationError('Invalid action type');
+  const emptyFieldsError = new InstrumentationError('Fields cannot be empty');
 
   inputs.forEach((input) => {
     const { fields, action } = input.message;
     const isInsertOrDelete = action === 'insert' || action === 'delete';
 
-    if (isInsertOrDelete) {
+    if (!isInsertOrDelete) {
+      errorResponseList.push(handleRtTfSingleEventError(input, invalidActionTypeError, {}));
+    } else if (!fields || Object.keys(fields).length === 0) {
+      errorResponseList.push(handleRtTfSingleEventError(input, emptyFieldsError, {}));
+    } else {
       successMetadata.push(input.metadata);
       const data = [
         {
@@ -81,8 +86,6 @@ const processRecordInputs = (inputs, destination) => {
           items.push({ [id]: value, Data: data });
         }
       });
-    } else {
-      errorResponseList.push(handleRtTfSingleEventError(input, error, {}));
     }
   });
 

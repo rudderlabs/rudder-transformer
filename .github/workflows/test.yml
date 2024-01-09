@@ -26,6 +26,20 @@ jobs:
       - name: Install Latest Version of Kind
         run: go install sigs.k8s.io/kind@v0.17.0
 
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4.0.1
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
       - name: Create Kind cluster
         run: kind create cluster --name kind-cluster --config=test/__tests__/data/worker-nodes-kind.yml
 

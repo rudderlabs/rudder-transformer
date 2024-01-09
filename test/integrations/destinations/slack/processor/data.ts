@@ -1,7 +1,8 @@
 export const data = [
   {
     name: 'slack',
-    description: 'Test 0-> Identify -> Default template with somw whiteListed traits',
+    description:
+      'Test 0-> Identify -> Default template with some whiteListed traits and some of them are with a space in between',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -678,7 +679,8 @@ export const data = [
   },
   {
     name: 'slack',
-    description: 'Test 4 -> Track call with custom template with no trait and only properties and modern webhook',
+    description:
+      'Test 4 -> Track call with custom template with no trait and only properties and modern webhook',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -861,7 +863,8 @@ export const data = [
   },
   {
     name: 'slack',
-    description: 'Test 5 -> Track call with default template and an extra empty event to template mapping containg blank string as event',
+    description:
+      'Test 5 -> Track call with default template and an extra empty event to template mapping containg blank string as event',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1043,7 +1046,8 @@ export const data = [
   },
   {
     name: 'slack',
-    description: 'Test 6 -> Track call with legacy webhook and custom template with properties and traits',
+    description:
+      'Test 6 -> Track call with legacy webhook and custom template with properties and traits',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1224,7 +1228,8 @@ export const data = [
   },
   {
     name: 'slack',
-    description: 'Test 7 -> Track call with legacy webhook and custom template with properties and custom channel from mapping',
+    description:
+      'Test 7 -> Track call with legacy webhook and custom template with properties and custom channel from mapping',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1720,7 +1725,8 @@ export const data = [
   },
   {
     name: 'slack',
-    description: 'Test 10-> Track call with custom template but template is wrong ( space in `{{properties. key1}}` )',
+    description:
+      'Test 10-> Track call with custom template but template is wrong ( space in `{{properties. key1}}` )',
     feature: 'processor',
     module: 'destination',
     version: 'v0',

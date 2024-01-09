@@ -1,42 +1,76 @@
 [
   {
-    "destKey": "distinct_id",
+    "destKey": "properties.distinct_id",
     "sourceKeys": ["userId", "anonymousId", "email"],
-    "required": true
+    "required": false
   },
   {
-    "destKey": "customer.name",
+    "destKey": "properties.customer.name",
     "sourceKeys": "name",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "properties.customer.first_name",
+    "sourceKeys": "firstName",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "properties.customer.last_name",
+    "sourceKeys": "lastName",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "properties.customer.age",
+    "sourceKeys": ["context.traits.age","traits.age"],
     "required": false
   },
   {
-    "destKey": "customer.age",
-    "sourceKeys": "age",
+    "destKey": "event",
+    "sourceKeys": "event",
     "required": false
   },
   {
-    "destKey": "customer.sex",
-    "sourceKeys": "sex",
+    "destKey": "properties.customer.sex",
+    "sourceKeys": ["traits.gender", "context.traits.gender","traits.sex", "context.traits.sex"],
     "required": false
   },
   {
-    "destKey": "customer.address",
+    "destKey": "properties.customer.address",
     "sourceKeys": "address",
-    "required": false
+    "required": false,
+    "sourceFromGenericMap": true
   },
   {
-    "destKey": "customer.email",
+    "destKey": "properties.customer.email",
     "sourceKeys": "email",
     "required": false,
     "sourceFromGenericMap": true
   },
   {
-    "destKey": "client",
+    "destKey": "properties.search_term",
+    "sourceKeys": "properties.query",
+    "required": false
+  },
+  {
+    "destKey": "properties.order_id",
+    "sourceKeys": ["properties.order_id", "properties.orderId"],
+    "required": false
+  },
+  {
+    "destKey": "properties.total",
+    "sourceKeys": "properties.total",
+    "required": false
+  },
+  {
+    "destKey": "properties.client",
     "sourceKeys": "context.app.version",
     "required": false
   },
   {
-    "destKey": "device",
+    "destKey": "properties.device",
     "sourceKeys": "context.device.model",
     "required": false
   }

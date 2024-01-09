@@ -5,14 +5,26 @@
     "required": true
   },
   {
-    "destKey": "properties.custormer.name",
+    "destKey": "properties.customer.name",
     "sourceKeys": "name",
     "required": false,
     "sourceFromGenericMap": true
   },
   {
-    "destKey": "properties.custormer.age",
-    "sourceKeys": "age",
+    "destKey": "properties.customer.first_name",
+    "sourceKeys": "firstName",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "properties.customer.last_name",
+    "sourceKeys": "lastName",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "properties.customer.age",
+    "sourceKeys": ["context.traits.age","traits.age"],
     "required": false
   },
   {
@@ -21,23 +33,24 @@
     "required": false
   },
   {
-    "destKey": "properties.custormer.sex",
-    "sourceKeys": "sex",
+    "destKey": "properties.customer.sex",
+    "sourceKeys": ["traits.gender", "context.traits.gender","traits.sex", "context.traits.sex"],
     "required": false
   },
   {
-    "destKey": "properties.custormer.address",
+    "destKey": "properties.customer.address",
     "sourceKeys": "address",
-    "required": false
+    "required": false,
+    "sourceFromGenericMap": true
   },
   {
-    "destKey": "properties.custormer.email",
+    "destKey": "properties.customer.email",
     "sourceKeys": "email",
     "required": true,
     "sourceFromGenericMap": true
   },
   {
-    "destKey": "client",
+    "destKey": "properties.client",
     "sourceKeys": "context.app.version",
     "required": false
   },

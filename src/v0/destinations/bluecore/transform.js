@@ -6,19 +6,9 @@ const {
   defaultPostRequestConfig,
   getValueFromMessage,
   isDefinedAndNotNull,
-  extractCustomFields,
   simpleProcessRouterDest,
 } = require('../../util');
 
-const {
-  // getActionSource,
-  // handleProduct,
-  // handleSearch,
-  handleProductListViewed,
-  // handleOrder,
-  // populateCustomDataBasedOnCategory,
-  // getCategoryFromEvent,
-} = require('./utils');
 
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const {
@@ -41,69 +31,21 @@ function checkValidEventName(str) {
 
 
 const trackResponseBuilder = async (message, category, { Config }) => {
-  console.log('Incoming Message:', message);
-  console.log('Destination Category:', category);
-  console.log('Configuration:', Config);
-
   let event = getValueFromMessage(message, 'event');
   if (!event) {
     throw new InstrumentationError('[BLUECORE] property:: event is required for track call');
   }
-
-  if (!Config.eventApiKey) {
+  if (!Config.token) {
     throw new ConfigurationError('[BLUECORE] event Api Keys required for Authentication.');
   }
-  let payload = {};
-  console.log('constructed Payload :', payload);
+  let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
 
   if (!payload) {
     // fail-safety for developer error
     throw new TransformationError(ErrorMessage.FailedToConstructPayload);
   }
   event = event.trim();
-  // Check for the event type being 'Product Viewed'
-  if (event.toLowerCase() === 'product viewed') {
-    // Utilize handleProductListViewed function
 
-    // console.log('Current Message:', message);
-    const properties = handleProductListViewed(message, category);
-    // Add other necessary properties to the payload
-    properties.distinct_id = 'xyz@example.com';
-    properties.token = 'bluestore';
-    properties.client = '4.0';
-    properties.device = 'mobile/iPad';
-    console.log(properties);
-
-    payload = { event : 'viewed_product', properties : properties};
-    // payload.event = event.replace(/\s+/g, '_');
-    // payload.properties = properties;
-  // if (checkValidEventName(payload.event)) {
-  //   throw new InstrumentationError(
-  //     "[BLUECORE] Event shouldn't contain period(.), numeric value and contains not more than 64 characters",
-  //     );
-  //   }
-    // payload = extractCustomFields(message, payload, ['properties'], []);
-
-    for (const product of properties.products) {
-      console.log("Product Details:");
-      console.log(product);
-    }
-    
-    // Build the response object with Bluecore payload
-    const response = defaultRequestConfig();
-    response.endpoint = `${BASE_URL}`;
-  
-    response.method = defaultPostRequestConfig.requestMethod;
-    const basicAuth = Buffer.from(Config.eventApiKey).toString('base64');
-    response.headers = {
-      Authorization: `Basic ${basicAuth}`,
-      'Content-Type': JSON_MIME_TYPE,
-    };
-    response.body.JSON = payload;
-    console.log('Transformed Payload:', payload);
-    return response;
-    
-  }
   if (isDefinedAndNotNull(EVENT_NAME_MAPPING[event])) {
     payload.event = EVENT_NAME_MAPPING[event];
   }
@@ -113,62 +55,93 @@ const trackResponseBuilder = async (message, category, { Config }) => {
       "[BLUECORE] Event shouldn't contain period(.), numeric value and contains not more than 64 characters",
       );
     }
-    payload = extractCustomFields(message, payload, ['properties'], []);
-    console.log('Transformed Payload:', payload);
-
+    
+    // Check the event type and create the product list accordingly
+    if (payload.event.toLowerCase() === 'viewed_product' || payload.event.toLowerCase() === 'add_to_cart'|| payload.event.toLowerCase() === 'remove_from_cart' || payload.event.toLowerCase() === 'purchase'|| payload.event.toLowerCase() === 'wishlist') {
+      let productList = [];
+      if (Array.isArray(message.properties.products)) {
+        // Multiple products
+        productList = message.properties.products.map(product => ({
+          id: product.product_id,
+          name: product.name,
+          price: product.price,
+          sku: product.sku,
+          category: product.category,
+          brand: product.brand,
+          variant: product.variant,
+          quantity: product.quantity,
+          coupon: product.coupon,
+          currency: product.currency,
+          position: product.position,
+          url: product.url,
+          image_url: product.image_url,
+        }));
+      } else if (message.properties) {
+        // Single product
+        productList.push({
+          id: message.properties.product_id,
+          name: message.properties.name,
+          price: message.properties.price,
+          sku: message.properties.sku,
+          category: message.properties.category,
+          brand: message.properties.brand,
+          variant: message.properties.variant,
+          quantity: message.properties.quantity,
+          coupon: message.properties.coupon,
+          currency: message.properties.currency,
+          position: message.properties.position,
+          url: message.properties.url,
+          image_url: message.properties.image_url,
+        });
+      }
+      // Adding the productPayloadList to the payload's properties under the key 'products'
+      if (productList.length > 0) {
+        payload.properties = {
+          ...payload.properties,
+          products: productList,
+        };
+      }
+    }
+    
   const response = defaultRequestConfig();
   response.endpoint = `${BASE_URL}`;
 
   response.method = defaultPostRequestConfig.requestMethod;
-  const basicAuth = Buffer.from(Config.eventApiKey).toString('base64');
+  const basicAuth = Buffer.from(Config.token).toString('base64');
   response.headers = {
     Authorization: `Basic ${basicAuth}`,
     'Content-Type': JSON_MIME_TYPE,
   };
+  payload.properties.token = Config.token;
   response.body.JSON = payload;
   return response;
 };
 
 const identifyResponseBuilder = async (message, category, { Config }) => {
-  if (!Config.usersApiKey) {
+  if (!Config.token) {
     throw new ConfigurationError('[BLUECORE] User API Key required for Authentication.');
   }
 
   let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
-  let event = getValueFromMessage(message, 'event');
-  console.log('Payload after constructPayload:', payload);
-  console.log('Payload properties after constructPayload:', payload.properties);
+  payload.event = 'identify';
+  payload.properties.token = Config.token;
 
   if (!payload) {
     // fail-safety for developer error
     throw new TransformationError(ErrorMessage.FailedToConstructPayload);
   }
   
-  payload = extractCustomFields(
-    message,
-    payload,
-    ['traits', 'context.traits'],
-    BLUECORE_IDENTIFY_EXCLUSION,
-    );
-    
-    console.log('Payload after extractCustomFields:', payload);
-    console.log('Properties after extractCustomFields:', payload.properties);
-
     
   const response = defaultRequestConfig();
   response.endpoint = `${BASE_URL}`;
   response.method = defaultPostRequestConfig.requestMethod;
   
-  const basicAuth = Buffer.from(Config.usersApiKey).toString('base64');
+  const basicAuth = Buffer.from(Config.token).toString('base64');
   response.headers = {
     Authorization: `Basic ${basicAuth}`,
     'Content-Type': JSON_MIME_TYPE,
   };
   response.body.JSON = payload;
-  // response.body.JSON.event = event;
-
-  console.log('Final Response before returning:', response);
-
   return response;
 };
 

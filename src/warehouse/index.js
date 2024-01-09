@@ -5,7 +5,6 @@ const { v4: uuidv4 } = require('uuid');
 
 const {
   isObject,
-  isBlank,
   isValidJsonPathKey,
   isValidLegacyJsonPathKey,
   keysFromJsonPaths,
@@ -24,7 +23,7 @@ const whPageColumnMappingRules = require('./config/WHPageConfig.js');
 const whScreenColumnMappingRules = require('./config/WHScreenConfig.js');
 const whGroupColumnMappingRules = require('./config/WHGroupConfig.js');
 const whAliasColumnMappingRules = require('./config/WHAliasConfig.js');
-const { isDataLakeProvider } = require('./config/helpers');
+const {isDataLakeProvider, isBlank} = require('./config/helpers');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const whExtractEventTableColumnMappingRules = require('./config/WHExtractEventTableConfig.js');
 

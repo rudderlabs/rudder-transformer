@@ -54,7 +54,7 @@
     "check:lint": "eslint . -f json -o reports/eslint.json || exit 0"
   },
   "dependencies": {
-    "@amplitude/ua-parser-js": "^0.7.24",
+    "@amplitude/ua-parser-js": "0.7.24",
     "@aws-sdk/client-personalize": "^3.470.0",
     "@aws-sdk/client-s3": "^3.474.0",
     "@aws-sdk/credential-providers": "^3.391.0",

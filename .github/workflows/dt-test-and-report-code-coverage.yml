@@ -1,4 +1,4 @@
-name: Report Code Coverage
+name: DT Tests
 on:
   workflow_call:
     secrets:
@@ -30,8 +30,9 @@ jobs:
 
       - name: Run Tests
         run: |
-          npm run test:js:ci
-          npm run test:ts:ci
+          # Supress logging in tests
+          LOG_LEVEL=100 npm run test:js:ci
+          LOG_LEVEL=100 npm run test:ts:ci
 
       - name: Run Lint Checks
         run: |

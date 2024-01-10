@@ -1,4 +1,4 @@
-name: Test and Report Code Coverage
+name: DT Tests
 on:
   workflow_call:
     secrets:

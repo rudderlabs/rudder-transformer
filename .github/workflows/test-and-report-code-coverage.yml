@@ -1,9 +1,12 @@
-name: Report Code Coverage
+name: Test and Report Code Coverage
 on:
   workflow_call:
     secrets:
       SONAR_TOKEN:
         required: true
+
+  pull_request:
+    types: ['opened', 'reopened', 'synchronize']
 
 jobs:
   coverage:

@@ -1,4 +1,4 @@
-name: Tests & report coverage
+name: UT Tests
 
 on:
   pull_request:
@@ -8,12 +8,6 @@ on:
       - synchronize
 
 jobs:
-  test-and-report-coverage:
-    name: Report Code Coverage
-    uses: ./.github/workflows/report-code-coverage.yml
-    secrets:
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
   ut_tests:
     name: UT Tests
     runs-on: ubuntu-latest

@@ -67,6 +67,20 @@
     "THE_TRADE_DESK": true,
     "INTERCOM": true
   },
+  "regulation": [
+    "BRAZE",
+    "AM",
+    "INTERCOM",
+    "CLEVERTAP",
+    "AF",
+    "MP",
+    "GA",
+    "ITERABLE",
+    "ENGAGE",
+    "CUSTIFY",
+    "SENDGRID",
+    "SPRIG"
+  ],
   "supportSourceTransformV1": true,
   "supportTransformerProxyV1": false
 }

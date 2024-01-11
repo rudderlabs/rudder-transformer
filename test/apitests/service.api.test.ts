@@ -35,7 +35,7 @@ const getDataFromPath = (pathInput) => {
   return JSON.parse(testDataFile.toString());
 };
 
-describe('Basic route tests', () => {
+describe('features tests', () => {
   test('successful features response', async () => {
     const expectedData = JSON.parse(
       fs.readFileSync(path.resolve(__dirname, '../../src/features.json'), 'utf8'),
@@ -43,6 +43,36 @@ describe('Basic route tests', () => {
     const response = await request(server).get('/features');
     expect(response.status).toEqual(200);
     expect(JSON.parse(response.text)).toEqual(expectedData);
+  });
+
+  test('features regulation should be array', async () => {
+    const response = await request(server).get('/features');
+    expect(response.status).toEqual(200);
+    const regulation = JSON.parse(response.text).regulation;
+    expect(Array.isArray(regulation)).toBeTruthy();
+  });
+
+  test('features routerTransform should be object', async () => {
+    const response = await request(server).get('/features');
+    expect(response.status).toEqual(200);
+    const routerTransform = JSON.parse(response.text).routerTransform;
+    expect(Array.isArray(routerTransform)).toBeFalsy();
+    expect(typeof routerTransform).toBe('object');
+    expect(Object.keys(routerTransform).length).toBeGreaterThan(0);
+  });
+
+  test('features supportSourceTransformV1 to be boolean', async () => {
+    const response = await request(server).get('/features');
+    expect(response.status).toEqual(200);
+    const supportSourceTransformV1 = JSON.parse(response.text).supportSourceTransformV1;
+    expect(typeof supportSourceTransformV1).toBe('boolean');
+  });
+
+  test('features supportTransformerProxyV1 to be boolean', async () => {
+    const response = await request(server).get('/features');
+    expect(response.status).toEqual(200);
+    const supportTransformerProxyV1 = JSON.parse(response.text).supportTransformerProxyV1;
+    expect(typeof supportTransformerProxyV1).toBe('boolean');
   });
 });
 

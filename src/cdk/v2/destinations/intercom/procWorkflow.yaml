@@ -58,13 +58,13 @@ steps:
         last_seen_at: $.toSeconds(.context.traits.lastSeenAt),
         role: .traits.role || .context.traits.role,
         signed_up_at: $.toSeconds(.traits.createdAt || .context.traits.createdAt),
-        owner_id: .traits.ownerId || .context.traits.ownerId ? Number(.traits.ownerId || .context.traits.ownerId) : undefined,
+        owner_id: Number(.traits.ownerId || .context.traits.ownerId) || undefined,
         unsubscribed_from_emails: .traits.unsubscribedFromEmails || .context.traits.unsubscribedFromEmails
       })
       payload.name = $.getName(.message);
       payload.custom_attributes = .message.context.traits || {};
       payload.custom_attributes = $.filterCustomAttributes(payload, "user");
-      payload.external_id = !(payload.external_id) && .destination.Config.sendAnonymousId && .message.anonymousId ? .message.anonymousId : payload.external_id;
+      payload.external_id = !payload.external_id && .destination.Config.sendAnonymousId && .message.anonymousId ? .message.anonymousId : payload.external_id;
       payload;
 
   - name: prepareIdentifyPayload

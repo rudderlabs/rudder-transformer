@@ -314,7 +314,7 @@ describe('filterCustomAttributes utility test', () => {
       custom_attributes: { source: 'rudder-js-sdk', data: { nestedAttribute: 'nestedValue' } },
     };
     const result = filterCustomAttributes(payload, 'user');
-    expect(result).toEqual({ source: 'rudder-js-sdk', 'data.nestedAttribute': 'nestedValue' });
+    expect(result).toEqual({ source: 'rudder-js-sdk', data_nestedAttribute: 'nestedValue' });
   });
 
   it('Should return null when custom_attributes is null', () => {

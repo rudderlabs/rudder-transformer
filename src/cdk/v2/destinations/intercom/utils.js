@@ -104,7 +104,7 @@ const filterCustomAttributes = (payload, type) => {
     });
 
     if (isDefinedAndNotNull(customAttributes) && Object.keys(customAttributes).length > 0) {
-      customAttributes = flattenJson(customAttributes);
+      customAttributes = flattenJson(customAttributes, '_');
     }
   }
   return customAttributes;

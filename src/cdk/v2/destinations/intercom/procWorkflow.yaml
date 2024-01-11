@@ -39,7 +39,7 @@ steps:
     template: |
       $.addExternalIdToTraits(.message);
       const payload = $.getFieldValueFromMessage(.message, "traits");
-      payload;
+      $.context.payload = payload;
 
   - name: searchContact
     condition: $.outputs.messageType === {{$.EventType.IDENTIFY}} || $.outputs.messageType === {{$.EventType.GROUP}}
@@ -47,117 +47,105 @@ steps:
       const contactId = await $.searchContact(.message, .destination);
       contactId;
 
-  - name: identifyEtlPayload
-    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}} && !.message.context.mappedToDestination
-    template: |
-      const payload = .message.({
-        external_id: {{{{$.getGenericPaths("userIdOnly")}}}},
-        email: {{{{$.getGenericPaths("email")}}}},
-        phone: {{{{$.getGenericPaths("phone")}}}},
-        avatar: {{{{$.getGenericPaths("avatar")}}}},
-        last_seen_at: $.toSeconds(.context.traits.lastSeenAt),
-        role: .traits.role || .context.traits.role,
-        signed_up_at: $.toSeconds(.traits.createdAt || .context.traits.createdAt),
-        owner_id: Number(.traits.ownerId || .context.traits.ownerId) || undefined,
-        unsubscribed_from_emails: .traits.unsubscribedFromEmails || .context.traits.unsubscribedFromEmails
-      })
-      payload.name = $.getName(.message);
-      payload.custom_attributes = .message.context.traits || {};
-      payload.custom_attributes = $.filterCustomAttributes(payload, "user");
-      payload.external_id = !payload.external_id && .destination.Config.sendAnonymousId && .message.anonymousId ? .message.anonymousId : payload.external_id;
-      payload;
-
-  - name: prepareIdentifyPayload
+  - name: identifyPayload
     condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
-    template: |
-      const endpoint = $.getBaseEndpoint(.destination) + "/" + "contacts";
-      $.context.payload = .message.context.mappedToDestination === true ? $.outputs.rEtlPayload : $.outputs.identifyEtlPayload;
-      $.context.requestMethod = $.outputs.searchContact ? 'PUT' : 'POST';
-      $.context.endpoint = $.outputs.searchContact ? endpoint + "/" + $.outputs.searchContact : endpoint;
-      $.context.payload = $.removeUndefinedAndNullValues($.context.payload);
-
-  - name: validateIdentifyPayload
-    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
-    template: |
-      $.assert($.context.payload.external_id || $.context.payload.email, "Either email or userId is required for Identify call");
+    steps: 
+      - name: streaming
+        condition: "!.message.context.mappedToDestination"
+        template: |
+          const payload = .message.({
+            external_id: {{{{$.getGenericPaths("userIdOnly")}}}},
+            email: {{{{$.getGenericPaths("email")}}}},
+            phone: {{{{$.getGenericPaths("phone")}}}},
+            avatar: {{{{$.getGenericPaths("avatar")}}}},
+            last_seen_at: $.toSeconds(.context.traits.lastSeenAt),
+            role: .traits.role || .context.traits.role,
+            signed_up_at: $.toSeconds(.traits.createdAt || .context.traits.createdAt),
+            owner_id: Number(.traits.ownerId || .context.traits.ownerId) || undefined,
+            unsubscribed_from_emails: .traits.unsubscribedFromEmails || .context.traits.unsubscribedFromEmails
+          })
+          payload.name = $.getName(.message);
+          payload.custom_attributes = .message.context.traits || {};
+          payload.custom_attributes = $.filterCustomAttributes(payload, "user");
+          payload.external_id = !payload.external_id && .destination.Config.sendAnonymousId && .message.anonymousId ? .message.anonymousId : payload.external_id;
+          $.context.payload = payload
+      - name: validate
+        template: |
+          $.assert($.context.payload.external_id || $.context.payload.email, "Either email or userId is required for Identify call");
+      - name: prepareFinalPayload
+        template: |
+          const endpoint = $.getBaseEndpoint(.destination) + "/" + "contacts";
+          $.context.requestMethod = $.outputs.searchContact ? 'PUT' : 'POST';
+          $.context.endpoint = $.outputs.searchContact ? endpoint + "/" + $.outputs.searchContact : endpoint;
+          $.context.payload = $.removeUndefinedAndNullValues($.context.payload);
 
   - name: trackEtlPayload
-    condition: $.outputs.messageType === {{$.EventType.TRACK}} && !.message.context.mappedToDestination
-    template: |
-      let payload = .message.({
-        event_name: .event,
-        created_at: $.toSeconds({{{{$.getGenericPaths("timestamp")}}}}),
-        user_id: {{{{$.getGenericPaths("userIdOnly")}}}},
-        email: {{{{$.getGenericPaths("email")}}}},
-        id: .properties.id || .traits.id,
-        metadata: .properties
-      })
-      payload = $.addMetadataToPayload(payload);
-      payload.user_id = !(payload.user_id) && .destination.Config.sendAnonymousId && .message.anonymousId ? .message.anonymousId : payload.user_id;
-      payload;
-
-  - name: prepareTrackPayload
     condition: $.outputs.messageType === {{$.EventType.TRACK}}
-    template: |
-      $.context.payload = .message.context.mappedToDestination === true ? $.outputs.rEtlPayload : $.outputs.trackEtlPayload;
-      $.context.requestMethod = 'POST';
-      $.context.endpoint =  $.getBaseEndpoint(.destination) + "/" + "events";
-      $.context.payload = $.removeUndefinedAndNullValues($.context.payload);
-
-  - name: validateTrackPayload
-    condition: $.outputs.messageType === {{$.EventType.TRACK}}
-    template: |
-      $.assert($.context.payload.event_name, "Event name is required for track call");
-      $.assert($.context.payload.user_id || $.context.payload.email, "Either email or userId is required for Track call");
-
-  - name: groupEtlPayload
-    condition: $.outputs.messageType === {{$.EventType.GROUP}} && !.message.context.mappedToDestination
-    template: |
-      const payload = .message.({
-        company_id:  {{{{$.getGenericPaths("groupId")}}}},
-        name: {{{{$.getGenericPaths("name")}}}},
-        website: {{{{$.getGenericPaths("website")}}}},
-        plan: .traits.plan || .context.traits.plan,
-        size: Number(.traits.size || .context.traits.size),
-        industry: .traits.industry || .context.traits.industry,
-        monthly_spend: .traits.monthlySpend || .context.traits.monthlySpend ? Number(.traits.monthlySpend || .context.traits.monthlySpend) : undefined,
-        remote_created_at: .traits.remoteCreatedAt || .context.traits.remoteCreatedAt ? Number(.traits.remoteCreatedAt || .context.traits.remoteCreatedAt) : undefined
-      })
-      payload.custom_attributes = .message.traits || {};
-      payload.custom_attributes = $.filterCustomAttributes(payload, "company");
-      payload;
-
-  - name: prepareAddUserToCompanyPayload
-    condition: $.outputs.messageType === {{$.EventType.GROUP}} && $.isDefinedAndNotNull($.outputs.searchContact)
-    template: |
-      $.assert(.message.groupId, "groupId is required for group call");
-      let payload = .message.context.mappedToDestination === true ? $.outputs.rEtlPayload : $.outputs.groupEtlPayload;
-      const contactId = $.outputs.searchContact;
-      const companyId = await $.createOrUpdateCompany(payload, .destination);
-      $.assert(companyId, "Unable to create or update company");
-      payload.requestBodyJson = {
-        id: companyId
-      }
-      payload.endpoint =  $.getBaseEndpoint(.destination) + "/" + "contacts" + "/" + contactId + "/" + "companies";
-      payload;
-
-  - name: prepareCreateOrUpdateCompanyPayload
-    condition: $.outputs.messageType === {{$.EventType.GROUP}} && !$.isDefinedAndNotNull($.outputs.searchContact)
-    template: |
-      $.assert(.message.groupId, "groupId is required for group call");
-      let payload = {
-        requestBodyJson: .message.context.mappedToDestination === true ? $.outputs.rEtlPayload : $.outputs.groupEtlPayload
-      }
-      payload.endpoint =  $.getBaseEndpoint(.destination) + "/" + "companies";
-      payload;
-
-  - name: prepareGroupPayload
+    steps: 
+      - name: streaming
+        condition: "!.message.context.mappedToDestination"
+        template: |
+          let payload = .message.({
+            event_name: .event,
+            created_at: $.toSeconds({{{{$.getGenericPaths("timestamp")}}}}),
+            user_id: {{{{$.getGenericPaths("userIdOnly")}}}},
+            email: {{{{$.getGenericPaths("email")}}}},
+            id: .properties.id || .traits.id,
+            metadata: .properties
+          })
+          payload = $.addMetadataToPayload(payload);
+          payload.user_id = !(payload.user_id) && .destination.Config.sendAnonymousId && .message.anonymousId ? .message.anonymousId : payload.user_id;
+          $.context.payload = payload
+      - name: validate
+        template: |
+          $.assert($.context.payload.event_name, "Event name is required for track call");
+          $.assert($.context.payload.user_id || $.context.payload.email, "Either email or userId is required for Track call");
+      - name: prepareFinalPayload
+        template: |
+          $.context.requestMethod = 'POST';
+          $.context.endpoint =  $.getBaseEndpoint(.destination) + "/" + "events";
+          $.context.payload = $.removeUndefinedAndNullValues($.context.payload);
+  
+  - name: groupPayload
     condition: $.outputs.messageType === {{$.EventType.GROUP}}
-    template: |
-      $.context.payload = $.isDefinedAndNotNull($.outputs.searchContact) ? $.outputs.prepareAddUserToCompanyPayload.requestBodyJson : $.outputs.prepareCreateOrUpdateCompanyPayload.requestBodyJson;
-      $.context.requestMethod = 'POST';
-      $.context.endpoint =  $.isDefinedAndNotNull($.outputs.searchContact) ? $.outputs.prepareAddUserToCompanyPayload.endpoint : $.outputs.prepareCreateOrUpdateCompanyPayload.endpoint;
-      $.context.payload = $.removeUndefinedAndNullValues($.context.payload);
+    steps:
+      - name: validateMessage
+        template: |
+          $.assert(.message.groupId, "groupId is required for group call");
+      - name: streaming
+        condition: "!.message.context.mappedToDestination"
+        template: |
+          const payload = .message.({
+            company_id:  {{{{$.getGenericPaths("groupId")}}}},
+            name: {{{{$.getGenericPaths("name")}}}},
+            website: {{{{$.getGenericPaths("website")}}}},
+            plan: .traits.plan || .context.traits.plan,
+            size: Number(.traits.size || .context.traits.size),
+            industry: .traits.industry || .context.traits.industry,
+            monthly_spend: .traits.monthlySpend || .context.traits.monthlySpend ? Number(.traits.monthlySpend || .context.traits.monthlySpend) : undefined,
+            remote_created_at: .traits.remoteCreatedAt || .context.traits.remoteCreatedAt ? Number(.traits.remoteCreatedAt || .context.traits.remoteCreatedAt) : undefined
+          })
+          payload.custom_attributes = .message.traits || {};
+          payload.custom_attributes = $.filterCustomAttributes(payload, "company");
+          $.context.payload = payload;
+      - name: whenSearchContactFound
+        condition: $.isDefinedAndNotNull($.outputs.searchContact)
+        template: |
+          const contactId = $.outputs.searchContact;
+          const companyId = await $.createOrUpdateCompany($.context.payload, .destination);
+          $.assert(companyId, "Unable to create or update company");
+          $.context.payload = {
+            id: companyId,
+          };
+          $.context.endpoint = $.getBaseEndpoint(.destination) + "/" + "contacts" + "/" + contactId + "/" + "companies";
+        else:
+          name: whenSearchContactNotFound
+          template: |
+            $.context.endpoint = $.getBaseEndpoint(.destination) + "/" + "companies";
+      - name: prepareFinalPayload
+        template: 
+          $.context.requestMethod = 'POST';
+          $.removeUndefinedAndNullValues($.context.payload)
 
   - name: buildResponseForProcessTransformation
     description: build response

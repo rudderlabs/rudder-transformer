@@ -454,7 +454,7 @@ export const data = [
             },
             statusCode: 400,
             error:
-              'Either email or userId is required for Identify call: Workflow: procWorkflow, Step: validateIdentifyPayload, ChildStep: undefined, OriginalError: Either email or userId is required for Identify call',
+              'Either email or userId is required for Identify call: Workflow: procWorkflow, Step: identifyPayload, ChildStep: validate, OriginalError: Either email or userId is required for Identify call',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
@@ -613,7 +613,7 @@ export const data = [
             },
             statusCode: 400,
             error:
-              'Event name is required for track call: Workflow: procWorkflow, Step: validateTrackPayload, ChildStep: undefined, OriginalError: Event name is required for track call',
+              'Event name is required for track call: Workflow: procWorkflow, Step: trackEtlPayload, ChildStep: validate, OriginalError: Event name is required for track call',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
@@ -800,7 +800,7 @@ export const data = [
             },
             statusCode: 400,
             error:
-              'groupId is required for group call: Workflow: procWorkflow, Step: prepareCreateOrUpdateCompanyPayload, ChildStep: undefined, OriginalError: groupId is required for group call',
+              'groupId is required for group call: Workflow: procWorkflow, Step: groupPayload, ChildStep: validateMessage, OriginalError: groupId is required for group call',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',

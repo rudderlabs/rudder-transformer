@@ -45,11 +45,11 @@ describe('features tests', () => {
     expect(JSON.parse(response.text)).toEqual(expectedData);
   });
 
-  test('features regulation should be array', async () => {
+  test('features regulations should be array', async () => {
     const response = await request(server).get('/features');
     expect(response.status).toEqual(200);
-    const regulation = JSON.parse(response.text).regulation;
-    expect(Array.isArray(regulation)).toBeTruthy();
+    const regulations = JSON.parse(response.text).regulations;
+    expect(Array.isArray(regulations)).toBeTruthy();
   });
 
   test('features routerTransform should be object', async () => {

@@ -39,7 +39,7 @@ jobs:
 
       - name: Uplaod Report to S3
         run: |
-          aws s3 cp ./test_reports/ s3://test-integrations-dev/integrations-test-reports/${{ context.payload.pull_request.number }}/
+          aws s3 cp ./test_reports/ s3://test-integrations-dev/integrations-test-reports/${{ github.event.number }}/
 
     
       - name: Comment on PR with S3 Object URL

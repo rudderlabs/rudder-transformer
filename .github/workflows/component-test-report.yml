@@ -46,11 +46,10 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
           const { owner, repo } = context.repo;
-          const runNumber = process.env.GITHUB_RUN_NUMBER;
-          const commentBody = `Test report for this run is available at: https://company.s3.amazonaws.com/integrations-test-reports/${runNumber}/test-report.html`;
-          
           // Get the pull request number
           const prNumber = context.payload.pull_request.number;
+          const commentBody = `Test report for this run is available at: https://company.s3.amazonaws.com/integrations-test-reports/${prNumber}/test-report.html`;
+          
 
           // Comment on the pull request
           await github.issues.createComment({ owner, repo, issue_number: prNumber, body: commentBody });

@@ -12,6 +12,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_DEV_ACCOUNT_ID }}:role/${{ secrets.AWS_DEV_S3_SYNC_ROLE }}
+          aws-region: us-east-1
+
       - name: Checkout
         uses: actions/checkout@v4.1.1
         with:
@@ -30,20 +36,16 @@ jobs:
         run: |
           npm run test:ts -- component
 
-      - name: Upload Report to S3
-        uses: jakejarvis/s3-sync-action@v0.5.0
-        with:
-          args: --acl public-read --follow-symlinks --delete
-        env:
-          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          SRC: ./test_reports/
-          DEST: /integrations-test-reports/${{ github.run_number }}/
+
+      - name: Uplaod Report to S3
+        run: |
+          aws s3 cp ./test_reports/ s3://test-integrations-dev/integrations-test-reports/${{ context.payload.pull_request.number }}/
+
+    
       - name: Comment on PR with S3 Object URL
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.PAT }}
         script: |
           const { owner, repo } = context.repo;
           // Get the pull request number

@@ -35,7 +35,7 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
  * @param {*} event
  * @returns track payload
  */
-const getTrackResponsePayload = (message, Config, event) => {
+const getTrackResponsePayload = (message, config, event) => {
   const payload = constructPayload(message, trackMappingV2);
 
   // if contents is not an array converting it into array
@@ -44,7 +44,7 @@ const getTrackResponsePayload = (message, Config, event) => {
   }
 
   // if contents is not present but we have properties.products present which has fields with superset of contents fields
-  if (payload.properties && !payload.properties?.contents && message.properties?.products) {
+  if (payload.properties && !payload.properties.contents && message.properties.products) {
     // retreiving data from products only when contents is not present
     payload.properties.contents = getContents(message, false);
   }
@@ -54,7 +54,7 @@ const getTrackResponsePayload = (message, Config, event) => {
   if (isDefinedAndNotNullAndNotEmpty(externalId)) {
     set(payload, 'user.external_id', externalId);
   }
-  if (Config.hashUserProperties && isDefinedAndNotNullAndNotEmpty(payload.user)) {
+  if (config.hashUserProperties && isDefinedAndNotNullAndNotEmpty(payload.user)) {
     payload.user = hashUserField(payload.user);
   }
   payload.event = event;
@@ -653,7 +653,7 @@ Returns
   }
 ]
  */
-const batchEvents = (eventsChunk, maxBatchSize) => {
+const batchEvents = (eventsChunk) => {
   const events = [];
   let data = [];
   let metadata = [];
@@ -661,7 +661,7 @@ const batchEvents = (eventsChunk, maxBatchSize) => {
   const { pixelCode } = destination.Config;
   eventsChunk.forEach((event) => {
     const eventData = event.message[0]?.body.JSON.data;
-    if (Array.isArray(eventData) && eventData?.length > maxBatchSize - data.length) {
+    if (Array.isArray(eventData) && eventData?.length > maxBatchSizeV2 - data.length) {
       // Partner name must be added above "data": [..];
       events.push({
         event: {
@@ -727,7 +727,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
 
   const batchedResponseList = [];
   if (eventsChunk.length > 0) {
-    const batchedEvents = batchEvents(eventsChunk, maxBatchSizeV2);
+    const batchedEvents = batchEvents(eventsChunk);
     batchedEvents.forEach((batch) => {
       const batchedRequest = buildBatchResponseForEvent(batch);
       batchedResponseList.push(

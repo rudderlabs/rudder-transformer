@@ -1,5 +1,4 @@
-const { SHA256 } = require('crypto-js');
-const { removeUndefinedAndNullValues } = require('../../util');
+const { removeUndefinedAndNullValues, hashToSha256 } = require('../../util');
 /**
  * This returns content type from properties object if nothing is present in payload it return default values 'product
  * @param {*} properties message.proeprties
@@ -38,7 +37,7 @@ const getContents = (message, getContentType = true) => {
   }
   return contents;
 };
-
+const hashString = (input) => hashToSha256(input.toString().trim());
 /*
  * Hashing user related detail i.e external_id, email, phone_number
  */
@@ -49,23 +48,21 @@ const hashUserField = (user) => {
   if (externalId) {
     // if there are multiple externalId's in form of array that tiktok supports then hashing every
     if (Array.isArray(externalId)) {
-      updatedUser.external_id = externalId.map((extId) =>
-        SHA256(extId.toString().trim()).toString(),
-      );
+      updatedUser.external_id = externalId.map((extId) => hashString(extId).toString());
     } else {
-      updatedUser.external_id = SHA256(externalId.toString().trim()).toString();
+      updatedUser.external_id = hashString(externalId).toString();
     }
   }
   // hashing email
   if (email && email.length > 0) {
-    updatedUser.email = SHA256(email).toString();
+    updatedUser.email = hashString(email).toString();
   }
   // hashing phone
   if (phone && phone.length > 0) {
     if (Array.isArray(phone)) {
-      updatedUser.phone = phone.map((num) => SHA256(num).toString());
+      updatedUser.phone = phone.map((num) => hashString(num).toString());
     } else {
-      updatedUser.phone = SHA256(phone).toString();
+      updatedUser.phone = hashString(phone).toString();
     }
   }
   return updatedUser;

@@ -7,6 +7,10 @@ on:
       - reopened
       - synchronize
 
+permissions:
+  id-token: write # allows the JWT to be requested from GitHub's OIDC provider
+  contents: read # This is required for actions/checkout
+
 jobs:
   test_and_upload:
     runs-on: ubuntu-latest

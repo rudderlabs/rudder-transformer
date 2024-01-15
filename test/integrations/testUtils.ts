@@ -2,7 +2,7 @@ import { globSync } from 'glob';
 import { join } from 'path';
 import { MockHttpCallsData, TestCaseData } from './testTypes';
 import MockAdapter from 'axios-mock-adapter';
-import isMatch from 'lodash/isMatch';
+import lodash from 'lodash';
 import { OptionValues } from 'commander';
 
 export const getTestDataFilePaths = (dirPath: string, opts: OptionValues): string[] => {
@@ -40,7 +40,7 @@ export const addMock = (mock: MockAdapter, axiosMock: MockHttpCallsData) => {
 
   const headersAsymMatch = {
     asymmetricMatch: function (actual) {
-      return isMatch(actual, opts.headers);
+      return lodash.isMatch(actual, opts.headers);
     },
   };
 
@@ -74,3 +74,21 @@ export const overrideDestination = (destination, overrideConfigValues) => {
     Config: { ...destination.Config, ...overrideConfigValues },
   });
 };
+
+const outputBatchedRequestCommon = {
+  body: {
+    XML: {},
+    FORM: {},
+    JSON_ARRAY: {},
+    JSON: {},
+  },
+  type: 'REST',
+  files: {},
+  method: 'POST',
+  params: {},
+  version: '1',
+};
+
+export function getBatchedRequest(overrides: object): object {
+  return lodash.merge({}, outputBatchedRequestCommon, overrides);
+}

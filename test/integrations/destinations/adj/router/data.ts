@@ -1,7 +1,41 @@
+import { getBatchedRequest } from '../../../testUtils';
+
+const destination = {
+  ID: '1i3Em7GMU9xVEiDlZUN8c88BMS9',
+  Name: 'ADJ',
+  DestinationDefinition: {
+    ID: '1i3DeZo6eSUKrS3KzDUqjbBPCDJ',
+    Name: 'ADJ',
+    DisplayName: 'Adjust',
+    Config: {
+      destConfig: {
+        android: ['useNativeSDK'],
+        defaultConfig: ['appToken', 'customMappings', 'delay', 'environment'],
+        ios: ['useNativeSDK'],
+        reactnative: ['useNativeSDK'],
+      },
+      excludeKeys: [],
+      includeKeys: ['appToken', 'customMappings', 'delay'],
+      supportedSourceTypes: ['android', 'ios', 'reactnative', 'cloud'],
+    },
+  },
+  Config: {
+    appToken: 'testAppToken',
+    customMappings: [
+      { from: 'Application Installed', to: '3fdmll' },
+      { from: 'First Investment', to: 'testEventToken' },
+    ],
+    environment: true,
+  },
+  Enabled: true,
+  Transformations: [],
+  IsProcessorEnabled: true,
+};
+
 export const data = [
   {
     name: 'adj',
-    description: 'Test 0',
+    description: 'Test 0', //TODO: we need a better description
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -12,38 +46,17 @@ export const data = [
             {
               message: {
                 anonymousId: '21e13f4bc7ceddad',
-                channel: 'mobile',
                 context: {
-                  app: {
-                    build: '4',
-                    name: 'RuddCDN',
-                    namespace: 'com.example.testapp',
-                    version: '1.0',
-                  },
                   device: {
                     adTrackingEnabled: true,
                     advertisingId: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
                     id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
-                    manufacturer: 'Google',
-                    model: 'AOSP on IA Emulator',
-                    name: 'generic_x86_arm',
                     type: 'Android',
                     attTrackingStatus: 3,
                   },
-                  library: { name: 'com.rudderstack.android.sdk.core', version: '1.0.6' },
-                  locale: 'en-US',
-                  network: { bluetooth: false, carrier: 'Android', cellular: true, wifi: true },
-                  os: { name: 'Android', version: '9' },
-                  screen: { density: 420, height: 1794, width: 1080 },
-                  timezone: 'Asia/Kolkata',
                   traits: { anonymousId: '21e13f4bc7ceddad' },
-                  userAgent:
-                    'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
                 },
                 event: 'First Investment',
-                integrations: { All: true },
-                messageId: '1601322811899-d9c7dd00-50dc-4364-95c8-e89423eb3cfb',
-                originalTimestamp: '2020-09-28T19:53:31.900Z',
                 properties: {
                   currency: 'EUR',
                   key1: 'value1',
@@ -52,44 +65,11 @@ export const data = [
                   key5: [{ k: 'v1' }, { k: 'v2' }],
                   revenue: 20.37566,
                 },
-                receivedAt: '2020-09-29T14:50:43.005+05:30',
                 request_ip: '[::1]',
-                sentAt: '2020-09-28T19:53:44.998Z',
-                timestamp: '2020-09-29T14:50:29.907+05:30',
                 type: 'track',
               },
               metadata: { jobId: 2, userId: 'u1' },
-              destination: {
-                ID: '1i3Em7GMU9xVEiDlZUN8c88BMS9',
-                Name: 'ADJ',
-                DestinationDefinition: {
-                  ID: '1i3DeZo6eSUKrS3KzDUqjbBPCDJ',
-                  Name: 'ADJ',
-                  DisplayName: 'Adjust',
-                  Config: {
-                    destConfig: {
-                      android: ['useNativeSDK'],
-                      defaultConfig: ['appToken', 'customMappings', 'delay', 'environment'],
-                      ios: ['useNativeSDK'],
-                      reactnative: ['useNativeSDK'],
-                    },
-                    excludeKeys: [],
-                    includeKeys: ['appToken', 'customMappings', 'delay'],
-                    supportedSourceTypes: ['android', 'ios', 'reactnative', 'cloud'],
-                  },
-                },
-                Config: {
-                  appToken: 'testAppToken',
-                  customMappings: [
-                    { from: 'Application Installed', to: '3fdmll' },
-                    { from: 'First Investment', to: 'testEventToken' },
-                  ],
-                  environment: true,
-                },
-                Enabled: true,
-                Transformations: [],
-                IsProcessorEnabled: true,
-              },
+              destination: destination,
             },
           ],
           destType: 'adj',
@@ -103,10 +83,7 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
+              batchedRequest: getBatchedRequest({
                 endpoint: 'https://s2s.adjust.com/event',
                 headers: { Accept: '*/*' },
                 params: {
@@ -124,44 +101,12 @@ export const data = [
                   event_token: 'testEventToken',
                   environment: 'production',
                 },
-                body: { JSON: {}, XML: {}, JSON_ARRAY: {}, FORM: {} },
-                files: {},
                 userId: '21e13f4bc7ceddad',
-              },
+              }),
               metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
-              destination: {
-                ID: '1i3Em7GMU9xVEiDlZUN8c88BMS9',
-                Name: 'ADJ',
-                DestinationDefinition: {
-                  ID: '1i3DeZo6eSUKrS3KzDUqjbBPCDJ',
-                  Name: 'ADJ',
-                  DisplayName: 'Adjust',
-                  Config: {
-                    destConfig: {
-                      android: ['useNativeSDK'],
-                      defaultConfig: ['appToken', 'customMappings', 'delay', 'environment'],
-                      ios: ['useNativeSDK'],
-                      reactnative: ['useNativeSDK'],
-                    },
-                    excludeKeys: [],
-                    includeKeys: ['appToken', 'customMappings', 'delay'],
-                    supportedSourceTypes: ['android', 'ios', 'reactnative', 'cloud'],
-                  },
-                },
-                Config: {
-                  appToken: 'testAppToken',
-                  customMappings: [
-                    { from: 'Application Installed', to: '3fdmll' },
-                    { from: 'First Investment', to: 'testEventToken' },
-                  ],
-                  environment: true,
-                },
-                Enabled: true,
-                Transformations: [],
-                IsProcessorEnabled: true,
-              },
+              destination: destination,
             },
           ],
         },
@@ -170,7 +115,7 @@ export const data = [
   },
   {
     name: 'adj',
-    description: 'Test 1',
+    description: 'Test 1', //TODO: we need a better description
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -181,14 +126,7 @@ export const data = [
             {
               message: {
                 anonymousId: '21e13f4bc7ceddad',
-                channel: 'mobile',
                 context: {
-                  app: {
-                    build: '4',
-                    name: 'RuddCDN',
-                    namespace: 'com.example.testapp',
-                    version: '1.0',
-                  },
                   device: {
                     adTrackingEnabled: true,
                     advertisingId: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
@@ -199,20 +137,9 @@ export const data = [
                     type: 'ios',
                     attTrackingStatus: 3,
                   },
-                  library: { name: 'com.rudderstack.android.sdk.core', version: '1.0.6' },
-                  locale: 'en-US',
-                  network: { bluetooth: false, carrier: 'Android', cellular: true, wifi: true },
-                  os: { name: 'Android', version: '9' },
-                  screen: { density: 420, height: 1794, width: 1080 },
-                  timezone: 'Asia/Kolkata',
                   traits: { anonymousId: '21e13f4bc7ceddad' },
-                  userAgent:
-                    'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
                 },
                 event: 'First Investment',
-                integrations: { All: true },
-                messageId: '1601322811899-d9c7dd00-50dc-4364-95c8-e89423eb3cfb',
-                originalTimestamp: '2020-09-28T19:53:31.900Z',
                 properties: {
                   currency: 'EUR',
                   key1: 'value1',
@@ -221,44 +148,11 @@ export const data = [
                   key5: [{ k: 'v1' }, { k: 'v2' }],
                   revenue: 20.37566,
                 },
-                receivedAt: '2020-09-29T14:50:43.005+05:30',
                 request_ip: '[::1]',
-                sentAt: '2020-09-28T19:53:44.998Z',
-                timestamp: '2020-09-29T14:50:29.907+05:30',
                 type: 'track',
               },
               metadata: { jobId: 2, userId: 'u1' },
-              destination: {
-                ID: '1i3Em7GMU9xVEiDlZUN8c88BMS9',
-                Name: 'ADJ',
-                DestinationDefinition: {
-                  ID: '1i3DeZo6eSUKrS3KzDUqjbBPCDJ',
-                  Name: 'ADJ',
-                  DisplayName: 'Adjust',
-                  Config: {
-                    destConfig: {
-                      android: ['useNativeSDK'],
-                      defaultConfig: ['appToken', 'customMappings', 'delay', 'environment'],
-                      ios: ['useNativeSDK'],
-                      reactnative: ['useNativeSDK'],
-                    },
-                    excludeKeys: [],
-                    includeKeys: ['appToken', 'customMappings', 'delay'],
-                    supportedSourceTypes: ['android', 'ios', 'reactnative', 'cloud'],
-                  },
-                },
-                Config: {
-                  appToken: 'testAppToken',
-                  customMappings: [
-                    { from: 'Application Installed', to: '3fdmll' },
-                    { from: 'First Investment', to: 'testEventToken' },
-                  ],
-                  environment: true,
-                },
-                Enabled: true,
-                Transformations: [],
-                IsProcessorEnabled: true,
-              },
+              destination: destination,
             },
           ],
           destType: 'adj',
@@ -272,10 +166,7 @@ export const data = [
         body: {
           output: [
             {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
+              batchedRequest: getBatchedRequest({
                 endpoint: 'https://s2s.adjust.com/event',
                 headers: { Accept: '*/*' },
                 params: {
@@ -293,44 +184,12 @@ export const data = [
                   event_token: 'testEventToken',
                   environment: 'production',
                 },
-                body: { JSON: {}, XML: {}, JSON_ARRAY: {}, FORM: {} },
-                files: {},
                 userId: '21e13f4bc7ceddad',
-              },
+              }),
               metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
-              destination: {
-                ID: '1i3Em7GMU9xVEiDlZUN8c88BMS9',
-                Name: 'ADJ',
-                DestinationDefinition: {
-                  ID: '1i3DeZo6eSUKrS3KzDUqjbBPCDJ',
-                  Name: 'ADJ',
-                  DisplayName: 'Adjust',
-                  Config: {
-                    destConfig: {
-                      android: ['useNativeSDK'],
-                      defaultConfig: ['appToken', 'customMappings', 'delay', 'environment'],
-                      ios: ['useNativeSDK'],
-                      reactnative: ['useNativeSDK'],
-                    },
-                    excludeKeys: [],
-                    includeKeys: ['appToken', 'customMappings', 'delay'],
-                    supportedSourceTypes: ['android', 'ios', 'reactnative', 'cloud'],
-                  },
-                },
-                Config: {
-                  appToken: 'testAppToken',
-                  customMappings: [
-                    { from: 'Application Installed', to: '3fdmll' },
-                    { from: 'First Investment', to: 'testEventToken' },
-                  ],
-                  environment: true,
-                },
-                Enabled: true,
-                Transformations: [],
-                IsProcessorEnabled: true,
-              },
+              destination: destination,
             },
           ],
         },

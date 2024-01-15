@@ -1,7 +1,9 @@
+import { getBatchedRequest } from '../../../testUtils';
+
 export const data = [
   {
     name: 'am',
-    description: 'Test 0',
+    description: 'Test 0', //TODO: we need a better description
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -52,12 +54,9 @@ export const data = [
                 },
                 type: 'identify',
                 messageId: '84e26acc-56a5-4835-8233-591137fca468',
-                session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
                 originalTimestamp: '2019-10-14T09:03:17.562Z',
                 anonymousId: '123456',
                 userId: '123456',
-                integrations: { All: true },
-                sentAt: '2019-10-14T09:03:22.563Z',
               },
               metadata: { jobId: 1, userId: 'u1' },
               destination: {
@@ -95,7 +94,6 @@ export const data = [
                 request_ip: '1.1.1.1',
                 type: 'page',
                 messageId: '5e10d13a-bf9a-44bf-b884-43a9e591ea71',
-                session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
                 originalTimestamp: '2019-10-14T11:15:18.299Z',
                 anonymousId: '00000000000000000000000000',
                 userId: '12345',
@@ -109,9 +107,7 @@ export const data = [
                   initial_referrer: 'https://docs.rudderstack.com',
                   initial_referring_domain: 'docs.rudderstack.com',
                 },
-                integrations: { All: true },
                 name: 'ApplicationLoaded',
-                sentAt: '2019-10-14T11:15:53.296Z',
               },
               metadata: { jobId: 2, userId: 'u1' },
               destination: { Config: { apiKey: 'abcde' } },
@@ -129,13 +125,9 @@ export const data = [
           output: [
             {
               batchedRequest: [
-                {
-                  version: '1',
-                  type: 'REST',
-                  method: 'POST',
+                getBatchedRequest({
                   endpoint: 'https://api2.amplitude.com/2/httpapi',
                   headers: { 'Content-Type': 'application/json' },
-                  params: {},
                   body: {
                     JSON: {
                       api_key: 'abcde',
@@ -173,13 +165,9 @@ export const data = [
                       ],
                       options: { min_id_length: 1 },
                     },
-                    XML: {},
-                    JSON_ARRAY: {},
-                    FORM: {},
                   },
-                  files: {},
                   userId: '123456',
-                },
+                }),
               ],
               metadata: [{ jobId: 1, userId: 'u1' }],
               batched: false,
@@ -190,13 +178,9 @@ export const data = [
             },
             {
               batchedRequest: [
-                {
-                  version: '1',
-                  type: 'REST',
-                  method: 'POST',
+                getBatchedRequest({
                   endpoint: 'https://api2.amplitude.com/2/httpapi',
                   headers: { 'Content-Type': 'application/json' },
-                  params: {},
                   body: {
                     JSON: {
                       api_key: 'abcde',
@@ -238,13 +222,9 @@ export const data = [
                       ],
                       options: { min_id_length: 1 },
                     },
-                    XML: {},
-                    JSON_ARRAY: {},
-                    FORM: {},
                   },
-                  files: {},
                   userId: '00000000000000000000000000',
-                },
+                }),
               ],
               metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,

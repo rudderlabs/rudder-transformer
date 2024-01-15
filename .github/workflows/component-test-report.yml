@@ -46,14 +46,14 @@ jobs:
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.PAT }}
-        script: |
-          const { owner, repo } = context.repo;
-          // Get the pull request number
-          const prNumber = context.payload.pull_request.number;
-          const commentBody = `Test report for this run is available at: https://company.s3.amazonaws.com/integrations-test-reports/${prNumber}/test-report.html`;
-          
+          script: |
+            const { owner, repo } = context.repo;
+            // Get the pull request number
+            const prNumber = context.payload.pull_request.number;
+            const commentBody = `Test report for this run is available at: https://company.s3.amazonaws.com/integrations-test-reports/${prNumber}/test-report.html`;
+            
 
-          // Comment on the pull request
-          await github.issues.createComment({ owner, repo, issue_number: prNumber, body: commentBody });
+            // Comment on the pull request
+            await github.issues.createComment({ owner, repo, issue_number: prNumber, body: commentBody });
 
         

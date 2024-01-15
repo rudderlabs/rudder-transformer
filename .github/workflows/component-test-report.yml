@@ -58,6 +58,11 @@ jobs:
             
 
             // Comment on the pull request
-            await github.issues.createComment({ owner, repo, issue_number: prNumber, body: commentBody });
+            github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: prNumber,
+              body: commentBody
+            });
 
         

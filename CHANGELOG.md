@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.53.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.53.0...v1.53.1) (2024-01-16)
+
+
+### Bug Fixes
+
+* mixpanel timestamp in ms ([#2990](https://github.com/rudderlabs/rudder-transformer/issues/2990)) ([0da63a4](https://github.com/rudderlabs/rudder-transformer/commit/0da63a4e368e59d46c1eaa4a77d4ac81e686183a))
+
 ## [1.53.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.52.4...v1.53.0) (2024-01-08)
 
 

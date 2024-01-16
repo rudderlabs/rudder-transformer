@@ -100,14 +100,17 @@ export const identifyData = [
         body: [
           {
             destination,
-            message: generateIndentifyPayload({
-              context: {
-                traits: commonTraits,
+            message: generateIndentifyPayload(
+              {
+                context: {
+                  traits: commonTraits,
+                },
+                anonymousId,
+                userId,
+                sentAt,
               },
-              anonymousId,
-              userId,
-              sentAt,
-            }),
+              true,
+            ),
           },
         ],
       },
@@ -166,24 +169,27 @@ export const identifyData = [
         body: [
           {
             destination: overrideDestination(destination, { flattenProperties: true }),
-            message: generateIndentifyPayload({
-              sentAt,
-              userId,
-              context: {
-                traits: {
-                  ...commonTraits,
-                  friend: {
-                    names: {
-                      first: 'Alice',
-                      last: 'Smith',
+            message: generateIndentifyPayload(
+              {
+                sentAt,
+                userId,
+                context: {
+                  traits: {
+                    ...commonTraits,
+                    friend: {
+                      names: {
+                        first: 'Alice',
+                        last: 'Smith',
+                      },
+                      age: 25,
                     },
-                    age: 25,
                   },
                 },
+                anonymousId,
+                originalTimestamp,
               },
-              anonymousId,
-              originalTimestamp,
-            }),
+              true,
+            ),
           },
         ],
       },
@@ -255,18 +261,21 @@ export const identifyData = [
                 privateApiKey: 'dummyPrivateApiKeyforfailure',
               },
             },
-            message: generateIndentifyPayload({
-              sentAt,
-              userId,
-              context: {
-                traits: {
-                  ...commonTraits,
-                  email: 'test3@rudderstack.com',
+            message: generateIndentifyPayload(
+              {
+                sentAt,
+                userId,
+                context: {
+                  traits: {
+                    ...commonTraits,
+                    email: 'test3@rudderstack.com',
+                  },
                 },
+                anonymousId,
+                originalTimestamp,
               },
-              anonymousId,
-              originalTimestamp,
-            }),
+              true,
+            ),
           },
         ],
       },
@@ -307,18 +316,21 @@ export const identifyData = [
         body: [
           {
             destination,
-            message: generateIndentifyPayload({
-              sentAt,
-              userId,
-              context: {
-                traits: {
-                  ...commonTraits,
-                  properties: { ...commonTraits.properties, subscribe: false },
+            message: generateIndentifyPayload(
+              {
+                sentAt,
+                userId,
+                context: {
+                  traits: {
+                    ...commonTraits,
+                    properties: { ...commonTraits.properties, subscribe: false },
+                  },
                 },
+                anonymousId,
+                originalTimestamp,
               },
-              anonymousId,
-              originalTimestamp,
-            }),
+              true,
+            ),
           },
         ],
       },
@@ -362,15 +374,18 @@ export const identifyData = [
         body: [
           {
             destination: overrideDestination(destination, { enforceEmailAsPrimary: true }),
-            message: generateIndentifyPayload({
-              sentAt,
-              userId,
-              context: {
-                traits: commonTraits,
+            message: generateIndentifyPayload(
+              {
+                sentAt,
+                userId,
+                context: {
+                  traits: commonTraits,
+                },
+                anonymousId,
+                originalTimestamp,
               },
-              anonymousId,
-              originalTimestamp,
-            }),
+              true,
+            ),
           },
         ],
       },
@@ -437,19 +452,22 @@ export const identifyData = [
         body: [
           {
             destination: destination,
-            message: generateIndentifyPayload({
-              sentAt,
-              userId,
-              context: {
-                traits: removeUndefinedAndNullValues({
-                  ...commonTraits,
-                  Flagged: undefined,
-                  Residence: undefined,
-                }),
+            message: generateIndentifyPayload(
+              {
+                sentAt,
+                userId,
+                context: {
+                  traits: removeUndefinedAndNullValues({
+                    ...commonTraits,
+                    Flagged: undefined,
+                    Residence: undefined,
+                  }),
+                },
+                anonymousId,
+                originalTimestamp,
               },
-              anonymousId,
-              originalTimestamp,
-            }),
+              true,
+            ),
           },
         ],
       },
@@ -511,19 +529,22 @@ export const identifyData = [
         body: [
           {
             destination: overrideDestination(destination, { enforceEmailAsPrimary: true }),
-            message: generateIndentifyPayload({
-              sentAt,
-              userId,
-              context: {
-                traits: removeUndefinedAndNullValues({
-                  ...commonTraits,
-                  email: undefined,
-                  phone: undefined,
-                }),
+            message: generateIndentifyPayload(
+              {
+                sentAt,
+                userId,
+                context: {
+                  traits: removeUndefinedAndNullValues({
+                    ...commonTraits,
+                    email: undefined,
+                    phone: undefined,
+                  }),
+                },
+                anonymousId,
+                originalTimestamp,
               },
-              anonymousId,
-              originalTimestamp,
-            }),
+              true,
+            ),
           },
         ],
       },

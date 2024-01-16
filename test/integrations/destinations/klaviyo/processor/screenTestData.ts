@@ -46,6 +46,7 @@ export const screenTestData = [
                 originalTimestamp: '2021-01-25T15:32:56.409Z',
               },
               'screen',
+              true,
             ),
           },
         ],

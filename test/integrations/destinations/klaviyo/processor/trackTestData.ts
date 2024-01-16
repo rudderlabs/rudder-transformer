@@ -48,28 +48,31 @@ export const trackTestData = [
         body: [
           {
             destination: overrideDestination(destination, { flattenProperties: true }),
-            message: generateTrackPayload({
-              type: 'track',
-              event: 'TestEven001',
-              sentAt: '2021-01-25T16:12:02.048Z',
-              userId: 'sajal12',
-              context: {
-                traits: {
-                  ...commonTraits,
-                  email: 'test@rudderstack.com',
-                  phone: '9112340375',
-                  plan_details: {
-                    plan_type: 'gold',
-                    duration: '3 months',
+            message: generateTrackPayload(
+              {
+                type: 'track',
+                event: 'TestEven001',
+                sentAt: '2021-01-25T16:12:02.048Z',
+                userId: 'sajal12',
+                context: {
+                  traits: {
+                    ...commonTraits,
+                    email: 'test@rudderstack.com',
+                    phone: '9112340375',
+                    plan_details: {
+                      plan_type: 'gold',
+                      duration: '3 months',
+                    },
                   },
                 },
+                properties: {
+                  vicePresdentInfo: commonProps,
+                },
+                anonymousId: '9c6bd77ea9da3e68',
+                originalTimestamp: '2021-01-25T15:32:56.409Z',
               },
-              properties: {
-                vicePresdentInfo: commonProps,
-              },
-              anonymousId: '9c6bd77ea9da3e68',
-              originalTimestamp: '2021-01-25T15:32:56.409Z',
-            }),
+              true,
+            ),
           },
         ],
       },
@@ -129,27 +132,30 @@ export const trackTestData = [
         body: [
           {
             destination,
-            message: generateTrackPayload({
-              type: 'track',
-              event: 'TestEven002',
-              sentAt: '2021-01-25T16:12:02.048Z',
-              userId: 'sajal12',
-              context: {
-                traits: {
-                  ...commonTraits,
-                  name: 'Test',
-                  email: 'test@rudderstack.com',
-                  phone: '9112340375',
-                  description: 'Sample description',
+            message: generateTrackPayload(
+              {
+                type: 'track',
+                event: 'TestEven002',
+                sentAt: '2021-01-25T16:12:02.048Z',
+                userId: 'sajal12',
+                context: {
+                  traits: {
+                    ...commonTraits,
+                    name: 'Test',
+                    email: 'test@rudderstack.com',
+                    phone: '9112340375',
+                    description: 'Sample description',
+                  },
                 },
+                properties: {
+                  ...commonProps,
+                  revenue: 3000,
+                },
+                anonymousId: '9c6bd77ea9da3e68',
+                originalTimestamp: '2021-01-25T15:32:56.409Z',
               },
-              properties: {
-                ...commonProps,
-                revenue: 3000,
-              },
-              anonymousId: '9c6bd77ea9da3e68',
-              originalTimestamp: '2021-01-25T15:32:56.409Z',
-            }),
+              true,
+            ),
           },
         ],
       },
@@ -206,22 +212,25 @@ export const trackTestData = [
         body: [
           {
             destination: overrideDestination(destination, { enforceEmailAsPrimary: true }),
-            message: generateTrackPayload({
-              type: 'track',
-              event: 'TestEven001',
-              sentAt: '2021-01-25T16:12:02.048Z',
-              userId: 'sajal12',
-              context: {
-                traits: {
-                  ...commonTraits,
-                  email: 'test@rudderstack.com',
-                  phone: '9112340375',
+            message: generateTrackPayload(
+              {
+                type: 'track',
+                event: 'TestEven001',
+                sentAt: '2021-01-25T16:12:02.048Z',
+                userId: 'sajal12',
+                context: {
+                  traits: {
+                    ...commonTraits,
+                    email: 'test@rudderstack.com',
+                    phone: '9112340375',
+                  },
                 },
+                properties: commonProps,
+                anonymousId: '9c6bd77ea9da3e68',
+                originalTimestamp: '2021-01-25T15:32:56.409Z',
               },
-              properties: commonProps,
-              anonymousId: '9c6bd77ea9da3e68',
-              originalTimestamp: '2021-01-25T15:32:56.409Z',
-            }),
+              true,
+            ),
           },
         ],
       },
@@ -276,18 +285,21 @@ export const trackTestData = [
         body: [
           {
             destination: overrideDestination(destination, { enforceEmailAsPrimary: true }),
-            message: generateTrackPayload({
-              type: 'track',
-              event: 'TestEven001',
-              sentAt: '2021-01-25T16:12:02.048Z',
-              userId: 'sajal12',
-              context: {
-                traits: commonTraits,
+            message: generateTrackPayload(
+              {
+                type: 'track',
+                event: 'TestEven001',
+                sentAt: '2021-01-25T16:12:02.048Z',
+                userId: 'sajal12',
+                context: {
+                  traits: commonTraits,
+                },
+                properties: commonProps,
+                anonymousId: '9c6bd77ea9da3e68',
+                originalTimestamp: '2021-01-25T15:32:56.409Z',
               },
-              properties: commonProps,
-              anonymousId: '9c6bd77ea9da3e68',
-              originalTimestamp: '2021-01-25T15:32:56.409Z',
-            }),
+              true,
+            ),
           },
         ],
       },

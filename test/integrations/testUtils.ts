@@ -78,14 +78,14 @@ export const overrideDestination = (destination, overrideConfigValues) => {
   });
 };
 
-export const generateIndentifyPayload = (parametersOverride: any) => {
+export const generateIndentifyPayload = (parametersOverride: any, simplifiedPayload = false) => {
   const payload = {
     type: 'identify',
     sentAt: parametersOverride.sentAt || '2021-01-03T17:02:53.195Z',
     userId: parametersOverride.userId || 'default-userId',
     channel: 'web',
-    context: {
-      externalId: parametersOverride.externalId || [],
+    context: removeUndefinedAndNullValues({
+      externalId: parametersOverride.externalId,
       os: { name: '', version: '1.12.3' },
       app: {
         name: 'RudderLabs JavaScript SDK',
@@ -101,26 +101,44 @@ export const generateIndentifyPayload = (parametersOverride: any) => {
       campaign: {},
       userAgent:
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0',
-    },
+    }),
     traits: parametersOverride.traits,
-    integrations: parametersOverride.integrations || {},
+    integrations: parametersOverride.integrations,
     rudderId: parametersOverride.rudderId || generateAlphanumericId(36),
     messageId: parametersOverride.messageId || generateAlphanumericId(36),
     anonymousId: parametersOverride.anonymousId || 'default-anonymousId',
     originalTimestamp: parametersOverride.originalTimestamp || '2021-01-03T17:02:53.193Z',
   };
 
+  if (simplifiedPayload) {
+    return {
+      type: 'identify',
+      sentAt: parametersOverride.sentAt || '2021-01-03T17:02:53.195Z',
+      userId: parametersOverride.userId || 'default-userId',
+      traits: parametersOverride.traits,
+      integrations: parametersOverride.integrations,
+      rudderId: parametersOverride.rudderId || generateAlphanumericId(36),
+      messageId: parametersOverride.messageId || generateAlphanumericId(36),
+      context: {
+        externalId: parametersOverride.externalId,
+        traits: parametersOverride.context.traits,
+      },
+      anonymousId: parametersOverride.anonymousId || 'default-anonymousId',
+      originalTimestamp: parametersOverride.originalTimestamp || '2021-01-03T17:02:53.193Z',
+    };
+  }
+
   return removeUndefinedAndNullValues(payload);
 };
 
-export const generateTrackPayload = (parametersOverride: any) => {
+export const generateTrackPayload = (parametersOverride: any, simplifiedPayload = false) => {
   const payload = {
     type: 'track',
     sentAt: parametersOverride.sentAt || '2021-01-03T17:02:53.195Z',
     userId: parametersOverride.userId || 'default-user-id',
     channel: 'web',
-    context: {
-      externalId: parametersOverride.externalId || [],
+    context: removeUndefinedAndNullValues({
+      externalId: parametersOverride.externalId,
       os: { name: '', version: '1.12.3' },
       app: {
         name: 'RudderLabs JavaScript SDK',
@@ -136,21 +154,44 @@ export const generateTrackPayload = (parametersOverride: any) => {
       campaign: {},
       userAgent:
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0',
-    },
+    }),
     rudderId: parametersOverride.rudderId || generateAlphanumericId(36),
     messageId: parametersOverride.messageId || generateAlphanumericId(36),
     anonymousId: parametersOverride.anonymousId || 'default-anonymousId',
     originalTimestamp: parametersOverride.originalTimestamp || '2021-01-03T17:02:53.193Z',
     timestamp: parametersOverride.timestamp,
     event: parametersOverride.event || 'test-event',
-    integrations: parametersOverride.integrations || {},
-    properties: parametersOverride.properties || {},
+    integrations: parametersOverride.integrations,
+    properties: parametersOverride.properties,
   };
+
+  if (simplifiedPayload) {
+    return removeUndefinedAndNullValues({
+      type: 'track',
+      sentAt: parametersOverride.sentAt || '2021-01-03T17:02:53.195Z',
+      userId: parametersOverride.userId || 'default-user-id',
+      event: parametersOverride.event || 'test-event',
+      properties: parametersOverride.properties,
+      integrations: parametersOverride.integrations,
+      rudderId: parametersOverride.rudderId || generateAlphanumericId(36),
+      messageId: parametersOverride.messageId || generateAlphanumericId(36),
+      context: removeUndefinedAndNullValues({
+        externalId: parametersOverride.externalId,
+        traits: parametersOverride.context.traits,
+      }),
+      anonymousId: parametersOverride.anonymousId || 'default-anonymousId',
+      originalTimestamp: parametersOverride.originalTimestamp || '2021-01-03T17:02:53.193Z',
+    });
+  }
 
   return removeUndefinedAndNullValues(payload);
 };
 
-export const generatePageOrScreenPayload = (parametersOverride: any, eventType: string) => {
+export const generatePageOrScreenPayload = (
+  parametersOverride: any,
+  eventType: string,
+  simplifiedPayload = false,
+) => {
   const payload = {
     channel: 'web',
     userId: parametersOverride.userId || 'default-userId',
@@ -188,7 +229,7 @@ export const generatePageOrScreenPayload = (parametersOverride: any, eventType: 
         density: 2,
       },
       traits: parametersOverride.context.traits,
-      externalId: parametersOverride.externalId || [],
+      externalId: parametersOverride.externalId,
       userAgent:
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
     }),
@@ -196,16 +237,36 @@ export const generatePageOrScreenPayload = (parametersOverride: any, eventType: 
     anonymousId: parametersOverride.anonymousId || 'default-anonymousId',
     properties: parametersOverride.properties,
     type: eventType || 'page',
-    integrations: parametersOverride.integrations || {},
+    integrations: parametersOverride.integrations,
     sentAt: '2022-04-20T15:20:57Z',
   };
+
+  if (simplifiedPayload) {
+    return removeUndefinedAndNullValues({
+      channel: 'web',
+      userId: parametersOverride.userId || 'default-userId',
+      type: eventType || 'page',
+      event: parametersOverride.event,
+      properties: parametersOverride.properties,
+      integrations: parametersOverride.integrations,
+      rudderId: parametersOverride.rudderId || generateAlphanumericId(36),
+      context: removeUndefinedAndNullValues({
+        externalId: parametersOverride.externalId,
+        traits: parametersOverride.context.traits,
+      }),
+      timestamp: parametersOverride.timestamp,
+      anonymousId: parametersOverride.anonymousId || 'default-anonymousId',
+      originalTimestamp: parametersOverride.originalTimestamp || '2022-04-26T05:17:09Z',
+    });
+  }
+
   return removeUndefinedAndNullValues(payload);
 };
 
-export const generateGroupPayload = (parametersOverride: any) => {
+export const generateGroupPayload = (parametersOverride: any, simplifiedPayload = false) => {
   const payload = {
     channel: 'web',
-    context: {
+    context: removeUndefinedAndNullValues({
       app: {
         build: '1.0.0',
         name: 'RudderLabs JavaScript SDK',
@@ -227,8 +288,9 @@ export const generateGroupPayload = (parametersOverride: any) => {
       screen: {
         density: 2,
       },
-      traits: parametersOverride.context.traits || {},
-    },
+      traits: parametersOverride.context.traits,
+      externalId: parametersOverride.externalId,
+    }),
     messageId: parametersOverride.messageId || generateAlphanumericId(36),
     session_id: parametersOverride.session_id || generateAlphanumericId(36),
     originalTimestamp: parametersOverride.originalTimestamp || '2019-10-14T09:03:17.562Z',
@@ -237,11 +299,28 @@ export const generateGroupPayload = (parametersOverride: any) => {
     userId: parametersOverride.userId || 'default-user-id',
     type: 'group',
     groupId: parametersOverride.groupId,
-    traits: parametersOverride.traits || {},
-    integrations: parametersOverride.integrations || {},
+    traits: parametersOverride.traits,
+    integrations: parametersOverride.integrations,
     sentAt: parametersOverride.sentAt || '2019-10-14T09:03:22.563Z',
   };
-  return payload;
+  if (simplifiedPayload) {
+    return removeUndefinedAndNullValues({
+      channel: 'web',
+      userId: parametersOverride.userId || 'default-userId',
+      type: 'group',
+      groupId: parametersOverride.groupId,
+      traits: parametersOverride.traits,
+      integrations: parametersOverride.integrations,
+      context: removeUndefinedAndNullValues({
+        externalId: parametersOverride.externalId,
+        traits: parametersOverride.context.traits,
+      }),
+      timestamp: parametersOverride.timestamp,
+      anonymousId: parametersOverride.anonymousId || generateAlphanumericId(36),
+      originalTimestamp: parametersOverride.originalTimestamp || '2019-10-14T09:03:17.562Z',
+    });
+  }
+  return removeUndefinedAndNullValues(payload);
 };
 
 export const transformResultBuilder = (matchData) => {

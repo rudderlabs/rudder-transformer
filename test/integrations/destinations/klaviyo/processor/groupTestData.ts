@@ -32,21 +32,24 @@ export const groupTestData = [
         body: [
           {
             destination,
-            message: generateGroupPayload({
-              userId: 'user123',
-              groupId: 'XUepkK',
-              traits: {
-                subscribe: true,
-              },
-              context: {
+            message: generateGroupPayload(
+              {
+                userId: 'user123',
+                groupId: 'XUepkK',
                 traits: {
-                  email: 'test@rudderstack.com',
-                  phone: '+12 345 678 900',
-                  consent: ['email'],
+                  subscribe: true,
                 },
+                context: {
+                  traits: {
+                    email: 'test@rudderstack.com',
+                    phone: '+12 345 678 900',
+                    consent: ['email'],
+                  },
+                },
+                timestamp: '2020-01-21T00:21:34.208Z',
               },
-              timestamp: '2020-01-21T00:21:34.208Z',
-            }),
+              true,
+            ),
           },
         ],
       },
@@ -94,21 +97,24 @@ export const groupTestData = [
         body: [
           {
             destination,
-            message: generateGroupPayload({
-              userId: 'user123',
-              groupId: '',
-              traits: {
-                subscribe: true,
-              },
-              context: {
+            message: generateGroupPayload(
+              {
+                userId: 'user123',
+                groupId: '',
                 traits: {
-                  email: 'test@rudderstack.com',
-                  phone: '+12 345 678 900',
-                  consent: 'email',
+                  subscribe: true,
                 },
+                context: {
+                  traits: {
+                    email: 'test@rudderstack.com',
+                    phone: '+12 345 678 900',
+                    consent: 'email',
+                  },
+                },
+                timestamp: '2020-01-21T00:21:34.208Z',
               },
-              timestamp: '2020-01-21T00:21:34.208Z',
-            }),
+              true,
+            ),
           },
         ],
       },

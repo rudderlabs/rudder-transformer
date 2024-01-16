@@ -36,6 +36,7 @@ const {
   handleRtTfSingleEventError,
   flattenJson,
   isNewStatusCodesAccepted,
+  validateEventName,
 } = require('../../util');
 const { JSON_MIME_TYPE, HTTP_STATUS_CODES } = require('../../util/constant');
 
@@ -156,7 +157,8 @@ const trackRequestHandler = (message, category, destination) => {
   const payload = {};
   const { privateApiKey, flattenProperties } = destination.Config;
   let event = get(message, 'event');
-  event = event ? event.trim().toLowerCase() : event;
+  validateEventName(event);
+  event = event.trim().toLowerCase();
   let attributes = {};
   if (ecomEvents.includes(event) && message.properties) {
     const eventName = eventNameMapping[event];

@@ -1493,6 +1493,115 @@ export const data = [
 	},
 	{
 		"name": "klaviyo",
+		"description": "Track event call -> Invalid event i.e. sent as non-string",
+		"feature": "processor",
+		"module": "destination",
+		"version": "v0",
+		"input": {
+			"request": {
+				"body": [
+					{
+						"destination": {
+							"Config": {
+								"publicApiKey": "dummyPublicApiKey",
+								"privateApiKey": "dummyPrivateApiKey"
+							}
+						},
+						"message": {
+							"type": "track",
+							"event": { "name": "TestEven002" },
+							"sentAt": "2021-01-25T16:12:02.048Z",
+							"userId": "sajal12",
+							"channel": "mobile",
+							"context": {
+								"os": {
+									"name": "Android",
+									"version": "10"
+								},
+								"app": {
+									"name": "KlaviyoTest",
+									"build": "1",
+									"version": "1.0",
+									"namespace": "com.rudderstack.android.rudderstack.sampleAndroidApp"
+								},
+								"device": {
+									"id": "9c6bd77ea9da3e68",
+									"name": "raphaelin",
+									"type": "android",
+									"model": "Redmi K20 Pro",
+									"manufacturer": "Xiaomi"
+								},
+								"locale": "en-IN",
+								"screen": {
+									"width": 1080,
+									"height": 2210,
+									"density": 440
+								},
+								"traits": {
+									"id": "user@1",
+									"age": "22",
+									"name": "Test",
+									"email": "test@rudderstack.com",
+									"phone": "9112340375",
+									"anonymousId": "9c6bd77ea9da3e68",
+									"description": "Sample description"
+								},
+								"library": {
+									"name": "com.rudderstack.android.sdk.core",
+									"version": "1.0.2"
+								},
+								"network": {
+									"wifi": true,
+									"carrier": "airtel",
+									"cellular": true,
+									"bluetooth": false
+								},
+								"timezone": "Asia/Kolkata",
+								"userAgent": "Dalvik/2.1.0 (Linux; U; Android 10; Redmi K20 Pro MIUI/V12.0.4.0.QFKINXM)"
+							},
+							"rudderId": "b7b24f86-f7bf-46d8-b2b4-ccafc080239c",
+							"messageId": "1611588776408-ee5a3212-fbf9-4cbb-bbad-3ed0f7c6a2ce",
+							"properties": {
+								"PreviouslyVicePresident": true,
+								"YearElected": 1801,
+								"VicePresidents": [
+									"Aaron Burr",
+									"George Clinton"
+								],
+								"revenue": 3000
+							},
+							"anonymousId": "9c6bd77ea9da3e68",
+							"integrations": {
+								"All": true
+							},
+							"originalTimestamp": "2021-01-25T15:32:56.409Z"
+						}
+					}
+				]
+			}
+		},
+		"output": {
+			"response": {
+				"status": 200,
+				"body": [
+					{
+						"error": "Event is a required field and should be a string",
+						"statTags": {
+							"destType": "KLAVIYO",
+							"errorCategory": "dataValidation",
+							"errorType": "instrumentation",
+							"feature": "processor",
+							"implementation": "native",
+							"module": "destination",
+						},
+						"statusCode": 400
+					}
+				]
+			}
+		}
+	},
+	{
+		"name": "klaviyo",
 		"description": "Track event call, with make email or phone as primary identifier toggle on",
 		"feature": "processor",
 		"module": "destination",

@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file. See [standa
 ### Bug Fixes
 
 * mixpanel timestamp in ms ([#2990](https://github.com/rudderlabs/rudder-transformer/issues/2990)) ([0da63a4](https://github.com/rudderlabs/rudder-transformer/commit/0da63a4e368e59d46c1eaa4a77d4ac81e686183a))
+* klaviyo: Event validation to be string before operating on it ([#2994](https://github.com/rudderlabs/rudder-transformer/issues/2994)) ([cd68d7c](https://github.com/rudderlabs/rudder-transformer/commit/cd68d7c4068588a325029e0cc523b74c3d3ccb1a))
 
 ## [1.53.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.52.4...v1.53.0) (2024-01-08)
 

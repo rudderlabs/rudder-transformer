@@ -17,13 +17,9 @@ const {
   handleRtTfSingleEventError,
 } = require('../../util');
 const { getContents, hashUserField } = require('./util');
-const {
-  trackMappingV2,
-  trackEndpointV2,
-  eventNameMapping,
-  PARTNER_NAME,
-  maxBatchSizeV2,
-} = require('./config');
+const config = require('./config');
+
+const { trackMappingV2, trackEndpointV2, eventNameMapping, PARTNER_NAME } = config;
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
@@ -35,7 +31,7 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
  * @param {*} event
  * @returns track payload
  */
-const getTrackResponsePayload = (message, config, event) => {
+const getTrackResponsePayload = (message, destConfig, event) => {
   const payload = constructPayload(message, trackMappingV2);
 
   // if contents is not an array converting it into array
@@ -54,7 +50,7 @@ const getTrackResponsePayload = (message, config, event) => {
   if (isDefinedAndNotNullAndNotEmpty(externalId)) {
     set(payload, 'user.external_id', externalId);
   }
-  if (config.hashUserProperties && isDefinedAndNotNullAndNotEmpty(payload.user)) {
+  if (destConfig.hashUserProperties && isDefinedAndNotNullAndNotEmpty(payload.user)) {
     payload.user = hashUserField(payload.user);
   }
   payload.event = event;
@@ -661,7 +657,8 @@ const batchEvents = (eventsChunk) => {
   const { pixelCode } = destination.Config;
   eventsChunk.forEach((event) => {
     const eventData = event.message[0]?.body.JSON.data;
-    if (Array.isArray(eventData) && eventData?.length > maxBatchSizeV2 - data.length) {
+    // eslint-disable-next-line unicorn/consistent-destructuring
+    if (Array.isArray(eventData) && eventData?.length > config.maxBatchSizeV2 - data.length) {
       // Partner name must be added above "data": [..];
       events.push({
         event: {

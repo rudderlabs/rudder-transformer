@@ -1,11 +1,4 @@
 const { removeUndefinedAndNullValues, hashToSha256 } = require('../../util');
-/**
- * This returns content type from properties object if nothing is present in payload it return default values 'product
- * @param {*} properties message.proeprties
- * @returns
- */
-const getContentTypeOnly = (properties) =>
-  properties.contentType || properties.content_type || 'product';
 
 /**
  * Prepare contents array from products array
@@ -67,4 +60,4 @@ const hashUserField = (user) => {
   }
   return updatedUser;
 };
-module.exports = { getContents, getContentTypeOnly, hashUserField };
+module.exports = { getContents, hashUserField };

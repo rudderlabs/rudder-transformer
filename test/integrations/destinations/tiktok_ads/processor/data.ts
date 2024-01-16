@@ -6513,4 +6513,342 @@ export const data = [
       },
     },
   },
+  {
+    name: 'tiktok_ads',
+    description: 'Test 43 -> V2 -> Contents present as object in properties',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: '21e13f4bc7ceddad',
+              channel: 'web',
+              context: {
+                traits: {
+                  email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f'
+                },
+                page: {
+                  url: 'http://demo.mywebsite.com/purchase',
+                  referrer: 'http://demo.mywebsite.com',
+                },
+                userAgent:
+                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                ip: '13.57.97.131',
+                locale: 'en-US',
+                externalId: [
+                  {
+                    type: 'tiktokExternalId',
+                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                  },
+                ],
+              },
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
+              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+              originalTimestamp: '2019-10-14T09:03:17.562Z',
+              timestamp: '2020-09-17T19:49:27Z',
+              type: 'track',
+              event: 'addToCart',
+              properties: {
+                eventId: '1616318632825_357',
+                contents: {
+                  price: 8,
+                  quantity: 2,
+                  content_type: 'socks',
+                  content_id: '1077218',
+                },
+                clickId: 'dummyclickId',
+                currency: 'USD',
+                value: 46,
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T09:03:22.563Z',
+            },
+            destination: {
+              Config: {
+                version: 'v2',
+                accessToken: 'dummyAccessToken',
+                pixelCode: '{{PIXEL-CODE}}',
+                hashUserProperties: false,
+                sendCustomEvents: true,
+                eventsToStandard: [
+                  {
+                    from: 'addToCart',
+                    to: 'download',
+                  }
+                ],
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/event/track/',
+              headers: {
+                'Access-Token': 'dummyAccessToken',
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  event_source: 'web',
+                  event_source_id: '{{PIXEL-CODE}}',
+                  partner_name: 'RudderStack',
+                  data: [
+                    {
+                      event: 'download',
+                      event_id: '1616318632825_357',
+                      event_time: 1600372167,
+                      properties: {
+                        content_type: "product",
+                        contents: [{
+                          price: 8,
+                          quantity: 2,
+                          content_type: 'socks',
+                          content_id: '1077218',
+                        }],
+                        currency: 'USD',
+                        value: 46,
+                      },
+                      page: {
+                        url: 'http://demo.mywebsite.com/purchase',
+                        referrer: 'http://demo.mywebsite.com',
+                      },
+                      user: {
+                        locale: "en-US",
+                        email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
+                        external_id:
+                          'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                        ip: '13.57.97.131',
+                        user_agent:
+                          'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                      },
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'tiktok_ads',
+    description: 'Test 44 -> Events 2.0 Event type identify not suported',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: '21e13f4bc7ceddad',
+              channel: 'web',
+              context: {
+                externalId: [
+                  {
+                    type: 'tiktokExternalId',
+                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                  },
+                ],
+              },
+              timestamp: '2020-09-17T19:49:27Z',
+              type: 'identify',
+              event: 'contact',
+              properties: {},
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T09:03:22.563Z',
+            },
+            destination: {
+              Config: {
+                accessToken: 'dummyAccessToken',
+                pixelCode: '{{PIXEL-CODE}}',
+                hashUserProperties: false,
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            statusCode: 400,
+            error: 'Event type identify is not supported',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'TIKTOK_ADS',
+              module: 'destination',
+              implementation: 'native',
+              feature: 'processor',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'tiktok_ads',
+    description: 'Test 45-> events 1.0 build contents from properties.product.$ where length of prodicts is 0',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: '21e13f4bc7ceddad',
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                userAgent:
+                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                ip: '13.57.97.131',
+                locale: 'en-US',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                screen: {
+                  density: 2,
+                },
+                externalId: [
+                  {
+                    type: 'tiktokExternalId',
+                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                  },
+                ],
+              },
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
+              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+              originalTimestamp: '2019-10-14T09:03:17.562Z',
+              timestamp: '2020-09-17T19:49:27Z',
+              type: 'track',
+              event: 'checkout step completed',
+              properties: {
+                eventId: '1616318632825_357',
+                products: [],
+                currency: 'USD',
+                value: 46,
+                context: {
+                  page: {
+                    url: 'http://demo.mywebsite.com/purchase',
+                    referrer: 'http://demo.mywebsite.com',
+                  },
+                  user: {
+                    phone_number:
+                      '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
+                    email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
+                  },
+                },
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T09:03:22.563Z',
+            },
+            destination: {
+              Config: {
+                accessToken: 'dummyAccessToken',
+                pixelCode: '{{PIXEL-CODE}}',
+                hashUserProperties: false,
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+              headers: {
+                'Access-Token': 'dummyAccessToken',
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  pixel_code: '{{PIXEL-CODE}}',
+                  event: 'CompletePayment',
+                  event_id: '1616318632825_357',
+                  timestamp: '2020-09-17T19:49:27Z',
+                  properties: {
+                    currency: 'USD',
+                    value: 46,
+                    contents: [],
+                  },
+                  context: {
+                    page: {
+                      url: 'http://demo.mywebsite.com/purchase',
+                      referrer: 'http://demo.mywebsite.com',
+                    },
+                    user: {
+                      phone_number:
+                        '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
+                      email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
+                      external_id:
+                        'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                    },
+                    ip: '13.57.97.131',
+                    user_agent:
+                      'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                  },
+                  partner_name: 'RudderStack',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];

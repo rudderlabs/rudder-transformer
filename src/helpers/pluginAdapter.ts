@@ -21,36 +21,34 @@ import {
 import { generateErrorObject } from '../v0/util';
 import { MappedToDestinationKey } from '../constants';
 
-type TransformedPayloadInfo = {
+export type TransformedPayloadInfo = {
   payload: any[];
   metadata: Metadata[];
-  destination: Destination;
 };
 
-type ErrorInfo = {
+export type ErrorInfo = {
   error: any;
   metadata: Metadata[];
-  destination: Destination;
 };
 
-type ProcTransformedState = {
+export type ProcTransformedState = {
   payload: TransformedOutput;
   metadata: Metadata;
   destination: Destination;
 };
 
-type RtTransformedState = {
+export type RtTransformedState = {
   payload: TransformedOutput[];
   metadata: Metadata[];
   destination: Destination;
 };
 
-type ErrorState = { metadata: Metadata; response: any; destination: Destination };
+export type ErrorState = { metadata: Metadata; response: any; destination: Destination };
 
 export class PluginAdapter {
   private static pluginCache: Map<string, Integration> = new Map();
 
-  static deduplicateMetadata(metadata: Metadata[]) {
+  static deduplicateMetadataByJobId(metadata: Metadata[]) {
     const jobIdMap = new Map();
     const deduplicatedMetadata: Metadata[] = [];
     for (const meta of metadata) {
@@ -78,6 +76,12 @@ export class PluginAdapter {
   static handleErrors(errors: ErrorInfo[], destination: Destination): ErrorState[] {
     const errorList: ErrorState[] = [];
 
+    // deduplicate error metadata for each error
+    errors.forEach((error) => {
+      // eslint-disable-next-line no-param-reassign
+      error.metadata = PluginAdapter.deduplicateMetadataByJobId(error.metadata);
+    });
+
     if (errors.length > 0) {
       const nestedErrorList = errors.map((e) =>
         e.metadata.map((metadata) => ({
@@ -93,7 +97,6 @@ export class PluginAdapter {
   }
 
   // Proc Transform Related Functions
-
   static handleProcSuccess(
     responseList: TransformedPayloadInfo[],
     destination: Destination,
@@ -244,7 +247,7 @@ export class PluginAdapter {
         finalResponse.push({
           payload: rankedResponse.payload.map((payload) => payload as TransformedOutput),
           // only stored deduplicated metadata in the final response
-          metadata: PluginAdapter.deduplicateMetadata(rankedResponse.metadata),
+          metadata: PluginAdapter.deduplicateMetadataByJobId(rankedResponse.metadata),
           destination,
         });
         // update the jobIdPositionMap for all the jobIds in the rankedResponse

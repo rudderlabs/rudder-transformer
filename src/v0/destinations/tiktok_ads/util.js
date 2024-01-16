@@ -21,7 +21,7 @@ const getContents = (message) => {
         price: product.price,
         quantity: product.quantity,
         description: product.description,
-        brand: product.brand
+        brand: product.brand,
       };
       contents.push(removeUndefinedAndNullValues(singleProduct));
     });

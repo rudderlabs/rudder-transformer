@@ -611,7 +611,6 @@ describe('Mixpanel utils test', () => {
       const setOnceProperties = ['name', 'email'];
 
       const result = trimTraits(traits, contextTraits, setOnceProperties);
-      console.log(result);
 
       expect(result).toEqual({
         traits: {

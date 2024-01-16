@@ -45,6 +45,7 @@ const retrieveUserId = async (apiKey, message) => {
     {
       destType: 'canny',
       feature: 'transformation',
+      endpointPath: `/v1/users/retrieve`,
     },
   );
   logger.debug(response);

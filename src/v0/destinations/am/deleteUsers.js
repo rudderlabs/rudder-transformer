@@ -28,6 +28,7 @@ const userDeletionHandler = async (userAttributes, config) => {
   // Ref : https://www.docs.developers.amplitude.com/analytics/apis/user-privacy-api/#response
   const batchEvents = getUserIdBatches(userAttributes, DELETE_MAX_BATCH_SIZE);
   const url = 'https://amplitude.com/api/2/deletions/users';
+  const endpointPath = '/api/2/deletions/users';
   await Promise.all(
     batchEvents.map(async (batch) => {
       const data = {
@@ -41,6 +42,7 @@ const userDeletionHandler = async (userAttributes, config) => {
       const resp = await httpPOST(url, data, requestOptions, {
         destType: 'am',
         feature: 'deleteUsers',
+        endpointPath,
       });
       const handledDelResponse = processAxiosResponse(resp);
       if (!isHttpStatusSuccess(handledDelResponse.status)) {

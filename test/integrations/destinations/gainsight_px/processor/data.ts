@@ -515,7 +515,6 @@ export const data = [
                   firstName: 'Sample',
                   lastName: 'User',
                   signUpDate: 1624431528295,
-                  createDate: 1571043797562,
                   title: 'engineer',
                   propertyKeys: ['AP-XABC-123'],
                   location: {
@@ -1716,7 +1715,7 @@ export const data = [
   },
   {
     name: 'gainsight_px',
-    description: 'Test 14',
+    description: 'Test 14 : existing user with no createdAt field in traits but signUpDate exists',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -1815,7 +1814,6 @@ export const data = [
                   firstName: 'Sample',
                   lastName: 'User',
                   signUpDate: 1624431528295,
-                  createDate: 1571043797562,
                   title: 'engineer',
                   propertyKeys: ['AP-XABC-123'],
                   location: {
@@ -1839,6 +1837,324 @@ export const data = [
               version: '1',
               endpoint: 'https://api.aptrinsic.com/v1/users/sample-user-id',
               userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'gainsight_px',
+    description: 'Test 15 : new user with no signUpDate and createDate in traits',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                apiKey: 'sample-api-key',
+                productTagKey: 'AP-XABC-123',
+                accountAttributeMap: [
+                  {
+                    from: '',
+                    to: '',
+                  },
+                ],
+                userAttributeMap: [
+                  {
+                    from: 'hobbyCustomField',
+                    to: 'hobby',
+                  },
+                ],
+                globalContextMap: [],
+              },
+            },
+            message: {
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                locale: 'en-US',
+                ip: '0.0.0.0',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                screen: {
+                  density: 2,
+                },
+              },
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
+              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+              originalTimestamp: '2019-10-14T09:03:17.562Z',
+              userId: 'absent-id',
+              anonymousId: 'sample-anon-id',
+              type: 'identify',
+              traits: {
+                type: 'USER',
+                gender: 'MALE',
+                email: 'user@email.com',
+                firstName: 'Sample',
+                lastName: 'User',
+                title: 'engineer',
+                countryName: 'USA',
+                countryCode: 'US',
+                city: 'New York',
+                hobbyCustomField: 'Sample Hobby',
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T09:03:22.563Z',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              body: {
+                XML: {},
+                JSON_ARRAY: {},
+                FORM: {},
+                JSON: {
+                  identifyId: 'absent-id',
+                  type: 'USER',
+                  gender: 'MALE',
+                  email: 'user@email.com',
+                  firstName: 'Sample',
+                  lastName: 'User',
+                  signUpDate: 1571043797562,
+                  createDate: 1571043797562,
+                  title: 'engineer',
+                  propertyKeys: ['AP-XABC-123'],
+                  location: {
+                    countryName: 'USA',
+                    countryCode: 'US',
+                    city: 'New York',
+                  },
+                  customAttributes: {
+                    hobby: 'Sample Hobby',
+                  },
+                },
+              },
+              type: 'REST',
+              files: {},
+              method: 'POST',
+              params: {},
+              headers: {
+                'X-APTRINSIC-API-KEY': 'sample-api-key',
+                'Content-Type': 'application/json',
+              },
+              version: '1',
+              endpoint: 'https://api.aptrinsic.com/v1/users',
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'gainsight_px',
+    description: 'Test 16 : existing user with no signUpDate and createDate in traits',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              ID: '1uLy1tqsoo9RhL1zLiqLQTKBIKL',
+              Name: 'gainsight-px-dest',
+              DestinationDefinition: {
+                ID: '1uLuOdwPCqtei55ZKXewwPhjQPf',
+                Name: 'GAINSIGHT_PX',
+                DisplayName: 'Gainsight PX',
+                Config: {
+                  destConfig: {
+                    defaultConfig: [
+                      'apiKey',
+                      'productTagKey',
+                      'userAttributeMap',
+                      'accountAttributeMap',
+                      'globalContextMap',
+                    ],
+                  },
+                  excludeKeys: [],
+                  includeKeys: [],
+                  saveDestinationResponse: true,
+                  secretKeys: ['apiKey', 'productTagKey'],
+                  supportedSourceTypes: [
+                    'android',
+                    'ios',
+                    'web',
+                    'unity',
+                    'amp',
+                    'cloud',
+                    'reactnative',
+                    'flutter',
+                  ],
+                  transformAt: 'router',
+                  transformAtV1: 'router',
+                },
+                ResponseRules: {},
+              },
+              Config: {
+                accountAttributeMap: [
+                  {
+                    from: 'cultureCustomField',
+                    to: 'culture',
+                  },
+                ],
+                apiKey: 'sample-api-key',
+                eventDelivery: false,
+                eventDeliveryTS: 1624472902670,
+                globalContextMap: [
+                  {
+                    from: 'kubrickTest',
+                    to: 'value',
+                  },
+                ],
+                productTagKey: 'AP-SAMPLE-2',
+                userAttributeMap: [
+                  {
+                    from: 'hobbyCustomField',
+                    to: 'hobby',
+                  },
+                ],
+              },
+              Enabled: true,
+              Transformations: [],
+              IsProcessorEnabled: true,
+            },
+            message: {
+              type: 'identify',
+              sentAt: '2021-06-25T08:59:52.891Z',
+              userId: 'stanley-kubrick',
+              channel: 'web',
+              context: {
+                os: {
+                  name: '',
+                  version: '',
+                },
+                app: {
+                  name: 'RudderLabs JavaScript SDK',
+                  build: '1.0.0',
+                  version: '1.1.18',
+                  namespace: 'com.rudderlabs.javascript',
+                },
+                page: {
+                  title: 'Test',
+                  search: '',
+                  path: 'index.html',
+                  url: 'http://127.0.0.1:3003/index.html',
+                  tab_url: 'http://127.0.0.1:3003/index.html',
+                  referrer: '$direct',
+                  initial_referrer: '$direct',
+                  referring_domain: '',
+                  initial_referring_domain: '',
+                },
+                locale: 'en-GB',
+                screen: {
+                  width: 1920,
+                  height: 1080,
+                  density: 1,
+                  innerWidth: 1920,
+                  innerHeight: 436,
+                },
+                traits: {
+                  name: 'Stanley Kubrick',
+                  email: 'stanley@kubrick.com',
+                  score: 100,
+                  title: 'Director/Film Maker',
+                  gender: 'Male',
+                  countryCode: 'US',
+                  countryName: 'USA',
+                  hobbyCustomField: 'Making films. Being a genius',
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.1.18',
+                },
+                campaign: {},
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36',
+              },
+              rudderId: '9a7820d0-0ff2-4451-b655-682cec15cbd2',
+              messageId: 'ff90d62e-a6e3-4e23-af20-03b4a249ef48',
+              timestamp: '2021-06-25T14:29:52.911+05:30',
+              receivedAt: '2021-06-25T14:29:52.911+05:30',
+              request_ip: '[::1]',
+              anonymousId: '1585ea2f-dddc-4d23-935f-c1196405d61e',
+              integrations: {
+                All: true,
+              },
+              originalTimestamp: '2021-06-25T08:59:52.891Z',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'PUT',
+              endpoint: 'https://api.aptrinsic.com/v1/users/stanley-kubrick',
+              userId: '',
+              headers: {
+                'X-APTRINSIC-API-KEY': 'sample-api-key',
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  email: 'stanley@kubrick.com',
+                  gender: 'MALE',
+                  title: 'Director/Film Maker',
+                  score: 100,
+                  location: {
+                    countryName: 'USA',
+                    countryCode: 'US',
+                  },
+                  firstName: 'Stanley',
+                  lastName: 'Kubrick',
+                  customAttributes: {
+                    hobby: 'Making films. Being a genius',
+                  },
+                  propertyKeys: ['AP-SAMPLE-2'],
+                  type: 'USER',
+                },
+                XML: {},
+                JSON_ARRAY: {},
+                FORM: {},
+              },
+              files: {},
             },
             statusCode: 200,
           },

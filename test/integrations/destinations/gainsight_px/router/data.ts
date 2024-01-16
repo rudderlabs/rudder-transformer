@@ -332,10 +332,8 @@ export const data = [
                   JSON: {
                     email: 'stanley@kubrick.com',
                     gender: 'MALE',
-                    signUpDate: 1624611592911,
                     title: 'Director/Film Maker',
                     score: 100,
-                    createDate: 1624611592911,
                     location: {
                       countryName: 'USA',
                       countryCode: 'US',

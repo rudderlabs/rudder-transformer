@@ -40,9 +40,9 @@ const prepareItemsPayload = (message) => {
   return items;
 };
 
-const getPrivacySetting = (message) => {
-  const integrationObj = getIntegrationsObj(message, 'THE_TRADE_DESK');
-};
+// const getPrivacySetting = (message) => {
+//   const integrationObj = getIntegrationsObj(message, 'THE_TRADE_DESK');
+// };
 
 const getDestinationExternalIDObject = (message) => {
   const { context } = message;
@@ -64,31 +64,31 @@ const prepareIdFromExternalId = (message) => {
   return { type, id };
 };
 
-const populateEventName = (message, destination) => {
-  let eventName;
-  const { event } = message;
-  const { eventsMapping } = destination.Config;
+// const populateEventName = (message, destination) => {
+//   let eventName;
+//   const { event } = message;
+//   const { eventsMapping } = destination.Config;
 
-  if (eventsMapping.length > 0) {
-    const keyMap = getHashFromArray(eventsMapping, 'from', 'to');
-    eventName = keyMap[event.toLowerCase()];
-  }
+//   if (eventsMapping.length > 0) {
+//     const keyMap = getHashFromArray(eventsMapping, 'from', 'to');
+//     eventName = keyMap[event.toLowerCase()];
+//   }
 
-  if (!eventName) {
-    const eventMapInfo = ECOMM_EVENT_MAP.find((eventMap) => {
-      if (eventMap.src.toLowerCase() === event.toLowerCase()) {
-        return eventMap;
-      }
-      return false;
-    });
+//   if (!eventName) {
+//     const eventMapInfo = ECOMM_EVENT_MAP.find((eventMap) => {
+//       if (eventMap.src.toLowerCase() === event.toLowerCase()) {
+//         return eventMap;
+//       }
+//       return false;
+//     });
 
-    if (isDefinedAndNotNull(eventMapInfo)) {
-      return eventMapInfo.dest;
-    }
-  }
+//     if (isDefinedAndNotNull(eventMapInfo)) {
+//       return eventMapInfo.dest;
+//     }
+//   }
 
-  return eventName;
-};
+//   return eventName;
+// };
 
 // "customProperties": [
 //     {

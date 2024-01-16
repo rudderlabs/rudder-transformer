@@ -6687,6 +6687,7 @@ export const data = [
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
+                version: "v2"
               },
             },
           },

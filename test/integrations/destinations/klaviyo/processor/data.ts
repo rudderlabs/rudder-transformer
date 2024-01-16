@@ -1679,7 +1679,7 @@ export const data = [
         status: 200,
         body: [
           {
-            error: 'Event type should be a string or undefined',
+            error: 'Event type should be a string',
             statTags: {
               destType: 'KLAVIYO',
               errorCategory: 'dataValidation',

@@ -156,7 +156,7 @@ const trackRequestHandler = (message, category, destination) => {
   const payload = {};
   const { privateApiKey, flattenProperties } = destination.Config;
   let event = get(message, 'event');
-  if (typeof event !== 'undefined' && typeof event !== 'string') {
+  if (event && typeof event !== 'string') {
     throw new InstrumentationError('Event type should be a string or undefined');
   }
   event = event ? event.trim().toLowerCase() : event;

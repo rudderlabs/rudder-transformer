@@ -78,7 +78,7 @@ export const overrideDestination = (destination, overrideConfigValues) => {
   });
 };
 
-export const generateIndentifyPayload = (parametersOverride: any, simplifiedPayload = false) => {
+export const generateIndentifyPayload = (parametersOverride: any) => {
   const payload = {
     type: 'identify',
     sentAt: parametersOverride.sentAt || '2021-01-03T17:02:53.195Z',
@@ -110,28 +110,28 @@ export const generateIndentifyPayload = (parametersOverride: any, simplifiedPayl
     originalTimestamp: parametersOverride.originalTimestamp || '2021-01-03T17:02:53.193Z',
   };
 
-  if (simplifiedPayload) {
-    return {
-      type: 'identify',
-      sentAt: parametersOverride.sentAt || '2021-01-03T17:02:53.195Z',
-      userId: parametersOverride.userId || 'default-userId',
-      traits: parametersOverride.traits,
-      integrations: parametersOverride.integrations,
-      rudderId: parametersOverride.rudderId || generateAlphanumericId(36),
-      messageId: parametersOverride.messageId || generateAlphanumericId(36),
-      context: {
-        externalId: parametersOverride.externalId,
-        traits: parametersOverride.context.traits,
-      },
-      anonymousId: parametersOverride.anonymousId || 'default-anonymousId',
-      originalTimestamp: parametersOverride.originalTimestamp || '2021-01-03T17:02:53.193Z',
-    };
-  }
-
   return removeUndefinedAndNullValues(payload);
 };
 
-export const generateTrackPayload = (parametersOverride: any, simplifiedPayload = false) => {
+export const generateSimplifiedIdentifyPayload = (parametersOverride: any) => {
+  return removeUndefinedAndNullValues({
+    type: 'identify',
+    sentAt: parametersOverride.sentAt || '2021-01-03T17:02:53.195Z',
+    userId: parametersOverride.userId || 'default-userId',
+    traits: parametersOverride.traits,
+    integrations: parametersOverride.integrations,
+    rudderId: parametersOverride.rudderId || generateAlphanumericId(36),
+    messageId: parametersOverride.messageId || generateAlphanumericId(36),
+    context: {
+      externalId: parametersOverride.externalId,
+      traits: parametersOverride.context.traits,
+    },
+    anonymousId: parametersOverride.anonymousId || 'default-anonymousId',
+    originalTimestamp: parametersOverride.originalTimestamp || '2021-01-03T17:02:53.193Z',
+  });
+};
+
+export const generateTrackPayload = (parametersOverride: any) => {
   const payload = {
     type: 'track',
     sentAt: parametersOverride.sentAt || '2021-01-03T17:02:53.195Z',
@@ -164,34 +164,29 @@ export const generateTrackPayload = (parametersOverride: any, simplifiedPayload 
     integrations: parametersOverride.integrations,
     properties: parametersOverride.properties,
   };
-
-  if (simplifiedPayload) {
-    return removeUndefinedAndNullValues({
-      type: 'track',
-      sentAt: parametersOverride.sentAt || '2021-01-03T17:02:53.195Z',
-      userId: parametersOverride.userId || 'default-user-id',
-      event: parametersOverride.event || 'test-event',
-      properties: parametersOverride.properties,
-      integrations: parametersOverride.integrations,
-      rudderId: parametersOverride.rudderId || generateAlphanumericId(36),
-      messageId: parametersOverride.messageId || generateAlphanumericId(36),
-      context: removeUndefinedAndNullValues({
-        externalId: parametersOverride.externalId,
-        traits: parametersOverride.context.traits,
-      }),
-      anonymousId: parametersOverride.anonymousId || 'default-anonymousId',
-      originalTimestamp: parametersOverride.originalTimestamp || '2021-01-03T17:02:53.193Z',
-    });
-  }
-
   return removeUndefinedAndNullValues(payload);
 };
 
-export const generatePageOrScreenPayload = (
-  parametersOverride: any,
-  eventType: string,
-  simplifiedPayload = false,
-) => {
+export const generateSimplifiedTrackPayload = (parametersOverride: any) => {
+  return removeUndefinedAndNullValues({
+    type: 'track',
+    sentAt: parametersOverride.sentAt || '2021-01-03T17:02:53.195Z',
+    userId: parametersOverride.userId || 'default-user-id',
+    event: parametersOverride.event || 'test-event',
+    properties: parametersOverride.properties,
+    integrations: parametersOverride.integrations,
+    rudderId: parametersOverride.rudderId || generateAlphanumericId(36),
+    messageId: parametersOverride.messageId || generateAlphanumericId(36),
+    context: removeUndefinedAndNullValues({
+      externalId: parametersOverride.externalId,
+      traits: parametersOverride.context.traits,
+    }),
+    anonymousId: parametersOverride.anonymousId || 'default-anonymousId',
+    originalTimestamp: parametersOverride.originalTimestamp || '2021-01-03T17:02:53.193Z',
+  });
+};
+
+export const generatePageOrScreenPayload = (parametersOverride: any, eventType: string) => {
   const payload = {
     channel: 'web',
     userId: parametersOverride.userId || 'default-userId',
@@ -241,29 +236,32 @@ export const generatePageOrScreenPayload = (
     sentAt: '2022-04-20T15:20:57Z',
   };
 
-  if (simplifiedPayload) {
-    return removeUndefinedAndNullValues({
-      channel: 'web',
-      userId: parametersOverride.userId || 'default-userId',
-      type: eventType || 'page',
-      event: parametersOverride.event,
-      properties: parametersOverride.properties,
-      integrations: parametersOverride.integrations,
-      rudderId: parametersOverride.rudderId || generateAlphanumericId(36),
-      context: removeUndefinedAndNullValues({
-        externalId: parametersOverride.externalId,
-        traits: parametersOverride.context.traits,
-      }),
-      timestamp: parametersOverride.timestamp,
-      anonymousId: parametersOverride.anonymousId || 'default-anonymousId',
-      originalTimestamp: parametersOverride.originalTimestamp || '2022-04-26T05:17:09Z',
-    });
-  }
-
   return removeUndefinedAndNullValues(payload);
 };
 
-export const generateGroupPayload = (parametersOverride: any, simplifiedPayload = false) => {
+export const generateSimplifiedPageOrScreenPayload = (
+  parametersOverride: any,
+  eventType: string,
+) => {
+  return removeUndefinedAndNullValues({
+    channel: 'web',
+    userId: parametersOverride.userId || 'default-userId',
+    type: eventType || 'page',
+    event: parametersOverride.event,
+    properties: parametersOverride.properties,
+    integrations: parametersOverride.integrations,
+    rudderId: parametersOverride.rudderId || generateAlphanumericId(36),
+    context: removeUndefinedAndNullValues({
+      externalId: parametersOverride.externalId,
+      traits: parametersOverride.context.traits,
+    }),
+    timestamp: parametersOverride.timestamp,
+    anonymousId: parametersOverride.anonymousId || 'default-anonymousId',
+    originalTimestamp: parametersOverride.originalTimestamp || '2022-04-26T05:17:09Z',
+  });
+};
+
+export const generateGroupPayload = (parametersOverride: any) => {
   const payload = {
     channel: 'web',
     context: removeUndefinedAndNullValues({
@@ -303,24 +301,25 @@ export const generateGroupPayload = (parametersOverride: any, simplifiedPayload 
     integrations: parametersOverride.integrations,
     sentAt: parametersOverride.sentAt || '2019-10-14T09:03:22.563Z',
   };
-  if (simplifiedPayload) {
-    return removeUndefinedAndNullValues({
-      channel: 'web',
-      userId: parametersOverride.userId || 'default-userId',
-      type: 'group',
-      groupId: parametersOverride.groupId,
-      traits: parametersOverride.traits,
-      integrations: parametersOverride.integrations,
-      context: removeUndefinedAndNullValues({
-        externalId: parametersOverride.externalId,
-        traits: parametersOverride.context.traits,
-      }),
-      timestamp: parametersOverride.timestamp,
-      anonymousId: parametersOverride.anonymousId || generateAlphanumericId(36),
-      originalTimestamp: parametersOverride.originalTimestamp || '2019-10-14T09:03:17.562Z',
-    });
-  }
   return removeUndefinedAndNullValues(payload);
+};
+
+export const generateSimplifiedGroupPayload = (parametersOverride: any) => {
+  return removeUndefinedAndNullValues({
+    channel: 'web',
+    userId: parametersOverride.userId || 'default-userId',
+    type: 'group',
+    groupId: parametersOverride.groupId,
+    traits: parametersOverride.traits,
+    integrations: parametersOverride.integrations,
+    context: removeUndefinedAndNullValues({
+      externalId: parametersOverride.externalId,
+      traits: parametersOverride.context.traits,
+    }),
+    timestamp: parametersOverride.timestamp,
+    anonymousId: parametersOverride.anonymousId || generateAlphanumericId(36),
+    originalTimestamp: parametersOverride.originalTimestamp || '2019-10-14T09:03:17.562Z',
+  });
 };
 
 export const transformResultBuilder = (matchData) => {

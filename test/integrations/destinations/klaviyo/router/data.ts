@@ -1,5 +1,6 @@
 export const data = [
   {
+    id: 'klaviyo-router-test-1',
     name: 'klaviyo',
     description: 'Basic Router Test to test multiple payloads',
     scenario: 'Framework',

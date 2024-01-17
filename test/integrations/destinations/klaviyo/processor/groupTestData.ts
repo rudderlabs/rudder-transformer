@@ -1,4 +1,4 @@
-import { generateGroupPayload, transformResultBuilder } from '../../../testUtils';
+import { generateSimplifiedGroupPayload, transformResultBuilder } from '../../../testUtils';
 
 const destination = {
   Config: {
@@ -32,24 +32,21 @@ export const groupTestData = [
         body: [
           {
             destination,
-            message: generateGroupPayload(
-              {
-                userId: 'user123',
-                groupId: 'XUepkK',
-                traits: {
-                  subscribe: true,
-                },
-                context: {
-                  traits: {
-                    email: 'test@rudderstack.com',
-                    phone: '+12 345 678 900',
-                    consent: ['email'],
-                  },
-                },
-                timestamp: '2020-01-21T00:21:34.208Z',
+            message: generateSimplifiedGroupPayload({
+              userId: 'user123',
+              groupId: 'XUepkK',
+              traits: {
+                subscribe: true,
               },
-              true,
-            ),
+              context: {
+                traits: {
+                  email: 'test@rudderstack.com',
+                  phone: '+12 345 678 900',
+                  consent: ['email'],
+                },
+              },
+              timestamp: '2020-01-21T00:21:34.208Z',
+            }),
           },
         ],
       },
@@ -97,24 +94,21 @@ export const groupTestData = [
         body: [
           {
             destination,
-            message: generateGroupPayload(
-              {
-                userId: 'user123',
-                groupId: '',
-                traits: {
-                  subscribe: true,
-                },
-                context: {
-                  traits: {
-                    email: 'test@rudderstack.com',
-                    phone: '+12 345 678 900',
-                    consent: 'email',
-                  },
-                },
-                timestamp: '2020-01-21T00:21:34.208Z',
+            message: generateSimplifiedGroupPayload({
+              userId: 'user123',
+              groupId: '',
+              traits: {
+                subscribe: true,
               },
-              true,
-            ),
+              context: {
+                traits: {
+                  email: 'test@rudderstack.com',
+                  phone: '+12 345 678 900',
+                  consent: 'email',
+                },
+              },
+              timestamp: '2020-01-21T00:21:34.208Z',
+            }),
           },
         ],
       },

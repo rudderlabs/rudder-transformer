@@ -1,4 +1,4 @@
-import { generatePageOrScreenPayload, transformResultBuilder } from '../../../testUtils';
+import { generateSimplifiedPageOrScreenPayload, transformResultBuilder } from '../../../testUtils';
 
 const destination = {
   Config: {
@@ -23,7 +23,7 @@ export const screenTestData = [
         body: [
           {
             destination,
-            message: generatePageOrScreenPayload(
+            message: generateSimplifiedPageOrScreenPayload(
               {
                 event: 'TestEven001',
                 sentAt: '2021-01-25T16:12:02.048Z',
@@ -46,7 +46,6 @@ export const screenTestData = [
                 originalTimestamp: '2021-01-25T15:32:56.409Z',
               },
               'screen',
-              true,
             ),
           },
         ],

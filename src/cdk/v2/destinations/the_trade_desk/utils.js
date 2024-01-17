@@ -8,6 +8,7 @@ const {
   getSuccessRespEvents,
   removeUndefinedAndNullValues,
   handleRtTfSingleEventError,
+  isEmptyObject,
 } = require('../../../../v0/util');
 const tradeDeskConfig = require('./config');
 
@@ -68,7 +69,7 @@ const processRecordInputs = (inputs, destination) => {
 
     if (!isInsertOrDelete) {
       errorResponseList.push(handleRtTfSingleEventError(input, invalidActionTypeError, {}));
-    } else if (!fields || Object.keys(fields).length === 0) {
+    } else if (isEmptyObject(fields)) {
       errorResponseList.push(handleRtTfSingleEventError(input, emptyFieldsError, {}));
     } else {
       successMetadata.push(input.metadata);
@@ -90,6 +91,9 @@ const processRecordInputs = (inputs, destination) => {
   });
 
   const payloads = batchResponseBuilder(items, Config);
+  if (payloads.length === 0) {
+    return errorResponseList;
+  }
 
   const response = getSuccessRespEvents(payloads, successMetadata, destination, true);
   return [response, ...errorResponseList];

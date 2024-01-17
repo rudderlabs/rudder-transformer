@@ -772,4 +772,59 @@ export const data = [
     },
     mockFns: defaultMockFns,
   },
+  {
+    name: destType,
+    description: '`fields` is missing',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'record',
+                action: 'insert',
+                channel: 'sources',
+                context: sampleContext,
+                recordId: '1',
+              },
+              destination: sampleDestination,
+              metadata: {
+                jobId: 1,
+              },
+            },
+          ],
+          destType,
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batched: false,
+              metadata: [{ jobId: 1 }],
+              statusCode: 400,
+              error: 'Fields cannot be empty',
+              statTags: {
+                destType: destTypeInUpperCase,
+                implementation: 'cdkV2',
+                feature: 'router',
+                module: 'destination',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+              },
+              destination: sampleDestination,
+            },
+          ],
+        },
+      },
+    },
+    mockFns: defaultMockFns,
+  },
 ];

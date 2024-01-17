@@ -8,10 +8,18 @@ on:
       - synchronize
 
 jobs:
-  test:
-    name: Run Tests
+  ut_tests:
+    name: UT Tests
     runs-on: ubuntu-latest
     steps:
+      - name: Setup Go
+        uses: actions/setup-go@v4.1.0
+        with:
+          go-version: 1.17
+
+      - name: Install Latest Version of Kind
+        run: go install sigs.k8s.io/kind@v0.17.0
+
       - name: Checkout
         uses: actions/checkout@v4.1.1
         with:
@@ -25,19 +33,6 @@ jobs:
 
       - name: Install Dependencies
         run: npm ci
-
-      - name: Run Unit Tests
-        run: |
-          npm run test:js:ci
-          npm run test:ts:ci
-
-      - name: Setup Go
-        uses: actions/setup-go@v4.1.0
-        with:
-          go-version: 1.17
-
-      - name: Install Latest Version of Kind
-        run: go install sigs.k8s.io/kind@v0.17.0
 
       - name: Create Kind cluster
         run: kind create cluster --name kind-cluster --config=test/__tests__/data/worker-nodes-kind.yml

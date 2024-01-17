@@ -60,7 +60,6 @@ describe('Utility Functions Tests', () => {
     test.each(funcTestData)('$description', async ({ description, input, output }) => {
       try {
         let result;
-        console.log(Object.values(input));
         result = utilities[funcName](...Object.values(input));
         expect(result).toEqual(output);
       } catch (e) {

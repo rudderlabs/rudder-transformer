@@ -93,9 +93,6 @@ describe(`${integration}   Tests`, () => {
           const output = await vRouter.pollStatus(input);
           expect(output).toEqual(respPollBody[index]);
         } catch (error) {
-          console.log("CHEEECKKKK");
-          console.log(error);
-          console.log(respPollBody[index].error);
           expect(error.message).toEqual(respPollBody[index].error);
         }
       });

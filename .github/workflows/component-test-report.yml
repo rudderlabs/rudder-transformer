@@ -54,7 +54,7 @@ jobs:
             const { owner, repo } = context.repo;
             // Get the pull request number
             const prNumber = context.payload.pull_request.number;
-            const commentBody = `Test report for this run is available at: https://test-integrations-dev.s3.amazonaws.com/integrations-test-reports/${prNumber}/test-report.html`;
+            const commentBody = `Test report for this run is available at: https://test-integrations-dev.s3.amazonaws.com/integrations-test-reports/rudder-transformer/${prNumber}/test-report.html`;
             
 
             // Comment on the pull request

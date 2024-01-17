@@ -4987,7 +4987,7 @@ export const data = [
         body: [
           {
             error:
-              'The use of the alias call in the context of the `Simplified ID merge` feature is no longer supported.',
+              'The use of the alias call in the context of the `Simplified ID merge` feature is not supported anymore.',
             statTags: {
               destType: 'MP',
               errorCategory: 'dataValidation',

@@ -442,7 +442,7 @@ const processSingleMessage = (message, destination) => {
     case EventType.ALIAS:
       if (destination.Config?.identityMergeApi === 'simplified') {
         throw new InstrumentationError(
-          'The use of the alias call in the context of the `Simplified ID merge` feature is no longer supported.',
+          'The use of the alias call in the context of the `Simplified ID merge` feature is not supported anymore.',
         );
       }
       return processAliasEvents(message, message.type, destination);

@@ -53,6 +53,9 @@ steps:
       - name: streaming
         condition: "!.message.context.mappedToDestination"
         template: |
+          const timestamp = .message.().(
+            {{{{$.getGenericPaths("timestamp")}}}};
+          );
           const payload = .message.({
             external_id: {{{{$.getGenericPaths("userIdOnly")}}}},
             email: {{{{$.getGenericPaths("email")}}}},
@@ -63,10 +66,11 @@ steps:
             signed_up_at: $.toSeconds(.traits.createdAt || .context.traits.createdAt),
             owner_id: Number(.traits.ownerId || .context.traits.ownerId) || undefined,
             unsubscribed_from_emails: .traits.unsubscribedFromEmails || .context.traits.unsubscribedFromEmails
-          })
+          });
           payload.name = $.getName(.message);
           payload.custom_attributes = .message.context.traits || {};
           payload.custom_attributes = $.filterCustomAttributes(payload, "user");
+          payload.last_seen_at = payload.last_seen_at === undefined && .destination.Config.updateLastRequestAt ? $.toSeconds(timestamp) : payload.last_seen_at;
           payload.external_id = !payload.external_id && .destination.Config.sendAnonymousId && .message.anonymousId ? .message.anonymousId : payload.external_id;
           $.context.payload = payload
       - name: validate

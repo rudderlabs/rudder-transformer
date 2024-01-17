@@ -22,7 +22,6 @@ export const data = [
                     lastName: 'Rudderlabs',
                     address: 'california usa',
                     ownerId: '13',
-                    lastSeenAt: '2023-11-10T14:42:44.724Z',
                   },
                 },
                 type: 'identify',
@@ -39,6 +38,7 @@ export const data = [
                   apiKey: 'testApiKey',
                   apiServer: 'standard',
                   sendAnonymousId: false,
+                  updateLastRequestAt: true,
                 },
               },
               metadata: {
@@ -85,6 +85,7 @@ export const data = [
                   apiKey: 'testApiKey',
                   apiServer: 'standard',
                   sendAnonymousId: false,
+                  updateLastRequestAt: false,
                 },
               },
               metadata: {
@@ -192,7 +193,7 @@ export const data = [
                   JSON: {
                     email: 'test@rudderlabs.com',
                     external_id: 'user@1',
-                    last_seen_at: 1699627364,
+                    last_seen_at: 1700628164,
                     name: 'Test Rudderlabs',
                     owner_id: 13,
                     phone: '+91 9999999999',
@@ -223,6 +224,7 @@ export const data = [
                   apiKey: 'testApiKey',
                   apiServer: 'standard',
                   sendAnonymousId: false,
+                  updateLastRequestAt: true,
                 },
                 DestinationDefinition: {
                   Config: {
@@ -280,6 +282,7 @@ export const data = [
                   apiKey: 'testApiKey',
                   apiServer: 'standard',
                   sendAnonymousId: false,
+                  updateLastRequestAt: false,
                 },
                 DestinationDefinition: {
                   Config: {

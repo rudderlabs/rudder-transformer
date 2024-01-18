@@ -89,7 +89,7 @@ export const data = [
             destination: {
               Config: {
                 accessToken: 'dummyAccessToken',
-                pixelCode: 'A1T8T4UYGVIQA8ORZMX9',
+                pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
             },
@@ -114,7 +114,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
+                  pixel_code: '{{PIXEL-CODE}}',
                   event: 'CompletePayment',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
@@ -256,7 +256,7 @@ export const data = [
             destination: {
               Config: {
                 accessToken: 'dummyAccessToken',
-                pixelCode: 'A1T8T4UYGVIQA8ORZMX9',
+                pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
             },
@@ -281,7 +281,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
+                  pixel_code: '{{PIXEL-CODE}}',
                   event: 'InitiateCheckout',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
@@ -418,7 +418,7 @@ export const data = [
             destination: {
               Config: {
                 accessToken: 'dummyAccessToken',
-                pixelCode: 'A1T8T4UYGVIQA8ORZMX9',
+                pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
             },
@@ -443,7 +443,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
+                  pixel_code: '{{PIXEL-CODE}}',
                   event: 'AddToWishlist',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
@@ -581,7 +581,7 @@ export const data = [
             destination: {
               Config: {
                 accessToken: 'dummyAccessToken',
-                pixelCode: 'A1T8T4UYGVIQA8ORZMX9',
+                pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
             },
@@ -697,7 +697,7 @@ export const data = [
             destination: {
               Config: {
                 accessToken: 'dummyAccessToken',
-                pixelCode: 'A1T8T4UYGVIQA8ORZMX9',
+                pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
             },
@@ -722,7 +722,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
+                  pixel_code: '{{PIXEL-CODE}}',
                   event: 'AddToWishlist',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
@@ -863,7 +863,7 @@ export const data = [
             destination: {
               Config: {
                 accessToken: 'dummyAccessToken',
-                pixelCode: 'A1T8T4UYGVIQA8ORZMX9',
+                pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
             },
@@ -888,7 +888,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
+                  pixel_code: '{{PIXEL-CODE}}',
                   event: 'AddToWishlist',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
@@ -1028,7 +1028,7 @@ export const data = [
             destination: {
               Config: {
                 accessToken: 'dummyAccessToken',
-                pixelCode: 'A1T8T4UYGVIQA8ORZMX9',
+                pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: true,
               },
             },
@@ -1053,7 +1053,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
+                  pixel_code: '{{PIXEL-CODE}}',
                   event: 'Subscribe',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
@@ -1192,7 +1192,7 @@ export const data = [
             destination: {
               Config: {
                 accessToken: 'dummyAccessToken',
-                pixelCode: 'A1T8T4UYGVIQA8ORZMX9',
+                pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
             },
@@ -1217,7 +1217,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
+                  pixel_code: '{{PIXEL-CODE}}',
                   event: 'AddPaymentInfo',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
@@ -1355,7 +1355,7 @@ export const data = [
             destination: {
               Config: {
                 accessToken: 'dummyAccessToken',
-                pixelCode: 'A1T8T4UYGVIQA8ORZMX9',
+                pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
             },
@@ -1467,7 +1467,7 @@ export const data = [
             destination: {
               Config: {
                 accessToken: 'dummyAccessToken',
-                pixelCode: 'A1T8T4UYGVIQA8ORZMX9',
+                pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
             },
@@ -1580,7 +1580,7 @@ export const data = [
             destination: {
               Config: {
                 accessToken: 'dummyAccessToken',
-                pixelCode: 'A1T8T4UYGVIQA8ORZMX9',
+                pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
             },
@@ -1605,7 +1605,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
+                  pixel_code: '{{PIXEL-CODE}}',
                   event: 'AddPaymentInfo',
                   event_id: '1616318632825_357',
                   properties: {
@@ -1743,7 +1743,7 @@ export const data = [
             destination: {
               Config: {
                 accessToken: 'dummyAccessToken',
-                pixelCode: 'A1T8T4UYGVIQA8ORZMX9',
+                pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
             },
@@ -1768,7 +1768,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
+                  pixel_code: '{{PIXEL-CODE}}',
                   event: 'SubmitForm',
                   event_id: '16163186328257',
                   timestamp: '2020-09-17T19:49:27Z',
@@ -1894,7 +1894,7 @@ export const data = [
             destination: {
               Config: {
                 accessToken: 'dummyAccessToken',
-                pixelCode: 'A1T8T4UYGVIQA8ORZMX9',
+                pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
             },
@@ -1919,7 +1919,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
+                  pixel_code: '{{PIXEL-CODE}}',
                   event: 'SubmitForm',
                   event_id: '16163186328257',
                   timestamp: '2020-09-17T19:49:27Z',
@@ -2040,7 +2040,7 @@ export const data = [
             destination: {
               Config: {
                 accessToken: 'dummyAccessToken',
-                pixelCode: 'A1T8T4UYGVIQA8ORZMX9',
+                pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
             },
@@ -2065,7 +2065,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
+                  pixel_code: '{{PIXEL-CODE}}',
                   event: 'Contact',
                   event_id: '16163186328257',
                   timestamp: '2020-09-17T19:49:27Z',
@@ -2204,7 +2204,7 @@ export const data = [
             destination: {
               Config: {
                 accessToken: 'dummyAccessToken',
-                pixelCode: 'A1T8T4UYGVIQA8ORZMX9',
+                pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
             },
@@ -2318,7 +2318,7 @@ export const data = [
             destination: {
               Config: {
                 accessToken: 'dummyAccessToken',
-                pixelCode: 'A1T8T4UYGVIQA8ORZMX9',
+                pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
             },
@@ -2343,7 +2343,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
+                  pixel_code: '{{PIXEL-CODE}}',
                   event: 'CompletePayment',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
@@ -2482,7 +2482,7 @@ export const data = [
             destination: {
               Config: {
                 accessToken: 'dummyAccessToken',
-                pixelCode: 'A1T8T4UYGVIQA8ORZMX9',
+                pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
             },
@@ -2507,7 +2507,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
+                  pixel_code: '{{PIXEL-CODE}}',
                   event: 'PlaceAnOrder',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
@@ -2650,7 +2650,7 @@ export const data = [
             destination: {
               Config: {
                 accessToken: 'dummyAccessToken',
-                pixelCode: 'A1T8T4UYGVIQA8ORZMX9',
+                pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: true,
               },
             },
@@ -2675,7 +2675,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
+                  pixel_code: '{{PIXEL-CODE}}',
                   event: 'Subscribe',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
@@ -2819,7 +2819,7 @@ export const data = [
             destination: {
               Config: {
                 accessToken: 'dummyAccessToken',
-                pixelCode: 'A1T8T4UYGVIQA8ORZMX9',
+                pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: true,
               },
             },
@@ -2844,7 +2844,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
+                  pixel_code: '{{PIXEL-CODE}}',
                   event: 'Subscribe',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
@@ -2984,7 +2984,7 @@ export const data = [
             destination: {
               Config: {
                 accessToken: 'dummyAccessToken',
-                pixelCode: 'A1T8T4UYGVIQA8ORZMX9',
+                pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
             },
@@ -3009,7 +3009,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
+                  pixel_code: '{{PIXEL-CODE}}',
                   event: 'CompletePayment',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
@@ -3148,7 +3148,7 @@ export const data = [
             destination: {
               Config: {
                 accessToken: 'dummyAccessToken',
-                pixelCode: 'A1T8T4UYGVIQA8ORZMX9',
+                pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
                 eventsToStandard: [
                   {
@@ -3187,7 +3187,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
+                  pixel_code: '{{PIXEL-CODE}}',
                   event: 'download',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
@@ -3249,7 +3249,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
+                  pixel_code: '{{PIXEL-CODE}}',
                   event: 'search',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
@@ -3388,7 +3388,7 @@ export const data = [
             destination: {
               Config: {
                 accessToken: 'dummyAccessToken',
-                pixelCode: 'A1T8T4UYGVIQA8ORZMX9',
+                pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
                 eventsToStandard: [
                   {
@@ -3508,7 +3508,7 @@ export const data = [
             destination: {
               Config: {
                 accessToken: 'dummyAccessToken',
-                pixelCode: 'A1T8T4UYGVIQA8ORZMX9',
+                pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
                 eventsToStandard: [
                   {
@@ -3543,7 +3543,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
+                  pixel_code: '{{PIXEL-CODE}}',
                   event: 'download',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
@@ -3681,7 +3681,7 @@ export const data = [
             destination: {
               Config: {
                 accessToken: 'dummyAccessToken',
-                pixelCode: 'A1T8T4UYGVIQA8ORZMX9',
+                pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: true,
                 eventsToStandard: [
                   {
@@ -3716,7 +3716,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
+                  pixel_code: '{{PIXEL-CODE}}',
                   event: 'download',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
@@ -3854,7 +3854,7 @@ export const data = [
             destination: {
               Config: {
                 accessToken: 'dummyAccessToken',
-                pixelCode: 'A1T8T4UYGVIQA8ORZMX9',
+                pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: true,
                 eventsToStandard: [
                   {
@@ -3889,7 +3889,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
+                  pixel_code: '{{PIXEL-CODE}}',
                   event: 'download',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
@@ -4048,7 +4048,7 @@ export const data = [
             destination: {
               Config: {
                 accessToken: 'dummyAccessToken',
-                pixelCode: 'A1T8T4UYGVIQA8ORZMX9',
+                pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
             },
@@ -4073,7 +4073,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
+                  pixel_code: '{{PIXEL-CODE}}',
                   event: 'CompletePayment',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
@@ -4219,7 +4219,7 @@ export const data = [
             destination: {
               Config: {
                 accessToken: 'dummyAccessToken',
-                pixelCode: 'A1T8T4UYGVIQA8ORZMX9',
+                pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
             },
@@ -4244,7 +4244,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
+                  pixel_code: '{{PIXEL-CODE}}',
                   event: 'CompletePayment',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
@@ -4394,7 +4394,7 @@ export const data = [
             destination: {
               Config: {
                 accessToken: 'dummyAccessToken',
-                pixelCode: 'A1T8T4UYGVIQA8ORZMX9',
+                pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
             },
@@ -4419,7 +4419,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
+                  pixel_code: '{{PIXEL-CODE}}',
                   event: 'CompletePayment',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
@@ -4541,7 +4541,7 @@ export const data = [
                     category: 'Games',
                     url: 'https://www.website.com/product/path',
                     image_url: 'https://www.website.com/product/path.jpg',
-                    brand:"brand_name"
+                    brand: 'brand_name',
                   },
                   {
                     product_id: '345',
@@ -4574,7 +4574,7 @@ export const data = [
             destination: {
               Config: {
                 accessToken: 'dummyAccessToken',
-                pixelCode: 'A1T8T4UYGVIQA8ORZMX9',
+                pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
               },
             },
@@ -4599,7 +4599,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
+                  pixel_code: '{{PIXEL-CODE}}',
                   event: 'CompletePayment',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
@@ -4619,7 +4619,7 @@ export const data = [
                         content_name: 'Monopoly',
                         price: 14,
                         quantity: 1,
-                        brand:"brand_name"
+                        brand: 'brand_name',
                       },
                       {
                         content_type: 'product_group',
@@ -4752,7 +4752,7 @@ export const data = [
             destination: {
               Config: {
                 accessToken: 'dummyAccessToken',
-                pixelCode: 'A1T8T4UYGVIQA8ORZMX9',
+                pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
                 sendCustomEvents: true,
               },
@@ -4778,7 +4778,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
+                  pixel_code: '{{PIXEL-CODE}}',
                   event: 'custom_event',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
@@ -4924,7 +4924,7 @@ export const data = [
             destination: {
               Config: {
                 accessToken: 'dummyAccessToken',
-                pixelCode: 'A1T8T4UYGVIQA8ORZMX9',
+                pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
                 sendCustomEvents: false,
               },
@@ -4956,7 +4956,7 @@ export const data = [
   },
   {
     name: 'tiktok_ads',
-    description: 'Test 29 -> Camel Case Custom Event Pass',
+    description: 'Test 31 -> Camel Case Custom Event Pass',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -5044,7 +5044,7 @@ export const data = [
             destination: {
               Config: {
                 accessToken: 'dummyAccessToken',
-                pixelCode: 'A1T8T4UYGVIQA8ORZMX9',
+                pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
                 sendCustomEvents: true,
               },
@@ -5070,7 +5070,7 @@ export const data = [
               params: {},
               body: {
                 JSON: {
-                  pixel_code: 'A1T8T4UYGVIQA8ORZMX9',
+                  pixel_code: '{{PIXEL-CODE}}',
                   event: 'customEvent',
                   event_id: '1616318632825_357',
                   timestamp: '2020-09-17T19:49:27Z',
@@ -5096,6 +5096,1732 @@ export const data = [
                     ad: {
                       callback: 'dummyclickId',
                     },
+                    page: {
+                      url: 'http://demo.mywebsite.com/purchase',
+                      referrer: 'http://demo.mywebsite.com',
+                    },
+                    user: {
+                      phone_number:
+                        '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
+                      email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
+                      external_id:
+                        'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                    },
+                    ip: '13.57.97.131',
+                    user_agent:
+                      'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                  },
+                  partner_name: 'RudderStack',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'tiktok_ads',
+    description: 'Test 32 -> V2 -> Camel Case Custom Event Pass',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: '21e13f4bc7ceddad',
+              channel: 'web',
+              context: {
+                traits: {
+                  email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f'
+                },
+                userAgent:
+                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                ip: '13.57.97.131',
+                locale: 'en-US',
+                externalId: [
+                  {
+                    type: 'tiktokExternalId',
+                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                  },
+                ],
+              },
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
+              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+              originalTimestamp: '2019-10-14T09:03:17.562Z',
+              timestamp: '2020-09-17T19:49:27Z',
+              type: 'track',
+              event: 'customEvent',
+              properties: {
+                eventId: '1616318632825_357',
+                contents: [
+                  {
+                    price: 8,
+                    quantity: 2,
+                    content_type: 'socks',
+                    content_id: '1077218',
+                  },
+                  {
+                    price: 30,
+                    quantity: 1,
+                    content_type: 'dress',
+                    content_id: '1197218',
+                  },
+                ],
+                url: "http://demo.mywebsite.com/purchase",
+                clickId: 'dummyclickId',
+                currency: 'USD',
+                value: 46,
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T09:03:22.563Z',
+            },
+            destination: {
+              Config: {
+                version: 'v2',
+                accessToken: 'dummyAccessToken',
+                pixelCode: '{{PIXEL-CODE}}',
+                hashUserProperties: false,
+                sendCustomEvents: true,
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/event/track/',
+              headers: {
+                'Access-Token': 'dummyAccessToken',
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  event_source: 'web',
+                  event_source_id: '{{PIXEL-CODE}}',
+                  partner_name: 'RudderStack',
+                  data: [
+                    {
+                      event: 'customEvent',
+                      event_id: '1616318632825_357',
+                      event_time: 1600372167,
+                      properties: {
+                        content_type: "product",
+                        contents: [
+                          {
+                            price: 8,
+                            quantity: 2,
+                            content_type: 'socks',
+                            content_id: '1077218',
+                          },
+                          {
+                            price: 30,
+                            quantity: 1,
+                            content_type: 'dress',
+                            content_id: '1197218',
+                          },
+                        ],
+                        currency: 'USD',
+                        value: 46,
+                      },
+                      page: {
+                        url: 'http://demo.mywebsite.com/purchase'
+                      },
+                      user: {
+                        locale: "en-US",
+                        email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
+                        external_id:
+                          'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                        ip: '13.57.97.131',
+                        user_agent:
+                          'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                      },
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'tiktok_ads',
+    description: 'Test 33 -> V2 -> Event mapped to one standard event with contents present as it is in properties',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: '21e13f4bc7ceddad',
+              channel: 'web',
+              context: {
+                traits: {
+                  email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f'
+                },
+                page: {
+                  url: 'http://demo.mywebsite.com/purchase',
+                  referrer: 'http://demo.mywebsite.com',
+                },
+                userAgent:
+                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                ip: '13.57.97.131',
+                locale: 'en-US',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                screen: {
+                  density: 2,
+                },
+                externalId: [
+                  {
+                    type: 'tiktokExternalId',
+                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                  },
+                ],
+              },
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
+              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+              originalTimestamp: '2019-10-14T09:03:17.562Z',
+              timestamp: '2020-09-17T19:49:27Z',
+              type: 'track',
+              event: 'addToCart',
+              properties: {
+                eventId: '1616318632825_357',
+                contents: [
+                  {
+                    price: 8,
+                    quantity: 2,
+                    content_type: 'socks',
+                    content_id: '1077218',
+                  },
+                  {
+                    price: 30,
+                    quantity: 1,
+                    content_type: 'dress',
+                    content_id: '1197218',
+                  },
+                ],
+                clickId: 'dummyclickId',
+                currency: 'USD',
+                value: 46,
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T09:03:22.563Z',
+            },
+            destination: {
+              Config: {
+                version: 'v2',
+                accessToken: 'dummyAccessToken',
+                pixelCode: '{{PIXEL-CODE}}',
+                hashUserProperties: false,
+                sendCustomEvents: true,
+                eventsToStandard: [
+                  {
+                    from: 'addToCart',
+                    to: 'download',
+                  }
+                ],
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/event/track/',
+              headers: {
+                'Access-Token': 'dummyAccessToken',
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  event_source: 'web',
+                  event_source_id: '{{PIXEL-CODE}}',
+                  partner_name: 'RudderStack',
+                  data: [
+                    {
+                      event: 'download',
+                      event_id: '1616318632825_357',
+                      event_time: 1600372167,
+                      properties: {
+                        content_type: "product",
+                        contents: [
+                          {
+                            price: 8,
+                            quantity: 2,
+                            content_type: 'socks',
+                            content_id: '1077218',
+                          },
+                          {
+                            price: 30,
+                            quantity: 1,
+                            content_type: 'dress',
+                            content_id: '1197218',
+                          },
+                        ],
+                        currency: 'USD',
+                        value: 46,
+                      },
+                      page: {
+                        url: 'http://demo.mywebsite.com/purchase',
+                        referrer: 'http://demo.mywebsite.com',
+                      },
+                      user: {
+                        locale: "en-US",
+                        email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
+                        external_id:
+                          'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                        ip: '13.57.97.131',
+                        user_agent:
+                          'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                      },
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'tiktok_ads',
+    description: 'Test 34 -> V2 -> Event mapped to multiple standard events and no phone',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: '21e13f4bc7ceddad',
+              channel: 'web',
+              context: {
+                traits: {
+                  email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f'
+                },
+                page: {
+                  url: 'http://demo.mywebsite.com/purchase'
+                },
+                userAgent:
+                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                ip: '13.57.97.131',
+                locale: 'en-US',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                screen: {
+                  density: 2,
+                },
+                externalId: [
+                  {
+                    type: 'tiktokExternalId',
+                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                  },
+                ],
+              },
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
+              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+              originalTimestamp: '2019-10-14T09:03:17.562Z',
+              timestamp: '2020-09-17T19:49:27Z',
+              type: 'track',
+              event: 'addToCart',
+              properties: {
+                eventId: '1616318632825_357',
+                contents: [
+                  {
+                    price: 8,
+                    quantity: 2,
+                    content_type: 'socks',
+                    content_id: '1077218',
+                  },
+                  {
+                    price: 30,
+                    quantity: 1,
+                    content_type: 'dress',
+                    content_id: '1197218',
+                  },
+                ],
+                clickId: 'dummyclickId',
+                currency: 'USD',
+                value: 46,
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T09:03:22.563Z',
+            },
+            destination: {
+              Config: {
+                version: 'v2',
+                accessToken: 'dummyAccessToken',
+                pixelCode: '{{PIXEL-CODE}}',
+                hashUserProperties: false,
+                sendCustomEvents: true,
+                eventsToStandard: [
+                  {
+                    from: 'addToCart',
+                    to: 'download',
+                  },
+                  {
+                    from: 'AddToCart',
+                    to: 'AddToWishlist',
+                  }
+                ],
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/event/track/',
+              headers: {
+                'Access-Token': 'dummyAccessToken',
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  event_source: 'web',
+                  event_source_id: '{{PIXEL-CODE}}',
+                  partner_name: 'RudderStack',
+                  data: [
+                    {
+                      event: 'download',
+                      event_id: '1616318632825_357',
+                      event_time: 1600372167,
+                      properties: {
+                        content_type: "product",
+                        contents: [
+                          {
+                            price: 8,
+                            quantity: 2,
+                            content_type: 'socks',
+                            content_id: '1077218',
+                          },
+                          {
+                            price: 30,
+                            quantity: 1,
+                            content_type: 'dress',
+                            content_id: '1197218',
+                          },
+                        ],
+                        currency: 'USD',
+                        value: 46,
+                      },
+                      page: {
+                        url: 'http://demo.mywebsite.com/purchase',
+                      },
+                      user: {
+                        locale: "en-US",
+                        email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
+                        external_id:
+                          'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                        ip: '13.57.97.131',
+                        user_agent:
+                          'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                      },
+                    },
+                    {
+                      event: 'AddToWishlist',
+                      event_id: '1616318632825_357',
+                      event_time: 1600372167,
+                      properties: {
+                        content_type: "product",
+                        contents: [
+                          {
+                            price: 8,
+                            quantity: 2,
+                            content_type: 'socks',
+                            content_id: '1077218',
+                          },
+                          {
+                            price: 30,
+                            quantity: 1,
+                            content_type: 'dress',
+                            content_id: '1197218',
+                          },
+                        ],
+                        currency: 'USD',
+                        value: 46,
+                      },
+                      page: {
+                        url: 'http://demo.mywebsite.com/purchase',
+                      },
+                      user: {
+                        locale: "en-US",
+                        email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
+                        external_id:
+                          'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                        ip: '13.57.97.131',
+                        user_agent:
+                          'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                      },
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'tiktok_ads',
+    description: 'Test 35 -> V2 -> array of external_id and phone number',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: '21e13f4bc7ceddad',
+              channel: 'web',
+              context: {
+                page: {
+                  url: 'http://demo.mywebsite.com/purchase',
+                  referrer: 'http://demo.mywebsite.com',
+                },
+                userAgent:
+                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                ip: '13.57.97.131',
+                externalId: [
+                  {
+                    type: 'tiktokExternalId',
+                    id: ['f0e388f53921a51f0bb0fc8a2944109ec188b5', '1f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc'],
+                  },
+                ],
+              },
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
+              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+              originalTimestamp: '2019-10-14T09:03:17.562Z',
+              timestamp: '2020-09-17T19:49:27Z',
+              type: 'track',
+              event: 'addToCart',
+              properties: {
+                eventId: '1616318632825_357',
+                contents: [
+                  {
+                    price: 8,
+                    quantity: 2,
+                    content_type: 'socks',
+                    content_id: '1077218',
+                  },
+                  {
+                    price: 30,
+                    quantity: 1,
+                    content_type: 'dress',
+                    content_id: '1197218',
+                  },
+                ],
+                clickId: 'dummyclickId',
+                currency: 'USD',
+                value: 46,
+                phone: ['+12345432', '+134234325'],
+                email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f'
+
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T09:03:22.563Z',
+            },
+            destination: {
+              Config: {
+                version: 'v2',
+                accessToken: 'dummyAccessToken',
+                pixelCode: '{{PIXEL-CODE}}',
+                hashUserProperties: false,
+                sendCustomEvents: true,
+                eventsToStandard: [
+                  {
+                    from: 'addToCart',
+                    to: 'download',
+                  },
+                  {
+                    from: 'AddToCart',
+                    to: 'AddToWishlist',
+                  }
+                ],
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/event/track/',
+              headers: {
+                'Access-Token': 'dummyAccessToken',
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  event_source: 'web',
+                  event_source_id: '{{PIXEL-CODE}}',
+                  partner_name: 'RudderStack',
+                  data: [
+                    {
+                      event: 'download',
+                      event_id: '1616318632825_357',
+                      event_time: 1600372167,
+                      properties: {
+                        content_type: "product",
+                        contents: [
+                          {
+                            price: 8,
+                            quantity: 2,
+                            content_type: 'socks',
+                            content_id: '1077218',
+                          },
+                          {
+                            price: 30,
+                            quantity: 1,
+                            content_type: 'dress',
+                            content_id: '1197218',
+                          },
+                        ],
+                        currency: 'USD',
+                        value: 46,
+                      },
+                      page: {
+                        url: 'http://demo.mywebsite.com/purchase',
+                        referrer: 'http://demo.mywebsite.com',
+                      },
+                      user: {
+                        phone: ['+12345432', '+134234325'],
+                        email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
+                        external_id: ['f0e388f53921a51f0bb0fc8a2944109ec188b5', '1f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc'],
+                        ip: '13.57.97.131',
+                        user_agent:
+                          'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                      },
+                    },
+                    {
+                      event: 'AddToWishlist',
+                      event_id: '1616318632825_357',
+                      event_time: 1600372167,
+                      properties: {
+                        content_type: "product",
+                        contents: [
+                          {
+                            price: 8,
+                            quantity: 2,
+                            content_type: 'socks',
+                            content_id: '1077218',
+                          },
+                          {
+                            price: 30,
+                            quantity: 1,
+                            content_type: 'dress',
+                            content_id: '1197218',
+                          },
+                        ],
+                        currency: 'USD',
+                        value: 46,
+                      },
+                      page: {
+                        url: 'http://demo.mywebsite.com/purchase',
+                        referrer: 'http://demo.mywebsite.com',
+                      },
+                      user: {
+                        phone: ['+12345432', '+134234325'],
+                        email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
+                        external_id: ['f0e388f53921a51f0bb0fc8a2944109ec188b5', '1f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc'],
+                        ip: '13.57.97.131',
+                        user_agent:
+                          'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                      },
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'tiktok_ads',
+    description: 'Test 36-> V2 -> Event not standard and no custom events allowed',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: '21e13f4bc7ceddad',
+              channel: 'web',
+              context: {
+                traits: {
+                  email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f'
+                },
+                page: {
+                  url: 'http://demo.mywebsite.com/purchase',
+                  referrer: 'http://demo.mywebsite.com',
+                },
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                userAgent:
+                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                locale: 'en-US',
+                ip: '13.57.97.131',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                screen: {
+                  density: 2,
+                },
+                externalId: [
+                  {
+                    type: 'tiktokExternalId',
+                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                  },
+                ],
+              },
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
+              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+              originalTimestamp: '2019-10-14T09:03:17.562Z',
+              timestamp: '2020-09-17T19:49:27Z',
+              type: 'track',
+              event: 'Product Added to Wishlist1',
+              properties: {
+                eventId: '1616318632825_357',
+                testEventCode: 'sample rudder test_event_code',
+                context: {
+                  page: {
+                    url: 'http://demo.mywebsite.com/purchase',
+                    referrer: 'http://demo.mywebsite.com',
+                  },
+                  user: {
+                    phone_number:
+                      '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
+                    email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
+                  },
+                },
+                contents: [
+                  {
+                    price: 8,
+                    quantity: 2,
+                    content_type: 'socks',
+                    content_id: '1077218',
+                  },
+                  {
+                    price: 30,
+                    quantity: 1,
+                    content_type: 'dress',
+                    content_id: '1197218',
+                  },
+                ],
+                currency: 'USD',
+                value: 46,
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T09:03:22.563Z',
+            },
+            destination: {
+              Config: {
+                accessToken: 'dummyAccessToken',
+                pixelCode: '{{PIXEL-CODE}}',
+                hashUserProperties: false,
+                version: 'v2',
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            statusCode: 400,
+            error:
+              'Event name (product added to wishlist1) is not valid, must be mapped to one of standard events',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'TIKTOK_ADS',
+              module: 'destination',
+              implementation: 'native',
+              feature: 'processor',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'tiktok_ads',
+    description: 'Test 37-> V2 -> No Message type',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: '21e13f4bc7ceddad',
+              channel: 'web',
+
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
+              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+              originalTimestamp: '2019-10-14T09:03:17.562Z',
+              timestamp: '2020-09-17T19:49:27Z',
+              event: 'Product Added to Wishlist1',
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T09:03:22.563Z',
+            },
+            destination: {
+              Config: {
+                accessToken: 'dummyAccessToken',
+                pixelCode: '{{PIXEL-CODE}}',
+                hashUserProperties: false,
+                version: 'v2'
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            statusCode: 400,
+            error:
+              'Event type is required',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'TIKTOK_ADS',
+              module: 'destination',
+              implementation: 'native',
+              feature: 'processor',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'tiktok_ads',
+    description: 'Test 38-> V2 -> Event not found',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: '21e13f4bc7ceddad',
+              channel: 'web',
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
+              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+              originalTimestamp: '2019-10-14T09:03:17.562Z',
+              timestamp: '2020-09-17T19:49:27Z',
+              type: 'track',
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T09:03:22.563Z',
+            },
+            destination: {
+              Config: {
+                accessToken: 'dummyAccessToken',
+                pixelCode: '{{PIXEL-CODE}}',
+                hashUserProperties: false,
+                version: 'v2',
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            statusCode: 400,
+            error:
+              'Event name is required',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'TIKTOK_ADS',
+              module: 'destination',
+              implementation: 'native',
+              feature: 'processor',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'tiktok_ads',
+    description: 'Test 39-> V2 -> Access Token not found',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: '21e13f4bc7ceddad',
+              channel: 'web',
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
+              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+              originalTimestamp: '2019-10-14T09:03:17.562Z',
+              timestamp: '2020-09-17T19:49:27Z',
+              type: 'track',
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T09:03:22.563Z',
+            },
+            destination: {
+              Config: {
+                pixelCode: 'configuration',
+                hashUserProperties: false,
+                version: 'v2',
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            statusCode: 400,
+            error:
+              'Access Token not found. Aborting',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
+              destType: 'TIKTOK_ADS',
+              module: 'destination',
+              implementation: 'native',
+              feature: 'processor',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'tiktok_ads',
+    description: 'Test 40-> V2 -> Pixel Code not found. Aborting',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: '21e13f4bc7ceddad',
+              channel: 'web',
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
+              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+              originalTimestamp: '2019-10-14T09:03:17.562Z',
+              timestamp: '2020-09-17T19:49:27Z',
+              type: 'track',
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T09:03:22.563Z',
+            },
+            destination: {
+              Config: {
+                accessToken: 'dummyAccessToken',
+                hashUserProperties: false,
+                version: 'v2',
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            statusCode: 400,
+            error:
+              'Pixel Code not found. Aborting',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
+              destType: 'TIKTOK_ADS',
+              module: 'destination',
+              implementation: 'native',
+              feature: 'processor',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'tiktok_ads',
+    description: 'Test 41 -> V2 -> One of standard event',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: '21e13f4bc7ceddad',
+              channel: 'web',
+              context: {
+                traits: {
+                  email: 'abc@xyz.com'
+                },
+                page: {
+                  url: 'http://demo.mywebsite.com/purchase',
+                  referrer: 'http://demo.mywebsite.com',
+                },
+                userAgent:
+                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                ip: '13.57.97.131',
+                externalId: [
+                  {
+                    type: 'tiktokExternalId',
+                    id: ['f0e388f53921a51f0bb0fc8a2944109ec188b5', '1f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc'],
+                  },
+                ],
+              },
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
+              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+              originalTimestamp: '2019-10-14T09:03:17.562Z',
+              timestamp: '2020-09-17T19:49:27Z',
+              type: 'track',
+              event: 'viewcontent',
+              properties: {
+                eventId: '1616318632825_357',
+                contents: [
+                  {
+                    price: 8,
+                    quantity: 2,
+                    content_type: 'socks',
+                    content_id: '1077218',
+                  },
+                  {
+                    price: 30,
+                    quantity: 1,
+                    content_type: 'dress',
+                    content_id: '1197218',
+                  },
+                ],
+                clickId: 'dummyclickId',
+                currency: 'USD',
+                value: 46,
+                phone: ['+12345432', '+134234325']
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T09:03:22.563Z',
+            },
+            destination: {
+              Config: {
+                version: 'v2',
+                accessToken: 'dummyAccessToken',
+                pixelCode: '{{PIXEL-CODE}}',
+                hashUserProperties: true,
+                sendCustomEvents: false,
+                eventsToStandard: [
+                  {
+                    from: 'addToCart',
+                    to: 'download',
+                  },
+                  {
+                    from: 'AddToCart',
+                    to: 'AddToWishlist',
+                  }
+                ],
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/event/track/',
+              headers: {
+                'Access-Token': 'dummyAccessToken',
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  event_source: 'web',
+                  event_source_id: '{{PIXEL-CODE}}',
+                  partner_name: 'RudderStack',
+                  data: [
+                    {
+                      event: 'ViewContent',
+                      event_id: '1616318632825_357',
+                      event_time: 1600372167,
+                      properties: {
+                        content_type: "product",
+                        contents: [
+                          {
+                            price: 8,
+                            quantity: 2,
+                            content_type: 'socks',
+                            content_id: '1077218',
+                          },
+                          {
+                            price: 30,
+                            quantity: 1,
+                            content_type: 'dress',
+                            content_id: '1197218',
+                          },
+                        ],
+                        currency: 'USD',
+                        value: 46,
+                      },
+                      page: {
+                        url: 'http://demo.mywebsite.com/purchase',
+                        referrer: 'http://demo.mywebsite.com',
+                      },
+                      user: {
+                        email: 'ee278943de84e5d6243578ee1a1057bcce0e50daad9755f45dfa64b60b13bc5d',
+                        external_id: ["3e0c7a51acd326b87f29596e38c22cbeb732df37bc5c8f5f524c14b55d3472db", "f8be04e62f5a3eba31c8b9380843666f28f3ab5f44a380f47fac04e9ce7b2168",],
+                        ip: '13.57.97.131',
+                        phone: [
+                          "49a15e38bdc2572d362a924c2ddd100baed0fe29db44270d3700fcef03b18c39",
+                          "5a6a7a09b18278e220312ce26d711ff7c8263d0965ee3b1d26b1b6f0ac7e71b3",
+                        ],
+                        user_agent:
+                          'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                      },
+                    }
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'tiktok_ads',
+    description: 'Test 42 -> V2 -> One of standard event and contents from products',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: '21e13f4bc7ceddad',
+              channel: 'web',
+              context: {
+                traits: {
+                  email: 'abc@xyz.com'
+                },
+                page: {
+                  url: 'http://demo.mywebsite.com/purchase',
+                  referrer: 'http://demo.mywebsite.com',
+                },
+                userAgent:
+                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                ip: '13.57.97.131',
+                externalId: [
+                  {
+                    type: 'tiktokExternalId',
+                    id: ['f0e388f53921a51f0bb0fc8a2944109ec188b5', '1f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc'],
+                  },
+                ],
+              },
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
+              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+              originalTimestamp: '2019-10-14T09:03:17.562Z',
+              timestamp: '2020-09-17T19:49:27Z',
+              type: 'track',
+              event: 'viewcontent',
+              properties: {
+                order_id: 1234,
+                shop_id: 4567,
+                description: "Viewed games",
+                query: "New age games",
+                contentType: 'product_group',
+                eventId: '1616318632825_357',
+                products: [
+                  {
+                    product_id: 123,
+                    sku: 'G-32',
+                    name: 'Monopoly',
+                    price: 14,
+                    quantity: 1,
+                    contentType: 'product_group',
+                    category: 'Games',
+                    brand: 'adidas',
+                    image_url: 'https://www.website.com/product/path.jpg',
+                  },
+                  {
+                    product_id: 345,
+                    sku: 'F-32',
+                    name: 'UNO',
+                    price: 3.45,
+                    contentType: 'product_group',
+                    quantity: 2,
+                  },
+                ],
+                clickId: 'dummyclickId',
+                currency: 'USD',
+                value: 46,
+                phone: ['+12345432', '+134234325']
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T09:03:22.563Z',
+            },
+            destination: {
+              Config: {
+                version: 'v2',
+                accessToken: 'dummyAccessToken',
+                pixelCode: '{{PIXEL-CODE}}',
+                hashUserProperties: true,
+                sendCustomEvents: false,
+                eventsToStandard: [
+                  {
+                    from: 'addToCart',
+                    to: 'download',
+                  },
+                  {
+                    from: 'AddToCart',
+                    to: 'AddToWishlist',
+                  }
+                ],
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/event/track/',
+              headers: {
+                'Access-Token': 'dummyAccessToken',
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  event_source: 'web',
+                  event_source_id: '{{PIXEL-CODE}}',
+                  partner_name: 'RudderStack',
+                  data: [
+                    {
+                      event: 'ViewContent',
+                      event_id: '1616318632825_357',
+                      event_time: 1600372167,
+                      properties: {
+                        order_id: "1234",
+                        shop_id: "4567",
+                        description: "Viewed games",
+                        query: "New age games",
+                        content_type: "product_group",
+                        contents: [
+                          {
+                            price: 14,
+                            quantity: 1,
+                            content_category: 'Games',
+                            content_id: '123',
+                            content_name: 'Monopoly',
+                            brand: 'adidas'
+                          },
+                          {
+                            price: 3.45,
+                            quantity: 2,
+                            content_id: '345',
+                            content_name: 'UNO'
+                          },
+                        ],
+                        currency: 'USD',
+                        value: 46,
+                      },
+                      page: {
+                        url: 'http://demo.mywebsite.com/purchase',
+                        referrer: 'http://demo.mywebsite.com',
+                      },
+                      user: {
+                        email: 'ee278943de84e5d6243578ee1a1057bcce0e50daad9755f45dfa64b60b13bc5d',
+                        external_id: ["3e0c7a51acd326b87f29596e38c22cbeb732df37bc5c8f5f524c14b55d3472db", "f8be04e62f5a3eba31c8b9380843666f28f3ab5f44a380f47fac04e9ce7b2168",],
+                        ip: '13.57.97.131',
+                        phone: [
+                          "49a15e38bdc2572d362a924c2ddd100baed0fe29db44270d3700fcef03b18c39",
+                          "5a6a7a09b18278e220312ce26d711ff7c8263d0965ee3b1d26b1b6f0ac7e71b3",
+                        ],
+                        user_agent:
+                          'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                      },
+                    }
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'tiktok_ads',
+    description: 'Test 43 -> V2 -> Contents present as object in properties',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: '21e13f4bc7ceddad',
+              channel: 'web',
+              context: {
+                traits: {
+                  email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f'
+                },
+                page: {
+                  url: 'http://demo.mywebsite.com/purchase',
+                  referrer: 'http://demo.mywebsite.com',
+                },
+                userAgent:
+                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                ip: '13.57.97.131',
+                locale: 'en-US',
+                externalId: [
+                  {
+                    type: 'tiktokExternalId',
+                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                  },
+                ],
+              },
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
+              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+              originalTimestamp: '2019-10-14T09:03:17.562Z',
+              timestamp: '2020-09-17T19:49:27Z',
+              type: 'track',
+              event: 'addToCart',
+              properties: {
+                eventId: '1616318632825_357',
+                contents: {
+                  price: 8,
+                  quantity: 2,
+                  content_type: 'socks',
+                  content_id: '1077218',
+                },
+                clickId: 'dummyclickId',
+                currency: 'USD',
+                value: 46,
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T09:03:22.563Z',
+            },
+            destination: {
+              Config: {
+                version: 'v2',
+                accessToken: 'dummyAccessToken',
+                pixelCode: '{{PIXEL-CODE}}',
+                hashUserProperties: false,
+                sendCustomEvents: true,
+                eventsToStandard: [
+                  {
+                    from: 'addToCart',
+                    to: 'download',
+                  }
+                ],
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/event/track/',
+              headers: {
+                'Access-Token': 'dummyAccessToken',
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  event_source: 'web',
+                  event_source_id: '{{PIXEL-CODE}}',
+                  partner_name: 'RudderStack',
+                  data: [
+                    {
+                      event: 'download',
+                      event_id: '1616318632825_357',
+                      event_time: 1600372167,
+                      properties: {
+                        content_type: "product",
+                        contents: [{
+                          price: 8,
+                          quantity: 2,
+                          content_type: 'socks',
+                          content_id: '1077218',
+                        }],
+                        currency: 'USD',
+                        value: 46,
+                      },
+                      page: {
+                        url: 'http://demo.mywebsite.com/purchase',
+                        referrer: 'http://demo.mywebsite.com',
+                      },
+                      user: {
+                        locale: "en-US",
+                        email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
+                        external_id:
+                          'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                        ip: '13.57.97.131',
+                        user_agent:
+                          'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                      },
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'tiktok_ads',
+    description: 'Test 44 -> Events 2.0 Event type identify not suported',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: '21e13f4bc7ceddad',
+              channel: 'web',
+              context: {
+                externalId: [
+                  {
+                    type: 'tiktokExternalId',
+                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                  },
+                ],
+              },
+              timestamp: '2020-09-17T19:49:27Z',
+              type: 'identify',
+              event: 'contact',
+              properties: {},
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T09:03:22.563Z',
+            },
+            destination: {
+              Config: {
+                accessToken: 'dummyAccessToken',
+                pixelCode: '{{PIXEL-CODE}}',
+                hashUserProperties: false,
+                version: "v2"
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            statusCode: 400,
+            error: 'Event type identify is not supported',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'TIKTOK_ADS',
+              module: 'destination',
+              implementation: 'native',
+              feature: 'processor',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'tiktok_ads',
+    description: 'Test 45-> events 1.0 build contents from properties.product.$ where length of prodicts is 0',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: '21e13f4bc7ceddad',
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                userAgent:
+                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                ip: '13.57.97.131',
+                locale: 'en-US',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                screen: {
+                  density: 2,
+                },
+                externalId: [
+                  {
+                    type: 'tiktokExternalId',
+                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                  },
+                ],
+              },
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
+              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+              originalTimestamp: '2019-10-14T09:03:17.562Z',
+              timestamp: '2020-09-17T19:49:27Z',
+              type: 'track',
+              event: 'checkout step completed',
+              properties: {
+                eventId: '1616318632825_357',
+                products: [],
+                currency: 'USD',
+                value: 46,
+                context: {
+                  page: {
+                    url: 'http://demo.mywebsite.com/purchase',
+                    referrer: 'http://demo.mywebsite.com',
+                  },
+                  user: {
+                    phone_number:
+                      '2f9d2b4df907e5c9a7b3434351b55700167b998a83dc479b825096486ffcf4ea',
+                    email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
+                  },
+                },
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T09:03:22.563Z',
+            },
+            destination: {
+              Config: {
+                accessToken: 'dummyAccessToken',
+                pixelCode: '{{PIXEL-CODE}}',
+                hashUserProperties: false,
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/pixel/track/',
+              headers: {
+                'Access-Token': 'dummyAccessToken',
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  pixel_code: '{{PIXEL-CODE}}',
+                  event: 'CompletePayment',
+                  event_id: '1616318632825_357',
+                  timestamp: '2020-09-17T19:49:27Z',
+                  properties: {
+                    currency: 'USD',
+                    value: 46,
+                    contents: [],
+                  },
+                  context: {
                     page: {
                       url: 'http://demo.mywebsite.com/purchase',
                       referrer: 'http://demo.mywebsite.com',

@@ -14,7 +14,7 @@ jobs:
   report-coverage:
     name: Report Code Coverage
     if: github.event_name == 'push'
-    uses: ./.github/workflows/report-code-coverage.yml
+    uses: ./.github/workflows/dt-test-and-report-code-coverage.yml
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 

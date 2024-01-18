@@ -68,17 +68,21 @@
   },
   {
     "destKey": "page.url",
-    "sourceKeys": ["properties.url", "context.page.url"],
+    "sourceKeys": ["properties.context.page.url", "properties.url", "context.page.url"],
     "required": true
   },
   {
     "destKey": "page.referrer",
-    "sourceKeys": ["properties.referrer", "context.page.referrer"],
+    "sourceKeys": [
+      "properties.context.page.referrer",
+      "properties.referrer",
+      "context.page.referrer"
+    ],
     "required": false
   },
   {
     "destKey": "user.locale",
-    "sourceKeys": "context.locale",
+    "sourceKeys": ["properties.context.user.locale", "context.locale"],
     "required": false
   },
   {
@@ -88,12 +92,13 @@
   },
   {
     "destKey": "user.ttp",
-    "sourceKeys": "properties.ttp",
+    "sourceKeys": ["properties.context.user.ttp", "properties.ttp"],
     "required": false
   },
   {
     "destKey": "user.email",
     "sourceKeys": [
+      "properties.context.user.email",
       "context.user.email",
       "traits.email",
       "context.traits.email",
@@ -106,18 +111,23 @@
   },
   {
     "destKey": "user.phone",
-    "sourceKeys": "phone",
-    "sourceFromGenericMap": true,
+    "sourceKeys": [
+      "properties.context.user.phone",
+      "traits.phone",
+      "context.traits.phone",
+      "properties.phone"
+    ],
+    "sourceFromGenericMap": false,
     "required": false
   },
   {
     "destKey": "user.ip",
-    "sourceKeys": ["context.ip", "request_ip"],
+    "sourceKeys": ["properties.context.user.ip", "context.ip", "request_ip"],
     "required": false
   },
   {
     "destKey": "user.user_agent",
-    "sourceKeys": "context.userAgent",
+    "sourceKeys": ["properties.context.user.userAgent", "context.userAgent"],
     "required": false
   }
 ]

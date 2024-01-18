@@ -141,6 +141,15 @@ const DestCanonicalNames = {
     'TWITTER_ADS',
   ],
   BRAZE: ['BRAZE', 'Braze', 'braze'],
+  THE_TRADE_DESK: [
+    'THE_TRADE_DESK',
+    'the_trade_desk',
+    'The_Trade_Desk',
+    'The Trade Desk',
+    'thetradedesk',
+    'theTradeDesk',
+    'TheTradeDesk',
+  ],
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

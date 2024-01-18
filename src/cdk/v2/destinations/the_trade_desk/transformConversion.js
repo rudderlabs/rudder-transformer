@@ -124,9 +124,10 @@ const getDataProcessingOptions = (message) => {
   return { policies, region };
 };
 
-// const getPrivacySetting = (message) => {
-//   const integrationObj = getIntegrationsObj(message, 'THE_TRADE_DESK');
-// };
+const getPrivacySetting = (message) => {
+  const integrationObj = getIntegrationsObj(message, 'THE_TRADE_DESK');
+  return integrationObj?.privacy_settings;
+};
 
 const prepareCustomProperties = (message, destination) => {
   const { customProperties } = destination.Config;
@@ -165,6 +166,7 @@ const prepareTrackPayload = (message, destination) => {
     adid_type: type,
     ...customProperties,
     data_processing_option: getDataProcessingOptions(message),
+    privacy_settings: getPrivacySetting(message),
   };
   return { data: [payload] };
 };

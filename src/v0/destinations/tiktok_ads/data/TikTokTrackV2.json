@@ -1,0 +1,133 @@
+[
+  {
+    "destKey": "event_id",
+    "sourceKeys": ["properties.eventId", "properties.event_id", "messageId"],
+    "required": false
+  },
+  {
+    "destKey": "event_time",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": true,
+    "metadata": {
+      "type": "secondTimestamp"
+    }
+  },
+  {
+    "destKey": "limited_data_use",
+    "sourceKeys": "properties.limited_data_use",
+    "required": false
+  },
+  {
+    "destKey": "properties.contents",
+    "sourceKeys": "properties.contents",
+    "required": false
+  },
+  {
+    "destKey": "properties.content_type",
+    "sourceKeys": ["properties.contentType", "properties.content_type"],
+    "metadata": {
+      "defaultValue": "product"
+    }
+  },
+  {
+    "destKey": "properties.shop_id",
+    "sourceKeys": ["properties.shop_id", "properties.shopId"],
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
+    "destKey": "properties.order_id",
+    "sourceKeys": ["properties.order_id", "properties.orderId"],
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
+    "destKey": "properties.currency",
+    "sourceKeys": "properties.currency",
+    "required": false
+  },
+  {
+    "destKey": "properties.value",
+    "sourceKeys": "properties.value",
+    "required": false
+  },
+  {
+    "destKey": "properties.description",
+    "sourceKeys": "properties.description",
+    "required": false
+  },
+  {
+    "destKey": "properties.query",
+    "sourceKeys": "properties.query",
+    "required": false
+  },
+  {
+    "destKey": "page.url",
+    "sourceKeys": ["properties.context.page.url", "properties.url", "context.page.url"],
+    "required": true
+  },
+  {
+    "destKey": "page.referrer",
+    "sourceKeys": [
+      "properties.context.page.referrer",
+      "properties.referrer",
+      "context.page.referrer"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "user.locale",
+    "sourceKeys": ["properties.context.user.locale", "context.locale"],
+    "required": false
+  },
+  {
+    "destKey": "user.ttclid",
+    "sourceKeys": "properties.ttclid",
+    "required": false
+  },
+  {
+    "destKey": "user.ttp",
+    "sourceKeys": ["properties.context.user.ttp", "properties.ttp"],
+    "required": false
+  },
+  {
+    "destKey": "user.email",
+    "sourceKeys": [
+      "properties.context.user.email",
+      "context.user.email",
+      "traits.email",
+      "context.traits.email",
+      "properties.email"
+    ],
+    "metadata": {
+      "type": ["trim", "toLower"]
+    },
+    "required": false
+  },
+  {
+    "destKey": "user.phone",
+    "sourceKeys": [
+      "properties.context.user.phone",
+      "traits.phone",
+      "context.traits.phone",
+      "properties.phone"
+    ],
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "user.ip",
+    "sourceKeys": ["properties.context.user.ip", "context.ip", "request_ip"],
+    "required": false
+  },
+  {
+    "destKey": "user.user_agent",
+    "sourceKeys": ["properties.context.user.userAgent", "context.userAgent"],
+    "required": false
+  }
+]

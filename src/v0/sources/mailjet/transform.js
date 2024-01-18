@@ -1,8 +1,8 @@
-const workflowEngine1 = require('@rudderstack/workflow-engine');
 const path = require('path');
 const fs = require('fs');
 const md5 = require('md5');
 const Message = require('../message');
+const { CommonUtils } = require('../../../util/common');
 
 // ref : https://dev.mailjet.com/email/guides/webhooks/
 // import mapping json using JSON.parse to preserve object key order
@@ -47,7 +47,7 @@ const processEvent = (event) => {
 
 // This fucntion just converts the incoming payload to array of already not and sends it to processEvent
 const process = (events) => {
-  const eventsArray = workflowEngine1.toArray(events);
+  const eventsArray = CommonUtils.toArray(events);
   return eventsArray.map(processEvent);
 };
 

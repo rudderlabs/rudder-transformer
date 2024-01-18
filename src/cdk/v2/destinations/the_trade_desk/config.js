@@ -55,8 +55,8 @@ const ECOMM_EVENT_MAP = [
 ];
 
 const CONFIG_CATEGORIES = {
-  COMMON_CONFIGS: { name: 'CommonConfig' },
-  ITEM_CONFIGS: { name: 'ItemConfig' },
+  COMMON_CONFIGS: { name: 'TTDCommonConfig' },
+  ITEM_CONFIGS: { name: 'TTDItemConfig' },
 };
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);

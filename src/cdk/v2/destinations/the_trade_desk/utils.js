@@ -8,12 +8,11 @@ const {
   getSuccessRespEvents,
   removeUndefinedAndNullValues,
   handleRtTfSingleEventError,
-  constructPayload,
 } = require('../../../../v0/util');
 const tradeDeskConfig = require('./config');
+const {processConversionInputs} = require('./transformConversion'); 
 
-const { DATA_PROVIDER_ID, DATA_SERVERS_BASE_ENDPOINTS_MAP, COMMON_CONFIGS, ITEM_CONFIGS } =
-  tradeDeskConfig;
+const { DATA_PROVIDER_ID, DATA_SERVERS_BASE_ENDPOINTS_MAP } = tradeDeskConfig;
 
 const ttlInMin = (ttl) => parseInt(ttl, 10) * 1440;
 const getBaseEndpoint = (dataServer) => DATA_SERVERS_BASE_ENDPOINTS_MAP[dataServer];
@@ -94,35 +93,7 @@ const processRecordInputs = (inputs, destination) => {
   return [response, ...errorResponseList];
 };
 
-const processCommonPayload = (message) => {
-  const commonPayload = constructPayload(message, COMMON_CONFIGS);
-  const presentActionSource = commonPayload.action_source;
-  if (presentActionSource && !VALID_ACTION_SOURCES.includes(presentActionSource.toLowerCase())) {
-    throw new InstrumentationError(
-      `Action source must be one of ${VALID_ACTION_SOURCES.join(', ')}`,
-    );
-  }
-
-  commonPayload.opt_out = deduceOptOutStatus(message);
-
-  return commonPayload;
-};
-
-const 
-
-const processConversionInputs = (inputs, destination) => {
-  const { Config } = destination;
-  const items = [];
-  const successMetadata = [];
-  const errorResponseList = [];
-  inputs.forEach((input) => {
-    const {} = input.message;
-    const commonPayload = constructPayload(input.message, COMMON_CONFIGS);
-    const itemsPayload = constructPayload(input.message?.properties, ITEM_CONFIGS);
-  });
-};
-
-const processRouterDest = (inputs) => {
+const processRouterDest = async (inputs) => {
   const respList = [];
   const { destination } = inputs[0];
   const groupedInputs = lodash.groupBy(inputs, (input) => input.message.type);
@@ -130,7 +101,7 @@ const processRouterDest = (inputs) => {
     const transformedRecordEvent = processRecordInputs(groupedInputs.record, destination);
     respList.push(...transformedRecordEvent);
   } else if (groupedInputs.track) {
-    const transformedConversionEvent = processConversionInputs(groupedInputs.track, destination);
+    const transformedConversionEvent = await processConversionInputs(groupedInputs.track);
     respList.push(...transformedConversionEvent);
   }
 

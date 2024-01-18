@@ -1,7 +1,6 @@
 const get = require('get-value');
-const { TransformationError, InstrumentationError } = require('@rudderstack/integrations-lib');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
-  isEmptyObject,
   constructPayload,
   defaultRequestConfig,
   simpleProcessRouterDest,
@@ -9,6 +8,8 @@ const {
   removeUndefinedAndNullValues,
   getHashFromArray,
   isDefinedAndNotNull,
+  isAppleFamily,
+  getIntegrationsObj,
 } = require('../../../../v0/util');
 const { EventType } = require('../../../../constants');
 const { JSON_MIME_TYPE } = require('../../../../v0/util/constant');
@@ -40,10 +41,6 @@ const prepareItemsPayload = (message) => {
   return items;
 };
 
-// const getPrivacySetting = (message) => {
-//   const integrationObj = getIntegrationsObj(message, 'THE_TRADE_DESK');
-// };
-
 const getDestinationExternalIDObject = (message) => {
   const { context } = message;
   const externalIdArray = context?.externalId || [];
@@ -51,51 +48,86 @@ const getDestinationExternalIDObject = (message) => {
   let externalIdObj;
 
   if (Array.isArray(externalIdArray)) {
-    externalIdObj = externalIdArray.find((extIdObj) =>
-      CONVERSION_SUPPORTED_ID_TYPES.includes(extIdObj?.type?.toUpperCase() && extIdObj?.id),
+    externalIdObj = externalIdArray.find(
+      (extIdObj) =>
+        CONVERSION_SUPPORTED_ID_TYPES.includes(extIdObj?.type?.toUpperCase()) && extIdObj?.id,
     );
   }
   return externalIdObj;
 };
 
-const prepareIdFromExternalId = (message) => {
-  const obj = getDestinationExternalIDObject(message);
-  const { type, id } = obj;
-  return { type, id };
+const getDeviceAdvertisingId = (message) => {
+  const { context } = message;
+  const idfa = isAppleFamily(context?.os?.name) ? context?.device?.advertisingId : null;
+  const aaid =
+    context?.os?.name.toLowerCase() === 'android' ? context?.device?.advertisingId : null;
+  const naid =
+    context?.os?.name.toLowerCase() === 'windows' ? context?.device?.advertisingId : null;
+  const deviceId = idfa || aaid || naid;
+  const type = idfa ? 'IDFA' : aaid ? 'AAID' : naid ? 'NAID' : null;
+  return { deviceId, type };
 };
 
-// const populateEventName = (message, destination) => {
-//   let eventName;
-//   const { event } = message;
-//   const { eventsMapping } = destination.Config;
+// TDID, DAID,'IDL','EUID', 'UID2',
+const getAdvertisingId = (message) => {
+  const { deviceId, type } = getDeviceAdvertisingId(message);
+  if (deviceId) {
+    return { id: deviceId, type };
+  }
+  const externalIdObj = getDestinationExternalIDObject(message);
+  return { id: externalIdObj?.id, type: externalIdObj?.type };
+};
 
-//   if (eventsMapping.length > 0) {
-//     const keyMap = getHashFromArray(eventsMapping, 'from', 'to');
-//     eventName = keyMap[event.toLowerCase()];
-//   }
+const populateEventName = (message, destination) => {
+  let eventName;
+  const { event } = message;
+  const { eventsMapping } = destination.Config;
 
-//   if (!eventName) {
-//     const eventMapInfo = ECOMM_EVENT_MAP.find((eventMap) => {
-//       if (eventMap.src.toLowerCase() === event.toLowerCase()) {
-//         return eventMap;
-//       }
-//       return false;
-//     });
+  if (eventsMapping.length > 0) {
+    const keyMap = getHashFromArray(eventsMapping, 'from', 'to');
+    eventName = keyMap[event.toLowerCase()];
+  }
 
-//     if (isDefinedAndNotNull(eventMapInfo)) {
-//       return eventMapInfo.dest;
-//     }
-//   }
+  if (!eventName) {
+    const eventMapInfo = ECOMM_EVENT_MAP.find((eventMap) => {
+      if (eventMap.src.toLowerCase() === event.toLowerCase()) {
+        return eventMap;
+      }
+      return false;
+    });
 
-//   return eventName;
+    if (isDefinedAndNotNull(eventMapInfo)) {
+      return eventMapInfo.dest;
+    }
+  }
+
+  return eventName;
+};
+
+const getDataProcessingOptions = (message) => {
+  const integrationObj = getIntegrationsObj(message, 'THE_TRADE_DESK');
+  let { policies, region } = integrationObj;
+  if (!policies || (Array.isArray(policies) && policies.length === 0)) {
+    policies = ['LDU'];
+  }
+
+  if (Array.isArray(policies)) {
+    if (policies.length > 1) {
+      throw new InstrumentationError('Only one policy is allowed');
+    }
+    if (policies[0] !== 'LDU') {
+      throw new InstrumentationError('Only LDU policy is supported');
+    }
+  }
+
+  // TODO: add us applicable state check
+  return { policies, region };
+};
+
+// const getPrivacySetting = (message) => {
+//   const integrationObj = getIntegrationsObj(message, 'THE_TRADE_DESK');
 // };
 
-// "customProperties": [
-//     {
-//       "rudderProperty": "properties.key1",
-//       "tradeDeskProperty": "td1"
-//     }
-//   ]
 const prepareCustomProperties = (message, destination) => {
   const { customProperties } = destination.Config;
   const payload = {};
@@ -106,17 +138,34 @@ const prepareCustomProperties = (message, destination) => {
       payload[tradeDeskProperty] = value;
     }
   });
-  return customProperties;
+  return payload;
+};
+
+const prepareFromConfig = (destination) => {
+  const { Config } = destination;
+  const { trackerId, advertiserId } = Config;
+  return { tracker_id: trackerId, adv: advertiserId };
 };
 
 const prepareCommonPayload = (message) => constructPayload(message, COMMON_CONFIGS);
 
 const prepareTrackPayload = (message, destination) => {
+  const configPayload = prepareFromConfig(destination);
   const commonPayload = prepareCommonPayload(message);
   const items = prepareItemsPayload(message);
-  const { type, id } = prepareIdFromExternalId(message);
+  const { id, type } = getAdvertisingId(message);
   const customProperties = prepareCustomProperties(message, destination);
-  const payload = { ...commonPayload, items, adid_type: type, adid: id, ...customProperties };
+  const eventName = populateEventName(message, destination);
+  const payload = {
+    ...configPayload,
+    ...commonPayload,
+    event_name: eventName,
+    items,
+    adid: id,
+    adid_type: type,
+    ...customProperties,
+    data_processing_option: getDataProcessingOptions(message),
+  };
   return { data: [payload] };
 };
 
@@ -144,9 +193,9 @@ const processEvent = (message, destination) => {
 
 const process = (event) => processEvent(event.message, event.destination);
 
-const processRouterDest = async (inputs, reqMetadata) => {
+const processConversionInputs = async (inputs, reqMetadata) => {
   const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 
-module.exports = { process, processRouterDest };
+module.exports = { processConversionInputs };

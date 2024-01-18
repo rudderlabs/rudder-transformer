@@ -1,5 +1,4 @@
 [
-    // Required, only for purchase events add this check
     {
         "destKey": "value",
         "sourceKeys": [
@@ -10,10 +9,6 @@
     {
         "destKey": "currency",
         "sourceKeys": "properties.currency"
-    },
-    {
-        "destKey": "event_name",
-        "sourceKeys": "event"
     },
     {
         "destKey": "client_ip",

@@ -69,25 +69,29 @@ const processRecordInputs = (inputs, destination) => {
 
     if (!isInsertOrDelete) {
       errorResponseList.push(handleRtTfSingleEventError(input, invalidActionTypeError, {}));
-    } else if (isEmptyObject(fields)) {
-      errorResponseList.push(handleRtTfSingleEventError(input, emptyFieldsError, {}));
-    } else {
-      successMetadata.push(input.metadata);
-      const data = [
-        {
-          Name: Config.audienceId,
-          TTLInMinutes: action === 'insert' ? ttlInMin(Config.ttlInDays) : 0,
-        },
-      ];
-
-      Object.keys(fields).forEach((id) => {
-        const value = fields[id];
-        if (value) {
-          // adding only non empty ID's
-          items.push({ [id]: value, Data: data });
-        }
-      });
+      return;
     }
+
+    if (isEmptyObject(fields)) {
+      errorResponseList.push(handleRtTfSingleEventError(input, emptyFieldsError, {}));
+      return;
+    }
+
+    successMetadata.push(input.metadata);
+    const data = [
+      {
+        Name: Config.audienceId,
+        TTLInMinutes: action === 'insert' ? ttlInMin(Config.ttlInDays) : 0,
+      },
+    ];
+
+    Object.keys(fields).forEach((id) => {
+      const value = fields[id];
+      if (value) {
+        // adding only non empty ID's
+        items.push({ [id]: value, Data: data });
+      }
+    });
   });
 
   const payloads = batchResponseBuilder(items, Config);

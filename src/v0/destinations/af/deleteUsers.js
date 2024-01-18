@@ -38,6 +38,7 @@ const deleteUser = async (config, endpoint, body, identityType, identityValue) =
     {
       destType: 'af',
       feature: 'deleteUsers',
+      endpointPath: `appsflyer.com/api/gdpr/v1/opendsr_requests`,
     },
   );
   const handledDelResponse = processAxiosResponse(response);

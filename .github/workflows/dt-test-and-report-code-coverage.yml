@@ -1,4 +1,4 @@
-name: Report Code Coverage
+name: DT Tests
 on:
   workflow_call:
     secrets:
@@ -20,7 +20,7 @@ jobs:
           fetch-depth: 1
 
       - name: Setup Node
-        uses: actions/setup-node@v4.0.0
+        uses: actions/setup-node@v4.0.1
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -30,8 +30,9 @@ jobs:
 
       - name: Run Tests
         run: |
-          npm run test:js:ci
-          npm run test:ts:ci
+          # Supress logging in tests
+          LOG_LEVEL=100 npm run test:js:ci
+          LOG_LEVEL=100 npm run test:ts:ci
 
       - name: Run Lint Checks
         run: |
@@ -57,7 +58,7 @@ jobs:
 
       - name: SonarCloud Scan
         if: always()
-        uses: SonarSource/sonarcloud-github-action@v2.0.0
+        uses: SonarSource/sonarcloud-github-action@v2.1.1
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

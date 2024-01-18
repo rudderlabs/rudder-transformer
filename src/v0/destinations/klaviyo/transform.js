@@ -156,6 +156,9 @@ const trackRequestHandler = (message, category, destination) => {
   const payload = {};
   const { privateApiKey, flattenProperties } = destination.Config;
   let event = get(message, 'event');
+  if (event && typeof event !== 'string') {
+    throw new InstrumentationError('Event type should be a string');
+  }
   event = event ? event.trim().toLowerCase() : event;
   let attributes = {};
   if (ecomEvents.includes(event) && message.properties) {

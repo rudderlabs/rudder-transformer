@@ -1,16 +1,15 @@
 /* eslint-disable max-classes-per-file */
-import { MessageDetails, StatusCode } from "./types";
+import { MessageDetails, StatusCode } from './types';
 
 export class ErrorDetailsExtractor {
   status: StatusCode;
 
   messageDetails: MessageDetails;
 
-  constructor (builder: ErrorDetailsExtractorBuilder) {
+  constructor(builder: ErrorDetailsExtractorBuilder) {
     this.status = builder.getStatus();
     this.messageDetails = builder.getMessageDetails();
   }
-
 }
 
 export class ErrorDetailsExtractorBuilder {
@@ -22,7 +21,7 @@ export class ErrorDetailsExtractorBuilder {
     this.status = 0;
     this.messageDetails = {};
   }
-  
+
   setStatus(status: number): ErrorDetailsExtractorBuilder {
     this.status = status;
     return this;
@@ -30,9 +29,9 @@ export class ErrorDetailsExtractorBuilder {
 
   /**
    * This means we need to set a message from a specific field that we see from the destination's response
-   * 
+   *
    * @param {string} fieldPath -- Path of the field which should be set as "error message"
-   * @returns 
+   * @returns
    */
   setMessageField(fieldPath: string): ErrorDetailsExtractorBuilder {
     if (this.messageDetails?.message) {
@@ -40,16 +39,16 @@ export class ErrorDetailsExtractorBuilder {
       return this;
     }
     this.messageDetails = {
-      field: fieldPath
-    }
+      field: fieldPath,
+    };
     return this;
   }
 
   /**
    * This means we need to set the message provided
-   * 
+   *
    * @param {string} msg - error message
-   * @returns 
+   * @returns
    */
   setMessage(msg: string): ErrorDetailsExtractorBuilder {
     if (this.messageDetails?.field) {
@@ -57,22 +56,20 @@ export class ErrorDetailsExtractorBuilder {
       return this;
     }
     this.messageDetails = {
-      message: msg
-    }
+      message: msg,
+    };
     return this;
   }
 
   build(): ErrorDetailsExtractor {
-    return new ErrorDetailsExtractor(this)
+    return new ErrorDetailsExtractor(this);
   }
 
   getStatus(): number {
     return this.status;
   }
-  
+
   getMessageDetails(): Record<string, string> {
     return this.messageDetails;
   }
 }
-
-

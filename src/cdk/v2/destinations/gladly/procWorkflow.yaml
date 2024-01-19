@@ -13,7 +13,6 @@ bindings:
     path: ../../../../adapters/network
   - name: processAxiosResponse
     path: ../../../../adapters/utils/networkUtils
-  
 
 steps:
   - name: checkIfProcessed

@@ -142,4 +142,3 @@ const deliveryCallsData = [
   },
 ];
 export const networkCallsData = [...deleteNwData, ...deliveryCallsData];
-

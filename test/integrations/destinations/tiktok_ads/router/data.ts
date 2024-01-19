@@ -2749,7 +2749,6 @@ export const data = [
               },
             },
           ],
-
         },
       },
     },

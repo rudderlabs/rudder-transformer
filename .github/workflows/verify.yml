@@ -4,15 +4,8 @@ on:
   pull_request:
 
 jobs:
-  pr-title-validation:
-    name: Check PR Title
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check PR Title
-        uses: rudderlabs/github-action-check-pr-title@v1.0.7
-
-  prettier:
-    name: Prettier
+  formatting-lint:
+    name: Check for formatting & lint errors
     runs-on: ubuntu-latest
 
     steps:

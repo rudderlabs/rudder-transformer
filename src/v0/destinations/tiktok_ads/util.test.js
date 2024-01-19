@@ -107,7 +107,7 @@ describe('hashUserField utility test', () => {
     const hashedUser = hashUserField(user);
 
     expect(hashedUser).toEqual({
-      external_id: "a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3",
+      external_id: 'a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3',
       email: '973dfe463ec85785f5f95af5ba3906eedb2d931c24e69824a89ea65dba4e813b',
       phone: '422ce82c6fc1724ac878042f7d055653ab5e983d186e616826a72d4384b68af8',
     });

@@ -5141,7 +5141,7 @@ export const data = [
               channel: 'web',
               context: {
                 traits: {
-                  email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f'
+                  email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
                 },
                 userAgent:
                   'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
@@ -5176,7 +5176,7 @@ export const data = [
                     content_id: '1197218',
                   },
                 ],
-                url: "http://demo.mywebsite.com/purchase",
+                url: 'http://demo.mywebsite.com/purchase',
                 clickId: 'dummyclickId',
                 currency: 'USD',
                 value: 46,
@@ -5225,7 +5225,7 @@ export const data = [
                       event_id: '1616318632825_357',
                       event_time: 1600372167,
                       properties: {
-                        content_type: "product",
+                        content_type: 'product',
                         contents: [
                           {
                             price: 8,
@@ -5244,10 +5244,10 @@ export const data = [
                         value: 46,
                       },
                       page: {
-                        url: 'http://demo.mywebsite.com/purchase'
+                        url: 'http://demo.mywebsite.com/purchase',
                       },
                       user: {
-                        locale: "en-US",
+                        locale: 'en-US',
                         email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
                         external_id:
                           'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
@@ -5273,7 +5273,8 @@ export const data = [
   },
   {
     name: 'tiktok_ads',
-    description: 'Test 33 -> V2 -> Event mapped to one standard event with contents present as it is in properties',
+    description:
+      'Test 33 -> V2 -> Event mapped to one standard event with contents present as it is in properties',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -5286,7 +5287,7 @@ export const data = [
               channel: 'web',
               context: {
                 traits: {
-                  email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f'
+                  email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
                 },
                 page: {
                   url: 'http://demo.mywebsite.com/purchase',
@@ -5352,7 +5353,7 @@ export const data = [
                   {
                     from: 'addToCart',
                     to: 'download',
-                  }
+                  },
                 ],
               },
             },
@@ -5386,7 +5387,7 @@ export const data = [
                       event_id: '1616318632825_357',
                       event_time: 1600372167,
                       properties: {
-                        content_type: "product",
+                        content_type: 'product',
                         contents: [
                           {
                             price: 8,
@@ -5409,7 +5410,7 @@ export const data = [
                         referrer: 'http://demo.mywebsite.com',
                       },
                       user: {
-                        locale: "en-US",
+                        locale: 'en-US',
                         email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
                         external_id:
                           'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
@@ -5448,10 +5449,10 @@ export const data = [
               channel: 'web',
               context: {
                 traits: {
-                  email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f'
+                  email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
                 },
                 page: {
-                  url: 'http://demo.mywebsite.com/purchase'
+                  url: 'http://demo.mywebsite.com/purchase',
                 },
                 userAgent:
                   'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
@@ -5517,7 +5518,7 @@ export const data = [
                   {
                     from: 'AddToCart',
                     to: 'AddToWishlist',
-                  }
+                  },
                 ],
               },
             },
@@ -5551,7 +5552,7 @@ export const data = [
                       event_id: '1616318632825_357',
                       event_time: 1600372167,
                       properties: {
-                        content_type: "product",
+                        content_type: 'product',
                         contents: [
                           {
                             price: 8,
@@ -5573,7 +5574,7 @@ export const data = [
                         url: 'http://demo.mywebsite.com/purchase',
                       },
                       user: {
-                        locale: "en-US",
+                        locale: 'en-US',
                         email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
                         external_id:
                           'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
@@ -5587,7 +5588,7 @@ export const data = [
                       event_id: '1616318632825_357',
                       event_time: 1600372167,
                       properties: {
-                        content_type: "product",
+                        content_type: 'product',
                         contents: [
                           {
                             price: 8,
@@ -5609,7 +5610,7 @@ export const data = [
                         url: 'http://demo.mywebsite.com/purchase',
                       },
                       user: {
-                        locale: "en-US",
+                        locale: 'en-US',
                         email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
                         external_id:
                           'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
@@ -5657,7 +5658,10 @@ export const data = [
                 externalId: [
                   {
                     type: 'tiktokExternalId',
-                    id: ['f0e388f53921a51f0bb0fc8a2944109ec188b5', '1f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc'],
+                    id: [
+                      'f0e388f53921a51f0bb0fc8a2944109ec188b5',
+                      '1f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                    ],
                   },
                 ],
               },
@@ -5687,8 +5691,7 @@ export const data = [
                 currency: 'USD',
                 value: 46,
                 phone: ['+12345432', '+134234325'],
-                email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f'
-
+                email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
               },
               integrations: {
                 All: true,
@@ -5710,7 +5713,7 @@ export const data = [
                   {
                     from: 'AddToCart',
                     to: 'AddToWishlist',
-                  }
+                  },
                 ],
               },
             },
@@ -5744,7 +5747,7 @@ export const data = [
                       event_id: '1616318632825_357',
                       event_time: 1600372167,
                       properties: {
-                        content_type: "product",
+                        content_type: 'product',
                         contents: [
                           {
                             price: 8,
@@ -5769,7 +5772,10 @@ export const data = [
                       user: {
                         phone: ['+12345432', '+134234325'],
                         email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
-                        external_id: ['f0e388f53921a51f0bb0fc8a2944109ec188b5', '1f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc'],
+                        external_id: [
+                          'f0e388f53921a51f0bb0fc8a2944109ec188b5',
+                          '1f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                        ],
                         ip: '13.57.97.131',
                         user_agent:
                           'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
@@ -5780,7 +5786,7 @@ export const data = [
                       event_id: '1616318632825_357',
                       event_time: 1600372167,
                       properties: {
-                        content_type: "product",
+                        content_type: 'product',
                         contents: [
                           {
                             price: 8,
@@ -5805,7 +5811,10 @@ export const data = [
                       user: {
                         phone: ['+12345432', '+134234325'],
                         email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
-                        external_id: ['f0e388f53921a51f0bb0fc8a2944109ec188b5', '1f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc'],
+                        external_id: [
+                          'f0e388f53921a51f0bb0fc8a2944109ec188b5',
+                          '1f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                        ],
                         ip: '13.57.97.131',
                         user_agent:
                           'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
@@ -5841,7 +5850,7 @@ export const data = [
               channel: 'web',
               context: {
                 traits: {
-                  email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f'
+                  email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
                 },
                 page: {
                   url: 'http://demo.mywebsite.com/purchase',
@@ -5979,7 +5988,7 @@ export const data = [
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
-                version: 'v2'
+                version: 'v2',
               },
             },
           },
@@ -5992,8 +6001,7 @@ export const data = [
         body: [
           {
             statusCode: 400,
-            error:
-              'Event type is required',
+            error: 'Event type is required',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
@@ -6048,8 +6056,7 @@ export const data = [
         body: [
           {
             statusCode: 400,
-            error:
-              'Event name is required',
+            error: 'Event name is required',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
@@ -6103,8 +6110,7 @@ export const data = [
         body: [
           {
             statusCode: 400,
-            error:
-              'Access Token not found. Aborting',
+            error: 'Access Token not found. Aborting',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'configuration',
@@ -6158,8 +6164,7 @@ export const data = [
         body: [
           {
             statusCode: 400,
-            error:
-              'Pixel Code not found. Aborting',
+            error: 'Pixel Code not found. Aborting',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'configuration',
@@ -6188,7 +6193,7 @@ export const data = [
               channel: 'web',
               context: {
                 traits: {
-                  email: 'abc@xyz.com'
+                  email: 'abc@xyz.com',
                 },
                 page: {
                   url: 'http://demo.mywebsite.com/purchase',
@@ -6200,7 +6205,10 @@ export const data = [
                 externalId: [
                   {
                     type: 'tiktokExternalId',
-                    id: ['f0e388f53921a51f0bb0fc8a2944109ec188b5', '1f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc'],
+                    id: [
+                      'f0e388f53921a51f0bb0fc8a2944109ec188b5',
+                      '1f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                    ],
                   },
                 ],
               },
@@ -6229,7 +6237,7 @@ export const data = [
                 clickId: 'dummyclickId',
                 currency: 'USD',
                 value: 46,
-                phone: ['+12345432', '+134234325']
+                phone: ['+12345432', '+134234325'],
               },
               integrations: {
                 All: true,
@@ -6251,7 +6259,7 @@ export const data = [
                   {
                     from: 'AddToCart',
                     to: 'AddToWishlist',
-                  }
+                  },
                 ],
               },
             },
@@ -6285,7 +6293,7 @@ export const data = [
                       event_id: '1616318632825_357',
                       event_time: 1600372167,
                       properties: {
-                        content_type: "product",
+                        content_type: 'product',
                         contents: [
                           {
                             price: 8,
@@ -6309,16 +6317,19 @@ export const data = [
                       },
                       user: {
                         email: 'ee278943de84e5d6243578ee1a1057bcce0e50daad9755f45dfa64b60b13bc5d',
-                        external_id: ["3e0c7a51acd326b87f29596e38c22cbeb732df37bc5c8f5f524c14b55d3472db", "f8be04e62f5a3eba31c8b9380843666f28f3ab5f44a380f47fac04e9ce7b2168",],
+                        external_id: [
+                          '3e0c7a51acd326b87f29596e38c22cbeb732df37bc5c8f5f524c14b55d3472db',
+                          'f8be04e62f5a3eba31c8b9380843666f28f3ab5f44a380f47fac04e9ce7b2168',
+                        ],
                         ip: '13.57.97.131',
                         phone: [
-                          "49a15e38bdc2572d362a924c2ddd100baed0fe29db44270d3700fcef03b18c39",
-                          "5a6a7a09b18278e220312ce26d711ff7c8263d0965ee3b1d26b1b6f0ac7e71b3",
+                          '49a15e38bdc2572d362a924c2ddd100baed0fe29db44270d3700fcef03b18c39',
+                          '5a6a7a09b18278e220312ce26d711ff7c8263d0965ee3b1d26b1b6f0ac7e71b3',
                         ],
                         user_agent:
                           'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
                       },
-                    }
+                    },
                   ],
                 },
                 JSON_ARRAY: {},
@@ -6349,7 +6360,7 @@ export const data = [
               channel: 'web',
               context: {
                 traits: {
-                  email: 'abc@xyz.com'
+                  email: 'abc@xyz.com',
                 },
                 page: {
                   url: 'http://demo.mywebsite.com/purchase',
@@ -6361,7 +6372,10 @@ export const data = [
                 externalId: [
                   {
                     type: 'tiktokExternalId',
-                    id: ['f0e388f53921a51f0bb0fc8a2944109ec188b5', '1f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc'],
+                    id: [
+                      'f0e388f53921a51f0bb0fc8a2944109ec188b5',
+                      '1f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                    ],
                   },
                 ],
               },
@@ -6374,8 +6388,8 @@ export const data = [
               properties: {
                 order_id: 1234,
                 shop_id: 4567,
-                description: "Viewed games",
-                query: "New age games",
+                description: 'Viewed games',
+                query: 'New age games',
                 contentType: 'product_group',
                 eventId: '1616318632825_357',
                 products: [
@@ -6402,7 +6416,7 @@ export const data = [
                 clickId: 'dummyclickId',
                 currency: 'USD',
                 value: 46,
-                phone: ['+12345432', '+134234325']
+                phone: ['+12345432', '+134234325'],
               },
               integrations: {
                 All: true,
@@ -6424,7 +6438,7 @@ export const data = [
                   {
                     from: 'AddToCart',
                     to: 'AddToWishlist',
-                  }
+                  },
                 ],
               },
             },
@@ -6458,11 +6472,11 @@ export const data = [
                       event_id: '1616318632825_357',
                       event_time: 1600372167,
                       properties: {
-                        order_id: "1234",
-                        shop_id: "4567",
-                        description: "Viewed games",
-                        query: "New age games",
-                        content_type: "product_group",
+                        order_id: '1234',
+                        shop_id: '4567',
+                        description: 'Viewed games',
+                        query: 'New age games',
+                        content_type: 'product_group',
                         contents: [
                           {
                             price: 14,
@@ -6470,13 +6484,13 @@ export const data = [
                             content_category: 'Games',
                             content_id: '123',
                             content_name: 'Monopoly',
-                            brand: 'adidas'
+                            brand: 'adidas',
                           },
                           {
                             price: 3.45,
                             quantity: 2,
                             content_id: '345',
-                            content_name: 'UNO'
+                            content_name: 'UNO',
                           },
                         ],
                         currency: 'USD',
@@ -6488,16 +6502,19 @@ export const data = [
                       },
                       user: {
                         email: 'ee278943de84e5d6243578ee1a1057bcce0e50daad9755f45dfa64b60b13bc5d',
-                        external_id: ["3e0c7a51acd326b87f29596e38c22cbeb732df37bc5c8f5f524c14b55d3472db", "f8be04e62f5a3eba31c8b9380843666f28f3ab5f44a380f47fac04e9ce7b2168",],
+                        external_id: [
+                          '3e0c7a51acd326b87f29596e38c22cbeb732df37bc5c8f5f524c14b55d3472db',
+                          'f8be04e62f5a3eba31c8b9380843666f28f3ab5f44a380f47fac04e9ce7b2168',
+                        ],
                         ip: '13.57.97.131',
                         phone: [
-                          "49a15e38bdc2572d362a924c2ddd100baed0fe29db44270d3700fcef03b18c39",
-                          "5a6a7a09b18278e220312ce26d711ff7c8263d0965ee3b1d26b1b6f0ac7e71b3",
+                          '49a15e38bdc2572d362a924c2ddd100baed0fe29db44270d3700fcef03b18c39',
+                          '5a6a7a09b18278e220312ce26d711ff7c8263d0965ee3b1d26b1b6f0ac7e71b3',
                         ],
                         user_agent:
                           'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
                       },
-                    }
+                    },
                   ],
                 },
                 JSON_ARRAY: {},
@@ -6528,7 +6545,7 @@ export const data = [
               channel: 'web',
               context: {
                 traits: {
-                  email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f'
+                  email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
                 },
                 page: {
                   url: 'http://demo.mywebsite.com/purchase',
@@ -6579,7 +6596,7 @@ export const data = [
                   {
                     from: 'addToCart',
                     to: 'download',
-                  }
+                  },
                 ],
               },
             },
@@ -6613,13 +6630,15 @@ export const data = [
                       event_id: '1616318632825_357',
                       event_time: 1600372167,
                       properties: {
-                        content_type: "product",
-                        contents: [{
-                          price: 8,
-                          quantity: 2,
-                          content_type: 'socks',
-                          content_id: '1077218',
-                        }],
+                        content_type: 'product',
+                        contents: [
+                          {
+                            price: 8,
+                            quantity: 2,
+                            content_type: 'socks',
+                            content_id: '1077218',
+                          },
+                        ],
                         currency: 'USD',
                         value: 46,
                       },
@@ -6628,7 +6647,7 @@ export const data = [
                         referrer: 'http://demo.mywebsite.com',
                       },
                       user: {
-                        locale: "en-US",
+                        locale: 'en-US',
                         email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
                         external_id:
                           'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
@@ -6687,7 +6706,7 @@ export const data = [
                 accessToken: 'dummyAccessToken',
                 pixelCode: '{{PIXEL-CODE}}',
                 hashUserProperties: false,
-                version: "v2"
+                version: 'v2',
               },
             },
           },
@@ -6716,7 +6735,8 @@ export const data = [
   },
   {
     name: 'tiktok_ads',
-    description: 'Test 45-> events 1.0 build contents from properties.product.$ where length of prodicts is 0',
+    description:
+      'Test 45-> events 1.0 build contents from properties.product.$ where length of prodicts is 0',
     feature: 'processor',
     module: 'destination',
     version: 'v0',

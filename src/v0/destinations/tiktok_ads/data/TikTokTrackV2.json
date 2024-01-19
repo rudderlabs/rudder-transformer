@@ -69,7 +69,7 @@
   {
     "destKey": "page.url",
     "sourceKeys": ["properties.context.page.url", "properties.url", "context.page.url"],
-    "required": true
+    "required": false
   },
   {
     "destKey": "page.referrer",

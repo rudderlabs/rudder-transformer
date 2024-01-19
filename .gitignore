@@ -135,3 +135,6 @@ dist
 
 
 .idea
+
+# component test report
+test_reports/

@@ -8,6 +8,7 @@ on:
     branches:
       - develop
       - anshul.dedicated-customers-build-pr
+      - dedicated-customers-build-pr
     types:
       - opened
 

@@ -1,4 +1,4 @@
-name: Prepare for Production Environment Deployment
+name: Test Workflow (Prepare for Production Environment Deployment)
 
 on:
   push:
@@ -7,8 +7,9 @@ on:
   pull_request:
     types:
       - closed
+      - opened
     branches:
-      - main
+      - develop
 
 jobs:
   report-coverage:

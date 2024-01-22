@@ -172,7 +172,7 @@ const getAccessToken = async (config) =>
 
     // when access token is present
     if (accessTokenResponse.response.access_token) {
-      /* This scenario will handle the case when we get the foloowing response
+      /* This scenario will handle the case when we get the following response
       status: 200  
       respnse: {"access_token":"<dummy-access-token>","token_type":"bearer","expires_in":0,"scope":"dummy@scope.com"}
       wherein "expires_in":0 denotes that we should refresh the accessToken but its not expired yet. 

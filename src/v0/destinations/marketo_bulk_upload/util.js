@@ -142,8 +142,8 @@ const getAccessTokenURL = (config) => {
 
 // Fetch access token from client id and client secret
 // DOC: https://developers.marketo.com/rest-api/authentication/
-const getAccessToken = async (config) =>
-  authCache.get(getAccessTokenCacheKey(config), async () => {
+const getAccessToken = async (config) => {
+  const accessToken = await authCache.get(getAccessTokenCacheKey(config), async () => {
     const url = getAccessTokenURL(config);
     const { processedResponse: accessTokenResponse } = await handleHttpRequest('get', url, {
       destType: 'marketo_bulk_upload',
@@ -190,6 +190,8 @@ const getAccessToken = async (config) =>
       400,
     );
   });
+  return accessToken;
+};
 
 /**
  * Handles the response of a polling operation.

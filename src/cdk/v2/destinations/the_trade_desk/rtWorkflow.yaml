@@ -1,6 +1,6 @@
 bindings:
   - name: processRouterDest
-    path: ./utils
+    path: ./transform
 
 steps:
   - name: validateInput

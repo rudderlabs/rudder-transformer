@@ -1,22 +1,25 @@
-const lodash = require('lodash');
+const get = require('get-value');
 const CryptoJS = require('crypto-js');
 const { InstrumentationError, AbortedError } = require('@rudderstack/integrations-lib');
-const { BatchUtils } = require('@rudderstack/workflow-engine');
 const {
-  defaultPostRequestConfig,
-  defaultRequestConfig,
-  getSuccessRespEvents,
-  removeUndefinedAndNullValues,
-  handleRtTfSingleEventError,
+  constructPayload,
+  getHashFromArray,
+  isDefinedAndNotNull,
+  isAppleFamily,
+  getIntegrationsObj,
 } = require('../../../../v0/util');
-const tradeDeskConfig = require('./config');
-const {processConversionInputs} = require('./transformConversion'); 
+const {
+  DATA_SERVERS_BASE_ENDPOINTS_MAP,
+  CONVERSION_SUPPORTED_ID_TYPES,
+  COMMON_CONFIGS,
+  ITEM_CONFIGS,
+  ECOMM_EVENT_MAP,
+} = require('./config');
 
-const { DATA_PROVIDER_ID, DATA_SERVERS_BASE_ENDPOINTS_MAP } = tradeDeskConfig;
-
-const ttlInMin = (ttl) => parseInt(ttl, 10) * 1440;
+const getTTLInMin = (ttl) => parseInt(ttl, 10) * 1440;
 const getBaseEndpoint = (dataServer) => DATA_SERVERS_BASE_ENDPOINTS_MAP[dataServer];
 const getFirstPartyEndpoint = (dataServer) => `${getBaseEndpoint(dataServer)}/data/advertiser`;
+const prepareCommonPayload = (message) => constructPayload(message, COMMON_CONFIGS);
 
 const getSignatureHeader = (request, secretKey) => {
   if (!secretKey) {
@@ -27,85 +30,145 @@ const getSignatureHeader = (request, secretKey) => {
   return base;
 };
 
-const responseBuilder = (items, config) => {
-  const { advertiserId, dataServer } = config;
+const prepareFromConfig = (destination) => ({
+  tracker_id: destination.Config?.trackerId,
+  adv: destination.Config?.advertiserId,
+});
 
-  const payload = { DataProviderId: DATA_PROVIDER_ID, AdvertiserId: advertiserId, Items: items };
-
-  const response = defaultRequestConfig();
-  response.endpoint = getFirstPartyEndpoint(dataServer);
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.body.JSON = removeUndefinedAndNullValues(payload);
-  return response;
+const prepareItemsPayload = (message) => {
+  const productPropertiesArray = Array.isArray(message.properties?.products)
+    ? message.properties.products
+    : [message.properties];
+  return productPropertiesArray.map((product) => constructPayload(product, ITEM_CONFIGS));
 };
 
-const batchResponseBuilder = (items, config) => {
-  const response = [];
-  const itemsChunks = BatchUtils.chunkArrayBySizeAndLength(items, {
-    // TODO: use destructuring at the top of file once proper 'mocking' is implemented.
-    // eslint-disable-next-line unicorn/consistent-destructuring
-    maxSizeInBytes: tradeDeskConfig.MAX_REQUEST_SIZE_IN_BYTES,
-  });
+const getDeviceAdvertisingId = (message) => {
+  const { context } = message;
+  const deviceId = context?.device?.advertisingId;
+  const osName = context?.os?.name?.toLowerCase();
 
-  itemsChunks.items.forEach((chunk) => {
-    response.push(responseBuilder(chunk, config));
-  });
-
-  return response;
-};
-
-const processRecordInputs = (inputs, destination) => {
-  const { Config } = destination;
-  const items = [];
-  const successMetadata = [];
-  const errorResponseList = [];
-
-  const error = new InstrumentationError('Invalid action type');
-
-  inputs.forEach((input) => {
-    const { fields, action } = input.message;
-    const isInsertOrDelete = action === 'insert' || action === 'delete';
-
-    if (isInsertOrDelete) {
-      successMetadata.push(input.metadata);
-      const data = [
-        {
-          Name: Config.audienceId,
-          TTLInMinutes: action === 'insert' ? ttlInMin(Config.ttlInDays) : 0,
-        },
-      ];
-
-      Object.keys(fields).forEach((id) => {
-        const value = fields[id];
-        if (value) {
-          // adding only non empty ID's
-          items.push({ [id]: value, Data: data });
-        }
-      });
-    } else {
-      errorResponseList.push(handleRtTfSingleEventError(input, error, {}));
-    }
-  });
-
-  const payloads = batchResponseBuilder(items, Config);
-
-  const response = getSuccessRespEvents(payloads, successMetadata, destination, true);
-  return [response, ...errorResponseList];
-};
-
-const processRouterDest = async (inputs) => {
-  const respList = [];
-  const { destination } = inputs[0];
-  const groupedInputs = lodash.groupBy(inputs, (input) => input.message.type);
-  if (groupedInputs.record) {
-    const transformedRecordEvent = processRecordInputs(groupedInputs.record, destination);
-    respList.push(...transformedRecordEvent);
-  } else if (groupedInputs.track) {
-    const transformedConversionEvent = await processConversionInputs(groupedInputs.track);
-    respList.push(...transformedConversionEvent);
+  let type;
+  switch (osName) {
+    case 'android':
+      type = 'AAID';
+      break;
+    case 'windows':
+      type = 'NAID';
+      break;
+    default:
+      type = isAppleFamily(osName) ? 'IDFA' : null;
+      break;
   }
 
-  return respList;
+  return { deviceId, type };
 };
 
-module.exports = { getSignatureHeader, processRouterDest };
+const getDestinationExternalIDObject = (message) => {
+  const { context } = message;
+  const externalIdArray = context?.externalId || [];
+
+  let externalIdObj;
+
+  if (Array.isArray(externalIdArray)) {
+    externalIdObj = externalIdArray.find(
+      (extIdObj) =>
+        CONVERSION_SUPPORTED_ID_TYPES.includes(extIdObj?.type?.toUpperCase()) && extIdObj?.id,
+    );
+  }
+  return externalIdObj;
+};
+
+// TDID, DAID,'IDL','EUID', 'UID2',
+const getAdvertisingId = (message) => {
+  const { deviceId, type } = getDeviceAdvertisingId(message);
+  if (deviceId && type) {
+    return { id: deviceId, type };
+  }
+  const externalIdObj = getDestinationExternalIDObject(message);
+  return { id: externalIdObj?.id, type: externalIdObj?.type };
+};
+
+const prepareCustomProperties = (message, destination) => {
+  const { customProperties } = destination.Config;
+  const payload = {};
+  customProperties.forEach((customProperty) => {
+    const { rudderProperty, tradeDeskProperty } = customProperty;
+    const value = get(message, rudderProperty);
+    if (value) {
+      payload[tradeDeskProperty] = value;
+    }
+  });
+  return payload;
+};
+
+const populateEventName = (message, destination) => {
+  let eventName;
+  const { event } = message;
+  if (!event) {
+    throw new InstrumentationError('Event is not present. Aborting.');
+  }
+  const { eventsMapping } = destination.Config;
+
+  if (eventsMapping.length > 0) {
+    const keyMap = getHashFromArray(eventsMapping, 'from', 'to');
+    eventName = keyMap[event.toLowerCase()];
+  }
+
+  if (!eventName) {
+    const eventMapInfo = ECOMM_EVENT_MAP.find((eventMap) => {
+      if (eventMap.src.toLowerCase() === event.toLowerCase()) {
+        return eventMap;
+      }
+      return false;
+    });
+
+    if (isDefinedAndNotNull(eventMapInfo)) {
+      return eventMapInfo.dest;
+    }
+  }
+
+  return eventName;
+};
+
+const getDataProcessingOptions = (message) => {
+  const integrationObj = getIntegrationsObj(message, 'THE_TRADE_DESK');
+  let { policies } = integrationObj;
+  const { region } = integrationObj;
+
+  if (region && !region.startsWith('us')) {
+    throw new InstrumentationError('Only US states are supported');
+  }
+
+  if (!policies || (Array.isArray(policies) && policies.length === 0)) {
+    policies = ['LDU'];
+  }
+
+  if (policies.length > 1) {
+    throw new InstrumentationError('Only one policy is allowed');
+  }
+
+  if (policies[0] !== 'LDU') {
+    throw new InstrumentationError('Only LDU policy is supported');
+  }
+
+  return { policies, region };
+};
+
+const getPrivacySetting = (message) => {
+  const integrationObj = getIntegrationsObj(message, 'THE_TRADE_DESK');
+  return integrationObj?.privacy_settings;
+};
+
+module.exports = {
+  getTTLInMin,
+  getFirstPartyEndpoint,
+  getSignatureHeader,
+  prepareFromConfig,
+  prepareCommonPayload,
+  prepareItemsPayload,
+  getAdvertisingId,
+  prepareCustomProperties,
+  populateEventName,
+  getDataProcessingOptions,
+  getPrivacySetting,
+};

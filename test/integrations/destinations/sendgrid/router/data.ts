@@ -140,7 +140,7 @@ export const data = [
   {
     name: 'sendgrid',
     description: 'Identify call batching with multiple listIds',
-    feature: FEATURES.ROUTER,
+    feature: 'router',
     module: 'destination',
     version: 'v0',
     input: {

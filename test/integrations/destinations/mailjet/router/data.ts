@@ -108,6 +108,7 @@ export const data = [
               },
               metadata: {
                 jobId: 1,
+                userId: 'u1',
               },
               message: {
                 userId: 'user@45',
@@ -168,6 +169,7 @@ export const data = [
               metadata: [
                 {
                   jobId: 1,
+                  userId: 'u1',
                 },
               ],
               batched: true,
@@ -212,6 +214,7 @@ export const data = [
               },
               metadata: {
                 jobId: 1,
+                userId: 'u1',
               },
               message: {
                 userId: 'user@45',
@@ -242,6 +245,7 @@ export const data = [
               },
               metadata: {
                 jobId: 2,
+                userId: 'u1',
               },
               message: {
                 userId: 'user@46',
@@ -284,6 +288,7 @@ export const data = [
               },
               metadata: {
                 jobId: 3,
+                userId: 'u1',
               },
               message: {
                 userId: 'user@47',
@@ -326,6 +331,7 @@ export const data = [
               },
               metadata: {
                 jobId: 4,
+                userId: 'u1',
               },
               message: {
                 userId: 'user@48',
@@ -368,6 +374,7 @@ export const data = [
               },
               metadata: {
                 jobId: 5,
+                userId: 'u1',
               },
               message: {
                 userId: 'user@49',
@@ -410,6 +417,7 @@ export const data = [
               },
               metadata: {
                 jobId: 6,
+                userId: 'u1',
               },
               message: {
                 userId: 'user@49',
@@ -446,6 +454,7 @@ export const data = [
               },
               metadata: {
                 jobId: 7,
+                userId: 'u1',
               },
               message: {
                 userId: 'user@50',
@@ -511,7 +520,10 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [{ jobId: 1 }, { jobId: 7 }],
+              metadata: [
+                { jobId: 1, userId: 'u1' },
+                { jobId: 7, userId: 'u1' },
+              ],
               batched: true,
               statusCode: 200,
               destination: {
@@ -557,7 +569,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [{ jobId: 2 }],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: true,
               statusCode: 200,
               destination: {
@@ -603,7 +615,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [{ jobId: 3 }],
+              metadata: [{ jobId: 3, userId: 'u1' }],
               batched: true,
               statusCode: 200,
               destination: {
@@ -649,7 +661,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [{ jobId: 4 }],
+              metadata: [{ jobId: 4, userId: 'u1' }],
               batched: true,
               statusCode: 200,
               destination: {
@@ -695,7 +707,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [{ jobId: 5 }],
+              metadata: [{ jobId: 5, userId: 'u1' }],
               batched: true,
               statusCode: 200,
               destination: {
@@ -741,7 +753,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [{ jobId: 6 }],
+              metadata: [{ jobId: 6, userId: 'u1' }],
               batched: true,
               statusCode: 200,
               destination: {

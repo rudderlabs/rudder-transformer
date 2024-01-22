@@ -153,7 +153,7 @@ const getAccessToken = async (config) =>
     // sample response : {response: '[ENOTFOUND] :: DNS lookup failed', status: 400}
     if (!isHttpStatusSuccess(accessTokenResponse.status)) {
       throw new NetworkError(
-        'Could not retrieve authorisation token',
+        `Could not retrieve authorisation token due to error ${accessTokenResponse}`,
         hydrateStatusForServer(accessTokenResponse.status, FETCH_ACCESS_TOKEN),
         {
           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(accessTokenResponse.status),
@@ -172,7 +172,7 @@ const getAccessToken = async (config) =>
 
     // when access token is present
     if (accessTokenResponse.response.access_token) {
-      /* This scenario will handle the case when we get the foloowing response
+      /* This scenario will handle the case when we get the following response
       status: 200  
       respnse: {"access_token":"<dummy-access-token>","token_type":"bearer","expires_in":0,"scope":"dummy@scope.com"}
       wherein "expires_in":0 denotes that we should refresh the accessToken but its not expired yet. 
@@ -185,7 +185,10 @@ const getAccessToken = async (config) =>
       }
       return accessTokenResponse.response.access_token;
     }
-    throw new AbortedError('Could not retrieve authorisation token', 400);
+    throw new AbortedError(
+      `Could not retrieve authorisation token due to error ${accessTokenResponse}`,
+      400,
+    );
   });
 
 /**
@@ -254,14 +257,18 @@ const handleFetchJobStatusResponse = (resp, type) => {
   if (!isHttpStatusSuccess(marketoReposnseStatus)) {
     logger.info('[Network Error]:Failed during fetching job status', { marketoResponse, type });
     throw new NetworkError(
-      'Unable to fetch job status',
+      `Unable to fetch job status: due to error ${marketoResponse}`,
       hydrateStatusForServer(marketoReposnseStatus, 'During fetching job status'),
     );
   }
 
   if (marketoResponse?.success === false) {
     logger.info('[Application Error]Failed during fetching job status', { marketoResponse, type });
-    throw new RetryableError('Failure during fetching job status', 500, resp);
+    throw new RetryableError(
+      `Failure during fetching job status due to error : ${marketoResponse}`,
+      500,
+      resp,
+    );
   }
 
   /*
@@ -394,7 +401,11 @@ const getFieldSchemaMap = async (accessToken, munchkinId) => {
       fieldMap[field?.name] = field?.dataType;
     });
   } else {
-    throw new RetryableError('Failed to fetch Marketo Field Schema', 500, fieldSchemaMapping);
+    throw new RetryableError(
+      `Failed to fetch Marketo Field Schema due to error ${fieldSchemaMapping}`,
+      500,
+      fieldSchemaMapping,
+    );
   }
   return fieldMap;
 };

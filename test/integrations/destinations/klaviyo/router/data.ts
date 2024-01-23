@@ -1,7 +1,10 @@
 export const data = [
   {
+    id: 'klaviyo-router-test-1',
     name: 'klaviyo',
-    description: 'Test 0',
+    description: 'Basic Router Test to test multiple payloads',
+    scenario: 'Framework',
+    successCriteria: 'All the subscription events should be batched',
     feature: 'router',
     module: 'destination',
     version: 'v0',

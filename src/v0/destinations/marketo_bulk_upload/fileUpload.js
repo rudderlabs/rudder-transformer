@@ -143,6 +143,7 @@ const getFileData = async (inputEvents, config, headerArr) => {
     requestTime = endTime - startTime;
     stats.histogram('marketo_bulk_upload_create_file_time', requestTime);
     stats.histogram('marketo_bulk_upload_upload_file_size', fileSize);
+    console.log(fileSize);
 
     return { readStream, successfulJobs, unsuccessfulJobs };
   }
@@ -206,8 +207,8 @@ const getImportID = async (input, config, accessToken, csvHeader) => {
     stats.counter('marketo_bulk_upload_upload_file_unsuccJobs', unsuccessfulJobs.length);
     if (!isHttpStatusSuccess(resp.status)) {
       throw new NetworkError(
-        'Unable to upload file',
-        hydrateStatusForServer(resp.status, 'During fetching poll status'),
+        `Unable to upload file due to error : ${resp.response}`,
+        hydrateStatusForServer(resp.status, 'During uploading file'),
       );
     }
     return handleFileUploadResponse(resp, successfulJobs, unsuccessfulJobs, requestTime, config);

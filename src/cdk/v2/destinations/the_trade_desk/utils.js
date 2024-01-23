@@ -14,6 +14,8 @@ const {
   COMMON_CONFIGS,
   ITEM_CONFIGS,
   ECOMM_EVENT_MAP,
+  REVENUE_SUPPORTED_ECOMM_EVENTS,
+  PRICE_SUPPORTED_ECOMM_EVENTS,
 } = require('./config');
 
 const getTTLInMin = (ttl) => parseInt(ttl, 10) * 1440;
@@ -34,6 +36,24 @@ const prepareFromConfig = (destination) => ({
   tracker_id: destination.Config?.trackerId,
   adv: destination.Config?.advertiserId,
 });
+
+const getRevenue = (message) => {
+  const { event, properties } = message;
+  let revenue = properties?.value;
+  if (PRICE_SUPPORTED_ECOMM_EVENTS.includes(event)) {
+    const { price, quantity = 1 } = properties;
+    if (price && !Number.isNaN(parseFloat(price)) && !Number.isNaN(parseInt(quantity, 10))) {
+      revenue = parseFloat(price) * parseInt(quantity, 10);
+    }
+  } else if (REVENUE_SUPPORTED_ECOMM_EVENTS.includes(event)) {
+    revenue = properties?.revenue || revenue;
+    if (event === 'Order Completed' && !revenue) {
+      throw new InstrumentationError('value is required for `Order Completed` event');
+    }
+  }
+
+  return revenue;
+};
 
 const prepareItemsPayload = (message) => {
   const productPropertiesArray = Array.isArray(message.properties?.products)
@@ -56,7 +76,7 @@ const getDeviceAdvertisingId = (message) => {
       type = 'NAID';
       break;
     default:
-      type = isAppleFamily(osName) ? 'IDFA' : null;
+      type = isAppleFamily(osName) ? 'IDFA' : undefined;
       break;
   }
 
@@ -78,7 +98,6 @@ const getDestinationExternalIDObject = (message) => {
   return externalIdObj;
 };
 
-// TDID, DAID,'IDL','EUID', 'UID2',
 const getAdvertisingId = (message) => {
   const { deviceId, type } = getDeviceAdvertisingId(message);
   if (deviceId && type) {
@@ -91,22 +110,21 @@ const getAdvertisingId = (message) => {
 const prepareCustomProperties = (message, destination) => {
   const { customProperties } = destination.Config;
   const payload = {};
-  customProperties.forEach((customProperty) => {
-    const { rudderProperty, tradeDeskProperty } = customProperty;
-    const value = get(message, rudderProperty);
-    if (value) {
-      payload[tradeDeskProperty] = value;
-    }
-  });
+  if (customProperties) {
+    customProperties.forEach((customProperty) => {
+      const { rudderProperty, tradeDeskProperty } = customProperty;
+      const value = get(message, rudderProperty);
+      if (value) {
+        payload[tradeDeskProperty] = value;
+      }
+    });
+  }
   return payload;
 };
 
 const populateEventName = (message, destination) => {
   let eventName;
   const { event } = message;
-  if (!event) {
-    throw new InstrumentationError('Event is not present. Aborting.');
-  }
   const { eventsMapping } = destination.Config;
 
   if (eventsMapping.length > 0) {
@@ -114,28 +132,37 @@ const populateEventName = (message, destination) => {
     eventName = keyMap[event.toLowerCase()];
   }
 
-  if (!eventName) {
-    const eventMapInfo = ECOMM_EVENT_MAP.find((eventMap) => {
-      if (eventMap.src.toLowerCase() === event.toLowerCase()) {
-        return eventMap;
-      }
-      return false;
-    });
-
-    if (isDefinedAndNotNull(eventMapInfo)) {
-      return eventMapInfo.dest;
-    }
+  if (eventName) {
+    return eventName;
   }
 
-  return eventName;
+  const eventMapInfo = ECOMM_EVENT_MAP.find((eventMap) => {
+    if (eventMap.src.toLowerCase() === event.toLowerCase()) {
+      return eventMap;
+    }
+    return false;
+  });
+
+  if (isDefinedAndNotNull(eventMapInfo)) {
+    return eventMapInfo.dest;
+  }
+
+  return event;
 };
 
+/**
+ * Retrieves the data processing options based on the provided message.
+ *
+ * @param {string} message - The message to process.
+ * @throws {InstrumentationError} - Throws an error if the region is not supported, if no policies are provided, if multiple policies are provided, or if the policy is not supported.
+ * @returns {Object} - The data processing options, including the policies and region.
+ */
 const getDataProcessingOptions = (message) => {
-  const integrationObj = getIntegrationsObj(message, 'THE_TRADE_DESK');
+  const integrationObj = getIntegrationsObj(message, 'THE_TRADE_DESK') || {};
   let { policies } = integrationObj;
   const { region } = integrationObj;
 
-  if (region && !region.startsWith('us')) {
+  if (region && !region.toLowerCase().startsWith('us')) {
     throw new InstrumentationError('Only US states are supported');
   }
 
@@ -164,8 +191,11 @@ module.exports = {
   getFirstPartyEndpoint,
   getSignatureHeader,
   prepareFromConfig,
+  getRevenue,
   prepareCommonPayload,
   prepareItemsPayload,
+  getDeviceAdvertisingId,
+  getDestinationExternalIDObject,
   getAdvertisingId,
   prepareCustomProperties,
   populateEventName,

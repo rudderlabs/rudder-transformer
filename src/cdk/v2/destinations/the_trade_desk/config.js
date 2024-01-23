@@ -54,6 +54,13 @@ const ECOMM_EVENT_MAP = [
   },
 ];
 
+const REVENUE_SUPPORTED_ECOMM_EVENTS = ['Order Completed', 'Checkout Started', 'Cart Viewed'];
+const PRICE_SUPPORTED_ECOMM_EVENTS = [
+  'Product Added',
+  'Product Viewed',
+  'Product Added to Wishlist',
+];
+
 const CONFIG_CATEGORIES = {
   COMMON_CONFIGS: { name: 'TTDCommonConfig' },
   ITEM_CONFIGS: { name: 'TTDItemConfig' },
@@ -71,5 +78,7 @@ module.exports = {
   COMMON_CONFIGS: MAPPING_CONFIG[CONFIG_CATEGORIES.COMMON_CONFIGS.name],
   ITEM_CONFIGS: MAPPING_CONFIG[CONFIG_CATEGORIES.ITEM_CONFIGS.name],
   ECOMM_EVENT_MAP,
+  REVENUE_SUPPORTED_ECOMM_EVENTS,
+  PRICE_SUPPORTED_ECOMM_EVENTS,
   REAL_TIME_CONVERSION_ENDPOINT,
 };

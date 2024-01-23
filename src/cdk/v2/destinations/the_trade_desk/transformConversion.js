@@ -11,6 +11,7 @@ const { REAL_TIME_CONVERSION_ENDPOINT } = require('./config');
 const {
   prepareFromConfig,
   prepareCommonPayload,
+  getRevenue,
   prepareItemsPayload,
   getAdvertisingId,
   prepareCustomProperties,
@@ -23,14 +24,23 @@ const responseBuilder = (payload) => {
   const response = defaultRequestConfig();
   response.endpoint = REAL_TIME_CONVERSION_ENDPOINT;
   response.method = defaultPostRequestConfig.requestMethod;
-  response.body.JSON = removeUndefinedAndNullValues(payload);
+  response.body.JSON = payload;
   response.headers = { 'Content-Type': JSON_MIME_TYPE };
   return response;
 };
 
-const validatePayload = (payload) => {
-  if (payload.event_name === 'purchase' && !payload.value) {
-    throw new InstrumentationError('value is required for purchase event');
+const validateInput = (message) => {
+  if (!message.type) {
+    throw new InstrumentationError('Event type is required');
+  }
+
+  const messageType = message.type.toLowerCase();
+  if (messageType !== EventType.TRACK) {
+    throw new InstrumentationError(`Event type "${messageType}" is not supported`);
+  }
+
+  if (!message.event) {
+    throw new InstrumentationError('Event is not present. Aborting.');
   }
 };
 
@@ -41,10 +51,12 @@ const prepareTrackPayload = (message, destination) => {
   const { id, type } = getAdvertisingId(message);
   const customProperties = prepareCustomProperties(message, destination);
   const eventName = populateEventName(message, destination);
+  const value = getRevenue(message);
   const payload = {
     ...configPayload,
     ...commonPayload,
     event_name: eventName,
+    value,
     items,
     adid: id,
     adid_type: type,
@@ -52,11 +64,12 @@ const prepareTrackPayload = (message, destination) => {
     data_processing_option: getDataProcessingOptions(message),
     privacy_settings: getPrivacySetting(message),
   };
-  validatePayload(payload);
-  return { data: [payload] };
+
+  return { data: [removeUndefinedAndNullValues(payload)] };
 };
 
 const trackResponseBuilder = (message, destination) => {
+  validateInput(message);
   const payload = prepareTrackPayload(message, destination);
   return responseBuilder(payload);
 };

@@ -441,7 +441,9 @@ const processSingleMessage = (message, destination) => {
       return processIdentifyEvents(clonedMessage, clonedMessage.type, destination);
     case EventType.ALIAS:
       if (destination.Config?.identityMergeApi === 'simplified') {
-        throw new InstrumentationError('Alias call is deprecated in `Simplified ID merge`');
+        throw new InstrumentationError(
+          'The use of the alias call in the context of the `Simplified ID merge` feature is not supported anymore.',
+        );
       }
       return processAliasEvents(message, message.type, destination);
     case EventType.GROUP:

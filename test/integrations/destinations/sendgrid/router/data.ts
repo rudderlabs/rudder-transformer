@@ -1,10 +1,8 @@
-import { FEATURES } from '../../../../../src/v0/util/tags';
-
 export const data = [
   {
     name: 'sendgrid',
     description: 'Router Test Case',
-    feature: FEATURES.ROUTER,
+    feature: 'router',
     module: 'destination',
     version: 'v0',
     input: {
@@ -35,9 +33,7 @@ export const data = [
                   clickTrackingEnableText: false,
                 },
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               message: {
                 channel: 'web',
                 context: {
@@ -47,10 +43,7 @@ export const data = [
                     namespace: 'com.rudderlabs.javascript',
                     version: '1.0.0',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-US',
@@ -65,21 +58,9 @@ export const data = [
                 event: 'testing',
                 properties: {
                   personalizations: [
-                    {
-                      to: [
-                        {
-                          email: 'a@g.com',
-                        },
-                        {
-                          name: 'hello',
-                        },
-                      ],
-                      subject: 'hey there',
-                    },
+                    { to: [{ email: 'a@g.com' }, { name: 'hello' }], subject: 'hey there' },
                   ],
-                  from: {
-                    email: 'ankit@rudderstack.com',
-                  },
+                  from: { email: 'ankit@rudderstack.com' },
                 },
                 integrations: { All: true },
                 sentAt: '2019-10-14T09:03:22.563Z',
@@ -103,19 +84,8 @@ export const data = [
                   FORM: {},
                   JSON_ARRAY: {},
                   JSON: {
-                    personalizations: [
-                      {
-                        to: [
-                          {
-                            email: 'a@g.com',
-                          },
-                        ],
-                        subject: 'hey there',
-                      },
-                    ],
-                    from: {
-                      email: 'ankit@rudderstack.com',
-                    },
+                    personalizations: [{ to: [{ email: 'a@g.com' }], subject: 'hey there' }],
+                    from: { email: 'ankit@rudderstack.com' },
                     reply_to: { email: 'ankit@rudderstack.com' },
                     subject: 'A sample subject',
                     content: [
@@ -131,18 +101,11 @@ export const data = [
                 files: {},
                 method: 'POST',
                 params: {},
-                headers: {
-                  Authorization: 'Bearer apikey',
-                  'Content-Type': 'application/json',
-                },
+                headers: { Authorization: 'Bearer apikey', 'Content-Type': 'application/json' },
                 version: '1',
                 endpoint: 'https://api.sendgrid.com/v3/mail/send',
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -177,7 +140,7 @@ export const data = [
   {
     name: 'sendgrid',
     description: 'Identify call batching with multiple listIds',
-    feature: FEATURES.ROUTER,
+    feature: 'router',
     module: 'destination',
     version: 'v0',
     input: {

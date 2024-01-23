@@ -12,11 +12,7 @@ export const data = [
             {
               message: {
                 anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-                destination_props: {
-                  Fb: {
-                    app_id: 'RudderFbApp',
-                  },
-                },
+                destination_props: { Fb: { app_id: 'RudderFbApp' } },
                 context: {
                   device: {
                     id: 'df16bffa-5c3d-4fbb-9bce-3bab098129a7R',
@@ -25,28 +21,16 @@ export const data = [
                     name: 'xiaomi',
                     type: 'Android',
                   },
-                  network: {
-                    carrier: 'Banglalink',
-                  },
-                  os: {
-                    name: 'android',
-                    version: '8.1.0',
-                  },
-                  screen: {
-                    height: '100',
-                    density: 50,
-                  },
+                  network: { carrier: 'Banglalink' },
+                  os: { name: 'android', version: '8.1.0' },
+                  screen: { height: '100', density: 50 },
                   traits: {
                     email: 'abc@gmail.com',
                     anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                   },
                 },
                 event: 'spin_result',
-                integrations: {
-                  AM: true,
-                  All: false,
-                  GA: true,
-                },
+                integrations: { AM: true, All: false, GA: true },
                 message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
                 properties: {
                   revenue: 400,
@@ -86,17 +70,7 @@ export const data = [
                   userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                   versionSessionCount: 2,
                   win_amount: 0,
-                  products: [
-                    {
-                      product_id: 123,
-                    },
-                    {
-                      product_id: 345,
-                    },
-                    {
-                      product_id: 567,
-                    },
-                  ],
+                  products: [{ product_id: 123 }, { product_id: 345 }, { product_id: 567 }],
                 },
                 timestamp: '2019-09-01T15:46:51.693229+05:30',
                 type: 'track',
@@ -121,23 +95,13 @@ export const data = [
                   versionSessionCount: 2,
                 },
               },
-              metadata: {
-                jobId: 2,
-              },
-              destination: {
-                Config: {
-                  appID: 'RudderFbApp',
-                },
-              },
+              metadata: { jobId: 2, userId: 'u1' },
+              destination: { Config: { appID: 'RudderFbApp' } },
             },
             {
               message: {
                 anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-                destination_props: {
-                  Fb: {
-                    app_id: 'RudderFbApp',
-                  },
-                },
+                destination_props: { Fb: { app_id: 'RudderFbApp' } },
                 context: {
                   device: {
                     id: 'df16bffa-5c3d-4fbb-9bce-3bab098129a7R',
@@ -146,28 +110,16 @@ export const data = [
                     name: 'xiaomi',
                     type: 'Android',
                   },
-                  network: {
-                    carrier: 'Banglalink',
-                  },
-                  os: {
-                    name: 'android',
-                    version: '8.1.0',
-                  },
-                  screen: {
-                    height: '100',
-                    density: 50,
-                  },
+                  network: { carrier: 'Banglalink' },
+                  os: { name: 'android', version: '8.1.0' },
+                  screen: { height: '100', density: 50 },
                   traits: {
                     email: 'abc@gmail.com',
                     anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                   },
                 },
                 event: 'spin_result',
-                integrations: {
-                  AM: true,
-                  All: false,
-                  GA: true,
-                },
+                integrations: { AM: true, All: false, GA: true },
                 message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
                 properties: {
                   revenue: 400,
@@ -208,17 +160,7 @@ export const data = [
                   userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                   versionSessionCount: 2,
                   win_amount: 0,
-                  products: [
-                    {
-                      product_id: 123,
-                    },
-                    {
-                      product_id: 345,
-                    },
-                    {
-                      product_id: 567,
-                    },
-                  ],
+                  products: [{ product_id: 123 }, { product_id: 345 }, { product_id: 567 }],
                 },
                 timestamp: '2019-09-01T15:46:51.693229+05:30',
                 type: 'track',
@@ -243,14 +185,8 @@ export const data = [
                   versionSessionCount: 2,
                 },
               },
-              metadata: {
-                jobId: 2,
-              },
-              destination: {
-                Config: {
-                  appID: 'RudderFbApp',
-                },
-              },
+              metadata: { jobId: 3, userId: 'u1' },
+              destination: { Config: { appID: 'RudderFbApp' } },
             },
           ],
           destType: 'fb',
@@ -263,11 +199,7 @@ export const data = [
         body: {
           output: [
             {
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               statTags: {
                 errorCategory: 'dataValidation',
                 errorType: 'instrumentation',
@@ -276,26 +208,14 @@ export const data = [
                 implementation: 'native',
                 module: 'destination',
               },
-              destination: {
-                Config: {
-                  appID: 'RudderFbApp',
-                },
-              },
+              destination: { Config: { appID: 'RudderFbApp' } },
               batched: false,
               statusCode: 400,
               error: 'If properties.revenue is present, properties.currency is required.',
             },
             {
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
-              destination: {
-                Config: {
-                  appID: 'RudderFbApp',
-                },
-              },
+              metadata: [{ jobId: 3, userId: 'u1' }],
+              destination: { Config: { appID: 'RudderFbApp' } },
               statTags: {
                 errorCategory: 'dataValidation',
                 errorType: 'instrumentation',

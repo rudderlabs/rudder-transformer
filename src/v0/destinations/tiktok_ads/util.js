@@ -23,7 +23,6 @@ const getContents = (message, getContentType = true) => {
         price: product.price,
         quantity: product.quantity,
         description: product.description,
-        brand: product.brand,
       };
       contents.push(removeUndefinedAndNullValues(singleProduct));
     });

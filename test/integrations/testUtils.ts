@@ -5,6 +5,12 @@ import MockAdapter from 'axios-mock-adapter';
 import isMatch from 'lodash/isMatch';
 import { OptionValues } from 'commander';
 import { removeUndefinedAndNullValues } from '@rudderstack/integrations-lib';
+import {
+  Destination,
+  Metadata,
+  ProxyDeliveriesRequest,
+  ProxyDeliveryRequest,
+} from '../../src/types';
 
 const generateAlphanumericId = (size = 36) =>
   [...Array(size)].map(() => ((Math.random() * size) | 0).toString(size)).join('');
@@ -78,6 +84,7 @@ export const overrideDestination = (destination, overrideConfigValues) => {
   });
 };
 
+// #### Utilities to generate payloads for testing ####
 export const generateIndentifyPayload = (parametersOverride: any) => {
   const payload = {
     type: 'identify',
@@ -363,4 +370,95 @@ export const compareObjects = (obj1, obj2, logPrefix = '', differences: string[]
   }
 
   return differences;
+};
+
+// #### Proxy Test Utils ####
+
+export const generatePayloadForDelivery = (payloadParams: any, metadata: any) => {
+  const boilerPlatePayload: ProxyDeliveryRequest = {
+    version: '1',
+    type: 'REST',
+    method: payloadParams.method || 'POST',
+    endpoint: payloadParams.endpoint || '',
+    headers: payloadParams.headers || {},
+    params: payloadParams.params || {},
+    body: {
+      JSON: payloadParams.JSON || {},
+      JSON_ARRAY: payloadParams.JSON_ARRAY || {},
+      XML: payloadParams.XML || {},
+      FORM: payloadParams.FORM || {},
+    },
+    files: payloadParams.files || {},
+    metadata: metadata,
+    userId: payloadParams.userId,
+  };
+
+  return removeUndefinedAndNullValues(boilerPlatePayload);
+};
+
+export const generateV1PayloadForDelivery = (
+  payloadParams: any,
+  metadataArray: Metadata[],
+  destination: Destination,
+) => {
+  const boilerPlatePayload: ProxyDeliveriesRequest = {
+    version: '1',
+    type: 'REST',
+    method: payloadParams.method || 'POST',
+    endpoint: payloadParams.endpoint || '',
+    headers: payloadParams.headers || {},
+    params: payloadParams.params || {},
+    body: {
+      JSON: payloadParams.JSON || {},
+      JSON_ARRAY: payloadParams.JSON_ARRAY || {},
+      XML: payloadParams.XML || {},
+      FORM: payloadParams.FORM || {},
+    },
+    files: payloadParams.files || {},
+    metadata: metadataArray,
+    userId: payloadParams.userId,
+    destination: destination,
+  };
+
+  return removeUndefinedAndNullValues(boilerPlatePayload);
+};
+
+// Others
+
+export const generateMetadata = (jobId: number, secret?: any, dontBatchDirective?: boolean) => {
+  const metadata: Metadata = {
+    sourceId: 'sourceId',
+    workspaceId: 'workspaceId',
+    namespace: 'namespace',
+    instanceId: 'instanceId',
+    sourceType: 'sourceType',
+    sourceCategory: 'sourceCategory',
+    trackingPlanId: 'trackingPlanId',
+    trackingPlanVersion: 1,
+    sourceTpConfig: {},
+    mergedTpConfig: {},
+    destinationId: 'destinationId',
+    jobRunId: 'jobRunId',
+    jobId: jobId,
+    sourceBatchId: 'sourceBatchId',
+    sourceJobId: 'sourceJobId',
+    sourceJobRunId: 'sourceJobRunId',
+    sourceTaskId: 'sourceTaskId',
+    sourceTaskRunId: 'sourceTaskRunId',
+    recordId: {},
+    destinationType: 'destinationType',
+    messageId: 'messageId',
+    oauthAccessToken: 'oauthAccessToken',
+    messageIds: ['messageIds'],
+    rudderId: 'rudderId',
+    receivedAt: 'receivedAt',
+    eventName: 'eventName',
+    eventType: 'eventType',
+    sourceDefinitionId: 'sourceDefinitionId',
+    destinationDefinitionId: 'destinationDefinitionId',
+    transformationId: 'transformationId',
+    dontBatch: dontBatchDirective,
+    secret: secret,
+  };
+  return removeUndefinedAndNullValues(metadata) as Metadata;
 };

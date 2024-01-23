@@ -52,6 +52,7 @@ type ProxyDeliveriesRequest = {
   };
   files?: Record<string, unknown>;
   metadata: Metadata[];
+  destination: Destination;
 };
 
 type ProxyRequest = ProxyDeliveryRequest | ProxyDeliveriesRequest;
@@ -88,6 +89,7 @@ type Metadata = {
   destinationDefinitionId: string;
   transformationId: string;
   dontBatch?: boolean;
+  secret?: any;
 };
 
 type MessageIdMetadataMap = {

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.54.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.54.0...v1.54.1) (2024-01-24)
+
+
+### Bug Fixes
+
+* remove brand mapping from products to contents in tiktok_ads ([49c4988](https://github.com/rudderlabs/rudder-transformer/commit/49c4988cc872f40780fa640240c209c3d768fab4))
+
 ## [1.54.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.53.0...v1.54.0) (2024-01-22)
 
 

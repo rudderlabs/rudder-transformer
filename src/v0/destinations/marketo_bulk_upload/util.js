@@ -19,12 +19,7 @@ const {
   FILE_UPLOAD_ERR_MSG,
   ACCESS_TOKEN_FETCH_ERR_MSG,
 } = require('./config');
-// const Cache = require('../../util/cache');
 const logger = require('../../../logger');
-
-// const { AUTH_CACHE_TTL } = require('../../util/constant');
-
-// const authCache = new Cache(AUTH_CACHE_TTL);
 
 const getMarketoFilePath = () =>
   `${__dirname}/uploadFile/${Date.now()}_marketo_bulk_upload_${generateUUID()}.csv`;
@@ -86,18 +81,9 @@ const handleCommonErrorResponse = (apiCallResult, OpErrorMessage, OpActivity) =>
       (errorObj) => errorObj.code === '601' || errorObj.code === '602',
     )
   ) {
-    // Special handling for 601 and 602 error codes for access token
-    // authCache.del(getAccessTokenCacheKey(config));
-    // if (apiCallResult.response?.errors.some((errorObj) => errorObj.code === '601')) {
-    // throw new AbortedError(
-    //   `[${OpErrorMessage}]Error message: ${apiCallResult.response?.errors[0]?.message}`,
-    // );
-    // }
-    // if (apiCallResult.response?.errors.some((errorObj) => errorObj.code === '602')) {
     throw new RetryableError(
       `[${OpErrorMessage}]Error message: ${apiCallResult.response?.errors[0]?.message}`,
     );
-    // }
   }
   if (
     apiCallResult.response?.errors?.length > 0 &&

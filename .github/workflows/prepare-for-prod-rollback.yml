@@ -68,7 +68,7 @@ jobs:
           cd rudder-devops
           git checkout -b dedicated-transformer-rollback-${{ steps.target-version.outputs.tag_name }}
 
-          cd helm-charts/customer-objects
+          cd customer-objects
 
           declare -a enabled_ut_customers=()
           declare -a sub_directories=('enterprise-us' 'enterprise-eu')

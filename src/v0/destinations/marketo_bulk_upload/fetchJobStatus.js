@@ -59,7 +59,6 @@ const responseHandler = async (event, type) => {
 
   const { config } = event;
   const accessToken = await getAccessToken(config);
-  console.log('access token in fetching job status', accessToken);
 
   /**
    * {

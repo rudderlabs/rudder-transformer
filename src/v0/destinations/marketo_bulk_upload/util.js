@@ -142,55 +142,6 @@ const getAccessTokenURL = (config) => {
 
 // Fetch access token from client id and client secret
 // DOC: https://developers.marketo.com/rest-api/authentication/
-// const getAccessToken = async (config) =>
-//   authCache.get(getAccessTokenCacheKey(config), async () => {
-//     const url = getAccessTokenURL(config);
-//     const { processedResponse: accessTokenResponse } = await handleHttpRequest('get', url, {
-//       destType: 'marketo_bulk_upload',
-//       feature: 'transformation',
-//     });
-
-//     // sample response : {response: '[ENOTFOUND] :: DNS lookup failed', status: 400}
-//     if (!isHttpStatusSuccess(accessTokenResponse.status)) {
-//       throw new NetworkError(
-//         `Could not retrieve authorisation token due to error ${accessTokenResponse}`,
-//         hydrateStatusForServer(accessTokenResponse.status, FETCH_ACCESS_TOKEN),
-//         {
-//           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(accessTokenResponse.status),
-//         },
-//         accessTokenResponse,
-//       );
-//     }
-//     if (accessTokenResponse.response?.success === false) {
-//       handleCommonErrorResponse(
-//         accessTokenResponse,
-//         ACCESS_TOKEN_FETCH_ERR_MSG,
-//         FETCH_ACCESS_TOKEN,
-//         config,
-//       );
-//     }
-
-//     // when access token is present
-//     if (accessTokenResponse.response.access_token) {
-//       /* This scenario will handle the case when we get the following response
-//       status: 200
-//       respnse: {"access_token":"<dummy-access-token>","token_type":"bearer","expires_in":0,"scope":"dummy@scope.com"}
-//       wherein "expires_in":0 denotes that we should refresh the accessToken but its not expired yet.
-//       */
-//       if (accessTokenResponse.response?.expires_in === 0) {
-//         throw new RetryableError(
-//           `Request Failed for marketo_bulk_upload, Access Token Expired (Retryable).`,
-//           500,
-//         );
-//       }
-//       return accessTokenResponse.response.access_token;
-//     }
-//     throw new AbortedError(
-//       `Could not retrieve authorisation token due to error ${accessTokenResponse}`,
-//       400,
-//     );
-//   });
-
 const getAccessToken = async (config) => {
   const url = getAccessTokenURL(config);
   const { processedResponse: accessTokenResponse } = await handleHttpRequest('get', url, {
@@ -286,7 +237,6 @@ const handlePollResponse = (pollStatus) => {
     });
 
     if (pollStatus.response?.result?.length > 0) {
-      console.log('poll status is ', JSON.stringify(pollStatus));
       return pollStatus.response;
     }
   }

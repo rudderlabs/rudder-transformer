@@ -21,6 +21,8 @@ import tags from '../../src/v0/util/tags';
 import { Server } from 'http';
 import { appendFileSync } from 'fs';
 import { responses } from '../testHelper';
+import { generateTestReport, initaliseReport } from '../test_reporter/reporter';
+import _ from 'lodash';
 
 // To run single destination test cases
 // npm run test:ts -- component  --destination=adobe_analytics
@@ -37,6 +39,7 @@ command
   .option('-f, --feature <string>', 'Enter Feature Name(processor, router)')
   .option('-i, --index <number>', 'Enter Test index')
   .option('-g, --generate <string>', 'Enter "true" If you want to generate network file')
+  .option('-id, --id <string>', 'Enter unique "Id" of the test case you want to run')
   .parse();
 
 const opts = command.opts();
@@ -50,7 +53,10 @@ if (opts.generate === 'true') {
 
 let server: Server;
 
+const REPORT_COMPATIBLE_INTEGRATION = ['klaviyo'];
+
 beforeAll(async () => {
+  initaliseReport();
   const app = new Koa();
   app.use(
     bodyParser({
@@ -124,6 +130,16 @@ const testRoute = async (route, tcData: TestCaseData) => {
   const outputResp = tcData.output.response || ({} as any);
   expect(response.status).toEqual(outputResp.status);
 
+  if (REPORT_COMPATIBLE_INTEGRATION.includes(tcData.name?.toLocaleLowerCase())) {
+    const bodyMatched = _.isEqual(response.body, outputResp.body);
+    const statusMatched = response.status === outputResp.status;
+    if (bodyMatched && statusMatched) {
+      generateTestReport(tcData, response.body, 'passed');
+    } else {
+      generateTestReport(tcData, response.body, 'failed');
+    }
+  }
+
   if (outputResp?.body) {
     expect(response.body).toEqual(outputResp.body);
   }
@@ -180,6 +196,14 @@ describe.each(allTestDataFilePaths)('%s Tests', (testDataPath) => {
   let testData: TestCaseData[] = getTestData(testDataPath);
   if (opts.index !== undefined) {
     testData = [testData[parseInt(opts.index)]];
+  }
+  if (opts.id) {
+    testData = testData.filter((data) => {
+      if (data['id'] === opts.id) {
+        return true;
+      }
+      return false;
+    });
   }
   describe(`${testData[0].name} ${testData[0].module}`, () => {
     test.each(testData)('$feature -> $description', async (tcData) => {

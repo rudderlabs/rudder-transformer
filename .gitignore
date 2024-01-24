@@ -132,3 +132,9 @@ dist
 
 # Others
 **/.DS_Store
+
+
+.idea
+
+# component test report
+test_reports/

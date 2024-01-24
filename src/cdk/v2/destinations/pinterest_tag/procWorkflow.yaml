@@ -9,6 +9,8 @@ bindings:
     path: ../../../../v0/util
   - name: removeUndefinedAndNullAndEmptyValues
     path: ../../../../v0/util
+  - name: validateEventName
+    path: ../../../../v0/util
 steps:
   - name: checkIfProcessed
     condition: .message.statusCode
@@ -100,7 +102,8 @@ steps:
         "hashed_maids": .context.device.advertisingId,
         "client_ip_address": .context.ip ?? .request_ip,
         "client_user_agent": .context.userAgent,
-        "external_id": {{{{$.getGenericPaths("userId")}}}}
+        "external_id": {{{{$.getGenericPaths("userId")}}}},
+        "click_id": .properties.clickId
       });
       !.destination.Config.sendExternalId ?  userFields = userFields{~["external_id"]} : null;
       userFields = $.removeUndefinedAndNullAndEmptyValues(userFields);
@@ -174,6 +177,7 @@ steps:
       name: eventNamesForOthers
       template: |
         let event = .message.event ?? .message.name;
+        $.validateEventName(event);
         let eventInLowerCase = event.toLowerCase();
         let eventNames = .destination.Config.eventsMapping.(){.from === event}.to[] ?? [];
         eventNames = $.convertToSnakeCase(eventNames);
@@ -185,14 +189,13 @@ steps:
   - name: payload
     template: |
       $.outputs.eventNames.().({...$.outputs.basePayload, event_name: .})[]
-    
+
   - name: checkSendTestEventConfig
     description: |
       If sendTestEvent is enabled, we send test event to the destination
       ref: https://help.pinterest.com/en/business/article/track-conversions-with-the-conversions-api
     template: |
-        ^.destination.Config.sendAsTestEvent ? {"test": true} : {}
-        
+      ^.destination.Config.sendAsTestEvent ? {"test": true} : {}
 
   - name: buildResponseForBatchMode
     description: In batchMode we return payload directly

@@ -1,8 +1,8 @@
+const { NetworkError, AbortedError } = require('@rudderstack/integrations-lib');
 const myAxios = require('../../../util/myAxios');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const logger = require('../../../logger');
 const { constructPayload, isDefinedAndNotNull } = require('../../util');
-const { NetworkError, AbortedError } = require('../../util/errorTypes');
 const { ENDPOINT, productMapping } = require('./config');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');

@@ -1,9 +1,3 @@
-const { httpGET, httpPOST } = require('../../../adapters/network');
-const {
-  getDynamicErrorType,
-  processAxiosResponse,
-} = require('../../../adapters/utils/networkUtils');
-const { isHttpStatusSuccess } = require('../../util/index');
 const {
   NetworkError,
   AbortedError,
@@ -11,7 +5,13 @@ const {
   RetryableError,
   UnhandledStatusCodeError,
   InstrumentationError,
-} = require('../../util/errorTypes');
+} = require('@rudderstack/integrations-lib');
+const { httpGET, httpPOST } = require('../../../adapters/network');
+const {
+  getDynamicErrorType,
+  processAxiosResponse,
+} = require('../../../adapters/utils/networkUtils');
+const { isHttpStatusSuccess } = require('../../util/index');
 const tags = require('../../util/tags');
 
 /**
@@ -247,6 +247,7 @@ const sendGetRequest = async (url, options) => {
   const clientResponse = await httpGET(url, options, {
     destType: 'marketo',
     feature: 'transformation',
+    endpointPath: `/v1/leads`,
   });
   const processedResponse = processAxiosResponse(clientResponse);
   return processedResponse;
@@ -262,6 +263,7 @@ const sendPostRequest = async (url, data, options) => {
   const clientResponse = await httpPOST(url, data, options, {
     destType: 'marketo',
     feature: 'transformation',
+    endpointPath: `/v1/leads`,
   });
   const processedResponse = processAxiosResponse(clientResponse);
   return processedResponse;

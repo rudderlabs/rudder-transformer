@@ -1,3 +1,4 @@
+const { NetworkError } = require('@rudderstack/integrations-lib');
 const { proxyRequest, prepareProxyRequest } = require('../../../adapters/network');
 const {
   getDynamicErrorType,
@@ -5,7 +6,6 @@ const {
 } = require('../../../adapters/utils/networkUtils');
 const { isDefinedAndNotNull, isDefined, isHttpStatusSuccess } = require('../../util');
 
-const { NetworkError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 
 const responseHandler = (destinationResponse, dest) => {

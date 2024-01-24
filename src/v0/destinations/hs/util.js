@@ -1,4 +1,10 @@
 const get = require('get-value');
+const {
+  NetworkInstrumentationError,
+  InstrumentationError,
+  ConfigurationError,
+  NetworkError,
+} = require('@rudderstack/integrations-lib');
 const { httpGET, httpPOST } = require('../../../adapters/network');
 const {
   processAxiosResponse,
@@ -12,12 +18,6 @@ const {
   getDestinationExternalIDInfoForRetl,
   getValueFromMessage,
 } = require('../../util');
-const {
-  NetworkInstrumentationError,
-  InstrumentationError,
-  ConfigurationError,
-  NetworkError,
-} = require('../../util/errorTypes');
 const {
   CONTACT_PROPERTY_MAP_ENDPOINT,
   IDENTIFY_CRM_SEARCH_CONTACT,
@@ -100,6 +100,7 @@ const getProperties = async (destination) => {
     hubspotPropertyMapResponse = await httpGET(CONTACT_PROPERTY_MAP_ENDPOINT, requestOptions, {
       destType: 'hs',
       feature: 'transformation',
+      endpointPath: `/properties/v1/contacts/properties`,
     });
     hubspotPropertyMapResponse = processAxiosResponse(hubspotPropertyMapResponse);
   } else {
@@ -111,6 +112,7 @@ const getProperties = async (destination) => {
       {
         destType: 'hs',
         feature: 'transformation',
+        endpointPath: `/properties/v1/contacts/properties?hapikey`,
       },
     );
     hubspotPropertyMapResponse = processAxiosResponse(hubspotPropertyMapResponse);
@@ -607,7 +609,8 @@ const splitEventsForCreateUpdate = async (inputs, destination) => {
     const { destinationExternalId } = getDestinationExternalIDInfoForRetl(message, DESTINATION);
 
     const filteredInfo = updateHubspotIds.filter(
-      (update) => update.property.toString().toLowerCase() === destinationExternalId.toString().toLowerCase(),
+      (update) =>
+        update.property.toString().toLowerCase() === destinationExternalId.toString().toLowerCase(),
     );
 
     if (filteredInfo.length > 0) {

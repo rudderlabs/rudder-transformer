@@ -2,6 +2,13 @@
 /* eslint-disable no-prototype-builtins */
 const Handlebars = require('handlebars');
 const get = require('get-value');
+const {
+  NetworkError,
+  ConfigurationError,
+  TransformationError,
+  InstrumentationError,
+  NetworkInstrumentationError,
+} = require('@rudderstack/integrations-lib');
 const myAxios = require('../../../util/myAxios');
 const { EventType } = require('../../../constants');
 const { EndPoints, BASE_URL } = require('./config');
@@ -17,13 +24,6 @@ const {
   getStringValueOfJSON,
   ErrorMessage,
 } = require('../../util');
-const {
-  NetworkError,
-  ConfigurationError,
-  TransformationError,
-  InstrumentationError,
-  NetworkInstrumentationError,
-} = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { JSON_MIME_TYPE } = require('../../util/constant');

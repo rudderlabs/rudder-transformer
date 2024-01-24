@@ -44,4 +44,5 @@ module.exports = {
   ECOM_PRODUCT_EVENTS,
   commonConfig: MAPPING_CONFIG[CONFIG_CATEGORIES.COMMON.name],
   formatDestinationConfig,
+  DESTINATION: 'ADOBE_ANALYTICS',
 };

@@ -1,4 +1,5 @@
 const qs = require('qs');
+const { InstrumentationError, NetworkError } = require('@rudderstack/integrations-lib');
 const { httpGET, httpPOST } = require('../../../adapters/network');
 const {
   getDynamicErrorType,
@@ -8,7 +9,6 @@ const { BASE_ENDPOINT, VERSION, ACCESS_TOKEN_CACHE_TTL_SECONDS } = require('./co
 const { constructPayload, isDefinedAndNotNullAndNotEmpty } = require('../../util');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
 const Cache = require('../../util/cache');
-const { InstrumentationError, NetworkError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -46,6 +46,7 @@ const getAccessToken = async (destination) => {
     const wootricAuthResponse = await httpPOST(request.url, request.data, request.header, {
       destType: 'wootric',
       feature: 'transformation',
+      endpointPath: `/oauth/token`,
     });
     const processedAuthResponse = processAxiosResponse(wootricAuthResponse);
     // If the request fails, throwing error.
@@ -98,6 +99,7 @@ const retrieveUserDetails = async (endUserId, externalId, accessToken) => {
   const userResponse = await httpGET(endpoint, requestOptions, {
     destType: 'wootric',
     feature: 'transformation',
+    endpointPath: `/v1/end_users/`,
   });
   const processedUserResponse = processAxiosResponse(userResponse);
 

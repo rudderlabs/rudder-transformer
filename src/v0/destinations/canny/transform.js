@@ -1,3 +1,4 @@
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const { ConfigCategory, mappingConfig, BASE_URL } = require('./config');
 const {
@@ -14,7 +15,6 @@ const {
   validateCreatePostFields,
   validateEventMapping,
 } = require('./util');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (responseConfgs) => {

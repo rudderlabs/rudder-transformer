@@ -1,5 +1,10 @@
 const jsonxml = require('jsontoxml');
 const get = require('get-value');
+const {
+  InstrumentationError,
+  TransformationError,
+  ConfigurationError,
+} = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const { ECOM_PRODUCT_EVENTS, commonConfig, formatDestinationConfig } = require('./config');
 const {
@@ -14,11 +19,6 @@ const {
   removeUndefinedAndNullValues,
   simpleProcessRouterDest,
 } = require('../../util');
-const {
-  InstrumentationError,
-  TransformationError,
-  ConfigurationError,
-} = require('../../util/errorTypes');
 
 const {
   handleContextData,
@@ -76,6 +76,7 @@ const responseBuilderSimple = async (message, destinationConfig, basicPayload) =
     }
     payload.linkURL =
       adobeIntegrationsObject?.linkURL || context?.page?.url || 'No linkURL provided';
+    payload.linkURL = encodeURI(payload.linkURL);
   }
   // handle hier
   if (overrideHiers) {
@@ -97,7 +98,7 @@ const responseBuilderSimple = async (message, destinationConfig, basicPayload) =
     const propertiesPageUrl = properties?.pageUrl;
     const pageUrl = contextPageUrl || propertiesPageUrl;
     if (isDefinedAndNotNullAndNotEmpty(pageUrl)) {
-      payload.pageUrl = pageUrl;
+      payload.pageUrl = encodeURI(pageUrl);
     }
     if (trackPageName) {
       // better handling possible here, both error and implementation wise
@@ -345,6 +346,9 @@ const processTrackEvent = (message, adobeEventName, destinationConfig, extras = 
 const handleTrack = (message, destinationConfig) => {
   const ORDER_ID_KEY = 'properties.order_id';
   const { event: rawEvent, properties } = message;
+  if (!rawEvent) {
+    throw new InstrumentationError('Event name is not present. Aborting message.');
+  }
   let payload = null;
   // handle ecommerce events separately
   // generic events should go to the default

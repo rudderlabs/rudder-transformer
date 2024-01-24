@@ -250,12 +250,6 @@ class Prometheus {
         labelNames: ['processSessions'],
       },
       {
-        name: 'user_transform_function_input_events',
-        help: 'user_transform_function_input_events',
-        type: 'counter',
-        labelNames: ['processSessions', 'sourceType', 'destinationType', 'k8_namespace'],
-      },
-      {
         name: 'user_transform_errors',
         help: 'user_transform_errors',
         type: 'counter',
@@ -458,6 +452,12 @@ class Prometheus {
         labelNames: ['writeKey', 'timestamp'],
       },
       {
+        name: 'regulation_worker_user_deletion_failure',
+        help: 'regulation_worker_user_deletion_failure',
+        type: 'counter',
+        labelNames: ['destType', 'module', 'implementation', 'feature'],
+      },
+      {
         name: 'shopify_server_side_identifier_event',
         help: 'shopify_server_side_identifier_event',
         type: 'counter',
@@ -494,6 +494,12 @@ class Prometheus {
         labelNames: ['type', 'writeKey', 'source'],
       },
       {
+        name: 'shopify_anon_id_resolve',
+        help: 'shopify_anon_id_resolve',
+        type: 'counter',
+        labelNames: ['method', 'writeKey', 'shopifyTopic'],
+      },
+      {
         name: 'shopify_redis_calls',
         help: 'shopify_redis_calls',
         type: 'counter',
@@ -504,20 +510,6 @@ class Prometheus {
         help: 'shopify_redis_no_val',
         type: 'counter',
         labelNames: ['writeKey', 'source'],
-      },
-      {
-        name: 'events_to_process',
-        help: 'events_to_process',
-        type: 'counter',
-        labelNames: [
-          'transformerVersionId',
-          'language',
-          'identifier',
-          'testMode',
-          'sourceType',
-          'destinationType',
-          'k8_namespace',
-        ],
       },
       {
         name: 'get_transformation_code',
@@ -620,6 +612,12 @@ class Prometheus {
         labelNames: ['sourceType', 'destinationType', 'k8_namespace'],
       },
       {
+        name: 'regulation_worker_requests_dest_latency',
+        help: 'regulation_worker_requests_dest_latency',
+        type: 'histogram',
+        labelNames: ['feature', 'implementation', 'destType'],
+      },
+      {
         name: 'dest_transform_request_latency',
         help: 'dest_transform_request_latency',
         type: 'histogram',
@@ -667,21 +665,6 @@ class Prometheus {
         help: 'creation_time',
         type: 'histogram',
         labelNames: ['transformerVersionId', 'language', 'identifier', 'publish', 'testMode'],
-      },
-      {
-        name: 'run_time',
-        help: 'run_time',
-        type: 'histogram',
-        labelNames: [
-          'transformerVersionId',
-          'language',
-          'identifier',
-          'publish',
-          'testMode',
-          'sourceType',
-          'destinationType',
-          'k8_namespace',
-        ],
       },
       { name: 'get_tracking_plan', help: 'get_tracking_plan', type: 'histogram', labelNames: [] },
       { name: 'createivm_duration', help: 'createivm_duration', type: 'histogram', labelNames: [] },
@@ -939,6 +922,38 @@ class Prometheus {
         help: 'marketo_bulk_upload_create_csvloop_time',
         type: 'histogram',
         labelNames: [],
+      },
+      {
+        name: 'user_transform_function_input_events',
+        help: 'user_transform_function_input_events',
+        type: 'counter',
+        labelNames: [
+          'identifier',
+          'testMode',
+          'sourceType',
+          'destinationType',
+          'k8_namespace',
+          'errored',
+          'statusCode',
+          'transformationId',
+          'workspaceId',
+        ],
+      },
+      {
+        name: 'user_transform_function_latency',
+        help: 'user_transform_function_latency',
+        type: 'histogram',
+        labelNames: [
+          'identifier',
+          'testMode',
+          'sourceType',
+          'destinationType',
+          'k8_namespace',
+          'errored',
+          'statusCode',
+          'transformationId',
+          'workspaceId',
+        ],
       },
     ];
 

@@ -1,4 +1,9 @@
 const get = require('get-value');
+const {
+  InstrumentationError,
+  NetworkInstrumentationError,
+  TransformationError,
+} = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   defaultRequestConfig,
@@ -9,11 +14,6 @@ const {
   getValidDynamicFormConfig,
   simpleProcessRouterDest,
 } = require('../../util');
-const {
-  InstrumentationError,
-  NetworkInstrumentationError,
-  TransformationError,
-} = require('../../util/errorTypes');
 
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
 const {

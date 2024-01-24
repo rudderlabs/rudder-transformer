@@ -1,8 +1,8 @@
+const { NetworkError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { httpPOST } = require('../../../adapters/network');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const { isHttpStatusSuccess } = require('../../util');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
-const { NetworkError, ConfigurationError } = require('../../util/errorTypes');
 const { executeCommonValidations } = require('../../util/regulation-api');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
@@ -38,6 +38,7 @@ const userDeletionHandler = async (userAttributes, config) => {
       const resp = await httpPOST(url, data, requestOptions, {
         destType: 'intercom',
         feature: 'deleteUsers',
+        endpointPath: '/user_delete_requests',
       });
       const handledDelResponse = processAxiosResponse(resp);
       if (!isHttpStatusSuccess(handledDelResponse.status) && handledDelResponse.status !== 404) {

@@ -1,6 +1,7 @@
 const get = require('get-value');
 const set = require('set-value');
 const truncate = require('truncate-utf8-bytes');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { MAX_BATCH_SIZE, configFieldsToCheck } = require('./config');
 const {
   constructPayload,
@@ -27,8 +28,6 @@ const {
   DEVICE_DELETE_ENDPOINT,
   DEVICE_REGISTER_ENDPOINT,
 } = require('./config');
-
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
 const deviceRelatedEventNames = [
   'Application Installed',

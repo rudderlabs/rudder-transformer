@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 const { v5 } = require('uuid');
 const sha256 = require('sha256');
+const { TransformationError } = require('@rudderstack/integrations-lib');
 const stats = require('../../../util/stats');
 const {
   constructPayload,
@@ -22,7 +23,6 @@ const {
   useRedisDatabase,
   maxTimeToIdentifyRSGeneratedCall,
 } = require('./config');
-const { TransformationError } = require('../../util/errorTypes');
 
 const getDataFromRedis = async (key, metricMetadata) => {
   try {
@@ -32,7 +32,10 @@ const getDataFromRedis = async (key, metricMetadata) => {
       ...metricMetadata,
     });
     const redisData = await RedisDB.getVal(key);
-    if (redisData === null) {
+    if (
+      redisData === null ||
+      (typeof redisData === 'object' && Object.keys(redisData).length === 0)
+    ) {
       stats.increment('shopify_redis_no_val', {
         ...metricMetadata,
       });
@@ -161,6 +164,10 @@ const getAnonymousIdAndSessionId = async (message, metricMetadata, redisData = n
   }
   // falling back to cartToken mapping or its hash in case no rudderAnonymousId or rudderSessionId is found
   if (isDefinedAndNotNull(anonymousId) && isDefinedAndNotNull(sessionId)) {
+    stats.increment('shopify_anon_id_resolve', {
+      method: 'note_attributes',
+      ...metricMetadata,
+    });
     return { anonymousId, sessionId };
   }
   const cartToken = getCartToken(message);
@@ -186,6 +193,13 @@ const getAnonymousIdAndSessionId = async (message, metricMetadata, redisData = n
     Hash the id and use it as anonymousId (limiting 256 -> 36 chars) and sessionId is not sent as its not required field
     */
     anonymousId = v5(cartToken, v5.URL);
+  } else {
+    // This metric let us know how many events based on event name used redis for anonId resolution
+    // and for how many
+    stats.increment('shopify_anon_id_resolve', {
+      method: 'database',
+      ...metricMetadata,
+    });
   }
   return { anonymousId, sessionId };
 };

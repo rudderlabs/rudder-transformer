@@ -2,11 +2,11 @@ const lodash = require('lodash');
 const sha256 = require('sha256');
 const get = require('get-value');
 const jsonSize = require('json-size');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const stats = require('../../../util/stats');
 
 const { isDefinedAndNotNull } = require('../../util');
 const { maxPayloadSize } = require('./config');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
 /**
  * Example payload ={
@@ -131,21 +131,21 @@ const getUpdatedDataElement = (dataElement, isHashRequired, eachProperty, update
   /**
    * hash the original value for the properties apart from 'MADID' && 'EXTERN_ID as hashing is not required for them
    * ref: https://developers.facebook.com/docs/marketing-api/audiences/guides/custom-audiences#hash
-   * sending null values for the properties for which user hasn't provided any value
+   * sending empty string for the properties for which user hasn't provided any value
    */
   if (isHashRequired && eachProperty !== 'MADID' && eachProperty !== 'EXTERN_ID') {
     if (tmpUpdatedProperty) {
       tmpUpdatedProperty = `${tmpUpdatedProperty}`;
       dataElement.push(sha256(tmpUpdatedProperty));
     } else {
-      dataElement.push(null);
+      dataElement.push('');
     }
   }
-  // if property name is MADID or EXTERN_ID if the value is undefined send null
+  // if property name is MADID or EXTERN_ID if the value is undefined send empty string
   else if (!tmpUpdatedProperty && (eachProperty === 'MADID' || eachProperty === 'EXTERN_ID')) {
-    dataElement.push(null);
+    dataElement.push('');
   } else {
-    dataElement.push(tmpUpdatedProperty);
+    dataElement.push(tmpUpdatedProperty || '');
   }
   return dataElement;
 };

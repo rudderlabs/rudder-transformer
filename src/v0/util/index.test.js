@@ -1,5 +1,7 @@
+const { TAG_NAMES } = require('@rudderstack/integrations-lib');
 const utilities = require('.');
 const { getFuncTestData } = require('../../../test/testHelper');
+const { FilteredEventsError } = require('./errorTypes');
 const { hasCircularReference, flattenJson } = require('./index');
 
 // Names of the utility functions to test
@@ -58,7 +60,6 @@ describe('Utility Functions Tests', () => {
     test.each(funcTestData)('$description', async ({ description, input, output }) => {
       try {
         let result;
-        console.log(Object.values(input));
         result = utilities[funcName](...Object.values(input));
         expect(result).toEqual(output);
       } catch (e) {
@@ -114,5 +115,13 @@ describe('flattenJson', () => {
     expect(() => flattenJson(data)).toThrow(
       "Event has circular reference. Can't flatten the event",
     );
+  });
+});
+
+describe('tests for generateErrorObject', () => {
+  test('test-0', () => {
+    const myErr = new FilteredEventsError('error-1');
+    const outputErrObj = utilities.generateErrorObject(myErr);
+    expect(outputErrObj.statTags).toEqual({});
   });
 });

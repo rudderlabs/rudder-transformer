@@ -1,5 +1,6 @@
 const { get, set } = require('lodash');
 const sha256 = require('sha256');
+const { NetworkError, NetworkInstrumentationError } = require('@rudderstack/integrations-lib');
 const { prepareProxyRequest, handleHttpRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../util/index');
 const { CONVERSION_ACTION_ID_CACHE_TTL } = require('./config');
@@ -12,7 +13,7 @@ const {
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 const { BASE_ENDPOINT } = require('./config');
-const { NetworkError, NetworkInstrumentationError } = require('../../util/errorTypes');
+
 const tags = require('../../util/tags');
 
 const ERROR_MSG_PATH = 'response[0].error.message';
@@ -43,6 +44,7 @@ const getConversionActionId = async (method, headers, params) => {
       {
         destType: 'google_adwords_enhanced_conversions',
         feature: 'proxy',
+        endpointPath: `/googleAds:searchStream`,
       },
     );
     if (!isHttpStatusSuccess(gaecConversionActionIdResponse.status)) {
@@ -95,6 +97,7 @@ const ProxyRequest = async (request) => {
   const { httpResponse: response } = await handleHttpRequest('constructor', requestBody, {
     destType: 'google_adwords_enhanced_conversions',
     feature: 'proxy',
+    endpointPath: `/googleAds:uploadOfflineUserData`,
   });
   return response;
 };

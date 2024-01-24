@@ -2165,6 +2165,7 @@ module.exports = {
   getValueFromPropertiesOrTraits,
   getValuesAsArrayFromConfig,
   handleSourceKeysOperation,
+  hashToSha256,
   isAppleFamily,
   isBlank,
   isCdkDestination,

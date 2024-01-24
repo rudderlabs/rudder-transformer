@@ -21,14 +21,7 @@ export const data = [
               message: {
                 type: 'identify',
                 sentAt: '2022-08-23T05:59:38.214Z',
-                traits: {
-                  to: {
-                    id: 1,
-                  },
-                  from: {
-                    id: 9405415215,
-                  },
-                },
+                traits: { to: { id: 1 }, from: { id: 9405415215 } },
                 userId: '1',
                 channel: 'sources',
                 context: {
@@ -60,9 +53,7 @@ export const data = [
                 request_ip: '10.1.90.32',
                 originalTimestamp: '2022-08-23T05:59:38.214Z',
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
             },
           ],
           destType: 'hs',
@@ -82,36 +73,17 @@ export const data = [
                 method: 'POST',
                 endpoint:
                   'https://api.hubapi.com/crm/v3/associations/companies/contacts/batch/create',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: 'Bearer pat-123',
-                },
+                headers: { 'Content-Type': 'application/json', Authorization: 'Bearer pat-123' },
                 params: {},
                 body: {
-                  JSON: {
-                    inputs: [
-                      {
-                        to: {
-                          id: 1,
-                        },
-                        from: {
-                          id: 9405415215,
-                        },
-                        type: 'engineer',
-                      },
-                    ],
-                  },
+                  JSON: { inputs: [{ to: { id: 1 }, from: { id: 9405415215 }, type: 'engineer' }] },
                   JSON_ARRAY: {},
                   XML: {},
                   FORM: {},
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: true,
               statusCode: 200,
               destination: {
@@ -153,47 +125,26 @@ export const data = [
                     firstname: 'Test Hubspot1',
                     anonymousId: '1111',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-GB',
                   ip: '0.0.0.0',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
-                  page: {
-                    path: '',
-                    referrer: '',
-                    search: '',
-                    title: '',
-                    url: '',
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
+                  page: { path: '', referrer: '', search: '', title: '', url: '' },
                 },
                 type: 'identify',
                 messageId: '50360b9c-ea8d-409c-b672-c9230f91cce5',
                 originalTimestamp: '2019-10-15T09:35:31.288Z',
                 anonymousId: '00000000000000000000000000',
                 userId: '12345',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               destination: {
-                Config: {
-                  apiKey: 'dummy-apikey',
-                  hubID: 'dummy-hubId',
-                },
+                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 name: 'Hubspot',
@@ -224,25 +175,14 @@ export const data = [
                     namespace: 'com.rudderlabs.javascript',
                     version: '1.0.0',
                   },
-                  traits: {
-                    email: 'testhubspot2@email.com',
-                    firstname: 'Test Hubspot2',
-                  },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  traits: { email: 'testhubspot2@email.com', firstname: 'Test Hubspot2' },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-GB',
                   ip: '0.0.0.0',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                 },
                 type: 'track',
                 messageId: '08829772-d991-427c-b976-b4c4f4430b4e',
@@ -256,14 +196,9 @@ export const data = [
                 },
                 sentAt: '2019-10-14T11:15:53.296Z',
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               destination: {
-                Config: {
-                  apiKey: 'dummy-apikey',
-                  hubID: 'dummy-hubId',
-                },
+                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 name: 'Hubspot',
@@ -291,24 +226,14 @@ export const data = [
                 method: 'POST',
                 endpoint:
                   'https://api.hubapi.com/contacts/v1/contact/createOrUpdate/email/testhubspot2@email.com',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 userId: '00000000000000000000000000',
-                params: {
-                  hapikey: 'dummy-apikey',
-                },
+                params: { hapikey: 'dummy-apikey' },
                 body: {
                   JSON: {
                     properties: [
-                      {
-                        property: 'email',
-                        value: 'testhubspot3@email.com',
-                      },
-                      {
-                        property: 'firstname',
-                        value: 'Test Hubspot3',
-                      },
+                      { property: 'email', value: 'testhubspot3@email.com' },
+                      { property: 'firstname', value: 'Test Hubspot3' },
                     ],
                   },
                   XML: {},
@@ -317,14 +242,9 @@ export const data = [
                 files: {},
                 statusCode: 200,
               },
-              metadata: {
-                jobId: 3,
-              },
+              metadata: { jobId: 3, userId: 'u1' },
               destination: {
-                Config: {
-                  apiKey: 'dummy-apikey',
-                  hubID: 'dummy-hubId',
-                },
+                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 name: 'Hubspot',
@@ -360,47 +280,26 @@ export const data = [
                     firstname: 'Test Hubspot4',
                     anonymousId: '4444',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-GB',
                   ip: '0.0.0.0',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
-                  page: {
-                    path: '',
-                    referrer: '',
-                    search: '',
-                    title: '',
-                    url: '',
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
+                  page: { path: '', referrer: '', search: '', title: '', url: '' },
                 },
                 type: 'identify',
                 messageId: '50360b9c-ea8d-409c-b672-c9230f91cce5',
                 originalTimestamp: '2019-10-15T09:35:31.288Z',
                 anonymousId: '00000000000000000000000000',
                 userId: '12345',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
-              metadata: {
-                jobId: 4,
-              },
+              metadata: { jobId: 4, userId: 'u1' },
               destination: {
-                Config: {
-                  apiKey: 'rate-limit-id',
-                  hubID: 'dummy-hubId',
-                },
+                Config: { apiKey: 'rate-limit-id', hubID: 'dummy-hubId' },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 name: 'Hubspot',
@@ -438,12 +337,8 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.hubapi.com/contacts/v1/contact/batch/',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                params: {
-                  hapikey: 'dummy-apikey',
-                },
+                headers: { 'Content-Type': 'application/json' },
+                params: { hapikey: 'dummy-apikey' },
                 body: {
                   JSON: {},
                   JSON_ARRAY: {
@@ -456,23 +351,14 @@ export const data = [
                 files: {},
               },
               metadata: [
-                {
-                  jobId: 3,
-                },
-                {
-                  jobId: 1,
-                },
-                {
-                  jobId: 4,
-                },
+                { jobId: 3, userId: 'u1' },
+                { jobId: 1, userId: 'u1' },
+                { jobId: 4, userId: 'u1' },
               ],
               batched: true,
               statusCode: 200,
               destination: {
-                Config: {
-                  apiKey: 'dummy-apikey',
-                  hubID: 'dummy-hubId',
-                },
+                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 name: 'Hubspot',
@@ -499,35 +385,21 @@ export const data = [
                 type: 'REST',
                 method: 'GET',
                 endpoint: 'https://track.hubspot.com/v1/event',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 params: {
                   _a: 'dummy-hubId',
                   _n: 'test track event HS',
                   email: 'testhubspot2@email.com',
                   firstname: 'Test Hubspot2',
                 },
-                body: {
-                  JSON: {},
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
-                },
+                body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
-                Config: {
-                  apiKey: 'dummy-apikey',
-                  hubID: 'dummy-hubId',
-                },
+                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 name: 'Hubspot',
@@ -569,11 +441,7 @@ export const data = [
                 context: {
                   mappedToDestination: true,
                   externalId: [
-                    {
-                      identifierType: 'email',
-                      id: 'testhubspot2@email.com',
-                      type: 'HS-lead',
-                    },
+                    { identifierType: 'email', id: 'testhubspot2@email.com', type: 'HS-lead' },
                   ],
                   sources: {
                     job_id: '24c5HJxHomh6YCngEOCgjS5r1KX/Syncher',
@@ -585,25 +453,16 @@ export const data = [
                   },
                 },
                 type: 'identify',
-                traits: {
-                  firstname: 'Test Hubspot',
-                  anonymousId: '12345',
-                  country: 'India',
-                },
+                traits: { firstname: 'Test Hubspot', anonymousId: '12345', country: 'India' },
                 messageId: '50360b9c-ea8d-409c-b672-c9230f91cce5',
                 originalTimestamp: '2019-10-15T09:35:31.288Z',
                 anonymousId: '00000000000000000000000000',
                 userId: '12345',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
               destination: {
-                Config: {
-                  apiKey: 'dummy-apikey',
-                  hubID: 'dummy-hubId',
-                },
+                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 name: 'Hubspot',
@@ -623,9 +482,7 @@ export const data = [
                 isConnectionEnabled: true,
                 isProcessorEnabled: true,
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
             },
             {
               message: {
@@ -633,11 +490,7 @@ export const data = [
                 context: {
                   mappedToDestination: true,
                   externalId: [
-                    {
-                      identifierType: 'email',
-                      id: 'testhubspot@email.com',
-                      type: 'HS-lead',
-                    },
+                    { identifierType: 'email', id: 'testhubspot@email.com', type: 'HS-lead' },
                   ],
                   sources: {
                     job_id: '24c5HJxHomh6YCngEOCgjS5r1KX/Syncher',
@@ -649,25 +502,16 @@ export const data = [
                   },
                 },
                 type: 'identify',
-                traits: {
-                  firstname: 'Test Hubspot 1',
-                  anonymousId: '123451',
-                  country: 'India 1',
-                },
+                traits: { firstname: 'Test Hubspot 1', anonymousId: '123451', country: 'India 1' },
                 messageId: '50360b9c-ea8d-409c-b672-c9230f91cce5',
                 originalTimestamp: '2019-10-15T09:35:31.288Z',
                 anonymousId: '00000000000000000000000000',
                 userId: '12345',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
               destination: {
-                Config: {
-                  apiKey: 'dummy-apikey',
-                  hubID: 'dummy-hubId',
-                },
+                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 name: 'Hubspot',
@@ -687,9 +531,7 @@ export const data = [
                 isConnectionEnabled: true,
                 isProcessorEnabled: true,
               },
-              metadata: {
-                jobId: 3,
-              },
+              metadata: { jobId: 3, userId: 'u1' },
             },
           ],
           destType: 'hs',
@@ -708,12 +550,8 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/lead/batch/create',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                params: {
-                  hapikey: 'dummy-apikey',
-                },
+                headers: { 'Content-Type': 'application/json' },
+                params: { hapikey: 'dummy-apikey' },
                 body: {
                   JSON: {
                     inputs: [
@@ -733,18 +571,11 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 3,
-                },
-              ],
+              metadata: [{ jobId: 3, userId: 'u1' }],
               batched: true,
               statusCode: 200,
               destination: {
-                Config: {
-                  apiKey: 'dummy-apikey',
-                  hubID: 'dummy-hubId',
-                },
+                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 name: 'Hubspot',
@@ -771,12 +602,8 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api.hubapi.com/crm/v3/objects/lead/batch/update',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                params: {
-                  hapikey: 'dummy-apikey',
-                },
+                headers: { 'Content-Type': 'application/json' },
+                params: { hapikey: 'dummy-apikey' },
                 body: {
                   JSON: {
                     inputs: [
@@ -797,18 +624,11 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: true,
               statusCode: 200,
               destination: {
-                Config: {
-                  apiKey: 'dummy-apikey',
-                  hubID: 'dummy-hubId',
-                },
+                Config: { apiKey: 'dummy-apikey', hubID: 'dummy-hubId' },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
                 name: 'Hubspot',
@@ -850,11 +670,7 @@ export const data = [
                 context: {
                   mappedToDestination: true,
                   externalId: [
-                    {
-                      identifierType: 'email',
-                      id: 'testhubspot2@email.com',
-                      type: 'HS-lead',
-                    },
+                    { identifierType: 'email', id: 'testhubspot2@email.com', type: 'HS-lead' },
                   ],
                   sources: {
                     job_id: '24c5HJxHomh6YCngEOCgjS5r1KX/Syncher',
@@ -866,18 +682,12 @@ export const data = [
                   },
                 },
                 type: 'identify',
-                traits: {
-                  firstname: 'Test Hubspot',
-                  anonymousId: '12345',
-                  country: 'India',
-                },
+                traits: { firstname: 'Test Hubspot', anonymousId: '12345', country: 'India' },
                 messageId: '50360b9c-ea8d-409c-b672-c9230f91cce5',
                 originalTimestamp: '2019-10-15T09:35:31.288Z',
                 anonymousId: '00000000000000000000000000',
                 userId: '12345',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
               destination: {
@@ -893,42 +703,22 @@ export const data = [
                       rsEventName: 'Purchase',
                       hubspotEventName: 'pedummy-hubId_rs_hub_test',
                       eventProperties: [
-                        {
-                          from: 'Revenue',
-                          to: 'value',
-                        },
-                        {
-                          from: 'Price',
-                          to: 'cost',
-                        },
+                        { from: 'Revenue', to: 'value' },
+                        { from: 'Price', to: 'cost' },
                       ],
                     },
                     {
                       rsEventName: 'Order Complete',
                       hubspotEventName: 'pedummy-hubId_rs_hub_chair',
                       eventProperties: [
-                        {
-                          from: 'firstName',
-                          to: 'first_name',
-                        },
-                        {
-                          from: 'lastName',
-                          to: 'last_name',
-                        },
+                        { from: 'firstName', to: 'first_name' },
+                        { from: 'lastName', to: 'last_name' },
                       ],
                     },
                   ],
                   eventFilteringOption: 'disable',
-                  blacklistedEvents: [
-                    {
-                      eventName: '',
-                    },
-                  ],
-                  whitelistedEvents: [
-                    {
-                      eventName: '',
-                    },
-                  ],
+                  blacklistedEvents: [{ eventName: '' }],
+                  whitelistedEvents: [{ eventName: '' }],
                 },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
@@ -949,9 +739,7 @@ export const data = [
                 isConnectionEnabled: true,
                 isProcessorEnabled: true,
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
             },
             {
               message: {
@@ -959,11 +747,7 @@ export const data = [
                 context: {
                   mappedToDestination: true,
                   externalId: [
-                    {
-                      identifierType: 'email',
-                      id: 'testhubspot@email.com',
-                      type: 'HS-lead',
-                    },
+                    { identifierType: 'email', id: 'testhubspot@email.com', type: 'HS-lead' },
                   ],
                   sources: {
                     job_id: '24c5HJxHomh6YCngEOCgjS5r1KX/Syncher',
@@ -975,18 +759,12 @@ export const data = [
                   },
                 },
                 type: 'identify',
-                traits: {
-                  firstname: 'Test Hubspot 1',
-                  anonymousId: '123451',
-                  country: 'India 1',
-                },
+                traits: { firstname: 'Test Hubspot 1', anonymousId: '123451', country: 'India 1' },
                 messageId: '50360b9c-ea8d-409c-b672-c9230f91cce5',
                 originalTimestamp: '2019-10-15T09:35:31.288Z',
                 anonymousId: '00000000000000000000000000',
                 userId: '12345',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
               destination: {
@@ -1002,42 +780,22 @@ export const data = [
                       rsEventName: 'Purchase',
                       hubspotEventName: 'pedummy-hubId_rs_hub_test',
                       eventProperties: [
-                        {
-                          from: 'Revenue',
-                          to: 'value',
-                        },
-                        {
-                          from: 'Price',
-                          to: 'cost',
-                        },
+                        { from: 'Revenue', to: 'value' },
+                        { from: 'Price', to: 'cost' },
                       ],
                     },
                     {
                       rsEventName: 'Order Complete',
                       hubspotEventName: 'pedummy-hubId_rs_hub_chair',
                       eventProperties: [
-                        {
-                          from: 'firstName',
-                          to: 'first_name',
-                        },
-                        {
-                          from: 'lastName',
-                          to: 'last_name',
-                        },
+                        { from: 'firstName', to: 'first_name' },
+                        { from: 'lastName', to: 'last_name' },
                       ],
                     },
                   ],
                   eventFilteringOption: 'disable',
-                  blacklistedEvents: [
-                    {
-                      eventName: '',
-                    },
-                  ],
-                  whitelistedEvents: [
-                    {
-                      eventName: '',
-                    },
-                  ],
+                  blacklistedEvents: [{ eventName: '' }],
+                  whitelistedEvents: [{ eventName: '' }],
                 },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
@@ -1058,9 +816,7 @@ export const data = [
                 isConnectionEnabled: true,
                 isProcessorEnabled: true,
               },
-              metadata: {
-                jobId: 3,
-              },
+              metadata: { jobId: 3, userId: 'u1' },
             },
             {
               message: {
@@ -1096,9 +852,7 @@ export const data = [
                 originalTimestamp: '2019-10-15T09:35:31.288Z',
                 anonymousId: '00000000000000000000000000',
                 userId: '12345',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
               destination: {
@@ -1114,42 +868,22 @@ export const data = [
                       rsEventName: 'Purchase',
                       hubspotEventName: 'pedummy-hubId_rs_hub_test',
                       eventProperties: [
-                        {
-                          from: 'Revenue',
-                          to: 'value',
-                        },
-                        {
-                          from: 'Price',
-                          to: 'cost',
-                        },
+                        { from: 'Revenue', to: 'value' },
+                        { from: 'Price', to: 'cost' },
                       ],
                     },
                     {
                       rsEventName: 'Order Complete',
                       hubspotEventName: 'pedummy-hubId_rs_hub_chair',
                       eventProperties: [
-                        {
-                          from: 'firstName',
-                          to: 'first_name',
-                        },
-                        {
-                          from: 'lastName',
-                          to: 'last_name',
-                        },
+                        { from: 'firstName', to: 'first_name' },
+                        { from: 'lastName', to: 'last_name' },
                       ],
                     },
                   ],
                   eventFilteringOption: 'disable',
-                  blacklistedEvents: [
-                    {
-                      eventName: '',
-                    },
-                  ],
-                  whitelistedEvents: [
-                    {
-                      eventName: '',
-                    },
-                  ],
+                  blacklistedEvents: [{ eventName: '' }],
+                  whitelistedEvents: [{ eventName: '' }],
                 },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
@@ -1170,9 +904,7 @@ export const data = [
                 isConnectionEnabled: true,
                 isProcessorEnabled: true,
               },
-              metadata: {
-                jobId: 4,
-              },
+              metadata: { jobId: 4, userId: 'u1' },
             },
           ],
           destType: 'hs',
@@ -1227,12 +959,8 @@ export const data = [
                 files: {},
               },
               metadata: [
-                {
-                  jobId: 3,
-                },
-                {
-                  jobId: 4,
-                },
+                { jobId: 3, userId: 'u1' },
+                { jobId: 4, userId: 'u1' },
               ],
               batched: true,
               statusCode: 200,
@@ -1249,42 +977,22 @@ export const data = [
                       rsEventName: 'Purchase',
                       hubspotEventName: 'pedummy-hubId_rs_hub_test',
                       eventProperties: [
-                        {
-                          from: 'Revenue',
-                          to: 'value',
-                        },
-                        {
-                          from: 'Price',
-                          to: 'cost',
-                        },
+                        { from: 'Revenue', to: 'value' },
+                        { from: 'Price', to: 'cost' },
                       ],
                     },
                     {
                       rsEventName: 'Order Complete',
                       hubspotEventName: 'pedummy-hubId_rs_hub_chair',
                       eventProperties: [
-                        {
-                          from: 'firstName',
-                          to: 'first_name',
-                        },
-                        {
-                          from: 'lastName',
-                          to: 'last_name',
-                        },
+                        { from: 'firstName', to: 'first_name' },
+                        { from: 'lastName', to: 'last_name' },
                       ],
                     },
                   ],
                   eventFilteringOption: 'disable',
-                  blacklistedEvents: [
-                    {
-                      eventName: '',
-                    },
-                  ],
-                  whitelistedEvents: [
-                    {
-                      eventName: '',
-                    },
-                  ],
+                  blacklistedEvents: [{ eventName: '' }],
+                  whitelistedEvents: [{ eventName: '' }],
                 },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
@@ -1337,11 +1045,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: true,
               statusCode: 200,
               destination: {
@@ -1357,42 +1061,22 @@ export const data = [
                       rsEventName: 'Purchase',
                       hubspotEventName: 'pedummy-hubId_rs_hub_test',
                       eventProperties: [
-                        {
-                          from: 'Revenue',
-                          to: 'value',
-                        },
-                        {
-                          from: 'Price',
-                          to: 'cost',
-                        },
+                        { from: 'Revenue', to: 'value' },
+                        { from: 'Price', to: 'cost' },
                       ],
                     },
                     {
                       rsEventName: 'Order Complete',
                       hubspotEventName: 'pedummy-hubId_rs_hub_chair',
                       eventProperties: [
-                        {
-                          from: 'firstName',
-                          to: 'first_name',
-                        },
-                        {
-                          from: 'lastName',
-                          to: 'last_name',
-                        },
+                        { from: 'firstName', to: 'first_name' },
+                        { from: 'lastName', to: 'last_name' },
                       ],
                     },
                   ],
                   eventFilteringOption: 'disable',
-                  blacklistedEvents: [
-                    {
-                      eventName: '',
-                    },
-                  ],
-                  whitelistedEvents: [
-                    {
-                      eventName: '',
-                    },
-                  ],
+                  blacklistedEvents: [{ eventName: '' }],
+                  whitelistedEvents: [{ eventName: '' }],
                 },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
@@ -1444,42 +1128,24 @@ export const data = [
                     firstname: 'Test Hubspot22',
                     anonymousId: '4444',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-GB',
                   ip: '0.0.0.0',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
-                  page: {
-                    path: '',
-                    referrer: '',
-                    search: '',
-                    title: '',
-                    url: '',
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
+                  page: { path: '', referrer: '', search: '', title: '', url: '' },
                 },
                 type: 'identify',
                 messageId: '50360b9c-ea8d-409c-b672-c9230f91cce5',
                 originalTimestamp: '2019-10-15T09:35:31.288Z',
                 anonymousId: '00000000000000000000000000',
                 userId: '12345',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               destination: {
                 Config: {
                   authorizationType: 'newPrivateAppApi',
@@ -1493,42 +1159,22 @@ export const data = [
                       rsEventName: 'Purchase',
                       hubspotEventName: 'pedummy-hubId_rs_hub_test',
                       eventProperties: [
-                        {
-                          from: 'Revenue',
-                          to: 'value',
-                        },
-                        {
-                          from: 'Price',
-                          to: 'cost',
-                        },
+                        { from: 'Revenue', to: 'value' },
+                        { from: 'Price', to: 'cost' },
                       ],
                     },
                     {
                       rsEventName: 'Order Complete',
                       hubspotEventName: 'pedummy-hubId_rs_hub_chair',
                       eventProperties: [
-                        {
-                          from: 'firstName',
-                          to: 'first_name',
-                        },
-                        {
-                          from: 'lastName',
-                          to: 'last_name',
-                        },
+                        { from: 'firstName', to: 'first_name' },
+                        { from: 'lastName', to: 'last_name' },
                       ],
                     },
                   ],
                   eventFilteringOption: 'disable',
-                  blacklistedEvents: [
-                    {
-                      eventName: '',
-                    },
-                  ],
-                  whitelistedEvents: [
-                    {
-                      eventName: '',
-                    },
-                  ],
+                  blacklistedEvents: [{ eventName: '' }],
+                  whitelistedEvents: [{ eventName: '' }],
                 },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
@@ -1565,42 +1211,24 @@ export const data = [
                     firstname: 'Test Hubspot44',
                     anonymousId: '4444',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-GB',
                   ip: '0.0.0.0',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
-                  page: {
-                    path: '',
-                    referrer: '',
-                    search: '',
-                    title: '',
-                    url: '',
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
+                  page: { path: '', referrer: '', search: '', title: '', url: '' },
                 },
                 type: 'identify',
                 messageId: '50360b9c-ea8d-409c-b672-c9230f91cce5',
                 originalTimestamp: '2019-10-15T09:35:31.288Z',
                 anonymousId: '00000000000000000000000000',
                 userId: '12345',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               destination: {
                 Config: {
                   authorizationType: 'newPrivateAppApi',
@@ -1614,42 +1242,22 @@ export const data = [
                       rsEventName: 'Purchase',
                       hubspotEventName: 'pedummy-hubId_rs_hub_test',
                       eventProperties: [
-                        {
-                          from: 'Revenue',
-                          to: 'value',
-                        },
-                        {
-                          from: 'Price',
-                          to: 'cost',
-                        },
+                        { from: 'Revenue', to: 'value' },
+                        { from: 'Price', to: 'cost' },
                       ],
                     },
                     {
                       rsEventName: 'Order Complete',
                       hubspotEventName: 'pedummy-hubId_rs_hub_chair',
                       eventProperties: [
-                        {
-                          from: 'firstName',
-                          to: 'first_name',
-                        },
-                        {
-                          from: 'lastName',
-                          to: 'last_name',
-                        },
+                        { from: 'firstName', to: 'first_name' },
+                        { from: 'lastName', to: 'last_name' },
                       ],
                     },
                   ],
                   eventFilteringOption: 'disable',
-                  blacklistedEvents: [
-                    {
-                      eventName: '',
-                    },
-                  ],
-                  whitelistedEvents: [
-                    {
-                      eventName: '',
-                    },
-                  ],
+                  blacklistedEvents: [{ eventName: '' }],
+                  whitelistedEvents: [{ eventName: '' }],
                 },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
@@ -1685,13 +1293,9 @@ export const data = [
                   ],
                 },
                 event: 'Purchase',
-                properties: {
-                  Revenue: 'name1',
-                },
+                properties: { Revenue: 'name1' },
               },
-              metadata: {
-                jobId: 3,
-              },
+              metadata: { jobId: 3, userId: 'u1' },
               destination: {
                 Config: {
                   authorizationType: 'newPrivateAppApi',
@@ -1705,42 +1309,22 @@ export const data = [
                       rsEventName: 'Purchase',
                       hubspotEventName: 'pedummy-hubId_rs_hub_test',
                       eventProperties: [
-                        {
-                          from: 'Revenue',
-                          to: 'value',
-                        },
-                        {
-                          from: 'Price',
-                          to: 'cost',
-                        },
+                        { from: 'Revenue', to: 'value' },
+                        { from: 'Price', to: 'cost' },
                       ],
                     },
                     {
                       rsEventName: 'Order Complete',
                       hubspotEventName: 'pedummy-hubId_rs_hub_chair',
                       eventProperties: [
-                        {
-                          from: 'firstName',
-                          to: 'first_name',
-                        },
-                        {
-                          from: 'lastName',
-                          to: 'last_name',
-                        },
+                        { from: 'firstName', to: 'first_name' },
+                        { from: 'lastName', to: 'last_name' },
                       ],
                     },
                   ],
                   eventFilteringOption: 'disable',
-                  blacklistedEvents: [
-                    {
-                      eventName: '',
-                    },
-                  ],
-                  whitelistedEvents: [
-                    {
-                      eventName: '',
-                    },
-                  ],
+                  blacklistedEvents: [{ eventName: '' }],
+                  whitelistedEvents: [{ eventName: '' }],
                 },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
@@ -1777,42 +1361,24 @@ export const data = [
                     firstname: 'Test Hubspot22',
                     anonymousId: '4444',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-GB',
                   ip: '0.0.0.0',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
-                  page: {
-                    path: '',
-                    referrer: '',
-                    search: '',
-                    title: '',
-                    url: '',
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
+                  page: { path: '', referrer: '', search: '', title: '', url: '' },
                 },
                 type: 'identify',
                 messageId: '50360b9c-ea8d-409c-b672-c9230f91cce5',
                 originalTimestamp: '2019-10-15T09:35:31.288Z',
                 anonymousId: '00000000000000000000000000',
                 userId: '12345',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
-              metadata: {
-                jobId: 4,
-              },
+              metadata: { jobId: 4, userId: 'u1' },
               destination: {
                 Config: {
                   authorizationType: 'newPrivateAppApi',
@@ -1826,42 +1392,22 @@ export const data = [
                       rsEventName: 'Purchase',
                       hubspotEventName: 'pedummy-hubId_rs_hub_test',
                       eventProperties: [
-                        {
-                          from: 'Revenue',
-                          to: 'value',
-                        },
-                        {
-                          from: 'Price',
-                          to: 'cost',
-                        },
+                        { from: 'Revenue', to: 'value' },
+                        { from: 'Price', to: 'cost' },
                       ],
                     },
                     {
                       rsEventName: 'Order Complete',
                       hubspotEventName: 'pedummy-hubId_rs_hub_chair',
                       eventProperties: [
-                        {
-                          from: 'firstName',
-                          to: 'first_name',
-                        },
-                        {
-                          from: 'lastName',
-                          to: 'last_name',
-                        },
+                        { from: 'firstName', to: 'first_name' },
+                        { from: 'lastName', to: 'last_name' },
                       ],
                     },
                   ],
                   eventFilteringOption: 'disable',
-                  blacklistedEvents: [
-                    {
-                      eventName: '',
-                    },
-                  ],
-                  whitelistedEvents: [
-                    {
-                      eventName: '',
-                    },
-                  ],
+                  blacklistedEvents: [{ eventName: '' }],
+                  whitelistedEvents: [{ eventName: '' }],
                 },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
@@ -1898,42 +1444,24 @@ export const data = [
                     firstname: 'Test Hubspot44',
                     anonymousId: '4444',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-GB',
                   ip: '0.0.0.0',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
-                  page: {
-                    path: '',
-                    referrer: '',
-                    search: '',
-                    title: '',
-                    url: '',
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
+                  page: { path: '', referrer: '', search: '', title: '', url: '' },
                 },
                 type: 'identify',
                 messageId: '50360b9c-ea8d-409c-b672-c9230f91cce5',
                 originalTimestamp: '2019-10-15T09:35:31.288Z',
                 anonymousId: '00000000000000000000000000',
                 userId: '12345',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
-              metadata: {
-                jobId: 5,
-              },
+              metadata: { jobId: 5, userId: 'u1' },
               destination: {
                 Config: {
                   authorizationType: 'newPrivateAppApi',
@@ -1947,42 +1475,22 @@ export const data = [
                       rsEventName: 'Purchase',
                       hubspotEventName: 'pedummy-hubId_rs_hub_test',
                       eventProperties: [
-                        {
-                          from: 'Revenue',
-                          to: 'value',
-                        },
-                        {
-                          from: 'Price',
-                          to: 'cost',
-                        },
+                        { from: 'Revenue', to: 'value' },
+                        { from: 'Price', to: 'cost' },
                       ],
                     },
                     {
                       rsEventName: 'Order Complete',
                       hubspotEventName: 'pedummy-hubId_rs_hub_chair',
                       eventProperties: [
-                        {
-                          from: 'firstName',
-                          to: 'first_name',
-                        },
-                        {
-                          from: 'lastName',
-                          to: 'last_name',
-                        },
+                        { from: 'firstName', to: 'first_name' },
+                        { from: 'lastName', to: 'last_name' },
                       ],
                     },
                   ],
                   eventFilteringOption: 'disable',
-                  blacklistedEvents: [
-                    {
-                      eventName: '',
-                    },
-                  ],
-                  whitelistedEvents: [
-                    {
-                      eventName: '',
-                    },
-                  ],
+                  blacklistedEvents: [{ eventName: '' }],
+                  whitelistedEvents: [{ eventName: '' }],
                 },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
@@ -2029,17 +1537,9 @@ export const data = [
                 body: {
                   JSON: {
                     inputs: [
+                      { properties: { email: 'noname@email.com', firstname: 'Test Hubspot44' } },
                       {
-                        properties: {
-                          email: 'noname@email.com',
-                          firstname: 'Test Hubspot44',
-                        },
-                      },
-                      {
-                        properties: {
-                          email: 'testhubspot@email.com',
-                          firstname: 'Test Hubspot44',
-                        },
+                        properties: { email: 'testhubspot@email.com', firstname: 'Test Hubspot44' },
                       },
                     ],
                   },
@@ -2050,18 +1550,10 @@ export const data = [
                 files: {},
               },
               metadata: [
-                {
-                  jobId: 1,
-                },
-                {
-                  jobId: 2,
-                },
-                {
-                  jobId: 4,
-                },
-                {
-                  jobId: 5,
-                },
+                { jobId: 1, userId: 'u1' },
+                { jobId: 2, userId: 'u1' },
+                { jobId: 4, userId: 'u1' },
+                { jobId: 5, userId: 'u1' },
               ],
               batched: true,
               statusCode: 200,
@@ -2078,42 +1570,22 @@ export const data = [
                       rsEventName: 'Purchase',
                       hubspotEventName: 'pedummy-hubId_rs_hub_test',
                       eventProperties: [
-                        {
-                          from: 'Revenue',
-                          to: 'value',
-                        },
-                        {
-                          from: 'Price',
-                          to: 'cost',
-                        },
+                        { from: 'Revenue', to: 'value' },
+                        { from: 'Price', to: 'cost' },
                       ],
                     },
                     {
                       rsEventName: 'Order Complete',
                       hubspotEventName: 'pedummy-hubId_rs_hub_chair',
                       eventProperties: [
-                        {
-                          from: 'firstName',
-                          to: 'first_name',
-                        },
-                        {
-                          from: 'lastName',
-                          to: 'last_name',
-                        },
+                        { from: 'firstName', to: 'first_name' },
+                        { from: 'lastName', to: 'last_name' },
                       ],
                     },
                   ],
                   eventFilteringOption: 'disable',
-                  blacklistedEvents: [
-                    {
-                      eventName: '',
-                    },
-                  ],
-                  whitelistedEvents: [
-                    {
-                      eventName: '',
-                    },
-                  ],
+                  blacklistedEvents: [{ eventName: '' }],
+                  whitelistedEvents: [{ eventName: '' }],
                 },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
@@ -2150,9 +1622,7 @@ export const data = [
                   JSON: {
                     email: 'osvaldocostaferreira98@gmail.com',
                     eventName: 'pedummy-hubId_rs_hub_test',
-                    properties: {
-                      value: 'name1',
-                    },
+                    properties: { value: 'name1' },
                   },
                   JSON_ARRAY: {},
                   XML: {},
@@ -2160,11 +1630,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 3,
-                },
-              ],
+              metadata: [{ jobId: 3, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -2180,42 +1646,22 @@ export const data = [
                       rsEventName: 'Purchase',
                       hubspotEventName: 'pedummy-hubId_rs_hub_test',
                       eventProperties: [
-                        {
-                          from: 'Revenue',
-                          to: 'value',
-                        },
-                        {
-                          from: 'Price',
-                          to: 'cost',
-                        },
+                        { from: 'Revenue', to: 'value' },
+                        { from: 'Price', to: 'cost' },
                       ],
                     },
                     {
                       rsEventName: 'Order Complete',
                       hubspotEventName: 'pedummy-hubId_rs_hub_chair',
                       eventProperties: [
-                        {
-                          from: 'firstName',
-                          to: 'first_name',
-                        },
-                        {
-                          from: 'lastName',
-                          to: 'last_name',
-                        },
+                        { from: 'firstName', to: 'first_name' },
+                        { from: 'lastName', to: 'last_name' },
                       ],
                     },
                   ],
                   eventFilteringOption: 'disable',
-                  blacklistedEvents: [
-                    {
-                      eventName: '',
-                    },
-                  ],
-                  whitelistedEvents: [
-                    {
-                      eventName: '',
-                    },
-                  ],
+                  blacklistedEvents: [{ eventName: '' }],
+                  whitelistedEvents: [{ eventName: '' }],
                 },
                 secretConfig: {},
                 ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',

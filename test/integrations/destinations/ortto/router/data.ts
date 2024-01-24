@@ -55,7 +55,7 @@ export const data = [
                 Enabled: true,
                 Transformations: [],
               },
-              metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 1 },
+              metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 1, userId: 'u1' },
               message: {
                 anonymousId: '8d872292709c6fbe',
                 channel: 'mobile',
@@ -176,7 +176,7 @@ export const data = [
                 Enabled: true,
                 Transformations: [],
               },
-              metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 2 },
+              metadata: { destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq', jobId: 2, userId: 'u1' },
               message: {
                 anonymousId: '8d872292709c6fbe',
                 channel: 'mobile',
@@ -327,6 +327,7 @@ export const data = [
                 {
                   destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                   jobId: 1,
+                  userId: 'u1',
                 },
               ],
               batched: true,
@@ -438,6 +439,7 @@ export const data = [
                 {
                   destintionId: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
                   jobId: 2,
+                  userId: 'u1',
                 },
               ],
               batched: true,

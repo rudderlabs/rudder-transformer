@@ -1,5 +1,5 @@
 const {
-  extractUniqueValues,
+  extractIDsForSearchAPI,
   validatePayloadDataTypes,
   getObjectAndIdentifierType,
 } = require('./util');
@@ -184,7 +184,7 @@ describe('extractUniqueValues utility test cases', () => {
       },
     ];
 
-    const result = extractUniqueValues(inputs);
+    const result = extractIDsForSearchAPI(inputs);
 
     expect(result).toEqual([
       'testhubspot2@email.com',
@@ -196,7 +196,7 @@ describe('extractUniqueValues utility test cases', () => {
 
   it('Should return an empty array when the input is empty', () => {
     const inputs = [];
-    const result = extractUniqueValues(inputs);
+    const result = extractIDsForSearchAPI(inputs);
     expect(result).toEqual([]);
   });
 });

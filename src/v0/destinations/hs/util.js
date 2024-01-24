@@ -487,7 +487,7 @@ const getObjectAndIdentifierType = (firstMessage) => {
  * @param {*} inputs
  * @returns
  */
-const extractUniqueValues = (inputs) => {
+const extractIDsForSearchAPI = (inputs) => {
   const values = inputs.map((input) => {
     const { message } = input;
     const { destinationExternalId } = getDestinationExternalIDInfoForRetl(message, DESTINATION);
@@ -503,13 +503,28 @@ const extractUniqueValues = (inputs) => {
  * @param {*} requestOptions
  * @param {*} objectType
  * @param {*} identifierType
- * @param {*} Config
+ * @param {*} destination
  * @returns
  */
-const performHubSpotSearch = async (rqdata, requestOptions, objectType, identifierType, Config) => {
+const performHubSpotSearch = async (
+  rqdata,
+  requestOptions,
+  objectType,
+  identifierType,
+  destination,
+) => {
   let checkAfter = 1;
   const searchResults = [];
   const requestData = rqdata;
+  const { Config } = destination;
+
+  const endpoint = IDENTIFY_CRM_SEARCH_ALL_OBJECTS.replace(':objectType', objectType);
+  const endpointPath = `objects/:objectType/search`;
+
+  const url =
+    Config.authorizationType === 'newPrivateAppApi'
+      ? endpoint
+      : `${endpoint}?hapikey=${Config.apiKey}`;
 
   /* *
    * This is needed for processing paginated response when searching hubspot.
@@ -517,13 +532,6 @@ const performHubSpotSearch = async (rqdata, requestOptions, objectType, identifi
    * */
 
   while (checkAfter) {
-    const endpoint = IDENTIFY_CRM_SEARCH_ALL_OBJECTS.replace(':objectType', objectType);
-    const endpointPath = `objects/:objectType/search`;
-
-    const url =
-      Config.authorizationType === 'newPrivateAppApi'
-        ? endpoint
-        : `${endpoint}?hapikey=${Config.apiKey}`;
     const searchResponse =
       Config.authorizationType === 'newPrivateAppApi'
         ? await httpPOST(url, requestData, requestOptions, {
@@ -572,7 +580,7 @@ const performHubSpotSearch = async (rqdata, requestOptions, objectType, identifi
  * @param {*} inputs
  * @param {*} destination
  */
-const getExistingData = async (inputs, destination) => {
+const getExistingContactsData = async (inputs, destination) => {
   const { Config } = destination;
   const updateHubspotIds = [];
   const firstMessage = inputs[0].message;
@@ -583,7 +591,7 @@ const getExistingData = async (inputs, destination) => {
 
   const { objectType, identifierType } = getObjectAndIdentifierType(firstMessage);
 
-  const values = extractUniqueValues(inputs);
+  const values = extractIDsForSearchAPI(inputs);
   const valuesChunk = lodash.chunk(values, MAX_CONTACTS_PER_REQUEST);
 
   // eslint-disable-next-line no-restricted-syntax
@@ -616,7 +624,7 @@ const getExistingData = async (inputs, destination) => {
       requestOptions,
       objectType,
       identifierType,
-      Config,
+      destination,
     );
     if (searchResults.length > 0) {
       updateHubspotIds.push(...searchResults);
@@ -652,7 +660,7 @@ const setHsSearchId = (input, id) => {
 
 const splitEventsForCreateUpdate = async (inputs, destination) => {
   // get all the id and properties of already existing objects needed for update.
-  const updateHubspotIds = await getExistingData(inputs, destination);
+  const updateHubspotIds = await getExistingContactsData(inputs, destination);
 
   const resultInput = inputs.map((input) => {
     const { message } = input;
@@ -732,5 +740,5 @@ module.exports = {
   getUTCMidnightTimeStampValue,
   populateTraits,
   getObjectAndIdentifierType,
-  extractUniqueValues,
+  extractIDsForSearchAPI,
 };

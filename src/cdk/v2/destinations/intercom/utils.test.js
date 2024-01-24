@@ -1,3 +1,4 @@
+const md5 = require('md5');
 const axios = require('axios');
 const {
   getName,
@@ -5,9 +6,12 @@ const {
   searchContact,
   getLookUpField,
   getBaseEndpoint,
+  getCompaniesList,
   addMetadataToPayload,
+  attachUserAndCompany,
   createOrUpdateCompany,
   filterCustomAttributes,
+  checkIfEmailOrUserIdPresent,
   separateReservedAndRestMetadata,
 } = require('./utils');
 const { BASE_ENDPOINT, BASE_EU_ENDPOINT, BASE_AU_ENDPOINT } = require('./config');
@@ -305,22 +309,22 @@ describe('getName utility test', () => {
 describe('filterCustomAttributes utility test', () => {
   it('Should return an empty object when all custom attributes are reserved attributes', () => {
     const payload = { custom_attributes: { email: 'test@rudder.com', name: 'rudder test' } };
-    const result = filterCustomAttributes(payload, 'user');
-    expect(result).toEqual({});
+    const result = filterCustomAttributes(payload, 'user', { Config: { apiVersion: 'latest' } });
+    expect(result).toBeUndefined();
   });
 
   it('Should return a flattened object when custom attributes are not null, not reserved attributes and nested', () => {
     const payload = {
       custom_attributes: { source: 'rudder-js-sdk', data: { nestedAttribute: 'nestedValue' } },
     };
-    const result = filterCustomAttributes(payload, 'user');
+    const result = filterCustomAttributes(payload, 'user', { Config: { apiVersion: 'latest' } });
     expect(result).toEqual({ source: 'rudder-js-sdk', data_nestedAttribute: 'nestedValue' });
   });
 
   it('Should return null when custom_attributes is null', () => {
     const payload = { custom_attributes: null };
-    const result = filterCustomAttributes(payload, 'company');
-    expect(result).toBeNull();
+    const result = filterCustomAttributes(payload, 'company', { Config: { apiVersion: 'latest' } });
+    expect(result).toBeUndefined();
   });
 });
 
@@ -584,5 +588,176 @@ describe('createOrUpdateCompany utility test', () => {
         'Unable to Create or Update Company due to : [{"code":"unauthorized","message":"Access Token Invalid"}]',
       );
     }
+  });
+});
+
+describe('checkIfEmailOrUserIdPresent utility test', () => {
+  it('Should return true when userId is present in message', () => {
+    const message = {
+      userId: '12345',
+      context: {
+        traits: {
+          email: 'test@example.com',
+        },
+      },
+    };
+    const Config = {
+      sendAnonymousId: true,
+      apiKey: '1234567890',
+    };
+    const result = checkIfEmailOrUserIdPresent(message, Config);
+    expect(result).toBe(true);
+  });
+
+  it('Should return true when email is present in message', () => {
+    const message = {
+      context: {
+        traits: {
+          email: 'test@example.com',
+        },
+      },
+    };
+    const Config = {
+      sendAnonymousId: true,
+      apiKey: '1234567890',
+    };
+    const result = checkIfEmailOrUserIdPresent(message, Config);
+    expect(result).toBe(true);
+  });
+
+  it('Should return true when both userId and email are present in message', () => {
+    const message = {
+      userId: '12345',
+      context: {
+        traits: {
+          email: 'test@example.com',
+        },
+      },
+    };
+    const Config = {
+      sendAnonymousId: true,
+      apiKey: '1234567890',
+    };
+    const result = checkIfEmailOrUserIdPresent(message, Config);
+    expect(result).toBe(true);
+  });
+
+  it('Should return false when no email or userId is present', () => {
+    const message = { anonymousId: 'anon@123' };
+    const Config = {
+      sendAnonymousId: false,
+      apiKey: '1234567890',
+    };
+    const result = checkIfEmailOrUserIdPresent(message, Config);
+    expect(result).toBe(false);
+  });
+});
+
+describe('getCompaniesList utility test', () => {
+  it('Should return an array with one object containing the company_id, custom_attributes, name and industry properties when the payload contains a company object with name or id properties', () => {
+    const payload = {
+      custom_attributes: {
+        company: {
+          name: 'rudderlabs',
+          industry: 'Tech',
+        },
+      },
+    };
+
+    const result = getCompaniesList(payload);
+
+    expect(result).toEqual([
+      {
+        company_id: md5('rudderlabs'),
+        custom_attributes: {},
+        name: 'rudderlabs',
+        industry: 'Tech',
+      },
+    ]);
+  });
+
+  it('Should return undefined when the payload does not contain a company object', () => {
+    const payload = {};
+    const result = getCompaniesList(payload);
+    expect(result).toBeUndefined();
+  });
+
+  it('Should return an empty array when the company object in the payload does not have name or id properties', () => {
+    const payload = {
+      custom_attributes: {
+        company: {},
+      },
+    };
+    const result = getCompaniesList(payload);
+    expect(result).toEqual([]);
+  });
+
+  it('Should return an array with one object containing the company_id, custom_attributes, name and industry properties when the payload contains a company object with name and id properties', () => {
+    const payload = {
+      custom_attributes: {
+        company: {
+          name: 'Company A',
+          id: '123',
+          industry: 'Tech',
+        },
+      },
+    };
+    const result = getCompaniesList(payload);
+    expect(result).toEqual([
+      {
+        company_id: '123',
+        custom_attributes: {},
+        name: 'Company A',
+        industry: 'Tech',
+      },
+    ]);
+  });
+});
+
+describe('attachUserAndCompany utility test', () => {
+  it('should return a valid response object when only email and groupId are present', () => {
+    const message = {
+      context: {
+        traits: {
+          email: 'test@example.com',
+        },
+      },
+      groupId: 'group123',
+    };
+    const Config = {
+      sendAnonymousId: false,
+      apiKey: 'testApiKey',
+    };
+
+    const expectedResponse = {
+      method: 'POST',
+      params: {},
+      type: 'REST',
+      version: '1',
+      endpoint: 'https://api.intercom.io/users',
+      files: {},
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer testApiKey',
+        Accept: 'application/json',
+        'Intercom-Version': '1.4',
+      },
+      body: {
+        FORM: {},
+        JSON: {
+          email: 'test@example.com',
+          companies: [
+            {
+              company_id: 'group123',
+            },
+          ],
+        },
+        JSON_ARRAY: {},
+        XML: {},
+      },
+      userId: undefined,
+    };
+    const response = attachUserAndCompany(message, Config);
+    expect(response).toEqual(expectedResponse);
   });
 });

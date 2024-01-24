@@ -1,3 +1,5 @@
+const md5 = require('md5');
+const get = require('get-value');
 const { NetworkError } = require('@rudderstack/integrations-lib');
 const tags = require('../../../../v0/util/tags');
 const { httpPOST } = require('../../../../adapters/network');
@@ -10,7 +12,9 @@ const {
   getIntegrationsObj,
   isDefinedAndNotNull,
   isHttpStatusSuccess,
+  defaultRequestConfig,
   getFieldValueFromMessage,
+  defaultPostRequestConfig,
   removeUndefinedAndNullValues,
 } = require('../../../../v0/util');
 const { JSON_MIME_TYPE } = require('../../../../v0/util/constant');
@@ -19,9 +23,9 @@ const {
   MetadataTypes,
   BASE_EU_ENDPOINT,
   BASE_AU_ENDPOINT,
-  ReservedUserAttributes,
+  ReservedAttributes,
   SEARCH_CONTACT_ENDPOINT,
-  ReservedCompanyAttributes,
+  ReservedCompanyProperties,
   CREATE_OR_UPDATE_COMPANY_ENDPOINT,
 } = require('./config');
 
@@ -34,7 +38,7 @@ const getHeaders = (destination) => ({
   'Content-Type': JSON_MIME_TYPE,
   Authorization: `Bearer ${destination.Config.apiKey}`,
   Accept: JSON_MIME_TYPE,
-  'Intercom-Version': '2.10',
+  'Intercom-Version': destination.Config.apiVersion === '1.4' ? '1.4' : '2.10',
 });
 
 /**
@@ -43,8 +47,9 @@ const getHeaders = (destination) => ({
  * @returns
  */
 const getBaseEndpoint = (destination) => {
-  const { apiServer } = destination.Config;
+  const { apiServer, apiVersion } = destination.Config;
 
+  if (apiVersion === '1.4') return BASE_ENDPOINT;
   switch (apiServer) {
     case 'eu':
       return BASE_EU_ENDPOINT;
@@ -90,24 +95,126 @@ const getName = (message) => {
 };
 
 /**
+ * Returns company payload
+ * @param {*} payload
+ * @returns
+ */
+const getCompaniesList = (payload) => {
+  const company = get(payload, 'custom_attributes.company');
+  if (!company) return undefined;
+  const companiesList = [];
+  if (company.name || company.id) {
+    const customAttributes = {};
+    Object.keys(company).forEach((key) => {
+      // If key is not in ReservedCompanyProperties
+      if (!ReservedCompanyProperties.includes(key)) {
+        const val = company[key];
+        if (val !== Object(val)) {
+          customAttributes[key] = val;
+        } else {
+          customAttributes[key] = JSON.stringify(val);
+        }
+      }
+    });
+
+    companiesList.push({
+      company_id: company.id || md5(company.name),
+      custom_attributes: removeUndefinedAndNullValues(customAttributes),
+      name: company.name,
+      industry: company.industry,
+    });
+  }
+  return companiesList;
+};
+
+/**
+ * Returns if email or userId is present in payload or not
+ * @param {*} message
+ * @param {*} Config
+ * @returns
+ */
+const checkIfEmailOrUserIdPresent = (message, Config) => {
+  const { context, anonymousId } = message;
+  let { userId } = message;
+  if (Config.sendAnonymousId && !userId) {
+    userId = anonymousId;
+  }
+  return !!(userId || context?.traits?.email);
+};
+
+/**
+ * Returns add user to company payload
+ * @param {*} message
+ * @param {*} Config
+ * @returns
+ */
+const attachUserAndCompany = (message, Config) => {
+  if (!checkIfEmailOrUserIdPresent(message, Config)) return undefined;
+  const email = message.context?.traits?.email;
+  const { userId, anonymousId, traits, groupId } = message;
+  const requestBody = {};
+  if (userId) {
+    requestBody.user_id = userId;
+  }
+  if (Config.sendAnonymousId && !userId) {
+    requestBody.user_id = anonymousId;
+  }
+  if (email) {
+    requestBody.email = email;
+  }
+  const companyObj = {
+    company_id: groupId,
+  };
+  if (traits?.name) {
+    companyObj.name = traits.name;
+  }
+  requestBody.companies = [companyObj];
+  const response = defaultRequestConfig();
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.endpoint = `${BASE_ENDPOINT}/users`;
+  response.headers = {
+    'Content-Type': JSON_MIME_TYPE,
+    Authorization: `Bearer ${Config.apiKey}`,
+    Accept: JSON_MIME_TYPE,
+    'Intercom-Version': '1.4',
+  };
+  response.body.JSON = requestBody;
+  response.userId = anonymousId;
+  return response;
+};
+
+/**
  * Returns custom attributes for identify and group calls (for contact and company in intercom)
  * @param {*} payload
  * @param {*} type
  * @returns
  */
-const filterCustomAttributes = (payload, type) => {
-  const ReservedAttributes = type === 'user' ? ReservedUserAttributes : ReservedCompanyAttributes;
-  let { custom_attributes: customAttributes } = payload;
+const filterCustomAttributes = (payload, type, destination) => {
+  let ReservedAttributesList;
+  if (type === 'user') {
+    ReservedAttributesList =
+      destination.Config.apiVersion === '1.4'
+        ? ReservedAttributes.oldVersionUserAttributes
+        : ReservedAttributes.newVersionUserAttributes;
+  } else {
+    ReservedAttributesList =
+      destination.Config.apiVersion === '1.4'
+        ? ReservedAttributes.oldVersionCompanyAttributes
+        : ReservedAttributes.newVersionCompanyAttributes;
+  }
+  let customAttributes = { ...get(payload, 'custom_attributes') };
   if (customAttributes) {
-    ReservedAttributes.forEach((trait) => {
+    ReservedAttributesList.forEach((trait) => {
       if (customAttributes[trait]) delete customAttributes[trait];
     });
-
     if (isDefinedAndNotNull(customAttributes) && Object.keys(customAttributes).length > 0) {
-      customAttributes = flattenJson(customAttributes, '_');
+      customAttributes =
+        destination.Config.apiVersion === 'latest'
+          ? flattenJson(customAttributes, '_')
+          : flattenJson(customAttributes);
     }
   }
-  return customAttributes;
+  return Object.keys(customAttributes).length === 0 ? undefined : customAttributes;
 };
 
 /**
@@ -247,8 +354,11 @@ module.exports = {
   searchContact,
   getLookUpField,
   getBaseEndpoint,
+  getCompaniesList,
   addMetadataToPayload,
+  attachUserAndCompany,
   createOrUpdateCompany,
   filterCustomAttributes,
+  checkIfEmailOrUserIdPresent,
   separateReservedAndRestMetadata,
 };

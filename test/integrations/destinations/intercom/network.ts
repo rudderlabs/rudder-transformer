@@ -317,7 +317,6 @@ const deleteNwData = [
         plan: 'enterprise',
         size: 500,
         industry: 'CDP',
-        custom_attributes: {},
       },
       headers: {
         Accept: 'application/json',

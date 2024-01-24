@@ -37,6 +37,7 @@ export const data = [
                 Config: {
                   apiKey: 'testApiKey',
                   apiServer: 'standard',
+                  apiVersion: 'latest',
                   sendAnonymousId: false,
                   updateLastRequestAt: true,
                 },
@@ -84,6 +85,7 @@ export const data = [
                 Config: {
                   apiKey: 'testApiKey',
                   apiServer: 'standard',
+                  apiVersion: 'latest',
                   sendAnonymousId: false,
                   updateLastRequestAt: false,
                 },
@@ -125,6 +127,7 @@ export const data = [
                 },
                 Config: {
                   apiKey: 'testApiKey',
+                  apiVersion: 'latest',
                   apiServer: 'standard',
                   sendAnonymousId: false,
                 },
@@ -167,6 +170,7 @@ export const data = [
                 },
                 Config: {
                   apiKey: 'testApiKey',
+                  apiVersion: 'latest',
                   apiServer: 'standard',
                   sendAnonymousId: false,
                 },
@@ -193,7 +197,6 @@ export const data = [
                   JSON: {
                     email: 'test@rudderlabs.com',
                     external_id: 'user@1',
-                    last_seen_at: 1700628164,
                     name: 'Test Rudderlabs',
                     owner_id: 13,
                     phone: '+91 9999999999',
@@ -223,6 +226,7 @@ export const data = [
                 Config: {
                   apiKey: 'testApiKey',
                   apiServer: 'standard',
+                  apiVersion: 'latest',
                   sendAnonymousId: false,
                   updateLastRequestAt: true,
                 },
@@ -281,6 +285,7 @@ export const data = [
                 Config: {
                   apiKey: 'testApiKey',
                   apiServer: 'standard',
+                  apiVersion: 'latest',
                   sendAnonymousId: false,
                   updateLastRequestAt: false,
                 },
@@ -325,6 +330,7 @@ export const data = [
                 Config: {
                   apiKey: 'testApiKey',
                   apiServer: 'standard',
+                  apiVersion: 'latest',
                   sendAnonymousId: false,
                 },
                 DestinationDefinition: {
@@ -356,6 +362,7 @@ export const data = [
                 Config: {
                   apiKey: 'testApiKey',
                   apiServer: 'standard',
+                  apiVersion: 'latest',
                   sendAnonymousId: false,
                 },
                 DestinationDefinition: {

@@ -17,28 +17,13 @@ export const data = [
                   ID: '1ZQUiJVMlmF7lfsdfXg7KXQnlLV',
                   Name: 'SLACK',
                   DisplayName: 'Slack',
-                  Config: {
-                    excludeKeys: [],
-                    includeKeys: [],
-                  },
+                  Config: { excludeKeys: [], includeKeys: [] },
                 },
                 Config: {
                   eventChannelSettings: [
-                    {
-                      eventChannel: '#slack_integration',
-                      eventName: 'is',
-                      eventRegex: true,
-                    },
-                    {
-                      eventChannel: '',
-                      eventName: '',
-                      eventRegex: false,
-                    },
-                    {
-                      eventChannel: '',
-                      eventName: '',
-                      eventRegex: false,
-                    },
+                    { eventChannel: '#slack_integration', eventName: 'is', eventRegex: true },
+                    { eventChannel: '', eventName: '', eventRegex: false },
+                    { eventChannel: '', eventName: '', eventRegex: false },
                   ],
                   eventTemplateSettings: [
                     {
@@ -47,22 +32,11 @@ export const data = [
                       eventTemplate:
                         '{{name}} performed {{event}} with {{properties.key1}} {{properties.key2}}',
                     },
-                    {
-                      eventName: '',
-                      eventRegex: false,
-                      eventTemplate: '',
-                    },
+                    { eventName: '', eventRegex: false, eventTemplate: '' },
                   ],
                   identifyTemplate: 'identified {{name}} with {{traits}}',
                   webhookUrl: 'https://hooks.slack.com/services/THZM86VSS/BV9HZ2UN6/demo',
-                  whitelistedTraitsSettings: [
-                    {
-                      trait: 'hiji',
-                    },
-                    {
-                      trait: '',
-                    },
-                  ],
+                  whitelistedTraitsSettings: [{ trait: 'hiji' }, { trait: '' }],
                 },
                 Enabled: true,
                 Transformations: [],
@@ -78,15 +52,9 @@ export const data = [
                     namespace: 'com.rudderlabs.javascript',
                     version: '1.1.1-rc.1',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.1.1-rc.1',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.1.1-rc.1' },
                   locale: 'en-US',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   page: {
                     path: '/tests/html/script-test.html',
                     referrer: 'http://localhost:1111/tests/html/',
@@ -94,9 +62,7 @@ export const data = [
                     title: '',
                     url: 'http://localhost:1111/tests/html/script-test.html',
                   },
-                  screen: {
-                    density: 1.7999999523162842,
-                  },
+                  screen: { density: 1.7999999523162842 },
                   traits: {
                     country: 'India',
                     email: 'name@domain.com',
@@ -106,9 +72,7 @@ export const data = [
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36',
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 messageId: '9ecc0183-89ed-48bd-87eb-b2d8e1ca6780',
                 originalTimestamp: '2020-03-23T03:46:30.916Z',
                 properties: {
@@ -132,6 +96,7 @@ export const data = [
                 jobId: 126,
                 messageId: '9ecc0183-89ed-48bd-87eb-b2d8e1ca6780',
                 sourceId: '1YhwKyDcKstudlGxkeN5p2wgsrp',
+                userId: 'u1',
               },
             },
           ],
@@ -187,6 +152,7 @@ export const data = [
                   jobId: 126,
                   messageId: '9ecc0183-89ed-48bd-87eb-b2d8e1ca6780',
                   sourceId: '1YhwKyDcKstudlGxkeN5p2wgsrp',
+                  userId: 'u1',
                 },
               ],
               statTags: {
@@ -223,28 +189,13 @@ export const data = [
                   ID: '1ZQUiJVMlmF7lfsdfXg7KXQnlLV',
                   Name: 'SLACK',
                   DisplayName: 'Slack',
-                  Config: {
-                    excludeKeys: [],
-                    includeKeys: [],
-                  },
+                  Config: { excludeKeys: [], includeKeys: [] },
                 },
                 Config: {
                   eventChannelSettings: [
-                    {
-                      eventChannel: '#slack_integration',
-                      eventName: 'is',
-                      eventRegex: true,
-                    },
-                    {
-                      eventChannel: '',
-                      eventName: '',
-                      eventRegex: false,
-                    },
-                    {
-                      eventChannel: '',
-                      eventName: '',
-                      eventRegex: false,
-                    },
+                    { eventChannel: '#slack_integration', eventName: 'is', eventRegex: true },
+                    { eventChannel: '', eventName: '', eventRegex: false },
+                    { eventChannel: '', eventName: '', eventRegex: false },
                   ],
                   eventTemplateSettings: [
                     {
@@ -253,22 +204,11 @@ export const data = [
                       eventTemplate:
                         '{{name}} performed {{event}} with {{properties.key1}} {{properties.key2}}',
                     },
-                    {
-                      eventName: '',
-                      eventRegex: false,
-                      eventTemplate: '',
-                    },
+                    { eventName: '', eventRegex: false, eventTemplate: '' },
                   ],
                   identifyTemplate: 'identified {{name}} with {{traits}}',
                   webhookUrl: 'https://hooks.slack.com/services/THZM86VSS/BV9HZ2UN6/demo',
-                  whitelistedTraitsSettings: [
-                    {
-                      trait: 'hiji',
-                    },
-                    {
-                      trait: '',
-                    },
-                  ],
+                  whitelistedTraitsSettings: [{ trait: 'hiji' }, { trait: '' }],
                 },
                 Enabled: true,
                 Transformations: [],
@@ -284,25 +224,11 @@ export const data = [
                     namespace: 'com.rudderlabs.javascript',
                     version: '1.1.1-rc.1',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.1.1-rc.1',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.1.1-rc.1' },
                   locale: 'en-US',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  page: {
-                    path: '',
-                    referrer: '',
-                    search: '',
-                    title: '',
-                    url: '',
-                  },
-                  screen: {
-                    density: 1.7999999523162842,
-                  },
+                  os: { name: '', version: '' },
+                  page: { path: '', referrer: '', search: '', title: '', url: '' },
+                  screen: { density: 1.7999999523162842 },
                   traits: {
                     country: 'India',
                     email: 'name@domain.com',
@@ -318,9 +244,7 @@ export const data = [
                   hiji: 'hulala-1',
                   name: 'my-name-1',
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 messageId: '4aaecff2-a513-4bbf-9824-c471f4ac9777',
                 originalTimestamp: '2020-03-23T03:41:46.122Z',
                 receivedAt: '2020-03-23T09:11:46.244+05:30',
@@ -337,6 +261,7 @@ export const data = [
                 jobId: 123,
                 messageId: '4aaecff2-a513-4bbf-9824-c471f4ac9777',
                 sourceId: '1YhwKyDcKstudlGxkeN5p2wgsrp',
+                userId: 'u1',
               },
             },
           ],
@@ -413,6 +338,7 @@ export const data = [
                   jobId: 123,
                   messageId: '4aaecff2-a513-4bbf-9824-c471f4ac9777',
                   sourceId: '1YhwKyDcKstudlGxkeN5p2wgsrp',
+                  userId: 'u1',
                 },
               ],
               statusCode: 200,

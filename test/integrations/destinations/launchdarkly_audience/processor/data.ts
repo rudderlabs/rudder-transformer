@@ -215,6 +215,74 @@ export const data = [
   },
   {
     name: 'launchdarkly_audience',
+    description: 'List data is empty',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              userId: 'user123',
+              type: 'audiencelist',
+              properties: {
+                listData: {},
+              },
+              context: {
+                ip: '14.5.67.21',
+                library: {
+                  name: 'http',
+                },
+              },
+              timestamp: '2020-02-02T00:23:09.544Z',
+            },
+            destination: {
+              Config: {
+                audienceId: 'test-audienceId',
+                audienceName: 'test-audienceName',
+                accessToken: 'test-accessToken',
+                clientSideId: 'test-clientSideId',
+              },
+              DestinationDefinition: { Config: { cdkV2Enabled: true } },
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            statusCode: 400,
+            error:
+              '`listData` is empty. Aborting message.: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: `listData` is empty. Aborting message.',
+            statTags: {
+              destType: 'LAUNCHDARKLY_AUDIENCE',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'cdkV2',
+              module: 'destination',
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'launchdarkly_audience',
     description: 'Unsupported action type',
     feature: 'processor',
     module: 'destination',

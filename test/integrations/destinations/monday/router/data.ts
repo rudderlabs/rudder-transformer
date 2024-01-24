@@ -20,23 +20,16 @@ export const data = [
                   whitelistedEvents: [{ eventName: 'create an item' }],
                 },
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               message: {
                 event: 'create an item',
                 type: 'track',
                 sentAt: '2021-01-03T17:02:53.195Z',
                 userId: 'user@27',
                 channel: 'web',
-                properties: {
-                  name: 'Task 1',
-                },
+                properties: { name: 'Task 1' },
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -44,13 +37,8 @@ export const data = [
                     namespace: 'com.rudderlabs.javascript',
                   },
                   locale: 'en-US',
-                  screen: {
-                    density: 2,
-                  },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.1.11',
-                  },
+                  screen: { density: 2 },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.1.11' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0',
@@ -69,18 +57,13 @@ export const data = [
                   boardId: '339283933',
                   groupTitle: 'Next month',
                   columnToPropertyMapping: [
-                    {
-                      from: 'Status',
-                      to: 'status',
-                    },
+                    { from: 'Status', to: 'status' },
                     { from: 'Email', to: 'emailId' },
                   ],
                   whitelistedEvents: [{ eventName: 'create an item' }],
                 },
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               message: {
                 event: 'create an item',
                 type: 'track',
@@ -94,10 +77,7 @@ export const data = [
                   emailText: 'emailId',
                 },
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -105,13 +85,8 @@ export const data = [
                     namespace: 'com.rudderlabs.javascript',
                   },
                   locale: 'en-US',
-                  screen: {
-                    density: 2,
-                  },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.1.11',
-                  },
+                  screen: { density: 2 },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.1.11' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0',
@@ -155,11 +130,7 @@ export const data = [
                 type: 'REST',
                 version: '1',
               },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -196,11 +167,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -210,10 +177,7 @@ export const data = [
                   boardId: '339283933',
                   groupTitle: 'Next month',
                   columnToPropertyMapping: [
-                    {
-                      from: 'Status',
-                      to: 'status',
-                    },
+                    { from: 'Status', to: 'status' },
                     { from: 'Email', to: 'emailId' },
                   ],
                   whitelistedEvents: [{ eventName: 'create an item' }],

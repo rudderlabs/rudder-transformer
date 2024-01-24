@@ -17,6 +17,7 @@ export const data = [
                   developer_token: 'ijkl91011',
                 },
                 jobId: 1,
+                userId: 'u1',
               },
               destination: {
                 Config: {
@@ -25,12 +26,8 @@ export const data = [
                   subAccount: true,
                   loginCustomerId: '11',
                   listOfConversions: [
-                    {
-                      conversions: 'Page View',
-                    },
-                    {
-                      conversions: 'Product Added',
-                    },
+                    { conversions: 'Page View' },
+                    { conversions: 'Product Added' },
                   ],
                   authStatus: 'active',
                 },
@@ -52,21 +49,13 @@ export const data = [
                     state: 'UK',
                     streetAddress: '71 Cherry Court SOUTHAMPTON SO53 5PD UK',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-US',
                   ip: '0.0.0.0',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                 },
                 event: 'Page View',
                 type: 'track',
@@ -110,9 +99,7 @@ export const data = [
                     },
                   ],
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 name: 'ApplicationLoaded',
                 sentAt: '2019-10-14T11:15:53.296Z',
               },
@@ -125,6 +112,7 @@ export const data = [
                   developer_token: 'ijkl91011',
                 },
                 jobId: 2,
+                userId: 'u1',
               },
               destination: {
                 Config: {
@@ -133,21 +121,15 @@ export const data = [
                   subAccount: true,
                   loginCustomerId: '',
                   listOfConversions: [
-                    {
-                      conversions: 'Page View',
-                    },
-                    {
-                      conversions: 'Product Added',
-                    },
+                    { conversions: 'Page View' },
+                    { conversions: 'Product Added' },
                   ],
                   authStatus: 'active',
                 },
               },
               message: {
                 type: 'identify',
-                traits: {
-                  status: 'elizabeth',
-                },
+                traits: { status: 'elizabeth' },
                 userId: 'emrichardson820+22822@gmail.com',
                 channel: 'sources',
                 context: {
@@ -174,10 +156,7 @@ export const data = [
               },
             },
             {
-              metadata: {
-                secret: {},
-                jobId: 3,
-              },
+              metadata: { secret: {}, jobId: 3, userId: 'u1' },
               destination: {
                 Config: {
                   rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
@@ -185,12 +164,8 @@ export const data = [
                   subAccount: true,
                   loginCustomerId: '11',
                   listOfConversions: [
-                    {
-                      conversions: 'Page View',
-                    },
-                    {
-                      conversions: 'Product Added',
-                    },
+                    { conversions: 'Page View' },
+                    { conversions: 'Product Added' },
                   ],
                   authStatus: 'active',
                 },
@@ -212,21 +187,13 @@ export const data = [
                     state: 'UK',
                     streetAddress: '71 Cherry Court SOUTHAMPTON SO53 5PD UK',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-US',
                   ip: '0.0.0.0',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                 },
                 event: 'Page View',
                 type: 'track',
@@ -270,9 +237,7 @@ export const data = [
                     },
                   ],
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 name: 'ApplicationLoaded',
                 sentAt: '2019-10-14T11:15:53.296Z',
               },
@@ -311,10 +276,7 @@ export const data = [
                           gclid: 'gclid1234',
                           conversionDateTime: '2022-01-01 12:32:45-08:00',
                         },
-                        restatementValue: {
-                          adjustedValue: 10,
-                          currencyCode: 'INR',
-                        },
+                        restatementValue: { adjustedValue: 10, currencyCode: 'INR' },
                         orderId: '10000',
                         adjustmentDateTime: '2022-01-01 12:32:45-08:00',
                         userAgent:
@@ -355,6 +317,7 @@ export const data = [
                     developer_token: 'ijkl91011',
                   },
                   jobId: 1,
+                  userId: 'u1',
                 },
               ],
               batched: false,
@@ -382,6 +345,7 @@ export const data = [
                     developer_token: 'ijkl91011',
                   },
                   jobId: 2,
+                  userId: 'u1',
                 },
               ],
               destination: {
@@ -391,12 +355,8 @@ export const data = [
                   subAccount: true,
                   loginCustomerId: '',
                   listOfConversions: [
-                    {
-                      conversions: 'Page View',
-                    },
-                    {
-                      conversions: 'Product Added',
-                    },
+                    { conversions: 'Page View' },
+                    { conversions: 'Product Added' },
                   ],
                   authStatus: 'active',
                 },
@@ -414,12 +374,7 @@ export const data = [
               },
             },
             {
-              metadata: [
-                {
-                  secret: {},
-                  jobId: 3,
-                },
-              ],
+              metadata: [{ secret: {}, jobId: 3, userId: 'u1' }],
               destination: {
                 Config: {
                   rudderAccountId: '25u5whFH7gVTnCiAjn4ykoCLGoC',
@@ -427,12 +382,8 @@ export const data = [
                   subAccount: true,
                   loginCustomerId: '11',
                   listOfConversions: [
-                    {
-                      conversions: 'Page View',
-                    },
-                    {
-                      conversions: 'Product Added',
-                    },
+                    { conversions: 'Page View' },
+                    { conversions: 'Product Added' },
                   ],
                   authStatus: 'active',
                 },

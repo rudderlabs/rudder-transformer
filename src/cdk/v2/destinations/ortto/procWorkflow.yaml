@@ -34,6 +34,7 @@ steps:
     description: |
       Builds common fields in destination payload.
     template: |
+      let phone = .message.().({{{{$.getGenericPaths("phone")}}}});
       let commonFields = .message.().({
         "fields": { 
           "str::first": {{{{$.getGenericPaths("firstName")}}}}, 
@@ -46,7 +47,7 @@ steps:
           "dtz::b": $.getBirthdayObj({{{{$.getGenericPaths("birthday")}}}}),
           "str::ei": {{{{$.getGenericPaths("userId")}}}},
           "str::language": .context.traits.language || .context.locale,
-          "phn::phone": {"n": {{{{$.getGenericPaths("phone")}}}}},
+          "phn::phone": phone ? {"n": phone},
           "bol::gdpr": .context.traits.gdpr ?? true,
           "bol::p": .context.traits.emailConsent || false,
           "bol::sp": .context.traits.smsConsent || false,

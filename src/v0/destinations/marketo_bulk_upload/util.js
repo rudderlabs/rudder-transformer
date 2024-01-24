@@ -19,12 +19,12 @@ const {
   FILE_UPLOAD_ERR_MSG,
   ACCESS_TOKEN_FETCH_ERR_MSG,
 } = require('./config');
-const Cache = require('../../util/cache');
+// const Cache = require('../../util/cache');
 const logger = require('../../../logger');
 
-const { AUTH_CACHE_TTL } = require('../../util/constant');
+// const { AUTH_CACHE_TTL } = require('../../util/constant');
 
-const authCache = new Cache(AUTH_CACHE_TTL);
+// const authCache = new Cache(AUTH_CACHE_TTL);
 
 const getMarketoFilePath = () =>
   `${__dirname}/uploadFile/${Date.now()}_marketo_bulk_upload_${generateUUID()}.csv`;
@@ -41,10 +41,10 @@ const hydrateStatusForServer = (statusCode, context) => {
   return status;
 };
 
-const getAccessTokenCacheKey = (config = {}) => {
-  const { munchkinId, clientId, clientSecret } = config;
-  return `${munchkinId}-${clientId}-${clientSecret}`;
-};
+// const getAccessTokenCacheKey = (config = {}) => {
+//   const { munchkinId, clientId, clientSecret } = config;
+//   return `${munchkinId}-${clientId}-${clientSecret}`;
+// };
 
 /**
  * Handles common error responses returned from API calls.
@@ -75,11 +75,11 @@ const getAccessTokenCacheKey = (config = {}) => {
  *   console.log(error);
  * }
  */
-const handleCommonErrorResponse = (apiCallResult, OpErrorMessage, OpActivity, config) => {
+const handleCommonErrorResponse = (apiCallResult, OpErrorMessage, OpActivity) => {
   // checking for invalid/expired token errors and evicting cache in that case
   // rudderJobMetadata contains some destination info which is being used to evict the cache
   if (
-    authCache &&
+    //  authCache &&
     apiCallResult.response?.errors &&
     apiCallResult.response?.errors?.length > 0 &&
     apiCallResult.response?.errors.some(
@@ -87,17 +87,17 @@ const handleCommonErrorResponse = (apiCallResult, OpErrorMessage, OpActivity, co
     )
   ) {
     // Special handling for 601 and 602 error codes for access token
-    authCache.del(getAccessTokenCacheKey(config));
-    if (apiCallResult.response?.errors.some((errorObj) => errorObj.code === '601')) {
-      throw new AbortedError(
-        `[${OpErrorMessage}]Error message: ${apiCallResult.response?.errors[0]?.message}`,
-      );
-    }
-    if (apiCallResult.response?.errors.some((errorObj) => errorObj.code === '602')) {
-      throw new RetryableError(
-        `[${OpErrorMessage}]Error message: ${apiCallResult.response?.errors[0]?.message}`,
-      );
-    }
+    // authCache.del(getAccessTokenCacheKey(config));
+    // if (apiCallResult.response?.errors.some((errorObj) => errorObj.code === '601')) {
+    // throw new AbortedError(
+    //   `[${OpErrorMessage}]Error message: ${apiCallResult.response?.errors[0]?.message}`,
+    // );
+    // }
+    // if (apiCallResult.response?.errors.some((errorObj) => errorObj.code === '602')) {
+    throw new RetryableError(
+      `[${OpErrorMessage}]Error message: ${apiCallResult.response?.errors[0]?.message}`,
+    );
+    // }
   }
   if (
     apiCallResult.response?.errors?.length > 0 &&
@@ -142,54 +142,97 @@ const getAccessTokenURL = (config) => {
 
 // Fetch access token from client id and client secret
 // DOC: https://developers.marketo.com/rest-api/authentication/
-const getAccessToken = async (config) =>
-  authCache.get(getAccessTokenCacheKey(config), async () => {
-    const url = getAccessTokenURL(config);
-    const { processedResponse: accessTokenResponse } = await handleHttpRequest('get', url, {
-      destType: 'marketo_bulk_upload',
-      feature: 'transformation',
-    });
+// const getAccessToken = async (config) =>
+//   authCache.get(getAccessTokenCacheKey(config), async () => {
+//     const url = getAccessTokenURL(config);
+//     const { processedResponse: accessTokenResponse } = await handleHttpRequest('get', url, {
+//       destType: 'marketo_bulk_upload',
+//       feature: 'transformation',
+//     });
 
-    // sample response : {response: '[ENOTFOUND] :: DNS lookup failed', status: 400}
-    if (!isHttpStatusSuccess(accessTokenResponse.status)) {
-      throw new NetworkError(
-        `Could not retrieve authorisation token due to error ${accessTokenResponse}`,
-        hydrateStatusForServer(accessTokenResponse.status, FETCH_ACCESS_TOKEN),
-        {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(accessTokenResponse.status),
-        },
-        accessTokenResponse,
-      );
-    }
-    if (accessTokenResponse.response?.success === false) {
-      handleCommonErrorResponse(
-        accessTokenResponse,
-        ACCESS_TOKEN_FETCH_ERR_MSG,
-        FETCH_ACCESS_TOKEN,
-        config,
-      );
-    }
+//     // sample response : {response: '[ENOTFOUND] :: DNS lookup failed', status: 400}
+//     if (!isHttpStatusSuccess(accessTokenResponse.status)) {
+//       throw new NetworkError(
+//         `Could not retrieve authorisation token due to error ${accessTokenResponse}`,
+//         hydrateStatusForServer(accessTokenResponse.status, FETCH_ACCESS_TOKEN),
+//         {
+//           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(accessTokenResponse.status),
+//         },
+//         accessTokenResponse,
+//       );
+//     }
+//     if (accessTokenResponse.response?.success === false) {
+//       handleCommonErrorResponse(
+//         accessTokenResponse,
+//         ACCESS_TOKEN_FETCH_ERR_MSG,
+//         FETCH_ACCESS_TOKEN,
+//         config,
+//       );
+//     }
 
-    // when access token is present
-    if (accessTokenResponse.response.access_token) {
-      /* This scenario will handle the case when we get the following response
+//     // when access token is present
+//     if (accessTokenResponse.response.access_token) {
+//       /* This scenario will handle the case when we get the following response
+//       status: 200
+//       respnse: {"access_token":"<dummy-access-token>","token_type":"bearer","expires_in":0,"scope":"dummy@scope.com"}
+//       wherein "expires_in":0 denotes that we should refresh the accessToken but its not expired yet.
+//       */
+//       if (accessTokenResponse.response?.expires_in === 0) {
+//         throw new RetryableError(
+//           `Request Failed for marketo_bulk_upload, Access Token Expired (Retryable).`,
+//           500,
+//         );
+//       }
+//       return accessTokenResponse.response.access_token;
+//     }
+//     throw new AbortedError(
+//       `Could not retrieve authorisation token due to error ${accessTokenResponse}`,
+//       400,
+//     );
+//   });
+
+const getAccessToken = async (config) => {
+  const url = getAccessTokenURL(config);
+  const { processedResponse: accessTokenResponse } = await handleHttpRequest('get', url, {
+    destType: 'marketo_bulk_upload',
+    feature: 'transformation',
+  });
+
+  // sample response : {response: '[ENOTFOUND] :: DNS lookup failed', status: 400}
+  if (!isHttpStatusSuccess(accessTokenResponse.status)) {
+    throw new NetworkError(
+      `Could not retrieve authorisation token due to error ${accessTokenResponse}`,
+      hydrateStatusForServer(accessTokenResponse.status, FETCH_ACCESS_TOKEN),
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(accessTokenResponse.status),
+      },
+      accessTokenResponse,
+    );
+  }
+  if (accessTokenResponse.response?.success === false) {
+    handleCommonErrorResponse(accessTokenResponse, ACCESS_TOKEN_FETCH_ERR_MSG, FETCH_ACCESS_TOKEN);
+  }
+
+  // when access token is present
+  if (accessTokenResponse.response.access_token) {
+    /* This scenario will handle the case when we get the following response
       status: 200  
       respnse: {"access_token":"<dummy-access-token>","token_type":"bearer","expires_in":0,"scope":"dummy@scope.com"}
       wherein "expires_in":0 denotes that we should refresh the accessToken but its not expired yet. 
       */
-      if (accessTokenResponse.response?.expires_in === 0) {
-        throw new RetryableError(
-          `Request Failed for marketo_bulk_upload, Access Token Expired (Retryable).`,
-          500,
-        );
-      }
-      return accessTokenResponse.response.access_token;
+    if (accessTokenResponse.response?.expires_in === 0) {
+      throw new RetryableError(
+        `Request Failed for marketo_bulk_upload, Access Token Expired (Retryable).`,
+        500,
+      );
     }
-    throw new AbortedError(
-      `Could not retrieve authorisation token due to error ${accessTokenResponse}`,
-      400,
-    );
-  });
+    return accessTokenResponse.response.access_token;
+  }
+  throw new AbortedError(
+    `Could not retrieve authorisation token due to error ${JSON.stringify(accessTokenResponse)}`,
+    400,
+  );
+};
 
 /**
  * Handles the response of a polling operation.
@@ -200,7 +243,7 @@ const getAccessToken = async (config) =>
  * @param {object} pollStatus - The response object from the polling operation.
  * @returns {object|null} - The response object if the polling operation was successful, otherwise null.
  */
-const handlePollResponse = (pollStatus, config) => {
+const handlePollResponse = (pollStatus) => {
   // DOC: https://developers.marketo.com/rest-api/error-codes/
   if (pollStatus.response.errors) {
     /* Sample error response for poll is:
@@ -216,7 +259,7 @@ const handlePollResponse = (pollStatus, config) => {
                   ]
               }
            */
-    handleCommonErrorResponse(pollStatus, POLL_STATUS_ERR_MSG, POLL_ACTIVITY, config);
+    handleCommonErrorResponse(pollStatus, POLL_STATUS_ERR_MSG, POLL_ACTIVITY);
   }
 
   /*
@@ -243,6 +286,7 @@ const handlePollResponse = (pollStatus, config) => {
     });
 
     if (pollStatus.response?.result?.length > 0) {
+      console.log('poll status is ', JSON.stringify(pollStatus));
       return pollStatus.response;
     }
   }
@@ -257,7 +301,7 @@ const handleFetchJobStatusResponse = (resp, type) => {
   if (!isHttpStatusSuccess(marketoReposnseStatus)) {
     logger.info('[Network Error]:Failed during fetching job status', { marketoResponse, type });
     throw new NetworkError(
-      `Unable to fetch job status: due to error ${marketoResponse}`,
+      `Unable to fetch job status: due to error ${JSON.stringify(marketoResponse)}`,
       hydrateStatusForServer(marketoReposnseStatus, 'During fetching job status'),
     );
   }
@@ -294,7 +338,7 @@ const handleFetchJobStatusResponse = (resp, type) => {
  * @param {number} requestTime - The time taken for the request in milliseconds.
  * @returns {object} - An object containing the importId, successfulJobs, and unsuccessfulJobs.
  */
-const handleFileUploadResponse = (resp, successfulJobs, unsuccessfulJobs, requestTime, config) => {
+const handleFileUploadResponse = (resp, successfulJobs, unsuccessfulJobs, requestTime) => {
   /*
     For unsuccessful response
     {
@@ -319,7 +363,7 @@ const handleFileUploadResponse = (resp, successfulJobs, unsuccessfulJobs, reques
         500,
       );
     } else {
-      handleCommonErrorResponse(resp, FILE_UPLOAD_ERR_MSG, UPLOAD_FILE, config);
+      handleCommonErrorResponse(resp, FILE_UPLOAD_ERR_MSG, UPLOAD_FILE);
     }
   }
 
@@ -402,7 +446,7 @@ const getFieldSchemaMap = async (accessToken, munchkinId) => {
     });
   } else {
     throw new RetryableError(
-      `Failed to fetch Marketo Field Schema due to error ${fieldSchemaMapping}`,
+      `Failed to fetch Marketo Field Schema due to error ${JSON.stringify(fieldSchemaMapping)}`,
       500,
       fieldSchemaMapping,
     );

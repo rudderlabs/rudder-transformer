@@ -36,6 +36,7 @@ export const data = [
               destination: sampleDestination,
               metadata: {
                 jobId: 1,
+                userId: 'u1',
               },
             },
             {
@@ -53,6 +54,7 @@ export const data = [
               destination: sampleDestination,
               metadata: {
                 jobId: 2,
+                userId: 'u1',
               },
             },
           ],
@@ -119,9 +121,11 @@ export const data = [
               metadata: [
                 {
                   jobId: 1,
+                  userId: 'u1',
                 },
                 {
                   jobId: 2,
+                  userId: 'u1',
                 },
               ],
               batched: true,
@@ -160,6 +164,7 @@ export const data = [
               destination: sampleDestination,
               metadata: {
                 jobId: 1,
+                userId: 'u1',
               },
             },
             {
@@ -177,6 +182,7 @@ export const data = [
               destination: sampleDestination,
               metadata: {
                 jobId: 2,
+                userId: 'u1',
               },
             },
           ],
@@ -272,9 +278,11 @@ export const data = [
               metadata: [
                 {
                   jobId: 1,
+                  userId: 'u1',
                 },
                 {
                   jobId: 2,
+                  userId: 'u1',
                 },
               ],
               batched: true,
@@ -313,6 +321,7 @@ export const data = [
               destination: overrideDestination(sampleDestination, { audienceId: '' }),
               metadata: {
                 jobId: 1,
+                userId: 'u1',
               },
             },
             {
@@ -330,6 +339,7 @@ export const data = [
               destination: overrideDestination(sampleDestination, { audienceId: '' }),
               metadata: {
                 jobId: 2,
+                userId: 'u1',
               },
             },
           ],
@@ -345,7 +355,10 @@ export const data = [
           output: [
             {
               batched: false,
-              metadata: [{ jobId: 1 }, { jobId: 2 }],
+              metadata: [
+                { jobId: 1, userId: 'u1' },
+                { jobId: 2, userId: 'u1' },
+              ],
               statusCode: 400,
               error: 'Segment name is not present. Aborting',
               statTags: {
@@ -387,6 +400,7 @@ export const data = [
               destination: overrideDestination(sampleDestination, { advertiserId: '' }),
               metadata: {
                 jobId: 1,
+                userId: 'u1',
               },
             },
           ],
@@ -402,7 +416,7 @@ export const data = [
           output: [
             {
               batched: false,
-              metadata: [{ jobId: 1 }],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               statusCode: 400,
               error: 'Advertiser ID is not present. Aborting',
               statTags: {
@@ -444,6 +458,7 @@ export const data = [
               destination: overrideDestination(sampleDestination, { advertiserSecretKey: '' }),
               metadata: {
                 jobId: 1,
+                userId: 'u1',
               },
             },
           ],
@@ -459,7 +474,7 @@ export const data = [
           output: [
             {
               batched: false,
-              metadata: [{ jobId: 1 }],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               statusCode: 400,
               error: 'Advertiser Secret Key is not present. Aborting',
               statTags: {
@@ -501,6 +516,7 @@ export const data = [
               destination: overrideDestination(sampleDestination, { ttlInDays: 190 }),
               metadata: {
                 jobId: 1,
+                userId: 'u1',
               },
             },
           ],
@@ -516,7 +532,7 @@ export const data = [
           output: [
             {
               batched: false,
-              metadata: [{ jobId: 1 }],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               statusCode: 400,
               error: 'TTL is out of range. Allowed values are 0 to 180 days',
               statTags: {

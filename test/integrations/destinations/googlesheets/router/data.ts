@@ -14,62 +14,20 @@ export const data = [
                 Config: {
                   credentials: '{ sheets credentials }',
                   eventKeyMap: [
-                    {
-                      from: 'firstName',
-                      to: 'First Name',
-                    },
-                    {
-                      from: 'lastName',
-                      to: 'Last Name',
-                    },
-                    {
-                      from: 'birthday',
-                      to: 'Birthday',
-                    },
-                    {
-                      from: 'address.city',
-                      to: 'City',
-                    },
-                    {
-                      from: 'address.country',
-                      to: 'Country',
-                    },
-                    {
-                      from: 'revenue',
-                      to: 'Revenue',
-                    },
-                    {
-                      from: 'offer',
-                      to: 'Offer',
-                    },
-                    {
-                      from: 'title',
-                      to: 'Title Page',
-                    },
-                    {
-                      from: 'Cart Value',
-                      to: 'Cart Value',
-                    },
-                    {
-                      from: 'revenue',
-                      to: 'Revenue',
-                    },
-                    {
-                      from: 'context.app.build',
-                      to: 'App Build',
-                    },
-                    {
-                      from: 'context.app.name',
-                      to: 'App Name',
-                    },
-                    {
-                      from: 'context.library.name',
-                      to: 'Library Name',
-                    },
-                    {
-                      from: 'context.ip',
-                      to: 'IP',
-                    },
+                    { from: 'firstName', to: 'First Name' },
+                    { from: 'lastName', to: 'Last Name' },
+                    { from: 'birthday', to: 'Birthday' },
+                    { from: 'address.city', to: 'City' },
+                    { from: 'address.country', to: 'Country' },
+                    { from: 'revenue', to: 'Revenue' },
+                    { from: 'offer', to: 'Offer' },
+                    { from: 'title', to: 'Title Page' },
+                    { from: 'Cart Value', to: 'Cart Value' },
+                    { from: 'revenue', to: 'Revenue' },
+                    { from: 'context.app.build', to: 'App Build' },
+                    { from: 'context.app.name', to: 'App Name' },
+                    { from: 'context.library.name', to: 'Library Name' },
+                    { from: 'context.ip', to: 'IP' },
                   ],
                   sheetId: 'rudder_sheet_id',
                   sheetName: 'rudder_sheet',
@@ -121,10 +79,7 @@ export const data = [
                   married: true,
                   customerType: 'Prime',
                   custom_tags: ['Test_User', 'Interested_User', 'DIY_Hobby'],
-                  custom_mappings: {
-                    Office: 'Trastkiv',
-                    Country: 'Russia',
-                  },
+                  custom_mappings: { Office: 'Trastkiv', Country: 'Russia' },
                   address: {
                     city: 'kolkata',
                     country: 'India',
@@ -136,71 +91,27 @@ export const data = [
                 integrations: { All: true },
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
             },
             {
               destination: {
                 Config: {
                   credentials: '{ sheets credentials }',
                   eventKeyMap: [
-                    {
-                      from: 'firstName',
-                      to: 'First Name',
-                    },
-                    {
-                      from: 'lastName',
-                      to: 'Last Name',
-                    },
-                    {
-                      from: 'birthday',
-                      to: 'Birthday',
-                    },
-                    {
-                      from: 'address.city',
-                      to: 'City',
-                    },
-                    {
-                      from: 'address.country',
-                      to: 'Country',
-                    },
-                    {
-                      from: 'revenue',
-                      to: 'Revenue',
-                    },
-                    {
-                      from: 'offer',
-                      to: 'Offer',
-                    },
-                    {
-                      from: 'title',
-                      to: 'Title Page',
-                    },
-                    {
-                      from: 'Cart Value',
-                      to: 'Cart Value',
-                    },
-                    {
-                      from: 'revenue',
-                      to: 'Revenue',
-                    },
-                    {
-                      from: 'context.app.build',
-                      to: 'App Build',
-                    },
-                    {
-                      from: 'context.app.name',
-                      to: 'App Name',
-                    },
-                    {
-                      from: 'context.library.name',
-                      to: 'Library Name',
-                    },
-                    {
-                      from: 'context.ip',
-                      to: 'IP',
-                    },
+                    { from: 'firstName', to: 'First Name' },
+                    { from: 'lastName', to: 'Last Name' },
+                    { from: 'birthday', to: 'Birthday' },
+                    { from: 'address.city', to: 'City' },
+                    { from: 'address.country', to: 'Country' },
+                    { from: 'revenue', to: 'Revenue' },
+                    { from: 'offer', to: 'Offer' },
+                    { from: 'title', to: 'Title Page' },
+                    { from: 'Cart Value', to: 'Cart Value' },
+                    { from: 'revenue', to: 'Revenue' },
+                    { from: 'context.app.build', to: 'App Build' },
+                    { from: 'context.app.name', to: 'App Name' },
+                    { from: 'context.library.name', to: 'Library Name' },
+                    { from: 'context.ip', to: 'IP' },
                   ],
                   sheetId: 'rudder_sheet_id',
                   sheetName: 'rudder_sheet',
@@ -232,26 +143,16 @@ export const data = [
                     name: 'generic_x86',
                     type: 'android',
                   },
-                  library: {
-                    name: 'com.rudderstack.android.sdk.core',
-                    version: '0.1.4',
-                  },
+                  library: { name: 'com.rudderstack.android.sdk.core', version: '0.1.4' },
                   locale: 'en-US',
-                  network: {
-                    carrier: 'Android',
-                    bluetooth: false,
-                    cellular: true,
-                    wifi: true,
-                  },
+                  network: { carrier: 'Android', bluetooth: false, cellular: true, wifi: true },
                   os: { name: 'Android', version: '9' },
                   screen: { density: 420, height: 1794, width: 1080 },
                   timezone: 'Asia/Kolkata',
                 },
                 timestamp: '2020-02-02T00:23:09.544Z',
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
             },
           ],
           destType: 'googlesheets',
@@ -272,50 +173,17 @@ export const data = [
                         attributeKey: 'messageId',
                         attributeValue: '84e26acc-56a5-4835-8233-591137fca468',
                       },
-                      '1': {
-                        attributeKey: 'First Name',
-                        attributeValue: 'James',
-                      },
-                      '2': {
-                        attributeKey: 'Last Name',
-                        attributeValue: 'Doe',
-                      },
-                      '3': {
-                        attributeKey: 'Birthday',
-                        attributeValue: '1614775793',
-                      },
-                      '4': {
-                        attributeKey: 'City',
-                        attributeValue: 'kolkata',
-                      },
-                      '5': {
-                        attributeKey: 'Country',
-                        attributeValue: 'India',
-                      },
-                      '6': {
-                        attributeKey: 'Revenue',
-                        attributeValue: '',
-                      },
-                      '7': {
-                        attributeKey: 'Offer',
-                        attributeValue: '',
-                      },
-                      '8': {
-                        attributeKey: 'Title Page',
-                        attributeValue: '',
-                      },
-                      '9': {
-                        attributeKey: 'Cart Value',
-                        attributeValue: '',
-                      },
-                      '10': {
-                        attributeKey: 'Revenue',
-                        attributeValue: '',
-                      },
-                      '11': {
-                        attributeKey: 'App Build',
-                        attributeValue: '1.0.0',
-                      },
+                      '1': { attributeKey: 'First Name', attributeValue: 'James' },
+                      '2': { attributeKey: 'Last Name', attributeValue: 'Doe' },
+                      '3': { attributeKey: 'Birthday', attributeValue: '1614775793' },
+                      '4': { attributeKey: 'City', attributeValue: 'kolkata' },
+                      '5': { attributeKey: 'Country', attributeValue: 'India' },
+                      '6': { attributeKey: 'Revenue', attributeValue: '' },
+                      '7': { attributeKey: 'Offer', attributeValue: '' },
+                      '8': { attributeKey: 'Title Page', attributeValue: '' },
+                      '9': { attributeKey: 'Cart Value', attributeValue: '' },
+                      '10': { attributeKey: 'Revenue', attributeValue: '' },
+                      '11': { attributeKey: 'App Build', attributeValue: '1.0.0' },
                       '12': {
                         attributeKey: 'App Name',
                         attributeValue: 'RudderLabs JavaScript SDK',
@@ -324,74 +192,29 @@ export const data = [
                         attributeKey: 'Library Name',
                         attributeValue: 'RudderLabs JavaScript SDK',
                       },
-                      '14': {
-                        attributeKey: 'IP',
-                        attributeValue: '0.0.0.0',
-                      },
+                      '14': { attributeKey: 'IP', attributeValue: '0.0.0.0' },
                     },
                   },
                   {
                     message: {
-                      '0': {
-                        attributeKey: 'messageId',
-                        attributeValue: '',
-                      },
-                      '1': {
-                        attributeKey: 'First Name',
-                        attributeValue: '',
-                      },
-                      '2': {
-                        attributeKey: 'Last Name',
-                        attributeValue: '',
-                      },
-                      '3': {
-                        attributeKey: 'Birthday',
-                        attributeValue: '',
-                      },
-                      '4': {
-                        attributeKey: 'City',
-                        attributeValue: '',
-                      },
-                      '5': {
-                        attributeKey: 'Country',
-                        attributeValue: '',
-                      },
-                      '6': {
-                        attributeKey: 'Revenue',
-                        attributeValue: 5.99,
-                      },
-                      '7': {
-                        attributeKey: 'Offer',
-                        attributeValue: 'Discount',
-                      },
-                      '8': {
-                        attributeKey: 'Title Page',
-                        attributeValue: '',
-                      },
-                      '9': {
-                        attributeKey: 'Cart Value',
-                        attributeValue: '',
-                      },
-                      '10': {
-                        attributeKey: 'Revenue',
-                        attributeValue: 5.99,
-                      },
-                      '11': {
-                        attributeKey: 'App Build',
-                        attributeValue: '1',
-                      },
-                      '12': {
-                        attributeKey: 'App Name',
-                        attributeValue: 'RudderAndroidClient',
-                      },
+                      '0': { attributeKey: 'messageId', attributeValue: '' },
+                      '1': { attributeKey: 'First Name', attributeValue: '' },
+                      '2': { attributeKey: 'Last Name', attributeValue: '' },
+                      '3': { attributeKey: 'Birthday', attributeValue: '' },
+                      '4': { attributeKey: 'City', attributeValue: '' },
+                      '5': { attributeKey: 'Country', attributeValue: '' },
+                      '6': { attributeKey: 'Revenue', attributeValue: 5.99 },
+                      '7': { attributeKey: 'Offer', attributeValue: 'Discount' },
+                      '8': { attributeKey: 'Title Page', attributeValue: '' },
+                      '9': { attributeKey: 'Cart Value', attributeValue: '' },
+                      '10': { attributeKey: 'Revenue', attributeValue: 5.99 },
+                      '11': { attributeKey: 'App Build', attributeValue: '1' },
+                      '12': { attributeKey: 'App Name', attributeValue: 'RudderAndroidClient' },
                       '13': {
                         attributeKey: 'Library Name',
                         attributeValue: 'com.rudderstack.android.sdk.core',
                       },
-                      '14': {
-                        attributeKey: 'IP',
-                        attributeValue: '14.5.67.21',
-                      },
+                      '14': { attributeKey: 'IP', attributeValue: '14.5.67.21' },
                     },
                   },
                 ],
@@ -399,12 +222,8 @@ export const data = [
                 spreadSheet: 'rudder_sheet',
               },
               metadata: [
-                {
-                  jobId: 1,
-                },
-                {
-                  jobId: 2,
-                },
+                { jobId: 1, userId: 'u1' },
+                { jobId: 2, userId: 'u1' },
               ],
               batched: true,
               statusCode: 200,
@@ -412,62 +231,20 @@ export const data = [
                 Config: {
                   credentials: '{ sheets credentials }',
                   eventKeyMap: [
-                    {
-                      from: 'firstName',
-                      to: 'First Name',
-                    },
-                    {
-                      from: 'lastName',
-                      to: 'Last Name',
-                    },
-                    {
-                      from: 'birthday',
-                      to: 'Birthday',
-                    },
-                    {
-                      from: 'address.city',
-                      to: 'City',
-                    },
-                    {
-                      from: 'address.country',
-                      to: 'Country',
-                    },
-                    {
-                      from: 'revenue',
-                      to: 'Revenue',
-                    },
-                    {
-                      from: 'offer',
-                      to: 'Offer',
-                    },
-                    {
-                      from: 'title',
-                      to: 'Title Page',
-                    },
-                    {
-                      from: 'Cart Value',
-                      to: 'Cart Value',
-                    },
-                    {
-                      from: 'revenue',
-                      to: 'Revenue',
-                    },
-                    {
-                      from: 'context.app.build',
-                      to: 'App Build',
-                    },
-                    {
-                      from: 'context.app.name',
-                      to: 'App Name',
-                    },
-                    {
-                      from: 'context.library.name',
-                      to: 'Library Name',
-                    },
-                    {
-                      from: 'context.ip',
-                      to: 'IP',
-                    },
+                    { from: 'firstName', to: 'First Name' },
+                    { from: 'lastName', to: 'Last Name' },
+                    { from: 'birthday', to: 'Birthday' },
+                    { from: 'address.city', to: 'City' },
+                    { from: 'address.country', to: 'Country' },
+                    { from: 'revenue', to: 'Revenue' },
+                    { from: 'offer', to: 'Offer' },
+                    { from: 'title', to: 'Title Page' },
+                    { from: 'Cart Value', to: 'Cart Value' },
+                    { from: 'revenue', to: 'Revenue' },
+                    { from: 'context.app.build', to: 'App Build' },
+                    { from: 'context.app.name', to: 'App Name' },
+                    { from: 'context.library.name', to: 'Library Name' },
+                    { from: 'context.ip', to: 'IP' },
                   ],
                   sheetId: 'rudder_sheet_id',
                   sheetName: 'rudder_sheet',

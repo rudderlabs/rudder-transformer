@@ -14,46 +14,19 @@ export const data = [
                 Config: {
                   advertiserId: 'test id',
                   eventFilteringOption: 'disable',
-                  whitelistedEvents: [
-                    {
-                      eventName: '',
-                    },
-                  ],
-                  blacklistedEvents: [
-                    {
-                      eventName: '',
-                    },
-                  ],
-                  eventsMap: [
-                    {
-                      from: 'Product Added',
-                      to: 'conv.add_to_cart',
-                    },
-                  ],
-                  useNativeSDK: {
-                    web: false,
-                  },
-                  clientAuthId: {
-                    web: 'test-client-auth-id',
-                  },
+                  whitelistedEvents: [{ eventName: '' }],
+                  blacklistedEvents: [{ eventName: '' }],
+                  eventsMap: [{ from: 'Product Added', to: 'conv.add_to_cart' }],
+                  useNativeSDK: { web: false },
+                  clientAuthId: { web: 'test-client-auth-id' },
                   oneTrustCookieCategories: {
-                    web: [
-                      {
-                        oneTrustCookieCategory: 'Marketing Sample',
-                      },
-                    ],
+                    web: [{ oneTrustCookieCategory: 'Marketing Sample' }],
                   },
-                  customDomain: {
-                    web: 'https://cookiedomain.com',
-                  },
-                  enableCookieSync: {
-                    web: true,
-                  },
+                  customDomain: { web: 'https://cookiedomain.com' },
+                  enableCookieSync: { web: true },
                 },
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               message: {
                 type: 'track',
                 event: 'Product Added',
@@ -61,10 +34,7 @@ export const data = [
                 userId: 'userSampleX138',
                 channel: 'web',
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   locale: 'en-IN',
                   traits: {
                     email: 'userSampleX120@gmail.com',
@@ -84,9 +54,7 @@ export const data = [
                   product_name: 'Red T-shirt',
                 },
                 anonymousId: '5f093403-1457-4a2c-b4e4-c61ec3bacf56',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 originalTimestamp: '2022-08-07T20:02:19.347Z',
               },
               writeKey: '2D0yaayoBD7bp8uFomnBONdedcA',
@@ -147,7 +115,7 @@ export const data = [
                   whitelistedEvents: [{ eventName: '' }],
                 },
               },
-              metadata: [{ jobId: 1 }],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               statusCode: 200,
             },
           ],
@@ -170,46 +138,19 @@ export const data = [
                 Config: {
                   advertiserId: 'test id',
                   eventFilteringOption: 'disable',
-                  whitelistedEvents: [
-                    {
-                      eventName: '',
-                    },
-                  ],
-                  blacklistedEvents: [
-                    {
-                      eventName: '',
-                    },
-                  ],
-                  eventsMap: [
-                    {
-                      from: 'Product Viewed',
-                      to: 'conv.add_to_cart',
-                    },
-                  ],
-                  useNativeSDK: {
-                    web: false,
-                  },
-                  clientAuthId: {
-                    web: 'test-client-auth-id',
-                  },
+                  whitelistedEvents: [{ eventName: '' }],
+                  blacklistedEvents: [{ eventName: '' }],
+                  eventsMap: [{ from: 'Product Viewed', to: 'conv.add_to_cart' }],
+                  useNativeSDK: { web: false },
+                  clientAuthId: { web: 'test-client-auth-id' },
                   oneTrustCookieCategories: {
-                    web: [
-                      {
-                        oneTrustCookieCategory: 'Marketing Sample',
-                      },
-                    ],
+                    web: [{ oneTrustCookieCategory: 'Marketing Sample' }],
                   },
-                  customDomain: {
-                    web: 'https://cookiedomain.com',
-                  },
-                  enableCookieSync: {
-                    web: true,
-                  },
+                  customDomain: { web: 'https://cookiedomain.com' },
+                  enableCookieSync: { web: true },
                 },
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               message: {
                 type: 'track',
                 event: 'Product Viewed',
@@ -217,10 +158,7 @@ export const data = [
                 userId: 'userSampleX138',
                 channel: 'web',
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   locale: 'en-IN',
                   traits: {
                     email: 'userSampleX120@gmail.com',
@@ -240,9 +178,7 @@ export const data = [
                   product_name: 'Red T-shirt',
                 },
                 anonymousId: '5f093403-1457-4a2c-b4e4-c61ec3bacf56',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 originalTimestamp: '2022-08-07T20:02:19.347Z',
               },
               writeKey: '2D0yaayoBD7bp8uFomnBONdedcA',
@@ -303,7 +239,7 @@ export const data = [
                   whitelistedEvents: [{ eventName: '' }],
                 },
               },
-              metadata: [{ jobId: 2 }],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               statusCode: 200,
             },
           ],

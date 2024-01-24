@@ -23,9 +23,7 @@ export const data = [
                 },
                 ID: 'iwehr83843',
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               message: {
                 userId: 'user 1',
                 type: 'audiencelist',
@@ -75,12 +73,7 @@ export const data = [
                   },
                   enablePartialFailure: true,
                 },
-                context: {
-                  ip: '14.5.67.21',
-                  library: {
-                    name: 'http',
-                  },
-                },
+                context: { ip: '14.5.67.21', library: { name: 'http' } },
                 timestamp: '2020-02-02T00:23:09.544Z',
               },
             },
@@ -123,11 +116,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {

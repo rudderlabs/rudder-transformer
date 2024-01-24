@@ -27,24 +27,15 @@ export const data = [
                   eventToTitleMapping: [],
                 },
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               message: {
                 event: 'New Alert',
                 type: 'track',
                 sentAt: '2021-01-03T17:02:53.195Z',
                 channel: 'web',
-                properties: {
-                  message: 'Please check the alert',
-                  brand: 'Zara',
-                  price: '12000',
-                },
+                properties: { message: 'Please check the alert', brand: 'Zara', price: '12000' },
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -52,13 +43,8 @@ export const data = [
                     namespace: 'com.rudderlabs.javascript',
                   },
                   locale: 'en-US',
-                  screen: {
-                    density: 2,
-                  },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.1.11',
-                  },
+                  screen: { density: 2 },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.1.11' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0',
@@ -86,9 +72,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://connect.signl4.com/webhook/dummyApiKey',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 params: {},
                 body: {
                   JSON: {
@@ -108,11 +92,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -163,32 +143,18 @@ export const data = [
                   s4StatusValue: 'new',
                   s4StatusProperty: '',
                   s4Filter: false,
-                  eventToTitleMapping: [
-                    {
-                      from: 'New Alert',
-                      to: 'Alert Created',
-                    },
-                  ],
+                  eventToTitleMapping: [{ from: 'New Alert', to: 'Alert Created' }],
                 },
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               message: {
                 event: 'New Alert',
                 type: 'identify',
                 sentAt: '2021-01-03T17:02:53.195Z',
                 channel: 'web',
-                properties: {
-                  message: 'Please check the alert',
-                  brand: 'Zara',
-                  price: '12000',
-                },
+                properties: { message: 'Please check the alert', brand: 'Zara', price: '12000' },
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -196,13 +162,8 @@ export const data = [
                     namespace: 'com.rudderlabs.javascript',
                   },
                   locale: 'en-US',
-                  screen: {
-                    density: 2,
-                  },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.1.11',
-                  },
+                  screen: { density: 2 },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.1.11' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0',
@@ -239,19 +200,10 @@ export const data = [
                   s4StatusValue: 'new',
                   s4StatusProperty: '',
                   s4Filter: false,
-                  eventToTitleMapping: [
-                    {
-                      from: 'New Alert',
-                      to: 'Alert Created',
-                    },
-                  ],
+                  eventToTitleMapping: [{ from: 'New Alert', to: 'Alert Created' }],
                 },
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               statTags: {
                 errorCategory: 'dataValidation',
                 destType: 'SIGNL4',

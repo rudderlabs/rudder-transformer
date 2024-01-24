@@ -19,24 +19,13 @@ export const data = [
                     namespace: 'com.rudderlabs.javascript',
                     version: '1.0.0',
                   },
-                  traits: {
-                    email: 'sayan@gmail.com',
-                    anonymousId: '12345',
-                  },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  traits: { email: 'sayan@gmail.com', anonymousId: '12345' },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-US',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                 },
                 type: 'track',
                 messageId: 'ec5481b6-a926-4d2e-b293-0b3a77c4d3be',
@@ -51,18 +40,11 @@ export const data = [
                   user_actual_id: 12345,
                   user_time_spent: 50000,
                 },
-                integrations: {
-                  All: true,
-                },
-                traits: {
-                  email: 'test@gmail.com',
-                  anonymousId: 'anon-id',
-                },
+                integrations: { All: true },
+                traits: { email: 'test@gmail.com', anonymousId: 'anon-id' },
                 sentAt: '2019-10-14T11:15:53.296Z',
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               destination: {
                 Config: {
                   projectID: 'abcde',
@@ -84,25 +66,14 @@ export const data = [
                     namespace: 'com.rudderlabs.javascript',
                     version: '1.0.0',
                   },
-                  traits: {
-                    email: 'sayan@gmail.com',
-                    anonymousId: '12345',
-                  },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  traits: { email: 'sayan@gmail.com', anonymousId: '12345' },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-US',
                   ip: '0.0.0.0',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                 },
                 type: 'page',
                 messageId: '5e10d13a-bf9a-44bf-b884-43a9e591ea71',
@@ -117,19 +88,12 @@ export const data = [
                   title: 'Test Page',
                   url: 'www.rudderlabs.com',
                 },
-                traits: {
-                  email: 'test@gmail.com',
-                  anonymousId: 'anon-id',
-                },
-                integrations: {
-                  All: true,
-                },
+                traits: { email: 'test@gmail.com', anonymousId: 'anon-id' },
+                integrations: { All: true },
                 name: 'ApplicationLoaded',
                 sentAt: '2019-10-14T11:15:53.296Z',
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 3, userId: 'u1' },
               destination: {
                 Config: {
                   projectID: 'abcde',
@@ -165,16 +129,12 @@ export const data = [
                     keen: {
                       addons: [
                         {
-                          input: {
-                            ip: 'request_ip',
-                          },
+                          input: { ip: 'request_ip' },
                           name: 'keen:ip_to_geo',
                           output: 'ip_geo_info',
                         },
                         {
-                          input: {
-                            ua_string: 'user_agent',
-                          },
+                          input: { ua_string: 'user_agent' },
                           name: 'keen:ua_parser',
                           output: 'parsed_user_agent',
                         },
@@ -182,10 +142,7 @@ export const data = [
                     },
                     anonymousId: '00000000000000000000000000',
                     user: {
-                      traits: {
-                        anonymousId: 'anon-id',
-                        email: 'test@gmail.com',
-                      },
+                      traits: { anonymousId: 'anon-id', email: 'test@gmail.com' },
                       userId: '12345',
                     },
                     user_agent:
@@ -196,21 +153,14 @@ export const data = [
                 files: {},
                 endpoint: 'https://api.keen.io/3.0/projects/abcde/events/test track event',
                 userId: '12345',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: 'xyz',
-                },
+                headers: { 'Content-Type': 'application/json', Authorization: 'xyz' },
                 version: '1',
                 params: {},
                 type: 'REST',
                 method: 'POST',
                 statusCode: 200,
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -239,16 +189,12 @@ export const data = [
                     keen: {
                       addons: [
                         {
-                          input: {
-                            ip: 'request_ip',
-                          },
+                          input: { ip: 'request_ip' },
                           name: 'keen:ip_to_geo',
                           output: 'ip_geo_info',
                         },
                         {
-                          input: {
-                            ua_string: 'user_agent',
-                          },
+                          input: { ua_string: 'user_agent' },
                           name: 'keen:ua_parser',
                           output: 'parsed_user_agent',
                         },
@@ -256,10 +202,7 @@ export const data = [
                     },
                     anonymousId: '00000000000000000000000000',
                     user: {
-                      traits: {
-                        anonymousId: 'anon-id',
-                        email: 'test@gmail.com',
-                      },
+                      traits: { anonymousId: 'anon-id', email: 'test@gmail.com' },
                       userId: '12345',
                     },
                     path: '/test',
@@ -272,21 +215,14 @@ export const data = [
                 endpoint:
                   'https://api.keen.io/3.0/projects/abcde/events/Viewed ApplicationLoaded page',
                 userId: '12345',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: 'xyz',
-                },
+                headers: { 'Content-Type': 'application/json', Authorization: 'xyz' },
                 version: '1',
                 params: {},
                 type: 'REST',
                 method: 'POST',
                 statusCode: 200,
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 3, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {

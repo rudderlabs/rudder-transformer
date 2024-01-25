@@ -14,24 +14,16 @@ export const data = [
           input: [
             {
               destination: {
-                Config: {
-                  publicApiKey: 'dummyPublicApiKey',
-                  privateApiKey: 'dummyPrivateApiKey',
-                },
+                Config: { publicApiKey: 'dummyPublicApiKey', privateApiKey: 'dummyPrivateApiKey' },
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               message: {
                 type: 'identify',
                 sentAt: '2021-01-03T17:02:53.195Z',
                 userId: 'test',
                 channel: 'web',
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -52,18 +44,11 @@ export const data = [
                     zip: '100-0001',
                     Flagged: false,
                     Residence: 'Shibuya',
-                    properties: {
-                      consent: ['email', 'sms'],
-                    },
+                    properties: { consent: ['email', 'sms'] },
                   },
                   locale: 'en-US',
-                  screen: {
-                    density: 2,
-                  },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.1.11',
-                  },
+                  screen: { density: 2 },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.1.11' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0',
@@ -71,32 +56,22 @@ export const data = [
                 rudderId: '8f8fa6b5-8e24-489c-8e22-61f23f2e364f',
                 messageId: '2116ef8c-efc3-4ca4-851b-02ee60dad6ff',
                 anonymousId: '97c46c81-3140-456d-b2a9-690d70aaca35',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 originalTimestamp: '2021-01-03T17:02:53.193Z',
               },
             },
             {
               destination: {
-                Config: {
-                  publicApiKey: 'dummyPublicApiKey',
-                  privateApiKey: 'dummyPrivateApiKey',
-                },
+                Config: { publicApiKey: 'dummyPublicApiKey', privateApiKey: 'dummyPrivateApiKey' },
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               message: {
                 type: 'identify',
                 sentAt: '2021-01-03T17:02:53.195Z',
                 userId: 'test',
                 channel: 'web',
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -117,20 +92,11 @@ export const data = [
                     zip: '100-0001',
                     Flagged: false,
                     Residence: 'Shibuya',
-                    properties: {
-                      listId: 'XUepkK',
-                      subscribe: true,
-                      consent: ['email', 'sms'],
-                    },
+                    properties: { listId: 'XUepkK', subscribe: true, consent: ['email', 'sms'] },
                   },
                   locale: 'en-US',
-                  screen: {
-                    density: 2,
-                  },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.1.11',
-                  },
+                  screen: { density: 2 },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.1.11' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0',
@@ -138,29 +104,20 @@ export const data = [
                 rudderId: '8f8fa6b5-8e24-489c-8e22-61f23f2e364f',
                 messageId: '2116ef8c-efc3-4ca4-851b-02ee60dad6ff',
                 anonymousId: '97c46c81-3140-456d-b2a9-690d70aaca35',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 originalTimestamp: '2021-01-03T17:02:53.193Z',
               },
             },
             {
               destination: {
-                Config: {
-                  publicApiKey: 'dummyPublicApiKey',
-                  privateApiKey: 'dummyPrivateApiKey',
-                },
+                Config: { publicApiKey: 'dummyPublicApiKey', privateApiKey: 'dummyPrivateApiKey' },
               },
-              metadata: {
-                jobId: 3,
-              },
+              metadata: { jobId: 3, userId: 'u1' },
               message: {
                 userId: 'user123',
                 type: 'group',
                 groupId: 'XUepkK',
-                traits: {
-                  subscribe: true,
-                },
+                traits: { subscribe: true },
                 context: {
                   traits: {
                     email: 'test@rudderstack.com',
@@ -168,30 +125,21 @@ export const data = [
                     consent: ['email'],
                   },
                   ip: '14.5.67.21',
-                  library: {
-                    name: 'http',
-                  },
+                  library: { name: 'http' },
                 },
                 timestamp: '2020-01-21T00:21:34.208Z',
               },
             },
             {
               destination: {
-                Config: {
-                  publicApiKey: 'dummyPublicApiKey',
-                  privateApiKey: 'dummyPrivateApiKey',
-                },
+                Config: { publicApiKey: 'dummyPublicApiKey', privateApiKey: 'dummyPrivateApiKey' },
               },
-              metadata: {
-                jobId: 4,
-              },
+              metadata: { jobId: 4, userId: 'u1' },
               message: {
                 userId: 'user123',
                 type: 'random',
                 groupId: 'XUepkK',
-                traits: {
-                  subscribe: true,
-                },
+                traits: { subscribe: true },
                 context: {
                   traits: {
                     email: 'test@rudderstack.com',
@@ -199,30 +147,21 @@ export const data = [
                     consent: 'email',
                   },
                   ip: '14.5.67.21',
-                  library: {
-                    name: 'http',
-                  },
+                  library: { name: 'http' },
                 },
                 timestamp: '2020-01-21T00:21:34.208Z',
               },
             },
             {
               destination: {
-                Config: {
-                  publicApiKey: 'dummyPublicApiKey',
-                  privateApiKey: 'dummyPrivateApiKey',
-                },
+                Config: { publicApiKey: 'dummyPublicApiKey', privateApiKey: 'dummyPrivateApiKey' },
               },
-              metadata: {
-                jobId: 5,
-              },
+              metadata: { jobId: 5, userId: 'u1' },
               message: {
                 userId: 'user123',
                 type: 'group',
                 groupId: '',
-                traits: {
-                  subscribe: true,
-                },
+                traits: { subscribe: true },
                 context: {
                   traits: {
                     email: 'test@rudderstack.com',
@@ -230,9 +169,7 @@ export const data = [
                     consent: 'email',
                   },
                   ip: '14.5.67.21',
-                  library: {
-                    name: 'http',
-                  },
+                  library: { name: 'http' },
                 },
                 timestamp: '2020-01-21T00:21:34.208Z',
               },
@@ -268,17 +205,11 @@ export const data = [
                         attributes: {
                           list_id: 'XUepkK',
                           subscriptions: [
-                            {
-                              email: 'test@rudderstack.com',
-                              phone_number: '+12 345 678 900',
-                            },
+                            { email: 'test@rudderstack.com', phone_number: '+12 345 678 900' },
                             {
                               email: 'test@rudderstack.com',
                               phone_number: '+12 345 578 900',
-                              channels: {
-                                email: ['MARKETING'],
-                                sms: ['MARKETING'],
-                              },
+                              channels: { email: ['MARKETING'], sms: ['MARKETING'] },
                             },
                           ],
                         },
@@ -320,10 +251,7 @@ export const data = [
                             country: 'JP',
                             zip: '100-0001',
                           },
-                          properties: {
-                            Flagged: false,
-                            Residence: 'Shibuya',
-                          },
+                          properties: { Flagged: false, Residence: 'Shibuya' },
                         },
                         id: '01GW3PHVY0MTCDGS0A1612HARX',
                       },
@@ -336,20 +264,13 @@ export const data = [
                 },
               ],
               metadata: [
-                {
-                  jobId: 3,
-                },
-                {
-                  jobId: 2,
-                },
+                { jobId: 3, userId: 'u1' },
+                { jobId: 2, userId: 'u1' },
               ],
               batched: true,
               statusCode: 200,
               destination: {
-                Config: {
-                  publicApiKey: 'dummyPublicApiKey',
-                  privateApiKey: 'dummyPrivateApiKey',
-                },
+                Config: { publicApiKey: 'dummyPublicApiKey', privateApiKey: 'dummyPrivateApiKey' },
               },
             },
             {
@@ -383,10 +304,7 @@ export const data = [
                           country: 'JP',
                           zip: '100-0001',
                         },
-                        properties: {
-                          Flagged: false,
-                          Residence: 'Shibuya',
-                        },
+                        properties: { Flagged: false, Residence: 'Shibuya' },
                       },
                       id: '01GW3PHVY0MTCDGS0A1612HARX',
                     },
@@ -397,26 +315,15 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
-                Config: {
-                  publicApiKey: 'dummyPublicApiKey',
-                  privateApiKey: 'dummyPrivateApiKey',
-                },
+                Config: { publicApiKey: 'dummyPublicApiKey', privateApiKey: 'dummyPrivateApiKey' },
               },
             },
             {
-              metadata: [
-                {
-                  jobId: 4,
-                },
-              ],
+              metadata: [{ jobId: 4, userId: 'u1' }],
               batched: false,
               statusCode: 400,
               error: 'Event type random is not supported',
@@ -429,18 +336,11 @@ export const data = [
                 module: 'destination',
               },
               destination: {
-                Config: {
-                  publicApiKey: 'dummyPublicApiKey',
-                  privateApiKey: 'dummyPrivateApiKey',
-                },
+                Config: { publicApiKey: 'dummyPublicApiKey', privateApiKey: 'dummyPrivateApiKey' },
               },
             },
             {
-              metadata: [
-                {
-                  jobId: 5,
-                },
-              ],
+              metadata: [{ jobId: 5, userId: 'u1' }],
               batched: false,
               statusCode: 400,
               error: 'groupId is a required field for group events',
@@ -453,10 +353,7 @@ export const data = [
                 module: 'destination',
               },
               destination: {
-                Config: {
-                  publicApiKey: 'dummyPublicApiKey',
-                  privateApiKey: 'dummyPrivateApiKey',
-                },
+                Config: { publicApiKey: 'dummyPublicApiKey', privateApiKey: 'dummyPrivateApiKey' },
               },
             },
           ],

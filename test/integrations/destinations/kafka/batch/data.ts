@@ -19,12 +19,8 @@ export const data = [
                   userId: 'user1',
                   context: {
                     ip: '14.5.67.21',
-                    traits: {
-                      trait1: 'new-val',
-                    },
-                    library: {
-                      name: 'http',
-                    },
+                    traits: { trait1: 'new-val' },
+                    library: { name: 'http' },
                   },
                   messageId: '6f27a4da-cefb-4800-acf1-f467e8aab91c',
                   timestamp: '2020-02-02T00:23:09.544Z',
@@ -35,10 +31,7 @@ export const data = [
                 },
                 topic: 'new-topic',
               },
-              metadata: {
-                rudderId: 'user1<<>>new-topic',
-                jobId: 1,
-              },
+              metadata: { rudderId: 'user1<<>>new-topic', jobId: 1, userId: 'u1' },
               destination: {
                 ID: '1uzGR4rn915R6Xts9KRfWAzmgGL',
                 Name: 'local-kafka-test',
@@ -105,12 +98,8 @@ export const data = [
                   userId: 'user2',
                   context: {
                     ip: '14.5.67.21',
-                    traits: {
-                      trait1: 'new-val',
-                    },
-                    library: {
-                      name: 'http',
-                    },
+                    traits: { trait1: 'new-val' },
+                    library: { name: 'http' },
                   },
                   messageId: 'fe182d9e-e86e-4db5-ae12-f4b399555fcc',
                   timestamp: '2020-02-02T00:23:09.544Z',
@@ -121,10 +110,7 @@ export const data = [
                 },
                 topic: 'new-topic',
               },
-              metadata: {
-                rudderId: 'user2<<>>new-topic',
-                jobId: 2,
-              },
+              metadata: { rudderId: 'user2<<>>new-topic', jobId: 2, userId: 'u1' },
               destination: {
                 ID: '1uzGR4rn915R6Xts9KRfWAzmgGL',
                 Name: 'local-kafka-test',
@@ -191,12 +177,8 @@ export const data = [
                   userId: 'user3',
                   context: {
                     ip: '14.5.67.21',
-                    traits: {
-                      trait1: 'new-val',
-                    },
-                    library: {
-                      name: 'http',
-                    },
+                    traits: { trait1: 'new-val' },
+                    library: { name: 'http' },
                   },
                   messageId: '2803e656-77ff-47ca-9606-90663f9aed38',
                   timestamp: '2020-02-02T00:23:09.544Z',
@@ -207,10 +189,7 @@ export const data = [
                 },
                 topic: 'new-topic',
               },
-              metadata: {
-                rudderId: 'user3<<>>new-topic',
-                jobId: 3,
-              },
+              metadata: { rudderId: 'user3<<>>new-topic', jobId: 3, userId: 'u1' },
               destination: {
                 ID: '1uzGR4rn915R6Xts9KRfWAzmgGL',
                 Name: 'local-kafka-test',
@@ -277,12 +256,8 @@ export const data = [
                   userId: 'user4',
                   context: {
                     ip: '14.5.67.21',
-                    traits: {
-                      trait1: 'new-val',
-                    },
-                    library: {
-                      name: 'http',
-                    },
+                    traits: { trait1: 'new-val' },
+                    library: { name: 'http' },
                   },
                   messageId: '87c98fc2-561b-4631-8cd6-1d02cdd1429f',
                   timestamp: '2020-02-02T00:23:09.544Z',
@@ -293,10 +268,7 @@ export const data = [
                 },
                 topic: 'new-topic',
               },
-              metadata: {
-                rudderId: 'user4<<>>new-topic',
-                jobId: 4,
-              },
+              metadata: { rudderId: 'user4<<>>new-topic', jobId: 4, userId: 'u1' },
               destination: {
                 ID: '1uzGR4rn915R6Xts9KRfWAzmgGL',
                 Name: 'local-kafka-test',
@@ -363,19 +335,10 @@ export const data = [
                   userId: 'user5',
                   context: {
                     ip: '14.5.67.21',
-                    traits: {
-                      trait1: 'new-val',
-                    },
-                    library: {
-                      name: 'http',
-                    },
+                    traits: { trait1: 'new-val' },
+                    library: { name: 'http' },
                   },
-                  integrations: {
-                    All: true,
-                    KAFKA: {
-                      schemaId: 'schema001',
-                    },
-                  },
+                  integrations: { All: true, KAFKA: { schemaId: 'schema001' } },
                   messageId: '87c98fc2-561b-4631-8cd6-1d02cdd1429f',
                   timestamp: '2020-02-02T00:23:09.544Z',
                   receivedAt: '2021-07-08T02:45:06.851+05:30',
@@ -386,10 +349,7 @@ export const data = [
                 schemaId: 'schema001',
                 topic: 'new-topic',
               },
-              metadata: {
-                rudderId: 'user5<<>>new-topic',
-                jobId: 5,
-              },
+              metadata: { rudderId: 'user5<<>>new-topic', jobId: 5, userId: 'u1' },
               destination: {
                 ID: '1uzGR4rn915R6Xts9KRfWAzmgGL',
                 Name: 'local-kafka-test',
@@ -456,19 +416,10 @@ export const data = [
                   userId: 'user6',
                   context: {
                     ip: '14.5.67.21',
-                    traits: {
-                      trait1: 'new-val',
-                    },
-                    library: {
-                      name: 'http',
-                    },
+                    traits: { trait1: 'new-val' },
+                    library: { name: 'http' },
                   },
-                  integrations: {
-                    All: true,
-                    KAFKA: {
-                      topic: 'topic-1',
-                    },
-                  },
+                  integrations: { All: true, KAFKA: { topic: 'topic-1' } },
                   messageId: '87c98fc2-561b-4631-8cd6-1d02cdd1429f',
                   timestamp: '2020-02-02T00:23:09.544Z',
                   receivedAt: '2021-07-08T02:45:06.851+05:30',
@@ -478,10 +429,7 @@ export const data = [
                 },
                 topic: 'topic-1',
               },
-              metadata: {
-                rudderId: 'user6<<>>topic-1',
-                jobId: 6,
-              },
+              metadata: { rudderId: 'user6<<>>topic-1', jobId: 6, userId: 'u1' },
               destination: {
                 ID: '1uzGR4rn915R6Xts9KRfWAzmgGL',
                 Name: 'local-kafka-test',
@@ -548,19 +496,10 @@ export const data = [
                   userId: 'user7',
                   context: {
                     ip: '14.5.67.21',
-                    traits: {
-                      trait1: 'new-val',
-                    },
-                    library: {
-                      name: 'http',
-                    },
+                    traits: { trait1: 'new-val' },
+                    library: { name: 'http' },
                   },
-                  integrations: {
-                    All: true,
-                    KAFKA: {
-                      topic: 'topic-1',
-                    },
-                  },
+                  integrations: { All: true, KAFKA: { topic: 'topic-1' } },
                   messageId: '87c98fc2-561b-4631-8cd6-1d02cdd1429f',
                   timestamp: '2020-02-02T00:23:09.544Z',
                   receivedAt: '2021-07-08T02:45:06.851+05:30',
@@ -570,10 +509,7 @@ export const data = [
                 },
                 topic: 'topic-1',
               },
-              metadata: {
-                rudderId: 'user7<<>>topic-1',
-                jobId: 7,
-              },
+              metadata: { rudderId: 'user7<<>>topic-1', jobId: 7, userId: 'u1' },
               destination: {
                 ID: '1uzGR4rn915R6Xts9KRfWAzmgGL',
                 Name: 'local-kafka-test',
@@ -640,19 +576,10 @@ export const data = [
                   userId: 'user8',
                   context: {
                     ip: '14.5.67.21',
-                    traits: {
-                      trait1: 'new-val',
-                    },
-                    library: {
-                      name: 'http',
-                    },
+                    traits: { trait1: 'new-val' },
+                    library: { name: 'http' },
                   },
-                  integrations: {
-                    All: true,
-                    KAFKA: {
-                      topic: 'topic-2',
-                    },
-                  },
+                  integrations: { All: true, KAFKA: { topic: 'topic-2' } },
                   messageId: '87c98fc2-561b-4631-8cd6-1d02cdd1429f',
                   timestamp: '2020-02-02T00:23:09.544Z',
                   receivedAt: '2021-07-08T02:45:06.851+05:30',
@@ -662,10 +589,7 @@ export const data = [
                 },
                 topic: 'topic-2',
               },
-              metadata: {
-                rudderId: 'user8<<>>topic-2',
-                jobId: 8,
-              },
+              metadata: { rudderId: 'user8<<>>topic-2', jobId: 8, userId: 'u1' },
               destination: {
                 ID: '1uzGR4rn915R6Xts9KRfWAzmgGL',
                 Name: 'local-kafka-test',
@@ -732,19 +656,10 @@ export const data = [
                   userId: 'user8',
                   context: {
                     ip: '14.5.67.21',
-                    traits: {
-                      trait1: 'new-val',
-                    },
-                    library: {
-                      name: 'http',
-                    },
+                    traits: { trait1: 'new-val' },
+                    library: { name: 'http' },
                   },
-                  integrations: {
-                    All: true,
-                    KAFKA: {
-                      topic: 'topic-2',
-                    },
-                  },
+                  integrations: { All: true, KAFKA: { topic: 'topic-2' } },
                   messageId: '87c98fc2-561b-4631-8cd6-1d02cdd1429f',
                   timestamp: '2020-02-02T00:23:09.544Z',
                   receivedAt: '2021-07-08T02:45:06.851+05:30',
@@ -754,10 +669,7 @@ export const data = [
                 },
                 topic: 'topic-2',
               },
-              metadata: {
-                rudderId: 'user8<<>>topic-2',
-                jobId: 9,
-              },
+              metadata: { rudderId: 'user8<<>>topic-2', jobId: 9, userId: 'u1' },
               destination: {
                 ID: '1uzGR4rn915R6Xts9KRfWAzmgGL',
                 Name: 'local-kafka-test',
@@ -824,19 +736,10 @@ export const data = [
                   userId: 'user8',
                   context: {
                     ip: '14.5.67.21',
-                    traits: {
-                      trait1: 'new-val',
-                    },
-                    library: {
-                      name: 'http',
-                    },
+                    traits: { trait1: 'new-val' },
+                    library: { name: 'http' },
                   },
-                  integrations: {
-                    All: true,
-                    KAFKA: {
-                      topic: 'topic-3',
-                    },
-                  },
+                  integrations: { All: true, KAFKA: { topic: 'topic-3' } },
                   messageId: '87c98fc2-561b-4631-8cd6-1d02cdd1429f',
                   timestamp: '2020-02-02T00:23:09.544Z',
                   receivedAt: '2021-07-08T02:45:06.851+05:30',
@@ -846,10 +749,7 @@ export const data = [
                 },
                 topic: 'topic-3',
               },
-              metadata: {
-                rudderId: 'user8<<>>topic-3',
-                jobId: 10,
-              },
+              metadata: { rudderId: 'user8<<>>topic-3', jobId: 10, userId: 'u1' },
               destination: {
                 ID: '1uzGR4rn915R6Xts9KRfWAzmgGL',
                 Name: 'local-kafka-test',
@@ -927,12 +827,8 @@ export const data = [
                   userId: 'user1',
                   context: {
                     ip: '14.5.67.21',
-                    traits: {
-                      trait1: 'new-val',
-                    },
-                    library: {
-                      name: 'http',
-                    },
+                    traits: { trait1: 'new-val' },
+                    library: { name: 'http' },
                   },
                   messageId: '6f27a4da-cefb-4800-acf1-f467e8aab91c',
                   timestamp: '2020-02-02T00:23:09.544Z',
@@ -951,12 +847,8 @@ export const data = [
                   userId: 'user2',
                   context: {
                     ip: '14.5.67.21',
-                    traits: {
-                      trait1: 'new-val',
-                    },
-                    library: {
-                      name: 'http',
-                    },
+                    traits: { trait1: 'new-val' },
+                    library: { name: 'http' },
                   },
                   messageId: 'fe182d9e-e86e-4db5-ae12-f4b399555fcc',
                   timestamp: '2020-02-02T00:23:09.544Z',
@@ -975,12 +867,8 @@ export const data = [
                   userId: 'user3',
                   context: {
                     ip: '14.5.67.21',
-                    traits: {
-                      trait1: 'new-val',
-                    },
-                    library: {
-                      name: 'http',
-                    },
+                    traits: { trait1: 'new-val' },
+                    library: { name: 'http' },
                   },
                   messageId: '2803e656-77ff-47ca-9606-90663f9aed38',
                   timestamp: '2020-02-02T00:23:09.544Z',
@@ -999,12 +887,8 @@ export const data = [
                   userId: 'user4',
                   context: {
                     ip: '14.5.67.21',
-                    traits: {
-                      trait1: 'new-val',
-                    },
-                    library: {
-                      name: 'http',
-                    },
+                    traits: { trait1: 'new-val' },
+                    library: { name: 'http' },
                   },
                   messageId: '87c98fc2-561b-4631-8cd6-1d02cdd1429f',
                   timestamp: '2020-02-02T00:23:09.544Z',
@@ -1023,19 +907,10 @@ export const data = [
                   userId: 'user5',
                   context: {
                     ip: '14.5.67.21',
-                    traits: {
-                      trait1: 'new-val',
-                    },
-                    library: {
-                      name: 'http',
-                    },
+                    traits: { trait1: 'new-val' },
+                    library: { name: 'http' },
                   },
-                  integrations: {
-                    All: true,
-                    KAFKA: {
-                      schemaId: 'schema001',
-                    },
-                  },
+                  integrations: { All: true, KAFKA: { schemaId: 'schema001' } },
                   messageId: '87c98fc2-561b-4631-8cd6-1d02cdd1429f',
                   timestamp: '2020-02-02T00:23:09.544Z',
                   receivedAt: '2021-07-08T02:45:06.851+05:30',
@@ -1048,23 +923,11 @@ export const data = [
               },
             ],
             metadata: [
-              { rudderId: 'user1<<>>new-topic', jobId: 1 },
-              {
-                rudderId: 'user2<<>>new-topic',
-                jobId: 2,
-              },
-              {
-                rudderId: 'user3<<>>new-topic',
-                jobId: 3,
-              },
-              {
-                rudderId: 'user4<<>>new-topic',
-                jobId: 4,
-              },
-              {
-                rudderId: 'user5<<>>new-topic',
-                jobId: 5,
-              },
+              { rudderId: 'user1<<>>new-topic', jobId: 1, userId: 'u1' },
+              { rudderId: 'user2<<>>new-topic', jobId: 2, userId: 'u1' },
+              { rudderId: 'user3<<>>new-topic', jobId: 3, userId: 'u1' },
+              { rudderId: 'user4<<>>new-topic', jobId: 4, userId: 'u1' },
+              { rudderId: 'user5<<>>new-topic', jobId: 5, userId: 'u1' },
             ],
             destination: {
               ID: '1uzGR4rn915R6Xts9KRfWAzmgGL',
@@ -1135,19 +998,10 @@ export const data = [
                   userId: 'user6',
                   context: {
                     ip: '14.5.67.21',
-                    traits: {
-                      trait1: 'new-val',
-                    },
-                    library: {
-                      name: 'http',
-                    },
+                    traits: { trait1: 'new-val' },
+                    library: { name: 'http' },
                   },
-                  integrations: {
-                    All: true,
-                    KAFKA: {
-                      topic: 'topic-1',
-                    },
-                  },
+                  integrations: { All: true, KAFKA: { topic: 'topic-1' } },
                   messageId: '87c98fc2-561b-4631-8cd6-1d02cdd1429f',
                   timestamp: '2020-02-02T00:23:09.544Z',
                   receivedAt: '2021-07-08T02:45:06.851+05:30',
@@ -1165,19 +1019,10 @@ export const data = [
                   userId: 'user7',
                   context: {
                     ip: '14.5.67.21',
-                    traits: {
-                      trait1: 'new-val',
-                    },
-                    library: {
-                      name: 'http',
-                    },
+                    traits: { trait1: 'new-val' },
+                    library: { name: 'http' },
                   },
-                  integrations: {
-                    All: true,
-                    KAFKA: {
-                      topic: 'topic-1',
-                    },
-                  },
+                  integrations: { All: true, KAFKA: { topic: 'topic-1' } },
                   messageId: '87c98fc2-561b-4631-8cd6-1d02cdd1429f',
                   timestamp: '2020-02-02T00:23:09.544Z',
                   receivedAt: '2021-07-08T02:45:06.851+05:30',
@@ -1189,14 +1034,8 @@ export const data = [
               },
             ],
             metadata: [
-              {
-                rudderId: 'user6<<>>topic-1',
-                jobId: 6,
-              },
-              {
-                rudderId: 'user7<<>>topic-1',
-                jobId: 7,
-              },
+              { rudderId: 'user6<<>>topic-1', jobId: 6, userId: 'u1' },
+              { rudderId: 'user7<<>>topic-1', jobId: 7, userId: 'u1' },
             ],
             destination: {
               ID: '1uzGR4rn915R6Xts9KRfWAzmgGL',
@@ -1267,19 +1106,10 @@ export const data = [
                   userId: 'user8',
                   context: {
                     ip: '14.5.67.21',
-                    traits: {
-                      trait1: 'new-val',
-                    },
-                    library: {
-                      name: 'http',
-                    },
+                    traits: { trait1: 'new-val' },
+                    library: { name: 'http' },
                   },
-                  integrations: {
-                    All: true,
-                    KAFKA: {
-                      topic: 'topic-2',
-                    },
-                  },
+                  integrations: { All: true, KAFKA: { topic: 'topic-2' } },
                   messageId: '87c98fc2-561b-4631-8cd6-1d02cdd1429f',
                   timestamp: '2020-02-02T00:23:09.544Z',
                   receivedAt: '2021-07-08T02:45:06.851+05:30',
@@ -1297,19 +1127,10 @@ export const data = [
                   userId: 'user8',
                   context: {
                     ip: '14.5.67.21',
-                    traits: {
-                      trait1: 'new-val',
-                    },
-                    library: {
-                      name: 'http',
-                    },
+                    traits: { trait1: 'new-val' },
+                    library: { name: 'http' },
                   },
-                  integrations: {
-                    All: true,
-                    KAFKA: {
-                      topic: 'topic-2',
-                    },
-                  },
+                  integrations: { All: true, KAFKA: { topic: 'topic-2' } },
                   messageId: '87c98fc2-561b-4631-8cd6-1d02cdd1429f',
                   timestamp: '2020-02-02T00:23:09.544Z',
                   receivedAt: '2021-07-08T02:45:06.851+05:30',
@@ -1321,14 +1142,8 @@ export const data = [
               },
             ],
             metadata: [
-              {
-                rudderId: 'user8<<>>topic-2',
-                jobId: 8,
-              },
-              {
-                rudderId: 'user8<<>>topic-2',
-                jobId: 9,
-              },
+              { rudderId: 'user8<<>>topic-2', jobId: 8, userId: 'u1' },
+              { rudderId: 'user8<<>>topic-2', jobId: 9, userId: 'u1' },
             ],
             destination: {
               ID: '1uzGR4rn915R6Xts9KRfWAzmgGL',
@@ -1399,19 +1214,10 @@ export const data = [
                   userId: 'user8',
                   context: {
                     ip: '14.5.67.21',
-                    traits: {
-                      trait1: 'new-val',
-                    },
-                    library: {
-                      name: 'http',
-                    },
+                    traits: { trait1: 'new-val' },
+                    library: { name: 'http' },
                   },
-                  integrations: {
-                    All: true,
-                    KAFKA: {
-                      topic: 'topic-3',
-                    },
-                  },
+                  integrations: { All: true, KAFKA: { topic: 'topic-3' } },
                   messageId: '87c98fc2-561b-4631-8cd6-1d02cdd1429f',
                   timestamp: '2020-02-02T00:23:09.544Z',
                   receivedAt: '2021-07-08T02:45:06.851+05:30',
@@ -1422,12 +1228,7 @@ export const data = [
                 topic: 'topic-3',
               },
             ],
-            metadata: [
-              {
-                rudderId: 'user8<<>>topic-3',
-                jobId: 10,
-              },
-            ],
+            metadata: [{ rudderId: 'user8<<>>topic-3', jobId: 10, userId: 'u1' }],
             destination: {
               ID: '1uzGR4rn915R6Xts9KRfWAzmgGL',
               Name: 'local-kafka-test',

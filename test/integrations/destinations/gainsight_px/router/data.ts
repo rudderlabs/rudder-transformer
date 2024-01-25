@@ -16,10 +16,7 @@ export const data = [
                 userId: 'stanley-kubrick',
                 channel: 'web',
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -55,10 +52,7 @@ export const data = [
                     countryName: 'USA',
                     hobbyCustomField: 'Making films. Being a genius',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.1.18',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.1.18' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36',
@@ -69,9 +63,7 @@ export const data = [
                 receivedAt: '2021-06-25T14:29:52.911+05:30',
                 request_ip: '[::1]',
                 anonymousId: '1585ea2f-dddc-4d23-935f-c1196405d61e',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 originalTimestamp: '2021-06-25T08:59:52.891Z',
               },
               metadata: {
@@ -122,28 +114,13 @@ export const data = [
                   ResponseRules: {},
                 },
                 Config: {
-                  accountAttributeMap: [
-                    {
-                      from: 'cultureCustomField',
-                      to: 'culture',
-                    },
-                  ],
+                  accountAttributeMap: [{ from: 'cultureCustomField', to: 'culture' }],
                   apiKey: 'sample-api-key',
                   eventDelivery: false,
                   eventDeliveryTS: 1624472902670,
-                  globalContextMap: [
-                    {
-                      from: 'kubrickTest',
-                      to: 'value',
-                    },
-                  ],
+                  globalContextMap: [{ from: 'kubrickTest', to: 'value' }],
                   productTagKey: 'AP-SAMPLE-2',
-                  userAttributeMap: [
-                    {
-                      from: 'hobbyCustomField',
-                      to: 'hobby',
-                    },
-                  ],
+                  userAttributeMap: [{ from: 'hobbyCustomField', to: 'hobby' }],
                 },
                 Enabled: true,
                 Transformations: [],
@@ -158,10 +135,7 @@ export const data = [
                 userId: 'adifhas9734',
                 channel: 'web',
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -194,10 +168,7 @@ export const data = [
                     firstname: 'test',
                     previousCompany: 'testprevCompany2',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.1.18',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.1.18' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36',
@@ -207,28 +178,18 @@ export const data = [
                 timestamp: '2021-06-26T16:11:22.335+05:30',
                 properties: {
                   array: [1, 2, 3],
-                  nested: {
-                    json: 'test',
-                  },
+                  nested: { json: 'test' },
                   status: 'testing',
                   description: 'Example track call',
                   fullyNested: [
-                    {
-                      a: 1,
-                      b: 2,
-                    },
-                    {
-                      a: 1,
-                      b: [1, 2, 3],
-                    },
+                    { a: 1, b: 2 },
+                    { a: 1, b: [1, 2, 3] },
                   ],
                 },
                 receivedAt: '2021-06-26T16:11:22.335+05:30',
                 request_ip: '[::1]',
                 anonymousId: '1585ea2f-dddc-4d23-935f-c1196405d61e',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 originalTimestamp: '2021-06-26T10:41:22.316Z',
               },
               metadata: {
@@ -279,28 +240,13 @@ export const data = [
                   ResponseRules: {},
                 },
                 Config: {
-                  accountAttributeMap: [
-                    {
-                      from: 'cultureCustomField',
-                      to: 'culture',
-                    },
-                  ],
+                  accountAttributeMap: [{ from: 'cultureCustomField', to: 'culture' }],
                   apiKey: 'sample-api-key',
                   eventDelivery: false,
                   eventDeliveryTS: 1624472902670,
-                  globalContextMap: [
-                    {
-                      from: 'kubrickTest',
-                      to: 'value',
-                    },
-                  ],
+                  globalContextMap: [{ from: 'kubrickTest', to: 'value' }],
                   productTagKey: 'AP-SAMPLE-2',
-                  userAttributeMap: [
-                    {
-                      from: 'hobbyCustomField',
-                      to: 'hobby',
-                    },
-                  ],
+                  userAttributeMap: [{ from: 'hobbyCustomField', to: 'hobby' }],
                 },
                 Enabled: true,
                 Transformations: [],
@@ -334,15 +280,10 @@ export const data = [
                     gender: 'MALE',
                     title: 'Director/Film Maker',
                     score: 100,
-                    location: {
-                      countryName: 'USA',
-                      countryCode: 'US',
-                    },
+                    location: { countryName: 'USA', countryCode: 'US' },
                     firstName: 'Stanley',
                     lastName: 'Kubrick',
-                    customAttributes: {
-                      hobby: 'Making films. Being a genius',
-                    },
+                    customAttributes: { hobby: 'Making films. Being a genius' },
                     propertyKeys: ['AP-SAMPLE-2'],
                     type: 'USER',
                   },
@@ -404,28 +345,13 @@ export const data = [
                   ResponseRules: {},
                 },
                 Config: {
-                  accountAttributeMap: [
-                    {
-                      from: 'cultureCustomField',
-                      to: 'culture',
-                    },
-                  ],
+                  accountAttributeMap: [{ from: 'cultureCustomField', to: 'culture' }],
                   apiKey: 'sample-api-key',
                   eventDelivery: false,
                   eventDeliveryTS: 1624472902670,
-                  globalContextMap: [
-                    {
-                      from: 'kubrickTest',
-                      to: 'value',
-                    },
-                  ],
+                  globalContextMap: [{ from: 'kubrickTest', to: 'value' }],
                   productTagKey: 'AP-SAMPLE-2',
-                  userAttributeMap: [
-                    {
-                      from: 'hobbyCustomField',
-                      to: 'hobby',
-                    },
-                  ],
+                  userAttributeMap: [{ from: 'hobbyCustomField', to: 'hobby' }],
                 },
                 Enabled: true,
                 Transformations: [],
@@ -459,9 +385,7 @@ export const data = [
                     referrer: '$direct',
                     propertyKey: 'AP-SAMPLE-2',
                     userType: 'USER',
-                    globalContext: {
-                      kubrickTest: 'value',
-                    },
+                    globalContext: { kubrickTest: 'value' },
                   },
                   XML: {},
                   JSON_ARRAY: {},
@@ -521,28 +445,13 @@ export const data = [
                   ResponseRules: {},
                 },
                 Config: {
-                  accountAttributeMap: [
-                    {
-                      from: 'cultureCustomField',
-                      to: 'culture',
-                    },
-                  ],
+                  accountAttributeMap: [{ from: 'cultureCustomField', to: 'culture' }],
                   apiKey: 'sample-api-key',
                   eventDelivery: false,
                   eventDeliveryTS: 1624472902670,
-                  globalContextMap: [
-                    {
-                      from: 'kubrickTest',
-                      to: 'value',
-                    },
-                  ],
+                  globalContextMap: [{ from: 'kubrickTest', to: 'value' }],
                   productTagKey: 'AP-SAMPLE-2',
-                  userAttributeMap: [
-                    {
-                      from: 'hobbyCustomField',
-                      to: 'hobby',
-                    },
-                  ],
+                  userAttributeMap: [{ from: 'hobbyCustomField', to: 'hobby' }],
                 },
                 Enabled: true,
                 Transformations: [],

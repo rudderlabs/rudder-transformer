@@ -30,57 +30,26 @@ export const data = [
                     type: 'Android',
                     attTrackingStatus: 3,
                   },
-                  library: {
-                    name: 'com.rudderstack.android.sdk.core',
-                    version: '1.0.6',
-                  },
+                  library: { name: 'com.rudderstack.android.sdk.core', version: '1.0.6' },
                   locale: 'en-US',
-                  network: {
-                    bluetooth: false,
-                    carrier: 'Android',
-                    cellular: true,
-                    wifi: true,
-                  },
-                  os: {
-                    name: 'Android',
-                    version: '9',
-                  },
-                  screen: {
-                    density: 420,
-                    height: 1794,
-                    width: 1080,
-                  },
+                  network: { bluetooth: false, carrier: 'Android', cellular: true, wifi: true },
+                  os: { name: 'Android', version: '9' },
+                  screen: { density: 420, height: 1794, width: 1080 },
                   timezone: 'Asia/Kolkata',
-                  traits: {
-                    anonymousId: '21e13f4bc7ceddad',
-                  },
+                  traits: { anonymousId: '21e13f4bc7ceddad' },
                   userAgent:
                     'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
                 },
                 event: 'First Investment',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 messageId: '1601322811899-d9c7dd00-50dc-4364-95c8-e89423eb3cfb',
                 originalTimestamp: '2020-09-28T19:53:31.900Z',
                 properties: {
                   currency: 'EUR',
                   key1: 'value1',
                   key2: 'value2',
-                  key3: {
-                    k4: 'v4',
-                    k5: {
-                      k6: 'v6',
-                    },
-                  },
-                  key5: [
-                    {
-                      k: 'v1',
-                    },
-                    {
-                      k: 'v2',
-                    },
-                  ],
+                  key3: { k4: 'v4', k5: { k6: 'v6' } },
+                  key5: [{ k: 'v1' }, { k: 'v2' }],
                   revenue: 20.37566,
                 },
                 receivedAt: '2020-09-29T14:50:43.005+05:30',
@@ -89,9 +58,7 @@ export const data = [
                 timestamp: '2020-09-29T14:50:29.907+05:30',
                 type: 'track',
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               destination: {
                 ID: '1i3Em7GMU9xVEiDlZUN8c88BMS9',
                 Name: 'ADJ',
@@ -114,14 +81,8 @@ export const data = [
                 Config: {
                   appToken: 'testAppToken',
                   customMappings: [
-                    {
-                      from: 'Application Installed',
-                      to: '3fdmll',
-                    },
-                    {
-                      from: 'First Investment',
-                      to: 'testEventToken',
-                    },
+                    { from: 'Application Installed', to: '3fdmll' },
+                    { from: 'First Investment', to: 'testEventToken' },
                   ],
                   environment: true,
                 },
@@ -147,9 +108,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://s2s.adjust.com/event',
-                headers: {
-                  Accept: '*/*',
-                },
+                headers: { Accept: '*/*' },
                 params: {
                   callback_params:
                     '{"key1":"value1","key2":"value2","key3.k4":"v4","key3.k5.k6":"v6","key5[0].k":"v1","key5[1].k":"v2"}',
@@ -165,20 +124,11 @@ export const data = [
                   event_token: 'testEventToken',
                   environment: 'production',
                 },
-                body: {
-                  JSON: {},
-                  XML: {},
-                  JSON_ARRAY: {},
-                  FORM: {},
-                },
+                body: { JSON: {}, XML: {}, JSON_ARRAY: {}, FORM: {} },
                 files: {},
                 userId: '21e13f4bc7ceddad',
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -203,14 +153,8 @@ export const data = [
                 Config: {
                   appToken: 'testAppToken',
                   customMappings: [
-                    {
-                      from: 'Application Installed',
-                      to: '3fdmll',
-                    },
-                    {
-                      from: 'First Investment',
-                      to: 'testEventToken',
-                    },
+                    { from: 'Application Installed', to: '3fdmll' },
+                    { from: 'First Investment', to: 'testEventToken' },
                   ],
                   environment: true,
                 },
@@ -255,57 +199,26 @@ export const data = [
                     type: 'ios',
                     attTrackingStatus: 3,
                   },
-                  library: {
-                    name: 'com.rudderstack.android.sdk.core',
-                    version: '1.0.6',
-                  },
+                  library: { name: 'com.rudderstack.android.sdk.core', version: '1.0.6' },
                   locale: 'en-US',
-                  network: {
-                    bluetooth: false,
-                    carrier: 'Android',
-                    cellular: true,
-                    wifi: true,
-                  },
-                  os: {
-                    name: 'Android',
-                    version: '9',
-                  },
-                  screen: {
-                    density: 420,
-                    height: 1794,
-                    width: 1080,
-                  },
+                  network: { bluetooth: false, carrier: 'Android', cellular: true, wifi: true },
+                  os: { name: 'Android', version: '9' },
+                  screen: { density: 420, height: 1794, width: 1080 },
                   timezone: 'Asia/Kolkata',
-                  traits: {
-                    anonymousId: '21e13f4bc7ceddad',
-                  },
+                  traits: { anonymousId: '21e13f4bc7ceddad' },
                   userAgent:
                     'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
                 },
                 event: 'First Investment',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 messageId: '1601322811899-d9c7dd00-50dc-4364-95c8-e89423eb3cfb',
                 originalTimestamp: '2020-09-28T19:53:31.900Z',
                 properties: {
                   currency: 'EUR',
                   key1: 'value1',
                   key2: 'value2',
-                  key3: {
-                    k4: 'v4',
-                    k5: {
-                      k6: 'v6',
-                    },
-                  },
-                  key5: [
-                    {
-                      k: 'v1',
-                    },
-                    {
-                      k: 'v2',
-                    },
-                  ],
+                  key3: { k4: 'v4', k5: { k6: 'v6' } },
+                  key5: [{ k: 'v1' }, { k: 'v2' }],
                   revenue: 20.37566,
                 },
                 receivedAt: '2020-09-29T14:50:43.005+05:30',
@@ -314,9 +227,7 @@ export const data = [
                 timestamp: '2020-09-29T14:50:29.907+05:30',
                 type: 'track',
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               destination: {
                 ID: '1i3Em7GMU9xVEiDlZUN8c88BMS9',
                 Name: 'ADJ',
@@ -339,14 +250,8 @@ export const data = [
                 Config: {
                   appToken: 'testAppToken',
                   customMappings: [
-                    {
-                      from: 'Application Installed',
-                      to: '3fdmll',
-                    },
-                    {
-                      from: 'First Investment',
-                      to: 'testEventToken',
-                    },
+                    { from: 'Application Installed', to: '3fdmll' },
+                    { from: 'First Investment', to: 'testEventToken' },
                   ],
                   environment: true,
                 },
@@ -372,9 +277,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://s2s.adjust.com/event',
-                headers: {
-                  Accept: '*/*',
-                },
+                headers: { Accept: '*/*' },
                 params: {
                   callback_params:
                     '{"key1":"value1","key2":"value2","key3.k4":"v4","key3.k5.k6":"v6","key5[0].k":"v1","key5[1].k":"v2"}',
@@ -390,20 +293,11 @@ export const data = [
                   event_token: 'testEventToken',
                   environment: 'production',
                 },
-                body: {
-                  JSON: {},
-                  XML: {},
-                  JSON_ARRAY: {},
-                  FORM: {},
-                },
+                body: { JSON: {}, XML: {}, JSON_ARRAY: {}, FORM: {} },
                 files: {},
                 userId: '21e13f4bc7ceddad',
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -428,14 +322,8 @@ export const data = [
                 Config: {
                   appToken: 'testAppToken',
                   customMappings: [
-                    {
-                      from: 'Application Installed',
-                      to: '3fdmll',
-                    },
-                    {
-                      from: 'First Investment',
-                      to: 'testEventToken',
-                    },
+                    { from: 'Application Installed', to: '3fdmll' },
+                    { from: 'First Investment', to: 'testEventToken' },
                   ],
                   environment: true,
                 },

@@ -37,25 +37,15 @@ export const data = [
                     version: '1.0.5',
                   },
                   ip: '0.0.0.0',
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.5',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.5' },
                   locale: 'en-GB',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                   traits: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36',
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 messageId: 'dd266c67-9199-4a52-ba32-f46ddde67312',
                 originalTimestamp: '2020-01-24T06:29:02.358Z',
                 properties: {
@@ -79,6 +69,7 @@ export const data = [
                 jobId: 1,
                 messageId: 'dd266c67-9199-4a52-ba32-f46ddde67312',
                 sourceId: '1WjrlZIy1d41MCceOrFbDVPnOPY',
+                userId: 'u1',
               },
             },
             {
@@ -109,18 +100,10 @@ export const data = [
                     version: '1.0.5',
                   },
                   ip: '0.0.0.0',
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.5',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.5' },
                   locale: 'en-GB',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                   traits: {
                     city: 'Disney',
                     country: 'USA',
@@ -130,9 +113,7 @@ export const data = [
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36',
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 traits: {
                   city: 'Disney-1',
                   country: 'India',
@@ -155,6 +136,7 @@ export const data = [
                 jobId: 2,
                 messageId: '2536eda4-d638-4c93-8014-8ffe3f083214',
                 sourceId: '1WjrlZIy1d41MCceOrFbDVPnOPY',
+                userId: 'u1',
               },
             },
           ],
@@ -187,12 +169,7 @@ export const data = [
                     _t: '1579847342',
                     _d: 1,
                   },
-                  body: {
-                    JSON: {},
-                    XML: {},
-                    JSON_ARRAY: {},
-                    FORM: {},
-                  },
+                  body: { JSON: {}, XML: {}, JSON_ARRAY: {}, FORM: {} },
                   files: {},
                   userId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
                   statusCode: 200,
@@ -206,6 +183,7 @@ export const data = [
                   jobId: 1,
                   messageId: 'dd266c67-9199-4a52-ba32-f46ddde67312',
                   sourceId: '1WjrlZIy1d41MCceOrFbDVPnOPY',
+                  userId: 'u1',
                 },
               ],
               batched: false,
@@ -245,12 +223,7 @@ export const data = [
                     _t: '1579847342',
                     _d: 1,
                   },
-                  body: {
-                    JSON: {},
-                    XML: {},
-                    JSON_ARRAY: {},
-                    FORM: {},
-                  },
+                  body: { JSON: {}, XML: {}, JSON_ARRAY: {}, FORM: {} },
                   files: {},
                   userId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
                   statusCode: 200,
@@ -264,6 +237,7 @@ export const data = [
                   jobId: 2,
                   messageId: '2536eda4-d638-4c93-8014-8ffe3f083214',
                   sourceId: '1WjrlZIy1d41MCceOrFbDVPnOPY',
+                  userId: 'u1',
                 },
               ],
               batched: false,

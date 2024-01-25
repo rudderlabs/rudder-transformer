@@ -43,7 +43,7 @@ export const data = [
                 sentAt: '2019-10-14T11:15:53.296Z',
                 integrations: { AF: { af_uid: 'afUid' } },
               },
-              metadata: { jobId: 2 },
+              metadata: { jobId: 2, userId: 'u1' },
               destination: {
                 Config: {
                   devKey: 'ef1d42390426e3f7c90ac78272e74344',
@@ -85,7 +85,7 @@ export const data = [
                 sentAt: '2019-10-14T11:15:53.296Z',
                 integrations: { AF: { af_uid: 'afUid' } },
               },
-              metadata: { jobId: 2 },
+              metadata: { jobId: 3, userId: 'u1' },
               destination: {
                 Config: {
                   devKey: 'ef1d42390426e3f7c90ac78272e74344',
@@ -128,7 +128,7 @@ export const data = [
                 sentAt: '2019-10-14T11:15:53.296Z',
                 integrations: { AF: { af_uid: 'afUid' } },
               },
-              metadata: { jobId: 2 },
+              metadata: { jobId: 4, userId: 'u1' },
               destination: {
                 Config: {
                   devKey: 'ef1d42390426e3f7c90ac78272e74344',
@@ -177,7 +177,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [{ jobId: 2 }],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -217,7 +217,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [{ jobId: 2 }],
+              metadata: [{ jobId: 3, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -257,7 +257,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [{ jobId: 2 }],
+              metadata: [{ jobId: 4, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {

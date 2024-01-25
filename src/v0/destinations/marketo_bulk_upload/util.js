@@ -36,11 +36,6 @@ const hydrateStatusForServer = (statusCode, context) => {
   return status;
 };
 
-// const getAccessTokenCacheKey = (config = {}) => {
-//   const { munchkinId, clientId, clientSecret } = config;
-//   return `${munchkinId}-${clientId}-${clientSecret}`;
-// };
-
 /**
  * Handles common error responses returned from API calls.
  * Checks the error code and throws the appropriate error object based on the code.
@@ -74,7 +69,6 @@ const handleCommonErrorResponse = (apiCallResult, OpErrorMessage, OpActivity) =>
   // checking for invalid/expired token errors and evicting cache in that case
   // rudderJobMetadata contains some destination info which is being used to evict the cache
   if (
-    //  authCache &&
     apiCallResult.response?.errors &&
     apiCallResult.response?.errors?.length > 0 &&
     apiCallResult.response?.errors.some(

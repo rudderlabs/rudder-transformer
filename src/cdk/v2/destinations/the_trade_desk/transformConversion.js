@@ -6,7 +6,6 @@ const {
   removeUndefinedAndNullValues,
 } = require('../../../../v0/util');
 const { EventType } = require('../../../../constants');
-const { JSON_MIME_TYPE } = require('../../../../v0/util/constant');
 const { REAL_TIME_CONVERSION_ENDPOINT } = require('./config');
 const {
   prepareFromConfig,
@@ -18,6 +17,7 @@ const {
   populateEventName,
   getDataProcessingOptions,
   getPrivacySetting,
+  enrichTrackPayload,
 } = require('./utils');
 
 const responseBuilder = (payload) => {
@@ -25,7 +25,6 @@ const responseBuilder = (payload) => {
   response.endpoint = REAL_TIME_CONVERSION_ENDPOINT;
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = payload;
-  response.headers = { 'Content-Type': JSON_MIME_TYPE };
   return response;
 };
 
@@ -52,7 +51,7 @@ const prepareTrackPayload = (message, destination) => {
   const customProperties = prepareCustomProperties(message, destination);
   const eventName = populateEventName(message, destination);
   const value = getRevenue(message);
-  const payload = {
+  let payload = {
     ...configPayload,
     ...commonPayload,
     event_name: eventName,
@@ -65,25 +64,18 @@ const prepareTrackPayload = (message, destination) => {
     privacy_settings: getPrivacySetting(message),
   };
 
+  payload = enrichTrackPayload(message, payload);
   return { data: [removeUndefinedAndNullValues(payload)] };
 };
 
 const trackResponseBuilder = (message, destination) => {
-  validateInput(message);
   const payload = prepareTrackPayload(message, destination);
   return responseBuilder(payload);
 };
 
 const processEvent = (message, destination) => {
-  if (!message.type) {
-    throw new InstrumentationError('Event type is required');
-  }
-
-  const messageType = message.type.toLowerCase();
-  if (messageType === EventType.TRACK) {
-    return trackResponseBuilder(message, destination);
-  }
-  throw new InstrumentationError(`Event type "${messageType}" is not supported`);
+  validateInput(message);
+  return trackResponseBuilder(message, destination);
 };
 
 const process = (event) => processEvent(event.message, event.destination);

@@ -11,24 +11,30 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const proxyRequest = async (request) => {
   const { endpoint, data, method, params, headers, config } = prepareProxyRequest(request);
-
-  if (!config?.advertiserSecretKey) {
-    throw new PlatformError('Advertiser secret key is missing in destination config. Aborting');
-  }
-
-  if (!process.env.THE_TRADE_DESK_DATA_PROVIDER_SECRET_KEY) {
-    throw new PlatformError('Data provider secret key is missing. Aborting');
-  }
-
-  const ProxyHeaders = {
+  let ProxyHeaders = {
     ...headers,
-    TtdSignature: getSignatureHeader(data, config.advertiserSecretKey),
-    'TtdSignature-dp': getSignatureHeader(
-      data,
-      process.env.THE_TRADE_DESK_DATA_PROVIDER_SECRET_KEY,
-    ),
     'Content-Type': JSON_MIME_TYPE,
   };
+
+  // For first party data flow
+  if (!endpoint.includes('realtimeconversion')) {
+    if (!config?.advertiserSecretKey) {
+      throw new PlatformError('Advertiser secret key is missing in destination config. Aborting');
+    }
+
+    if (!process.env.THE_TRADE_DESK_DATA_PROVIDER_SECRET_KEY) {
+      throw new PlatformError('Data provider secret key is missing. Aborting');
+    }
+
+    ProxyHeaders = {
+      ...ProxyHeaders,
+      TtdSignature: getSignatureHeader(data, config.advertiserSecretKey),
+      'TtdSignature-dp': getSignatureHeader(
+        data,
+        process.env.THE_TRADE_DESK_DATA_PROVIDER_SECRET_KEY,
+      ),
+    };
+  }
 
   const requestOptions = {
     url: endpoint,
@@ -48,7 +54,7 @@ const responseHandler = (destinationResponse) => {
   // if the response from destination is not a success case build an explicit error
   if (!isHttpStatusSuccess(status)) {
     throw new NetworkError(
-      `Request failed with status: ${status} due to ${response}`,
+      `Request failed with status: ${status} due to ${JSON.stringify(response)}`,
       status,
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),

@@ -1,3 +1,4 @@
+const lodash = require('lodash');
 const get = require('get-value');
 const CryptoJS = require('crypto-js');
 const { InstrumentationError, AbortedError } = require('@rudderstack/integrations-lib');
@@ -7,6 +8,7 @@ const {
   isDefinedAndNotNull,
   isAppleFamily,
   getIntegrationsObj,
+  extractCustomFields,
 } = require('../../../../v0/util');
 const {
   DATA_SERVERS_BASE_ENDPOINTS_MAP,
@@ -14,8 +16,7 @@ const {
   COMMON_CONFIGS,
   ITEM_CONFIGS,
   ECOMM_EVENT_MAP,
-  REVENUE_SUPPORTED_ECOMM_EVENTS,
-  PRICE_SUPPORTED_ECOMM_EVENTS,
+  ITEM_EXCLUSION_LIST,
 } = require('./config');
 
 const getTTLInMin = (ttl) => parseInt(ttl, 10) * 1440;
@@ -40,14 +41,15 @@ const prepareFromConfig = (destination) => ({
 const getRevenue = (message) => {
   const { event, properties } = message;
   let revenue = properties?.value;
-  if (PRICE_SUPPORTED_ECOMM_EVENTS.includes(event)) {
+  const eventsMapInfo = ECOMM_EVENT_MAP[event.toLowerCase()];
+  if (eventsMapInfo?.rootLevelPriceSupported) {
     const { price, quantity = 1 } = properties;
     if (price && !Number.isNaN(parseFloat(price)) && !Number.isNaN(parseInt(quantity, 10))) {
       revenue = parseFloat(price) * parseInt(quantity, 10);
     }
-  } else if (REVENUE_SUPPORTED_ECOMM_EVENTS.includes(event)) {
+  } else if (eventsMapInfo?.revenueFieldSupported) {
     revenue = properties?.revenue || revenue;
-    if (event === 'Order Completed' && !revenue) {
+    if (event.toLowerCase() === 'order completed' && !revenue) {
       throw new InstrumentationError('value is required for `Order Completed` event');
     }
   }
@@ -55,11 +57,36 @@ const getRevenue = (message) => {
   return revenue;
 };
 
+const prepareItemsFromProperties = (message) => {
+  const { properties } = message;
+  const items = [];
+  const item = constructPayload(properties, ITEM_CONFIGS);
+  // extractCustomFields(message, properties, ['properties'], ITEM_EXCLUSION_LIST);
+  items.push(item);
+  return items;
+};
+
+const prepareItemsFromProducts = (message) => {
+  const products = get(message, 'properties.products');
+  const items = [];
+  products.forEach((product) => {
+    const item = constructPayload(product, ITEM_CONFIGS);
+    extractCustomFields(product, item, 'root', ITEM_EXCLUSION_LIST);
+    items.push(item);
+  });
+  return items;
+};
+
 const prepareItemsPayload = (message) => {
-  const productPropertiesArray = Array.isArray(message.properties?.products)
-    ? message.properties.products
-    : [message.properties];
-  return productPropertiesArray.map((product) => constructPayload(product, ITEM_CONFIGS));
+  const { event } = message;
+  let items;
+  const eventMapInfo = ECOMM_EVENT_MAP[event.toLowerCase()];
+  if (eventMapInfo?.itemsArray) {
+    items = prepareItemsFromProducts(message);
+  } else if (eventMapInfo) {
+    items = prepareItemsFromProperties(message);
+  }
+  return items;
 };
 
 const getDeviceAdvertisingId = (message) => {
@@ -104,7 +131,11 @@ const getAdvertisingId = (message) => {
     return { id: deviceId, type };
   }
   const externalIdObj = getDestinationExternalIDObject(message);
-  return { id: externalIdObj?.id, type: externalIdObj?.type };
+  if (externalIdObj?.id && externalIdObj?.type) {
+    return { id: externalIdObj.id, type: externalIdObj.type.toUpperCase() };
+  }
+
+  return { id: null, type: null };
 };
 
 const prepareCustomProperties = (message, destination) => {
@@ -116,6 +147,7 @@ const prepareCustomProperties = (message, destination) => {
       const value = get(message, rudderProperty);
       if (value) {
         payload[tradeDeskProperty] = value;
+        lodash.unset(message, rudderProperty);
       }
     });
   }
@@ -127,7 +159,7 @@ const populateEventName = (message, destination) => {
   const { event } = message;
   const { eventsMapping } = destination.Config;
 
-  if (eventsMapping.length > 0) {
+  if (Array.isArray(eventsMapping) && eventsMapping.length > 0) {
     const keyMap = getHashFromArray(eventsMapping, 'from', 'to');
     eventName = keyMap[event.toLowerCase()];
   }
@@ -136,15 +168,9 @@ const populateEventName = (message, destination) => {
     return eventName;
   }
 
-  const eventMapInfo = ECOMM_EVENT_MAP.find((eventMap) => {
-    if (eventMap.src.toLowerCase() === event.toLowerCase()) {
-      return eventMap;
-    }
-    return false;
-  });
-
+  const eventMapInfo = ECOMM_EVENT_MAP[event.toLowerCase()];
   if (isDefinedAndNotNull(eventMapInfo)) {
-    return eventMapInfo.dest;
+    return eventMapInfo.event;
   }
 
   return event;
@@ -161,6 +187,7 @@ const getDataProcessingOptions = (message) => {
   const integrationObj = getIntegrationsObj(message, 'THE_TRADE_DESK') || {};
   let { policies } = integrationObj;
   const { region } = integrationObj;
+  let dataProcessingOptions;
 
   if (region && !region.toLowerCase().startsWith('us')) {
     throw new InstrumentationError('Only US states are supported');
@@ -178,12 +205,32 @@ const getDataProcessingOptions = (message) => {
     throw new InstrumentationError('Only LDU policy is supported');
   }
 
-  return { policies, region };
+  if (policies && region) {
+    dataProcessingOptions = { policies, region };
+  }
+
+  return dataProcessingOptions;
 };
 
 const getPrivacySetting = (message) => {
   const integrationObj = getIntegrationsObj(message, 'THE_TRADE_DESK');
   return integrationObj?.privacy_settings;
+};
+
+const enrichTrackPayload = (message, payload) => {
+  let rawPayload = { ...payload };
+  const eventsMapInfo = ECOMM_EVENT_MAP[message.event.toLowerCase()];
+  if (eventsMapInfo && !eventsMapInfo.itemsArray) {
+    rawPayload = extractCustomFields(message, rawPayload, ['properties'], ITEM_EXCLUSION_LIST);
+  } else {
+    rawPayload = extractCustomFields(
+      message,
+      rawPayload,
+      ['properties'],
+      ['products', 'revenue', 'value'],
+    );
+  }
+  return rawPayload;
 };
 
 module.exports = {
@@ -201,4 +248,5 @@ module.exports = {
   populateEventName,
   getDataProcessingOptions,
   getPrivacySetting,
+  enrichTrackPayload,
 };

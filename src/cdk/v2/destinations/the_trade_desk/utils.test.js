@@ -9,6 +9,7 @@ const {
   populateEventName,
   getDataProcessingOptions,
   getPrivacySetting,
+  enrichTrackPayload,
 } = require('./utils');
 
 describe('getSignatureHeader', () => {
@@ -294,7 +295,7 @@ describe('getAdvertisingId', () => {
     };
 
     let result = getAdvertisingId(message);
-    expect(result).toEqual({ id: undefined, type: undefined });
+    expect(result).toEqual({ id: null, type: null });
 
     message = {
       context: {
@@ -305,7 +306,7 @@ describe('getAdvertisingId', () => {
     };
 
     result = getAdvertisingId(message);
-    expect(result).toEqual({ id: undefined, type: undefined });
+    expect(result).toEqual({ id: null, type: null });
   });
 
   it('should return an object with undefined ID and type when the message contains an external ID object with a supported type but no ID or missing externalId', () => {
@@ -319,13 +320,13 @@ describe('getAdvertisingId', () => {
       },
     };
     let result = getAdvertisingId(message);
-    expect(result).toEqual({ id: undefined, type: undefined });
+    expect(result).toEqual({ id: null, type: null });
 
     message = {
       context: {},
     };
     result = getAdvertisingId(message);
-    expect(result).toEqual({ id: undefined, type: undefined });
+    expect(result).toEqual({ id: null, type: null });
   });
 });
 
@@ -496,7 +497,7 @@ describe('getDataProcessingOptions', () => {
       },
     };
 
-    expect(getDataProcessingOptions(message)).toEqual({ policies: ['LDU'], region: undefined });
+    expect(getDataProcessingOptions(message)).toBeUndefined();
 
     message = {
       integrations: {
@@ -504,7 +505,7 @@ describe('getDataProcessingOptions', () => {
       },
     };
 
-    expect(getDataProcessingOptions(message)).toEqual({ policies: ['LDU'], region: undefined });
+    expect(getDataProcessingOptions(message)).toBeUndefined();
 
     message = {
       integrations: {
@@ -553,5 +554,106 @@ describe('getPrivacySetting', () => {
 
     message = { integrations: { THE_TRADE_DESK: { privacy_settings: null } } };
     expect(getPrivacySetting(message)).toBeNull();
+  });
+});
+
+describe('enrichTrackPayload', () => {
+  it('should correctly enrich the payload with custom fields for ecomm events where product array is  not supported', () => {
+    const message = {
+      event: 'Product Added',
+      properties: {
+        product_id: 'prd123',
+        sku: 'sku123',
+        brand: 'brand123',
+        property1: 'value1',
+        property2: 'value2',
+      },
+    };
+    const payload = {
+      items: [
+        {
+          item_code: 'prd123',
+        },
+      ],
+      property1: 'value1',
+      property2: 'value2',
+    };
+    const expectedPayload = {
+      items: [
+        {
+          item_code: 'prd123',
+        },
+      ],
+      brand: 'brand123',
+      property1: 'value1',
+      property2: 'value2',
+    };
+
+    const result = enrichTrackPayload(message, payload);
+    expect(result).toEqual(expectedPayload);
+  });
+
+  it('should correctly enrich the payload with custom fields when the for ecomm events with products array support', () => {
+    const message = {
+      event: 'order completed',
+      properties: {
+        order_id: 'ord123',
+        total: 52.0,
+        subtotal: 45.0,
+        revenue: 50.0,
+        products: [{ product_id: 'prd123', sku: 'sku123', brand: 'brand123' }],
+        property1: 'value1',
+        property2: 'value2',
+      },
+    };
+    const payload = {
+      order_id: 'ord123',
+      value: 50.0,
+      items: [{ item_code: 'prd123', brand: 'brand123' }],
+      property1: 'value1',
+      property2: 'value2',
+    };
+    const expectedPayload = {
+      order_id: 'ord123',
+      total: 52.0,
+      subtotal: 45.0,
+      value: 50.0,
+      items: [{ item_code: 'prd123', brand: 'brand123' }],
+      property1: 'value1',
+      property2: 'value2',
+    };
+
+    const result = enrichTrackPayload(message, payload);
+
+    expect(result).toEqual(expectedPayload);
+  });
+
+  it('should return the enriched payload for custom event', () => {
+    const message = {
+      event: 'someEvent',
+      properties: {
+        order_id: 'ord123',
+        property1: 'value1',
+        property2: 'value2',
+      },
+    };
+    const payload = {
+      order_id: 'ord123',
+    };
+    let expectedPayload = {
+      order_id: 'ord123',
+      property1: 'value1',
+      property2: 'value2',
+    };
+
+    let result = enrichTrackPayload(message, payload);
+    expect(result).toEqual(expectedPayload);
+
+    expectedPayload = {
+      order_id: 'ord123',
+      property1: 'value1',
+      property2: 'value2',
+    };
+    expect(enrichTrackPayload(message, {})).toEqual(expectedPayload);
   });
 });

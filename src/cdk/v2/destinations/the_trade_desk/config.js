@@ -1,6 +1,6 @@
 const { getMappingConfig } = require('../../../../v0/util');
 
-const SUPPORTED_EVENT_TYPE = 'record';
+const SUPPORTED_EVENT_TYPE = ['record', 'track'];
 const ACTION_TYPES = ['insert', 'delete'];
 const DATA_PROVIDER_ID = 'rudderstack';
 
@@ -27,44 +27,50 @@ const CONVERSION_SUPPORTED_ID_TYPES = [
   'UID2',
 ];
 
-const ECOMM_EVENT_MAP = [
-  {
-    src: 'Product Added',
-    dest: 'addtocart',
+const ECOMM_EVENT_MAP = {
+  'product added': {
+    event: 'addtocart',
+    rootLevelPriceSupported: true,
   },
-  {
-    src: 'Order Completed',
-    dest: 'purchase',
+  'order completed': {
+    event: 'purchase',
+    itemsArray: true,
+    revenueFieldSupported: true,
   },
-  {
-    src: 'Product Viewed',
-    dest: 'viewitem',
+  'product viewed': {
+    event: 'viewitem',
+    rootLevelPriceSupported: true,
   },
-  {
-    src: 'Checkout Started',
-    dest: 'startcheckout',
+  'checkout started': {
+    event: 'startcheckout',
+    itemsArray: true,
+    revenueFieldSupported: true,
   },
-  {
-    src: 'Cart Viewed',
-    dest: 'viewcart',
+  'cart viewed': {
+    event: 'viewcart',
+    itemsArray: true,
   },
-  {
-    src: 'Product Added to Wishlist',
-    dest: 'wishlistitem',
+  'product added to wishlist': {
+    event: 'wishlistitem',
+    rootLevelPriceSupported: true,
   },
-];
-
-const REVENUE_SUPPORTED_ECOMM_EVENTS = ['Order Completed', 'Checkout Started', 'Cart Viewed'];
-const PRICE_SUPPORTED_ECOMM_EVENTS = [
-  'Product Added',
-  'Product Viewed',
-  'Product Added to Wishlist',
-];
+};
 
 const CONFIG_CATEGORIES = {
   COMMON_CONFIGS: { name: 'TTDCommonConfig' },
   ITEM_CONFIGS: { name: 'TTDItemConfig' },
 };
+
+const ITEM_EXCLUSION_LIST = [
+  'product_id',
+  'sku',
+  'name',
+  'price',
+  'quantity',
+  'cat',
+  'category_id',
+  'categoryId',
+];
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
@@ -75,10 +81,10 @@ module.exports = {
   MAX_REQUEST_SIZE_IN_BYTES: 2500000,
   DATA_SERVERS_BASE_ENDPOINTS_MAP,
   CONVERSION_SUPPORTED_ID_TYPES,
+  CONFIG_CATEGORIES,
   COMMON_CONFIGS: MAPPING_CONFIG[CONFIG_CATEGORIES.COMMON_CONFIGS.name],
   ITEM_CONFIGS: MAPPING_CONFIG[CONFIG_CATEGORIES.ITEM_CONFIGS.name],
   ECOMM_EVENT_MAP,
-  REVENUE_SUPPORTED_ECOMM_EVENTS,
-  PRICE_SUPPORTED_ECOMM_EVENTS,
   REAL_TIME_CONVERSION_ENDPOINT,
+  ITEM_EXCLUSION_LIST,
 };

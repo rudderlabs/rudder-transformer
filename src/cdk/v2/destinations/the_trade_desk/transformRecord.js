@@ -1,4 +1,4 @@
-const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { BatchUtils } = require('@rudderstack/workflow-engine');
 const {
   defaultPostRequestConfig,
@@ -45,8 +45,17 @@ const processRecordInputs = (inputs, destination) => {
   const successMetadata = [];
   const errorResponseList = [];
 
-  const error = new InstrumentationError('Invalid action type');
+  if (!Config.audienceId) {
+    const segmentNameError = new ConfigurationError(
+      'Segment name/Audience ID is not present. Aborting',
+    );
+    const errorResponses = inputs.map((input) =>
+      handleRtTfSingleEventError(input, segmentNameError, {}),
+    );
+    return errorResponses;
+  }
 
+  const error = new InstrumentationError('Invalid action type');
   inputs.forEach((input) => {
     const { fields, action } = input.message;
     const isInsertOrDelete = action === 'insert' || action === 'delete';

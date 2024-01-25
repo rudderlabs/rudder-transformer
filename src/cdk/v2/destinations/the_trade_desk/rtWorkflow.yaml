@@ -3,15 +3,15 @@ bindings:
     path: ./transform
 
 steps:
-  - name: validateInput
+  - name: validateConfig
     template: |
-      $.assert(Array.isArray(^) && ^.length > 0, "Invalid event array")
       const config = ^[0].destination.Config
-      $.assertConfig(config.audienceId, "Segment name is not present. Aborting")
       $.assertConfig(config.advertiserId, "Advertiser ID is not present. Aborting")
       $.assertConfig(config.advertiserSecretKey, "Advertiser Secret Key is not present. Aborting")
+      $.assertConfig(config.trackerId, "Tracking Tag ID is not present. Aborting")
       config.ttlInDays ?  $.assertConfig(config.ttlInDays >=0 && config.ttlInDays <= 180, "TTL is out of range. Allowed values are 0 to 180 days")
 
   - name: processRouterDest
     template: |
+      $.assert(Array.isArray(^) && ^.length > 0, "Invalid event array")
       $.processRouterDest(^)

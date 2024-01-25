@@ -41,8 +41,8 @@ const hydrateStatusForServer = (statusCode, context) => {
  * Checks the error code and throws the appropriate error object based on the code.
  *
  * @param {object} resp - The response object containing the error information.
- * @param {string} OpErrorMessage - The error message to be used if the error code is not recognized.
- * @param {string} OpActivity - The activity name for tracking purposes.
+ * @param {string} opErrorMessage - The error message to be used if the error code is not recognized.
+ * @param {string} opActivity - The activity name for tracking purposes.
  * @throws {AbortedError} - If the error code is abortable.
  * @throws {ThrottledError} - If the error code is within the range of throttled codes.
  * @throws {RetryableError} - If the error code is neither abortable nor throttled.
@@ -65,7 +65,7 @@ const hydrateStatusForServer = (statusCode, context) => {
  *   console.log(error);
  * }
  */
-const handleCommonErrorResponse = (apiCallResult, OpErrorMessage, OpActivity) => {
+const handleCommonErrorResponse = (apiCallResult, opErrorMessage, opActivity) => {
   // checking for invalid/expired token errors and evicting cache in that case
   // rudderJobMetadata contains some destination info which is being used to evict the cache
   if (
@@ -76,7 +76,7 @@ const handleCommonErrorResponse = (apiCallResult, OpErrorMessage, OpActivity) =>
     )
   ) {
     throw new RetryableError(
-      `[${OpErrorMessage}]Error message: ${apiCallResult.response?.errors[0]?.message}`,
+      `[${opErrorMessage}]Error message: ${apiCallResult.response?.errors[0]?.message}`,
     );
   }
   if (
@@ -87,29 +87,29 @@ const handleCommonErrorResponse = (apiCallResult, OpErrorMessage, OpActivity) =>
       ABORTABLE_CODES.includes(apiCallResult.response?.errors[0]?.code))
   ) {
     // for empty file the code is 1003 and that should be retried
-    stats.increment(OpActivity, {
+    stats.increment(opActivity, {
       status: 400,
       state: 'Abortable',
     });
-    throw new AbortedError(apiCallResult.response?.errors[0]?.message || OpErrorMessage, 400);
+    throw new AbortedError(apiCallResult.response?.errors[0]?.message || opErrorMessage, 400);
   } else if (THROTTLED_CODES.includes(apiCallResult.response?.errors[0]?.code)) {
     // for more than 10 concurrent uses the code is 615 and that should be retried
-    stats.increment(OpActivity, {
+    stats.increment(opActivity, {
       status: 429,
       state: 'Retryable',
     });
     throw new RetryableError(
-      `[${OpErrorMessage}]Error message: ${apiCallResult.response?.errors[0]?.message}`,
+      `[${opErrorMessage}]Error message: ${apiCallResult.response?.errors[0]?.message}`,
       500,
     );
   }
   // by default every thing will be retried
-  stats.increment(OpActivity, {
+  stats.increment(opActivity, {
     status: 500,
     state: 'Retryable',
   });
   throw new RetryableError(
-    `[${OpErrorMessage}]Error message: ${apiCallResult.response?.errors[0]?.message}`,
+    `[${opErrorMessage}]Error message: ${apiCallResult.response?.errors[0]?.message}`,
     500,
   );
 };
@@ -130,8 +130,7 @@ const getAccessToken = async (config) => {
   });
 
   // sample response : {response: '[ENOTFOUND] :: DNS lookup failed', status: 400}
-  if (!isHttpStatusSuccess(accessTokenResponse.status)
-  ) {
+  if (!isHttpStatusSuccess(accessTokenResponse.status)) {
     throw new NetworkError(
       `Could not retrieve authorisation token due to error ${JSON.stringify(accessTokenResponse)}`,
       hydrateStatusForServer(accessTokenResponse.status, FETCH_ACCESS_TOKEN),

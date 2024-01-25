@@ -2,9 +2,49 @@ const {
   handleCommonErrorResponse,
   handlePollResponse,
   handleFileUploadResponse,
+  getAccessToken,
 } = require('./util');
 
-const { AbortedError, RetryableError } = require('@rudderstack/integrations-lib');
+const {
+  AbortedError,
+  RetryableError,
+  NetworkError,
+  TransformationError,
+} = require('@rudderstack/integrations-lib');
+const util = require('./util.js');
+const networkAdapter = require('../../../adapters/network');
+const { handleHttpRequest } = networkAdapter;
+
+// Mock the handleHttpRequest function
+jest.mock('../../../adapters/network');
+
+const successfulResponse = {
+  status: 200,
+  response: {
+    access_token: '<dummy-access-token>',
+    token_type: 'bearer',
+    expires_in: 3600,
+    scope: 'dummy@scope.com',
+    success: true,
+  },
+};
+
+const unsuccessfulResponse = {
+  status: 400,
+  response: '[ENOTFOUND] :: DNS lookup failed',
+};
+
+const emptyResponse = {
+  response: '',
+};
+
+const invalidClientErrorResponse = {
+  status: 401,
+  response: {
+    error: 'invalid_client',
+    error_description: 'Bad client credentials',
+  },
+};
 
 describe('handleCommonErrorResponse', () => {
   test('should throw AbortedError for abortable error codes', () => {
@@ -13,7 +53,7 @@ describe('handleCommonErrorResponse', () => {
         errors: [{ code: 1003, message: 'Aborted' }],
       },
     };
-    expect(() => handleCommonErrorResponse(resp, 'OpErrorMessage', 'OpActivity')).toThrow(
+    expect(() => handleCommonErrorResponse(resp, 'opErrorMessage', 'opActivity')).toThrow(
       AbortedError,
     );
   });
@@ -24,7 +64,7 @@ describe('handleCommonErrorResponse', () => {
         errors: [{ code: 615, message: 'Throttled' }],
       },
     };
-    expect(() => handleCommonErrorResponse(resp, 'OpErrorMessage', 'OpActivity')).toThrow(
+    expect(() => handleCommonErrorResponse(resp, 'opErrorMessage', 'opActivity')).toThrow(
       RetryableError,
     );
   });
@@ -35,7 +75,7 @@ describe('handleCommonErrorResponse', () => {
         errors: [{ code: 2000, message: 'Retryable' }],
       },
     };
-    expect(() => handleCommonErrorResponse(resp, 'OpErrorMessage', 'OpActivity')).toThrow(
+    expect(() => handleCommonErrorResponse(resp, 'opErrorMessage', 'opActivity')).toThrow(
       RetryableError,
     );
   });
@@ -46,7 +86,7 @@ describe('handleCommonErrorResponse', () => {
         errors: [],
       },
     };
-    expect(() => handleCommonErrorResponse(resp, 'OpErrorMessage', 'OpActivity')).toThrow(
+    expect(() => handleCommonErrorResponse(resp, 'opErrorMessage', 'opActivity')).toThrow(
       RetryableError,
     );
   });
@@ -226,5 +266,90 @@ describe('handleFileUploadResponse', () => {
     expect(() => {
       handleFileUploadResponse(resp, successfulJobs, unsuccessfulJobs, requestTime);
     }).toThrow(AbortedError);
+  });
+});
+
+describe('getAccessToken', () => {
+  beforeEach(() => {
+    handleHttpRequest.mockClear();
+  });
+
+  it('should retrieve and return access token on successful response', async () => {
+    const url =
+      'https://dummyMunchkinId.mktorest.com/identity/oauth/token?client_id=dummyClientId&client_secret=dummyClientSecret&grant_type=client_credentials';
+
+    handleHttpRequest.mockResolvedValueOnce({
+      processedResponse: successfulResponse,
+    });
+
+    const config = {
+      clientId: 'dummyClientId',
+      clientSecret: 'dummyClientSecret',
+      munchkinId: 'dummyMunchkinId',
+    };
+
+    const result = await getAccessToken(config);
+    expect(result).toBe('<dummy-access-token>');
+    expect(handleHttpRequest).toHaveBeenCalledTimes(1);
+    // Ensure your mock response structure is consistent with the actual behavior
+    expect(handleHttpRequest).toHaveBeenCalledWith('get', url, {
+      destType: 'marketo_bulk_upload',
+      feature: 'transformation',
+    });
+  });
+
+  it('should throw a NetworkError on unsuccessful HTTP status', async () => {
+    handleHttpRequest.mockResolvedValueOnce({
+      processedResponse: unsuccessfulResponse,
+    });
+
+    const config = {
+      clientId: 'dummyClientId',
+      clientSecret: 'dummyClientSecret',
+      munchkinId: 'dummyMunchkinId',
+    };
+
+    await expect(getAccessToken(config)).rejects.toThrow(NetworkError);
+  });
+
+  it('should throw a RetryableError when expires_in is 0', async () => {
+    handleHttpRequest.mockResolvedValueOnce({
+      processedResponse: {
+        ...successfulResponse,
+        response: { ...successfulResponse.response, expires_in: 0 },
+      },
+    });
+
+    const config = {
+      clientId: 'dummyClientId',
+      clientSecret: 'dummyClientSecret',
+      munchkinId: 'dummyMunchkinId',
+    };
+
+    await expect(getAccessToken(config)).rejects.toThrow(RetryableError);
+  });
+
+  it('should throw an AbortedError on unsuccessful response', async () => {
+    handleHttpRequest.mockResolvedValueOnce({ processedResponse: invalidClientErrorResponse });
+
+    const config = {
+      clientId: 'invalidClientID',
+      clientSecret: 'dummyClientSecret',
+      munchkinId: 'dummyMunchkinId',
+    };
+
+    await expect(getAccessToken(config)).rejects.toThrow(NetworkError);
+  });
+
+  it('should throw transformation error response', async () => {
+    handleHttpRequest.mockResolvedValueOnce({ processedResponse: emptyResponse });
+
+    const config = {
+      clientId: 'dummyClientId',
+      clientSecret: 'dummyClientSecret',
+      munchkinId: 'dummyMunchkinId',
+    };
+
+    await expect(getAccessToken(config)).rejects.toThrow(TransformationError);
   });
 });

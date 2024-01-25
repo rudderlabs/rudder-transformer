@@ -131,9 +131,7 @@ const getAccessToken = async (config) => {
   });
 
   // sample response : {response: '[ENOTFOUND] :: DNS lookup failed', status: 400}
-  if (
-    isDefinedAndNotNull(accessTokenResponse.status) &&
-    !isHttpStatusSuccess(accessTokenResponse.status)
+  if (!isHttpStatusSuccess(accessTokenResponse.status)
   ) {
     throw new NetworkError(
       `Could not retrieve authorisation token due to error ${JSON.stringify(accessTokenResponse)}`,
@@ -163,9 +161,9 @@ const getAccessToken = async (config) => {
     }
     return accessTokenResponse.response.access_token;
   }
-  throw new AbortedError(
+  throw new RetyrableError(
     `Could not retrieve authorisation token due to error ${JSON.stringify(accessTokenResponse)}`,
-    400,
+    500,
   );
 };
 

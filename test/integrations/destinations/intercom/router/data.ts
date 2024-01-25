@@ -25,6 +25,7 @@ export const data = [
                   },
                 },
                 type: 'identify',
+                integrations: { All: true },
                 originalTimestamp: '2023-11-10T14:42:44.724Z',
                 timestamp: '2023-11-22T10:12:44.757+05:30',
               },

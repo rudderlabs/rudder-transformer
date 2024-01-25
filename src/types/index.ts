@@ -18,7 +18,7 @@ type ProcessorTransformationOutput = {
   files?: Record<string, unknown>;
 };
 
-type ProxyDeliveryRequest = {
+type ProxyV0Request = {
   version: string;
   type: string;
   method: string;
@@ -33,10 +33,10 @@ type ProxyDeliveryRequest = {
     FORM?: Record<string, unknown>;
   };
   files?: Record<string, unknown>;
-  metadata: Metadata;
+  metadata: ProxyMetdata;
 };
 
-type ProxyDeliveriesRequest = {
+type ProxyV1Request = {
   version: string;
   type: string;
   method: string;
@@ -51,10 +51,24 @@ type ProxyDeliveriesRequest = {
     FORM?: Record<string, unknown>;
   };
   files?: Record<string, unknown>;
-  metadata: Metadata[];
+  metadata: ProxyMetdata[];
+  destinationConfig: Record<string, unknown>;
 };
 
-type ProxyRequest = ProxyDeliveryRequest | ProxyDeliveriesRequest;
+type ProxyRequest = ProxyV0Request | ProxyV1Request;
+
+type ProxyMetdata = {
+  jobId: number;
+  attemptNum: number;
+  userId: string;
+  sourceId: string;
+  destinationId: string;
+  workspaceId: string;
+  secret: Record<string, unknown>;
+  destInfo?: Record<string, unknown>;
+  omitempty?: Record<string, unknown>;
+  dontBatch: boolean;
+};
 
 type Metadata = {
   sourceId: string;
@@ -172,7 +186,7 @@ type SourceTransformationResponse = {
   statTags: object;
 };
 
-type DeliveryResponse = {
+type DeliveryV0Response = {
   status: number;
   message: string;
   destinationResponse: any;
@@ -183,12 +197,12 @@ type DeliveryResponse = {
 type DeliveryJobState = {
   error: string;
   statusCode: number;
-  metadata: Metadata;
+  metadata: ProxyMetdata;
 };
 
-type DeliveriesResponse = {
-  status?: number;
-  message?: string;
+type DeliveryV1Response = {
+  status: number;
+  message: string;
   statTags?: object;
   authErrorCategory?: string;
   response: DeliveryJobState[];
@@ -236,12 +250,21 @@ type ErrorDetailer = {
   sourceId?: string;
 };
 
-type MetaTransferObject = {
-  metadatas?: Metadata[];
-  metadata?: Metadata;
+type MetaTransferObjectForProxy = {
+  metadata?: ProxyMetdata;
+  metadatas?: ProxyMetdata[];
   errorDetails: ErrorDetailer;
   errorContext: string;
 };
+
+type MetaTransferObject =
+  | {
+      metadatas?: Metadata[];
+      metadata?: Metadata;
+      errorDetails: ErrorDetailer;
+      errorContext: string;
+    }
+  | MetaTransferObjectForProxy;
 
 type UserTransformationResponse = {
   transformedEvent: RudderMessage;
@@ -307,8 +330,8 @@ type SourceInput = {
 export {
   ComparatorInput,
   DeliveryJobState,
-  DeliveryResponse,
-  DeliveriesResponse,
+  DeliveryV0Response,
+  DeliveryV1Response,
   Destination,
   ErrorDetailer,
   MessageIdMetadataMap,
@@ -317,9 +340,10 @@ export {
   ProcessorTransformationOutput,
   ProcessorTransformationRequest,
   ProcessorTransformationResponse,
-  ProxyDeliveriesRequest,
-  ProxyDeliveryRequest,
+  ProxyMetdata,
   ProxyRequest,
+  ProxyV0Request,
+  ProxyV1Request,
   RouterTransformationRequest,
   RouterTransformationRequestData,
   RouterTransformationResponse,

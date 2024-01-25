@@ -59,6 +59,7 @@ const responseHandler = async (event, type) => {
 
   const { config } = event;
   const accessToken = await getAccessToken(config);
+  console.log("access token at fetch jobs", accessToken);
 
   /**
    * {
@@ -140,6 +141,7 @@ const responseHandler = async (event, type) => {
       SucceededKeys,
     },
   };
+  console.log("fetch job status: ", JSON.stringify(response));
   return removeUndefinedValues(response);
 };
 

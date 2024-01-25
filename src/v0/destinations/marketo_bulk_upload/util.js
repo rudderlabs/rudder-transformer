@@ -217,6 +217,7 @@ const handlePollResponse = (pollStatus) => {
     });
 
     if (pollStatus.response?.result?.length > 0) {
+      console.log("poll response :", JSON.stringify(pollStatus.response));
       return pollStatus.response;
     }
   }

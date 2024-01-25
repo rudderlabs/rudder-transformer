@@ -8,6 +8,7 @@ const { POLL_ACTIVITY } = require('./config');
 
 const getPollStatus = async (event) => {
   const accessToken = await getAccessToken(event.config);
+  console.log("access token at the time of poll ", accessToken);
   const { munchkinId } = event.config;
 
   // To see the status of the import job polling is done

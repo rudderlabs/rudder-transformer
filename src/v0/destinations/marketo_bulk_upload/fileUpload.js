@@ -223,6 +223,7 @@ const getImportID = async (input, config, accessToken, csvHeader) => {
  */
 const responseHandler = async (input, config) => {
   const accessToken = await getAccessToken(config);
+  console.log("access token at the time of file upload", accessToken);
   /**
   {
     "importId" : <some-id>,
@@ -242,6 +243,7 @@ const responseHandler = async (input, config) => {
     accessToken,
     headerForCsv,
   );
+  console.log("import id: " , importId);
   // if upload is successful
   if (importId) {
     const csvHeader = headerForCsv.toString();

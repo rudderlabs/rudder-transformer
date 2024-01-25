@@ -19,19 +19,14 @@ export const data = [
                   allowedProperties: [],
                 },
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               message: {
                 type: 'identify',
                 sentAt: '2021-01-03T17:02:53.195Z',
                 userId: 'user@27',
                 channel: 'web',
                 context: {
-                  os: {
-                    name: '',
-                    version: '1.12.3',
-                  },
+                  os: { name: '', version: '1.12.3' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -46,18 +41,9 @@ export const data = [
                     userId: 'user@27',
                   },
                   locale: 'en-US',
-                  device: {
-                    token: 'token',
-                    id: 'id',
-                    type: 'ios',
-                  },
-                  screen: {
-                    density: 2,
-                  },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.1.11',
-                  },
+                  device: { token: 'token', id: 'id', type: 'ios' },
+                  screen: { density: 2 },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.1.11' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0',
@@ -75,34 +61,19 @@ export const data = [
                   emailDeviceType: false,
                   smsDeviceType: false,
                   eventAsTags: false,
-                  allowedProperties: [
-                    {
-                      propertyName: 'brand',
-                    },
-                    {
-                      propertyName: 'price',
-                    },
-                  ],
+                  allowedProperties: [{ propertyName: 'brand' }, { propertyName: 'price' }],
                 },
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               message: {
                 event: 'add_to_Cart',
                 type: 'track',
                 sentAt: '2021-01-03T17:02:53.195Z',
                 userId: 'user@27',
                 channel: 'web',
-                properties: {
-                  brand: 'Zara',
-                  price: '12000',
-                },
+                properties: { brand: 'Zara', price: '12000' },
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -110,13 +81,8 @@ export const data = [
                     namespace: 'com.rudderlabs.javascript',
                   },
                   locale: 'en-US',
-                  screen: {
-                    density: 2,
-                  },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.1.11',
-                  },
+                  screen: { density: 2 },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.1.11' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0',
@@ -145,10 +111,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://onesignal.com/api/v1/players',
-                  headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                  },
+                  headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
                   params: {},
                   body: {
                     JSON: {
@@ -180,10 +143,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint: 'https://onesignal.com/api/v1/players',
-                  headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                  },
+                  headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
                   params: {},
                   body: {
                     JSON: {
@@ -211,11 +171,7 @@ export const data = [
                   files: {},
                 },
               ],
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -233,32 +189,19 @@ export const data = [
                 body: {
                   XML: {},
                   FORM: {},
-                  JSON: {
-                    tags: {
-                      brand: 'Zara',
-                      price: '12000',
-                      add_to_Cart: true,
-                    },
-                  },
+                  JSON: { tags: { brand: 'Zara', price: '12000', add_to_Cart: true } },
                   JSON_ARRAY: {},
                 },
                 type: 'REST',
                 files: {},
                 method: 'PUT',
                 params: {},
-                headers: {
-                  Accept: 'application/json',
-                  'Content-Type': 'application/json',
-                },
+                headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
                 version: '1',
                 endpoint:
                   'https://onesignal.com/api/v1/apps/random-818c-4a28-b98e-6cd8a994eb22/users/user@27',
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -267,14 +210,7 @@ export const data = [
                   emailDeviceType: false,
                   smsDeviceType: false,
                   eventAsTags: false,
-                  allowedProperties: [
-                    {
-                      propertyName: 'brand',
-                    },
-                    {
-                      propertyName: 'price',
-                    },
-                  ],
+                  allowedProperties: [{ propertyName: 'brand' }, { propertyName: 'price' }],
                 },
               },
             },

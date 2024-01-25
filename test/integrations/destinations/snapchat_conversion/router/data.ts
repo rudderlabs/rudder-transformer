@@ -69,6 +69,7 @@ export const data = [
               },
               metadata: {
                 jobId: 1,
+                userId: 'u1',
               },
               destination: {
                 Config: {
@@ -135,6 +136,7 @@ export const data = [
               },
               metadata: {
                 jobId: 2,
+                userId: 'u1',
               },
               destination: {
                 Config: {
@@ -201,6 +203,7 @@ export const data = [
               },
               metadata: {
                 jobId: 3,
+                userId: 'u1',
               },
               destination: {
                 Config: {
@@ -244,12 +247,15 @@ export const data = [
               metadata: [
                 {
                   jobId: 1,
+                  userId: 'u1',
                 },
                 {
                   jobId: 2,
+                  userId: 'u1',
                 },
                 {
                   jobId: 3,
+                  userId: 'u1',
                 },
               ],
               batched: true,
@@ -381,6 +387,7 @@ export const data = [
               },
               metadata: {
                 jobId: 4,
+                userId: 'u1',
               },
               destination: {
                 Config: {
@@ -412,6 +419,7 @@ export const data = [
               metadata: [
                 {
                   jobId: 4,
+                  userId: 'u1',
                 },
               ],
               batched: false,

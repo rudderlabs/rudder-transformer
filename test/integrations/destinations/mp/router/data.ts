@@ -20,10 +20,7 @@ export const data = [
                 useOldMapping: true,
                 strictMode: true,
               }),
-              metadata: {
-                jobId: 1,
-                additionalProp: 1,
-              },
+              metadata: { jobId: 1, additionalProp: 1, userId: 'u1' },
               message: {
                 anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
                 channel: 'web',
@@ -36,18 +33,10 @@ export const data = [
                     version: '1.0.5',
                   },
                   ip: '0.0.0.0',
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.5',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.5' },
                   locale: 'en-GB',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                   traits: {},
                   page: {
                     path: '/destinations/mixpanel',
@@ -62,9 +51,7 @@ export const data = [
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36',
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 messageId: 'dd266c67-9199-4a52-ba32-f46ddde67312',
                 originalTimestamp: '2020-01-24T06:29:02.358Z',
                 page: {
@@ -94,10 +81,7 @@ export const data = [
                 identityMergeApi: 'simplified',
                 strictMode: true,
               }),
-              metadata: {
-                jobId: 2,
-                additionalProp: 2,
-              },
+              metadata: { jobId: 2, additionalProp: 2, userId: 'u1' },
               message: {
                 anonymousId: 'anonId01',
                 channel: 'mobile',
@@ -116,40 +100,20 @@ export const data = [
                     type: 'ios',
                     token: 'test_device_token',
                   },
-                  library: {
-                    name: 'com.rudderstack.android.sdk.core',
-                    version: '1.0.1-beta.1',
-                  },
+                  library: { name: 'com.rudderstack.android.sdk.core', version: '1.0.1-beta.1' },
                   locale: 'en-US',
-                  network: {
-                    carrier: 'Android',
-                    bluetooth: false,
-                    cellular: true,
-                    wifi: true,
-                  },
-                  os: {
-                    name: 'iOS',
-                    version: '8.1.0',
-                  },
-                  screen: {
-                    density: 420,
-                    height: 1794,
-                    width: 1080,
-                  },
+                  network: { carrier: 'Android', bluetooth: false, cellular: true, wifi: true },
+                  os: { name: 'iOS', version: '8.1.0' },
+                  screen: { density: 420, height: 1794, width: 1080 },
                   timezone: 'Asia/Kolkata',
                   userAgent:
                     'Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)',
                 },
                 event: 'Product Viewed',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 userId: 'userId01',
                 messageId: 'id2',
-                properties: {
-                  name: 'T-Shirt',
-                  revenue: 18.9,
-                },
+                properties: { name: 'T-Shirt', revenue: 18.9 },
                 type: 'track',
                 originalTimestamp: '2020-01-24T06:29:02.362Z',
                 receivedAt: '2020-01-24T11:59:02.403+05:30',
@@ -165,10 +129,7 @@ export const data = [
                 useOldMapping: true,
                 strictMode: true,
               }),
-              metadata: {
-                jobId: 3,
-                additionalProp: 3,
-              },
+              metadata: { jobId: 3, additionalProp: 3, userId: 'u1' },
               message: {
                 anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
                 channel: 'web',
@@ -180,18 +141,10 @@ export const data = [
                     version: '1.0.5',
                   },
                   ip: '0.0.0.0',
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.5',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.5' },
                   locale: 'en-GB',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                   traits: {
                     city: 'Disney',
                     country: 'USA',
@@ -211,9 +164,7 @@ export const data = [
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36',
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 page: {
                   path: '/destinations/mixpanel',
                   referrer: '',
@@ -243,10 +194,7 @@ export const data = [
                 identityMergeApi: 'simplified',
                 strictMode: true,
               }),
-              metadata: {
-                jobId: 4,
-                additionalProp: 4,
-              },
+              metadata: { jobId: 4, additionalProp: 4, userId: 'u1' },
               message: {
                 anonymousId: 'anonId01',
                 channel: 'web',
@@ -258,18 +206,10 @@ export const data = [
                     version: '1.0.5',
                   },
                   ip: '0.0.0.0',
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.5',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.5' },
                   locale: 'en-GB',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                   traits: {
                     city: 'Disney',
                     country: 'USA',
@@ -291,9 +231,7 @@ export const data = [
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36',
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 page: {
                   path: '/destinations/mixpanel',
                   referrer: '',
@@ -320,10 +258,7 @@ export const data = [
                 token: 'test_api_token',
                 strictMode: true,
               }),
-              metadata: {
-                jobId: 5,
-                additionalProp: 5,
-              },
+              metadata: { jobId: 5, additionalProp: 5, userId: 'u1' },
               message: {
                 anonymousId: '5094f5704b9cf2b3',
                 channel: 'mobile',
@@ -342,44 +277,21 @@ export const data = [
                     type: 'ios',
                     token: 'test_device_token',
                   },
-                  library: {
-                    name: 'com.rudderstack.android.sdk.core',
-                    version: '1.0.1-beta.1',
-                  },
+                  library: { name: 'com.rudderstack.android.sdk.core', version: '1.0.1-beta.1' },
                   locale: 'en-US',
-                  network: {
-                    carrier: 'Android',
-                    bluetooth: false,
-                    cellular: true,
-                    wifi: true,
-                  },
-                  os: {
-                    name: 'iOS',
-                    version: '8.1.0',
-                  },
-                  screen: {
-                    density: 420,
-                    height: 1794,
-                    width: 1080,
-                  },
+                  network: { carrier: 'Android', bluetooth: false, cellular: true, wifi: true },
+                  os: { name: 'iOS', version: '8.1.0' },
+                  screen: { density: 420, height: 1794, width: 1080 },
                   timezone: 'Asia/Kolkata',
-                  traits: {
-                    anonymousId: '5094f5704b9cf2b3',
-                    userId: 'test_user_id',
-                  },
+                  traits: { anonymousId: '5094f5704b9cf2b3', userId: 'test_user_id' },
                   userAgent:
                     'Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)',
                 },
                 event: 'MainActivity',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 userId: 'test_user_id',
                 messageId: 'id2',
-                properties: {
-                  name: 'MainActivity',
-                  automatic: true,
-                },
+                properties: { name: 'MainActivity', automatic: true },
                 originalTimestamp: '2020-03-12T09:05:03.421Z',
                 type: 'identify',
                 sentAt: '2020-03-12T09:05:13.042Z',
@@ -397,10 +309,7 @@ export const data = [
                 ],
                 strictMode: true,
               }),
-              metadata: {
-                jobId: 6,
-                additionalProp: 6,
-              },
+              metadata: { jobId: 6, additionalProp: 6, userId: 'u1' },
               message: {
                 anonymousId: 'anonId06',
                 channel: 'web',
@@ -412,18 +321,10 @@ export const data = [
                     version: '1.0.5',
                   },
                   ip: '0.0.0.0',
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.5',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.5' },
                   locale: 'en-GB',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                   page: {
                     path: '/destinations/mixpanel',
                     referrer: '',
@@ -437,9 +338,7 @@ export const data = [
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36',
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 page: {
                   path: '/destinations/mixpanel',
                   referrer: '',
@@ -450,9 +349,7 @@ export const data = [
                   initial_referrer: 'https://docs.rudderstack.com',
                   initial_referring_domain: 'docs.rudderstack.com',
                 },
-                traits: {
-                  company: 'testComp',
-                },
+                traits: { company: 'testComp' },
                 messageId: '2536eda4-d638-4c93-8014-8ffe3f083214',
                 originalTimestamp: '2020-01-24T06:29:02.362Z',
                 receivedAt: '2020-01-24T11:59:02.403+05:30',
@@ -475,10 +372,7 @@ export const data = [
                 ],
                 strictMode: true,
               }),
-              metadata: {
-                jobId: 7,
-                additionalProp: 7,
-              },
+              metadata: { jobId: 7, additionalProp: 7, userId: 'u1' },
               message: {
                 anonymousId: 'anonId06',
                 channel: 'web',
@@ -490,18 +384,10 @@ export const data = [
                     version: '1.0.5',
                   },
                   ip: '0.0.0.0',
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.5',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.5' },
                   locale: 'en-GB',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                   page: {
                     path: '/destinations/mixpanel',
                     referrer: '',
@@ -515,9 +401,7 @@ export const data = [
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36',
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 page: {
                   path: '/destinations/mixpanel',
                   referrer: '',
@@ -542,9 +426,7 @@ export const data = [
           destType: 'mp',
         },
         method: 'POST',
-        headers: {
-          'X-Feature-Gzip-Support': '?1',
-        },
+        headers: { 'X-Feature-Gzip-Support': '?1' },
       },
     },
     output: {
@@ -562,9 +444,7 @@ export const data = [
                   'Content-Type': 'application/json',
                   Authorization: 'Basic dGVzdF9hcGlfc2VjcmV0Og==',
                 },
-                params: {
-                  strict: 1,
-                },
+                params: { strict: 1 },
                 body: {
                   JSON: {},
                   JSON_ARRAY: {},
@@ -577,12 +457,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 1,
-                  additionalProp: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, additionalProp: 1, userId: 'u1' }],
               batched: true,
               statusCode: 200,
               destination: {
@@ -635,9 +510,7 @@ export const data = [
                     'Content-Type': 'application/json',
                     Authorization: 'Basic dGVzdF9hcGlfc2VjcmV0Og==',
                   },
-                  params: {
-                    strict: 1,
-                  },
+                  params: { strict: 1 },
                   body: {
                     JSON: {},
                     JSON_ARRAY: {},
@@ -651,12 +524,7 @@ export const data = [
                   files: {},
                 },
               ],
-              metadata: [
-                {
-                  jobId: 2,
-                  additionalProp: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, additionalProp: 2, userId: 'u1' }],
               batched: true,
               statusCode: 200,
               destination: {
@@ -709,9 +577,7 @@ export const data = [
                     'Content-Type': 'application/json',
                     Authorization: 'Basic dGVzdF9hcGlfc2VjcmV0Og==',
                   },
-                  params: {
-                    strict: 1,
-                  },
+                  params: { strict: 1 },
                   body: {
                     JSON: {},
                     JSON_ARRAY: {},
@@ -726,18 +592,9 @@ export const data = [
                 },
               ],
               metadata: [
-                {
-                  jobId: 3,
-                  additionalProp: 3,
-                },
-                {
-                  jobId: 4,
-                  additionalProp: 4,
-                },
-                {
-                  jobId: 5,
-                  additionalProp: 5,
-                },
+                { jobId: 3, additionalProp: 3, userId: 'u1' },
+                { jobId: 4, additionalProp: 4, userId: 'u1' },
+                { jobId: 5, additionalProp: 5, userId: 'u1' },
               ],
               batched: true,
               statusCode: 200,
@@ -801,12 +658,7 @@ export const data = [
                   files: {},
                 },
               ],
-              metadata: [
-                {
-                  jobId: 6,
-                  additionalProp: 6,
-                },
-              ],
+              metadata: [{ jobId: 6, additionalProp: 6, userId: 'u1' }],
               batched: true,
               statusCode: 200,
               destination: {
@@ -815,11 +667,7 @@ export const data = [
                   apiSecret: 'test_api_secret',
                   token: 'test_api_token',
                   prefixProperties: true,
-                  groupKeySettings: [
-                    {
-                      groupKey: 'company',
-                    },
-                  ],
+                  groupKeySettings: [{ groupKey: 'company' }],
                   strictMode: true,
                   useNativeSDK: false,
                 },
@@ -835,12 +683,7 @@ export const data = [
               },
             },
             {
-              metadata: [
-                {
-                  jobId: 7,
-                  additionalProp: 7,
-                },
-              ],
+              metadata: [{ jobId: 7, additionalProp: 7, userId: 'u1' }],
               batched: false,
               statusCode: 400,
               error:
@@ -860,11 +703,7 @@ export const data = [
                   token: 'test_api_token',
                   prefixProperties: true,
                   useNativeSDK: false,
-                  groupKeySettings: [
-                    {
-                      groupKey: 'company',
-                    },
-                  ],
+                  groupKeySettings: [{ groupKey: 'company' }],
                   strictMode: true,
                 },
                 DestinationDefinition: {
@@ -901,10 +740,7 @@ export const data = [
                 useOldMapping: true,
                 strictMode: true,
               }),
-              metadata: {
-                jobId: 1,
-                additionalProp: 1,
-              },
+              metadata: { jobId: 1, additionalProp: 1, userId: 'u1' },
               message: {
                 anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
                 channel: 'web',
@@ -917,18 +753,10 @@ export const data = [
                     version: '1.0.5',
                   },
                   ip: '0.0.0.0',
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.5',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.5' },
                   locale: 'en-GB',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                   traits: {},
                   page: {
                     path: '/destinations/mixpanel',
@@ -943,9 +771,7 @@ export const data = [
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36',
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 messageId: 'dd266c67-9199-4a52-ba32-f46ddde67312',
                 originalTimestamp: '2020-01-24T06:29:02.358Z',
                 page: {
@@ -975,10 +801,7 @@ export const data = [
                 identityMergeApi: 'simplified',
                 strictMode: true,
               }),
-              metadata: {
-                jobId: 2,
-                additionalProp: 2,
-              },
+              metadata: { jobId: 2, additionalProp: 2, userId: 'u1' },
               message: {
                 anonymousId: 'anonId01',
                 channel: 'mobile',
@@ -997,40 +820,20 @@ export const data = [
                     type: 'ios',
                     token: 'test_device_token',
                   },
-                  library: {
-                    name: 'com.rudderstack.android.sdk.core',
-                    version: '1.0.1-beta.1',
-                  },
+                  library: { name: 'com.rudderstack.android.sdk.core', version: '1.0.1-beta.1' },
                   locale: 'en-US',
-                  network: {
-                    carrier: 'Android',
-                    bluetooth: false,
-                    cellular: true,
-                    wifi: true,
-                  },
-                  os: {
-                    name: 'iOS',
-                    version: '8.1.0',
-                  },
-                  screen: {
-                    density: 420,
-                    height: 1794,
-                    width: 1080,
-                  },
+                  network: { carrier: 'Android', bluetooth: false, cellular: true, wifi: true },
+                  os: { name: 'iOS', version: '8.1.0' },
+                  screen: { density: 420, height: 1794, width: 1080 },
                   timezone: 'Asia/Kolkata',
                   userAgent:
                     'Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)',
                 },
                 event: 'Product Viewed',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 userId: 'userId01',
                 messageId: 'id2',
-                properties: {
-                  name: 'T-Shirt',
-                  revenue: 18.9,
-                },
+                properties: { name: 'T-Shirt', revenue: 18.9 },
                 type: 'track',
                 originalTimestamp: '2020-01-24T06:29:02.362Z',
                 receivedAt: '2020-01-24T11:59:02.403+05:30',
@@ -1046,10 +849,7 @@ export const data = [
                 useOldMapping: true,
                 strictMode: true,
               }),
-              metadata: {
-                jobId: 3,
-                additionalProp: 3,
-              },
+              metadata: { jobId: 3, additionalProp: 3, userId: 'u1' },
               message: {
                 anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
                 channel: 'web',
@@ -1061,18 +861,10 @@ export const data = [
                     version: '1.0.5',
                   },
                   ip: '0.0.0.0',
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.5',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.5' },
                   locale: 'en-GB',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                   traits: {
                     city: 'Disney',
                     country: 'USA',
@@ -1092,9 +884,7 @@ export const data = [
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36',
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 page: {
                   path: '/destinations/mixpanel',
                   referrer: '',
@@ -1124,10 +914,7 @@ export const data = [
                 identityMergeApi: 'simplified',
                 strictMode: true,
               }),
-              metadata: {
-                jobId: 4,
-                additionalProp: 4,
-              },
+              metadata: { jobId: 4, additionalProp: 4, userId: 'u1' },
               message: {
                 anonymousId: 'anonId01',
                 channel: 'web',
@@ -1139,18 +926,10 @@ export const data = [
                     version: '1.0.5',
                   },
                   ip: '0.0.0.0',
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.5',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.5' },
                   locale: 'en-GB',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                   traits: {
                     city: 'Disney',
                     country: 'USA',
@@ -1172,9 +951,7 @@ export const data = [
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36',
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 page: {
                   path: '/destinations/mixpanel',
                   referrer: '',
@@ -1201,10 +978,7 @@ export const data = [
                 token: 'test_api_token',
                 strictMode: true,
               }),
-              metadata: {
-                jobId: 5,
-                additionalProp: 5,
-              },
+              metadata: { jobId: 5, additionalProp: 5, userId: 'u1' },
               message: {
                 anonymousId: '5094f5704b9cf2b3',
                 channel: 'mobile',
@@ -1223,44 +997,21 @@ export const data = [
                     type: 'ios',
                     token: 'test_device_token',
                   },
-                  library: {
-                    name: 'com.rudderstack.android.sdk.core',
-                    version: '1.0.1-beta.1',
-                  },
+                  library: { name: 'com.rudderstack.android.sdk.core', version: '1.0.1-beta.1' },
                   locale: 'en-US',
-                  network: {
-                    carrier: 'Android',
-                    bluetooth: false,
-                    cellular: true,
-                    wifi: true,
-                  },
-                  os: {
-                    name: 'iOS',
-                    version: '8.1.0',
-                  },
-                  screen: {
-                    density: 420,
-                    height: 1794,
-                    width: 1080,
-                  },
+                  network: { carrier: 'Android', bluetooth: false, cellular: true, wifi: true },
+                  os: { name: 'iOS', version: '8.1.0' },
+                  screen: { density: 420, height: 1794, width: 1080 },
                   timezone: 'Asia/Kolkata',
-                  traits: {
-                    anonymousId: '5094f5704b9cf2b3',
-                    userId: 'test_user_id',
-                  },
+                  traits: { anonymousId: '5094f5704b9cf2b3', userId: 'test_user_id' },
                   userAgent:
                     'Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)',
                 },
                 event: 'MainActivity',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 userId: 'test_user_id',
                 messageId: 'id2',
-                properties: {
-                  name: 'MainActivity',
-                  automatic: true,
-                },
+                properties: { name: 'MainActivity', automatic: true },
                 originalTimestamp: '2020-03-12T09:05:03.421Z',
                 type: 'identify',
                 sentAt: '2020-03-12T09:05:13.042Z',
@@ -1278,10 +1029,7 @@ export const data = [
                 ],
                 strictMode: true,
               }),
-              metadata: {
-                jobId: 6,
-                additionalProp: 6,
-              },
+              metadata: { jobId: 6, additionalProp: 6, userId: 'u1' },
               message: {
                 anonymousId: 'anonId06',
                 channel: 'web',
@@ -1293,18 +1041,10 @@ export const data = [
                     version: '1.0.5',
                   },
                   ip: '0.0.0.0',
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.5',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.5' },
                   locale: 'en-GB',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                   page: {
                     path: '/destinations/mixpanel',
                     referrer: '',
@@ -1318,9 +1058,7 @@ export const data = [
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36',
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 page: {
                   path: '/destinations/mixpanel',
                   referrer: '',
@@ -1331,9 +1069,7 @@ export const data = [
                   initial_referrer: 'https://docs.rudderstack.com',
                   initial_referring_domain: 'docs.rudderstack.com',
                 },
-                traits: {
-                  company: 'testComp',
-                },
+                traits: { company: 'testComp' },
                 messageId: '2536eda4-d638-4c93-8014-8ffe3f083214',
                 originalTimestamp: '2020-01-24T06:29:02.362Z',
                 receivedAt: '2020-01-24T11:59:02.403+05:30',
@@ -1356,10 +1092,7 @@ export const data = [
                 ],
                 strictMode: true,
               }),
-              metadata: {
-                jobId: 7,
-                additionalProp: 7,
-              },
+              metadata: { jobId: 7, additionalProp: 7, userId: 'u1' },
               message: {
                 anonymousId: 'anonId06',
                 channel: 'web',
@@ -1371,18 +1104,10 @@ export const data = [
                     version: '1.0.5',
                   },
                   ip: '0.0.0.0',
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.5',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.5' },
                   locale: 'en-GB',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                   page: {
                     path: '/destinations/mixpanel',
                     referrer: '',
@@ -1396,9 +1121,7 @@ export const data = [
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36',
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 page: {
                   path: '/destinations/mixpanel',
                   referrer: '',
@@ -1440,9 +1163,7 @@ export const data = [
                   'Content-Type': 'application/json',
                   Authorization: 'Basic dGVzdF9hcGlfc2VjcmV0Og==',
                 },
-                params: {
-                  strict: 1,
-                },
+                params: { strict: 1 },
                 body: {
                   JSON: {},
                   JSON_ARRAY: {
@@ -1454,12 +1175,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 1,
-                  additionalProp: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, additionalProp: 1, userId: 'u1' }],
               batched: true,
               statusCode: 200,
               destination: {
@@ -1512,9 +1228,7 @@ export const data = [
                     'Content-Type': 'application/json',
                     Authorization: 'Basic dGVzdF9hcGlfc2VjcmV0Og==',
                   },
-                  params: {
-                    strict: 1,
-                  },
+                  params: { strict: 1 },
                   body: {
                     JSON: {},
                     JSON_ARRAY: {
@@ -1527,12 +1241,7 @@ export const data = [
                   files: {},
                 },
               ],
-              metadata: [
-                {
-                  jobId: 2,
-                  additionalProp: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, additionalProp: 2, userId: 'u1' }],
               batched: true,
               statusCode: 200,
               destination: {
@@ -1585,9 +1294,7 @@ export const data = [
                     'Content-Type': 'application/json',
                     Authorization: 'Basic dGVzdF9hcGlfc2VjcmV0Og==',
                   },
-                  params: {
-                    strict: 1,
-                  },
+                  params: { strict: 1 },
                   body: {
                     JSON: {},
                     JSON_ARRAY: {
@@ -1601,18 +1308,9 @@ export const data = [
                 },
               ],
               metadata: [
-                {
-                  jobId: 3,
-                  additionalProp: 3,
-                },
-                {
-                  jobId: 4,
-                  additionalProp: 4,
-                },
-                {
-                  jobId: 5,
-                  additionalProp: 5,
-                },
+                { jobId: 3, additionalProp: 3, userId: 'u1' },
+                { jobId: 4, additionalProp: 4, userId: 'u1' },
+                { jobId: 5, additionalProp: 5, userId: 'u1' },
               ],
               batched: true,
               statusCode: 200,
@@ -1676,12 +1374,7 @@ export const data = [
                   files: {},
                 },
               ],
-              metadata: [
-                {
-                  jobId: 6,
-                  additionalProp: 6,
-                },
-              ],
+              metadata: [{ jobId: 6, additionalProp: 6, userId: 'u1' }],
               batched: true,
               statusCode: 200,
               destination: {
@@ -1690,11 +1383,7 @@ export const data = [
                   apiSecret: 'test_api_secret',
                   token: 'test_api_token',
                   prefixProperties: true,
-                  groupKeySettings: [
-                    {
-                      groupKey: 'company',
-                    },
-                  ],
+                  groupKeySettings: [{ groupKey: 'company' }],
                   strictMode: true,
                   useNativeSDK: false,
                 },
@@ -1710,12 +1399,7 @@ export const data = [
               },
             },
             {
-              metadata: [
-                {
-                  jobId: 7,
-                  additionalProp: 7,
-                },
-              ],
+              metadata: [{ jobId: 7, additionalProp: 7, userId: 'u1' }],
               batched: false,
               statusCode: 400,
               error:
@@ -1735,11 +1419,7 @@ export const data = [
                   token: 'test_api_token',
                   prefixProperties: true,
                   useNativeSDK: false,
-                  groupKeySettings: [
-                    {
-                      groupKey: 'company',
-                    },
-                  ],
+                  groupKeySettings: [{ groupKey: 'company' }],
                   strictMode: true,
                 },
                 DestinationDefinition: {

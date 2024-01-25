@@ -415,34 +415,6 @@ export const data = [
                 kind: 'dfareporting#conversionsBatchInsertResponse',
               },
               status: 200,
-              rudderJobMetadata: [
-                {
-                  jobId: 2,
-                  attemptNum: 0,
-                  userId: '',
-                  sourceId: '2Vsge2uWYdrLfG7pZb5Y82eo4lr',
-                  destinationId: '2RHh08uOsXqE9KvCDg3hoaeuK2L',
-                  workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
-                  secret: {
-                    access_token: 'secret',
-                    refresh_token: 'refresh',
-                    developer_token: 'developer_Token',
-                  },
-                },
-                {
-                  jobId: 3,
-                  attemptNum: 1,
-                  userId: '',
-                  sourceId: '2Vsge2uWYdrLfG7pZb5Y82eo4lr',
-                  destinationId: '2RHh08uOsXqE9KvCDg3hoaeuK2L',
-                  workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
-                  secret: {
-                    access_token: 'secret',
-                    refresh_token: 'refresh',
-                    developer_token: 'developer_Token',
-                  },
-                },
-              ],
             },
             response: [
               {
@@ -530,19 +502,21 @@ export const data = [
             XML: {},
             FORM: {},
           },
-          metadata: {
-            jobId: 2,
-            attemptNum: 0,
-            userId: '',
-            sourceId: '2Vsge2uWYdrLfG7pZb5Y82eo4lr',
-            destinationId: '2RHh08uOsXqE9KvCDg3hoaeuK2L',
-            workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
-            secret: {
-              access_token: 'secret',
-              refresh_token: 'refresh',
-              developer_token: 'developer_Token',
+          metadata: [
+            {
+              jobId: 2,
+              attemptNum: 0,
+              userId: '',
+              sourceId: '2Vsge2uWYdrLfG7pZb5Y82eo4lr',
+              destinationId: '2RHh08uOsXqE9KvCDg3hoaeuK2L',
+              workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
+              secret: {
+                access_token: 'secret',
+                refresh_token: 'refresh',
+                developer_token: 'developer_Token',
+              },
             },
-          },
+          ],
           files: {},
         },
         method: 'POST',
@@ -576,22 +550,22 @@ export const data = [
                 kind: 'dfareporting#conversionsBatchInsertResponse',
               },
               status: 200,
-              rudderJobMetadata: {
-                jobId: 2,
-                attemptNum: 0,
-                userId: '',
-                sourceId: '2Vsge2uWYdrLfG7pZb5Y82eo4lr',
-                destinationId: '2RHh08uOsXqE9KvCDg3hoaeuK2L',
-                workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
-                secret: {
-                  access_token: 'secret',
-                  refresh_token: 'refresh',
-                  developer_token: 'developer_Token',
-                },
-              },
             },
             response: [
               {
+                metadata: {
+                  jobId: 2,
+                  attemptNum: 0,
+                  userId: '',
+                  sourceId: '2Vsge2uWYdrLfG7pZb5Y82eo4lr',
+                  destinationId: '2RHh08uOsXqE9KvCDg3hoaeuK2L',
+                  workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
+                  secret: {
+                    access_token: 'secret',
+                    refresh_token: 'refresh',
+                    developer_token: 'developer_Token',
+                  },
+                },
                 error: 'success',
                 statusCode: 200,
               },

@@ -540,7 +540,7 @@ const getExistingData = async (inputs, destination) => {
             feature: 'transformation',
             endpointPath,
           })
-        : await httpPOST(url, requestData, { 
+        : await httpPOST(url, requestData, {
             destType: 'hs',
             feature: 'transformation',
             endpointPath,

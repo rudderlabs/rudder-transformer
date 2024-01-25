@@ -541,7 +541,6 @@ const getExistingData = async (inputs, destination) => {
             endpointPath,
           })
         : await httpPOST(url, requestData, { 
-          // 100 REQ -> 100/10 + 1 + 1 -> 12
             destType: 'hs',
             feature: 'transformation',
             endpointPath,

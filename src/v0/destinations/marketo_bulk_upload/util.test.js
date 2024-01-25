@@ -1,7 +1,11 @@
 const util = require('./util.js');
 const networkAdapter = require('../../../adapters/network');
 const { handleHttpRequest } = networkAdapter;
-const { AbortedError, RetryableError, NetworkError } = require('@rudderstack/integrations-lib');
+const {
+  RetryableError,
+  NetworkError,
+  TransformationError,
+} = require('@rudderstack/integrations-lib');
 
 // Mock the handleHttpRequest function
 jest.mock('../../../adapters/network');
@@ -105,7 +109,7 @@ describe('util.getAccessToken', () => {
     await expect(util.getAccessToken(config)).rejects.toThrow(NetworkError);
   });
 
-  it('should throw abortable error response', async () => {
+  it('should throw transformation error response', async () => {
     handleHttpRequest.mockResolvedValueOnce({ processedResponse: emptyResponse });
 
     const config = {
@@ -114,6 +118,6 @@ describe('util.getAccessToken', () => {
       munchkinId: 'dummyMunchkinId',
     };
 
-    await expect(util.getAccessToken(config)).rejects.toThrow(AbortedError);
+    await expect(util.getAccessToken(config)).rejects.toThrow(TransformationError);
   });
 });

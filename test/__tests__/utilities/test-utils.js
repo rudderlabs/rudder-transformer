@@ -2,6 +2,7 @@ const fs = require("fs");
 const _ = require("lodash");
 const path = require("path");
 const { ConfigFactory, Executor } = require("rudder-transformer-cdk");
+const { assertRouterOutput } = require('../../testHelper');
 
 // TODO: separate this out later as the list grows
 const cdkEnabledDestinations = {
@@ -95,7 +96,9 @@ function executeTransformationTest(dest, transformAt) {
             if (transformAt == "processor") {
               actualData = await transformer.process(tcInput);
             } else {
-              actualData = (await transformer.processRouterDest([tcInput]))[0];
+              actual = await transformer.processRouterDest([tcInput])
+              assertRouterOutput(actual, [tcInput]);
+              actualData = (actual)[0];
             }
           }
           // Compare actual and expected data
@@ -115,6 +118,7 @@ function executeTransformationTest(dest, transformAt) {
           const version = "v0";
           const transformer = require(`../../../src/${version}/destinations/${dest}/transform`);
           actualData = await transformer.processRouterDest(commonInput);
+          assertRouterOutput(actualData, commonInput);
           const cloneActual = _.cloneDeep(actualData);
           cloneActual[0].statTags = "undefined";
           // Compare actual and expected data

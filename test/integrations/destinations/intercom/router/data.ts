@@ -42,9 +42,7 @@ export const data = [
                   updateLastRequestAt: true,
                 },
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1 },
             },
             {
               message: {
@@ -236,11 +234,7 @@ export const data = [
                   },
                 },
               },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1 }],
               statusCode: 200,
             },
             {
@@ -295,11 +289,7 @@ export const data = [
                   },
                 },
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2 }],
               statusCode: 200,
             },
             {

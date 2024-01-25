@@ -16,9 +16,7 @@ export const data = [
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36',
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 userId: 'user@123',
                 groupId: 'group@795',
                 messageId: '022bb90c-bbac-11e4-8dfc-aa07a5b093db',
@@ -39,9 +37,7 @@ export const data = [
                 },
                 type: 'group',
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               destination: {
                 Config: {
                   apiKey: 'dummyApiKey',
@@ -77,10 +73,7 @@ export const data = [
                 body: {
                   XML: {},
                   FORM: {},
-                  JSON: {
-                    user_id: 52,
-                    user_custom_id: 'user@123',
-                  },
+                  JSON: { user_id: 52, user_custom_id: 'user@123' },
                   JSON_ARRAY: {},
                 },
                 type: 'REST',
@@ -95,11 +88,7 @@ export const data = [
                 version: '1',
                 endpoint: 'https://commander.user.com/api/public/companies/21/add_member/',
               },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -154,19 +143,10 @@ export const data = [
                     useroccupation: 'mechanical engineer',
                   },
                 },
-                traits: {
-                  googleUrl: 'www.google.com',
-                },
-                integrations: {
-                  All: true,
-                  user: {
-                    lookup: 'email',
-                  },
-                },
+                traits: { googleUrl: 'www.google.com' },
+                integrations: { All: true, user: { lookup: 'email' } },
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               destination: {
                 Config: {
                   apiKey: 'dummyApiKey',
@@ -229,11 +209,7 @@ export const data = [
                 version: '1',
                 endpoint: 'https://commander.user.com/api/public/users/59/',
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {

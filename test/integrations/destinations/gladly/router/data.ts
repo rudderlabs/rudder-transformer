@@ -22,32 +22,21 @@ export const data = [
                     lastName: 'Rudderlabs',
                     address: 'california usa',
                   },
-                  externalId: [
-                    {
-                      id: 'user@1',
-                      type: 'GladlyCustomerId',
-                    },
-                  ],
+                  externalId: [{ id: 'user@1', type: 'GladlyCustomerId' }],
                 },
                 type: 'identify',
                 originalTimestamp: '2023-11-10T14:42:44.724Z',
                 timestamp: '2023-11-22T10:12:44.75705:30',
               },
               destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 Config: {
                   apiToken: 'testApiToken',
                   userName: 'testUserName',
                   domain: 'rudderlabs.us-uat.gladly.qa',
                 },
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
             },
             {
               message: {
@@ -62,32 +51,21 @@ export const data = [
                     lastName: 'Rudderstack',
                     address: 'New York, USA',
                   },
-                  externalId: [
-                    {
-                      id: 'user@2',
-                      type: 'GladlyCustomerId',
-                    },
-                  ],
+                  externalId: [{ id: 'user@2', type: 'GladlyCustomerId' }],
                 },
                 type: 'identify',
                 originalTimestamp: '2023-11-10T14:42:44.724Z',
                 timestamp: '2023-11-22T10:12:44.75705:30',
               },
               destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 Config: {
                   apiToken: 'testApiToken',
                   userName: 'testUserName',
                   domain: 'rudderlabs.us-uat.gladly.qa',
                 },
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
             },
             {
               message: {
@@ -100,32 +78,21 @@ export const data = [
                     lastName: 'Rudderstack',
                     address: 'New York, USA',
                   },
-                  externalId: [
-                    {
-                      id: 'user@3',
-                      type: 'GladlyCustomerId',
-                    },
-                  ],
+                  externalId: [{ id: 'user@3', type: 'GladlyCustomerId' }],
                 },
                 type: 'identify',
                 originalTimestamp: '2023-11-10T14:42:44.724Z',
                 timestamp: '2023-11-22T10:12:44.75705:30',
               },
               destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 Config: {
                   apiToken: 'testApiToken',
                   userName: 'testUserName',
                   domain: 'rudderlabs.us-uat.gladly.qa',
                 },
               },
-              metadata: {
-                jobId: 3,
-              },
+              metadata: { jobId: 3, userId: 'u1' },
             },
           ],
           destType: 'gladly',
@@ -145,21 +112,11 @@ export const data = [
                   FORM: {},
                   JSON: {
                     address: 'california usa',
-                    customAttributes: {
-                      age: 23,
-                    },
-                    emails: [
-                      {
-                        original: 'test@rudderlabs.com',
-                      },
-                    ],
+                    customAttributes: { age: 23 },
+                    emails: [{ original: 'test@rudderlabs.com' }],
                     externalCustomerId: 'externalCustomer@1',
                     id: 'user@1',
-                    phones: [
-                      {
-                        original: '+91 9999999999',
-                      },
-                    ],
+                    phones: [{ original: '+91 9999999999' }],
                   },
                   JSON_ARRAY: {},
                   XML: {},
@@ -181,17 +138,9 @@ export const data = [
                   domain: 'rudderlabs.us-uat.gladly.qa',
                   userName: 'testUserName',
                 },
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
               },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               statusCode: 200,
             },
             {
@@ -201,20 +150,10 @@ export const data = [
                   FORM: {},
                   JSON: {
                     address: 'New York, USA',
-                    customAttributes: {
-                      age: 23,
-                    },
-                    emails: [
-                      {
-                        original: 'test+2@rudderlabs.com',
-                      },
-                    ],
+                    customAttributes: { age: 23 },
+                    emails: [{ original: 'test+2@rudderlabs.com' }],
                     externalCustomerId: 'externalCustomer@2',
-                    phones: [
-                      {
-                        original: '+91 9999999998',
-                      },
-                    ],
+                    phones: [{ original: '+91 9999999998' }],
                   },
                   JSON_ARRAY: {},
                   XML: {},
@@ -236,17 +175,9 @@ export const data = [
                   domain: 'rudderlabs.us-uat.gladly.qa',
                   userName: 'testUserName',
                 },
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               statusCode: 200,
             },
             {
@@ -257,11 +188,7 @@ export const data = [
                   JSON: {
                     address: 'New York, USA',
                     externalCustomerId: 'externalCustomer@3',
-                    phones: [
-                      {
-                        original: '+91 9999999988',
-                      },
-                    ],
+                    phones: [{ original: '+91 9999999988' }],
                   },
                   JSON_ARRAY: {},
                   XML: {},
@@ -283,17 +210,9 @@ export const data = [
                   domain: 'rudderlabs.us-uat.gladly.qa',
                   userName: 'testUserName',
                 },
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
               },
-              metadata: [
-                {
-                  jobId: 3,
-                },
-              ],
+              metadata: [{ jobId: 3, userId: 'u1' }],
               statusCode: 200,
             },
           ],
@@ -316,12 +235,7 @@ export const data = [
                 userId: 'externalCustomer@1',
                 channel: 'web',
                 context: {
-                  externalId: [
-                    {
-                      id: 'externalCustomer@1',
-                      identifierType: 'externalCustomerId',
-                    },
-                  ],
+                  externalId: [{ id: 'externalCustomer@1', identifierType: 'externalCustomerId' }],
                   mappedToDestination: true,
                 },
                 traits: {
@@ -337,32 +251,21 @@ export const data = [
                 timestamp: '2023-11-22T10:12:44.75705:30',
               },
               destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 Config: {
                   apiToken: 'testApiToken',
                   userName: 'testUserName',
                   domain: 'rudderlabs.us-uat.gladly.qa',
                 },
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
             },
             {
               message: {
                 userId: 'externalCustomer@2',
                 channel: 'web',
                 context: {
-                  externalId: [
-                    {
-                      id: 'externalCustomer@2',
-                      identifierType: 'externalCustomerId',
-                    },
-                  ],
+                  externalId: [{ id: 'externalCustomer@2', identifierType: 'externalCustomerId' }],
                   mappedToDestination: true,
                 },
                 traits: {
@@ -378,32 +281,21 @@ export const data = [
                 timestamp: '2023-11-22T10:12:44.75705:30',
               },
               destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 Config: {
                   apiToken: 'testApiToken',
                   userName: 'testUserName',
                   domain: 'rudderlabs.us-uat.gladly.qa',
                 },
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
             },
             {
               message: {
                 userId: 'externalCustomer@3',
                 channel: 'web',
                 context: {
-                  externalId: [
-                    {
-                      id: 'externalCustomer@3',
-                      identifierType: 'externalCustomerId',
-                    },
-                  ],
+                  externalId: [{ id: 'externalCustomer@3', identifierType: 'externalCustomerId' }],
                   mappedToDestination: true,
                 },
                 traits: {
@@ -418,20 +310,14 @@ export const data = [
                 timestamp: '2023-11-22T10:12:44.75705:30',
               },
               destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 Config: {
                   apiToken: 'testApiToken',
                   userName: 'testUserName',
                   domain: 'rudderlabs.us-uat.gladly.qa',
                 },
               },
-              metadata: {
-                jobId: 3,
-              },
+              metadata: { jobId: 3, userId: 'u1' },
             },
           ],
           destType: 'gladly',
@@ -451,18 +337,10 @@ export const data = [
                   FORM: {},
                   JSON: {
                     address: 'california usa',
-                    emails: [
-                      {
-                        original: 'test@rudderlabs.com',
-                      },
-                    ],
+                    emails: [{ original: 'test@rudderlabs.com' }],
                     externalCustomerId: 'externalCustomer@1',
                     id: 'user@1',
-                    phones: [
-                      {
-                        original: '+91 9999999999',
-                      },
-                    ],
+                    phones: [{ original: '+91 9999999999' }],
                   },
                   JSON_ARRAY: {},
                   XML: {},
@@ -484,17 +362,9 @@ export const data = [
                   domain: 'rudderlabs.us-uat.gladly.qa',
                   userName: 'testUserName',
                 },
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
               },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               statusCode: 200,
             },
             {
@@ -504,17 +374,9 @@ export const data = [
                   FORM: {},
                   JSON: {
                     address: 'New York, USA',
-                    emails: [
-                      {
-                        original: 'test+2@rudderlabs.com',
-                      },
-                    ],
+                    emails: [{ original: 'test+2@rudderlabs.com' }],
                     externalCustomerId: 'externalCustomer@2',
-                    phones: [
-                      {
-                        original: '+91 9999999998',
-                      },
-                    ],
+                    phones: [{ original: '+91 9999999998' }],
                   },
                   JSON_ARRAY: {},
                   XML: {},
@@ -536,17 +398,9 @@ export const data = [
                   domain: 'rudderlabs.us-uat.gladly.qa',
                   userName: 'testUserName',
                 },
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               statusCode: 200,
             },
             {
@@ -557,11 +411,7 @@ export const data = [
                   JSON: {
                     address: 'New York, USA',
                     externalCustomerId: 'externalCustomer@3',
-                    phones: [
-                      {
-                        original: '+91 9999999988',
-                      },
-                    ],
+                    phones: [{ original: '+91 9999999988' }],
                   },
                   JSON_ARRAY: {},
                   XML: {},
@@ -583,17 +433,9 @@ export const data = [
                   domain: 'rudderlabs.us-uat.gladly.qa',
                   userName: 'testUserName',
                 },
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
               },
-              metadata: [
-                {
-                  jobId: 3,
-                },
-              ],
+              metadata: [{ jobId: 3, userId: 'u1' }],
               statusCode: 200,
             },
           ],

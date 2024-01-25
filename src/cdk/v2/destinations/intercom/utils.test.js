@@ -211,6 +211,7 @@ describe('getBaseEndpoint utility test', () => {
     const destination = {
       Config: {
         apiServer: 'eu',
+        apiVersion: 'latest',
       },
     };
     const result = getBaseEndpoint(destination);
@@ -221,6 +222,7 @@ describe('getBaseEndpoint utility test', () => {
     const destination = {
       Config: {
         apiServer: 'au',
+        apiVersion: 'latest',
       },
     };
     const result = getBaseEndpoint(destination);
@@ -252,7 +254,7 @@ describe('getHeaders utility test', () => {
       Accept: 'application/json',
       'Intercom-Version': '2.10',
     };
-    const headers = getHeaders(destination);
+    const headers = getHeaders(destination, 'latest');
     expect(headers).toEqual(expectedHeaders);
   });
 });

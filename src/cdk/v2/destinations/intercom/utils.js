@@ -32,13 +32,14 @@ const {
 /**
  * Returns destination request headers
  * @param {*} destination
+ * @param {*} apiVersion
  * @returns
  */
-const getHeaders = (destination) => ({
+const getHeaders = (destination, apiVersion) => ({
   'Content-Type': JSON_MIME_TYPE,
   Authorization: `Bearer ${destination.Config.apiKey}`,
   Accept: JSON_MIME_TYPE,
-  'Intercom-Version': destination.Config.apiVersion === '1.4' ? '1.4' : '2.10',
+  'Intercom-Version': apiVersion === '1.4' ? '1.4' : '2.10',
 });
 
 /**
@@ -47,7 +48,9 @@ const getHeaders = (destination) => ({
  * @returns
  */
 const getBaseEndpoint = (destination) => {
-  const { apiServer, apiVersion } = destination.Config;
+  const { apiServer } = destination.Config;
+  let { apiVersion } = destination.Config;
+  apiVersion = isDefinedAndNotNull(apiVersion) ? apiVersion : '1.4';
 
   if (apiVersion === '1.4') return BASE_ENDPOINT;
   switch (apiServer) {
@@ -191,14 +194,16 @@ const attachUserAndCompany = (message, Config) => {
  */
 const filterCustomAttributes = (payload, type, destination) => {
   let ReservedAttributesList;
+  let { apiVersion } = destination.Config;
+  apiVersion = isDefinedAndNotNull(apiVersion) ? apiVersion : '1.4';
   if (type === 'user') {
     ReservedAttributesList =
-      destination.Config.apiVersion === '1.4'
+      apiVersion === '1.4'
         ? ReservedAttributes.oldVersionUserAttributes
         : ReservedAttributes.newVersionUserAttributes;
   } else {
     ReservedAttributesList =
-      destination.Config.apiVersion === '1.4'
+      apiVersion === '1.4'
         ? ReservedAttributes.oldVersionCompanyAttributes
         : ReservedAttributes.newVersionCompanyAttributes;
   }
@@ -209,9 +214,7 @@ const filterCustomAttributes = (payload, type, destination) => {
     });
     if (isDefinedAndNotNull(customAttributes) && Object.keys(customAttributes).length > 0) {
       customAttributes =
-        destination.Config.apiVersion === 'latest'
-          ? flattenJson(customAttributes, '_')
-          : flattenJson(customAttributes);
+        apiVersion === '1.4' ? flattenJson(customAttributes) : flattenJson(customAttributes, '_');
     }
   }
   return Object.keys(customAttributes).length === 0 ? undefined : customAttributes;

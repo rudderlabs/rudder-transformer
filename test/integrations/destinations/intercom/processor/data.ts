@@ -3485,7 +3485,6 @@ export const data = [
               },
               Config: {
                 apiKey: 'abcd=',
-                apiVersion: '1.4',
                 appId: 'asdasdasd',
                 collectContext: false,
               },
@@ -3632,7 +3631,6 @@ export const data = [
               Config: {
                 apiKey: 'abcd=',
                 appId: 'asdasdasd',
-                apiVersion: '1.4',
                 collectContext: false,
                 sendAnonymousId: true,
               },

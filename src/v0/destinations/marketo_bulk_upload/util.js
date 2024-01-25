@@ -3,6 +3,7 @@ const {
   RetryableError,
   NetworkError,
   TransformationError,
+  isDefinedAndNotNull,
 } = require('@rudderstack/integrations-lib');
 const { handleHttpRequest } = require('../../../adapters/network');
 const tags = require('../../util/tags');
@@ -130,9 +131,12 @@ const getAccessToken = async (config) => {
   });
 
   // sample response : {response: '[ENOTFOUND] :: DNS lookup failed', status: 400}
-  if (!isHttpStatusSuccess(accessTokenResponse.status)) {
+  if (
+    isDefinedAndNotNull(accessTokenResponse.status) &&
+    !isHttpStatusSuccess(accessTokenResponse.status)
+  ) {
     throw new NetworkError(
-      `Could not retrieve authorisation token due to error ${accessTokenResponse}`,
+      `Could not retrieve authorisation token due to error ${JSON.stringify(accessTokenResponse)}`,
       hydrateStatusForServer(accessTokenResponse.status, FETCH_ACCESS_TOKEN),
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(accessTokenResponse.status),

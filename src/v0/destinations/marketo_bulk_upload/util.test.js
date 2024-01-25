@@ -1,7 +1,7 @@
 const util = require('./util.js');
-const axios = require('axios');
 const networkAdapter = require('../../../adapters/network');
 const { handleHttpRequest } = networkAdapter;
+const { AbortedError, RetryableError, NetworkError } = require('@rudderstack/integrations-lib');
 
 // Mock the handleHttpRequest function
 jest.mock('../../../adapters/network');
@@ -60,5 +60,60 @@ describe('util.getAccessToken', () => {
       destType: 'marketo_bulk_upload',
       feature: 'transformation',
     });
+  });
+
+  it('should throw a NetworkError on unsuccessful HTTP status', async () => {
+    handleHttpRequest.mockResolvedValueOnce({
+      processedResponse: unsuccessfulResponse,
+    });
+
+    const config = {
+      clientId: 'dummyClientId',
+      clientSecret: 'dummyClientSecret',
+      munchkinId: 'dummyMunchkinId',
+    };
+
+    await expect(util.getAccessToken(config)).rejects.toThrow(NetworkError);
+  });
+
+  it('should throw a RetryableError when expires_in is 0', async () => {
+    handleHttpRequest.mockResolvedValueOnce({
+      processedResponse: {
+        ...successfulResponse,
+        response: { ...successfulResponse.response, expires_in: 0 },
+      },
+    });
+
+    const config = {
+      clientId: 'dummyClientId',
+      clientSecret: 'dummyClientSecret',
+      munchkinId: 'dummyMunchkinId',
+    };
+
+    await expect(util.getAccessToken(config)).rejects.toThrow(RetryableError);
+  });
+
+  it('should throw an AbortedError on unsuccessful response', async () => {
+    handleHttpRequest.mockResolvedValueOnce({ processedResponse: invalidClientErrorResponse });
+
+    const config = {
+      clientId: 'invalidClientID',
+      clientSecret: 'dummyClientSecret',
+      munchkinId: 'dummyMunchkinId',
+    };
+
+    await expect(util.getAccessToken(config)).rejects.toThrow(NetworkError);
+  });
+
+  it('should throw abortable error response', async () => {
+    handleHttpRequest.mockResolvedValueOnce({ processedResponse: emptyResponse });
+
+    const config = {
+      clientId: 'dummyClientId',
+      clientSecret: 'dummyClientSecret',
+      munchkinId: 'dummyMunchkinId',
+    };
+
+    await expect(util.getAccessToken(config)).rejects.toThrow(AbortedError);
   });
 });

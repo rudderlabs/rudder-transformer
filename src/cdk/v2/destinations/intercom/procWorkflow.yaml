@@ -37,7 +37,7 @@ steps:
 
   - name: apiVersion
     template: |
-      const version = $.isDefinedAndNotNull(.destination.Config.apiVersion) ? .destination.Config.apiVersion : "1.4";
+      const version = $.isDefinedAndNotNull(.destination.Config.apiVersion) ? .destination.Config.apiVersion : "latest";
       version;
 
   - name: rEtlPayload

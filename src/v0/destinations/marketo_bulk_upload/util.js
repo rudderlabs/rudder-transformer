@@ -3,7 +3,6 @@ const {
   RetryableError,
   NetworkError,
   TransformationError,
-  isDefinedAndNotNull,
 } = require('@rudderstack/integrations-lib');
 const { handleHttpRequest } = require('../../../adapters/network');
 const tags = require('../../util/tags');
@@ -161,7 +160,7 @@ const getAccessToken = async (config) => {
     }
     return accessTokenResponse.response.access_token;
   }
-  throw new RetyrableError(
+  throw new RetryableError(
     `Could not retrieve authorisation token due to error ${JSON.stringify(accessTokenResponse)}`,
     500,
   );

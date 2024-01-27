@@ -452,6 +452,12 @@ class Prometheus {
         labelNames: ['writeKey', 'timestamp'],
       },
       {
+        name: 'regulation_worker_user_deletion_failure',
+        help: 'regulation_worker_user_deletion_failure',
+        type: 'counter',
+        labelNames: ['destType', 'module', 'implementation', 'feature'],
+      },
+      {
         name: 'shopify_server_side_identifier_event',
         help: 'shopify_server_side_identifier_event',
         type: 'counter',
@@ -486,6 +492,12 @@ class Prometheus {
         help: 'shopify_redis_failures',
         type: 'counter',
         labelNames: ['type', 'writeKey', 'source'],
+      },
+      {
+        name: 'shopify_anon_id_resolve',
+        help: 'shopify_anon_id_resolve',
+        type: 'counter',
+        labelNames: ['method', 'writeKey', 'shopifyTopic'],
       },
       {
         name: 'shopify_redis_calls',
@@ -598,6 +610,12 @@ class Prometheus {
         help: 'tp_event_latency',
         type: 'histogram',
         labelNames: ['sourceType', 'destinationType', 'k8_namespace'],
+      },
+      {
+        name: 'regulation_worker_requests_dest_latency',
+        help: 'regulation_worker_requests_dest_latency',
+        type: 'histogram',
+        labelNames: ['feature', 'implementation', 'destType'],
       },
       {
         name: 'dest_transform_request_latency',
@@ -918,7 +936,7 @@ class Prometheus {
           'errored',
           'statusCode',
           'transformationId',
-          'workspaceId'
+          'workspaceId',
         ],
       },
       {
@@ -934,9 +952,9 @@ class Prometheus {
           'errored',
           'statusCode',
           'transformationId',
-          'workspaceId'
+          'workspaceId',
         ],
-      }
+      },
     ];
 
     metrics.forEach((metric) => {

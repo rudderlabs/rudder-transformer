@@ -1,7 +1,7 @@
 export const data = [
   {
     name: 'campaign_manager',
-    description: 'Test 0',
+    description: 'Batch Different Type Requests',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -17,6 +17,7 @@ export const data = [
                   developer_token: 'ijkl91011',
                 },
                 jobId: 1,
+                userId: 'u1',
               },
               destination: {
                 Config: {
@@ -56,28 +57,20 @@ export const data = [
                     postalCode: 'EC3M',
                     streetAddress: '71 Cherry Court SOUTHAMPTON SO53 5PD UK',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-US',
                   ip: '0.0.0.0',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                 },
                 event: 'Promotion Clicked',
                 originalTimestamp: '2022-11-17T00:22:02.903+05:30',
                 properties: {
                   profileId: 437689,
                   floodlightConfigurationId: '213123123',
-                  ordinal: 'string',
+                  ordinal: '1',
                   quantity: '455678',
                   floodlightActivityId: '456543345245',
                   value: 7,
@@ -91,9 +84,7 @@ export const data = [
                 },
                 type: 'track',
                 anonymousId: 'randomId',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 name: 'ApplicationLoaded',
                 sentAt: '2022-11-17T00:22:02.903+05:30',
               },
@@ -106,6 +97,7 @@ export const data = [
                   developer_token: 'ijkl91011',
                 },
                 jobId: 2,
+                userId: 'u1',
               },
               destination: {
                 Config: {
@@ -145,21 +137,13 @@ export const data = [
                     postalCode: 'EC3M',
                     streetAddress: '71 Cherry Court SOUTHAMPTON SO53 5PD UK',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-US',
                   ip: '0.0.0.0',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                 },
                 event: 'Promotion Clicked',
                 type: 'track',
@@ -167,7 +151,7 @@ export const data = [
                 properties: {
                   profileId: 437689,
                   floodlightConfigurationId: '213123123',
-                  ordinal: 'string',
+                  ordinal: '2',
                   floodlightActivityId: '456543345245',
                   quantity: '455678',
                   value: 7,
@@ -180,9 +164,7 @@ export const data = [
                   requestType: 'batchupdate',
                 },
                 anonymousId: 'randomId',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 name: 'ApplicationLoaded',
                 sentAt: '2022-11-17T00:22:02.903+05:30',
               },
@@ -195,6 +177,7 @@ export const data = [
                   developer_token: 'ijkl91011',
                 },
                 jobId: 3,
+                userId: 'u1',
               },
               destination: {
                 Config: {
@@ -234,21 +217,13 @@ export const data = [
                     postalCode: 'EC3M',
                     streetAddress: '71 Cherry Court SOUTHAMPTON SO53 5PD UK',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-US',
                   ip: '0.0.0.0',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                 },
                 event: 'Promotion Clicked',
                 type: 'track',
@@ -256,16 +231,11 @@ export const data = [
                 properties: {
                   profileId: 437689,
                   floodlightConfigurationId: '213123123',
-                  ordinal: 'string',
+                  ordinal: '3',
                   floodlightActivityId: '456543345245',
-                  mobileDeviceId: 'string',
                   value: 7,
                   encryptedUserIdCandidates: ['dfghjbnm'],
-                  gclid: 'string',
-                  matchId: 'string',
-                  dclid: 'string',
                   quantity: '455678',
-                  impressionId: 'string',
                   limitAdTracking: true,
                   childDirectedTreatment: true,
                   encryptionInfo: {
@@ -277,9 +247,7 @@ export const data = [
                   requestType: 'randomValue',
                 },
                 anonymousId: 'randomId',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 name: 'ApplicationLoaded',
                 sentAt: '2022-11-17T00:22:02.903+05:30',
               },
@@ -322,7 +290,7 @@ export const data = [
                         treatmentForUnderage: false,
                         timestampMicros: '1668624722903000',
                         floodlightConfigurationId: '213123123',
-                        ordinal: 'string',
+                        ordinal: '1',
                         quantity: '455678',
                         floodlightActivityId: '456543345245',
                         value: 7,
@@ -346,9 +314,10 @@ export const data = [
                     refresh_token: 'efgh5678',
                   },
                   jobId: 1,
+                  userId: 'u1',
                 },
               ],
-              batched: false,
+              batched: true,
               statusCode: 200,
               destination: {
                 Config: {
@@ -387,7 +356,7 @@ export const data = [
                         treatmentForUnderage: false,
                         timestampMicros: '1668624722903000',
                         floodlightConfigurationId: '213123123',
-                        ordinal: 'string',
+                        ordinal: '2',
                         quantity: '455678',
                         floodlightActivityId: '456543345245',
                         value: 7,
@@ -409,9 +378,10 @@ export const data = [
                     refresh_token: 'efgh5678',
                   },
                   jobId: 2,
+                  userId: 'u1',
                 },
               ],
-              batched: false,
+              batched: true,
               statusCode: 200,
               destination: {
                 Config: {
@@ -444,6 +414,7 @@ export const data = [
                     refresh_token: 'efgh5678',
                   },
                   jobId: 3,
+                  userId: 'u1',
                 },
               ],
               statusCode: 400,
@@ -454,6 +425,803 @@ export const data = [
                 feature: 'router',
                 implementation: 'native',
                 module: 'destination',
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'campaign_manager',
+    description: 'Batch Sucessful BatchInsert Request',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              metadata: {
+                secret: {
+                  access_token: 'dummyApiToken',
+                  refresh_token: 'efgh5678',
+                  developer_token: 'ijkl91011',
+                },
+                jobId: 4,
+                userId: 'u1',
+              },
+              destination: {
+                Config: {
+                  treatmentForUnderage: false,
+                  limitAdTracking: false,
+                  childDirectedTreatment: false,
+                  nonPersonalizedAd: false,
+                  rudderAccountId: '2EOknn1JNH7WK1MfNku4fGYKkRK',
+                },
+              },
+              message: {
+                channel: 'web',
+                event: 'Promotion Clicked',
+                originalTimestamp: '2022-11-17T00:22:02.903+05:30',
+                properties: {
+                  profileId: 437689,
+                  matchId: '123',
+                  floodlightConfigurationId: '213123123',
+                  quantity: '455678',
+                  ordinal: '1',
+                  floodlightActivityId: '456543345245',
+                  value: 7,
+                  limitAdTracking: true,
+                  childDirectedTreatment: true,
+                  requestType: 'batchinsert',
+                },
+                type: 'track',
+                anonymousId: 'randomId',
+                integrations: { All: true },
+                name: 'ApplicationLoaded',
+                sentAt: '2022-11-17T00:22:02.903+05:30',
+              },
+            },
+            {
+              metadata: {
+                secret: {
+                  access_token: 'dummyApiToken',
+                  refresh_token: 'efgh5678',
+                  developer_token: 'ijkl91011',
+                },
+                jobId: 5,
+                userId: 'u1',
+              },
+              destination: {
+                Config: {
+                  treatmentForUnderage: false,
+                  limitAdTracking: false,
+                  childDirectedTreatment: false,
+                  nonPersonalizedAd: false,
+                  rudderAccountId: '2EOknn1JNH7WK1MfNku4fGYKkRK',
+                },
+              },
+              message: {
+                channel: 'web',
+                event: 'Promotion Clicked',
+                type: 'track',
+                originalTimestamp: '2022-11-17T00:22:02.903+05:30',
+                properties: {
+                  profileId: 437689,
+                  floodlightConfigurationId: '213123123',
+                  ordinal: '1',
+                  floodlightActivityId: '456543345245',
+                  quantity: '455678',
+                  value: 7,
+                  matchId: '111',
+                  limitAdTracking: true,
+                  childDirectedTreatment: true,
+                  requestType: 'batchinsert',
+                },
+                anonymousId: 'randomId',
+                integrations: { All: true },
+                name: 'ApplicationLoaded',
+                sentAt: '2022-11-17T00:22:02.903+05:30',
+              },
+            },
+            {
+              metadata: {
+                secret: {
+                  access_token: 'dummyApiToken',
+                  refresh_token: 'efgh5678',
+                  developer_token: 'ijkl91011',
+                },
+                jobId: 6,
+                userId: 'u1',
+              },
+              destination: {
+                Config: {
+                  treatmentForUnderage: false,
+                  limitAdTracking: false,
+                  childDirectedTreatment: false,
+                  nonPersonalizedAd: false,
+                  rudderAccountId: '2EOknn1JNH7WK1MfNku4fGYKkRK',
+                },
+              },
+              message: {
+                channel: 'web',
+                event: 'Promotion Clicked',
+                type: 'track',
+                originalTimestamp: '2022-11-17T00:22:02.903+05:30',
+                properties: {
+                  profileId: 437689,
+                  floodlightConfigurationId: '213123123',
+                  floodlightActivityId: '456543345245',
+                  value: 7,
+                  gclid: '123',
+                  ordinal: '1',
+                  quantity: '455678',
+                  limitAdTracking: true,
+                  childDirectedTreatment: true,
+                  requestType: 'batchinsert',
+                },
+                anonymousId: 'randomId',
+                integrations: { All: true },
+                name: 'ApplicationLoaded',
+                sentAt: '2022-11-17T00:22:02.903+05:30',
+              },
+            },
+          ],
+          destType: 'campaign_manager',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint:
+                  'https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/437689/conversions/batchinsert',
+                headers: {
+                  Authorization: 'Bearer dummyApiToken',
+                  'Content-Type': 'application/json',
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    kind: 'dfareporting#conversionsBatchInsertRequest',
+                    conversions: [
+                      {
+                        floodlightConfigurationId: '213123123',
+                        ordinal: '1',
+                        timestampMicros: '1668624722903000',
+                        floodlightActivityId: '456543345245',
+                        quantity: '455678',
+                        value: 7,
+                        matchId: '123',
+                        limitAdTracking: true,
+                        childDirectedTreatment: true,
+                        nonPersonalizedAd: false,
+                        treatmentForUnderage: false,
+                      },
+                      {
+                        floodlightConfigurationId: '213123123',
+                        ordinal: '1',
+                        timestampMicros: '1668624722903000',
+                        floodlightActivityId: '456543345245',
+                        quantity: '455678',
+                        value: 7,
+                        matchId: '111',
+                        limitAdTracking: true,
+                        childDirectedTreatment: true,
+                        nonPersonalizedAd: false,
+                        treatmentForUnderage: false,
+                      },
+                      {
+                        floodlightConfigurationId: '213123123',
+                        ordinal: '1',
+                        timestampMicros: '1668624722903000',
+                        floodlightActivityId: '456543345245',
+                        quantity: '455678',
+                        value: 7,
+                        gclid: '123',
+                        limitAdTracking: true,
+                        childDirectedTreatment: true,
+                        nonPersonalizedAd: false,
+                        treatmentForUnderage: false,
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                {
+                  secret: {
+                    access_token: 'dummyApiToken',
+                    refresh_token: 'efgh5678',
+                    developer_token: 'ijkl91011',
+                  },
+                  jobId: 4,
+                  userId: 'u1',
+                },
+                {
+                  secret: {
+                    access_token: 'dummyApiToken',
+                    refresh_token: 'efgh5678',
+                    developer_token: 'ijkl91011',
+                  },
+                  jobId: 5,
+                  userId: 'u1',
+                },
+                {
+                  secret: {
+                    access_token: 'dummyApiToken',
+                    refresh_token: 'efgh5678',
+                    developer_token: 'ijkl91011',
+                  },
+                  jobId: 6,
+                  userId: 'u1',
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                Config: {
+                  treatmentForUnderage: false,
+                  limitAdTracking: false,
+                  childDirectedTreatment: false,
+                  nonPersonalizedAd: false,
+                  rudderAccountId: '2EOknn1JNH7WK1MfNku4fGYKkRK',
+                },
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'campaign_manager',
+    description: 'Batch Sucessful BatchInsert and BatchUpdate Request',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              metadata: {
+                secret: {
+                  access_token: 'dummyApiToken',
+                  refresh_token: 'efgh5678',
+                  developer_token: 'ijkl91011',
+                },
+                jobId: 4,
+                userId: 'u1',
+              },
+              destination: {
+                Config: {
+                  treatmentForUnderage: false,
+                  limitAdTracking: false,
+                  childDirectedTreatment: false,
+                  nonPersonalizedAd: false,
+                  rudderAccountId: '2EOknn1JNH7WK1MfNku4fGYKkRK',
+                },
+              },
+              message: {
+                channel: 'web',
+                event: 'Promotion Clicked',
+                originalTimestamp: '2022-11-17T00:22:02.903+05:30',
+                properties: {
+                  profileId: 437689,
+                  matchId: '123',
+                  floodlightConfigurationId: '213123123',
+                  quantity: '455678',
+                  ordinal: '1',
+                  floodlightActivityId: '456543345245',
+                  value: 7,
+                  limitAdTracking: true,
+                  childDirectedTreatment: true,
+                  requestType: 'batchupdate',
+                },
+                type: 'track',
+                anonymousId: 'randomId',
+                integrations: { All: true },
+                name: 'ApplicationLoaded',
+                sentAt: '2022-11-17T00:22:02.903+05:30',
+              },
+            },
+            {
+              metadata: {
+                secret: {
+                  access_token: 'dummyApiToken',
+                  refresh_token: 'efgh5678',
+                  developer_token: 'ijkl91011',
+                },
+                jobId: 5,
+                userId: 'u1',
+              },
+              destination: {
+                Config: {
+                  treatmentForUnderage: false,
+                  limitAdTracking: false,
+                  childDirectedTreatment: false,
+                  nonPersonalizedAd: false,
+                  rudderAccountId: '2EOknn1JNH7WK1MfNku4fGYKkRK',
+                },
+              },
+              message: {
+                channel: 'web',
+                event: 'Promotion Clicked',
+                type: 'track',
+                originalTimestamp: '2022-11-17T00:22:02.903+05:30',
+                properties: {
+                  profileId: 437689,
+                  floodlightConfigurationId: '213123123',
+                  ordinal: '1',
+                  floodlightActivityId: '456543345245',
+                  quantity: '455678',
+                  value: 7,
+                  matchId: '111',
+                  limitAdTracking: true,
+                  childDirectedTreatment: true,
+                  requestType: 'batchupdate',
+                },
+                anonymousId: 'randomId',
+                integrations: { All: true },
+                name: 'ApplicationLoaded',
+                sentAt: '2022-11-17T00:22:02.903+05:30',
+              },
+            },
+            {
+              metadata: {
+                secret: {
+                  access_token: 'dummyApiToken',
+                  refresh_token: 'efgh5678',
+                  developer_token: 'ijkl91011',
+                },
+                jobId: 6,
+                userId: 'u1',
+              },
+              destination: {
+                Config: {
+                  treatmentForUnderage: false,
+                  limitAdTracking: false,
+                  childDirectedTreatment: false,
+                  nonPersonalizedAd: false,
+                  rudderAccountId: '2EOknn1JNH7WK1MfNku4fGYKkRK',
+                },
+              },
+              message: {
+                channel: 'web',
+                event: 'Promotion Clicked',
+                type: 'track',
+                originalTimestamp: '2022-11-17T00:22:02.903+05:30',
+                properties: {
+                  profileId: 437689,
+                  floodlightConfigurationId: '213123123',
+                  floodlightActivityId: '456543345245',
+                  value: 7,
+                  gclid: '123',
+                  ordinal: '1',
+                  quantity: '455678',
+                  limitAdTracking: true,
+                  childDirectedTreatment: true,
+                  requestType: 'batchinsert',
+                },
+                anonymousId: 'randomId',
+                integrations: { All: true },
+                name: 'ApplicationLoaded',
+                sentAt: '2022-11-17T00:22:02.903+05:30',
+              },
+            },
+          ],
+          destType: 'campaign_manager',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint:
+                  'https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/437689/conversions/batchupdate',
+                headers: {
+                  Authorization: 'Bearer dummyApiToken',
+                  'Content-Type': 'application/json',
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    kind: 'dfareporting#conversionsBatchUpdateRequest',
+                    conversions: [
+                      {
+                        floodlightConfigurationId: '213123123',
+                        ordinal: '1',
+                        timestampMicros: '1668624722903000',
+                        floodlightActivityId: '456543345245',
+                        quantity: '455678',
+                        value: 7,
+                        matchId: '123',
+                        nonPersonalizedAd: false,
+                        treatmentForUnderage: false,
+                      },
+                      {
+                        floodlightConfigurationId: '213123123',
+                        ordinal: '1',
+                        timestampMicros: '1668624722903000',
+                        floodlightActivityId: '456543345245',
+                        quantity: '455678',
+                        value: 7,
+                        matchId: '111',
+                        nonPersonalizedAd: false,
+                        treatmentForUnderage: false,
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                {
+                  secret: {
+                    access_token: 'dummyApiToken',
+                    refresh_token: 'efgh5678',
+                    developer_token: 'ijkl91011',
+                  },
+                  jobId: 4,
+                  userId: 'u1',
+                },
+                {
+                  secret: {
+                    access_token: 'dummyApiToken',
+                    refresh_token: 'efgh5678',
+                    developer_token: 'ijkl91011',
+                  },
+                  jobId: 5,
+                  userId: 'u1',
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                Config: {
+                  treatmentForUnderage: false,
+                  limitAdTracking: false,
+                  childDirectedTreatment: false,
+                  nonPersonalizedAd: false,
+                  rudderAccountId: '2EOknn1JNH7WK1MfNku4fGYKkRK',
+                },
+              },
+            },
+            {
+              batchedRequest: {
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint:
+                  'https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/437689/conversions/batchinsert',
+                headers: {
+                  Authorization: 'Bearer dummyApiToken',
+                  'Content-Type': 'application/json',
+                },
+                params: {},
+                body: {
+                  JSON: {
+                    kind: 'dfareporting#conversionsBatchInsertRequest',
+                    conversions: [
+                      {
+                        floodlightConfigurationId: '213123123',
+                        ordinal: '1',
+                        timestampMicros: '1668624722903000',
+                        floodlightActivityId: '456543345245',
+                        quantity: '455678',
+                        value: 7,
+                        gclid: '123',
+                        limitAdTracking: true,
+                        childDirectedTreatment: true,
+                        nonPersonalizedAd: false,
+                        treatmentForUnderage: false,
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                files: {},
+              },
+              metadata: [
+                {
+                  secret: {
+                    access_token: 'dummyApiToken',
+                    refresh_token: 'efgh5678',
+                    developer_token: 'ijkl91011',
+                  },
+                  jobId: 6,
+                  userId: 'u1',
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                Config: {
+                  treatmentForUnderage: false,
+                  limitAdTracking: false,
+                  childDirectedTreatment: false,
+                  nonPersonalizedAd: false,
+                  rudderAccountId: '2EOknn1JNH7WK1MfNku4fGYKkRK',
+                },
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'campaign_manager',
+    description: 'Entire Batch has data instrumentation',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              metadata: {
+                secret: {
+                  access_token: 'dummyApiToken',
+                  refresh_token: 'efgh5678',
+                  developer_token: 'ijkl91011',
+                },
+                jobId: 4,
+                userId: 'u1',
+              },
+              destination: {
+                Config: {
+                  treatmentForUnderage: false,
+                  limitAdTracking: false,
+                  childDirectedTreatment: false,
+                  nonPersonalizedAd: false,
+                  rudderAccountId: '2EOknn1JNH7WK1MfNku4fGYKkRK',
+                },
+              },
+              message: {
+                channel: 'web',
+                event: 'Promotion Clicked',
+                originalTimestamp: '2022-11-17T00:22:02.903+05:30',
+                properties: {
+                  profileId: 437689,
+                  floodlightConfigurationId: '213123123',
+                  quantity: '455678',
+                  ordinal: '1',
+                  floodlightActivityId: '456543345245',
+                  value: 7,
+                  limitAdTracking: true,
+                  childDirectedTreatment: true,
+                  requestType: 'batchupdate',
+                },
+                type: 'track',
+                anonymousId: 'randomId',
+                integrations: { All: true },
+                name: 'ApplicationLoaded',
+                sentAt: '2022-11-17T00:22:02.903+05:30',
+              },
+            },
+            {
+              metadata: {
+                secret: {
+                  access_token: 'dummyApiToken',
+                  refresh_token: 'efgh5678',
+                  developer_token: 'ijkl91011',
+                },
+                jobId: 5,
+                userId: 'u1',
+              },
+              destination: {
+                Config: {
+                  treatmentForUnderage: false,
+                  limitAdTracking: false,
+                  childDirectedTreatment: false,
+                  nonPersonalizedAd: false,
+                  rudderAccountId: '2EOknn1JNH7WK1MfNku4fGYKkRK',
+                },
+              },
+              message: {
+                channel: 'web',
+                event: 'Promotion Clicked',
+                type: 'track',
+                originalTimestamp: '2022-11-17T00:22:02.903+05:30',
+                properties: {
+                  profileId: 437689,
+                  floodlightConfigurationId: '213123123',
+                  ordinal: '1',
+                  floodlightActivityId: '456543345245',
+                  quantity: '455678',
+                  value: 7,
+                  limitAdTracking: true,
+                  childDirectedTreatment: true,
+                  requestType: 'batchupdate',
+                },
+                anonymousId: 'randomId',
+                integrations: { All: true },
+                name: 'ApplicationLoaded',
+                sentAt: '2022-11-17T00:22:02.903+05:30',
+              },
+            },
+            {
+              metadata: {
+                secret: {
+                  access_token: 'dummyApiToken',
+                  refresh_token: 'efgh5678',
+                  developer_token: 'ijkl91011',
+                },
+                jobId: 6,
+                userId: 'u1',
+              },
+              destination: {
+                Config: {
+                  treatmentForUnderage: false,
+                  limitAdTracking: false,
+                  childDirectedTreatment: false,
+                  nonPersonalizedAd: false,
+                  rudderAccountId: '2EOknn1JNH7WK1MfNku4fGYKkRK',
+                },
+              },
+              message: {
+                channel: 'web',
+                event: 'Promotion Clicked',
+                type: 'track',
+                originalTimestamp: '2022-11-17T00:22:02.903+05:30',
+                properties: {
+                  profileId: 437689,
+                  floodlightConfigurationId: '213123123',
+                  floodlightActivityId: '456543345245',
+                  value: 7,
+                  ordinal: '1',
+                  quantity: '455678',
+                  limitAdTracking: true,
+                  childDirectedTreatment: true,
+                  requestType: 'batchinsert',
+                },
+                anonymousId: 'randomId',
+                integrations: { All: true },
+                name: 'ApplicationLoaded',
+                sentAt: '2022-11-17T00:22:02.903+05:30',
+              },
+            },
+          ],
+          destType: 'campaign_manager',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              metadata: [
+                {
+                  secret: {
+                    access_token: 'dummyApiToken',
+                    refresh_token: 'efgh5678',
+                    developer_token: 'ijkl91011',
+                  },
+                  jobId: 4,
+                  userId: 'u1',
+                },
+              ],
+              batched: false,
+              statusCode: 400,
+              error:
+                '[CAMPAIGN MANAGER (DCM)]: Atleast one of encryptedUserId,encryptedUserIdCandidates, matchId, mobileDeviceId, gclid, dclid, impressionId.',
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                destType: 'CAMPAIGN_MANAGER',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'router',
+              },
+              destination: {
+                Config: {
+                  treatmentForUnderage: false,
+                  limitAdTracking: false,
+                  childDirectedTreatment: false,
+                  nonPersonalizedAd: false,
+                  rudderAccountId: '2EOknn1JNH7WK1MfNku4fGYKkRK',
+                },
+              },
+            },
+            {
+              metadata: [
+                {
+                  secret: {
+                    access_token: 'dummyApiToken',
+                    refresh_token: 'efgh5678',
+                    developer_token: 'ijkl91011',
+                  },
+                  jobId: 5,
+                  userId: 'u1',
+                },
+              ],
+              batched: false,
+              statusCode: 400,
+              error:
+                '[CAMPAIGN MANAGER (DCM)]: Atleast one of encryptedUserId,encryptedUserIdCandidates, matchId, mobileDeviceId, gclid, dclid, impressionId.',
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                destType: 'CAMPAIGN_MANAGER',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'router',
+              },
+              destination: {
+                Config: {
+                  treatmentForUnderage: false,
+                  limitAdTracking: false,
+                  childDirectedTreatment: false,
+                  nonPersonalizedAd: false,
+                  rudderAccountId: '2EOknn1JNH7WK1MfNku4fGYKkRK',
+                },
+              },
+            },
+            {
+              metadata: [
+                {
+                  secret: {
+                    access_token: 'dummyApiToken',
+                    refresh_token: 'efgh5678',
+                    developer_token: 'ijkl91011',
+                  },
+                  jobId: 6,
+                  userId: 'u1',
+                },
+              ],
+              batched: false,
+              statusCode: 400,
+              error:
+                '[CAMPAIGN MANAGER (DCM)]: Atleast one of encryptedUserId,encryptedUserIdCandidates, matchId, mobileDeviceId, gclid, dclid, impressionId.',
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                destType: 'CAMPAIGN_MANAGER',
+                module: 'destination',
+                implementation: 'native',
+                feature: 'router',
+              },
+              destination: {
+                Config: {
+                  treatmentForUnderage: false,
+                  limitAdTracking: false,
+                  childDirectedTreatment: false,
+                  nonPersonalizedAd: false,
+                  rudderAccountId: '2EOknn1JNH7WK1MfNku4fGYKkRK',
+                },
               },
             },
           ],

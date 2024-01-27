@@ -93,6 +93,10 @@ const identifyRequestHandler = async (message, category, destination, reqMetadat
   data.attributes.properties = flattenProperties
     ? flattenJson(data.attributes.properties, '.', 'normal', false)
     : data.attributes.properties;
+
+  if (isEmptyObject(data.attributes.properties)) {
+    delete data.attributes.properties;
+  }
   const payload = {
     data: removeUndefinedAndNullValues(data),
   };
@@ -152,6 +156,9 @@ const trackRequestHandler = (message, category, destination) => {
   const payload = {};
   const { privateApiKey, flattenProperties } = destination.Config;
   let event = get(message, 'event');
+  if (event && typeof event !== 'string') {
+    throw new InstrumentationError('Event type should be a string');
+  }
   event = event ? event.trim().toLowerCase() : event;
   let attributes = {};
   if (ecomEvents.includes(event) && message.properties) {

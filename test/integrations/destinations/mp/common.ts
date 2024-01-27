@@ -20,4 +20,42 @@ const sampleDestination = {
   Transformations: [],
 };
 
-export { sampleDestination, defaultMockFns };
+const destinationWithSetOnceProperty = {
+  Config: {
+    apiSecret: 'dummySecret',
+    dataResidency: 'us',
+    identityMergeApi: 'simplified',
+    setOnceProperties: [
+      {
+        property: 'nationality',
+      },
+      {
+        property: 'firstName',
+      },
+      {
+        property: 'address.city',
+      },
+    ],
+    superProperties: [
+      {
+        property: 'random',
+      },
+    ],
+    token: 'dummyToken',
+    useNativeSDK: false,
+    useNewMapping: false,
+    userDeletionApi: 'engage',
+    whitelistedEvents: [],
+  },
+  DestinationDefinition: {
+    DisplayName: 'Kiss Metrics',
+    ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
+    Name: 'MIXPANEL',
+  },
+  Enabled: true,
+  ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
+  Name: 'Kiss Metrics',
+  Transformations: [],
+};
+
+export { sampleDestination, defaultMockFns, destinationWithSetOnceProperty };

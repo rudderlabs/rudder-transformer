@@ -206,8 +206,8 @@ const getImportID = async (input, config, accessToken, csvHeader) => {
     stats.counter('marketo_bulk_upload_upload_file_unsuccJobs', unsuccessfulJobs.length);
     if (!isHttpStatusSuccess(resp.status)) {
       throw new NetworkError(
-        'Unable to upload file',
-        hydrateStatusForServer(resp.status, 'During fetching poll status'),
+        `Unable to upload file due to error : ${resp.response}`,
+        hydrateStatusForServer(resp.status, 'During uploading file'),
       );
     }
     return handleFileUploadResponse(resp, successfulJobs, unsuccessfulJobs, requestTime, config);

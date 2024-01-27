@@ -34,7 +34,7 @@ const getPollStatus = async (event) => {
       state: 'Retryable',
     });
     throw new NetworkError(
-      'Could not poll status',
+      `Could not poll status: due to error ${pollStatus.response}`,
       hydrateStatusForServer(pollStatus.status, 'During fetching poll status'),
     );
   }

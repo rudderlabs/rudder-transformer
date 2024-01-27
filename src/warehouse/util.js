@@ -4,6 +4,7 @@ const get = require('get-value');
 const v0 = require('./v0/util');
 const v1 = require('./v1/util');
 const { PlatformError, InstrumentationError } = require('@rudderstack/integrations-lib');
+const {isBlank} = require('./config/helpers');
 
 const minTimeInMs = Date.parse('0001-01-01T00:00:00Z');
 const maxTimeInMs = Date.parse('9999-12-31T23:59:59.999Z');
@@ -20,10 +21,6 @@ const isValidJsonPathKey = (key, level, jsonKeys = {}) => {
 };
 const isValidLegacyJsonPathKey = (eventType, key, level, jsonKeys = {}) => {
   return eventType === 'track' && jsonKeys[key] === level;
-};
-
-const isBlank = (value) => {
-  return _.isEmpty(_.toString(value));
 };
 
 /*
@@ -97,6 +94,9 @@ const timestampRegex = new RegExp(
 );
 
 function validTimestamp(input) {
+  if (typeof input !== 'string') {
+    return false;
+  }
   if (timestampRegex.test(input)) {
     // check if date value lies in between min time and max time. if not then it's not a valid timestamp
     const d = new Date(input);
@@ -147,7 +147,6 @@ const getRecordIDForExtract = (message) => {
 
 module.exports = {
   isObject,
-  isBlank,
   isValidJsonPathKey,
   isValidLegacyJsonPathKey,
   keysFromJsonPaths,

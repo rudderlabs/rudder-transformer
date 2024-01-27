@@ -2,7 +2,8 @@
   {
     "metadata": [
       {
-        "jobId": 5
+        "jobId": 5,
+        "userId": "u1"
       }
     ],
     "batched": false,

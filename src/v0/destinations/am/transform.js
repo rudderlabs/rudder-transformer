@@ -297,6 +297,15 @@ const identifyBuilder = (message, destination, rawPayload) => {
       }
     });
   }
+  // update identify call request with unset fields
+  // AM docs https://www.docs.developers.amplitude.com/analytics/apis/http-v2-api/#keys-for-the-event-argument:~:text=exceed%2040%20layers.-,user_properties,-Optional.%20Object.%20A
+  const unsetObject = AMUtils.getUnsetObj(message);
+  if (unsetObject) {
+    // Example   unsetObject = {
+    //     "testObj.del1": "-"
+    // }
+    set(rawPayload, `user_properties.$unset`, unsetObject);
+  }
   return rawPayload;
 };
 
@@ -334,7 +343,7 @@ const getResponseData = (evType, destination, rawPayload, message, groupInfo) =>
     case EventType.IDENTIFY:
       // event_type for identify event is $identify
       rawPayload.event_type = IDENTIFY_AM;
-      identifyBuilder(message, destination, rawPayload);
+      rawPayload = identifyBuilder(message, destination, rawPayload);
       break;
     case EventType.GROUP:
       // event_type for identify event is $identify
@@ -591,8 +600,12 @@ const processSingleMessage = (message, destination) => {
   const { name, event, properties } = message;
   const messageType = message.type.toLowerCase();
   const CATEGORY_KEY = 'properties.category';
-  const { useUserDefinedPageEventName, userProvidedPageEventString,
-    useUserDefinedScreenEventName, userProvidedScreenEventString } = destination.Config;
+  const {
+    useUserDefinedPageEventName,
+    userProvidedPageEventString,
+    useUserDefinedScreenEventName,
+    userProvidedScreenEventString,
+  } = destination.Config;
   switch (messageType) {
     case EventType.IDENTIFY:
       payloadObjectName = 'events'; // identify same as events
@@ -602,17 +615,17 @@ const processSingleMessage = (message, destination) => {
     case EventType.PAGE:
       if (useUserDefinedPageEventName) {
         const getMessagePath = userProvidedPageEventString
-            .substring(
-                userProvidedPageEventString.indexOf('{') + 2,
-                userProvidedPageEventString.indexOf('}'),
-            )
-            .trim();
+          .substring(
+            userProvidedPageEventString.indexOf('{') + 2,
+            userProvidedPageEventString.indexOf('}'),
+          )
+          .trim();
         evType =
-            userProvidedPageEventString.trim() === ''
-                ? name
-                : userProvidedPageEventString
-                    .trim()
-                    .replaceAll(/{{([^{}]+)}}/g, get(message, getMessagePath));
+          userProvidedPageEventString.trim() === ''
+            ? name
+            : userProvidedPageEventString
+                .trim()
+                .replaceAll(/{{([^{}]+)}}/g, get(message, getMessagePath));
       } else {
         evType = `Viewed ${name || get(message, CATEGORY_KEY) || ''} Page`;
       }
@@ -625,25 +638,25 @@ const processSingleMessage = (message, destination) => {
     case EventType.SCREEN:
       {
         const { eventType, updatedProperties } = getScreenevTypeAndUpdatedProperties(
-            message,
-            CATEGORY_KEY,
+          message,
+          CATEGORY_KEY,
         );
         let customScreenEv = '';
         if (useUserDefinedScreenEventName) {
           const getMessagePath = userProvidedScreenEventString
-              .substring(
-                  userProvidedScreenEventString.indexOf('{') + 2,
-                  userProvidedScreenEventString.indexOf('}'),
-              )
-              .trim();
+            .substring(
+              userProvidedScreenEventString.indexOf('{') + 2,
+              userProvidedScreenEventString.indexOf('}'),
+            )
+            .trim();
           customScreenEv =
-              userProvidedScreenEventString.trim() === ''
-                  ? name
-                  : userProvidedScreenEventString
-                      .trim()
-                      .replaceAll(/{{([^{}]+)}}/g, get(message, getMessagePath));
+            userProvidedScreenEventString.trim() === ''
+              ? name
+              : userProvidedScreenEventString
+                  .trim()
+                  .replaceAll(/{{([^{}]+)}}/g, get(message, getMessagePath));
         }
-        evType =useUserDefinedScreenEventName ? customScreenEv : eventType;
+        evType = useUserDefinedScreenEventName ? customScreenEv : eventType;
         message.properties = updatedProperties;
         category = ConfigCategory.SCREEN;
       }

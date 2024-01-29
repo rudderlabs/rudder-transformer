@@ -402,13 +402,8 @@ const checkEventStatusViaSchemaMatching = (event, fieldMap) => {
     const { job_id } = metadata;
 
     Object.entries(message).forEach(([paramName, paramValue]) => {
-      let expectedDataType = SCHEMA_DATA_TYPE_MAP[fieldMap[paramName]];
+      const expectedDataType = SCHEMA_DATA_TYPE_MAP[fieldMap[paramName]];
       const actualDataType = typeof paramValue;
-
-      // If expectedDataType is not one of the primitive data types, treat it as a string
-      if (!['string', 'number', 'boolean', 'undefined'].includes(expectedDataType)) {
-        expectedDataType = 'string';
-      }
 
       if (!mismatchedFields[job_id] && actualDataType !== expectedDataType) {
         mismatchedFields[job_id] = `invalid ${paramName}`;

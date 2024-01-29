@@ -33,6 +33,7 @@ const SCHEMA_DATA_TYPE_MAP = {
   email: 'string',
   phone: 'string',
   url: 'string',
+  object: 'object',
 };
 
 module.exports = {

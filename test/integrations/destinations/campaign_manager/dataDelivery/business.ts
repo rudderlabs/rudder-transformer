@@ -79,7 +79,7 @@ export const testScenariosForV0API = [
     id: 'cm360_v0_scenario_1',
     name: 'campaign_manager',
     description:
-      '[Proxy v0 API] :: Test for a valid request - where the destination responds with 200 without any error',
+      '[Proxy v0 API] :: Test for a valid request with a successful 200 response from the destination',
     successCriteria: 'Should return 200 with no error with destination response',
     scenario: 'Business',
     feature: 'dataDelivery',

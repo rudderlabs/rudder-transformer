@@ -357,7 +357,7 @@ describe('getAccessToken', () => {
 
 describe('checkEventStatusViaSchemaMatching', () => {
   // The function correctly identifies fields with expected data types.
-  it('should correctly identify fields with expected data types', () => {
+  it('if event data types match with expected data types we send no field as mismatch', () => {
     const event = {
       input: [
         {
@@ -384,7 +384,7 @@ describe('checkEventStatusViaSchemaMatching', () => {
   });
 
   // The function correctly identifies fields with unexpected data types.
-  it('should correctly identify fields with unexpected data types', () => {
+  it('if event data types do not match with expected data types we send that field as mismatch', () => {
     const event = {
       input: [
         {
@@ -413,7 +413,7 @@ describe('checkEventStatusViaSchemaMatching', () => {
   });
 
   // The function correctly handles events with multiple fields.
-  it('should correctly handle events with multiple fields', () => {
+  it('For array of events the mismatch object fills up with each event errors', () => {
     const event = {
       input: [
         {
@@ -454,7 +454,7 @@ describe('checkEventStatusViaSchemaMatching', () => {
   });
 
   // The function correctly handles events with missing fields.
-  it('should have no effect with missing fields', () => {
+  it('it is not mandatory to send all the fields present in schema', () => {
     const event = {
       input: [
         {
@@ -480,7 +480,7 @@ describe('checkEventStatusViaSchemaMatching', () => {
   });
 
   // The function correctly handles events with additional fields. But this will not happen in our use case
-  it('should correctly handle events with additional fields', () => {
+  it('for any field beyond schema fields will be mapped as invalid', () => {
     const event = {
       input: [
         {

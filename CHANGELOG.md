@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.54.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.54.1...v1.54.2) (2024-01-25)
+
+
+### Bug Fixes
+
+* deleting access token cache for marketo bulk upload destination ([#3029](https://github.com/rudderlabs/rudder-transformer/issues/3029)) ([78b75bf](https://github.com/rudderlabs/rudder-transformer/commit/78b75bf4d9114209b3e89489fb43228dc9a70e5f))
+
 ### [1.54.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.54.0...v1.54.1) (2024-01-24)
 
 

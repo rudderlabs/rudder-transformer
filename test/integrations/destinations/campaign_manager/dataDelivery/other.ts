@@ -5,7 +5,7 @@ export const otherScenariosV0 = [
     id: 'cm360_v0_other_scenario_1',
     name: 'campaign_manager',
     description:
-      '[Proxy v0 API] :: Scneario for testing Service Unavailable error from destination',
+      '[Proxy v0 API] :: Scenario for testing Service Unavailable error from destination',
     successCriteria: 'Should return 500 status code with error message',
     scenario: 'Framework',
     feature: 'dataDelivery',
@@ -55,7 +55,7 @@ export const otherScenariosV0 = [
   {
     id: 'cm360_v0_other_scenario_2',
     name: 'campaign_manager',
-    description: '[Proxy v0 API] :: Scneario for testing Internal Server error from destination',
+    description: '[Proxy v0 API] :: Scenario for testing Internal Server error from destination',
     successCriteria: 'Should return 500 status code with error message',
     scenario: 'Framework',
     feature: 'dataDelivery',
@@ -99,7 +99,7 @@ export const otherScenariosV0 = [
   {
     id: 'cm360_v0_other_scenario_3',
     name: 'campaign_manager',
-    description: '[Proxy v0 API] :: Scneario for testing Gateway Time Out error from destination',
+    description: '[Proxy v0 API] :: Scenario for testing Gateway Time Out error from destination',
     successCriteria: 'Should return 500 status code with error message',
     scenario: 'Framework',
     feature: 'dataDelivery',
@@ -143,7 +143,7 @@ export const otherScenariosV0 = [
   {
     id: 'cm360_v0_other_scenario_4',
     name: 'campaign_manager',
-    description: '[Proxy v0 API] :: Scneario for testing null response from destination',
+    description: '[Proxy v0 API] :: Scenario for testing null response from destination',
     successCriteria: 'Should return 500 status code with error message',
     scenario: 'Framework',
     feature: 'dataDelivery',
@@ -188,7 +188,7 @@ export const otherScenariosV0 = [
     id: 'cm360_v0_other_scenario_5',
     name: 'campaign_manager',
     description:
-      '[Proxy v0 API] :: Scneario for testing null and no status response from destination',
+      '[Proxy v0 API] :: Scenario for testing null and no status response from destination',
     successCriteria: 'Should return 500 status code with error message',
     scenario: 'Framework',
     feature: 'dataDelivery',
@@ -236,7 +236,7 @@ export const otherScenariosV1 = [
     id: 'cm360_v1_other_scenario_1',
     name: 'campaign_manager',
     description:
-      '[Proxy v1 API] :: Scneario for testing Service Unavailable error from destination',
+      '[Proxy v1 API] :: Scenario for testing Service Unavailable error from destination',
     successCriteria: 'Should return 500 status code with error message',
     scenario: 'Framework',
     feature: 'dataDelivery',
@@ -296,7 +296,7 @@ export const otherScenariosV1 = [
   {
     id: 'cm360_v1_other_scenario_2',
     name: 'campaign_manager',
-    description: '[Proxy v1 API] :: Scneario for testing Internal Server error from destination',
+    description: '[Proxy v1 API] :: Scenario for testing Internal Server error from destination',
     successCriteria: 'Should return 500 status code with error message',
     scenario: 'Framework',
     feature: 'dataDelivery',
@@ -355,7 +355,7 @@ export const otherScenariosV1 = [
   {
     id: 'cm360_v1_other_scenario_3',
     name: 'campaign_manager',
-    description: '[Proxy v1 API] :: Scneario for testing Gateway Time Out error from destination',
+    description: '[Proxy v1 API] :: Scenario for testing Gateway Time Out error from destination',
     successCriteria: 'Should return 500 status code with error message',
     scenario: 'Framework',
     feature: 'dataDelivery',
@@ -414,7 +414,7 @@ export const otherScenariosV1 = [
   {
     id: 'cm360_v1_other_scenario_4',
     name: 'campaign_manager',
-    description: '[Proxy v1 API] :: Scneario for testing null response from destination',
+    description: '[Proxy v1 API] :: Scenario for testing null response from destination',
     successCriteria: 'Should return 500 status code with error message',
     scenario: 'Framework',
     feature: 'dataDelivery',
@@ -474,7 +474,7 @@ export const otherScenariosV1 = [
     id: 'cm360_v1_other_scenario_5',
     name: 'campaign_manager',
     description:
-      '[Proxy v1 API] :: Scneario for testing null and no status response from destination',
+      '[Proxy v1 API] :: Scenario for testing null and no status response from destination',
     successCriteria: 'Should return 500 status code with error message',
     scenario: 'Framework',
     feature: 'dataDelivery',

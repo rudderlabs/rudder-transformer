@@ -74,7 +74,7 @@ const metadataArray = [proxyMetdata1, proxyMetdata2];
 // Test scenarios for the test cases
 // ===================================
 
-export const testScneariosForV0API = [
+export const testScenariosForV0API = [
   {
     id: 'cm360_v0_scenario_1',
     name: 'campaign_manager',
@@ -281,7 +281,7 @@ export const testScneariosForV0API = [
   },
 ];
 
-export const testScneariosForV1API = [
+export const testScenariosForV1API = [
   {
     id: 'cm360_v1_scenario_1',
     name: 'campaign_manager',

@@ -53,7 +53,7 @@ export const v0oauthScenarios = [
     id: 'cm360_v0_oauth_scenario_1',
     name: 'campaign_manager',
     description:
-      '[Proxy v0 API] :: Oauth scneario where valid credentials are missing as mock response from destination',
+      '[Proxy v0 API] :: Oauth  where valid credentials are missing as mock response from destination',
     successCriteria:
       'Since the error from the destination is 401 - the proxy should return 500 with authErrorCategory as REFRESH_TOKEN',
     scenario: 'Oauth',
@@ -128,7 +128,7 @@ export const v0oauthScenarios = [
     id: 'cm360_v0_oauth_scenario_2',
     name: 'campaign_manager',
     description:
-      '[Proxy v0 API] :: Oauth scneario where ACCESS_TOKEN_SCOPE_INSUFFICIENT error as mock response from destination',
+      '[Proxy v0 API] :: Oauth  where ACCESS_TOKEN_SCOPE_INSUFFICIENT error as mock response from destination',
     successCriteria:
       'Since the error from the destination is 403 - the proxy should return 500 with authErrorCategory as AUTH_STATUS_INACTIVE',
     scenario: 'Oauth',
@@ -200,7 +200,7 @@ export const v0oauthScenarios = [
     id: 'cm360_v0_oauth_scenario_3',
     name: 'campaign_manager',
     description:
-      '[Proxy v0 API] :: Oauth scneario where google.auth.exceptions.RefreshError invalid_grant error as mock response from destination',
+      '[Proxy v0 API] :: Oauth  where google.auth.exceptions.RefreshError invalid_grant error as mock response from destination',
     successCriteria:
       'Since the error from the destination is 403 - the proxy should return 500 with authErrorCategory as AUTH_STATUS_INACTIVE',
     scenario: 'Oauth',
@@ -254,7 +254,7 @@ export const v0oauthScenarios = [
     id: 'cm360_v0_oauth_scenario_4',
     name: 'campaign_manager',
     description:
-      '[Proxy v0 API] :: Oauth scneario where google.auth.exceptions.RefreshError refresh error as mock response from destination',
+      '[Proxy v0 API] :: Oauth  where google.auth.exceptions.RefreshError refresh error as mock response from destination',
     successCriteria: 'Should return 500 with authErrorCategory as AUTH_STATUS_INACTIVE',
     scenario: 'Oauth',
     feature: 'dataDelivery',
@@ -307,7 +307,7 @@ export const v1oauthScenarios = [
     id: 'cm360_v1_oauth_scenario_1',
     name: 'campaign_manager',
     description:
-      '[Proxy v1 API] :: Oauth scneario where valid credentials are missing as mock response from destination',
+      '[Proxy v1 API] :: Oauth  where valid credentials are missing as mock response from destination',
     successCriteria:
       'Since the error from the destination is 401 - the proxy should return 500 with authErrorCategory as REFRESH_TOKEN',
     scenario: 'Oauth',
@@ -370,7 +370,7 @@ export const v1oauthScenarios = [
     id: 'cm360_v1_oauth_scenario_2',
     name: 'campaign_manager',
     description:
-      '[Proxy v1 API] :: Oauth scneario where ACCESS_TOKEN_SCOPE_INSUFFICIENT error as mock response from destination',
+      '[Proxy v1 API] :: Oauth  where ACCESS_TOKEN_SCOPE_INSUFFICIENT error as mock response from destination',
     successCriteria:
       'Since the error from the destination is 403 - the proxy should return 500 with authErrorCategory as AUTH_STATUS_INACTIVE',
     scenario: 'Oauth',
@@ -433,7 +433,7 @@ export const v1oauthScenarios = [
     id: 'cm360_v1_oauth_scenario_3',
     name: 'campaign_manager',
     description:
-      '[Proxy v1 API] :: Oauth scneario where google.auth.exceptions.RefreshError invalid_grant error as mock response from destination',
+      '[Proxy v1 API] :: Oauth  where google.auth.exceptions.RefreshError invalid_grant error as mock response from destination',
     successCriteria:
       'Since the error from the destination is 403 - the proxy should return 500 with authErrorCategory as AUTH_STATUS_INACTIVE',
     scenario: 'Oauth',
@@ -496,7 +496,7 @@ export const v1oauthScenarios = [
     id: 'cm360_v1_oauth_scenario_4',
     name: 'campaign_manager',
     description:
-      '[Proxy v1 API] :: Oauth scneario where google.auth.exceptions.RefreshError refresh error as mock response from destination',
+      '[Proxy v1 API] :: Oauth  where google.auth.exceptions.RefreshError refresh error as mock response from destination',
     successCriteria: 'Should return 500 with authErrorCategory as AUTH_STATUS_INACTIVE',
     scenario: 'Oauth',
     feature: 'dataDelivery',

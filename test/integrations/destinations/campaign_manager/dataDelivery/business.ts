@@ -1,7 +1,7 @@
 import { ProxyMetdata } from '../../../../../src/types';
 import { generateProxyV0Payload, generateProxyV1Payload } from '../../../testUtils';
 
-// Boilerplat data for the test cases
+// Boilerplate data for the test cases
 // ======================================
 
 const commonHeaders = {

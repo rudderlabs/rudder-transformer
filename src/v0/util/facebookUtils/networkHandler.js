@@ -100,12 +100,14 @@ const errorDetailsMap = {
   190: {
     460: new ErrorDetailsExtractorBuilder()
       .setStatus(400)
+      .setStat('accessTokenExpired')
       .setMessage(
         'The session has been invalidated because the user changed their password or Facebook has changed the session for security reasons',
       )
       .build(),
     default: new ErrorDetailsExtractorBuilder()
       .setStatus(400)
+      .setStat('accessTokenExpired')
       .setMessage('Invalid OAuth 2.0 access token')
       .build(),
   },
@@ -211,6 +213,7 @@ const getErrorDetailsFromErrorMap = (error) => {
 
 const getStatus = (error) => {
   const errorDetail = getErrorDetailsFromErrorMap(error);
+  console.log(errorDetail);
   let errorStatus = 500;
   const isErrorDetailEmpty = isEmpty(errorDetail);
   if (isErrorDetailEmpty) {

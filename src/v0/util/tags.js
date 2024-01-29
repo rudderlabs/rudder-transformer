@@ -40,6 +40,7 @@ const ERROR_CATEGORIES = {
   NETWORK: 'network',
   PLATFORM: 'platform',
   TRANSFORMATION: 'transformation',
+  ACCESS_TOKEN_EXPIRED: 'accessTokenExpired'
 };
 
 const ERROR_TYPES = {

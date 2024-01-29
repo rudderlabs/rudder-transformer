@@ -439,7 +439,7 @@ describe('checkEventStatusViaSchemaMatching', () => {
       ],
     };
     const fieldSchemaMapping = {
-      email: 'string',
+      email: 'email',
       id: 'integer',
       testCustomFieldScore: 'integer',
       isLead: 'boolean',
@@ -459,8 +459,8 @@ describe('checkEventStatusViaSchemaMatching', () => {
       input: [
         {
           message: {
-            field1: 'value1',
-            field3: true,
+            email: 'value1',
+            isLead: true,
           },
           metadata: {
             job_id: 'job1',
@@ -469,9 +469,9 @@ describe('checkEventStatusViaSchemaMatching', () => {
       ],
     };
     const fieldSchemaMapping = {
-      field1: 'string',
-      field2: 'number',
-      field3: 'boolean',
+      email: 'string',
+      id: 'number',
+      isLead: 'boolean',
     };
 
     const result = checkEventStatusViaSchemaMatching(event, fieldSchemaMapping);

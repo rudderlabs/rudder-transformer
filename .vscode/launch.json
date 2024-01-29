@@ -19,7 +19,7 @@
       "name": "Launch TS",
       "program": "${workspaceFolder}/dist/src/index.js",
       "outFiles": ["${workspaceFolder}/dist/src/**/*.js"],
-      "runtimeExecutable": "/usr/local/bin/node"
+      "runtimeExecutable": "/Users/shrouti/.nvm/versions/node/v18.19.0/bin/node"
     },
     {
       "name": "benchmark",
@@ -29,7 +29,7 @@
       "args": ["--destinations=${input:destinations}", "--feature=${input:feature}"],
       "runtimeArgs": ["--nolazy"],
       "sourceMaps": true,
-      "runtimeExecutable": "/usr/local/bin/node"
+      "runtimeExecutable": "/Users/shrouti/.nvm/versions/node/v18.19.0/bin/node"
     },
     {
       "runtimeExecutable": "/usr/local/bin/node",

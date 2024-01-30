@@ -55,22 +55,14 @@ export const data = [
           output: {
             status: 400,
             message: 'Invalid OAuth 2.0 access token',
-            destinationResponse: {
-              error: {
-                message: 'The access token could not be decrypted',
-                type: 'OAuthException',
-                code: 190,
-                fbtrace_id: 'fbpixel_trace_id',
-              },
-              status: 500,
-            },
+            destinationResponse: '',
             statTags: {
               destType: 'FB',
-              errorCategory: 'network',
+              errorCategory: 'dataValidation',
               destinationId: 'Non-determininable',
               workspaceId: 'Non-determininable',
-              errorType: 'aborted',
-              meta: 'unauthorized',
+              errorType: 'configuration',
+              meta: 'accessTokenExpired',
               feature: 'dataDelivery',
               implementation: 'native',
               module: 'destination',

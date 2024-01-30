@@ -574,7 +574,7 @@ export const data = [
   },
   {
     name: 'fb_custom_audience',
-    description: 'user addition failed due to unavailable audience error',
+    description: 'user addition failed due expired access token error',
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v0',
@@ -614,24 +614,14 @@ export const data = [
         status: 400,
         body: {
           output: {
-            destinationResponse: {
-              error: {
-                message:
-                  'Error validating access token: Session has expired on Tuesday, 01-Aug-23 10:12:14 PDT. The current time is Sunday, 28-Jan-24 16:01:17 PST.',
-                type: 'OAuthException',
-                code: 190,
-                error_subcode: 463,
-                fbtrace_id: 'A3b8C6PpI-kdIOwPwV4PANi',
-              },
-              status: 400,
-            },
+            destinationResponse: '',
             message: 'Invalid OAuth 2.0 access token',
             statTags: {
               destType: 'FB_CUSTOM_AUDIENCE',
               destinationId: 'Non-determininable',
-              errorCategory: 'network',
-              errorType: 'aborted',
-              meta: 'unauthorized',
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
+              meta: 'accessTokenExpired',
               feature: 'dataDelivery',
               implementation: 'native',
               module: 'destination',

@@ -2,7 +2,7 @@ const { isEmpty } = require('lodash');
 const get = require('get-value');
 const {
   NetworkError,
-  UnauthorizedError,
+  ConfigurationAuthError,
   isDefinedAndNotNull,
 } = require('@rudderstack/integrations-lib');
 const {
@@ -252,10 +252,7 @@ const errorResponseHandler = (destResponse) => {
   const { error } = response;
   const { status, errorMessage, stats: errorStatTags } = getStatus(error);
   if (isDefinedAndNotNull(errorStatTags) && errorStatTags?.errorType === 'accessTokenExpired') {
-    throw new UnauthorizedError(`${errorMessage}`, status, {
-      ...response,
-      status: destResponse.status,
-    });
+    throw new ConfigurationAuthError(`${errorMessage}`);
   }
   throw new NetworkError(
     `${errorMessage || error.message || 'Unknown failure during response transformation'}`,

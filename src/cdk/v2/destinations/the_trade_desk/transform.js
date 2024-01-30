@@ -10,28 +10,30 @@ const processRouterDest = async (inputs) => {
   const { destination } = inputs[0];
   const groupedInputs = lodash.groupBy(inputs, (input) => input.message.type);
 
-  Object.keys(groupedInputs).forEach(async (type) => {
-    switch (type) {
-      case EventType.RECORD: {
-        const transformedRecordEvent = processRecordInputs(groupedInputs.record, destination);
-        respList.push(...transformedRecordEvent);
-        break;
-      }
+  await Promise.all(
+    Object.keys(groupedInputs).map(async (type) => {
+      switch (type) {
+        case EventType.RECORD: {
+          const transformedRecordEvent = processRecordInputs(groupedInputs.record, destination);
+          respList.push(...transformedRecordEvent);
+          break;
+        }
 
-      case EventType.TRACK: {
-        const transformedConversionEvent = await processConversionInputs(groupedInputs.track);
-        respList.push(...transformedConversionEvent);
-        break;
+        case EventType.TRACK: {
+          const transformedConversionEvent = await processConversionInputs(groupedInputs.track);
+          respList.push(...transformedConversionEvent);
+          break;
+        }
+        default: {
+          const error = new InstrumentationError(`Event type "${type}" is not supported`);
+          const errorResponses = groupedInputs[type].map((input) =>
+            handleRtTfSingleEventError(input, error, {}),
+          );
+          respList.push(...errorResponses);
+        }
       }
-      default: {
-        const error = new InstrumentationError(`Event type "${type}" is not supported`);
-        const errorResponses = groupedInputs[type].map((input) =>
-          handleRtTfSingleEventError(input, error, {}),
-        );
-        respList.push(...errorResponses);
-      }
-    }
-  });
+    }),
+  );
 
   return respList;
 };

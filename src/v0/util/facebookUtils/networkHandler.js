@@ -114,7 +114,7 @@ const errorDetailsMap = {
     default: new ErrorDetailsExtractorBuilder()
       .setStatus(400)
       .setStat({
-        [tags.TAG_NAMES.ERROR_TYPE]: tags.ERROR_TYPES.ACCESS_TOKEN_EXPIRED,
+        [tags.TAG_NAMES.ERROR_TYPE]: tags.ERROR_TYPES.UNAUTHORIZED,
       })
       .setMessage('Invalid OAuth 2.0 access token')
       .build(),

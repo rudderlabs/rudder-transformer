@@ -6,9 +6,12 @@ export class ErrorDetailsExtractor {
 
   messageDetails: MessageDetails;
 
+  stat : Stat
+
   constructor (builder: ErrorDetailsExtractorBuilder) {
     this.status = builder.getStatus();
     this.messageDetails = builder.getMessageDetails();
+    this.stat = builder.getStat();
   }
 
 }
@@ -22,7 +25,7 @@ export class ErrorDetailsExtractorBuilder {
   constructor() {
     this.status = 0;
     this.messageDetails = {};
-    this.stat = '';
+    this.stat = {};
   }
   
   setStatus(status: number): ErrorDetailsExtractorBuilder {
@@ -30,7 +33,7 @@ export class ErrorDetailsExtractorBuilder {
     return this;
   }
 
-  setStat(stat: string): ErrorDetailsExtractorBuilder {
+  setStat(stat: Record<string, string>): ErrorDetailsExtractorBuilder {
     this.stat = stat
     return this;
   }
@@ -75,6 +78,10 @@ export class ErrorDetailsExtractorBuilder {
 
   getStatus(): number {
     return this.status;
+  }
+
+  getStat(): Record<string, string> {
+    return this.stat;
   }
   
   getMessageDetails(): Record<string, string> {

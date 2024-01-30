@@ -39,8 +39,7 @@ const ERROR_CATEGORIES = {
   DATA_VALIDATION: 'dataValidation',
   NETWORK: 'network',
   PLATFORM: 'platform',
-  TRANSFORMATION: 'transformation',
-  ACCESS_TOKEN_EXPIRED: 'accessTokenExpired'
+  TRANSFORMATION: 'transformation'
 };
 
 const ERROR_TYPES = {
@@ -53,6 +52,7 @@ const ERROR_TYPES = {
   UNSUPPORTED: 'unsupported',
   REDIS: 'redis',
   FILTERED: 'filtered',
+  ACCESS_TOKEN_EXPIRED: 'accessTokenExpired'
 };
 
 const METADATA = {

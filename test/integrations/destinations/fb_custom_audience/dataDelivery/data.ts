@@ -574,7 +574,7 @@ export const data = [
   // },
   {
     name: 'fb_custom_audience',
-    description: 'user addition failed due to missing permission',
+    description: 'user addition failed due to unavailable audience error',
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v0',
@@ -583,33 +583,20 @@ export const data = [
         body: {
           version: '1',
           type: 'REST',
-          method: 'POST',
-          endpoint: getEndPoint('aud10'),
+          method: 'DELETE',
+          endpoint: getEndPoint('aud1'),
           headers: {
-            'test-dest-response-key': 'code400accesstokenexpirederror',
+            'test-dest-response-key': 'accessTokenInvalidError',
           },
           params: {
-            access_token: 'ABCD',
+            access_token: 'ABC',
             payload: {
               is_raw: true,
               data_source: {
                 sub_type: 'ANYTHING',
               },
-              schema: [
-                'DOBM',
-                'DOBD',
-                'DOBY',
-                'PHONE',
-                'GEN',
-                'FI',
-                'MADID',
-                'ZIP',
-                'ST',
-                'COUNTRY',
-              ],
-              data: [
-                ['2', '13', '2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN'],
-              ],
+              schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
+              data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
             },
           },
           body: {
@@ -623,28 +610,36 @@ export const data = [
       },
     },
     output: {
-      "response": {
-        "status": 400,
-        "message": "Invalid OAuth 2.0 access token",
-        "destinationResponse": {
-          "error": {
-            "message": "Error validating access token: Session has expired on Tuesday, 01-Aug-23 10:12:14 PDT. The current time is Sunday, 28-Jan-24 16:01:17 PST.",
-            "type": "OAuthException",
-            "code": 190,
-            "error_subcode": 463,
-            "fbtrace_id": "A3b8C6PpI-kdIOwPwV4PANi"
+      response: {
+        status: 400,
+        body: {
+          output: {
+            destinationResponse: {
+              error: {
+                message: 'Error validating access token: Session has expired on Tuesday, 01-Aug-23 10:12:14 PDT. The current time is Sunday, 28-Jan-24 16:01:17 PST.',
+                type: 'OAuthException',
+                code: 190,
+                error_subcode: 463,
+                fbtrace_id: 'A3b8C6PpI-kdIOwPwV4PANi'
+              },
+              status: 400,
+            },
+            message:
+              'Invalid OAuth 2.0 access token',
+            statTags: {
+              destType: 'FB_CUSTOM_AUDIENCE',
+              destinationId: 'Non-determininable',
+              errorCategory: 'network',
+              errorType: 'accessTokenExpired',
+              feature: 'dataDelivery',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'Non-determininable',
+            },
+            status: 400,
           },
-          "status": 400
         },
-        "statTags": {
-          "errorCategory": "network",
-          "errorType": "aborted",
-          "destType": "FB_CUSTOM_AUDIENCE",
-          "module": "destination",
-          "implementation": "native",
-          "feature": "dataDelivery"
-        }
-      }
+      },
     },
-  }
+  },
 ];

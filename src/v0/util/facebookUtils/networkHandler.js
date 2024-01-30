@@ -107,7 +107,9 @@ const errorDetailsMap = {
       .build(),
     default: new ErrorDetailsExtractorBuilder()
       .setStatus(400)
-      .setStat('accessTokenExpired')
+      .setStat({
+        [tags.TAG_NAMES.ERROR_TYPE]: tags.ERROR_TYPES.ACCESS_TOKEN_EXPIRED,
+      })
       .setMessage('Invalid OAuth 2.0 access token')
       .build(),
   },
@@ -229,8 +231,10 @@ const getStatus = (error) => {
   if (errorDetail?.messageDetails?.field) {
     errorMessage = get(error, errorDetail?.messageDetails?.field);
   }
+  
+  let tags = errorDetail?.stat;
 
-  return { status: errorStatus, errorMessage };
+  return { status: errorStatus, errorMessage, tags };
 };
 
 const errorResponseHandler = (destResponse) => {
@@ -244,10 +248,9 @@ const errorResponseHandler = (destResponse) => {
   throw new NetworkError(
     `${errorMessage || error.message || 'Unknown failure during response transformation'}`,
     status,
-    {
-      ...errorStatTags,
-      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
-    },
+    
+      // [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+     errorStatTags ,
     { ...response, status: destResponse.status },
   );
 };

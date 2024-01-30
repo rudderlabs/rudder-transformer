@@ -408,7 +408,7 @@ describe('checkEventStatusViaSchemaMatching', () => {
     const result = checkEventStatusViaSchemaMatching(event, fieldSchemaMapping);
 
     expect(result).toEqual({
-      job1: 'invalid email',
+      job1: 'invalid email for value 123 ',
     });
   });
 
@@ -448,8 +448,8 @@ describe('checkEventStatusViaSchemaMatching', () => {
     const result = checkEventStatusViaSchemaMatching(event, fieldSchemaMapping);
 
     expect(result).toEqual({
-      job1: 'invalid id',
-      job2: 'invalid testCustomFieldScore',
+      job1: 'invalid id for value value1 ',
+      job2: 'invalid testCustomFieldScore for value false ',
     });
   });
 
@@ -505,7 +505,7 @@ describe('checkEventStatusViaSchemaMatching', () => {
     const result = checkEventStatusViaSchemaMatching(event, fieldSchemaMapping);
 
     expect(result).toEqual({
-      job1: 'invalid abc',
+      job1: 'invalid abc for value value2 ',
     });
   });
 
@@ -534,7 +534,7 @@ describe('checkEventStatusViaSchemaMatching', () => {
     const result = checkEventStatusViaSchemaMatching(event, fieldSchemaMapping);
 
     expect(result).toEqual({
-      job1: 'invalid id',
+      job1: 'invalid id for value null ',
     });
   });
 });

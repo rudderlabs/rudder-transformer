@@ -1,6 +1,10 @@
 const { isEmpty } = require('lodash');
 const get = require('get-value');
-const { NetworkError } = require('@rudderstack/integrations-lib');
+const {
+  NetworkError,
+  UnauthorizedError,
+  isDefinedAndNotNull,
+} = require('@rudderstack/integrations-lib');
 const {
   processAxiosResponse,
   getDynamicErrorType,
@@ -100,7 +104,9 @@ const errorDetailsMap = {
   190: {
     460: new ErrorDetailsExtractorBuilder()
       .setStatus(400)
-      .setStat('accessTokenExpired')
+      .setStat({
+        [tags.TAG_NAMES.ERROR_TYPE]: tags.ERROR_TYPES.ACCESS_TOKEN_EXPIRED,
+      })
       .setMessage(
         'The session has been invalidated because the user changed their password or Facebook has changed the session for security reasons',
       )
@@ -222,7 +228,7 @@ const getStatus = (error) => {
     // Unhandled error response
     return {
       status: errorStatus,
-      tags: { [tags.TAG_NAMES.META]: tags.METADATA.UNHANDLED_STATUS_CODE },
+      stats: { [tags.TAG_NAMES.META]: tags.METADATA.UNHANDLED_STATUS_CODE },
     };
   }
   errorStatus = errorDetail.status;
@@ -231,10 +237,10 @@ const getStatus = (error) => {
   if (errorDetail?.messageDetails?.field) {
     errorMessage = get(error, errorDetail?.messageDetails?.field);
   }
-  
-  let tags = errorDetail?.stat;
 
-  return { status: errorStatus, errorMessage, tags };
+  const stats = errorDetail?.stat;
+
+  return { status: errorStatus, errorMessage, stats };
 };
 
 const errorResponseHandler = (destResponse) => {
@@ -244,13 +250,20 @@ const errorResponseHandler = (destResponse) => {
     return;
   }
   const { error } = response;
-  const { status, errorMessage, tags: errorStatTags } = getStatus(error);
+  const { status, errorMessage, stats: errorStatTags } = getStatus(error);
+  if (isDefinedAndNotNull(errorStatTags) && errorStatTags?.errorType === 'accessTokenExpired') {
+    throw new UnauthorizedError(`${errorMessage}`, status, {
+      ...response,
+      status: destResponse.status,
+    });
+  }
   throw new NetworkError(
     `${errorMessage || error.message || 'Unknown failure during response transformation'}`,
     status,
-    
-      // [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
-     errorStatTags ,
+    {
+      ...errorStatTags,
+      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+    },
     { ...response, status: destResponse.status },
   );
 };

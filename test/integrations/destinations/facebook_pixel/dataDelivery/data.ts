@@ -56,6 +56,7 @@ export const data = [
               destinationId: 'Non-determininable',
               workspaceId: 'Non-determininable',
               errorType: 'aborted',
+              meta: 'unauthorized',
               feature: 'dataDelivery',
               implementation: 'native',
               module: 'destination',

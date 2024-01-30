@@ -9,7 +9,7 @@ const {
   extractCustomFields,
   isAppleFamily,
   getBrowserInfo,
-  toUnixTimestamp,
+  toUnixTimestampInMS,
   batchMultiplexedEvents,
   getSuccessRespEvents,
   defaultBatchRequestConfig,
@@ -113,7 +113,7 @@ const createIdentifyResponse = (message, type, destination, responseBuilderSimpl
     $token: token,
     $distinct_id: message.userId || message.anonymousId,
     $ip: get(message, 'context.ip') || message.request_ip,
-    $time: toUnixTimestamp(message.timestamp),
+    $time: toUnixTimestampInMS(message.timestamp || message.originalTimestamp),
   };
 
   if (destination?.Config.identityMergeApi === 'simplified') {

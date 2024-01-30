@@ -56,7 +56,7 @@ steps:
           const event_type = (eventNames.length === 0 || eventNames[0]==="") ? ({"tracking_type": "Custom", "custom_event_name": event}): ({tracking_type: eventNames[0]});
 
       - name: customFields
-        condition: $.outputs.eventType.tracking_type === "Purchase"
+        condition: $.outputs.prepareTrackPayload.eventType.tracking_type === "Purchase"
         template: |
           const customFields = .message.().({
             "currency": .properties.currency,

@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.54.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.54.2...v1.54.3) (2024-01-30)
+
+
+### Bug Fixes
+
+* hubspot increasing batch limit from 10 to 100 ([8075b7c](https://github.com/rudderlabs/rudder-transformer/commit/8075b7c6c6203657a8aad2525bd2f302dabd9960))
+
 ### [1.54.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.54.1...v1.54.2) (2024-01-25)
 
 

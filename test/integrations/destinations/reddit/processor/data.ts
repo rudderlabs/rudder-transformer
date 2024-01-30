@@ -126,7 +126,10 @@ export const data = [
                         screen_dimensions: {},
                       },
                       event_metadata: {
-                        item_count: 3,
+                        item_count: 2,
+                        currency: 'USD',
+                        value: 15,
+                        value_decimal: 0.15,
                         products: [
                           {
                             id: '123',

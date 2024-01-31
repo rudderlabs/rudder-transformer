@@ -3,6 +3,7 @@ const {
   handlePollResponse,
   handleFileUploadResponse,
   getAccessToken,
+  checkEventStatusViaSchemaMatching,
 } = require('./util');
 
 const {
@@ -351,5 +352,189 @@ describe('getAccessToken', () => {
     };
 
     await expect(getAccessToken(config)).rejects.toThrow(TransformationError);
+  });
+});
+
+describe('checkEventStatusViaSchemaMatching', () => {
+  // The function correctly identifies fields with expected data types.
+  it('if event data types match with expected data types we send no field as mismatch', () => {
+    const event = {
+      input: [
+        {
+          message: {
+            email: 'value1',
+            id: 123,
+            isLead: true,
+          },
+          metadata: {
+            job_id: 'job1',
+          },
+        },
+      ],
+    };
+    const fieldSchemaMapping = {
+      email: 'string',
+      id: 'integer',
+      isLead: 'boolean',
+    };
+
+    const result = checkEventStatusViaSchemaMatching(event, fieldSchemaMapping);
+
+    expect(result).toEqual({});
+  });
+
+  // The function correctly identifies fields with unexpected data types.
+  it('if event data types do not match with expected data types we send that field as mismatch', () => {
+    const event = {
+      input: [
+        {
+          message: {
+            email: 123,
+            city: '123',
+            islead: true,
+          },
+          metadata: {
+            job_id: 'job1',
+          },
+        },
+      ],
+    };
+    const fieldSchemaMapping = {
+      email: 'string',
+      city: 'number',
+      islead: 'boolean',
+    };
+
+    const result = checkEventStatusViaSchemaMatching(event, fieldSchemaMapping);
+
+    expect(result).toEqual({
+      job1: 'invalid email',
+    });
+  });
+
+  // The function correctly handles events with multiple fields.
+  it('For array of events the mismatch object fills up with each event errors', () => {
+    const event = {
+      input: [
+        {
+          message: {
+            id: 'value1',
+            testCustomFieldScore: 123,
+            isLead: true,
+          },
+          metadata: {
+            job_id: 'job1',
+          },
+        },
+        {
+          message: {
+            email: 'value2',
+            id: 456,
+            testCustomFieldScore: false,
+          },
+          metadata: {
+            job_id: 'job2',
+          },
+        },
+      ],
+    };
+    const fieldSchemaMapping = {
+      email: 'email',
+      id: 'integer',
+      testCustomFieldScore: 'integer',
+      isLead: 'boolean',
+    };
+
+    const result = checkEventStatusViaSchemaMatching(event, fieldSchemaMapping);
+
+    expect(result).toEqual({
+      job1: 'invalid id',
+      job2: 'invalid testCustomFieldScore',
+    });
+  });
+
+  // The function correctly handles events with missing fields.
+  it('it is not mandatory to send all the fields present in schema', () => {
+    const event = {
+      input: [
+        {
+          message: {
+            email: 'value1',
+            isLead: true,
+          },
+          metadata: {
+            job_id: 'job1',
+          },
+        },
+      ],
+    };
+    const fieldSchemaMapping = {
+      email: 'string',
+      id: 'number',
+      isLead: 'boolean',
+    };
+
+    const result = checkEventStatusViaSchemaMatching(event, fieldSchemaMapping);
+
+    expect(result).toEqual({});
+  });
+
+  // The function correctly handles events with additional fields. But this will not happen in our use case
+  it('for any field beyond schema fields will be mapped as invalid', () => {
+    const event = {
+      input: [
+        {
+          message: {
+            email: 'value1',
+            id: 124,
+            isLead: true,
+            abc: 'value2',
+          },
+          metadata: {
+            job_id: 'job1',
+          },
+        },
+      ],
+    };
+    const fieldSchemaMapping = {
+      email: 'string',
+      id: 'number',
+      isLead: 'boolean',
+    };
+
+    const result = checkEventStatusViaSchemaMatching(event, fieldSchemaMapping);
+
+    expect(result).toEqual({
+      job1: 'invalid abc',
+    });
+  });
+
+  // The function correctly handles events with null values.
+  it('should correctly handle events with null values', () => {
+    const event = {
+      input: [
+        {
+          message: {
+            email: 'value1',
+            id: null,
+            isLead: true,
+          },
+          metadata: {
+            job_id: 'job1',
+          },
+        },
+      ],
+    };
+    const fieldSchemaMapping = {
+      email: 'string',
+      id: 'number',
+      isLead: 'boolean',
+    };
+
+    const result = checkEventStatusViaSchemaMatching(event, fieldSchemaMapping);
+
+    expect(result).toEqual({
+      job1: 'invalid id',
+    });
   });
 });

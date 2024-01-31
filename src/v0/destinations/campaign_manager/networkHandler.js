@@ -54,7 +54,7 @@ const responseHandler = (destinationResponse) => {
       if (checkIfFailuresAreRetryable(response)) {
         throw new RetryableError(
           `Campaign Manager: Retrying during CAMPAIGN_MANAGER response transformation`,
-          500,
+          status,
           destinationResponse,
         );
       } else {
@@ -76,7 +76,7 @@ const responseHandler = (destinationResponse) => {
 
   throw new NetworkError(
     `Campaign Manager: ${response.error?.message} during CAMPAIGN_MANAGER response transformation 3`,
-    500,
+    status,
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },

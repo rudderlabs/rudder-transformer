@@ -128,8 +128,8 @@ export const data = [
                       event_metadata: {
                         item_count: 2,
                         currency: 'USD',
-                        value: 15,
-                        value_decimal: 0.15,
+                        value: 1500,
+                        value_decimal: 15,
                         products: [
                           {
                             id: '123',

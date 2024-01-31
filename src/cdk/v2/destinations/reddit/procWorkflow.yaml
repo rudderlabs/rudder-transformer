@@ -60,9 +60,9 @@ steps:
         template: |
           const customFields = .message.().({
             "currency": .properties.currency,
-            "value": .properties.revenue !== undefined ? Number(.properties.revenue) : undefined,
+            "value_decimal": .properties.revenue !== undefined ? Number(.properties.revenue) : undefined,
             "item_count": (Array.isArray(.properties.products) && .properties.products.length) || (.properties.itemCount && Number(.properties.itemCount)),
-            "value_decimal": .properties.revenue !== undefined ? Number(.properties.revenue)/100 : undefined,
+            "value": .properties.revenue !== undefined ? Number(.properties.revenue)*100 : undefined,
             "conversion_id": .properties.conversionId || .messageId,
           });
           $.removeUndefinedAndNullValues(customFields)

@@ -111,6 +111,14 @@ const errorDetailsMap = {
         'The session has been invalidated because the user changed their password or Facebook has changed the session for security reasons',
       )
       .build(),
+      
+     463: new ErrorDetailsExtractorBuilder()
+      .setStatus(400)
+      .setStat({
+        [tags.TAG_NAMES.ERROR_TYPE]: tags.ERROR_TYPES.ACCESS_TOKEN_EXPIRED,
+      })
+     .setMessageField('message')
+      .build(),
     default: new ErrorDetailsExtractorBuilder()
       .setStatus(400)
       .setStat({
@@ -251,7 +259,7 @@ const errorResponseHandler = (destResponse) => {
   }
   const { error } = response;
   const { status, errorMessage, stats: errorStatTags } = getStatus(error);
-  if (isDefinedAndNotNull(errorStatTags) && errorStatTags?.errorType === 'accessTokenExpired') {
+  if (isDefinedAndNotNull(errorStatTags) && errorStatTags?.[tags.TAG_NAMES.ERROR_TYPE] === 'accessTokenExpired') {
     throw new ConfigurationAuthError(`${errorMessage}`);
   }
   throw new NetworkError(

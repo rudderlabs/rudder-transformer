@@ -231,7 +231,6 @@ const getErrorDetailsFromErrorMap = (error) => {
 
 const getStatus = (error) => {
   const errorDetail = getErrorDetailsFromErrorMap(error);
-  console.log(errorDetail);
   let errorStatus = 500;
   const isErrorDetailEmpty = isEmpty(errorDetail);
   if (isErrorDetailEmpty) {

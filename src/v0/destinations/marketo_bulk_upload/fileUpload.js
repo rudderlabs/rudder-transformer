@@ -206,11 +206,11 @@ const getImportID = async (input, config, accessToken, csvHeader) => {
     stats.counter('marketo_bulk_upload_upload_file_unsuccJobs', unsuccessfulJobs.length);
     if (!isHttpStatusSuccess(resp.status)) {
       throw new NetworkError(
-        `Unable to upload file due to error : ${resp.response}`,
+        `Unable to upload file due to error : ${JSON.stringify(resp.response)}`,
         hydrateStatusForServer(resp.status, 'During uploading file'),
       );
     }
-    return handleFileUploadResponse(resp, successfulJobs, unsuccessfulJobs, requestTime, config);
+    return handleFileUploadResponse(resp, successfulJobs, unsuccessfulJobs, requestTime);
   }
   return { importId: null, successfulJobs, unsuccessfulJobs };
 };
@@ -242,7 +242,6 @@ const responseHandler = async (input, config) => {
     accessToken,
     headerForCsv,
   );
-
   // if upload is successful
   if (importId) {
     const csvHeader = headerForCsv.toString();

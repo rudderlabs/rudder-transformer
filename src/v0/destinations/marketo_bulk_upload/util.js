@@ -406,7 +406,7 @@ const checkEventStatusViaSchemaMatching = (event, fieldMap) => {
       const actualDataType = typeof paramValue;
 
       if (!mismatchedFields[job_id] && actualDataType !== expectedDataType) {
-        mismatchedFields[job_id] = `invalid ${paramName} for value ${paramValue} `;
+        mismatchedFields[job_id] = `invalid ${paramName}`;
       }
     });
   });

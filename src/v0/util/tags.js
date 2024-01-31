@@ -51,8 +51,7 @@ const ERROR_TYPES = {
   OAUTH_SECRET: 'oAuthSecret',
   UNSUPPORTED: 'unsupported',
   REDIS: 'redis',
-  FILTERED: 'filtered',
-  AUTH: 'accessTokenExpired',
+  FILTERED: 'filtered'
 };
 
 const METADATA = {

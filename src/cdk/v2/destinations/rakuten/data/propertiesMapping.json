@@ -83,7 +83,7 @@
     "destKey": "shipped"
   },
   {
-    "sourceKeys": "properties.sitename",
+    "sourceKeys": ["properties.sitename", "properties.url", "context.page.url"],
     "destKey": "sitename"
   },
   {

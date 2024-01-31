@@ -52,7 +52,7 @@ export const transformationFailures = [
               jobId: '1',
             },
             statTags: {
-              destType: 'rakuten',
+              destType: 'RAKUTEN',
               destinationId: 'dummyDestId',
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
@@ -120,7 +120,7 @@ export const transformationFailures = [
               jobId: '1',
             },
             statTags: {
-              destType: 'rakuten',
+              destType: 'RAKUTEN',
               destinationId: 'dummyDestId',
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
@@ -185,7 +185,7 @@ export const transformationFailures = [
               jobId: '1',
             },
             statTags: {
-              destType: 'rakuten',
+              destType: 'RAKUTEN',
               errorCategory: 'dataValidation',
               destinationId: 'dummyDestId',
               errorType: 'instrumentation',
@@ -251,7 +251,7 @@ export const transformationFailures = [
               jobId: '1',
             },
             statTags: {
-              destType: 'rakuten',
+              destType: 'RAKUTEN',
               destinationId: 'dummyDestId',
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
@@ -318,7 +318,7 @@ export const transformationFailures = [
               jobId: '1',
             },
             statTags: {
-              destType: 'rakuten',
+              destType: 'RAKUTEN',
               destinationId: 'dummyDestId',
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',

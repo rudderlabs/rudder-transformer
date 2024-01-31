@@ -52,7 +52,7 @@ const ERROR_TYPES = {
   UNSUPPORTED: 'unsupported',
   REDIS: 'redis',
   FILTERED: 'filtered',
-  UNAUTHORIZED: 'accessTokenExpired',
+  AUTH: 'accessTokenExpired',
 };
 
 const METADATA = {

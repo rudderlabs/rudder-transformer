@@ -4,13 +4,15 @@ const {
   NetworkError,
   ConfigurationAuthError,
   isDefinedAndNotNull,
+  ERROR_TYPES,
+  TAG_NAMES,
+  METADATA,
 } = require('@rudderstack/integrations-lib');
 const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
-const tags = require('../tags');
 const { ErrorDetailsExtractorBuilder } = require('../../../util/error-extractor');
 
 /**
@@ -105,24 +107,24 @@ const errorDetailsMap = {
     460: new ErrorDetailsExtractorBuilder()
       .setStatus(400)
       .setStat({
-        [tags.TAG_NAMES.ERROR_TYPE]: tags.ERROR_TYPES.ACCESS_TOKEN_EXPIRED,
+        [TAG_NAMES.ERROR_TYPE]: ERROR_TYPES.AUTH,
       })
       .setMessage(
         'The session has been invalidated because the user changed their password or Facebook has changed the session for security reasons',
       )
       .build(),
-      
-     463: new ErrorDetailsExtractorBuilder()
+
+    463: new ErrorDetailsExtractorBuilder()
       .setStatus(400)
       .setStat({
-        [tags.TAG_NAMES.ERROR_TYPE]: tags.ERROR_TYPES.ACCESS_TOKEN_EXPIRED,
+        [TAG_NAMES.ERROR_TYPE]: ERROR_TYPES.AUTH,
       })
-     .setMessageField('message')
+      .setMessageField('message')
       .build(),
     default: new ErrorDetailsExtractorBuilder()
       .setStatus(400)
       .setStat({
-        [tags.TAG_NAMES.ERROR_TYPE]: tags.ERROR_TYPES.UNAUTHORIZED,
+        [TAG_NAMES.ERROR_TYPE]: ERROR_TYPES.AUTH,
       })
       .setMessage('Invalid OAuth 2.0 access token')
       .build(),
@@ -236,7 +238,7 @@ const getStatus = (error) => {
     // Unhandled error response
     return {
       status: errorStatus,
-      stats: { [tags.TAG_NAMES.META]: tags.METADATA.UNHANDLED_STATUS_CODE },
+      stats: { [TAG_NAMES.META]: METADATA.UNHANDLED_STATUS_CODE },
     };
   }
   errorStatus = errorDetail.status;
@@ -259,7 +261,10 @@ const errorResponseHandler = (destResponse) => {
   }
   const { error } = response;
   const { status, errorMessage, stats: errorStatTags } = getStatus(error);
-  if (isDefinedAndNotNull(errorStatTags) && errorStatTags?.[tags.TAG_NAMES.ERROR_TYPE] === 'accessTokenExpired') {
+  if (
+    isDefinedAndNotNull(errorStatTags) &&
+    errorStatTags?.[TAG_NAMES.ERROR_TYPE] === 'accessTokenExpired'
+  ) {
     throw new ConfigurationAuthError(`${errorMessage}`);
   }
   throw new NetworkError(
@@ -267,7 +272,7 @@ const errorResponseHandler = (destResponse) => {
     status,
     {
       ...errorStatTags,
-      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+      [TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },
     { ...response, status: destResponse.status },
   );

@@ -615,7 +615,8 @@ export const data = [
         body: {
           output: {
             destinationResponse: '',
-            message: 'Invalid OAuth 2.0 access token',
+            message:
+              'Error validating access token: Session has expired on Tuesday, 01-Aug-23 10:12:14 PDT. The current time is Sunday, 28-Jan-24 16:01:17 PST.',
             statTags: {
               destType: 'FB_CUSTOM_AUDIENCE',
               destinationId: 'Non-determininable',

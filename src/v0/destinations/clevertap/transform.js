@@ -225,7 +225,6 @@ const getClevertapProfile = (message, category) => {
     ['traits', 'context.traits'],
     CLEVERTAP_DEFAULT_EXCLUSION,
   );
-  profile = convertObjectAndArrayToString(profile);
 
   // Add additional properties being passed inside overrideFields in traits or contextual traits
   // to be added to the profile object, to be sent into Clevertap profileData

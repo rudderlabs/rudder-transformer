@@ -343,4 +343,94 @@ export const trackSuccess = [
       },
     },
   },
+  {
+    id: 'rakuten-test-track-success-4',
+    name: 'rakuten',
+    description: 'Track call for Discount event ',
+    scenario: 'Business',
+    successCriteria:
+      'Response should have last item of skulist as "Discount", qlist as 0 and amtlist as negative and status code should be 200',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination,
+            message: {
+              type: 'track',
+              sentAt: '2021-01-25T16:12:02.048Z',
+              userId: 'sajal12',
+              channel: 'mobile',
+              rudderId: 'b7b24f86-f7bf-46d8-b2b4-ccafc080239c',
+              messageId: '1611588776408-ee5a3212-fbf9-4cbb-bbad-3ed0f7c6a2ce',
+              properties: {
+                orderId: 'SampleOrderId',
+                tr: 'SampleRanSiteID',
+                landTime: '20240129_1200',
+                products: [
+                  {
+                    sku: 'custom sku 0',
+                    amount: '125',
+                  },
+                  {
+                    sku: 'custom sku 1',
+                    quantity: 5,
+                    price: 25,
+                  },
+                  {
+                    sku: 'Discount',
+                    quantity: 0,
+                    amount: -500,
+                    name: 'Discount',
+                  },
+                ],
+              },
+              anonymousId: '9c6bd77ea9da3e68',
+              integrations: {
+                All: true,
+              },
+              originalTimestamp: '2021-01-25T15:32:56.409Z',
+            },
+            metadata: {
+              destinationId: 'dummyDestId',
+              jobId: '1',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: {
+              destinationId: 'dummyDestId',
+              jobId: '1',
+            },
+            output: transformResultBuilder({
+              method: 'GET',
+              endpoint,
+              headers: commonOutputHeaders,
+              params: {
+                mid: 'dummyMarketingId',
+                xml: 1,
+                namelist: '||Discount',
+                amtlist: '12500|12500|-50000',
+                skulist: 'custom sku 0|custom sku 1|Discount',
+                qlist: '|5|0',
+                ord: 'SampleOrderId',
+                tr: 'SampleRanSiteID',
+                land: '20240129_1200',
+              },
+              userId: '',
+            }),
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];

@@ -1,4 +1,5 @@
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const { isDefinedAndNotNull } = require('rudder-transformer-cdk/build/utils');
 const { mappingConfig, ConfigCategories, productProperties } = require('./config');
 const { constructPayload } = require('../../../../v0/util');
 
@@ -25,7 +26,9 @@ const constructLineItems = (properties) => {
   // mapping all the properties leaving amount as for amount we need to do some calculations
   Object.keys(productProperties).forEach((property) => {
     const propertyKey = productProperties[property];
-    const values = properties.products.map((product) => product?.[propertyKey] || '');
+    const values = properties.products.map((product) =>
+      isDefinedAndNotNull(product?.[propertyKey]) ? product[propertyKey] : '',
+    );
     if (values.some((element) => element !== '')) {
       productList[property] = values.join('|');
     }

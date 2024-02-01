@@ -66,51 +66,6 @@ const responseWrapper = (payload, destination) => {
   return response;
 };
 
-/**
- * Expected behaviors:                            
-    payload = {                                       "finalPayload": {
-      "device": {                                          "device": "{\"browser\":{\"name\":\"Chrome121\",\"version\":\"106.0.0.0\"},\"os\":{\"version\":\"10.15.7\"}}",
-        "browser": {                                       "name": "macOS",
-          "name": "Chrome121",                             "platform": "web"
-          "version": "106.0.0.0"                        }
-        },
-        "os": {
-          "version": "10.15.7"
-        }
-      },
-      "name": "macOS",
-      "platform": "web"
-    }                                        
- *                                                    
-  }
- * This function stringify the payload attributes if it's an array or objects.
- * @param {*} payload
- * @returns
- * return the final payload after converting to the relevant data-types.
- */
-const convertObjectAndArrayToString = (payload, event) => {
-  const finalPayload = {};
-  if (payload) {
-    Object.keys(payload).forEach((key) => {
-      if (payload[key] && (Array.isArray(payload[key]) || typeof payload[key] === 'object')) {
-        finalPayload[key] = JSON.stringify(payload[key]);
-      } else {
-        finalPayload[key] = payload[key];
-      }
-    });
-    if (event === 'Charged' && finalPayload.Items) {
-      finalPayload.Items = JSON.parse(finalPayload.Items);
-      if (
-        !Array.isArray(finalPayload.Items) ||
-        (Array.isArray(finalPayload.Items) && typeof finalPayload.Items[0] !== 'object')
-      ) {
-        throw new InstrumentationError('Products property value must be an array of objects');
-      }
-    }
-  }
-  return finalPayload;
-};
-
 // generates clevertap identify payload with both objectId and identity
 const mapIdentifyPayloadWithObjectId = (message, profile) => {
   const userId = getFieldValueFromMessage(message, 'userIdOnly');
@@ -310,6 +265,14 @@ const responseBuilderSimple = (message, category, destination) => {
         ['properties'],
         ['checkout_id', 'revenue', 'products', 'ts'],
       );
+
+      if (
+        !Array.isArray(eventPayload.evtData.Items) ||
+        (Array.isArray(eventPayload.evtData.Items) &&
+          typeof eventPayload.evtData.Items[0] !== 'object')
+      ) {
+        throw new InstrumentationError('Products property value must be an array of objects');
+      }
     }
     // For other type of events we need to follow payload for sending events
     // Source: https://developer.clevertap.com/docs/upload-events-api
@@ -318,13 +281,6 @@ const responseBuilderSimple = (message, category, destination) => {
       eventPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
     }
     eventPayload.type = 'event';
-    // stringify the evtData if it's an Object or array.
-    if (eventPayload.evtData) {
-      eventPayload.evtData = convertObjectAndArrayToString(
-        eventPayload.evtData,
-        eventPayload.evtName,
-      );
-    }
 
     // setting identification for tracking payload here based on destination config
     if (destination.Config.enableObjectIdMapping) {

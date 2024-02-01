@@ -27,10 +27,7 @@ export const data = [
                     name: 'iPod touch (7th generation)',
                     type: 'iOS',
                   },
-                  library: {
-                    name: 'test-ios-library',
-                    version: '1.0.7',
-                  },
+                  library: { name: 'test-ios-library', version: '1.0.7' },
                   locale: 'en-US',
                   network: {
                     bluetooth: false,
@@ -38,15 +35,8 @@ export const data = [
                     cellular: false,
                     wifi: true,
                   },
-                  os: {
-                    name: 'iOS',
-                    version: '14.0',
-                  },
-                  screen: {
-                    density: 2,
-                    height: 320,
-                    width: 568,
-                  },
+                  os: { name: 'iOS', version: '14.0' },
+                  screen: { density: 2, height: 320, width: 568 },
                   timezone: 'Asia/Kolkata',
                   traits: {
                     anonymousId: '58b21c2d-f8d5-4410-a2d0-b268a26b7e33',
@@ -62,9 +52,7 @@ export const data = [
                   userAgent: 'unknown',
                 },
                 event: 'Test Event 2',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 messageId: '1601493060-39010c49-e6e4-4626-a75c-0dbf1925c9e8',
                 originalTimestamp: '2020-09-30T19:11:00.337Z',
                 receivedAt: '2020-10-01T00:41:11.369+05:30',
@@ -73,9 +61,7 @@ export const data = [
                 timestamp: '2020-10-01T00:41:01.324+05:30',
                 type: 'identify',
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               destination: {
                 Config: {
                   apiKey: 'intercomApiKey',
@@ -102,10 +88,7 @@ export const data = [
                     name: 'iPod touch (7th generation)',
                     type: 'iOS',
                   },
-                  library: {
-                    name: 'test-ios-library',
-                    version: '1.0.7',
-                  },
+                  library: { name: 'test-ios-library', version: '1.0.7' },
                   locale: 'en-US',
                   network: {
                     bluetooth: false,
@@ -113,15 +96,8 @@ export const data = [
                     cellular: false,
                     wifi: true,
                   },
-                  os: {
-                    name: 'iOS',
-                    version: '14.0',
-                  },
-                  screen: {
-                    density: 2,
-                    height: 320,
-                    width: 568,
-                  },
+                  os: { name: 'iOS', version: '14.0' },
+                  screen: { density: 2, height: 320, width: 568 },
                   timezone: 'Asia/Kolkata',
                   traits: {
                     anonymousId: '58b21c2d-f8d5-4410-a2d0-b268a26b7e33',
@@ -135,9 +111,7 @@ export const data = [
                   userAgent: 'unknown',
                 },
                 event: 'Test Event 2',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 messageId: '1601493060-39010c49-e6e4-4626-a75c-0dbf1925c9e8',
                 originalTimestamp: '2020-09-30T19:11:00.337Z',
                 receivedAt: '2020-10-01T00:41:11.369+05:30',
@@ -146,9 +120,7 @@ export const data = [
                 timestamp: '2020-10-01T00:41:01.324+05:30',
                 type: 'identify',
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               destination: {
                 Config: {
                   apiKey: 'intercomApiKey',
@@ -201,11 +173,7 @@ export const data = [
                 files: {},
                 userId: '58b21c2d-f8d5-4410-a2d0-b268a26b7e33',
               },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -249,11 +217,7 @@ export const data = [
                 files: {},
                 userId: '58b21c2d-f8d5-4410-a2d0-b268a26b7e33',
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {

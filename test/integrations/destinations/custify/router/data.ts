@@ -12,15 +12,10 @@ export const data = [
             {
               description: 'Group callw with all parameters',
               destination: {
-                Config: {
-                  apiKey: 'apiKey_key_test_001',
-                  sendAnonymousId: false,
-                },
+                Config: { apiKey: 'apiKey_key_test_001', sendAnonymousId: false },
                 ID: 'custify-1234',
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               message: {
                 type: 'group',
                 userId: 'user_111',
@@ -46,16 +41,12 @@ export const data = [
                     custom_prop1: 'custom_value1',
                     custom_prop2: 123,
                     custom_prop3: false,
-                    custom_prop4: {
-                      test: 'test',
-                    },
+                    custom_prop4: { test: 'test' },
                     custom_prop5: [1, 3, 4],
                     createdAt: '2022-04-27T13:56:13.012Z',
                   },
                   ip: '14.5.67.21',
-                  library: {
-                    name: 'http',
-                  },
+                  library: { name: 'http' },
                 },
                 timestamp: '2020-01-21T00:21:34.208Z',
               },
@@ -63,15 +54,10 @@ export const data = [
             {
               description: 'Identify with all parameters',
               destination: {
-                Config: {
-                  apiKeyToken: 'pk_123',
-                  listId: 'correctListId123',
-                },
+                Config: { apiKeyToken: 'pk_123', listId: 'correctListId123' },
                 ID: 'custify-1234',
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               message: {
                 type: 'identify',
                 userId: 'user_1234',
@@ -84,7 +70,6 @@ export const data = [
                     sessionCount: 23,
                     unsubscribedFromEmails: false,
                     unsubscribedFromCalls: false,
-
                     signed_up_at: '2022-04-27T13:56:13.012Z',
                     custom_prop1: 'custom_value1',
                     custom_prop2: 123,
@@ -92,9 +77,7 @@ export const data = [
                     custom_prop4: { test: 'test' },
                     custom_prop5: [1, 3, 4],
                     createdAt: '2022-04-27T13:56:13.012Z',
-                    company: {
-                      id: 'company_123',
-                    },
+                    company: { id: 'company_123' },
                   },
                 },
                 timestamp: '2022-04-27T13:56:13.012Z',
@@ -143,12 +126,7 @@ export const data = [
                       createdAt: '2022-04-27T13:56:13.012Z',
                     },
                     name: 'Absolute User',
-                    companies: [
-                      {
-                        company_id: 'company_222',
-                        remove: false,
-                      },
-                    ],
+                    companies: [{ company_id: 'company_222', remove: false }],
                   },
                   JSON_ARRAY: {},
                   XML: {},
@@ -157,18 +135,11 @@ export const data = [
                 files: {},
                 userId: 'user_111',
               },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
-                Config: {
-                  apiKey: 'apiKey_key_test_001',
-                  sendAnonymousId: false,
-                },
+                Config: { apiKey: 'apiKey_key_test_001', sendAnonymousId: false },
                 ID: 'custify-1234',
               },
             },
@@ -205,12 +176,7 @@ export const data = [
                       createdAt: '2022-04-27T13:56:13.012Z',
                     },
                     name: 'New User',
-                    companies: [
-                      {
-                        company_id: 'company_123',
-                        remove: false,
-                      },
-                    ],
+                    companies: [{ company_id: 'company_123', remove: false }],
                   },
                   JSON_ARRAY: {},
                   XML: {},
@@ -219,18 +185,11 @@ export const data = [
                 files: {},
                 userId: 'user_1234',
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
-                Config: {
-                  apiKeyToken: 'pk_123',
-                  listId: 'correctListId123',
-                },
+                Config: { apiKeyToken: 'pk_123', listId: 'correctListId123' },
                 ID: 'custify-1234',
               },
             },

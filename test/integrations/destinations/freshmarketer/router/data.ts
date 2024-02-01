@@ -16,9 +16,7 @@ export const data = [
                   domain: 'rudderstack-476952domain3105.myfreshworks.com',
                 },
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               message: {
                 messageId: 'ec5481b6-a926-4d2e-b293-0b3a77c4d3be',
                 originalTimestamp: '2022-06-22T10:57:58Z',
@@ -39,18 +37,10 @@ export const data = [
                     type: 'ios',
                     attTrackingStatus: 3,
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   locale: 'en-US',
-                  os: {
-                    name: 'iOS',
-                    version: '14.4.1',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: 'iOS', version: '14.4.1' },
+                  screen: { density: 2 },
                 },
                 traits: {
                   email: 'testuser@google.com',
@@ -72,9 +62,7 @@ export const data = [
                   domain: 'rudderstack-476952domain3105.myfreshworks.com',
                 },
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               message: {
                 messageId: 'ec5481b6-a926-4d2e-b293-0b3a77c4d3be',
                 originalTimestamp: '2022-06-22T10:57:58Z',
@@ -95,18 +83,10 @@ export const data = [
                     type: 'ios',
                     attTrackingStatus: 3,
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   locale: 'en-US',
-                  os: {
-                    name: 'iOS',
-                    version: '14.4.1',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: 'iOS', version: '14.4.1' },
+                  screen: { density: 2 },
                 },
                 traits: {
                   email: 'testuser@google.com',
@@ -123,14 +103,9 @@ export const data = [
             },
             {
               destination: {
-                Config: {
-                  apiKey: 'dummyApiKey',
-                  domain: 'domain-rudder.myfreshworks.com',
-                },
+                Config: { apiKey: 'dummyApiKey', domain: 'domain-rudder.myfreshworks.com' },
               },
-              metadata: {
-                jobId: 3,
-              },
+              metadata: { jobId: 3, userId: 'u1' },
               message: {
                 messageId: 'sadjb-1e2r3fhgb-12bvbbj',
                 originalTimestamp: '2022-06-22T10:57:58Z',
@@ -151,21 +126,11 @@ export const data = [
                     type: 'ios',
                     attTrackingStatus: 3,
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   locale: 'en-US',
-                  os: {
-                    name: 'iOS',
-                    version: '14.4.1',
-                  },
-                  screen: {
-                    density: 2,
-                  },
-                  traits: {
-                    email: 'testuser@google.com',
-                  },
+                  os: { name: 'iOS', version: '14.4.1' },
+                  screen: { density: 2 },
+                  traits: { email: 'testuser@google.com' },
                 },
                 traits: {
                   groupType: 'accounts',
@@ -217,9 +182,7 @@ export const data = [
                       updated_at: '2022-06-22T10:57:58Z',
                       lifecycle_stage_id: 71010794467,
                     },
-                    unique_identifier: {
-                      emails: 'testuser@google.com',
-                    },
+                    unique_identifier: { emails: 'testuser@google.com' },
                   },
                   JSON_ARRAY: {},
                   XML: {},
@@ -227,11 +190,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -266,9 +225,7 @@ export const data = [
                       updated_at: '2022-06-22T10:57:58Z',
                       lifecycle_stage_id: 71010794467,
                     },
-                    unique_identifier: {
-                      emails: 'testuser@google.com',
-                    },
+                    unique_identifier: { emails: 'testuser@google.com' },
                   },
                   JSON_ARRAY: {},
                   XML: {},
@@ -276,11 +233,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -318,15 +271,10 @@ export const data = [
                           last_contacted: null,
                           record_type_id: '71010794477',
                         },
-                        {
-                          id: 70003771396,
-                          is_primary: false,
-                        },
+                        { id: 70003771396, is_primary: false },
                       ],
                     },
-                    unique_identifier: {
-                      emails: 'testuser@google.com',
-                    },
+                    unique_identifier: { emails: 'testuser@google.com' },
                   },
                   JSON_ARRAY: {},
                 },
@@ -341,18 +289,11 @@ export const data = [
                 version: '1',
                 endpoint: 'https://domain-rudder.myfreshworks.com/crm/sales/api/contacts/upsert',
               },
-              metadata: [
-                {
-                  jobId: 3,
-                },
-              ],
+              metadata: [{ jobId: 3, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
-                Config: {
-                  apiKey: 'dummyApiKey',
-                  domain: 'domain-rudder.myfreshworks.com',
-                },
+                Config: { apiKey: 'dummyApiKey', domain: 'domain-rudder.myfreshworks.com' },
               },
             },
           ],

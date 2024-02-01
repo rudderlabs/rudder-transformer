@@ -16,10 +16,7 @@ export const data = [
                 userId: 'live-test',
                 channel: 'web',
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -38,9 +35,7 @@ export const data = [
                     initial_referring_domain: '',
                   },
                   locale: 'en-GB',
-                  screen: {
-                    density: 2,
-                  },
+                  screen: { density: 2 },
                   traits: {
                     name: 'Cosmo Krammer',
                     email: 'cosmo@krammer.com',
@@ -49,10 +44,7 @@ export const data = [
                     linkedinUrl: 'https://linkedin.com/cosmo-krammer',
                     masterAvatarTypeCode: 10,
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.1.18',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.1.18' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36',
@@ -63,9 +55,7 @@ export const data = [
                 receivedAt: '2021-05-28T16:52:01.859+05:30',
                 request_ip: '[::1]',
                 anonymousId: '1585ea2f-dddc-4d23-935f-c1196405d61e',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 originalTimestamp: '2021-05-28T11:22:01.842Z',
               },
               metadata: {
@@ -140,10 +130,7 @@ export const data = [
                 userId: '',
                 channel: 'web',
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -162,14 +149,9 @@ export const data = [
                     initial_referring_domain: '',
                   },
                   locale: 'en-GB',
-                  screen: {
-                    density: 2,
-                  },
+                  screen: { density: 2 },
                   traits: {},
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.1.18',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.1.18' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36',
@@ -177,16 +159,11 @@ export const data = [
                 rudderId: '1a30a93f-916b-4c39-ad20-1ce7bbbd7754',
                 messageId: 'f5619b1a-8704-42a8-bab9-92bbeaa44896',
                 timestamp: '2021-05-28T17:22:12.905+05:30',
-                properties: {
-                  email: 'sample@user.com',
-                  status: 'active',
-                },
+                properties: { email: 'sample@user.com', status: 'active' },
                 receivedAt: '2021-05-28T17:22:12.905+05:30',
                 request_ip: '[::1]',
                 anonymousId: '1585ea2f-dddc-4d23-935f-c1196405d61e',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 originalTimestamp: '2021-05-28T11:52:12.893Z',
               },
               metadata: {
@@ -244,18 +221,8 @@ export const data = [
                   accessKey: 'sample-access-key',
                   contractId: 'sample-contract-id',
                   domain: 'demo-account.gainsightcloud.com',
-                  eventNameMap: [
-                    {
-                      from: 'Demo Request',
-                      to: 'Product Demo',
-                    },
-                  ],
-                  eventVersionMap: [
-                    {
-                      from: 'Demo Request',
-                      to: '1.0.0',
-                    },
-                  ],
+                  eventNameMap: [{ from: 'Demo Request', to: 'Product Demo' }],
+                  eventVersionMap: [{ from: 'Demo Request', to: '1.0.0' }],
                   sharedSecret: 'sample-shared-secret',
                   tenantId: 'sample-tenant-id',
                   topicName: 'Support Tickets',
@@ -281,10 +248,7 @@ export const data = [
                 type: 'REST',
                 method: 'PUT',
                 endpoint: 'https://demo-account.gainsightcloud.com/v1.0/api/people',
-                headers: {
-                  Accesskey: 'sample-access-key',
-                  'Content-Type': 'application/json',
-                },
+                headers: { Accesskey: 'sample-access-key', 'Content-Type': 'application/json' },
                 params: {},
                 body: {
                   JSON: {
@@ -387,10 +351,7 @@ export const data = [
                 },
                 params: {},
                 body: {
-                  JSON: {
-                    email: 'sample@user.com',
-                    status: 'active',
-                  },
+                  JSON: { email: 'sample@user.com', status: 'active' },
                   XML: {},
                   JSON_ARRAY: {},
                   FORM: {},
@@ -456,18 +417,8 @@ export const data = [
                   accessKey: 'sample-access-key',
                   contractId: 'sample-contract-id',
                   domain: 'demo-account.gainsightcloud.com',
-                  eventNameMap: [
-                    {
-                      from: 'Demo Request',
-                      to: 'Product Demo',
-                    },
-                  ],
-                  eventVersionMap: [
-                    {
-                      from: 'Demo Request',
-                      to: '1.0.0',
-                    },
-                  ],
+                  eventNameMap: [{ from: 'Demo Request', to: 'Product Demo' }],
+                  eventVersionMap: [{ from: 'Demo Request', to: '1.0.0' }],
                   sharedSecret: 'sample-shared-secret',
                   tenantId: 'sample-tenant-id',
                   topicName: 'Support Tickets',

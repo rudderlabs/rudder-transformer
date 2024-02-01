@@ -17,6 +17,7 @@ export const data = [
                   developer_token: 'ijkl91011',
                 },
                 jobId: 1,
+                userId: 'u1',
               },
               destination: {
                 Config: {
@@ -56,21 +57,13 @@ export const data = [
                     postalCode: 'EC3M',
                     streetAddress: '71 Cherry Court SOUTHAMPTON SO53 5PD UK',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-US',
                   ip: '0.0.0.0',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                 },
                 event: 'Promotion Clicked',
                 originalTimestamp: '2022-11-17T00:22:02.903+05:30',
@@ -91,9 +84,7 @@ export const data = [
                 },
                 type: 'track',
                 anonymousId: 'randomId',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 name: 'ApplicationLoaded',
                 sentAt: '2022-11-17T00:22:02.903+05:30',
               },
@@ -106,6 +97,7 @@ export const data = [
                   developer_token: 'ijkl91011',
                 },
                 jobId: 2,
+                userId: 'u1',
               },
               destination: {
                 Config: {
@@ -145,21 +137,13 @@ export const data = [
                     postalCode: 'EC3M',
                     streetAddress: '71 Cherry Court SOUTHAMPTON SO53 5PD UK',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-US',
                   ip: '0.0.0.0',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                 },
                 event: 'Promotion Clicked',
                 type: 'track',
@@ -180,9 +164,7 @@ export const data = [
                   requestType: 'batchupdate',
                 },
                 anonymousId: 'randomId',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 name: 'ApplicationLoaded',
                 sentAt: '2022-11-17T00:22:02.903+05:30',
               },
@@ -195,6 +177,7 @@ export const data = [
                   developer_token: 'ijkl91011',
                 },
                 jobId: 3,
+                userId: 'u1',
               },
               destination: {
                 Config: {
@@ -234,21 +217,13 @@ export const data = [
                     postalCode: 'EC3M',
                     streetAddress: '71 Cherry Court SOUTHAMPTON SO53 5PD UK',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-US',
                   ip: '0.0.0.0',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                 },
                 event: 'Promotion Clicked',
                 type: 'track',
@@ -272,9 +247,7 @@ export const data = [
                   requestType: 'randomValue',
                 },
                 anonymousId: 'randomId',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 name: 'ApplicationLoaded',
                 sentAt: '2022-11-17T00:22:02.903+05:30',
               },
@@ -341,6 +314,7 @@ export const data = [
                     refresh_token: 'efgh5678',
                   },
                   jobId: 1,
+                  userId: 'u1',
                 },
               ],
               batched: true,
@@ -404,6 +378,7 @@ export const data = [
                     refresh_token: 'efgh5678',
                   },
                   jobId: 2,
+                  userId: 'u1',
                 },
               ],
               batched: true,
@@ -439,6 +414,7 @@ export const data = [
                     refresh_token: 'efgh5678',
                   },
                   jobId: 3,
+                  userId: 'u1',
                 },
               ],
               statusCode: 400,
@@ -474,6 +450,7 @@ export const data = [
                   developer_token: 'ijkl91011',
                 },
                 jobId: 4,
+                userId: 'u1',
               },
               destination: {
                 Config: {
@@ -502,9 +479,7 @@ export const data = [
                 },
                 type: 'track',
                 anonymousId: 'randomId',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 name: 'ApplicationLoaded',
                 sentAt: '2022-11-17T00:22:02.903+05:30',
               },
@@ -517,6 +492,7 @@ export const data = [
                   developer_token: 'ijkl91011',
                 },
                 jobId: 5,
+                userId: 'u1',
               },
               destination: {
                 Config: {
@@ -545,9 +521,7 @@ export const data = [
                   requestType: 'batchinsert',
                 },
                 anonymousId: 'randomId',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 name: 'ApplicationLoaded',
                 sentAt: '2022-11-17T00:22:02.903+05:30',
               },
@@ -560,6 +534,7 @@ export const data = [
                   developer_token: 'ijkl91011',
                 },
                 jobId: 6,
+                userId: 'u1',
               },
               destination: {
                 Config: {
@@ -588,9 +563,7 @@ export const data = [
                   requestType: 'batchinsert',
                 },
                 anonymousId: 'randomId',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 name: 'ApplicationLoaded',
                 sentAt: '2022-11-17T00:22:02.903+05:30',
               },
@@ -677,6 +650,7 @@ export const data = [
                     developer_token: 'ijkl91011',
                   },
                   jobId: 4,
+                  userId: 'u1',
                 },
                 {
                   secret: {
@@ -685,6 +659,7 @@ export const data = [
                     developer_token: 'ijkl91011',
                   },
                   jobId: 5,
+                  userId: 'u1',
                 },
                 {
                   secret: {
@@ -693,6 +668,7 @@ export const data = [
                     developer_token: 'ijkl91011',
                   },
                   jobId: 6,
+                  userId: 'u1',
                 },
               ],
               batched: true,
@@ -730,6 +706,7 @@ export const data = [
                   developer_token: 'ijkl91011',
                 },
                 jobId: 4,
+                userId: 'u1',
               },
               destination: {
                 Config: {
@@ -758,9 +735,7 @@ export const data = [
                 },
                 type: 'track',
                 anonymousId: 'randomId',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 name: 'ApplicationLoaded',
                 sentAt: '2022-11-17T00:22:02.903+05:30',
               },
@@ -773,6 +748,7 @@ export const data = [
                   developer_token: 'ijkl91011',
                 },
                 jobId: 5,
+                userId: 'u1',
               },
               destination: {
                 Config: {
@@ -801,9 +777,7 @@ export const data = [
                   requestType: 'batchupdate',
                 },
                 anonymousId: 'randomId',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 name: 'ApplicationLoaded',
                 sentAt: '2022-11-17T00:22:02.903+05:30',
               },
@@ -816,6 +790,7 @@ export const data = [
                   developer_token: 'ijkl91011',
                 },
                 jobId: 6,
+                userId: 'u1',
               },
               destination: {
                 Config: {
@@ -844,9 +819,7 @@ export const data = [
                   requestType: 'batchinsert',
                 },
                 anonymousId: 'randomId',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 name: 'ApplicationLoaded',
                 sentAt: '2022-11-17T00:22:02.903+05:30',
               },
@@ -916,6 +889,7 @@ export const data = [
                     developer_token: 'ijkl91011',
                   },
                   jobId: 4,
+                  userId: 'u1',
                 },
                 {
                   secret: {
@@ -924,6 +898,7 @@ export const data = [
                     developer_token: 'ijkl91011',
                   },
                   jobId: 5,
+                  userId: 'u1',
                 },
               ],
               batched: true,
@@ -983,6 +958,7 @@ export const data = [
                     developer_token: 'ijkl91011',
                   },
                   jobId: 6,
+                  userId: 'u1',
                 },
               ],
               batched: true,
@@ -1020,6 +996,7 @@ export const data = [
                   developer_token: 'ijkl91011',
                 },
                 jobId: 4,
+                userId: 'u1',
               },
               destination: {
                 Config: {
@@ -1047,9 +1024,7 @@ export const data = [
                 },
                 type: 'track',
                 anonymousId: 'randomId',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 name: 'ApplicationLoaded',
                 sentAt: '2022-11-17T00:22:02.903+05:30',
               },
@@ -1062,6 +1037,7 @@ export const data = [
                   developer_token: 'ijkl91011',
                 },
                 jobId: 5,
+                userId: 'u1',
               },
               destination: {
                 Config: {
@@ -1089,9 +1065,7 @@ export const data = [
                   requestType: 'batchupdate',
                 },
                 anonymousId: 'randomId',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 name: 'ApplicationLoaded',
                 sentAt: '2022-11-17T00:22:02.903+05:30',
               },
@@ -1104,6 +1078,7 @@ export const data = [
                   developer_token: 'ijkl91011',
                 },
                 jobId: 6,
+                userId: 'u1',
               },
               destination: {
                 Config: {
@@ -1124,7 +1099,6 @@ export const data = [
                   floodlightConfigurationId: '213123123',
                   floodlightActivityId: '456543345245',
                   value: 7,
-
                   ordinal: '1',
                   quantity: '455678',
                   limitAdTracking: true,
@@ -1132,9 +1106,7 @@ export const data = [
                   requestType: 'batchinsert',
                 },
                 anonymousId: 'randomId',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 name: 'ApplicationLoaded',
                 sentAt: '2022-11-17T00:22:02.903+05:30',
               },
@@ -1159,6 +1131,7 @@ export const data = [
                     developer_token: 'ijkl91011',
                   },
                   jobId: 4,
+                  userId: 'u1',
                 },
               ],
               batched: false,
@@ -1192,6 +1165,7 @@ export const data = [
                     developer_token: 'ijkl91011',
                   },
                   jobId: 5,
+                  userId: 'u1',
                 },
               ],
               batched: false,
@@ -1225,6 +1199,7 @@ export const data = [
                     developer_token: 'ijkl91011',
                   },
                   jobId: 6,
+                  userId: 'u1',
                 },
               ],
               batched: false,

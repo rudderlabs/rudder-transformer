@@ -12,13 +12,8 @@ export const data = [
             {
               message: {
                 context: {
-                  device: {
-                    name: 'Mi',
-                    token: 'dummyDeviceToken',
-                  },
-                  os: {
-                    name: 'android',
-                  },
+                  device: { name: 'Mi', token: 'dummyDeviceToken' },
+                  os: { name: 'android' },
                   traits: {
                     address: {
                       city: 'city',
@@ -50,9 +45,7 @@ export const data = [
                   Name: 'FRESHSALES',
                   DisplayName: 'Freshsales',
                   Config: {
-                    destConfig: {
-                      defaultConfig: ['apiKey', 'domain'],
-                    },
+                    destConfig: { defaultConfig: ['apiKey', 'domain'] },
                     excludeKeys: [],
                     includeKeys: ['apiKey', 'domain'],
                     saveDestinationResponse: true,
@@ -83,7 +76,7 @@ export const data = [
                 IsProcessorEnabled: true,
                 RevisionID: '2E3xCLWeb83vOGDh0mkN4Auei3i',
               },
-              metadata: {},
+              metadata: { userId: 'u1' },
             },
           ],
           destType: 'freshsales',
@@ -123,9 +116,7 @@ export const data = [
                       created_at: '2022-08-30T11:28:43.647+05:30',
                       updated_at: '2022-08-30T11:28:43.647+05:30',
                     },
-                    unique_identifier: {
-                      emails: 'user112@mail.com',
-                    },
+                    unique_identifier: { emails: 'user112@mail.com' },
                   },
                   JSON_ARRAY: {},
                   XML: {},
@@ -133,7 +124,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [{}],
+              metadata: [{ userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -144,9 +135,7 @@ export const data = [
                   Name: 'FRESHSALES',
                   DisplayName: 'Freshsales',
                   Config: {
-                    destConfig: {
-                      defaultConfig: ['apiKey', 'domain'],
-                    },
+                    destConfig: { defaultConfig: ['apiKey', 'domain'] },
                     excludeKeys: [],
                     includeKeys: ['apiKey', 'domain'],
                     saveDestinationResponse: true,

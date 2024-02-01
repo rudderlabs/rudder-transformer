@@ -12,21 +12,14 @@ export const data = [
             {
               description: 'Creating task using listId from externalId array',
               destination: {
-                Config: {
-                  apiToken: 'pk_123',
-                  listId: 'correctListId123',
-                },
+                Config: { apiToken: 'pk_123', listId: 'correctListId123' },
                 ID: 'clickup-1234',
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               message: {
                 type: 'track',
                 event: 'anonymous page visit',
-                context: {
-                  externalId: [{ type: 'clickUpListId', id: 'correctListId456' }],
-                },
+                context: { externalId: [{ type: 'clickUpListId', id: 'correctListId456' }] },
                 rudderId: '553b5522-c575-40a7-8072-9741c5f9a647',
                 messageId: '831f1fa5-de84-4f22-880a-4c3f23fc3f04',
                 anonymousId: 'bf412108-0357-4330-b119-7305e767823c',
@@ -35,35 +28,19 @@ export const data = [
             {
               description: 'Creating task with assignees',
               destination: {
-                Config: {
-                  apiToken: 'pk_123',
-                  listId: 'correctListId123',
-                },
+                Config: { apiToken: 'pk_123', listId: 'correctListId123' },
                 ID: 'clickup-1234',
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               message: {
                 type: 'track',
                 event: 'Product Viewed',
-                properties: {
-                  taskName: 'Transformer Testing',
-                },
+                properties: { taskName: 'Transformer Testing' },
                 context: {
                   externalId: [
-                    {
-                      type: 'clickUpAssigneeId',
-                      id: 61205104,
-                    },
-                    {
-                      type: 'clickUpAssigneeId',
-                      id: 61217234,
-                    },
-                    {
-                      type: 'clickUpAssigneeId',
-                      id: 61228575,
-                    },
+                    { type: 'clickUpAssigneeId', id: 61205104 },
+                    { type: 'clickUpAssigneeId', id: 61217234 },
+                    { type: 'clickUpAssigneeId', id: 61228575 },
                   ],
                 },
                 rudderId: '553b5522-c575-40a7-8072-9741c5f9a647',
@@ -78,57 +55,22 @@ export const data = [
                   apiToken: 'pk_123',
                   listId: 'correctListId123',
                   keyToCustomFieldName: [
-                    {
-                      from: 'industry',
-                      to: 'Industry',
-                    },
-                    {
-                      from: 'Payment Status',
-                      to: 'Payment Status',
-                    },
-                    {
-                      from: 'labelKey',
-                      to: 'Labels',
-                    },
-                    {
-                      from: 'locationKey',
-                      to: 'Location',
-                    },
-                    {
-                      from: 'phone',
-                      to: 'Phone Number',
-                    },
-                    {
-                      from: 'email',
-                      to: 'Email',
-                    },
-                    {
-                      from: 'url',
-                      to: 'Url',
-                    },
-                    {
-                      from: 'rating',
-                      to: 'Rating',
-                    },
-                    {
-                      from: 'plan',
-                      to: 'Plan',
-                    },
-                    {
-                      from: 'contactTitle',
-                      to: 'Contact Title',
-                    },
-                    {
-                      from: 'date',
-                      to: 'Date',
-                    },
+                    { from: 'industry', to: 'Industry' },
+                    { from: 'Payment Status', to: 'Payment Status' },
+                    { from: 'labelKey', to: 'Labels' },
+                    { from: 'locationKey', to: 'Location' },
+                    { from: 'phone', to: 'Phone Number' },
+                    { from: 'email', to: 'Email' },
+                    { from: 'url', to: 'Url' },
+                    { from: 'rating', to: 'Rating' },
+                    { from: 'plan', to: 'Plan' },
+                    { from: 'contactTitle', to: 'Contact Title' },
+                    { from: 'date', to: 'Date' },
                   ],
                 },
                 ID: 'clickup-1234',
               },
-              metadata: {
-                jobId: 3,
-              },
+              metadata: { jobId: 3, userId: 'u1' },
               message: {
                 type: 'track',
                 event: 'Product Viewed',
@@ -171,27 +113,16 @@ export const data = [
                 Config: {
                   apiToken: 'pk_123',
                   listId: 'correctListId123',
-                  keyToCustomFieldName: [
-                    {
-                      from: 'location',
-                      to: 'Location',
-                    },
-                  ],
+                  keyToCustomFieldName: [{ from: 'location', to: 'Location' }],
                 },
                 ID: 'clickup-1234',
               },
-              metadata: {
-                jobId: 4,
-              },
+              metadata: { jobId: 4, userId: 'u1' },
               message: {
                 type: 'track',
                 event: 'Product Viewed',
                 properties: {
-                  location: {
-                    lat: -100,
-                    lng: 124,
-                    formattedAddress: 'Gold Coast QLD, Australia',
-                  },
+                  location: { lat: -100, lng: 124, formattedAddress: 'Gold Coast QLD, Australia' },
                 },
                 context: {},
                 rudderId: '553b5522-c575-40a7-8072-9741c5f9a647',
@@ -213,37 +144,20 @@ export const data = [
             {
               batched: false,
               batchedRequest: {
-                body: {
-                  FORM: {},
-                  JSON: {
-                    name: 'anonymous page visit',
-                  },
-                  JSON_ARRAY: {},
-                  XML: {},
-                },
+                body: { FORM: {}, JSON: { name: 'anonymous page visit' }, JSON_ARRAY: {}, XML: {} },
                 endpoint: 'https://api.clickup.com/api/v2/list/correctListId456/task',
                 files: {},
-                headers: {
-                  Authorization: 'pk_123',
-                  'Content-Type': 'application/json',
-                },
+                headers: { Authorization: 'pk_123', 'Content-Type': 'application/json' },
                 method: 'POST',
                 params: {},
                 type: 'REST',
                 version: '1',
               },
               destination: {
-                Config: {
-                  apiToken: 'pk_123',
-                  listId: 'correctListId123',
-                },
+                Config: { apiToken: 'pk_123', listId: 'correctListId123' },
                 ID: 'clickup-1234',
               },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               statusCode: 200,
             },
             {
@@ -251,36 +165,23 @@ export const data = [
               batchedRequest: {
                 body: {
                   FORM: {},
-                  JSON: {
-                    assignees: [61205104, 61217234, 61228575],
-                    name: 'Transformer Testing',
-                  },
+                  JSON: { assignees: [61205104, 61217234, 61228575], name: 'Transformer Testing' },
                   JSON_ARRAY: {},
                   XML: {},
                 },
                 endpoint: 'https://api.clickup.com/api/v2/list/correctListId123/task',
                 files: {},
-                headers: {
-                  Authorization: 'pk_123',
-                  'Content-Type': 'application/json',
-                },
+                headers: { Authorization: 'pk_123', 'Content-Type': 'application/json' },
                 method: 'POST',
                 params: {},
                 type: 'REST',
                 version: '1',
               },
               destination: {
-                Config: {
-                  apiToken: 'pk_123',
-                  listId: 'correctListId123',
-                },
+                Config: { apiToken: 'pk_123', listId: 'correctListId123' },
                 ID: 'clickup-1234',
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               statusCode: 200,
             },
             {
@@ -309,40 +210,22 @@ export const data = [
                         id: 'ea6c1e48-2abf-4328-b228-79c213e147c8',
                         value: {
                           formatted_address: 'Gold Coast QLD, Australia',
-                          location: {
-                            lat: -20,
-                            lng: 124,
-                          },
+                          location: { lat: -20, lng: 124 },
                         },
                       },
-                      {
-                        id: 'c9b83d91-b979-4b34-b4bd-88bf9cf2b9a6',
-                        value: '+12233445567',
-                      },
-                      {
-                        id: 'ebe825fb-92de-41ce-a29c-25018da039b4',
-                        value: 'test123@example.com',
-                      },
+                      { id: 'c9b83d91-b979-4b34-b4bd-88bf9cf2b9a6', value: '+12233445567' },
+                      { id: 'ebe825fb-92de-41ce-a29c-25018da039b4', value: 'test123@example.com' },
                       {
                         id: 'b01b32fd-94d3-43e6-9f31-2c855ff169cd',
                         value: 'https://www.rudderstack.com/',
                       },
-                      {
-                        id: 'f431cda3-a575-4a05-ba8d-583d9b6cb2df',
-                        value: 3,
-                      },
+                      { id: 'f431cda3-a575-4a05-ba8d-583d9b6cb2df', value: 3 },
                       {
                         id: '4b7a29be-e261-4340-8f3f-e6de838473e5',
                         value: 'c5032049-8c05-44e9-a000-3a071d457b8f',
                       },
-                      {
-                        id: '4bfebc00-9d4a-40d1-aef8-5a87b610186c',
-                        value: 'VP of Operations',
-                      },
-                      {
-                        id: '666f74bf-6d87-41f3-8735-ccf0efe066dd',
-                        value: 1645796361032,
-                      },
+                      { id: '4bfebc00-9d4a-40d1-aef8-5a87b610186c', value: 'VP of Operations' },
+                      { id: '666f74bf-6d87-41f3-8735-ccf0efe066dd', value: 1645796361032 },
                     ],
                     name: 'Product Viewed',
                     description: 'Creating task with valid custom fields values',
@@ -361,10 +244,7 @@ export const data = [
                 },
                 endpoint: 'https://api.clickup.com/api/v2/list/correctListId123/task',
                 files: {},
-                headers: {
-                  Authorization: 'pk_123',
-                  'Content-Type': 'application/json',
-                },
+                headers: { Authorization: 'pk_123', 'Content-Type': 'application/json' },
                 method: 'POST',
                 params: {},
                 type: 'REST',
@@ -374,60 +254,23 @@ export const data = [
                 Config: {
                   apiToken: 'pk_123',
                   keyToCustomFieldName: [
-                    {
-                      from: 'industry',
-                      to: 'Industry',
-                    },
-                    {
-                      from: 'Payment Status',
-                      to: 'Payment Status',
-                    },
-                    {
-                      from: 'labelKey',
-                      to: 'Labels',
-                    },
-                    {
-                      from: 'locationKey',
-                      to: 'Location',
-                    },
-                    {
-                      from: 'phone',
-                      to: 'Phone Number',
-                    },
-                    {
-                      from: 'email',
-                      to: 'Email',
-                    },
-                    {
-                      from: 'url',
-                      to: 'Url',
-                    },
-                    {
-                      from: 'rating',
-                      to: 'Rating',
-                    },
-                    {
-                      from: 'plan',
-                      to: 'Plan',
-                    },
-                    {
-                      from: 'contactTitle',
-                      to: 'Contact Title',
-                    },
-                    {
-                      from: 'date',
-                      to: 'Date',
-                    },
+                    { from: 'industry', to: 'Industry' },
+                    { from: 'Payment Status', to: 'Payment Status' },
+                    { from: 'labelKey', to: 'Labels' },
+                    { from: 'locationKey', to: 'Location' },
+                    { from: 'phone', to: 'Phone Number' },
+                    { from: 'email', to: 'Email' },
+                    { from: 'url', to: 'Url' },
+                    { from: 'rating', to: 'Rating' },
+                    { from: 'plan', to: 'Plan' },
+                    { from: 'contactTitle', to: 'Contact Title' },
+                    { from: 'date', to: 'Date' },
                   ],
                   listId: 'correctListId123',
                 },
                 ID: 'clickup-1234',
               },
-              metadata: [
-                {
-                  jobId: 3,
-                },
-              ],
+              metadata: [{ jobId: 3, userId: 'u1' }],
               statusCode: 200,
             },
             {
@@ -435,22 +278,13 @@ export const data = [
                 Config: {
                   apiToken: 'pk_123',
                   listId: 'correctListId123',
-                  keyToCustomFieldName: [
-                    {
-                      from: 'location',
-                      to: 'Location',
-                    },
-                  ],
+                  keyToCustomFieldName: [{ from: 'location', to: 'Location' }],
                 },
                 ID: 'clickup-1234',
               },
               batched: false,
               error: 'Invalid value specified for latitude. Latitude must be in range "[-90, 90]"',
-              metadata: [
-                {
-                  jobId: 4,
-                },
-              ],
+              metadata: [{ jobId: 4, userId: 'u1' }],
               statTags: {
                 destType: 'CLICKUP',
                 errorCategory: 'dataValidation',

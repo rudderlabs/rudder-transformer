@@ -18,9 +18,7 @@ export const data = [
                   eventNamesSettings: [{ event: '' }],
                 },
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               message: {
                 channel: 'web',
                 context: {
@@ -62,9 +60,7 @@ export const data = [
                   eventNamesSettings: [{ event: '' }],
                 },
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               message: {
                 channel: 'web',
                 context: {
@@ -130,11 +126,7 @@ export const data = [
                 version: '1',
                 endpoint: 'https://api.delighted.com/v1/people.json',
               },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -152,10 +144,7 @@ export const data = [
                   XML: {},
                   JSON_ARRAY: {},
                   FORM: {},
-                  JSON: {
-                    email: '123@abc.com',
-                    email_update: 'abc@123.com',
-                  },
+                  JSON: { email: '123@abc.com', email_update: 'abc@123.com' },
                 },
                 type: 'REST',
                 files: {},
@@ -168,11 +157,7 @@ export const data = [
                 version: '1',
                 endpoint: 'https://api.delighted.com/v1/people.json',
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {

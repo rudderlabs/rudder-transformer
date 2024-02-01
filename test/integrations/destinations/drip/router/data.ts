@@ -18,9 +18,7 @@ export const data = [
                   enableUserCreation: true,
                 },
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               message: {
                 channel: 'web',
                 context: {
@@ -47,9 +45,7 @@ export const data = [
                   firstName: 'James',
                   lastName: 'Doe',
                   phone: '237416221',
-                  customFields: {
-                    filter1: 'filterval1',
-                  },
+                  customFields: { filter1: 'filterval1' },
                 },
                 integrations: { All: true },
                 sentAt: '2019-10-14T09:03:22.563Z',
@@ -64,9 +60,7 @@ export const data = [
                   enableUserCreation: true,
                 },
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               message: {
                 channel: 'web',
                 context: {
@@ -89,12 +83,7 @@ export const data = [
                 originalTimestamp: '2019-10-14T09:03:17.562Z',
                 type: 'track',
                 event: 'testing',
-                properties: {
-                  email: 'user1@gmail.com',
-                  customFields: {
-                    field1: 'val1',
-                  },
-                },
+                properties: { email: 'user1@gmail.com', customFields: { field1: 'val1' } },
                 integrations: { All: true },
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
@@ -124,9 +113,7 @@ export const data = [
                         last_name: 'Doe',
                         phone: '237416221',
                         ip_address: '0.0.0.0',
-                        custom_fields: {
-                          filter1: 'filterval1',
-                        },
+                        custom_fields: { filter1: 'filterval1' },
                       },
                     ],
                   },
@@ -142,11 +129,7 @@ export const data = [
                 version: '1',
                 endpoint: 'https://api.getdrip.com/v2/1809802/subscribers',
               },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -168,9 +151,7 @@ export const data = [
                     events: [
                       {
                         email: 'user1@gmail.com',
-                        properties: {
-                          field1: 'val1',
-                        },
+                        properties: { field1: 'val1' },
                         action: 'testing',
                         occurred_at: '2019-10-14T09:03:17.562Z',
                       },
@@ -188,11 +169,7 @@ export const data = [
                 version: '1',
                 endpoint: 'https://api.getdrip.com/v2/1809802/events',
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {

@@ -18,11 +18,7 @@ export const data = [
                 channel: 'web',
                 properties: {},
                 context: {
-                  traits: {
-                    organization: 'RudderStack',
-                    fullName: 'John Doe',
-                    country: 'US',
-                  },
+                  traits: { organization: 'RudderStack', fullName: 'John Doe', country: 'US' },
                   sessionId: 1685626914716,
                 },
                 rudderId: '8f8fa6b5-8e24-489c-8e22-61f23f2e364f',
@@ -32,17 +28,11 @@ export const data = [
                 userId: 'userId123',
                 integrations: {
                   All: true,
-                  optimizely_fullstack: {
-                    variationId: 'test_variation_id_1',
-                  },
+                  optimizely_fullstack: { variationId: 'test_variation_id_1' },
                 },
               },
               destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 Config: {
                   dataFileUrl: 'https://cdn.optimizely.com/datafiles/abc.json',
                   accountId: 'test_account_id',
@@ -50,20 +40,12 @@ export const data = [
                   experimentId: 'test_experiment_id',
                   trackKnownUsers: true,
                   attributeMapping: [
-                    {
-                      from: 'organization',
-                      to: 'company',
-                    },
-                    {
-                      from: 'fullName',
-                      to: 'name',
-                    },
+                    { from: 'organization', to: 'company' },
+                    { from: 'fullName', to: 'name' },
                   ],
                 },
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
             },
             {
               message: {
@@ -72,34 +54,21 @@ export const data = [
                 userId: 'userId123',
                 channel: 'web',
                 context: {
-                  traits: {
-                    organization: 'RudderStack',
-                    fullName: 'John Doe',
-                  },
+                  traits: { organization: 'RudderStack', fullName: 'John Doe' },
                   sessionId: 1685626914716,
                 },
                 rudderId: '5354b3f2-cb72-4355-a2b5-a298c3837c7d',
                 messageId: '2116ef8c-efc3-4ca4-851b-02ee60dad6ff',
                 timestamp: '2023-02-10T12:16:07.251Z',
-                properties: {
-                  foo: 'bar',
-                  revenue: 123,
-                  quantity: 2,
-                },
+                properties: { foo: 'bar', revenue: 123, quantity: 2 },
                 anonymousId: '856365b8-da4b-4c13-9098-84df18559446',
                 integrations: {
                   All: true,
-                  optimizely_fullstack: {
-                    variationId: 'test_variation_id_2',
-                  },
+                  optimizely_fullstack: { variationId: 'test_variation_id_2' },
                 },
               },
               destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 Config: {
                   dataFileUrl: 'https://cdn.optimizely.com/datafiles/abc.json',
                   accountId: 'test_account_id',
@@ -108,30 +77,16 @@ export const data = [
                   trackKnownUsers: true,
                   anonymizeIp: true,
                   eventMapping: [
-                    {
-                      from: 'Product Searched',
-                      to: 'Searched',
-                    },
-                    {
-                      from: 'product_added',
-                      to: 'Product Added',
-                    },
+                    { from: 'Product Searched', to: 'Searched' },
+                    { from: 'product_added', to: 'Product Added' },
                   ],
                   attributeMapping: [
-                    {
-                      from: 'organization',
-                      to: 'company',
-                    },
-                    {
-                      from: 'fullName',
-                      to: 'name',
-                    },
+                    { from: 'organization', to: 'company' },
+                    { from: 'fullName', to: 'name' },
                   ],
                 },
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
             },
             {
               message: {
@@ -139,33 +94,21 @@ export const data = [
                 userId: 'userId123',
                 channel: 'web',
                 context: {
-                  traits: {
-                    organization: 'RudderStack',
-                    fullName: 'John Doe',
-                  },
+                  traits: { organization: 'RudderStack', fullName: 'John Doe' },
                   sessionId: 1685626914716,
                 },
                 rudderId: '5354b3f2-cb72-4355-a2b5-a298c3837c7d',
                 messageId: '2116ef8c-efc3-4ca4-851b-02ee60dad6ff',
                 timestamp: '2023-02-10T12:16:07.251Z',
-                properties: {
-                  foo: 'bar',
-                  category: 'food',
-                },
+                properties: { foo: 'bar', category: 'food' },
                 anonymousId: '856365b8-da4b-4c13-9098-84df18559446',
                 integrations: {
                   All: true,
-                  optimizely_fullstack: {
-                    variationId: 'test_variation_id_1',
-                  },
+                  optimizely_fullstack: { variationId: 'test_variation_id_1' },
                 },
               },
               destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 Config: {
                   dataFileUrl: 'https://cdn.optimizely.com/datafiles/abc.json',
                   accountId: 'test_account_id',
@@ -176,20 +119,12 @@ export const data = [
                   trackCategorizedPages: true,
                   trackNamedPages: false,
                   pageMapping: [
-                    {
-                      from: 'meal',
-                      to: 'Viewed Meal Page',
-                    },
-                    {
-                      from: 'food',
-                      to: 'Product Added',
-                    },
+                    { from: 'meal', to: 'Viewed Meal Page' },
+                    { from: 'food', to: 'Product Added' },
                   ],
                 },
               },
-              metadata: {
-                jobId: 3,
-              },
+              metadata: { jobId: 3, userId: 'u1' },
             },
             {
               message: {
@@ -201,19 +136,10 @@ export const data = [
                 rudderId: '8f8fa6b5-8e24-489c-8e22-61f23f2e364f',
                 messageId: '2116ef8c-efc3-4ca4-851b-02ee60dad6ff',
                 anonymousId: '97c46c81-3140-456d-b2a9-690d70aaca35',
-                integrations: {
-                  All: true,
-                  optimizely_fullstack: {
-                    variationId: '123',
-                  },
-                },
+                integrations: { All: true, optimizely_fullstack: { variationId: '123' } },
               },
               destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 Config: {
                   dataFileUrl: 'https://cdn.optimizely.com/datafiles/abc.json',
                   accountId: 'test_account_id',
@@ -223,9 +149,7 @@ export const data = [
                   trackNamedPages: false,
                 },
               },
-              metadata: {
-                jobId: 4,
-              },
+              metadata: { jobId: 4, userId: 'u1' },
             },
           ],
           destType: 'optimizely_fullstack',
@@ -245,9 +169,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://logx.optimizely.com/v1/events',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 params: {},
                 body: {
                   JSON: {
@@ -303,11 +225,7 @@ export const data = [
                 files: {},
               },
               destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 Config: {
                   dataFileUrl: 'https://cdn.optimizely.com/datafiles/abc.json',
                   accountId: 'test_account_id',
@@ -315,22 +233,12 @@ export const data = [
                   experimentId: 'test_experiment_id',
                   trackKnownUsers: true,
                   attributeMapping: [
-                    {
-                      from: 'organization',
-                      to: 'company',
-                    },
-                    {
-                      from: 'fullName',
-                      to: 'name',
-                    },
+                    { from: 'organization', to: 'company' },
+                    { from: 'fullName', to: 'name' },
                   ],
                 },
               },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               statusCode: 200,
             },
             {
@@ -340,9 +248,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://logx.optimizely.com/v1/events',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 params: {},
                 body: {
                   JSON: {
@@ -379,9 +285,7 @@ export const data = [
                                 uuid: '2116ef8c-efc3-4ca4-851b-02ee60dad6ff',
                                 quantity: 2,
                                 revenue: 12300,
-                                tags: {
-                                  foo: 'bar',
-                                },
+                                tags: { foo: 'bar' },
                               },
                             ],
                           },
@@ -397,11 +301,7 @@ export const data = [
                 files: {},
               },
               destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 Config: {
                   dataFileUrl: 'https://cdn.optimizely.com/datafiles/abc.json',
                   accountId: 'test_account_id',
@@ -410,32 +310,16 @@ export const data = [
                   trackKnownUsers: true,
                   anonymizeIp: true,
                   eventMapping: [
-                    {
-                      from: 'Product Searched',
-                      to: 'Searched',
-                    },
-                    {
-                      from: 'product_added',
-                      to: 'Product Added',
-                    },
+                    { from: 'Product Searched', to: 'Searched' },
+                    { from: 'product_added', to: 'Product Added' },
                   ],
                   attributeMapping: [
-                    {
-                      from: 'organization',
-                      to: 'company',
-                    },
-                    {
-                      from: 'fullName',
-                      to: 'name',
-                    },
+                    { from: 'organization', to: 'company' },
+                    { from: 'fullName', to: 'name' },
                   ],
                 },
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               statusCode: 200,
             },
             {
@@ -445,9 +329,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://logx.optimizely.com/v1/events',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 params: {},
                 body: {
                   JSON: {
@@ -468,10 +350,7 @@ export const data = [
                                 key: 'Product Added',
                                 timestamp: 1676031367251,
                                 uuid: '2116ef8c-efc3-4ca4-851b-02ee60dad6ff',
-                                tags: {
-                                  foo: 'bar',
-                                  category: 'food',
-                                },
+                                tags: { foo: 'bar', category: 'food' },
                               },
                             ],
                           },
@@ -487,11 +366,7 @@ export const data = [
                 files: {},
               },
               destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 Config: {
                   dataFileUrl: 'https://cdn.optimizely.com/datafiles/abc.json',
                   accountId: 'test_account_id',
@@ -502,32 +377,18 @@ export const data = [
                   trackCategorizedPages: true,
                   trackNamedPages: false,
                   pageMapping: [
-                    {
-                      from: 'meal',
-                      to: 'Viewed Meal Page',
-                    },
-                    {
-                      from: 'food',
-                      to: 'Product Added',
-                    },
+                    { from: 'meal', to: 'Viewed Meal Page' },
+                    { from: 'food', to: 'Product Added' },
                   ],
                 },
               },
-              metadata: [
-                {
-                  jobId: 3,
-                },
-              ],
+              metadata: [{ jobId: 3, userId: 'u1' }],
               statusCode: 200,
             },
             {
               batched: false,
               destination: {
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
                 Config: {
                   accountId: 'test_account_id',
                   campaignId: 'test_campagin_id',
@@ -539,11 +400,7 @@ export const data = [
               },
               error:
                 "Both 'Track Categorized Pages' and 'Track Named Pages' toggles are disabled in webapp. Please enable at one of them to send page/screen events to Optimizely.",
-              metadata: [
-                {
-                  jobId: 4,
-                },
-              ],
+              metadata: [{ jobId: 4, userId: 'u1' }],
               statTags: {
                 destType: 'OPTIMIZELY_FULLSTACK',
                 errorCategory: 'dataValidation',

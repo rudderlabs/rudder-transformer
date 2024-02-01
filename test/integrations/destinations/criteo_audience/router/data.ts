@@ -19,12 +19,7 @@ export const data = [
                 },
                 ID: 'iwehr83843',
               },
-              metadata: {
-                secret: {
-                  accessToken: 'success_access_token',
-                },
-                jobId: 1,
-              },
+              metadata: { secret: { accessToken: 'success_access_token' }, jobId: 1, userId: 'u1' },
               message: {
                 userId: 'user 1',
                 type: 'audiencelist',
@@ -52,12 +47,7 @@ export const data = [
                     ],
                   },
                 },
-                context: {
-                  ip: '14.5.67.21',
-                  library: {
-                    name: 'http',
-                  },
-                },
+                context: { ip: '14.5.67.21', library: { name: 'http' } },
                 timestamp: '2020-02-02T00:23:09.544Z',
               },
             },
@@ -71,12 +61,7 @@ export const data = [
                 },
                 ID: 'iwehr83843',
               },
-              metadata: {
-                secret: {
-                  accessToken: 'success_access_token',
-                },
-                jobId: 2,
-              },
+              metadata: { secret: { accessToken: 'success_access_token' }, jobId: 2, userId: 'u1' },
               message: {
                 userId: 'user 1',
                 type: 'audiencelist',
@@ -112,9 +97,7 @@ export const data = [
                     ],
                   },
                 },
-                context: {
-                  ip: '14.5.67.21',
-                },
+                context: { ip: '14.5.67.21' },
                 timestamp: '2020-02-02T00:23:09.544Z',
               },
             },
@@ -162,12 +145,7 @@ export const data = [
                 },
               ],
               metadata: [
-                {
-                  jobId: 1,
-                  secret: {
-                    accessToken: 'success_access_token',
-                  },
-                },
+                { jobId: 1, secret: { accessToken: 'success_access_token' }, userId: 'u1' },
               ],
               batched: false,
               statusCode: 200,
@@ -243,12 +221,7 @@ export const data = [
                 },
               ],
               metadata: [
-                {
-                  jobId: 2,
-                  secret: {
-                    accessToken: 'success_access_token',
-                  },
-                },
+                { jobId: 2, secret: { accessToken: 'success_access_token' }, userId: 'u1' },
               ],
               batched: false,
               statusCode: 200,
@@ -292,6 +265,7 @@ export const data = [
                   accessToken: 'success_access_token',
                 },
                 jobId: 1,
+                userId: 'u1',
               },
               message: {
                 userId: 'user 1',
@@ -352,7 +326,8 @@ export const data = [
                 secret: {
                   accessToken: 'success_access_token',
                 },
-                jobId: 1,
+                jobId: 2,
+                userId: 'u1',
               },
               message: {
                 userId: 'user 1',
@@ -445,6 +420,7 @@ export const data = [
               metadata: [
                 {
                   jobId: 1,
+                  userId: 'u1',
                   secret: {
                     accessToken: 'success_access_token',
                   },
@@ -497,7 +473,8 @@ export const data = [
               ],
               metadata: [
                 {
-                  jobId: 1,
+                  jobId: 2,
+                  userId: 'u1',
                   secret: {
                     accessToken: 'success_access_token',
                   },

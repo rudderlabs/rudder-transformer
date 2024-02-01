@@ -18,19 +18,14 @@ export const data = [
                 },
                 ID: '2D7TqLto9tnkBuR1ciMrbiA4cbG',
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               message: {
                 type: 'identify',
                 sentAt: '2022-01-20T13:39:21.033Z',
                 userId: 'dummyId2',
                 channel: 'web',
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -66,10 +61,7 @@ export const data = [
                     company: 'Rudderstack',
                     createdAt: '2021-01-20T13:39:21.032Z',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.2.20',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.2.20' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36',
@@ -77,9 +69,7 @@ export const data = [
                 rudderId: '553b5522-c575-40a7-8072-9741c5f9a647',
                 messageId: '831f1fa5-de84-4f22-880a-4c3f23fc3f04',
                 anonymousId: 'bf412108-0357-4330-b119-7305e767823c',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 originalTimestamp: '2022-01-20T13:39:21.032Z',
               },
             },
@@ -92,19 +82,14 @@ export const data = [
                 },
                 ID: '2D7TqLto9tnkBuR1ciMrbiA4cbG',
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               message: {
                 type: 'identify',
                 sentAt: '2022-01-20T13:39:21.033Z',
                 userId: 'dummyId2',
                 channel: 'web',
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -139,10 +124,7 @@ export const data = [
                     company: 'Rudderstack',
                     createdAt: '2021-01-20T13:39:21.032Z',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.2.20',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.2.20' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36',
@@ -150,9 +132,7 @@ export const data = [
                 rudderId: '553b5522-c575-40a7-8072-9741c5f9a647',
                 messageId: '831f1fa5-de84-4f22-880a-4c3f23fc3f04',
                 anonymousId: 'bf412108-0357-4330-b119-7305e767823c',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 originalTimestamp: '2022-01-20T13:39:21.032Z',
               },
             },
@@ -165,19 +145,14 @@ export const data = [
                 },
                 ID: '2D7TqLto9tnkBuR1ciMrbiA4cbG',
               },
-              metadata: {
-                jobId: 3,
-              },
+              metadata: { jobId: 3, userId: 'u1' },
               message: {
                 type: 'identify',
                 sentAt: '2022-01-20T13:39:21.033Z',
                 userId: 'dummyId2',
                 channel: 'web',
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -212,10 +187,7 @@ export const data = [
                     company: 'Rudderstack',
                     createdAt: '2021-01-20T13:39:21.032Z',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.2.20',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.2.20' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36',
@@ -223,9 +195,7 @@ export const data = [
                 rudderId: '553b5522-c575-40a7-8072-9741c5f9a647',
                 messageId: '831f1fa5-de84-4f22-880a-4c3f23fc3f04',
                 anonymousId: 'bf412108-0357-4330-b119-7305e767823c',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 originalTimestamp: '2022-01-20T13:39:21.032Z',
               },
             },
@@ -238,19 +208,14 @@ export const data = [
                 },
                 ID: '2D7TqLto9tnkBuR1ciMrbiA4cbG',
               },
-              metadata: {
-                jobId: 5,
-              },
+              metadata: { jobId: 5, userId: 'u1' },
               message: {
                 type: 'identify',
                 sentAt: '2022-01-20T13:39:21.033Z',
                 userId: 'dummyId2',
                 channel: 'web',
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -276,10 +241,7 @@ export const data = [
                     innerWidth: 536,
                     innerHeight: 689,
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.2.20',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.2.20' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36',
@@ -287,9 +249,7 @@ export const data = [
                 rudderId: '553b5522-c575-40a7-8072-9741c5f9a647',
                 messageId: '831f1fa5-de84-4f22-880a-4c3f23fc3f04',
                 anonymousId: 'bf412108-0357-4330-b119-7305e767823c',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 originalTimestamp: '2022-01-20T13:39:21.032Z',
               },
             },
@@ -302,19 +262,14 @@ export const data = [
                 },
                 ID: '2D7TqLto9tnkBuR1ciMrbiA4cbG',
               },
-              metadata: {
-                jobId: 6,
-              },
+              metadata: { jobId: 6, userId: 'u1' },
               message: {
                 type: 'identify',
                 sentAt: '2022-01-20T13:39:21.033Z',
                 userId: 'dummyId2',
                 channel: 'web',
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -348,10 +303,7 @@ export const data = [
                     company: 'Rudderstack',
                     createdAt: '2021-01-20T13:39:21.032Z',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.2.20',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.2.20' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36',
@@ -359,9 +311,7 @@ export const data = [
                 rudderId: '553b5522-c575-40a7-8072-9741c5f9a647',
                 messageId: '831f1fa5-de84-4f22-880a-4c3f23fc3f04',
                 anonymousId: 'bf412108-0357-4330-b119-7305e767823c',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 originalTimestamp: '2022-01-20T13:39:21.032Z',
               },
             },
@@ -374,19 +324,14 @@ export const data = [
                 },
                 ID: '2D7TqLto9tnkBuR1ciMrbiA4cbG',
               },
-              metadata: {
-                jobId: 7,
-              },
+              metadata: { jobId: 7, userId: 'u1' },
               message: {
                 type: 'identify',
                 sentAt: '2022-01-20T13:39:21.033Z',
                 userId: 'dummyId1',
                 channel: 'web',
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -412,13 +357,8 @@ export const data = [
                     innerWidth: 536,
                     innerHeight: 689,
                   },
-                  traits: {
-                    email: 'dummyuser1_01@gmail.com',
-                  },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.2.20',
-                  },
+                  traits: { email: 'dummyuser1_01@gmail.com' },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.2.20' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36',
@@ -426,9 +366,7 @@ export const data = [
                 rudderId: '553b5522-c575-40a7-8072-9741c5f9a647',
                 messageId: '831f1fa5-de84-4f22-880a-4c3f23fc3f04',
                 anonymousId: 'bf412108-0357-4330-b119-7305e767823c',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 originalTimestamp: '2022-01-20T13:39:21.032Z',
               },
             },
@@ -441,19 +379,14 @@ export const data = [
                 },
                 ID: '2D7TqLto9tnkBuR1ciMrbiA4cbG',
               },
-              metadata: {
-                jobId: 8,
-              },
+              metadata: { jobId: 8, userId: 'u1' },
               message: {
                 type: 'identify',
                 sentAt: '2022-01-20T13:39:21.033Z',
                 userId: 'dummyId1',
                 channel: 'web',
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -479,13 +412,8 @@ export const data = [
                     innerWidth: 536,
                     innerHeight: 689,
                   },
-                  traits: {
-                    phone: '+19777777778',
-                  },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.2.20',
-                  },
+                  traits: { phone: '+19777777778' },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.2.20' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36',
@@ -493,9 +421,7 @@ export const data = [
                 rudderId: '553b5522-c575-40a7-8072-9741c5f9a647',
                 messageId: '831f1fa5-de84-4f22-880a-4c3f23fc3f04',
                 anonymousId: 'bf412108-0357-4330-b119-7305e767823c',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 originalTimestamp: '2022-01-20T13:39:21.032Z',
               },
             },
@@ -508,19 +434,14 @@ export const data = [
                 },
                 ID: '2D7TqLto9tnkBuR1ciMrbiA4cbG',
               },
-              metadata: {
-                jobId: 9,
-              },
+              metadata: { jobId: 9, userId: 'u1' },
               message: {
                 type: 'identify',
                 sentAt: '2022-01-20T13:39:21.033Z',
                 userId: 'dummyId1',
                 channel: 'web',
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -553,10 +474,7 @@ export const data = [
                     gender: 'Male',
                     company: 'Rudderstack',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.2.20',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.2.20' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36',
@@ -564,9 +482,7 @@ export const data = [
                 rudderId: '553b5522-c575-40a7-8072-9741c5f9a647',
                 messageId: '831f1fa5-de84-4f22-880a-4c3f23fc3f04',
                 anonymousId: 'bf412108-0357-4330-b119-7305e767823c',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 originalTimestamp: '2022-01-20T13:39:21.032Z',
               },
             },
@@ -579,9 +495,7 @@ export const data = [
                 },
                 ID: '2D7TqLto9tnkBuR1ciMrbiA4cbG',
               },
-              metadata: {
-                jobId: 10,
-              },
+              metadata: { jobId: 10, userId: 'u1' },
               message: {
                 type: 'track',
                 sentAt: '2022-01-20T13:39:21.033Z',
@@ -592,10 +506,7 @@ export const data = [
                   feedbackText: 'Simple, Easy to use, Reliable, Affordable Product',
                 },
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -631,10 +542,7 @@ export const data = [
                     company: 'Rudderstack',
                     createdAt: '2021-01-20T13:39:21.032Z',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.2.20',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.2.20' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36',
@@ -642,12 +550,7 @@ export const data = [
                 rudderId: '553b5522-c575-40a7-8072-9741c5f9a647',
                 messageId: '831f1fa5-de84-4f22-880a-4c3f23fc3f04',
                 anonymousId: 'bf412108-0357-4330-b119-7305e767823c',
-                integrations: {
-                  All: true,
-                  Wootric: {
-                    eventType: 'create response',
-                  },
-                },
+                integrations: { All: true, Wootric: { eventType: 'create response' } },
                 originalTimestamp: '2022-01-20T13:39:21.032Z',
               },
             },
@@ -660,9 +563,7 @@ export const data = [
                 },
                 ID: '2D7TqLto9tnkBuR1ciMrbiA4cbG',
               },
-              metadata: {
-                jobId: 11,
-              },
+              metadata: { jobId: 11, userId: 'u1' },
               message: {
                 type: 'track',
                 sentAt: '2022-01-20T13:39:21.033Z',
@@ -673,10 +574,7 @@ export const data = [
                   feedbackText: 'Simple, Easy to use, Reliable, Affordable Product',
                 },
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -703,10 +601,7 @@ export const data = [
                     innerWidth: 536,
                     innerHeight: 689,
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.2.20',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.2.20' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36',
@@ -714,12 +609,7 @@ export const data = [
                 rudderId: '553b5522-c575-40a7-8072-9741c5f9a647',
                 messageId: '831f1fa5-de84-4f22-880a-4c3f23fc3f04',
                 anonymousId: 'bf412108-0357-4330-b119-7305e767823c',
-                integrations: {
-                  All: true,
-                  Wootric: {
-                    eventType: 'create response',
-                  },
-                },
+                integrations: { All: true, Wootric: { eventType: 'create response' } },
                 originalTimestamp: '2022-01-20T13:39:21.032Z',
               },
             },
@@ -732,9 +622,7 @@ export const data = [
                 },
                 ID: '2D7TqLto9tnkBuR1ciMrbiA4cbG',
               },
-              metadata: {
-                jobId: 12,
-              },
+              metadata: { jobId: 12, userId: 'u1' },
               message: {
                 type: 'track',
                 sentAt: '2022-01-20T13:39:21.033Z',
@@ -745,10 +633,7 @@ export const data = [
                   feedbackText: 'Simple, Easy to use, Reliable, Affordable Product',
                 },
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -775,10 +660,7 @@ export const data = [
                     innerWidth: 536,
                     innerHeight: 689,
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.2.20',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.2.20' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36',
@@ -786,12 +668,7 @@ export const data = [
                 rudderId: '553b5522-c575-40a7-8072-9741c5f9a647',
                 messageId: '831f1fa5-de84-4f22-880a-4c3f23fc3f04',
                 anonymousId: 'bf412108-0357-4330-b119-7305e767823c',
-                integrations: {
-                  All: true,
-                  Wootric: {
-                    eventType: 'create response',
-                  },
-                },
+                integrations: { All: true, Wootric: { eventType: 'create response' } },
                 originalTimestamp: '2022-01-20T13:39:21.032Z',
               },
             },
@@ -804,9 +681,7 @@ export const data = [
                 },
                 ID: '2D7TqLto9tnkBuR1ciMrbiA4cbG',
               },
-              metadata: {
-                jobId: 13,
-              },
+              metadata: { jobId: 13, userId: 'u1' },
               message: {
                 type: 'track',
                 sentAt: '2022-01-20T13:39:21.033Z',
@@ -817,10 +692,7 @@ export const data = [
                   feedbackText: 'Simple, Easy to use, Reliable, Affordable Product',
                 },
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -846,10 +718,7 @@ export const data = [
                     innerWidth: 536,
                     innerHeight: 689,
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.2.20',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.2.20' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36',
@@ -857,12 +726,7 @@ export const data = [
                 rudderId: '553b5522-c575-40a7-8072-9741c5f9a647',
                 messageId: '831f1fa5-de84-4f22-880a-4c3f23fc3f04',
                 anonymousId: 'bf412108-0357-4330-b119-7305e767823c',
-                integrations: {
-                  All: true,
-                  Wootric: {
-                    eventType: 'create decline',
-                  },
-                },
+                integrations: { All: true, Wootric: { eventType: 'create decline' } },
                 originalTimestamp: '2022-01-20T13:39:21.032Z',
               },
             },
@@ -875,9 +739,7 @@ export const data = [
                 },
                 ID: '2D7TqLto9tnkBuR1ciMrbiA4cbG',
               },
-              metadata: {
-                jobId: 14,
-              },
+              metadata: { jobId: 14, userId: 'u1' },
               message: {
                 type: 'track',
                 sentAt: '2022-01-20T13:39:21.033Z',
@@ -888,10 +750,7 @@ export const data = [
                   feedbackText: 'Simple, Easy to use, Reliable, Affordable Product',
                 },
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -917,10 +776,7 @@ export const data = [
                     innerWidth: 536,
                     innerHeight: 689,
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.2.20',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.2.20' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36',
@@ -928,12 +784,7 @@ export const data = [
                 rudderId: '553b5522-c575-40a7-8072-9741c5f9a647',
                 messageId: '831f1fa5-de84-4f22-880a-4c3f23fc3f04',
                 anonymousId: 'bf412108-0357-4330-b119-7305e767823c',
-                integrations: {
-                  All: true,
-                  Wootric: {
-                    eventType: 'create decline',
-                  },
-                },
+                integrations: { All: true, Wootric: { eventType: 'create decline' } },
                 originalTimestamp: '2022-01-20T13:39:21.032Z',
               },
             },
@@ -946,9 +797,7 @@ export const data = [
                 },
                 ID: '2D7TqLto9tnkBuR1ciMrbiA4cbG',
               },
-              metadata: {
-                jobId: 15,
-              },
+              metadata: { jobId: 15, userId: 'u1' },
               message: {
                 type: 'track',
                 sentAt: '2022-01-20T13:39:21.033Z',
@@ -959,10 +808,7 @@ export const data = [
                   feedbackText: 'Simple, Easy to use, Reliable, Affordable Product',
                 },
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -999,10 +845,7 @@ export const data = [
                     company: 'Rudderstack',
                     createdAt: '2021-01-20T13:39:21.032Z',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.2.20',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.2.20' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36',
@@ -1010,12 +853,7 @@ export const data = [
                 rudderId: '553b5522-c575-40a7-8072-9741c5f9a647',
                 messageId: '831f1fa5-de84-4f22-880a-4c3f23fc3f04',
                 anonymousId: 'bf412108-0357-4330-b119-7305e767823c',
-                integrations: {
-                  All: true,
-                  Wootric: {
-                    eventType: 'random',
-                  },
-                },
+                integrations: { All: true, Wootric: { eventType: 'random' } },
                 originalTimestamp: '2022-01-20T13:39:21.032Z',
               },
             },
@@ -1028,23 +866,15 @@ export const data = [
                 },
                 ID: '2D7TqLto9tnkBuR1ciMrbiA4cbG',
               },
-              metadata: {
-                jobId: 16,
-              },
+              metadata: { jobId: 16, userId: 'u1' },
               message: {
                 type: 'track',
                 sentAt: '2022-01-20T13:39:21.033Z',
                 userId: 'dummyId1',
                 channel: 'web',
-                properties: {
-                  feedbackScore: 3,
-                  feedbackText: 'Too Slow!!!',
-                },
+                properties: { feedbackScore: 3, feedbackText: 'Too Slow!!!' },
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -1081,10 +911,7 @@ export const data = [
                     company: 'Rudderstack',
                     createdAt: '2021-01-20T13:39:21.032Z',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.2.20',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.2.20' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36',
@@ -1092,9 +919,7 @@ export const data = [
                 rudderId: '553b5522-c575-40a7-8072-9741c5f9a647',
                 messageId: '831f1fa5-de84-4f22-880a-4c3f23fc3f04',
                 anonymousId: 'bf412108-0357-4330-b119-7305e767823c',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 originalTimestamp: '2022-01-20T13:39:21.032Z',
               },
             },
@@ -1140,11 +965,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -1186,11 +1007,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -1232,11 +1049,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 3,
-                },
-              ],
+              metadata: [{ jobId: 3, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -1257,11 +1070,7 @@ export const data = [
                 },
                 ID: '2D7TqLto9tnkBuR1ciMrbiA4cbG',
               },
-              metadata: [
-                {
-                  jobId: 5,
-                },
-              ],
+              metadata: [{ jobId: 5, userId: 'u1' }],
               batched: false,
               statusCode: 400,
               error: 'email/phone number are missing. At least one parameter must be provided',
@@ -1283,11 +1092,7 @@ export const data = [
                 },
                 ID: '2D7TqLto9tnkBuR1ciMrbiA4cbG',
               },
-              metadata: [
-                {
-                  jobId: 6,
-                },
-              ],
+              metadata: [{ jobId: 6, userId: 'u1' }],
               batched: false,
               statusCode: 400,
               error: 'email/phone number are missing. At least one parameter must be provided',
@@ -1316,18 +1121,11 @@ export const data = [
                   JSON: {},
                   JSON_ARRAY: {},
                   XML: {},
-                  FORM: {
-                    email: 'dummyuser1_01@gmail.com',
-                    last_surveyed: '1642685961',
-                  },
+                  FORM: { email: 'dummyuser1_01@gmail.com', last_surveyed: '1642685961' },
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 7,
-                },
-              ],
+              metadata: [{ jobId: 7, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -1355,18 +1153,11 @@ export const data = [
                   JSON: {},
                   JSON_ARRAY: {},
                   XML: {},
-                  FORM: {
-                    phone_number: '+19777777778',
-                    last_surveyed: '1642685961',
-                  },
+                  FORM: { phone_number: '+19777777778', last_surveyed: '1642685961' },
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 8,
-                },
-              ],
+              metadata: [{ jobId: 8, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -1405,11 +1196,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 9,
-                },
-              ],
+              metadata: [{ jobId: 9, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -1452,11 +1239,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 10,
-                },
-              ],
+              metadata: [{ jobId: 10, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -1469,11 +1252,7 @@ export const data = [
               },
             },
             {
-              metadata: [
-                {
-                  jobId: 11,
-                },
-              ],
+              metadata: [{ jobId: 11, userId: 'u1' }],
               destination: {
                 Config: {
                   username: 'wootricfakeuser@example.com',
@@ -1503,11 +1282,7 @@ export const data = [
                 },
                 ID: '2D7TqLto9tnkBuR1ciMrbiA4cbG',
               },
-              metadata: [
-                {
-                  jobId: 12,
-                },
-              ],
+              metadata: [{ jobId: 12, userId: 'u1' }],
               batched: false,
               statusCode: 400,
               error: 'Invalid Score',
@@ -1542,11 +1317,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 13,
-                },
-              ],
+              metadata: [{ jobId: 13, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -1567,11 +1338,7 @@ export const data = [
                 },
                 ID: '2D7TqLto9tnkBuR1ciMrbiA4cbG',
               },
-              metadata: [
-                {
-                  jobId: 14,
-                },
-              ],
+              metadata: [{ jobId: 14, userId: 'u1' }],
               batched: false,
               statusCode: 400,
               error: 'No user found with userId : dummyId2',
@@ -1593,11 +1360,7 @@ export const data = [
                 },
                 ID: '2D7TqLto9tnkBuR1ciMrbiA4cbG',
               },
-              metadata: [
-                {
-                  jobId: 15,
-                },
-              ],
+              metadata: [{ jobId: 15, userId: 'u1' }],
               batched: false,
               statusCode: 400,
               error: 'Event Type not supported',
@@ -1611,11 +1374,7 @@ export const data = [
               },
             },
             {
-              metadata: [
-                {
-                  jobId: 16,
-                },
-              ],
+              metadata: [{ jobId: 16, userId: 'u1' }],
               destination: {
                 Config: {
                   username: 'wootricfakeuser@example.com',

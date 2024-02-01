@@ -4619,7 +4619,6 @@ export const data = [
                         content_name: 'Monopoly',
                         price: 14,
                         quantity: 1,
-                        brand: 'brand_name',
                       },
                       {
                         content_type: 'product_group',
@@ -6484,7 +6483,6 @@ export const data = [
                             content_category: 'Games',
                             content_id: '123',
                             content_name: 'Monopoly',
-                            brand: 'adidas',
                           },
                           {
                             price: 3.45,

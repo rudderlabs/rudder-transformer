@@ -12,7 +12,7 @@ const {
   getTimeDifference,
   getValuesAsArrayFromConfig,
   removeUndefinedValues,
-  toUnixTimestamp,
+  toUnixTimestampInMS,
   getFieldValueFromMessage,
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
@@ -174,7 +174,8 @@ const getEventValueForTrackEvent = (message, destination) => {
   if (mappedProperties.$insert_id) {
     mappedProperties.$insert_id = mappedProperties.$insert_id.slice(-36);
   }
-  const unixTimestamp = toUnixTimestamp(message.timestamp);
+
+  const unixTimestamp = toUnixTimestampInMS(message.timestamp || message.originalTimestamp);
   let properties = {
     ...message.properties,
     ...get(message, 'context.traits'),
@@ -304,7 +305,7 @@ const processPageOrScreenEvents = (message, type, destination) => {
     ...mappedProperties,
     token: destination.Config.token,
     distinct_id: message.userId || message.anonymousId,
-    time: toUnixTimestamp(message.timestamp),
+    time: toUnixTimestampInMS(message.timestamp || message.originalTimestamp),
     ...buildUtmParams(message.context?.campaign),
   };
   if (destination.Config?.identityMergeApi === 'simplified') {

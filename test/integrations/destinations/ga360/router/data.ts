@@ -18,48 +18,31 @@ export const data = [
               message: {
                 channel: 'web',
                 context: {
-                  traits: {
-                    name: 'Rudder Test',
-                  },
+                  traits: { name: 'Rudder Test' },
                   app: {
                     build: '1.0.0',
                     name: 'RudderLabs JavaScript SDK',
                     namespace: 'com.rudderlabs.javascript',
                     version: '1.0.0',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-US',
                   ip: '0.0.0.0',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                 },
-                properties: {
-                  plan: 'standard plan',
-                  name: 'rudder test',
-                },
+                properties: { plan: 'standard plan', name: 'rudder test' },
                 type: 'identify',
                 messageId: '84e26acc-56a5-4835-8233-591137fca468',
                 originalTimestamp: '2019-10-14T09:03:17.562Z',
                 anonymousId: '00000000000000000000000000',
                 userId: '123456',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               destination: {
                 Config: {
                   trackingID: 'UA-165994240-1',
@@ -86,42 +69,20 @@ export const data = [
                   useGoogleAmpClientId: true,
                   'web-useNativeSDK': true,
                   dimensions: [
-                    {
-                      from: 'name',
-                      to: 'dimension1',
-                    },
-                    {
-                      from: 'custom2',
-                      to: 'dimension2',
-                    },
+                    { from: 'name', to: 'dimension1' },
+                    { from: 'custom2', to: 'dimension2' },
                   ],
                   metrics: [
-                    {
-                      from: 'email',
-                      to: 'metric1',
-                    },
-                    {
-                      from: 'trait2',
-                      to: 'metric2',
-                    },
+                    { from: 'email', to: 'metric1' },
+                    { from: 'trait2', to: 'metric2' },
                   ],
                   resetCustomDimensionsOnPage: [
-                    {
-                      resetCustomDimensionsOnPage: 'abc',
-                    },
-                    {
-                      resetCustomDimensionsOnPage: 'xyz',
-                    },
+                    { resetCustomDimensionsOnPage: 'abc' },
+                    { resetCustomDimensionsOnPage: 'xyz' },
                   ],
                   contentGroupings: [
-                    {
-                      from: 'plan',
-                      to: 'contentGroup1',
-                    },
-                    {
-                      from: 'name',
-                      to: 'contentGroup2',
-                    },
+                    { from: 'plan', to: 'contentGroup1' },
+                    { from: 'name', to: 'contentGroup2' },
                   ],
                 },
                 Enabled: true,
@@ -137,24 +98,14 @@ export const data = [
                     namespace: 'com.rudderlabs.javascript',
                     version: '1.0.0',
                   },
-                  traits: {
-                    email: 'test@rudderstack.com',
-                  },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  traits: { email: 'test@rudderstack.com' },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-US',
                   ip: '0.0.0.0',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                 },
                 type: 'page',
                 messageId: '5e10d13a-bf9a-44bf-b884-43a9e591ea71',
@@ -168,15 +119,11 @@ export const data = [
                   title: 'a',
                   url: 'https://www.example.com/abc',
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 name: 'ApplicationLoaded',
                 sentAt: '2019-10-14T11:15:53.296Z',
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               destination: {
                 Config: {
                   trackingID: 'UA-165994240-1',
@@ -203,42 +150,20 @@ export const data = [
                   useGoogleAmpClientId: true,
                   'web-useNativeSDK': true,
                   dimensions: [
-                    {
-                      from: 'name',
-                      to: 'dimension1',
-                    },
-                    {
-                      from: 'custom2',
-                      to: 'dimension2',
-                    },
+                    { from: 'name', to: 'dimension1' },
+                    { from: 'custom2', to: 'dimension2' },
                   ],
                   metrics: [
-                    {
-                      from: 'email',
-                      to: 'metric1',
-                    },
-                    {
-                      from: 'trait2',
-                      to: 'metric2',
-                    },
+                    { from: 'email', to: 'metric1' },
+                    { from: 'trait2', to: 'metric2' },
                   ],
                   resetCustomDimensionsOnPage: [
-                    {
-                      resetCustomDimensionsOnPage: 'abc',
-                    },
-                    {
-                      resetCustomDimensionsOnPage: 'xyz',
-                    },
+                    { resetCustomDimensionsOnPage: 'abc' },
+                    { resetCustomDimensionsOnPage: 'xyz' },
                   ],
                   contentGroupings: [
-                    {
-                      from: 'plan',
-                      to: 'contentGroup1',
-                    },
-                    {
-                      from: 'prop2',
-                      to: 'contentGroup2',
-                    },
+                    { from: 'plan', to: 'contentGroup1' },
+                    { from: 'prop2', to: 'contentGroup2' },
                   ],
                 },
                 Enabled: true,
@@ -284,20 +209,11 @@ export const data = [
                   ul: 'en-US',
                   qt: 124901802438,
                 },
-                body: {
-                  JSON: {},
-                  XML: {},
-                  JSON_ARRAY: {},
-                  FORM: {},
-                },
+                body: { JSON: {}, XML: {}, JSON_ARRAY: {}, FORM: {} },
                 files: {},
                 userId: '00000000000000000000000000',
               },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -326,42 +242,20 @@ export const data = [
                   useGoogleAmpClientId: true,
                   'web-useNativeSDK': true,
                   dimensions: [
-                    {
-                      from: 'name',
-                      to: 'dimension1',
-                    },
-                    {
-                      from: 'custom2',
-                      to: 'dimension2',
-                    },
+                    { from: 'name', to: 'dimension1' },
+                    { from: 'custom2', to: 'dimension2' },
                   ],
                   metrics: [
-                    {
-                      from: 'email',
-                      to: 'metric1',
-                    },
-                    {
-                      from: 'trait2',
-                      to: 'metric2',
-                    },
+                    { from: 'email', to: 'metric1' },
+                    { from: 'trait2', to: 'metric2' },
                   ],
                   resetCustomDimensionsOnPage: [
-                    {
-                      resetCustomDimensionsOnPage: 'abc',
-                    },
-                    {
-                      resetCustomDimensionsOnPage: 'xyz',
-                    },
+                    { resetCustomDimensionsOnPage: 'abc' },
+                    { resetCustomDimensionsOnPage: 'xyz' },
                   ],
                   contentGroupings: [
-                    {
-                      from: 'plan',
-                      to: 'contentGroup1',
-                    },
-                    {
-                      from: 'name',
-                      to: 'contentGroup2',
-                    },
+                    { from: 'plan', to: 'contentGroup1' },
+                    { from: 'name', to: 'contentGroup2' },
                   ],
                 },
                 Enabled: true,
@@ -396,20 +290,11 @@ export const data = [
                   dt: 'a',
                   qt: 124893881701,
                 },
-                body: {
-                  JSON: {},
-                  XML: {},
-                  JSON_ARRAY: {},
-                  FORM: {},
-                },
+                body: { JSON: {}, XML: {}, JSON_ARRAY: {}, FORM: {} },
                 files: {},
                 userId: '00000000000000000000000000',
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -438,42 +323,20 @@ export const data = [
                   useGoogleAmpClientId: true,
                   'web-useNativeSDK': true,
                   dimensions: [
-                    {
-                      from: 'name',
-                      to: 'dimension1',
-                    },
-                    {
-                      from: 'custom2',
-                      to: 'dimension2',
-                    },
+                    { from: 'name', to: 'dimension1' },
+                    { from: 'custom2', to: 'dimension2' },
                   ],
                   metrics: [
-                    {
-                      from: 'email',
-                      to: 'metric1',
-                    },
-                    {
-                      from: 'trait2',
-                      to: 'metric2',
-                    },
+                    { from: 'email', to: 'metric1' },
+                    { from: 'trait2', to: 'metric2' },
                   ],
                   resetCustomDimensionsOnPage: [
-                    {
-                      resetCustomDimensionsOnPage: 'abc',
-                    },
-                    {
-                      resetCustomDimensionsOnPage: 'xyz',
-                    },
+                    { resetCustomDimensionsOnPage: 'abc' },
+                    { resetCustomDimensionsOnPage: 'xyz' },
                   ],
                   contentGroupings: [
-                    {
-                      from: 'plan',
-                      to: 'contentGroup1',
-                    },
-                    {
-                      from: 'prop2',
-                      to: 'contentGroup2',
-                    },
+                    { from: 'plan', to: 'contentGroup1' },
+                    { from: 'prop2', to: 'contentGroup2' },
                   ],
                 },
                 Enabled: true,

@@ -46,8 +46,10 @@ const validateInput = (message) => {
 const prepareTrackPayload = (message, destination) => {
   const configPayload = prepareFromConfig(destination);
   const commonPayload = prepareCommonPayload(message);
+  // prepare items array
   const items = prepareItemsPayload(message);
   const { id, type } = getAdvertisingId(message);
+  // get td1-td10 custom properties
   const customProperties = prepareCustomProperties(message, destination);
   const eventName = populateEventName(message, destination);
   const value = getRevenue(message);

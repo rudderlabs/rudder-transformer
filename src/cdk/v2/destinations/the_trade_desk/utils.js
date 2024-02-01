@@ -24,6 +24,14 @@ const getBaseEndpoint = (dataServer) => DATA_SERVERS_BASE_ENDPOINTS_MAP[dataServ
 const getFirstPartyEndpoint = (dataServer) => `${getBaseEndpoint(dataServer)}/data/advertiser`;
 const prepareCommonPayload = (message) => constructPayload(message, COMMON_CONFIGS);
 
+/**
+ * Generates a signature header for a given request using a secret key.
+ *
+ * @param {Object} request - The request object to generate the signature for.
+ * @param {string} secretKey - The secret key used to generate the signature.
+ * @returns {string} - The generated signature header.
+ * @throws {AbortedError} - If the secret key is missing.
+ */
 const getSignatureHeader = (request, secretKey) => {
   if (!secretKey) {
     throw new AbortedError('Secret key is missing. Aborting');
@@ -38,6 +46,13 @@ const prepareFromConfig = (destination) => ({
   adv: destination.Config?.advertiserId,
 });
 
+/**
+ * Calculates the revenue based on the given message.
+ *
+ * @param {Object} message - The message object containing the event and properties.
+ * @returns {number} - The calculated revenue.
+ * @throws {InstrumentationError} - If the event is 'Order Completed' and revenue is not provided.
+ */
 const getRevenue = (message) => {
   const { event, properties } = message;
   let revenue = properties?.value;
@@ -57,15 +72,26 @@ const getRevenue = (message) => {
   return revenue;
 };
 
+/**
+ * Generates items from properties of a given message.
+ *
+ * @param {Object} message - The message object containing properties.
+ * @returns {Array} - An array of items generated from the properties.
+ */
 const prepareItemsFromProperties = (message) => {
   const { properties } = message;
   const items = [];
   const item = constructPayload(properties, ITEM_CONFIGS);
-  // extractCustomFields(message, properties, ['properties'], ITEM_EXCLUSION_LIST);
   items.push(item);
   return items;
 };
 
+/**
+ * Generates items payload from products.
+ *
+ * @param {Object} message - The message object.
+ * @returns {Array} - The items payload.
+ */
 const prepareItemsFromProducts = (message) => {
   const products = get(message, 'properties.products');
   const items = [];
@@ -77,6 +103,12 @@ const prepareItemsFromProducts = (message) => {
   return items;
 };
 
+/**
+ * Generates items payload from root properties or products.
+ *
+ * @param {Object} message - The message object containing event and properties.
+ * @returns {Array} - The array of items payload.
+ */
 const prepareItemsPayload = (message) => {
   const { event } = message;
   let items;
@@ -89,6 +121,12 @@ const prepareItemsPayload = (message) => {
   return items;
 };
 
+/**
+ * Retrieves the device advertising ID and type based on the provided message.
+ *
+ * @param {Object} message - The message object containing the context.
+ * @returns {Object} - An object containing the device advertising ID and type.
+ */
 const getDeviceAdvertisingId = (message) => {
   const { context } = message;
   const deviceId = context?.device?.advertisingId;
@@ -110,6 +148,12 @@ const getDeviceAdvertisingId = (message) => {
   return { deviceId, type };
 };
 
+/**
+ * Retrieves the external ID object from the given message context.
+ *
+ * @param {Object} message - The message object containing the context.
+ * @returns {Object|undefined} - The external ID object, or undefined if not found.
+ */
 const getDestinationExternalIDObject = (message) => {
   const { context } = message;
   const externalIdArray = context?.externalId || [];
@@ -125,6 +169,16 @@ const getDestinationExternalIDObject = (message) => {
   return externalIdObj;
 };
 
+/**
+ * Retrieves the advertising ID and type from the given message.
+ *
+ * @param {Object} message - The message object containing the context.
+ * @returns {Object} - An object containing the advertising ID and type.
+ *                    If the advertising ID and type are found in the device context, they are returned.
+ *                    If not, the external ID object is checked and if found, its ID and type are returned.
+ *                    If neither the device context nor the external ID object contain the required information,
+ *                    an object with null values for ID and type is returned.
+ */
 const getAdvertisingId = (message) => {
   const { deviceId, type } = getDeviceAdvertisingId(message);
   if (deviceId && type) {
@@ -138,6 +192,13 @@ const getAdvertisingId = (message) => {
   return { id: null, type: null };
 };
 
+/**
+ * Prepares custom properties (td1-td10) for a given message and destination.
+ *
+ * @param {object} message - The message object.
+ * @param {object} destination - The destination object.
+ * @returns {object} - The prepared payload object.
+ */
 const prepareCustomProperties = (message, destination) => {
   const { customProperties } = destination.Config;
   const payload = {};
@@ -147,6 +208,7 @@ const prepareCustomProperties = (message, destination) => {
       const value = get(message, rudderProperty);
       if (value) {
         payload[tradeDeskProperty] = value;
+        // unset the rudder property from the message, since it is already mapped to a trade desk property
         lodash.unset(message, rudderProperty);
       }
     });
@@ -154,11 +216,19 @@ const prepareCustomProperties = (message, destination) => {
   return payload;
 };
 
+/**
+ * Retrieves the event name based on the provided message and destination.
+ *
+ * @param {object} message - The message object containing the event.
+ * @param {object} destination - The destination object containing the events mapping configuration.
+ * @returns {string} - The event name.
+ */
 const populateEventName = (message, destination) => {
   let eventName;
   const { event } = message;
   const { eventsMapping } = destination.Config;
 
+  // if event is mapped on dashboard, use the mapped event name
   if (Array.isArray(eventsMapping) && eventsMapping.length > 0) {
     const keyMap = getHashFromArray(eventsMapping, 'from', 'to');
     eventName = keyMap[event.toLowerCase()];
@@ -168,11 +238,13 @@ const populateEventName = (message, destination) => {
     return eventName;
   }
 
+  // if event is one of the supported ecommerce events, use the mapped trade desk event name
   const eventMapInfo = ECOMM_EVENT_MAP[event.toLowerCase()];
   if (isDefinedAndNotNull(eventMapInfo)) {
     return eventMapInfo.event;
   }
 
+  // else return the event name as it is
   return event;
 };
 
@@ -220,9 +292,11 @@ const getPrivacySetting = (message) => {
 const enrichTrackPayload = (message, payload) => {
   let rawPayload = { ...payload };
   const eventsMapInfo = ECOMM_EVENT_MAP[message.event.toLowerCase()];
+  // checking if event is an ecomm one and itemsArray/products support is not present. e.g Product Added event
   if (eventsMapInfo && !eventsMapInfo.itemsArray) {
     rawPayload = extractCustomFields(message, rawPayload, ['properties'], ITEM_EXCLUSION_LIST);
   } else {
+    // for custom events
     rawPayload = extractCustomFields(
       message,
       rawPayload,

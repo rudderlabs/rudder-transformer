@@ -252,7 +252,7 @@ export const otherScenariosV1 = [
     },
     output: {
       response: {
-        status: 500,
+        status: 200,
         body: {
           output: {
             response: [
@@ -284,7 +284,6 @@ export const otherScenariosV1 = [
               destinationId: 'default-destinationId',
               workspaceId: 'default-workspaceId',
             },
-            authErrorCategory: '',
             message:
               'Campaign Manager: Error transformer proxy v1 during CAMPAIGN_MANAGER response transformation',
             status: 500,
@@ -312,7 +311,7 @@ export const otherScenariosV1 = [
     },
     output: {
       response: {
-        status: 500,
+        status: 200,
         body: {
           output: {
             response: [
@@ -343,7 +342,6 @@ export const otherScenariosV1 = [
               destinationId: 'default-destinationId',
               workspaceId: 'default-workspaceId',
             },
-            authErrorCategory: '',
             message:
               'Campaign Manager: Error transformer proxy v1 during CAMPAIGN_MANAGER response transformation',
             status: 500,
@@ -371,7 +369,7 @@ export const otherScenariosV1 = [
     },
     output: {
       response: {
-        status: 500,
+        status: 200,
         body: {
           output: {
             response: [
@@ -402,7 +400,6 @@ export const otherScenariosV1 = [
               destinationId: 'default-destinationId',
               workspaceId: 'default-workspaceId',
             },
-            authErrorCategory: '',
             message:
               'Campaign Manager: Error transformer proxy v1 during CAMPAIGN_MANAGER response transformation',
             status: 500,
@@ -430,7 +427,7 @@ export const otherScenariosV1 = [
     },
     output: {
       response: {
-        status: 500,
+        status: 200,
         body: {
           output: {
             response: [
@@ -461,7 +458,6 @@ export const otherScenariosV1 = [
               destinationId: 'default-destinationId',
               workspaceId: 'default-workspaceId',
             },
-            authErrorCategory: '',
             message:
               'Campaign Manager: Error transformer proxy v1 during CAMPAIGN_MANAGER response transformation',
             status: 500,
@@ -490,7 +486,7 @@ export const otherScenariosV1 = [
     },
     output: {
       response: {
-        status: 500,
+        status: 200,
         body: {
           output: {
             response: [
@@ -521,7 +517,6 @@ export const otherScenariosV1 = [
               destinationId: 'default-destinationId',
               workspaceId: 'default-workspaceId',
             },
-            authErrorCategory: '',
             message:
               'Campaign Manager: Error transformer proxy v1 during CAMPAIGN_MANAGER response transformation',
             status: 500,

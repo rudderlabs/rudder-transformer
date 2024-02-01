@@ -1,6 +1,7 @@
 /* eslint-disable prefer-destructuring */
 /* eslint-disable sonarjs/no-duplicate-string */
 import { Context } from 'koa';
+import { isDefinedAndNotNullAndNotEmpty } from '@rudderstack/integrations-lib';
 import { MiscService } from '../services/misc';
 import {
   DeliveryV1Response,
@@ -84,7 +85,11 @@ export class DeliveryController {
       );
     }
     ctx.body = { output: deliveryResponse };
-    ControllerUtility.deliveryPostProcess(ctx, deliveryResponse.status);
+    if (isDefinedAndNotNullAndNotEmpty(deliveryResponse.authErrorCategory)) {
+      ControllerUtility.deliveryPostProcess(ctx, deliveryResponse.status);
+    } else {
+      ControllerUtility.deliveryPostProcess(ctx);
+    }
 
     logger.debug('Native(Delivery):: Response from transformer::', JSON.stringify(ctx.body));
     return ctx;

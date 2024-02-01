@@ -629,7 +629,7 @@ export const data = [
     },
     output: {
       response: {
-        status: 401,
+        status: 200,
         body: {
           output: {
             status: 401,
@@ -662,7 +662,6 @@ export const data = [
               module: 'destination',
               workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
             },
-            authErrorCategory: '',
             message: 'Request failed for braze with status: 401',
           },
         },
@@ -770,7 +769,7 @@ export const data = [
     },
     output: {
       response: {
-        status: 401,
+        status: 200,
         body: {
           output: {
             status: 401,
@@ -840,7 +839,6 @@ export const data = [
               module: 'destination',
               workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
             },
-            authErrorCategory: '',
             message: 'Request failed for braze with status: 401',
           },
         },

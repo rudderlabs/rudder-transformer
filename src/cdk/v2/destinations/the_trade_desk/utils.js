@@ -9,6 +9,7 @@ const {
   isAppleFamily,
   getIntegrationsObj,
   extractCustomFields,
+  generateExclusionList,
 } = require('../../../../v0/util');
 const {
   DATA_SERVERS_BASE_ENDPOINTS_MAP,
@@ -16,7 +17,6 @@ const {
   COMMON_CONFIGS,
   ITEM_CONFIGS,
   ECOMM_EVENT_MAP,
-  ITEM_EXCLUSION_LIST,
 } = require('./config');
 
 const getTTLInMin = (ttl) => parseInt(ttl, 10) * 1440;
@@ -97,7 +97,8 @@ const prepareItemsFromProducts = (message) => {
   const items = [];
   products.forEach((product) => {
     const item = constructPayload(product, ITEM_CONFIGS);
-    extractCustomFields(product, item, 'root', ITEM_EXCLUSION_LIST);
+    const itemExclusionList = generateExclusionList(ITEM_CONFIGS);
+    extractCustomFields(product, item, 'root', itemExclusionList);
     items.push(item);
   });
   return items;
@@ -301,7 +302,8 @@ const enrichTrackPayload = (message, payload) => {
   const eventsMapInfo = ECOMM_EVENT_MAP[message.event.toLowerCase()];
   // checking if event is an ecomm one and itemsArray/products support is not present. e.g Product Added event
   if (eventsMapInfo && !eventsMapInfo.itemsArray) {
-    rawPayload = extractCustomFields(message, rawPayload, ['properties'], ITEM_EXCLUSION_LIST);
+    const itemExclusionList = generateExclusionList(ITEM_CONFIGS);
+    rawPayload = extractCustomFields(message, rawPayload, ['properties'], itemExclusionList);
   } else {
     // for custom events
     rawPayload = extractCustomFields(

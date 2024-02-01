@@ -61,17 +61,6 @@ const CONFIG_CATEGORIES = {
   ITEM_CONFIGS: { name: 'TTDItemConfig' },
 };
 
-const ITEM_EXCLUSION_LIST = [
-  'product_id',
-  'sku',
-  'name',
-  'price',
-  'quantity',
-  'cat',
-  'category_id',
-  'categoryId',
-];
-
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
 module.exports = {
@@ -86,5 +75,4 @@ module.exports = {
   ITEM_CONFIGS: MAPPING_CONFIG[CONFIG_CATEGORIES.ITEM_CONFIGS.name],
   ECOMM_EVENT_MAP,
   REAL_TIME_CONVERSION_ENDPOINT,
-  ITEM_EXCLUSION_LIST,
 };

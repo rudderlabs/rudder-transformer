@@ -1280,6 +1280,31 @@ function getFullName(message) {
 }
 
 /**
+ * Generates an exclusion list from mapping config.
+ *
+ * @param {Array} mappingConfig - The mapping config.
+ *   [
+ *     {
+ *       "destKey": "item_code",
+ *       "sourceKeys": [
+ *         "product_id",
+ *         "sku"
+ *       ]
+ *     },
+ *     {
+ *       "destKey": "name",
+ *       "sourceKeys": "name"
+ *     }
+ *   ]
+ * @returns {Array} - The generated exclusion list.
+ *   ["product_id", "sku", "name"]
+ */
+const generateExclusionList = (mappingConfig) =>
+  mappingConfig.flatMap((mapping) =>
+    Array.isArray(mapping.sourceKeys) ? [...mapping.sourceKeys] : [mapping.sourceKeys],
+  );
+
+/**
  * Extract fileds from message with exclusions
  * Pass the keys of message for extraction and
  * exclusion fields to exlude and the payload to map into
@@ -2132,6 +2157,7 @@ module.exports = {
   defaultPutRequestConfig,
   defaultRequestConfig,
   deleteObjectProperty,
+  generateExclusionList,
   extractCustomFields,
   flattenJson,
   flattenMap,

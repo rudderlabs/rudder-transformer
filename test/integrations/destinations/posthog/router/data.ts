@@ -16,9 +16,7 @@ export const data = [
                   yourInstance: 'https://app.posthog.com/',
                 },
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               message: {
                 event: 'event-alias',
                 context: {
@@ -29,13 +27,8 @@ export const data = [
                     model: 'Redmi 6',
                     name: 'xiaomi',
                   },
-                  network: {
-                    carrier: 'Banglalink',
-                  },
-                  os: {
-                    name: 'android',
-                    version: '8.1.0',
-                  },
+                  network: { carrier: 'Banglalink' },
+                  os: { name: 'android', version: '8.1.0' },
                   app: {
                     build: '1.0.0',
                     name: 'RudderLabs JavaScript SDK',
@@ -43,10 +36,7 @@ export const data = [
                     version: '1.1.7',
                   },
                   traits: {
-                    address: {
-                      city: 'Dhaka',
-                      country: 'Bangladesh',
-                    },
+                    address: { city: 'Dhaka', country: 'Bangladesh' },
                     anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                   },
                 },
@@ -74,18 +64,13 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://app.posthog.com/batch',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 params: {},
                 body: {
                   JSON: {
                     properties: {
                       $set: {
-                        address: {
-                          city: 'Dhaka',
-                          country: 'Bangladesh',
-                        },
+                        address: { city: 'Dhaka', country: 'Bangladesh' },
                         anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                       },
                       $os: 'android',
@@ -117,11 +102,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -148,13 +129,9 @@ export const data = [
           input: [
             {
               destination: {
-                Config: {
-                  teamApiKey: 'K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE',
-                },
+                Config: { teamApiKey: 'K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE' },
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               message: {
                 anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                 event: 'Product Brought',
@@ -166,18 +143,10 @@ export const data = [
                     model: 'Redmi 6',
                     name: 'xiaomi',
                   },
-                  network: {
-                    carrier: 'Banglalink',
-                  },
-                  os: {
-                    name: 'android',
-                    version: '8.1.0',
-                  },
+                  network: { carrier: 'Banglalink' },
+                  os: { name: 'android', version: '8.1.0' },
                   traits: {
-                    address: {
-                      city: 'Dhaka',
-                      country: 'Bangladesh',
-                    },
+                    address: { city: 'Dhaka', country: 'Bangladesh' },
                     anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                   },
                 },
@@ -241,9 +210,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://app.posthog.com/batch',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 params: {},
                 body: {
                   JSON: {
@@ -252,10 +219,7 @@ export const data = [
                     messageId: 'e4408cb8-16dd-41e9-a313-a7a9cdc4bac5',
                     properties: {
                       $set: {
-                        address: {
-                          city: 'Dhaka',
-                          country: 'Bangladesh',
-                        },
+                        address: { city: 'Dhaka', country: 'Bangladesh' },
                         anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                       },
                       $os: 'android',
@@ -316,17 +280,11 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
-                Config: {
-                  teamApiKey: 'K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE',
-                },
+                Config: { teamApiKey: 'K_HlByO3IE73-Tz4ch1LNDs0JGdwbknNGolFc4HdoAE' },
               },
             },
           ],

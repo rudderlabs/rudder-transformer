@@ -18,9 +18,7 @@ export const data = [
                   enableObjectIdMapping: true,
                 },
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               message: {
                 channel: 'web',
                 context: {
@@ -30,21 +28,13 @@ export const data = [
                     namespace: 'com.rudderlabs.javascript',
                     version: '1.0.0',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-US',
                   ip: '0.0.0.0',
-                  os: {
-                    name: 'Android',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: 'Android', version: '' },
+                  screen: { density: 2 },
                   device: {
                     id: 'f54bb572361c4fd1',
                     name: 'whyred',
@@ -77,10 +67,7 @@ export const data = [
                   msgemail: true,
                   msgwhatsapp: false,
                   custom_tags: ['Test_User', 'Interested_User', 'DIY_Hobby'],
-                  custom_mappings: {
-                    Office: 'Trastkiv',
-                    Country: 'Russia',
-                  },
+                  custom_mappings: { Office: 'Trastkiv', Country: 'Russia' },
                   address: {
                     city: 'kolkata',
                     country: 'India',
@@ -89,9 +76,7 @@ export const data = [
                     street: '',
                   },
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
             },
@@ -104,15 +89,10 @@ export const data = [
                   enableObjectIdMapping: true,
                 },
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               message: {
                 event: 'Random',
-                properties: {
-                  country_region: 'India',
-                  test: 'abc',
-                },
+                properties: { country_region: 'India', test: 'abc' },
                 receivedAt: '2021-08-20T12:49:07.691Z',
                 rudderId: '138c4214-b537-4f77-9dea-9abde70b5147',
                 type: 'track',
@@ -127,23 +107,13 @@ export const data = [
                   trackAnonymous: true,
                 },
               },
-              metadata: {
-                jobId: 3,
-              },
+              metadata: { jobId: 3, userId: 'u1' },
               message: {
                 type: 'group',
                 anonymousId: 'anon-id-new',
                 name: 'Rudder',
-                properties: {
-                  title: 'Home',
-                  path: '/',
-                },
-                context: {
-                  ip: '14.5.67.21',
-                  library: {
-                    name: 'http',
-                  },
-                },
+                properties: { title: 'Home', path: '/' },
+                context: { ip: '14.5.67.21', library: { name: 'http' } },
                 timestamp: '2020-02-02T00:23:09.544Z',
               },
             },
@@ -209,10 +179,7 @@ export const data = [
                       },
                       {
                         evtName: 'Random',
-                        evtData: {
-                          country_region: 'India',
-                          test: 'abc',
-                        },
+                        evtData: { country_region: 'India', test: 'abc' },
                         type: 'event',
                         objectId: 'cd3a4439-7df0-4475-acb9-6659c7c4dfe3',
                       },
@@ -225,12 +192,8 @@ export const data = [
                 files: {},
               },
               metadata: [
-                {
-                  jobId: 1,
-                },
-                {
-                  jobId: 2,
-                },
+                { jobId: 1, userId: 'u1' },
+                { jobId: 2, userId: 'u1' },
               ],
               batched: false,
               statusCode: 200,
@@ -244,11 +207,7 @@ export const data = [
               },
             },
             {
-              metadata: [
-                {
-                  jobId: 3,
-                },
-              ],
+              metadata: [{ jobId: 3, userId: 'u1' }],
               batched: false,
               statusCode: 400,
               error: 'Message type not supported',

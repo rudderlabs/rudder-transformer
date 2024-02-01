@@ -23,14 +23,12 @@ describe(`Network Handler Tests`, () => {
   it('Should return v0 handler if v1 version and handler is present for destination in v0', () => {
     const { networkHandler, handlerVersion } = getNetworkHandler('braze', `v1`);
     const brazeProxy = require(`../v0/destinations/braze/networkHandler`).networkHandler;
-    console.log(networkHandler);
     expect(networkHandler).toEqual(new brazeProxy());
   });
 
   it('Should return generic handler', () => {
     const { networkHandler, handlerVersion } = getNetworkHandler('abc', `v1`);
     const brazeProxy = require(`../v0/destinations/braze/networkHandler`).networkHandler;
-    console.log(networkHandler);
     expect(networkHandler).toEqual(new GenericNetworkHandler());
   });
 });

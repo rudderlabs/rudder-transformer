@@ -6,6 +6,7 @@ const {
   getSuccessRespEvents,
   removeUndefinedAndNullValues,
   handleRtTfSingleEventError,
+  isEmptyObject,
 } = require('../../../../v0/util');
 const { getTTLInMin, getFirstPartyEndpoint } = require('./utils');
 const tradeDeskConfig = require('./config');
@@ -55,33 +56,43 @@ const processRecordInputs = (inputs, destination) => {
     return errorResponses;
   }
 
-  const error = new InstrumentationError('Invalid action type');
+  const invalidActionTypeError = new InstrumentationError('Invalid action type');
+  const emptyFieldsError = new InstrumentationError('Fields cannot be empty');
   inputs.forEach((input) => {
     const { fields, action } = input.message;
     const isInsertOrDelete = action === 'insert' || action === 'delete';
 
-    if (isInsertOrDelete) {
-      successMetadata.push(input.metadata);
-      const data = [
-        {
-          Name: Config.audienceId,
-          TTLInMinutes: action === 'insert' ? getTTLInMin(Config.ttlInDays) : 0,
-        },
-      ];
-
-      Object.keys(fields).forEach((id) => {
-        const value = fields[id];
-        if (value) {
-          // adding only non empty ID's
-          items.push({ [id]: value, Data: data });
-        }
-      });
-    } else {
-      errorResponseList.push(handleRtTfSingleEventError(input, error, {}));
+    if (!isInsertOrDelete) {
+      errorResponseList.push(handleRtTfSingleEventError(input, invalidActionTypeError, {}));
+      return;
     }
+
+    if (isEmptyObject(fields)) {
+      errorResponseList.push(handleRtTfSingleEventError(input, emptyFieldsError, {}));
+      return;
+    }
+
+    successMetadata.push(input.metadata);
+    const data = [
+      {
+        Name: Config.audienceId,
+        TTLInMinutes: action === 'insert' ? getTTLInMin(Config.ttlInDays) : 0,
+      },
+    ];
+
+    Object.keys(fields).forEach((id) => {
+      const value = fields[id];
+      if (value) {
+        // adding only non empty ID's
+        items.push({ [id]: value, Data: data });
+      }
+    });
   });
 
   const payloads = batchResponseBuilder(items, Config);
+  if (payloads.length === 0) {
+    return errorResponseList;
+  }
 
   const response = getSuccessRespEvents(payloads, successMetadata, destination, true);
   return [response, ...errorResponseList];

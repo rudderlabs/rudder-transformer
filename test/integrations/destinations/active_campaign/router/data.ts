@@ -18,9 +18,7 @@ export const data = [
                   eventKey: 'f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03',
                 },
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               message: {
                 channel: 'web',
                 context: {
@@ -30,21 +28,13 @@ export const data = [
                     namespace: 'com.rudderlabs.javascript',
                     version: '1.0.0',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-US',
                   ip: '0.0.0.0',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                 },
                 messageId: '84e26acc-56a5-4835-8233-591137fca468',
                 session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
@@ -66,18 +56,9 @@ export const data = [
                     Random: 'random',
                   },
                   lists: [
-                    {
-                      id: 2,
-                      status: 'subscribe',
-                    },
-                    {
-                      id: 3,
-                      status: 'unsubscribe',
-                    },
-                    {
-                      id: 3,
-                      status: 'unsubscribexyz',
-                    },
+                    { id: 2, status: 'subscribe' },
+                    { id: 3, status: 'unsubscribe' },
+                    { id: 3, status: 'unsubscribexyz' },
                   ],
                   address: {
                     city: 'kolkata',
@@ -87,9 +68,7 @@ export const data = [
                     street: '',
                   },
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
             },
@@ -117,22 +96,10 @@ export const data = [
                       lastName: 'Doe',
                       phone: '92374162212',
                       fieldValues: [
-                        {
-                          field: '0',
-                          value: 'Trastkiv',
-                        },
-                        {
-                          field: '1',
-                          value: 'Russia',
-                        },
-                        {
-                          field: '3',
-                          value: '||Potato||Onion||',
-                        },
-                        {
-                          field: '4',
-                          value: 'random',
-                        },
+                        { field: '0', value: 'Trastkiv' },
+                        { field: '1', value: 'Russia' },
+                        { field: '3', value: '||Potato||Onion||' },
+                        { field: '4', value: 'random' },
                       ],
                     },
                   },
@@ -141,18 +108,11 @@ export const data = [
                 files: {},
                 method: 'POST',
                 params: {},
-                headers: {
-                  'Api-Token': 'dummyApiToken',
-                  'Content-Type': 'application/json',
-                },
+                headers: { 'Api-Token': 'dummyApiToken', 'Content-Type': 'application/json' },
                 version: '1',
                 endpoint: 'https://active.campaigns.rudder.com/api/3/contact/sync',
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -188,9 +148,7 @@ export const data = [
                   eventKey: 'f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03',
                 },
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               message: {
                 channel: 'web',
                 context: {
@@ -200,24 +158,13 @@ export const data = [
                     namespace: 'com.rudderlabs.javascript',
                     version: '1.0.0',
                   },
-                  traits: {
-                    email: 'jamesDoe@gmail.com',
-                    anonymousId: '12345',
-                  },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  traits: { email: 'jamesDoe@gmail.com', anonymousId: '12345' },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-US',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                 },
                 request_ip: '1.1.1.1',
                 type: 'page',
@@ -234,9 +181,7 @@ export const data = [
                   title: 'Test Page',
                   url: 'https://www.rudderlabs.com',
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 sentAt: '2019-10-14T11:15:53.296Z',
               },
             },
@@ -257,28 +202,17 @@ export const data = [
                   XML: {},
                   FORM: {},
                   JSON_ARRAY: {},
-                  JSON: {
-                    siteTrackingDomain: {
-                      name: 'rudderlabs.com',
-                    },
-                  },
+                  JSON: { siteTrackingDomain: { name: 'rudderlabs.com' } },
                 },
                 type: 'REST',
                 files: {},
                 method: 'POST',
                 params: {},
-                headers: {
-                  'Api-Token': 'dummyApiToken',
-                  'Content-Type': 'application/json',
-                },
+                headers: { 'Api-Token': 'dummyApiToken', 'Content-Type': 'application/json' },
                 version: '1',
                 endpoint: 'https://active.campaigns.rudder.com/api/3/siteTrackingDomains',
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -312,10 +246,7 @@ export const data = [
                 sentAt: '2023-01-10T22:31:10.954Z',
                 channel: 'web',
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -342,10 +273,7 @@ export const data = [
                     innerHeight: 782,
                   },
                   traits: {},
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '2.20.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '2.20.0' },
                   campaign: {},
                   sessionId: 1673389635049,
                   userAgent:
@@ -369,9 +297,7 @@ export const data = [
                 receivedAt: '2023-01-10T22:31:11.612Z',
                 request_ip: '0.0.0.20',
                 anonymousId: '878e8f5f-9b6c-4aef-b5d3-1b970a13f17a',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 originalTimestamp: '2023-01-10T22:31:10.943Z',
               },
               destination: {
@@ -382,9 +308,7 @@ export const data = [
                   eventKey: 'f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03',
                 },
               },
-              metadata: {
-                jobId: 5,
-              },
+              metadata: { jobId: 5, userId: 'u1' },
             },
           ],
           destType: 'active_campaign',
@@ -408,11 +332,7 @@ export const data = [
                 module: 'destination',
               },
               statusCode: 400,
-              metadata: [
-                {
-                  jobId: 5,
-                },
-              ],
+              metadata: [{ jobId: 5, userId: 'u1' }],
               batched: false,
               destination: {
                 Config: {

@@ -196,7 +196,6 @@ describe('getRearrangedEvents', () => {
       ],
     ];
     const result = getRearrangedEvents(successEventslist, errorEventsList);
-    console.log(JSON.stringify(result));
     expect(result).toEqual(expected);
   });
 
@@ -261,7 +260,6 @@ describe('getRearrangedEvents', () => {
       ],
     ];
     const result = getRearrangedEvents(successEventslist, errorEventsList);
-    console.log(JSON.stringify(result));
     expect(result).toEqual(expected);
   });
 });

@@ -46,6 +46,10 @@ const processRecordInputs = (inputs, destination) => {
   const successMetadata = [];
   const errorResponseList = [];
 
+  if (!inputs || inputs.length === 0) {
+    return [];
+  }
+
   if (!Config.audienceId) {
     const segmentNameError = new ConfigurationError(
       'Segment name/Audience ID is not present. Aborting',

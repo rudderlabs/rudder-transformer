@@ -83,6 +83,9 @@ const processEvent = (message, destination) => {
 const process = (event) => processEvent(event.message, event.destination);
 
 const processConversionInputs = async (inputs, reqMetadata) => {
+  if (!inputs || inputs.length === 0) {
+    return [];
+  }
   const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };

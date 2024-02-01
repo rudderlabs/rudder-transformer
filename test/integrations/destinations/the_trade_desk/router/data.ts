@@ -1751,21 +1751,6 @@ export const data = [
               destination: sampleDestination,
             },
             {
-              batched: false,
-              metadata: [{ jobId: 3 }],
-              statusCode: 400,
-              error: 'Event type "identify" is not supported',
-              statTags: {
-                errorCategory: 'dataValidation',
-                errorType: 'instrumentation',
-                destType: 'THE_TRADE_DESK',
-                module: 'destination',
-                implementation: 'cdkV2',
-                feature: 'router',
-              },
-              destination: sampleDestination,
-            },
-            {
               batchedRequest: {
                 version: '1',
                 type: 'REST',
@@ -1801,6 +1786,21 @@ export const data = [
               ],
               batched: false,
               statusCode: 200,
+              destination: sampleDestination,
+            },
+            {
+              batched: false,
+              metadata: [{ jobId: 3 }],
+              statusCode: 400,
+              error: 'Event type identify is not supported',
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                destType: 'THE_TRADE_DESK',
+                module: 'destination',
+                implementation: 'cdkV2',
+                feature: 'router',
+              },
               destination: sampleDestination,
             },
           ],

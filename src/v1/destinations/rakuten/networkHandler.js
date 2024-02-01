@@ -1,8 +1,4 @@
-const {
-  NetworkError,
-  InstrumentationError,
-  ConfigurationError,
-} = require('@rudderstack/integrations-lib');
+const { TransformerProxyError } = require('../../../v0/util/errorTypes');
 const { httpSend } = require('../../../adapters/network');
 const {
   processAxiosResponse,
@@ -10,8 +6,8 @@ const {
 } = require('../../../adapters/utils/networkUtils');
 
 const DESTINATION = 'RAKUTEN';
-const { TAG_NAMES } = require('../../util/tags');
-const { HTTP_STATUS_CODES } = require('../../util/constant');
+const { TAG_NAMES } = require('../../../v0/util/tags');
+const { HTTP_STATUS_CODES } = require('../../../v0/util/constant');
 
 const prepareProxyRequest = (request) => request;
 const proxyRequest = async (request, destType) => {
@@ -36,9 +32,9 @@ const responseHandler = (destinationResponse) => {
   const msg = `[${DESTINATION} Response Handler] - Request Processed Successfully`;
   const { response, status } = destinationResponse;
   if (status === 400) {
-    throw new ConfigurationError(
+    throw new TransformerProxyError(
       `Request failed with status: ${status} due to invalid Marketing Id`,
-      status,
+      400,
       {
         [TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
       },
@@ -51,9 +47,9 @@ const responseHandler = (destinationResponse) => {
 
   // For access denied for a mid rakuten sends status code 200 with response as <response> <error> Access denied </error> </response>
   if (errors) {
-    throw new ConfigurationError(
+    throw new TransformerProxyError(
       `Request failed with status: ${status} due to ${errors}. Can you try to enable pixel tracking for this mid.`,
-      status,
+      400,
       {
         // status would be 200 but since no error type for this status code hence it will take it as aborted
         [TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
@@ -62,9 +58,9 @@ const responseHandler = (destinationResponse) => {
     );
   }
   if (parseInt(badRecords, 10)) {
-    throw new InstrumentationError(
+    throw new TransformerProxyError(
       `Request failed with status: ${status} with number of bad records ${badRecords}`,
-      status,
+      400,
       {
         // status would be 200 but since no error type for this status code hence it will take it as aborted
         [TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
@@ -76,7 +72,7 @@ const responseHandler = (destinationResponse) => {
   neither we have any sample response but just in case if we recoeve non 2xx status
   */
   if (status !== 200) {
-    throw new NetworkError(
+    throw new TransformerProxyError(
       `Request failed with status: ${status}`,
       status,
       {

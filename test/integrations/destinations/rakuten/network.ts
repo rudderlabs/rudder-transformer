@@ -1,5 +1,6 @@
 export const networkCallsData = [
   {
+    description: 'When mid is invalid',
     httpReq: {
       url: 'https://track.linksynergy.com/ep',
       params: {
@@ -23,6 +24,7 @@ export const networkCallsData = [
     },
   },
   {
+    description: 'When mid is valid but there is no access',
     httpReq: {
       url: 'https://track.linksynergy.com/ep',
       params: {
@@ -46,6 +48,7 @@ export const networkCallsData = [
     },
   },
   {
+    description: 'When record along with mid is valid',
     httpReq: {
       url: 'https://track.linksynergy.com/ep',
       params: {
@@ -65,10 +68,11 @@ export const networkCallsData = [
     },
     httpRes: {
       status: 200,
-      data: '<response><unique_id>143407391431</unique_id><summary><transactions><good>3</good><bad>0</bad></transactions></summary></response>',
+      data: '<response><unique_id>uniqueId</unique_id><summary><transactions><good>3</good><bad>0</bad></transactions></summary></response>',
     },
   },
   {
+    description: 'When records are invalid and mid is valid',
     httpReq: {
       url: 'https://track.linksynergy.com/ep',
       params: {
@@ -88,7 +92,7 @@ export const networkCallsData = [
     },
     httpRes: {
       status: 200,
-      data: '<response><unique_id>143407391431</unique_id><summary><transactions><good>0</good><bad>3</bad></transactions></summary></response>',
+      data: '<response><unique_id>uniqueId</unique_id><summary><transactions><good>0</good><bad>3</bad></transactions></summary></response>',
     },
   },
 ];

@@ -13,7 +13,8 @@ export const data = [
     description: 'Test 0: Failure response from rakuten for invalid mid',
     feature: 'dataDelivery',
     module: 'destination',
-    version: 'v0',
+    scenario: 'Framework',
+    version: 'v1',
     input: {
       request: {
         body: {
@@ -25,6 +26,16 @@ export const data = [
             ...commonParams,
           },
           userId: '',
+          metadata: [
+            {
+              jobId: 2,
+              attemptNum: 0,
+              userId: '',
+              sourceId: 'dummySourceId',
+              destinationId: 'dummyDestId',
+              workspaceId: 'dummyWorkspaceId',
+            },
+          ],
         },
       },
     },
@@ -32,16 +43,30 @@ export const data = [
       response: {
         status: 400,
         statTags: {
-          errorCategory: 'dataValidation',
+          errorCategory: 'network',
           errorType: 'configuration',
           destType: 'RAKUTEN',
           module: 'destination',
           implementation: 'native',
           feature: 'dataDelivery',
-          destinationId: 'Non-determininable',
-          workspaceId: 'Non-determininable',
+          destinationId: 'dummyDestId',
+          workspaceId: 'dummyWorkspaceId',
         },
-        destinationResponse: '',
+        destinationResponse: {
+          response:
+            '<!doctype html><html lang="en"><head><title>HTTP Status 400 – Bad Request</title><style type="text/css">h1 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:22px;} h2 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:16px;} h3 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:14px;} body {font-family:Tahoma,Arial,sans-serif;color:black;background-color:white;} b {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;} p {font-family:Tahoma,Arial,sans-serif;background:white;color:black;font-size:12px;} a {color:black;} a.name {color:black;} .line {height:1px;background-color:#525D76;border:none;}</style></head><body><h1>HTTP Status 400 – Bad Request</h1></body></html>',
+          status: 400,
+          rudderJobMetadata: [
+            {
+              jobId: 2,
+              attemptNum: 0,
+              userId: '',
+              sourceId: 'dummySourceId',
+              destinationId: 'dummyDestId',
+              workspaceId: 'dummyWorkspaceId',
+            },
+          ],
+        },
         authErrorCategory: '',
         message: 'Request failed with status: 400 due to invalid Marketing Id',
       },
@@ -51,8 +76,9 @@ export const data = [
     name: 'rakuten',
     description: 'Test 1: Failure response from rakuten for access denied for rakuten mid',
     feature: 'dataDelivery',
+    scenario: 'Framework',
     module: 'destination',
-    version: 'v0',
+    version: 'v1',
     input: {
       request: {
         body: {
@@ -64,6 +90,16 @@ export const data = [
             ...commonParams,
           },
           userId: '',
+          metadata: [
+            {
+              jobId: 2,
+              attemptNum: 0,
+              userId: '',
+              sourceId: 'dummySourceId',
+              destinationId: 'dummyDestId',
+              workspaceId: 'dummyWorkspaceId',
+            },
+          ],
         },
       },
     },
@@ -71,16 +107,29 @@ export const data = [
       response: {
         status: 400,
         statTags: {
-          errorCategory: 'dataValidation',
+          errorCategory: 'network',
           errorType: 'configuration',
           destType: 'RAKUTEN',
           module: 'destination',
           implementation: 'native',
           feature: 'dataDelivery',
-          destinationId: 'Non-determininable',
-          workspaceId: 'Non-determininable',
+          destinationId: 'dummyDestId',
+          workspaceId: 'dummyWorkspaceId',
         },
-        destinationResponse: '',
+        destinationResponse: {
+          response: '<response><error>Access denied</error></response>',
+          status: 200,
+          rudderJobMetadata: [
+            {
+              jobId: 2,
+              attemptNum: 0,
+              userId: '',
+              sourceId: 'dummySourceId',
+              destinationId: 'dummyDestId',
+              workspaceId: 'dummyWorkspaceId',
+            },
+          ],
+        },
         authErrorCategory: '',
         message:
           'Request failed with status: 200 due to Access denied. Can you try to enable pixel tracking for this mid.',
@@ -91,8 +140,9 @@ export const data = [
     name: 'rakuten',
     description: 'Test 2: Failure response from rakuten for bad records>0',
     feature: 'dataDelivery',
+    scenario: 'Framework',
     module: 'destination',
-    version: 'v0',
+    version: 'v1',
     input: {
       request: {
         body: {
@@ -104,6 +154,16 @@ export const data = [
             ...commonParams,
           },
           userId: '',
+          metadata: [
+            {
+              jobId: 2,
+              attemptNum: 0,
+              userId: '',
+              sourceId: 'dummySourceId',
+              destinationId: 'dummyDestId',
+              workspaceId: 'dummyWorkspaceId',
+            },
+          ],
         },
       },
     },
@@ -111,16 +171,30 @@ export const data = [
       response: {
         status: 400,
         statTags: {
-          errorCategory: 'dataValidation',
-          errorType: 'instrumentation',
+          errorCategory: 'network',
+          errorType: 'aborted',
           destType: 'RAKUTEN',
           module: 'destination',
           implementation: 'native',
           feature: 'dataDelivery',
-          destinationId: 'Non-determininable',
-          workspaceId: 'Non-determininable',
+          destinationId: 'dummyDestId',
+          workspaceId: 'dummyWorkspaceId',
         },
-        destinationResponse: '',
+        destinationResponse: {
+          response:
+            '<response><unique_id>143407391431</unique_id><summary><transactions><good>0</good><bad>3</bad></transactions></summary></response>',
+          status: 200,
+          rudderJobMetadata: [
+            {
+              jobId: 2,
+              attemptNum: 0,
+              userId: '',
+              sourceId: 'dummySourceId',
+              destinationId: 'dummyDestId',
+              workspaceId: 'dummyWorkspaceId',
+            },
+          ],
+        },
         authErrorCategory: '',
         message: 'Request failed with status: 200 with number of bad records 3',
       },
@@ -130,8 +204,9 @@ export const data = [
     name: 'rakuten',
     description: 'Test 3: Success response from rakuten with good records > 0',
     feature: 'dataDelivery',
+    scenario: 'Framework',
     module: 'destination',
-    version: 'v0',
+    version: 'v1',
     input: {
       request: {
         body: {
@@ -143,6 +218,16 @@ export const data = [
             ...commonParams,
           },
           userId: '',
+          metadata: [
+            {
+              jobId: 2,
+              attemptNum: 0,
+              userId: '',
+              sourceId: 'dummySourceId',
+              destinationId: 'dummyDestId',
+              workspaceId: 'dummyWorkspaceId',
+            },
+          ],
         },
       },
     },
@@ -150,7 +235,7 @@ export const data = [
       response: {
         status: 200,
         destinationResponse:
-          '<response><unique_id>143407391431</unique_id><summary><transactions><good>3</good><bad>0</bad></transactions></summary></response>',
+          '<response><unique_id>uniqueId</unique_id><summary><transactions><good>3</good><bad>0</bad></transactions></summary></response>',
         message: '[RAKUTEN Response Handler] - Request Processed Successfully',
       },
     },

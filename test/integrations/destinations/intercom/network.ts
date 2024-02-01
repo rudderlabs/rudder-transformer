@@ -165,7 +165,7 @@ const deleteNwData = [
   {
     httpReq: {
       method: 'post',
-      url: 'https://api.intercom.io/contacts/search',
+      url: 'https://api.eu.intercom.io/contacts/search',
       data: {
         query: {
           operator: 'AND',
@@ -309,7 +309,7 @@ const deleteNwData = [
   {
     httpReq: {
       method: 'post',
-      url: 'https://api.intercom.io/companies',
+      url: 'https://api.eu.intercom.io/companies',
       data: {
         company_id: 'rudderlabs',
         name: 'RudderStack',
@@ -344,7 +344,7 @@ const deleteNwData = [
   {
     httpReq: {
       method: 'post',
-      url: 'https://api.intercom.io/companies',
+      url: 'https://api.eu.intercom.io/companies',
       data: {
         company_id: 'rudderlabs',
         name: 'RudderStack',

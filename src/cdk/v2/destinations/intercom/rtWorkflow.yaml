@@ -1,6 +1,8 @@
 bindings:
   - name: handleRtTfSingleEventError
     path: ../../../../v0/util/index
+  - name: isDefinedAndNotNull
+    path: ../../../../v0/util
 
 steps:
   - name: validateInput
@@ -14,8 +16,8 @@ steps:
 
   - name: successfulEvents
     template: |
-      $.outputs.transform#idx.output.({
-        "batchedRequest": .,
+      $.outputs.transform#idx{$.isDefinedAndNotNull(.output)}.({
+        "batchedRequest": .output,
         "batched": false,
         "destination": ^[idx].destination,
         "metadata": ^[idx].metadata[],

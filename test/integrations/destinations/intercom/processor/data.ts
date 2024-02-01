@@ -964,7 +964,7 @@ export const data = [
               Config: {
                 apiKey: 'testApiKey',
                 apiVersion: 'latest',
-                apiServer: 'standard',
+                apiServer: 'eu',
                 sendAnonymousId: false,
               },
             },
@@ -990,7 +990,7 @@ export const data = [
                 FORM: {},
                 JSON_ARRAY: {},
               },
-              endpoint: 'https://api.intercom.io/contacts/70701240741e45d040/companies',
+              endpoint: 'https://api.eu.intercom.io/contacts/70701240741e45d040/companies',
               headers: {
                 Accept: 'application/json',
                 Authorization: 'Bearer testApiKey',

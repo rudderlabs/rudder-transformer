@@ -55,7 +55,15 @@ export const data = [
           output: {
             status: 400,
             message: 'Invalid OAuth 2.0 access token',
-            destinationResponse: '',
+            destinationResponse: {
+              error: {
+                code: 190,
+                fbtrace_id: 'fbpixel_trace_id',
+                message: 'The access token could not be decrypted',
+                type: 'OAuthException',
+              },
+              status: 500,
+            },
             statTags: {
               destType: 'FB',
               errorCategory: 'dataValidation',

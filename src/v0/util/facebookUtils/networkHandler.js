@@ -264,7 +264,7 @@ const errorResponseHandler = (destResponse) => {
     isDefinedAndNotNull(errorStatTags) &&
     errorStatTags?.[TAG_NAMES.ERROR_TYPE] === ERROR_TYPES.AUTH
   ) {
-    throw new ConfigurationAuthError(errorMessage);
+    throw new ConfigurationAuthError(errorMessage, { ...response, status: destResponse.status });
   }
   throw new NetworkError(
     `${errorMessage || error.message || 'Unknown failure during response transformation'}`,

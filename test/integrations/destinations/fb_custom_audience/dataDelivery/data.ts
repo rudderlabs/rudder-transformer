@@ -614,7 +614,17 @@ export const data = [
         status: 400,
         body: {
           output: {
-            destinationResponse: '',
+            destinationResponse: {
+              error: {
+                code: 190,
+                error_subcode: 463,
+                fbtrace_id: 'A3b8C6PpI-kdIOwPwV4PANi',
+                message:
+                  'Error validating access token: Session has expired on Tuesday, 01-Aug-23 10:12:14 PDT. The current time is Sunday, 28-Jan-24 16:01:17 PST.',
+                type: 'OAuthException',
+              },
+              status: 400,
+            },
             message:
               'Error validating access token: Session has expired on Tuesday, 01-Aug-23 10:12:14 PDT. The current time is Sunday, 28-Jan-24 16:01:17 PST.',
             statTags: {

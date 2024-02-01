@@ -1164,7 +1164,7 @@
     ],
     "output": {
       "statusCode": 400,
-      "error": "UserId is not present. Aborting",
+      "error": "UserId is not present",
       "statTags": {
         "errorCategory": "dataValidation",
         "errorType": "instrumentation",

@@ -76,7 +76,7 @@ function process(events) {
   }
   const responses = processEvents(eventList);
   if (responses.length === 0) {
-    throw new InstrumentationError('UserId is not present. Aborting');
+    throw new InstrumentationError('UserId is not present');
   }
   return responses;
 }

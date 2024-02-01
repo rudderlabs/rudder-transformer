@@ -289,6 +289,13 @@ const getPrivacySetting = (message) => {
   return integrationObj?.privacy_settings;
 };
 
+/**
+ * Enriches the track payload with extra properties present in 'properties' other than the ones defined in TTDCommonConfig.json and TTDItemConfig.json
+ *
+ * @param {Object} message - The message object containing the event information.
+ * @param {Object} payload - The payload object to be enriched.
+ * @returns {Object} - The enriched payload object.
+ */
 const enrichTrackPayload = (message, payload) => {
   let rawPayload = { ...payload };
   const eventsMapInfo = ECOMM_EVENT_MAP[message.event.toLowerCase()];

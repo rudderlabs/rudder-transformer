@@ -149,6 +149,7 @@ const DestCanonicalNames = {
     'thetradedesk',
     'theTradeDesk',
     'TheTradeDesk',
+    'the trade desk',
   ],
 };
 

@@ -39,7 +39,7 @@ const validateInput = (message) => {
   }
 
   if (!message.event) {
-    throw new InstrumentationError('Event is not present. Aborting.');
+    throw new InstrumentationError('Event name is not present. Aborting.');
   }
 };
 

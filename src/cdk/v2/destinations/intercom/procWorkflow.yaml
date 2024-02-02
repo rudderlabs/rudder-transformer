@@ -115,7 +115,10 @@ steps:
       
       - name: finalPayload
         template: |
-          $.context = $.outputs.versionWorkflows.v1 ?? $.outputs.versionWorkflows.v2
+          const finalOutput = $.outputs.versionWorkflows.v1 ?? $.outputs.versionWorkflows.v2
+          $.context.requestMethod = finalOutput.requestMethod;
+          $.context.payload = finalOutput.payload;
+          $.context.endpoint = finalOutput.endpoint;
 
   - name: buildResponseForProcessTransformation
     description: Build response for multiple transformed event

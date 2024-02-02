@@ -506,13 +506,7 @@ const extractIDsForSearchAPI = (inputs) => {
  * @param {*} destination
  * @returns
  */
-const performHubSpotSearch = async (
-  rqdata,
-  requestOptions,
-  objectType,
-  identifierType,
-  destination,
-) => {
+const performHubSpotSearch = async (rqdata, rqOptions, objectType, identifierType, destination) => {
   let checkAfter = 1;
   const searchResults = [];
   const requestData = rqdata;
@@ -526,29 +520,20 @@ const performHubSpotSearch = async (
       ? endpoint
       : `${endpoint}?hapikey=${Config.apiKey}`;
 
+  const requestOptions = Config.authorizationType === 'newPrivateAppApi' ? rqOptions : {};
+
   /* *
    * This is needed for processing paginated response when searching hubspot.
    * we can't avoid await in loop as response to the request contains the pagination details
    * */
 
   while (checkAfter) {
-    const searchResponse =
-      Config.authorizationType === 'newPrivateAppApi'
-        ? await httpPOST(url, requestData, requestOptions, {
-            destType: 'hs',
-            feature: 'transformation',
-            endpointPath,
-          })
-        : await httpPOST(
-            url,
-            requestData,
-            {},
-            {
-              destType: 'hs',
-              feature: 'transformation',
-              endpointPath,
-            },
-          );
+    const searchResponse = await httpPOST(url, requestData, requestOptions, {
+      destType: 'hs',
+      feature: 'transformation',
+      endpointPath,
+    });
+
     const processedResponse = processAxiosResponse(searchResponse);
 
     if (processedResponse.status !== 200) {

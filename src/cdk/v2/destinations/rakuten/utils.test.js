@@ -97,7 +97,7 @@ describe('constructLineItems', () => {
         },
       ],
     };
-    expect(() => constructLineItems(properties)).toThrow('quantity is required field. Aborting');
+    expect(() => constructLineItems(properties)).toThrow('quantity is a required field. Aborting');
   });
   it('should throw an InstrumentationError when a product is missing both amount and price properties', () => {
     const properties = {

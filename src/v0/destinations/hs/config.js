@@ -37,7 +37,7 @@ const IDENTIFY_CRM_UPDATE_CONTACT = `${BASE_ENDPOINT}/crm/v3/objects/contacts/:c
 const BATCH_IDENTIFY_CRM_CREATE_NEW_CONTACT = `${BASE_ENDPOINT}/crm/v3/objects/contacts/batch/create`;
 const BATCH_IDENTIFY_CRM_UPDATE_CONTACT = `${BASE_ENDPOINT}/crm/v3/objects/contacts/batch/update`;
 // Ref - https://developers.hubspot.com/docs/api/crm/contacts#endpoint?spec=GET-/crm/v3/objects/contacts
-const MAX_BATCH_SIZE_CRM_CONTACT = 10;
+const MAX_BATCH_SIZE_CRM_CONTACT = 100;
 
 // Track
 // Ref - https://developers.hubspot.com/docs/api/analytics/events

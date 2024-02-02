@@ -247,9 +247,7 @@ const getStatus = (error) => {
     errorMessage = get(error, errorDetail?.messageDetails?.field);
   }
 
-  const stats = errorDetail?.stat;
-
-  return { status: errorStatus, errorMessage, stats };
+  return { status: errorStatus, errorMessage, stats: errorDetail?.stat };
 };
 
 const errorResponseHandler = (destResponse) => {

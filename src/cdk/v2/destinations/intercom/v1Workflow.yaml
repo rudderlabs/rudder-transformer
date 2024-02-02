@@ -1,0 +1,81 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ./utils
+    exportAll: true
+  - path: ../../bindings/jsontemplate
+    exportAll: true
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+  - name: getFieldValueFromMessage
+    path: ../../../../v0/util
+
+steps:
+  - name: messageType
+    template: .message.type.toLowerCase()
+
+  - name: searchContact
+      condition: $.outputs.messageType in [{{$.EventType.IDENTIFY}}, {{$.EventType.GROUP}}]
+      template: |
+        await $.searchContact(.message, .destination)
+
+  - name: identifyWorkflow
+    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
+    steps:
+      - name: streamingPayload
+        condition: "!$.rETLPayload"
+        template: |
+          const payload = .message.({
+            user_id: {{{{$.getGenericPaths("userIdOnly")}}}},
+            email: {{{{$.getGenericPaths("email")}}}},
+            phone: {{{{$.getGenericPaths("phone")}}}},
+            signed_up_at: $.toSeconds(.traits.createdAt || .context.traits.createdAt),
+            last_seen_user_agent: .context.userAgent,
+          });
+          !(payload.user_id) && .destination.Config.sendAnonymousId ? payload.user_id = .message.anonymousId;
+          payload;
+
+      - name: finalPayload
+        template: |
+          let payload = .message.context.mappedToDestination ? $.outputs.rEtlPayload : $.outputs.identifyTransformationForOlderVersion;
+          payload = {
+          ...payload,
+          name : $.getName(.message),
+          custom_attributes : .message.traits || .message.context.traits || {},
+          update_last_request_at: typeof .destination.Config.updateLastRequestAt === 'boolean' ? .destination.Config.updateLastRequestAt : true
+          }
+          payload.companies = $.getCompaniesList(payload);
+          payload.custom_attributes = !.message.context.mappedToDestination ? $.filterCustomAttributes(payload, "user", .destination);
+          payload.user_id = !payload.user_id && .destination.Config.sendAnonymousId && .message.anonymousId ? .message.anonymousId : payload.user_id;
+          $.context.payload = payload;
+          $.assert($.context.payload.user_id || $.context.payload.email, "Either of `email` or `userId` is required for Identify call");
+          $.context.requestMethod = 'POST';
+          $.context.endpoint = $.getBaseEndpoint(.destination) + "/" + "users";
+          $.context.payload = $.removeUndefinedAndNullValues($.context.payload);
+  
+  - name: groupFinalPayload
+    condition: $.outputs.messageType === {{$.EventType.GROUP}}
+    template: |
+      $.context.response = [];
+      const response = $.defaultRequestConfig();
+      let payload = $.groupTransformPayload
+      payload = {
+        ...payload,
+        custom_attributes : $.getFieldValueFromMessage(.message, "traits") || {}
+      }
+      payload.custom_attributes = $.filterCustomAttributes(payload, "company", .destination);
+      response.body.JSON = $.removeUndefinedAndNullValues(payload);
+      response.endpoint = $.getBaseEndpoint(.destination) + "/" + "companies";
+      response.headers = $.getHeaders(.destination, $.outputs.apiVersion);
+      response.method = "POST";
+      response.userId = .message.anonymousId;
+      $.context.response.push(response);
+      const attachUserAndCompanyResponse = $.attachUserAndCompany(.message, .destination.Config);
+      attachUserAndCompanyResponse ? attachUserAndCompanyResponse.userId = .message.anonymousId;
+      attachUserAndCompanyResponse ? $.context.response.push(attachUserAndCompanyResponse);
+
+  - name: finalPayload
+    template: |
+      $.context

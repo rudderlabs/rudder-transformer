@@ -1,0 +1,90 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ./utils
+    exportAll: true
+  - path: ../../bindings/jsontemplate
+    exportAll: true
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+  - name: isDefinedAndNotNull
+    path: ../../../../v0/util
+
+steps:
+  - name: messageType
+    template: .message.type.toLowerCase()
+
+  - name: searchContact
+      condition: $.outputs.messageType in [{{$.EventType.IDENTIFY}}, {{$.EventType.GROUP}}]
+      template: |
+        await $.searchContact(.message, .destination)
+
+  - name: identifyWorkflow
+    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
+    steps:
+      - name: streamingPayload
+        condition: "!$.rETLPayload"
+        template: |
+          const payload = .message.({
+                external_id: {{{{$.getGenericPaths("userIdOnly")}}}},
+                email: {{{{$.getGenericPaths("email")}}}},
+                phone: {{{{$.getGenericPaths("phone")}}}},
+                avatar: {{{{$.getGenericPaths("avatar")}}}},
+                last_seen_at: $.toSeconds(.context.traits.lastSeenAt),
+                role: .traits.role || .context.traits.role,
+                signed_up_at: $.toSeconds(.traits.createdAt || .context.traits.createdAt),
+                owner_id: Number(.traits.ownerId || .context.traits.ownerId) || undefined,
+                unsubscribed_from_emails: .traits.unsubscribedFromEmails || .context.traits.unsubscribedFromEmails
+              });
+          !(payload.external_id) && .destination.Config.sendAnonymousId ? payload.external_id = .message.anonymousId;
+          payload;
+
+      - name: finalPayload
+        template: |
+          const payload = $.rEtlPayload ?? $.outputs.identifyWorkflow.streamingPayload;
+          payload.name = $.getName(.message);
+          payload.custom_attributes = .message.context.traits || {};
+          payload.custom_attributes = $.filterCustomAttributes(payload, "user", .destination);
+          payload.external_id = !payload.external_id && .destination.Config.sendAnonymousId && .message.anonymousId ? .message.anonymousId : payload.external_id;
+          $.context.payload = payload;
+          $.assert($.context.payload.external_id || $.context.payload.email, "Either email or userId is required for Identify call");
+          const endpoint = $.getBaseEndpoint(.destination) + "/" + "contacts";
+          $.context.requestMethod = $.outputs.searchContact ? 'PUT' : 'POST';
+          $.context.endpoint = $.outputs.searchContact ? endpoint + "/" + $.outputs.searchContact : endpoint;
+          $.context.payload = $.removeUndefinedAndNullValues($.context.payload);
+
+  - name: groupWorkflow
+    condition: $.outputs.messageType === {{$.EventType.GROUP}}
+    steps:
+      - name: validateMessageAndPreparePayload
+        template: |
+          $.assert(.message.groupId, "groupId is required for group call");
+          const payload = $.groupPayload;
+          payload.custom_attributes = .message.traits || {};
+          payload.custom_attributes = $.filterCustomAttributes(payload, "company", .destination);
+          $.context.payload = payload;
+      - name: whenSearchContactFound
+        condition: $.isDefinedAndNotNull($.outputs.searchContact)
+        template: |
+          const contactId = $.outputs.searchContact;
+          const companyId = await $.createOrUpdateCompany($.context.payload, .destination);
+          $.assert(companyId, "Unable to create or update company");
+          $.context.payload = {
+            id: companyId,
+          };
+          $.context.endpoint = $.getBaseEndpoint(.destination) + "/" + "contacts" + "/" + contactId + "/" + "companies";
+        else:
+          name: whenSearchContactNotFound
+          template: |
+            $.context.endpoint = $.getBaseEndpoint(.destination) + "/" + "companies";
+      - name: prepareFinalPayload
+        template: 
+          $.context.requestMethod = 'POST';
+          $.removeUndefinedAndNullValues($.context.payload);
+
+  - name: finalPayload
+    template: |
+      $.context
+
+  
+  

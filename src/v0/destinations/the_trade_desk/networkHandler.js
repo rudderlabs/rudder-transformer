@@ -8,6 +8,9 @@ const { getSignatureHeader } = require('../../../cdk/v2/destinations/the_trade_d
 const { isHttpStatusSuccess } = require('../../util/index');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const {
+  REAL_TIME_CONVERSION_ENDPOINT,
+} = require('../../../cdk/v2/destinations/the_trade_desk/config');
 
 const proxyRequest = async (request) => {
   const { endpoint, data, method, params, headers, config } = prepareProxyRequest(request);
@@ -17,7 +20,7 @@ const proxyRequest = async (request) => {
   };
 
   // For first party data flow
-  if (!endpoint.includes('realtimeconversion')) {
+  if (endpoint !== REAL_TIME_CONVERSION_ENDPOINT) {
     if (!config?.advertiserSecretKey) {
       throw new PlatformError('Advertiser secret key is missing in destination config. Aborting');
     }

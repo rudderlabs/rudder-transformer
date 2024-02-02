@@ -5,6 +5,7 @@ const ACTION_TYPES = ['insert', 'delete'];
 const DATA_PROVIDER_ID = 'rudderstack';
 
 // ref:- https://partner.thetradedesk.com/v3/portal/data/doc/DataEnvironments
+// api ref:- https://partner.thetradedesk.com/v3/portal/data/doc/post-data-advertiser-external
 const DATA_SERVERS_BASE_ENDPOINTS_MAP = {
   apac: 'https://sin-data.adsrvr.org',
   tokyo: 'https://tok-data.adsrvr.org',
@@ -14,6 +15,7 @@ const DATA_SERVERS_BASE_ENDPOINTS_MAP = {
   china: 'https://data-cn2.adsrvr.cn',
 };
 
+// ref:- https://partner.thetradedesk.com/v3/portal/data/doc/DataConversionEventsApi
 const REAL_TIME_CONVERSION_ENDPOINT = 'https://insight.adsrvr.org/track/realtimeconversion';
 
 const CONVERSION_SUPPORTED_ID_TYPES = [

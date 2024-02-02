@@ -4,10 +4,10 @@ const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
-const DESTINATION = 'RAKUTEN';
 const { TAG_NAMES } = require('../../util/tags');
 const { HTTP_STATUS_CODES } = require('../../util/constant');
 
+const DESTINATION = 'RAKUTEN';
 const prepareProxyRequest = (request) => request;
 const proxyRequest = async (request, destType) => {
   const { endpoint, data, method, params, headers } = prepareProxyRequest(request);
@@ -87,7 +87,6 @@ const responseHandler = (destinationResponse) => {
     destinationResponse,
   };
 };
-
 // eslint-disable-next-line @typescript-eslint/naming-convention
 class networkHandler {
   constructor() {

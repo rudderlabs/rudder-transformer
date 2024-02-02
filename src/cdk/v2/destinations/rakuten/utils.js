@@ -24,27 +24,35 @@ const constructProperties = (message) => {
  * @returns
  */
 const constructLineItems = (properties) => {
-  if (!Array.isArray(properties?.products) || properties?.products.length < 1) {
+  // Validate the existence and non-emptiness of the 'products' array in 'properties'
+  if (!Array.isArray(properties?.products) || properties.products.length === 0) {
     throw new InstrumentationError('Either properties.product is not an array or is empty');
   }
-  const { products } = properties;
-  // beofre constructing the payload we are just validating the products array for sku and quantity
 
+  const { products } = properties;
   const productList = {};
-  // mapping all the properties leaving amount as for amount we need to do some calculations
+
+  // Iterate over product properties to construct the payload
   Object.keys(productProperties).forEach((property) => {
     const propertyKey = productProperties[property];
+
+    // Extract values for the current property from the 'products' array
     const values = products.map((product) =>
       isDefinedAndNotNull(product?.[propertyKey]) ? product[propertyKey] : '',
     );
+
+    // Validate if a required property is missing
     if (requiredProductProperties.includes(property) && values.includes('')) {
-      throw new InstrumentationError(`${propertyKey} is required field. Aborting`);
+      throw new InstrumentationError(`${propertyKey} is a required field. Aborting`);
     }
+
+    // Include property in the payload if values are non-empty
     if (values.some((element) => element !== '')) {
       productList[property] = values.join('|');
     }
   });
-  // mapping amount list
+
+  // Map 'amountList' by evaluating 'amount' or deriving it from 'price' and 'quantity'
   const amountList = products.map((product) => {
     if (!product.amount) {
       if (product?.price) {

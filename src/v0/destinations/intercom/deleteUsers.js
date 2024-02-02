@@ -14,7 +14,7 @@ const userDeletionHandler = async (userAttributes, config) => {
   }
   const { apiKey } = config;
   if (!apiKey) {
-    throw new ConfigurationError('api key for deletion not present');
+    throw new ConfigurationError('The access token is not available');
   }
   const validUserIds = [];
   userAttributes.forEach((userAttribute) => {

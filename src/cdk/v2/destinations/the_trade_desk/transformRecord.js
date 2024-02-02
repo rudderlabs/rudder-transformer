@@ -13,6 +13,20 @@ const tradeDeskConfig = require('./config');
 
 const { DATA_PROVIDER_ID } = tradeDeskConfig;
 
+const validateConfig = (config) => {
+  if (!config.advertiserSecretKey) {
+    throw new ConfigurationError('Advertiser Secret Key is not present. Aborting');
+  }
+
+  if (config.ttlInDays && !(config.ttlInDays >= 0 && config.ttlInDays <= 180)) {
+    throw new ConfigurationError('TTL is out of range. Allowed values are 0 to 180 days');
+  }
+
+  if (!config.audienceId) {
+    throw new ConfigurationError('Segment name/Audience ID is not present. Aborting');
+  }
+};
+
 const responseBuilder = (items, config) => {
   const { advertiserId, dataServer } = config;
 
@@ -50,15 +64,7 @@ const processRecordInputs = (inputs, destination) => {
     return [];
   }
 
-  if (!Config.audienceId) {
-    const segmentNameError = new ConfigurationError(
-      'Segment name/Audience ID is not present. Aborting',
-    );
-    const errorResponses = inputs.map((input) =>
-      handleRtTfSingleEventError(input, segmentNameError, {}),
-    );
-    return errorResponses;
-  }
+  validateConfig(Config);
 
   const invalidActionTypeError = new InstrumentationError(
     'Invalid action type. You can only add or remove IDs from the audience/segment',

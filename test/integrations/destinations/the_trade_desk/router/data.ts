@@ -358,7 +358,10 @@ export const data = [
           output: [
             {
               batched: false,
-              metadata: [{ jobId: 1, userId: 'u1' }],
+              metadata: [
+                { jobId: 1, userId: 'u1' },
+                { jobId: 2, userId: 'u1' },
+              ],
               statusCode: 400,
               error: 'Segment name/Audience ID is not present. Aborting',
               statTags: {
@@ -369,22 +372,6 @@ export const data = [
                 errorCategory: 'dataValidation',
                 errorType: 'configuration',
               },
-              destination: overrideDestination(sampleDestination, { audienceId: '' }),
-            },
-            {
-              batched: false,
-              metadata: [{ jobId: 2, userId: 'u1' }],
-              statusCode: 400,
-              error: 'Segment name/Audience ID is not present. Aborting',
-              statTags: {
-                destType: destTypeInUpperCase,
-                implementation: 'cdkV2',
-                feature: 'router',
-                module: 'destination',
-                errorCategory: 'dataValidation',
-                errorType: 'configuration',
-              },
-              destination: overrideDestination(sampleDestination, { audienceId: '' }),
             },
           ],
         },
@@ -419,6 +406,24 @@ export const data = [
                 userId: 'u1',
               },
             },
+            {
+              message: {
+                type: 'record',
+                action: 'insert',
+                fields: {
+                  DAID: 'test-daid-2',
+                  UID2: 'test-uid2-2',
+                },
+                channel: 'sources',
+                context: sampleContext,
+                recordId: '1',
+              },
+              destination: overrideDestination(sampleDestination, { advertiserId: '' }),
+              metadata: {
+                jobId: 2,
+                userId: 'u1',
+              },
+            },
           ],
           destType,
         },
@@ -432,7 +437,10 @@ export const data = [
           output: [
             {
               batched: false,
-              metadata: [{ jobId: 1, userId: 'u1' }],
+              metadata: [
+                { jobId: 1, userId: 'u1' },
+                { jobId: 2, userId: 'u1' },
+              ],
               statusCode: 400,
               error: 'Advertiser ID is not present. Aborting',
               statTags: {
@@ -1803,6 +1811,121 @@ export const data = [
                 feature: 'router',
               },
               destination: sampleDestination,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: destType,
+    description: 'Tracker id is not present',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'record',
+                action: 'insert',
+                fields: {
+                  DAID: 'test-daid-1',
+                },
+                channel: 'sources',
+                context: sampleContext,
+                recordId: '1',
+              },
+              destination: overrideDestination(sampleDestination, { trackerId: '' }),
+              metadata: {
+                jobId: 1,
+              },
+            },
+            {
+              message: {
+                type: 'track',
+                event: 'custom event abc',
+                properties: {
+                  key1: 'value1',
+                  value: 25,
+                  product_id: 'prd123',
+                  key2: true,
+                  test: 'test123',
+                },
+              },
+              destination: overrideDestination(sampleDestination, { trackerId: '' }),
+              metadata: {
+                jobId: 2,
+              },
+            },
+          ],
+          destType,
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://sin-data.adsrvr.org/data/advertiser',
+                  headers: {},
+                  params: {},
+                  body: {
+                    JSON: {
+                      DataProviderId: dataProviderId,
+                      AdvertiserId: advertiserId,
+                      Items: [
+                        {
+                          DAID: 'test-daid-1',
+                          Data: [
+                            {
+                              Name: segmentName,
+                              TTLInMinutes: 43200,
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+              ],
+              metadata: [
+                {
+                  jobId: 1,
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: overrideDestination(sampleDestination, { trackerId: '' }),
+            },
+            {
+              batched: false,
+              metadata: [{ jobId: 2 }],
+              statusCode: 400,
+              error: 'Tracking Tag ID is not present. Aborting',
+              statTags: {
+                errorCategory: 'dataValidation',
+                errorType: 'configuration',
+                destType: 'THE_TRADE_DESK',
+                module: 'destination',
+                implementation: 'cdkV2',
+                feature: 'router',
+              },
+              destination: overrideDestination(sampleDestination, { trackerId: '' }),
             },
           ],
         },

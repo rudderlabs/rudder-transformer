@@ -11,13 +11,12 @@ bindings:
     path: '@rudderstack/integrations-lib'
 
 steps:
-  - name: validateConfig
+  - name: validateCommonConfig
+    description: |
+      validate common config for first party data and realtime conversion flow
     template: |
       const config = ^[0].destination.Config
       $.assertConfig(config.advertiserId, "Advertiser ID is not present. Aborting")
-      $.assertConfig(config.advertiserSecretKey, "Advertiser Secret Key is not present. Aborting")
-      $.assertConfig(config.trackerId, "Tracking Tag ID is not present. Aborting")
-      config.ttlInDays ?  $.assertConfig(config.ttlInDays >=0 && config.ttlInDays <= 180, "TTL is out of range. Allowed values are 0 to 180 days")
 
   - name: validateInput
     template: |

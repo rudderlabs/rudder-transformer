@@ -1,4 +1,4 @@
-const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
   defaultRequestConfig,
   simpleProcessRouterDest,
@@ -28,7 +28,12 @@ const responseBuilder = (payload) => {
   return response;
 };
 
-const validateInput = (message) => {
+const validateInputAndConfig = (message, destination) => {
+  const { Config } = destination;
+  if (!Config.trackerId) {
+    throw new ConfigurationError('Tracking Tag ID is not present. Aborting');
+  }
+
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
   }
@@ -76,7 +81,7 @@ const trackResponseBuilder = (message, destination) => {
 };
 
 const processEvent = (message, destination) => {
-  validateInput(message);
+  validateInputAndConfig(message, destination);
   return trackResponseBuilder(message, destination);
 };
 

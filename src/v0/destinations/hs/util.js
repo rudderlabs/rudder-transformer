@@ -506,10 +506,16 @@ const extractIDsForSearchAPI = (inputs) => {
  * @param {*} destination
  * @returns
  */
-const performHubSpotSearch = async (rqdata, rqOptions, objectType, identifierType, destination) => {
+const performHubSpotSearch = async (
+  reqdata,
+  reqOptions,
+  objectType,
+  identifierType,
+  destination,
+) => {
   let checkAfter = 1;
   const searchResults = [];
-  const requestData = rqdata;
+  const requestData = reqdata;
   const { Config } = destination;
 
   const endpoint = IDENTIFY_CRM_SEARCH_ALL_OBJECTS.replace(':objectType', objectType);
@@ -520,7 +526,7 @@ const performHubSpotSearch = async (rqdata, rqOptions, objectType, identifierTyp
       ? endpoint
       : `${endpoint}?hapikey=${Config.apiKey}`;
 
-  const requestOptions = Config.authorizationType === 'newPrivateAppApi' ? rqOptions : {};
+  const requestOptions = Config.authorizationType === 'newPrivateAppApi' ? reqOptions : {};
 
   /* *
    * This is needed for processing paginated response when searching hubspot.

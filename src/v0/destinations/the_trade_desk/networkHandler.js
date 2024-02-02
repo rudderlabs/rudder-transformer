@@ -66,9 +66,10 @@ const responseHandler = (destinationResponse) => {
     );
   }
 
-  // Trade desk returns 200 with an error in case of "Failed to parse TDID, DAID, UID2, IDL, EUID, or failed to decrypt UID2Token or EUIDToken"
+  // Trade desk first party data api returns 200 with an error in case of "Failed to parse TDID, DAID, UID2, IDL, EUID, or failed to decrypt UID2Token or EUIDToken"
   // https://partner.thetradedesk.com/v3/portal/data/doc/post-data-advertiser-external
   // {"FailedLines":[{"ErrorCode":"MissingUserId","Message":"Invalid DAID, item #1"}]}
+  // For real time conversion api we don't have separate response handling, trade desk always return 400 for bad events.
   if ('FailedLines' in response && response.FailedLines.length > 0) {
     throw new AbortedError(
       `Request failed with status: ${status} due to ${JSON.stringify(response)}`,
@@ -78,7 +79,7 @@ const responseHandler = (destinationResponse) => {
   }
 
   // else successfully return status, message and original destination response
-  // Trade desk returns 200 with empty object '{}' in response if all the events are processed successfully
+  // For first party api trade desk returns 200 with empty object '{}' in response if all the events are processed successfully
   return {
     status,
     message,

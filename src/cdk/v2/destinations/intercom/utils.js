@@ -199,13 +199,13 @@ const filterCustomAttributes = (payload, type, destination) => {
   if (type === 'user') {
     ReservedAttributesList =
       apiVersion === '1.4'
-        ? ReservedAttributes.oldVersionUserAttributes
-        : ReservedAttributes.newVersionUserAttributes;
+        ? ReservedAttributes.v1UserAttributes
+        : ReservedAttributes.v2UserAttributes;
   } else {
     ReservedAttributesList =
       apiVersion === '1.4'
-        ? ReservedAttributes.oldVersionCompanyAttributes
-        : ReservedAttributes.newVersionCompanyAttributes;
+        ? ReservedAttributes.v1CompanyAttributes
+        : ReservedAttributes.v2CompanyAttributes;
   }
   let customAttributes = { ...get(payload, 'custom_attributes') };
   if (customAttributes) {

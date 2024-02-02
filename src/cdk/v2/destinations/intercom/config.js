@@ -6,7 +6,7 @@ const SEARCH_CONTACT_ENDPOINT = 'contacts/search';
 const CREATE_OR_UPDATE_COMPANY_ENDPOINT = 'companies';
 
 const ReservedAttributes = {
-  oldVersionUserAttributes: [
+  v1UserAttributes: [
     'userId',
     'email',
     'phone',
@@ -18,7 +18,7 @@ const ReservedAttributes = {
     'lastname',
     'company',
   ],
-  newVersionUserAttributes: [
+  v2UserAttributes: [
     'userId',
     'role',
     'email',
@@ -37,7 +37,7 @@ const ReservedAttributes = {
     'originalTimestamp',
     'unsubscribedFromEmails',
   ],
-  oldVersionCompanyAttributes: [
+  v1CompanyAttributes: [
     'remoteCreatedAt',
     'monthlySpend',
     'industry',
@@ -47,7 +47,7 @@ const ReservedAttributes = {
     'name',
     'userId',
   ],
-  newVersionCompanyAttributes: [
+  v2CompanyAttributes: [
     'tags',
     'size',
     'plan',

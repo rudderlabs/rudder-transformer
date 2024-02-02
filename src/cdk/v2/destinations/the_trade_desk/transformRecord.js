@@ -60,8 +60,10 @@ const processRecordInputs = (inputs, destination) => {
     return errorResponses;
   }
 
-  const invalidActionTypeError = new InstrumentationError('Invalid action type');
-  const emptyFieldsError = new InstrumentationError('Fields cannot be empty');
+  const invalidActionTypeError = new InstrumentationError(
+    'Invalid action type. You can only add or remove IDs from the audience/segment',
+  );
+  const emptyFieldsError = new InstrumentationError('`fields` cannot be empty');
   inputs.forEach((input) => {
     const { fields, action } = input.message;
     const isInsertOrDelete = action === 'insert' || action === 'delete';

@@ -674,7 +674,8 @@ export const data = [
               batched: false,
               metadata: [{ jobId: 2 }],
               statusCode: 400,
-              error: 'Invalid action type',
+              error:
+                'Invalid action type. You can only add or remove IDs from the audience/segment',
               statTags: {
                 destType: destTypeInUpperCase,
                 implementation: 'cdkV2',
@@ -787,7 +788,7 @@ export const data = [
               batched: false,
               metadata: [{ jobId: 1 }],
               statusCode: 400,
-              error: 'Fields cannot be empty',
+              error: '`fields` cannot be empty',
               statTags: {
                 destType: destTypeInUpperCase,
                 implementation: 'cdkV2',
@@ -842,7 +843,7 @@ export const data = [
               batched: false,
               metadata: [{ jobId: 1 }],
               statusCode: 400,
-              error: 'Fields cannot be empty',
+              error: '`fields` cannot be empty',
               statTags: {
                 destType: destTypeInUpperCase,
                 implementation: 'cdkV2',

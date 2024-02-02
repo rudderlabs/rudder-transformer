@@ -1330,10 +1330,10 @@ const generateExclusionList = (mappingConfig) =>
  * )
  * -------------------------------------------
  * The above call will map the fields other than the
- * exlusion list from the given keys to the destination payload
+ * exclusion list from the given keys to the destination payload
  *
  */
-function extractCustomFields(message, destination, keys, exclusionFields) {
+function extractCustomFields(message, payload, keys, exclusionFields) {
   const mappingKeys = [];
   if (Array.isArray(keys)) {
     keys.forEach((key) => {
@@ -1344,7 +1344,7 @@ function extractCustomFields(message, destination, keys, exclusionFields) {
         });
         mappingKeys.forEach((mappingKey) => {
           if (!(typeof messageContext[mappingKey] === 'undefined')) {
-            set(destination, mappingKey, get(messageContext, mappingKey));
+            set(payload, mappingKey, get(messageContext, mappingKey));
           }
         });
       }
@@ -1355,14 +1355,14 @@ function extractCustomFields(message, destination, keys, exclusionFields) {
     });
     mappingKeys.forEach((mappingKey) => {
       if (!(typeof message[mappingKey] === 'undefined')) {
-        set(destination, mappingKey, get(message, mappingKey));
+        set(payload, mappingKey, get(message, mappingKey));
       }
     });
   } else {
     logger.debug('unable to parse keys');
   }
 
-  return destination;
+  return payload;
 }
 
 // Deleting nested properties from objects

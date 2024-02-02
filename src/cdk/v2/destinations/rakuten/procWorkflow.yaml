@@ -28,7 +28,6 @@ steps:
 
   - name: buildResponse
     template: |
-      console.log("$.context.payload2",$.context.payload)
       const response = $.defaultRequestConfig();
       response.params = $.context.payload;
       response.method = "GET";
@@ -37,5 +36,4 @@ steps:
         "accept": "application/json",
         "content-type": "application/json"
       };
-      console.log("responseBidy",response)
       response

@@ -1,13 +1,12 @@
-const { TransformerProxyError } = require('../../../v0/util/errorTypes');
 const { httpSend } = require('../../../adapters/network');
 const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
-
+const { NetworkError } = require('@rudderstack/integrations-lib');
 const DESTINATION = 'RAKUTEN';
-const { TAG_NAMES } = require('../../../v0/util/tags');
-const { HTTP_STATUS_CODES } = require('../../../v0/util/constant');
+const { TAG_NAMES } = require('../../util/tags');
+const { HTTP_STATUS_CODES } = require('../../util/constant');
 
 const prepareProxyRequest = (request) => request;
 const proxyRequest = async (request, destType) => {
@@ -32,7 +31,7 @@ const responseHandler = (destinationResponse) => {
   const msg = `[${DESTINATION} Response Handler] - Request Processed Successfully`;
   const { response, status } = destinationResponse;
   if (status === 400) {
-    throw new TransformerProxyError(
+    throw new NetworkError(
       `Request failed with status: ${status} due to invalid Marketing Id`,
       400,
       {
@@ -47,7 +46,7 @@ const responseHandler = (destinationResponse) => {
 
   // For access denied for a mid rakuten sends status code 200 with response as <response> <error> Access denied </error> </response>
   if (errors) {
-    throw new TransformerProxyError(
+    throw new NetworkError(
       `Request failed with status: ${status} due to ${errors}. Can you try to enable pixel tracking for this mid.`,
       400,
       {
@@ -58,7 +57,7 @@ const responseHandler = (destinationResponse) => {
     );
   }
   if (parseInt(badRecords, 10)) {
-    throw new TransformerProxyError(
+    throw new NetworkError(
       `Request failed with status: ${status} with number of bad records ${badRecords}`,
       400,
       {
@@ -72,7 +71,7 @@ const responseHandler = (destinationResponse) => {
   neither we have any sample response but just in case if we recoeve non 2xx status
   */
   if (status !== 200) {
-    throw new TransformerProxyError(
+    throw new NetworkError(
       `Request failed with status: ${status}`,
       status,
       {

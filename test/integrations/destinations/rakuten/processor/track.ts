@@ -43,6 +43,7 @@ export const trackSuccess = [
                   {
                     sku: 'custom sku 2',
                     name: 'SampleProduct',
+                    quantity: 1,
                     amount: 30,
                     coupon: 'SALE50',
                   },
@@ -89,7 +90,7 @@ export const trackSuccess = [
                 sequencelist: '123||',
                 shipbylist: 'Express||',
                 shipidlist: 'SHIP123||',
-                qlist: '5|5|',
+                qlist: '5|5|1',
                 marginlist: '0.15||',
                 markdownlist: '5||',
                 taxexemptlist: 'N||',
@@ -159,6 +160,7 @@ export const trackSuccess = [
                   {
                     sku: 'custom sku 0',
                     amount: '125',
+                    quantity: 1,
                   },
                   {
                     sku: 'custom sku 1',
@@ -208,7 +210,7 @@ export const trackSuccess = [
                 couponlist: '||SALE50',
                 namelist: '||SampleProduct',
                 skulist: 'custom sku 0|custom sku 1|custom sku 2',
-                qlist: '|5|1',
+                qlist: '1|5|1',
                 ord: 'SampleOrderId',
                 tr: 'SampleRanSiteID',
                 land: '20240129_1200',
@@ -269,6 +271,7 @@ export const trackSuccess = [
                 products: [
                   {
                     sku: 'custom sku 0',
+                    quantity: 1,
                     amount: '-125',
                   },
                   {
@@ -310,7 +313,7 @@ export const trackSuccess = [
                 xml: 1,
                 amtlist: '-12500|-12500',
                 skulist: 'custom sku 0|custom sku 1',
-                qlist: '|5',
+                qlist: '1|5',
                 ord: 'SampleOrderId',
                 tr: 'SampleRanSiteID',
                 land: '20240129_1200',
@@ -372,6 +375,7 @@ export const trackSuccess = [
                 products: [
                   {
                     sku: 'custom sku 0',
+                    quantity: 5,
                     amount: '125',
                   },
                   {
@@ -420,7 +424,7 @@ export const trackSuccess = [
                 namelist: '||Discount',
                 amtlist: '12500|12500|-50000',
                 skulist: 'custom sku 0|custom sku 1|Discount',
-                qlist: '|5|0',
+                qlist: '5|5|0',
                 ord: 'SampleOrderId',
                 tr: 'SampleRanSiteID',
                 land: '20240129_1200',

@@ -1,6 +1,11 @@
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { isDefinedAndNotNull } = require('rudder-transformer-cdk/build/utils');
-const { mappingConfig, ConfigCategories, productProperties } = require('./config');
+const {
+  mappingConfig,
+  ConfigCategories,
+  productProperties,
+  requiredProductProperties,
+} = require('./config');
 const { constructPayload } = require('../../../../v0/util');
 
 /**
@@ -22,19 +27,25 @@ const constructLineItems = (properties) => {
   if (!Array.isArray(properties?.products) || properties?.products.length < 1) {
     throw new InstrumentationError('Either properties.product is not an array or is empty');
   }
+  const { products } = properties;
+  // beofre constructing the payload we are just validating the products array for sku and quantity
+
   const productList = {};
   // mapping all the properties leaving amount as for amount we need to do some calculations
   Object.keys(productProperties).forEach((property) => {
     const propertyKey = productProperties[property];
-    const values = properties.products.map((product) =>
+    const values = products.map((product) =>
       isDefinedAndNotNull(product?.[propertyKey]) ? product[propertyKey] : '',
     );
+    if (requiredProductProperties.includes(property) && values.includes('')) {
+      throw new InstrumentationError(`${propertyKey} is required field. Aborting`);
+    }
     if (values.some((element) => element !== '')) {
       productList[property] = values.join('|');
     }
   });
   // mapping amount list
-  const amountList = properties.products.map((product) => {
+  const amountList = products.map((product) => {
     if (!product.amount) {
       if (product?.price) {
         return (product.quantity || 1) * product.price * 100;

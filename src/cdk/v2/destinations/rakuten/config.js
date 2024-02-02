@@ -29,4 +29,6 @@ const productProperties = {
   taxexemptlist: 'taxExempt',
   sequencelist: 'sequence',
 };
-module.exports = { ConfigCategories, mappingConfig, productProperties };
+// list of all properties that are required
+const requiredProductProperties = ['skulist', 'qlist'];
+module.exports = { ConfigCategories, mappingConfig, productProperties, requiredProductProperties };

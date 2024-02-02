@@ -80,7 +80,7 @@ export const networkCallsData = [
         xml: 1,
         amtlist: '12500|12500',
         qlist: '|5',
-        ord: 'SampleOrderId',
+        ord: 'SampleOrderId', 
         tr: 'SampleRanSiteID',
         land: '20240129_1200',
       },

@@ -14,7 +14,7 @@ export const data = [
     feature: 'dataDelivery',
     module: 'destination',
     scenario: 'Framework',
-    version: 'v1',
+    version: 'v0',
     input: {
       request: {
         body: {
@@ -26,16 +26,6 @@ export const data = [
             ...commonParams,
           },
           userId: '',
-          metadata: [
-            {
-              jobId: 2,
-              attemptNum: 0,
-              userId: '',
-              sourceId: 'dummySourceId',
-              destinationId: 'dummyDestId',
-              workspaceId: 'dummyWorkspaceId',
-            },
-          ],
         },
       },
     },
@@ -78,7 +68,7 @@ export const data = [
     feature: 'dataDelivery',
     scenario: 'Framework',
     module: 'destination',
-    version: 'v1',
+    version: 'v0',
     input: {
       request: {
         body: {
@@ -90,16 +80,6 @@ export const data = [
             ...commonParams,
           },
           userId: '',
-          metadata: [
-            {
-              jobId: 2,
-              attemptNum: 0,
-              userId: '',
-              sourceId: 'dummySourceId',
-              destinationId: 'dummyDestId',
-              workspaceId: 'dummyWorkspaceId',
-            },
-          ],
         },
       },
     },
@@ -142,7 +122,7 @@ export const data = [
     feature: 'dataDelivery',
     scenario: 'Framework',
     module: 'destination',
-    version: 'v1',
+    version: 'v0',
     input: {
       request: {
         body: {
@@ -154,16 +134,6 @@ export const data = [
             ...commonParams,
           },
           userId: '',
-          metadata: [
-            {
-              jobId: 2,
-              attemptNum: 0,
-              userId: '',
-              sourceId: 'dummySourceId',
-              destinationId: 'dummyDestId',
-              workspaceId: 'dummyWorkspaceId',
-            },
-          ],
         },
       },
     },
@@ -206,7 +176,7 @@ export const data = [
     feature: 'dataDelivery',
     scenario: 'Framework',
     module: 'destination',
-    version: 'v1',
+    version: 'v0',
     input: {
       request: {
         body: {
@@ -218,16 +188,6 @@ export const data = [
             ...commonParams,
           },
           userId: '',
-          metadata: [
-            {
-              jobId: 2,
-              attemptNum: 0,
-              userId: '',
-              sourceId: 'dummySourceId',
-              destinationId: 'dummyDestId',
-              workspaceId: 'dummyWorkspaceId',
-            },
-          ],
         },
       },
     },

@@ -44,7 +44,6 @@ steps:
     template: |
       $.addExternalIdToTraits(.message);
       $.context.payload = $.getFieldValueFromMessage(.message, "traits")
-      
   
   - name: trackWorkflow
     condition: $.outputs.messageType === {{$.EventType.TRACK}}
@@ -65,11 +64,10 @@ steps:
           $.outputs.apiVersion !== "v1" ? payload.created_at = $.toSeconds(timestamp);
           $.outputs.apiVersion === "v1" ? payload.created = $.toSeconds(timestamp);
           !(payload.user_id) && .destination.Config.sendAnonymousId ? payload.user_id = .message.anonymousId;
-          $context.payload = payload;
-
+          $.context.payload = payload;
       - name: finalPayload
         template: |
-          $context.payload = $.addMetadataToPayload($context.payload);
+          $.context.payload = $.addMetadataToPayload($.context.payload);
           $.assert($.context.payload.event_name, "Event name is required for track call");
           $.assert($.context.payload.user_id || $.context.payload.email, "Either email or userId is required for Track call");
           $.context.requestMethod = 'POST';
@@ -112,7 +110,6 @@ steps:
               value: $.outputs.rETLPayload
             - name: groupTransformPayload
               value: $.outputs.rETLPayload || $.outputs.groupTransformPayload
-      
       - name: finalPayload
         template: |
           $.context = $.outputs.versionWorkflows.v1 ?? $.outputs.versionWorkflows.v2

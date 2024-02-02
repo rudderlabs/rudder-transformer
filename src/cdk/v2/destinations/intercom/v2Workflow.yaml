@@ -15,9 +15,9 @@ steps:
     template: .message.type.toLowerCase()
 
   - name: searchContact
-      condition: $.outputs.messageType in [{{$.EventType.IDENTIFY}}, {{$.EventType.GROUP}}]
-      template: |
-        await $.searchContact(.message, .destination)
+    condition: $.outputs.messageType in [{{$.EventType.IDENTIFY}}, {{$.EventType.GROUP}}]
+    template: |
+      await $.searchContact(.message, .destination)
 
   - name: identifyWorkflow
     condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}

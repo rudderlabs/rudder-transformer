@@ -1232,6 +1232,9 @@ function toUnixTimestamp(timestamp) {
   return unixTimestamp;
 }
 
+// Accepts a timestamp and returns the corresponding unix timestamp in milliseconds
+const toUnixTimestampInMS = (timestamp) => new Date(timestamp).getTime();
+
 // Accecpts timestamp as a parameter and returns the difference of the same with current time.
 function getTimeDifference(timestamp) {
   const currentTime = Date.now();
@@ -2165,6 +2168,7 @@ module.exports = {
   getValueFromPropertiesOrTraits,
   getValuesAsArrayFromConfig,
   handleSourceKeysOperation,
+  hashToSha256,
   isAppleFamily,
   isBlank,
   isCdkDestination,
@@ -2193,6 +2197,7 @@ module.exports = {
   stripTrailingSlash,
   toTitleCase,
   toUnixTimestamp,
+  toUnixTimestampInMS,
   updatePayload,
   checkInvalidRtTfEvents,
   simpleProcessRouterDest,

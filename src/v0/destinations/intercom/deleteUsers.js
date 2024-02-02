@@ -14,7 +14,7 @@ const userDeletionHandler = async (userAttributes, config) => {
   }
   const { apiKey } = config;
   if (!apiKey) {
-    throw new ConfigurationError('api key for deletion not present');
+    throw new ConfigurationError('The access token is not available');
   }
   const validUserIds = [];
   userAttributes.forEach((userAttribute) => {
@@ -38,6 +38,7 @@ const userDeletionHandler = async (userAttributes, config) => {
       const resp = await httpPOST(url, data, requestOptions, {
         destType: 'intercom',
         feature: 'deleteUsers',
+        endpointPath: '/user_delete_requests',
       });
       const handledDelResponse = processAxiosResponse(resp);
       if (!isHttpStatusSuccess(handledDelResponse.status) && handledDelResponse.status !== 404) {

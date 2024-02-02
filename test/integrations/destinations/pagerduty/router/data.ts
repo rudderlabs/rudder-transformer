@@ -18,10 +18,7 @@ export const data = [
                 userId: 'user@45',
                 properties: {
                   source: 'rudder-webapp',
-                  customDetails: {
-                    'ping time': '1500ms',
-                    'load avg': 0.75,
-                  },
+                  customDetails: { 'ping time': '1500ms', 'load avg': 0.75 },
                   imageURLs: [
                     {
                       src: 'https://static.s4be.cochrane.org/app/uploads/2017/04/shutterstock_531145954.jpg',
@@ -31,9 +28,7 @@ export const data = [
                       src: 'https://chart.googleapis.com/chart?chs=600x400&chd=t:6,2,9,5,2,5,7,4,8,2,1&cht=lc&chds=a&chxt=y&chm=D,0033FF,0,0,5,1',
                       alt: 'second image',
                     },
-                    {
-                      alt: 'third image',
-                    },
+                    { alt: 'third image' },
                   ],
                   linkURLs: [
                     {
@@ -44,20 +39,12 @@ export const data = [
                       href: 'https://www.techtarget.com/whatis/definition/stack-overflow#:~:text=A%20stack%20overflow%20is%20a,been%20allocated%20to%20that%20stack',
                       text: 'Stack Overflow Error',
                     },
-                    {
-                      text: 'Destructure Error',
-                    },
+                    { text: 'Destructure Error' },
                   ],
                 },
-                integrations: {
-                  pagerduty: {
-                    type: 'changeEvent',
-                  },
-                },
+                integrations: { pagerduty: { type: 'changeEvent' } },
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               destination: {
                 Config: {
                   routingKey: '9552b56325dc490bd0139be85f7b8fac',
@@ -80,10 +67,7 @@ export const data = [
                   source: 'rudder-webapp',
                   group: 'destination',
                   class: 'connection settings',
-                  customDetails: {
-                    'ping time': '1500ms',
-                    'load avg': 0.75,
-                  },
+                  customDetails: { 'ping time': '1500ms', 'load avg': 0.75 },
                   imageURLs: [
                     {
                       src: 'https://static.s4be.cochrane.org/app/uploads/2017/04/shutterstock_531145954.jpg',
@@ -93,9 +77,7 @@ export const data = [
                       src: 'https://chart.googleapis.com/chart?chs=600x400&chd=t:6,2,9,5,2,5,7,4,8,2,1&cht=lc&chds=a&chxt=y&chm=D,0033FF,0,0,5,1',
                       alt: 'second image',
                     },
-                    {
-                      alt: 'third image',
-                    },
+                    { alt: 'third image' },
                   ],
                   linkURLs: [
                     {
@@ -106,15 +88,11 @@ export const data = [
                       href: 'https://www.techtarget.com/whatis/definition/stack-overflow#:~:text=A%20stack%20overflow%20is%20a,been%20allocated%20to%20that%20stack',
                       text: 'Stack Overflow Error',
                     },
-                    {
-                      text: 'Destructure Error',
-                    },
+                    { text: 'Destructure Error' },
                   ],
                 },
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               destination: {
                 Config: {
                   routingKey: '9552b56325dc490bd0139be85f7b8fac',
@@ -138,10 +116,7 @@ export const data = [
                   source: 'rudder-webapp',
                   group: 'destination',
                   class: 'connection settings',
-                  customDetails: {
-                    'ping time': '1500ms',
-                    'load avg': 0.75,
-                  },
+                  customDetails: { 'ping time': '1500ms', 'load avg': 0.75 },
                   imageURLs: [
                     {
                       src: 'https://static.s4be.cochrane.org/app/uploads/2017/04/shutterstock_531145954.jpg',
@@ -151,9 +126,7 @@ export const data = [
                       src: 'https://chart.googleapis.com/chart?chs=600x400&chd=t:6,2,9,5,2,5,7,4,8,2,1&cht=lc&chds=a&chxt=y&chm=D,0033FF,0,0,5,1',
                       alt: 'second image',
                     },
-                    {
-                      alt: 'third image',
-                    },
+                    { alt: 'third image' },
                   ],
                   linkURLs: [
                     {
@@ -164,15 +137,11 @@ export const data = [
                       href: 'https://www.techtarget.com/whatis/definition/stack-overflow#:~:text=A%20stack%20overflow%20is%20a,been%20allocated%20to%20that%20stack',
                       text: 'Stack Overflow Error',
                     },
-                    {
-                      text: 'Destructure Error',
-                    },
+                    { text: 'Destructure Error' },
                   ],
                 },
               },
-              metadata: {
-                jobId: 3,
-              },
+              metadata: { jobId: 3, userId: 'u1' },
               destination: {
                 Config: {
                   routingKey: '9552b56325dc490bd0139be85f7b8fac',
@@ -221,10 +190,7 @@ export const data = [
                     payload: {
                       source: 'rudder-webapp',
                       summary: 'Github CI/CD Triggered',
-                      custom_details: {
-                        'load avg': 0.75,
-                        'ping time': '1500ms',
-                      },
+                      custom_details: { 'load avg': 0.75, 'ping time': '1500ms' },
                     },
                     routing_key: '9552b56325dc490bd0139be85f7b8fac',
                   },
@@ -234,9 +200,7 @@ export const data = [
                 files: {},
                 method: 'POST',
                 params: {},
-                headers: {
-                  'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 version: '1',
                 endpoint: 'https://events.pagerduty.com/v2/change/enqueue',
               },
@@ -246,7 +210,7 @@ export const data = [
                   dedupKeyFieldIdentifier: 'properties.dedupKey',
                 },
               },
-              metadata: [{ jobId: 1 }],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               statusCode: 200,
             },
             {
@@ -266,9 +230,7 @@ export const data = [
                 files: {},
                 method: 'POST',
                 params: {},
-                headers: {
-                  'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 version: '1',
                 endpoint: 'https://events.pagerduty.com/v2/enqueue',
               },
@@ -278,13 +240,13 @@ export const data = [
                   dedupKeyFieldIdentifier: 'properties.dedupKey',
                 },
               },
-              metadata: [{ jobId: 2 }],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               statusCode: 200,
             },
             {
               batched: false,
               error: 'Events must be sent within ninety days of their occurrence',
-              metadata: [{ jobId: 3 }],
+              metadata: [{ jobId: 3, userId: 'u1' }],
               statusCode: 400,
               statTags: {
                 destType: 'PAGERDUTY',

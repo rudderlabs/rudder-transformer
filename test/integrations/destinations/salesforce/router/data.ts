@@ -1,10 +1,8 @@
-import { FEATURES } from '../../../../../src/v0/util/tags';
-
 export const data = [
   {
     name: 'salesforce',
     description: 'Test 0',
-    feature: FEATURES.ROUTER,
+    feature: 'router',
     module: 'destination',
     version: 'v0',
     input: {
@@ -23,18 +21,10 @@ export const data = [
                     version: '1.0.0',
                   },
                   ip: '0.0.0.0',
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   locale: 'en-US',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                   traits: {
                     anonymousId: '1e7673da-9473-49c6-97f7-da848ecafa76',
                     company: 'Initech',
@@ -54,9 +44,7 @@ export const data = [
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36',
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 messageId: 'f19c35da-e9de-4c6e-b6e5-9e60cccc12c8',
                 originalTimestamp: '2020-01-27T12:20:55.301Z',
                 receivedAt: '2020-01-27T17:50:58.657+05:30',
@@ -66,9 +54,7 @@ export const data = [
                 type: 'identify',
                 userId: '1e7673da-9473-49c6-97f7-da848ecafa76',
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               destination: {
                 Config: {
                   initialAccessToken: 'dummyInitialAccessToken',
@@ -133,12 +119,7 @@ export const data = [
                 },
               ],
               metadata: [
-                {
-                  destInfo: {
-                    authKey: '1WqFFH5esuVPnUgHkvEoYxDcX3y',
-                  },
-                  jobId: 1,
-                },
+                { destInfo: { authKey: '1WqFFH5esuVPnUgHkvEoYxDcX3y' }, jobId: 1, userId: 'u1' },
               ],
               batched: false,
               statusCode: 200,
@@ -167,7 +148,7 @@ export const data = [
   {
     name: 'salesforce',
     description: 'Test 1',
-    feature: FEATURES.ROUTER,
+    feature: 'router',
     module: 'destination',
     version: 'v0',
     input: {
@@ -186,18 +167,10 @@ export const data = [
                     version: '1.0.0',
                   },
                   ip: '0.0.0.0',
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   locale: 'en-US',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                   traits: {
                     anonymousId: '1e7673da-9473-49c6-97f7-da848ecafa76',
                     company: 'Initech',
@@ -217,9 +190,7 @@ export const data = [
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36',
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 messageId: 'f19c35da-e9de-4c6e-b6e5-9e60cccc12c8',
                 originalTimestamp: '2020-01-27T12:20:55.301Z',
                 receivedAt: '2020-01-27T17:50:58.657+05:30',
@@ -229,9 +200,7 @@ export const data = [
                 type: 'identify',
                 userId: '1e7673da-9473-49c6-97f7-da848ecafa76',
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               destination: {
                 Config: {
                   initialAccessToken: 'dummyInitialAccessToken',
@@ -297,12 +266,7 @@ export const data = [
                 },
               ],
               metadata: [
-                {
-                  destInfo: {
-                    authKey: '1WqFFH5esuVPnUgHkvEoYxDcX3y',
-                  },
-                  jobId: 2,
-                },
+                { destInfo: { authKey: '1WqFFH5esuVPnUgHkvEoYxDcX3y' }, jobId: 2, userId: 'u1' },
               ],
               batched: false,
               statusCode: 200,
@@ -331,7 +295,7 @@ export const data = [
   {
     name: 'salesforce',
     description: 'Test 2',
-    feature: FEATURES.ROUTER,
+    feature: 'router',
     module: 'destination',
     version: 'v0',
     input: {
@@ -350,24 +314,14 @@ export const data = [
                     version: '1.0.0',
                   },
                   ip: '0.0.0.0',
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   locale: 'en-US',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36',
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 traits: {
                   anonymousId: '1e7673da-9473-49c6-97f7-da848ecafa76',
                   company: 'Initech',
@@ -393,9 +347,7 @@ export const data = [
                 type: 'identify',
                 userId: '1e7673da-9473-49c6-97f7-da848ecafa76',
               },
-              metadata: {
-                jobId: 3,
-              },
+              metadata: { jobId: 3, userId: 'u1' },
               destination: {
                 Config: {
                   initialAccessToken: 'dummyInitialAccessToken',
@@ -460,12 +412,7 @@ export const data = [
                 },
               ],
               metadata: [
-                {
-                  destInfo: {
-                    authKey: '1WqFFH5esuVPnUgHkvEoYxDcX3y',
-                  },
-                  jobId: 3,
-                },
+                { destInfo: { authKey: '1WqFFH5esuVPnUgHkvEoYxDcX3y' }, jobId: 3, userId: 'u1' },
               ],
               batched: false,
               statusCode: 200,
@@ -494,7 +441,7 @@ export const data = [
   {
     name: 'salesforce',
     description: 'Test 3',
-    feature: FEATURES.ROUTER,
+    feature: 'router',
     module: 'destination',
     version: 'v0',
     input: {
@@ -535,9 +482,7 @@ export const data = [
                 files: {},
                 statusCode: 200,
               },
-              metadata: {
-                jobId: 4,
-              },
+              metadata: { jobId: 4, userId: 'u1' },
               destination: {
                 Config: {
                   initialAccessToken: 'dummyInitialAccessToken',
@@ -601,12 +546,7 @@ export const data = [
                 statusCode: 200,
               },
               metadata: [
-                {
-                  destInfo: {
-                    authKey: '1WqFFH5esuVPnUgHkvEoYxDcX3y',
-                  },
-                  jobId: 4,
-                },
+                { destInfo: { authKey: '1WqFFH5esuVPnUgHkvEoYxDcX3y' }, jobId: 4, userId: 'u1' },
               ],
               batched: false,
               statusCode: 200,

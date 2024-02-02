@@ -19,11 +19,7 @@ export const data = [
             {
               message: {
                 anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-                destination_props: {
-                  Fb: {
-                    app_id: 'RudderFbApp',
-                  },
-                },
+                destination_props: { Fb: { app_id: 'RudderFbApp' } },
                 context: {
                   device: {
                     id: 'df16bffa-5c3d-4fbb-9bce-3bab098129a7R',
@@ -31,67 +27,34 @@ export const data = [
                     model: 'Redmi 6',
                     name: 'xiaomi',
                   },
-                  network: {
-                    carrier: 'Banglalink',
-                  },
-                  os: {
-                    name: 'android',
-                    version: '8.1.0',
-                  },
-                  screen: {
-                    height: '100',
-                    density: 50,
-                  },
+                  network: { carrier: 'Banglalink' },
+                  os: { name: 'android', version: '8.1.0' },
+                  screen: { height: '100', density: 50 },
                   traits: {
                     email: 'abc@gmail.com',
                     anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                   },
                 },
                 event: 'spin_result',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
-                properties: {
-                  revenue: 400,
-                  additional_bet_index: 0,
-                },
+                properties: { revenue: 400, additional_bet_index: 0 },
                 timestamp: '2023-10-14T15:46:51.693229+05:30',
                 type: 'track',
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               destination: {
                 Config: {
                   limitedDataUsage: true,
-                  blacklistPiiProperties: [
-                    {
-                      blacklistPiiProperties: '',
-                      blacklistPiiHash: false,
-                    },
-                  ],
+                  blacklistPiiProperties: [{ blacklistPiiProperties: '', blacklistPiiHash: false }],
                   removeExternalId: true,
                   accessToken: '09876',
                   pixelId: 'dummyPixelId',
-                  eventsToEvents: [
-                    {
-                      from: '',
-                      to: '',
-                    },
-                  ],
-                  eventCustomProperties: [
-                    {
-                      eventCustomProperties: '',
-                    },
-                  ],
+                  eventsToEvents: [{ from: '', to: '' }],
+                  eventCustomProperties: [{ eventCustomProperties: '' }],
                   valueFieldIdentifier: '',
                   advancedMapping: false,
-                  whitelistPiiProperties: [
-                    {
-                      whitelistPiiProperties: '',
-                    },
-                  ],
+                  whitelistPiiProperties: [{ whitelistPiiProperties: '' }],
                 },
                 Enabled: true,
               },
@@ -114,67 +77,34 @@ export const data = [
                     namespace: 'com.rudderlabs.javascript',
                     version: '1.0.0',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-US',
                   ip: '0.0.0.0',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                 },
-                properties: {
-                  plan: 'standard plan',
-                  name: 'rudder test',
-                },
+                properties: { plan: 'standard plan', name: 'rudder test' },
                 type: 'identify',
                 messageId: '84e26acc-56a5-4835-8233-591137fca468',
                 originalTimestamp: '2023-10-14T00:00:00.693229+05:30',
                 anonymousId: '00000000000000000000000000',
                 userId: '123456',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               destination: {
                 Config: {
-                  blacklistPiiProperties: [
-                    {
-                      blacklistPiiProperties: '',
-                      blacklistPiiHash: false,
-                    },
-                  ],
+                  blacklistPiiProperties: [{ blacklistPiiProperties: '', blacklistPiiHash: false }],
                   accessToken: '09876',
                   pixelId: 'dummyPixelId',
-                  eventsToEvents: [
-                    {
-                      from: '',
-                      to: '',
-                    },
-                  ],
-                  eventCustomProperties: [
-                    {
-                      eventCustomProperties: '',
-                    },
-                  ],
+                  eventsToEvents: [{ from: '', to: '' }],
+                  eventCustomProperties: [{ eventCustomProperties: '' }],
                   valueFieldIdentifier: '',
                   advancedMapping: true,
-                  whitelistPiiProperties: [
-                    {
-                      whitelistPiiProperties: '',
-                    },
-                  ],
+                  whitelistPiiProperties: [{ whitelistPiiProperties: '' }],
                 },
                 Enabled: true,
               },
@@ -195,7 +125,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: `https://graph.facebook.com/${VERSION}/dummyPixelId/events?access_token=09876`,
+                endpoint: 'https://graph.facebook.com/v18.0/dummyPixelId/events?access_token=09876',
                 headers: {},
                 params: {},
                 body: {
@@ -210,43 +140,21 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
                 Config: {
                   limitedDataUsage: true,
-                  blacklistPiiProperties: [
-                    {
-                      blacklistPiiProperties: '',
-                      blacklistPiiHash: false,
-                    },
-                  ],
+                  blacklistPiiProperties: [{ blacklistPiiProperties: '', blacklistPiiHash: false }],
                   removeExternalId: true,
                   accessToken: '09876',
                   pixelId: 'dummyPixelId',
-                  eventsToEvents: [
-                    {
-                      from: '',
-                      to: '',
-                    },
-                  ],
-                  eventCustomProperties: [
-                    {
-                      eventCustomProperties: '',
-                    },
-                  ],
+                  eventsToEvents: [{ from: '', to: '' }],
+                  eventCustomProperties: [{ eventCustomProperties: '' }],
                   valueFieldIdentifier: '',
                   advancedMapping: false,
-                  whitelistPiiProperties: [
-                    {
-                      whitelistPiiProperties: '',
-                    },
-                  ],
+                  whitelistPiiProperties: [{ whitelistPiiProperties: '' }],
                 },
                 Enabled: true,
               },
@@ -256,7 +164,7 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: `https://graph.facebook.com/${VERSION}/dummyPixelId/events?access_token=09876`,
+                endpoint: 'https://graph.facebook.com/v18.0/dummyPixelId/events?access_token=09876',
                 headers: {},
                 params: {},
                 body: {
@@ -271,41 +179,19 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
                 Config: {
-                  blacklistPiiProperties: [
-                    {
-                      blacklistPiiProperties: '',
-                      blacklistPiiHash: false,
-                    },
-                  ],
+                  blacklistPiiProperties: [{ blacklistPiiProperties: '', blacklistPiiHash: false }],
                   accessToken: '09876',
                   pixelId: 'dummyPixelId',
-                  eventsToEvents: [
-                    {
-                      from: '',
-                      to: '',
-                    },
-                  ],
-                  eventCustomProperties: [
-                    {
-                      eventCustomProperties: '',
-                    },
-                  ],
+                  eventsToEvents: [{ from: '', to: '' }],
+                  eventCustomProperties: [{ eventCustomProperties: '' }],
                   valueFieldIdentifier: '',
                   advancedMapping: true,
-                  whitelistPiiProperties: [
-                    {
-                      whitelistPiiProperties: '',
-                    },
-                  ],
+                  whitelistPiiProperties: [{ whitelistPiiProperties: '' }],
                 },
                 Enabled: true,
               },

@@ -37,7 +37,7 @@ steps:
 
   - name: apiVersion
     template: |
-      const version = $.isDefinedAndNotNull(.destination.Config.apiVersion) ? .destination.Config.apiVersion : "latest";
+      const version = $.isDefinedAndNotNull(.destination.Config.apiVersion) ? .destination.Config.apiVersion : "v2";
       version;
 
   - name: rEtlPayload
@@ -48,13 +48,13 @@ steps:
       payload;
 
   - name: searchContact
-    condition: ($.outputs.messageType === {{$.EventType.IDENTIFY}} || $.outputs.messageType === {{$.EventType.GROUP}}) && $.outputs.apiVersion !== "1.4"
+    condition: ($.outputs.messageType === {{$.EventType.IDENTIFY}} || $.outputs.messageType === {{$.EventType.GROUP}}) && $.outputs.apiVersion !== "v1"
     template: |
       const contactId = await $.searchContact(.message, .destination);
       contactId;
 
   - name: identifyTransformationForLatestVersion
-    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}} && $.outputs.apiVersion !== "1.4" && !.message.context.mappedToDestination
+    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}} && $.outputs.apiVersion !== "v1" && !.message.context.mappedToDestination
     template: |
       const payload = .message.({
             external_id: {{{{$.getGenericPaths("userIdOnly")}}}},
@@ -71,7 +71,7 @@ steps:
       payload;
 
   - name: identifyPayloadForLatestVersion
-    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}} && $.outputs.apiVersion !== "1.4" 
+    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}} && $.outputs.apiVersion !== "v1" 
     template: |
       const payload = .message.context.mappedToDestination ? $.outputs.rEtlPayload : $.outputs.identifyTransformationForLatestVersion;
       payload.name = $.getName(.message);
@@ -86,7 +86,7 @@ steps:
       $.context.payload = $.removeUndefinedAndNullValues($.context.payload);
 
   - name: identifyTransformationForOlderVersion
-    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}} && $.outputs.apiVersion === "1.4" && !.message.context.mappedToDestination
+    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}} && $.outputs.apiVersion === "v1" && !.message.context.mappedToDestination
     template: |
       const payload = .message.({
             user_id: {{{{$.getGenericPaths("userIdOnly")}}}},
@@ -99,7 +99,7 @@ steps:
       payload;
 
   - name: identifyPayloadForOlderVersion
-    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}} && $.outputs.apiVersion === "1.4"
+    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}} && $.outputs.apiVersion === "v1"
     template: |
       let payload = .message.context.mappedToDestination ? $.outputs.rEtlPayload : $.outputs.identifyTransformationForOlderVersion;
        payload = {
@@ -129,9 +129,9 @@ steps:
             email: {{{{$.getGenericPaths("email")}}}},
             metadata: .properties
           });
-      $.outputs.apiVersion !== "1.4" ? payload.id = .message.properties.id || .message.traits.id;
-      $.outputs.apiVersion !== "1.4" ? payload.created_at = $.toSeconds(timestamp);
-      $.outputs.apiVersion === "1.4" ? payload.created = $.toSeconds(timestamp);
+      $.outputs.apiVersion !== "v1" ? payload.id = .message.properties.id || .message.traits.id;
+      $.outputs.apiVersion !== "v1" ? payload.created_at = $.toSeconds(timestamp);
+      $.outputs.apiVersion === "v1" ? payload.created = $.toSeconds(timestamp);
       !(payload.user_id) && .destination.Config.sendAnonymousId ? payload.user_id = .message.anonymousId;
       payload;
 
@@ -163,7 +163,7 @@ steps:
       payload;
 
   - name: groupPayloadForLatestVersion
-    condition: $.outputs.messageType === {{$.EventType.GROUP}} && $.outputs.apiVersion !== "1.4"
+    condition: $.outputs.messageType === {{$.EventType.GROUP}} && $.outputs.apiVersion !== "v1"
     steps:
       - name: validateMessageAndPreparePayload
         template: |
@@ -192,7 +192,7 @@ steps:
           $.removeUndefinedAndNullValues($.context.payload);
 
   - name: groupPayloadForOlderVersion
-    condition: $.outputs.messageType === {{$.EventType.GROUP}} && $.outputs.apiVersion === "1.4"
+    condition: $.outputs.messageType === {{$.EventType.GROUP}} && $.outputs.apiVersion === "v1"
     template: |
       $.context.response = [];
       const response = $.defaultRequestConfig();
@@ -226,5 +226,5 @@ steps:
         response.endpoint = $.context.endpoint;
         response.method = $.context.requestMethod;
         response.headers = $.getHeaders(.destination, $.outputs.apiVersion);
-        $.outputs.apiVersion === "1.4" && $.outputs.messageType !== {{$.EventType.GROUP}} ? response.userId = .message.anonymousId;
+        $.outputs.apiVersion === "v1" && $.outputs.messageType !== {{$.EventType.GROUP}} ? response.userId = .message.anonymousId;
         response;

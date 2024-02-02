@@ -34,7 +34,7 @@ export const data = [
               },
               Config: {
                 apiKey: 'testApiKey',
-                apiVersion: 'latest',
+                apiVersion: 'v2',
                 apiServer: 'standard',
                 sendAnonymousId: false,
               },
@@ -107,7 +107,7 @@ export const data = [
               },
               Config: {
                 apiKey: 'testApiKey',
-                apiVersion: 'latest',
+                apiVersion: 'v2',
                 apiServer: 'standard',
                 sendAnonymousId: false,
               },
@@ -175,7 +175,7 @@ export const data = [
                 },
               },
               Config: {
-                apiVersion: 'latest',
+                apiVersion: 'v2',
                 apiServer: 'standard',
                 sendAnonymousId: false,
               },
@@ -249,7 +249,7 @@ export const data = [
               },
               Config: {
                 apiKey: 'testApiKey',
-                apiVersion: 'latest',
+                apiVersion: 'v2',
                 apiServer: 'standard',
                 sendAnonymousId: false,
               },
@@ -341,7 +341,7 @@ export const data = [
               },
               Config: {
                 apiKey: 'testApiKey',
-                apiVersion: 'latest',
+                apiVersion: 'v2',
                 apiServer: 'standard',
                 sendAnonymousId: false,
               },
@@ -437,7 +437,7 @@ export const data = [
               },
               Config: {
                 apiKey: 'testApiKey',
-                apiVersion: 'latest',
+                apiVersion: 'v2',
                 apiServer: 'standard',
                 sendAnonymousId: false,
               },
@@ -515,7 +515,7 @@ export const data = [
               },
               Config: {
                 apiKey: 'invalidApiKey',
-                apiVersion: 'latest',
+                apiVersion: 'v2',
                 apiServer: 'standard',
                 sendAnonymousId: false,
               },
@@ -598,7 +598,7 @@ export const data = [
               },
               Config: {
                 apiKey: 'testApiKey',
-                apiVersion: 'latest',
+                apiVersion: 'v2',
                 apiServer: 'standard',
                 sendAnonymousId: false,
               },
@@ -682,7 +682,7 @@ export const data = [
               },
               Config: {
                 apiKey: 'testApiKey',
-                apiVersion: 'latest',
+                apiVersion: 'v2',
                 apiServer: 'standard',
                 sendAnonymousId: false,
               },
@@ -787,7 +787,7 @@ export const data = [
               },
               Config: {
                 apiKey: 'testApiKey',
-                apiVersion: 'latest',
+                apiVersion: 'v2',
                 apiServer: 'standard',
                 sendAnonymousId: false,
               },
@@ -866,7 +866,7 @@ export const data = [
               },
               Config: {
                 apiKey: 'testApiKey',
-                apiVersion: 'latest',
+                apiVersion: 'v2',
                 apiServer: 'standard',
                 sendAnonymousId: false,
               },
@@ -963,7 +963,7 @@ export const data = [
               },
               Config: {
                 apiKey: 'testApiKey',
-                apiVersion: 'latest',
+                apiVersion: 'v2',
                 apiServer: 'eu',
                 sendAnonymousId: false,
               },
@@ -1047,7 +1047,7 @@ export const data = [
               },
               Config: {
                 apiKey: 'testApiKey',
-                apiVersion: 'latest',
+                apiVersion: 'v2',
                 apiServer: 'standard',
                 sendAnonymousId: false,
               },
@@ -1140,7 +1140,7 @@ export const data = [
               },
               Config: {
                 apiKey: 'testApiKey',
-                apiVersion: 'latest',
+                apiVersion: 'v2',
                 apiServer: 'standard',
                 sendAnonymousId: false,
               },
@@ -1296,7 +1296,7 @@ export const data = [
               },
               Config: {
                 apiKey: 'intercomApiKey',
-                apiVersion: '1.4',
+                apiVersion: 'v1',
                 appId: '9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0',
                 collectContext: false,
               },
@@ -1443,7 +1443,7 @@ export const data = [
               },
               Config: {
                 apiKey: 'intercomApiKey',
-                apiVersion: '1.4',
+                apiVersion: 'v1',
                 appId: '9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0',
                 collectContext: false,
               },
@@ -1579,7 +1579,7 @@ export const data = [
               },
               Config: {
                 apiKey: 'intercomApiKey',
-                apiVersion: '1.4',
+                apiVersion: 'v1',
                 appId: '9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0',
                 collectContext: false,
               },
@@ -1715,7 +1715,7 @@ export const data = [
               },
               Config: {
                 apiKey: 'intercomApiKey',
-                apiVersion: '1.4',
+                apiVersion: 'v1',
                 appId: '9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0',
                 collectContext: false,
               },
@@ -1850,7 +1850,7 @@ export const data = [
               },
               Config: {
                 apiKey: 'intercomApiKey',
-                apiVersion: '1.4',
+                apiVersion: 'v1',
                 appId: '9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0',
                 collectContext: false,
               },
@@ -1974,7 +1974,7 @@ export const data = [
               },
               Config: {
                 apiKey: 'intercomApiKey',
-                apiVersion: '1.4',
+                apiVersion: 'v1',
                 appId: '9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0',
                 collectContext: false,
               },
@@ -2132,7 +2132,7 @@ export const data = [
               },
               Config: {
                 apiKey: 'intercomApiKey',
-                apiVersion: '1.4',
+                apiVersion: 'v1',
                 appId: '9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0',
                 collectContext: false,
                 updateLastRequestAt: false,
@@ -2286,7 +2286,7 @@ export const data = [
               },
               Config: {
                 apiKey: 'intercomApiKey',
-                apiVersion: '1.4',
+                apiVersion: 'v1',
                 appId: '9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0',
                 collectContext: false,
               },
@@ -2457,7 +2457,7 @@ export const data = [
               },
               Config: {
                 apiKey: 'intercomApiKey',
-                apiVersion: '1.4',
+                apiVersion: 'v1',
                 appId: '9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0',
                 collectContext: false,
               },
@@ -2615,7 +2615,7 @@ export const data = [
               },
               Config: {
                 apiKey: 'intercomApiKey',
-                apiVersion: '1.4',
+                apiVersion: 'v1',
                 appId: '9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0',
                 collectContext: false,
               },
@@ -2745,7 +2745,7 @@ export const data = [
               },
               Config: {
                 apiKey: 'intercomApiKey',
-                apiVersion: '1.4',
+                apiVersion: 'v1',
                 appId: '9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0',
                 collectContext: false,
               },
@@ -2867,7 +2867,7 @@ export const data = [
               },
               Config: {
                 apiKey: 'intercomApiKey',
-                apiVersion: '1.4',
+                apiVersion: 'v1',
                 appId: '9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0',
                 collectContext: false,
               },
@@ -3003,7 +3003,7 @@ export const data = [
               },
               Config: {
                 apiKey: 'intercomApiKey',
-                apiVersion: '1.4',
+                apiVersion: 'v1',
                 appId: '9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0',
                 collectContext: false,
                 sendAnonymousId: true,
@@ -3141,7 +3141,7 @@ export const data = [
               },
               Config: {
                 apiKey: 'intercomApiKey',
-                apiVersion: '1.4',
+                apiVersion: 'v1',
                 appId: '9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0',
                 collectContext: false,
                 sendAnonymousId: false,
@@ -3218,7 +3218,7 @@ export const data = [
               Config: {
                 apiKey: 'abcd=',
                 appId: 'asdasdasd',
-                apiVersion: '1.4',
+                apiVersion: 'v1',
                 collectContext: false,
               },
             },
@@ -3384,7 +3384,7 @@ export const data = [
               },
               Config: {
                 apiKey: 'abcd=',
-                apiVersion: '1.4',
+                apiVersion: 'v1',
                 appId: 'asdasdasd',
                 collectContext: false,
               },
@@ -3485,7 +3485,7 @@ export const data = [
               },
               Config: {
                 apiKey: 'abcd=',
-                apiVersion: '1.4',
+                apiVersion: 'v1',
                 appId: 'asdasdasd',
                 collectContext: false,
               },
@@ -3632,7 +3632,7 @@ export const data = [
               Config: {
                 apiKey: 'abcd=',
                 appId: 'asdasdasd',
-                apiVersion: '1.4',
+                apiVersion: 'v1',
                 collectContext: false,
                 sendAnonymousId: true,
               },

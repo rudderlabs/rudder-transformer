@@ -38,7 +38,7 @@ export const data = [
                 Config: {
                   apiKey: 'testApiKey',
                   apiServer: 'standard',
-                  apiVersion: 'latest',
+                  apiVersion: 'v2',
                   sendAnonymousId: false,
                   updateLastRequestAt: true,
                 },
@@ -84,7 +84,7 @@ export const data = [
                 Config: {
                   apiKey: 'testApiKey',
                   apiServer: 'standard',
-                  apiVersion: 'latest',
+                  apiVersion: 'v2',
                   sendAnonymousId: false,
                   updateLastRequestAt: false,
                 },
@@ -126,7 +126,7 @@ export const data = [
                 },
                 Config: {
                   apiKey: 'testApiKey',
-                  apiVersion: 'latest',
+                  apiVersion: 'v2',
                   apiServer: 'eu',
                   sendAnonymousId: false,
                 },
@@ -169,7 +169,7 @@ export const data = [
                 },
                 Config: {
                   apiKey: 'testApiKey',
-                  apiVersion: 'latest',
+                  apiVersion: 'v2',
                   apiServer: 'eu',
                   sendAnonymousId: false,
                 },
@@ -225,7 +225,7 @@ export const data = [
                 Config: {
                   apiKey: 'testApiKey',
                   apiServer: 'standard',
-                  apiVersion: 'latest',
+                  apiVersion: 'v2',
                   sendAnonymousId: false,
                   updateLastRequestAt: true,
                 },
@@ -280,7 +280,7 @@ export const data = [
                 Config: {
                   apiKey: 'testApiKey',
                   apiServer: 'standard',
-                  apiVersion: 'latest',
+                  apiVersion: 'v2',
                   sendAnonymousId: false,
                   updateLastRequestAt: false,
                 },
@@ -321,7 +321,7 @@ export const data = [
                 Config: {
                   apiKey: 'testApiKey',
                   apiServer: 'eu',
-                  apiVersion: 'latest',
+                  apiVersion: 'v2',
                   sendAnonymousId: false,
                 },
                 DestinationDefinition: {
@@ -353,7 +353,7 @@ export const data = [
                 Config: {
                   apiKey: 'testApiKey',
                   apiServer: 'eu',
-                  apiVersion: 'latest',
+                  apiVersion: 'v2',
                   sendAnonymousId: false,
                 },
                 DestinationDefinition: {
@@ -459,7 +459,7 @@ export const data = [
                 },
                 Config: {
                   apiKey: 'testApiKey',
-                  apiVersion: '1.4',
+                  apiVersion: 'v1',
                   sendAnonymousId: false,
                   updateLastRequestAt: false,
                   collectContext: false,
@@ -539,7 +539,7 @@ export const data = [
                 },
                 Config: {
                   apiKey: 'testApiKey',
-                  apiVersion: '1.4',
+                  apiVersion: 'v1',
                   sendAnonymousId: false,
                   updateLastRequestAt: false,
                   collectContext: false,
@@ -579,7 +579,7 @@ export const data = [
                 },
                 Config: {
                   apiKey: 'testApiKey',
-                  apiVersion: '1.4',
+                  apiVersion: 'v1',
                   sendAnonymousId: false,
                   collectContext: false,
                 },
@@ -642,7 +642,7 @@ export const data = [
               destination: {
                 Config: {
                   apiKey: 'testApiKey',
-                  apiVersion: '1.4',
+                  apiVersion: 'v1',
                   collectContext: false,
                   sendAnonymousId: false,
                   updateLastRequestAt: false,
@@ -702,7 +702,7 @@ export const data = [
                 },
                 Config: {
                   apiKey: 'testApiKey',
-                  apiVersion: '1.4',
+                  apiVersion: 'v1',
                   collectContext: false,
                   sendAnonymousId: false,
                   updateLastRequestAt: false,
@@ -772,7 +772,7 @@ export const data = [
               destination: {
                 Config: {
                   apiKey: 'testApiKey',
-                  apiVersion: '1.4',
+                  apiVersion: 'v1',
                   collectContext: false,
                   sendAnonymousId: false,
                 },

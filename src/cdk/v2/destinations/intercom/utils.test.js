@@ -211,7 +211,7 @@ describe('getBaseEndpoint utility test', () => {
     const destination = {
       Config: {
         apiServer: 'eu',
-        apiVersion: 'latest',
+        apiVersion: 'v2',
       },
     };
     const result = getBaseEndpoint(destination);
@@ -222,7 +222,7 @@ describe('getBaseEndpoint utility test', () => {
     const destination = {
       Config: {
         apiServer: 'au',
-        apiVersion: 'latest',
+        apiVersion: 'v2',
       },
     };
     const result = getBaseEndpoint(destination);
@@ -254,7 +254,7 @@ describe('getHeaders utility test', () => {
       Accept: 'application/json',
       'Intercom-Version': '2.10',
     };
-    const headers = getHeaders(destination, 'latest');
+    const headers = getHeaders(destination, 'v2');
     expect(headers).toEqual(expectedHeaders);
   });
 });
@@ -311,7 +311,7 @@ describe('getName utility test', () => {
 describe('filterCustomAttributes utility test', () => {
   it('Should return an empty object when all custom attributes are reserved attributes', () => {
     const payload = { custom_attributes: { email: 'test@rudder.com', name: 'rudder test' } };
-    const result = filterCustomAttributes(payload, 'user', { Config: { apiVersion: 'latest' } });
+    const result = filterCustomAttributes(payload, 'user', { Config: { apiVersion: 'v2' } });
     expect(result).toBeUndefined();
   });
 
@@ -319,13 +319,13 @@ describe('filterCustomAttributes utility test', () => {
     const payload = {
       custom_attributes: { source: 'rudder-js-sdk', data: { nestedAttribute: 'nestedValue' } },
     };
-    const result = filterCustomAttributes(payload, 'user', { Config: { apiVersion: 'latest' } });
+    const result = filterCustomAttributes(payload, 'user', { Config: { apiVersion: 'v2' } });
     expect(result).toEqual({ source: 'rudder-js-sdk', data_nestedAttribute: 'nestedValue' });
   });
 
   it('Should return null when custom_attributes is null', () => {
     const payload = { custom_attributes: null };
-    const result = filterCustomAttributes(payload, 'company', { Config: { apiVersion: 'latest' } });
+    const result = filterCustomAttributes(payload, 'company', { Config: { apiVersion: 'v2' } });
     expect(result).toBeUndefined();
   });
 });

@@ -39,7 +39,7 @@ const getHeaders = (destination, apiVersion) => ({
   'Content-Type': JSON_MIME_TYPE,
   Authorization: `Bearer ${destination.Config.apiKey}`,
   Accept: JSON_MIME_TYPE,
-  'Intercom-Version': apiVersion === '1.4' ? '1.4' : '2.10',
+  'Intercom-Version': apiVersion === 'v1' ? '1.4' : '2.10',
 });
 
 /**
@@ -50,9 +50,9 @@ const getHeaders = (destination, apiVersion) => ({
 const getBaseEndpoint = (destination) => {
   const { apiServer } = destination.Config;
   let { apiVersion } = destination.Config;
-  apiVersion = isDefinedAndNotNull(apiVersion) ? apiVersion : '1.4';
+  apiVersion = isDefinedAndNotNull(apiVersion) ? apiVersion : 'v2';
 
-  if (apiVersion === '1.4') return BASE_ENDPOINT;
+  if (apiVersion === 'v1') return BASE_ENDPOINT;
   switch (apiServer) {
     case 'eu':
       return BASE_EU_ENDPOINT;
@@ -195,15 +195,15 @@ const attachUserAndCompany = (message, Config) => {
 const filterCustomAttributes = (payload, type, destination) => {
   let ReservedAttributesList;
   let { apiVersion } = destination.Config;
-  apiVersion = isDefinedAndNotNull(apiVersion) ? apiVersion : '1.4';
+  apiVersion = isDefinedAndNotNull(apiVersion) ? apiVersion : 'v2';
   if (type === 'user') {
     ReservedAttributesList =
-      apiVersion === '1.4'
+      apiVersion === 'v1'
         ? ReservedAttributes.v1UserAttributes
         : ReservedAttributes.v2UserAttributes;
   } else {
     ReservedAttributesList =
-      apiVersion === '1.4'
+      apiVersion === 'v1'
         ? ReservedAttributes.v1CompanyAttributes
         : ReservedAttributes.v2CompanyAttributes;
   }
@@ -214,7 +214,7 @@ const filterCustomAttributes = (payload, type, destination) => {
     });
     if (isDefinedAndNotNull(customAttributes) && Object.keys(customAttributes).length > 0) {
       customAttributes =
-        apiVersion === '1.4' ? flattenJson(customAttributes) : flattenJson(customAttributes, '_');
+        apiVersion === 'v1' ? flattenJson(customAttributes) : flattenJson(customAttributes, '_');
     }
   }
   return Object.keys(customAttributes).length === 0 ? undefined : customAttributes;

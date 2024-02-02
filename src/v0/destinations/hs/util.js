@@ -539,11 +539,16 @@ const performHubSpotSearch = async (
             feature: 'transformation',
             endpointPath,
           })
-        : await httpPOST(url, requestData, {
-            destType: 'hs',
-            feature: 'transformation',
-            endpointPath,
-          });
+        : await httpPOST(
+            url,
+            requestData,
+            {},
+            {
+              destType: 'hs',
+              feature: 'transformation',
+              endpointPath,
+            },
+          );
     const processedResponse = processAxiosResponse(searchResponse);
 
     if (processedResponse.status !== 200) {

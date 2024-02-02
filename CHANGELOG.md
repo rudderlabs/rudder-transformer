@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.54.4](https://github.com/rudderlabs/rudder-transformer/compare/v1.54.3...v1.54.4) (2024-01-31)
+
+
+### Bug Fixes
+
+* purchsse events for reddit ([56d24ec](https://github.com/rudderlabs/rudder-transformer/commit/56d24ec74c0c21bcdcdf262b4feec6edd1dff51c))
+
 ### [1.54.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.54.2...v1.54.3) (2024-01-30)
 
 

@@ -52,6 +52,7 @@ export const data = [
                   state: 'WB',
                   street: '',
                 },
+                'category-unsubscribe': { email: ['Marketing', 'Transactional'] },
               },
               integrations: {
                 All: true,
@@ -107,6 +108,7 @@ export const data = [
                           state: 'WB',
                           street: '',
                         },
+                        'category-unsubscribe': { email: ['Marketing', 'Transactional'] },
                       },
                       identity: 'anon_id',
                     },

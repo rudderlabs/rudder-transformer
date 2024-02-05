@@ -59,6 +59,5 @@ describe('responseHandler', () => {
     expect(() => {
       responseHandler(destinationResponse);
     }).toThrow('Request failed with status: 200 with number of bad records 1');
-
   });
 });

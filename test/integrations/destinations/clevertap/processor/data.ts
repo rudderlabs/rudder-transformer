@@ -1462,11 +1462,6 @@ export const data = [
               properties: {
                 country_region: 'India',
                 test: 'abc',
-                listCategories: ['list1', 'list2'],
-                objectCategories: {
-                  category1: 'value1',
-                  category2: 'value2',
-                },
               },
               receivedAt: '2021-08-20T12:49:07.691Z',
               rudderId: '138c4214-b537-4f77-9dea-9abde70b5147',
@@ -1501,11 +1496,6 @@ export const data = [
                       evtData: {
                         country_region: 'India',
                         test: 'abc',
-                        listCategories: ['list1', 'list2'],
-                        objectCategories: {
-                          category1: 'value1',
-                          category2: 'value2',
-                        },
                       },
                       type: 'event',
                       objectId: 'cd3a4439-7df0-4475-acb9-6659c7c4dfe3',

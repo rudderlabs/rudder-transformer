@@ -1280,6 +1280,31 @@ function getFullName(message) {
 }
 
 /**
+ * Generates an exclusion list from mapping config.
+ *
+ * @param {Array} mappingConfig - The mapping config.
+ *   [
+ *     {
+ *       "destKey": "item_code",
+ *       "sourceKeys": [
+ *         "product_id",
+ *         "sku"
+ *       ]
+ *     },
+ *     {
+ *       "destKey": "name",
+ *       "sourceKeys": "name"
+ *     }
+ *   ]
+ * @returns {Array} - The generated exclusion list.
+ *   ["product_id", "sku", "name"]
+ */
+const generateExclusionList = (mappingConfig) =>
+  mappingConfig.flatMap((mapping) =>
+    Array.isArray(mapping.sourceKeys) ? [...mapping.sourceKeys] : [mapping.sourceKeys],
+  );
+
+/**
  * Extract fileds from message with exclusions
  * Pass the keys of message for extraction and
  * exclusion fields to exlude and the payload to map into
@@ -1305,10 +1330,10 @@ function getFullName(message) {
  * )
  * -------------------------------------------
  * The above call will map the fields other than the
- * exlusion list from the given keys to the destination payload
+ * exclusion list from the given keys to the destination payload
  *
  */
-function extractCustomFields(message, destination, keys, exclusionFields) {
+function extractCustomFields(message, payload, keys, exclusionFields) {
   const mappingKeys = [];
   if (Array.isArray(keys)) {
     keys.forEach((key) => {
@@ -1319,7 +1344,7 @@ function extractCustomFields(message, destination, keys, exclusionFields) {
         });
         mappingKeys.forEach((mappingKey) => {
           if (!(typeof messageContext[mappingKey] === 'undefined')) {
-            set(destination, mappingKey, get(messageContext, mappingKey));
+            set(payload, mappingKey, get(messageContext, mappingKey));
           }
         });
       }
@@ -1330,14 +1355,14 @@ function extractCustomFields(message, destination, keys, exclusionFields) {
     });
     mappingKeys.forEach((mappingKey) => {
       if (!(typeof message[mappingKey] === 'undefined')) {
-        set(destination, mappingKey, get(message, mappingKey));
+        set(payload, mappingKey, get(message, mappingKey));
       }
     });
   } else {
     logger.debug('unable to parse keys');
   }
 
-  return destination;
+  return payload;
 }
 
 // Deleting nested properties from objects
@@ -2132,6 +2157,7 @@ module.exports = {
   defaultPutRequestConfig,
   defaultRequestConfig,
   deleteObjectProperty,
+  generateExclusionList,
   extractCustomFields,
   flattenJson,
   flattenMap,

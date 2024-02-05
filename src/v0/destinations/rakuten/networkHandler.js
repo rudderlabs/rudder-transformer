@@ -99,4 +99,5 @@ class networkHandler {
 
 module.exports = {
   networkHandler,
+  responseHandler
 };

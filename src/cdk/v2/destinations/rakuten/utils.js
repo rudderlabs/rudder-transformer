@@ -54,11 +54,12 @@ const constructLineItems = (properties) => {
 
   // Map 'amountList' by evaluating 'amount' or deriving it from 'price' and 'quantity'
   const amountList = products.map((product) => {
-    if (!product.amount) {
-      if (product?.price) {
-        return product.quantity * product.price * 100;
-      }
+    if (!product?.amount && !product?.price) {
       throw new InstrumentationError('Either amount or price is required for every product');
+    }
+
+    if (product.price) {
+        return product.quantity * product.price * 100;
     }
     return product.amount * 100;
   });

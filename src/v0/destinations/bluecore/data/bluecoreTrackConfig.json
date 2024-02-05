@@ -28,11 +28,6 @@
     "required": false
   },
   {
-    "destKey": "event",
-    "sourceKeys": "event",
-    "required": false
-  },
-  {
     "destKey": "properties.customer.sex",
     "sourceKeys": ["traits.gender", "context.traits.gender","traits.sex", "context.traits.sex"],
     "required": false
@@ -56,7 +51,7 @@
   },
   {
     "destKey": "properties.order_id",
-    "sourceKeys": ["properties.order_id", "properties.orderId"],
+    "sourceKeys": "properties.order_id",
     "required": false
   },
   {

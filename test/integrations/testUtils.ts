@@ -42,7 +42,9 @@ export const getAllTestMockDataFilePaths = (dirPath: string, destination: string
   const globPattern = join(dirPath, '**', 'network.ts');
   let testFilePaths = globSync(globPattern);
   if (destination) {
-    const commonTestFilePaths = testFilePaths.filter((testFile) => testFile.includes('common'));
+    const commonTestFilePaths = testFilePaths.filter((testFile) =>
+      testFile.includes('test/integrations/common'),
+    );
     testFilePaths = testFilePaths.filter((testFile) => testFile.includes(destination));
     testFilePaths = [...commonTestFilePaths, ...testFilePaths];
   }

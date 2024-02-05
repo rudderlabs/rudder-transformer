@@ -499,6 +499,7 @@ const extractIDsForSearchAPI = (inputs) => {
 
 /**
  * Returns hubspot records
+ * Ref : https://developers.hubspot.com/docs/api/crm/search
  * @param {*} data
  * @param {*} requestOptions
  * @param {*} objectType
@@ -544,7 +545,7 @@ const performHubSpotSearch = async (
 
     if (processedResponse.status !== 200) {
       throw new NetworkError(
-        `rETL - Error during searching object record. ${processedResponse.response?.message}`,
+        `rETL - Error during searching object record. ${JSON.stringify(processedResponse.response?.message)}`,
         processedResponse.status,
         {
           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedResponse.status),

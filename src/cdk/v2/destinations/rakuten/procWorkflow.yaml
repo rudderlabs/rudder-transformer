@@ -1,0 +1,39 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+  - path: ./utils
+
+steps:
+  - name: messageType
+    template: |
+      .message.type.toLowerCase();
+  - name: validateInput
+    template: |
+      let messageType = $.outputs.messageType;
+      $.assert(messageType, "message Type is not present. Aborting");
+      $.assert(messageType in {{$.EventType.([.TRACK])}}, "message type " + messageType + " is not supported");
+      $.assertConfig(.destination.Config.mid, "Merchant ID is not present. Aborting");
+  - name: prepareTrackPayload
+    condition: $.outputs.messageType === {{$.EventType.TRACK}}
+    template: |
+      const properties = $.constructProperties(.message);
+      const lineItems = $.constructLineItems(.message.properties)
+      $.context.payload = {...properties,...lineItems,xml:1, mid:.destination.Config.mid}
+      $.context.payload = $.removeUndefinedAndNullValues($.context.payload);
+
+  - name: buildResponse
+    template: |
+      const response = $.defaultRequestConfig();
+      response.params = $.context.payload;
+      response.method = "GET";
+      response.endpoint = "https://track.linksynergy.com/ep";
+      response.headers = {
+        "accept": "application/json",
+        "content-type": "application/json"
+      };
+      response

@@ -572,4 +572,76 @@ export const data = [
       },
     },
   },
+  {
+    name: 'fb_custom_audience',
+    description: 'user addition failed due expired access token error',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          version: '1',
+          type: 'REST',
+          method: 'DELETE',
+          endpoint: getEndPoint('aud1'),
+          headers: {
+            'test-dest-response-key': 'accessTokenInvalidError',
+          },
+          params: {
+            access_token: 'ABC',
+            payload: {
+              is_raw: true,
+              data_source: {
+                sub_type: 'ANYTHING',
+              },
+              schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
+              data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
+            },
+          },
+          body: {
+            JSON: {},
+            XML: {},
+            JSON_ARRAY: {},
+            FORM: {},
+          },
+          files: {},
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 400,
+        body: {
+          output: {
+            destinationResponse: {
+              error: {
+                code: 190,
+                error_subcode: 463,
+                fbtrace_id: 'A3b8C6PpI-kdIOwPwV4PANi',
+                message:
+                  'Error validating access token: Session has expired on Tuesday, 01-Aug-23 10:12:14 PDT. The current time is Sunday, 28-Jan-24 16:01:17 PST.',
+                type: 'OAuthException',
+              },
+              status: 400,
+            },
+            message:
+              'Error validating access token: Session has expired on Tuesday, 01-Aug-23 10:12:14 PDT. The current time is Sunday, 28-Jan-24 16:01:17 PST.',
+            statTags: {
+              destType: 'FB_CUSTOM_AUDIENCE',
+              destinationId: 'Non-determininable',
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
+              meta: 'accessTokenExpired',
+              feature: 'dataDelivery',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'Non-determininable',
+            },
+            status: 400,
+          },
+        },
+      },
+    },
+  },
 ];

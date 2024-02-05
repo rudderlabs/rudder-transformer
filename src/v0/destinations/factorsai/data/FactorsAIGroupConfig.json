@@ -34,5 +34,10 @@
     "destKey": "email",
     "sourceKeys": "email",
     "required": false
+  },
+  {
+    "sourceKeys": "context",
+    "destKey": "context",
+    "required": false
   }
 ]

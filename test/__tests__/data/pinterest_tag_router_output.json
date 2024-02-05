@@ -294,22 +294,28 @@
       },
       "metadata": [
         {
-          "jobId": 1
+          "jobId": 1,
+          "userId": "u1"
         },
         {
-          "jobId": 2
+          "jobId": 2,
+          "userId": "u1"
         },
         {
-          "jobId": 3
+          "jobId": 3,
+          "userId": "u1"
         },
         {
-          "jobId": 4
+          "jobId": 4,
+          "userId": "u1"
         },
         {
-          "jobId": 6
+          "jobId": 6,
+          "userId": "u1"
         },
         {
-          "jobId": 7
+          "jobId": 7,
+          "userId": "u1"
         }
       ],
       "batched": true,
@@ -360,7 +366,8 @@
     {
       "metadata": [
         {
-          "jobId": 5
+          "jobId": 5,
+          "userId": "u1"
         }
       ],
       "statTags": {
@@ -593,13 +600,16 @@
       },
       "metadata": [
         {
-          "jobId": 8
+          "jobId": 8,
+          "userId": "u1"
         },
         {
-          "jobId": 9
+          "jobId": 9,
+          "userId": "u1"
         },
         {
-          "jobId": 10
+          "jobId": 10,
+          "userId": "u1"
         }
       ],
       "batched": true,

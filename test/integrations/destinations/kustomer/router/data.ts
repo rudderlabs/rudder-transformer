@@ -75,15 +75,9 @@ export const data = [
                 integrations: { All: true },
                 originalTimestamp: '2021-01-03T17:02:53.193Z',
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               destination: {
-                Config: {
-                  apiKey: 'dummyApiKey',
-                  genericPage: false,
-                  genericScreen: false,
-                },
+                Config: { apiKey: 'dummyApiKey', genericPage: false, genericScreen: false },
               },
             },
             {
@@ -128,15 +122,9 @@ export const data = [
                 integrations: { All: true },
                 originalTimestamp: '2021-01-03T17:02:53.195Z',
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               destination: {
-                Config: {
-                  apiKey: 'dummyApiKey',
-                  genericPage: false,
-                  genericScreen: false,
-                },
+                Config: { apiKey: 'dummyApiKey', genericPage: false, genericScreen: false },
               },
             },
             {
@@ -181,9 +169,7 @@ export const data = [
                 integrations: { All: true },
                 originalTimestamp: '2021-01-03T17:02:53.195Z',
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 3, userId: 'u1' },
               destination: {
                 Config: {
                   baseEndpoint: 'https://api.prod2.kustomerapp.com',
@@ -245,29 +231,10 @@ export const data = [
                       },
                     ],
                     birthdayAt: '2005-01-01T23:28:56.782Z',
-                    emails: [
-                      {
-                        type: 'home',
-                        email: 'test@rudderstack.com',
-                      },
-                    ],
-                    phones: [
-                      {
-                        type: 'home',
-                        phone: '+12345578900',
-                      },
-                    ],
-                    urls: [
-                      {
-                        url: 'www.mattertoast873.com',
-                      },
-                    ],
-                    locations: [
-                      {
-                        type: 'home',
-                        address: '24 Dovers Lane Miami Florida 1890001',
-                      },
-                    ],
+                    emails: [{ type: 'home', email: 'test@rudderstack.com' }],
+                    phones: [{ type: 'home', phone: '+12345578900' }],
+                    urls: [{ url: 'www.mattertoast873.com' }],
+                    locations: [{ type: 'home', address: '24 Dovers Lane Miami Florida 1890001' }],
                   },
                   XML: {},
                   JSON_ARRAY: {},
@@ -275,19 +242,11 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
-                Config: {
-                  apiKey: 'dummyApiKey',
-                  genericPage: false,
-                  genericScreen: false,
-                },
+                Config: { apiKey: 'dummyApiKey', genericPage: false, genericScreen: false },
               },
             },
             {
@@ -303,17 +262,12 @@ export const data = [
                 params: {},
                 body: {
                   JSON: {
-                    identity: {
-                      externalId: 'user@doe',
-                    },
+                    identity: { externalId: 'user@doe' },
                     event: {
                       name: 'Tracking-Weekender',
                       sessionId: '63nsa22',
                       trackingId: 'sahetwiac',
-                      meta: {
-                        YearServicedNum: 211,
-                        region: 'strapis',
-                      },
+                      meta: { YearServicedNum: 211, region: 'strapis' },
                     },
                   },
                   XML: {},
@@ -322,19 +276,11 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
-                Config: {
-                  apiKey: 'dummyApiKey',
-                  genericPage: false,
-                  genericScreen: false,
-                },
+                Config: { apiKey: 'dummyApiKey', genericPage: false, genericScreen: false },
               },
             },
             {
@@ -350,17 +296,12 @@ export const data = [
                 params: {},
                 body: {
                   JSON: {
-                    identity: {
-                      externalId: 'user@doe',
-                    },
+                    identity: { externalId: 'user@doe' },
                     event: {
                       name: 'Tracking-Weekender',
                       sessionId: '63nsa22',
                       trackingId: 'sahetwiac',
-                      meta: {
-                        YearServicedNum: 211,
-                        region: 'strapis',
-                      },
+                      meta: { YearServicedNum: 211, region: 'strapis' },
                     },
                   },
                   XML: {},
@@ -369,11 +310,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 3, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {

@@ -26,24 +26,15 @@ export const data = [
                     'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
                 },
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               message: {
                 event: 'New Alert',
                 type: 'track',
                 sentAt: '2021-01-03T17:02:53.195Z',
                 channel: 'web',
-                properties: {
-                  message: 'Please check the alert',
-                  brand: 'Zara',
-                  price: '12000',
-                },
+                properties: { message: 'Please check the alert', brand: 'Zara', price: '12000' },
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -51,13 +42,8 @@ export const data = [
                     namespace: 'com.rudderlabs.javascript',
                   },
                   locale: 'en-US',
-                  screen: {
-                    density: 2,
-                  },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.1.11',
-                  },
+                  screen: { density: 2 },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.1.11' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0',
@@ -108,11 +94,7 @@ export const data = [
                   files: {},
                 },
               ],
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -178,24 +160,15 @@ export const data = [
                   ],
                 },
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               message: {
                 event: 'Order Completed',
                 type: 'track',
                 sentAt: '2021-01-03T17:02:53.195Z',
                 channel: 'web',
-                properties: {
-                  message: 'Please check the alert',
-                  brand: 'Zara',
-                  price: '12000',
-                },
+                properties: { message: 'Please check the alert', brand: 'Zara', price: '12000' },
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -203,13 +176,8 @@ export const data = [
                     namespace: 'com.rudderlabs.javascript',
                   },
                   locale: 'en-US',
-                  screen: {
-                    density: 2,
-                  },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.1.11',
-                  },
+                  screen: { density: 2 },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.1.11' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0',
@@ -312,11 +280,7 @@ export const data = [
                   files: {},
                 },
               ],
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -396,9 +360,7 @@ export const data = [
                   ],
                 },
               },
-              metadata: {
-                jobId: 3,
-              },
+              metadata: { jobId: 3, userId: 'u1' },
               message: {
                 messageId: 'ec5481b6-a926-4d2e-b293-0b3a77c4d3be',
                 originalTimestamp: '2022-06-22T10:57:58Z',
@@ -419,18 +381,10 @@ export const data = [
                     type: 'ios',
                     attTrackingStatus: 3,
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   locale: 'en-US',
-                  os: {
-                    name: 'iOS',
-                    version: '14.4.1',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: 'iOS', version: '14.4.1' },
+                  screen: { density: 2 },
                 },
                 traits: {
                   email: 'testuser@google.com',
@@ -485,11 +439,7 @@ export const data = [
                 endpoint:
                   'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
               },
-              metadata: [
-                {
-                  jobId: 3,
-                },
-              ],
+              metadata: [{ jobId: 3, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {

@@ -11,10 +11,7 @@ export const data = [
           input: [
             {
               destination: {
-                Config: {
-                  branchKey: '<branch key goes here>',
-                  useNativeSDK: false,
-                },
+                Config: { branchKey: '<branch key goes here>', useNativeSDK: false },
                 DestinationDefinition: {
                   DisplayName: 'Branch Metrics',
                   ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
@@ -25,9 +22,7 @@ export const data = [
                 Name: 'branch test',
                 Transformations: [],
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               message: {
                 anonymousId: 'sampath',
                 channel: 'web',
@@ -39,34 +34,19 @@ export const data = [
                     version: '1.0.0',
                   },
                   ip: '0.0.0.0',
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   locale: 'en-US',
-                  os: {
-                    name: 'iOS',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
-                  traits: {
-                    anonymousId: 'sampath',
-                    email: 'sampath@gmail.com',
-                  },
+                  os: { name: 'iOS', version: '' },
+                  screen: { density: 2 },
+                  traits: { anonymousId: 'sampath', email: 'sampath@gmail.com' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
                 },
                 event: 'product added',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 messageId: 'ea5cfab2-3961-4d8a-8187-3d1858c90a9f',
                 originalTimestamp: '2020-01-17T04:53:51.185Z',
-                properties: {
-                  name: 'sampath',
-                },
+                properties: { name: 'sampath' },
                 receivedAt: '2020-01-17T10:23:52.688+05:30',
                 request_ip: '[::1]:64059',
                 sentAt: '2020-01-17T04:53:52.667Z',
@@ -77,10 +57,7 @@ export const data = [
             },
             {
               destination: {
-                Config: {
-                  branchKey: '<branch key goes here>',
-                  useNativeSDK: false,
-                },
+                Config: { branchKey: '<branch key goes here>', useNativeSDK: false },
                 DestinationDefinition: {
                   DisplayName: 'Branch Metrics',
                   ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
@@ -91,9 +68,7 @@ export const data = [
                 Name: 'branch test',
                 Transformations: [],
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               message: {
                 anonymousId: 'sampath',
                 channel: 'web',
@@ -105,28 +80,15 @@ export const data = [
                     version: '1.0.0',
                   },
                   ip: '0.0.0.0',
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   locale: 'en-US',
-                  os: {
-                    name: 'iOS',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: 'iOS', version: '' },
+                  screen: { density: 2 },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
                 },
-                integrations: {
-                  All: true,
-                },
-                traits: {
-                  anonymousId: 'sampath',
-                  email: 'sampath@gmail.com',
-                },
+                integrations: { All: true },
+                traits: { anonymousId: 'sampath', email: 'sampath@gmail.com' },
                 messageId: 'ea5cfab2-3961-4d8a-8187-3d1858c90a9f',
                 originalTimestamp: '2020-01-17T04:53:51.185Z',
                 receivedAt: '2020-01-17T10:23:52.688+05:30',
@@ -154,20 +116,13 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api2.branch.io/v2/event/standard',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Accept: 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
                 params: {},
                 body: {
                   JSON: {
                     branch_key: '<branch key goes here>',
                     name: 'ADD_TO_CART',
-                    content_items: [
-                      {
-                        $product_name: 'sampath',
-                      },
-                    ],
+                    content_items: [{ $product_name: 'sampath' }],
                     user_data: {
                       os: 'iOS',
                       os_version: '',
@@ -185,18 +140,11 @@ export const data = [
                 files: {},
                 userId: 'sampath',
               },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
-                Config: {
-                  branchKey: '<branch key goes here>',
-                  useNativeSDK: false,
-                },
+                Config: { branchKey: '<branch key goes here>', useNativeSDK: false },
                 DestinationDefinition: {
                   DisplayName: 'Branch Metrics',
                   ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
@@ -214,19 +162,13 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://api2.branch.io/v2/event/custom',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Accept: 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
                 params: {},
                 body: {
                   JSON: {
                     branch_key: '<branch key goes here>',
                     name: 'sampath',
-                    custom_data: {
-                      anonymousId: 'sampath',
-                      email: 'sampath@gmail.com',
-                    },
+                    custom_data: { anonymousId: 'sampath', email: 'sampath@gmail.com' },
                     content_items: [{}],
                     user_data: {
                       os: 'iOS',
@@ -245,18 +187,11 @@ export const data = [
                 files: {},
                 userId: 'sampath',
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
-                Config: {
-                  branchKey: '<branch key goes here>',
-                  useNativeSDK: false,
-                },
+                Config: { branchKey: '<branch key goes here>', useNativeSDK: false },
                 DestinationDefinition: {
                   DisplayName: 'Branch Metrics',
                   ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',

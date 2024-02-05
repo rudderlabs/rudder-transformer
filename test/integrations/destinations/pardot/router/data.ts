@@ -5,7 +5,7 @@ export const data = [
     name: 'pardot',
     description: 'Test 0',
     feature: 'router',
-    module: 'destination',
+    module: MODULES.DESTINATION,
     version: 'v0',
     input: {
       request: {
@@ -25,9 +25,7 @@ export const data = [
                   name: 'PARDOT',
                   displayName: 'Pardot',
                   config: {
-                    auth: {
-                      type: 'OAuth',
-                    },
+                    auth: { type: 'OAuth' },
                     transformAt: 'router',
                     transformAtV1: 'router',
                     saveDestinationResponse: true,
@@ -58,10 +56,8 @@ export const data = [
               },
               metadata: {
                 jobId: 1,
-                secret: {
-                  access_token: 'myToken',
-                  refresh_token: 'myRefreshToken',
-                },
+                secret: { access_token: 'myToken', refresh_token: 'myRefreshToken' },
+                userId: 'u1',
               },
               message: {
                 type: 'identify',
@@ -70,10 +66,7 @@ export const data = [
                 userId: 'user12345',
                 channel: 'web',
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -100,19 +93,11 @@ export const data = [
                     innerHeight: 776,
                   },
                   traits: {},
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.1.18',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.1.18' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36',
-                  externalId: [
-                    {
-                      type: 'pardotId',
-                      id: 123435,
-                    },
-                  ],
+                  externalId: [{ type: 'pardotId', id: 123435 }],
                 },
                 rudderId: 'fa2994a5-2a81-45fd-9919-fcf5596ad380',
                 messageId: 'e2d1a383-d9a2-4e03-a9dc-131d153c4d95',
@@ -121,9 +106,7 @@ export const data = [
                 receivedAt: '2021-11-15T14:06:42.497+05:30',
                 request_ip: '[::1]',
                 anonymousId: 'd8b2ed61-7fa5-4ef8-bd92-6a506157c0cf',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 originalTimestamp: '2021-09-08T11:10:45.466Z',
                 traits: {
                   email: 'Roger12@waltair.io',
@@ -149,9 +132,7 @@ export const data = [
                   name: 'PARDOT',
                   displayName: 'Pardot',
                   config: {
-                    auth: {
-                      type: 'OAuth',
-                    },
+                    auth: { type: 'OAuth' },
                     transformAt: 'router',
                     transformAtV1: 'router',
                     saveDestinationResponse: true,
@@ -182,10 +163,8 @@ export const data = [
               },
               metadata: {
                 jobId: 2,
-                secret: {
-                  access_token: 'myToken',
-                  refresh_token: 'myRefreshToken',
-                },
+                secret: { access_token: 'myToken', refresh_token: 'myRefreshToken' },
+                userId: 'u1',
               },
               message: {
                 type: 'identify',
@@ -194,10 +173,7 @@ export const data = [
                 userId: 'user12345',
                 channel: 'web',
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -224,10 +200,7 @@ export const data = [
                     innerHeight: 776,
                   },
                   traits: {},
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.1.18',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.1.18' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36',
@@ -239,9 +212,7 @@ export const data = [
                 receivedAt: '2021-11-15T14:06:42.497+05:30',
                 request_ip: '[::1]',
                 anonymousId: 'd8b2ed61-7fa5-4ef8-bd92-6a506157c0cf',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 originalTimestamp: '2021-09-08T11:10:45.466Z',
                 traits: {
                   email: 'Roger_12@waltair.io',
@@ -267,9 +238,7 @@ export const data = [
                   name: 'PARDOT',
                   displayName: 'Pardot',
                   config: {
-                    auth: {
-                      type: 'OAuth',
-                    },
+                    auth: { type: 'OAuth' },
                     transformAt: 'router',
                     transformAtV1: 'router',
                     saveDestinationResponse: true,
@@ -300,10 +269,8 @@ export const data = [
               },
               metadata: {
                 jobId: 3,
-                secret: {
-                  access_token: 'myToken',
-                  refresh_token: 'myRefreshToken',
-                },
+                secret: { access_token: 'myToken', refresh_token: 'myRefreshToken' },
+                userId: 'u1',
               },
               message: {
                 type: 'identify',
@@ -312,10 +279,7 @@ export const data = [
                 userId: 'user12345',
                 channel: 'web',
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -342,19 +306,11 @@ export const data = [
                     innerHeight: 776,
                   },
                   traits: {},
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.1.18',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.1.18' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36',
-                  externalId: [
-                    {
-                      type: 'crmfid',
-                      id: '00Q6r000002LKhTPVR',
-                    },
-                  ],
+                  externalId: [{ type: 'crmfid', id: '00Q6r000002LKhTPVR' }],
                 },
                 rudderId: 'fa2994a5-2a81-45fd-9919-fcf5596ad380',
                 messageId: 'e2d1a383-d9a2-4e03-a9dc-131d153c4d95',
@@ -363,9 +319,7 @@ export const data = [
                 receivedAt: '2021-11-15T14:06:42.497+05:30',
                 request_ip: '[::1]',
                 anonymousId: 'd8b2ed61-7fa5-4ef8-bd92-6a506157c0cf',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 originalTimestamp: '2021-09-08T11:10:45.466Z',
                 traits: {
                   email: 'nick_kyrgios@waltair.io',
@@ -391,9 +345,7 @@ export const data = [
                   name: 'PARDOT',
                   displayName: 'Pardot',
                   config: {
-                    auth: {
-                      type: 'OAuth',
-                    },
+                    auth: { type: 'OAuth' },
                     transformAt: 'router',
                     transformAtV1: 'router',
                     saveDestinationResponse: true,
@@ -424,10 +376,8 @@ export const data = [
               },
               metadata: {
                 jobId: 4,
-                secret: {
-                  access_token: 'myExpiredToken',
-                  refresh_token: 'myRefreshToken',
-                },
+                secret: { access_token: 'myExpiredToken', refresh_token: 'myRefreshToken' },
+                userId: 'u1',
               },
               message: {
                 type: 'identify',
@@ -436,10 +386,7 @@ export const data = [
                 userId: 'user12345',
                 channel: 'web',
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -466,10 +413,7 @@ export const data = [
                     innerHeight: 776,
                   },
                   traits: {},
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.1.18',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.1.18' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36',
@@ -481,9 +425,7 @@ export const data = [
                 receivedAt: '2021-11-15T14:06:42.497+05:30',
                 request_ip: '[::1]',
                 anonymousId: 'd8b2ed61-7fa5-4ef8-bd92-6a506157c0cf',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 originalTimestamp: '2021-09-08T11:10:45.466Z',
                 traits: {
                   email: 'rolex_waltair@mywebsite.io',
@@ -509,9 +451,7 @@ export const data = [
                   name: 'PARDOT',
                   displayName: 'Pardot',
                   config: {
-                    auth: {
-                      type: 'OAuth',
-                    },
+                    auth: { type: 'OAuth' },
                     transformAt: 'router',
                     transformAtV1: 'router',
                     saveDestinationResponse: true,
@@ -540,10 +480,7 @@ export const data = [
                 Name: 'test destination',
                 Transformations: [],
               },
-              metadata: {
-                jobId: 5,
-                secret: null,
-              },
+              metadata: { jobId: 5, secret: null, userId: 'u1' },
               message: {
                 type: 'identify',
                 event: 'navigated user',
@@ -551,10 +488,7 @@ export const data = [
                 userId: 'user12345',
                 channel: 'web',
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -581,10 +515,7 @@ export const data = [
                     innerHeight: 776,
                   },
                   traits: {},
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.1.18',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.1.18' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36',
@@ -596,9 +527,7 @@ export const data = [
                 receivedAt: '2021-11-15T14:06:42.497+05:30',
                 request_ip: '[::1]',
                 anonymousId: 'd8b2ed61-7fa5-4ef8-bd92-6a506157c0cf',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 originalTimestamp: '2021-09-08T11:10:45.466Z',
                 traits: {
                   email: 'rolex_waltair@mywebsite.io',
@@ -649,10 +578,8 @@ export const data = [
               metadata: [
                 {
                   jobId: 1,
-                  secret: {
-                    access_token: 'myToken',
-                    refresh_token: 'myRefreshToken',
-                  },
+                  secret: { access_token: 'myToken', refresh_token: 'myRefreshToken' },
+                  userId: 'u1',
                 },
               ],
               batched: false,
@@ -670,9 +597,7 @@ export const data = [
                   name: 'PARDOT',
                   displayName: 'Pardot',
                   config: {
-                    auth: {
-                      type: 'OAuth',
-                    },
+                    auth: { type: 'OAuth' },
                     transformAt: 'router',
                     transformAtV1: 'router',
                     saveDestinationResponse: true,
@@ -731,10 +656,8 @@ export const data = [
               metadata: [
                 {
                   jobId: 2,
-                  secret: {
-                    access_token: 'myToken',
-                    refresh_token: 'myRefreshToken',
-                  },
+                  secret: { access_token: 'myToken', refresh_token: 'myRefreshToken' },
+                  userId: 'u1',
                 },
               ],
               batched: false,
@@ -752,9 +675,7 @@ export const data = [
                   name: 'PARDOT',
                   displayName: 'Pardot',
                   config: {
-                    auth: {
-                      type: 'OAuth',
-                    },
+                    auth: { type: 'OAuth' },
                     transformAt: 'router',
                     transformAtV1: 'router',
                     saveDestinationResponse: true,
@@ -813,10 +734,8 @@ export const data = [
               metadata: [
                 {
                   jobId: 3,
-                  secret: {
-                    access_token: 'myToken',
-                    refresh_token: 'myRefreshToken',
-                  },
+                  secret: { access_token: 'myToken', refresh_token: 'myRefreshToken' },
+                  userId: 'u1',
                 },
               ],
               batched: false,
@@ -834,9 +753,7 @@ export const data = [
                   name: 'PARDOT',
                   displayName: 'Pardot',
                   config: {
-                    auth: {
-                      type: 'OAuth',
-                    },
+                    auth: { type: 'OAuth' },
                     transformAt: 'router',
                     transformAtV1: 'router',
                     saveDestinationResponse: true,
@@ -895,10 +812,8 @@ export const data = [
               metadata: [
                 {
                   jobId: 4,
-                  secret: {
-                    access_token: 'myExpiredToken',
-                    refresh_token: 'myRefreshToken',
-                  },
+                  secret: { access_token: 'myExpiredToken', refresh_token: 'myRefreshToken' },
+                  userId: 'u1',
                 },
               ],
               batched: false,
@@ -916,9 +831,7 @@ export const data = [
                   name: 'PARDOT',
                   displayName: 'Pardot',
                   config: {
-                    auth: {
-                      type: 'OAuth',
-                    },
+                    auth: { type: 'OAuth' },
                     transformAt: 'router',
                     transformAtV1: 'router',
                     saveDestinationResponse: true,
@@ -962,9 +875,7 @@ export const data = [
                   name: 'PARDOT',
                   displayName: 'Pardot',
                   config: {
-                    auth: {
-                      type: 'OAuth',
-                    },
+                    auth: { type: 'OAuth' },
                     transformAt: 'router',
                     transformAtV1: 'router',
                     saveDestinationResponse: true,
@@ -993,12 +904,7 @@ export const data = [
                 Name: 'test destination',
                 Transformations: [],
               },
-              metadata: [
-                {
-                  jobId: 5,
-                  secret: null,
-                },
-              ],
+              metadata: [{ jobId: 5, secret: null, userId: 'u1' }],
               batched: false,
               statusCode: 500,
               error: 'OAuth - access token not found',
@@ -1046,9 +952,7 @@ export const data = [
             },
           },
           files: {},
-          params: {
-            destination: 'pardot',
-          },
+          params: { destination: 'pardot' },
         },
         method: 'POST',
       },
@@ -1062,10 +966,7 @@ export const data = [
             status: 200,
             destinationResponse: {
               response: {
-                '@attributes': {
-                  stat: 'ok',
-                  version: 1,
-                },
+                '@attributes': { stat: 'ok', version: 1 },
                 prospect: {
                   id: 123435,
                   campaign_id: 42213,
@@ -1112,11 +1013,7 @@ export const data = [
                   is_starred: null,
                   created_at: '2022-01-21 18:21:46',
                   updated_at: '2022-01-21 18:48:41',
-                  campaign: {
-                    id: 42113,
-                    name: 'Test',
-                    crm_fid: '7012y000000MNOCLL4',
-                  },
+                  campaign: { id: 42113, name: 'Test', crm_fid: '7012y000000MNOCLL4' },
                   assigned_to: {
                     user: {
                       id: 38443703,
@@ -1142,26 +1039,10 @@ export const data = [
                     id: 304,
                     name: 'Default',
                     profile_criteria: [
-                      {
-                        id: 1500,
-                        name: 'Shipping Volume',
-                        matches: 'Unknown',
-                      },
-                      {
-                        id: 1502,
-                        name: 'Industry',
-                        matches: 'Unknown',
-                      },
-                      {
-                        id: 1506,
-                        name: 'Job Title',
-                        matches: 'Unknown',
-                      },
-                      {
-                        id: 1508,
-                        name: 'Department',
-                        matches: 'Unknown',
-                      },
+                      { id: 1500, name: 'Shipping Volume', matches: 'Unknown' },
+                      { id: 1502, name: 'Industry', matches: 'Unknown' },
+                      { id: 1506, name: 'Job Title', matches: 'Unknown' },
+                      { id: 1508, name: 'Department', matches: 'Unknown' },
                     ],
                   },
                   visitors: null,
@@ -1207,9 +1088,7 @@ export const data = [
             },
           },
           files: {},
-          params: {
-            destination: 'pardot',
-          },
+          params: { destination: 'pardot' },
         },
         method: 'POST',
       },
@@ -1223,10 +1102,7 @@ export const data = [
             status: 201,
             destinationResponse: {
               response: {
-                '@attributes': {
-                  stat: 'ok',
-                  version: 1,
-                },
+                '@attributes': { stat: 'ok', version: 1 },
                 prospect: {
                   id: 123435,
                   campaign_id: 42213,
@@ -1273,11 +1149,7 @@ export const data = [
                   is_starred: null,
                   created_at: '2022-01-21 18:21:46',
                   updated_at: '2022-01-21 18:48:41',
-                  campaign: {
-                    id: 42113,
-                    name: 'Test',
-                    crm_fid: '7012y000000MNOCLL4',
-                  },
+                  campaign: { id: 42113, name: 'Test', crm_fid: '7012y000000MNOCLL4' },
                   assigned_to: {
                     user: {
                       id: 38443703,
@@ -1303,26 +1175,10 @@ export const data = [
                     id: 304,
                     name: 'Default',
                     profile_criteria: [
-                      {
-                        id: 1500,
-                        name: 'Shipping Volume',
-                        matches: 'Unknown',
-                      },
-                      {
-                        id: 1502,
-                        name: 'Industry',
-                        matches: 'Unknown',
-                      },
-                      {
-                        id: 1506,
-                        name: 'Job Title',
-                        matches: 'Unknown',
-                      },
-                      {
-                        id: 1508,
-                        name: 'Department',
-                        matches: 'Unknown',
-                      },
+                      { id: 1500, name: 'Shipping Volume', matches: 'Unknown' },
+                      { id: 1502, name: 'Industry', matches: 'Unknown' },
+                      { id: 1506, name: 'Job Title', matches: 'Unknown' },
+                      { id: 1508, name: 'Department', matches: 'Unknown' },
                     ],
                   },
                   visitors: null,
@@ -1367,9 +1223,7 @@ export const data = [
             },
           },
           files: {},
-          params: {
-            destination: 'pardot',
-          },
+          params: { destination: 'pardot' },
         },
         method: 'POST',
       },
@@ -1383,10 +1237,7 @@ export const data = [
             status: 200,
             destinationResponse: {
               response: {
-                '@attributes': {
-                  stat: 'ok',
-                  version: 1,
-                },
+                '@attributes': { stat: 'ok', version: 1 },
                 prospect: {
                   id: 123435,
                   campaign_id: 42213,
@@ -1433,11 +1284,7 @@ export const data = [
                   is_starred: null,
                   created_at: '2022-01-21 18:21:46',
                   updated_at: '2022-01-21 18:48:41',
-                  campaign: {
-                    id: 42113,
-                    name: 'Test',
-                    crm_fid: '7012y000000MNOCLL4',
-                  },
+                  campaign: { id: 42113, name: 'Test', crm_fid: '7012y000000MNOCLL4' },
                   assigned_to: {
                     user: {
                       id: 38443703,
@@ -1463,26 +1310,10 @@ export const data = [
                     id: 304,
                     name: 'Default',
                     profile_criteria: [
-                      {
-                        id: 1500,
-                        name: 'Shipping Volume',
-                        matches: 'Unknown',
-                      },
-                      {
-                        id: 1502,
-                        name: 'Industry',
-                        matches: 'Unknown',
-                      },
-                      {
-                        id: 1506,
-                        name: 'Job Title',
-                        matches: 'Unknown',
-                      },
-                      {
-                        id: 1508,
-                        name: 'Department',
-                        matches: 'Unknown',
-                      },
+                      { id: 1500, name: 'Shipping Volume', matches: 'Unknown' },
+                      { id: 1502, name: 'Industry', matches: 'Unknown' },
+                      { id: 1506, name: 'Job Title', matches: 'Unknown' },
+                      { id: 1508, name: 'Department', matches: 'Unknown' },
                     ],
                   },
                   visitors: null,
@@ -1528,9 +1359,7 @@ export const data = [
             },
           },
           files: {},
-          params: {
-            destination: 'pardot',
-          },
+          params: { destination: 'pardot' },
         },
         method: 'POST',
       },
@@ -1545,11 +1374,7 @@ export const data = [
             status: 500,
             authErrorCategory: 'REFRESH_TOKEN',
             destinationResponse: {
-              '@attributes': {
-                stat: 'fail',
-                version: 1,
-                err_code: 184,
-              },
+              '@attributes': { stat: 'fail', version: 1, err_code: 184 },
               err: 'access_token is invalid, unknown, or malformed: Inactive token',
             },
             statTags: {
@@ -1558,7 +1383,7 @@ export const data = [
               destinationId: 'Non-determininable',
               workspaceId: 'Non-determininable',
               errorType: 'retryable',
-              feature: 'dataDelivery',
+              feature: FEATURES.DATA_DELIVERY,
               implementation: 'native',
               module: 'destination',
             },

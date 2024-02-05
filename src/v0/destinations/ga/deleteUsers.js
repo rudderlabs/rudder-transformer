@@ -80,6 +80,7 @@ const userDeletionHandler = async (userAttributes, config, rudderDestInfo) => {
         {
           destType: 'ga',
           feature: 'deleteUsers',
+          endpointPath: '/userDeletion/userDeletionRequests:upsert',
         },
       );
       // process the response to know about refreshing scenario

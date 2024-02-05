@@ -1,12 +1,18 @@
 const { isEmpty } = require('lodash');
 const get = require('get-value');
-const { NetworkError } = require('@rudderstack/integrations-lib');
+const {
+  NetworkError,
+  ConfigurationAuthError,
+  isDefinedAndNotNull,
+  ERROR_TYPES,
+  TAG_NAMES,
+  METADATA,
+} = require('@rudderstack/integrations-lib');
 const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
-const tags = require('../tags');
 const { ErrorDetailsExtractorBuilder } = require('../../../util/error-extractor');
 
 /**
@@ -100,12 +106,26 @@ const errorDetailsMap = {
   190: {
     460: new ErrorDetailsExtractorBuilder()
       .setStatus(400)
+      .setStat({
+        [TAG_NAMES.ERROR_TYPE]: ERROR_TYPES.AUTH,
+      })
       .setMessage(
         'The session has been invalidated because the user changed their password or Facebook has changed the session for security reasons',
       )
       .build(),
+
+    463: new ErrorDetailsExtractorBuilder()
+      .setStatus(400)
+      .setStat({
+        [TAG_NAMES.ERROR_TYPE]: ERROR_TYPES.AUTH,
+      })
+      .setMessageField('message')
+      .build(),
     default: new ErrorDetailsExtractorBuilder()
       .setStatus(400)
+      .setStat({
+        [TAG_NAMES.ERROR_TYPE]: ERROR_TYPES.AUTH,
+      })
       .setMessage('Invalid OAuth 2.0 access token')
       .build(),
   },
@@ -217,7 +237,7 @@ const getStatus = (error) => {
     // Unhandled error response
     return {
       status: errorStatus,
-      tags: { [tags.TAG_NAMES.META]: tags.METADATA.UNHANDLED_STATUS_CODE },
+      stats: { [TAG_NAMES.META]: METADATA.UNHANDLED_STATUS_CODE },
     };
   }
   errorStatus = errorDetail.status;
@@ -227,7 +247,7 @@ const getStatus = (error) => {
     errorMessage = get(error, errorDetail?.messageDetails?.field);
   }
 
-  return { status: errorStatus, errorMessage };
+  return { status: errorStatus, errorMessage, stats: errorDetail?.stat };
 };
 
 const errorResponseHandler = (destResponse) => {
@@ -237,13 +257,19 @@ const errorResponseHandler = (destResponse) => {
     return;
   }
   const { error } = response;
-  const { status, errorMessage, tags: errorStatTags } = getStatus(error);
+  const { status, errorMessage, stats: errorStatTags } = getStatus(error);
+  if (
+    isDefinedAndNotNull(errorStatTags) &&
+    errorStatTags?.[TAG_NAMES.ERROR_TYPE] === ERROR_TYPES.AUTH
+  ) {
+    throw new ConfigurationAuthError(errorMessage, { ...response, status: destResponse.status });
+  }
   throw new NetworkError(
     `${errorMessage || error.message || 'Unknown failure during response transformation'}`,
     status,
     {
       ...errorStatTags,
-      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+      [TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },
     { ...response, status: destResponse.status },
   );

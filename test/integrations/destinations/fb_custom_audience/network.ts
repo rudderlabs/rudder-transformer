@@ -480,4 +480,46 @@ export const networkCallsData = [
       status: 403,
     },
   },
+  {
+    httpReq: {
+      version: '1',
+      type: 'REST',
+      method: 'DELETE',
+      endpoint: getEndPoint('aud1'),
+      headers: {
+        'test-dest-response-key': 'accessTokenInvalidError',
+      },
+      params: {
+        access_token: 'ABC',
+        payload: {
+          is_raw: true,
+          data_source: {
+            sub_type: 'ANYTHING',
+          },
+          schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
+          data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
+        },
+      },
+      userId: '',
+      body: {
+        JSON: {},
+        XML: {},
+        JSON_ARRAY: {},
+        FORM: {},
+      },
+      files: {},
+    },
+    httpRes: {
+      data: {
+        error: {
+          message: 'Error validating access token: Session has expired on Tuesday, 01-Aug-23 10:12:14 PDT. The current time is Sunday, 28-Jan-24 16:01:17 PST.',
+          type: 'OAuthException',
+          code: 190,
+          error_subcode: 463,
+          fbtrace_id: 'A3b8C6PpI-kdIOwPwV4PANi'
+        },
+      },
+      status: 400,
+    },
+  }
 ];

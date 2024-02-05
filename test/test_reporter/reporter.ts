@@ -125,9 +125,9 @@ export const generateTestReport = (testData, output, result) => {
 
 export const initaliseReport = () => {
   const htmlTemplate = generateHTMLTemplate();
-  if (!fs.existsSync('test_reports')){
+  if (!fs.existsSync('test_reports')) {
     fs.mkdirSync('test_reports');
-}
+  }
   fs.writeFileSync('test_reports/test-report.html', htmlTemplate);
   console.log('Report initialised');
 };

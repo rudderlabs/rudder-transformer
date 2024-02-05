@@ -30,5 +30,5 @@ const productProperties = {
   sequencelist: 'sequence',
 };
 // list of all properties that are required
-const requiredProductProperties = ['skulist', 'qlist'];
+const requiredProductProperties = ['skulist', 'qlist', 'namelist'];
 module.exports = { ConfigCategories, mappingConfig, productProperties, requiredProductProperties };

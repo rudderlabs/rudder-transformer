@@ -151,6 +151,7 @@ const DestCanonicalNames = {
     'TheTradeDesk',
     'the trade desk',
   ],
+  INTERCOM: ['INTERCOM', 'intercom', 'Intercom'],
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

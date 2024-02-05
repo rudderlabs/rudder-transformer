@@ -33,6 +33,7 @@ export const ProxyV0RequestSchema = z.object({
     .optional(),
   files: z.record(z.unknown()).optional(),
   metadata: ProxyMetadataSchema,
+  destinationConfig: z.record(z.unknown()),
 });
 
 export const ProxyV1RequestSchema = z.object({

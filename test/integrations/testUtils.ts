@@ -379,7 +379,11 @@ export const compareObjects = (obj1, obj2, logPrefix = '', differences: string[]
   return differences;
 };
 
-export const generateProxyV0Payload = (payloadParameters: any, metadataInput?: ProxyMetdata) => {
+export const generateProxyV0Payload = (
+  payloadParameters: any,
+  metadataInput?: ProxyMetdata,
+  destinationConfig?: any,
+) => {
   let metadata: ProxyMetdata = {
     jobId: 1,
     attemptNum: 1,
@@ -411,6 +415,7 @@ export const generateProxyV0Payload = (payloadParameters: any, metadataInput?: P
     },
     files: payloadParameters.files || {},
     metadata,
+    destinationConfig: destinationConfig || {},
   };
   return removeUndefinedAndNullValues(payload);
 };

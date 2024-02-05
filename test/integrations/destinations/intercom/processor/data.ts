@@ -1024,10 +1024,16 @@ export const data = [
         body: [
           {
             message: {
-              userId: 'user@1',
               channel: 'web',
               context: {
-                mappedToDestination: true,
+                externalId: [
+                  {
+                    id: 'user@1',
+                    type: 'INTERCOM-customer',
+                    identifierType: 'user_id',
+                  },
+                ],
+                mappedToDestination: 'true',
               },
               traits: {
                 email: 'test@rudderlabs.com',
@@ -1072,6 +1078,7 @@ export const data = [
                   name: 'Test Rudderlabs',
                   phone: '+91 9999999999',
                   owner_id: 13,
+                  user_id: 'user@1',
                 },
                 XML: {},
                 FORM: {},
@@ -1112,7 +1119,7 @@ export const data = [
               userId: 'user@1',
               channel: 'web',
               context: {
-                mappedToDestination: true,
+                mappedToDestination: 'true',
               },
               traits: {
                 event_name: 'Product Viewed',
@@ -2803,11 +2810,12 @@ export const data = [
                 },
                 externalId: [
                   {
-                    identifierType: 'email',
-                    id: 'test@gmail.com',
+                    id: '10156',
+                    type: 'INTERCOM-customer',
+                    identifierType: 'user_id',
                   },
                 ],
-                mappedToDestination: true,
+                mappedToDestination: 'true',
                 device: {
                   id: '58b21c2d-f8d5-4410-a2d0-b268a26b7e33',
                   manufacturer: 'Apple',
@@ -2905,8 +2913,8 @@ export const data = [
                   createdAt: '2020-09-30T19:11:00.337Z',
                   phone: '9876543210',
                   key1: 'value1',
-                  email: 'test@gmail.com',
                   update_last_request_at: true,
+                  user_id: '10156',
                 },
                 JSON_ARRAY: {},
                 XML: {},

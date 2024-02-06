@@ -68,6 +68,11 @@
       "destKey": "properties.device",
       "sourceKeys": "context.device.model",
       "required": false
-    }
+    },
+    {
+        "destKey": "properties.products",
+        "sourceKeys": "properties.products",
+        "required": false
+      }
   ]
   

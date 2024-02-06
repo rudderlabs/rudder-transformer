@@ -77,6 +77,7 @@ const { getHashFromArrayWithDuplicate, isDefinedAndNotNull, ConfigurationError, 
     }
   
     const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+    // TODO: add support for product array
     payload.event = eventName;
     verifyTrackPayload(payload);
     payload.token = Config.bluecoreNamespace;
@@ -87,9 +88,6 @@ const { getHashFromArrayWithDuplicate, isDefinedAndNotNull, ConfigurationError, 
     return payload;
   };
   
-  // const identifyResponseBuilder = async (message, category, { Config }) => {
-  
-  // }
   
   const responseBuilderSimple = (response) => {
     const resp = defaultRequestConfig();

@@ -205,7 +205,10 @@ export const data = [
                           screen_dimensions: {},
                         },
                         event_metadata: {
-                          item_count: 3,
+                          item_count: 2,
+                          currency: 'USD',
+                          value: 1500,
+                          value_decimal: 15,
                           products: [
                             { id: '123', name: 'Monopoly', category: 'Games' },
                             { id: '345', name: 'UNO', category: 'Games' },

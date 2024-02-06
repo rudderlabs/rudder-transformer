@@ -2,7 +2,7 @@ const { TAG_NAMES } = require('@rudderstack/integrations-lib');
 const utilities = require('.');
 const { getFuncTestData } = require('../../../test/testHelper');
 const { FilteredEventsError } = require('./errorTypes');
-const { hasCircularReference, flattenJson } = require('./index');
+const { hasCircularReference, flattenJson, generateExclusionList } = require('./index');
 
 // Names of the utility functions to test
 const functionNames = [
@@ -123,5 +123,46 @@ describe('tests for generateErrorObject', () => {
     const myErr = new FilteredEventsError('error-1');
     const outputErrObj = utilities.generateErrorObject(myErr);
     expect(outputErrObj.statTags).toEqual({});
+  });
+});
+
+describe('generateExclusionList', () => {
+  it('should return an array of excluded keys when given a mapping config', () => {
+    const mappingConfig = [
+      {
+        destKey: 'item_code',
+        sourceKeys: ['product_id', 'sku'],
+      },
+      {
+        destKey: 'name',
+        sourceKeys: 'name',
+      },
+    ];
+    const expected = ['product_id', 'sku', 'name'];
+    const result = generateExclusionList(mappingConfig);
+    expect(result).toEqual(expected);
+  });
+
+  it('should return an empty array when the mapping config is empty', () => {
+    const mappingConfig = [];
+    const expected = [];
+    const result = generateExclusionList(mappingConfig);
+    expect(result).toEqual(expected);
+  });
+
+  it('should return an array with unique keys when the mapping config has duplicate destination keys', () => {
+    const mappingConfig = [
+      {
+        destKey: 'item_code',
+        sourceKeys: ['product_id'],
+      },
+      {
+        destKey: 'item_code',
+        sourceKeys: ['sku'],
+      },
+    ];
+    const expected = ['product_id', 'sku'];
+    const result = generateExclusionList(mappingConfig);
+    expect(result).toEqual(expected);
   });
 });

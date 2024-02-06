@@ -23,7 +23,7 @@ steps:
     template: |
       const properties = $.constructProperties(.message);
       const lineItems = $.constructLineItems(.message.properties)
-      $.context.payload = {...properties,...lineItems,xml:1, mid:.destination.Config.mid}
+      $.context.payload = {...properties,...lineItems,xml:1,source:'rudderstack', mid:.destination.Config.mid}
       $.context.payload = $.removeUndefinedAndNullValues($.context.payload);
 
   - name: buildResponse

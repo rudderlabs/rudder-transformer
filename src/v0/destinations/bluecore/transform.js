@@ -4,9 +4,8 @@ const { getHashFromArrayWithDuplicate, isDefinedAndNotNull, ConfigurationError, 
   const {
    constructPayload,
     ErrorMessage,
-    defaultPostRequestConfig,
+    defaultRequestConfig,
     getValueFromMessage,
-    // isDefinedAndNotNull,
     simpleProcessRouterDest,
     validateEventName,
   } = require('../../util');
@@ -21,15 +20,15 @@ const { getHashFromArrayWithDuplicate, isDefinedAndNotNull, ConfigurationError, 
   const verifyTrackPayload = (payload) => {
   switch (payload.event) {
     case 'search':
-      if (!payload.search_term) {
+      if (!payload.properties.search_term) {
         throw new InstrumentationError('[Bluecore] property:: search_query is required for search event');
       }
       break;
     case 'purchase':
-      if (!payload.order_id) {
+      if (!payload.properties.order_id) {
         throw new InstrumentationError('[Bluecore] property:: order_id is required for purchase event');
       }
-      if (!payload.total) {
+      if (!payload.properties.total) {
         throw new InstrumentationError('[Bluecore] property:: total is required for purchase event');
       }
       break;
@@ -52,7 +51,7 @@ const { getHashFromArrayWithDuplicate, isDefinedAndNotNull, ConfigurationError, 
     }
     /*
     Step 2: To find if the particular event is amongst the list of standard
-            Rudderstack ecommerce events, used specifically for Pinterest Conversion API
+            Rudderstack ecommerce events, used specifically for Bluecore API
             mappings.
     */
     if (!eventName) {
@@ -68,13 +67,9 @@ const { getHashFromArrayWithDuplicate, isDefinedAndNotNull, ConfigurationError, 
           return [eventMapInfo.dest];
         }
     }
-    // Step 3 : check if one single event is mapped then
-    // if(typeof eventName === 'string') {
-    //     return [eventName];
-    // }
     return eventName;
   };
-  const trackResponseBuilder = async (message, category, { Config }, eventName) => {
+  const trackResponseBuilder = (message, category, { Config }, eventName) => {
     const event = getValueFromMessage(message, 'event');
     
     if (!event) {
@@ -96,13 +91,12 @@ const { getHashFromArrayWithDuplicate, isDefinedAndNotNull, ConfigurationError, 
   
   // }
   
-  const responseBuilderSimple = (response, destination) => {
-    const resp = defaultPostRequestConfig();
+  const responseBuilderSimple = (response) => {
+    const resp = defaultRequestConfig();
     resp.endpoint = BASE_URL;
     resp.body.JSON = response;
     resp.headers = {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${destination.Config.bluecoreNamespace}`,
     };
     return resp;
   }
@@ -125,7 +119,8 @@ const { getHashFromArrayWithDuplicate, isDefinedAndNotNull, ConfigurationError, 
       case EventType.TRACK:
         deducedEventNameArray.push(...deduceTrackEventName(message.event, destination.Config));
         deducedEventNameArray.forEach((eventName) => {
-          toSendEvents.push(trackResponseBuilder(message, category, destination, eventName));
+            const trackResponse = trackResponseBuilder(message, category, destination, eventName);
+          toSendEvents.push(trackResponse);
         });
         break;
       case EventType.IDENTIFY:
@@ -135,7 +130,7 @@ const { getHashFromArrayWithDuplicate, isDefinedAndNotNull, ConfigurationError, 
         throw new InstrumentationError(`Message type ${messageType} not supported`);
     }
     toSendEvents.forEach((sendEvent) => {
-      respList.push(responseBuilderSimple(sendEvent, destination));
+      respList.push(responseBuilderSimple(sendEvent));
     });
     return respList;
   };

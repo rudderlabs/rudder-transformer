@@ -12,9 +12,7 @@ export const data = [
             {
               message: {
                 context: {
-                  traits: {
-                    email: 'testone@gmail.com',
-                  },
+                  traits: { email: 'testone@gmail.com' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   ip: '54.100.200.255',
@@ -57,38 +55,29 @@ export const data = [
                     },
                   ],
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
               destination: {
                 Config: {
                   accountId: 'a2_fsddXXXfsfd',
                   hashData: true,
-                  eventsMapping: [
-                    {
-                      from: 'Order Completed',
-                      to: 'Purchase',
-                    },
-                  ],
+                  eventsMapping: [{ from: 'Order Completed', to: 'Purchase' }],
                 },
                 DestinationDefinition: { Config: { cdkV2Enabled: true } },
               },
               metadata: {
                 destinationId: 'destId',
                 workspaceId: 'wspId',
-                secret: {
-                  accessToken: 'dummyAccessToken',
-                },
+                secret: { accessToken: 'dummyAccessToken' },
+                jobId: 1,
+                userId: 'u1',
               },
             },
             {
               message: {
                 context: {
-                  traits: {
-                    email: 'testone@gmail.com',
-                  },
+                  traits: { email: 'testone@gmail.com' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   ip: '54.100.200.255',
@@ -122,38 +111,29 @@ export const data = [
                     },
                   ],
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
               destination: {
                 Config: {
                   accountId: 'a2_fsddXXXfsfd',
                   hashData: true,
-                  eventsMapping: [
-                    {
-                      from: 'Order Completed',
-                      to: 'Purchase',
-                    },
-                  ],
+                  eventsMapping: [{ from: 'Order Completed', to: 'Purchase' }],
                 },
                 DestinationDefinition: { Config: { cdkV2Enabled: true } },
               },
               metadata: {
                 destinationId: 'destId',
                 workspaceId: 'wspId',
-                secret: {
-                  accessToken: 'dummyAccessToken',
-                },
+                secret: { accessToken: 'dummyAccessToken' },
+                jobId: 2,
+                userId: 'u1',
               },
             },
             {
               message: {
                 context: {
-                  traits: {
-                    email: 'testone@gmail.com',
-                  },
+                  traits: { email: 'testone@gmail.com' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   ip: '54.100.200.255',
@@ -177,30 +157,23 @@ export const data = [
                   url: 'https://www.website.com/product/path',
                   image_url: 'https://www.website.com/product/path.webp',
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
               destination: {
                 Config: {
                   accountId: 'a2_fsddXXXfsfd',
                   hashData: true,
-                  eventsMapping: [
-                    {
-                      from: 'Order Completed',
-                      to: 'Purchase',
-                    },
-                  ],
+                  eventsMapping: [{ from: 'Order Completed', to: 'Purchase' }],
                 },
                 DestinationDefinition: { Config: { cdkV2Enabled: true } },
               },
               metadata: {
                 destinationId: 'destId',
                 workspaceId: 'wspId',
-                secret: {
-                  accessToken: 'dummyAccessToken',
-                },
+                secret: { accessToken: 'dummyAccessToken' },
+                jobId: 3,
+                userId: 'u1',
               },
             },
           ],
@@ -220,9 +193,7 @@ export const data = [
                     events: [
                       {
                         event_at: '2019-10-14T09:03:17.562Z',
-                        event_type: {
-                          tracking_type: 'Purchase',
-                        },
+                        event_type: { tracking_type: 'Purchase' },
                         user: {
                           email: 'ac144532d9e4efeab19475d9253a879173ea12a3d2238d1cb8a332a7b3a105f2',
                           external_id:
@@ -239,24 +210,14 @@ export const data = [
                           value: 1500,
                           value_decimal: 15,
                           products: [
-                            {
-                              id: '123',
-                              name: 'Monopoly',
-                              category: 'Games',
-                            },
-                            {
-                              id: '345',
-                              name: 'UNO',
-                              category: 'Games',
-                            },
+                            { id: '123', name: 'Monopoly', category: 'Games' },
+                            { id: '345', name: 'UNO', category: 'Games' },
                           ],
                         },
                       },
                       {
                         event_at: '2019-10-14T09:03:17.562Z',
-                        event_type: {
-                          tracking_type: 'ViewContent',
-                        },
+                        event_type: { tracking_type: 'ViewContent' },
                         user: {
                           email: 'ac144532d9e4efeab19475d9253a879173ea12a3d2238d1cb8a332a7b3a105f2',
                           external_id:
@@ -285,9 +246,7 @@ export const data = [
                       },
                       {
                         event_at: '2019-10-14T09:03:17.562Z',
-                        event_type: {
-                          tracking_type: 'AddToCart',
-                        },
+                        event_type: { tracking_type: 'AddToCart' },
                         user: {
                           email: 'ac144532d9e4efeab19475d9253a879173ea12a3d2238d1cb8a332a7b3a105f2',
                           external_id:
@@ -330,23 +289,23 @@ export const data = [
                 {
                   destinationId: 'destId',
                   workspaceId: 'wspId',
-                  secret: {
-                    accessToken: 'dummyAccessToken',
-                  },
+                  secret: { accessToken: 'dummyAccessToken' },
+                  jobId: 1,
+                  userId: 'u1',
                 },
                 {
                   destinationId: 'destId',
                   workspaceId: 'wspId',
-                  secret: {
-                    accessToken: 'dummyAccessToken',
-                  },
+                  secret: { accessToken: 'dummyAccessToken' },
+                  jobId: 2,
+                  userId: 'u1',
                 },
                 {
                   destinationId: 'destId',
                   workspaceId: 'wspId',
-                  secret: {
-                    accessToken: 'dummyAccessToken',
-                  },
+                  secret: { accessToken: 'dummyAccessToken' },
+                  jobId: 3,
+                  userId: 'u1',
                 },
               ],
               batched: true,
@@ -355,18 +314,9 @@ export const data = [
                 Config: {
                   accountId: 'a2_fsddXXXfsfd',
                   hashData: true,
-                  eventsMapping: [
-                    {
-                      from: 'Order Completed',
-                      to: 'Purchase',
-                    },
-                  ],
+                  eventsMapping: [{ from: 'Order Completed', to: 'Purchase' }],
                 },
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
               },
             },
           ],
@@ -387,9 +337,7 @@ export const data = [
             {
               message: {
                 context: {
-                  traits: {
-                    email: 'testone@gmail.com',
-                  },
+                  traits: { email: 'testone@gmail.com' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   ip: '54.100.200.255',
@@ -422,29 +370,22 @@ export const data = [
                     },
                   ],
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
               destination: {
                 Config: {
                   accountId: 'a2_fsddXXXfsfd',
-                  eventsMapping: [
-                    {
-                      from: 'Order Completed',
-                      to: 'Purchase',
-                    },
-                  ],
+                  eventsMapping: [{ from: 'Order Completed', to: 'Purchase' }],
                 },
                 DestinationDefinition: { Config: { cdkV2Enabled: true } },
               },
               metadata: {
                 destinationId: 'destId',
                 workspaceId: 'wspId',
-                secret: {
-                  accessToken: 'dummyAccessToken',
-                },
+                secret: { accessToken: 'dummyAccessToken' },
+                jobId: 1,
+                userId: 'u1',
               },
             },
           ],
@@ -462,26 +403,17 @@ export const data = [
                 {
                   destinationId: 'destId',
                   workspaceId: 'wspId',
-                  secret: {
-                    accessToken: 'dummyAccessToken',
-                  },
+                  secret: { accessToken: 'dummyAccessToken' },
+                  jobId: 1,
+                  userId: 'u1',
                 },
               ],
               destination: {
                 Config: {
                   accountId: 'a2_fsddXXXfsfd',
-                  eventsMapping: [
-                    {
-                      from: 'Order Completed',
-                      to: 'Purchase',
-                    },
-                  ],
+                  eventsMapping: [{ from: 'Order Completed', to: 'Purchase' }],
                 },
-                DestinationDefinition: {
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
+                DestinationDefinition: { Config: { cdkV2Enabled: true } },
               },
               batched: false,
               statusCode: 400,

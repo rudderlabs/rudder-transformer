@@ -21,15 +21,9 @@ export const data = [
                     namespace: 'com.rudderlabs.javascript',
                     version: '1.1.6',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.1.6',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.1.6' },
                   locale: 'en-GB',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   page: {
                     path: '/testing/script-test.html',
                     referrer: '',
@@ -37,13 +31,9 @@ export const data = [
                     title: '',
                     url: 'http://localhost:3243/testing/script-test.html',
                   },
-                  screen: {
-                    density: 2,
-                  },
+                  screen: { density: 2 },
                   traits: {
-                    company: {
-                      id: 'abc123',
-                    },
+                    company: { id: 'abc123' },
                     createdAt: 'Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)',
                     email: 'rudderTest@gmail.com',
                     name: 'Rudder Test',
@@ -53,9 +43,7 @@ export const data = [
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36',
                 },
                 event: 'Order Completed',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 messageId: 'a0adfab9-baf7-4e09-a2ce-bbe2844c324a',
                 originalTimestamp: '2020-10-16T08:10:12.782Z',
                 properties: {
@@ -125,9 +113,7 @@ export const data = [
                 type: 'track',
                 userId: 'rudder123',
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               destination: {
                 ID: '1iuTZs6eEZVMm6GjRBe6bNShaL3',
                 Name: 'MoEngage Testing',
@@ -136,9 +122,7 @@ export const data = [
                   Name: 'MOENGAGE',
                   DisplayName: 'MoEngage',
                   Config: {
-                    destConfig: {
-                      defaultConfig: ['apiId', 'apiKey', 'region'],
-                    },
+                    destConfig: { defaultConfig: ['apiId', 'apiKey', 'region'] },
                     excludeKeys: [],
                     includeKeys: [],
                     supportedSourceTypes: [
@@ -175,15 +159,9 @@ export const data = [
                     namespace: 'com.rudderlabs.javascript',
                     version: '1.1.6',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.1.6',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.1.6' },
                   locale: 'en-GB',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   page: {
                     path: '/testing/script-test.html',
                     referrer: '',
@@ -191,13 +169,9 @@ export const data = [
                     title: '',
                     url: 'http://localhost:3243/testing/script-test.html',
                   },
-                  screen: {
-                    density: 2,
-                  },
+                  screen: { density: 2 },
                   traits: {
-                    company: {
-                      id: 'abc123',
-                    },
+                    company: { id: 'abc123' },
                     createdAt: 'Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)',
                     email: 'rudderTest@gmail.com',
                     name: 'Rudder Test',
@@ -206,9 +180,7 @@ export const data = [
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36',
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 messageId: 'e108eb05-f6cd-4624-ba8c-568f2e2b3f92',
                 originalTimestamp: '2020-10-16T08:26:14.938Z',
                 receivedAt: '2020-10-16T13:56:14.945+05:30',
@@ -218,9 +190,7 @@ export const data = [
                 type: 'identify',
                 userId: 'rudder123',
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               destination: {
                 ID: '1iuTZs6eEZVMm6GjRBe6bNShaL3',
                 Name: 'MoEngage Testing',
@@ -229,9 +199,7 @@ export const data = [
                   Name: 'MOENGAGE',
                   DisplayName: 'MoEngage',
                   Config: {
-                    destConfig: {
-                      defaultConfig: ['apiId', 'apiKey', 'region'],
-                    },
+                    destConfig: { defaultConfig: ['apiId', 'apiKey', 'region'] },
                     excludeKeys: [],
                     includeKeys: [],
                     supportedSourceTypes: [
@@ -354,11 +322,7 @@ export const data = [
                 files: {},
                 userId: '4eb021e9-a2af-4926-ae82-fe996d12f3c5',
               },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -369,9 +333,7 @@ export const data = [
                   Name: 'MOENGAGE',
                   DisplayName: 'MoEngage',
                   Config: {
-                    destConfig: {
-                      defaultConfig: ['apiId', 'apiKey', 'region'],
-                    },
+                    destConfig: { defaultConfig: ['apiId', 'apiKey', 'region'] },
                     excludeKeys: [],
                     includeKeys: [],
                     supportedSourceTypes: [
@@ -429,11 +391,7 @@ export const data = [
                 files: {},
                 userId: '4eb021e9-a2af-4926-ae82-fe996d12f3c5',
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -444,9 +402,7 @@ export const data = [
                   Name: 'MOENGAGE',
                   DisplayName: 'MoEngage',
                   Config: {
-                    destConfig: {
-                      defaultConfig: ['apiId', 'apiKey', 'region'],
-                    },
+                    destConfig: { defaultConfig: ['apiId', 'apiKey', 'region'] },
                     excludeKeys: [],
                     includeKeys: [],
                     supportedSourceTypes: [

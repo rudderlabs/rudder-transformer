@@ -27,9 +27,7 @@ export const data = [
                 Enabled: true,
                 Transformations: [],
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               message: {
                 anonymousId: 'userId12345',
                 channel: 'web',
@@ -41,18 +39,10 @@ export const data = [
                     version: '1.0.0',
                   },
                   ip: '0.0.0.0',
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   locale: 'en-US',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                   traits: {
                     anonymousId: 'userId12345',
                     email: 'bob.dole@initech.com',
@@ -62,9 +52,7 @@ export const data = [
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36',
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 messageId: '21e475b2-3694-477b-afb6-5b94a81aac21',
                 originalTimestamp: '2019-11-15T10:22:32Z',
                 receivedAt: '2019-11-15T15:52:37+05:30',
@@ -94,9 +82,7 @@ export const data = [
                 Enabled: true,
                 Transformations: [],
               },
-              metadata: {
-                jobId: 3,
-              },
+              metadata: { jobId: 3, userId: 'u1' },
               message: {
                 anonymousId: 'userId12345',
                 channel: 'web',
@@ -108,30 +94,15 @@ export const data = [
                     version: '1.0.0',
                   },
                   ip: '0.0.0.0',
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   locale: 'en-US',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
-                  traits: {
-                    anonymousId: 'userId12345',
-                    email: 'bob.dole@initech.com',
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
+                  traits: { anonymousId: 'userId12345', email: 'bob.dole@initech.com' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36',
                 },
-                integrations: {
-                  MailChimp: {
-                    subscriptionStatus: 'subscribed',
-                  },
-                },
+                integrations: { MailChimp: { subscriptionStatus: 'subscribed' } },
                 messageId: '6d1f3ca8-e2d0-4d34-9926-44596171af0c',
                 originalTimestamp: '2019-11-15T10:26:53Z',
                 receivedAt: '2019-11-15T15:56:58+05:30',
@@ -161,9 +132,7 @@ export const data = [
                 Enabled: true,
                 Transformations: [],
               },
-              metadata: {
-                jobId: 4,
-              },
+              metadata: { jobId: 4, userId: 'u1' },
               message: {
                 anonymousId: 'userId12345',
                 channel: 'web',
@@ -175,30 +144,15 @@ export const data = [
                     version: '1.0.0',
                   },
                   ip: '0.0.0.0',
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   locale: 'en-US',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
-                  traits: {
-                    anonymousId: 'userId12345',
-                    email: 'bob.dole@initech.com',
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
+                  traits: { anonymousId: 'userId12345', email: 'bob.dole@initech.com' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36',
                 },
-                integrations: {
-                  MailChimp: {
-                    subscriptionStatus: 'subscrib',
-                  },
-                },
+                integrations: { MailChimp: { subscriptionStatus: 'subscrib' } },
                 messageId: '6d1f3ca8-e2d0-4d34-9926-44596171af0c',
                 originalTimestamp: '2019-11-15T10:26:53Z',
                 receivedAt: '2019-11-15T15:56:58+05:30',
@@ -228,22 +182,12 @@ export const data = [
                 Enabled: true,
                 Transformations: [],
               },
-              metadata: {
-                jobId: 5,
-              },
+              metadata: { jobId: 5, userId: 'u1' },
               message: {
                 anonymousId: 'userId12345',
                 channel: 'web',
-                context: {
-                  traits: {
-                    anonymousId: 'userId12345',
-                    email: 'bob.dole@initech.com',
-                  },
-                },
-                properties: {
-                  brand: 'Aster',
-                  product: 'Garments',
-                },
+                context: { traits: { anonymousId: 'userId12345', email: 'bob.dole@initech.com' } },
+                properties: { brand: 'Aster', product: 'Garments' },
                 messageId: '6d1f3ca8-e2d0-4d34-9926-44596171af0c',
                 originalTimestamp: '2019-11-15T10:26:53Z',
                 receivedAt: '2019-11-15T15:56:58+05:30',
@@ -273,23 +217,12 @@ export const data = [
                 Enabled: true,
                 Transformations: [],
               },
-              metadata: {
-                jobId: 6,
-              },
+              metadata: { jobId: 6, userId: 'u1' },
               message: {
                 anonymousId: 'userId12345',
                 channel: 'web',
-                context: {
-                  traits: {
-                    anonymousId: 'userId12345',
-                    email: 'bob.dole@initech.com',
-                  },
-                },
-                properties: {
-                  brand: 'Aster',
-                  product: 'Garments',
-                  is_syncing: false,
-                },
+                context: { traits: { anonymousId: 'userId12345', email: 'bob.dole@initech.com' } },
+                properties: { brand: 'Aster', product: 'Garments', is_syncing: false },
                 messageId: '6d1f3ca8-e2d0-4d34-9926-44596171af0c',
                 originalTimestamp: '2019-11-15T10:26:53Z',
                 receivedAt: '2019-11-15T15:56:58+05:30',
@@ -318,31 +251,18 @@ export const data = [
                 Enabled: true,
                 Transformations: [],
               },
-              metadata: {
-                jobId: 7,
-              },
+              metadata: { jobId: 7, userId: 'u1' },
               message: {
                 anonymousId: 'userId12345',
                 channel: 'web',
-                context: {
-                  traits: {
-                    anonymousId: 'userId12345',
-                    email: 'bob.dole@initech.com',
-                  },
-                },
+                context: { traits: { anonymousId: 'userId12345', email: 'bob.dole@initech.com' } },
                 properties: {
                   brand: 'Aster',
                   product: 'Garments',
                   isSyncing: false,
                   products: [
-                    {
-                      product_id: '123',
-                      price: '14',
-                    },
-                    {
-                      product_id: '123',
-                      price: 14,
-                    },
+                    { product_id: '123', price: '14' },
+                    { product_id: '123', price: 14 },
                   ],
                   purchased: false,
                 },
@@ -384,18 +304,12 @@ export const data = [
                     members: [
                       {
                         email_address: 'bob.dole@initech.com',
-                        merge_fields: {
-                          FNAME: 'Bob',
-                          LNAME: 'Dole',
-                          ANONYMOUSI: 'userId12345',
-                        },
+                        merge_fields: { FNAME: 'Bob', LNAME: 'Dole', ANONYMOUSI: 'userId12345' },
                         status: 'subscribed',
                       },
                       {
                         email_address: 'bob.dole@initech.com',
-                        merge_fields: {
-                          ANONYMOUSI: 'userId12345',
-                        },
+                        merge_fields: { ANONYMOUSI: 'userId12345' },
                         status: 'subscribed',
                       },
                     ],
@@ -408,12 +322,8 @@ export const data = [
                 files: {},
               },
               metadata: [
-                {
-                  jobId: 2,
-                },
-                {
-                  jobId: 3,
-                },
+                { jobId: 2, userId: 'u1' },
+                { jobId: 3, userId: 'u1' },
               ],
               batched: true,
               statusCode: 200,
@@ -451,10 +361,7 @@ export const data = [
                   JSON: {
                     name: 'local_testing',
                     occurred_at: '2019-11-15T10:26:53+00:00',
-                    properties: {
-                      brand: 'Aster',
-                      product: 'Garments',
-                    },
+                    properties: { brand: 'Aster', product: 'Garments' },
                   },
                   XML: {},
                   JSON_ARRAY: {},
@@ -463,11 +370,7 @@ export const data = [
                 files: {},
                 audienceId: 'aud111',
               },
-              metadata: [
-                {
-                  jobId: 5,
-                },
-              ],
+              metadata: [{ jobId: 5, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -520,11 +423,7 @@ export const data = [
                 files: {},
                 audienceId: 'aud111',
               },
-              metadata: [
-                {
-                  jobId: 7,
-                },
-              ],
+              metadata: [{ jobId: 7, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -563,11 +462,7 @@ export const data = [
                 Enabled: true,
                 Transformations: [],
               },
-              metadata: [
-                {
-                  jobId: 6,
-                },
-              ],
+              metadata: [{ jobId: 6, userId: 'u1' }],
               batched: false,
               statusCode: 400,
               error: 'Missing required value from "event"',
@@ -598,11 +493,7 @@ export const data = [
                 Enabled: true,
                 Transformations: [],
               },
-              metadata: [
-                {
-                  jobId: 4,
-                },
-              ],
+              metadata: [{ jobId: 4, userId: 'u1' }],
               batched: false,
               statusCode: 400,
               error:
@@ -648,9 +539,7 @@ export const data = [
                 Enabled: true,
                 Transformations: [],
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               message: {
                 anonymousId: 'userId12345',
                 channel: 'web',
@@ -670,30 +559,15 @@ export const data = [
                     version: '1.0.0',
                   },
                   ip: '0.0.0.0',
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   locale: 'en-US',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36',
                 },
-                integrations: {
-                  All: true,
-                },
-                traits: {
-                  merge_fields: {
-                    FIRSTNAME: 'Bob',
-                  },
-                  status: 'subscribed',
-                },
+                integrations: { All: true },
+                traits: { merge_fields: { FIRSTNAME: 'Bob' }, status: 'subscribed' },
                 messageId: '21e475b2-3694-477b-afb6-5b94a81aac21',
                 originalTimestamp: '2019-11-15T10:22:32Z',
                 receivedAt: '2019-11-15T15:52:37+05:30',
@@ -722,14 +596,10 @@ export const data = [
                 Enabled: true,
                 Transformations: [],
               },
-              metadata: {
-                jobId: 3,
-              },
+              metadata: { jobId: 3, userId: 'u1' },
               message: {
                 type: 'identify',
-                traits: {
-                  status: 'subscribed',
-                },
+                traits: { status: 'subscribed' },
                 userId: 'emrichardson820+22822@gmail.com',
                 channel: 'sources',
                 context: {
@@ -772,14 +642,10 @@ export const data = [
                 Enabled: true,
                 Transformations: [],
               },
-              metadata: {
-                jobId: 4,
-              },
+              metadata: { jobId: 4, userId: 'u1' },
               message: {
                 type: 'identify',
-                traits: {
-                  status: 'subscribed',
-                },
+                traits: { status: 'subscribed' },
                 userId: 'emrichardson820+22822@gmail.com',
                 channel: 'sources',
                 context: {
@@ -822,14 +688,10 @@ export const data = [
                 Enabled: true,
                 Transformations: [],
               },
-              metadata: {
-                jobId: 5,
-              },
+              metadata: { jobId: 5, userId: 'u1' },
               message: {
                 type: 'identify',
-                traits: {
-                  status: 'subscrib',
-                },
+                traits: { status: 'subscrib' },
                 userId: 'emrichardson820+22822@gmail.com',
                 channel: 'sources',
                 context: {
@@ -881,20 +743,12 @@ export const data = [
                   JSON: {
                     members: [
                       {
-                        merge_fields: {
-                          FIRSTNAME: 'Bob',
-                        },
+                        merge_fields: { FIRSTNAME: 'Bob' },
                         status: 'subscribed',
                         email_address: 'bob.dole@initech.com',
                       },
-                      {
-                        status: 'subscribed',
-                        email_address: 'emrichardson820+22822@gmail.com',
-                      },
-                      {
-                        status: 'subscribed',
-                        email_address: 'emrichardson820+22822@gmail.com',
-                      },
+                      { status: 'subscribed', email_address: 'emrichardson820+22822@gmail.com' },
+                      { status: 'subscribed', email_address: 'emrichardson820+22822@gmail.com' },
                     ],
                     update_existing: true,
                   },
@@ -905,15 +759,9 @@ export const data = [
                 files: {},
               },
               metadata: [
-                {
-                  jobId: 2,
-                },
-                {
-                  jobId: 3,
-                },
-                {
-                  jobId: 4,
-                },
+                { jobId: 2, userId: 'u1' },
+                { jobId: 3, userId: 'u1' },
+                { jobId: 4, userId: 'u1' },
               ],
               batched: true,
               statusCode: 200,
@@ -951,11 +799,7 @@ export const data = [
                 Enabled: true,
                 Transformations: [],
               },
-              metadata: [
-                {
-                  jobId: 5,
-                },
-              ],
+              metadata: [{ jobId: 5, userId: 'u1' }],
               batched: false,
               statusCode: 400,
               error:

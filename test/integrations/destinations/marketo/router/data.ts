@@ -27,66 +27,33 @@ export const data = [
                     name: 'generic_x86',
                     type: 'android',
                   },
-                  library: {
-                    name: 'com.rudderstack.android.sdk.core',
-                    version: '1.0.1-beta.1',
-                  },
+                  library: { name: 'com.rudderstack.android.sdk.core', version: '1.0.1-beta.1' },
                   locale: 'en-US',
-                  network: {
-                    carrier: 'Android',
-                    bluetooth: false,
-                    cellular: true,
-                    wifi: true,
-                  },
-                  os: {
-                    name: 'Android',
-                    version: '8.1.0',
-                  },
-                  screen: {
-                    density: 420,
-                    height: 1794,
-                    width: 1080,
-                  },
+                  network: { carrier: 'Android', bluetooth: false, cellular: true, wifi: true },
+                  os: { name: 'Android', version: '8.1.0' },
+                  screen: { density: 420, height: 1794, width: 1080 },
                   timezone: 'Asia/Kolkata',
-                  traits: {
-                    anonymousId: 'anon_id_success',
-                  },
+                  traits: { anonymousId: 'anon_id_success' },
                   userAgent:
                     'Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)',
                 },
                 event: 'Product Clicked',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 messageId: 'id1',
-                properties: {
-                  name: 'Test Product',
-                },
+                properties: { name: 'Test Product' },
                 originalTimestamp: '2020-12-17T21:00:59.176Z',
                 type: 'track',
                 sentAt: '2020-03-12T09:05:03.421Z',
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               destination: {
                 Config: {
                   accountId: 'marketo_acct_id_success',
                   clientId: 'marketo_client_id_success',
                   clientSecret: 'marketo_client_secret_success',
                   trackAnonymousEvents: true,
-                  customActivityPropertyMap: [
-                    {
-                      from: 'name',
-                      to: 'productName',
-                    },
-                  ],
-                  leadTraitMapping: [
-                    {
-                      from: 'leadScore',
-                      to: 'customLeadScore',
-                    },
-                  ],
+                  customActivityPropertyMap: [{ from: 'name', to: 'productName' }],
+                  leadTraitMapping: [{ from: 'leadScore', to: 'customLeadScore' }],
                   rudderEventsMapping: [
                     {
                       event: 'Product Clicked',
@@ -134,56 +101,20 @@ export const data = [
                     responseType: 'JSON',
                     rules: {
                       retryable: [
-                        {
-                          success: 'false',
-                          'errors.0.code': 600,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 601,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 602,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 604,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 606,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 607,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 608,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 611,
-                        },
+                        { success: 'false', 'errors.0.code': 600 },
+                        { success: 'false', 'errors.0.code': 601 },
+                        { success: 'false', 'errors.0.code': 602 },
+                        { success: 'false', 'errors.0.code': 604 },
+                        { success: 'false', 'errors.0.code': 606 },
+                        { success: 'false', 'errors.0.code': 607 },
+                        { success: 'false', 'errors.0.code': 608 },
+                        { success: 'false', 'errors.0.code': 611 },
                       ],
                       abortable: [
-                        {
-                          success: 'false',
-                          'errors.0.code': 603,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 605,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 609,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 610,
-                        },
+                        { success: 'false', 'errors.0.code': 603 },
+                        { success: 'false', 'errors.0.code': 605 },
+                        { success: 'false', 'errors.0.code': 609 },
+                        { success: 'false', 'errors.0.code': 610 },
                       ],
                     },
                   },
@@ -216,67 +147,33 @@ export const data = [
                     name: 'generic_x86',
                     type: 'android',
                   },
-                  library: {
-                    name: 'com.rudderstack.android.sdk.core',
-                    version: '1.0.1-beta.1',
-                  },
+                  library: { name: 'com.rudderstack.android.sdk.core', version: '1.0.1-beta.1' },
                   locale: 'en-US',
-                  network: {
-                    carrier: 'Android',
-                    bluetooth: false,
-                    cellular: true,
-                    wifi: true,
-                  },
-                  os: {
-                    name: 'Android',
-                    version: '8.1.0',
-                  },
-                  screen: {
-                    density: 420,
-                    height: 1794,
-                    width: 1080,
-                  },
+                  network: { carrier: 'Android', bluetooth: false, cellular: true, wifi: true },
+                  os: { name: 'Android', version: '8.1.0' },
+                  screen: { density: 420, height: 1794, width: 1080 },
                   timezone: 'Asia/Kolkata',
-                  traits: {
-                    anonymousId: 'anon_id_success',
-                  },
+                  traits: { anonymousId: 'anon_id_success' },
                   userAgent:
                     'Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)',
                 },
                 event: 'Product Clicked',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 messageId: 'id1',
-                properties: {
-                  name: 'Test Product',
-                  product_id: 'prod_1',
-                },
+                properties: { name: 'Test Product', product_id: 'prod_1' },
                 originalTimestamp: '2020-12-17T21:00:59.176Z',
                 type: 'track',
                 sentAt: '2020-12-17T21:00:59.176Z',
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               destination: {
                 Config: {
                   accountId: 'marketo_acct_id_success',
                   clientId: 'marketo_client_id_success',
                   clientSecret: 'marketo_client_secret_success',
                   trackAnonymousEvents: true,
-                  customActivityPropertyMap: [
-                    {
-                      from: 'name',
-                      to: 'productName',
-                    },
-                  ],
-                  leadTraitMapping: [
-                    {
-                      from: 'leadScore',
-                      to: 'customLeadScore',
-                    },
-                  ],
+                  customActivityPropertyMap: [{ from: 'name', to: 'productName' }],
+                  leadTraitMapping: [{ from: 'leadScore', to: 'customLeadScore' }],
                   rudderEventsMapping: [
                     {
                       event: 'Product Clicked',
@@ -324,56 +221,20 @@ export const data = [
                     responseType: 'JSON',
                     rules: {
                       retryable: [
-                        {
-                          success: 'false',
-                          'errors.0.code': 600,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 601,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 602,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 604,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 606,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 607,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 608,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 611,
-                        },
+                        { success: 'false', 'errors.0.code': 600 },
+                        { success: 'false', 'errors.0.code': 601 },
+                        { success: 'false', 'errors.0.code': 602 },
+                        { success: 'false', 'errors.0.code': 604 },
+                        { success: 'false', 'errors.0.code': 606 },
+                        { success: 'false', 'errors.0.code': 607 },
+                        { success: 'false', 'errors.0.code': 608 },
+                        { success: 'false', 'errors.0.code': 611 },
                       ],
                       abortable: [
-                        {
-                          success: 'false',
-                          'errors.0.code': 603,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 605,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 609,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 610,
-                        },
+                        { success: 'false', 'errors.0.code': 603 },
+                        { success: 'false', 'errors.0.code': 605 },
+                        { success: 'false', 'errors.0.code': 609 },
+                        { success: 'false', 'errors.0.code': 610 },
                       ],
                     },
                   },
@@ -395,10 +256,7 @@ export const data = [
                 userId: 'e17c5a5e-5e2f-430b-b497-fe3f1ea3a704',
                 channel: 'web',
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -441,10 +299,7 @@ export const data = [
                     lastWebinarEventDate: '2022-09-15T20:00:00.000Z',
                     nextWebinarEventDate: '2022-09-16T06:15:00.000Z',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '2.12.1',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '2.12.1' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36',
@@ -455,9 +310,7 @@ export const data = [
                 receivedAt: '2022-09-19T10:34:02.956Z',
                 request_ip: '11.105.44.120',
                 anonymousId: '0c7b8b80-9c43-4f8e-b2d2-5e2448a25040',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 originalTimestamp: '2022-09-19T10:34:02.000Z',
               },
               destination: {
@@ -468,38 +321,17 @@ export const data = [
                   trackAnonymousEvents: false,
                   createIfNotExist: true,
                   rudderEventsMapping: [
-                    {
-                      event: 'acq_signup_completed',
-                      marketoActivityId: '100026',
-                    },
-                    {
-                      event: 'act_createwebinarform_submit',
-                      marketoActivityId: '100025',
-                    },
-                    {
-                      event: 'act_presentation_style',
-                      marketoActivityId: '100025',
-                    },
-                    {
-                      event: 'act_webinar_view',
-                      marketoActivityId: '100025',
-                    },
-                    {
-                      event: 'act_webinar_join',
-                      marketoActivityId: '100025',
-                    },
-                    {
-                      event: 'act_presentation_addteammember',
-                      marketoActivityId: '100025',
-                    },
+                    { event: 'acq_signup_completed', marketoActivityId: '100026' },
+                    { event: 'act_createwebinarform_submit', marketoActivityId: '100025' },
+                    { event: 'act_presentation_style', marketoActivityId: '100025' },
+                    { event: 'act_webinar_view', marketoActivityId: '100025' },
+                    { event: 'act_webinar_join', marketoActivityId: '100025' },
+                    { event: 'act_presentation_addteammember', marketoActivityId: '100025' },
                     {
                       event: 'act_engagement_discussions_savediscussion',
                       marketoActivityId: '100025',
                     },
-                    {
-                      event: 'act_engagement_networking_savetime',
-                      marketoActivityId: '100025',
-                    },
+                    { event: 'act_engagement_networking_savetime', marketoActivityId: '100025' },
                   ],
                 },
                 destinationDefinition: {
@@ -533,56 +365,20 @@ export const data = [
                     responseType: 'JSON',
                     rules: {
                       retryable: [
-                        {
-                          success: 'false',
-                          'errors.0.code': 600,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 601,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 602,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 604,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 606,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 607,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 608,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 611,
-                        },
+                        { success: 'false', 'errors.0.code': 600 },
+                        { success: 'false', 'errors.0.code': 601 },
+                        { success: 'false', 'errors.0.code': 602 },
+                        { success: 'false', 'errors.0.code': 604 },
+                        { success: 'false', 'errors.0.code': 606 },
+                        { success: 'false', 'errors.0.code': 607 },
+                        { success: 'false', 'errors.0.code': 608 },
+                        { success: 'false', 'errors.0.code': 611 },
                       ],
                       abortable: [
-                        {
-                          success: 'false',
-                          'errors.0.code': 603,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 605,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 609,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 610,
-                        },
+                        { success: 'false', 'errors.0.code': 603 },
+                        { success: 'false', 'errors.0.code': 605 },
+                        { success: 'false', 'errors.0.code': 609 },
+                        { success: 'false', 'errors.0.code': 610 },
                       ],
                     },
                   },
@@ -604,9 +400,7 @@ export const data = [
                 isConnectionEnabled: true,
                 isProcessorEnabled: true,
               },
-              metadata: {
-                jobId: 3,
-              },
+              metadata: { jobId: 3, userId: 'u1' },
             },
             {
               message: {
@@ -615,10 +409,7 @@ export const data = [
                 userId: 'e17c5a5e-5e2f-430b-b497-fe3f1ea3a704',
                 channel: 'web',
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -661,10 +452,7 @@ export const data = [
                     lastWebinarEventDate: '2022-09-15T20:00:00.000Z',
                     nextWebinarEventDate: '2022-09-16T06:15:00.000Z',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '2.12.1',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '2.12.1' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36',
@@ -675,9 +463,7 @@ export const data = [
                 receivedAt: '2022-09-19T10:34:02.956Z',
                 request_ip: '11.105.44.120',
                 anonymousId: '0c7b8b80-9c43-4f8e-b2d2-5e2448a25040',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 originalTimestamp: '2022-09-19T10:34:02.000Z',
               },
               destination: {
@@ -688,38 +474,17 @@ export const data = [
                   trackAnonymousEvents: false,
                   createIfNotExist: true,
                   rudderEventsMapping: [
-                    {
-                      event: 'acq_signup_completed',
-                      marketoActivityId: '100026',
-                    },
-                    {
-                      event: 'act_createwebinarform_submit',
-                      marketoActivityId: '100025',
-                    },
-                    {
-                      event: 'act_presentation_style',
-                      marketoActivityId: '100025',
-                    },
-                    {
-                      event: 'act_webinar_view',
-                      marketoActivityId: '100025',
-                    },
-                    {
-                      event: 'act_webinar_join',
-                      marketoActivityId: '100025',
-                    },
-                    {
-                      event: 'act_presentation_addteammember',
-                      marketoActivityId: '100025',
-                    },
+                    { event: 'acq_signup_completed', marketoActivityId: '100026' },
+                    { event: 'act_createwebinarform_submit', marketoActivityId: '100025' },
+                    { event: 'act_presentation_style', marketoActivityId: '100025' },
+                    { event: 'act_webinar_view', marketoActivityId: '100025' },
+                    { event: 'act_webinar_join', marketoActivityId: '100025' },
+                    { event: 'act_presentation_addteammember', marketoActivityId: '100025' },
                     {
                       event: 'act_engagement_discussions_savediscussion',
                       marketoActivityId: '100025',
                     },
-                    {
-                      event: 'act_engagement_networking_savetime',
-                      marketoActivityId: '100025',
-                    },
+                    { event: 'act_engagement_networking_savetime', marketoActivityId: '100025' },
                   ],
                 },
                 destinationDefinition: {
@@ -753,56 +518,20 @@ export const data = [
                     responseType: 'JSON',
                     rules: {
                       retryable: [
-                        {
-                          success: 'false',
-                          'errors.0.code': 600,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 601,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 602,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 604,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 606,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 607,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 608,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 611,
-                        },
+                        { success: 'false', 'errors.0.code': 600 },
+                        { success: 'false', 'errors.0.code': 601 },
+                        { success: 'false', 'errors.0.code': 602 },
+                        { success: 'false', 'errors.0.code': 604 },
+                        { success: 'false', 'errors.0.code': 606 },
+                        { success: 'false', 'errors.0.code': 607 },
+                        { success: 'false', 'errors.0.code': 608 },
+                        { success: 'false', 'errors.0.code': 611 },
                       ],
                       abortable: [
-                        {
-                          success: 'false',
-                          'errors.0.code': 603,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 605,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 609,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 610,
-                        },
+                        { success: 'false', 'errors.0.code': 603 },
+                        { success: 'false', 'errors.0.code': 605 },
+                        { success: 'false', 'errors.0.code': 609 },
+                        { success: 'false', 'errors.0.code': 610 },
                       ],
                     },
                   },
@@ -824,9 +553,7 @@ export const data = [
                 isConnectionEnabled: true,
                 isProcessorEnabled: true,
               },
-              metadata: {
-                jobId: 4,
-              },
+              metadata: { jobId: 4, userId: 'u1' },
             },
             {
               message: {
@@ -835,10 +562,7 @@ export const data = [
                 userId: 'e17c5a5e-5e2f-430b-b497-fe3f1ea3a704',
                 channel: 'web',
                 context: {
-                  os: {
-                    name: '',
-                    version: '',
-                  },
+                  os: { name: '', version: '' },
                   app: {
                     name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -881,10 +605,7 @@ export const data = [
                     lastWebinarEventDate: '2022-09-15T20:00:00.000Z',
                     nextWebinarEventDate: '2022-09-16T06:15:00.000Z',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '2.12.1',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '2.12.1' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36',
@@ -895,9 +616,7 @@ export const data = [
                 receivedAt: '2022-09-19T10:34:02.956Z',
                 request_ip: '11.105.44.120',
                 anonymousId: '0c7b8b80-9c43-4f8e-b2d2-5e2448a25040',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 originalTimestamp: '2022-09-19T10:34:02.000Z',
               },
               destination: {
@@ -908,38 +627,17 @@ export const data = [
                   trackAnonymousEvents: false,
                   createIfNotExist: true,
                   rudderEventsMapping: [
-                    {
-                      event: 'acq_signup_completed',
-                      marketoActivityId: '100026',
-                    },
-                    {
-                      event: 'act_createwebinarform_submit',
-                      marketoActivityId: '100025',
-                    },
-                    {
-                      event: 'act_presentation_style',
-                      marketoActivityId: '100025',
-                    },
-                    {
-                      event: 'act_webinar_view',
-                      marketoActivityId: '100025',
-                    },
-                    {
-                      event: 'act_webinar_join',
-                      marketoActivityId: '100025',
-                    },
-                    {
-                      event: 'act_presentation_addteammember',
-                      marketoActivityId: '100025',
-                    },
+                    { event: 'acq_signup_completed', marketoActivityId: '100026' },
+                    { event: 'act_createwebinarform_submit', marketoActivityId: '100025' },
+                    { event: 'act_presentation_style', marketoActivityId: '100025' },
+                    { event: 'act_webinar_view', marketoActivityId: '100025' },
+                    { event: 'act_webinar_join', marketoActivityId: '100025' },
+                    { event: 'act_presentation_addteammember', marketoActivityId: '100025' },
                     {
                       event: 'act_engagement_discussions_savediscussion',
                       marketoActivityId: '100025',
                     },
-                    {
-                      event: 'act_engagement_networking_savetime',
-                      marketoActivityId: '100025',
-                    },
+                    { event: 'act_engagement_networking_savetime', marketoActivityId: '100025' },
                   ],
                 },
                 destinationDefinition: {
@@ -973,56 +671,20 @@ export const data = [
                     responseType: 'JSON',
                     rules: {
                       retryable: [
-                        {
-                          success: 'false',
-                          'errors.0.code': 600,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 601,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 602,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 604,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 606,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 607,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 608,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 611,
-                        },
+                        { success: 'false', 'errors.0.code': 600 },
+                        { success: 'false', 'errors.0.code': 601 },
+                        { success: 'false', 'errors.0.code': 602 },
+                        { success: 'false', 'errors.0.code': 604 },
+                        { success: 'false', 'errors.0.code': 606 },
+                        { success: 'false', 'errors.0.code': 607 },
+                        { success: 'false', 'errors.0.code': 608 },
+                        { success: 'false', 'errors.0.code': 611 },
                       ],
                       abortable: [
-                        {
-                          success: 'false',
-                          'errors.0.code': 603,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 605,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 609,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 610,
-                        },
+                        { success: 'false', 'errors.0.code': 603 },
+                        { success: 'false', 'errors.0.code': 605 },
+                        { success: 'false', 'errors.0.code': 609 },
+                        { success: 'false', 'errors.0.code': 610 },
                       ],
                     },
                   },
@@ -1044,9 +706,7 @@ export const data = [
                 isConnectionEnabled: true,
                 isProcessorEnabled: true,
               },
-              metadata: {
-                jobId: 5,
-              },
+              metadata: { jobId: 5, userId: 'u1' },
             },
           ],
           destType: 'marketo',
@@ -1090,12 +750,7 @@ export const data = [
                 files: {},
               },
               metadata: [
-                {
-                  destInfo: {
-                    authKey: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
-                  },
-                  jobId: 1,
-                },
+                { destInfo: { authKey: '1mMy5cqbtfuaKZv1IhVQKnBdVwe' }, jobId: 1, userId: 'u1' },
               ],
               batched: false,
               statusCode: 200,
@@ -1105,18 +760,8 @@ export const data = [
                   clientId: 'marketo_client_id_success',
                   clientSecret: 'marketo_client_secret_success',
                   trackAnonymousEvents: true,
-                  customActivityPropertyMap: [
-                    {
-                      from: 'name',
-                      to: 'productName',
-                    },
-                  ],
-                  leadTraitMapping: [
-                    {
-                      from: 'leadScore',
-                      to: 'customLeadScore',
-                    },
-                  ],
+                  customActivityPropertyMap: [{ from: 'name', to: 'productName' }],
+                  leadTraitMapping: [{ from: 'leadScore', to: 'customLeadScore' }],
                   rudderEventsMapping: [
                     {
                       event: 'Product Clicked',
@@ -1164,56 +809,20 @@ export const data = [
                     responseType: 'JSON',
                     rules: {
                       retryable: [
-                        {
-                          success: 'false',
-                          'errors.0.code': 600,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 601,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 602,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 604,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 606,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 607,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 608,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 611,
-                        },
+                        { success: 'false', 'errors.0.code': 600 },
+                        { success: 'false', 'errors.0.code': 601 },
+                        { success: 'false', 'errors.0.code': 602 },
+                        { success: 'false', 'errors.0.code': 604 },
+                        { success: 'false', 'errors.0.code': 606 },
+                        { success: 'false', 'errors.0.code': 607 },
+                        { success: 'false', 'errors.0.code': 608 },
+                        { success: 'false', 'errors.0.code': 611 },
                       ],
                       abortable: [
-                        {
-                          success: 'false',
-                          'errors.0.code': 603,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 605,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 609,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 610,
-                        },
+                        { success: 'false', 'errors.0.code': 603 },
+                        { success: 'false', 'errors.0.code': 605 },
+                        { success: 'false', 'errors.0.code': 609 },
+                        { success: 'false', 'errors.0.code': 610 },
                       ],
                     },
                   },
@@ -1259,12 +868,7 @@ export const data = [
                 files: {},
               },
               metadata: [
-                {
-                  destInfo: {
-                    authKey: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
-                  },
-                  jobId: 2,
-                },
+                { destInfo: { authKey: '1mMy5cqbtfuaKZv1IhVQKnBdVwe' }, jobId: 2, userId: 'u1' },
               ],
               batched: false,
               statusCode: 200,
@@ -1274,18 +878,8 @@ export const data = [
                   clientId: 'marketo_client_id_success',
                   clientSecret: 'marketo_client_secret_success',
                   trackAnonymousEvents: true,
-                  customActivityPropertyMap: [
-                    {
-                      from: 'name',
-                      to: 'productName',
-                    },
-                  ],
-                  leadTraitMapping: [
-                    {
-                      from: 'leadScore',
-                      to: 'customLeadScore',
-                    },
-                  ],
+                  customActivityPropertyMap: [{ from: 'name', to: 'productName' }],
+                  leadTraitMapping: [{ from: 'leadScore', to: 'customLeadScore' }],
                   rudderEventsMapping: [
                     {
                       event: 'Product Clicked',
@@ -1333,56 +927,20 @@ export const data = [
                     responseType: 'JSON',
                     rules: {
                       retryable: [
-                        {
-                          success: 'false',
-                          'errors.0.code': 600,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 601,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 602,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 604,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 606,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 607,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 608,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 611,
-                        },
+                        { success: 'false', 'errors.0.code': 600 },
+                        { success: 'false', 'errors.0.code': 601 },
+                        { success: 'false', 'errors.0.code': 602 },
+                        { success: 'false', 'errors.0.code': 604 },
+                        { success: 'false', 'errors.0.code': 606 },
+                        { success: 'false', 'errors.0.code': 607 },
+                        { success: 'false', 'errors.0.code': 608 },
+                        { success: 'false', 'errors.0.code': 611 },
                       ],
                       abortable: [
-                        {
-                          success: 'false',
-                          'errors.0.code': 603,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 605,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 609,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 610,
-                        },
+                        { success: 'false', 'errors.0.code': 603 },
+                        { success: 'false', 'errors.0.code': 605 },
+                        { success: 'false', 'errors.0.code': 609 },
+                        { success: 'false', 'errors.0.code': 610 },
                       ],
                     },
                   },
@@ -1402,17 +960,9 @@ export const data = [
               statusCode: 400,
               error:
                 '{"message":"Request Failed for marketo, Lookup field \'userId\' not found (Aborted).[Marketo Transformer]: During lead look up using email","destinationResponse":{"response":{"requestId":"142e4#1835b117b76","success":false,"errors":[{"code":"1006","message":"Lookup field \'userId\' not found"}]},"status":200}}',
-              statTags: {
-                errorCategory: 'network',
-                errorType: 'aborted',
-              },
+              statTags: { errorCategory: 'network', errorType: 'aborted' },
               metadata: [
-                {
-                  destInfo: {
-                    authKey: '1mMy5cqbtfuaKZv1IhVQKnBdVke',
-                  },
-                  jobId: 3,
-                },
+                { destInfo: { authKey: '1mMy5cqbtfuaKZv1IhVQKnBdVke' }, jobId: 3, userId: 'u1' },
               ],
               destination: {
                 Config: {
@@ -1422,38 +972,17 @@ export const data = [
                   trackAnonymousEvents: false,
                   createIfNotExist: true,
                   rudderEventsMapping: [
-                    {
-                      event: 'acq_signup_completed',
-                      marketoActivityId: '100026',
-                    },
-                    {
-                      event: 'act_createwebinarform_submit',
-                      marketoActivityId: '100025',
-                    },
-                    {
-                      event: 'act_presentation_style',
-                      marketoActivityId: '100025',
-                    },
-                    {
-                      event: 'act_webinar_view',
-                      marketoActivityId: '100025',
-                    },
-                    {
-                      event: 'act_webinar_join',
-                      marketoActivityId: '100025',
-                    },
-                    {
-                      event: 'act_presentation_addteammember',
-                      marketoActivityId: '100025',
-                    },
+                    { event: 'acq_signup_completed', marketoActivityId: '100026' },
+                    { event: 'act_createwebinarform_submit', marketoActivityId: '100025' },
+                    { event: 'act_presentation_style', marketoActivityId: '100025' },
+                    { event: 'act_webinar_view', marketoActivityId: '100025' },
+                    { event: 'act_webinar_join', marketoActivityId: '100025' },
+                    { event: 'act_presentation_addteammember', marketoActivityId: '100025' },
                     {
                       event: 'act_engagement_discussions_savediscussion',
                       marketoActivityId: '100025',
                     },
-                    {
-                      event: 'act_engagement_networking_savetime',
-                      marketoActivityId: '100025',
-                    },
+                    { event: 'act_engagement_networking_savetime', marketoActivityId: '100025' },
                   ],
                 },
                 destinationDefinition: {
@@ -1487,56 +1016,20 @@ export const data = [
                     responseType: 'JSON',
                     rules: {
                       retryable: [
-                        {
-                          success: 'false',
-                          'errors.0.code': 600,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 601,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 602,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 604,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 606,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 607,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 608,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 611,
-                        },
+                        { success: 'false', 'errors.0.code': 600 },
+                        { success: 'false', 'errors.0.code': 601 },
+                        { success: 'false', 'errors.0.code': 602 },
+                        { success: 'false', 'errors.0.code': 604 },
+                        { success: 'false', 'errors.0.code': 606 },
+                        { success: 'false', 'errors.0.code': 607 },
+                        { success: 'false', 'errors.0.code': 608 },
+                        { success: 'false', 'errors.0.code': 611 },
                       ],
                       abortable: [
-                        {
-                          success: 'false',
-                          'errors.0.code': 603,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 605,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 609,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 610,
-                        },
+                        { success: 'false', 'errors.0.code': 603 },
+                        { success: 'false', 'errors.0.code': 605 },
+                        { success: 'false', 'errors.0.code': 609 },
+                        { success: 'false', 'errors.0.code': 610 },
                       ],
                     },
                   },
@@ -1577,38 +1070,17 @@ export const data = [
                   trackAnonymousEvents: false,
                   createIfNotExist: true,
                   rudderEventsMapping: [
-                    {
-                      event: 'acq_signup_completed',
-                      marketoActivityId: '100026',
-                    },
-                    {
-                      event: 'act_createwebinarform_submit',
-                      marketoActivityId: '100025',
-                    },
-                    {
-                      event: 'act_presentation_style',
-                      marketoActivityId: '100025',
-                    },
-                    {
-                      event: 'act_webinar_view',
-                      marketoActivityId: '100025',
-                    },
-                    {
-                      event: 'act_webinar_join',
-                      marketoActivityId: '100025',
-                    },
-                    {
-                      event: 'act_presentation_addteammember',
-                      marketoActivityId: '100025',
-                    },
+                    { event: 'acq_signup_completed', marketoActivityId: '100026' },
+                    { event: 'act_createwebinarform_submit', marketoActivityId: '100025' },
+                    { event: 'act_presentation_style', marketoActivityId: '100025' },
+                    { event: 'act_webinar_view', marketoActivityId: '100025' },
+                    { event: 'act_webinar_join', marketoActivityId: '100025' },
+                    { event: 'act_presentation_addteammember', marketoActivityId: '100025' },
                     {
                       event: 'act_engagement_discussions_savediscussion',
                       marketoActivityId: '100025',
                     },
-                    {
-                      event: 'act_engagement_networking_savetime',
-                      marketoActivityId: '100025',
-                    },
+                    { event: 'act_engagement_networking_savetime', marketoActivityId: '100025' },
                   ],
                 },
                 destinationDefinition: {
@@ -1642,56 +1114,20 @@ export const data = [
                     responseType: 'JSON',
                     rules: {
                       retryable: [
-                        {
-                          success: 'false',
-                          'errors.0.code': 600,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 601,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 602,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 604,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 606,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 607,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 608,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 611,
-                        },
+                        { success: 'false', 'errors.0.code': 600 },
+                        { success: 'false', 'errors.0.code': 601 },
+                        { success: 'false', 'errors.0.code': 602 },
+                        { success: 'false', 'errors.0.code': 604 },
+                        { success: 'false', 'errors.0.code': 606 },
+                        { success: 'false', 'errors.0.code': 607 },
+                        { success: 'false', 'errors.0.code': 608 },
+                        { success: 'false', 'errors.0.code': 611 },
                       ],
                       abortable: [
-                        {
-                          success: 'false',
-                          'errors.0.code': 603,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 605,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 609,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 610,
-                        },
+                        { success: 'false', 'errors.0.code': 603 },
+                        { success: 'false', 'errors.0.code': 605 },
+                        { success: 'false', 'errors.0.code': 609 },
+                        { success: 'false', 'errors.0.code': 610 },
                       ],
                     },
                   },
@@ -1714,12 +1150,7 @@ export const data = [
                 isProcessorEnabled: true,
               },
               metadata: [
-                {
-                  destInfo: {
-                    authKey: '1mMy5cqbtfuaKZv1IhVQKnBdVke',
-                  },
-                  jobId: 4,
-                },
+                { destInfo: { authKey: '1mMy5cqbtfuaKZv1IhVQKnBdVke' }, jobId: 4, userId: 'u1' },
               ],
             },
             {
@@ -1755,12 +1186,7 @@ export const data = [
                 files: {},
               },
               metadata: [
-                {
-                  destInfo: {
-                    authKey: '1mMy5cqbtfuaKZv1IhVQKnBdVke',
-                  },
-                  jobId: 5,
-                },
+                { destInfo: { authKey: '1mMy5cqbtfuaKZv1IhVQKnBdVke' }, jobId: 5, userId: 'u1' },
               ],
               batched: false,
               statusCode: 200,
@@ -1772,38 +1198,17 @@ export const data = [
                   trackAnonymousEvents: false,
                   createIfNotExist: true,
                   rudderEventsMapping: [
-                    {
-                      event: 'acq_signup_completed',
-                      marketoActivityId: '100026',
-                    },
-                    {
-                      event: 'act_createwebinarform_submit',
-                      marketoActivityId: '100025',
-                    },
-                    {
-                      event: 'act_presentation_style',
-                      marketoActivityId: '100025',
-                    },
-                    {
-                      event: 'act_webinar_view',
-                      marketoActivityId: '100025',
-                    },
-                    {
-                      event: 'act_webinar_join',
-                      marketoActivityId: '100025',
-                    },
-                    {
-                      event: 'act_presentation_addteammember',
-                      marketoActivityId: '100025',
-                    },
+                    { event: 'acq_signup_completed', marketoActivityId: '100026' },
+                    { event: 'act_createwebinarform_submit', marketoActivityId: '100025' },
+                    { event: 'act_presentation_style', marketoActivityId: '100025' },
+                    { event: 'act_webinar_view', marketoActivityId: '100025' },
+                    { event: 'act_webinar_join', marketoActivityId: '100025' },
+                    { event: 'act_presentation_addteammember', marketoActivityId: '100025' },
                     {
                       event: 'act_engagement_discussions_savediscussion',
                       marketoActivityId: '100025',
                     },
-                    {
-                      event: 'act_engagement_networking_savetime',
-                      marketoActivityId: '100025',
-                    },
+                    { event: 'act_engagement_networking_savetime', marketoActivityId: '100025' },
                   ],
                 },
                 destinationDefinition: {
@@ -1837,56 +1242,20 @@ export const data = [
                     responseType: 'JSON',
                     rules: {
                       retryable: [
-                        {
-                          success: 'false',
-                          'errors.0.code': 600,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 601,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 602,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 604,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 606,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 607,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 608,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 611,
-                        },
+                        { success: 'false', 'errors.0.code': 600 },
+                        { success: 'false', 'errors.0.code': 601 },
+                        { success: 'false', 'errors.0.code': 602 },
+                        { success: 'false', 'errors.0.code': 604 },
+                        { success: 'false', 'errors.0.code': 606 },
+                        { success: 'false', 'errors.0.code': 607 },
+                        { success: 'false', 'errors.0.code': 608 },
+                        { success: 'false', 'errors.0.code': 611 },
                       ],
                       abortable: [
-                        {
-                          success: 'false',
-                          'errors.0.code': 603,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 605,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 609,
-                        },
-                        {
-                          success: 'false',
-                          'errors.0.code': 610,
-                        },
+                        { success: 'false', 'errors.0.code': 603 },
+                        { success: 'false', 'errors.0.code': 605 },
+                        { success: 'false', 'errors.0.code': 609 },
+                        { success: 'false', 'errors.0.code': 610 },
                       ],
                     },
                   },
@@ -1942,42 +1311,20 @@ export const data = [
                     name: 'generic_x86',
                     type: 'android',
                   },
-                  library: {
-                    name: 'com.rudderstack.android.sdk.core',
-                    version: '1.0.1-beta.1',
-                  },
+                  library: { name: 'com.rudderstack.android.sdk.core', version: '1.0.1-beta.1' },
                   locale: 'en-US',
-                  network: {
-                    carrier: 'Android',
-                    bluetooth: false,
-                    cellular: true,
-                    wifi: true,
-                  },
-                  os: {
-                    name: 'Android',
-                    version: '8.1.0',
-                  },
-                  screen: {
-                    density: 420,
-                    height: 1794,
-                    width: 1080,
-                  },
+                  network: { carrier: 'Android', bluetooth: false, cellular: true, wifi: true },
+                  os: { name: 'Android', version: '8.1.0' },
+                  screen: { density: 420, height: 1794, width: 1080 },
                   timezone: 'Asia/Kolkata',
-                  traits: {
-                    anonymousId: 'anon_id_success',
-                  },
+                  traits: { anonymousId: 'anon_id_success' },
                   userAgent:
                     'Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)',
                 },
                 event: 'Product Clicked',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 messageId: 'id1',
-                properties: {
-                  name: 'Test Product',
-                  product_id: 'prod_1',
-                },
+                properties: { name: 'Test Product', product_id: 'prod_1' },
                 originalTimestamp: '2020-12-17T21:00:59.176Z',
                 type: 'track',
                 sentAt: '2020-12-17T21:00:59.176Z',
@@ -1990,21 +1337,10 @@ export const data = [
                   clientSecret: 'marketo_client_secret_success',
                   trackAnonymousEvents: true,
                   customActivityPropertyMap: [
-                    {
-                      from: 'name',
-                      to: 'productName',
-                    },
-                    {
-                      from: 'product_id',
-                      to: 'productId',
-                    },
+                    { from: 'name', to: 'productName' },
+                    { from: 'product_id', to: 'productId' },
                   ],
-                  leadTraitMapping: [
-                    {
-                      from: 'leadScore',
-                      to: 'customLeadScore',
-                    },
-                  ],
+                  leadTraitMapping: [{ from: 'leadScore', to: 'customLeadScore' }],
                   createIfNotExist: true,
                   rudderEventsMapping: [
                     {
@@ -2015,17 +1351,7 @@ export const data = [
                   ],
                 },
               },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-                {
-                  jobId: 1,
-                },
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1 }, { jobId: 1 }, { jobId: 1 }],
               batched: false,
               statusCode: 200,
             },
@@ -2058,12 +1384,7 @@ export const data = [
                       {
                         activityDate: '2020-12-17T21:00:59.176Z',
                         activityTypeId: 100001,
-                        attributes: [
-                          {
-                            name: 'productId',
-                            value: 'prod_1',
-                          },
-                        ],
+                        attributes: [{ name: 'productId', value: 'prod_1' }],
                         leadId: 4,
                         primaryAttributeValue: 'Test Product',
                       },
@@ -2075,19 +1396,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                [
-                  {
-                    jobId: 1,
-                  },
-                  {
-                    jobId: 1,
-                  },
-                  {
-                    jobId: 1,
-                  },
-                ],
-              ],
+              metadata: [[{ jobId: 1 }, { jobId: 1 }, { jobId: 1 }]],
               batched: false,
               statusCode: 200,
               destination: {
@@ -2098,21 +1407,10 @@ export const data = [
                   clientSecret: 'marketo_client_secret_success',
                   trackAnonymousEvents: true,
                   customActivityPropertyMap: [
-                    {
-                      from: 'name',
-                      to: 'productName',
-                    },
-                    {
-                      from: 'product_id',
-                      to: 'productId',
-                    },
+                    { from: 'name', to: 'productName' },
+                    { from: 'product_id', to: 'productId' },
                   ],
-                  leadTraitMapping: [
-                    {
-                      from: 'leadScore',
-                      to: 'customLeadScore',
-                    },
-                  ],
+                  leadTraitMapping: [{ from: 'leadScore', to: 'customLeadScore' }],
                   createIfNotExist: true,
                   rudderEventsMapping: [
                     {

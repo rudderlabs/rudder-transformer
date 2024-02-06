@@ -1,9 +1,5 @@
 const get = require('get-value');
-const {
-  InstrumentationError,
-  TransformationError,
-  getHashFromArray,
-} = require('@rudderstack/integrations-lib');
+const { InstrumentationError, TransformationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   defaultRequestConfig,
@@ -23,6 +19,7 @@ const {
   UpdateContactWithLifeCycleStage,
   updateAccountWOContact,
   getHeaders,
+  createCustomField,
 } = require('./utils');
 
 /*
@@ -45,6 +42,7 @@ const identifyResponseConfig = (Config) => {
  * @returns
  */
 const identifyResponseBuilder = (message, { Config }) => {
+  let customFieldObject = {};
   const { customPropertyMapping, apiKey, domain } = Config;
   const traits = getFieldValueFromMessage(message, 'traits');
   const payload = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name]);
@@ -57,17 +55,9 @@ const identifyResponseBuilder = (message, { Config }) => {
   if (payload.address) payload.address = flattenAddress(payload.address);
 
   // adding support for custom properties
-  if (customPropertyMapping && customPropertyMapping.length > 0) {
-    const customField = {};
-    const propertyMap = getHashFromArray(customPropertyMapping, 'from', 'to', false);
-    Object.keys(traits).forEach((key) => {
-      if (propertyMap[key]) {
-        customField[propertyMap[key]] = traits[key];
-      }
-    });
-    if (Object.keys(customField).length > 0) {
-      payload.custom_field = customField;
-    }
+  customFieldObject = { ...createCustomField(traits, customPropertyMapping) };
+  if (Object.keys(customFieldObject).length > 0) {
+    payload.custom_field = customFieldObject;
   }
   const response = defaultRequestConfig();
   response.headers = getHeaders(apiKey);

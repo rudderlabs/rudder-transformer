@@ -4,6 +4,7 @@ const {
   NetworkInstrumentationError,
   InstrumentationError,
   NetworkError,
+  getHashFromArray,
 } = require('@rudderstack/integrations-lib');
 const { httpPOST, httpGET } = require('../../../adapters/network');
 const {
@@ -384,6 +385,19 @@ const flattenAddress = (address) => {
   return result;
 };
 
+const createCustomField = (traits, customPropertyMapping) => {
+  const customField = {};
+  if (customPropertyMapping && customPropertyMapping.length > 0) {
+    const propertyMap = getHashFromArray(customPropertyMapping, 'from', 'to', false);
+    Object.keys(traits).forEach((key) => {
+      if (propertyMap[key]) {
+        customField[propertyMap[key]] = traits[key];
+      }
+    });
+  }
+  return customField;
+};
+
 module.exports = {
   getUserAccountDetails,
   flattenAddress,
@@ -391,4 +405,5 @@ module.exports = {
   UpdateContactWithLifeCycleStage,
   updateAccountWOContact,
   getHeaders,
+  createCustomField,
 };

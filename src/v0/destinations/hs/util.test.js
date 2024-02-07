@@ -1,4 +1,9 @@
-const { validatePayloadDataTypes } = require('../../../../src/v0/destinations/hs/util');
+const {
+  getRequestData,
+  extractIDsForSearchAPI,
+  validatePayloadDataTypes,
+  getObjectAndIdentifierType,
+} = require('./util');
 
 const propertyMap = {
   firstName: 'string',
@@ -38,5 +43,189 @@ describe('Validate payload data types utility function test cases', () => {
     } catch (error) {
       expect(error.message).toEqual(expectedOutput);
     }
+  });
+});
+
+describe('getObjectAndIdentifierType utility test cases', () => {
+  it('should return an object with objectType and identifierType properties when given a valid input', () => {
+    const firstMessage = {
+      type: 'identify',
+      traits: {
+        to: {
+          id: 1,
+        },
+        from: {
+          id: 940,
+        },
+      },
+      userId: '1',
+      context: {
+        externalId: [
+          {
+            id: 1,
+            type: 'HS-association',
+            toObjectType: 'contacts',
+            fromObjectType: 'companies',
+            identifierType: 'id',
+            associationTypeId: 'engineer',
+          },
+        ],
+        mappedToDestination: 'true',
+      },
+    };
+    const result = getObjectAndIdentifierType(firstMessage);
+    expect(result).toEqual({ objectType: 'association', identifierType: 'id' });
+  });
+
+  it('should throw an error when objectType or identifierType is not present in input', () => {
+    const firstMessage = {
+      type: 'identify',
+      traits: {
+        to: {
+          id: 1,
+        },
+        from: {
+          id: 940,
+        },
+      },
+      userId: '1',
+      context: {
+        externalId: [
+          {
+            id: 1,
+            type: 'HS-',
+            toObjectType: 'contacts',
+            fromObjectType: 'companies',
+            associationTypeId: 'engineer',
+          },
+        ],
+        mappedToDestination: 'true',
+      },
+    };
+    try {
+      getObjectAndIdentifierType(firstMessage);
+    } catch (err) {
+      expect(err.message).toBe('rETL - external Id not found.');
+    }
+  });
+});
+
+describe('extractUniqueValues utility test cases', () => {
+  it('Should return an array of unique values', () => {
+    const inputs = [
+      {
+        message: {
+          context: {
+            externalId: [
+              {
+                identifierType: 'email',
+                id: 'testhubspot2@email.com',
+                type: 'HS-lead',
+              },
+            ],
+            mappedToDestination: true,
+          },
+        },
+      },
+      {
+        message: {
+          context: {
+            externalId: [
+              {
+                identifierType: 'email',
+                id: 'Testhubspot3@email.com',
+                type: 'HS-lead',
+              },
+            ],
+            mappedToDestination: true,
+          },
+        },
+      },
+      {
+        message: {
+          context: {
+            externalId: [
+              {
+                identifierType: 'email',
+                id: 'testhubspot4@email.com',
+                type: 'HS-lead',
+              },
+            ],
+            mappedToDestination: true,
+          },
+        },
+      },
+      {
+        message: {
+          context: {
+            externalId: [
+              {
+                identifierType: 'email',
+                id: 'testHUBSPOT5@email.com',
+                type: 'HS-lead',
+              },
+            ],
+            mappedToDestination: true,
+          },
+        },
+      },
+      {
+        message: {
+          context: {
+            externalId: [
+              {
+                identifierType: 'email',
+                id: 'testhubspot2@email.com',
+                type: 'HS-lead',
+              },
+            ],
+            mappedToDestination: true,
+          },
+        },
+      },
+    ];
+
+    const result = extractIDsForSearchAPI(inputs);
+
+    expect(result).toEqual([
+      'testhubspot2@email.com',
+      'testhubspot3@email.com',
+      'testhubspot4@email.com',
+      'testhubspot5@email.com',
+    ]);
+  });
+
+  it('Should return an empty array when the input is empty', () => {
+    const inputs = [];
+    const result = extractIDsForSearchAPI(inputs);
+    expect(result).toEqual([]);
+  });
+});
+
+describe('getRequestDataAndRequestOptions utility test cases', () => {
+  it('Should return an object with requestData and requestOptions', () => {
+    const identifierType = 'email';
+    const chunk = 'test1@gmail.com';
+    const accessToken = 'dummyAccessToken';
+
+    const expectedRequestData = {
+      filterGroups: [
+        {
+          filters: [
+            {
+              propertyName: identifierType,
+              values: chunk,
+              operator: 'IN',
+            },
+          ],
+        },
+      ],
+      properties: [identifierType],
+      limit: 100,
+      after: 0,
+    };
+
+    const requestData = getRequestData(identifierType, chunk, accessToken);
+    expect(requestData).toEqual(expectedRequestData);
   });
 });

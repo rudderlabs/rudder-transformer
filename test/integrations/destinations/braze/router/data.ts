@@ -27,9 +27,7 @@ export const data = [
                 Name: 'Braze',
                 Transformations: [],
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               message: {
                 anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
                 channel: 'web',
@@ -41,25 +39,15 @@ export const data = [
                     version: '1.0.5',
                   },
                   ip: '0.0.0.0',
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.5',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.5' },
                   locale: 'en-GB',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                   traits: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36',
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 messageId: 'dd266c67-9199-4a52-ba32-f46ddde67312',
                 originalTimestamp: '2020-01-24T06:29:02.358Z',
                 properties: {
@@ -95,9 +83,7 @@ export const data = [
                 Name: 'Braze',
                 Transformations: [],
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               message: {
                 anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
                 channel: 'web',
@@ -109,18 +95,10 @@ export const data = [
                     version: '1.0.5',
                   },
                   ip: '0.0.0.0',
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.5',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.5' },
                   locale: 'en-GB',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                   traits: {
                     city: 'Disney',
                     country: 'USA',
@@ -130,9 +108,7 @@ export const data = [
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36',
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 messageId: '2536eda4-d638-4c93-8014-8ffe3f083214',
                 originalTimestamp: '2020-01-24T06:29:02.362Z',
                 receivedAt: '2020-01-24T11:59:02.403+05:30',
@@ -162,16 +138,11 @@ export const data = [
                 Name: 'Braze',
                 Transformations: [],
               },
-              metadata: {
-                jobId: 3,
-              },
+              metadata: { jobId: 3, userId: 'u1' },
               message: {
                 anonymousId: '56yrtsdfgbgxcb-22b4-401d-aae5-1b994be9a969',
                 groupId: 'c90f0fd2-2a02-4f2f-bf07-7e7d2c2ed2b1',
-                traits: {
-                  phone: '5055077683',
-                  subscriptionState: 'subscribed',
-                },
+                traits: { phone: '5055077683', subscriptionState: 'subscribed' },
                 userId: 'user123',
                 type: 'group',
               },
@@ -195,16 +166,11 @@ export const data = [
                 Name: 'Braze',
                 Transformations: [],
               },
-              metadata: {
-                jobId: 4,
-              },
+              metadata: { jobId: 4, userId: 'u1' },
               message: {
                 anonymousId: 'dfgdfgdfg-22b4-401d-aae5-1b994be9a969',
                 groupId: '58d0a278-b55b-4f10-b7d2-98d1c5dd4c30',
-                traits: {
-                  phone: '5055077683',
-                  subscriptionState: 'subscribed',
-                },
+                traits: { phone: '5055077683', subscriptionState: 'subscribed' },
                 userId: 'user877',
                 type: 'group',
               },
@@ -228,14 +194,8 @@ export const data = [
                 Name: 'Braze',
                 Transformations: [],
               },
-              metadata: {
-                jobId: 5,
-              },
-              message: {
-                type: 'alias',
-                previousId: 'adsfsaf',
-                userId: 'dsafsdf',
-              },
+              metadata: { jobId: 5, userId: 'u1' },
+              message: { type: 'alias', previousId: 'adsfsaf', userId: 'dsafsdf' },
             },
             {
               destination: {
@@ -256,14 +216,8 @@ export const data = [
                 Name: 'Braze',
                 Transformations: [],
               },
-              metadata: {
-                jobId: 6,
-              },
-              message: {
-                type: 'alias',
-                previousId: 'adsfsaf2',
-                userId: 'dsafsdf2',
-              },
+              metadata: { jobId: 6, userId: 'u1' },
+              message: { type: 'alias', previousId: 'adsfsaf2', userId: 'dsafsdf2' },
             },
           ],
           destType: 'braze',
@@ -379,20 +333,12 @@ export const data = [
                     JSON: {
                       merge_updates: [
                         {
-                          identifier_to_keep: {
-                            external_id: 'dsafsdf',
-                          },
-                          identifier_to_merge: {
-                            external_id: 'adsfsaf',
-                          },
+                          identifier_to_keep: { external_id: 'dsafsdf' },
+                          identifier_to_merge: { external_id: 'adsfsaf' },
                         },
                         {
-                          identifier_to_keep: {
-                            external_id: 'dsafsdf2',
-                          },
-                          identifier_to_merge: {
-                            external_id: 'adsfsaf2',
-                          },
+                          identifier_to_keep: { external_id: 'dsafsdf2' },
+                          identifier_to_merge: { external_id: 'adsfsaf2' },
                         },
                       ],
                     },
@@ -404,24 +350,12 @@ export const data = [
                 },
               ],
               metadata: [
-                {
-                  jobId: 1,
-                },
-                {
-                  jobId: 2,
-                },
-                {
-                  jobId: 3,
-                },
-                {
-                  jobId: 4,
-                },
-                {
-                  jobId: 5,
-                },
-                {
-                  jobId: 6,
-                },
+                { jobId: 1, userId: 'u1' },
+                { jobId: 2, userId: 'u1' },
+                { jobId: 3, userId: 'u1' },
+                { jobId: 4, userId: 'u1' },
+                { jobId: 5, userId: 'u1' },
+                { jobId: 6, userId: 'u1' },
               ],
               batched: true,
               statusCode: 200,
@@ -481,9 +415,7 @@ export const data = [
                 IsProcessorEnabled: true,
                 RevisionID: '2N9Uaf2tWq2QRmatBWQm03Rz6qX',
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               message: {
                 type: 'track',
                 event: 'Sign In Completed',
@@ -503,17 +435,10 @@ export const data = [
                     account_region: 'ON',
                     is_pickup_selected: 'false',
                     has_tradein_attempt: false,
-                    custom_obj_attr: {
-                      key1: 'value1',
-                      key2: 'value2',
-                      key4: 'value4',
-                    },
+                    custom_obj_attr: { key1: 'value1', key2: 'value2', key4: 'value4' },
                     custom_arr: [1, 2, 'str1'],
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '2.9.5',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '2.9.5' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36',
@@ -560,9 +485,7 @@ export const data = [
                 IsProcessorEnabled: true,
                 RevisionID: '2N9Uaf2tWq2QRmatBWQm03Rz6qX',
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               message: {
                 type: 'track',
                 event: 'Sign In Completed',
@@ -582,17 +505,10 @@ export const data = [
                     account_region: 'ON',
                     is_pickup_selected: 'true',
                     has_tradein_attempt: false,
-                    custom_obj_attr: {
-                      key1: 'value1',
-                      key2: 'value2',
-                      key4: 'value4',
-                    },
+                    custom_obj_attr: { key1: 'value1', key2: 'value2', key4: 'value4' },
                     custom_arr: ['1', '2', 'str1'],
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '2.9.5',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '2.9.5' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36',
@@ -639,9 +555,7 @@ export const data = [
                 IsProcessorEnabled: true,
                 RevisionID: '2N9Uaf2tWq2QRmatBWQm03Rz6qX',
               },
-              metadata: {
-                jobId: 3,
-              },
+              metadata: { jobId: 3, userId: 'u1' },
               message: {
                 anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
                 channel: 'web',
@@ -653,18 +567,10 @@ export const data = [
                     version: '1.0.5',
                   },
                   ip: '0.0.0.0',
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.5',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.5' },
                   locale: 'en-GB',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                   traits: {
                     city: 'Disney',
                     country: 'USA',
@@ -674,9 +580,7 @@ export const data = [
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36',
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 messageId: '2536eda4-d638-4c93-8014-8ffe3f083214',
                 type: 'identify',
                 userId: 'user@50',
@@ -705,9 +609,7 @@ export const data = [
                 IsProcessorEnabled: true,
                 RevisionID: '2N9Uaf2tWq2QRmatBWQm03Rz6qX',
               },
-              metadata: {
-                jobId: 4,
-              },
+              metadata: { jobId: 4, userId: 'u1' },
               message: {
                 anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
                 channel: 'web',
@@ -719,18 +621,10 @@ export const data = [
                     version: '1.0.5',
                   },
                   ip: '0.0.0.0',
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.5',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.5' },
                   locale: 'en-GB',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                   traits: {
                     city: 'Disney',
                     country: 'USA',
@@ -740,9 +634,7 @@ export const data = [
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36',
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 messageId: '2536eda4-d638-4c93-8014-8ffe3f083214',
                 type: 'identify',
                 userId: 'user@50',
@@ -781,11 +673,7 @@ export const data = [
                           subscribe_once: true,
                           pwa: true,
                           external_id: 'braze_test_user',
-                          custom_obj_attr: {
-                            key1: 'value1',
-                            key2: 'value2',
-                            key4: 'value4',
-                          },
+                          custom_obj_attr: { key1: 'value1', key2: 'value2', key4: 'value4' },
                         },
                         {
                           last_name: 'Miranda 2',
@@ -842,15 +730,9 @@ export const data = [
                 },
               ],
               metadata: [
-                {
-                  jobId: 1,
-                },
-                {
-                  jobId: 2,
-                },
-                {
-                  jobId: 3,
-                },
+                { jobId: 1, userId: 'u1' },
+                { jobId: 2, userId: 'u1' },
+                { jobId: 3, userId: 'u1' },
               ],
               batched: true,
               statusCode: 200,
@@ -889,11 +771,7 @@ export const data = [
               },
               statusCode: 400,
               batched: false,
-              metadata: [
-                {
-                  jobId: 4,
-                },
-              ],
+              metadata: [{ jobId: 4, userId: 'u1' }],
               destination: {
                 ID: '2N9UakqKF0D35wfzSeofIxPdL8X',
                 Name: 'Braze-Test',

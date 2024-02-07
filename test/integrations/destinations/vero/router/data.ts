@@ -1,10 +1,8 @@
-import { FEATURES } from '../../../../../src/v0/util/tags';
-
 export const data = [
   {
     name: 'vero',
     description: 'Test 0',
-    feature: FEATURES.ROUTER,
+    feature: 'router',
     module: 'destination',
     version: 'v0',
     input: {
@@ -12,20 +10,10 @@ export const data = [
         body: {
           input: [
             {
-              destination: {
-                Config: {
-                  authToken: 'testAuthToken',
-                },
-              },
-              metadata: {
-                jobId: 1,
-              },
+              destination: { Config: { authToken: 'testAuthToken' } },
+              metadata: { jobId: 1, userId: 'u1' },
               message: {
-                context: {
-                  traits: {
-                    email: 'user001@tech.com',
-                  },
-                },
+                context: { traits: { email: 'user001@tech.com' } },
                 type: 'Identify',
                 userId: 'user001',
               },
@@ -65,16 +53,8 @@ export const data = [
                   files: {},
                 },
               ],
-              destination: {
-                Config: {
-                  authToken: 'testAuthToken',
-                },
-              },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              destination: { Config: { authToken: 'testAuthToken' } },
+              metadata: [{ jobId: 1, userId: 'u1' }],
               statusCode: 200,
             },
           ],
@@ -85,7 +65,7 @@ export const data = [
   {
     name: 'vero',
     description: 'Test 1',
-    feature: FEATURES.ROUTER,
+    feature: 'router',
     module: 'destination',
     version: 'v0',
     input: {
@@ -93,20 +73,10 @@ export const data = [
         body: {
           input: [
             {
-              destination: {
-                Config: {
-                  authToken: 'testAuthToken',
-                },
-              },
-              metadata: {
-                jobId: 2,
-              },
+              destination: { Config: { authToken: 'testAuthToken' } },
+              metadata: { jobId: 2, userId: 'u1' },
               message: {
-                context: {
-                  traits: {
-                    email: 'user002@tech.com',
-                  },
-                },
+                context: { traits: { email: 'user002@tech.com' } },
                 type: 'Identify',
                 anonymousId: 'b4ffheww8eisndbdjgdewifewfgerwibderv',
               },
@@ -146,16 +116,8 @@ export const data = [
                   files: {},
                 },
               ],
-              destination: {
-                Config: {
-                  authToken: 'testAuthToken',
-                },
-              },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              destination: { Config: { authToken: 'testAuthToken' } },
+              metadata: [{ jobId: 2, userId: 'u1' }],
               statusCode: 200,
             },
           ],
@@ -166,7 +128,7 @@ export const data = [
   {
     name: 'vero',
     description: 'Test 2',
-    feature: FEATURES.ROUTER,
+    feature: 'router',
     module: 'destination',
     version: 'v0',
     input: {
@@ -174,14 +136,8 @@ export const data = [
         body: {
           input: [
             {
-              destination: {
-                Config: {
-                  authToken: 'testAuthToken',
-                },
-              },
-              metadata: {
-                jobId: 3,
-              },
+              destination: { Config: { authToken: 'testAuthToken' } },
+              metadata: { jobId: 3, userId: 'u1' },
               message: {
                 context: {
                   traits: {
@@ -190,13 +146,7 @@ export const data = [
                     email: 'user005@tech.com',
                   },
                 },
-                integrations: {
-                  vero: {
-                    tags: {
-                      add: ['a', 'b'],
-                    },
-                  },
-                },
+                integrations: { vero: { tags: { add: ['a', 'b'] } } },
                 type: 'Identify',
                 userId: 'fprediruser001',
               },
@@ -226,10 +176,7 @@ export const data = [
                     JSON: {
                       id: 'fprediruser001',
                       email: 'user005@tech.com',
-                      data: {
-                        address: 'Caravela Beach Goa',
-                        homwTown: 'Mawsynram',
-                      },
+                      data: { address: 'Caravela Beach Goa', homwTown: 'Mawsynram' },
                       auth_token: 'testAuthToken',
                     },
                     JSON_ARRAY: {},
@@ -246,11 +193,7 @@ export const data = [
                   headers: {},
                   params: {},
                   body: {
-                    JSON: {
-                      auth_token: 'testAuthToken',
-                      id: 'fprediruser001',
-                      add: ['a', 'b'],
-                    },
+                    JSON: { auth_token: 'testAuthToken', id: 'fprediruser001', add: ['a', 'b'] },
                     JSON_ARRAY: {},
                     XML: {},
                     FORM: {},
@@ -258,16 +201,8 @@ export const data = [
                   files: {},
                 },
               ],
-              destination: {
-                Config: {
-                  authToken: 'testAuthToken',
-                },
-              },
-              metadata: [
-                {
-                  jobId: 3,
-                },
-              ],
+              destination: { Config: { authToken: 'testAuthToken' } },
+              metadata: [{ jobId: 3, userId: 'u1' }],
               statusCode: 200,
             },
           ],
@@ -278,7 +213,7 @@ export const data = [
   {
     name: 'vero',
     description: 'Test 3',
-    feature: FEATURES.ROUTER,
+    feature: 'router',
     module: 'destination',
     version: 'v0',
     input: {
@@ -286,21 +221,11 @@ export const data = [
         body: {
           input: [
             {
-              destination: {
-                Config: {
-                  authToken: 'testAuthToken',
-                },
-              },
-              metadata: {
-                jobId: 4,
-              },
+              destination: { Config: { authToken: 'testAuthToken' } },
+              metadata: { jobId: 4, userId: 'u1' },
               message: {
                 event: 'Random event with nonexisting userId and email',
-                properties: {
-                  movieWatched: 3,
-                  gamesPlayed: 4,
-                  email: 'eventIdn02@sample.com',
-                },
+                properties: { movieWatched: 3, gamesPlayed: 4, email: 'eventIdn02@sample.com' },
                 type: 'track',
                 userId: 'eventIdn01',
               },
@@ -328,16 +253,9 @@ export const data = [
                   params: {},
                   body: {
                     JSON: {
-                      identity: {
-                        id: 'eventIdn01',
-                        email: 'eventIdn02@sample.com',
-                      },
+                      identity: { id: 'eventIdn01', email: 'eventIdn02@sample.com' },
                       event_name: 'Random event with nonexisting userId and email',
-                      data: {
-                        movieWatched: 3,
-                        gamesPlayed: 4,
-                        email: 'eventIdn02@sample.com',
-                      },
+                      data: { movieWatched: 3, gamesPlayed: 4, email: 'eventIdn02@sample.com' },
                       auth_token: 'testAuthToken',
                     },
                     JSON_ARRAY: {},
@@ -347,16 +265,8 @@ export const data = [
                   files: {},
                 },
               ],
-              destination: {
-                Config: {
-                  authToken: 'testAuthToken',
-                },
-              },
-              metadata: [
-                {
-                  jobId: 4,
-                },
-              ],
+              destination: { Config: { authToken: 'testAuthToken' } },
+              metadata: [{ jobId: 4, userId: 'u1' }],
               statusCode: 200,
             },
           ],

@@ -4769,7 +4769,7 @@ export const data = [
         body: [
           {
             error:
-              '{"message":"rETL - Error during searching object record. Request Rate Limit reached","destinationResponse":{"response":{"status":"error","message":"Request Rate Limit reached","correlationId":"4d39ff11-e121-4514-bcd8-132a9dd1ff50","category":"RATE-LIMIT_REACHED","links":{"api key":"https://app.hubspot.com/l/api-key/"}},"status":429}}',
+              '{"message":"rETL - Error during searching object record. \\"Request Rate Limit reached\\"","destinationResponse":{"response":{"status":"error","message":"Request Rate Limit reached","correlationId":"4d39ff11-e121-4514-bcd8-132a9dd1ff50","category":"RATE-LIMIT_REACHED","links":{"api key":"https://app.hubspot.com/l/api-key/"}},"status":429}}',
             metadata: {
               jobId: 2,
             },

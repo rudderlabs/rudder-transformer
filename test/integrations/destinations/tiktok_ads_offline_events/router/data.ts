@@ -1,10 +1,8 @@
-import { FEATURES } from '../../../../../src/v0/util/tags';
-
 export const data = [
   {
     name: 'tiktok_ads_offline_events',
     description: 'Test 0',
-    feature: FEATURES.ROUTER,
+    feature: 'router',
     module: 'destination',
     version: 'v0',
     input: {
@@ -12,30 +10,20 @@ export const data = [
         body: {
           input: [
             {
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  hashUserProperties: true,
-                },
+                Config: { accessToken: 'dummyAccessToken', hashUserProperties: true },
               },
               message: {
                 event: 'subscribe',
-                context: {
-                  traits: {
-                    phone: '1234567890',
-                  },
-                  channel: 'web',
-                },
+                context: { traits: { phone: '1234567890' }, channel: 'web' },
                 properties: {
                   eventSetId: '7181537436256731137',
                   eventId: '1616318632825_352',
                   order_id: 'abc_xyz',
                   shop_id: '123abc',
                   currency: 'USD',
-                  value: 46.0,
+                  value: 46,
                   price: 8,
                   quantity: 2,
                   content_type: 'product1234',
@@ -49,22 +37,14 @@ export const data = [
               },
             },
             {
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  hashUserProperties: true,
-                },
+                Config: { accessToken: 'dummyAccessToken', hashUserProperties: true },
               },
               message: {
                 event: 'subscribe',
                 context: {
-                  traits: {
-                    phone: '1234567890',
-                    email: 'random@mail.com',
-                  },
+                  traits: { phone: '1234567890', email: 'random@mail.com' },
                   channel: 'web',
                 },
                 properties: {
@@ -111,10 +91,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://business-api.tiktok.com/open_api/v1.3/offline/batch/',
-                headers: {
-                  'Access-Token': 'dummyAccessToken',
-                  'Content-Type': 'application/json',
-                },
+                headers: { 'Access-Token': 'dummyAccessToken', 'Content-Type': 'application/json' },
                 params: {},
                 body: {
                   JSON: {
@@ -149,7 +126,7 @@ export const data = [
                           ],
                           event_channel: 'web',
                           currency: 'USD',
-                          value: 46.0,
+                          value: 46,
                         },
                       },
                       {
@@ -199,18 +176,11 @@ export const data = [
                 files: {},
               },
               destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  hashUserProperties: true,
-                },
+                Config: { accessToken: 'dummyAccessToken', hashUserProperties: true },
               },
               metadata: [
-                {
-                  jobId: 1,
-                },
-                {
-                  jobId: 2,
-                },
+                { jobId: 1, userId: 'u1' },
+                { jobId: 2, userId: 'u1' },
               ],
               statusCode: 200,
             },
@@ -222,7 +192,7 @@ export const data = [
   {
     name: 'tiktok_ads_offline_events',
     description: 'Test 1',
-    feature: FEATURES.ROUTER,
+    feature: 'router',
     module: 'destination',
     version: 'v0',
     input: {
@@ -230,28 +200,18 @@ export const data = [
         body: {
           input: [
             {
-              metadata: {
-                jobId: 3,
-              },
+              metadata: { jobId: 3, userId: 'u1' },
               destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  hashUserProperties: true,
-                },
+                Config: { accessToken: 'dummyAccessToken', hashUserProperties: true },
               },
               message: {
                 event: 'subscribe',
-                context: {
-                  traits: {
-                    phone: '1234567890',
-                  },
-                  channel: 'web',
-                },
+                context: { traits: { phone: '1234567890' }, channel: 'web' },
                 properties: {
                   eventSetId: '6071537445256731123',
                   eventId: '1616318632825_352',
                   currency: 'USD',
-                  value: 46.0,
+                  value: 46,
                   price: 8,
                   content_type: 'product1234',
                 },
@@ -277,10 +237,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://business-api.tiktok.com/open_api/v1.3/offline/batch/',
-                headers: {
-                  'Access-Token': 'dummyAccessToken',
-                  'Content-Type': 'application/json',
-                },
+                headers: { 'Access-Token': 'dummyAccessToken', 'Content-Type': 'application/json' },
                 params: {},
                 body: {
                   JSON: {
@@ -301,15 +258,10 @@ export const data = [
                           },
                         },
                         properties: {
-                          contents: [
-                            {
-                              price: 8,
-                              content_type: 'product1234',
-                            },
-                          ],
+                          contents: [{ price: 8, content_type: 'product1234' }],
                           event_channel: 'web',
                           currency: 'USD',
-                          value: 46.0,
+                          value: 46,
                         },
                       },
                     ],
@@ -321,16 +273,9 @@ export const data = [
                 files: {},
               },
               destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  hashUserProperties: true,
-                },
+                Config: { accessToken: 'dummyAccessToken', hashUserProperties: true },
               },
-              metadata: [
-                {
-                  jobId: 3,
-                },
-              ],
+              metadata: [{ jobId: 3, userId: 'u1' }],
               statusCode: 200,
             },
           ],
@@ -341,7 +286,7 @@ export const data = [
   {
     name: 'tiktok_ads_offline_events',
     description: 'Test 2',
-    feature: FEATURES.ROUTER,
+    feature: 'router',
     module: 'destination',
     version: 'v0',
     input: {
@@ -349,26 +294,13 @@ export const data = [
         body: {
           input: [
             {
-              metadata: {
-                jobId: 4,
-              },
+              metadata: { jobId: 4, userId: 'u1' },
               destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  hashUserProperties: true,
-                },
+                Config: { accessToken: 'dummyAccessToken', hashUserProperties: true },
               },
               message: {
-                context: {
-                  traits: {
-                    phone: '1234567890',
-                  },
-                  channel: 'web',
-                },
-                properties: {
-                  eventSetId: '2345676543',
-                  eventId: '1616318632825_352',
-                },
+                context: { traits: { phone: '1234567890' }, channel: 'web' },
+                properties: { eventSetId: '2345676543', eventId: '1616318632825_352' },
                 type: 'track',
                 userId: 'eventIdn01',
                 timestamp: '2023-01-03',
@@ -386,18 +318,11 @@ export const data = [
           output: [
             {
               destination: {
-                Config: {
-                  accessToken: 'dummyAccessToken',
-                  hashUserProperties: true,
-                },
+                Config: { accessToken: 'dummyAccessToken', hashUserProperties: true },
               },
               batched: false,
               error: 'Event name is required',
-              metadata: [
-                {
-                  jobId: 4,
-                },
-              ],
+              metadata: [{ jobId: 4, userId: 'u1' }],
               statTags: {
                 errorCategory: 'dataValidation',
                 errorType: 'instrumentation',

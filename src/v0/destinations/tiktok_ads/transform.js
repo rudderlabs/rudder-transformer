@@ -21,6 +21,7 @@ const {
   handleRtTfSingleEventError,
   batchMultiplexedEvents,
 } = require('../../util');
+const { process: processV2, processRouterDest: processRouterDestV2 } = require('./transformV2');
 const { getContents } = require('./util');
 const {
   trackMapping,
@@ -165,7 +166,9 @@ const trackResponseBuilder = async (message, { Config }) => {
 
 const process = async (event) => {
   const { message, destination } = event;
-
+  if (destination.Config?.version === 'v2') {
+    return processV2(event);
+  }
   if (!destination.Config.accessToken) {
     throw new ConfigurationError('Access Token not found. Aborting ');
   }
@@ -240,6 +243,11 @@ function getEventChunks(event, trackResponseList, eventsChunk) {
 }
 
 const processRouterDest = async (inputs, reqMetadata) => {
+  const { destination } = inputs[0];
+  const { Config } = destination;
+  if (Config?.version === 'v2') {
+    return processRouterDestV2(inputs, reqMetadata);
+  }
   const errorRespEvents = checkInvalidRtTfEvents(inputs);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;

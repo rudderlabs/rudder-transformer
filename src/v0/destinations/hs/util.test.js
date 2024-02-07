@@ -225,19 +225,10 @@ describe('getRequestDataAndRequestOptions utility test cases', () => {
       after: 0,
     };
 
-    const expectedRequestOptions = {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-    };
-
-    const { requestData, requestOptions } = getRequestDataAndRequestOptions(
+    const { requestData } = getRequestDataAndRequestOptions(
       identifierType,
       chunk,
-      accessToken,
     );
     expect(requestData).toEqual(expectedRequestData);
-    expect(requestOptions).toEqual(expectedRequestOptions);
   });
 });

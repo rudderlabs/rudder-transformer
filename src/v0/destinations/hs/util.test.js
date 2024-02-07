@@ -2,6 +2,7 @@ const {
   extractIDsForSearchAPI,
   validatePayloadDataTypes,
   getObjectAndIdentifierType,
+  getRequestDataAndRequestOptions,
 } = require('./util');
 
 const propertyMap = {
@@ -198,5 +199,45 @@ describe('extractUniqueValues utility test cases', () => {
     const inputs = [];
     const result = extractIDsForSearchAPI(inputs);
     expect(result).toEqual([]);
+  });
+});
+
+describe('getRequestDataAndRequestOptions utility test cases', () => {
+  it('Should return an object with requestData and requestOptions', () => {
+    const identifierType = 'email';
+    const chunk = 'test1@gmail.com';
+    const accessToken = 'dummyAccessToken';
+
+    const expectedRequestData = {
+      filterGroups: [
+        {
+          filters: [
+            {
+              propertyName: identifierType,
+              values: chunk,
+              operator: 'IN',
+            },
+          ],
+        },
+      ],
+      properties: [identifierType],
+      limit: 100,
+      after: 0,
+    };
+
+    const expectedRequestOptions = {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
+
+    const { requestData, requestOptions } = getRequestDataAndRequestOptions(
+      identifierType,
+      chunk,
+      accessToken,
+    );
+    expect(requestData).toEqual(expectedRequestData);
+    expect(requestOptions).toEqual(expectedRequestOptions);
   });
 });

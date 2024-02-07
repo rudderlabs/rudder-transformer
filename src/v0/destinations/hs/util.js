@@ -545,7 +545,9 @@ const performHubSpotSearch = async (
 
     if (processedResponse.status !== 200) {
       throw new NetworkError(
-        `rETL - Error during searching object record. ${JSON.stringify(processedResponse.response?.message)}`,
+        `rETL - Error during searching object record. ${JSON.stringify(
+          processedResponse.response?.message,
+        )}`,
         processedResponse.status,
         {
           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedResponse.status),
@@ -573,6 +575,40 @@ const performHubSpotSearch = async (
 };
 
 /**
+ * Returns requestData and requestOptions
+ * @param {*} identifierType
+ * @param {*} chunk
+ * @param {*} accessToken
+ * @returns
+ */
+const getRequestDataAndRequestOptions = (identifierType, chunk, accessToken) => {
+  const requestData = {
+    filterGroups: [
+      {
+        filters: [
+          {
+            propertyName: identifierType,
+            values: chunk,
+            operator: 'IN',
+          },
+        ],
+      },
+    ],
+    properties: [identifierType],
+    limit: SEARCH_LIMIT_VALUE,
+    after: 0,
+  };
+
+  const requestOptions = {
+    headers: {
+      'Content-Type': JSON_MIME_TYPE,
+      Authorization: `Bearer ${accessToken}`,
+    },
+  };
+  return { requestData, requestOptions };
+};
+
+/**
  * DOC: https://developers.hubspot.com/docs/api/crm/search
  * @param {*} inputs
  * @param {*} destination
@@ -593,29 +629,11 @@ const getExistingContactsData = async (inputs, destination) => {
 
   // eslint-disable-next-line no-restricted-syntax
   for (const chunk of valuesChunk) {
-    const requestData = {
-      filterGroups: [
-        {
-          filters: [
-            {
-              propertyName: identifierType,
-              values: chunk,
-              operator: 'IN',
-            },
-          ],
-        },
-      ],
-      properties: [identifierType],
-      limit: SEARCH_LIMIT_VALUE,
-      after: 0,
-    };
-
-    const requestOptions = {
-      headers: {
-        'Content-Type': JSON_MIME_TYPE,
-        Authorization: `Bearer ${Config.accessToken}`,
-      },
-    };
+    const { requestData, requestOptions } = getRequestDataAndRequestOptions(
+      identifierType,
+      chunk,
+      Config.accessToken,
+    );
     const searchResults = await performHubSpotSearch(
       requestData,
       requestOptions,
@@ -738,4 +756,5 @@ module.exports = {
   populateTraits,
   getObjectAndIdentifierType,
   extractIDsForSearchAPI,
+  getRequestDataAndRequestOptions,
 };

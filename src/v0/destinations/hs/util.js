@@ -163,16 +163,14 @@ const validatePayloadDataTypes = (propertyMap, hsSupportedKey, value, traitsKey)
 
   if (propertyMap[hsSupportedKey] === 'bool' && typeof propValue === 'object') {
     throw new InstrumentationError(
-      `Property ${traitsKey} data type ${typeof propValue} is not matching with Hubspot property data type ${
-        propertyMap[hsSupportedKey]
+      `Property ${traitsKey} data type ${typeof propValue} is not matching with Hubspot property data type ${propertyMap[hsSupportedKey]
       }`,
     );
   }
 
   if (propertyMap[hsSupportedKey] === 'number' && typeof propValue !== 'number') {
     throw new InstrumentationError(
-      `Property ${traitsKey} data type ${typeof propValue} is not matching with Hubspot property data type ${
-        propertyMap[hsSupportedKey]
+      `Property ${traitsKey} data type ${typeof propValue} is not matching with Hubspot property data type ${propertyMap[hsSupportedKey]
       }`,
     );
   }
@@ -581,7 +579,7 @@ const performHubSpotSearch = async (
  * @param {*} accessToken
  * @returns
  */
-const getRequestDataAndRequestOptions = (identifierType, chunk, accessToken) => {
+const getRequestDataAndRequestOptions = (identifierType, chunk) => {
   const requestData = {
     filterGroups: [
       {
@@ -599,13 +597,7 @@ const getRequestDataAndRequestOptions = (identifierType, chunk, accessToken) => 
     after: 0,
   };
 
-  const requestOptions = {
-    headers: {
-      'Content-Type': JSON_MIME_TYPE,
-      Authorization: `Bearer ${accessToken}`,
-    },
-  };
-  return { requestData, requestOptions };
+  return { requestData };
 };
 
 /**
@@ -626,13 +618,17 @@ const getExistingContactsData = async (inputs, destination) => {
 
   const values = extractIDsForSearchAPI(inputs);
   const valuesChunk = lodash.chunk(values, MAX_CONTACTS_PER_REQUEST);
-
+  const requestOptions = {
+    headers: {
+      'Content-Type': JSON_MIME_TYPE,
+      Authorization: `Bearer ${Config.accessToken}`,
+    },
+  };
   // eslint-disable-next-line no-restricted-syntax
   for (const chunk of valuesChunk) {
-    const { requestData, requestOptions } = getRequestDataAndRequestOptions(
+    const { requestData } = getRequestDataAndRequestOptions(
       identifierType,
       chunk,
-      Config.accessToken,
     );
     const searchResults = await performHubSpotSearch(
       requestData,

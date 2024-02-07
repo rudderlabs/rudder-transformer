@@ -1,17 +1,47 @@
 bindings:
-  - name: processRouterDest
-    path: ./utils
+  - name: EventType
+    path: ../../../../constants
+  - name: processRecordInputs
+    path: ./transformRecord
+  - name: processConversionInputs
+    path: ./transformConversion
+  - name: handleRtTfSingleEventError
+    path: ../../../../v0/util/index
+  - name: InstrumentationError
+    path: '@rudderstack/integrations-lib'
 
 steps:
+  - name: validateCommonConfig
+    description: |
+      validate common config for first party data and realtime conversion flow
+    template: |
+      const config = ^[0].destination.Config
+      $.assertConfig(config.advertiserId, "Advertiser ID is not present. Aborting")
+
   - name: validateInput
     template: |
       $.assert(Array.isArray(^) && ^.length > 0, "Invalid event array")
-      const config = ^[0].destination.Config
-      $.assertConfig(config.audienceId, "Segment name is not present. Aborting")
-      $.assertConfig(config.advertiserId, "Advertiser ID is not present. Aborting")
-      $.assertConfig(config.advertiserSecretKey, "Advertiser Secret Key is not present. Aborting")
-      config.ttlInDays ?  $.assertConfig(config.ttlInDays >=0 && config.ttlInDays <= 180, "TTL is out of range. Allowed values are 0 to 180 days")
 
-  - name: processRouterDest
+  - name: processRecordEvents
     template: |
-      $.processRouterDest(^)
+      $.processRecordInputs(^.{.message.type === $.EventType.RECORD}[], ^[0].destination)
+
+  - name: processConversionEvents
+    template: |
+      $.processConversionInputs(^.{.message.type === $.EventType.TRACK}[])
+
+  - name: failOtherEvents
+    template: |
+      const otherEvents = ^.{.message.type !== $.EventType.TRACK && .message.type !== $.EventType.RECORD}[]
+      let failedEvents = otherEvents.map(
+        function(event) {
+        const error = new $.InstrumentationError("Event type " + event.message.type + " is not supported");
+          $.handleRtTfSingleEventError(event, error, {})
+        }
+      )
+
+      failedEvents ?? []
+
+  - name: finalPayload
+    template: |
+      [...$.outputs.processRecordEvents, ...$.outputs.processConversionEvents, ...$.outputs.failOtherEvents]

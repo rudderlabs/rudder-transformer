@@ -163,14 +163,16 @@ const validatePayloadDataTypes = (propertyMap, hsSupportedKey, value, traitsKey)
 
   if (propertyMap[hsSupportedKey] === 'bool' && typeof propValue === 'object') {
     throw new InstrumentationError(
-      `Property ${traitsKey} data type ${typeof propValue} is not matching with Hubspot property data type ${propertyMap[hsSupportedKey]
+      `Property ${traitsKey} data type ${typeof propValue} is not matching with Hubspot property data type ${
+        propertyMap[hsSupportedKey]
       }`,
     );
   }
 
   if (propertyMap[hsSupportedKey] === 'number' && typeof propValue !== 'number') {
     throw new InstrumentationError(
-      `Property ${traitsKey} data type ${typeof propValue} is not matching with Hubspot property data type ${propertyMap[hsSupportedKey]
+      `Property ${traitsKey} data type ${typeof propValue} is not matching with Hubspot property data type ${
+        propertyMap[hsSupportedKey]
       }`,
     );
   }
@@ -573,13 +575,12 @@ const performHubSpotSearch = async (
 };
 
 /**
- * Returns requestData and requestOptions
+ * Returns requestData
  * @param {*} identifierType
  * @param {*} chunk
- * @param {*} accessToken
  * @returns
  */
-const getRequestDataAndRequestOptions = (identifierType, chunk) => {
+const getRequestData = (identifierType, chunk) => {
   const requestData = {
     filterGroups: [
       {
@@ -597,7 +598,7 @@ const getRequestDataAndRequestOptions = (identifierType, chunk) => {
     after: 0,
   };
 
-  return { requestData };
+  return requestData;
 };
 
 /**
@@ -626,10 +627,7 @@ const getExistingContactsData = async (inputs, destination) => {
   };
   // eslint-disable-next-line no-restricted-syntax
   for (const chunk of valuesChunk) {
-    const { requestData } = getRequestDataAndRequestOptions(
-      identifierType,
-      chunk,
-    );
+    const requestData = getRequestData(identifierType, chunk);
     const searchResults = await performHubSpotSearch(
       requestData,
       requestOptions,
@@ -752,5 +750,5 @@ module.exports = {
   populateTraits,
   getObjectAndIdentifierType,
   extractIDsForSearchAPI,
-  getRequestDataAndRequestOptions,
+  getRequestData,
 };

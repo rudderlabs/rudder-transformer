@@ -1,8 +1,8 @@
 const {
+  getRequestData,
   extractIDsForSearchAPI,
   validatePayloadDataTypes,
   getObjectAndIdentifierType,
-  getRequestDataAndRequestOptions,
 } = require('./util');
 
 const propertyMap = {
@@ -225,19 +225,7 @@ describe('getRequestDataAndRequestOptions utility test cases', () => {
       after: 0,
     };
 
-    const expectedRequestOptions = {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-    };
-
-    const { requestData, requestOptions } = getRequestDataAndRequestOptions(
-      identifierType,
-      chunk,
-      accessToken,
-    );
+    const requestData = getRequestData(identifierType, chunk, accessToken);
     expect(requestData).toEqual(expectedRequestData);
-    expect(requestOptions).toEqual(expectedRequestOptions);
   });
 });

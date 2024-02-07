@@ -33,4 +33,37 @@ export const networkCallsData = [
       status: 200,
     },
   },
+
+  {
+    httpReq: {
+      method: 'delete',
+      url: 'https://api.custify.com/people?user_id=rudder1',
+      headers: {
+        Authorization: 'Bearer dummyApiKey',
+      },
+    },
+    httpRes: {
+      data: {
+        msg: 'All users associated with rudder1 were successfully deleted',
+        code: 'Success',
+        params: null,
+      },
+      status: 200,
+    },
+  },
+  {
+    httpReq: {
+      method: 'delete',
+      url: 'https://api.custify.com/people?user_id=rudder2',
+      headers: {
+        Authorization: 'Bearer dummyApiKey',
+      },
+    },
+    httpRes: {
+      data: {
+        error: 'User: rudder2 not found',
+      },
+      status: 404,
+    },
+  },
 ];

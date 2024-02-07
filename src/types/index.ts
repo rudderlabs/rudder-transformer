@@ -34,6 +34,7 @@ type ProxyV0Request = {
   };
   files?: Record<string, unknown>;
   metadata: ProxyMetdata;
+  destinationConfig: Record<string, unknown>;
 };
 
 type ProxyV1Request = {

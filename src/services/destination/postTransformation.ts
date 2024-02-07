@@ -186,9 +186,11 @@ export class DestinationPostTransformationService {
     const resp = {
       response: responses,
       statTags: errObj.statTags,
-      authErrorCategory: errObj.authErrorCategory,
       message: errObj.message.toString(),
       status: errObj.status,
+      ...(errObj.authErrorCategory && {
+        authErrorCategory: errObj.authErrorCategory,
+      }),
     } as DeliveryV1Response;
 
     ErrorReportingService.reportError(error, metaTo.errorContext, resp);

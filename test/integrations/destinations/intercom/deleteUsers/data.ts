@@ -19,7 +19,7 @@ export const data = [
               },
             ],
             config: {
-              apiKey: 'API_KEY',
+              apiKey: 'testApiKey',
             },
           },
         ],
@@ -57,7 +57,7 @@ export const data = [
               },
             ],
             config: {
-              apiKey: 'API_KEY',
+              apiKey: 'testApiKey',
             },
           },
         ],
@@ -140,7 +140,7 @@ export const data = [
         body: [
           {
             statusCode: 400,
-            error: 'api key for deletion not present',
+            error: 'The access token is not available',
           },
         ],
       },

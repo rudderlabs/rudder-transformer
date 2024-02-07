@@ -1,14 +1,17 @@
 /* eslint-disable max-classes-per-file */
-import { MessageDetails, StatusCode } from "./types";
+import { MessageDetails, StatusCode, Stat } from "./types";
 
 export class ErrorDetailsExtractor {
   status: StatusCode;
 
   messageDetails: MessageDetails;
 
+  stat : Stat
+
   constructor (builder: ErrorDetailsExtractorBuilder) {
     this.status = builder.getStatus();
     this.messageDetails = builder.getMessageDetails();
+    this.stat = builder.getStat();
   }
 
 }
@@ -18,13 +21,20 @@ export class ErrorDetailsExtractorBuilder {
 
   messageDetails: MessageDetails;
 
+  stat: Stat;
   constructor() {
     this.status = 0;
     this.messageDetails = {};
+    this.stat = {};
   }
   
   setStatus(status: number): ErrorDetailsExtractorBuilder {
     this.status = status;
+    return this;
+  }
+
+  setStat(stat: Record<string, string>): ErrorDetailsExtractorBuilder {
+    this.stat = stat
     return this;
   }
 
@@ -68,6 +78,10 @@ export class ErrorDetailsExtractorBuilder {
 
   getStatus(): number {
     return this.status;
+  }
+
+  getStat(): Record<string, string> {
+    return this.stat;
   }
   
   getMessageDetails(): Record<string, string> {

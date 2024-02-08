@@ -115,7 +115,7 @@ const commonParams3 = {
   },
 };
 
-const invalidArgumentPayload = {
+const invalidArgumentRequestPayload = {
   addConversionPayload: {
     enable_partial_failure: false,
     enable_warnings: false,
@@ -160,7 +160,7 @@ const invalidArgumentPayload = {
   isStoreConversion: true,
 };
 
-const validRequest1 = {
+const validRequestPayload1 = {
   addConversionPayload: {
     enable_partial_failure: false,
     enable_warnings: false,
@@ -205,7 +205,7 @@ const validRequest1 = {
   isStoreConversion: true,
 };
 
-const validRequest2 = {
+const validRequestPayload2 = {
   conversions: [
     {
       gbraid: 'gbraid',
@@ -244,7 +244,7 @@ const validRequest2 = {
   partialFailure: true,
 };
 
-const validRequest3 = {
+const validRequestPayload3 = {
   conversions: [
     {
       gbraid: 'gbraid',
@@ -301,7 +301,7 @@ export const testScenariosForV0API = [
         body: generateProxyV0Payload({
           headers: commonHeaders1,
           params: commonParams1,
-          JSON: invalidArgumentPayload,
+          JSON: invalidArgumentRequestPayload,
           endpoint:
             'https://googleads.googleapis.com/v14/customers/11122233331/offlineUserDataJobs',
         }),
@@ -385,7 +385,7 @@ export const testScenariosForV0API = [
         body: generateProxyV0Payload({
           headers: commonHeaders1,
           params: commonParams1,
-          JSON: validRequest1,
+          JSON: validRequestPayload1,
           endpoint: 'https://googleads.googleapis.com/v14/customers/1112223333/offlineUserDataJobs',
         }),
         method: 'POST',
@@ -425,7 +425,7 @@ export const testScenariosForV0API = [
         body: generateProxyV0Payload({
           headers: commonHeaders2,
           params: commonParams2,
-          JSON: validRequest2,
+          JSON: validRequestPayload2,
           endpoint:
             'https://googleads.googleapis.com/v14/customers/1234567891:uploadClickConversions',
         }),
@@ -475,7 +475,7 @@ export const testScenariosForV0API = [
         body: generateProxyV0Payload({
           headers: commonHeaders2,
           params: commonParams3,
-          JSON: validRequest3,
+          JSON: validRequestPayload3,
           endpoint:
             'https://googleads.googleapis.com/v14/customers/1234567891:uploadClickConversions',
         }),
@@ -528,7 +528,7 @@ export const testScenariosForV1API = [
           {
             headers: commonHeaders1,
             params: commonParams1,
-            JSON: invalidArgumentPayload,
+            JSON: invalidArgumentRequestPayload,
             endpoint:
               'https://googleads.googleapis.com/v14/customers/11122233331/offlineUserDataJobs',
           },
@@ -593,7 +593,7 @@ export const testScenariosForV1API = [
           {
             headers: commonHeaders1,
             params: commonParams1,
-            JSON: validRequest1,
+            JSON: validRequestPayload1,
             endpoint:
               'https://googleads.googleapis.com/v14/customers/1112223333/offlineUserDataJobs',
           },
@@ -637,7 +637,7 @@ export const testScenariosForV1API = [
           {
             headers: commonHeaders2,
             params: commonParams2,
-            JSON: validRequest2,
+            JSON: validRequestPayload2,
             endpoint:
               'https://googleads.googleapis.com/v14/customers/1234567891:uploadClickConversions',
           },
@@ -692,7 +692,7 @@ export const testScenariosForV1API = [
           {
             headers: commonHeaders2,
             params: commonParams3,
-            JSON: validRequest3,
+            JSON: validRequestPayload3,
             endpoint:
               'https://googleads.googleapis.com/v14/customers/1234567891:uploadClickConversions',
           },

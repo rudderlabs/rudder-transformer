@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.55.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.54.4...v1.55.0) (2024-02-05)
+
+
+### Features
+
+* add new stat for access token expired in fb custom audience ([#3043](https://github.com/rudderlabs/rudder-transformer/issues/3043)) ([1e6d540](https://github.com/rudderlabs/rudder-transformer/commit/1e6d540fafc61a84fbbaa63d4bc5b1edc17ec44e))
+* **intercom:** upgrade intercom version from 1.4 to 2.10 ([#2976](https://github.com/rudderlabs/rudder-transformer/issues/2976)) ([717639b](https://github.com/rudderlabs/rudder-transformer/commit/717639bcce605109b145eb4cc6836fe1589278fe))
+* onboard new destination rakuten ([#3046](https://github.com/rudderlabs/rudder-transformer/issues/3046)) ([c7c3110](https://github.com/rudderlabs/rudder-transformer/commit/c7c3110a4526e31bc296abb33f3246fa8eee049a))
+* trade desk real time conversions ([#3023](https://github.com/rudderlabs/rudder-transformer/issues/3023)) ([212d5f0](https://github.com/rudderlabs/rudder-transformer/commit/212d5f09d8addc618d4398029e62c9a18a9512cf))
+
+
+### Bug Fixes
+
+* adding map for marketo known values and javascript known values ([#3037](https://github.com/rudderlabs/rudder-transformer/issues/3037)) ([64ab555](https://github.com/rudderlabs/rudder-transformer/commit/64ab555d31b4c1c49863794444bd79b2b6a45927))
+* mixpanel timestamp in ms ([#3028](https://github.com/rudderlabs/rudder-transformer/issues/3028)) ([5ad55a2](https://github.com/rudderlabs/rudder-transformer/commit/5ad55a27c8b737fd96f65c68ba086769747c5360))
+* upgrade ua-parser-js from 1.0.35 to 1.0.37 ([9a4cdef](https://github.com/rudderlabs/rudder-transformer/commit/9a4cdef59ab1c2d9dc95eb8629a7009d8d633297))
+
+### [1.54.4](https://github.com/rudderlabs/rudder-transformer/compare/v1.54.3...v1.54.4) (2024-01-31)
+
+
+### Bug Fixes
+
+* purchsse events for reddit ([56d24ec](https://github.com/rudderlabs/rudder-transformer/commit/56d24ec74c0c21bcdcdf262b4feec6edd1dff51c))
+
+### [1.54.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.54.2...v1.54.3) (2024-01-30)
+
+
+### Bug Fixes
+
+* hubspot increasing batch limit from 10 to 100 ([8075b7c](https://github.com/rudderlabs/rudder-transformer/commit/8075b7c6c6203657a8aad2525bd2f302dabd9960))
+
+### [1.54.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.54.1...v1.54.2) (2024-01-25)
+
+
+### Bug Fixes
+
+* deleting access token cache for marketo bulk upload destination ([#3029](https://github.com/rudderlabs/rudder-transformer/issues/3029)) ([78b75bf](https://github.com/rudderlabs/rudder-transformer/commit/78b75bf4d9114209b3e89489fb43228dc9a70e5f))
+
 ### [1.54.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.54.0...v1.54.1) (2024-01-24)
 
 

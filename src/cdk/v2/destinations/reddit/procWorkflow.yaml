@@ -56,13 +56,13 @@ steps:
           const event_type = (eventNames.length === 0 || eventNames[0]==="") ? ({"tracking_type": "Custom", "custom_event_name": event}): ({tracking_type: eventNames[0]});
 
       - name: customFields
-        condition: $.outputs.eventType.tracking_type === "Purchase"
+        condition: $.outputs.prepareTrackPayload.eventType.tracking_type === "Purchase"
         template: |
           const customFields = .message.().({
             "currency": .properties.currency,
-            "value": .properties.revenue !== undefined ? Number(.properties.revenue) : undefined,
+            "value_decimal": .properties.revenue !== undefined ? Number(.properties.revenue) : undefined,
             "item_count": (Array.isArray(.properties.products) && .properties.products.length) || (.properties.itemCount && Number(.properties.itemCount)),
-            "value_decimal": .properties.revenue !== undefined ? Number(.properties.revenue)/100 : undefined,
+            "value": .properties.revenue !== undefined ? Number(.properties.revenue)*100 : undefined,
             "conversion_id": .properties.conversionId || .messageId,
           });
           $.removeUndefinedAndNullValues(customFields)

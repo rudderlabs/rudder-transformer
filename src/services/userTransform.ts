@@ -14,7 +14,7 @@ import {
   RetryRequestError,
   extractStackTraceUptoLastSubstringMatch,
 } from '../util/utils';
-import { getMetadata, isNonFuncObject } from '../v0/util';
+import { getMetadata, getTransformationMetadata, isNonFuncObject } from '../v0/util';
 import { SUPPORTED_FUNC_NAMES } from '../util/ivmFactory';
 import logger from '../logger';
 import stats from '../util/stats';
@@ -162,15 +162,18 @@ export class UserTransformService {
             ),
           );
           stats.counter('user_transform_errors', eventsToProcess.length, {
-            transformationId: eventsToProcess[0]?.metadata?.transformationId,
-            workspaceId: eventsToProcess[0]?.metadata?.workspaceId,
+            ...getTransformationMetadata(eventsToProcess[0]?.metadata),
             status,
             ...metaTags,
           });
         } finally {
           stats.timing('user_transform_request_latency', userFuncStartTime, {
-            workspaceId: eventsToProcess[0]?.metadata?.workspaceId,
-            transformationId: eventsToProcess[0]?.metadata?.transformationId,
+            ...getTransformationMetadata(eventsToProcess[0]?.metadata),
+            ...metaTags,
+          });
+
+          stats.histogram('user_transform_request_size', JSON.stringify(eventsToProcess).length, {
+            ...getTransformationMetadata(eventsToProcess[0]?.metadata),
             ...metaTags,
           });
         }

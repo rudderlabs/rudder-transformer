@@ -643,6 +643,18 @@ class Prometheus {
         ],
       },
       {
+        name: 'user_transform_request_size',
+        help: 'user_transform_request_size',
+        type: 'histogram',
+        labelNames: [
+          'workspaceId',
+          'transformationId',
+          'sourceType',
+          'destinationType',
+          'k8_namespace',
+        ],
+      },
+      {
         name: 'source_transform_request_latency',
         help: 'source_transform_request_latency',
         type: 'histogram',

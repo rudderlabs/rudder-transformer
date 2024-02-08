@@ -6,7 +6,7 @@ type ProcessorTransformationOutput = {
   type: string;
   method: string;
   endpoint: string;
-  userId: string;
+  userId?: string;
   headers?: Record<string, unknown>;
   params?: Record<string, unknown>;
   body?: {
@@ -142,7 +142,7 @@ type ProcessorTransformationRequest = {
   message: object;
   metadata: Metadata;
   destination: Destination;
-  libraries: UserTransformationLibrary[];
+  libraries?: UserTransformationLibrary[];
 };
 
 type RouterTransformationRequestData = {
@@ -162,17 +162,17 @@ type ProcessorTransformationResponse = {
   metadata: Metadata;
   statusCode: number;
   error?: string;
-  statTags: object;
+  statTags?: object;
 };
 
 type RouterTransformationResponse = {
-  batchedRequest?: ProcessorTransformationOutput;
+  batchedRequest?: ProcessorTransformationOutput | ProcessorTransformationOutput[];
   metadata: Metadata[];
   destination: Destination;
   batched: boolean;
   statusCode: number;
-  error: string;
-  statTags: object;
+  error?: string;
+  statTags?: object;
 };
 
 type SourceTransformationOutput = {

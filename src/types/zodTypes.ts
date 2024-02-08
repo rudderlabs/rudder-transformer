@@ -2,6 +2,109 @@ import { z } from 'zod';
 import { isDefinedAndNotNullAndNotEmpty } from '@rudderstack/integrations-lib';
 import { isHttpStatusSuccess } from '../v0/util';
 
+const ProcessorTransformationOutputSchema = z.object({
+  version: z.string(),
+  type: z.string(),
+  method: z.string(),
+  endpoint: z.string(),
+  userId: z.string().optional(),
+  headers: z.record(z.unknown()).optional(),
+  params: z.record(z.unknown()).optional(),
+  body: z
+    .object({
+      JSON: z.record(z.unknown()).optional(),
+      JSON_ARRAY: z.record(z.unknown()).optional(),
+      XML: z.record(z.unknown()).optional(),
+      FORM: z.record(z.unknown()).optional(),
+    })
+    .optional(),
+  files: z.record(z.unknown()).optional(),
+});
+
+export const ProcessorTransformationResponseSchema = z
+  .object({
+    output: ProcessorTransformationOutputSchema.optional(),
+    metadata: z.record(z.unknown()),
+    statusCode: z.number(),
+    error: z.string().optional(),
+    statTags: z.record(z.unknown()).optional(),
+  })
+  .refine(
+    (data) => {
+      if (!isHttpStatusSuccess(data.statusCode)) {
+        return (
+          isDefinedAndNotNullAndNotEmpty(data.statTags) ||
+          isDefinedAndNotNullAndNotEmpty(data.error)
+        );
+      }
+      return true;
+    },
+    {
+      message: "statTags and error can't be empty when status is not a 2XX",
+      path: ['statTags', 'error'], // Pointing out which field is invalid
+    },
+  )
+  .refine(
+    (data) => {
+      if (isHttpStatusSuccess(data.statusCode)) {
+        return isDefinedAndNotNullAndNotEmpty(data.output);
+      }
+      return true;
+    },
+    {
+      message: "output can't be empty when status is 2XX",
+      path: ['output'], // Pointing out which field is invalid
+    },
+  );
+
+export const ProcessorTransformationResponseListSchema = z.array(
+  ProcessorTransformationResponseSchema,
+);
+
+export const RouterTransformationResponseSchema = z
+  .object({
+    batchedRequest: z
+      .array(ProcessorTransformationOutputSchema)
+      .or(ProcessorTransformationOutputSchema)
+      .optional(),
+    metadata: z.array(z.record(z.unknown())), // array of metadata
+    destination: z.record(z.unknown()),
+    batched: z.boolean(),
+    statusCode: z.number(),
+    error: z.string().optional(),
+    statTags: z.record(z.unknown()).optional(),
+  })
+  .refine(
+    (data) => {
+      if (!isHttpStatusSuccess(data.statusCode)) {
+        return (
+          isDefinedAndNotNullAndNotEmpty(data.statTags) ||
+          isDefinedAndNotNullAndNotEmpty(data.error)
+        );
+      }
+      return true;
+    },
+    {
+      message: "statTags and error can't be empty when status is not a 2XX",
+      path: ['statTags', 'error'], // Pointing out which field is invalid
+    },
+  )
+  .refine(
+    (data) => {
+      if (isHttpStatusSuccess(data.statusCode)) {
+        return isDefinedAndNotNullAndNotEmpty(data.batchedRequest);
+      }
+      return true;
+    },
+    {
+      message: "batchedRequest can't be empty when status is 2XX",
+      path: ['batchedRequest'], // Pointing out which field is invalid
+    },
+  );
+
+export const RouterTransformationResponseListSchema = z.array(RouterTransformationResponseSchema);
+
+// Proxy related schemas
 export const ProxyMetadataSchema = z.object({
   jobId: z.number(),
   attemptNum: z.number(),
@@ -10,7 +113,7 @@ export const ProxyMetadataSchema = z.object({
   destinationId: z.string(),
   workspaceId: z.string(),
   secret: z.record(z.unknown()),
-  destInfo: z.object({}).optional(),
+  destInfo: z.record(z.unknown()).optional(),
   omitempty: z.record(z.unknown()).optional(),
   dontBatch: z.boolean(),
 });

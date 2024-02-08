@@ -1,5 +1,11 @@
 import { AxiosResponse } from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import {
+  ProcessorTransformationRequest,
+  ProcessorTransformationResponse,
+  RouterTransformationRequest,
+  RouterTransformationResponse,
+} from '../../src/types';
 
 export interface requestType {
   method: string;
@@ -46,4 +52,51 @@ export interface TestCaseData {
 export type MockHttpCallsData = {
   httpReq: Record<string, any>;
   httpRes: Partial<AxiosResponse>;
+};
+
+export type ProcessorTestData = {
+  id: string;
+  name: string;
+  description: string;
+  scenario: string;
+  successCriteria: string;
+  comment?: string;
+  feature: string;
+  module: string;
+  version: string;
+  input: {
+    request: {
+      body: ProcessorTransformationRequest[];
+    };
+  };
+  output: {
+    response: {
+      status: number;
+      body: ProcessorTransformationResponse[];
+    };
+  };
+};
+export type RouterTestData = {
+  id: string;
+  name: string;
+  description: string;
+  comment?: string;
+  scenario: string;
+  successCriteria: string;
+  feature: string;
+  module: string;
+  version: string;
+  input: {
+    request: {
+      body: RouterTransformationRequest;
+    };
+  };
+  output: {
+    response: {
+      status: number;
+      body: {
+        output: RouterTransformationResponse[];
+      };
+    };
+  };
 };

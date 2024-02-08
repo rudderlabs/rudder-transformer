@@ -23,6 +23,7 @@ import { appendFileSync } from 'fs';
 import { assertRouterOutput, responses } from '../testHelper';
 import { generateTestReport, initaliseReport } from '../test_reporter/reporter';
 import _ from 'lodash';
+import { processorTransformSchema, routerTransformSchema, batchTransformSchema } from './testTypes';
 
 // To run single destination test cases
 // npm run test:ts -- component  --destination=adobe_analytics
@@ -158,11 +159,26 @@ const testRoute = async (route, tcData: TestCaseData) => {
   }
 
   if (outputResp?.body) {
+    validateSchema(response.body, tcData.feature);
     expect(response.body).toEqual(outputResp.body);
   }
 
   if (outputResp.headers !== undefined) {
     expect(response.headers).toEqual(outputResp.headers);
+  }
+};
+
+const validateSchema = (response, feature: string) => {
+  switch (feature) {
+    case tags.FEATURES.ROUTER:
+      routerTransformSchema.parse(response);
+      break;
+    case tags.FEATURES.BATCH:
+      batchTransformSchema.parse(response);
+      break;
+    case tags.FEATURES.PROCESSOR:
+      processorTransformSchema.parse(response);
+      break;
   }
 };
 

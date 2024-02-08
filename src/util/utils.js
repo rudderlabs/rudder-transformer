@@ -26,20 +26,20 @@ const staticLookup = (transformerVersionId) => async (hostname, _, cb) => {
       transformerVersionId,
       error: 'true',
     });
-    cb(null, `unable to resolve IP address for ${hostname}`, RECORD_TYPE_A);
+    cb(new Error(`unable to resolve IP address for ${hostname}`), null, RECORD_TYPE_A);
     return;
   }
   stats.timing('fetch_dns_resolve_time', resolveStartTime, { transformerVersionId });
 
   if (ips.length === 0) {
-    cb(null, `resolved empty list of IP address for ${hostname}`, RECORD_TYPE_A);
+    cb(new Error(`resolved empty list of IP address for ${hostname}`), null, RECORD_TYPE_A);
     return;
   }
 
   // eslint-disable-next-line no-restricted-syntax
   for (const ip of ips) {
     if (ip.startsWith(LOCALHOST_OCTET)) {
-      cb(null, `cannot use ${ip} as IP address`, RECORD_TYPE_A);
+      cb(new Error(`cannot use ${ip} as IP address`), null, RECORD_TYPE_A);
       return;
     }
   }

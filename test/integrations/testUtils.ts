@@ -6,7 +6,13 @@ import MockAdapter from 'axios-mock-adapter';
 import isMatch from 'lodash/isMatch';
 import { OptionValues } from 'commander';
 import { removeUndefinedAndNullValues } from '@rudderstack/integrations-lib';
-import { Destination, Metadata, ProxyMetdata } from '../../src/types';
+import {
+  Destination,
+  Metadata,
+  ProxyMetdata,
+  ProxyV0Request,
+  ProxyV1Request,
+} from '../../src/types';
 import {
   DeliveryV0ResponseSchema,
   DeliveryV0ResponseSchemaForOauth,
@@ -67,7 +73,7 @@ export const addMock = (mock: MockAdapter, axiosMock: MockHttpCallsData) => {
 
   switch (method.toLowerCase()) {
     case 'get':
-      // We are accepting parameters exclusively for mocking purposes and do not require a request body, 
+      // We are accepting parameters exclusively for mocking purposes and do not require a request body,
       // particularly for GET requests where it is typically unnecessary
       // @ts-ignore
       mock.onGet(url, { params }, headersAsymMatch).reply(status, data, headers);
@@ -389,7 +395,7 @@ export const generateProxyV0Payload = (
   payloadParameters: any,
   metadataInput?: ProxyMetdata,
   destinationConfig?: any,
-) => {
+): ProxyV0Request => {
   let metadata: ProxyMetdata = {
     jobId: 1,
     attemptNum: 1,
@@ -423,14 +429,14 @@ export const generateProxyV0Payload = (
     metadata,
     destinationConfig: destinationConfig || {},
   };
-  return removeUndefinedAndNullValues(payload);
+  return removeUndefinedAndNullValues(payload) as ProxyV0Request;
 };
 
 export const generateProxyV1Payload = (
   payloadParameters: any,
   metadataInput?: ProxyMetdata[],
   destinationConfig?: any,
-) => {
+): ProxyV1Request => {
   let metadata: ProxyMetdata[] = [
     {
       jobId: 1,
@@ -466,7 +472,7 @@ export const generateProxyV1Payload = (
     metadata,
     destinationConfig: destinationConfig || {},
   };
-  return removeUndefinedAndNullValues(payload);
+  return removeUndefinedAndNullValues(payload) as ProxyV1Request;
 };
 
 // -----------------------------

@@ -1,3 +1,4 @@
+import { ProxyV1TestData } from '../../../testTypes';
 import { generateProxyV1Payload, generateProxyV0Payload } from '../../../testUtils';
 // Boilerplat data for the test cases
 // ======================================
@@ -302,7 +303,7 @@ export const v0oauthScenarios = [
   },
 ];
 
-export const v1oauthScenarios = [
+export const v1oauthScenarios: ProxyV1TestData[] = [
   {
     id: 'cm360_v1_oauth_scenario_1',
     name: 'campaign_manager',

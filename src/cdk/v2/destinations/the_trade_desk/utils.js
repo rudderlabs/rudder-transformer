@@ -115,8 +115,10 @@ const prepareItemsPayload = (message) => {
   let items;
   const eventMapInfo = ECOMM_EVENT_MAP[event.toLowerCase()];
   if (eventMapInfo?.itemsArray) {
+    // if event is one of the supported ecommerce events and products array is present
     items = prepareItemsFromProducts(message);
   } else if (eventMapInfo) {
+    // if event is one of the supported ecommerce events and products array is not present
     items = prepareItemsFromProperties(message);
   }
   return items;
@@ -304,14 +306,17 @@ const enrichTrackPayload = (message, payload) => {
   if (eventsMapInfo && !eventsMapInfo.itemsArray) {
     const itemExclusionList = generateExclusionList(ITEM_CONFIGS);
     rawPayload = extractCustomFields(message, rawPayload, ['properties'], itemExclusionList);
-  } else {
-    // for custom events
+  } else if (eventsMapInfo) {
+    // for ecomm events with products array supports. e.g Order Completed event
     rawPayload = extractCustomFields(
       message,
       rawPayload,
       ['properties'],
       ['products', 'revenue', 'value'],
     );
+  } else {
+    // for custom events
+    rawPayload = extractCustomFields(message, rawPayload, ['properties'], ['value']);
   }
   return rawPayload;
 };

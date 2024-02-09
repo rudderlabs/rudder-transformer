@@ -1,3 +1,4 @@
+import { generateMetadata } from '../../../testUtils';
 import { V1BusinessTestScenarion } from './business';
 import { v1OauthScenarios } from './oauth';
 import { v1OtherScenarios } from './other';
@@ -42,6 +43,9 @@ const v0testCases = [
           params: {
             destination: 'criteo_audience',
           },
+          userId: '1234',
+          metadata: generateMetadata(1),
+          destinationConfig: {},
         },
         method: 'POST',
       },
@@ -100,6 +104,9 @@ const v0testCases = [
           params: {
             destination: 'criteo_audience',
           },
+          userId: '1234',
+          metadata: generateMetadata(2),
+          destinationConfig: {},
         },
         method: 'POST',
       },
@@ -127,8 +134,8 @@ const v0testCases = [
             statTags: {
               destType: 'CRITEO_AUDIENCE',
               errorCategory: 'network',
-              destinationId: 'Non-determininable',
-              workspaceId: 'Non-determininable',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
               errorType: 'aborted',
               feature: 'dataDelivery',
               implementation: 'native',
@@ -177,6 +184,9 @@ const v0testCases = [
           params: {
             destination: 'criteo_audience',
           },
+          userId: '1234',
+          metadata: generateMetadata(3),
+          destinationConfig: {},
         },
         method: 'POST',
       },
@@ -204,8 +214,8 @@ const v0testCases = [
             statTags: {
               destType: 'CRITEO_AUDIENCE',
               errorCategory: 'network',
-              destinationId: 'Non-determininable',
-              workspaceId: 'Non-determininable',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
               errorType: 'aborted',
               feature: 'dataDelivery',
               implementation: 'native',
@@ -254,6 +264,9 @@ const v0testCases = [
           params: {
             destination: 'criteo_audience',
           },
+          userId: '1234',
+          metadata: generateMetadata(4),
+          destinationConfig: {},
         },
         method: 'POST',
       },
@@ -279,8 +292,8 @@ const v0testCases = [
             statTags: {
               destType: 'CRITEO_AUDIENCE',
               errorCategory: 'network',
-              destinationId: 'Non-determininable',
-              workspaceId: 'Non-determininable',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
               errorType: 'aborted',
               feature: 'dataDelivery',
               implementation: 'native',
@@ -331,6 +344,9 @@ const v0testCases = [
           params: {
             destination: 'criteo_audience',
           },
+          userId: '1234',
+          metadata: generateMetadata(5),
+          destinationConfig: {},
         },
         method: 'POST',
       },
@@ -356,8 +372,8 @@ const v0testCases = [
             statTags: {
               destType: 'CRITEO_AUDIENCE',
               errorCategory: 'network',
-              destinationId: 'Non-determininable',
-              workspaceId: 'Non-determininable',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
               feature: 'dataDelivery',
               implementation: 'native',
               errorType: 'retryable',
@@ -407,6 +423,9 @@ const v0testCases = [
           params: {
             destination: 'criteo_audience',
           },
+          userId: '1234',
+          metadata: generateMetadata(6),
+          destinationConfig: {},
         },
         method: 'POST',
       },
@@ -425,8 +444,8 @@ const v0testCases = [
             statTags: {
               destType: 'CRITEO_AUDIENCE',
               errorCategory: 'network',
-              destinationId: 'Non-determininable',
-              workspaceId: 'Non-determininable',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
               errorType: 'throttled',
               feature: 'dataDelivery',
               implementation: 'native',
@@ -476,6 +495,9 @@ const v0testCases = [
           params: {
             destination: 'criteo_audience',
           },
+          userId: '1234',
+          metadata: generateMetadata(7),
+          destinationConfig: {},
         },
         method: 'POST',
       },
@@ -496,8 +518,8 @@ const v0testCases = [
             statTags: {
               destType: 'CRITEO_AUDIENCE',
               errorCategory: 'network',
-              destinationId: 'Non-determininable',
-              workspaceId: 'Non-determininable',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
               errorType: 'aborted',
               feature: 'dataDelivery',
               implementation: 'native',

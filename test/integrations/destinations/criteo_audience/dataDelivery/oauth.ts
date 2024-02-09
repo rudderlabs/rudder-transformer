@@ -65,7 +65,7 @@ export const v1OauthScenarios = [
             ],
             message:
               'The authorization token has expired during criteo_audience response transformation',
-            commonStatTags,
+            statTags: commonStatTags,
           },
         },
       },
@@ -122,9 +122,9 @@ export const v1OauthScenarios = [
                 statusCode: 401,
               },
             ],
+            statTags: commonStatTags,
             message:
               'The authorization header is invalid during criteo_audience response transformation',
-            commonStatTags,
           },
         },
       },

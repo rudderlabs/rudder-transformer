@@ -18,6 +18,39 @@ const users = [
   },
 ];
 
+const statTags = {
+  aborted: {
+    destType: 'SALESFORCE',
+    destinationId: 'dummyDestinationId',
+    errorCategory: 'network',
+    errorType: 'aborted',
+    feature: 'dataDelivery',
+    implementation: 'native',
+    module: 'destination',
+    workspaceId: 'dummyWorkspaceId',
+  },
+  retryable: {
+    destType: 'SALESFORCE',
+    destinationId: 'dummyDestinationId',
+    errorCategory: 'network',
+    errorType: 'retryable',
+    feature: 'dataDelivery',
+    implementation: 'native',
+    module: 'destination',
+    workspaceId: 'dummyWorkspaceId',
+  },
+  throttled: {
+    destType: 'SALESFORCE',
+    destinationId: 'dummyDestinationId',
+    errorCategory: 'network',
+    errorType: 'throttled',
+    feature: 'dataDelivery',
+    implementation: 'native',
+    module: 'destination',
+    workspaceId: 'dummyWorkspaceId',
+  },
+};
+
 const proxyMetdata: ProxyMetdata = {
   jobId: 1,
   attemptNum: 1,
@@ -43,19 +76,6 @@ const externalIDSearchedData = {
   JSON: externalIdSearchData,
   params,
 };
-
-console.log(
-  JSON.stringify(
-    generateProxyV1Payload(
-      {
-        ...commonRequestParameters,
-        endpoint:
-          'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/invalid_session_id',
-      },
-      reqMetadataArray,
-    ),
-  ),
-);
 
 export const testScenariosForV1API = [
   {
@@ -137,16 +157,7 @@ export const testScenariosForV1API = [
                 statusCode: 500,
               },
             ],
-            statTags: {
-              destType: 'SALESFORCE',
-              errorCategory: 'network',
-              destinationId: 'dummyDestinationId',
-              workspaceId: 'dummyWorkspaceId',
-              errorType: 'retryable',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-            },
+            statTags: statTags.retryable,
           },
         },
       },
@@ -188,16 +199,7 @@ export const testScenariosForV1API = [
                 statusCode: 400,
               },
             ],
-            statTags: {
-              destType: 'SALESFORCE',
-              errorCategory: 'network',
-              destinationId: 'dummyDestinationId',
-              workspaceId: 'dummyWorkspaceId',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-            },
+            statTags: statTags.aborted,
           },
         },
       },
@@ -236,29 +238,11 @@ export const testScenariosForV1API = [
               {
                 error:
                   '[{"message":"Request limit exceeded","errorCode":"REQUEST_LIMIT_EXCEEDED"}]',
-                metadata: {
-                  attemptNum: 1,
-                  destinationId: 'dummyDestinationId',
-                  dontBatch: false,
-                  jobId: 1,
-                  secret: {},
-                  sourceId: 'dummySourceId',
-                  userId: 'dummyUserId',
-                  workspaceId: 'dummyWorkspaceId',
-                },
+                metadata: proxyMetdata,
                 statusCode: 429,
               },
             ],
-            statTags: {
-              destType: 'SALESFORCE',
-              destinationId: 'dummyDestinationId',
-              errorCategory: 'network',
-              errorType: 'throttled',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'dummyWorkspaceId',
-            },
+            statTags: statTags.throttled,
             status: 429,
           },
         },
@@ -297,29 +281,11 @@ export const testScenariosForV1API = [
             response: [
               {
                 error: '[{"message":"Server Unavailable","errorCode":"SERVER_UNAVAILABLE"}]',
-                metadata: {
-                  attemptNum: 1,
-                  destinationId: 'dummyDestinationId',
-                  dontBatch: false,
-                  jobId: 1,
-                  secret: {},
-                  sourceId: 'dummySourceId',
-                  userId: 'dummyUserId',
-                  workspaceId: 'dummyWorkspaceId',
-                },
+                metadata: proxyMetdata,
                 statusCode: 500,
               },
             ],
-            statTags: {
-              destType: 'SALESFORCE',
-              destinationId: 'dummyDestinationId',
-              errorCategory: 'network',
-              errorType: 'retryable',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'dummyWorkspaceId',
-            },
+            statTags: statTags.retryable,
             status: 500,
           },
         },
@@ -358,29 +324,11 @@ export const testScenariosForV1API = [
             response: [
               {
                 error: '{"error":"invalid_grant","error_description":"authentication failure"}',
-                metadata: {
-                  attemptNum: 1,
-                  destinationId: 'dummyDestinationId',
-                  dontBatch: false,
-                  jobId: 1,
-                  secret: {},
-                  sourceId: 'dummySourceId',
-                  userId: 'dummyUserId',
-                  workspaceId: 'dummyWorkspaceId',
-                },
+                metadata: proxyMetdata,
                 statusCode: 400,
               },
             ],
-            statTags: {
-              destType: 'SALESFORCE',
-              destinationId: 'dummyDestinationId',
-              errorCategory: 'network',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'dummyWorkspaceId',
-            },
+            statTags: statTags.aborted,
             status: 400,
           },
         },
@@ -419,29 +367,11 @@ export const testScenariosForV1API = [
             response: [
               {
                 error: '{"message":"Server Unavailable","errorCode":"SERVER_UNAVAILABLE"}',
-                metadata: {
-                  attemptNum: 1,
-                  destinationId: 'dummyDestinationId',
-                  dontBatch: false,
-                  jobId: 1,
-                  secret: {},
-                  sourceId: 'dummySourceId',
-                  userId: 'dummyUserId',
-                  workspaceId: 'dummyWorkspaceId',
-                },
+                metadata: proxyMetdata,
                 statusCode: 500,
               },
             ],
-            statTags: {
-              destType: 'SALESFORCE',
-              destinationId: 'dummyDestinationId',
-              errorCategory: 'network',
-              errorType: 'retryable',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'dummyWorkspaceId',
-            },
+            statTags: statTags.retryable,
             status: 500,
           },
         },
@@ -481,16 +411,7 @@ export const testScenariosForV1API = [
               {
                 error:
                   '{"searchRecords":[{"attributes":{"type":"object_name","url":"/services/data/v50.0/sobjects/object_name/a0J75100002w97gEAA"},"Id":"a0J75100002w97gEAA","External_ID__c":"external_id"},{"attributes":{"type":"object_name","url":"/services/data/v50.0/sobjects/object_name/a0J75200002w9ZsEAI"},"Id":"a0J75200002w9ZsEAI","External_ID__c":"external_id TEST"}]}',
-                metadata: {
-                  attemptNum: 1,
-                  destinationId: 'dummyDestinationId',
-                  dontBatch: false,
-                  jobId: 1,
-                  secret: {},
-                  sourceId: 'dummySourceId',
-                  userId: 'dummyUserId',
-                  workspaceId: 'dummyWorkspaceId',
-                },
+                metadata: proxyMetdata,
                 statusCode: 200,
               },
             ],
@@ -500,221 +421,4 @@ export const testScenariosForV1API = [
       },
     },
   },
-
-  // {
-  //   id: 'salesforce_v1_scenario_4',
-  //   name: 'salesforce',
-  //   description: 'salesforce',
-  //   successCriteria: '',
-  //   scenario: 'Business',
-  //   feature: 'dataDelivery',
-  //   module: 'destination',
-  //   version: 'v1',
-  //   input: {
-  //     request: {
-  //       body: generateProxyV1Payload(
-  //         {
-  //           ...commonRequestParameters,
-  //           endpoint: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/4',
-  //         },
-  //         reqMetadataArray,
-  //       ),
-  //       method: 'POST',
-  //     },
-  //   },
-  //   output: {
-  //     response: {
-  //       status: 200,
-  //       body: {},
-  //     },
-  //   },
-  // },
-
-  // {
-  //   id: 'salesforce_v1_scenario_4',
-  //   name: 'salesforce',
-  //   description: 'salesforce',
-  //   successCriteria: '',
-  //   scenario: 'Business',
-  //   feature: 'dataDelivery',
-  //   module: 'destination',
-  //   version: 'v1',
-  //   input: {
-  //     request: {
-  //       body: generateProxyV1Payload(
-  //         {
-  //           ...commonRequestParameters,
-  //           endpoint: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/4',
-  //         },
-  //         reqMetadataArray,
-  //       ),
-  //       method: 'POST',
-  //     },
-  //   },
-  //   output: {
-  //     response: {
-  //       status: 200,
-  //       body: {},
-  //     },
-  //   },
-  // },
-
-  // {
-  //   id: 'salesforce_v1_scenario_3',
-  //   name: 'salesforce',
-  //   description: 'salesforce',
-  //   successCriteria: '',
-  //   scenario: 'Business',
-  //   feature: 'dataDelivery',
-  //   module: 'destination',
-  //   version: 'v1',
-  //   input: {
-  //     request: {
-  //       body: generateProxyV1Payload(
-  //         {
-  //           ...commonRequestParameters,
-  //           endpoint: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/2',
-  //         },
-  //         reqMetadataArray,
-  //       ),
-  //       method: 'POST',
-  //     },
-  //   },
-  //   output: {
-  //     response: {
-  //       status: 200,
-  //       body: {
-  //         output: {
-  //           status: 500,
-  //           message:
-  //             'Salesforce Request Failed - due to "Session expired or invalid", (Retryable) during Salesforce Response Handling',
-  //           response: [
-  //             {
-  //               error:
-  //                 '[{"message":"Session expired or invalid","errorCode":"INVALID_SESSION_ID"}]',
-  //               metadata: proxyMetdata,
-  //               statusCode: 500,
-  //             },
-  //           ],
-  //           statTags: {
-  //             destType: 'SALESFORCE',
-  //             errorCategory: 'network',
-  //             destinationId: 'dummyDestinationId',
-  //             workspaceId: 'dummyWorkspaceId',
-  //             errorType: 'retryable',
-  //             feature: 'dataDelivery',
-  //             implementation: 'native',
-  //             module: 'destination',
-  //           },
-  //         },
-  //       },
-  //     },
-  //   },
-  // },
-
-  // {
-  //   id: 'salesforce_v1_scenario_3',
-  //   name: 'salesforce',
-  //   description: 'salesforce',
-  //   successCriteria: '',
-  //   scenario: 'Business',
-  //   feature: 'dataDelivery',
-  //   module: 'destination',
-  //   version: 'v1',
-  //   input: {
-  //     request: {
-  //       body: generateProxyV1Payload(
-  //         {
-  //           ...commonRequestParameters,
-  //           endpoint: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/2',
-  //         },
-  //         reqMetadataArray,
-  //       ),
-  //       method: 'POST',
-  //     },
-  //   },
-  //   output: {
-  //     response: {
-  //       status: 200,
-  //       body: {
-  //         output: {
-  //           status: 500,
-  //           message:
-  //             'Salesforce Request Failed - due to "Session expired or invalid", (Retryable) during Salesforce Response Handling',
-  //           response: [
-  //             {
-  //               error:
-  //                 '[{"message":"Session expired or invalid","errorCode":"INVALID_SESSION_ID"}]',
-  //               metadata: proxyMetdata,
-  //               statusCode: 500,
-  //             },
-  //           ],
-  //           statTags: {
-  //             destType: 'SALESFORCE',
-  //             errorCategory: 'network',
-  //             destinationId: 'dummyDestinationId',
-  //             workspaceId: 'dummyWorkspaceId',
-  //             errorType: 'retryable',
-  //             feature: 'dataDelivery',
-  //             implementation: 'native',
-  //             module: 'destination',
-  //           },
-  //         },
-  //       },
-  //     },
-  //   },
-  // },
-
-  // {
-  //   id: 'salesforce_v1_scenario_3',
-  //   name: 'salesforce',
-  //   description: 'salesforce',
-  //   successCriteria: '',
-  //   scenario: 'Business',
-  //   feature: 'dataDelivery',
-  //   module: 'destination',
-  //   version: 'v1',
-  //   input: {
-  //     request: {
-  //       body: generateProxyV1Payload(
-  //         {
-  //           ...commonRequestParameters,
-  //           endpoint: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/2',
-  //         },
-  //         reqMetadataArray,
-  //       ),
-  //       method: 'POST',
-  //     },
-  //   },
-  //   output: {
-  //     response: {
-  //       status: 200,
-  //       body: {
-  //         output: {
-  //           status: 500,
-  //           message:
-  //             'Salesforce Request Failed - due to "Session expired or invalid", (Retryable) during Salesforce Response Handling',
-  //           response: [
-  //             {
-  //               error:
-  //                 '[{"message":"Session expired or invalid","errorCode":"INVALID_SESSION_ID"}]',
-  //               metadata: proxyMetdata,
-  //               statusCode: 500,
-  //             },
-  //           ],
-  //           statTags: {
-  //             destType: 'SALESFORCE',
-  //             errorCategory: 'network',
-  //             destinationId: 'dummyDestinationId',
-  //             workspaceId: 'dummyWorkspaceId',
-  //             errorType: 'retryable',
-  //             feature: 'dataDelivery',
-  //             implementation: 'native',
-  //             module: 'destination',
-  //           },
-  //         },
-  //       },
-  //     },
-  //   },
-  // },
 ];

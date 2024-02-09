@@ -13,16 +13,6 @@ const CONFIG_CATEGORIES = {
   },
 };
 
-// const EVENT_NAME_MAPPING = {
-//   'Product Viewed': 'viewed_product',
-//   'Products Searched': 'search',
-//   'Product Added': 'add_to_cart',
-//   'Product Removed': 'remove_from_cart',
-//   'Product Added to Wishlist': 'wishlist',
-//   'Order Completed': 'purchase',
-//   'Identify': 'identify',
-// };
-
 const EVENT_NAME_MAPPING = [
   {
     src: ['Product Viewed'],
@@ -50,10 +40,13 @@ const EVENT_NAME_MAPPING = [
   },
 ];
 
+const BLUECORE_EXCLUSION_FIELDS = ['query','order_id','total']
+
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 module.exports = {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   EVENT_NAME_MAPPING,
   BASE_URL,
+  BLUECORE_EXCLUSION_FIELDS
 };

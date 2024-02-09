@@ -1,4 +1,3 @@
-// TODO: Add support for product array
 // TODO : experiment if a custom event without distinct_id as an identifier reaches bluecore or not
 
 const { isDefinedAndNotNull, ConfigurationError, TransformationError,
@@ -8,7 +7,6 @@ const {
   constructPayload,
   ErrorMessage,
   defaultRequestConfig,
-  getValueFromMessage,
   simpleProcessRouterDest,
 } = require('../../util');
 
@@ -17,33 +15,14 @@ const {
   CONFIG_CATEGORIES,
   BASE_URL,
 } = require('./config');
-const { verifyPayload, deduceTrackEventName } = require('./util');
+const { verifyPayload, deduceTrackEventName, addProductArray } = require('./util');
 
-const addProductArray = (message, payload, eventName) => {
-  switch (eventName) {
-    case 'viewed_product':
-    case 'add_to_cart':
-    case 'remove_from_cart':
-    case 'wishlist':
-      if (isDefinedAndNotNull(message.properties.products)) {
-        return message.properties.products;
-      }
-      break;
-    case 'purchase':
-      if (isDefinedAndNotNull(message.properties.products)) {
-        return message.properties.products;
-      }
-      break;
-    default:
-      break;
-  }
-};
+
 
 const trackResponseBuilder = (message, category, { Config }, eventName) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
-  // TODO: add support for product array
-  if(eventName !== 'optin' || eventName !== 'unsubscribe') {
-    payload.properties.product = addProductArray(message, payload, eventName);
+  if(eventName !== 'optin' || eventName !== 'unsubscribe' || eventName !== 'search' ) {
+    payload.properties.product = addProductArray(message, payload.products, eventName);
   }
   payload.event = eventName;
   verifyPayload(payload, message);

@@ -60,8 +60,21 @@ const deduceTrackEventName = (trackEventName, Config) => {
     return trackEventName;
 };
 
+const addProductArray = (message, products, eventName) => {
+    if (!isDefinedAndNotNull(products)) {
+      throw new InstrumentationError(`Product array is required for ${eventName} event`);
+    }
+    const productArray =  Array.isArray(products) ? products : [products];
+    productArray.forEach(({ product_id, query, order_id, total, ...rest }) => ({
+      id: product_id,
+      ...rest
+    }));
+    return productArray;
+  }
+
 module.exports = {
     verifyPayload,
-    deduceTrackEventName
+    deduceTrackEventName,
+    addProductArray
 };
 

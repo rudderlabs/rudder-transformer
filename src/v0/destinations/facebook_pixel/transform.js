@@ -205,6 +205,7 @@ const processEvent = (message, destination) => {
   let mappedEvent;
   switch (messageType) {
     case EventType.IDENTIFY:
+      console.log('Identify event advancedMapping', advancedMapping);
       if (advancedMapping) {
         category = CONFIG_CATEGORIES.USERDATA;
         break;

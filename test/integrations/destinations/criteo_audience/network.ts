@@ -97,54 +97,6 @@ export const networkCallsData = [
   },
   {
     httpReq: {
-      url: 'https://api.criteo.com/2022-10/audiences/3485/contactlist',
-      data: commonData,
-      params,
-      headers,
-      method,
-    },
-    httpRes: {
-      code: '400',
-      data: {
-        errors: [
-          {
-            traceIdentifier: '80a1a0ba3981b04da847d05700752c77',
-            type: 'authorization',
-            code: 'authorization-token-expired',
-            instance: '/2022-10/audiences/123/contactlist',
-            title: 'The authorization token has expired',
-          },
-        ],
-      },
-      status: 401,
-    },
-  },
-  {
-    httpReq: {
-      url: 'https://api.criteo.com/2022-10/audiences/34895/contactlist',
-      data: commonData,
-      params,
-      headers,
-      method,
-    },
-    httpRes: {
-      code: '400',
-      data: {
-        errors: [
-          {
-            traceIdentifier: '80a1a0ba3981b04da847d05700752c77',
-            type: 'authorization',
-            code: 'authorization-token-invalid',
-            instance: '/2022-10/audiences/123/contactlist',
-            title: 'The authorization header is invalid',
-          },
-        ],
-      },
-      status: 401,
-    },
-  },
-  {
-    httpReq: {
       url: 'https://api.criteo.com/2022-10/audiences/34896/contactlist',
       data: commonData,
       params,

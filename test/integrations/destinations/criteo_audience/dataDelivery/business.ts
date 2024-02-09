@@ -1,4 +1,4 @@
-import { generateProxyV1Payload } from '../../../testUtils';
+import { generateProxyV1Payload, generateMetadata } from '../../../testUtils';
 export const headers = {
   Authorization: 'Bearer success_access_token',
   'Content-Type': 'application/json',
@@ -8,33 +8,6 @@ export const params = {
   destination: 'criteo_audience',
 };
 const method = 'PATCH';
-
-const output = {
-  response: {
-    status: 200,
-    body: {
-      output: {
-        status: 200,
-        message: 'Request Processed Successfully',
-        response: [
-          {
-            error: '""',
-            metadata: {
-              attemptNum: 1,
-              destinationId: 'dummyDestinationId',
-              dontBatch: false,
-              secret: {},
-              sourceId: 'dummySourceId',
-              userId: 'dummyUserId',
-              workspaceId: 'dummyWorkspaceId',
-            },
-            statusCode: 200,
-          },
-        ],
-      },
-    },
-  },
-};
 
 export const V1BusinessTestScenarion = [
   {
@@ -67,18 +40,7 @@ export const V1BusinessTestScenarion = [
             method,
             endpoint: 'https://api.criteo.com/2022-10/audiences/34894/contactlist',
           },
-          [
-            {
-              jobId: 1,
-              attemptNum: 1,
-              userId: 'dummyUserId',
-              sourceId: 'dummySourceId',
-              destinationId: 'dummyDestinationId',
-              workspaceId: 'dummyWorkspaceId',
-              secret: {},
-              dontBatch: false,
-            },
-          ],
+          [generateMetadata(1)],
         ),
         method: 'POST',
       },
@@ -93,16 +55,7 @@ export const V1BusinessTestScenarion = [
             response: [
               {
                 error: '""',
-                metadata: {
-                  attemptNum: 1,
-                  destinationId: 'dummyDestinationId',
-                  dontBatch: false,
-                  jobId: 1,
-                  secret: {},
-                  sourceId: 'dummySourceId',
-                  userId: 'dummyUserId',
-                  workspaceId: 'dummyWorkspaceId',
-                },
+                metadata: generateMetadata(1),
                 statusCode: 200,
               },
             ],
@@ -115,6 +68,7 @@ export const V1BusinessTestScenarion = [
     id: 'criteo_audience_business_1',
     name: 'criteo_audience',
     description: '[Business]:: Test for email type audience to add users with success response',
+    successCriteria: 'Should return a 200 status code with a success message',
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v1',
@@ -145,18 +99,7 @@ export const V1BusinessTestScenarion = [
             method,
             endpoint: 'https://api.criteo.com/2022-10/audiences/34894/contactlist',
           },
-          [
-            {
-              jobId: 2,
-              attemptNum: 1,
-              userId: 'dummyUserId',
-              sourceId: 'dummySourceId',
-              destinationId: 'dummyDestinationId',
-              workspaceId: 'dummyWorkspaceId',
-              secret: {},
-              dontBatch: false,
-            },
-          ],
+          [generateMetadata(2)],
         ),
       },
     },
@@ -170,16 +113,7 @@ export const V1BusinessTestScenarion = [
             response: [
               {
                 error: '""',
-                metadata: {
-                  attemptNum: 1,
-                  destinationId: 'dummyDestinationId',
-                  dontBatch: false,
-                  jobId: 2,
-                  secret: {},
-                  sourceId: 'dummySourceId',
-                  userId: 'dummyUserId',
-                  workspaceId: 'dummyWorkspaceId',
-                },
+                metadata: generateMetadata(2),
                 statusCode: 200,
               },
             ],
@@ -192,6 +126,7 @@ export const V1BusinessTestScenarion = [
     id: 'criteo_audience_business_2',
     name: 'criteo_audience',
     description: '[Business]:: Test for mobile type audience to remove users with success response',
+    successCriteria: 'Should return a 200 status code with a success message',
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v1',
@@ -223,18 +158,7 @@ export const V1BusinessTestScenarion = [
             method,
             endpoint: 'https://api.criteo.com/2022-10/audiences/34893/contactlist',
           },
-          [
-            {
-              jobId: 3,
-              attemptNum: 1,
-              userId: 'dummyUserId',
-              sourceId: 'dummySourceId',
-              destinationId: 'dummyDestinationId',
-              workspaceId: 'dummyWorkspaceId',
-              secret: {},
-              dontBatch: false,
-            },
-          ],
+          [generateMetadata(3)],
         ),
       },
     },
@@ -248,16 +172,7 @@ export const V1BusinessTestScenarion = [
             response: [
               {
                 error: '""',
-                metadata: {
-                  attemptNum: 1,
-                  destinationId: 'dummyDestinationId',
-                  dontBatch: false,
-                  jobId: 3,
-                  secret: {},
-                  sourceId: 'dummySourceId',
-                  userId: 'dummyUserId',
-                  workspaceId: 'dummyWorkspaceId',
-                },
+                metadata: generateMetadata(3),
                 statusCode: 200,
               },
             ],
@@ -270,7 +185,8 @@ export const V1BusinessTestScenarion = [
     id: 'criteo_audience_business_3',
     name: 'criteo_audience',
     description: '[Business]:: Test for mobile type audience where audienceId is invalid',
-    successCriteria: 'Should return a 400 status code with an error message',
+    successCriteria:
+      'Should return a 400 status code with an error audience-invalid. It should also have the invalid audienceId in the error message as follows: "Audience <provided audienceId> is invalid"',
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v1',
@@ -294,18 +210,7 @@ export const V1BusinessTestScenarion = [
             method,
             endpoint: 'https://api.criteo.com/2022-10/audiences/34896/contactlist',
           },
-          [
-            {
-              jobId: 4,
-              attemptNum: 1,
-              userId: 'dummyUserId',
-              sourceId: 'dummySourceId',
-              destinationId: 'dummyDestinationId',
-              workspaceId: 'dummyWorkspaceId',
-              secret: {},
-              dontBatch: false,
-            },
-          ],
+          [generateMetadata(4)],
         ),
       },
     },
@@ -320,24 +225,15 @@ export const V1BusinessTestScenarion = [
               {
                 error:
                   '{"errors":[{"traceIdentifier":"80a1a0ba3981b04da847d05700752c77","type":"authorization","code":"audience-invalid"}]}',
-                metadata: {
-                  attemptNum: 1,
-                  destinationId: 'dummyDestinationId',
-                  dontBatch: false,
-                  jobId: 4,
-                  secret: {},
-                  sourceId: 'dummySourceId',
-                  userId: 'dummyUserId',
-                  workspaceId: 'dummyWorkspaceId',
-                },
+                metadata: generateMetadata(4),
                 statusCode: 400,
               },
             ],
             statTags: {
               destType: 'CRITEO_AUDIENCE',
               errorCategory: 'network',
-              destinationId: 'dummyDestinationId',
-              workspaceId: 'dummyWorkspaceId',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
               errorType: 'aborted',
               feature: 'dataDelivery',
               implementation: 'native',

@@ -1,5 +1,5 @@
 import { params, headers } from './business';
-import { generateProxyV1Payload } from '../../../testUtils';
+import { generateProxyV1Payload, generateMetadata } from '../../../testUtils';
 
 export const v1OtherScenarios = [
   {
@@ -18,7 +18,7 @@ export const v1OtherScenarios = [
             headers,
             params,
             method: 'PATCH',
-            endpoint: 'https://api.criteo.com/2022-10/audiences/34897/contactlist',
+            endpoint: 'https://random_test_url/test_for_internal_server_error',
             JSON: {
               data: {
                 type: 'ContactlistAmendment',
@@ -31,18 +31,7 @@ export const v1OtherScenarios = [
               },
             },
           },
-          [
-            {
-              attemptNum: 1,
-              destinationId: 'dummyDestinationId',
-              dontBatch: false,
-              secret: {},
-              sourceId: 'dummySourceId',
-              userId: 'dummyUserId',
-              workspaceId: 'dummyWorkspaceId',
-              jobId: 1,
-            },
-          ],
+          [generateMetadata(1)],
         ),
         method: 'POST',
       },
@@ -55,18 +44,8 @@ export const v1OtherScenarios = [
             status: 500,
             response: [
               {
-                error:
-                  '{"errors":[{"traceIdentifier":"80a1a0ba3981b04da847d05700752c77","type":"authorization","code":"audience-invalid"}]}',
-                metadata: {
-                  attemptNum: 1,
-                  destinationId: 'dummyDestinationId',
-                  dontBatch: false,
-                  secret: {},
-                  sourceId: 'dummySourceId',
-                  userId: 'dummyUserId',
-                  workspaceId: 'dummyWorkspaceId',
-                  jobId: 1,
-                },
+                error: '""',
+                metadata: generateMetadata(1),
                 statusCode: 500,
               },
             ],
@@ -74,8 +53,8 @@ export const v1OtherScenarios = [
             statTags: {
               destType: 'CRITEO_AUDIENCE',
               errorCategory: 'network',
-              destinationId: 'dummyDestinationId',
-              workspaceId: 'dummyWorkspaceId',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
               feature: 'dataDelivery',
               implementation: 'native',
               errorType: 'retryable',
@@ -102,7 +81,7 @@ export const v1OtherScenarios = [
             headers,
             params,
             method: 'PATCH',
-            endpoint: 'https://api.criteo.com/2022-10/audiences/34898/contactlist',
+            endpoint: 'https://random_test_url/test_for_too_many_requests',
             JSON: {
               data: {
                 type: 'ContactlistAmendment',
@@ -115,18 +94,7 @@ export const v1OtherScenarios = [
               },
             },
           },
-          [
-            {
-              attemptNum: 1,
-              destinationId: 'dummyDestinationId',
-              dontBatch: false,
-              secret: {},
-              sourceId: 'dummySourceId',
-              userId: 'dummyUserId',
-              workspaceId: 'dummyWorkspaceId',
-              jobId: 2,
-            },
-          ],
+          [generateMetadata(2)],
         ),
         method: 'POST',
       },
@@ -140,16 +108,7 @@ export const v1OtherScenarios = [
             response: [
               {
                 error: '{}',
-                metadata: {
-                  attemptNum: 1,
-                  destinationId: 'dummyDestinationId',
-                  dontBatch: false,
-                  secret: {},
-                  sourceId: 'dummySourceId',
-                  userId: 'dummyUserId',
-                  workspaceId: 'dummyWorkspaceId',
-                  jobId: 2,
-                },
+                metadata: generateMetadata(2),
                 statusCode: 429,
               },
             ],
@@ -158,8 +117,8 @@ export const v1OtherScenarios = [
             statTags: {
               destType: 'CRITEO_AUDIENCE',
               errorCategory: 'network',
-              destinationId: 'dummyDestinationId',
-              workspaceId: 'dummyWorkspaceId',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
               feature: 'dataDelivery',
               implementation: 'native',
               errorType: 'throttled',
@@ -199,18 +158,7 @@ export const v1OtherScenarios = [
             },
             endpoint: 'https://api.criteo.com/2022-10/audiences/34899/contactlist',
           },
-          [
-            {
-              attemptNum: 1,
-              destinationId: 'dummyDestinationId',
-              dontBatch: false,
-              secret: {},
-              sourceId: 'dummySourceId',
-              userId: 'dummyUserId',
-              workspaceId: 'dummyWorkspaceId',
-              jobId: 3,
-            },
-          ],
+          [generateMetadata(3)],
         ),
         method: 'POST',
       },
@@ -224,16 +172,7 @@ export const v1OtherScenarios = [
             response: [
               {
                 error: '{"message":"unknown error"}',
-                metadata: {
-                  attemptNum: 1,
-                  destinationId: 'dummyDestinationId',
-                  dontBatch: false,
-                  secret: {},
-                  sourceId: 'dummySourceId',
-                  userId: 'dummyUserId',
-                  workspaceId: 'dummyWorkspaceId',
-                  jobId: 3,
-                },
+                metadata: generateMetadata(3),
                 statusCode: 400,
               },
             ],
@@ -242,8 +181,8 @@ export const v1OtherScenarios = [
             statTags: {
               destType: 'CRITEO_AUDIENCE',
               errorCategory: 'network',
-              destinationId: 'dummyDestinationId',
-              workspaceId: 'dummyWorkspaceId',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
               errorType: 'aborted',
               feature: 'dataDelivery',
               implementation: 'native',

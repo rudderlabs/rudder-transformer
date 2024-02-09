@@ -1,5 +1,17 @@
 import { params, headers } from './business';
-import { generateProxyV1Payload } from '../../../testUtils';
+import { generateProxyV1Payload, generateMetadata } from '../../../testUtils';
+
+const commonStatTags = {
+  destType: 'CRITEO_AUDIENCE',
+  errorCategory: 'network',
+  destinationId: 'default-destinationId',
+  workspaceId: 'default-workspaceId',
+  errorType: 'aborted',
+  feature: 'dataDelivery',
+  implementation: 'native',
+  module: 'destination',
+};
+
 export const v1OauthScenarios = [
   {
     id: 'criteo_audience_oauth_0',
@@ -28,20 +40,10 @@ export const v1OauthScenarios = [
             params,
             headers,
             method: 'PATCH',
-            endpoint: 'https://api.criteo.com/2022-10/audiences/3485/contactlist',
+            endpoint:
+              'https://api.criteo.com/2022-10/audiences/3485/contactlist/expiredAccessToken',
           },
-          [
-            {
-              attemptNum: 1,
-              destinationId: 'dummyDestinationId',
-              dontBatch: false,
-              secret: {},
-              sourceId: 'dummySourceId',
-              userId: 'dummyUserId',
-              workspaceId: 'dummyWorkspaceId',
-              jobId: 1,
-            },
-          ],
+          [generateMetadata(1)],
         ),
         method: 'POST',
       },
@@ -57,31 +59,13 @@ export const v1OauthScenarios = [
               {
                 error:
                   'The authorization token has expired during criteo_audience response transformation',
-                metadata: {
-                  attemptNum: 1,
-                  destinationId: 'dummyDestinationId',
-                  dontBatch: false,
-                  jobId: 1,
-                  secret: {},
-                  sourceId: 'dummySourceId',
-                  userId: 'dummyUserId',
-                  workspaceId: 'dummyWorkspaceId',
-                },
+                metadata: generateMetadata(1),
                 statusCode: 401,
               },
             ],
             message:
               'The authorization token has expired during criteo_audience response transformation',
-            statTags: {
-              destType: 'CRITEO_AUDIENCE',
-              errorCategory: 'network',
-              destinationId: 'dummyDestinationId',
-              workspaceId: 'dummyWorkspaceId',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-            },
+            commonStatTags,
           },
         },
       },
@@ -91,7 +75,8 @@ export const v1OauthScenarios = [
     id: 'criteo_audience_oauth_1',
     name: 'criteo_audience',
     description: '[OAUTH]:: Test invalid access token',
-    successCriteria: 'Should return a 401 status code with authErrorCategory as REFRESH_TOKEN',
+    successCriteria:
+      'We should get a 401 status code with errorCode authorization-token-invalid. As we need to refresh the token for these conditions, authErrorCategory should be REFRESH_TOKEN',
     scenario: 'oauth',
     feature: 'dataDelivery',
     module: 'destination',
@@ -114,20 +99,10 @@ export const v1OauthScenarios = [
             params,
             headers,
             method: 'PATCH',
-            endpoint: 'https://api.criteo.com/2022-10/audiences/34895/contactlist',
+            endpoint:
+              'https://api.criteo.com/2022-10/audiences/34895/contactlist/invalidAccessToken',
           },
-          [
-            {
-              attemptNum: 1,
-              destinationId: 'dummyDestinationId',
-              dontBatch: false,
-              secret: {},
-              sourceId: 'dummySourceId',
-              userId: 'dummyUserId',
-              workspaceId: 'dummyWorkspaceId',
-              jobId: 2,
-            },
-          ],
+          [generateMetadata(2)],
         ),
         method: 'POST',
       },
@@ -143,31 +118,13 @@ export const v1OauthScenarios = [
               {
                 error:
                   'The authorization header is invalid during criteo_audience response transformation',
-                metadata: {
-                  attemptNum: 1,
-                  destinationId: 'dummyDestinationId',
-                  dontBatch: false,
-                  secret: {},
-                  sourceId: 'dummySourceId',
-                  userId: 'dummyUserId',
-                  workspaceId: 'dummyWorkspaceId',
-                  jobId: 2,
-                },
+                metadata: generateMetadata(2),
                 statusCode: 401,
               },
             ],
             message:
               'The authorization header is invalid during criteo_audience response transformation',
-            statTags: {
-              destType: 'CRITEO_AUDIENCE',
-              errorCategory: 'network',
-              destinationId: 'dummyDestinationId',
-              workspaceId: 'dummyWorkspaceId',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-            },
+            commonStatTags,
           },
         },
       },

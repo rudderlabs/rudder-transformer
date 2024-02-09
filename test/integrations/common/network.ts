@@ -17,7 +17,18 @@ export const networkCallsData = [
     },
   },
   {
-    description: 'Mock response depicting INTERNAL SERVER ERROR error',
+    description: 'Mock response depicting INTERNAL SERVER ERROR error with post method',
+    httpReq: {
+      method: 'post',
+      url: 'https://random_test_url/test_for_internal_server_error',
+    },
+    httpRes: {
+      data: 'Internal Server Error',
+      status: 500,
+    },
+  },
+  {
+    description: 'Mock response depicting INTERNAL SERVER ERROR error with patch method',
     httpReq: {
       method: 'post',
       url: 'https://random_test_url/test_for_internal_server_error',
@@ -57,6 +68,17 @@ export const networkCallsData = [
     },
     httpRes: {
       data: null,
+    },
+  },
+  {
+    description: 'Mock response depicting TOO MANY REQUESTS error with patch method',
+    httpReq: {
+      method: 'patch',
+      url: 'https://random_test_url/test_for_too_many_requests',
+    },
+    httpRes: {
+      data: {},
+      status: 429,
     },
   },
 ];

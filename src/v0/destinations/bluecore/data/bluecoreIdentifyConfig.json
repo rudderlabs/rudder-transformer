@@ -1,7 +1,7 @@
 [
     {
       "destKey": "properties.distinct_id",
-      "sourceKeys": ["email"],
+      "sourceKeys": ["traits.email","context.traits.email","userId","anonymousId"],
       "required": true
     },
     {
@@ -29,7 +29,7 @@
     },
     {
       "destKey": "event",
-      "sourceKeys": "event",
+      "sourceKeys": ["traits.action", "context.traits.action"],
       "required": false
     },
     {

@@ -521,10 +521,13 @@ export const validateTestWithZOD = (testPayload: TestCaseData, response: any) =>
 
 export const generateMetadata = (jobId: number): any => {
   return {
-    sourceId: 'default-sourceId',
-    workspaceId: 'default-workspaceId',
-    namespace: 'default-namespace',
-    destinationId: 'default-destinationId',
     jobId,
+    attemptNum: 1,
+    userId: 'default-userId',
+    sourceId: 'default-sourceId',
+    destinationId: 'default-destinationId',
+    workspaceId: 'default-workspaceId',
+    secret: {},
+    dontBatch: false,
   };
 };

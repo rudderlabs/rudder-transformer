@@ -16,10 +16,10 @@ export class UserTransformController {
       JSON.stringify(ctx.request.body),
     );
     const events = ctx.request.body as ProcessorTransformationRequest[];
-    const processedRespone: UserTransformationServiceResponse =
+    const processedResponse: UserTransformationServiceResponse =
       await UserTransformService.transformRoutine(events, ctx.state.features);
-    ctx.body = processedRespone.transformedEvents;
-    ControllerUtility.postProcess(ctx, processedRespone.retryStatus);
+    ctx.body = processedResponse.transformedEvents;
+    ControllerUtility.postProcess(ctx, processedResponse.retryStatus);
     logger.debug(
       '(User transform - router:/customTransform ):: Response from transformer',
       JSON.stringify(ctx.response.body),

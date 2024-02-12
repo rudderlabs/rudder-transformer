@@ -906,16 +906,6 @@ const batch = (destEvents) => {
       const MissingUserIdDeviceIdError = new InstrumentationError(
         'Both userId and deviceId cannot be undefined',
       );
-      // const errorResponse = getErrorRespEvents(
-      //   metadata,
-      //   400,
-      //   'Both userId and deviceId cannot be undefined',
-      //   {
-      //     [tags.TAG_NAMES.ERROR_CATEGORY]: tags.ERROR_CATEGORIES.DATA_VALIDATION,
-      //     [tags.TAG_NAMES.ERROR_TYPE]: tags.ERROR_TYPES.INSTRUMENTATION,
-      //   },
-      // );
-
       respList.push(handleRtTfSingleEventError(ev, MissingUserIdDeviceIdError, {}));
       return;
     }

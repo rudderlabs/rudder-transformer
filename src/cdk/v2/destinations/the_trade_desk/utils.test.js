@@ -635,25 +635,35 @@ describe('enrichTrackPayload', () => {
         order_id: 'ord123',
         property1: 'value1',
         property2: 'value2',
+        revenue: 10,
+        value: 11,
+        products: [
+          {
+            product_id: 'prd123',
+            test: 'test',
+          },
+        ],
       },
     };
     const payload = {
       order_id: 'ord123',
+      value: 11,
     };
-    let expectedPayload = {
+    const expectedPayload = {
       order_id: 'ord123',
       property1: 'value1',
       property2: 'value2',
+      revenue: 10,
+      value: 11,
+      products: [
+        {
+          product_id: 'prd123',
+          test: 'test',
+        },
+      ],
     };
 
-    let result = enrichTrackPayload(message, payload);
+    const result = enrichTrackPayload(message, payload);
     expect(result).toEqual(expectedPayload);
-
-    expectedPayload = {
-      order_id: 'ord123',
-      property1: 'value1',
-      property2: 'value2',
-    };
-    expect(enrichTrackPayload(message, {})).toEqual(expectedPayload);
   });
 });

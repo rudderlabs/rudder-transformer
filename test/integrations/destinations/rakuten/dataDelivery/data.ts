@@ -1,6 +1,7 @@
 import { endpoint, commonOutputHeaders } from '../processor/commonConfig';
 const commonParams = {
   xml: 1,
+  source: 'rudderstack',
   amtlist: '12500|12500',
   qlist: '|5',
   ord: 'SampleOrderId',

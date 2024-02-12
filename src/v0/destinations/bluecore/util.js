@@ -2,6 +2,14 @@ const { InstrumentationError, isDefinedAndNotNullAndNotEmpty, getHashFromArrayWi
 const { getFieldValueFromMessage, validateEventName } = require("../../util");
 const { EVENT_NAME_MAPPING } = require("./config");
 
+/**
+ * Verifies the correctness of payload for different events.
+ *
+ * @param {Object} payload - The payload object containing event information.
+ * @param {Object} message - The message object containing additional information.
+ * @throws {InstrumentationError} - Throws an error if required properties are missing.
+ * @returns {void}
+ */
 const verifyPayload = (payload, message) => {
     switch (payload.event) {
         case 'search':
@@ -19,7 +27,7 @@ const verifyPayload = (payload, message) => {
             break;
         case 'identify':
             if (!isDefinedAndNotNullAndNotEmpty(getFieldValueFromMessage(message, 'email'))) {
-                throw new InstrumentationError('[Bluecore] property:: email is required for identify event');
+                throw new InstrumentationError('[Bluecore] property:: email is required for \'identify\' action');
             }
             break;
         default:
@@ -27,6 +35,13 @@ const verifyPayload = (payload, message) => {
     }
 };
 
+/**
+ * Deduces the track event name based on the provided track event name and configuration.
+ *
+ * @param {string} trackEventName - The track event name to deduce.
+ * @param {object} Config - The configuration object.
+ * @returns {string|array} - The deduced track event name.
+ */
 const deduceTrackEventName = (trackEventName, Config) => {
     let eventName;
     const { eventsMapping } = Config;
@@ -38,7 +53,8 @@ const deduceTrackEventName = (trackEventName, Config) => {
     if (eventsMapping.length > 0) {
         const keyMap = getHashFromArrayWithDuplicate(eventsMapping, 'from', 'to', false);
         eventName = keyMap[trackEventName];
-        return eventName;
+        const finalEvent = [...eventName];
+        return finalEvent;
     }
     /*
     Step 2: To find if the particular event is amongst the list of standard
@@ -57,24 +73,49 @@ const deduceTrackEventName = (trackEventName, Config) => {
     }
 
     // Step 3: if nothing matches this is to be considered as a custom event
-    return trackEventName;
+    return [trackEventName];
 };
 
-const addProductArray = (message, products, eventName) => {
-    if (!isDefinedAndNotNull(products)) {
+/**
+ * Determines if the given event name is a standard Bluecore event.
+ *
+ * @param {string} eventName - The name of the event to check.
+ * @returns {boolean} - True if the event is a standard Bluecore event, false otherwise.
+ */
+const isStandardBluecoreEvent = (eventName) => {
+    const standardEventList = EVENT_NAME_MAPPING.map(item => item.dest);
+    return !!(standardEventList.includes(eventName));
+}
+
+/**
+ * Adds an array of products to a message.
+ *
+ * @param {object} message - The message object to add the products to.
+ * @param {array|object} products - The array or object of products to add.
+ * @param {string} eventName - The name of the event.
+ * @throws {InstrumentationError} - If the products array is not defined or null.
+ * @returns {array} - The updated product array.
+ */
+const addProductArray = (products, eventName) => {
+    let finalProductArray = null;
+    if (!isDefinedAndNotNull(products) && isStandardBluecoreEvent(eventName)) {
       throw new InstrumentationError(`Product array is required for ${eventName} event`);
     }
-    const productArray =  Array.isArray(products) ? products : [products];
-    productArray.forEach(({ product_id, query, order_id, total, ...rest }) => ({
-      id: product_id,
-      ...rest
-    }));
-    return productArray;
+    if(isDefinedAndNotNull(products)) {
+        const productArray =  Array.isArray(products) ? products : [products];
+        const mappedProductArray =  productArray.map(({ product_id, query, order_id, total, ...rest }) => ({
+          id: product_id,
+          ...rest
+        }));
+        finalProductArray = mappedProductArray;
+    }
+    return finalProductArray;
   }
 
 module.exports = {
     verifyPayload,
     deduceTrackEventName,
-    addProductArray
+    addProductArray,
+    isStandardBluecoreEvent
 };
 

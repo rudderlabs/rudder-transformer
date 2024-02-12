@@ -15,27 +15,27 @@ const CONFIG_CATEGORIES = {
 
 const EVENT_NAME_MAPPING = [
   {
-    src: ['Product Viewed'],
+    src: ['product viewed'],
     dest: 'viewed_product',
   },
   {
-    src: ['Products Searched'],
+    src: ['products searched'],
     dest: 'search',
   },
   {
-    src: ['Product Added'],
+    src: ['product added'],
     dest: 'add_to_cart',
   },
   {
-    src: ['Product Removed'],
+    src: ['product removed'],
     dest: 'remove_from_cart',
   },
   {
-    src: ['Product Added to Wishlist'],
+    src: ['product added to wishlist'],
     dest: 'wishlist',
   },
   {
-    src: ['Order Completed'],
+    src: ['order completed'],
     dest: 'purchase',
   },
 ];

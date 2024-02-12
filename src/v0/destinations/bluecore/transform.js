@@ -21,8 +21,11 @@ const { verifyPayload, deduceTrackEventName, addProductArray } = require('./util
 
 const trackResponseBuilder = (message, category, { Config }, eventName) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
-  if(eventName !== 'optin' || eventName !== 'unsubscribe' || eventName !== 'search' ) {
-    payload.properties.product = addProductArray(message, payload.products, eventName);
+  if(eventName !== 'optin' && eventName !== 'unsubscribe' && eventName !== 'search') {
+    payload.properties.products = addProductArray(payload.properties.products, eventName);
+  } else {
+    // bluecore is not not expecting optin , unsubscribe and search to have properties
+    delete payload.properties.products;
   }
   payload.event = eventName;
   verifyPayload(payload, message);
@@ -102,4 +105,4 @@ const processRouterDest = async (inputs, reqMetadata) => {
   return respList;
 };
 
-module.exports = { process, processRouterDest };
+module.exports = { process, processRouterDest, trackResponseBuilder, identifyResponseBuilder };

@@ -6,7 +6,7 @@
       "anonymousId",
       "email"
     ],
-    "required": false
+    "required": true
   },
   {
     "destKey": "properties.customer.name",

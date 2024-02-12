@@ -77,7 +77,6 @@ const process = async (event) => {
   switch (messageType) {
     case EventType.TRACK:
       deducedEventNameArray.push(...deduceTrackEventName(message.event, destination.Config));
-  //    ['event1', 'event2', 'event3']
       deducedEventNameArray.forEach((eventName) => {
         const trackResponse = trackResponseBuilder(message, category, destination, eventName);
         toSendEvents.push(trackResponse);

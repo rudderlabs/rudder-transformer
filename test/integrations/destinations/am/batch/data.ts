@@ -1,4 +1,3 @@
-import { destination } from './../../rakuten/processor/commonConfig';
 export const data = [
   {
     name: 'am',

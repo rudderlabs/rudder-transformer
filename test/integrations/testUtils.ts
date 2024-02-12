@@ -484,9 +484,9 @@ export const validateTestWithZOD = (testPayload: TestCaseData, response: any) =>
     case 'router':
       RouterTransformationResponseListSchema.parse(response.body.output);
       break;
-    // case 'batch':
-    //   BatchScheam.parse(responseBody);
-    //   break;
+    case 'batch':
+      RouterTransformationResponseListSchema.parse(response.body);
+      break;
     // case 'user_deletion':
     //   DeletionSchema.parse(responseBody);
     //   break;

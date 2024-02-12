@@ -621,7 +621,7 @@ const processSingleMessage = (message, destination) => {
           )
           .trim();
         evType =
-          userProvidedPageEventString.trim() === ''
+          userProvidedPageEventString?.trim() === ''
             ? name
             : userProvidedPageEventString
                 ?.trim()

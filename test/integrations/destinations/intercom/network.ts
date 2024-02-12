@@ -8,7 +8,7 @@ const deleteNwData = [
       },
       headers: {
         Accept: 'application/json',
-        Authorization: 'Bearer API_KEY',
+        Authorization: 'Bearer testApiKey',
         'Content-Type': 'application/json',
       },
     },
@@ -35,7 +35,7 @@ const deleteNwData = [
       },
       headers: {
         Accept: 'application/json',
-        Authorization: 'Bearer API_KEY',
+        Authorization: 'Bearer testApiKey',
         'Content-Type': 'application/json',
       },
     },
@@ -56,7 +56,7 @@ const deleteNwData = [
       },
       headers: {
         Accept: 'application/json',
-        Authorization: 'Bearer API_KEY',
+        Authorization: 'Bearer testApiKey',
         'Content-Type': 'application/json',
       },
     },
@@ -77,7 +77,7 @@ const deleteNwData = [
       },
       headers: {
         Accept: 'application/json',
-        Authorization: 'Bearer API_KEY',
+        Authorization: 'Bearer testApiKey',
         'Content-Type': 'application/json',
       },
     },
@@ -86,6 +86,291 @@ const deleteNwData = [
       statusText: 'ok',
       data: {
         id: 9,
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.intercom.io/contacts/search',
+      data: {
+        query: {
+          operator: 'AND',
+          value: [{ field: 'email', operator: '=', value: 'test@rudderlabs.com' }],
+        },
+      },
+      headers: {
+        Accept: 'application/json',
+        Authorization: 'Bearer testApiKey',
+        'Content-Type': 'application/json',
+      },
+    },
+    httpRes: {
+      status: 200,
+      statusText: 'ok',
+      data: {
+        type: 'list',
+        total_count: 0,
+        pages: {
+          type: 'pages',
+          page: 1,
+          per_page: 50,
+          total_pages: 0,
+        },
+        data: [],
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.intercom.io/contacts/search',
+      data: {
+        query: {
+          operator: 'AND',
+          value: [{ field: 'email', operator: '=', value: 'test+2@rudderlabs.com' }],
+        },
+      },
+      headers: {
+        Accept: 'application/json',
+        Authorization: 'Bearer testApiKey',
+        'Content-Type': 'application/json',
+      },
+    },
+    httpRes: {
+      status: 200,
+      statusText: 'ok',
+      data: {
+        type: 'list',
+        total_count: 1,
+        pages: {
+          type: 'pages',
+          page: 1,
+          per_page: 50,
+          total_pages: 1,
+        },
+        data: [
+          {
+            type: 'contact',
+            id: '7070129940741e45d040',
+            workspace_id: 'rudderWorkspace',
+            external_id: 'user@2',
+            role: 'user',
+            email: 'test+2@rudderlabs.com',
+          },
+        ],
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.eu.intercom.io/contacts/search',
+      data: {
+        query: {
+          operator: 'AND',
+          value: [{ field: 'email', operator: '=', value: 'test+5@rudderlabs.com' }],
+        },
+      },
+      headers: {
+        Accept: 'application/json',
+        Authorization: 'Bearer testApiKey',
+        'Content-Type': 'application/json',
+      },
+    },
+    httpRes: {
+      status: 200,
+      statusText: 'ok',
+      data: {
+        type: 'list',
+        total_count: 1,
+        pages: {
+          type: 'pages',
+          page: 1,
+          per_page: 50,
+          total_pages: 1,
+        },
+        data: [
+          {
+            type: 'contact',
+            id: '70701240741e45d040',
+            workspace_id: 'rudderWorkspace',
+            external_id: 'user@5',
+            role: 'user',
+            email: 'test+5@rudderlabs.com',
+          },
+        ],
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.intercom.io/contacts/search',
+      data: {
+        query: {
+          operator: 'AND',
+          value: [{ field: 'phone', operator: '=', value: '+91 9299999999' }],
+        },
+      },
+      headers: {
+        Accept: 'application/json',
+        Authorization: 'Bearer testApiKey',
+        'Content-Type': 'application/json',
+      },
+    },
+    httpRes: {
+      status: 200,
+      statusText: 'ok',
+      data: {
+        type: 'list',
+        total_count: 1,
+        pages: {
+          type: 'pages',
+          page: 1,
+          per_page: 50,
+          total_pages: 1,
+        },
+        data: [
+          {
+            type: 'contact',
+            id: '7070129940741e45d040',
+            workspace_id: 'rudderWorkspace',
+            external_id: 'user@2',
+            role: 'user',
+            email: 'test+2@rudderlabs.com',
+          },
+        ],
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.intercom.io/contacts/search',
+      data: {
+        query: {
+          operator: 'AND',
+          value: [{ field: 'email', operator: '=', value: 'test+4@rudderlabs.com' }],
+        },
+      },
+      headers: {
+        Accept: 'application/json',
+        Authorization: 'Bearer testApiKey',
+        'Content-Type': 'application/json',
+      },
+    },
+    httpRes: {
+      status: 200,
+      statusText: 'ok',
+      data: {
+        type: 'list',
+        total_count: 0,
+        pages: {
+          type: 'pages',
+          page: 1,
+          per_page: 50,
+          total_pages: 0,
+        },
+        data: [],
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.intercom.io/contacts/search',
+      data: {
+        query: {
+          operator: 'AND',
+          value: [{ field: 'email', operator: '=', value: 'test+3@rudderlabs.com' }],
+        },
+      },
+      headers: {
+        Accept: 'application/json',
+        Authorization: 'Bearer invalidApiKey',
+        'Content-Type': 'application/json',
+      },
+    },
+    httpRes: {
+      status: 401,
+      data: {
+        type: 'error.list',
+        request_id: 'request_1',
+        errors: [
+          {
+            code: 'unauthorized',
+            message: 'Access Token Invalid',
+          },
+        ],
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.eu.intercom.io/companies',
+      data: {
+        company_id: 'rudderlabs',
+        name: 'RudderStack',
+        website: 'www.rudderstack.com',
+        plan: 'enterprise',
+        size: 500,
+        industry: 'CDP',
+      },
+      headers: {
+        Accept: 'application/json',
+        Authorization: 'Bearer testApiKey',
+        'Content-Type': 'application/json',
+      },
+    },
+    httpRes: {
+      status: 200,
+      data: {
+        type: 'company',
+        company_id: 'rudderlabs',
+        id: '657264e9018c0a647s45',
+        name: 'RudderStack',
+        website: 'www.rudderstack.com',
+        plan: 'enterprise',
+        size: 500,
+        industry: 'CDP',
+        remote_created_at: 1374138000,
+        created_at: 1701930212,
+        updated_at: 1701930212,
+      },
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.eu.intercom.io/companies',
+      data: {
+        company_id: 'rudderlabs',
+        name: 'RudderStack',
+        website: 'www.rudderstack.com',
+        plan: 'enterprise',
+        size: 500,
+        industry: 'CDP',
+        custom_attributes: { isOpenSource: true },
+      },
+      headers: {
+        Accept: 'application/json',
+        Authorization: 'Bearer testApiKey',
+        'Content-Type': 'application/json',
+      },
+    },
+    httpRes: {
+      status: 401,
+      data: {
+        type: 'error.list',
+        request_id: 'request_1',
+        errors: [
+          {
+            code: 'parameter_invalid',
+            message: "Custom attribute 'isOpenSource' does not exist",
+          },
+        ],
       },
     },
   },
@@ -142,4 +427,3 @@ const deliveryCallsData = [
   },
 ];
 export const networkCallsData = [...deleteNwData, ...deliveryCallsData];
-

@@ -22,13 +22,13 @@ const {
   getFieldValueFromMessage,
   getValueFromMessage,
   deleteObjectProperty,
-  getErrorRespEvents,
   removeUndefinedAndNullValues,
   isDefinedAndNotNull,
   isAppleFamily,
   isDefinedAndNotNullAndNotEmpty,
   simpleProcessRouterDest,
   isValidInteger,
+  handleRtTfSingleEventError,
 } = require('../../util');
 const {
   BASE_URL,
@@ -40,7 +40,6 @@ const {
   AMBatchSizeLimit,
   AMBatchEventLimit,
 } = require('./config');
-const tags = require('../../util/tags');
 
 const AMUtils = require('./utils');
 
@@ -904,16 +903,10 @@ const batch = (destEvents) => {
     // this case shold not happen and should be filtered already
     // by the first pass of single event transformation
     if (messageEvent && !userId && !deviceId) {
-      const errorResponse = getErrorRespEvents(
-        metadata,
-        400,
+      const MissingUserIdDeviceIdError = new InstrumentationError(
         'Both userId and deviceId cannot be undefined',
-        {
-          [tags.TAG_NAMES.ERROR_CATEGORY]: tags.ERROR_CATEGORIES.DATA_VALIDATION,
-          [tags.TAG_NAMES.ERROR_TYPE]: tags.ERROR_TYPES.INSTRUMENTATION,
-        },
       );
-      respList.push(errorResponse);
+      respList.push(handleRtTfSingleEventError(ev, MissingUserIdDeviceIdError, {}));
       return;
     }
     /* check if not a JSON body or (userId length < 5 && batchEventsWithUserIdLengthLowerThanFive is false) or

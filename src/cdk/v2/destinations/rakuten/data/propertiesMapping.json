@@ -1,0 +1,101 @@
+[
+  {
+    "sourceKeys": "properties.orderId",
+    "required": true,
+    "destKey": "ord"
+  },
+  {
+    "sourceKeys": ["properties.tr", "properties.ranSiteID"],
+    "required": true,
+    "destKey": "tr"
+  },
+  {
+    "sourceKeys": ["properties.land", "properties.landTime"],
+    "required": true,
+    "destKey": "land"
+  },
+  {
+    "sourceKeys": ["properties.date", "properties.orderCompletedTime"],
+    "destKey": "date"
+  },
+  {
+    "sourceKeys": ["properties.altord", "properties.alterOrderId"],
+    "destKey": "altord"
+  },
+  {
+    "sourceKeys": "properties.currency",
+    "destKey": "cur"
+  },
+  {
+    "sourceKeys": "properties.creditCardType",
+    "destKey": "cc"
+  },
+  {
+    "sourceKeys": "properties.commReason",
+    "destKey": "commreason"
+  },
+  {
+    "sourceKeys": "properties.isComm",
+    "destKey": "iscomm"
+  },
+  {
+    "sourceKeys": "properties.consumed",
+    "destKey": "consumed"
+  },
+  {
+    "sourceKeys": "properties.coupon",
+    "destKey": "coupon"
+  },
+  {
+    "sourceKeys": ["properties.custId", "properties.customerId", "properties.userId"],
+    "destKey": "custid"
+  },
+  {
+    "sourceKeys": ["properties.custScore", "properties.customerScore"],
+    "destKey": "custscore"
+  },
+  {
+    "sourceKeys": ["properties.custStatus", "properties.customerStatus"],
+    "destKey": "custstatus"
+  },
+  {
+    "sourceKeys": ["properties.dId", "properties.advertisingId"],
+    "destKey": "did"
+  },
+  {
+    "sourceKeys": ["properties.disamt", "properties.discountAmout"],
+    "destKey": "disamt"
+  },
+  {
+    "sourceKeys": ["properties.ordStatus", "properties.orderStatus"],
+    "destKey": "ordstatus"
+  },
+  {
+    "sourceKeys": "properties.segment",
+    "destKey": "segment"
+  },
+  {
+    "sourceKeys": "properties.shipcountry",
+    "destKey": "shipcountry"
+  },
+  {
+    "sourceKeys": "properties.shipped",
+    "destKey": "shipped"
+  },
+  {
+    "sourceKeys": ["properties.sitename", "properties.url", "context.page.url"],
+    "destKey": "sitename"
+  },
+  {
+    "sourceKeys": "properties.storeId",
+    "destKey": "storeid"
+  },
+  {
+    "sourceKeys": ["properties.storecat", "properties.storeCategory"],
+    "destKey": "storecat"
+  },
+  {
+    "sourceKeys": "properties.currency",
+    "destKey": "cur"
+  }
+]

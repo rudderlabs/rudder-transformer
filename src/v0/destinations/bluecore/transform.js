@@ -1,5 +1,3 @@
-// TODO : experiment if a custom event without distinct_id as an identifier reaches bluecore or not
-
 const { isDefinedAndNotNull, ConfigurationError, TransformationError,
   InstrumentationError, } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');

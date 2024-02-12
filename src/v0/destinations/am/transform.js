@@ -615,7 +615,7 @@ const processSingleMessage = (message, destination) => {
     case EventType.PAGE:
       if (useUserDefinedPageEventName) {
         const getMessagePath = userProvidedPageEventString
-          .substring(
+          ?.substring(
             userProvidedPageEventString.indexOf('{') + 2,
             userProvidedPageEventString.indexOf('}'),
           )
@@ -624,7 +624,7 @@ const processSingleMessage = (message, destination) => {
           userProvidedPageEventString.trim() === ''
             ? name
             : userProvidedPageEventString
-                .trim()
+                ?.trim()
                 .replaceAll(/{{([^{}]+)}}/g, get(message, getMessagePath));
       } else {
         evType = `Viewed ${name || get(message, CATEGORY_KEY) || ''} Page`;
@@ -705,7 +705,7 @@ const processSingleMessage = (message, destination) => {
   // putting a check for evType as there some cases like page name is not present and teamplte depends on page name only.
   if (!isDefinedAndNotNull(evType)) {
     throw new InstrumentationError(
-      'Event type not present. Please send event type. If you are sending page/screen call, please provide the name',
+      'Event type not present. If you are sending page/screen call with custom name, please provide the name',
     );
   }
   return responseBuilderSimple(

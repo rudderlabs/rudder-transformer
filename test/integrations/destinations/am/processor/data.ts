@@ -11352,7 +11352,7 @@ export const data = [
               Config: {
                 apiKey: 'abcde',
                 useUserDefinedPageEventName: true,
-                userProvidedPageEventString: undefined,
+                userProvidedPageEventString: '',
               },
             },
           },
@@ -11366,7 +11366,7 @@ export const data = [
           {
             statusCode: 400,
             error:
-              'Event type not present. Please send event type. If you are sending page/screen call, please provide the name',
+              'Event type not present. If you are sending page/screen call with custom name, please provide the name',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',

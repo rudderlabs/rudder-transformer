@@ -41,7 +41,7 @@ steps:
       version;
 
   - name: rEtlPayload
-    condition: .message.context.mappedToDestination === true
+    condition: .message.context.mappedToDestination
     template: |
       $.addExternalIdToTraits(.message);
       const payload = $.getFieldValueFromMessage(.message, "traits");

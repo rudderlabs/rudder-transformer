@@ -80,6 +80,7 @@ export const trackSuccess = [
               params: {
                 mid: 'dummyMarketingId',
                 xml: 1,
+                source: 'rudderstack',
                 amtlist: '2000|2500|3000',
                 brandlist: 'SampleBrand||',
                 catidlist: '12345||',
@@ -209,6 +210,7 @@ export const trackSuccess = [
               params: {
                 mid: 'dummyMarketingId',
                 xml: 1,
+                source: 'rudderstack',
                 amtlist: '12500|12500|3000',
                 couponlist: '||SALE50',
                 namelist: 'name_1|name_2|SampleProduct',
@@ -316,6 +318,7 @@ export const trackSuccess = [
               params: {
                 mid: 'dummyMarketingId',
                 xml: 1,
+                source: 'rudderstack',
                 amtlist: '-12500|-12500',
                 skulist: 'custom sku 0|custom sku 1',
                 qlist: '1|5',
@@ -429,6 +432,7 @@ export const trackSuccess = [
               params: {
                 mid: 'dummyMarketingId',
                 xml: 1,
+                source: 'rudderstack',
                 namelist: 'name_1|name_2|Discount',
                 amtlist: '12500|12500|-50000',
                 skulist: 'custom sku 0|custom sku 1|Discount',

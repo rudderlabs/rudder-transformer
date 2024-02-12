@@ -1,5 +1,6 @@
 const { isDefinedAndNotNull, ConfigurationError, TransformationError,
-  InstrumentationError, } = require('@rudderstack/integrations-lib');
+  InstrumentationError,
+  removeUndefinedAndNullValues, } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   constructPayload,
@@ -19,12 +20,7 @@ const { verifyPayload, deduceTrackEventName, addProductArray } = require('./util
 
 const trackResponseBuilder = (message, category, { Config }, eventName) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
-  if(eventName !== 'optin' && eventName !== 'unsubscribe' && eventName !== 'search') {
-    payload.properties.products = addProductArray(payload.properties.products, eventName);
-  } else {
-    // bluecore is not not expecting optin , unsubscribe and search to have properties
-    delete payload.properties.products;
-  }
+  payload.properties.products = addProductArray(payload.properties.products, eventName);
   payload.event = eventName;
   verifyPayload(payload, message);
   payload.token = Config.bluecoreNamespace;
@@ -32,7 +28,7 @@ const trackResponseBuilder = (message, category, { Config }, eventName) => {
     // fail-safety for developer error
     throw new TransformationError(ErrorMessage.FailedToConstructPayload);
   }
-  return payload;
+  return removeUndefinedAndNullValues(payload);
 };
 
 const identifyResponseBuilder = (message, category, destination) => {
@@ -81,6 +77,7 @@ const process = async (event) => {
   switch (messageType) {
     case EventType.TRACK:
       deducedEventNameArray.push(...deduceTrackEventName(message.event, destination.Config));
+  //    ['event1', 'event2', 'event3']
       deducedEventNameArray.forEach((eventName) => {
         const trackResponse = trackResponseBuilder(message, category, destination, eventName);
         toSendEvents.push(trackResponse);

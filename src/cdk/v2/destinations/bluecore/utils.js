@@ -1,7 +1,11 @@
 const { InstrumentationError, isDefinedAndNotNullAndNotEmpty, getHashFromArrayWithDuplicate, isDefinedAndNotNull, isDefinedNotNullNotEmpty } = require("@rudderstack/integrations-lib");
-const { getFieldValueFromMessage, validateEventName } = require("../../util");
+const { getFieldValueFromMessage, validateEventName, constructPayload } = require('../../../../v0/util');
 const { EVENT_NAME_MAPPING } = require("./config");
-const { EventType } = require('../../../constants');
+const { EventType } = require('../../../../constants');
+const {
+    MAPPING_CONFIG,
+    CONFIG_CATEGORIES,
+  } = require('./config');
 
 /**
  * Verifies the correctness of payload for different events.
@@ -119,10 +123,17 @@ const addProductArray = (products, eventName) => {
     return finalProductArray;
 }
 
+const constructProperties = (message) => {
+    const category = CONFIG_CATEGORIES[message.type.toUpperCase()];
+    const payload =  constructPayload(message, MAPPING_CONFIG[category.name]);
+    return payload;
+  };
+
 module.exports = {
     verifyPayload,
     deduceTrackEventName,
     addProductArray,
-    isStandardBluecoreEvent
+    isStandardBluecoreEvent,
+    constructProperties
 };
 

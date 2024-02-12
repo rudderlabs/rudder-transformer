@@ -1,0 +1,64 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+  - path: ./utils
+  - path: lodash
+    name: cloneDeep
+
+steps:
+  - name: messageType
+    template: |
+      .message.type.toLowerCase();
+  - name: validateInput
+    template: |
+      let messageType = $.outputs.messageType;
+      $.assert(messageType, "message Type is not present. Aborting");
+      $.assert(messageType in {{$.EventType.([.TRACK, .IDENTIFY])}}, "message type " + messageType + " is not supported");
+      $.assertConfig(.destination.Config.bluecoreNamespace, "[BLUECORE] bluecore account namespace required for Authentication.");
+  - name: validateInputForTrack
+    description: Additional validation for Track events
+    condition: $.outputs.messageType === {{$.EventType.TRACK}}
+    template: |
+      $.assert(.message.event, "event_name could not be mapped. Aborting.")
+  - name: deduceEventNames
+    template: |
+      $.context.deducedEventNameArray = $.deduceTrackEventName(.message.event,.destination.Config)
+  - name: prepareTrackPayload
+    condition: $.outputs.messageType === {{$.EventType.TRACK}}
+    template: |
+      const payload = $.constructProperties(.message);
+      $.context.payloads = $.outputs.deduceEventNames.(
+        const newPayload = cloneDeep(payload);
+        newPayload.properties.products = $.addProductArray(newPayload.properties.products, .);
+        newPayload.event = eventName;
+        newPayload.token = ^.destination.Config.bluecoreNamespace;
+        $.verifyPayload(newPayload, ^.message);
+        $.removeUndefinedAndNullValues(newPayload)
+      })[];
+
+  - name: prepareIdentifyPayload
+    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
+    template: |
+      const payload = $.constructProperties(.message);
+      payload.token = .destination.Config.bluecoreNamespace;
+      $.verifyPayload(payload, .message);
+      payload.event = payload.event ?? 'customer_patch';
+      $.context.payloads = [$.removeUndefinedAndNullValues(payload)];
+  
+  - name: buildResponse
+    template: |
+      $.context.payloads.(
+        const response = $.defaultRequestConfig();
+        response.params = .;
+        response.method = "POST";
+        response.endpoint = "https://api.bluecore.com/api/track/mobile/v1";
+        response.headers = {
+          "content-type": "application/json"
+        };
+        response
+      )

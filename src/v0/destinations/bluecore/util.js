@@ -1,6 +1,7 @@
-const { InstrumentationError, isDefinedAndNotNullAndNotEmpty, getHashFromArrayWithDuplicate, isDefinedAndNotNull } = require("@rudderstack/integrations-lib");
+const { InstrumentationError, isDefinedAndNotNullAndNotEmpty, getHashFromArrayWithDuplicate, isDefinedAndNotNull, isDefinedNotNullNotEmpty } = require("@rudderstack/integrations-lib");
 const { getFieldValueFromMessage, validateEventName } = require("../../util");
 const { EVENT_NAME_MAPPING } = require("./config");
+const { EventType } = require('../../../constants');
 
 /**
  * Verifies the correctness of payload for different events.
@@ -11,6 +12,9 @@ const { EVENT_NAME_MAPPING } = require("./config");
  * @returns {void}
  */
 const verifyPayload = (payload, message) => {
+    if (message.type === EventType.IDENTIFY && isDefinedNotNullNotEmpty(payload.event) && payload.event !== 'identify') {
+        throw new InstrumentationError('[Bluecore]  traits.action must be \'identify\' for identify action');
+    }
     switch (payload.event) {
         case 'search':
             if (!payload.properties.search_term) {
@@ -99,18 +103,18 @@ const isStandardBluecoreEvent = (eventName) => {
 const addProductArray = (products, eventName) => {
     let finalProductArray = null;
     if (!isDefinedAndNotNull(products) && isStandardBluecoreEvent(eventName)) {
-      throw new InstrumentationError(`Product array is required for ${eventName} event`);
+        throw new InstrumentationError(`Product array is required for ${eventName} event`);
     }
-    if(isDefinedAndNotNull(products)) {
-        const productArray =  Array.isArray(products) ? products : [products];
-        const mappedProductArray =  productArray.map(({ product_id, query, order_id, total, ...rest }) => ({
-          id: product_id,
-          ...rest
+    if (isDefinedAndNotNull(products)) {
+        const productArray = Array.isArray(products) ? products : [products];
+        const mappedProductArray = productArray.map(({ product_id, query, order_id, total, ...rest }) => ({
+            id: product_id,
+            ...rest
         }));
         finalProductArray = mappedProductArray;
     }
     return finalProductArray;
-  }
+}
 
 module.exports = {
     verifyPayload,

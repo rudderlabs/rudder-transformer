@@ -114,6 +114,17 @@ describe('verifyPayload', () => {
         };
         expect(() => verifyPayload(payload, {})).toThrow(InstrumentationError);
     });
+
+      // Verify payload for purchase event without total property, should throw an InstrumentationError.
+      it('should throw an InstrumentationError when verifying payload for identify event with action field other than identify', () => {
+        const payload = {
+            event: 'random',
+            properties: {
+                email: 'abc@gmail.com'
+            }
+        };
+        expect(() => verifyPayload(payload, {type: 'identify'})).toThrow(InstrumentationError);
+    });
 });
 
 describe('isStandardBluecoreEvent', () => {

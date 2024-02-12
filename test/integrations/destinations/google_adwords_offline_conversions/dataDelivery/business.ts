@@ -12,153 +12,102 @@ const proxyMetdata: ProxyMetdata = {
   dontBatch: false,
 };
 
-const commonHeaders1 = {
-  Authorization: 'Bearer abcd1234',
-  'Content-Type': 'application/json',
-  'developer-token': 'ijkl91011',
-  'login-customer-id': 'logincustomerid',
+const transactionAttribute = {
+  CUSTOM_KEY: 'CUSTOM_VALUE',
+  currency_code: 'INR',
+  order_id: 'order id',
+  store_attribute: {
+    store_code: 'store code',
+  },
+  transaction_amount_micros: '100000000',
+  transaction_date_time: '2019-10-14 11:15:18+00:00',
 };
 
-const commonHeaders2 = {
-  Authorization: 'Bearer abcd1234',
-  'Content-Type': 'application/json',
-  'developer-token': 'ijkl91011',
-};
-
-const commonParams1 = {
-  customerId: '1112223333',
-  event: 'Sign-up - click',
-};
-
-const commonParams2 = {
-  event: 'Sign-up - click',
-  customerId: '1234567891',
-  customVariables: [
-    {
-      from: 'Value',
-      to: 'revenue',
+const createJobPayload = {
+  job: {
+    storeSalesMetadata: {
+      custom_key: 'CUSTOM_KEY',
+      loyaltyFraction: 1,
+      transaction_upload_fraction: '1',
     },
-    {
-      from: 'total',
-      to: 'cost',
-    },
-  ],
-  properties: {
-    gbraid: 'gbraid',
-    wbraid: 'wbraid',
-    externalAttributionCredit: 10,
-    externalAttributionModel: 'externalAttributionModel',
-    conversionCustomVariable: 'conversionCustomVariable',
-    Value: 'value',
-    merchantId: '9876merchantId',
-    feedCountryCode: 'feedCountryCode',
-    feedLanguageCode: 'feedLanguageCode',
-    localTransactionCost: 20,
-    products: [
+    type: 'STORE_SALES_UPLOAD_FIRST_PARTY',
+  },
+};
+
+const products = [
+  {
+    product_id: '507f1f77bcf86cd799439011',
+    quantity: '2',
+    price: '50',
+    sku: '45790-32',
+    name: 'Monopoly: 3rd Edition',
+    position: '1',
+    category: 'cars',
+    url: 'https://www.example.com/product/path',
+    image_url: 'https://www.example.com/product/path.jpg',
+  },
+];
+
+const headers = {
+  header1: {
+    Authorization: 'Bearer abcd1234',
+    'Content-Type': 'application/json',
+    'developer-token': 'ijkl91011',
+    'login-customer-id': 'logincustomerid',
+  },
+  header2: {
+    Authorization: 'Bearer abcd1234',
+    'Content-Type': 'application/json',
+    'developer-token': 'ijkl91011',
+  },
+};
+
+const params = {
+  param1: {
+    customerId: '1112223333',
+    event: 'Sign-up - click',
+  },
+  param2: {
+    event: 'Sign-up - click',
+    customerId: '1234567891',
+    customVariables: [
       {
-        product_id: '507f1f77bcf86cd799439011',
-        quantity: '2',
-        price: '50',
-        sku: '45790-32',
-        name: 'Monopoly: 3rd Edition',
-        position: '1',
-        category: 'cars',
-        url: 'https://www.example.com/product/path',
-        image_url: 'https://www.example.com/product/path.jpg',
+        from: 'Value',
+        to: 'revenue',
+      },
+      {
+        from: 'total',
+        to: 'cost',
       },
     ],
-    userIdentifierSource: 'FIRST_PARTY',
-    conversionEnvironment: 'WEB',
-    gclid: 'gclid',
-    conversionDateTime: '2022-01-01 12:32:45-08:00',
-    conversionValue: '1',
-    currency: 'GBP',
-    orderId: 'PL-123QR',
-  },
-};
-
-const commonParams3 = {
-  event: 'Sign-up - click',
-  customerId: '1234567891',
-  customVariables: [],
-  properties: {
-    gbraid: 'gbraid',
-    wbraid: 'wbraid',
-    externalAttributionCredit: 10,
-    externalAttributionModel: 'externalAttributionModel',
-    conversionCustomVariable: 'conversionCustomVariable',
-    value: 'value',
-    merchantId: '9876merchantId',
-    feedCountryCode: 'feedCountryCode',
-    feedLanguageCode: 'feedLanguageCode',
-    localTransactionCost: 20,
-    products: [
-      {
-        product_id: '507f1f77bcf86cd799439011',
-        quantity: '2',
-        price: '50',
-        sku: '45790-32',
-        name: 'Monopoly: 3rd Edition',
-        position: '1',
-        category: 'cars',
-        url: 'https://www.example.com/product/path',
-        image_url: 'https://www.example.com/product/path.jpg',
-      },
-    ],
-    userIdentifierSource: 'FIRST_PARTY',
-    conversionEnvironment: 'WEB',
-    gclid: 'gclid',
-    conversionDateTime: '2022-01-01 12:32:45-08:00',
-    conversionValue: '1',
-    currency: 'GBP',
-    orderId: 'PL-123QR',
-  },
-};
-
-const invalidArgumentRequestPayload = {
-  addConversionPayload: {
-    enable_partial_failure: false,
-    enable_warnings: false,
-    operations: [
-      {
-        create: {
-          transaction_attribute: {
-            CUSTOM_KEY: 'CUSTOM_VALUE',
-            currency_code: 'INR',
-            order_id: 'order id',
-            store_attribute: {
-              store_code: 'store code',
-            },
-            transaction_amount_micros: '100000000',
-            transaction_date_time: '2019-10-14 11:15:18+00:00',
-          },
-          userIdentifiers: [
-            {
-              hashedEmail: '6db61e6dcbcf2390e4a46af26f26a133a3bee45021422fc7ae86e9136f14110',
-              userIdentifierSource: 'UNSPECIFIED',
-            },
-          ],
-        },
-      },
-    ],
-    validate_only: false,
-  },
-  createJobPayload: {
-    job: {
-      storeSalesMetadata: {
-        custom_key: 'CUSTOM_KEY',
-        loyaltyFraction: 1,
-        transaction_upload_fraction: '1',
-      },
-      type: 'STORE_SALES_UPLOAD_FIRST_PARTY',
+    properties: {
+      gbraid: 'gbraid',
+      wbraid: 'wbraid',
+      externalAttributionCredit: 10,
+      externalAttributionModel: 'externalAttributionModel',
+      conversionCustomVariable: 'conversionCustomVariable',
+      Value: 'value',
+      merchantId: '9876merchantId',
+      feedCountryCode: 'feedCountryCode',
+      feedLanguageCode: 'feedLanguageCode',
+      localTransactionCost: 20,
+      products,
+      userIdentifierSource: 'FIRST_PARTY',
+      conversionEnvironment: 'WEB',
+      gclid: 'gclid',
+      conversionDateTime: '2022-01-01 12:32:45-08:00',
+      conversionValue: '1',
+      currency: 'GBP',
+      orderId: 'PL-123QR',
     },
   },
-  event: '1112223333',
-  executeJobPayload: {
-    validate_only: false,
-  },
-  isStoreConversion: true,
+  param3: {},
+  param4: {},
 };
+
+params['param3'] = { ...params.param2, customVariables: [] };
+
+params['param4'] = { ...params.param3, customerId: '1234567893', conversionEnvironment: 'APP' };
 
 const validRequestPayload1 = {
   addConversionPayload: {
@@ -167,16 +116,7 @@ const validRequestPayload1 = {
     operations: [
       {
         create: {
-          transaction_attribute: {
-            CUSTOM_KEY: 'CUSTOM_VALUE',
-            currency_code: 'INR',
-            order_id: 'order id',
-            store_attribute: {
-              store_code: 'store code',
-            },
-            transaction_amount_micros: '100000000',
-            transaction_date_time: '2019-10-14 11:15:18+00:00',
-          },
+          transaction_attribute: transactionAttribute,
           userIdentifiers: [
             {
               hashedEmail: '6db61e6dcbcf2390e4a46af426f26a133a3bee45021422fc7ae86e9136f14110',
@@ -188,16 +128,7 @@ const validRequestPayload1 = {
     ],
     validate_only: false,
   },
-  createJobPayload: {
-    job: {
-      storeSalesMetadata: {
-        custom_key: 'CUSTOM_KEY',
-        loyaltyFraction: 1,
-        transaction_upload_fraction: '1',
-      },
-      type: 'STORE_SALES_UPLOAD_FIRST_PARTY',
-    },
-  },
+  createJobPayload,
   event: '1112223333',
   executeJobPayload: {
     validate_only: false,
@@ -244,43 +175,41 @@ const validRequestPayload2 = {
   partialFailure: true,
 };
 
-const validRequestPayload3 = {
+const invalidArgumentRequestPayload = {
+  addConversionPayload: {
+    enable_partial_failure: false,
+    enable_warnings: false,
+    operations: [
+      {
+        create: {
+          transaction_attribute: transactionAttribute,
+          userIdentifiers: [
+            {
+              hashedEmail: '6db61e6dcbcf2390e4a46af26f26a133a3bee45021422fc7ae86e9136f14110',
+              userIdentifierSource: 'UNSPECIFIED',
+            },
+          ],
+        },
+      },
+    ],
+    validate_only: false,
+  },
+  createJobPayload,
+  event: '1112223333',
+  executeJobPayload: {
+    validate_only: false,
+  },
+  isStoreConversion: true,
+};
+
+const notAllowedToAccessFeatureRequestPayload = {
+  ...validRequestPayload2,
   conversions: [
     {
-      gbraid: 'gbraid',
-      wbraid: 'wbraid',
-      externalAttributionData: {
-        externalAttributionCredit: 10,
-        externalAttributionModel: 'externalAttributionModel',
-      },
-      cartData: {
-        merchantId: 9876,
-        feedCountryCode: 'feedCountryCode',
-        feedLanguageCode: 'feedLanguageCode',
-        localTransactionCost: 20,
-        items: [
-          {
-            productId: '507f1f77bcf86cd799439011',
-            quantity: 2,
-            unitPrice: 50,
-          },
-        ],
-      },
-      userIdentifiers: [
-        {
-          userIdentifierSource: 'FIRST_PARTY',
-          hashedPhoneNumber: '04e1dabb7c1348b72bfa87da179c9697c69af74827649266a5da8cdbb367abcd',
-        },
-      ],
-      conversionEnvironment: 'WEB',
-      gclid: 'gclid',
-      conversionDateTime: '2022-01-01 12:32:45-08:00',
-      conversionValue: 1,
-      currencyCode: 'GBP',
-      orderId: 'PL-123QR',
+      ...validRequestPayload2.conversions[0],
+      conversionEnvironment: 'APP',
     },
   ],
-  partialFailure: true,
 };
 
 const metadata = [proxyMetdata];
@@ -299,8 +228,8 @@ export const testScenariosForV0API = [
     input: {
       request: {
         body: generateProxyV0Payload({
-          headers: commonHeaders1,
-          params: commonParams1,
+          headers: headers.header1,
+          params: params.param1,
           JSON: invalidArgumentRequestPayload,
           endpoint:
             'https://googleads.googleapis.com/v14/customers/11122233331/offlineUserDataJobs',
@@ -383,8 +312,8 @@ export const testScenariosForV0API = [
     input: {
       request: {
         body: generateProxyV0Payload({
-          headers: commonHeaders1,
-          params: commonParams1,
+          headers: headers.header1,
+          params: params.param1,
           JSON: validRequestPayload1,
           endpoint: 'https://googleads.googleapis.com/v14/customers/1112223333/offlineUserDataJobs',
         }),
@@ -423,8 +352,8 @@ export const testScenariosForV0API = [
     input: {
       request: {
         body: generateProxyV0Payload({
-          headers: commonHeaders2,
-          params: commonParams2,
+          headers: headers.header2,
+          params: params.param2,
           JSON: validRequestPayload2,
           endpoint:
             'https://googleads.googleapis.com/v14/customers/1234567891:uploadClickConversions',
@@ -473,9 +402,9 @@ export const testScenariosForV0API = [
     input: {
       request: {
         body: generateProxyV0Payload({
-          headers: commonHeaders2,
-          params: commonParams3,
-          JSON: validRequestPayload3,
+          headers: headers.header2,
+          params: params.param3,
+          JSON: validRequestPayload2,
           endpoint:
             'https://googleads.googleapis.com/v14/customers/1234567891:uploadClickConversions',
         }),
@@ -526,8 +455,8 @@ export const testScenariosForV1API = [
       request: {
         body: generateProxyV1Payload(
           {
-            headers: commonHeaders1,
-            params: commonParams1,
+            headers: headers.header1,
+            params: params.param1,
             JSON: invalidArgumentRequestPayload,
             endpoint:
               'https://googleads.googleapis.com/v14/customers/11122233331/offlineUserDataJobs',
@@ -591,8 +520,8 @@ export const testScenariosForV1API = [
       request: {
         body: generateProxyV1Payload(
           {
-            headers: commonHeaders1,
-            params: commonParams1,
+            headers: headers.header1,
+            params: params.param1,
             JSON: validRequestPayload1,
             endpoint:
               'https://googleads.googleapis.com/v14/customers/1112223333/offlineUserDataJobs',
@@ -635,8 +564,8 @@ export const testScenariosForV1API = [
       request: {
         body: generateProxyV1Payload(
           {
-            headers: commonHeaders2,
-            params: commonParams2,
+            headers: headers.header2,
+            params: params.param2,
             JSON: validRequestPayload2,
             endpoint:
               'https://googleads.googleapis.com/v14/customers/1234567891:uploadClickConversions',
@@ -690,9 +619,9 @@ export const testScenariosForV1API = [
       request: {
         body: generateProxyV1Payload(
           {
-            headers: commonHeaders2,
-            params: commonParams3,
-            JSON: validRequestPayload3,
+            headers: headers.header2,
+            params: params.param3,
+            JSON: validRequestPayload2,
             endpoint:
               'https://googleads.googleapis.com/v14/customers/1234567891:uploadClickConversions',
           },
@@ -726,6 +655,71 @@ export const testScenariosForV1API = [
               },
             ],
             status: 200,
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'gaoc_v1_scenario_5',
+    name: 'google_adwords_offline_conversions',
+    description:
+      '[Proxy v1 API] :: Test for customer is not allowed Test for a valid request with a successful 200 response from the destinationto access feature partial failure error',
+    successCriteria: 'Should return 400 with error with destination response',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            headers: headers.header2,
+            params: params.param4,
+            JSON: notAllowedToAccessFeatureRequestPayload,
+            endpoint:
+              'https://googleads.googleapis.com/v14/customers/1234567893:uploadClickConversions',
+          },
+          metadata,
+        ),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            message:
+              '[Google Ads Offline Conversions]:: partialFailureError - Customer is not allowlisted for accessing this feature., at conversions[0].conversion_environment',
+            response: [
+              {
+                error:
+                  '[Google Ads Offline Conversions]:: partialFailureError - Customer is not allowlisted for accessing this feature., at conversions[0].conversion_environment',
+                metadata: {
+                  attemptNum: 1,
+                  destinationId: 'dummyDestinationId',
+                  dontBatch: false,
+                  jobId: 1,
+                  secret: {},
+                  sourceId: 'dummySourceId',
+                  userId: 'dummyUserId',
+                  workspaceId: 'dummyWorkspaceId',
+                },
+                statusCode: 400,
+              },
+            ],
+            statTags: {
+              destType: 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS',
+              destinationId: 'dummyDestinationId',
+              errorCategory: 'network',
+              errorType: 'aborted',
+              feature: 'dataDelivery',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'dummyWorkspaceId',
+            },
+            status: 400,
           },
         },
       },

@@ -33,6 +33,7 @@ const {
   AUTH_STATUS_INACTIVE,
 } = require('../../adapters/networkhandler/authConstants');
 const { FEATURE_FILTER_CODE, FEATURE_GZIP_SUPPORT } = require('./constant');
+const { CommonUtils } = require('../../util/common');
 
 // ========================================================================
 // INLINERS
@@ -2143,17 +2144,10 @@ const parseConfigArray = (arr, key) => {
  * @returns
  */
 const findExistingBatch = (batch, metadataMap) => {
-  let existingBatch = null;
-
-  // eslint-disable-next-line no-restricted-syntax
-  for (const metadataItem of batch.metadata) {
-    if (metadataMap.has(metadataItem.jobId)) {
-      existingBatch = metadataMap.get(metadataItem.jobId);
-      break;
-    }
-  }
-
-  return existingBatch;
+  const existingMetadataItem = batch.metadata.find((metadataItem) =>
+    metadataMap.has(metadataItem.jobId),
+  );
+  return existingMetadataItem ? metadataMap.get(existingMetadataItem.jobId) : null;
 };
 
 /**
@@ -2192,10 +2186,8 @@ const combineBatchRequestsWithSameJobIds = (inputBatches) => {
       if (existingBatch) {
         // Merge batchedRequests arrays
         existingBatch.batchedRequest = [
-          ...(Array.isArray(existingBatch.batchedRequest)
-            ? existingBatch.batchedRequest
-            : [existingBatch.batchedRequest]),
-          ...(Array.isArray(batch.batchedRequest) ? batch.batchedRequest : [batch.batchedRequest]),
+          ...CommonUtils.toArray(existingBatch.batchedRequest),
+          ...CommonUtils.toArray(batch.batchedRequest),
         ];
 
         // Merge metadata

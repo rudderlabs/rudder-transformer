@@ -34,6 +34,8 @@ const createJob = async (endpoint, headers, payload) => {
       destType: 'google_adwords_offline_conversions',
       feature: 'proxy',
       endpointPath: `/create`,
+      requestMethod: 'POST',
+      module: 'dataDelivery',
     },
   );
   createJobResponse = processAxiosResponse(createJobResponse);
@@ -59,6 +61,8 @@ const addConversionToJob = async (endpoint, headers, jobId, payload) => {
       destType: 'google_adwords_offline_conversions',
       feature: 'proxy',
       endpointPath: `/addOperations`,
+      requestMethod: 'POST',
+      module: 'dataDelivery',
     },
   );
   addConversionToJobResponse = processAxiosResponse(addConversionToJobResponse);
@@ -83,6 +87,8 @@ const runTheJob = async (endpoint, headers, payload, jobId) => {
       destType: 'google_adwords_offline_conversions',
       feature: 'proxy',
       endpointPath: `/run`,
+      requestMethod: 'POST',
+      module: 'dataDelivery',
     },
   );
   return executeJobResponse;
@@ -110,6 +116,8 @@ const getConversionCustomVariable = async (headers, params) => {
       destType: 'google_adwords_offline_conversions',
       feature: 'proxy',
       endpointPath: `/searchStream`,
+      requestMethod: 'POST',
+      module: 'dataDelivery',
     });
     searchStreamResponse = processAxiosResponse(searchStreamResponse);
     if (!isHttpStatusSuccess(searchStreamResponse.status)) {
@@ -247,6 +255,8 @@ const ProxyRequest = async (request) => {
     feature: 'proxy',
     destType: 'gogole_adwords_offline_conversions',
     endpointPath: `/proxy`,
+    requestMethod: 'POST',
+    module: 'dataDelivery',
   });
   return response;
 };

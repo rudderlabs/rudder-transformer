@@ -49,6 +49,8 @@ const deleteProfile = async (userAttributes, config) => {
           destType: 'mp',
           feature: 'deleteUsers',
           endpointPath,
+          requestMethod: 'POST',
+          module: 'deletion',
         },
       );
       if (!isHttpStatusSuccess(handledDelResponse.status)) {
@@ -104,6 +106,8 @@ const createDeletionTask = async (userAttributes, config) => {
           destType: 'mp',
           feature: 'deleteUsers',
           endpointPath,
+          requestMethod: 'POST',
+          module: 'deletion',
         },
       );
       if (!isHttpStatusSuccess(handledDelResponse.status)) {

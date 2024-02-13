@@ -104,6 +104,8 @@ const getProperties = async (destination) => {
       destType: 'hs',
       feature: 'transformation',
       endpointPath: `/properties/v1/contacts/properties`,
+      requestMethod: 'GET',
+      module: 'router',
     });
     hubspotPropertyMapResponse = processAxiosResponse(hubspotPropertyMapResponse);
   } else {

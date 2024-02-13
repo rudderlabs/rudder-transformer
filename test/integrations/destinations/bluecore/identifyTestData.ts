@@ -1,51 +1,51 @@
-
 import {
   overrideDestination,
   transformResultBuilder,
   generateSimplifiedIdentifyPayload,
-} from '../../testUtils';const destination = {
-    "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
-    "Name": "BLUECORE",
-    "Config": {
-        "bluecoreNamespace": "dummy_sandbox",
-        "eventsMapping": [
-            {
-                "from": "ABC Searched",
-                "to": "search"
-            }
-        ]
-    },
-    "Enabled": true,
-    "Transformations": []
+} from '../../testUtils';
+
+const destination = {
+  ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+  Name: 'BLUECORE',
+  Config: {
+    bluecoreNamespace: 'dummy_sandbox',
+    eventsMapping: [
+      {
+        from: 'ABC Searched',
+        to: 'search',
+      },
+    ],
+  },
+  Enabled: true,
+  Transformations: [],
 };
 
 const commonTraits = {
-    "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
-    "phone": "+1234589947",
-    "gender": "non-binary",
-    "db": "19950715",
-    "lastname": "Rudderlabs",
-    "firstName": "Test",
-    "address": {
-        "city": "Kolkata",
-        "state": "WB",
-        "zip": "700114",
-        "country": "IN"
-    }
+  anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
+  phone: '+1234589947',
+  gender: 'non-binary',
+  db: '19950715',
+  lastname: 'Rudderlabs',
+  firstName: 'Test',
+  address: {
+    city: 'Kolkata',
+    state: 'WB',
+    zip: '700114',
+    country: 'IN',
+  },
 };
 
 const commonOutputCustomerProperties = {
-    "first_name": "Test",
-    "last_name": "Rudderlabs",
-    "sex": "non-binary",
-    "address": {
-        "city": "Kolkata",
-        "state": "WB",
-        "zip": "700114",
-        "country": "IN"
-    }
-}
-
+  first_name: 'Test',
+  last_name: 'Rudderlabs',
+  sex: 'non-binary',
+  address: {
+    city: 'Kolkata',
+    state: 'WB',
+    zip: '700114',
+    country: 'IN',
+  },
+};
 
 const commonOutputHeaders = {
   'Content-Type': 'application/json',
@@ -76,13 +76,12 @@ export const identifyData = [
             destination,
             message: generateSimplifiedIdentifyPayload({
               context: {
-                traits: {...commonTraits, 
-                    "email": "abc@gmail.com"},
+                traits: { ...commonTraits, email: 'abc@gmail.com' },
               },
               anonymousId,
               userId,
               sentAt,
-              originalTimestamp
+              originalTimestamp,
             }),
           },
         ],
@@ -100,15 +99,15 @@ export const identifyData = [
               headers: commonOutputHeaders,
               JSON: {
                 properties: {
-                    distinct_id: 'abc@gmail.com',
-                    customer: {...commonOutputCustomerProperties,  email: 'abc@gmail.com',},
+                  distinct_id: 'abc@gmail.com',
+                  customer: { ...commonOutputCustomerProperties, email: 'abc@gmail.com' },
                 },
-                "token": "dummy_sandbox",
-                "event": "customer_patch"
-            },
+                token: 'dummy_sandbox',
+                event: 'customer_patch',
+              },
             }),
             statusCode: 200,
-          }
+          },
         ],
       },
     },
@@ -133,37 +132,37 @@ export const identifyData = [
               context: {
                 traits: commonTraits,
               },
-              traits : {
-                action : 'identify'
+              traits: {
+                action: 'identify',
               },
               anonymousId,
               userId,
               sentAt,
-              originalTimestamp
+              originalTimestamp,
             }),
           },
         ],
       },
     },
     output: {
-        response: {
-          status: 200,
-          body: [
-            {
-              error: '[Bluecore] property:: email is required for \'identify\' action',
-              statTags: {
-                destType: 'BLUECORE',
-                errorCategory: 'dataValidation',
-                errorType: 'instrumentation',
-                feature: 'processor',
-                implementation: 'native',
-                module: 'destination',
-              },
-              statusCode: 400,
+      response: {
+        status: 200,
+        body: [
+          {
+            error: "[Bluecore] property:: email is required for 'identify' action",
+            statTags: {
+              destType: 'BLUECORE',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
             },
-          ],
-        },
+            statusCode: 400,
+          },
+        ],
       },
+    },
   },
   {
     id: 'bluecore-identify-test-3',
@@ -185,37 +184,37 @@ export const identifyData = [
               context: {
                 traits: commonTraits,
               },
-              traits : {
-                action : 'random'
+              traits: {
+                action: 'random',
               },
               anonymousId,
               userId,
               sentAt,
-              originalTimestamp
+              originalTimestamp,
             }),
           },
         ],
       },
     },
     output: {
-        response: {
-          status: 200,
-          body: [
-            {
-              error: '[Bluecore]  traits.action must be \'identify\' for identify action',
-              statTags: {
-                destType: 'BLUECORE',
-                errorCategory: 'dataValidation',
-                errorType: 'instrumentation',
-                feature: 'processor',
-                implementation: 'native',
-                module: 'destination',
-              },
-              statusCode: 400,
+      response: {
+        status: 200,
+        body: [
+          {
+            error: "[Bluecore]  traits.action must be 'identify' for identify action",
+            statTags: {
+              destType: 'BLUECORE',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
             },
-          ],
-        },
+            statusCode: 400,
+          },
+        ],
       },
+    },
   },
   {
     id: 'bluecore-identify-test-1',
@@ -235,16 +234,15 @@ export const identifyData = [
             destination,
             message: generateSimplifiedIdentifyPayload({
               context: {
-                traits: {...commonTraits, 
-                    "email": "abc@gmail.com"},
+                traits: { ...commonTraits, email: 'abc@gmail.com' },
               },
               traits: {
-                action: 'identify'
+                action: 'identify',
               },
               anonymousId,
               userId,
               sentAt,
-              originalTimestamp
+              originalTimestamp,
             }),
           },
         ],
@@ -262,17 +260,17 @@ export const identifyData = [
               headers: commonOutputHeaders,
               JSON: {
                 properties: {
-                    distinct_id: 'abc@gmail.com',
-                    customer: {...commonOutputCustomerProperties,  email: 'abc@gmail.com',},
+                  distinct_id: 'abc@gmail.com',
+                  customer: { ...commonOutputCustomerProperties, email: 'abc@gmail.com' },
                 },
-                "token": "dummy_sandbox",
-                "event": "identify"
-            },
+                token: 'dummy_sandbox',
+                event: 'identify',
+              },
             }),
             statusCode: 200,
-          }
+          },
         ],
       },
     },
-  }
+  },
 ];

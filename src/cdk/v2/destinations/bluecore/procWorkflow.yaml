@@ -34,7 +34,8 @@ steps:
       const payload = $.constructProperties(.message);
       $.context.payloads = $.outputs.deduceEventNames.(
         const newPayload = cloneDeep(payload);
-        newPayload.properties.products = $.addProductArray(newPayload.properties.products, .);
+        const temporaryProductArray = newPayload.properties.products ?? $.createProductForStandardEcommEvent(.message.properties, .);
+        newPayload.properties.products = $.addProductArray(temporaryProductArray);
         newPayload.event = eventName;
         newPayload.token = ^.destination.Config.bluecoreNamespace;
         $.verifyPayload(newPayload, ^.message);

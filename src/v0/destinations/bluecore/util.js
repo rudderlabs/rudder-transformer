@@ -1,6 +1,12 @@
-const { InstrumentationError, isDefinedAndNotNullAndNotEmpty, getHashFromArrayWithDuplicate, isDefinedAndNotNull, isDefinedNotNullNotEmpty } = require("@rudderstack/integrations-lib");
-const { getFieldValueFromMessage, validateEventName } = require("../../util");
-const { EVENT_NAME_MAPPING } = require("./config");
+const {
+  InstrumentationError,
+  isDefinedAndNotNullAndNotEmpty,
+  getHashFromArrayWithDuplicate,
+  isDefinedAndNotNull,
+  isDefinedNotNullNotEmpty,
+} = require('@rudderstack/integrations-lib');
+const { getFieldValueFromMessage, validateEventName } = require('../../util');
+const { EVENT_NAME_MAPPING } = require('./config');
 const { EventType } = require('../../../constants');
 
 /**
@@ -12,31 +18,45 @@ const { EventType } = require('../../../constants');
  * @returns {void}
  */
 const verifyPayload = (payload, message) => {
-    if (message.type === EventType.IDENTIFY && isDefinedNotNullNotEmpty(payload.event) && payload.event !== 'identify') {
-        throw new InstrumentationError('[Bluecore]  traits.action must be \'identify\' for identify action');
-    }
-    switch (payload.event) {
-        case 'search':
-            if (!payload.properties.search_term) {
-                throw new InstrumentationError('[Bluecore] property:: search_query is required for search event');
-            }
-            break;
-        case 'purchase':
-            if (!payload.properties.order_id) {
-                throw new InstrumentationError('[Bluecore] property:: order_id is required for purchase event');
-            }
-            if (!payload.properties.total) {
-                throw new InstrumentationError('[Bluecore] property:: total is required for purchase event');
-            }
-            break;
-        case 'identify':
-            if (!isDefinedAndNotNullAndNotEmpty(getFieldValueFromMessage(message, 'email'))) {
-                throw new InstrumentationError('[Bluecore] property:: email is required for \'identify\' action');
-            }
-            break;
-        default:
-            break;
-    }
+  if (
+    message.type === EventType.IDENTIFY &&
+    isDefinedNotNullNotEmpty(payload.event) &&
+    payload.event !== 'identify'
+  ) {
+    throw new InstrumentationError(
+      "[Bluecore]  traits.action must be 'identify' for identify action",
+    );
+  }
+  switch (payload.event) {
+    case 'search':
+      if (!payload.properties.search_term) {
+        throw new InstrumentationError(
+          '[Bluecore] property:: search_query is required for search event',
+        );
+      }
+      break;
+    case 'purchase':
+      if (!payload.properties.order_id) {
+        throw new InstrumentationError(
+          '[Bluecore] property:: order_id is required for purchase event',
+        );
+      }
+      if (!payload.properties.total) {
+        throw new InstrumentationError(
+          '[Bluecore] property:: total is required for purchase event',
+        );
+      }
+      break;
+    case 'identify':
+      if (!isDefinedAndNotNullAndNotEmpty(getFieldValueFromMessage(message, 'email'))) {
+        throw new InstrumentationError(
+          "[Bluecore] property:: email is required for 'identify' action",
+        );
+      }
+      break;
+    default:
+      break;
+  }
 };
 
 /**
@@ -47,37 +67,40 @@ const verifyPayload = (payload, message) => {
  * @returns {string|array} - The deduced track event name.
  */
 const deduceTrackEventName = (trackEventName, Config) => {
-    let eventName;
-    const { eventsMapping } = Config;
-    validateEventName(trackEventName);
-    /*
+  let eventName;
+  const { eventsMapping } = Config;
+  validateEventName(trackEventName);
+  /*
     Step 1: Will look for the event name in the eventsMapping array if mapped to a standard bluecore event.
             and return the corresponding event name if found.
      */
-    if (eventsMapping.length > 0) {
-        const keyMap = getHashFromArrayWithDuplicate(eventsMapping, 'from', 'to', false);
-        eventName = keyMap[trackEventName];
-        const finalEvent = [...eventName];
-        return finalEvent;
-    }
-    /*
+  if (eventsMapping.length > 0) {
+    const keyMap = getHashFromArrayWithDuplicate(eventsMapping, 'from', 'to', false);
+    eventName = keyMap[trackEventName];
+  }
+  if (isDefinedAndNotNullAndNotEmpty(eventName)) {
+    const finalEvent = typeof eventName === 'string' ? [eventName] : [...eventName];
+    return finalEvent;
+  }
+
+  /*
     Step 2: To find if the particular event is amongst the list of standard
             Rudderstack ecommerce events, used specifically for Bluecore API
             mappings.
     */
 
-    const eventMapInfo = EVENT_NAME_MAPPING.find((eventMap) => {
-        if (eventMap.src.includes(trackEventName.toLowerCase())) {
-            return eventMap;
-        }
-        return false;
-    });
-    if (isDefinedAndNotNull(eventMapInfo)) {
-        return [eventMapInfo.dest];
+  const eventMapInfo = EVENT_NAME_MAPPING.find((eventMap) => {
+    if (eventMap.src.includes(trackEventName.toLowerCase())) {
+      return eventMap;
     }
+    return false;
+  });
+  if (isDefinedAndNotNull(eventMapInfo)) {
+    return [eventMapInfo.dest];
+  }
 
-    // Step 3: if nothing matches this is to be considered as a custom event
-    return [trackEventName];
+  // Step 3: if nothing matches this is to be considered as a custom event
+  return [trackEventName];
 };
 
 /**
@@ -87,9 +110,9 @@ const deduceTrackEventName = (trackEventName, Config) => {
  * @returns {boolean} - True if the event is a standard Bluecore event, false otherwise.
  */
 const isStandardBluecoreEvent = (eventName) => {
-    const standardEventList = EVENT_NAME_MAPPING.map(item => item.dest);
-    return !!(standardEventList.includes(eventName));
-}
+  const standardEventList = EVENT_NAME_MAPPING.map((item) => item.dest);
+  return !!standardEventList.includes(eventName);
+};
 
 /**
  * Adds an array of products to a message.
@@ -100,29 +123,34 @@ const isStandardBluecoreEvent = (eventName) => {
  * @throws {InstrumentationError} - If the products array is not defined or null.
  * @returns {array} - The updated product array.
  */
-const addProductArray = (products, eventName) => {
-    let finalProductArray = null;
-    if(eventName !== 'optin' && eventName !== 'unsubscribe' && eventName !== 'search') {
-        if (!isDefinedAndNotNull(products) && isStandardBluecoreEvent(eventName)) {
-            throw new InstrumentationError(`Product array is required for ${eventName} event`);
-        }
-        if (isDefinedAndNotNull(products)) {
-            const productArray = Array.isArray(products) ? products : [products];
-            const mappedProductArray = productArray.map(({ product_id, query, order_id, total, ...rest }) => ({
-                id: product_id,
-                ...rest
-            }));
-            finalProductArray = mappedProductArray;
-        }
-    }
- 
-    return finalProductArray;
-}
+const addProductArray = (products) => {
+  let finalProductArray = null;
+  if (isDefinedAndNotNull(products)) {
+    const productArray = Array.isArray(products) ? products : [products];
+    const mappedProductArray = productArray.map(
+      ({ product_id, sku, id, query, order_id, total, ...rest }) => ({
+        id: product_id || sku || id,
+        ...rest,
+      }),
+    );
+    finalProductArray = mappedProductArray;
+  }
+  // }
 
-module.exports = {
-    verifyPayload,
-    deduceTrackEventName,
-    addProductArray,
-    isStandardBluecoreEvent
+  return finalProductArray;
 };
 
+const createProductForStandardEcommEvent = (properties, eventName) => {
+  if (isStandardBluecoreEvent(eventName) && eventName !== 'search') {
+    return [properties];
+  }
+  return null;
+};
+
+module.exports = {
+  verifyPayload,
+  deduceTrackEventName,
+  addProductArray,
+  isStandardBluecoreEvent,
+  createProductForStandardEcommEvent,
+};

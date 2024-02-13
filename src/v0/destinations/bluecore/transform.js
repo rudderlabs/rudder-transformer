@@ -1,26 +1,32 @@
-const { isDefinedAndNotNull, ConfigurationError, TransformationError,
+const {
+  isDefinedAndNotNull,
+  ConfigurationError,
+  TransformationError,
   InstrumentationError,
-  removeUndefinedAndNullValues, } = require('@rudderstack/integrations-lib');
+} = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
 const {
   constructPayload,
   ErrorMessage,
   defaultRequestConfig,
   simpleProcessRouterDest,
+  removeUndefinedNullValuesAndEmptyObjectArray,
 } = require('../../util');
 
+const { MAPPING_CONFIG, CONFIG_CATEGORIES, BASE_URL } = require('./config');
 const {
-  MAPPING_CONFIG,
-  CONFIG_CATEGORIES,
-  BASE_URL,
-} = require('./config');
-const { verifyPayload, deduceTrackEventName, addProductArray } = require('./util');
-
-
+  verifyPayload,
+  deduceTrackEventName,
+  addProductArray,
+  createProductForStandardEcommEvent,
+} = require('./util');
 
 const trackResponseBuilder = (message, category, { Config }, eventName) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
-  payload.properties.products = addProductArray(payload.properties.products, eventName);
+  const temporaryProductArray =
+    payload.properties.products ||
+    createProductForStandardEcommEvent(message.properties, eventName);
+  payload.properties.products = addProductArray(temporaryProductArray);
   payload.event = eventName;
   verifyPayload(payload, message);
   payload.token = Config.bluecoreNamespace;
@@ -28,7 +34,7 @@ const trackResponseBuilder = (message, category, { Config }, eventName) => {
     // fail-safety for developer error
     throw new TransformationError(ErrorMessage.FailedToConstructPayload);
   }
-  return removeUndefinedAndNullValues(payload);
+  return removeUndefinedNullValuesAndEmptyObjectArray(payload);
 };
 
 const identifyResponseBuilder = (message, category, destination) => {
@@ -58,7 +64,7 @@ const responseBuilderSimple = (response) => {
     'Content-Type': 'application/json',
   };
   return resp;
-}
+};
 
 const process = async (event) => {
   const deducedEventNameArray = [];
@@ -70,7 +76,9 @@ const process = async (event) => {
   }
 
   if (!destination.Config.bluecoreNamespace) {
-    throw new ConfigurationError('[BLUECORE] bluecore account namespace required for Authentication.');
+    throw new ConfigurationError(
+      '[BLUECORE] bluecore account namespace required for Authentication.',
+    );
   }
   const messageType = message.type.toLowerCase();
   const category = CONFIG_CATEGORIES[message.type.toUpperCase()];

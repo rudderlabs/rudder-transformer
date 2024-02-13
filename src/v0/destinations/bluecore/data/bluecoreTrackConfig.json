@@ -1,11 +1,7 @@
 [
   {
     "destKey": "properties.distinct_id",
-    "sourceKeys": [
-      "userId",
-      "anonymousId",
-      "email"
-    ],
+    "sourceKeys": ["userId", "anonymousId", "email"],
     "required": true
   },
   {
@@ -28,20 +24,12 @@
   },
   {
     "destKey": "properties.customer.age",
-    "sourceKeys": [
-      "context.traits.age",
-      "traits.age"
-    ],
+    "sourceKeys": ["context.traits.age", "traits.age"],
     "required": false
   },
   {
     "destKey": "properties.customer.sex",
-    "sourceKeys": [
-      "traits.gender",
-      "context.traits.gender",
-      "traits.sex",
-      "context.traits.sex"
-    ],
+    "sourceKeys": ["traits.gender", "context.traits.gender", "traits.sex", "context.traits.sex"],
     "required": false
   },
   {
@@ -83,10 +71,7 @@
   },
   {
     "destKey": "properties.products",
-    "sourceKeys": [
-      "properties.products",
-      "properties"
-    ],
+    "sourceKeys": ["properties.products"],
     "required": false
   }
 ]

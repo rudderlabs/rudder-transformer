@@ -1,3 +1,4 @@
+import { ProxyV1TestData } from '../../../testTypes';
 import { generateProxyV1Payload, generateMetadata } from '../../../testUtils';
 export const headers = {
   Authorization: 'Bearer success_access_token',
@@ -9,7 +10,7 @@ export const params = {
 };
 const method = 'PATCH';
 
-export const V1BusinessTestScenarion = [
+export const V1BusinessTestScenarion: ProxyV1TestData[] = [
   {
     id: 'criteo_audience_business_0',
     name: 'criteo_audience',
@@ -67,6 +68,7 @@ export const V1BusinessTestScenarion = [
   {
     id: 'criteo_audience_business_1',
     name: 'criteo_audience',
+    scenario: 'business',
     description: '[Business]:: Test for email type audience to add users with success response',
     successCriteria: 'Should return a 200 status code with a success message',
     feature: 'dataDelivery',
@@ -74,6 +76,7 @@ export const V1BusinessTestScenarion = [
     version: 'v1',
     input: {
       request: {
+        method: 'POST',
         body: generateProxyV1Payload(
           {
             JSON: {
@@ -125,6 +128,7 @@ export const V1BusinessTestScenarion = [
   {
     id: 'criteo_audience_business_2',
     name: 'criteo_audience',
+    scenario: 'business',
     description: '[Business]:: Test for mobile type audience to remove users with success response',
     successCriteria: 'Should return a 200 status code with a success message',
     feature: 'dataDelivery',
@@ -132,6 +136,7 @@ export const V1BusinessTestScenarion = [
     version: 'v1',
     input: {
       request: {
+        method: 'POST',
         body: generateProxyV1Payload(
           {
             JSON: {
@@ -184,6 +189,7 @@ export const V1BusinessTestScenarion = [
   {
     id: 'criteo_audience_business_3',
     name: 'criteo_audience',
+    scenario: 'business',
     description: '[Business]:: Test for mobile type audience where audienceId is invalid',
     successCriteria:
       'Should return a 400 status code with an error audience-invalid. It should also have the invalid audienceId in the error message as follows: "Audience <provided audienceId> is invalid"',
@@ -192,6 +198,7 @@ export const V1BusinessTestScenarion = [
     version: 'v1',
     input: {
       request: {
+        method: 'POST',
         body: generateProxyV1Payload(
           {
             JSON: {

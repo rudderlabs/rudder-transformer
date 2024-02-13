@@ -6,7 +6,7 @@ import v8 from 'v8';
 
 import pprof, { heap } from '@datadog/pprof';
 import { promisify } from 'util';
-import logger from '../logger';
+import logger from '@rudderstack/integrations-lib';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CatchErr } from '../util/types';
 

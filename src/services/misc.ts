@@ -3,8 +3,9 @@ import fs from 'fs';
 import path from 'path';
 import { Context } from 'koa';
 import { DestHandlerMap } from '../constants/destinationCanonicalNames';
-import { Metadata } from '../types';
+import { ErrorDetailer, LoggableExtraData, Metadata } from '../types';
 import { getCPUProfile, getHeapProfile } from '../middleware';
+import customLogger from '@rudderstack/integrations-lib';
 
 export class MiscService {
   public static getDestHandler(dest: string, version: string) {
@@ -31,6 +32,7 @@ export class MiscService {
       namespace: 'Unknown',
       cluster: 'Unknown',
       features: ctx.state?.features || {},
+      serviceContext: {},
     };
   }
 
@@ -73,5 +75,21 @@ export class MiscService {
 
   public static async getHeapProfile() {
     return getHeapProfile();
+  }
+
+  public static getLoggableData(errorDetailer: ErrorDetailer): Partial<LoggableExtraData> {
+    return {
+      ...(errorDetailer?.destinationId && { destinationId: errorDetailer.destinationId }),
+      ...(errorDetailer?.sourceId && { sourceId: errorDetailer.sourceId }),
+      ...(errorDetailer?.workspaceId && { workspaceId: errorDetailer.workspaceId }),
+      ...(errorDetailer?.destType && { destType: errorDetailer.destType }),
+      module: errorDetailer.module,
+      implementation: errorDetailer.implementation,
+    };
+  }
+
+  public static logError(errorMessage: string, errorDetailer: ErrorDetailer) {
+    const loggableExtraData: Partial<LoggableExtraData> = this.getLoggableData(errorDetailer);
+    customLogger.errorw(errorMessage || '', loggableExtraData);
   }
 }

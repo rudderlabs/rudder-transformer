@@ -2,7 +2,7 @@ import { Context } from 'koa';
 import { MiscService } from '../services/misc';
 import { ServiceSelector } from '../helpers/serviceSelector';
 import { ControllerUtility } from './util';
-import logger from '../logger';
+import logger from '@rudderstack/integrations-lib';
 import { SourcePostTransformationService } from '../services/source/postTransformation';
 
 export class SourceController {

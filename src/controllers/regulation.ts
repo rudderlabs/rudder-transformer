@@ -1,5 +1,5 @@
 import { Context } from 'koa';
-import logger from '../logger';
+import logger from '@rudderstack/integrations-lib';
 import { UserDeletionRequest, UserDeletionResponse } from '../types';
 import { ServiceSelector } from '../helpers/serviceSelector';
 import tags from '../v0/util/tags';

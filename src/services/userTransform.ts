@@ -16,7 +16,7 @@ import {
 } from '../util/utils';
 import { getMetadata, isNonFuncObject } from '../v0/util';
 import { SUPPORTED_FUNC_NAMES } from '../util/ivmFactory';
-import logger from '../logger';
+import logger from '@rudderstack/integrations-lib';
 import stats from '../util/stats';
 import { CommonUtils } from '../util/common';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

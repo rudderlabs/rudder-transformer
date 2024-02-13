@@ -18,6 +18,14 @@ const destination = {
   },
   Enabled: true,
   Transformations: [],
+  DestinationDefinition: { Config: { cdkV2Enabled: true } },
+};
+
+const metadata = {
+  sourceType: '',
+  destinationType: '',
+  namespace: '',
+  destinationId: '',
 };
 
 const commonTraits = {
@@ -74,6 +82,7 @@ export const identifyData = [
         body: [
           {
             destination,
+            metadata,
             message: generateSimplifiedIdentifyPayload({
               context: {
                 traits: { ...commonTraits, email: 'abc@gmail.com' },
@@ -106,6 +115,12 @@ export const identifyData = [
                 event: 'customer_patch',
               },
             }),
+            metadata: {
+              sourceType: '',
+              destinationType: '',
+              namespace: '',
+              destinationId: '',
+            },
             statusCode: 200,
           },
         ],
@@ -128,6 +143,7 @@ export const identifyData = [
         body: [
           {
             destination,
+            metadata,
             message: generateSimplifiedIdentifyPayload({
               context: {
                 traits: commonTraits,
@@ -149,13 +165,21 @@ export const identifyData = [
         status: 200,
         body: [
           {
-            error: "[Bluecore] property:: email is required for 'identify' action",
+            error:
+              "[Bluecore] property:: email is required for 'identify' action: Workflow: procWorkflow, Step: prepareIdentifyPayload, ChildStep: undefined, OriginalError: [Bluecore] property:: email is required for 'identify' action",
+            metadata: {
+              destinationId: '',
+              destinationType: '',
+              namespace: '',
+              sourceType: '',
+            },
             statTags: {
               destType: 'BLUECORE',
+              destinationId: '',
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
               feature: 'processor',
-              implementation: 'native',
+              implementation: 'cdkV2',
               module: 'destination',
             },
             statusCode: 400,
@@ -180,6 +204,7 @@ export const identifyData = [
         body: [
           {
             destination,
+            metadata,
             message: generateSimplifiedIdentifyPayload({
               context: {
                 traits: commonTraits,
@@ -201,13 +226,21 @@ export const identifyData = [
         status: 200,
         body: [
           {
-            error: "[Bluecore]  traits.action must be 'identify' for identify action",
+            error:
+              "[Bluecore]  traits.action must be 'identify' for identify action: Workflow: procWorkflow, Step: prepareIdentifyPayload, ChildStep: undefined, OriginalError: [Bluecore]  traits.action must be 'identify' for identify action",
+            metadata: {
+              destinationId: '',
+              destinationType: '',
+              namespace: '',
+              sourceType: '',
+            },
             statTags: {
               destType: 'BLUECORE',
+              destinationId: '',
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
               feature: 'processor',
-              implementation: 'native',
+              implementation: 'cdkV2',
               module: 'destination',
             },
             statusCode: 400,
@@ -232,6 +265,7 @@ export const identifyData = [
         body: [
           {
             destination,
+            metadata,
             message: generateSimplifiedIdentifyPayload({
               context: {
                 traits: { ...commonTraits, email: 'abc@gmail.com' },
@@ -267,6 +301,12 @@ export const identifyData = [
                 event: 'identify',
               },
             }),
+            metadata: {
+              destinationId: '',
+              destinationType: '',
+              namespace: '',
+              sourceType: '',
+            },
             statusCode: 200,
           },
         ],

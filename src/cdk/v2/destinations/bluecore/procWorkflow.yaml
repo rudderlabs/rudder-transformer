@@ -4,6 +4,8 @@ bindings:
   - path: ../../bindings/jsontemplate
   - name: defaultRequestConfig
     path: ../../../../v0/util
+  - name: removeUndefinedNullValuesAndEmptyObjectArray
+    path: ../../../../v0/util
   - name: removeUndefinedAndNullValues
     path: ../../../../v0/util
   - path: ./utils
@@ -20,28 +22,6 @@ steps:
       $.assert(messageType, "message Type is not present. Aborting");
       $.assert(messageType in {{$.EventType.([.TRACK, .IDENTIFY])}}, "message type " + messageType + " is not supported");
       $.assertConfig(.destination.Config.bluecoreNamespace, "[BLUECORE] bluecore account namespace required for Authentication.");
-  - name: validateInputForTrack
-    description: Additional validation for Track events
-    condition: $.outputs.messageType === {{$.EventType.TRACK}}
-    template: |
-      $.assert(.message.event, "event_name could not be mapped. Aborting.")
-  - name: deduceEventNames
-    template: |
-      $.context.deducedEventNameArray = $.deduceTrackEventName(.message.event,.destination.Config)
-  - name: prepareTrackPayload
-    condition: $.outputs.messageType === {{$.EventType.TRACK}}
-    template: |
-      const payload = $.constructProperties(.message);
-      $.context.payloads = $.outputs.deduceEventNames.(
-        const newPayload = cloneDeep(payload);
-        const temporaryProductArray = newPayload.properties.products ?? $.createProductForStandardEcommEvent(.message.properties, .);
-        newPayload.properties.products = $.addProductArray(temporaryProductArray);
-        newPayload.event = eventName;
-        newPayload.token = ^.destination.Config.bluecoreNamespace;
-        $.verifyPayload(newPayload, ^.message);
-        $.removeUndefinedAndNullValues(newPayload)
-      })[];
-
   - name: prepareIdentifyPayload
     condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
     template: |
@@ -50,16 +30,38 @@ steps:
       $.verifyPayload(payload, .message);
       payload.event = payload.event ?? 'customer_patch';
       $.context.payloads = [$.removeUndefinedAndNullValues(payload)];
+  - name: validateInputForTrack
+    description: Additional validation for Track events
+    condition: $.outputs.messageType === {{$.EventType.TRACK}}
+    template: |
+      $.assert(.message.event, "event_name could not be mapped. Aborting.")
+  - name: deduceEventNames
+    condition: $.outputs.messageType === {{$.EventType.TRACK}}
+    template: |
+      $.context.deducedEventNameArray = $.deduceTrackEventName(.message.event,.destination.Config)
+  - name: prepareTrackPayload
+    condition: $.outputs.messageType === {{$.EventType.TRACK}}
+    template: |
+      const payload = $.constructProperties(.message);
+      $.context.payloads = $.context.deducedEventNameArray@eventName.(
+        const newPayload = $.cloneDeep(payload);
+        const temporaryProductArray = newPayload.properties.products ?? $.createProductForStandardEcommEvent(^.message, eventName);
+        newPayload.properties.products = $.addProductArray(temporaryProductArray);
+        newPayload.event = eventName;
+        newPayload.token = ^.destination.Config.bluecoreNamespace;
+        $.verifyPayload(newPayload, ^.message);
+        $.removeUndefinedNullValuesAndEmptyObjectArray(newPayload)
+      )[];
   
   - name: buildResponse
     template: |
       $.context.payloads.(
         const response = $.defaultRequestConfig();
-        response.params = .;
+        response.body.JSON = .;
         response.method = "POST";
         response.endpoint = "https://api.bluecore.com/api/track/mobile/v1";
         response.headers = {
-          "content-type": "application/json"
+          "Content-Type": "application/json"
         };
         response
       )

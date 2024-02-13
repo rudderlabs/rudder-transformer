@@ -31,6 +31,14 @@ const destination = {
   },
   Enabled: true,
   Transformations: [],
+  DestinationDefinition: { Config: { cdkV2Enabled: true } },
+};
+
+const metadata = {
+  sourceType: '',
+  destinationType: '',
+  namespace: '',
+  destinationId: '',
 };
 
 const commonTraits = {
@@ -89,6 +97,7 @@ export const trackTestData = [
         body: [
           {
             destination: destination,
+            metadata,
             message: generateSimplifiedTrackPayload({
               type: 'track',
               event: 'TestEven001',
@@ -144,6 +153,7 @@ export const trackTestData = [
               },
               userId: '',
             }),
+            metadata,
             statusCode: 200,
           },
         ],
@@ -166,6 +176,7 @@ export const trackTestData = [
         body: [
           {
             destination: destination,
+            metadata,
             message: generateSimplifiedTrackPayload({
               type: 'track',
               event: 'TestEven001',
@@ -207,6 +218,7 @@ export const trackTestData = [
               },
               userId: '',
             }),
+            metadata,
             statusCode: 200,
           },
         ],
@@ -229,6 +241,7 @@ export const trackTestData = [
         body: [
           {
             destination: destination,
+            metadata,
             message: generateSimplifiedTrackPayload({
               type: 'track',
               event: 'optin',
@@ -270,6 +283,7 @@ export const trackTestData = [
               },
               userId: '',
             }),
+            metadata,
             statusCode: 200,
           },
         ],
@@ -292,6 +306,7 @@ export const trackTestData = [
         body: [
           {
             destination: destination,
+            metadata,
             message: generateSimplifiedTrackPayload({
               type: 'track',
               event: 'unsubscribe',
@@ -333,6 +348,7 @@ export const trackTestData = [
               },
               userId: '',
             }),
+            metadata,
             statusCode: 200,
           },
         ],

@@ -162,7 +162,8 @@ const constructProperties = (message) => {
  * @param {string} eventName - The name of the event.
  * @returns {Array|null} - An array containing the properties if the event is a standard Bluecore event and not 'search', otherwise null.
  */
-const createProductForStandardEcommEvent = (properties, eventName) => {
+const createProductForStandardEcommEvent = (message, eventName) => {
+  const { properties } = message;
   if (isStandardBluecoreEvent(eventName) && eventName !== 'search') {
     return [properties];
   }

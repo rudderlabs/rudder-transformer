@@ -186,7 +186,6 @@ describe('deduceTrackEventName', () => {
       eventsMapping: [{ from: 'customEvent', to: 'search' }],
     };
     const result = deduceTrackEventName(trackEventName, Config);
-    console.log(result);
     expect(result).toEqual(['search']);
   });
 
@@ -200,7 +199,6 @@ describe('deduceTrackEventName', () => {
       ],
     };
     const result = deduceTrackEventName(trackEventName, Config);
-    console.log(result);
     expect(result).toEqual(['search', 'purchase']);
   });
 

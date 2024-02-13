@@ -1,5 +1,12 @@
 import { generateSimplifiedTrackPayload, transformResultBuilder } from '../../testUtils';
 
+const metadata = {
+  sourceType: '',
+  destinationType: '',
+  namespace: '',
+  destinationId: '',
+};
+
 const destination = {
   ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
   Name: 'BLUECORE',
@@ -26,6 +33,7 @@ const destination = {
   },
   Enabled: true,
   Transformations: [],
+  DestinationDefinition: { Config: { cdkV2Enabled: true } },
 };
 
 const commonTraits = {
@@ -82,6 +90,7 @@ export const ecomTestData = [
         body: [
           {
             destination: destination,
+            metadata,
             message: generateSimplifiedTrackPayload({
               type: 'track',
               event: 'testPurchase',
@@ -106,13 +115,16 @@ export const ecomTestData = [
         status: 200,
         body: [
           {
-            error: '[Bluecore] property:: order_id is required for purchase event',
+            error:
+              '[Bluecore] property:: order_id is required for purchase event: Workflow: procWorkflow, Step: prepareTrackPayload, ChildStep: undefined, OriginalError: [Bluecore] property:: order_id is required for purchase event',
+            metadata,
             statTags: {
               destType: 'BLUECORE',
+              destinationId: '',
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
               feature: 'processor',
-              implementation: 'native',
+              implementation: 'cdkV2',
               module: 'destination',
             },
             statusCode: 400,
@@ -135,6 +147,7 @@ export const ecomTestData = [
         body: [
           {
             destination: destination,
+            metadata,
             message: generateSimplifiedTrackPayload({
               type: 'track',
               event: 'testPurchase',
@@ -159,13 +172,16 @@ export const ecomTestData = [
         status: 200,
         body: [
           {
-            error: '[Bluecore] property:: total is required for purchase event',
+            error:
+              '[Bluecore] property:: total is required for purchase event: Workflow: procWorkflow, Step: prepareTrackPayload, ChildStep: undefined, OriginalError: [Bluecore] property:: total is required for purchase event',
+            metadata,
             statTags: {
               destType: 'BLUECORE',
+              destinationId: '',
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
               feature: 'processor',
-              implementation: 'native',
+              implementation: 'cdkV2',
               module: 'destination',
             },
             statusCode: 400,
@@ -188,6 +204,7 @@ export const ecomTestData = [
         body: [
           {
             destination: destination,
+            metadata,
             message: generateSimplifiedTrackPayload({
               type: 'track',
               event: 'Products Searched',
@@ -212,13 +229,16 @@ export const ecomTestData = [
         status: 200,
         body: [
           {
-            error: '[Bluecore] property:: search_query is required for search event',
+            error:
+              '[Bluecore] property:: search_query is required for search event: Workflow: procWorkflow, Step: prepareTrackPayload, ChildStep: undefined, OriginalError: [Bluecore] property:: search_query is required for search event',
+            metadata,
             statTags: {
               destType: 'BLUECORE',
+              destinationId: '',
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
               feature: 'processor',
-              implementation: 'native',
+              implementation: 'cdkV2',
               module: 'destination',
             },
             statusCode: 400,
@@ -241,6 +261,7 @@ export const ecomTestData = [
         body: [
           {
             destination: destination,
+            metadata,
             message: generateSimplifiedTrackPayload({
               type: 'track',
               event: 'product viewed',
@@ -289,6 +310,7 @@ export const ecomTestData = [
               },
               userId: '',
             }),
+            metadata,
             statusCode: 200,
           },
         ],
@@ -339,7 +361,8 @@ export const ecomTestData = [
                 All: true,
               },
             },
-            destination: destination,
+            metadata,
+            destination,
           },
         ],
       },
@@ -372,6 +395,7 @@ export const ecomTestData = [
               },
               userId: '',
             }),
+            metadata,
             statusCode: 200,
           },
           {
@@ -398,6 +422,7 @@ export const ecomTestData = [
               },
               userId: '',
             }),
+            metadata,
             statusCode: 200,
           },
         ],

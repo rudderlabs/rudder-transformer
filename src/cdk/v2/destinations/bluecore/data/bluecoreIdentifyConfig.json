@@ -1,7 +1,7 @@
 [
   {
     "destKey": "properties.distinct_id",
-    "sourceKeys": ["traits.email","context.traits.email","userId","anonymousId"],
+    "sourceKeys": ["traits.email", "context.traits.email", "userId", "anonymousId"],
     "required": true
   },
   {
@@ -24,7 +24,7 @@
   },
   {
     "destKey": "properties.customer.age",
-    "sourceKeys": ["context.traits.age","traits.age"],
+    "sourceKeys": ["context.traits.age", "traits.age"],
     "required": false
   },
   {
@@ -34,7 +34,7 @@
   },
   {
     "destKey": "properties.customer.sex",
-    "sourceKeys": ["traits.gender", "context.traits.gender","traits.sex", "context.traits.sex"],
+    "sourceKeys": ["traits.gender", "context.traits.gender", "traits.sex", "context.traits.sex"],
     "required": false
   },
   {
@@ -46,7 +46,7 @@
   {
     "destKey": "properties.customer.email",
     "sourceKeys": "email",
-    "required": true,
+    "required": false,
     "sourceFromGenericMap": true
   },
   {

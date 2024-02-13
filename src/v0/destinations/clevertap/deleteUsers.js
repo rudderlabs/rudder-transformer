@@ -53,6 +53,8 @@ const userDeletionHandler = async (userAttributes, config) => {
         destType: 'clevertap',
         feature: 'deleteUsers',
         endpointPath,
+        requestMethod: 'POST',
+        module: 'deletion',
       },
     );
     const handledDelResponse = processAxiosResponse(deletionResponse);

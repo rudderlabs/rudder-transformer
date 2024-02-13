@@ -18,6 +18,7 @@ const {
 } = require('../../util');
 const { getContents, hashUserField } = require('./util');
 const config = require('./config');
+const { CommonUtils } = require('../../../util/common');
 
 const { trackMappingV2, trackEndpointV2, eventNameMapping, PARTNER_NAME } = config;
 const { JSON_MIME_TYPE } = require('../../util/constant');
@@ -36,11 +37,11 @@ const getTrackResponsePayload = (message, destConfig, event) => {
 
   // if contents is not an array converting it into array
   if (payload.properties?.contents && !Array.isArray(payload.properties.contents)) {
-    payload.properties.contents = [payload.properties.contents];
+    payload.properties.contents = CommonUtils.toArray(payload.properties.contents);
   }
 
   // if contents is not present but we have properties.products present which has fields with superset of contents fields
-  if (payload.properties && !payload.properties.contents && message.properties.products) {
+  if (!payload.properties?.contents && message.properties?.products) {
     // retreiving data from products only when contents is not present
     payload.properties.contents = getContents(message, false);
   }

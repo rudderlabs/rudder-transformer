@@ -524,4 +524,225 @@ const deleteNwData = [
     },
   },
 ];
-export const networkCallsData = [...deleteNwData, ...dataDeliveryMocksData];
+
+const BRAZE_USERS_TRACK_ENDPOINT = 'https://rest.iad-03.braze.com/users/track';
+
+const partner = 'RudderStack';
+
+const BrazeEvent1 = {
+  name: 'Product List Viewed',
+  time: '2023-11-30T21:48:45.634Z',
+  properties: {
+    products: [
+      {
+        sku: '23-04-52-62-01-18',
+        name: 'Broman Hoodie',
+        price: '97.99',
+        variant: [
+          {
+            id: 39653520310368,
+            sku: '23-04-52-62-01-18',
+            grams: 0,
+            price: '97.99',
+            title: '(SM)',
+            weight: 0,
+            option1: '(SM)',
+            taxable: true,
+            position: 1,
+            tax_code: '',
+            created_at: '2023-05-18T12:56:22-06:00',
+            product_id: 6660780884064,
+            updated_at: '2023-11-30T15:48:43-06:00',
+            weight_unit: 'kg',
+            quantity_rule: {
+              min: 1,
+              increment: 1,
+            },
+            compare_at_price: '139.99',
+            inventory_policy: 'deny',
+            requires_shipping: true,
+            inventory_quantity: 8,
+            fulfillment_service: 'manual',
+            inventory_management: 'shopify',
+            quantity_price_breaks: [],
+            old_inventory_quantity: 8,
+          },
+        ],
+        category: '62 OTHER/RETRO',
+        currency: 'CAD',
+        product_id: 6660780884064,
+      },
+      {
+        sku: '23-04-08-61-01-18',
+        name: 'Kipling Camo Hoodie',
+        price: '69.99',
+        variant: [
+          {
+            id: 39672628740192,
+            sku: '23-04-08-61-01-18',
+            grams: 0,
+            price: '69.99',
+            title: '(SM)',
+            weight: 0,
+            option1: '(SM)',
+            taxable: true,
+            position: 1,
+            tax_code: '',
+            created_at: '2023-06-28T12:52:56-06:00',
+            product_id: 6666835853408,
+            updated_at: '2023-11-30T15:48:43-06:00',
+            weight_unit: 'kg',
+            quantity_rule: {
+              min: 1,
+              increment: 1,
+            },
+            compare_at_price: '99.99',
+            inventory_policy: 'deny',
+            requires_shipping: true,
+            inventory_quantity: 8,
+            fulfillment_service: 'manual',
+            inventory_management: 'shopify',
+            quantity_price_breaks: [],
+            old_inventory_quantity: 8,
+          },
+        ],
+        category: 'Misc',
+        currency: 'CAD',
+        product_id: 6666835853408,
+      },
+    ],
+  },
+  _update_existing_only: false,
+  user_alias: {
+    alias_name: 'ab7de609-9bec-8e1c-42cd-084a1cd93a4e',
+    alias_label: 'rudder_id',
+  },
+};
+
+const BrazeEvent2 = {
+  name: 'Add to Cart',
+  time: '2020-01-24T11:59:02.403+05:30',
+  properties: {
+    revenue: 50,
+  },
+  external_id: 'mickeyMouse',
+};
+
+const BrazePurchaseEvent = {
+  product_id: '507f1f77bcf86cd799439011',
+  price: 0,
+  currency: 'USD',
+  quantity: 1,
+  time: '2020-01-24T11:59:02.402+05:30',
+  _update_existing_only: false,
+  user_alias: {
+    alias_name: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
+    alias_label: 'rudder_id',
+  },
+};
+
+const headers = {
+  Accept: 'application/json',
+  Authorization: 'Bearer api_key',
+  'Content-Type': 'application/json',
+  'User-Agent': 'RudderLabs',
+};
+
+// New Mocks for Braze
+const updatedDataDeliveryMocksData = [
+  {
+    description:
+      'Mock response from destination depicting a valid request for 2 valid events and 1 purchase event',
+    httpReq: {
+      url: `${BRAZE_USERS_TRACK_ENDPOINT}/valid_scenario1`,
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        events_processed: 2,
+        purchases_processed: 1,
+        message: 'success',
+      },
+      status: 200,
+    },
+  },
+
+  {
+    description:
+      'Mock response from destination depicting a request with 1 valid and 1 invalid event and 1 invalid purchase event',
+    httpReq: {
+      url: `${BRAZE_USERS_TRACK_ENDPOINT}/invalid_scenario1`,
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        events_processed: 1,
+        message: 'success',
+        errors: [
+          {
+            type: "'external_id', 'braze_id', 'user_alias', 'email' or 'phone' is required",
+            input_array: 'events',
+            index: 1,
+          },
+          {
+            type: "'quantity' is not valid",
+            input_array: 'purchases',
+            index: 0,
+          },
+        ],
+      },
+      status: 200,
+    },
+  },
+
+  {
+    description:
+      'Mock response from destination depicting a request with all the payloads are invalid',
+    httpReq: {
+      url: `${BRAZE_USERS_TRACK_ENDPOINT}/invalid_scenario2`,
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        message:
+          "Valid data must be provided in the 'attributes', 'events', or 'purchases' fields.",
+        errors: [
+          {
+            type: "'external_id', 'braze_id', 'user_alias', 'email' or 'phone' is required",
+            input_array: 'events',
+            index: 0,
+          },
+          {
+            type: "'external_id', 'braze_id', 'user_alias', 'email' or 'phone' is required",
+            input_array: 'events',
+            index: 1,
+          },
+          {
+            type: "'quantity' is not valid",
+            input_array: 'purchases',
+            index: 0,
+          },
+        ],
+      },
+      status: 400,
+    },
+  },
+  {
+    description: 'Mock response from destination depicting a request with invalid credentials',
+    httpReq: {
+      url: `${BRAZE_USERS_TRACK_ENDPOINT}/invalid_scenario3`,
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        message: 'Invalid API Key',
+      },
+      status: 401,
+    },
+  },
+];
+export const networkCallsData = [
+  ...deleteNwData,
+  ...dataDeliveryMocksData,
+  ...updatedDataDeliveryMocksData,
+];

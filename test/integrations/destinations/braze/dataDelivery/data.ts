@@ -1,6 +1,8 @@
 import MockAdapter from 'axios-mock-adapter';
+import { testScenariosForV1API } from './business';
+import { otherScenariosV1 } from './other';
 
-export const data = [
+export const existingTestData = [
   {
     name: 'braze',
     description: 'Test 0',
@@ -846,3 +848,5 @@ export const data = [
     },
   },
 ];
+
+export const data = [...existingTestData, ...testScenariosForV1API, ...otherScenariosV1];

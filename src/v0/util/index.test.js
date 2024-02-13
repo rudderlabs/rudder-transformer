@@ -2,7 +2,12 @@ const { TAG_NAMES } = require('@rudderstack/integrations-lib');
 const utilities = require('.');
 const { getFuncTestData } = require('../../../test/testHelper');
 const { FilteredEventsError } = require('./errorTypes');
-const { hasCircularReference, flattenJson, generateExclusionList } = require('./index');
+const {
+  hasCircularReference,
+  flattenJson,
+  generateExclusionList,
+  combineBatchRequestsWithSameJobIds,
+} = require('./index');
 
 // Names of the utility functions to test
 const functionNames = [
@@ -164,5 +169,290 @@ describe('generateExclusionList', () => {
     const expected = ['product_id', 'sku'];
     const result = generateExclusionList(mappingConfig);
     expect(result).toEqual(expected);
+  });
+});
+
+describe('Unit test cases for combineBatchRequestsWithSameJobIds', () => {
+  it('Combine batch request with same jobIds', async () => {
+    const input = [
+      {
+        batchedRequest: {
+          endpoint: 'https://endpoint1',
+        },
+        metadata: [
+          {
+            jobId: 1,
+          },
+          {
+            jobId: 4,
+          },
+        ],
+        batched: true,
+        statusCode: 200,
+        destination: {
+          Config: {
+            key: 'value',
+          },
+        },
+      },
+      {
+        batchedRequest: {
+          endpoint: 'https://endpoint2',
+        },
+        metadata: [
+          {
+            jobId: 3,
+          },
+        ],
+        batched: true,
+        statusCode: 200,
+        destination: {
+          Config: {
+            key: 'value',
+          },
+        },
+      },
+      {
+        batchedRequest: {
+          endpoint: 'https://endpoint1',
+        },
+        metadata: [
+          {
+            jobId: 5,
+          },
+        ],
+        batched: true,
+        statusCode: 200,
+        destination: {
+          Config: {
+            key: 'value',
+          },
+        },
+      },
+      {
+        batchedRequest: {
+          endpoint: 'https://endpoint3',
+        },
+        metadata: [
+          {
+            jobId: 1,
+          },
+          {
+            jobId: 3,
+          },
+        ],
+        batched: true,
+        statusCode: 200,
+        destination: {
+          Config: {
+            key: 'value',
+          },
+        },
+      },
+      {
+        batchedRequest: {
+          endpoint: 'https://endpoint2',
+        },
+        metadata: [
+          {
+            jobId: 6,
+          },
+        ],
+        batched: true,
+        statusCode: 200,
+        destination: {
+          Config: {
+            key: 'value',
+          },
+        },
+      },
+    ];
+
+    const expectedOutput = [
+      {
+        batchedRequest: [
+          {
+            endpoint: 'https://endpoint1',
+          },
+          {
+            endpoint: 'https://endpoint3',
+          },
+          {
+            endpoint: 'https://endpoint2',
+          },
+        ],
+        metadata: [
+          {
+            jobId: 1,
+          },
+          {
+            jobId: 4,
+          },
+          {
+            jobId: 3,
+          },
+        ],
+        batched: true,
+        statusCode: 200,
+        destination: {
+          Config: {
+            key: 'value',
+          },
+        },
+      },
+      {
+        batchedRequest: {
+          endpoint: 'https://endpoint1',
+        },
+        metadata: [
+          {
+            jobId: 5,
+          },
+        ],
+        batched: true,
+        statusCode: 200,
+        destination: {
+          Config: {
+            key: 'value',
+          },
+        },
+      },
+      {
+        batchedRequest: {
+          endpoint: 'https://endpoint2',
+        },
+        metadata: [
+          {
+            jobId: 6,
+          },
+        ],
+        batched: true,
+        statusCode: 200,
+        destination: {
+          Config: {
+            key: 'value',
+          },
+        },
+      },
+    ];
+    expect(combineBatchRequestsWithSameJobIds(input)).toEqual(expectedOutput);
+  });
+
+  it('Each batchRequest contains unique jobIds (no event multiplexing)', async () => {
+    const input = [
+      {
+        batchedRequest: {
+          endpoint: 'https://endpoint1',
+        },
+        metadata: [
+          {
+            jobId: 1,
+          },
+          {
+            jobId: 4,
+          },
+        ],
+        batched: true,
+        statusCode: 200,
+        destination: {
+          Config: {
+            key: 'value',
+          },
+        },
+      },
+      {
+        batchedRequest: {
+          endpoint: 'https://endpoint3',
+        },
+        metadata: [
+          {
+            jobId: 2,
+          },
+        ],
+        batched: true,
+        statusCode: 200,
+        destination: {
+          Config: {
+            key: 'value',
+          },
+        },
+      },
+      {
+        batchedRequest: {
+          endpoint: 'https://endpoint3',
+        },
+        metadata: [
+          {
+            jobId: 5,
+          },
+        ],
+        batched: true,
+        statusCode: 200,
+        destination: {
+          Config: {
+            key: 'value',
+          },
+        },
+      },
+    ];
+
+    const expectedOutput = [
+      {
+        batchedRequest: {
+          endpoint: 'https://endpoint1',
+        },
+
+        metadata: [
+          {
+            jobId: 1,
+          },
+          {
+            jobId: 4,
+          },
+        ],
+        batched: true,
+        statusCode: 200,
+        destination: {
+          Config: {
+            key: 'value',
+          },
+        },
+      },
+      {
+        batchedRequest: {
+          endpoint: 'https://endpoint3',
+        },
+        metadata: [
+          {
+            jobId: 2,
+          },
+        ],
+        batched: true,
+        statusCode: 200,
+        destination: {
+          Config: {
+            key: 'value',
+          },
+        },
+      },
+      {
+        batchedRequest: {
+          endpoint: 'https://endpoint3',
+        },
+        metadata: [
+          {
+            jobId: 5,
+          },
+        ],
+        batched: true,
+        statusCode: 200,
+        destination: {
+          Config: {
+            key: 'value',
+          },
+        },
+      },
+    ];
+    expect(combineBatchRequestsWithSameJobIds(input)).toEqual(expectedOutput);
   });
 });

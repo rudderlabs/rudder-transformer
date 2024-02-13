@@ -11366,7 +11366,7 @@ export const data = [
           {
             statusCode: 400,
             error:
-              'Event type not present. If you are sending page/screen call with custom name, please provide the name',
+              'Event type is missing. Please send it under `event.type`. For page/screen events, send it under `event.name`',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',

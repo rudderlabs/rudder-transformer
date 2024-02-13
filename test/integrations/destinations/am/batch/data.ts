@@ -61,7 +61,7 @@ export const data = [
                 endpoint: 'https://api.eu.amplitude.com/2/httpapi',
               },
               metadata: {
-                job_id: 1,
+                jobId: 1,
                 userId: 'u1',
               },
               destination: {
@@ -83,16 +83,24 @@ export const data = [
           {
             batched: false,
             error: 'Both userId and deviceId cannot be undefined',
-            //TODO fix this
-            metadata: {
-              job_id: 1,
-              userId: 'u1',
-            },
+            metadata: [
+              {
+                jobId: 1,
+                userId: 'u1',
+              },
+            ],
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
             },
             statusCode: 400,
+            destination: {
+              ID: 'a',
+              url: 'a',
+              Config: {
+                residencyServer: 'EU',
+              },
+            },
           },
         ],
       },
@@ -163,7 +171,7 @@ export const data = [
                 endpoint: 'https://api.eu.amplitude.com/2/httpapi',
               },
               metadata: {
-                job_id: 1,
+                jobId: 1,
                 userId: 'u1',
               },
               destination: {
@@ -218,7 +226,7 @@ export const data = [
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
               },
               metadata: {
-                job_id: 2,
+                jobId: 2,
                 userId: 'u1',
               },
               destination: {
@@ -273,7 +281,7 @@ export const data = [
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
               },
               metadata: {
-                job_id: 3,
+                jobId: 3,
                 userId: 'u1',
               },
               destination: {
@@ -331,7 +339,7 @@ export const data = [
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
               },
               metadata: {
-                job_id: 4,
+                jobId: 4,
                 userId: 'u1',
               },
               destination: {
@@ -389,7 +397,7 @@ export const data = [
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
               },
               metadata: {
-                job_id: 5,
+                jobId: 5,
                 userId: 'u1',
               },
               destination: {
@@ -423,7 +431,7 @@ export const data = [
                 endpoint: 'https://api2.amplitude.com/groupidentify',
               },
               metadata: {
-                job_id: 6,
+                jobId: 6,
                 userId: 'u1',
               },
               destination: {
@@ -455,7 +463,7 @@ export const data = [
                 endpoint: 'https://api2.amplitude.com/usermap',
               },
               metadata: {
-                job_id: 7,
+                jobId: 7,
                 userId: 'u1',
               },
               destination: {
@@ -529,7 +537,7 @@ export const data = [
             },
             metadata: [
               {
-                job_id: 1,
+                jobId: 1,
                 userId: 'u1',
               },
             ],
@@ -565,7 +573,7 @@ export const data = [
             },
             metadata: [
               {
-                job_id: 6,
+                jobId: 6,
                 userId: 'u1',
               },
             ],
@@ -599,7 +607,7 @@ export const data = [
             },
             metadata: [
               {
-                job_id: 7,
+                jobId: 7,
                 userId: 'u1',
               },
             ],
@@ -710,19 +718,19 @@ export const data = [
             },
             metadata: [
               {
-                job_id: 2,
+                jobId: 2,
                 userId: 'u1',
               },
               {
-                job_id: 3,
+                jobId: 3,
                 userId: 'u1',
               },
               {
-                job_id: 4,
+                jobId: 4,
                 userId: 'u1',
               },
               {
-                job_id: 5,
+                jobId: 5,
                 userId: 'u1',
               },
             ],
@@ -801,7 +809,7 @@ export const data = [
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
               },
               metadata: {
-                job_id: 1,
+                jobId: 1,
                 userId: 'u1',
               },
               destination: {
@@ -854,7 +862,7 @@ export const data = [
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
               },
               metadata: {
-                job_id: 2,
+                jobId: 2,
                 userId: 'u1',
               },
               destination: {
@@ -907,7 +915,7 @@ export const data = [
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
               },
               metadata: {
-                job_id: 3,
+                jobId: 3,
                 userId: 'u1',
               },
               destination: {
@@ -963,7 +971,7 @@ export const data = [
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
               },
               metadata: {
-                job_id: 4,
+                jobId: 4,
                 userId: 'u1',
               },
               destination: {
@@ -1019,7 +1027,7 @@ export const data = [
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
               },
               metadata: {
-                job_id: 5,
+                jobId: 5,
                 userId: 'u1',
               },
               destination: {
@@ -1053,7 +1061,7 @@ export const data = [
                 endpoint: 'https://api2.amplitude.com/groupidentify',
               },
               metadata: {
-                job_id: 6,
+                jobId: 6,
                 userId: 'u1',
               },
               destination: {
@@ -1085,7 +1093,7 @@ export const data = [
                 endpoint: 'https://api2.amplitude.com/usermap',
               },
               metadata: {
-                job_id: 7,
+                jobId: 7,
                 userId: 'u1',
               },
               destination: {
@@ -1157,7 +1165,7 @@ export const data = [
             },
             metadata: [
               {
-                job_id: 1,
+                jobId: 1,
                 userId: 'u1',
               },
             ],
@@ -1193,7 +1201,7 @@ export const data = [
             },
             metadata: [
               {
-                job_id: 6,
+                jobId: 6,
                 userId: 'u1',
               },
             ],
@@ -1227,7 +1235,7 @@ export const data = [
             },
             metadata: [
               {
-                job_id: 7,
+                jobId: 7,
                 userId: 'u1',
               },
             ],
@@ -1338,19 +1346,19 @@ export const data = [
             },
             metadata: [
               {
-                job_id: 2,
+                jobId: 2,
                 userId: 'u1',
               },
               {
-                job_id: 3,
+                jobId: 3,
                 userId: 'u1',
               },
               {
-                job_id: 4,
+                jobId: 4,
                 userId: 'u1',
               },
               {
-                job_id: 5,
+                jobId: 5,
                 userId: 'u1',
               },
             ],
@@ -2117,7 +2125,7 @@ export const data = [
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
               },
               metadata: {
-                job_id: 1,
+                jobId: 1,
                 userId: 'u1',
               },
               destination: {
@@ -2172,7 +2180,7 @@ export const data = [
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
               },
               metadata: {
-                job_id: 2,
+                jobId: 2,
                 userId: 'u1',
               },
               destination: {
@@ -2227,7 +2235,7 @@ export const data = [
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
               },
               metadata: {
-                job_id: 3,
+                jobId: 3,
                 userId: 'u1',
               },
               destination: {
@@ -2285,7 +2293,7 @@ export const data = [
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
               },
               metadata: {
-                job_id: 4,
+                jobId: 4,
                 userId: 'u1',
               },
               destination: {
@@ -2343,7 +2351,7 @@ export const data = [
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
               },
               metadata: {
-                job_id: 5,
+                jobId: 5,
                 userId: 'u1',
               },
               destination: {
@@ -2377,7 +2385,7 @@ export const data = [
                 endpoint: 'https://api2.amplitude.com/groupidentify',
               },
               metadata: {
-                job_id: 6,
+                jobId: 6,
                 userId: 'u1',
               },
               destination: {
@@ -2409,7 +2417,7 @@ export const data = [
                 endpoint: 'https://api2.amplitude.com/usermap',
               },
               metadata: {
-                job_id: 7,
+                jobId: 7,
                 userId: 'u1',
               },
               destination: {
@@ -2483,7 +2491,7 @@ export const data = [
             },
             metadata: [
               {
-                job_id: 1,
+                jobId: 1,
                 userId: 'u1',
               },
             ],
@@ -2519,7 +2527,7 @@ export const data = [
             },
             metadata: [
               {
-                job_id: 6,
+                jobId: 6,
                 userId: 'u1',
               },
             ],
@@ -2553,7 +2561,7 @@ export const data = [
             },
             metadata: [
               {
-                job_id: 7,
+                jobId: 7,
                 userId: 'u1',
               },
             ],
@@ -2664,19 +2672,19 @@ export const data = [
             },
             metadata: [
               {
-                job_id: 2,
+                jobId: 2,
                 userId: 'u1',
               },
               {
-                job_id: 3,
+                jobId: 3,
                 userId: 'u1',
               },
               {
-                job_id: 4,
+                jobId: 4,
                 userId: 'u1',
               },
               {
-                job_id: 5,
+                jobId: 5,
                 userId: 'u1',
               },
             ],
@@ -2756,7 +2764,7 @@ export const data = [
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
               },
               metadata: {
-                job_id: 1,
+                jobId: 1,
                 userId: 'u1',
               },
               destination: {
@@ -2811,7 +2819,7 @@ export const data = [
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
               },
               metadata: {
-                job_id: 2,
+                jobId: 2,
                 userId: 'u1',
               },
               destination: {
@@ -2866,7 +2874,7 @@ export const data = [
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
               },
               metadata: {
-                job_id: 3,
+                jobId: 3,
                 userId: 'u1',
               },
               destination: {
@@ -2924,7 +2932,7 @@ export const data = [
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
               },
               metadata: {
-                job_id: 4,
+                jobId: 4,
                 userId: 'u1',
               },
               destination: {
@@ -2982,7 +2990,7 @@ export const data = [
                 endpoint: 'https://api2.amplitude.com/2/httpapi',
               },
               metadata: {
-                job_id: 5,
+                jobId: 5,
                 userId: 'u1',
               },
               destination: {
@@ -3016,7 +3024,7 @@ export const data = [
                 endpoint: 'https://api2.amplitude.com/groupidentify',
               },
               metadata: {
-                job_id: 6,
+                jobId: 6,
                 userId: 'u1',
               },
               destination: {
@@ -3048,7 +3056,7 @@ export const data = [
                 endpoint: 'https://api2.amplitude.com/usermap',
               },
               metadata: {
-                job_id: 7,
+                jobId: 7,
                 userId: 'u1',
               },
               destination: {
@@ -3121,7 +3129,7 @@ export const data = [
             },
             metadata: [
               {
-                job_id: 1,
+                jobId: 1,
                 userId: 'u1',
               },
             ],
@@ -3157,7 +3165,7 @@ export const data = [
             },
             metadata: [
               {
-                job_id: 6,
+                jobId: 6,
                 userId: 'u1',
               },
             ],
@@ -3191,7 +3199,7 @@ export const data = [
             },
             metadata: [
               {
-                job_id: 7,
+                jobId: 7,
                 userId: 'u1',
               },
             ],
@@ -3302,19 +3310,19 @@ export const data = [
             },
             metadata: [
               {
-                job_id: 2,
+                jobId: 2,
                 userId: 'u1',
               },
               {
-                job_id: 3,
+                jobId: 3,
                 userId: 'u1',
               },
               {
-                job_id: 4,
+                jobId: 4,
                 userId: 'u1',
               },
               {
-                job_id: 5,
+                jobId: 5,
                 userId: 'u1',
               },
             ],

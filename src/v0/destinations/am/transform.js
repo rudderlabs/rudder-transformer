@@ -702,12 +702,7 @@ const processSingleMessage = (message, destination) => {
       logger.debug('could not determine type');
       throw new InstrumentationError('message type not supported');
   }
-  // putting a check for evType as there some cases like page name is not present and teamplte depends on page name only.
-  if (!isDefinedAndNotNull(evType)) {
-    throw new InstrumentationError(
-      'Event type not present. If you are sending page/screen call with custom name, please provide the name',
-    );
-  }
+  AMUtils.validateEventType(evType);
   return responseBuilderSimple(
     groupInfo,
     payloadObjectName,

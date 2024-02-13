@@ -6,6 +6,7 @@ export const networkCallsData = [
       params: {
         mid: 'invalid_mid',
         xml: 1,
+        source: 'rudderstack',
         amtlist: '12500|12500',
         qlist: '|5',
         ord: 'SampleOrderId',
@@ -30,6 +31,7 @@ export const networkCallsData = [
       params: {
         mid: 'access_denied_for_mid',
         xml: 1,
+        source: 'rudderstack',
         amtlist: '12500|12500',
         qlist: '|5',
         ord: 'SampleOrderId',
@@ -54,6 +56,7 @@ export const networkCallsData = [
       params: {
         mid: 'valid_mid_with_good_records',
         xml: 1,
+        source: 'rudderstack',
         amtlist: '12500|12500',
         qlist: '|5',
         ord: 'SampleOrderId',
@@ -78,6 +81,7 @@ export const networkCallsData = [
       params: {
         mid: 'valid_mid_with_bad_records',
         xml: 1,
+        source: 'rudderstack',
         amtlist: '12500|12500',
         qlist: '|5',
         ord: 'SampleOrderId',

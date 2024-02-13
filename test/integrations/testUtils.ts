@@ -6,14 +6,24 @@ import MockAdapter from 'axios-mock-adapter';
 import isMatch from 'lodash/isMatch';
 import { OptionValues } from 'commander';
 import { removeUndefinedAndNullValues } from '@rudderstack/integrations-lib';
-import { ProxyMetdata } from '../../src/types';
+import {
+  Destination,
+  Metadata,
+  ProxyMetdata,
+  ProxyV0Request,
+  ProxyV1Request,
+} from '../../src/types';
 import {
   DeliveryV0ResponseSchema,
   DeliveryV0ResponseSchemaForOauth,
   DeliveryV1ResponseSchema,
   DeliveryV1ResponseSchemaForOauth,
+  ProcessorTransformationResponseListSchema,
+  ProcessorTransformationResponseSchema,
   ProxyV0RequestSchema,
   ProxyV1RequestSchema,
+  RouterTransformationResponseListSchema,
+  RouterTransformationResponseSchema,
 } from '../../src/types/zodTypes';
 
 const generateAlphanumericId = (size = 36) =>
@@ -63,7 +73,7 @@ export const addMock = (mock: MockAdapter, axiosMock: MockHttpCallsData) => {
 
   switch (method.toLowerCase()) {
     case 'get':
-      // We are accepting parameters exclusively for mocking purposes and do not require a request body, 
+      // We are accepting parameters exclusively for mocking purposes and do not require a request body,
       // particularly for GET requests where it is typically unnecessary
       // @ts-ignore
       mock.onGet(url, { params }, headersAsymMatch).reply(status, data, headers);
@@ -88,13 +98,13 @@ export const addMock = (mock: MockAdapter, axiosMock: MockHttpCallsData) => {
       break;
   }
 };
-export const overrideDestination = (destination, overrideConfigValues) => {
+export const overrideDestination = (destination: Destination, overrideConfigValues) => {
   return Object.assign({}, destination, {
     Config: { ...destination.Config, ...overrideConfigValues },
   });
 };
 
-export const generateIndentifyPayload = (parametersOverride: any) => {
+export const generateIndentifyPayload: any = (parametersOverride: any) => {
   const payload = {
     type: 'identify',
     sentAt: parametersOverride.sentAt || '2021-01-03T17:02:53.195Z',
@@ -129,7 +139,7 @@ export const generateIndentifyPayload = (parametersOverride: any) => {
   return removeUndefinedAndNullValues(payload);
 };
 
-export const generateSimplifiedIdentifyPayload = (parametersOverride: any) => {
+export const generateSimplifiedIdentifyPayload: any = (parametersOverride: any) => {
   return removeUndefinedAndNullValues({
     type: 'identify',
     sentAt: parametersOverride.sentAt || '2021-01-03T17:02:53.195Z',
@@ -147,7 +157,7 @@ export const generateSimplifiedIdentifyPayload = (parametersOverride: any) => {
   });
 };
 
-export const generateTrackPayload = (parametersOverride: any) => {
+export const generateTrackPayload: any = (parametersOverride: any) => {
   const payload = {
     type: 'track',
     sentAt: parametersOverride.sentAt || '2021-01-03T17:02:53.195Z',
@@ -183,7 +193,7 @@ export const generateTrackPayload = (parametersOverride: any) => {
   return removeUndefinedAndNullValues(payload);
 };
 
-export const generateSimplifiedTrackPayload = (parametersOverride: any) => {
+export const generateSimplifiedTrackPayload: any = (parametersOverride: any) => {
   return removeUndefinedAndNullValues({
     type: 'track',
     sentAt: parametersOverride.sentAt || '2021-01-03T17:02:53.195Z',
@@ -202,7 +212,7 @@ export const generateSimplifiedTrackPayload = (parametersOverride: any) => {
   });
 };
 
-export const generatePageOrScreenPayload = (parametersOverride: any, eventType: string) => {
+export const generatePageOrScreenPayload: any = (parametersOverride: any, eventType: string) => {
   const payload = {
     channel: 'web',
     userId: parametersOverride.userId || 'default-userId',
@@ -255,7 +265,7 @@ export const generatePageOrScreenPayload = (parametersOverride: any, eventType: 
   return removeUndefinedAndNullValues(payload);
 };
 
-export const generateSimplifiedPageOrScreenPayload = (
+export const generateSimplifiedPageOrScreenPayload: any = (
   parametersOverride: any,
   eventType: string,
 ) => {
@@ -277,7 +287,7 @@ export const generateSimplifiedPageOrScreenPayload = (
   });
 };
 
-export const generateGroupPayload = (parametersOverride: any) => {
+export const generateGroupPayload: any = (parametersOverride: any) => {
   const payload = {
     channel: 'web',
     context: removeUndefinedAndNullValues({
@@ -320,7 +330,7 @@ export const generateGroupPayload = (parametersOverride: any) => {
   return removeUndefinedAndNullValues(payload);
 };
 
-export const generateSimplifiedGroupPayload = (parametersOverride: any) => {
+export const generateSimplifiedGroupPayload: any = (parametersOverride: any) => {
   return removeUndefinedAndNullValues({
     channel: 'web',
     userId: parametersOverride.userId || 'default-userId',
@@ -338,7 +348,7 @@ export const generateSimplifiedGroupPayload = (parametersOverride: any) => {
   });
 };
 
-export const transformResultBuilder = (matchData) => {
+export const transformResultBuilder: any = (matchData) => {
   return removeUndefinedAndNullValues({
     version: '1',
     type: 'REST',
@@ -385,7 +395,7 @@ export const generateProxyV0Payload = (
   payloadParameters: any,
   metadataInput?: ProxyMetdata,
   destinationConfig?: any,
-) => {
+): ProxyV0Request => {
   let metadata: ProxyMetdata = {
     jobId: 1,
     attemptNum: 1,
@@ -419,14 +429,14 @@ export const generateProxyV0Payload = (
     metadata,
     destinationConfig: destinationConfig || {},
   };
-  return removeUndefinedAndNullValues(payload);
+  return removeUndefinedAndNullValues(payload) as ProxyV0Request;
 };
 
 export const generateProxyV1Payload = (
   payloadParameters: any,
   metadataInput?: ProxyMetdata[],
   destinationConfig?: any,
-) => {
+): ProxyV1Request => {
   let metadata: ProxyMetdata[] = [
     {
       jobId: 1,
@@ -462,7 +472,7 @@ export const generateProxyV1Payload = (
     metadata,
     destinationConfig: destinationConfig || {},
   };
-  return removeUndefinedAndNullValues(payload);
+  return removeUndefinedAndNullValues(payload) as ProxyV1Request;
 };
 
 // -----------------------------
@@ -471,18 +481,18 @@ export const generateProxyV1Payload = (
 export const validateTestWithZOD = (testPayload: TestCaseData, response: any) => {
   // Validate the resquest payload
   switch (testPayload.feature) {
-    // case 'router':
-    //   RouterSchema.parse(responseBody);
-    //   break;
+    case 'router':
+      RouterTransformationResponseListSchema.parse(response.body.output);
+      break;
     // case 'batch':
     //   BatchScheam.parse(responseBody);
     //   break;
     // case 'user_deletion':
     //   DeletionSchema.parse(responseBody);
     //   break;
-    // case 'processor':
-    //   ProcessorSchema.parse(responseBody);
-    //   break;
+    case 'processor':
+      ProcessorTransformationResponseListSchema.parse(response.body);
+      break;
     case 'dataDelivery':
       if (testPayload.version === 'v0') {
         ProxyV0RequestSchema.parse(testPayload.input.request.body);
@@ -504,4 +514,20 @@ export const validateTestWithZOD = (testPayload: TestCaseData, response: any) =>
       break;
   }
   return true;
+};
+
+// -----------------------------
+// Helper functions
+
+export const generateMetadata = (jobId: number): any => {
+  return {
+    jobId,
+    attemptNum: 1,
+    userId: 'default-userId',
+    sourceId: 'default-sourceId',
+    destinationId: 'default-destinationId',
+    workspaceId: 'default-workspaceId',
+    secret: {},
+    dontBatch: false,
+  };
 };

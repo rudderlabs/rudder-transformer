@@ -172,10 +172,14 @@ export class UserTransformService {
             ...metaTags,
           });
 
-          stats.histogram('user_transform_request_size', JSON.stringify(eventsToProcess).length, {
-            ...getTransformationMetadata(eventsToProcess[0]?.metadata),
-            ...metaTags,
-          });
+          stats.histogram(
+            'user_transform_request_size',
+            Buffer.byteLength(JSON.stringify(eventsToProcess)),
+            {
+              ...getTransformationMetadata(eventsToProcess[0]?.metadata),
+              ...metaTags,
+            },
+          );
         }
 
         stats.counter('user_transform_requests', 1, {});

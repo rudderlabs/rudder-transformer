@@ -3,6 +3,7 @@ const {
   verifyPayload,
   isStandardBluecoreEvent,
   deduceTrackEventName,
+  populateAccurateDistinctId,
 } = require('./utils');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 
@@ -120,7 +121,9 @@ describe('verifyPayload', () => {
         email: 'abc@gmail.com',
       },
     };
-    expect(() => verifyPayload(payload, { type: 'identify' })).toThrow(InstrumentationError);
+    expect(() =>
+      verifyPayload(payload, { type: 'identify', traits: { action: 'random' } }),
+    ).toThrow(InstrumentationError);
   });
 });
 
@@ -228,5 +231,81 @@ describe('deduceTrackEventName', () => {
       eventsMapping: [],
     };
     expect(() => deduceTrackEventName(trackEventName, Config)).toThrow();
+  });
+});
+
+describe('populateAccurateDistinctId', () => {
+  // Returns the distinctId based on the email field when it exists in the message object and the event is not an identify event.
+  it('should return the distinctId based on the email field when it exists in the message object and the event is not an identify event', () => {
+    const payload = { event: 'event' };
+    const message = { userId: '123', context: { traits: { email: 'test@example.com' } } };
+    const distinctId = populateAccurateDistinctId(payload, message);
+    expect(distinctId).toBe('test@example.com');
+  });
+
+  // Returns the distinctId based on the userId field when it exists in the message object and the event is an identify event.
+  it('should return the distinctId based on the userId field when it exists in the message object and the event is an identify event', () => {
+    const payload = { event: 'identify' };
+    const message = { userId: '123', context: { traits: { email: 'test@example.com' } } };
+    const distinctId = populateAccurateDistinctId(payload, message);
+    expect(distinctId).toBe('123');
+  });
+
+  // Returns the distinctId based on the userId field when it exists in the message object and the email field does not exist and the event is not an identify event.
+  it('should return the distinctId based on the userId field when it exists in the message object and the email field does not exist and the event is not an identify event', () => {
+    const payload = { event: 'event' };
+    const message = { userId: '123' };
+    const distinctId = populateAccurateDistinctId(payload, message);
+    expect(distinctId).toBe('123');
+  });
+
+  // Returns the distinctId based on the email field when it exists in the message object and the userId field is empty and the event is not an identify event.
+  it('should throw instrumenatation error as the message is malformed where email is at the root level', () => {
+    const payload = { event: 'event' };
+    const message = { email: 'test@example.com', userId: '' };
+    const testFn = () => populateAccurateDistinctId(payload, message);
+    expect(testFn).toThrow(InstrumentationError);
+  });
+
+  // Returns the distinctId based on the userId field when it exists in the message object and the email field is empty and the event is not an identify event.
+  it('should return the distinctId based on the userId field when it exists in the message object and the email field is empty and the event is not an identify event', () => {
+    const payload = { event: 'event' };
+    const message = { email: '', userId: '123' };
+    const distinctId = populateAccurateDistinctId(payload, message);
+    expect(distinctId).toBe('123');
+  });
+
+  // Returns the distinctId based on the anonymousId field when it exists in the message object and the email and userId fields are empty and the event is not an identify event.
+  it('should return the distinctId based on the anonymousId field when it exists in the message object and the email and userId fields are empty and the event is not an identify event', () => {
+    const payload = { event: 'event' };
+    const message = { anonymousId: 'abc' };
+    const distinctId = populateAccurateDistinctId(payload, message);
+    expect(distinctId).toBe('abc');
+  });
+
+  it('should return the distinctId based on the externalId field when it exists in the context object and the event is not an identify event', () => {
+    const payload = { event: 'event' };
+    const message = {
+      userId: '123',
+      context: {
+        traits: { email: 'test@example.com' },
+        externalId: [{ type: 'bluecoreExternalId', id: '54321' }],
+      },
+    };
+    const distinctId = populateAccurateDistinctId(payload, message);
+    expect(distinctId).toBe('54321');
+  });
+
+  it('should return the distinctId based on the externalId field when it exists in the context object and the event is an identify event', () => {
+    const payload = { event: 'identify' };
+    const message = {
+      userId: '123',
+      context: {
+        traits: { email: 'test@example.com' },
+        externalId: [{ type: 'bluecoreExternalId', id: '54321' }],
+      },
+    };
+    const distinctId = populateAccurateDistinctId(payload, message);
+    expect(distinctId).toBe('54321');
   });
 });

@@ -29,6 +29,7 @@ steps:
       payload.token = .destination.Config.bluecoreNamespace;
       $.verifyPayload(payload, .message);
       payload.event = payload.event ?? 'customer_patch';
+      payload.properties.distinct_id = $.populateAccurateDistinctId(payload, .message);
       $.context.payloads = [$.removeUndefinedAndNullValues(payload)];
   - name: validateInputForTrack
     description: Additional validation for Track events
@@ -45,6 +46,7 @@ steps:
       const payload = $.constructProperties(.message);
       $.context.payloads = $.context.deducedEventNameArray@eventName.(
         const newPayload = $.cloneDeep(payload);
+        newPayload.properties.distinct_id = $.populateAccurateDistinctId(newPayload, ^.message);
         const temporaryProductArray = newPayload.properties.products ?? $.createProductForStandardEcommEvent(^.message, eventName);
         newPayload.properties.products = $.addProductArray(temporaryProductArray);
         newPayload.event = eventName;

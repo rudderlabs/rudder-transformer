@@ -9,6 +9,7 @@ const {
   getFieldValueFromMessage,
   validateEventName,
   constructPayload,
+  getDestinationExternalID,
 } = require('../../../../v0/util');
 const { EVENT_NAME_MAPPING } = require('./config');
 const { EventType } = require('../../../../constants');
@@ -25,8 +26,8 @@ const { MAPPING_CONFIG, CONFIG_CATEGORIES } = require('./config');
 const verifyPayload = (payload, message) => {
   if (
     message.type === EventType.IDENTIFY &&
-    isDefinedNotNullNotEmpty(payload.event) &&
-    payload.event !== 'identify'
+    isDefinedNotNullNotEmpty(message?.traits?.action) &&
+    message?.traits?.action !== 'identify'
   ) {
     throw new InstrumentationError(
       "[Bluecore]  traits.action must be 'identify' for identify action",
@@ -169,6 +170,45 @@ const createProductForStandardEcommEvent = (message, eventName) => {
   }
   return null;
 };
+/**
+ * Function: populateAccurateDistinctId
+ *
+ * Description:
+ * This function is used to populate the accurate distinct ID based on the given payload and message.
+ *
+ * Parameters:
+ * - payload (object): The payload object containing the event and other data.
+ * - message (object): The message object containing the user data.
+ *
+ * Returns:
+ * - distinctId (string): The accurate distinct ID based on the given payload and message.
+ *
+ * Throws:
+ * - InstrumentationError: If the distinct ID could not be set.
+ *
+ */
+const populateAccurateDistinctId = (payload, message) => {
+  let distinctId;
+  const bluecoreExternalId = getDestinationExternalID(message, 'bluecoreExternalId');
+  if (!isDefinedAndNotNullAndNotEmpty(bluecoreExternalId)) {
+    if (payload.event === 'identify') {
+      distinctId = getFieldValueFromMessage(message, 'userId');
+    } else {
+      // email is always a more preferred distinct_id
+      distinctId =
+        getFieldValueFromMessage(message, 'email') || getFieldValueFromMessage(message, 'userId');
+    }
+  } else {
+    distinctId = bluecoreExternalId;
+  }
+  if (!isDefinedAndNotNullAndNotEmpty(distinctId)) {
+    // dev safe. AnonymouId should be always present
+    throw new InstrumentationError(
+      '[Bluecore] property:: distinct_id could not be set. Please provide either email or userId or anonymousId or externalId as distinct_id.',
+    );
+  }
+  return distinctId;
+};
 
 module.exports = {
   verifyPayload,
@@ -177,4 +217,5 @@ module.exports = {
   isStandardBluecoreEvent,
   constructProperties,
   createProductForStandardEcommEvent,
+  populateAccurateDistinctId,
 };

@@ -1,10 +1,5 @@
 [
   {
-    "destKey": "properties.distinct_id",
-    "sourceKeys": ["traits.email", "context.traits.email", "userId", "anonymousId"],
-    "required": true
-  },
-  {
     "destKey": "properties.customer.name",
     "sourceKeys": "name",
     "required": false,

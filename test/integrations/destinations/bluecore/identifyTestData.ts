@@ -43,6 +43,14 @@ const commonTraits = {
   },
 };
 
+const contextWithExternalId = {
+  traits: {
+    ...commonTraits,
+    email: 'abc@gmail.com',
+  },
+  externalId: [{ type: 'bluecoreExternalId', id: '54321' }],
+};
+
 const commonOutputCustomerProperties = {
   first_name: 'Test',
   last_name: 'Rudderlabs',
@@ -250,7 +258,7 @@ export const identifyData = [
     },
   },
   {
-    id: 'bluecore-identify-test-1',
+    id: 'bluecore-identify-test-4',
     name: 'bluecore',
     description:
       '[Success]: Identify call with all properties, that stitches a customer email with distinct_id in bluecore if action is identify and email is present in traits',
@@ -294,7 +302,7 @@ export const identifyData = [
               headers: commonOutputHeaders,
               JSON: {
                 properties: {
-                  distinct_id: 'abc@gmail.com',
+                  distinct_id: 'user@1',
                   customer: { ...commonOutputCustomerProperties, email: 'abc@gmail.com' },
                 },
                 token: 'dummy_sandbox',
@@ -306,6 +314,65 @@ export const identifyData = [
               destinationType: '',
               namespace: '',
               sourceType: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'bluecore-identify-test-5',
+    name: 'bluecore',
+    description:
+      '[Success]: Identify call with all properties and externalId, that creates a customer in bluecore by default, distinct_id is set to externalId value',
+    scenario: 'Business',
+    successCriteria:
+      'Response should containt one payload with event name as customer_patch and status code should be 200',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination,
+            metadata,
+            message: generateSimplifiedIdentifyPayload({
+              context: contextWithExternalId,
+              anonymousId,
+              userId,
+              sentAt,
+              originalTimestamp,
+            }),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              userId: '',
+              method: 'POST',
+              endpoint: commonEndpoint,
+              headers: commonOutputHeaders,
+              JSON: {
+                properties: {
+                  distinct_id: '54321',
+                  customer: { ...commonOutputCustomerProperties, email: 'abc@gmail.com' },
+                },
+                token: 'dummy_sandbox',
+                event: 'customer_patch',
+              },
+            }),
+            metadata: {
+              sourceType: '',
+              destinationType: '',
+              namespace: '',
+              destinationId: '',
             },
             statusCode: 200,
           },

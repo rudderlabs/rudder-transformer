@@ -292,7 +292,7 @@ export const ecomTestData = [
               headers: commonOutputHeaders,
               JSON: {
                 properties: {
-                  distinct_id: 'sajal12',
+                  distinct_id: 'test@rudderstack.com',
                   customer: {
                     age: '22',
                     email: 'test@rudderstack.com',
@@ -378,7 +378,7 @@ export const ecomTestData = [
               headers: commonOutputHeaders,
               JSON: {
                 properties: {
-                  distinct_id: 'new-id',
+                  distinct_id: 'user@1',
                   customer: {
                     age: '22',
                   },
@@ -405,7 +405,7 @@ export const ecomTestData = [
               headers: commonOutputHeaders,
               JSON: {
                 properties: {
-                  distinct_id: 'new-id',
+                  distinct_id: 'user@1',
                   customer: {
                     age: '22',
                   },

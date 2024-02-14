@@ -125,6 +125,26 @@ describe('verifyPayload', () => {
       verifyPayload(payload, { type: 'identify', traits: { action: 'random' } }),
     ).toThrow(InstrumentationError);
   });
+
+  it('should throw an InstrumentationError when verifying payload for optin event without email property', () => {
+    const payload = {
+      event: 'optin',
+      properties: {
+        order_id: '123',
+      },
+    };
+    expect(() => verifyPayload(payload, {})).toThrow(InstrumentationError);
+  });
+
+  it('should throw an InstrumentationError when verifying payload for unsubscribe event without email property', () => {
+    const payload = {
+      event: 'unsubscribe',
+      properties: {
+        order_id: '123',
+      },
+    };
+    expect(() => verifyPayload(payload, {})).toThrow(InstrumentationError);
+  });
 });
 
 describe('isStandardBluecoreEvent', () => {

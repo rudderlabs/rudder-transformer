@@ -54,9 +54,11 @@ const verifyPayload = (payload, message) => {
       }
       break;
     case 'identify':
+    case 'optin':
+    case 'unsubscribe':
       if (!isDefinedAndNotNullAndNotEmpty(getFieldValueFromMessage(message, 'email'))) {
         throw new InstrumentationError(
-          "[Bluecore] property:: email is required for 'identify' action",
+          `[Bluecore] property:: email is required for ${payload.event} action`,
         );
       }
       break;

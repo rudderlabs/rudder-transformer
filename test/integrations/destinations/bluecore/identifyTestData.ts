@@ -141,8 +141,6 @@ export const identifyData = [
     description:
       '[Success]: Identify call with all properties,along with action as identify that mandatorily needs email to link distict_id with customer in bluecore',
     scenario: 'Business',
-    successCriteria:
-      'Response should containt one payload with event name as identify and status code should be 200',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -174,7 +172,7 @@ export const identifyData = [
         body: [
           {
             error:
-              "[Bluecore] property:: email is required for 'identify' action: Workflow: procWorkflow, Step: prepareIdentifyPayload, ChildStep: undefined, OriginalError: [Bluecore] property:: email is required for 'identify' action",
+              '[Bluecore] property:: email is required for identify action: Workflow: procWorkflow, Step: prepareIdentifyPayload, ChildStep: undefined, OriginalError: [Bluecore] property:: email is required for identify action',
             metadata: {
               destinationId: '',
               destinationType: '',

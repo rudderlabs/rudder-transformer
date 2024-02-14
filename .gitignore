@@ -138,3 +138,6 @@ dist
 
 # component test report
 test_reports/
+
+# temporary files
+temp/

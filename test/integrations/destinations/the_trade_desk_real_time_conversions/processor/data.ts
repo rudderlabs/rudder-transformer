@@ -231,7 +231,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://insight.adsrvr.org/track/realtimeconversion',
-              headers: {},
+              headers: { 'Content-Type': 'application/json' },
               params: {},
               body: {
                 JSON: {
@@ -339,7 +339,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://insight.adsrvr.org/track/realtimeconversion',
-              headers: {},
+              headers: { 'Content-Type': 'application/json' },
               params: {},
               body: {
                 JSON: {
@@ -432,7 +432,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://insight.adsrvr.org/track/realtimeconversion',
-              headers: {},
+              headers: { 'Content-Type': 'application/json' },
               params: {},
               body: {
                 JSON: {
@@ -533,7 +533,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://insight.adsrvr.org/track/realtimeconversion',
-              headers: {},
+              headers: { 'Content-Type': 'application/json' },
               params: {},
               body: {
                 JSON: {
@@ -643,7 +643,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://insight.adsrvr.org/track/realtimeconversion',
-              headers: {},
+              headers: { 'Content-Type': 'application/json' },
               params: {},
               body: {
                 JSON: {
@@ -762,7 +762,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://insight.adsrvr.org/track/realtimeconversion',
-              headers: {},
+              headers: { 'Content-Type': 'application/json' },
               params: {},
               body: {
                 JSON: {
@@ -869,7 +869,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://insight.adsrvr.org/track/realtimeconversion',
-              headers: {},
+              headers: { 'Content-Type': 'application/json' },
               params: {},
               body: {
                 JSON: {
@@ -948,7 +948,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint: 'https://insight.adsrvr.org/track/realtimeconversion',
-              headers: {},
+              headers: { 'Content-Type': 'application/json' },
               params: {},
               body: {
                 JSON: {

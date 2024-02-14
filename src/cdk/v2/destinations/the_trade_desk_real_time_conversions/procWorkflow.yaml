@@ -53,4 +53,7 @@ steps:
       const response = $.defaultRequestConfig();
       response.body.JSON = {data: [$.removeUndefinedAndNullValues($.outputs.prepareTrackPayload)]};
       response.endpoint = $.REAL_TIME_CONVERSION_ENDPOINT;
+      response.headers = {
+        "Content-Type": "application/json"
+      };
       response;

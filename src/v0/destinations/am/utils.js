@@ -10,6 +10,7 @@
 // populate these dest keys
 const get = require('get-value');
 const uaParser = require('@amplitude/ua-parser-js');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const logger = require('../../../logger');
 const { isDefinedAndNotNull } = require('../../util');
 
@@ -108,6 +109,19 @@ const getUnsetObj = (message) => {
 
   return unsetObject;
 };
+
+/**
+ * Check for evType as in some cases, like when the page name is absent, 
+ * either the template depends only on the event.name or there is no template provided by user
+ * @param {*} evType 
+ */
+const validateEventType = (evType) => {
+    if (!isDefinedAndNotNull(evType) || (typeof evType === "string" && evType.length ===0)) {
+      throw new InstrumentationError(
+        'Event type is missing. Please send it under `event.type`. For page/screen events, send it under `event.name`',
+      );
+    }
+};
 module.exports = {
   getOSName,
   getOSVersion,
@@ -117,4 +131,5 @@ module.exports = {
   getBrand,
   getEventId,
   getUnsetObj,
+  validateEventType
 };

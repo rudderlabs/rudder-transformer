@@ -6870,4 +6870,107 @@ export const data = [
       },
     },
   },
+  {
+    name: 'tiktok_ads',
+    description: 'Test 46 -> V2 -> Event with no properties',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: '21e13f4bc7ceddad',
+              channel: 'web',
+              context: {
+                traits: {
+                  email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
+                },
+                userAgent:
+                  'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                ip: '13.57.97.131',
+                locale: 'en-US',
+                externalId: [
+                  {
+                    type: 'tiktokExternalId',
+                    id: 'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                  },
+                ],
+              },
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
+              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+              originalTimestamp: '2019-10-14T09:03:17.562Z',
+              timestamp: '2020-09-17T19:49:27Z',
+              type: 'track',
+              event: 'customEvent',
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T09:03:22.563Z',
+            },
+            destination: {
+              Config: {
+                version: 'v2',
+                accessToken: 'dummyAccessToken',
+                pixelCode: '{{PIXEL-CODE}}',
+                hashUserProperties: false,
+                sendCustomEvents: true,
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://business-api.tiktok.com/open_api/v1.3/event/track/',
+              headers: {
+                'Access-Token': 'dummyAccessToken',
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  event_source: 'web',
+                  event_source_id: '{{PIXEL-CODE}}',
+                  partner_name: 'RudderStack',
+                  data: [
+                    {
+                      event: 'customEvent',
+                      event_id: '84e26acc-56a5-4835-8233-591137fca468',
+                      event_time: 1600372167,
+                      properties: { content_type: 'product' },
+                      user: {
+                        locale: 'en-US',
+                        email: 'dd6ff77f54e2106661089bae4d40cdb600979bf7edc9eb65c0942ba55c7c2d7f',
+                        external_id:
+                          'f0e388f53921a51f0bb0fc8a2944109ec188b59172935d8f23020b1614cc44bc',
+                        ip: '13.57.97.131',
+                        user_agent:
+                          'Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion',
+                      },
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];

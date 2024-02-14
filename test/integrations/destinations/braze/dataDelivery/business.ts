@@ -127,6 +127,25 @@ const BrazePurchaseEvent = {
 
 const metadataArray = [generateMetadata(1), generateMetadata(2), generateMetadata(3)];
 
+const errorMessages = {
+  message_1: '{"events_processed":2,"purchases_processed":1,"message":"success"}',
+  message_2:
+    '{"events_processed":1,"message":"success","errors":[{"type":"\'external_id\', \'braze_id\', \'user_alias\', \'email\' or \'phone\' is required","input_array":"events","index":1},{"type":"\'quantity\' is not valid","input_array":"purchases","index":0}]}',
+  message_3:
+    '{"message":"Valid data must be provided in the \'attributes\', \'events\', or \'purchases\' fields.","errors":[{"type":"\'external_id\', \'braze_id\', \'user_alias\', \'email\' or \'phone\' is required","input_array":"events","index":0},{"type":"\'external_id\', \'braze_id\', \'user_alias\', \'email\' or \'phone\' is required","input_array":"events","index":1},{"type":"\'quantity\' is not valid","input_array":"purchases","index":0}]}',
+};
+
+const expectedStatTags = {
+  errorCategory: 'network',
+  errorType: 'aborted',
+  destType: 'BRAZE',
+  module: 'destination',
+  implementation: 'native',
+  feature: 'dataDelivery',
+  destinationId: 'default-destinationId',
+  workspaceId: 'default-workspaceId',
+};
+
 export const testScenariosForV1API: ProxyV1TestData[] = [
   {
     id: 'braze_v1_scenario_1',
@@ -162,17 +181,17 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           output: {
             response: [
               {
-                error: '{"events_processed":2,"purchases_processed":1,"message":"success"}',
+                error: errorMessages.message_1,
                 statusCode: 200,
                 metadata: generateMetadata(1),
               },
               {
-                error: '{"events_processed":2,"purchases_processed":1,"message":"success"}',
+                error: errorMessages.message_1,
                 statusCode: 200,
                 metadata: generateMetadata(2),
               },
               {
-                error: '{"events_processed":2,"purchases_processed":1,"message":"success"}',
+                error: errorMessages.message_1,
                 statusCode: 200,
                 metadata: generateMetadata(3),
               },
@@ -218,20 +237,17 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           output: {
             response: [
               {
-                error:
-                  '{"events_processed":1,"message":"success","errors":[{"type":"\'external_id\', \'braze_id\', \'user_alias\', \'email\' or \'phone\' is required","input_array":"events","index":1},{"type":"\'quantity\' is not valid","input_array":"purchases","index":0}]}',
+                error: errorMessages.message_2,
                 statusCode: 200,
                 metadata: generateMetadata(1),
               },
               {
-                error:
-                  '{"events_processed":1,"message":"success","errors":[{"type":"\'external_id\', \'braze_id\', \'user_alias\', \'email\' or \'phone\' is required","input_array":"events","index":1},{"type":"\'quantity\' is not valid","input_array":"purchases","index":0}]}',
+                error: errorMessages.message_2,
                 statusCode: 200,
                 metadata: generateMetadata(2),
               },
               {
-                error:
-                  '{"events_processed":1,"message":"success","errors":[{"type":"\'external_id\', \'braze_id\', \'user_alias\', \'email\' or \'phone\' is required","input_array":"events","index":1},{"type":"\'quantity\' is not valid","input_array":"purchases","index":0}]}',
+                error: errorMessages.message_2,
                 statusCode: 200,
                 metadata: generateMetadata(3),
               },
@@ -279,34 +295,22 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           output: {
             response: [
               {
-                error:
-                  '{"message":"Valid data must be provided in the \'attributes\', \'events\', or \'purchases\' fields.","errors":[{"type":"\'external_id\', \'braze_id\', \'user_alias\', \'email\' or \'phone\' is required","input_array":"events","index":0},{"type":"\'external_id\', \'braze_id\', \'user_alias\', \'email\' or \'phone\' is required","input_array":"events","index":1},{"type":"\'quantity\' is not valid","input_array":"purchases","index":0}]}',
+                error: errorMessages.message_3,
                 statusCode: 400,
                 metadata: generateMetadata(1),
               },
               {
-                error:
-                  '{"message":"Valid data must be provided in the \'attributes\', \'events\', or \'purchases\' fields.","errors":[{"type":"\'external_id\', \'braze_id\', \'user_alias\', \'email\' or \'phone\' is required","input_array":"events","index":0},{"type":"\'external_id\', \'braze_id\', \'user_alias\', \'email\' or \'phone\' is required","input_array":"events","index":1},{"type":"\'quantity\' is not valid","input_array":"purchases","index":0}]}',
+                error: errorMessages.message_3,
                 statusCode: 400,
                 metadata: generateMetadata(2),
               },
               {
-                error:
-                  '{"message":"Valid data must be provided in the \'attributes\', \'events\', or \'purchases\' fields.","errors":[{"type":"\'external_id\', \'braze_id\', \'user_alias\', \'email\' or \'phone\' is required","input_array":"events","index":0},{"type":"\'external_id\', \'braze_id\', \'user_alias\', \'email\' or \'phone\' is required","input_array":"events","index":1},{"type":"\'quantity\' is not valid","input_array":"purchases","index":0}]}',
+                error: errorMessages.message_3,
                 statusCode: 400,
                 metadata: generateMetadata(3),
               },
             ],
-            statTags: {
-              errorCategory: 'network',
-              errorType: 'aborted',
-              destType: 'BRAZE',
-              module: 'destination',
-              implementation: 'native',
-              feature: 'dataDelivery',
-              destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
-            },
+            statTags: expectedStatTags,
             message: 'Request failed for braze with status: 400',
             status: 400,
           },
@@ -362,16 +366,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                 metadata: generateMetadata(3),
               },
             ],
-            statTags: {
-              errorCategory: 'network',
-              errorType: 'aborted',
-              destType: 'BRAZE',
-              module: 'destination',
-              implementation: 'native',
-              feature: 'dataDelivery',
-              destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
-            },
+            statTags: expectedStatTags,
             message: 'Request failed for braze with status: 401',
             status: 401,
           },

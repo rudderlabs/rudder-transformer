@@ -527,7 +527,9 @@ export const generateMetadata = (jobId: number): any => {
     sourceId: 'default-sourceId',
     destinationId: 'default-destinationId',
     workspaceId: 'default-workspaceId',
-    secret: {},
+    secret: {
+      accessToken: 'default-accessToken',
+    },
     dontBatch: false,
   };
 };

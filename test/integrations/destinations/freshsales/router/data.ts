@@ -115,6 +115,7 @@ export const data = [
                       zipcode: 'postalCode',
                       created_at: '2022-08-30T11:28:43.647+05:30',
                       updated_at: '2022-08-30T11:28:43.647+05:30',
+                      custom_field: {},
                     },
                     unique_identifier: { emails: 'user112@mail.com' },
                   },

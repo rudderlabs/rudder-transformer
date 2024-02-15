@@ -1,46 +1,91 @@
-const { createCustomField } = require('./utils');
+const { populatePayloadWithCustomFields } = require('./utils');
 
-describe('createCustomField', () => {
-  // Should return an empty object when given an empty traits object and customPropertyMapping array
-  it('should return an empty object when given an empty traits object and customPropertyMapping array', () => {
-    const traits = {};
-    const customPropertyMapping = [];
-    const result = createCustomField(traits, customPropertyMapping);
-    expect(result).toEqual({});
+describe('populatePayloadWithCustomFields', () => {
+  it('Mapping config is empty', () => {
+    const message = {
+      traits: {
+        email: 'test@example.com',
+        firstName: 'John',
+        lastName: 'Doe',
+        newProp: 'newPropValue',
+      },
+    };
+    const customPropertyMapping = [{ from: 'newProp', to: 'cf_newProp' }];
+    const payload = {};
+    const MAPPING_CONFIG = [];
+
+    const result = populatePayloadWithCustomFields(
+      message,
+      customPropertyMapping,
+      payload,
+      MAPPING_CONFIG,
+    );
+
+    expect(result).toEqual({
+      custom_field: {
+        email: 'test@example.com',
+        firstName: 'John',
+        lastName: 'Doe',
+        cf_newProp: 'newPropValue',
+      },
+    });
   });
 
-  // Should return an empty object when given a traits object with no matching keys in customPropertyMapping array
-  it('should return an empty object when given a traits object with no matching keys in customPropertyMapping array', () => {
-    const traits = { name: 'John', age: 30 };
-    const customPropertyMapping = [{ from: 'email', to: 'email' }];
-    const result = createCustomField(traits, customPropertyMapping);
-    expect(result).toEqual({});
-  });
-
-  // Should return a customField object with key-value pairs when given a traits object with matching keys in customPropertyMapping array
-  it('should return a customField object with key-value pairs when given a traits object with matching keys in customPropertyMapping array', () => {
-    const traits = { name: 'John', age: 30, email: 'john@example.com' };
-    const customPropertyMapping = [
-      { from: 'name', to: 'user_name' },
-      { from: 'email', to: 'user_email' },
+  it('should exclude specified fields from being added as custom fields', () => {
+    const message = {
+      traits: {
+        email: 'test@example.com',
+        first_name: 'John',
+        lastName: 'Doe',
+        newProp: 'newPropValue',
+      },
+    };
+    const customPropertyMapping = [{ from: 'newProp', to: 'cf_newProp' }];
+    const payload = {};
+    const MAPPING_CONFIG = [
+      { destKey: 'first_name', sourceKeys: 'firstName', sourceFromGenericMap: true },
+      { destKey: 'email', sourceKeys: 'email', sourceFromGenericMap: true },
     ];
-    const result = createCustomField(traits, customPropertyMapping);
-    expect(result).toEqual({ user_name: 'John', user_email: 'john@example.com' });
+
+    const result = populatePayloadWithCustomFields(
+      message,
+      customPropertyMapping,
+      payload,
+      MAPPING_CONFIG,
+    );
+
+    expect(result).toEqual({
+      custom_field: {
+        cf_newProp: 'newPropValue',
+        lastName: 'Doe',
+      },
+    });
   });
 
-  // Should return an empty object when given a null customPropertyMapping array
-  it('should return an empty object when given a null customPropertyMapping array', () => {
-    const traits = { name: 'John' };
-    const customPropertyMapping = null;
-    const result = createCustomField(traits, customPropertyMapping);
-    expect(result).toEqual({});
-  });
+  it('should not overwrite existing payload data', () => {
+    const message = {
+      traits: {
+        firstName: 'John',
+      },
+    };
+    const customPropertyMapping = [{ from: 'firstName', to: 'first_name' }];
+    const initialPayload = {
+      existingField: 'existingValue',
+    };
+    const MAPPING_CONFIG = [];
 
-  // Should return an empty object when given a traits object with no matching keys in customPropertyMapping array and customPropertyMapping array with no 'to' values
-  it("should return an empty object when given a traits object with no matching keys in customPropertyMapping array and customPropertyMapping array with no 'to' values", () => {
-    const traits = { name: 'John', age: 30 };
-    const customPropertyMapping = [{ from: 'email' }, { from: 'phone' }];
-    const result = createCustomField(traits, customPropertyMapping);
-    expect(result).toEqual({});
+    const result = populatePayloadWithCustomFields(
+      message,
+      customPropertyMapping,
+      initialPayload,
+      MAPPING_CONFIG,
+    );
+
+    expect(result).toEqual({
+      existingField: 'existingValue',
+      custom_field: {
+        first_name: 'John',
+      },
+    });
   });
 });

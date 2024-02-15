@@ -189,6 +189,9 @@ export const data = [
                     work_number: '9988776655',
                     mobile_number: '1-926-555-9504',
                     lifecycle_stage_id: 71010794467,
+                    custom_field: {
+                      owner_id: '70000090119',
+                    },
                   },
                   unique_identifier: {
                     emails: 'testuser@google.com',
@@ -300,6 +303,9 @@ export const data = [
                     work_number: '9988776655',
                     mobile_number: '1-926-555-9504',
                     lifecycle_stage_id: 71010794467,
+                    custom_field: {
+                      owner_id: '70000090119',
+                    },
                   },
                   unique_identifier: {
                     emails: 'testuser@google.com',
@@ -418,6 +424,7 @@ export const data = [
                     mobile_number: '1-926-555-9504',
                     created_at: '2022-06-22T10:57:58Z',
                     updated_at: '2022-06-22T10:57:58Z',
+                    custom_field: {},
                   },
                   unique_identifier: {
                     emails: 'testuser@google.com',
@@ -2774,17 +2781,18 @@ export const data = [
                 JSON: {
                   contact: {
                     emails: 'testuser@google.com',
-                    last_name: 'Mishra',
-                    created_at: '2022-06-22T10:57:58Z',
                     first_name: 'Rk',
-                    updated_at: '2022-06-22T10:57:58Z',
-                    external_id: 'ea5cfab2-3961-4d8a-8187-3d1858c99099',
+                    last_name: 'Mishra',
                     work_number: '9988776655',
+                    external_id: 'ea5cfab2-3961-4d8a-8187-3d1858c99099',
                     mobile_number: '1-926-555-9504',
+                    created_at: '2022-06-22T10:57:58Z',
+                    updated_at: '2022-06-22T10:57:58Z',
                     lifecycle_stage_id: 71010794467,
                     custom_field: {
                       cf_newProp1: 'value1',
                       cf_newProp2: 'value2',
+                      owner_id: '70000090119',
                     },
                   },
                   unique_identifier: {

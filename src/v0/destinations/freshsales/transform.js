@@ -19,7 +19,7 @@ const {
   UpdateContactWithLifeCycleStage,
   updateAccountWOContact,
   getHeaders,
-  createCustomField,
+  populatePayloadWithCustomFields,
 } = require('./utils');
 
 /*
@@ -42,9 +42,7 @@ const identifyResponseConfig = (Config) => {
  * @returns
  */
 const identifyResponseBuilder = (message, { Config }) => {
-  let customFieldObject = {};
   const { customPropertyMapping, apiKey, domain } = Config;
-  const traits = getFieldValueFromMessage(message, 'traits');
   const payload = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name]);
 
   if (!payload) {
@@ -55,16 +53,20 @@ const identifyResponseBuilder = (message, { Config }) => {
   if (payload.address) payload.address = flattenAddress(payload.address);
 
   // adding support for custom properties
-  customFieldObject = { ...createCustomField(traits, customPropertyMapping) };
-  if (Object.keys(customFieldObject).length > 0) {
-    payload.custom_field = customFieldObject;
-  }
+  const updatedPayload = {
+    ...populatePayloadWithCustomFields(
+      message,
+      customPropertyMapping,
+      payload,
+      MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name],
+    ),
+  };
   const response = defaultRequestConfig();
   response.headers = getHeaders(apiKey);
   response.endpoint = `https://${domain}${CONFIG_CATEGORIES.IDENTIFY.baseUrl}`;
   response.method = CONFIG_CATEGORIES.IDENTIFY.method;
   response.body.JSON = {
-    contact: payload,
+    contact: updatedPayload,
     unique_identifier: { emails: payload.emails },
   };
   return response;

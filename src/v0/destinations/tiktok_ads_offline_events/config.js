@@ -23,8 +23,17 @@ const EVENT_NAME_MAPPING = {
   contact: 'Contact',
   submitform: 'SubmitForm',
   subscribe: 'Subscribe',
+  'product added to wishlist': 'AddToWishlist',
+  'product added': 'AddToCart',
+  'checkout started': 'InitiateCheckout',
+  'payment info entered': 'AddPaymentInfo',
+  'order completed': 'PlaceAnOrder',
+  viewcontent: 'ViewContent',
+  clickbutton: 'ClickButton',
+  search: 'Search',
+  download: 'Download',
+  completeregistration: 'CompleteRegistration',
 };
-
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
 module.exports = {

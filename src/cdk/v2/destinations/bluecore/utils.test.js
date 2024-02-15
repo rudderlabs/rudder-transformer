@@ -4,6 +4,7 @@ const {
   isStandardBluecoreEvent,
   deduceTrackEventName,
   populateAccurateDistinctId,
+  deepMerge,
 } = require('./utils');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 
@@ -327,5 +328,54 @@ describe('populateAccurateDistinctId', () => {
     };
     const distinctId = populateAccurateDistinctId(payload, message);
     expect(distinctId).toBe('54321');
+  });
+
+  describe('deepMerge', () => {
+    // Should merge two objects with non-overlapping properties
+    it('should merge two objects with non-overlapping properties', () => {
+      const obj1 = { a: 1, b: 2 };
+      const obj2 = { c: 3, d: 4 };
+      const result = deepMerge(obj1, obj2);
+      expect(result).toEqual({ a: 1, b: 2, c: 3, d: 4 });
+    });
+
+    // Should merge two objects with overlapping properties
+    it('should merge two objects with overlapping properties', () => {
+      const obj1 = { a: 1, b: 2 };
+      const obj2 = { b: 3, c: 4 };
+      const result = deepMerge(obj1, obj2);
+      expect(result).toEqual({ a: 1, b: 3, c: 4 });
+    });
+
+    // Should merge multiple objects with non-overlapping properties
+    it('should merge multiple objects with non-overlapping properties', () => {
+      const obj1 = { a: 1 };
+      const obj2 = { b: 2 };
+      const obj3 = { c: 3 };
+      const result = deepMerge(obj1, obj2, obj3);
+      expect(result).toEqual({ a: 1, b: 2, c: 3 });
+    });
+
+    // Should return an empty object when no arguments are passed
+    it('should return an empty object when no arguments are passed', () => {
+      const result = deepMerge();
+      expect(result).toEqual(undefined);
+    });
+
+    // Should return the target object when no sources are passed
+    it('should return the target object when no sources are passed', () => {
+      const obj = { a: 1, b: 2 };
+      const result = deepMerge(obj);
+      expect(result).toBe(obj);
+    });
+
+    // Should handle non-object values as the target object
+    it('target must be an object', () => {
+      const target = 'hello';
+      const obj = { a: 1, b: 2 };
+      const result = deepMerge(target, obj);
+      expect(result).not.toBe({ a: 1, b: 2 });
+      expect(result).toBe('hello');
+    });
   });
 });

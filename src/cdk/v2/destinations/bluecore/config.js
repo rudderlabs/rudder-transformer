@@ -11,6 +11,10 @@ const CONFIG_CATEGORIES = {
     name: 'bluecoreTrackConfig',
     type: 'track',
   },
+  COMMON: {
+    name: 'bluecoreCommonConfig',
+    type: 'common',
+  },
 };
 
 const EVENT_NAME_MAPPING = [
@@ -40,7 +44,7 @@ const EVENT_NAME_MAPPING = [
   },
 ];
 
-const BLUECORE_EXCLUSION_FIELDS = ['query','order_id','total']
+const BLUECORE_EXCLUSION_FIELDS = ['query', 'order_id', 'total'];
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 module.exports = {
@@ -48,5 +52,5 @@ module.exports = {
   MAPPING_CONFIG,
   EVENT_NAME_MAPPING,
   BASE_URL,
-  BLUECORE_EXCLUSION_FIELDS
+  BLUECORE_EXCLUSION_FIELDS,
 };

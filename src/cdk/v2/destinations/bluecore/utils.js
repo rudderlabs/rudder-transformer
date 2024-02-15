@@ -26,8 +26,8 @@ const { MAPPING_CONFIG, CONFIG_CATEGORIES } = require('./config');
 const verifyPayload = (payload, message) => {
   if (
     message.type === EventType.IDENTIFY &&
-    isDefinedNotNullNotEmpty(message?.traits?.action) &&
-    message?.traits?.action !== 'identify'
+    isDefinedNotNullNotEmpty(message.traits?.action) &&
+    message.traits?.action !== 'identify'
   ) {
     throw new InstrumentationError(
       "[Bluecore]  traits.action must be 'identify' for identify action",

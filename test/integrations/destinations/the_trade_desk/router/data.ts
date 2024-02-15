@@ -1681,9 +1681,16 @@ export const data = [
                 properties: {
                   key1: 'value1',
                   value: 25,
+                  revenue: 10,
                   product_id: 'prd123',
                   key2: true,
                   test: 'test123',
+                  products: [
+                    {
+                      product_id: 'prd123',
+                      test: 'test',
+                    },
+                  ],
                 },
               },
               destination: sampleDestination,
@@ -1779,6 +1786,13 @@ export const data = [
                         test: 'test123',
                         key1: 'value1',
                         key2: true,
+                        revenue: 10,
+                        products: [
+                          {
+                            product_id: 'prd123',
+                            test: 'test',
+                          },
+                        ],
                       },
                     ],
                   },

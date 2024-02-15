@@ -1337,7 +1337,7 @@ const generateExclusionListUsingKeyPaths = (mappingConfig) =>
       // Handle the case where it's a single string, not an array
       return [genericMappings.split('.').pop()];
     }
-    // Handle the original case where sourceFromGenericMap is not true or does not exist
+    // Handle the case where sourceFromGenericMap is not true or does not exist
     // This also assumes that the non-generic mappings might be in dot notation and extracts the last key
     return Array.isArray(mapping.sourceKeys)
       ? mapping.sourceKeys.map((key) => key.split('.').pop())

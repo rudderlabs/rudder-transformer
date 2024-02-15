@@ -301,6 +301,32 @@ function trimTraits(traits, contextTraits, setOnceProperties) {
   };
 }
 
+/**
+ * Generates a custom event name for a page or screen.
+ *
+ * @param {Object} message - The message object.
+ * @param {string} userDefinedEventString - The user-defined event string.
+ * @returns {string} - The generated custom event name.
+ * @throws {InstrumentationError} - If the event does not contain the configured path.
+ * @example
+ *
+ * const message = {name: 'Home'};
+ * const userDefinedEventString = 'Viewed a {{ name }} page';
+ * -> Viewed a Home page
+ */
+const generatePageOrScreenCustomEventName = (message, userDefinedEventString) => {
+  const getMessagePath = userDefinedEventString?.match(/{\s*([^{}]+)\s*}/)?.[1]?.trim();
+  if (!getMessagePath) return userDefinedEventString;
+
+  const value = get(message, getMessagePath);
+  if (!value) {
+    throw new InstrumentationError(
+      `'Use Custom Page/Screen Event Name' setting is enabled but the event does not contain the ${getMessagePath} configured in 'Page/Screen Event Name Format' setting`,
+    );
+  }
+  return userDefinedEventString?.trim().replaceAll(/{{([^{}]+)}}/g, value);
+};
+
 module.exports = {
   createIdentifyResponse,
   isImportAuthCredentialsAvailable,
@@ -309,4 +335,5 @@ module.exports = {
   generateBatchedPayloadForArray,
   batchEvents,
   trimTraits,
+  generatePageOrScreenCustomEventName,
 };

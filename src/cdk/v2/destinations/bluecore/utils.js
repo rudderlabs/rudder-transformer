@@ -1,3 +1,5 @@
+const lodash = require('lodash');
+
 const {
   InstrumentationError,
   isDefinedAndNotNullAndNotEmpty,
@@ -146,35 +148,6 @@ const addProductArray = (products) => {
   return finalProductArray;
 };
 
-function isObject(item) {
-  return item && typeof item === 'object' && !Array.isArray(item);
-}
-
-/**
- * Recursively merges multiple objects into a single object.
- *
- * @param {Object} target - The target object to merge into.
- * @param {...Object} sources - The source objects to merge from.
- * @returns {Object} - The merged object.
- */
-function deepMerge(target, ...sources) {
-  if (sources.length === 0) return target;
-  const source = sources.shift();
-
-  if (isObject(target) && isObject(source)) {
-    Object.keys(source).forEach((key) => {
-      if (isObject(source[key])) {
-        if (!target[key]) Object.assign(target, { [key]: {} });
-        deepMerge(target[key], source[key]);
-      } else {
-        Object.assign(target, { [key]: source[key] });
-      }
-    });
-  }
-
-  return deepMerge(target, ...sources);
-}
-
 /**
  * Constructs properties based on the given message.
  *
@@ -186,7 +159,7 @@ const constructProperties = (message) => {
   const commonPayload = constructPayload(message, MAPPING_CONFIG[commonCategory.name]);
   const category = CONFIG_CATEGORIES[message.type.toUpperCase()];
   const typeSpecificPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
-  const finalPayload = deepMerge({}, commonPayload, typeSpecificPayload);
+  const finalPayload = lodash.merge(commonPayload, typeSpecificPayload);
   return finalPayload;
 };
 
@@ -252,5 +225,4 @@ module.exports = {
   constructProperties,
   createProductForStandardEcommEvent,
   populateAccurateDistinctId,
-  deepMerge,
 };

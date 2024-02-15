@@ -40,7 +40,7 @@ const getTrackResponsePayload = (message, destConfig, event) => {
   }
 
   // if contents is not present but we have properties.products present which has fields with superset of contents fields
-  if (payload.properties && !payload.properties.contents && message.properties.products) {
+  if (!payload.properties?.contents && message.properties?.products) {
     // retreiving data from products only when contents is not present
     payload.properties.contents = getContents(message, false);
   }

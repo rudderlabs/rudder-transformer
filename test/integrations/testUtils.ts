@@ -1,10 +1,12 @@
 import { globSync } from 'glob';
 import { join } from 'path';
 import { MockHttpCallsData, TestCaseData } from './testTypes';
+import tags from '../../src/v0/util/tags';
 import MockAdapter from 'axios-mock-adapter';
 import isMatch from 'lodash/isMatch';
 import { OptionValues } from 'commander';
 import { removeUndefinedAndNullValues } from '@rudderstack/integrations-lib';
+import { appendFileSync, existsSync, mkdirSync } from 'fs';
 
 const generateAlphanumericId = (size = 36) =>
   [...Array(size)].map(() => ((Math.random() * size) | 0).toString(size)).join('');
@@ -49,7 +51,7 @@ export const addMock = (mock: MockAdapter, axiosMock: MockHttpCallsData) => {
 
   switch (method.toLowerCase()) {
     case 'get':
-      // We are accepting parameters exclusively for mocking purposes and do not require a request body, 
+      // We are accepting parameters exclusively for mocking purposes and do not require a request body,
       // particularly for GET requests where it is typically unnecessary
       // @ts-ignore
       mock.onGet(url, { params }, headersAsymMatch).reply(status, data, headers);
@@ -77,6 +79,45 @@ export const addMock = (mock: MockAdapter, axiosMock: MockHttpCallsData) => {
 export const overrideDestination = (destination, overrideConfigValues) => {
   return Object.assign({}, destination, {
     Config: { ...destination.Config, ...overrideConfigValues },
+  });
+};
+
+export const produceTestData = (testData: TestCaseData[]) => {
+  const result: any = [];
+  testData.forEach((tcData) => {
+    let events;
+    try {
+      switch (tcData.feature) {
+        case tags.FEATURES.PROCESSOR:
+          events = tcData.input.request.body;
+          break;
+        case tags.FEATURES.BATCH:
+          events = tcData.input.request.body.input;
+          break;
+        case tags.FEATURES.ROUTER:
+          events = tcData.input.request.body.input;
+          break;
+      }
+    } catch (e) {
+      throw new Error(`Error in producing test data: ${e}`);
+    }
+
+    events.map((event) => {
+      result.push(event.message);
+    });
+  });
+
+  it('data generated successfully', () => {
+    // write the data to a file
+
+    // create directory if not exists
+    const dir = join(__dirname, '../../temp');
+    if (!existsSync(dir)) {
+      mkdirSync(dir);
+    }
+    appendFileSync(join(__dirname, '../../temp/test_data.json'), JSON.stringify(result, null, 2));
+    console.log('Data generated successfully at temp/test_data.json');
+    expect(true).toEqual(true); // Intentionally pass the test case
   });
 };
 

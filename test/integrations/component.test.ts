@@ -16,6 +16,7 @@ import {
   getMockHttpCallsData,
   getAllTestMockDataFilePaths,
   addMock,
+  produceTestData,
 } from './testUtils';
 import tags from '../../src/v0/util/tags';
 import { Server } from 'http';
@@ -40,7 +41,7 @@ command
   .option('-i, --index <number>', 'Enter Test index')
   .option('-g, --generate <string>', 'Enter "true" If you want to generate network file')
   .option('-id, --id <string>', 'Enter unique "Id" of the test case you want to run')
-  .option('-m, --mode <string>', 'Enter mode of operation (passive, active), default is active') // for generating test data
+  .option('-m, --mode <string>', 'Enter mode of operation (passive, active)', 'active') // for generating test data
   .parse();
 
 const opts = command.opts();
@@ -99,7 +100,7 @@ if (!opts.generate || opts.generate === 'false') {
   registerAxiosMocks(allAxiosRequests);
 }
 
-const mode = opts.mode || 'active';
+const mode = opts.mode;
 // END
 const rootDir = __dirname;
 const allTestDataFilePaths = getTestDataFilePaths(rootDir, opts);
@@ -226,39 +227,7 @@ describe.each(allTestDataFilePaths)('%s Tests', (testDataPath) => {
   }
 
   if (mode === 'passive') {
-    // print the test data
-    const result: any = [];
-    testData.forEach((tcData) => {
-      let events;
-      switch (tcData.feature) {
-        case tags.FEATURES.PROCESSOR:
-          events = tcData.input.request.body;
-          break;
-        case tags.FEATURES.BATCH:
-          events = tcData.input.request.body.input;
-          break;
-        case tags.FEATURES.ROUTER:
-          events = tcData.input.request.body.input;
-          break;
-      }
-
-      events.map((event) => {
-        result.push(event.message);
-      });
-    });
-
-    it('data generated successfully', () => {
-      // write the data to a file
-      
-      // create directory if not exists
-      const dir = join(__dirname, '../../temp');
-      if (!require('fs').existsSync(dir)) {
-        require('fs').mkdirSync(dir);
-      }
-      appendFileSync(join(__dirname, '../../temp/test_data.json'), JSON.stringify(result, null, 2));
-      console.log('Data generated successfully at temp/test_data.json');
-      expect(true).toEqual(true); // Intentionally pass the test case
-    });
+    produceTestData(testData);
   } else {
     describe(`${testData[0].name} ${testData[0].module}`, () => {
       test.each(testData)('$feature -> $description', async (tcData) => {

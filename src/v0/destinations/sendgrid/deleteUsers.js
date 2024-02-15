@@ -85,6 +85,9 @@ const userDeletionHandler = async (userAttributes, config) => {
       const deletionResponse = await httpDELETE(endpoint, requestOptions, {
         destType: 'sendgrid',
         feature: 'deleteUsers',
+        endpointPath: '/marketing/contacts',
+        requestMethod: 'DELETE',
+        module: 'deletion',
       });
       const handledDelResponse = processAxiosResponse(deletionResponse);
 

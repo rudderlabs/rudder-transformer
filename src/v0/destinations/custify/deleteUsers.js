@@ -27,6 +27,7 @@ const userDeletionHandler = async (userAttributes, config) => {
       if (!userId) {
         throw new InstrumentationError('User id for deletion not present', 400);
       }
+      // Reference: https://docs.custify.com/#tag/People/paths/~1people/delete
       const requestUrl = `https://api.custify.com/people?user_id=${userId}`;
       const requestOptions = {
         headers: {

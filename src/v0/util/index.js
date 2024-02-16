@@ -33,6 +33,7 @@ const {
   AUTH_STATUS_INACTIVE,
 } = require('../../adapters/networkhandler/authConstants');
 const { FEATURE_FILTER_CODE, FEATURE_GZIP_SUPPORT } = require('./constant');
+const { CommonUtils } = require('../../util/common');
 
 // ========================================================================
 // INLINERS
@@ -2136,6 +2137,87 @@ const parseConfigArray = (arr, key) => {
   return arr.map((item) => item[key]);
 };
 
+/**
+ * Finds an existing batch based on metadata JobIds from the provided batch and metadataMap.
+ * @param {*} batch
+ * @param {*} metadataMap The map containing metadata items indexed by JobIds.
+ * @returns
+ */
+const findExistingBatch = (batch, metadataMap) => {
+  const existingMetadataItem = batch.metadata.find((metadataItem) =>
+    metadataMap.has(metadataItem.jobId),
+  );
+  return existingMetadataItem ? metadataMap.get(existingMetadataItem.jobId) : null;
+};
+
+/**
+ * Removes duplicate metadata within each merged batch object.
+ * @param {*} mergedBatches An array of merged batch objects.
+ */
+const removeDuplicateMetadata = (mergedBatches) => {
+  mergedBatches.forEach((batch) => {
+    const metadataSet = new Set();
+    // eslint-disable-next-line no-param-reassign
+    batch.metadata = batch.metadata.filter((metadataItem) => {
+      if (!metadataSet.has(metadataItem.jobId)) {
+        metadataSet.add(metadataItem.jobId);
+        return true;
+      }
+      return false;
+    });
+  });
+};
+
+/**
+ * Combines batched requests with the same JobIds.
+ * @param {*} inputBatches The array of batched request objects.
+ * @returns  The combined batched requests with merged JobIds.
+ *
+ */
+const combineBatchRequestsWithSameJobIds = (inputBatches) => {
+  const combineBatches = (batches) => {
+    const clonedBatches = [...batches];
+    const mergedBatches = [];
+    const metadataMap = new Map();
+
+    clonedBatches.forEach((batch) => {
+      const existingBatch = findExistingBatch(batch, metadataMap);
+
+      if (existingBatch) {
+        // Merge batchedRequests arrays
+        existingBatch.batchedRequest = [
+          ...CommonUtils.toArray(existingBatch.batchedRequest),
+          ...CommonUtils.toArray(batch.batchedRequest),
+        ];
+
+        // Merge metadata
+        batch.metadata.forEach((metadataItem) => {
+          if (!metadataMap.has(metadataItem.jobId)) {
+            metadataMap.set(metadataItem.jobId, existingBatch);
+          }
+          existingBatch.metadata.push(metadataItem);
+        });
+      } else {
+        mergedBatches.push(batch);
+        batch.metadata.forEach((metadataItem) => {
+          metadataMap.set(metadataItem.jobId, batch);
+        });
+      }
+    });
+
+    // Remove duplicate metadata within each merged object
+    removeDuplicateMetadata(mergedBatches);
+
+    return mergedBatches;
+  };
+  // We need to run this twice because in first pass some batches might not get merged
+  // and in second pass they might get merged
+  // Example: [[{jobID:1}, {jobID:2}], [{jobID:3}], [{jobID:1}, {jobID:3}]]
+  // 1st pass: [[{jobID:1}, {jobID:2}, {jobID:3}], [{jobID:3}]]
+  // 2nd pass: [[{jobID:1}, {jobID:2}, {jobID:3}]]
+  return combineBatches(combineBatches(inputBatches));
+};
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -2249,4 +2331,7 @@ module.exports = {
   isNewStatusCodesAccepted,
   IsGzipSupported,
   parseConfigArray,
+  findExistingBatch,
+  removeDuplicateMetadata,
+  combineBatchRequestsWithSameJobIds,
 };

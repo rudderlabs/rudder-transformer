@@ -614,16 +614,16 @@ const processSingleMessage = (message, destination) => {
     case EventType.PAGE:
       if (useUserDefinedPageEventName) {
         const getMessagePath = userProvidedPageEventString
-          .substring(
+          ?.substring(
             userProvidedPageEventString.indexOf('{') + 2,
             userProvidedPageEventString.indexOf('}'),
           )
           .trim();
         evType =
-          userProvidedPageEventString.trim() === ''
+          userProvidedPageEventString?.trim() === ''
             ? name
             : userProvidedPageEventString
-                .trim()
+                ?.trim()
                 .replaceAll(/{{([^{}]+)}}/g, get(message, getMessagePath));
       } else {
         evType = `Viewed ${name || get(message, CATEGORY_KEY) || ''} Page`;
@@ -701,6 +701,7 @@ const processSingleMessage = (message, destination) => {
       logger.debug('could not determine type');
       throw new InstrumentationError('message type not supported');
   }
+  AMUtils.validateEventType(evType);
   return responseBuilderSimple(
     groupInfo,
     payloadObjectName,

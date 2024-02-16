@@ -648,4 +648,4 @@ export const existingTestData = [
   },
 ];
 
-export const data = [...testScenariosForV1API, ...otherScenariosV1];
+export const data = [...existingTestData, ...testScenariosForV1API, ...otherScenariosV1];

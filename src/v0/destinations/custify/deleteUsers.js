@@ -17,36 +17,41 @@ const userDeletionHandler = async (userAttributes, config) => {
   }
 
   const { apiKey } = config;
-  const { userId } = userAttributes;
 
   if (!apiKey) {
     throw new ConfigurationError('api key for deletion not present', 400);
   }
-  if (!userId) {
-    throw new InstrumentationError('User id for deletion not present', 400);
-  }
-  const requestUrl = `https://api.custify.com/people?user_id=${userId}`;
-  const requestOptions = {
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-    },
-  };
+  await Promise.all(
+    userAttributes.map(async (userAttr) => {
+      const { userId } = userAttr;
+      if (!userId) {
+        throw new InstrumentationError('User id for deletion not present', 400);
+      }
+      // Reference: https://docs.custify.com/#tag/People/paths/~1people/delete
+      const requestUrl = `https://api.custify.com/people?user_id=${userId}`;
+      const requestOptions = {
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+        },
+      };
 
-  const deletionResponse = await httpDELETE(requestUrl, requestOptions, {
-    destType: 'custify',
-    feature: 'deleteUsers',
-  });
-  const processedDeletionRequest = processAxiosResponse(deletionResponse);
-  if (processedDeletionRequest.status !== 200 && processedDeletionRequest.status !== 404) {
-    throw new NetworkError(
-      JSON.stringify(processedDeletionRequest.response) || 'Error while deleting user',
-      processedDeletionRequest.status,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedDeletionRequest.status),
-      },
-      deletionResponse,
-    );
-  }
+      const deletionResponse = await httpDELETE(requestUrl, requestOptions, {
+        destType: 'custify',
+        feature: 'deleteUsers',
+      });
+      const processedDeletionRequest = processAxiosResponse(deletionResponse);
+      if (processedDeletionRequest.status !== 200 && processedDeletionRequest.status !== 404) {
+        throw new NetworkError(
+          JSON.stringify(processedDeletionRequest.response) || 'Error while deleting user',
+          processedDeletionRequest.status,
+          {
+            [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedDeletionRequest.status),
+          },
+          deletionResponse,
+        );
+      }
+    }),
+  );
 
   return { statusCode: 200, status: 'successful' };
 };

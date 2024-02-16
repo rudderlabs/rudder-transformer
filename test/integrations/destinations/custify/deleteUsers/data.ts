@@ -1,12 +1,14 @@
 const destType = 'custify';
+const commonData = {
+  name: destType,
+  feature: 'userDeletion',
+  module: 'destination',
+  version: 'v0',
+};
 
 export const data = [
   {
-    name: destType,
     description: 'Test 0: should fail when config is not being sent',
-    feature: 'userDeletion',
-    module: 'destination',
-    version: 'v0',
     input: {
       request: {
         body: [
@@ -34,11 +36,7 @@ export const data = [
     },
   },
   {
-    name: destType,
     description: 'Test 1: should fail when apiKey is not present in config',
-    feature: 'userDeletion',
-    module: 'destination',
-    version: 'v0',
     input: {
       request: {
         body: [
@@ -68,4 +66,93 @@ export const data = [
       },
     },
   },
-];
+
+  {
+    description: 'Test 2: should pass when one of the users is not present in destination',
+    input: {
+      request: {
+        body: [
+          {
+            destType: destType.toUpperCase(),
+            userAttributes: [
+              {
+                userId: 'rudder1',
+              },
+              {
+                userId: 'rudder2',
+              },
+            ],
+            config: {
+              apiKey: 'dummyApiKey',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [{ statusCode: 200, status: 'successful' }],
+      },
+    },
+  },
+
+  {
+    description:
+      'Test 3: should fail when one of the users is returning with 4xx(not 404) from destination',
+    input: {
+      request: {
+        body: [
+          {
+            destType: destType.toUpperCase(),
+            userAttributes: [
+              {
+                userId: 'rudder1',
+              },
+              {
+                userId: 'rudder3',
+              },
+            ],
+            config: {
+              apiKey: 'dummyApiKey',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 400,
+        body: [{ statusCode: 400, error: '{"error":"User: rudder3 has a problem"}' }],
+      },
+    },
+  },
+
+  {
+    description: 'Test 4: should fail when one of the userAttributes does not contain `userId`',
+    input: {
+      request: {
+        body: [
+          {
+            destType: destType.toUpperCase(),
+            userAttributes: [
+              {
+                userId: 'rudder1',
+              },
+              {},
+            ],
+            config: {
+              apiKey: 'dummyApiKey',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 400,
+        body: [{ statusCode: 400, error: 'User id for deletion not present' }],
+      },
+    },
+  },
+].map((props) => ({ ...commonData, ...props }));

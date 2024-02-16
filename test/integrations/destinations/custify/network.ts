@@ -66,4 +66,20 @@ export const networkCallsData = [
       status: 404,
     },
   },
+
+  {
+    httpReq: {
+      method: 'delete',
+      url: 'https://api.custify.com/people?user_id=rudder3',
+      headers: {
+        Authorization: 'Bearer dummyApiKey',
+      },
+    },
+    httpRes: {
+      data: {
+        error: 'User: rudder3 has a problem',
+      },
+      status: 400,
+    },
+  },
 ];

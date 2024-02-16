@@ -6,7 +6,7 @@ const {
   getHashFromArray,
   removeUndefinedAndNullValues,
   getSuccessRespEvents,
-  getErrorRespEvents,
+  checkInvalidRtTfEvents,
 } = require('../../util');
 
 const filterConfigTopics = (message, destination) => {
@@ -38,9 +38,9 @@ const filterConfigTopics = (message, destination) => {
 
 const batch = (destEvents) => {
   const respList = [];
-  if (!Array.isArray(destEvents) || destEvents.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, 'Invalid event array');
-    return [respEvents];
+  const errorRespEvents = checkInvalidRtTfEvents(destEvents);
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
   }
 
   // Grouping the events by topic

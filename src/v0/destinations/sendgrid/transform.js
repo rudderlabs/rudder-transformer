@@ -9,7 +9,6 @@ const {
   ErrorMessage,
   isEmptyObject,
   constructPayload,
-  getErrorRespEvents,
   extractCustomFields,
   getValueFromMessage,
   defaultRequestConfig,
@@ -19,6 +18,7 @@ const {
   defaultBatchRequestConfig,
   handleRtTfSingleEventError,
   removeUndefinedAndNullValues,
+  checkInvalidRtTfEvents,
 } = require('../../util');
 const {
   MAPPING_CONFIG,
@@ -236,9 +236,9 @@ const batchEvents = (successRespList) => {
 };
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, 'Invalid event array');
-    return [respEvents];
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
   }
   let batchResponseList = [];
   const batchErrorRespList = [];

@@ -1,13 +1,13 @@
 const lodash = require('lodash');
 const { TransformationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
-  getErrorRespEvents,
   getSuccessRespEvents,
   defaultRequestConfig,
   defaultPostRequestConfig,
   defaultBatchRequestConfig,
   handleRtTfSingleEventError,
   removeUndefinedAndNullValues,
+  checkInvalidRtTfEvents,
 } = require('../../util');
 
 const { MAX_BATCH_SIZE } = require('./config');
@@ -121,9 +121,9 @@ const batchEvents = (successRespList) => {
 };
 
 const processRouterDest = (inputs, reqMetadata) => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, 'Invalid event array');
-    return [respEvents];
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
   }
   let batchResponseList = [];
   const batchErrorRespList = [];

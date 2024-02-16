@@ -5,12 +5,12 @@ const {
   defaultRequestConfig,
   defaultPostRequestConfig,
   getSuccessRespEvents,
-  getErrorRespEvents,
   constructPayload,
   defaultBatchRequestConfig,
   removeUndefinedAndNullValues,
   batchMultiplexedEvents,
   handleRtTfSingleEventError,
+  checkInvalidRtTfEvents,
 } = require('../../util');
 const {
   processUserPayload,
@@ -172,9 +172,9 @@ const batchEvents = (successRespList) => {
 };
 
 const processRouterDest = (inputs, reqMetadata) => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, 'Invalid event array');
-    return [respEvents];
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
   }
 
   const successRespList = [];

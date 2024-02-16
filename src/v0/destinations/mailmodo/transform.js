@@ -10,9 +10,9 @@ const {
   defaultPostRequestConfig,
   defaultBatchRequestConfig,
   removeUndefinedAndNullValues,
-  getErrorRespEvents,
   getSuccessRespEvents,
   handleRtTfSingleEventError,
+  checkInvalidRtTfEvents,
 } = require('../../util');
 const { deduceAddressFields, extractCustomProperties } = require('./utils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
@@ -191,9 +191,9 @@ function getEventChunks(event, identifyEventChunks, eventResponseList) {
 }
 
 const processRouterDest = (inputs, reqMetadata) => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, 'Invalid event array');
-    return [respEvents];
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
   }
 
   const identifyEventChunks = []; // list containing identify events in batched format

@@ -147,7 +147,7 @@ const getContentType = (message, defaultValue, categoryToContent, destinationNam
     return integrationsObj.contentType;
   }
 
-  let { category } = properties;
+  let { category } = properties || {};
   if (!category) {
     const { products } = properties;
     if (products && products.length > 0 && Array.isArray(products) && isObject(products[0])) {

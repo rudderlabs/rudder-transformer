@@ -2,6 +2,29 @@ import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
 import { ProxyV1TestData } from '../../../testTypes';
 import { getEndPoint } from '../../../../../src/v0/destinations/fb_custom_audience/config';
 
+const statTags = {
+  destType: 'FB_CUSTOM_AUDIENCE',
+  destinationId: 'default-destinationId',
+  errorCategory: 'network',
+  errorType: 'aborted',
+  feature: 'dataDelivery',
+  implementation: 'native',
+  module: 'destination',
+  workspaceId: 'default-workspaceId',
+};
+
+const params = {
+  access_token: 'ABC',
+  payload: {
+    is_raw: true,
+    data_source: {
+      sub_type: 'ANYTHING',
+    },
+    schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
+    data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
+  },
+};
+
 export const testScenariosForV1API: ProxyV1TestData[] = [
   {
     id: 'fbca_v1_scenario_1',
@@ -134,16 +157,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             status: 400,
             message:
               'Missing permission. Please make sure you have ads_management permission and the application is included in the allowlist',
-            statTags: {
-              destType: 'FB_CUSTOM_AUDIENCE',
-              destinationId: 'default-destinationId',
-              errorCategory: 'network',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'default-workspaceId',
-            },
+            statTags,
             response: [
               {
                 error:
@@ -174,17 +188,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           headers: {
             'test-dest-response-key': 'audienceUnavailableError',
           },
-          params: {
-            access_token: 'ABC',
-            payload: {
-              is_raw: true,
-              data_source: {
-                sub_type: 'ANYTHING',
-              },
-              schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
-              data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
-            },
-          },
+          params,
         }),
         method: 'POST',
       },
@@ -197,16 +201,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             status: 400,
             message:
               'Custom Audience Unavailable: The custom audience you are trying to use has not been shared with your ad account',
-            statTags: {
-              destType: 'FB_CUSTOM_AUDIENCE',
-              destinationId: 'default-destinationId',
-              errorCategory: 'network',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'default-workspaceId',
-            },
+            statTags,
             response: [
               {
                 error:
@@ -237,17 +232,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           headers: {
             'test-dest-response-key': 'audienceDeletedError',
           },
-          params: {
-            access_token: 'ABC',
-            payload: {
-              is_raw: true,
-              data_source: {
-                sub_type: 'ANYTHING',
-              },
-              schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
-              data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
-            },
-          },
+          params,
         }),
         method: 'POST',
       },
@@ -259,16 +244,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           output: {
             status: 400,
             message: 'Custom Audience Has Been Deleted',
-            statTags: {
-              destType: 'FB_CUSTOM_AUDIENCE',
-              destinationId: 'default-destinationId',
-              errorCategory: 'network',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'default-workspaceId',
-            },
+            statTags,
             response: [
               {
                 error: 'Custom Audience Has Been Deleted',
@@ -298,17 +274,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           headers: {
             'test-dest-response-key': 'failedToUpdateAudienceError',
           },
-          params: {
-            access_token: 'ABC',
-            payload: {
-              is_raw: true,
-              data_source: {
-                sub_type: 'ANYTHING',
-              },
-              schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
-              data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
-            },
-          },
+          params,
         }),
         method: 'POST',
       },
@@ -320,16 +286,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           output: {
             status: 400,
             message: 'Failed to update the custom audience',
-            statTags: {
-              destType: 'FB_CUSTOM_AUDIENCE',
-              destinationId: 'default-destinationId',
-              errorCategory: 'network',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'default-workspaceId',
-            },
+            statTags,
             response: [
               {
                 error: 'Failed to update the custom audience',
@@ -360,17 +317,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           headers: {
             'test-dest-response-key': 'parameterExceededError',
           },
-          params: {
-            access_token: 'ABC',
-            payload: {
-              is_raw: true,
-              data_source: {
-                sub_type: 'ANYTHING',
-              },
-              schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
-              data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
-            },
-          },
+          params,
         }),
         method: 'POST',
       },
@@ -382,16 +329,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           output: {
             status: 400,
             message: 'The number of parameters exceeded the maximum for this operation',
-            statTags: {
-              destType: 'FB_CUSTOM_AUDIENCE',
-              destinationId: 'default-destinationId',
-              errorCategory: 'network',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'default-workspaceId',
-            },
+            statTags,
             response: [
               {
                 error: 'The number of parameters exceeded the maximum for this operation',
@@ -421,17 +359,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           headers: {
             'test-dest-response-key': 'code200PermissionError',
           },
-          params: {
-            access_token: 'ABC',
-            payload: {
-              is_raw: true,
-              data_source: {
-                sub_type: 'ANYTHING',
-              },
-              schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
-              data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
-            },
-          },
+          params,
         }),
         method: 'POST',
       },
@@ -443,16 +371,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           output: {
             status: 403,
             message: '(#200) The current user can not update audience 23861283180290489',
-            statTags: {
-              destType: 'FB_CUSTOM_AUDIENCE',
-              destinationId: 'default-destinationId',
-              errorCategory: 'network',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'default-workspaceId',
-            },
+            statTags,
             response: [
               {
                 error: '(#200) The current user can not update audience 23861283180290489',
@@ -482,17 +401,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           headers: {
             'test-dest-response-key': 'accessTokenInvalidError',
           },
-          params: {
-            access_token: 'ABC',
-            payload: {
-              is_raw: true,
-              data_source: {
-                sub_type: 'ANYTHING',
-              },
-              schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
-              data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
-            },
-          },
+          params,
         }),
         method: 'POST',
       },

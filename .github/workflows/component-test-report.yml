@@ -61,8 +61,6 @@ jobs:
               issue_number: prNumber,
             });
 
-            console.log(issueComments);
-
             for (const comment of issueComments) {
               if (comment.body === commentBody) {
                 console.log('Comment already exists');

@@ -127,4 +127,34 @@ export const data = [
       },
     },
   },
+
+  {
+    description:
+      'Test 4: should fail when one of the userAttributes does not contain `userId`',
+    input: {
+      request: {
+        body: [
+          {
+            destType: destType.toUpperCase(),
+            userAttributes: [
+              {
+                userId: 'rudder1',
+              },
+              {
+              },
+            ],
+            config: {
+              apiKey: 'dummyApiKey',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 400,
+        body: [{ statusCode: 400, error: 'User id for deletion not present' }],
+      },
+    },
+  },
 ].map((props) => ({ ...commonData, ...props }));

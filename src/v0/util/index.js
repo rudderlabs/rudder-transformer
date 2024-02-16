@@ -1325,24 +1325,35 @@ const generateExclusionList = (mappingConfig) =>
  *   ]
  * @returns {Array} - The generated exclusion list, which can be fed in the "extractCustomFields" function.
  */
-const generateExclusionListUsingKeyPaths = (mappingConfig) =>
-  mappingConfig.flatMap((mapping) => {
+const generateExclusionListUsingKeyPaths = (mappingConfig) => {
+  const resultList = mappingConfig.flatMap((mapping) => {
     if (mapping.sourceFromGenericMap) {
       // If sourceFromGenericMap is true, use the mapping for generic fields
       const genericMappings = genericFieldMapping[mapping.sourceKeys];
-      if (Array.isArray(genericMappings)) {
-        // Map over the genericMappings to extract the last part of each path
-        return genericMappings.map((paths) => paths.split('.').pop());
+      if (isDefinedAndNotNull(genericMappings)) {
+        if (Array.isArray(genericMappings)) {
+          // Map over the genericMappings to extract the last part of each path
+          return genericMappings.map((paths) => paths.split('.').pop());
+        }
+        // Handle the case where it's a single string, not an array
+        return [genericMappings.split('.').pop()];
       }
-      // Handle the case where it's a single string, not an array
-      return [genericMappings.split('.').pop()];
     }
+
     // Handle the case where sourceFromGenericMap is not true or does not exist
     // This also assumes that the non-generic mappings might be in dot notation and extracts the last key
-    return Array.isArray(mapping.sourceKeys)
-      ? mapping.sourceKeys.map((key) => key.split('.').pop())
-      : [mapping.sourceKeys.split('.').pop()];
+    if (isDefinedAndNotNull(mapping.sourceKeys)) {
+      return Array.isArray(mapping.sourceKeys)
+        ? mapping.sourceKeys.map((key) => key.split('.').pop())
+        : [mapping.sourceKeys.split('.').pop()];
+    }
+    throw new TransformationError('sourceKeys is not defined in the mapping configuration');
   });
+  // Use a Set to filter out duplicates, then convert it back to an array
+  const uniqueResultList = [...new Set(resultList)];
+
+  return uniqueResultList;
+};
 
 /**
  * Extract fileds from message with exclusions

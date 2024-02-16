@@ -123,7 +123,7 @@ export const data = [
           {
             destination: overrideDestination(sampleDestination, {
               useUserDefinedPageEventName: true,
-              userDefinedPageEventString: 'Viewed a {{ name }} page',
+              userDefinedPageEventTemplate: 'Viewed a {{ name }} page',
             }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',

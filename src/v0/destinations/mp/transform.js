@@ -303,9 +303,9 @@ const processPageOrScreenEvents = (message, type, destination) => {
     token,
     identityMergeApi,
     useUserDefinedPageEventName,
-    userDefinedPageEventString,
+    userDefinedPageEventTemplate,
     useUserDefinedScreenEventName,
-    userDefinedScreenEventString,
+    userDefinedScreenEventTemplate,
   } = destination.Config;
   const mappedProperties = constructPayload(message, mPEventPropertiesConfigJson);
   let properties = {
@@ -340,11 +340,11 @@ const processPageOrScreenEvents = (message, type, destination) => {
   let eventName;
   if (type === 'page') {
     eventName = useUserDefinedPageEventName
-      ? generatePageOrScreenCustomEventName(message, userDefinedPageEventString)
+      ? generatePageOrScreenCustomEventName(message, userDefinedPageEventTemplate)
       : 'Loaded a Page';
   } else {
     eventName = useUserDefinedScreenEventName
-      ? generatePageOrScreenCustomEventName(message, userDefinedScreenEventString)
+      ? generatePageOrScreenCustomEventName(message, userDefinedScreenEventTemplate)
       : 'Loaded a Screen';
   }
 

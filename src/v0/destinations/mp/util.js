@@ -1,7 +1,8 @@
 const lodash = require('lodash');
 const set = require('set-value');
 const get = require('get-value');
-const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const Handlebars = require('handlebars');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
   isDefined,
   constructPayload,
@@ -304,27 +305,19 @@ function trimTraits(traits, contextTraits, setOnceProperties) {
 /**
  * Generates a custom event name for a page or screen.
  *
- * @param {Object} message - The message object.
- * @param {string} userDefinedEventString - The user-defined event string.
- * @returns {string} - The generated custom event name.
- * @throws {InstrumentationError} - If the event does not contain the configured path.
- * @example
- *
- * const message = {name: 'Home'};
- * const userDefinedEventString = 'Viewed a {{ name }} page';
- * -> Viewed a Home page
+ * @param {Object} message - The message object
+ * @param {string} userDefinedEventTemplate - The user-defined event template to be used for generating the event name.
+ * @throws {ConfigurationError} If the event template is missing.
+ * @returns {string} The generated custom event name.
  */
-const generatePageOrScreenCustomEventName = (message, userDefinedEventString) => {
-  const getMessagePath = userDefinedEventString?.match(/{\s*([^{}]+)\s*}/)?.[1]?.trim();
-  if (!getMessagePath) return userDefinedEventString;
-
-  const value = get(message, getMessagePath);
-  if (!value) {
-    throw new InstrumentationError(
-      `'Use Custom Page/Screen Event Name' setting is enabled but the event does not contain the ${getMessagePath} configured in 'Page/Screen Event Name Format' setting`,
+const generatePageOrScreenCustomEventName = (message, userDefinedEventTemplate) => {
+  if (!userDefinedEventTemplate) {
+    throw new ConfigurationError(
+      'Event template is missing. Please provide a valid event template in `Page/Screen Event Name Template` setting',
     );
   }
-  return userDefinedEventString?.trim().replaceAll(/{{([^{}]+)}}/g, value);
+  const eventTemplate = Handlebars.compile(userDefinedEventTemplate);
+  return eventTemplate(message);
 };
 
 module.exports = {

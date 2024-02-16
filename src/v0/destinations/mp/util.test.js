@@ -7,7 +7,7 @@ const {
   generatePageOrScreenCustomEventName,
 } = require('./util');
 const { FEATURE_GZIP_SUPPORT } = require('../../util/constant');
-const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const { ConfigurationError } = require('@rudderstack/integrations-lib');
 
 const maxBatchSizeMock = 2;
 
@@ -450,34 +450,35 @@ describe('Unit test cases for trimTraits', () => {
 });
 
 describe('generatePageOrScreenCustomEventName', () => {
-  it('should generate a custom event name when userDefinedEventString contains handlebars and message object is provided', () => {
+  it('should generate a custom event name when userDefinedEventTemplate contains handlebars and message object is provided', () => {
     const message = { name: 'Home' };
-    const userDefinedEventString = 'Viewed a {{ name }} page';
+    const userDefinedEventTemplate = 'Viewed a {{ name }} page';
     const expected = 'Viewed a Home page';
-    const result = generatePageOrScreenCustomEventName(message, userDefinedEventString);
+    const result = generatePageOrScreenCustomEventName(message, userDefinedEventTemplate);
     expect(result).toBe(expected);
   });
 
-  it('should return the undefined name when userDefinedEventString is not provided', () => {
+  it('should throw a ConfigurationError when userDefinedEventTemplate is not provided', () => {
     const message = { name: 'Home' };
-    const userDefinedEventString = undefined;
-    const result = generatePageOrScreenCustomEventName(message, userDefinedEventString);
-    expect(result).toBe(undefined);
-  });
-
-  it('should return the userDefinedEventString when it does not contain handlebars', () => {
-    const message = { name: 'Home' };
-    const userDefinedEventString = 'Viewed a Home page';
-    const expected = 'Viewed a Home page';
-    const result = generatePageOrScreenCustomEventName(message, userDefinedEventString);
-    expect(result).toBe(expected);
-  });
-
-  it('should throw an InstrumentationError when getMessagePath is not present in the message object', () => {
-    const message = { name: 'Home' };
-    const userDefinedEventString = 'Viewed a {{ path }} page';
+    const userDefinedEventTemplate = undefined;
     expect(() => {
-      generatePageOrScreenCustomEventName(message, userDefinedEventString);
-    }).toThrow(InstrumentationError);
+      generatePageOrScreenCustomEventName(message, userDefinedEventTemplate);
+    }).toThrow(ConfigurationError);
+  });
+
+  it('should return the userDefinedEventTemplate when it does not contain handlebars', () => {
+    const message = { name: 'Home' };
+    const userDefinedEventTemplate = 'Viewed a Home page';
+    const expected = 'Viewed a Home page';
+    const result = generatePageOrScreenCustomEventName(message, userDefinedEventTemplate);
+    expect(result).toBe(expected);
+  });
+
+  it('should return a event name when message object is not provided', () => {
+    const message = undefined;
+    const userDefinedEventTemplate = 'Viewed a {{ path }} page';
+    const expected = 'Viewed a  page';
+    const result = generatePageOrScreenCustomEventName(message, userDefinedEventTemplate);
+    expect(result).toBe(expected);
   });
 });

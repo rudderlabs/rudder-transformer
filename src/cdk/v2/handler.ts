@@ -50,16 +50,20 @@ export async function getWorkflowEngine(
 
 const workflowEnginePromiseMap = new Map();
 
-export function getCachedWorkflowEngine(
+export async function getCachedWorkflowEngine(
   destName: string,
   feature: string,
   bindings: Record<string, unknown> = {},
-): WorkflowEngine {
+): Promise<WorkflowEngine> {
   // Create a new instance of the engine for the destination if needed
   // TODO: Use cache to avoid long living engine objects
   workflowEnginePromiseMap[destName] = workflowEnginePromiseMap[destName] || new Map();
   if (!workflowEnginePromiseMap[destName][feature]) {
-    workflowEnginePromiseMap[destName][feature] = getWorkflowEngine(destName, feature, bindings);
+    workflowEnginePromiseMap[destName][feature] = await getWorkflowEngine(
+      destName,
+      feature,
+      bindings,
+    );
   }
   return workflowEnginePromiseMap[destName][feature];
 }
@@ -97,5 +101,8 @@ export function executeStep(
 ): Promise<StepOutput> {
   return workflowEngine
     .getStepExecutor(stepName)
-    .execute(input, Object.assign(workflowEngine.bindings, getEmptyExecutionBindings(), bindings));
+    .execute(
+      input,
+      Object.assign(workflowEngine.getBindings(), getEmptyExecutionBindings(), bindings),
+    );
 }

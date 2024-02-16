@@ -29,7 +29,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
   {
     id: 'fbca_v1_scenario_1',
     name: 'fb_custom_audience',
-    description: 'successfully adding users to audience',
+    description: 'successfully delete users from audience',
     successCriteria: 'Should return 200 with no error with destination response',
     scenario: 'Business',
     feature: 'dataDelivery',
@@ -174,7 +174,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
   {
     id: 'fbca_v1_scenario_3',
     name: 'fb_custom_audience',
-    description: 'user addition failed due to unavailable audience error',
+    description: 'user deletion failed due to unavailable audience error',
     successCriteria: 'Fail with status code 400',
     scenario: 'Business',
     feature: 'dataDelivery',
@@ -218,7 +218,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
   {
     id: 'fbca_v1_scenario_4',
     name: 'fb_custom_audience',
-    description: 'user addition failed because the custom audience has been deleted',
+    description: 'user deletion failed because the custom audience has been deleted',
     successCriteria: 'Fail with status code 400',
     scenario: 'Business',
     feature: 'dataDelivery',
@@ -387,7 +387,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
   {
     id: 'fbca_v1_scenario_8',
     name: 'fb_custom_audience',
-    description: 'user addition failed due expired access token error',
+    description: 'user deletion failed due expired access token error',
     successCriteria: 'Fail with status code 400',
     scenario: 'Business',
     feature: 'dataDelivery',

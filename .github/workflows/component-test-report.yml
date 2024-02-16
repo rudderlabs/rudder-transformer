@@ -54,11 +54,14 @@ jobs:
             const prNumber = context.payload.pull_request.number;
             const commentBody = `Test report for this run is available at: https://test-integrations-dev.s3.amazonaws.com/integrations-test-reports/rudder-transformer/${prNumber}/test-report.html`;
 
-            const issueComments = await github.rest.issues.listComments({
+            // find all the comments of the PR
+            const issueComments = await github.paginate(github.rest.issues.listComments, {
               owner,
               repo,
               issue_number: prNumber,
             });
+
+            console.log(issueComments);
 
             for (const comment of issueComments) {
               if (comment.body === commentBody) {

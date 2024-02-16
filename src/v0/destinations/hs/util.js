@@ -118,6 +118,8 @@ const getProperties = async (destination) => {
         destType: 'hs',
         feature: 'transformation',
         endpointPath: `/properties/v1/contacts/properties?hapikey`,
+        requestMethod: 'GET',
+        module: 'router',
       },
     );
     hubspotPropertyMapResponse = processAxiosResponse(hubspotPropertyMapResponse);
@@ -367,6 +369,8 @@ const searchContacts = async (message, destination) => {
         destType: 'hs',
         feature: 'transformation',
         endpointPath,
+        requestMethod: 'POST',
+        module: 'router',
       },
     );
     searchContactsResponse = processAxiosResponse(searchContactsResponse);
@@ -377,6 +381,8 @@ const searchContacts = async (message, destination) => {
       destType: 'hs',
       feature: 'transformation',
       endpointPath,
+      requestMethod: 'POST',
+      module: 'router',
     });
     searchContactsResponse = processAxiosResponse(searchContactsResponse);
   }
@@ -541,6 +547,8 @@ const performHubSpotSearch = async (
       destType: 'hs',
       feature: 'transformation',
       endpointPath,
+      requestMethod: 'POST',
+      module: 'router',
     });
 
     const processedResponse = processAxiosResponse(searchResponse);

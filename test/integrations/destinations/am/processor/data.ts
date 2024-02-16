@@ -11327,4 +11327,57 @@ export const data = [
       },
     },
   },
+  {
+    name: 'am',
+    description:
+      'Test 78 -> Page call invalid event type as page name and template is not provided',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              request_ip: '1.1.1.1',
+              type: 'page',
+              userId: '12345',
+              properties: {},
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T11:15:53.296Z',
+            },
+            destination: {
+              Config: {
+                apiKey: 'abcde',
+                useUserDefinedPageEventName: true,
+                userProvidedPageEventString: '',
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            statusCode: 400,
+            error:
+              'Event type is missing. Please send it under `event.type`. For page/screen events, send it under `event.name`',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'AM',
+              module: 'destination',
+              implementation: 'native',
+              feature: 'processor',
+            },
+          },
+        ],
+      },
+    },
+  },
 ];

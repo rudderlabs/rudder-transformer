@@ -45,7 +45,7 @@ export const data = [
             destination: {
               Config: { devKey: 'ef1d42390426e3f7c90ac78272e74344', androidAppId: 'appId' },
               Enabled: true,
-              placePropertiesAtRoot: false,
+              addPropertiesAtRoot: false,
             },
           },
         ],
@@ -119,7 +119,7 @@ export const data = [
               Config: {
                 devKey: 'ef1d42390426e3f7c90ac78272e74344',
                 androidAppId: 'com.rudderlabs.javascript',
-                placePropertiesAtRoot: false,
+                addPropertiesAtRoot: false,
               },
               Enabled: true,
             },
@@ -307,7 +307,7 @@ export const data = [
               Config: {
                 devKey: 'ef1d42390426e3f7c90ac78272e74344',
                 androidAppId: 'com.rudderlabs.javascript',
-                placePropertiesAtRoot: false,
+                addPropertiesAtRoot: false,
               },
               Enabled: true,
             },
@@ -1583,7 +1583,7 @@ export const data = [
                 devKey: 'ef1d42390426e3f7c90ac78272e74344',
                 androidAppId: 'com.rudderlabs.javascript',
                 sharingFilter: 'all',
-                placePropertiesAtRoot: true,
+                addPropertiesAtRoot: true,
               },
               Enabled: true,
             },
@@ -1675,7 +1675,7 @@ export const data = [
               Config: {
                 devKey: 'ef1d42390426e3f7c90ac78272e74344',
                 androidAppId: 'com.rudderlabs.javascript',
-                placePropertiesAtRoot: true,
+                addPropertiesAtRoot: true,
               },
               Enabled: true,
             },
@@ -1794,7 +1794,7 @@ export const data = [
                 groupValueTrait: 'age',
                 trackProductsOnce: false,
                 trackRevenuePerProduct: false,
-                placePropertiesAtRoot: true,
+                addPropertiesAtRoot: true,
               },
             },
           },

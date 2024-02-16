@@ -18,6 +18,7 @@ const {
   handleRtTfSingleEventError,
   groupEventsByType,
   parseConfigArray,
+  combineBatchRequestsWithSameJobIds,
 } = require('../../util');
 const {
   ConfigCategory,
@@ -33,7 +34,6 @@ const {
   createIdentifyResponse,
   isImportAuthCredentialsAvailable,
   buildUtmParams,
-  combineBatchRequestsWithSameJobIds,
   groupEventsByEndpoint,
   batchEvents,
   trimTraits,

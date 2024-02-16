@@ -2,7 +2,7 @@ import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
 import { ProxyV1TestData } from '../../../testTypes';
 import { getEndPoint } from '../../../../../src/v0/destinations/fb_custom_audience/config';
 
-export const otherScenariosV1 = [
+export const otherScenariosV1: ProxyV1TestData[] = [
   {
     id: 'fbca_v1_other_scenario_1',
     name: 'fb_custom_audience',
@@ -33,36 +33,29 @@ export const otherScenariosV1 = [
             },
           },
         }),
-        method: 'DELETE',
+        method: 'POST',
       },
     },
     output: {
       response: {
-        status: 429,
+        status: 200,
         body: {
           output: {
             message: 'There have been too many calls to this ad-account.',
             statTags: {
               destType: 'FB_CUSTOM_AUDIENCE',
-              destinationId: 'Non-determininable',
+              destinationId: 'default-destinationId',
               errorCategory: 'network',
               errorType: 'throttled',
               feature: 'dataDelivery',
               implementation: 'native',
               module: 'destination',
-              workspaceId: 'Non-determininable',
+              workspaceId: 'default-workspaceId',
             },
             status: 429,
             response: [
               {
-                error: {
-                  error: {
-                    code: 80003,
-                    message: 'There have been too many calls to this ad-account.',
-                    type: 'GraphMethodException',
-                  },
-                  status: 429,
-                },
+                error: 'There have been too many calls to this ad-account.',
                 statusCode: 429,
                 metadata: generateMetadata(1),
               },

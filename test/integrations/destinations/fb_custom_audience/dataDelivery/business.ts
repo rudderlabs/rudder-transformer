@@ -2,7 +2,7 @@ import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
 import { ProxyV1TestData } from '../../../testTypes';
 import { getEndPoint } from '../../../../../src/v0/destinations/fb_custom_audience/config';
 
-export const testScenariosForV1API = [
+export const testScenariosForV1API: ProxyV1TestData[] = [
   {
     id: 'fbca_v1_scenario_1',
     name: 'fb_custom_audience',
@@ -58,7 +58,7 @@ export const testScenariosForV1API = [
             },
           },
         }),
-        method: 'DELETE',
+        method: 'POST',
       },
     },
     output: {
@@ -70,13 +70,8 @@ export const testScenariosForV1API = [
             message: 'Request Processed Successfully',
             response: [
               {
-                error: {
-                  audience_id: 'aud1',
-                  invalid_entry_samples: {},
-                  num_invalid_entries: 0,
-                  num_received: 4,
-                  session_id: '123',
-                },
+                error:
+                  '{"audience_id":"aud1","session_id":"123","num_received":4,"num_invalid_entries":0,"invalid_entry_samples":{}}',
                 statusCode: 200,
                 metadata: generateMetadata(1),
               },
@@ -133,7 +128,7 @@ export const testScenariosForV1API = [
     },
     output: {
       response: {
-        status: 400,
+        status: 200,
         body: {
           output: {
             status: 400,
@@ -141,25 +136,18 @@ export const testScenariosForV1API = [
               'Missing permission. Please make sure you have ads_management permission and the application is included in the allowlist',
             statTags: {
               destType: 'FB_CUSTOM_AUDIENCE',
-              destinationId: 'Non-determininable',
+              destinationId: 'default-destinationId',
               errorCategory: 'network',
               errorType: 'aborted',
               feature: 'dataDelivery',
               implementation: 'native',
               module: 'destination',
-              workspaceId: 'Non-determininable',
+              workspaceId: 'default-workspaceId',
             },
             response: [
               {
-                error: {
-                  error: {
-                    code: 294,
-                    message:
-                      'Missing permission. Please make sure you have ads_management permission and the application is included in the allowlist',
-                    type: 'GraphMethodException',
-                  },
-                  status: 400,
-                },
+                error:
+                  'Missing permission. Please make sure you have ads_management permission and the application is included in the allowlist',
                 statusCode: 400,
                 metadata: generateMetadata(1),
               },
@@ -198,12 +186,12 @@ export const testScenariosForV1API = [
             },
           },
         }),
-        method: 'DELETE',
+        method: 'POST',
       },
     },
     output: {
       response: {
-        status: 400,
+        status: 200,
         body: {
           output: {
             status: 400,
@@ -211,25 +199,327 @@ export const testScenariosForV1API = [
               'Custom Audience Unavailable: The custom audience you are trying to use has not been shared with your ad account',
             statTags: {
               destType: 'FB_CUSTOM_AUDIENCE',
-              destinationId: 'Non-determininable',
+              destinationId: 'default-destinationId',
               errorCategory: 'network',
               errorType: 'aborted',
               feature: 'dataDelivery',
               implementation: 'native',
               module: 'destination',
-              workspaceId: 'Non-determininable',
+              workspaceId: 'default-workspaceId',
             },
             response: [
               {
-                error: {
-                  error: {
-                    code: 1487301,
-                    message:
-                      'Custom Audience Unavailable: The custom audience you are trying to use has not been shared with your ad account',
-                    type: 'GraphMethodException',
-                  },
-                  status: 400,
-                },
+                error:
+                  'Custom Audience Unavailable: The custom audience you are trying to use has not been shared with your ad account',
+                statusCode: 400,
+                metadata: generateMetadata(1),
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'fbca_v1_scenario_4',
+    name: 'fb_custom_audience',
+    description: 'user addition failed because the custom audience has been deleted',
+    successCriteria: 'Fail with status code 400',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload({
+          method: 'DELETE',
+          endpoint: getEndPoint('aud1'),
+          headers: {
+            'test-dest-response-key': 'audienceDeletedError',
+          },
+          params: {
+            access_token: 'ABC',
+            payload: {
+              is_raw: true,
+              data_source: {
+                sub_type: 'ANYTHING',
+              },
+              schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
+              data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
+            },
+          },
+        }),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 400,
+            message: 'Custom Audience Has Been Deleted',
+            statTags: {
+              destType: 'FB_CUSTOM_AUDIENCE',
+              destinationId: 'default-destinationId',
+              errorCategory: 'network',
+              errorType: 'aborted',
+              feature: 'dataDelivery',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'default-workspaceId',
+            },
+            response: [
+              {
+                error: 'Custom Audience Has Been Deleted',
+                statusCode: 400,
+                metadata: generateMetadata(1),
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'fbca_v1_scenario_5',
+    name: 'fb_custom_audience',
+    description: 'Failed to update the custom audience for unknown reason',
+    successCriteria: 'Fail with status code 400',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload({
+          method: 'DELETE',
+          endpoint: getEndPoint('aud1'),
+          headers: {
+            'test-dest-response-key': 'failedToUpdateAudienceError',
+          },
+          params: {
+            access_token: 'ABC',
+            payload: {
+              is_raw: true,
+              data_source: {
+                sub_type: 'ANYTHING',
+              },
+              schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
+              data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
+            },
+          },
+        }),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 400,
+            message: 'Failed to update the custom audience',
+            statTags: {
+              destType: 'FB_CUSTOM_AUDIENCE',
+              destinationId: 'default-destinationId',
+              errorCategory: 'network',
+              errorType: 'aborted',
+              feature: 'dataDelivery',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'default-workspaceId',
+            },
+            response: [
+              {
+                error: 'Failed to update the custom audience',
+                statusCode: 400,
+                metadata: generateMetadata(1),
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'fbca_v1_scenario_6',
+    name: 'fb_custom_audience',
+    description:
+      'Failed to update the custom audience as excessive number of parameters were passed in the request',
+    successCriteria: 'Fail with status code 400',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload({
+          method: 'DELETE',
+          endpoint: getEndPoint('aud1'),
+          headers: {
+            'test-dest-response-key': 'parameterExceededError',
+          },
+          params: {
+            access_token: 'ABC',
+            payload: {
+              is_raw: true,
+              data_source: {
+                sub_type: 'ANYTHING',
+              },
+              schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
+              data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
+            },
+          },
+        }),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 400,
+            message: 'The number of parameters exceeded the maximum for this operation',
+            statTags: {
+              destType: 'FB_CUSTOM_AUDIENCE',
+              destinationId: 'default-destinationId',
+              errorCategory: 'network',
+              errorType: 'aborted',
+              feature: 'dataDelivery',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'default-workspaceId',
+            },
+            response: [
+              {
+                error: 'The number of parameters exceeded the maximum for this operation',
+                statusCode: 400,
+                metadata: generateMetadata(1),
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'fbca_v1_scenario_7',
+    name: 'fb_custom_audience',
+    description: 'user having permission issue while updating audience',
+    successCriteria: 'Fail with status code 403',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload({
+          method: 'DELETE',
+          endpoint: getEndPoint('aud1'),
+          headers: {
+            'test-dest-response-key': 'code200PermissionError',
+          },
+          params: {
+            access_token: 'ABC',
+            payload: {
+              is_raw: true,
+              data_source: {
+                sub_type: 'ANYTHING',
+              },
+              schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
+              data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
+            },
+          },
+        }),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 403,
+            message: '(#200) The current user can not update audience 23861283180290489',
+            statTags: {
+              destType: 'FB_CUSTOM_AUDIENCE',
+              destinationId: 'default-destinationId',
+              errorCategory: 'network',
+              errorType: 'aborted',
+              feature: 'dataDelivery',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'default-workspaceId',
+            },
+            response: [
+              {
+                error: '(#200) The current user can not update audience 23861283180290489',
+                statusCode: 403,
+                metadata: generateMetadata(1),
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'fbca_v1_scenario_8',
+    name: 'fb_custom_audience',
+    description: 'user addition failed due expired access token error',
+    successCriteria: 'Fail with status code 400',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload({
+          method: 'DELETE',
+          endpoint: getEndPoint('aud1'),
+          headers: {
+            'test-dest-response-key': 'accessTokenInvalidError',
+          },
+          params: {
+            access_token: 'ABC',
+            payload: {
+              is_raw: true,
+              data_source: {
+                sub_type: 'ANYTHING',
+              },
+              schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
+              data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
+            },
+          },
+        }),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 400,
+            message:
+              'Error validating access token: Session has expired on Tuesday, 01-Aug-23 10:12:14 PDT. The current time is Sunday, 28-Jan-24 16:01:17 PST.',
+            statTags: {
+              destType: 'FB_CUSTOM_AUDIENCE',
+              destinationId: 'default-destinationId',
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
+              meta: 'accessTokenExpired',
+              feature: 'dataDelivery',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'default-workspaceId',
+            },
+            response: [
+              {
+                error:
+                  'Error validating access token: Session has expired on Tuesday, 01-Aug-23 10:12:14 PDT. The current time is Sunday, 28-Jan-24 16:01:17 PST.',
                 statusCode: 400,
                 metadata: generateMetadata(1),
               },

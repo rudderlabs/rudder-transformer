@@ -48,7 +48,7 @@ steps:
         const newPayload = $.cloneDeep(payload);
         newPayload.properties.distinct_id = $.populateAccurateDistinctId(newPayload, ^.message);
         const temporaryProductArray = newPayload.properties.products ?? $.createProductForStandardEcommEvent(^.message, eventName);
-        newPayload.properties.products = $.addProductArray(temporaryProductArray);
+        newPayload.properties.products = $.normalizeProductArray(temporaryProductArray);
         newPayload.event = eventName;
         newPayload.token = ^.destination.Config.bluecoreNamespace;
         $.verifyPayload(newPayload, ^.message);

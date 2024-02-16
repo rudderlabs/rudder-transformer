@@ -1,13 +1,14 @@
 const {
-  addProductArray,
+  normalizeProductArray,
   verifyPayload,
   isStandardBluecoreEvent,
   deduceTrackEventName,
   populateAccurateDistinctId,
+  createProductForStandardEcommEvent,
 } = require('./utils');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 
-describe('addProductArray', () => {
+describe('normalizeProductArray', () => {
   // Adds an array of products to a message when products array is defined and not null.
   it('should add an array of products to a message when products array is defined and not null', () => {
     const products = [
@@ -16,7 +17,7 @@ describe('addProductArray', () => {
     ];
     const eventName = 'purchase';
 
-    const result = addProductArray(products, eventName);
+    const result = normalizeProductArray(products, eventName);
 
     expect(result).toEqual([
       { id: 1, name: 'Product 1' },
@@ -29,7 +30,7 @@ describe('addProductArray', () => {
     const product = { product_id: 1, name: 'Product 1' };
     const eventName = 'add_to_cart';
 
-    const result = addProductArray(product, eventName);
+    const result = normalizeProductArray(product, eventName);
     expect(result).toEqual([{ id: 1, name: 'Product 1' }]);
   });
 
@@ -39,7 +40,7 @@ describe('addProductArray', () => {
     const eventName = 'custom';
 
     expect(() => {
-      addProductArray(message, products, eventName);
+      normalizeProductArray(message, products, eventName);
     }).toBeNull;
   });
 });
@@ -57,7 +58,7 @@ describe('verifyPayload', () => {
   });
 
   // Verify payload for purchase event with order_id and total properties.
-  it('should verify payload for purchase event with order_id and total properties', () => {
+  it('should verify payload for purchase event with order_id and total and customer properties', () => {
     const payload = {
       event: 'purchase',
       properties: {
@@ -65,14 +66,18 @@ describe('verifyPayload', () => {
         total: 100,
       },
     };
-    expect(() => verifyPayload(payload, {})).not.toThrow();
+    expect(() => verifyPayload(payload, {})).toThrow(InstrumentationError);
   });
 
   // Verify payload for identify event with email property.
   it('should verify payload for identify event with email property', () => {
     const payload = {
       event: 'identify',
-      properties: {},
+      properties: {
+        customer: {
+          first_name: 'John',
+        },
+      },
     };
     const message = {
       traits: {
@@ -327,5 +332,72 @@ describe('populateAccurateDistinctId', () => {
     };
     const distinctId = populateAccurateDistinctId(payload, message);
     expect(distinctId).toBe('54321');
+  });
+});
+
+describe('createProductForStandardEcommEvent', () => {
+  // Returns an array containing the properties if the event is a standard Bluecore event and not 'search'.
+  it("should return an array containing the properties when the event is a standard Bluecore event and not 'search'", () => {
+    const message = {
+      event: 'some event',
+      properties: { name: 'product 1' },
+    };
+    const eventName = 'some event';
+    const result = createProductForStandardEcommEvent(message, eventName);
+    expect(result).toEqual(null);
+  });
+
+  // Returns null if the event is 'search'.
+  it("should return null when the event is 'search'", () => {
+    const message = {
+      event: 'search',
+      properties: { name: 'product 1' },
+    };
+    const eventName = 'search';
+    const result = createProductForStandardEcommEvent(message, eventName);
+    expect(result).toBeNull();
+  });
+
+  // Throws an InstrumentationError if the event is 'order completed' and the eventName is 'purchase'.
+  it("should throw an InstrumentationError when the event is 'order completed' and the eventName is 'purchase'", () => {
+    const message = {
+      event: 'order completed',
+      properties: { name: 'product 1' },
+    };
+    const eventName = 'purchase';
+    expect(() => {
+      createProductForStandardEcommEvent(message, eventName);
+    }).toThrow(InstrumentationError);
+  });
+
+  // Returns null if the eventName is not a standard Bluecore event.
+  it('should return null when the eventName is not a standard Bluecore event', () => {
+    const message = {
+      event: 'some event',
+      properties: { name: 'product 1', products: [{ product_id: 1, name: 'prod1' }] },
+    };
+    const eventName = 'non-standard';
+    const result = createProductForStandardEcommEvent(message, eventName);
+    expect(result).toBeNull();
+  });
+
+  // Returns null if the eventName is not provided.
+  it('should return null when the eventName is not provided', () => {
+    const message = {
+      event: 'some event',
+      properties: { name: 'product 1' },
+    };
+    const result = createProductForStandardEcommEvent(message);
+    expect(result).toBeNull();
+  });
+
+  // Returns null if the properties are not provided.
+  it('should return null when the properties are not provided', () => {
+    const message = {
+      event: 'some event',
+    };
+    const eventName = 'some event';
+    const result = createProductForStandardEcommEvent(message, eventName);
+    expect(result).toBeNull();
   });
 });

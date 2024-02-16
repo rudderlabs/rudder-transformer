@@ -429,4 +429,61 @@ export const ecomTestData = [
       },
     },
   },
+  {
+    id: 'bluecore-track-test-6',
+    name: 'bluecore',
+    description:
+      'Track event call with Order Completed event without product array and not mapped in destination config. This will be sent with purchase name. This event without properties.products will generate error as products array is required for purchase event and ordered completed is a standard ecomm event',
+    scenario: 'Business',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: destination,
+            metadata,
+            message: generateSimplifiedTrackPayload({
+              type: 'track',
+              event: 'Order Completed',
+              userId: 'sajal12',
+              context: {
+                traits: {
+                  ...commonTraits,
+                  email: 'test@rudderstack.com',
+                  phone: '9112340375',
+                },
+              },
+              properties: commonPropsWithoutProducts,
+              anonymousId: '9c6bd77ea9da3e68',
+              originalTimestamp: '2021-01-25T15:32:56.409Z',
+            }),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              '[Bluecore]:: products array is required for purchase event: Workflow: procWorkflow, Step: prepareTrackPayload, ChildStep: undefined, OriginalError: [Bluecore]:: products array is required for purchase event',
+            metadata,
+            statTags: {
+              destType: 'BLUECORE',
+              destinationId: '',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'cdkV2',
+              module: 'destination',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
 ];

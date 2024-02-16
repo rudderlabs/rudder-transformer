@@ -37,21 +37,29 @@ const verifyPayload = (payload, message) => {
   }
   switch (payload.event) {
     case 'search':
-      if (!payload.properties.search_term) {
+      if (!payload?.properties?.search_term) {
         throw new InstrumentationError(
           '[Bluecore] property:: search_query is required for search event',
         );
       }
       break;
     case 'purchase':
-      if (!payload.properties.order_id) {
+      if (!payload?.properties?.order_id) {
         throw new InstrumentationError(
           '[Bluecore] property:: order_id is required for purchase event',
         );
       }
-      if (!payload.properties.total) {
+      if (!payload?.properties?.total) {
         throw new InstrumentationError(
           '[Bluecore] property:: total is required for purchase event',
+        );
+      }
+      if (
+        !isDefinedAndNotNull(payload?.properties?.customer) ||
+        Object.keys(payload.properties.customer).length === 0
+      ) {
+        throw new InstrumentationError(
+          `[Bluecore] property:: No relevant trait to populate customer information, which is required for ${payload.event} event`,
         );
       }
       break;
@@ -61,6 +69,14 @@ const verifyPayload = (payload, message) => {
       if (!isDefinedAndNotNullAndNotEmpty(getFieldValueFromMessage(message, 'email'))) {
         throw new InstrumentationError(
           `[Bluecore] property:: email is required for ${payload.event} action`,
+        );
+      }
+      if (
+        !isDefinedAndNotNull(payload?.properties?.customer) ||
+        Object.keys(payload.properties.customer).length === 0
+      ) {
+        throw new InstrumentationError(
+          `[Bluecore] property:: No relevant trait to populate customer information, which is required for ${payload.event} action`,
         );
       }
       break;
@@ -133,7 +149,7 @@ const isStandardBluecoreEvent = (eventName) => {
  * @throws {InstrumentationError} - If the products array is not defined or null.
  * @returns {array} - The updated product array.
  */
-const addProductArray = (products) => {
+const normalizeProductArray = (products) => {
   let finalProductArray = null;
   if (isDefinedAndNotNull(products)) {
     const productArray = Array.isArray(products) ? products : [products];
@@ -145,6 +161,7 @@ const addProductArray = (products) => {
     );
     finalProductArray = mappedProductArray;
   }
+  // if any custom event is not sent with product array, then it should be null
   return finalProductArray;
 };
 
@@ -171,7 +188,10 @@ const constructProperties = (message) => {
  * @returns {Array|null} - An array containing the properties if the event is a standard Bluecore event and not 'search', otherwise null.
  */
 const createProductForStandardEcommEvent = (message, eventName) => {
-  const { properties } = message;
+  const { event, properties } = message;
+  if (event.toLowerCase() === 'order completed' && eventName === 'purchase') {
+    throw new InstrumentationError('[Bluecore]:: products array is required for purchase event');
+  }
   if (isStandardBluecoreEvent(eventName) && eventName !== 'search') {
     return [properties];
   }
@@ -220,7 +240,7 @@ const populateAccurateDistinctId = (payload, message) => {
 module.exports = {
   verifyPayload,
   deduceTrackEventName,
-  addProductArray,
+  normalizeProductArray,
   isStandardBluecoreEvent,
   constructProperties,
   createProductForStandardEcommEvent,

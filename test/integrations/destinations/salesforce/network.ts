@@ -12,7 +12,6 @@ const dataValue = {
   account_type__c: 'free_trial',
 };
 
-
 const tfProxyMocksData = [
   {
     httpReq: {
@@ -442,8 +441,30 @@ const businessMockData = [
   },
 ];
 
+const otherMocksData = [
+  {
+    description:
+      'Mock response from destination depicting a valid lead request, with no changed data',
+    httpReq: {
+      method: 'post',
+      url: 'https://sf_test_url/test_for_service_not_available',
+    },
+    httpRes: {
+      data: {
+        error: {
+          message: 'Service Unavailable',
+          description:
+            'The server is currently unable to handle the request due to temporary overloading or maintenance of the server. Please try again later.',
+        },
+      },
+      status: 503,
+    },
+  },
+];
+
 export const networkCallsData = [
   ...tfProxyMocksData,
   ...transformationMocksData,
   ...businessMockData,
+  ...otherMocksData
 ];

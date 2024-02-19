@@ -1,6 +1,7 @@
 import { AxiosError } from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { testScenariosForV1API } from './business';
+import { otherSalesforceScenariosV1 } from './other';
 
 const legacyDataValue = {
   Email: 'danis.archurav@sbermarket.ru',
@@ -742,4 +743,4 @@ const legacyTests = [
     },
   },
 ];
-export const data = [...legacyTests, ...testScenariosForV1API];
+export const data = [...legacyTests, ...testScenariosForV1API, ...otherSalesforceScenariosV1];

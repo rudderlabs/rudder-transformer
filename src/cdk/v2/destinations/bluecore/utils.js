@@ -116,10 +116,7 @@ const deduceTrackEventName = (trackEventName, Config) => {
     */
 
   const eventMapInfo = EVENT_NAME_MAPPING.find((eventMap) => {
-    if (eventMap.src.includes(trackEventName.toLowerCase())) {
-      return eventMap;
-    }
-    return false;
+    return eventMap.src.includes(trackEventName.toLowerCase());
   });
   if (isDefinedAndNotNull(eventMapInfo)) {
     return [eventMapInfo.dest];
@@ -135,10 +132,8 @@ const deduceTrackEventName = (trackEventName, Config) => {
  * @param {string} eventName - The name of the event to check.
  * @returns {boolean} - True if the event is a standard Bluecore event, false otherwise.
  */
-const isStandardBluecoreEvent = (eventName) => {
-  const standardEventList = EVENT_NAME_MAPPING.map((item) => item.dest);
-  return !!standardEventList.includes(eventName);
-};
+const isStandardBluecoreEvent = (eventName) => 
+  return !!EVENT_NAME_MAPPING.find((item) => item.dest.includes(eventName));
 
 /**
  * Adds an array of products to a message.

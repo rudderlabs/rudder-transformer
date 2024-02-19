@@ -1,7 +1,8 @@
 // import { ecomTestData } from './ecomTestData';
-import { identifyData } from './identifyTestData';
+//  import { identifyTestData } from './identifyTestData';
 // import { trackTestData } from './trackTestData';
-import { validationTestData } from './validationTestData';
+// import { validationTestData } from './validationTestData';
+import { pageScreenTestData } from './pageScreenTestData';
 
 export const mockFns = (_) => {
   // @ts-ignore
@@ -9,8 +10,9 @@ export const mockFns = (_) => {
 };
 
 export const data = [
-  ...identifyData,
+  //...identifyTestData,
   // ...trackTestData,
   // ...ecomTestData,
-  ...validationTestData,
+  //  ...validationTestData,
+  ...pageScreenTestData,
 ].map((d) => ({ ...d, mockFns }));

@@ -250,6 +250,7 @@ export const generateSimplifiedPageOrScreenPayload = (
     userId: parametersOverride.userId || 'default-userId',
     type: eventType || 'page',
     event: parametersOverride.event,
+    name: parametersOverride.name,
     properties: parametersOverride.properties,
     integrations: parametersOverride.integrations,
     rudderId: parametersOverride.rudderId || generateAlphanumericId(36),

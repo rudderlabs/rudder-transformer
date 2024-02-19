@@ -30,7 +30,7 @@ const formatRevenue = (revenue) => {
  */
 const getActionSource = (payload, channel) => {
   let actionSource = 'other';
-  if (payload.action_source) {
+  if (payload?.action_source) {
     const isActionSourceValid = ACTION_SOURCES_VALUES.includes(payload.action_source);
     if (!isActionSourceValid) {
       throw new InstrumentationError('Invalid Action Source type');

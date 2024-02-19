@@ -1,0 +1,37 @@
+[
+  {
+    "description": "should correctly generate exclusion list for a simple mapping configuration",
+    "input": [
+      [
+        {
+          "destKey": "email",
+          "sourceKeys": "email",
+          "required": true,
+          "sourceFromGenericMap": true
+        },
+        {
+          "destKey": "key",
+          "sourceKeys": "context.traits.key"
+        }
+      ]
+    ],
+    "output": ["email", "id", "key"]
+  },
+  {
+    "description": "should correctly generate exclusion list for a simple mapping configuration",
+    "input": [
+      [
+        {
+          "destKey": "email",
+          "sourceKeys": ["context.email", "traits.email"],
+          "required": true
+        },
+        {
+          "destKey": "key",
+          "sourceKeys": ["context.traits.key", "traits.key"]
+        }
+      ]
+    ],
+    "output": ["email", "key"]
+  }
+]

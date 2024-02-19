@@ -21,7 +21,6 @@ const functionNames = [
   'removeUndefinedNullValuesAndEmptyObjectArray',
   'groupEventsByType',
   'isValidInteger',
-  'generateExclusionListUsingKeyPaths',
 ];
 
 // Names of the utility functions to test which expects multiple arguments as values and not objects

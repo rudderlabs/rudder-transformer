@@ -28,7 +28,7 @@ jobs:
           fetch-depth: 1
 
       - name: Setup Node
-        uses: actions/setup-node@v4.0.1
+        uses: actions/setup-node@v4.0.2
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -40,13 +40,11 @@ jobs:
         run: |
           npm run test:ts -- component
 
-
       - name: Uplaod Report to S3
         run: |
           aws s3 cp ./test_reports/ s3://test-integrations-dev/integrations-test-reports/rudder-transformer/${{ github.event.number }}/ --recursive
-
     
-      - name: Comment on PR with S3 Object URL
+      - name: Add Test Report Link as Comment on PR
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.PAT }}
@@ -55,10 +53,23 @@ jobs:
             // Get the pull request number
             const prNumber = context.payload.pull_request.number;
             const commentBody = `Test report for this run is available at: https://test-integrations-dev.s3.amazonaws.com/integrations-test-reports/rudder-transformer/${prNumber}/test-report.html`;
-            
+
+            // find all the comments of the PR
+            const issueComments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number: prNumber,
+            });
+
+            for (const comment of issueComments) {
+              if (comment.body === commentBody) {
+                console.log('Comment already exists');
+                return;
+              }
+            }
 
             // Comment on the pull request
-            github.rest.issues.createComment({
+            await github.rest.issues.createComment({
               owner,
               repo,
               issue_number: prNumber,

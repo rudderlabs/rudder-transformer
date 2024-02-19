@@ -113,9 +113,15 @@ function getEventValueForUnIdentifiedTrackEvent(message) {
   return { eventValue };
 }
 
-function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport) {
+function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport, addPropertiesAtRoot) {
   let eventValue = {};
-  set(eventValue, 'properties', message.properties);
+
+  if (addPropertiesAtRoot) {
+    eventValue = message.properties;
+  } else {
+    set(eventValue, 'properties', message.properties);
+  }
+
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach((sourceKey) => {
     set(eventValue, mappingJson[sourceKey], get(message, sourceKey));
@@ -160,7 +166,7 @@ function processNonTrackEvents(message, eventName) {
   return payload;
 }
 
-function processEventTypeTrack(message) {
+function processEventTypeTrack(message, addPropertiesAtRoot) {
   let isMultiSupport = true;
   const evType = message.event && message.event.toLowerCase();
   let category = ConfigCategory.DEFAULT;
@@ -184,6 +190,7 @@ function processEventTypeTrack(message) {
     message,
     mappingConfig[category.name],
     isMultiSupport,
+    addPropertiesAtRoot,
   );
   payload.eventName = message.event;
   payload.eventCurrency = message?.properties?.currency;
@@ -196,7 +203,7 @@ function processSingleMessage(message, destination) {
   let payload;
   switch (messageType) {
     case EventType.TRACK: {
-      payload = processEventTypeTrack(message);
+      payload = processEventTypeTrack(message, destination.Config.addPropertiesAtRoot);
       break;
     }
     case EventType.SCREEN: {

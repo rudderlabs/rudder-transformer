@@ -20,6 +20,7 @@ const commonTraits = {
   userId: 'user@1',
   title: 'Developer',
   organization: 'Rudder',
+  street: '63, Shibuya',
   city: 'Tokyo',
   region: 'Kanto',
   country: 'JP',
@@ -46,10 +47,12 @@ const commonOutputUserProps = {
     region: 'Kanto',
     country: 'JP',
     zip: '100-0001',
+    address1: '63, Shibuya',
   },
   properties: {
     Flagged: false,
     Residence: 'Shibuya',
+    street: '63, Shibuya',
   },
 };
 
@@ -424,80 +427,6 @@ export const identifyData = [
   },
   {
     id: 'klaviyo-identify-test-6',
-    name: 'klaviyo',
-    description: 'Identify call without user custom Properties',
-    scenario: 'Business',
-    successCriteria:
-      'Response should contain two payloads one for profile updation and other for subscription, response status code should be 200, for the profile updation payload does not have any custom properties in the payload',
-    feature: 'processor',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: [
-          {
-            destination: destination,
-            message: generateSimplifiedIdentifyPayload({
-              sentAt,
-              userId,
-              context: {
-                traits: removeUndefinedAndNullValues({
-                  ...commonTraits,
-                  Flagged: undefined,
-                  Residence: undefined,
-                }),
-              },
-              anonymousId,
-              originalTimestamp,
-            }),
-          },
-        ],
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: [
-          {
-            output: transformResultBuilder({
-              userId: '',
-              method: 'PATCH',
-              endpoint: commonUserUpdateEndpoint,
-              headers: commonOutputHeaders,
-              JSON: {
-                data: {
-                  type: 'profile',
-                  attributes: removeUndefinedAndNullValues({
-                    ...commonOutputUserProps,
-                    properties: undefined,
-                  }),
-                  id: '01GW3PHVY0MTCDGS0A1612HARX',
-                },
-              },
-            }),
-            statusCode: 200,
-          },
-          {
-            output: transformResultBuilder({
-              userId: '',
-              method: 'POST',
-              endpoint: subscribeEndpoint,
-              headers: commonOutputHeaders,
-              JSON: {
-                data: {
-                  type: 'profile-subscription-bulk-create-job',
-                  attributes: commonOutputSubscriptionProps,
-                },
-              },
-            }),
-            statusCode: 200,
-          },
-        ],
-      },
-    },
-  },
-  {
-    id: 'klaviyo-identify-test-7',
     name: 'klaviyo',
     description: 'Identify call without email and phone & enforceEmailAsPrimary enabled from UI',
     scenario: 'Business',

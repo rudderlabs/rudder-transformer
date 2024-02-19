@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.56.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.55.0...v1.56.0) (2024-02-19)
+
+
+### Features
+
+* add custom property mapping feature for freshsales identify call ([#3065](https://github.com/rudderlabs/rudder-transformer/issues/3065)) ([aa4b8b4](https://github.com/rudderlabs/rudder-transformer/commit/aa4b8b471a647544a3e34dad335f24bec9d9d06b))
+* **hs:** chunking data based on batch limit ([#2907](https://github.com/rudderlabs/rudder-transformer/issues/2907)) ([a60694c](https://github.com/rudderlabs/rudder-transformer/commit/a60694cef1da31d27a5cf90264548cad793f556f))
+* onboard bluecore integration ([#3061](https://github.com/rudderlabs/rudder-transformer/issues/3061)) ([aef5f8e](https://github.com/rudderlabs/rudder-transformer/commit/aef5f8e5f267262e0f9e10229f14f2bcc8ad29e2))
+* tiktok_offline_events added support for all Standard  events ([#3094](https://github.com/rudderlabs/rudder-transformer/issues/3094)) ([b5cdccb](https://github.com/rudderlabs/rudder-transformer/commit/b5cdccb75fe68150816140174087fddad677db10))
+
+
+### Bug Fixes
+
+* add support of placing properties at root in af ([#3082](https://github.com/rudderlabs/rudder-transformer/issues/3082)) ([0f01524](https://github.com/rudderlabs/rudder-transformer/commit/0f01524b6f4f2f82efc21f88f8c97cb6fdaf91ea))
+* amplitude batch output metadata ([#3077](https://github.com/rudderlabs/rudder-transformer/issues/3077)) ([69c8348](https://github.com/rudderlabs/rudder-transformer/commit/69c83489c85486c9b2aed4a1292bd9f0aae9ca44))
+* amplitude: Error handling for missing event type ([#3079](https://github.com/rudderlabs/rudder-transformer/issues/3079)) ([f7ec0a1](https://github.com/rudderlabs/rudder-transformer/commit/f7ec0a1244a7b97e6b40de5ed9881c63300866dc))
+* custify user-regulation logic ([#3076](https://github.com/rudderlabs/rudder-transformer/issues/3076)) ([9683161](https://github.com/rudderlabs/rudder-transformer/commit/9683161612c7e3b9c2be95a2728f68ec7dcf69f4))
+* error handling for auth0 source ([#3038](https://github.com/rudderlabs/rudder-transformer/issues/3038)) ([2a21274](https://github.com/rudderlabs/rudder-transformer/commit/2a21274333350c615991f7b56b81b766502d5bf4))
+* **ga4:** failures not considered with 200 status in events tab ([#3089](https://github.com/rudderlabs/rudder-transformer/issues/3089)) ([6a364fb](https://github.com/rudderlabs/rudder-transformer/commit/6a364fba34c46b15c0fe4b06ecfa6f4b81b6f436))
+* gaoc batching order ([#3064](https://github.com/rudderlabs/rudder-transformer/issues/3064)) ([a98cabd](https://github.com/rudderlabs/rudder-transformer/commit/a98cabdfe7781ada12baf742df4a3a439fc5fecd))
+* resolve bugsnag issue caused due to undefined properties ([#3086](https://github.com/rudderlabs/rudder-transformer/issues/3086)) ([d522b35](https://github.com/rudderlabs/rudder-transformer/commit/d522b35c908a9f262ba3ba27dda0ea5d9ac5bc6b))
+* tiktok ads v2 error handling ([#3084](https://github.com/rudderlabs/rudder-transformer/issues/3084)) ([b6edff4](https://github.com/rudderlabs/rudder-transformer/commit/b6edff46fa0e0e210e82206fea46a064e3fbe00f))
+
 ## [1.55.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.54.4...v1.55.0) (2024-02-05)
 
 

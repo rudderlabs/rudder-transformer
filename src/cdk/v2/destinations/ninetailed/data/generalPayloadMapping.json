@@ -1,0 +1,35 @@
+[
+  {
+    "sourceKeys": "anonymousId",
+    "required": true,
+    "destKey": "anonymousId"
+  },
+  {
+    "sourceKeys": "messageId",
+    "required": true,
+    "destKey": "messageId"
+  },
+  {
+    "sourceKeys": "channel",
+    "required": true,
+    "destKey": "channel"
+  },
+  {
+    "sourceKeys": "properties",
+    "destKey": "properties"
+  },
+  {
+    "sourceKeys": "traits",
+    "sourceFromGenericMap": true,
+    "destKey": "traits"
+  },
+  {
+    "sourceKeys": "userIdOnly",
+    "sourceFromGenericMap": true,
+    "destKey": "userId"
+  },
+  {
+    "sourceKeys": "type",
+    "destKey": "type"
+  }
+]

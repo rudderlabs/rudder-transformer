@@ -1,0 +1,43 @@
+[
+  {
+    "sourceKeys": "context.app.name",
+    "required": true,
+    "destKey": "context.app.name"
+  },
+  {
+    "sourceKeys": "context.app.version",
+    "required": true,
+    "destKey": "context.app.version"
+  },
+  {
+    "sourceKeys": "context.campaign",
+    "destKey": "context.campaign"
+  },
+  {
+    "sourceKeys": "context.library.name",
+    "required": true,
+    "destKey": "context.library.name"
+  },
+  {
+    "sourceKeys": "context.library.version",
+    "required": true,
+    "destKey": "context.library.version"
+  },
+  {
+    "sourceKeys": "context.locale",
+    "destKey": "context.locale"
+  },
+  {
+    "sourceKeys": "context.page",
+    "destKey": "context.page"
+  },
+  {
+    "sourceKeys": "context.userAgent",
+    "destKey": "context.userAgent"
+  },
+  {
+    "sourceKeys": "context.location",
+    "required": true,
+    "destKey": "context.location"
+  }
+]

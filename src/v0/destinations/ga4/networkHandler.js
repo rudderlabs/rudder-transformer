@@ -30,9 +30,9 @@ const responseHandler = (destinationResponse, dest) => {
       const { description, validationCode, fieldPath } = response.validationMessages[0];
       throw new NetworkError(
         `Validation Server Response Handler:: Validation Error for ${dest} of field path :${fieldPath} | ${validationCode}-${description}`,
-        status,
+        400,
         {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(400),
         },
         response?.validationMessages[0]?.description,
       );

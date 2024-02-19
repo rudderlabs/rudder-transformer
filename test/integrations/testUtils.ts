@@ -38,7 +38,7 @@ export const getAllTestMockDataFilePaths = (dirPath: string, destination: string
 };
 
 export const addMock = (mock: MockAdapter, axiosMock: MockHttpCallsData) => {
-  const { url, method, data: reqData, ...opts } = axiosMock.httpReq;
+  const { url, method, data: reqData, params, ...opts } = axiosMock.httpReq;
   const { data, headers, status } = axiosMock.httpRes;
 
   const headersAsymMatch = {
@@ -49,8 +49,10 @@ export const addMock = (mock: MockAdapter, axiosMock: MockHttpCallsData) => {
 
   switch (method.toLowerCase()) {
     case 'get':
+      // We are accepting parameters exclusively for mocking purposes and do not require a request body,
+      // particularly for GET requests where it is typically unnecessary
       // @ts-ignore
-      mock.onGet(url, reqData, headersAsymMatch).reply(status, data, headers);
+      mock.onGet(url, { params }, headersAsymMatch).reply(status, data, headers);
       break;
     case 'delete':
       // @ts-ignore
@@ -123,7 +125,7 @@ export const generateSimplifiedIdentifyPayload = (parametersOverride: any) => {
     rudderId: parametersOverride.rudderId || generateAlphanumericId(36),
     messageId: parametersOverride.messageId || generateAlphanumericId(36),
     context: {
-      externalId: parametersOverride.externalId,
+      externalId: parametersOverride.context.externalId,
       traits: parametersOverride.context.traits,
     },
     anonymousId: parametersOverride.anonymousId || 'default-anonymousId',
@@ -178,7 +180,7 @@ export const generateSimplifiedTrackPayload = (parametersOverride: any) => {
     rudderId: parametersOverride.rudderId || generateAlphanumericId(36),
     messageId: parametersOverride.messageId || generateAlphanumericId(36),
     context: removeUndefinedAndNullValues({
-      externalId: parametersOverride.externalId,
+      externalId: parametersOverride.context.externalId,
       traits: parametersOverride.context.traits,
     }),
     anonymousId: parametersOverride.anonymousId || 'default-anonymousId',

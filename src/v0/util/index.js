@@ -34,7 +34,6 @@ const {
 } = require('../../adapters/networkhandler/authConstants');
 const { FEATURE_FILTER_CODE, FEATURE_GZIP_SUPPORT } = require('./constant');
 const { CommonUtils } = require('../../util/common');
-const genericFieldMapping = require('./data/GenericFieldMapping.json');
 
 // ========================================================================
 // INLINERS
@@ -1307,55 +1306,6 @@ const generateExclusionList = (mappingConfig) =>
   );
 
 /**
- * Generates an exclusion list using key paths based on the provided mapping configuration.
- *
- * @param {Array} mappingConfig - The traditional mapping configuration used build payloads.
- * example :
- * [
- *     {
- *       "destKey": "email",
- *       "sourceKeys": "email",
- *       "required": true,
- *       "sourceFromGenericMap": true
- *     },
- *     {
- *       "destKey": "key",
- *       "sourceKeys": ["context.traits.key", "traits.key"],
- *     }
- *   ]
- * @returns {Array} - The generated exclusion list, which can be fed in the "extractCustomFields" function.
- */
-const generateExclusionListUsingKeyPaths = (mappingConfig) => {
-  const resultList = mappingConfig.flatMap((mapping) => {
-    if (mapping.sourceFromGenericMap) {
-      // If sourceFromGenericMap is true, use the mapping for generic fields
-      const genericMappings = genericFieldMapping[mapping.sourceKeys];
-      if (isDefinedAndNotNull(genericMappings)) {
-        if (Array.isArray(genericMappings)) {
-          // Map over the genericMappings to extract the last part of each path
-          return genericMappings.map((paths) => paths.split('.').pop());
-        }
-        // Handle the case where it's a single string, not an array
-        return [genericMappings.split('.').pop()];
-      }
-    }
-
-    // Handle the case where sourceFromGenericMap is not true or does not exist
-    // This also assumes that the non-generic mappings might be in dot notation and extracts the last key
-    if (isDefinedAndNotNull(mapping.sourceKeys)) {
-      return Array.isArray(mapping.sourceKeys)
-        ? mapping.sourceKeys.map((key) => key.split('.').pop())
-        : [mapping.sourceKeys.split('.').pop()];
-    }
-    throw new TransformationError('sourceKeys is not defined in the mapping configuration');
-  });
-  // Use a Set to filter out duplicates, then convert it back to an array
-  const uniqueResultList = [...new Set(resultList)];
-
-  return uniqueResultList;
-};
-
-/**
  * Extract fileds from message with exclusions
  * Pass the keys of message for extraction and
  * exclusion fields to exlude and the payload to map into
@@ -1391,9 +1341,7 @@ function extractCustomFields(message, payload, keys, exclusionFields) {
       const messageContext = get(message, key);
       if (messageContext) {
         Object.keys(messageContext).forEach((k) => {
-          if (!exclusionFields.includes(k)) {
-            mappingKeys.push(k);
-          }
+          if (!exclusionFields.includes(k)) mappingKeys.push(k);
         });
         mappingKeys.forEach((mappingKey) => {
           if (!(typeof messageContext[mappingKey] === 'undefined')) {
@@ -2386,5 +2334,4 @@ module.exports = {
   findExistingBatch,
   removeDuplicateMetadata,
   combineBatchRequestsWithSameJobIds,
-  generateExclusionListUsingKeyPaths,
 };

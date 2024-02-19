@@ -19,7 +19,6 @@ const {
   UpdateContactWithLifeCycleStage,
   updateAccountWOContact,
   getHeaders,
-  populatePayloadWithCustomFields,
 } = require('./utils');
 
 /*
@@ -42,7 +41,6 @@ const identifyResponseConfig = (Config) => {
  * @returns
  */
 const identifyResponseBuilder = (message, { Config }) => {
-  const { customPropertyMapping, apiKey, domain } = Config;
   const payload = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name]);
 
   if (!payload) {
@@ -51,22 +49,12 @@ const identifyResponseBuilder = (message, { Config }) => {
   }
 
   if (payload.address) payload.address = flattenAddress(payload.address);
-
-  // adding support for custom properties
-  const updatedPayload = {
-    ...populatePayloadWithCustomFields(
-      message,
-      customPropertyMapping,
-      payload,
-      MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name],
-    ),
-  };
   const response = defaultRequestConfig();
-  response.headers = getHeaders(apiKey);
-  response.endpoint = `https://${domain}${CONFIG_CATEGORIES.IDENTIFY.baseUrl}`;
+  response.headers = getHeaders(Config.apiKey);
+  response.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.baseUrl}`;
   response.method = CONFIG_CATEGORIES.IDENTIFY.method;
   response.body.JSON = {
-    contact: updatedPayload,
+    contact: payload,
     unique_identifier: { emails: payload.emails },
   };
   return response;

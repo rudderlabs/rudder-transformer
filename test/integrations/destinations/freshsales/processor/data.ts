@@ -189,6 +189,9 @@ export const data = [
                     work_number: '9988776655',
                     mobile_number: '1-926-555-9504',
                     lifecycle_stage_id: 71010794467,
+                    custom_field: {
+                      owner_id: '70000090119',
+                    },
                   },
                   unique_identifier: {
                     emails: 'testuser@google.com',
@@ -300,6 +303,9 @@ export const data = [
                     work_number: '9988776655',
                     mobile_number: '1-926-555-9504',
                     lifecycle_stage_id: 71010794467,
+                    custom_field: {
+                      owner_id: '70000090119',
+                    },
                   },
                   unique_identifier: {
                     emails: 'testuser@google.com',
@@ -418,6 +424,7 @@ export const data = [
                     mobile_number: '1-926-555-9504',
                     created_at: '2022-06-22T10:57:58Z',
                     updated_at: '2022-06-22T10:57:58Z',
+                    custom_field: {},
                   },
                   unique_identifier: {
                     emails: 'testuser@google.com',
@@ -2680,6 +2687,134 @@ export const data = [
               module: 'destination',
             },
             statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'freshsales',
+    description: 'Identify call for creating new user along with custom property mapping',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                apiKey: 'dummyApiKey',
+                domain: 'rudderstack-476952domain3105.myfreshworks.com',
+                customPropertyMapping: [
+                  {
+                    from: 'newProp1',
+                    to: 'cf_newProp1',
+                  },
+                  {
+                    from: 'newProp2',
+                    to: 'cf_newProp2',
+                  },
+                ],
+              },
+            },
+            message: {
+              messageId: 'ec5481b6-a926-4d2e-b293-0b3a77c4d3be',
+              originalTimestamp: '2022-06-22T10:57:58Z',
+              anonymousId: 'ea5cfab2-3961-4d8a-8187-3d1858c99099',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                device: {
+                  advertisingId: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
+                  id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
+                  manufacturer: 'Google',
+                  model: 'AOSP on IA Emulator',
+                  name: 'generic_x86_arm',
+                  type: 'ios',
+                  attTrackingStatus: 3,
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                locale: 'en-US',
+                os: {
+                  name: 'iOS',
+                  version: '14.4.1',
+                },
+                screen: {
+                  density: 2,
+                },
+              },
+              traits: {
+                email: 'testuser@google.com',
+                first_name: 'Rk',
+                last_name: 'Mishra',
+                mobileNumber: '1-926-555-9504',
+                lifecycleStageId: 71010794467,
+                phone: '9988776655',
+                owner_id: '70000090119',
+                newProp1: 'value1',
+                newProp2: 'value2',
+              },
+              type: 'identify',
+              sentAt: '2022-04-22T10:57:58Z',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              body: {
+                XML: {},
+                FORM: {},
+                JSON: {
+                  contact: {
+                    emails: 'testuser@google.com',
+                    first_name: 'Rk',
+                    last_name: 'Mishra',
+                    work_number: '9988776655',
+                    external_id: 'ea5cfab2-3961-4d8a-8187-3d1858c99099',
+                    mobile_number: '1-926-555-9504',
+                    created_at: '2022-06-22T10:57:58Z',
+                    updated_at: '2022-06-22T10:57:58Z',
+                    lifecycle_stage_id: 71010794467,
+                    custom_field: {
+                      cf_newProp1: 'value1',
+                      cf_newProp2: 'value2',
+                      owner_id: '70000090119',
+                    },
+                  },
+                  unique_identifier: {
+                    emails: 'testuser@google.com',
+                  },
+                },
+                JSON_ARRAY: {},
+              },
+              type: 'REST',
+              files: {},
+              method: 'POST',
+              params: {},
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Token token=dummyApiKey',
+              },
+              version: '1',
+              endpoint:
+                'https://rudderstack-476952domain3105.myfreshworks.com/crm/sales/api/contacts/upsert',
+              userId: '',
+            },
+            statusCode: 200,
           },
         ],
       },

@@ -215,19 +215,19 @@ const createProductForStandardEcommEvent = (message, eventName) => {
  *
  */
 const populateAccurateDistinctId = (payload, message) => {
-  let distinctId;
   const bluecoreExternalId = getDestinationExternalID(message, 'bluecoreExternalId');
-  if (!isDefinedAndNotNullAndNotEmpty(bluecoreExternalId)) {
-    if (payload.event === 'identify') {
-      distinctId = getFieldValueFromMessage(message, 'userId');
-    } else {
-      // email is always a more preferred distinct_id
-      distinctId =
-        getFieldValueFromMessage(message, 'email') || getFieldValueFromMessage(message, 'userId');
-    }
-  } else {
-    distinctId = bluecoreExternalId;
+  if (isDefinedAndNotNullAndNotEmpty(bluecoreExternalId)) {
+    return bluecoreExternalId;
   }
+  let distinctId;
+  if (payload.event === 'identify') {
+    distinctId = getFieldValueFromMessage(message, 'userId');
+  } else {
+    // email is always a more preferred distinct_id
+    distinctId =
+      getFieldValueFromMessage(message, 'email') || getFieldValueFromMessage(message, 'userId');
+  }
+
   if (!isDefinedAndNotNullAndNotEmpty(distinctId)) {
     // dev safe. AnonymouId should be always present
     throw new InstrumentationError(

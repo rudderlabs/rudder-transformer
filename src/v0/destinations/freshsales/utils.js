@@ -4,7 +4,6 @@ const {
   NetworkInstrumentationError,
   InstrumentationError,
   NetworkError,
-  getHashFromArray,
 } = require('@rudderstack/integrations-lib');
 const { httpPOST, httpGET } = require('../../../adapters/network');
 const {
@@ -15,8 +14,6 @@ const {
   defaultRequestConfig,
   defaultPostRequestConfig,
   getFieldValueFromMessage,
-  extractCustomFields,
-  generateExclusionListUsingKeyPaths,
 } = require('../../util');
 const { CONFIG_CATEGORIES, LIFECYCLE_STAGE_ENDPOINT } = require('./config');
 const tags = require('../../util/tags');
@@ -387,33 +384,6 @@ const flattenAddress = (address) => {
   return result;
 };
 
-const populatePayloadWithCustomFields = (
-  message,
-  customPropertyMapping,
-  payload,
-  MAPPING_CONFIG,
-) => {
-  const rawPayload = { ...payload };
-  const traits = getFieldValueFromMessage(message, 'traits');
-  const itemExclusionList = generateExclusionListUsingKeyPaths(MAPPING_CONFIG);
-  const customField = {};
-  if (customPropertyMapping && customPropertyMapping.length > 0) {
-    const propertyMap = getHashFromArray(customPropertyMapping, 'from', 'to', false);
-    Object.keys(traits).forEach((key) => {
-      if (propertyMap[key]) {
-        itemExclusionList.push(key);
-        customField[propertyMap[key]] = traits[key];
-      }
-    });
-  }
-  // adding all other trait fields as custom fields, freshsales will handle any non configured fields by itself and reject the values
-  rawPayload.custom_field = {
-    ...customField,
-    ...extractCustomFields(message, {}, ['traits', 'context.traits'], itemExclusionList),
-  };
-  return rawPayload;
-};
-
 module.exports = {
   getUserAccountDetails,
   flattenAddress,
@@ -421,5 +391,4 @@ module.exports = {
   UpdateContactWithLifeCycleStage,
   updateAccountWOContact,
   getHeaders,
-  populatePayloadWithCustomFields,
 };

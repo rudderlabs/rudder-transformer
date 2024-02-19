@@ -187,7 +187,7 @@ const createProductForStandardEcommEvent = (message, eventName) => {
   if (event.toLowerCase() === 'order completed' && eventName === 'purchase') {
     throw new InstrumentationError('[Bluecore]:: products array is required for purchase event');
   }
-  if (isStandardBluecoreEvent(eventName) && eventName !== 'search') {
+  if (eventName !== 'search' && isStandardBluecoreEvent(eventName)) {
     return [properties];
   }
   return null;

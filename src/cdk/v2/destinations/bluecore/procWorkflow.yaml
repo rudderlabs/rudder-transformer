@@ -31,29 +31,28 @@ steps:
       payload.event = payload.event ?? 'customer_patch';
       payload.properties.distinct_id = $.populateAccurateDistinctId(payload, .message);
       $.context.payloads = [$.removeUndefinedAndNullValues(payload)];
-  - name: validateInputForTrack
-    description: Additional validation for Track events
-    condition: $.outputs.messageType === {{$.EventType.TRACK}}
-    template: |
-      $.assert(.message.event, "event_name could not be mapped. Aborting.")
-  - name: deduceEventNames
-    condition: $.outputs.messageType === {{$.EventType.TRACK}}
-    template: |
-      $.context.deducedEventNameArray = $.deduceTrackEventName(.message.event,.destination.Config)
-  - name: prepareTrackPayload
-    condition: $.outputs.messageType === {{$.EventType.TRACK}}
-    template: |
-      const payload = $.constructProperties(.message);
-      $.context.payloads = $.context.deducedEventNameArray@eventName.(
-        const newPayload = $.cloneDeep(payload);
-        newPayload.properties.distinct_id = $.populateAccurateDistinctId(newPayload, ^.message);
-        const temporaryProductArray = newPayload.properties.products ?? $.createProductForStandardEcommEvent(^.message, eventName);
-        newPayload.properties.products = $.normalizeProductArray(temporaryProductArray);
-        newPayload.event = eventName;
-        newPayload.token = ^.destination.Config.bluecoreNamespace;
-        $.verifyPayload(newPayload, ^.message);
-        $.removeUndefinedNullValuesAndEmptyObjectArray(newPayload)
-      )[];
+  - name: handleTrackEvent
+    steps:
+      - name: validateInput
+        description: Additional validation for Track events
+        template: |
+          $.assert(.message.event, "event_name could not be mapped. Aborting.")
+      - name: deduceEventNames
+        template: |
+          $.context.deducedEventNameArray = $.deduceTrackEventName(.message.event,.destination.Config)
+      - name: preparePayload
+        template: |
+          const payload = $.constructProperties(.message);
+          $.context.payloads = $.context.deducedEventNameArray@eventName.(
+            const newPayload = $.cloneDeep(payload);
+            newPayload.properties.distinct_id = $.populateAccurateDistinctId(newPayload, ^.message);
+            const temporaryProductArray = newPayload.properties.products ?? $.createProductForStandardEcommEvent(^.message, eventName);
+            newPayload.properties.products = $.normalizeProductArray(temporaryProductArray);
+            newPayload.event = eventName;
+            newPayload.token = ^.destination.Config.bluecoreNamespace;
+            $.verifyPayload(newPayload, ^.message);
+            $.removeUndefinedNullValuesAndEmptyObjectArray(newPayload)
+          )[];
   
   - name: buildResponse
     template: |

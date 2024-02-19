@@ -116,7 +116,7 @@ export const ecomTestData = [
         body: [
           {
             error:
-              '[Bluecore] property:: order_id is required for purchase event: Workflow: procWorkflow, Step: prepareTrackPayload, ChildStep: undefined, OriginalError: [Bluecore] property:: order_id is required for purchase event',
+              '[Bluecore] property:: order_id is required for purchase event: Workflow: procWorkflow, Step: handleTrackEvent, ChildStep: preparePayload, OriginalError: [Bluecore] property:: order_id is required for purchase event',
             metadata,
             statTags: {
               destType: 'BLUECORE',
@@ -173,7 +173,7 @@ export const ecomTestData = [
         body: [
           {
             error:
-              '[Bluecore] property:: total is required for purchase event: Workflow: procWorkflow, Step: prepareTrackPayload, ChildStep: undefined, OriginalError: [Bluecore] property:: total is required for purchase event',
+              '[Bluecore] property:: total is required for purchase event: Workflow: procWorkflow, Step: handleTrackEvent, ChildStep: preparePayload, OriginalError: [Bluecore] property:: total is required for purchase event',
             metadata,
             statTags: {
               destType: 'BLUECORE',
@@ -230,7 +230,7 @@ export const ecomTestData = [
         body: [
           {
             error:
-              '[Bluecore] property:: search_query is required for search event: Workflow: procWorkflow, Step: prepareTrackPayload, ChildStep: undefined, OriginalError: [Bluecore] property:: search_query is required for search event',
+              '[Bluecore] property:: search_query is required for search event: Workflow: procWorkflow, Step: handleTrackEvent, ChildStep: preparePayload, OriginalError: [Bluecore] property:: search_query is required for search event',
             metadata,
             statTags: {
               destType: 'BLUECORE',
@@ -469,7 +469,7 @@ export const ecomTestData = [
         body: [
           {
             error:
-              '[Bluecore]:: products array is required for purchase event: Workflow: procWorkflow, Step: prepareTrackPayload, ChildStep: undefined, OriginalError: [Bluecore]:: products array is required for purchase event',
+              '[Bluecore]:: products array is required for purchase event: Workflow: procWorkflow, Step: handleTrackEvent, ChildStep: preparePayload, OriginalError: [Bluecore]:: products array is required for purchase event',
             metadata,
             statTags: {
               destType: 'BLUECORE',

@@ -5,6 +5,16 @@ const metadata = {
   destinationId: '',
 };
 
+const outputStatTags = {
+  destType: 'BLUECORE',
+  destinationId: '',
+  errorCategory: 'dataValidation',
+  errorType: 'instrumentation',
+  feature: 'processor',
+  implementation: 'cdkV2',
+  module: 'destination',
+};
+
 export const validationTestData = [
   {
     id: 'bluecore-validation-test-1',
@@ -36,7 +46,7 @@ export const validationTestData = [
               Transformations: [],
               DestinationDefinition: { Config: { cdkV2Enabled: true } },
             },
-            metadata: metadata,
+            metadata,
             message: {
               userId: 'user123',
               type: 'random',
@@ -64,21 +74,8 @@ export const validationTestData = [
           {
             error:
               'message type random is not supported: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: message type random is not supported',
-            metadata: {
-              destinationId: '',
-              destinationType: '',
-              namespace: '',
-              sourceType: '',
-            },
-            statTags: {
-              destType: 'BLUECORE',
-              destinationId: '',
-              errorCategory: 'dataValidation',
-              errorType: 'instrumentation',
-              feature: 'processor',
-              implementation: 'cdkV2',
-              module: 'destination',
-            },
+            metadata,
+            statTags: outputStatTags,
             statusCode: 400,
           },
         ],
@@ -142,21 +139,8 @@ export const validationTestData = [
           {
             error:
               'message type random is not supported: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: message type random is not supported',
-            metadata: {
-              destinationId: '',
-              destinationType: '',
-              namespace: '',
-              sourceType: '',
-            },
-            statTags: {
-              destType: 'BLUECORE',
-              destinationId: '',
-              errorCategory: 'dataValidation',
-              errorType: 'instrumentation',
-              feature: 'processor',
-              implementation: 'cdkV2',
-              module: 'destination',
-            },
+            metadata,
+            statTags: outputStatTags,
             statusCode: 400,
           },
         ],

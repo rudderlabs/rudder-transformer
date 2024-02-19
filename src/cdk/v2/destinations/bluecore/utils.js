@@ -13,6 +13,7 @@ const {
   constructPayload,
   getDestinationExternalID,
 } = require('../../../../v0/util');
+const { CommonUtils } = require('../../../../util/common');
 const { EVENT_NAME_MAPPING } = require('./config');
 const { EventType } = require('../../../../constants');
 const { MAPPING_CONFIG, CONFIG_CATEGORIES } = require('./config');
@@ -92,9 +93,9 @@ const verifyPayload = (payload, message) => {
  * @param {object} Config - The configuration object.
  * @returns {string|array} - The deduced track event name.
  */
-const deduceTrackEventName = (trackEventName, Config) => {
+const deduceTrackEventName = (trackEventName, destConfig) => {
   let eventName;
-  const { eventsMapping } = Config;
+  const { eventsMapping } = destConfig;
   validateEventName(trackEventName);
   /*
     Step 1: Will look for the event name in the eventsMapping array if mapped to a standard bluecore event.
@@ -115,9 +116,9 @@ const deduceTrackEventName = (trackEventName, Config) => {
             mappings.
     */
 
-  const eventMapInfo = EVENT_NAME_MAPPING.find((eventMap) => {
-    return eventMap.src.includes(trackEventName.toLowerCase());
-  });
+  const eventMapInfo = EVENT_NAME_MAPPING.find((eventMap) =>
+    eventMap.src.includes(trackEventName.toLowerCase()),
+  );
   if (isDefinedAndNotNull(eventMapInfo)) {
     return [eventMapInfo.dest];
   }
@@ -132,8 +133,14 @@ const deduceTrackEventName = (trackEventName, Config) => {
  * @param {string} eventName - The name of the event to check.
  * @returns {boolean} - True if the event is a standard Bluecore event, false otherwise.
  */
-const isStandardBluecoreEvent = (eventName) => 
-  return !!EVENT_NAME_MAPPING.find((item) => item.dest.includes(eventName));
+const isStandardBluecoreEvent = (eventName) => {
+  // Return false immediately if eventName is an empty string or falsy
+  if (!eventName) {
+    return false;
+  }
+  // Proceed with the original check if eventName is not empty
+  return !!EVENT_NAME_MAPPING.some((item) => item.dest.includes(eventName));
+};
 
 /**
  * Adds an array of products to a message.
@@ -147,7 +154,7 @@ const isStandardBluecoreEvent = (eventName) =>
 const normalizeProductArray = (products) => {
   let finalProductArray = null;
   if (isDefinedAndNotNull(products)) {
-    const productArray = Array.isArray(products) ? products : [products];
+    const productArray = CommonUtils.toArray(products);
     const mappedProductArray = productArray.map(
       ({ product_id, sku, id, query, order_id, total, ...rest }) => ({
         id: product_id || sku || id,

@@ -50,6 +50,7 @@ const deleteUser = async (config, endpoint, body, identityType, identityValue) =
       handledDelResponse.status,
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(handledDelResponse.status),
+        [tags.TAG_NAMES.STATUS]: handledDelResponse.status,
       },
       handledDelResponse,
     );

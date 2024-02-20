@@ -1,4 +1,9 @@
-const { transformedPayloadData, fetchUserData, deduceFbcParam } = require('./index');
+const {
+  transformedPayloadData,
+  fetchUserData,
+  deduceFbcParam,
+  getContentType,
+} = require('./index');
 const sha256 = require('sha256');
 const { MAPPING_CONFIG, CONFIG_CATEGORIES } = require('../../destinations/facebook_pixel/config');
 
@@ -530,5 +535,107 @@ describe('fetchUserData', () => {
       ln: '532eaabd9574880dbf76b9b8cc00832c20a6ec113d682299550d7a6e0f345e25',
       ph: '593a6d58f34eb5c3de4f47e38d1faaa7d389fafe332a85400b1e54498391c579',
     });
+  });
+});
+
+describe('getContentType', () => {
+  // Returns default value when no category or categoryToContent is provided
+  it('should return default value when no category or categoryToContent is provided', () => {
+    const message = {
+      properties: {
+        produtcs: [
+          {
+            product_id: '123',
+          },
+        ],
+      },
+    };
+    const defaultValue = 'product';
+    const categoryToContent = [];
+    const destinationName = 'fb_pixel';
+
+    const result = getContentType(message, defaultValue, categoryToContent, destinationName);
+
+    expect(result).toBe(defaultValue);
+  });
+
+  // Returns default value when categoryToContent is not an array
+  it('should return default value when categoryToContent is not an array', () => {
+    const message = {
+      properties: {
+        products: [
+          {
+            product_id: '123',
+          },
+        ],
+      },
+    };
+    const defaultValue = 'product';
+    const categoryToContent = 'not an array';
+    const destinationName = 'fb_pixel';
+
+    const result = getContentType(message, defaultValue, categoryToContent, destinationName);
+
+    expect(result).toBe(defaultValue);
+  });
+
+  // Returns categoryToContent value when category is provided and matches with categoryToContent
+  it('should return categoryToContent value when category is provided and matches with categoryToContent', () => {
+    const message = {
+      properties: {
+        category: 'clothing',
+      },
+    };
+    const defaultValue = 'product';
+    const categoryToContent = [{ from: 'clothing', to: 'garments' }];
+    const destinationName = 'fb_pixel';
+
+    const result = getContentType(message, defaultValue, categoryToContent, destinationName);
+
+    expect(result).toBe(categoryToContent[0].to);
+  });
+
+  // Returns integrationsObj.contentType when it exists
+  it('should return integrationsObj.contentType when it exists', () => {
+    const message = {
+      properties: {
+        products: [
+          {
+            product_id: '123',
+          },
+        ],
+      },
+      integrations: {
+        fb_pixel: {
+          contentType: 'content_type_value',
+        },
+      },
+    };
+    const defaultValue = 'product';
+    const categoryToContent = [];
+    const destinationName = 'fb_pixel';
+    const integrationsObj = {
+      contentType: 'content_type_value',
+    };
+
+    const result = getContentType(message, defaultValue, categoryToContent, destinationName);
+
+    expect(result).toBe(integrationsObj.contentType);
+  });
+
+  // Returns 'product' when category is 'clothing' and categoryToContent is not provided
+  it("should return 'product' when category is 'clothing' and categoryToContent is not provided", () => {
+    const message = {
+      properties: {
+        category: 'clothing',
+      },
+    };
+    const defaultValue = 'product';
+    const categoryToContent = [];
+    const destinationName = 'fb_pixel';
+
+    const result = getContentType(message, defaultValue, categoryToContent, destinationName);
+
+    expect(result).toBe(defaultValue);
   });
 });

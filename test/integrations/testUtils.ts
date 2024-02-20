@@ -156,6 +156,7 @@ export const generateTrackPayload = (parametersOverride: any) => {
       campaign: {},
       userAgent:
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0',
+      dataProcessingOptions: parametersOverride.context.dataProcessingOptions,
     }),
     rudderId: parametersOverride.rudderId || generateAlphanumericId(36),
     messageId: parametersOverride.messageId || generateAlphanumericId(36),

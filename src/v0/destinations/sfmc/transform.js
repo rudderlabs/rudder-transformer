@@ -209,7 +209,7 @@ const responseBuilderSimple = async (message, category, destination) => {
     eventToExternalKey,
     eventToPrimaryKey,
     eventToUUID,
-    eventToDefinitionMapping
+    eventToDefinitionMapping,
   } = destination.Config;
   // map from an event name to an external key of a data extension.
   const hashMapExternalKey = getHashFromArray(eventToExternalKey, 'from', 'to');
@@ -220,7 +220,7 @@ const responseBuilderSimple = async (message, category, destination) => {
   // token needed for authorization for subsequent calls
   const authToken = await getToken(clientId, clientSecret, subDomain);
   // map from an event name to an event definition key.
-  const hashMapEventDefinition = getHashFromArray(eventToDefinitionMapping, 'from', 'to')
+  const hashMapEventDefinition = getHashFromArray(eventToDefinitionMapping, 'from', 'to');
   // if createOrUpdateContacts is true identify calls for create and update of contacts will not occur.
   if (category.type === 'identify' && !createOrUpdateContacts) {
     // first call to identify the contact
@@ -254,11 +254,11 @@ const responseBuilderSimple = async (message, category, destination) => {
     if (typeof message.event !== 'string') {
       throw new ConfigurationError('Event name must be a string');
     }
-    if (!isDefinedAndNotNull(hashMapExternalKey[message.event.toLowerCase()])) {
-      throw new ConfigurationError('Event not mapped for this track call');
-    }
     if (hashMapEventDefinition[message.event.toLowerCase()]) {
       return responseBuilderForMessageEvent(message, subDomain, authToken, hashMapEventDefinition);
+    }
+    if (!isDefinedAndNotNull(hashMapExternalKey[message.event.toLowerCase()])) {
+      throw new ConfigurationError('Event not mapped for this track call');
     }
     return responseBuilderForInsertData(
       message,

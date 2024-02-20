@@ -10,6 +10,7 @@ const {
   defaultBatchRequestConfig,
   getSuccessRespEvents,
   checkInvalidRtTfEvents,
+  combineBatchRequestsWithSameJobIds,
 } = require('../../util');
 const {
   CALL_CONVERSION,
@@ -229,7 +230,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
     .concat(storeSalesEventsBatchedResponseList)
     .concat(clickCallEvents)
     .concat(errorRespList);
-  return batchedResponseList;
+  return combineBatchRequestsWithSameJobIds(batchedResponseList);
 };
 
 module.exports = { process, processRouterDest };

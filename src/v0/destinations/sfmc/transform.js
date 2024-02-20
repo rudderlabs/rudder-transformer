@@ -182,6 +182,23 @@ const responseBuilderForInsertData = (
   return response;
 };
 
+const responseBuilderForMessageEvent = (message, subDomain, authToken, hashMapEventDefinition) => {
+  const contactKey =
+    getFieldValueFromMessage(message, 'userIdOnly') || getFieldValueFromMessage(message, 'email');
+  const response = defaultPostRequestConfig();
+  response.endpoint = `https://${subDomain}.${ENDPOINTS.EVENT}`;
+  response.headers = {
+    'Content-Type': JSON_MIME_TYPE,
+    Authorization: `Bearer ${authToken}`,
+  };
+  response.body.JSON = {
+    ContactKey: contactKey,
+    EventDefinitionKey: hashMapEventDefinition[message.event.toLowerCase()],
+    Data: { ...message.properties },
+  };
+  return response;
+};
+
 const responseBuilderSimple = async (message, category, destination) => {
   const {
     clientId,
@@ -192,6 +209,7 @@ const responseBuilderSimple = async (message, category, destination) => {
     eventToExternalKey,
     eventToPrimaryKey,
     eventToUUID,
+    eventToDefinitionMapping
   } = destination.Config;
   // map from an event name to an external key of a data extension.
   const hashMapExternalKey = getHashFromArray(eventToExternalKey, 'from', 'to');
@@ -201,6 +219,8 @@ const responseBuilderSimple = async (message, category, destination) => {
   const hashMapUUID = getHashFromArray(eventToUUID, 'event', 'uuid');
   // token needed for authorization for subsequent calls
   const authToken = await getToken(clientId, clientSecret, subDomain);
+  // map from an event name to an event definition key.
+  const hashMapEventDefinition = getHashFromArray(eventToDefinitionMapping, 'from', 'to')
   // if createOrUpdateContacts is true identify calls for create and update of contacts will not occur.
   if (category.type === 'identify' && !createOrUpdateContacts) {
     // first call to identify the contact
@@ -237,7 +257,9 @@ const responseBuilderSimple = async (message, category, destination) => {
     if (!isDefinedAndNotNull(hashMapExternalKey[message.event.toLowerCase()])) {
       throw new ConfigurationError('Event not mapped for this track call');
     }
-
+    if (hashMapEventDefinition[message.event.toLowerCase()]) {
+      return responseBuilderForMessageEvent(message, subDomain, authToken, hashMapEventDefinition);
+    }
     return responseBuilderForInsertData(
       message,
       hashMapExternalKey[message.event.toLowerCase()],

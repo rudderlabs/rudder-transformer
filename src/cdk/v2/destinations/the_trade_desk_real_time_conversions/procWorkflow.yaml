@@ -1,0 +1,59 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+  - path: ./config
+    exportAll: true
+  - path: ./utils
+    exportAll: true
+
+steps:
+  - name: validateConfig
+    template: |
+      $.assertConfig(.destination.Config.advertiserId, "Advertiser ID is not present. Aborting")
+      $.assertConfig(.destination.Config.trackerId, "Tracking Tag ID is not present. Aborting")
+
+  - name: validateInput
+    template: |
+      let messageType = .message.type;
+      $.assert(messageType, "message Type is not present. Aborting.");
+      $.assert(messageType.toLowerCase() === $.EventType.TRACK, "Event type " + messageType + " is not supported");
+      $.assert(.message.event, "Event is not present. Aborting.");
+
+  - name: prepareTrackPayload
+    template: |
+      const configPayload = $.prepareFromConfig(.destination);
+      const commonPayload = $.prepareCommonPayload(.message);
+      const { id, type } = $.getAdvertisingId(.message);
+      const items = $.prepareItemsPayload(.message);
+      const customProperties = $.prepareCustomProperties(.message, .destination);
+      const eventName = $.populateEventName(.message, .destination);
+      const value = $.getRevenue(.message);
+      let payload = {
+        ...configPayload,
+        ...commonPayload,
+        event_name: eventName,
+        value,
+        items,
+        adid: id,
+        adid_type: type,
+        ...customProperties,
+        data_processing_option: $.getDataProcessingOptions(.message),
+        privacy_settings: $.getPrivacySetting(.message),
+      };
+      payload = $.enrichTrackPayload(.message, payload);
+      payload;
+
+  - name: buildResponseForProcessTransformation
+    template: |
+      const response = $.defaultRequestConfig();
+      response.body.JSON = {data: [$.removeUndefinedAndNullValues($.outputs.prepareTrackPayload)]};
+      response.endpoint = $.REAL_TIME_CONVERSION_ENDPOINT;
+      response.headers = {
+        "Content-Type": "application/json"
+      };
+      response;

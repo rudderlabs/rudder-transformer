@@ -3,9 +3,10 @@ const { marketoResponseHandler } = require('./util');
 const { proxyRequest, prepareProxyRequest } = require('../../../adapters/network');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 
-const responseHandler = (destinationResponse, destType) => {
+const responseHandler = (responseParams) => {
+  const { destinationResponse, destType,rudderJobMetadata } = responseParams;
   const message = 'Request Processed Successfully';
-  const { status, rudderJobMetadata } = destinationResponse;
+  const { status } = destinationResponse;
   const authCache = v0Utils.getDestAuthCacheInstance(destType);
   // check for marketo application level failures
   marketoResponseHandler(

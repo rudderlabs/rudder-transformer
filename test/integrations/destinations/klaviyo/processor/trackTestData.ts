@@ -1,15 +1,29 @@
+import { Destination } from '../../../../../src/types';
+import { ProcessorTestData } from '../../../testTypes';
 import {
+  generateMetadata,
   generateSimplifiedTrackPayload,
   generateTrackPayload,
   overrideDestination,
   transformResultBuilder,
 } from '../../../testUtils';
 
-const destination = {
+const destination: Destination = {
+  ID: '123',
+  Name: 'klaviyo',
+  DestinationDefinition: {
+    ID: '123',
+    Name: 'klaviyo',
+    DisplayName: 'klaviyo',
+    Config: {},
+  },
   Config: {
     publicApiKey: 'dummyPublicApiKey',
     privateApiKey: 'dummyPrivateApiKey',
   },
+  Enabled: true,
+  WorkspaceID: '123',
+  Transformations: [],
 };
 
 const commonTraits = {
@@ -33,7 +47,7 @@ const commonOutputHeaders = {
 
 const eventEndPoint = 'https://a.klaviyo.com/api/events';
 
-export const trackTestData = [
+export const trackTestData: ProcessorTestData[] = [
   {
     id: 'klaviyo-track-test-1',
     name: 'klaviyo',
@@ -71,6 +85,7 @@ export const trackTestData = [
               anonymousId: '9c6bd77ea9da3e68',
               originalTimestamp: '2021-01-25T15:32:56.409Z',
             }),
+            metadata: generateMetadata(1),
           },
         ],
       },
@@ -110,6 +125,7 @@ export const trackTestData = [
               userId: '',
             }),
             statusCode: 200,
+            metadata: generateMetadata(1),
           },
         ],
       },
@@ -151,6 +167,7 @@ export const trackTestData = [
               anonymousId: '9c6bd77ea9da3e68',
               originalTimestamp: '2021-01-25T15:32:56.409Z',
             }),
+            metadata: generateMetadata(2),
           },
         ],
       },
@@ -187,6 +204,7 @@ export const trackTestData = [
               userId: '',
             }),
             statusCode: 200,
+            metadata: generateMetadata(2),
           },
         ],
       },
@@ -223,6 +241,7 @@ export const trackTestData = [
               anonymousId: '9c6bd77ea9da3e68',
               originalTimestamp: '2021-01-25T15:32:56.409Z',
             }),
+            metadata: generateMetadata(3),
           },
         ],
       },
@@ -256,6 +275,7 @@ export const trackTestData = [
               userId: '',
             }),
             statusCode: 200,
+            metadata: generateMetadata(3),
           },
         ],
       },
@@ -289,6 +309,7 @@ export const trackTestData = [
               anonymousId: '9c6bd77ea9da3e68',
               originalTimestamp: '2021-01-25T15:32:56.409Z',
             }),
+            metadata: generateMetadata(4),
           },
         ],
       },
@@ -306,8 +327,11 @@ export const trackTestData = [
               feature: 'processor',
               implementation: 'native',
               module: 'destination',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
             },
             statusCode: 400,
+            metadata: generateMetadata(4),
           },
         ],
       },

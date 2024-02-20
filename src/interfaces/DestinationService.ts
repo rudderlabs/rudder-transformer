@@ -1,5 +1,5 @@
 import {
-  DeliveryResponse,
+  DeliveryV0Response,
   MetaTransferObject,
   ProcessorTransformationRequest,
   ProcessorTransformationResponse,
@@ -8,7 +8,7 @@ import {
   UserDeletionRequest,
   UserDeletionResponse,
   ProxyRequest,
-  DeliveriesResponse,
+  DeliveryV1Response,
 } from '../types/index';
 
 export interface DestinationService {
@@ -49,7 +49,7 @@ export interface DestinationService {
     destinationType: string,
     requestMetadata: NonNullable<unknown>,
     version: string,
-  ): Promise<DeliveryResponse | DeliveriesResponse>;
+  ): Promise<DeliveryV0Response | DeliveryV1Response>;
 
   processUserDeletion(
     requests: UserDeletionRequest[],

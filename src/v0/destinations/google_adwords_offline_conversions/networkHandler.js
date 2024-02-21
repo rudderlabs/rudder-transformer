@@ -251,7 +251,8 @@ const ProxyRequest = async (request) => {
   return response;
 };
 
-const responseHandler = (destinationResponse) => {
+const responseHandler = (responseParams) => {
+  const { destinationResponse } = responseParams;
   const message = `[Google Ads Offline Conversions Response Handler] - Request processed successfully`;
   const { status } = destinationResponse;
   if (isHttpStatusSuccess(status)) {

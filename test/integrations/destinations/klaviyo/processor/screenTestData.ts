@@ -1,13 +1,30 @@
-import { generateSimplifiedPageOrScreenPayload, transformResultBuilder } from '../../../testUtils';
+import { Destination } from '../../../../../src/types';
+import { ProcessorTestData } from '../../../testTypes';
+import {
+  generateMetadata,
+  generateSimplifiedPageOrScreenPayload,
+  transformResultBuilder,
+} from '../../../testUtils';
 
-const destination = {
+const destination: Destination = {
+  ID: '123',
+  Name: 'klaviyo',
+  DestinationDefinition: {
+    ID: '123',
+    Name: 'klaviyo',
+    DisplayName: 'klaviyo',
+    Config: {},
+  },
   Config: {
     publicApiKey: 'dummyPublicApiKey',
     privateApiKey: 'dummyPrivateApiKey',
   },
+  Enabled: true,
+  WorkspaceID: '123',
+  Transformations: [],
 };
 
-export const screenTestData = [
+export const screenTestData: ProcessorTestData[] = [
   {
     id: 'klaviyo-screen-test-1',
     name: 'klaviyo',
@@ -47,6 +64,7 @@ export const screenTestData = [
               },
               'screen',
             ),
+            metadata: generateMetadata(1),
           },
         ],
       },
@@ -89,6 +107,7 @@ export const screenTestData = [
               userId: '',
             }),
             statusCode: 200,
+            metadata: generateMetadata(1),
           },
         ],
       },

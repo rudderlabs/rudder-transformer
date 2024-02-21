@@ -11,7 +11,8 @@ const tags = require('../../util/tags');
 const stats = require('../../../util/stats');
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const responseHandler = (destinationResponse, _dest) => {
+const responseHandler = (responseParams) => {
+  const { destinationResponse } = responseParams;
   const message = `Request for ${DESTINATION} Processed Successfully`;
   const { response, status } = destinationResponse;
   // if the response from destination is not a success case build an explicit error

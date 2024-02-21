@@ -46,6 +46,7 @@ const userDeletionHandler = async (userAttributes, config) => {
       processedDeletionRequest.status,
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedDeletionRequest.status),
+        [tags.TAG_NAMES.STATUS]: processedDeletionRequest.status,
       },
       deletionResponse,
     );

@@ -310,4 +310,9 @@ const processRouterDest = async (inputs, reqMetadata) => {
   return respList;
 };
 
-module.exports = { process, processRouterDest, responseBuilderSimple };
+module.exports = {
+  process,
+  processRouterDest,
+  responseBuilderSimple,
+  responseBuilderForMessageEvent,
+};

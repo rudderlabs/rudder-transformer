@@ -44,7 +44,8 @@ function checkIfFailuresAreRetryable(response) {
   }
 }
 
-const responseHandler = (destinationResponse) => {
+const responseHandler = (responseParams) => {
+  const { destinationResponse } = responseParams;
   const message = `[CAMPAIGN_MANAGER Response Handler] - Request Processed Successfully`;
   const { response, status } = destinationResponse;
 

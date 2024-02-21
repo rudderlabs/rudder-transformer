@@ -8,7 +8,7 @@ describe('responseHandler', () => {
       status: 200,
     };
 
-    const result = responseHandler(destinationResponse);
+    const result = responseHandler({ destinationResponse });
 
     expect(result.status).toBe(200);
     expect(result.message).toBe('[RAKUTEN Response Handler] - Request Processed Successfully');
@@ -21,7 +21,7 @@ describe('responseHandler', () => {
       status: 400,
     };
     expect(() => {
-      responseHandler(destinationResponse);
+      responseHandler({ destinationResponse });
     }).toThrow('Request failed with status: 400 due to invalid Marketing Id');
   });
 
@@ -31,7 +31,7 @@ describe('responseHandler', () => {
       status: 200,
     };
     expect(() => {
-      responseHandler(destinationResponse);
+      responseHandler({ destinationResponse });
     }).toThrow(
       'Request failed with status: 200 due to Access denied. Can you try to enable pixel tracking for this mid.',
     );
@@ -43,7 +43,7 @@ describe('responseHandler', () => {
       status: 200,
     };
 
-    const result = responseHandler(destinationResponse);
+    const result = responseHandler({ destinationResponse });
 
     expect(result.status).toBe(200);
     expect(result.message).toBe('[RAKUTEN Response Handler] - Request Processed Successfully');
@@ -57,8 +57,7 @@ describe('responseHandler', () => {
     };
 
     expect(() => {
-      responseHandler(destinationResponse);
+      responseHandler({ destinationResponse });
     }).toThrow('Request failed with status: 200 with number of bad records 1');
-
   });
 });

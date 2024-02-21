@@ -185,7 +185,8 @@ const responseBuilderForInsertData = (
 const responseBuilderForMessageEvent = (message, subDomain, authToken, hashMapEventDefinition) => {
   const contactKey =
     getFieldValueFromMessage(message, 'userIdOnly') || getFieldValueFromMessage(message, 'email');
-  const response = defaultPostRequestConfig();
+  const response = defaultRequestConfig();
+  response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = `https://${subDomain}.${ENDPOINTS.EVENT}`;
   response.headers = {
     'Content-Type': JSON_MIME_TYPE,

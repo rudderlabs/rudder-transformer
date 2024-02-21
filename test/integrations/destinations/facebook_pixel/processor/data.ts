@@ -1,8 +1,7 @@
-// import { ecomTestData } from './ecomTestData';
-//  import { identifyTestData } from './identifyTestData';
+import { identifyTestData } from './identifyTestData';
 import { trackTestData } from './trackTestData';
-// import { validationTestData } from './validationTestData';
-// import { pageScreenTestData } from './pageScreenTestData';
+import { validationTestData } from './validationTestData';
+import { pageScreenTestData } from './pageScreenTestData';
 import { ecommTestData } from './ecommTestData';
 import { configLevelFeaturesTestData } from './configLevelFeaturesTestData';
 
@@ -12,11 +11,10 @@ export const mockFns = (_) => {
 };
 
 export const data = [
-  //...identifyTestData,
-  //...trackTestData,
-  // ...ecomTestData,
-  //  ...validationTestData,
-  // ...pageScreenTestData,
-  // ...ecommTestData,
+  ...identifyTestData,
+  ...trackTestData,
+  ...validationTestData,
+  ...pageScreenTestData,
+  ...ecommTestData,
   ...configLevelFeaturesTestData,
 ].map((d) => ({ ...d, mockFns }));

@@ -275,7 +275,8 @@ const errorResponseHandler = (destResponse) => {
   );
 };
 
-const destResponseHandler = (destinationResponse) => {
+const destResponseHandler = (responseParams) => {
+  const { destinationResponse } = responseParams;
   errorResponseHandler(destinationResponse);
   return {
     destinationResponse: destinationResponse.response,

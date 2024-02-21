@@ -65,9 +65,7 @@ describe('getUnsetObj', () => {
   });
 });
 
-
 describe('validateEventType', () => {
-
   it('should validate event type when it is valid with only page name given', () => {
     expect(() => {
       validateEventType('Home Page');
@@ -77,21 +75,25 @@ describe('validateEventType', () => {
   it('should throw an error when event type is null', () => {
     expect(() => {
       validateEventType(null);
-    }).toThrow('Event type is missing. Please send it under `event.type`. For page/screen events, send it under `event.name`');
+    }).toThrow(
+      'Event type is missing. Please send it under `event.type`. For page/screen events, send it under `event.name`',
+    );
   });
 
   it('should throw an error when event type is undefined', () => {
     expect(() => {
       validateEventType(undefined);
-    }).toThrow('Event type is missing. Please send it under `event.type`. For page/screen events, send it under `event.name`');
+    }).toThrow(
+      'Event type is missing. Please send it under `event.type`. For page/screen events, send it under `event.name`',
+    );
   });
 
   // Function receives an empty string as event type
   it('should throw an error when event type is an empty string', () => {
     expect(() => {
       validateEventType('');
-    }).toThrow('Event type is missing. Please send it under `event.type`. For page/screen events, send it under `event.name`');
+    }).toThrow(
+      'Event type is missing. Please send it under `event.type`. For page/screen events, send it under `event.name`',
+    );
   });
-
 });
-

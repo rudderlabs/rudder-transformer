@@ -34,10 +34,11 @@ function isEventAbortableAndExtractErrMsg(element, proxyOutputObj) {
   return isAbortable;
 }
 
-const responseHandler = (destinationResponse) => {
+const responseHandler = (responseParams) => {
+  const { destinationResponse, rudderJobMetadata } = responseParams;
   const message = `[CAMPAIGN_MANAGER Response V1 Handler] - Request Processed Successfully`;
   const responseWithIndividualEvents = [];
-  const { response, status, rudderJobMetadata } = destinationResponse;
+  const { response, status } = destinationResponse;
 
   if (isHttpStatusSuccess(status)) {
     // check for Partial Event failures and Successes

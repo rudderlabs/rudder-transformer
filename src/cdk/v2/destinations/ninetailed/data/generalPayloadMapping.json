@@ -15,21 +15,11 @@
     "destKey": "channel"
   },
   {
-    "sourceKeys": "properties",
-    "destKey": "properties"
-  },
-  {
-    "sourceKeys": "traits",
-    "sourceFromGenericMap": true,
-    "destKey": "traits"
-  },
-  {
-    "sourceKeys": "userIdOnly",
-    "sourceFromGenericMap": true,
-    "destKey": "userId"
-  },
-  {
     "sourceKeys": "type",
     "destKey": "type"
+  },
+  {
+    "sourceKeys": "originalTimestamp",
+    "destKey": "originalTimestamp"
   }
 ]

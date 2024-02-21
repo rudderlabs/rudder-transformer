@@ -1,4 +1,4 @@
-const { mappingConfig, ConfigCategories } = require('./config');
+const { mappingConfig, ConfigCategories, batchEndpoint } = require('./config');
 const { constructPayload } = require('../../../../v0/util');
 
 /**
@@ -9,9 +9,27 @@ const { constructPayload } = require('../../../../v0/util');
  */
 const constructFullPayload = (message) => {
   const context = constructPayload(message, mappingConfig[ConfigCategories.CONTEXT.name]);
-  const payload = constructPayload(message, mappingConfig[ConfigCategories.GENERAL.name]);
-  payload.context = context;
-  return payload;
+  let payload = constructPayload(message, mappingConfig[ConfigCategories.GENERAL.name]);
+  let typeSpecifcPayload;
+  switch (message.type) {
+    case 'track':
+      typeSpecifcPayload = constructPayload(message, mappingConfig[ConfigCategories.TRACK.name]);
+      break;
+    case 'identify':
+      typeSpecifcPayload = constructPayload(message, mappingConfig[ConfigCategories.IDENTIFY.name]);
+      break;
+    case 'page':
+      typeSpecifcPayload = constructPayload(message, mappingConfig[ConfigCategories.PAGE.name]);
+      break;
+    default:
+      break;
+  }
+  payload = { ...payload, ...context };
+  return { ...payload, ...typeSpecifcPayload }; // merge base and type-specific payloads;
 };
 
-module.exports = { constructFullPayload };
+const getEndpoint = (organisationId, environment) => batchEndpoint
+    .replace('{{organisationId}}', organisationId)
+    .replace('{{environment}}', environment);
+
+module.exports = { constructFullPayload, getEndpoint };

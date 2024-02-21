@@ -9,6 +9,18 @@ const ConfigCategories = {
     type: 'context',
     name: 'contextMapping',
   },
+  TRACK: {
+    type: 'track',
+    name: 'trackMapping',
+  },
+  IDENTIFY: {
+    type: 'identify',
+    name: 'identifyMapping',
+  },
+  PAGE: {
+    type: 'page',
+    name: 'pageMapping',
+  },
 };
 const MAX_BATCH_SIZE = 200; // Maximum number of events to send in a single batch
 const mappingConfig = getMappingConfig(ConfigCategories, __dirname);

@@ -170,7 +170,6 @@ describe('Delivery controller tests', () => {
           statTags: {
             errorCategory: 'transformation',
           },
-          authErrorCategory: '',
           status: 500,
           response: [{ error: 'test error', metadata: { a1: 'b1' }, statusCode: 500 }],
         },

@@ -1,10 +1,27 @@
-import { generateSimplifiedGroupPayload, transformResultBuilder } from '../../../testUtils';
+import { Destination } from '../../../../../src/types';
+import { ProcessorTestData } from '../../../testTypes';
+import {
+  generateMetadata,
+  generateSimplifiedGroupPayload,
+  transformResultBuilder,
+} from '../../../testUtils';
 
-const destination = {
+const destination: Destination = {
+  ID: '123',
+  Name: 'klaviyo',
+  DestinationDefinition: {
+    ID: '123',
+    Name: 'klaviyo',
+    DisplayName: 'klaviyo',
+    Config: {},
+  },
   Config: {
     publicApiKey: 'dummyPublicApiKey',
     privateApiKey: 'dummyPrivateApiKey',
   },
+  Enabled: true,
+  WorkspaceID: '123',
+  Transformations: [],
 };
 
 const headers = {
@@ -16,7 +33,7 @@ const headers = {
 
 const commonEndpoint = 'https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs';
 
-export const groupTestData = [
+export const groupTestData: ProcessorTestData[] = [
   {
     id: 'klaviyo-group-test-1',
     name: 'klaviyo',
@@ -47,6 +64,7 @@ export const groupTestData = [
               },
               timestamp: '2020-01-21T00:21:34.208Z',
             }),
+            metadata: generateMetadata(1),
           },
         ],
       },
@@ -74,6 +92,7 @@ export const groupTestData = [
               userId: '',
             }),
             statusCode: 200,
+            metadata: generateMetadata(1),
           },
         ],
       },
@@ -109,6 +128,7 @@ export const groupTestData = [
               },
               timestamp: '2020-01-21T00:21:34.208Z',
             }),
+            metadata: generateMetadata(2),
           },
         ],
       },
@@ -126,8 +146,11 @@ export const groupTestData = [
               feature: 'processor',
               implementation: 'native',
               module: 'destination',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
             },
             statusCode: 400,
+            metadata: generateMetadata(2),
           },
         ],
       },

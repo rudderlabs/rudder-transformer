@@ -479,6 +479,7 @@ export const data = [
                 ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
                 Name: 'MP',
                 Transformations: [],
+                WorkspaceID: '',
               },
             },
             {
@@ -546,6 +547,7 @@ export const data = [
                 ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
                 Name: 'MP',
                 Transformations: [],
+                WorkspaceID: '',
               },
             },
             {
@@ -617,6 +619,7 @@ export const data = [
                 ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
                 Name: 'MP',
                 Transformations: [],
+                WorkspaceID: '',
               },
             },
             {
@@ -680,6 +683,7 @@ export const data = [
                 ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
                 Name: 'MP',
                 Transformations: [],
+                WorkspaceID: '',
               },
             },
             {
@@ -715,6 +719,7 @@ export const data = [
                 ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
                 Name: 'MP',
                 Transformations: [],
+                WorkspaceID: '',
               },
             },
           ],
@@ -1197,6 +1202,7 @@ export const data = [
                 ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
                 Name: 'MP',
                 Transformations: [],
+                WorkspaceID: '',
               },
             },
             {
@@ -1263,6 +1269,7 @@ export const data = [
                 ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
                 Name: 'MP',
                 Transformations: [],
+                WorkspaceID: '',
               },
             },
             {
@@ -1333,6 +1340,7 @@ export const data = [
                 ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
                 Name: 'MP',
                 Transformations: [],
+                WorkspaceID: '',
               },
             },
             {
@@ -1396,6 +1404,7 @@ export const data = [
                 ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
                 Name: 'MP',
                 Transformations: [],
+                WorkspaceID: '',
               },
             },
             {
@@ -1431,6 +1440,7 @@ export const data = [
                 ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
                 Name: 'MP',
                 Transformations: [],
+                WorkspaceID: '',
               },
             },
           ],

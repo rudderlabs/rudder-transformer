@@ -7,6 +7,7 @@ const {
   InstrumentationError,
   ConfigurationError,
   UnauthorizedError,
+  getErrorRespEvents,
 } = require('@rudderstack/integrations-lib');
 const stats = require('../../../util/stats');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
@@ -28,7 +29,6 @@ const {
   getFieldValueFromMessage,
   getDestinationExternalID,
   getSuccessRespEvents,
-  getErrorRespEvents,
   isDefinedAndNotNull,
   generateErrorObject,
   checkInvalidRtTfEvents,

@@ -22,6 +22,7 @@ const {
   PlatformError,
   TransformationError,
   OAuthSecretError,
+  getErrorRespEvents,
 } = require('@rudderstack/integrations-lib');
 const logger = require('../../logger');
 const stats = require('../../util/stats');
@@ -480,16 +481,6 @@ const getSuccessRespEvents = (
   batched,
   statusCode,
   destination,
-});
-
-// Router transformer
-// Error responses
-const getErrorRespEvents = (metadata, statusCode, error, statTags, batched = false) => ({
-  metadata,
-  batched,
-  statusCode,
-  error,
-  statTags,
 });
 
 // ========================================================================
@@ -1661,7 +1652,7 @@ function getValidDynamicFormConfig(
  */
 const checkInvalidRtTfEvents = (inputs) => {
   if (!Array.isArray(inputs) || inputs.length === 0) {
-    const respEvents = getErrorRespEvents(null, 400, 'Invalid event array');
+    const respEvents = getErrorRespEvents([], 400, 'Invalid event array');
     return [respEvents];
   }
   return [];
@@ -2254,7 +2245,6 @@ module.exports = {
   getDestinationExternalIDInfoForRetl,
   getDestinationExternalIDObjectForRetl,
   getDeviceModel,
-  getErrorRespEvents,
   getEventTime,
   getFieldValueFromMessage,
   getFirstAndLastName,

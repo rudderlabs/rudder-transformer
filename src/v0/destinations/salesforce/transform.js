@@ -3,6 +3,7 @@ const cloneDeep = require('lodash/cloneDeep');
 const {
   InstrumentationError,
   NetworkInstrumentationError,
+  getErrorRespEvents,
 } = require('@rudderstack/integrations-lib');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 const {
@@ -20,7 +21,6 @@ const {
   constructPayload,
   getFirstAndLastName,
   getSuccessRespEvents,
-  getErrorRespEvents,
   addExternalIdToTraits,
   getDestinationExternalIDObjectForRetl,
   checkInvalidRtTfEvents,

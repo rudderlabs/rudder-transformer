@@ -1,13 +1,25 @@
+import { Destination } from '../../../../src/types';
+
 const destType = 'the_trade_desk_real_time_conversions';
 const destTypeInUpperCase = 'THE_TRADE_DESK_REAL_TIME_CONVERSIONS';
 const advertiserId = 'test-advertiser-id';
 const trackerId = 'test-trackerId';
-const sampleDestination = {
+const sampleDestination: Destination = {
   Config: {
     advertiserId,
     trackerId,
   },
-  DestinationDefinition: { Config: { cdkV2Enabled: true } },
+  Enabled: true,
+  ID: '123',
+  Name: 'TRADE_DESK_REAL_TIME_CONVERSIONS',
+  WorkspaceID: 'test-workspace-id',
+  Transformations: [],
+  DestinationDefinition: {
+    ID: '123',
+    DisplayName: 'Trade Desk',
+    Name: 'TRADE_DESK',
+    Config: { cdkV2Enabled: true },
+  },
 };
 
 const sampleContextForConversion = {

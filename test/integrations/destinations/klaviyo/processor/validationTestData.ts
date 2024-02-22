@@ -1,4 +1,26 @@
-export const validationTestData = [
+import { Destination } from '../../../../../src/types';
+import { ProcessorTestData } from '../../../testTypes';
+import { generateMetadata } from '../../../testUtils';
+
+const destination: Destination = {
+  ID: '123',
+  Name: 'klaviyo',
+  DestinationDefinition: {
+    ID: '123',
+    Name: 'klaviyo',
+    DisplayName: 'klaviyo',
+    Config: {},
+  },
+  Config: {
+    publicApiKey: 'dummyPublicApiKey',
+    privateApiKey: 'dummyPrivateApiKey',
+  },
+  Enabled: true,
+  WorkspaceID: '123',
+  Transformations: [],
+};
+
+export const validationTestData: ProcessorTestData[] = [
   {
     id: 'klaviyo-validation-test-1',
     name: 'klaviyo',
@@ -13,12 +35,7 @@ export const validationTestData = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                publicApiKey: 'dummyPublicApiKey',
-                privateApiKey: 'dummyPrivateApiKey',
-              },
-            },
+            destination,
             message: {
               userId: 'user123',
               type: 'random',
@@ -35,6 +52,7 @@ export const validationTestData = [
               },
               timestamp: '2020-01-21T00:21:34.208Z',
             },
+            metadata: generateMetadata(1),
           },
         ],
       },
@@ -52,8 +70,11 @@ export const validationTestData = [
               feature: 'processor',
               implementation: 'native',
               module: 'destination',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
             },
             statusCode: 400,
+            metadata: generateMetadata(1),
           },
         ],
       },

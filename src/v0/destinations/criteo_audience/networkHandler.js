@@ -67,7 +67,8 @@ const criteoAudienceRespHandler = (destResponse, stageMsg) => {
   );
 };
 
-const responseHandler = (destinationResponse) => {
+const responseHandler = (responseParams) => {
+  const { destinationResponse } = responseParams;
   const message = `Request Processed Successfully`;
   const { status } = destinationResponse;
   if (!isHttpStatusSuccess(status)) {

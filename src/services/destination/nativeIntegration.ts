@@ -5,7 +5,7 @@ import groupBy from 'lodash/groupBy';
 import cloneDeep from 'lodash/cloneDeep';
 import { DestinationService } from '../../interfaces/DestinationService';
 import {
-  DeliveryResponse,
+  DeliveryV0Response,
   ErrorDetailer,
   MetaTransferObject,
   ProcessorTransformationRequest,
@@ -16,9 +16,9 @@ import {
   UserDeletionRequest,
   UserDeletionResponse,
   ProxyRequest,
-  ProxyDeliveriesRequest,
-  ProxyDeliveryRequest,
-  DeliveriesResponse,
+  ProxyV0Request,
+  ProxyV1Request,
+  DeliveryV1Response,
   DeliveryJobState,
 } from '../../types/index';
 import { DestinationPostTransformationService } from './postTransformation';
@@ -181,7 +181,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
     destinationType: string,
     _requestMetadata: NonNullable<unknown>,
     version: string,
-  ): Promise<DeliveryResponse | DeliveriesResponse> {
+  ): Promise<DeliveryV0Response | DeliveryV1Response> {
     try {
       const { networkHandler, handlerVersion } = networkHandlerFactory.getNetworkHandler(
         destinationType,
@@ -191,24 +191,22 @@ export class NativeIntegrationDestinationService implements DestinationService {
       const processedProxyResponse = networkHandler.processAxiosResponse(rawProxyResponse);
       let rudderJobMetadata =
         version.toLowerCase() === 'v1'
-          ? (deliveryRequest as ProxyDeliveriesRequest).metadata
-          : (deliveryRequest as ProxyDeliveryRequest).metadata;
+          ? (deliveryRequest as ProxyV1Request).metadata
+          : (deliveryRequest as ProxyV0Request).metadata;
 
       if (version.toLowerCase() === 'v1' && handlerVersion.toLowerCase() === 'v0') {
         rudderJobMetadata = rudderJobMetadata[0];
       }
-
-      let responseProxy = networkHandler.responseHandler(
-        {
-          ...processedProxyResponse,
-          rudderJobMetadata,
-        },
-        destinationType,
-      );
+      const responseParams = {
+        destinationResponse: processedProxyResponse,
+        rudderJobMetadata,
+        destType: destinationType,
+      };
+      let responseProxy = networkHandler.responseHandler(responseParams);
       // Adaption Logic for V0 to V1
       if (handlerVersion.toLowerCase() === 'v0' && version.toLowerCase() === 'v1') {
-        const v0Response = responseProxy as DeliveryResponse;
-        const jobStates = (deliveryRequest as ProxyDeliveriesRequest).metadata.map(
+        const v0Response = responseProxy as DeliveryV0Response;
+        const jobStates = (deliveryRequest as ProxyV1Request).metadata.map(
           (metadata) =>
             ({
               error: JSON.stringify(v0Response.destinationResponse?.response),
@@ -221,7 +219,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
           status: v0Response.status,
           message: v0Response.message,
           authErrorCategory: v0Response.authErrorCategory,
-        } as DeliveriesResponse;
+        } as DeliveryV1Response;
       }
       return responseProxy;
     } catch (err: any) {
@@ -236,10 +234,10 @@ export class NativeIntegrationDestinationService implements DestinationService {
       );
 
       if (version.toLowerCase() === 'v1') {
-        metaTO.metadatas = (deliveryRequest as ProxyDeliveriesRequest).metadata;
+        metaTO.metadatas = (deliveryRequest as ProxyV1Request).metadata;
         return DestinationPostTransformationService.handlevV1DeliveriesFailureEvents(err, metaTO);
       }
-      metaTO.metadata = (deliveryRequest as ProxyDeliveryRequest).metadata;
+      metaTO.metadata = (deliveryRequest as ProxyV0Request).metadata;
       return DestinationPostTransformationService.handleDeliveryFailureEvents(err, metaTO);
     }
   }

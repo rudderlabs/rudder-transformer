@@ -1,50 +1,154 @@
 const { populateConsentForGoogleDestinations } = require('./index');
 
-describe('unit test for populateConsentForGoogleDestinations', () => {
-  // Returns an empty object when no properties are provided.
-  it('should return an empty object when no properties are provided', () => {
-    const result = populateConsentForGoogleDestinations({});
-    expect(result).toEqual({});
-  });
+describe('populateConsentForGoogleDestinations', () => {
 
-  // Sets adUserData property of consent object when userDataConsent property is provided and its value is one of the allowed consent statuses.
-  it('should set adUserData property of consent object when userDataConsent property is provided and its value is one of the allowed consent statuses', () => {
-    const properties = { userDataConsent: 'GRANTED' };
-    const result = populateConsentForGoogleDestinations(properties);
-    expect(result).toEqual({ adUserData: 'GRANTED' });
-  });
+  // Returns an object with ad_user_data and ad_personalization properties set to UNSPECIFIED when no consents are provided
+  it('GOOGLE_ADWORDS_OFFLINE_CONVERSIONS : should return an object with ad_user_data and ad_personalization properties set to UNSPECIFIED when no consents are provided', () => {
+    const message = {};
+    const destName = 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS';
 
-  // Sets adPersonalization property of consent object when personalizationConsent property is provided and its value is one of the allowed consent statuses.
-  it('should set adPersonalization property of consent object when personalizationConsent property is provided and its value is one of the allowed consent statuses', () => {
-    const properties = { personalizationConsent: 'DENIED' };
-    const result = populateConsentForGoogleDestinations(properties);
-    expect(result).toEqual({ adPersonalization: 'DENIED' });
-  });
+    const result = populateConsentForGoogleDestinations(message, destName);
 
-  // Returns an empty object when properties parameter is not provided.
-  it('should return an empty object when properties parameter is not provided', () => {
-    const result = populateConsentForGoogleDestinations();
-    expect(result).toEqual({});
-  });
-
-  // Returns an empty object when properties parameter is null.
-  it('should return an empty object when properties parameter is null', () => {
-    const result = populateConsentForGoogleDestinations(null);
-    expect(result).toEqual({});
-  });
-
-  // Returns an empty object when properties parameter is an empty object.
-  it('should return an empty object when properties parameter is an empty object', () => {
-    const result = populateConsentForGoogleDestinations({});
-    expect(result).toEqual({});
-  });
-
-  // Returns an empty object when properties parameter is an empty object.
-  it('should return an empty object when properties parameter contains adUserData and adPersonalization with non-allowed values', () => {
-    const result = populateConsentForGoogleDestinations({
-      adUserData: 'RANDOM',
-      personalizationConsent: 'RANDOM',
+    expect(result).toEqual({
+      ad_user_data: 'UNSPECIFIED',
+      ad_personalization: 'UNSPECIFIED',
     });
+  });
+
+  // Returns an empty object when the destination name is not recognized
+  it('GOOGLE_ADWORDS_OFFLINE_CONVERSIONS: should return an empty object when the destination name is not recognized', () => {
+    const message = {};
+    const destName = 'unknown_destination';
+
+    const result = populateConsentForGoogleDestinations(message, destName);
+
     expect(result).toEqual({});
+  });
+
+  // Returns an object with ad_user_data and ad_personalization properties set to the provided consents when they are valid and present in the message properties
+  it('GOOGLE_ADWORDS_OFFLINE_CONVERSIONS: should return an object with ad_user_data and ad_personalization properties set to the provided consents when they are valid and present in the message properties', () => {
+    const message = {
+      integrations: {
+        google_adwords_offline_conversions: {
+          consents: {
+            ad_user_data: 'GRANTED',
+            ad_personalization: 'DENIED'
+          }
+        }
+      }
+    };
+    const destName = 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS';
+
+    const result = populateConsentForGoogleDestinations(message, destName);
+
+    expect(result).toEqual({
+      ad_user_data: 'GRANTED',
+      ad_personalization: 'DENIED',
+    });
+  });
+
+  // Returns an object with ad_user_data and ad_personalization properties set to UNSPECIFIED when the provided consents are not valid or not present in the message properties
+  it('GOOGLE_ADWORDS_OFFLINE_CONVERSIONS : should return an object with ad_user_data and ad_personalization properties set to UNSPECIFIED when the provided consents are not valid or not present in the message properties', () => {
+    const message = {
+      integrations: {
+        google_adwords_offline_conversions: {
+          consents: {
+            ad_user_data: 'GRANTED',
+            ad_personalization: 'INVALID'
+          }
+        }
+      }
+    };
+    const destName = 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS';
+
+    const result = populateConsentForGoogleDestinations(message, destName);
+
+    expect(result).toEqual({
+      ad_user_data: 'GRANTED',
+      ad_personalization: 'UNSPECIFIED',
+    });
+  });
+
+  // Returns an empty object when the integration object is not present in the message
+  it('GOOGLE_ADWORDS_OFFLINE_CONVERSIONS : should return an default object when the integration object is not present in the message', () => {
+    const message = {};
+    const destName = 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS';
+
+    const result = populateConsentForGoogleDestinations(message, destName);
+
+    expect(result).toEqual({
+      ad_user_data: 'UNSPECIFIED',
+      ad_personalization: 'UNSPECIFIED',
+    });
+  });
+
+  // Returns an object with ad_user_data and ad_personalization properties set to UNSPECIFIED when no consents are provided
+  it('GOOGLE_ADWORDS_REMARKETING_LISTS: should return an object with ad_user_data and ad_personalization properties set to UNSPECIFIED when no consents are provided', () => {
+    const message = {};
+    const destName = 'GOOGLE_ADWORDS_REMARKETING_LISTS';
+
+    const result = populateConsentForGoogleDestinations(message, destName);
+
+    expect(result).toEqual({
+      adUserData: 'UNSPECIFIED',
+      adPersonalization: 'UNSPECIFIED',
+    });
+  });
+
+  // Returns an object with ad_user_data and ad_personalization properties set to the provided consents when they are valid and present in the message properties
+  it('GOOGLE_ADWORDS_REMARKETING_LISTS : should return an object with ad_user_data and ad_personalization properties set to the provided consents when they are valid and present in the message properties', () => {
+    const message = {
+      integrations: {
+        google_adwords_remarketing_lists: {
+          consents: {
+            adUserData: 'GRANTED',
+            adPersonalization: 'DENIED'
+          }
+        }
+      }
+    };
+    const destName = 'GOOGLE_ADWORDS_REMARKETING_LISTS';
+
+    const result = populateConsentForGoogleDestinations(message, destName);
+
+    expect(result).toEqual({
+      adUserData: 'GRANTED',
+      adPersonalization: 'DENIED',
+    });
+  });
+
+  // Returns an object with ad_user_data and ad_personalization properties set to UNSPECIFIED when the provided consents are not valid or not present in the message properties
+  it('GOOGLE_ADWORDS_REMARKETING_LISTS : should return an object with ad_user_data and ad_personalization properties set to UNSPECIFIED when the provided consents are not valid or not present in the message properties', () => {
+    const message = {
+      integrations: {
+        google_adwords_remarketing_lists: {
+          consents: {
+            adUserData: 'GRANTED',
+            adPersonalization: 'INVALID'
+          }
+        }
+      }
+    };
+    const destName = 'GOOGLE_ADWORDS_REMARKETING_LISTS';
+
+    const result = populateConsentForGoogleDestinations(message, destName);
+
+    expect(result).toEqual({
+      adUserData: 'GRANTED',
+      adPersonalization: 'UNSPECIFIED',
+    });
+  });
+
+  // Returns an empty object when the integration object is not present in the message
+  it('GOOGLE_ADWORDS_REMARKETING_LISTS : should return an default object when the integration object is not present in the message', () => {
+    const message = {};
+    const destName = 'GOOGLE_ADWORDS_REMARKETING_LISTS';
+
+    const result = populateConsentForGoogleDestinations(message, destName);
+
+    expect(result).toEqual({
+      adUserData: 'UNSPECIFIED',
+      adPersonalization: 'UNSPECIFIED',
+    });
   });
 });

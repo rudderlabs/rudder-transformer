@@ -14,8 +14,9 @@ const {
   getDestinationExternalIDInfoForRetl,
   getAccessToken,
 } = require('../../util');
+const {groupUserDataBasedOnConsentLevel} = require('./utils');
 
-const { populateConsentForGoogleDestinations } = require('../../util/googleUtils');
+// const { populateConsentForGoogleDestinations } = require('../../util/googleUtils');
 
 const {
   offlineDataJobsMapping,
@@ -140,18 +141,17 @@ const populateIdentifiers = (attributeArray, { Config }) => {
  * create/remove object each chunk.
  * @param {rudder event message} message
  * @param {rudder event destination} destination
- * @returns
+ * @returns {create : {enablePartialFailure : boolean, operations : { create : {userIdentifiers: []}} }. remove : {enablePartialFailure : boolean, operations : { remove : {userIdentifiers: []}} }}
  */
 
-const createPayload = (message, destination) => {
-  const { listData } = message.properties;
+const createPayload = (message, userDataBlock, destination) => {
+  // const { listData } = message.properties;
   const properties = ['add', 'remove'];
-
   let outputPayloads = {};
-  const typeOfOperation = Object.keys(listData);
+  const typeOfOperation = Object.keys(userDataBlock);
   typeOfOperation.forEach((key) => {
     if (properties.includes(key)) {
-      const userIdentifiersList = populateIdentifiers(listData[key], destination);
+      const userIdentifiersList = populateIdentifiers(userDataBlock[key], destination);
       if (userIdentifiersList.length === 0) {
         logger.info(
           `Google_adwords_remarketing_list]:: No attributes are present in the '${key}' property.`,
@@ -174,7 +174,7 @@ const createPayload = (message, destination) => {
             operations.create.userIdentifiers = element;
             outputPayload.operations.push(operations);
           });
-          outputPayloads = { ...outputPayloads, create: outputPayload };
+          outputPayloads = { ...outputPayloads, create: outputPayload, consent : userDataBlock.consent };
           break;
         case 'remove':
           // for remove operation
@@ -185,7 +185,7 @@ const createPayload = (message, destination) => {
             operations.remove.userIdentifiers = element;
             outputPayload.operations.push(operations);
           });
-          outputPayloads = { ...outputPayloads, remove: outputPayload };
+          outputPayloads = { ...outputPayloads, remove: outputPayload, consent : userDataBlock.consent };
           break;
         default:
       }
@@ -199,6 +199,9 @@ const createPayload = (message, destination) => {
 
 const processEvent = async (metadata, message, destination) => {
   const response = [];
+  let createdPayload = {};
+  // let consentObj = {};
+  const payloadArray = []
   if (!message.type) {
     throw new InstrumentationError('Message Type is not present. Aborting message.');
   }
@@ -208,18 +211,22 @@ const processEvent = async (metadata, message, destination) => {
   if (!message.properties.listData) {
     throw new InstrumentationError('listData is not present inside properties. Aborting message.');
   }
+  // const mappedToDestination = get(message, MappedToDestinationKey);
   if (message.type.toLowerCase() === 'audiencelist') {
-    const createdPayload = createPayload(message, destination);
+    const userDataGroupedByConsentLevel = groupUserDataBasedOnConsentLevel(message);
+    userDataGroupedByConsentLevel.forEach((userDataBlock) => {
+       createdPayload = {...createPayload(message,userDataBlock, destination)};
+       payloadArray.push(createdPayload);
+    });
 
     if (Object.keys(createdPayload).length === 0) {
       throw new InstrumentationError(
         "Neither 'add' nor 'remove' property is present inside 'listData' or there are no attributes inside 'add' or 'remove' properties matching with the schema fields. Aborting message.",
       );
     }
-
-    Object.values(createdPayload).forEach((data) => {
-      const consentObj = populateConsentForGoogleDestinations(message.properties);
-      response.push(responseBuilder(metadata, data, destination, message, consentObj));
+    payloadArray.forEach((singlePayload) => {
+            const finalDataObject = singlePayload.create || singlePayload.remove;
+            response.push(responseBuilder(metadata, finalDataObject, destination, message, singlePayload.consent));
     });
     return response;
   }

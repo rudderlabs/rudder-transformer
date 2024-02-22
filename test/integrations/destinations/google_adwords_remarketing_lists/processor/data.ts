@@ -79,7 +79,10 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
-                consent: {},
+                consent: {
+                  adPersonalization: 'UNSPECIFIED',
+                  adUserData: 'UNSPECIFIED',
+                },
               },
               body: {
                 JSON: {
@@ -213,7 +216,10 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
-                consent: {},
+                consent: {
+                  adPersonalization: 'UNSPECIFIED',
+                  adUserData: 'UNSPECIFIED',
+                },
               },
               body: {
                 JSON: {
@@ -332,7 +338,10 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
-                consent: {},
+                consent: {
+                  adPersonalization: 'UNSPECIFIED',
+                  adUserData: 'UNSPECIFIED',
+                },
               },
               body: {
                 JSON: {
@@ -1434,7 +1443,10 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
-                consent: {},
+                consent: {
+                  adPersonalization: 'UNSPECIFIED',
+                  adUserData: 'UNSPECIFIED',
+                },
               },
               body: {
                 JSON: {
@@ -2829,7 +2841,10 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
-                consent: {},
+                consent: {
+                  adPersonalization: 'UNSPECIFIED',
+                  adUserData: 'UNSPECIFIED',
+                },
               },
               body: {
                 JSON: {
@@ -2909,7 +2924,10 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
-                consent: {},
+                consent: {
+                  adPersonalization: 'UNSPECIFIED',
+                  adUserData: 'UNSPECIFIED',
+                },
               },
               body: {
                 JSON: {
@@ -4122,7 +4140,10 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
-                consent: {},
+                consent: {
+                  adPersonalization: 'UNSPECIFIED',
+                  adUserData: 'UNSPECIFIED',
+                },
               },
               body: {
                 JSON: {
@@ -5422,7 +5443,10 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
-                consent: {},
+                consent: {
+                  adPersonalization: 'UNSPECIFIED',
+                  adUserData: 'UNSPECIFIED',
+                },
               },
               body: {
                 JSON: {
@@ -6799,7 +6823,10 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
-                consent: {},
+                consent: {
+                  adPersonalization: 'UNSPECIFIED',
+                  adUserData: 'UNSPECIFIED',
+                },
               },
               body: {
                 JSON: {
@@ -8109,7 +8136,10 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
-                consent: {},
+                consent: {
+                  adPersonalization: 'UNSPECIFIED',
+                  adUserData: 'UNSPECIFIED',
+                },
               },
               body: {
                 JSON: {
@@ -9409,7 +9439,10 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
-                consent: {},
+                consent: {
+                  adPersonalization: 'UNSPECIFIED',
+                  adUserData: 'UNSPECIFIED',
+                },
               },
               body: {
                 JSON: {
@@ -10804,7 +10837,10 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
-                consent: {},
+                consent: {
+                  adPersonalization: 'UNSPECIFIED',
+                  adUserData: 'UNSPECIFIED',
+                },
               },
               body: {
                 JSON: {
@@ -10884,7 +10920,10 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
-                consent: {},
+                consent: {
+                  adPersonalization: 'UNSPECIFIED',
+                  adUserData: 'UNSPECIFIED',
+                },
               },
               body: {
                 JSON: {
@@ -11059,7 +11098,10 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
-                consent: {},
+                consent: {
+                  adPersonalization: 'UNSPECIFIED',
+                  adUserData: 'UNSPECIFIED',
+                },
               },
               body: {
                 JSON: {
@@ -11137,7 +11179,10 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
-                consent: {},
+                consent: {
+                  adPersonalization: 'UNSPECIFIED',
+                  adUserData: 'UNSPECIFIED',
+                },
               },
               body: {
                 JSON: {
@@ -11281,7 +11326,10 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
-                consent: {},
+                consent: {
+                  adPersonalization: 'UNSPECIFIED',
+                  adUserData: 'UNSPECIFIED',
+                },
               },
               body: {
                 JSON: {
@@ -11488,7 +11536,10 @@ export const data = [
               params: {
                 listId: 'aud1234',
                 customerId: '7693729833',
-                consent: {},
+                consent: {
+                  adPersonalization: 'UNSPECIFIED',
+                  adUserData: 'UNSPECIFIED',
+                },
               },
               body: {
                 JSON: {
@@ -11627,7 +11678,10 @@ export const data = [
               params: {
                 listId: '830441345',
                 customerId: '7693729833',
-                consent: {},
+                consent: {
+                  adPersonalization: 'UNSPECIFIED',
+                  adUserData: 'UNSPECIFIED',
+                },
               },
               body: {
                 JSON: {
@@ -11765,7 +11819,10 @@ export const data = [
               params: {
                 listId: '830441345',
                 customerId: '7693729833',
-                consent: {},
+                consent: {
+                  adPersonalization: 'UNSPECIFIED',
+                  adUserData: 'UNSPECIFIED',
+                },
               },
               body: {
                 JSON: {
@@ -12048,7 +12105,10 @@ export const data = [
               params: {
                 listId: '830441345',
                 customerId: '7693729833',
-                consent: {},
+                consent: {
+                  adPersonalization: 'UNSPECIFIED',
+                  adUserData: 'UNSPECIFIED',
+                },
               },
               body: {
                 JSON: {

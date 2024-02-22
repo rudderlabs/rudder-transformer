@@ -27,6 +27,7 @@ steps:
   - name: buildResponse
     template: |
       const response = $.defaultRequestConfig();
-      response.body.JSON = $.context.payload;
+      response.body.JSON.events = [$.context.payload];
+      response.endpoint = $.getEndpoint(.destination.Config);
       response.method = "POST";
       response

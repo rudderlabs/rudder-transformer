@@ -44,52 +44,58 @@ export const page = [
             },
             output: transformResultBuilder({
               method: 'POST',
+              endpoint:
+                'https://experience.ninetailed.co/v2/organizations/dummyOrganisationId/environments/main/events',
               JSON: {
-                context: {
-                  app: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
-                  campaign: {
-                    name: 'campign_123',
-                    source: 'social marketing',
-                    medium: 'facebook',
-                    term: '1 year',
-                  },
-                  library: {
-                    name: 'RudderstackSDK',
-                    version: 'Ruddderstack SDK version',
-                  },
-                  locale: 'en-US',
-                  page: {
-                    path: '/signup',
-                    referrer: 'https://rudderstack.medium.com/',
-                    search: '?type=freetrial',
-                    url: 'https://app.rudderstack.com/signup?type=freetrial',
-                  },
-                  userAgent:
-                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
-                  location: {
-                    coordinates: {
-                      latitude: 40.7128,
-                      longitude: -74.006,
+                events: [
+                  {
+                    context: {
+                      app: {
+                        name: 'RudderLabs JavaScript SDK',
+                        version: '1.0.0',
+                      },
+                      campaign: {
+                        name: 'campign_123',
+                        source: 'social marketing',
+                        medium: 'facebook',
+                        term: '1 year',
+                      },
+                      library: {
+                        name: 'RudderstackSDK',
+                        version: 'Ruddderstack SDK version',
+                      },
+                      locale: 'en-US',
+                      page: {
+                        path: '/signup',
+                        referrer: 'https://rudderstack.medium.com/',
+                        search: '?type=freetrial',
+                        url: 'https://app.rudderstack.com/signup?type=freetrial',
+                      },
+                      userAgent:
+                        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                      location: {
+                        coordinates: {
+                          latitude: 40.7128,
+                          longitude: -74.006,
+                        },
+                        city: 'San Francisco',
+                        postalCode: '94107',
+                        region: 'CA',
+                        regionCode: 'CA',
+                        country: '  United States',
+                        countryCode: 'United States of America',
+                        continent: 'North America',
+                        timezone: 'America/Los_Angeles',
+                      },
                     },
-                    city: 'San Francisco',
-                    postalCode: '94107',
-                    region: 'CA',
-                    regionCode: 'CA',
-                    country: '  United States',
-                    countryCode: 'United States of America',
-                    continent: 'North America',
-                    timezone: 'America/Los_Angeles',
+                    type: 'page',
+                    channel: 'mobile',
+                    messageId: '1611588776408-ee5a3212-fbf9-4cbb-bbad-3ed0f7c6a2ce',
+                    properties: commonProperties,
+                    anonymousId: '9c6bd77ea9da3e68',
+                    originalTimestamp: '2021-01-25T15:32:56.409Z',
                   },
-                },
-                type: 'page',
-                channel: 'mobile',
-                messageId: '1611588776408-ee5a3212-fbf9-4cbb-bbad-3ed0f7c6a2ce',
-                properties: commonProperties,
-                anonymousId: '9c6bd77ea9da3e68',
-                originalTimestamp: '2021-01-25T15:32:56.409Z',
+                ],
               },
               userId: '',
             }),

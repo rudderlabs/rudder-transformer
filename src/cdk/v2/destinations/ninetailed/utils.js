@@ -28,8 +28,11 @@ const constructFullPayload = (message) => {
   return { ...payload, ...typeSpecifcPayload }; // merge base and type-specific payloads;
 };
 
-const getEndpoint = (organisationId, environment) => batchEndpoint
+const getEndpoint = (Config) => {
+  const { organisationId, environment } = Config;
+  return batchEndpoint
     .replace('{{organisationId}}', organisationId)
     .replace('{{environment}}', environment);
+};
 
 module.exports = { constructFullPayload, getEndpoint };

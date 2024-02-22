@@ -2,10 +2,11 @@ bindings:
   - path: ./config
   - name: handleRtTfSingleEventError
     path: ../../../../v0/util/index
-
+  - path: ./utils
 steps:
   - name: validateInput
     template: |
+      console.log('router input: ', ^)
       $.assert(Array.isArray(^) && ^.length > 0, "Invalid event array")
 
   - name: transform
@@ -16,7 +17,7 @@ steps:
   - name: successfulEvents
     template: |
       $.outputs.transform#idx.output.({
-        "output": .,
+        "output": .body.JSON.events[0],
         "destination": ^[idx].destination,
         "metadata": ^[idx].metadata
       })[]
@@ -28,6 +29,7 @@ steps:
   - name: batchSuccessfulEvents
     description: Batches the successfulEvents
     template: |
+      console.log('successBatch: ', $.outputs.successfulEvents)
       let batches = $.chunk($.outputs.successfulEvents, $.MAX_BATCH_SIZE);
       batches@batch.({
         "batchedRequest": {
@@ -40,11 +42,10 @@ steps:
           "version": "1",
           "type": "REST",
           "method": "POST",
-          "endpoint": {{$.ENDPOINT}},
-          "headers": batch[0].destination.Config.().({
-            "X-Algolia-Application-Id": .applicationId,
-            "X-Algolia-API-Key": .apiKey
-          }),
+          "endpoint": $.getEndpoint(batch[0].destination.Config),
+          "headers": {
+            "Content-Type": "application/json"
+          },
           "params": {},
           "files": {}
         },

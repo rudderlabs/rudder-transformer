@@ -1,4 +1,8 @@
-export const data = [
+import { AxiosError } from 'axios';
+import MockAdapter from 'axios-mock-adapter';
+import { testScenariosForV1API } from './business';
+
+const legacyTests = [
   {
     name: 'marketo',
     description: 'Test 0',
@@ -488,3 +492,5 @@ export const data = [
     },
   },
 ];
+
+export const data = [...legacyTests, ...testScenariosForV1API];

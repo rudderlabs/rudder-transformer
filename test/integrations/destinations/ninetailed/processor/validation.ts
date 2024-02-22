@@ -3,7 +3,7 @@ import { destination } from './commonConfig';
 export const validationFailures = [
   {
     id: 'Ninetailed-validation-test-1',
-    name: 'NINETAILED',
+    name: 'ninetailed',
     description: 'Required field anonymousId not present',
     scenario: 'Framework',
     successCriteria: 'Transformationn Error for anonymousId not present',
@@ -114,7 +114,7 @@ export const validationFailures = [
   },
   {
     id: 'Ninetailed-test-4',
-    name: 'NINETAILED',
+    name: 'ninetailed',
     description: 'Unsupported message type -> Identify',
     scenario: 'Framework',
     successCriteria: 'Transformationn Error for Unsupported message type',

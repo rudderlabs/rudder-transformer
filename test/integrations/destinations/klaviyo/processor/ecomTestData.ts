@@ -1,10 +1,23 @@
-import { overrideDestination, transformResultBuilder } from '../../../testUtils';
+import { overrideDestination, transformResultBuilder, generateMetadata } from '../../../testUtils';
+import { ProcessorTestData } from '../../../testTypes';
+import { Destination } from '../../../../../src/types';
 
-const destination = {
+const destination: Destination = {
+  ID: '123',
+  Name: 'klaviyo',
+  DestinationDefinition: {
+    ID: '123',
+    Name: 'klaviyo',
+    DisplayName: 'klaviyo',
+    Config: {},
+  },
   Config: {
     publicApiKey: 'dummyPublicApiKey',
     privateApiKey: 'dummyPrivateApiKey',
   },
+  Enabled: true,
+  WorkspaceID: '123',
+  Transformations: [],
 };
 
 const commonTraits = {
@@ -26,7 +39,7 @@ const commonOutputHeaders = {
   revision: '2023-02-22',
 };
 
-export const ecomTestData = [
+export const ecomTestData: ProcessorTestData[] = [
   {
     id: 'klaviyo-ecom-test-1',
     name: 'klaviyo',
@@ -64,6 +77,7 @@ export const ecomTestData = [
               anonymousId: '9c6bd77ea9da3e68',
               originalTimestamp: '2021-01-25T15:32:56.409Z',
             },
+            metadata: generateMetadata(1),
           },
         ],
       },
@@ -108,6 +122,7 @@ export const ecomTestData = [
               userId: '',
             }),
             statusCode: 200,
+            metadata: generateMetadata(1),
           },
         ],
       },
@@ -170,6 +185,7 @@ export const ecomTestData = [
               },
               anonymousId: '9c6bd77ea9da3e68',
             },
+            metadata: generateMetadata(2),
           },
         ],
       },
@@ -220,6 +236,7 @@ export const ecomTestData = [
               userId: '',
             }),
             statusCode: 200,
+            metadata: generateMetadata(2),
           },
         ],
       },
@@ -280,6 +297,7 @@ export const ecomTestData = [
               },
               originalTimestamp: '2021-01-25T15:32:56.409Z',
             },
+            metadata: generateMetadata(3),
           },
         ],
       },
@@ -336,6 +354,7 @@ export const ecomTestData = [
               userId: '',
             }),
             statusCode: 200,
+            metadata: generateMetadata(3),
           },
         ],
       },

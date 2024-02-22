@@ -7,7 +7,8 @@ const {
 } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 
-const responseHandler = (destinationResponse) => {
+const responseHandler = (responseParams) => {
+  const { destinationResponse } = responseParams;
   const message = 'Request Processed Successfully';
   const { response, status } = destinationResponse;
 

@@ -8,10 +8,10 @@ import {
   ProcessorTransformationResponse,
   RouterTransformationResponse,
   ProcessorTransformationOutput,
-  DeliveryResponse,
+  DeliveryV0Response,
   MetaTransferObject,
   UserDeletionResponse,
-  DeliveriesResponse,
+  DeliveryV1Response,
   DeliveryJobState,
 } from '../../types/index';
 import { generateErrorObject } from '../../v0/util';
@@ -75,7 +75,13 @@ export class DestinationPostTransformationService {
   ): RouterTransformationResponse[] {
     const resultantPayloads: RouterTransformationResponse[] = cloneDeep(transformedPayloads);
     resultantPayloads.forEach((resultantPayload) => {
-      if (resultantPayload.batchedRequest && resultantPayload.batchedRequest.userId) {
+      if (Array.isArray(resultantPayload.batchedRequest)) {
+        resultantPayload.batchedRequest.forEach((batchedRequest) => {
+          if (batchedRequest.userId) {
+            batchedRequest.userId = `${batchedRequest.userId}`;
+          }
+        });
+      } else if (resultantPayload.batchedRequest && resultantPayload.batchedRequest.userId) {
         resultantPayload.batchedRequest.userId = `${resultantPayload.batchedRequest.userId}`;
       }
     });
@@ -145,7 +151,7 @@ export class DestinationPostTransformationService {
   public static handleDeliveryFailureEvents(
     error: any,
     metaTo: MetaTransferObject,
-  ): DeliveryResponse {
+  ): DeliveryV0Response {
     const errObj = generateErrorObject(error, metaTo.errorDetails, false);
     const resp = {
       status: errObj.status,
@@ -155,7 +161,7 @@ export class DestinationPostTransformationService {
       ...(errObj.authErrorCategory && {
         authErrorCategory: errObj.authErrorCategory,
       }),
-    } as DeliveryResponse;
+    } as DeliveryV0Response;
 
     ErrorReportingService.reportError(error, metaTo.errorContext, resp);
     return resp;
@@ -164,7 +170,7 @@ export class DestinationPostTransformationService {
   public static handlevV1DeliveriesFailureEvents(
     error: FixMe,
     metaTo: MetaTransferObject,
-  ): DeliveriesResponse {
+  ): DeliveryV1Response {
     const errObj = generateErrorObject(error, metaTo.errorDetails, false);
     const metadataArray = metaTo.metadatas;
     if (!Array.isArray(metadataArray)) {
@@ -186,10 +192,12 @@ export class DestinationPostTransformationService {
     const resp = {
       response: responses,
       statTags: errObj.statTags,
-      authErrorCategory: errObj.authErrorCategory,
       message: errObj.message.toString(),
       status: errObj.status,
-    } as DeliveriesResponse;
+      ...(errObj.authErrorCategory && {
+        authErrorCategory: errObj.authErrorCategory,
+      }),
+    } as DeliveryV1Response;
 
     ErrorReportingService.reportError(error, metaTo.errorContext, resp);
     return resp;

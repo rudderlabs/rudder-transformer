@@ -58,11 +58,6 @@ export const data = [
                 statusText: 'No Content',
               },
               status: 204,
-              rudderJobMetadata: {
-                destInfo: {
-                  authKey: '2HezPl1w11opbFSxnLDEgZ7kWTf',
-                },
-              },
             },
           },
         },
@@ -128,11 +123,6 @@ export const data = [
                   errorCode: 'INVALID_SESSION_ID',
                 },
               ],
-              rudderJobMetadata: {
-                destInfo: {
-                  authKey: '2HezPl1w11opbFSxnLDEgZ7kWTf',
-                },
-              },
               status: 401,
             },
             statTags: {
@@ -210,11 +200,6 @@ export const data = [
                 },
               ],
               status: 401,
-              rudderJobMetadata: {
-                destInfo: {
-                  authKey: '2HezPl1w11opbFSxnLDEgZ7kWTf',
-                },
-              },
             },
             statTags: {
               destType: 'SALESFORCE',
@@ -291,11 +276,6 @@ export const data = [
                 },
               ],
               status: 403,
-              rudderJobMetadata: {
-                destInfo: {
-                  authKey: '2HezPl1w11opbFSxnLDEgZ7kWTf',
-                },
-              },
             },
             statTags: {
               destType: 'SALESFORCE',
@@ -372,11 +352,6 @@ export const data = [
                 },
               ],
               status: 503,
-              rudderJobMetadata: {
-                destInfo: {
-                  authKey: '2HezPl1w11opbFSxnLDEgZ7kWTf',
-                },
-              },
             },
             statTags: {
               destType: 'SALESFORCE',
@@ -451,11 +426,6 @@ export const data = [
                 error_description: 'authentication failure',
               },
               status: 400,
-              rudderJobMetadata: {
-                destInfo: {
-                  authKey: '2HezPl1w11opbFSxnLDEgZ7kWTf',
-                },
-              },
             },
             statTags: {
               destType: 'SALESFORCE',
@@ -525,11 +495,6 @@ export const data = [
               response: {
                 errorCode: 'SERVER_UNAVAILABLE',
                 message: 'Server Unavailable',
-              },
-              rudderJobMetadata: {
-                destInfo: {
-                  authKey: '2HezPl1w11opbFSxnLDEgZ7kWTf',
-                },
               },
               status: 503,
             },
@@ -619,11 +584,6 @@ export const data = [
                 ],
               },
               status: 200,
-              rudderJobMetadata: {
-                destInfo: {
-                  authKey: '2HezPl1w11opbFSxnLDEgZ7kWTf',
-                },
-              },
             },
           },
         },
@@ -685,11 +645,6 @@ export const data = [
             destinationResponse: {
               response: '[ECONNABORTED] :: Connection aborted',
               status: 500,
-              rudderJobMetadata: {
-                destInfo: {
-                  authKey: '2HezPl1w11opbFSxnLDEgZ7kWTf',
-                },
-              },
             },
             statTags: {
               destType: 'SALESFORCE',
@@ -783,11 +738,6 @@ export const data = [
             destinationResponse: {
               response: '[EAI_AGAIN] :: Temporary failure in name resolution',
               status: 500,
-              rudderJobMetadata: {
-                destInfo: {
-                  authKey: '2HezPl1w11opbFSxnLDEgZ7kWTf',
-                },
-              },
             },
             statTags: {
               destType: 'SALESFORCE',

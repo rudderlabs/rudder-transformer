@@ -36,7 +36,7 @@ const CommerceEventConfig = {
     'Cart Viewed': 'VIEW_CART',
     'Checkout Started': 'INITIATE_PURCHASE',
     'Payment Info Entered': 'ADD_PAYMENT_INFO',
-    'Order Completed': 'ADD_PAYMENT_INFO',
+    'Order Completed': 'PURCHASE',
     'Spend Credits': 'SPEND_CREDITS',
     'Promotion Viewed': 'VIEW_AD',
     'Promotion Clicked': 'CLICK_AD',

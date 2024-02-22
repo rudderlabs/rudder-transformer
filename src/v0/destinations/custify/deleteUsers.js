@@ -35,25 +35,26 @@ const userDeletionHandler = async (userAttributes, config) => {
         },
       };
 
-  const deletionResponse = await httpDELETE(requestUrl, requestOptions, {
-    destType: 'custify',
-    feature: 'deleteUsers',
-    requestMethod: 'DELETE',
-    endpointPath: '/people',
-    module: 'deletion',
-  });
-  const processedDeletionRequest = processAxiosResponse(deletionResponse);
-  if (processedDeletionRequest.status !== 200 && processedDeletionRequest.status !== 404) {
-    throw new NetworkError(
-      JSON.stringify(processedDeletionRequest.response) || 'Error while deleting user',
-      processedDeletionRequest.status,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedDeletionRequest.status),
-        [tags.TAG_NAMES.STATUS]: processedDeletionRequest.status,
-      },
-      deletionResponse,
-    );
-  }
+      const deletionResponse = await httpDELETE(requestUrl, requestOptions, {
+        destType: 'custify',
+        feature: 'deleteUsers',
+        requestMethod: 'DELETE',
+        endpointPath: '/people',
+        module: 'deletion',
+      });
+      const processedDeletionRequest = processAxiosResponse(deletionResponse);
+      if (processedDeletionRequest.status !== 200 && processedDeletionRequest.status !== 404) {
+        throw new NetworkError(
+          JSON.stringify(processedDeletionRequest.response) || 'Error while deleting user',
+          processedDeletionRequest.status,
+          {
+            [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedDeletionRequest.status),
+          },
+          deletionResponse,
+        );
+      }
+    }),
+  );
 
   return { statusCode: 200, status: 'successful' };
 };

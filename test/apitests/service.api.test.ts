@@ -241,8 +241,9 @@ describe('Api tests with a mock source/destination', () => {
         return { response: 'response', status: 200 };
       }),
       responseHandler: jest.fn((o, d) => {
-        expect(o).toEqual({ response: 'response', status: 200, rudderJobMetadata: { a1: 'b1' } });
-        expect(d).toEqual(destType);
+        expect(o.destinationResponse).toEqual({ response: 'response', status: 200 });
+        expect(o.rudderJobMetadata).toEqual({ a1: 'b1' });
+        expect(o.destType).toEqual(destType);
         return { status: 200, message: 'response', destinationResponse: 'response' };
       }),
     };
@@ -301,8 +302,9 @@ describe('Api tests with a mock source/destination', () => {
         return { response: 'response', status: 200 };
       }),
       responseHandler: jest.fn((o, d) => {
-        expect(o).toEqual({ response: 'response', status: 200, rudderJobMetadata: [{ a1: 'b1' }] });
-        expect(d).toEqual(destType);
+        expect(o.destinationResponse).toEqual({ response: 'response', status: 200 });
+        expect(o.rudderJobMetadata).toEqual([{ a1: 'b1' }]);
+        expect(o.destType).toEqual(destType);
         return respHandlerResponse;
       }),
     };

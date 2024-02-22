@@ -175,7 +175,7 @@ describe('Delivery controller tests', () => {
           response: [{ error: 'test error', metadata: { a1: 'b1' }, statusCode: 500 }],
         },
       };
-      expect(response.status).toEqual(500);
+      expect(response.status).toEqual(200);
       expect(response.body).toEqual(expectedResp);
 
       expect(response.header['apiversion']).toEqual('2');

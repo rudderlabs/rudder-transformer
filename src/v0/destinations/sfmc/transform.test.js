@@ -125,9 +125,10 @@ describe('responseBuilderSimple', () => {
 
   it('should build response object with correct details for message event', () => {
     const message = {
-      userId: '12345',
+      userId: 'u123',
       event: 'testEvent',
       properties: {
+        contactId: '12345',
         prop1: 'value1',
         prop2: 'value2',
       },
@@ -145,13 +146,15 @@ describe('responseBuilderSimple', () => {
       hashMapEventDefinition,
     );
     expect(response.method).toBe('POST');
-    expect(response.endpoint).toBe('https://subdomain.rest.marketingcloudapis.com/interaction/v1/events');
+    expect(response.endpoint).toBe(
+      'https://subdomain.rest.marketingcloudapis.com/interaction/v1/events',
+    );
     expect(response.headers).toEqual({
       'Content-Type': 'application/json',
       Authorization: 'Bearer token',
     });
     expect(response.body.JSON).toEqual({
-      ContactKey: "12345",
+      ContactKey: '12345',
       EventDefinitionKey: 'eventDefinitionKey',
       Data: {
         prop1: 'value1',

@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-nested-ternary */
 const {
   NetworkError,
@@ -182,9 +183,11 @@ const responseBuilderForInsertData = (
   return response;
 };
 
+// DOC : https://developer.salesforce.com/docs/marketing/marketing-cloud/references/mc_rest_interaction/postEvent.html
+
 const responseBuilderForMessageEvent = (message, subDomain, authToken, hashMapEventDefinition) => {
-  const contactKey =
-    getFieldValueFromMessage(message, 'userIdOnly') || getFieldValueFromMessage(message, 'email');
+  const contactKey = message.properties.contactId;
+  delete message.properties.contactId;
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = `https://${subDomain}.${ENDPOINTS.EVENT}`;

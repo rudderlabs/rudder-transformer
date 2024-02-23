@@ -137,6 +137,9 @@ const getAccessToken = async (destination) => {
     const dspAuthorisationData = await httpSend(request, {
       destType: 'yahoo_dsp',
       feature: 'transformation',
+      endpointPath: '/identity/oauth2/access_token',
+      requestMethod: 'POST',
+      module: 'router',
     });
     // If the request fails, throwing error.
     if (dspAuthorisationData.success === false) {

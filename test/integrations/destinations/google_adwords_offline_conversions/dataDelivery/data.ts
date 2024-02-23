@@ -12,7 +12,7 @@ export const data = [
           type: 'REST',
           method: 'POST',
           endpoint:
-            'https://googleads.googleapis.com/v14/customers/11122233331/offlineUserDataJobs',
+            'https://googleads.googleapis.com/v15/customers/11122233331/offlineUserDataJobs',
           headers: {
             Authorization: 'Bearer abcd1234',
             'Content-Type': 'application/json',
@@ -91,7 +91,7 @@ export const data = [
                 code: 400,
                 details: [
                   {
-                    '@type': 'type.googleapis.com/google.ads.googleads.v14.errors.GoogleAdsFailure',
+                    '@type': 'type.googleapis.com/google.ads.googleads.v15.errors.GoogleAdsFailure',
                     errors: [
                       {
                         errorCode: {
@@ -152,7 +152,7 @@ export const data = [
           version: '1',
           type: 'REST',
           method: 'POST',
-          endpoint: 'https://googleads.googleapis.com/v14/customers/1112223333/offlineUserDataJobs',
+          endpoint: 'https://googleads.googleapis.com/v15/customers/1112223333/offlineUserDataJobs',
           headers: {
             Authorization: 'Bearer abcd1234',
             'Content-Type': 'application/json',
@@ -248,7 +248,7 @@ export const data = [
           version: '1',
           type: 'REST',
           method: 'POST',
-          endpoint: 'https://googleads.googleapis.com/v14/customers/customerid/offlineUserDataJobs',
+          endpoint: 'https://googleads.googleapis.com/v15/customers/customerid/offlineUserDataJobs',
           headers: {
             Authorization: 'Bearer abcd1234',
             'Content-Type': 'application/json',
@@ -358,7 +358,7 @@ export const data = [
           type: 'REST',
           method: 'POST',
           endpoint:
-            'https://googleads.googleapis.com/v14/customers/1234567890:uploadClickConversions',
+            'https://googleads.googleapis.com/v15/customers/1234567890:uploadClickConversions',
           headers: {
             Authorization: 'Bearer abcd1234',
             'Content-Type': 'application/json',
@@ -505,7 +505,7 @@ export const data = [
           type: 'REST',
           method: 'POST',
           endpoint:
-            'https://googleads.googleapis.com/v14/customers/1234567891:uploadClickConversions',
+            'https://googleads.googleapis.com/v15/customers/1234567891:uploadClickConversions',
           headers: {
             Authorization: 'Bearer abcd1234',
             'Content-Type': 'application/json',
@@ -646,7 +646,7 @@ export const data = [
           type: 'REST',
           method: 'POST',
           endpoint:
-            'https://googleads.googleapis.com/v14/customers/1234567891:uploadClickConversions',
+            'https://googleads.googleapis.com/v15/customers/1234567891:uploadClickConversions',
           headers: {
             Authorization: 'Bearer abcd1234',
             'Content-Type': 'application/json',

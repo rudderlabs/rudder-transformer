@@ -11905,10 +11905,7 @@ export const data = [
               params: {
                 listId: '830441345',
                 customerId: '7693729833',
-                consent: {
-                  adUserData: 'UNSPECIFIED',
-                  adPersonalization: 'GRANTED',
-                },
+                consent: {},
               },
               body: {
                 JSON: {

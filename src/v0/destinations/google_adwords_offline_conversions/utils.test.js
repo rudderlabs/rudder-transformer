@@ -2,6 +2,7 @@ const {
   getClickConversionPayloadAndEndpoint,
   buildAndGetAddress,
   getExisitingUserIdentifier,
+  populateConsentForGoogleDestinations,
 } = require('./utils');
 
 const getTestMessage = () => {
@@ -161,7 +162,7 @@ describe('getExisitingUserIdentifier util tests', () => {
 describe('getClickConversionPayloadAndEndpoint util tests', () => {
   it('getClickConversionPayloadAndEndpoint flow check when default field identifier is present', () => {
     let expectedOutput = {
-      endpoint: 'https://googleads.googleapis.com/v14/customers/9625812972:uploadClickConversions',
+      endpoint: 'https://googleads.googleapis.com/v15/customers/9625812972:uploadClickConversions',
       payload: {
         conversions: [
           {
@@ -187,7 +188,7 @@ describe('getClickConversionPayloadAndEndpoint util tests', () => {
     delete fittingPayload.traits.email;
     delete fittingPayload.properties.email;
     let expectedOutput = {
-      endpoint: 'https://googleads.googleapis.com/v14/customers/9625812972:uploadClickConversions',
+      endpoint: 'https://googleads.googleapis.com/v15/customers/9625812972:uploadClickConversions',
       payload: {
         conversions: [
           {
@@ -215,7 +216,7 @@ describe('getClickConversionPayloadAndEndpoint util tests', () => {
     delete fittingPayload.traits.phone;
     delete fittingPayload.properties.email;
     let expectedOutput = {
-      endpoint: 'https://googleads.googleapis.com/v14/customers/9625812972:uploadClickConversions',
+      endpoint: 'https://googleads.googleapis.com/v15/customers/9625812972:uploadClickConversions',
       payload: {
         conversions: [
           {
@@ -251,7 +252,7 @@ describe('getClickConversionPayloadAndEndpoint util tests', () => {
       },
     ];
     let expectedOutput = {
-      endpoint: 'https://googleads.googleapis.com/v14/customers/9625812972:uploadClickConversions',
+      endpoint: 'https://googleads.googleapis.com/v15/customers/9625812972:uploadClickConversions',
       payload: {
         conversions: [
           {
@@ -271,5 +272,99 @@ describe('getClickConversionPayloadAndEndpoint util tests', () => {
     expect(getClickConversionPayloadAndEndpoint(fittingPayload, config, '9625812972')).toEqual(
       expectedOutput,
     );
+  });
+});
+
+describe('populateConsentForGoogleDestinations', () => {
+  // Returns an object with ad_user_data and ad_personalization properties set to UNSPECIFIED when no consents are provided
+  it('GOOGLE_ADWORDS_OFFLINE_CONVERSIONS : store sales conversion without any mention in integrations object', () => {
+    const message = {};
+    const conversionType = 'store';
+
+    const result = populateConsentForGoogleDestinations(message, conversionType);
+
+    expect(result).toEqual({
+      ad_user_data: 'UNSPECIFIED',
+      ad_personalization: 'UNSPECIFIED',
+    });
+  });
+
+  // Returns an empty object when the destination name is not recognized
+  it('GOOGLE_ADWORDS_OFFLINE_CONVERSIONS: store sales conversions with integrations object', () => {
+    const message = {
+      integrations: {
+        google_adwords_offline_conversions: {
+          consents: {
+            adUserData: 'GRANTED',
+            adPersonalization: 'DENIED',
+          },
+        },
+      },
+    };
+    const conversionType = 'store';
+
+    const result = populateConsentForGoogleDestinations(message, conversionType);
+
+    expect(result).toEqual({
+      ad_personalization: 'DENIED',
+      ad_user_data: 'GRANTED',
+    });
+  });
+
+  // Returns an object with ad_user_data and ad_personalization properties set to the provided consents when they are valid and present in the message properties
+  it('GOOGLE_ADWORDS_OFFLINE_CONVERSIONS: click conversion with integration object of allowed types', () => {
+    const message = {
+      integrations: {
+        google_adwords_offline_conversions: {
+          consents: {
+            adUserData: 'GRANTED',
+            adPersonalization: 'DENIED',
+          },
+        },
+      },
+    };
+    const conversionType = 'click';
+
+    const result = populateConsentForGoogleDestinations(message, conversionType);
+
+    expect(result).toEqual({
+      adUserData: 'GRANTED',
+      adPersonalization: 'DENIED',
+    });
+  });
+
+  // Returns an object with ad_user_data and ad_personalization properties set to UNSPECIFIED when the provided consents are not valid or not present in the message properties
+  it('GOOGLE_ADWORDS_OFFLINE_CONVERSIONS : click conversion with invalid consent value', () => {
+    const message = {
+      integrations: {
+        google_adwords_offline_conversions: {
+          consents: {
+            adUserData: 'GRANTED',
+            adPersonalization: 'INVALID',
+          },
+        },
+      },
+    };
+    const conversionType = 'click';
+
+    const result = populateConsentForGoogleDestinations(message, conversionType);
+
+    expect(result).toEqual({
+      adUserData: 'GRANTED',
+      adPersonalization: 'UNKNOWN',
+    });
+  });
+
+  // Returns an empty object when the integration object is not present in the message
+  it('GOOGLE_ADWORDS_OFFLINE_CONVERSIONS : call conversion without integrations object consent ', () => {
+    const message = {};
+    const conversionType = 'call';
+
+    const result = populateConsentForGoogleDestinations(message, conversionType);
+
+    expect(result).toEqual({
+      adUserData: 'UNSPECIFIED',
+      adPersonalization: 'UNSPECIFIED',
+    });
   });
 });

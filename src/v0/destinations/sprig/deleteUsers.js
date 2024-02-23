@@ -49,7 +49,9 @@ const userDeletionHandler = async (userAttributes, config) => {
       {
         destType: 'sprig',
         feature: 'deleteUsers',
-        endpointPath: 'api.sprig.com/v2/purge/visitors',
+        endpointPath: '/purge/visitors',
+        requestMethod: 'POST',
+        module: 'deletion',
       },
     );
     const handledDelResponse = processAxiosResponse(deletionResponse);
@@ -59,6 +61,7 @@ const userDeletionHandler = async (userAttributes, config) => {
         handledDelResponse.status,
         {
           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(handledDelResponse.status),
+          [tags.TAG_NAMES.STATUS]: handledDelResponse.status,
         },
         handledDelResponse,
       );

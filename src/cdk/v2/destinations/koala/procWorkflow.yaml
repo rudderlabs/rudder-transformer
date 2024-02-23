@@ -1,6 +1,7 @@
 bindings:
   - name: EventType
     path: ../../../../constants
+  - path: ../../bindings/jsontemplate
   - name: defaultRequestConfig
     path: ../../../../v0/util
 
@@ -11,7 +12,43 @@ steps:
       $.assert(.message.type in {{$.EventType.([.IDENTIFY, .TRACK])}}, 
         "message type " + .message.type + " is not supported");
       $.assertConfig(.destination.Config.publicKey, "publicKey is not present. Aborting message");
-      $.assert(.message.traits.email, "email is not present on traits. Aborting message");
+      $.assert(.message.traits.email ?? .message.traits.ko_profile_id, "Neither email or ko_profile_id are present on traits. Aborting message");
+  - name: setMessageType
+    template: |
+      $.context.messageType = .message.type.toLowerCase();
+  - name: preparePayloadForIdentify
+    condition: $.context.messageType === {{$.EventType.IDENTIFY}}
+    template: |
+      const traits = .message.traits ?? .message.context.traits ?? {};
+      const koTraits = traits{~['ko_profile_id']}
+      const basePayload = {
+        email: .message.().({{{{$.getGenericPaths("email")}}}}),
+        profile_id: traits.ko_profile_id,
+        identifies: [{
+          type: $.context.messageType,
+          event: .message.event, 
+          sent_at: .message.().({{{{$.getGenericPaths("timestamp")}}}}),
+          traits: koTraits 
+        }]
+      };
+
+      $.context.payload = basePayload
+  - name: preparePayloadForTrack
+    condition: $.context.messageType === {{$.EventType.TRACK}}
+    template: |
+      const properties = .message.properties ?? .message.context.properties ?? {};
+      const basePayload = {
+        email: .message.().({{{{$.getGenericPaths("email")}}}}),
+        profile_id: .message.traits.ko_profile_id ?? .message.context.traits.ko_profile_id,
+        events: [{
+          type: $.context.messageType,
+          event: .message.event,
+          sent_at: .message.().({{{{$.getGenericPaths("timestamp")}}}}),
+          properties: properties 
+        }]
+      };
+
+      $.context.payload = basePayload
   - name: buildResponse
     description: In batchMode we return payload directly
     condition: $.batchMode
@@ -20,7 +57,7 @@ steps:
       name: buildResponseForProcessTransformation
       template: |
         const response = $.defaultRequestConfig();
-        response.body.JSON = .message;
+        response.body.JSON = $.context.payload;
         response.endpoint = "https://api2.getkoala.com/web/profiles/" + .destination.Config.publicKey + "/batch";
         response.headers = {
           "User-Agent": 'rudderstack/1.0.0',

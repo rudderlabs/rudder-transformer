@@ -53,19 +53,16 @@ export const data = [
                 JSON_ARRAY: {},
                 XML: {},
                 JSON: {
-                  userId: 'user-uuid',
-                  annonymousId: 'annonymous-uuid',
-                  event: 'User Signed Up',
-                  type: 'track',
-                  traits: {
-                    email: 'johndoe@somemail.com'
-                  },
-                  properties: {
-                    label: 'test',
-                    value: 10,
-                  },
-                  originalTimestamp: '2024-01-23T08:35:17.562Z',
-                  sentAt: '2024-01-23T08:35:17.562Z',
+                  email: 'johndoe@somemail.com',
+                  events: [{
+                    type: 'track',
+                    event: 'User Signed Up',
+                    sent_at: '2024-01-23T08:35:17.562Z',
+                    properties: {
+                      label: 'test',
+                      value: 10,
+                    },
+                  }]
                 },
               },
               endpoint: 'https://api2.getkoala.com/web/profiles/kkooaallaa321/batch',
@@ -122,6 +119,7 @@ export const data = [
                   postalCode: '94107',
                 },
                 email: 'johndoe@somemail.com',
+                ko_profile_id: 'xxxx-2222-xxxx-xxxx'
               },
               originalTimestamp: '2024-01-23T08:35:17.342Z',
               sentAt: '2024-01-23T08:35:35.234Z',
@@ -145,20 +143,22 @@ export const data = [
                 JSON_ARRAY: {},
                 XML: {},
                 JSON: {
-                  userId: 'user-uuid',
-                  type: 'identify',
-                  traits: {
-                    FirstName: 'John',
-                    LastName: 'Doe',
-                    address: {
-                      city: 'San Francisco',
-                      state: 'CA',
-                      postalCode: '94107',
+                  email: 'johndoe@somemail.com',
+                  profile_id: 'xxxx-2222-xxxx-xxxx',
+                  identifies: [{
+                    type: 'identify',
+                    sent_at: '2024-01-23T08:35:17.342Z',
+                    traits: {
+                      FirstName: 'John',
+                      LastName: 'Doe',
+                      address: {
+                        city: 'San Francisco',
+                        state: 'CA',
+                        postalCode: '94107',
+                      },
+                      email: 'johndoe@somemail.com',
                     },
-                    email: 'johndoe@somemail.com',
-                  },
-                  originalTimestamp: '2024-01-23T08:35:17.342Z',
-                  sentAt: '2024-01-23T08:35:35.234Z',
+                  }],
                 },
               },
               endpoint: 'https://api2.getkoala.com/web/profiles/kkooaallaa321/batch',
@@ -227,7 +227,7 @@ export const data = [
           {
             statusCode: 400,
             error:
-              'email is not present on traits. Aborting message: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: email is not present on traits. Aborting message',
+              'Neither email or ko_profile_id are present on traits. Aborting message: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: Neither email or ko_profile_id are present on traits. Aborting message',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',

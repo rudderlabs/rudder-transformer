@@ -38,6 +38,7 @@ steps:
     template: |
       const properties = .message.properties ?? .message.context.properties ?? {};
       const basePayload = {
+        ip: .message.request_ip ?? message.context.ip, 
         email: .message.().({{{{$.getGenericPaths("email")}}}}),
         profile_id: .message.traits.ko_profile_id ?? .message.context.traits.ko_profile_id,
         events: [{
@@ -45,7 +46,8 @@ steps:
           event: .message.event,
           message_id: .message.messageId,
           sent_at: .message.().({{{{$.getGenericPaths("timestamp")}}}}),
-          properties: properties 
+          properties: properties,
+          context: .message.context
         }]
       };
 

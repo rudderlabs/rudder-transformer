@@ -32,8 +32,12 @@ export const data = [
                 label: 'test',
                 value: 10,
               },
+              context: {
+                network: 'wifi'
+              },
               originalTimestamp: '2024-01-23T08:35:17.562Z',
               sentAt: '2024-01-23T08:35:17.562Z',
+              request_ip: '192.11.22.33',
             },
             metadata: {
               destinationId: 'destId',
@@ -54,6 +58,7 @@ export const data = [
                 JSON_ARRAY: {},
                 XML: {},
                 JSON: {
+                  ip: '192.11.22.33',
                   email: 'johndoe@somemail.com',
                   events: [{
                     type: 'track',
@@ -63,6 +68,9 @@ export const data = [
                     properties: {
                       label: 'test',
                       value: 10,
+                    },
+                    context: {
+                      network: 'wifi'
                     },
                   }]
                 },

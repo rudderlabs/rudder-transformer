@@ -120,6 +120,9 @@ async function getSaleforceIdForRecord(
     {
       destType: 'salesforce',
       feature: 'transformation',
+      endpointPath: '/parameterizedSearch',
+      requestMethod: 'GET',
+      module: 'router',
     },
   );
   if (!isHttpStatusSuccess(processedsfSearchResponse.status)) {
@@ -233,6 +236,9 @@ async function getSalesforceIdFromPayload(
       {
         destType: 'salesforce',
         feature: 'transformation',
+        endpointPath: '/parameterizedSearch',
+        requestMethod: 'GET',
+        module: 'router',
       },
     );
 

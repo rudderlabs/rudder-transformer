@@ -83,16 +83,21 @@ const responseWrapper = (payload, destination) => {
     }                                        
  *                                                    
   }
- * This function stringify the payload attributes if it's an array or objects.
+ * This function stringify the payload attributes if it's an array or objects. The keys that are not stringified are present in the `stringifyExcludeList` array.
  * @param {*} payload
  * @returns
  * return the final payload after converting to the relevant data-types.
  */
 const convertObjectAndArrayToString = (payload, event) => {
   const finalPayload = {};
+  const stringifyExcludeList = ['category-unsubscribe', 'category-resubscribe'];
   if (payload) {
     Object.keys(payload).forEach((key) => {
-      if (payload[key] && (Array.isArray(payload[key]) || typeof payload[key] === 'object')) {
+      if (
+        payload[key] &&
+        (Array.isArray(payload[key]) || typeof payload[key] === 'object') &&
+        !stringifyExcludeList.includes(key)
+      ) {
         finalPayload[key] = JSON.stringify(payload[key]);
       } else {
         finalPayload[key] = payload[key];

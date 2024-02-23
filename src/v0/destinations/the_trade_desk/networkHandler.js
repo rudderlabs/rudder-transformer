@@ -37,7 +37,13 @@ const proxyRequest = async (request) => {
     headers: ProxyHeaders,
     method,
   };
-  const response = await httpSend(requestOptions, { feature: 'proxy', destType: 'the_trade_desk' });
+  const response = await httpSend(requestOptions, {
+    feature: 'proxy',
+    destType: 'the_trade_desk',
+    endpointPath: '/track/realtimeconversion',
+    requestMethod: 'POST',
+    module: 'dataDelivery',
+  });
   return response;
 };
 

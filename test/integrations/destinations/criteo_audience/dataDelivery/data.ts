@@ -1,4 +1,9 @@
-export const data = [
+import { generateMetadata } from '../../../testUtils';
+import { V1BusinessTestScenarion } from './business';
+import { v1OauthScenarios } from './oauth';
+import { v1OtherScenarios } from './other';
+
+const v0testCases = [
   {
     name: 'criteo_audience',
     description: 'Test 0',
@@ -38,6 +43,9 @@ export const data = [
           params: {
             destination: 'criteo_audience',
           },
+          userId: '1234',
+          metadata: generateMetadata(1),
+          destinationConfig: {},
         },
         method: 'POST',
       },
@@ -70,7 +78,7 @@ export const data = [
           version: '1',
           type: 'REST',
           method: 'PATCH',
-          endpoint: 'https://api.criteo.com/2022-10/audiences/3485/contactlist',
+          endpoint: 'https://api.criteo.com/2022-10/audiences/3485/contactlist/expiredAccessToken',
           headers: {
             Authorization: 'Bearer success_access_token',
             'Content-Type': 'application/json',
@@ -96,6 +104,9 @@ export const data = [
           params: {
             destination: 'criteo_audience',
           },
+          userId: '1234',
+          metadata: generateMetadata(2),
+          destinationConfig: {},
         },
         method: 'POST',
       },
@@ -123,8 +134,8 @@ export const data = [
             statTags: {
               destType: 'CRITEO_AUDIENCE',
               errorCategory: 'network',
-              destinationId: 'Non-determininable',
-              workspaceId: 'Non-determininable',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
               errorType: 'aborted',
               feature: 'dataDelivery',
               implementation: 'native',
@@ -147,7 +158,7 @@ export const data = [
           version: '1',
           type: 'REST',
           method: 'PATCH',
-          endpoint: 'https://api.criteo.com/2022-10/audiences/34895/contactlist',
+          endpoint: 'https://api.criteo.com/2022-10/audiences/34895/contactlist/invalidAccessToken',
           headers: {
             Authorization: 'Bearer success_access_token',
             'Content-Type': 'application/json',
@@ -173,6 +184,9 @@ export const data = [
           params: {
             destination: 'criteo_audience',
           },
+          userId: '1234',
+          metadata: generateMetadata(3),
+          destinationConfig: {},
         },
         method: 'POST',
       },
@@ -200,8 +214,8 @@ export const data = [
             statTags: {
               destType: 'CRITEO_AUDIENCE',
               errorCategory: 'network',
-              destinationId: 'Non-determininable',
-              workspaceId: 'Non-determininable',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
               errorType: 'aborted',
               feature: 'dataDelivery',
               implementation: 'native',
@@ -250,6 +264,9 @@ export const data = [
           params: {
             destination: 'criteo_audience',
           },
+          userId: '1234',
+          metadata: generateMetadata(4),
+          destinationConfig: {},
         },
         method: 'POST',
       },
@@ -275,8 +292,8 @@ export const data = [
             statTags: {
               destType: 'CRITEO_AUDIENCE',
               errorCategory: 'network',
-              destinationId: 'Non-determininable',
-              workspaceId: 'Non-determininable',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
               errorType: 'aborted',
               feature: 'dataDelivery',
               implementation: 'native',
@@ -327,6 +344,9 @@ export const data = [
           params: {
             destination: 'criteo_audience',
           },
+          userId: '1234',
+          metadata: generateMetadata(5),
+          destinationConfig: {},
         },
         method: 'POST',
       },
@@ -352,8 +372,8 @@ export const data = [
             statTags: {
               destType: 'CRITEO_AUDIENCE',
               errorCategory: 'network',
-              destinationId: 'Non-determininable',
-              workspaceId: 'Non-determininable',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
               feature: 'dataDelivery',
               implementation: 'native',
               errorType: 'retryable',
@@ -403,6 +423,9 @@ export const data = [
           params: {
             destination: 'criteo_audience',
           },
+          userId: '1234',
+          metadata: generateMetadata(6),
+          destinationConfig: {},
         },
         method: 'POST',
       },
@@ -421,8 +444,8 @@ export const data = [
             statTags: {
               destType: 'CRITEO_AUDIENCE',
               errorCategory: 'network',
-              destinationId: 'Non-determininable',
-              workspaceId: 'Non-determininable',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
               errorType: 'throttled',
               feature: 'dataDelivery',
               implementation: 'native',
@@ -472,6 +495,9 @@ export const data = [
           params: {
             destination: 'criteo_audience',
           },
+          userId: '1234',
+          metadata: generateMetadata(7),
+          destinationConfig: {},
         },
         method: 'POST',
       },
@@ -492,8 +518,8 @@ export const data = [
             statTags: {
               destType: 'CRITEO_AUDIENCE',
               errorCategory: 'network',
-              destinationId: 'Non-determininable',
-              workspaceId: 'Non-determininable',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
               errorType: 'aborted',
               feature: 'dataDelivery',
               implementation: 'native',
@@ -505,4 +531,11 @@ export const data = [
       },
     },
   },
+];
+
+export const data = [
+  ...v0testCases,
+  ...V1BusinessTestScenarion,
+  ...v1OauthScenarios,
+  ...v1OtherScenarios,
 ];

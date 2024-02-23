@@ -198,6 +198,9 @@ const getImportID = async (input, config, accessToken, csvHeader) => {
       {
         destType: 'marketo_bulk_upload',
         feature: 'transformation',
+        endpointPath: '/leads.json',
+        requestMethod: 'POST',
+        module: 'router',
       },
     );
     const endTime = Date.now();

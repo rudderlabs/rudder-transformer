@@ -13,7 +13,6 @@ const {
   getFieldValueFromMessage,
   handleRtTfSingleEventError,
   validateEventName,
-  checkInvalidRtTfEvents,
 } = require('../../util');
 
 const logger = require('../../../logger');
@@ -174,10 +173,6 @@ const batchEvents = (successRespList) => {
 };
 
 const processRouterDest = (inputs, reqMetadata) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
   let batchResponseList = [];
   const batchErrorRespList = [];
   const successRespList = [];

@@ -31,7 +31,6 @@ const {
   getSuccessRespEvents,
   isDefinedAndNotNull,
   generateErrorObject,
-  checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
 } = require('../../util');
 const Cache = require('../../util/cache');
@@ -456,10 +455,6 @@ const process = async (event) => {
 const processRouterDest = async (inputs, reqMetadata) => {
   // Token needs to be generated for marketo which will be done on input level.
   // If destination information is not present Error should be thrown
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
   let token;
   try {
     token = await getAuthToken(formatConfig(inputs[0].destination));

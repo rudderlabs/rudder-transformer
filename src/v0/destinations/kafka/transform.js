@@ -6,7 +6,6 @@ const {
   getHashFromArray,
   removeUndefinedAndNullValues,
   getSuccessRespEvents,
-  checkInvalidRtTfEvents,
 } = require('../../util');
 
 const filterConfigTopics = (message, destination) => {
@@ -38,10 +37,6 @@ const filterConfigTopics = (message, destination) => {
 
 const batch = (destEvents) => {
   const respList = [];
-  const errorRespEvents = checkInvalidRtTfEvents(destEvents);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
 
   // Grouping the events by topic
   const groupedEvents = groupBy(destEvents, (event) => event.message.topic);

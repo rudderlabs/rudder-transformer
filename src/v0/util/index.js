@@ -1714,11 +1714,6 @@ const handleRtTfSingleEventError = (input, error, reqMetadata) => {
  * @returns
  */
 const simpleProcessRouterDest = async (inputs, singleTfFunc, reqMetadata, processParams) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
-
   const respList = await Promise.all(
     inputs.map(async (input) => {
       try {
@@ -1746,10 +1741,6 @@ const simpleProcessRouterDest = async (inputs, singleTfFunc, reqMetadata, proces
  * @returns
  */
 const simpleProcessRouterDestSync = async (inputs, singleTfFunc, reqMetadata, processParams) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
   const respList = [];
   // eslint-disable-next-line no-restricted-syntax
   for (const input of inputs) {

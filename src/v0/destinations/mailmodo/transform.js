@@ -12,7 +12,6 @@ const {
   removeUndefinedAndNullValues,
   getSuccessRespEvents,
   handleRtTfSingleEventError,
-  checkInvalidRtTfEvents,
 } = require('../../util');
 const { deduceAddressFields, extractCustomProperties } = require('./utils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
@@ -191,11 +190,6 @@ function getEventChunks(event, identifyEventChunks, eventResponseList) {
 }
 
 const processRouterDest = (inputs, reqMetadata) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
-
   const identifyEventChunks = []; // list containing identify events in batched format
   const eventResponseList = []; // list containing other events in batched format
   const errorRespList = [];

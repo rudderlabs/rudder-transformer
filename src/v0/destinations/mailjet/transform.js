@@ -7,7 +7,6 @@ const {
   defaultBatchRequestConfig,
   handleRtTfSingleEventError,
   removeUndefinedAndNullValues,
-  checkInvalidRtTfEvents,
 } = require('../../util');
 
 const { MAX_BATCH_SIZE } = require('./config');
@@ -121,10 +120,6 @@ const batchEvents = (successRespList) => {
 };
 
 const processRouterDest = (inputs, reqMetadata) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
   let batchResponseList = [];
   const batchErrorRespList = [];
   const successRespList = [];

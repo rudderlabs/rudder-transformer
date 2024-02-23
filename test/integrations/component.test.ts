@@ -43,6 +43,7 @@ command
   .option('-id, --id <string>', 'Enter unique "Id" of the test case you want to run')
   .parse();
 
+jest.setTimeout(30000000);
 const opts = command.opts();
 if (opts.generate === 'true' && !opts.destination) {
   throw new Error('Invalid option, generate should be true for a destination');

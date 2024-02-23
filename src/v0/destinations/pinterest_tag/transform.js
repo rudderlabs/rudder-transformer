@@ -10,7 +10,6 @@ const {
   removeUndefinedAndNullValues,
   batchMultiplexedEvents,
   handleRtTfSingleEventError,
-  checkInvalidRtTfEvents,
 } = require('../../util');
 const {
   processUserPayload,
@@ -172,11 +171,6 @@ const batchEvents = (successRespList) => {
 };
 
 const processRouterDest = (inputs, reqMetadata) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
-
   const successRespList = [];
   const batchErrorRespList = [];
   inputs.forEach((input) => {

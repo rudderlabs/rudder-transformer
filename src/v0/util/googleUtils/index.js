@@ -1,5 +1,5 @@
 const get = require('get-value');
-const { getIntegrationsObj } = require("..");
+const { getIntegrationsObj } = require('..');
 
 const GOOGLE_ALLOWED_CONSENT_STATUS = ['UNSPECIFIED', 'UNKNOWN', 'GRANTED', 'DENIED'];
 const { MappedToDestinationKey } = require('../../../constants');
@@ -12,70 +12,16 @@ const { MappedToDestinationKey } = require('../../../constants');
  * ref : https://developers.google.com/google-ads/api/rest/reference/rest/v15/Consent
  */
 
-// const populateConsentForGoogleDestinations = (message, destName) => {
-//   let consentObj = {};
-
-//   const integrationObj = getIntegrationsObj(message, destName) || {};
-
-//   if(destName === 'google_adwords_offline_conversion') {
-//     const tempConsentObject = {
-//       ad_user_data: 'UNSPECIFIED',
-//       ad_personalization: 'UNSPECIFIED',
-//     };
-//     if (
-//       integrationObj?.consents?.ad_user_data &&
-//       GOOGLE_ALLOWED_CONSENT_STATUS.includes(integrationObj?.consents?.ad_user_data)
-//     ) {
-//       tempConsentObject.ad_user_data = integrationObj?.consents?.ad_user_data;
-//     }
-  
-//     if (
-//       integrationObj?.consents?.ad_personalization &&
-//       GOOGLE_ALLOWED_CONSENT_STATUS.includes(integrationObj?.consents?.ad_personalization)
-//     ) {
-//       tempConsentObject.ad_personalization =integrationObj?.consents?.ad_personalization;
-//     }
-//     consentObj = {...tempConsentObject};
-//   }
-
-//   if(destName === 'google_adwords_remarketing_lists') {
-//     const tempConsentObject = {
-//       ad_user_data: 'UNSPECIFIED',
-//       ad_personalization: 'UNSPECIFIED',
-//     };
-//     if (
-//       integrationObj?.consents?.adUserData &&
-//       GOOGLE_ALLOWED_CONSENT_STATUS.includes(integrationObj?.consents?.adUserData)
-//     ) {
-//       tempConsentObject.adUserData = integrationObj?.consents?.adUserData;
-//     }
-  
-//     if (
-//       integrationObj?.consents?.adPersonalization &&
-//       GOOGLE_ALLOWED_CONSENT_STATUS.includes(integrationObj?.consents?.adPersonalization)
-//     ) {
-//       tempConsentObject.adPersonalization =integrationObj?.consents?.adPersonalization;
-//     }
-//     consentObj = {...tempConsentObject};
-//   }
-
-
-
-//   return consentObj;
-// };
-
 const populateConsentForGoogleDestinations = (message, destName) => {
-
   const mappedToDestination = get(message, MappedToDestinationKey);
-  // TODO : need to add proper handling based on different destinations 
-  if(mappedToDestination) return {};
+  if (mappedToDestination) return {};
   // Define mappings for different destination names
   const mappings = {
-    'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS': {
+    GOOGLE_ADWORDS_OFFLINE_CONVERSIONS: {
       ad_user_data: 'ad_user_data',
       ad_personalization: 'ad_personalization',
     },
-    'GOOGLE_ADWORDS_REMARKETING_LISTS': {
+    GOOGLE_ADWORDS_REMARKETING_LISTS: {
       adUserData: 'adUserData',
       adPersonalization: 'adPersonalization',
     },
@@ -107,5 +53,4 @@ const populateConsentForGoogleDestinations = (message, destName) => {
   return consentObj;
 };
 
-
-module.exports = { populateConsentForGoogleDestinations };
+module.exports = { populateConsentForGoogleDestinations, GOOGLE_ALLOWED_CONSENT_STATUS };

@@ -228,7 +228,14 @@ export const data = [
                     'Content-Type': 'application/json',
                     'developer-token': 'ijkl9101',
                   },
-                  params: { listId: '7090784486', customerId: '7693729833', consent: {} },
+                  params: {
+                    listId: '7090784486',
+                    customerId: '7693729833',
+                    consent: {
+                      adPersonalization: 'UNSPECIFIED',
+                      adUserData: 'UNSPECIFIED',
+                    },
+                  },
                   body: {
                     JSON: {
                       enablePartialFailure: true,
@@ -305,7 +312,14 @@ export const data = [
                     'Content-Type': 'application/json',
                     'developer-token': 'ijkl9101',
                   },
-                  params: { listId: '7090784486', customerId: '7693729833', consent: {} },
+                  params: {
+                    listId: '7090784486',
+                    customerId: '7693729833',
+                    consent: {
+                      adPersonalization: 'UNSPECIFIED',
+                      adUserData: 'UNSPECIFIED',
+                    },
+                  },
                   body: {
                     JSON: {
                       enablePartialFailure: true,
@@ -359,7 +373,14 @@ export const data = [
                     'Content-Type': 'application/json',
                     'developer-token': 'ijkl9101',
                   },
-                  params: { listId: '7090784486', customerId: '7693729833', consent: {} },
+                  params: {
+                    listId: '7090784486',
+                    customerId: '7693729833',
+                    consent: {
+                      adPersonalization: 'UNSPECIFIED',
+                      adUserData: 'UNSPECIFIED',
+                    },
+                  },
                   body: {
                     JSON: {
                       enablePartialFailure: true,
@@ -436,7 +457,14 @@ export const data = [
                     'Content-Type': 'application/json',
                     'developer-token': 'ijkl9101',
                   },
-                  params: { listId: '7090784486', customerId: '7693729833', consent: {} },
+                  params: {
+                    listId: '7090784486',
+                    customerId: '7693729833',
+                    consent: {
+                      adPersonalization: 'UNSPECIFIED',
+                      adUserData: 'UNSPECIFIED',
+                    },
+                  },
                   body: {
                     JSON: {
                       enablePartialFailure: true,
@@ -484,7 +512,14 @@ export const data = [
                     'Content-Type': 'application/json',
                     'developer-token': 'ijkl9101',
                   },
-                  params: { listId: '7090784486', customerId: '7693729833', consent: {} },
+                  params: {
+                    listId: '7090784486',
+                    customerId: '7693729833',
+                    consent: {
+                      adPersonalization: 'UNSPECIFIED',
+                      adUserData: 'UNSPECIFIED',
+                    },
+                  },
                   body: {
                     JSON: {
                       enablePartialFailure: true,

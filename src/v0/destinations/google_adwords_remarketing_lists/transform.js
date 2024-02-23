@@ -1,3 +1,4 @@
+const lodash = require('lodash');
 const sha256 = require('sha256');
 const get = require('get-value');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
@@ -14,7 +15,7 @@ const {
   getDestinationExternalIDInfoForRetl,
   getAccessToken,
 } = require('../../util');
-const {groupUserDataBasedOnConsentLevel} = require('./utils');
+const { groupUserDataBasedOnConsentLevel } = require('./utils');
 
 // const { populateConsentForGoogleDestinations } = require('../../util/googleUtils');
 
@@ -145,7 +146,6 @@ const populateIdentifiers = (attributeArray, { Config }) => {
  */
 
 const createPayload = (message, userDataBlock, destination) => {
-  // const { listData } = message.properties;
   const properties = ['add', 'remove'];
   let outputPayloads = {};
   const typeOfOperation = Object.keys(userDataBlock);
@@ -174,7 +174,11 @@ const createPayload = (message, userDataBlock, destination) => {
             operations.create.userIdentifiers = element;
             outputPayload.operations.push(operations);
           });
-          outputPayloads = { ...outputPayloads, create: outputPayload, consent : userDataBlock.consent };
+          outputPayloads = {
+            ...outputPayloads,
+            create: outputPayload,
+            consent: userDataBlock.consent,
+          };
           break;
         case 'remove':
           // for remove operation
@@ -185,11 +189,15 @@ const createPayload = (message, userDataBlock, destination) => {
             operations.remove.userIdentifiers = element;
             outputPayload.operations.push(operations);
           });
-          outputPayloads = { ...outputPayloads, remove: outputPayload, consent : userDataBlock.consent };
+          outputPayloads = {
+            ...outputPayloads,
+            remove: outputPayload,
+            consent: userDataBlock.consent,
+          };
           break;
         default:
       }
-    } else {
+    } else if (key !== 'consent') {
       logger.info(`listData "${key}" is not valid. Supported types are "add" and "remove"`);
     }
   });
@@ -200,8 +208,7 @@ const createPayload = (message, userDataBlock, destination) => {
 const processEvent = async (metadata, message, destination) => {
   const response = [];
   let createdPayload = {};
-  // let consentObj = {};
-  const payloadArray = []
+  const payloadArray = [];
   if (!message.type) {
     throw new InstrumentationError('Message Type is not present. Aborting message.');
   }
@@ -211,22 +218,31 @@ const processEvent = async (metadata, message, destination) => {
   if (!message.properties.listData) {
     throw new InstrumentationError('listData is not present inside properties. Aborting message.');
   }
-  // const mappedToDestination = get(message, MappedToDestinationKey);
   if (message.type.toLowerCase() === 'audiencelist') {
     const userDataGroupedByConsentLevel = groupUserDataBasedOnConsentLevel(message);
     userDataGroupedByConsentLevel.forEach((userDataBlock) => {
-       createdPayload = {...createPayload(message,userDataBlock, destination)};
-       payloadArray.push(createdPayload);
+      createdPayload = { ...createPayload(message, userDataBlock, destination) };
+      payloadArray.push(createdPayload);
     });
 
-    if (Object.keys(createdPayload).length === 0) {
+    const sortedPayloadArray = lodash.sortBy(payloadArray, (item) => !item.remove);
+
+    if (sortedPayloadArray.length === 0) {
       throw new InstrumentationError(
         "Neither 'add' nor 'remove' property is present inside 'listData' or there are no attributes inside 'add' or 'remove' properties matching with the schema fields. Aborting message.",
       );
     }
-    payloadArray.forEach((singlePayload) => {
-            const finalDataObject = singlePayload.create || singlePayload.remove;
-            response.push(responseBuilder(metadata, finalDataObject, destination, message, singlePayload.consent));
+
+    sortedPayloadArray.forEach((singlePayload) => {
+      if (singlePayload && Object.keys(singlePayload).length <= 1) {
+        throw new InstrumentationError(
+          "Neither 'add' nor 'remove' property is present inside 'listData' or there are no attributes inside 'add' or 'remove' properties matching with the schema fields. Aborting message.",
+        );
+      }
+      const finalDataObject = singlePayload.remove || singlePayload.create;
+      response.push(
+        responseBuilder(metadata, finalDataObject, destination, message, singlePayload.consent),
+      );
     });
     return response;
   }

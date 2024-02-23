@@ -73,17 +73,7 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
       payload.addConversionPayload.operations.create.consent = consentObject;
     }
   }
-
-  // if(payload?.conversions?.length > 0) {
-  //   // const consentObject = populateConsentForGoogleDestinations(message, conversionType);
-  // if(Object.keys(consentObject).length > 0) {
-  //   if(conversionType === 'click' || conversionType === 'call') {
-  //     payload.conversions[0].consent = consentObject;
-  //   } else if(conversionType === 'store'){
-  //     payload.addConversionPayload.create.consent = consentObject;
-  //   }
-  // }
-  //  }
+  
   if (conversionType !== 'store') {
     // transform originalTimestamp to conversionDateTime format (yyyy-mm-dd hh:mm:ss+|-hh:mm)
     // e.g 2019-10-14T11:15:18.299Z -> 2019-10-14 16:10:29+0530

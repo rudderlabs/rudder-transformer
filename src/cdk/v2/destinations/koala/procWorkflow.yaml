@@ -43,6 +43,7 @@ steps:
         events: [{
           type: $.context.messageType,
           event: .message.event,
+          message_id: .message.messageId,
           sent_at: .message.().({{{{$.getGenericPaths("timestamp")}}}}),
           properties: properties 
         }]

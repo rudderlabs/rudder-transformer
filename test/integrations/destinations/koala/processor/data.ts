@@ -24,6 +24,7 @@ export const data = [
               annonymousId: 'annonymous-uuid',
               event: 'User Signed Up',
               type: 'track',
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
               traits: {
                 email: 'johndoe@somemail.com'
               },
@@ -58,6 +59,7 @@ export const data = [
                     type: 'track',
                     event: 'User Signed Up',
                     sent_at: '2024-01-23T08:35:17.562Z',
+                    message_id: '84e26acc-56a5-4835-8233-591137fca468',
                     properties: {
                       label: 'test',
                       value: 10,

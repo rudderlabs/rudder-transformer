@@ -149,7 +149,7 @@ export const generateSimplifiedIdentifyPayload: any = (parametersOverride: any) 
     rudderId: parametersOverride.rudderId || generateAlphanumericId(36),
     messageId: parametersOverride.messageId || generateAlphanumericId(36),
     context: {
-      externalId: parametersOverride.externalId,
+      externalId: parametersOverride.context.externalId,
       traits: parametersOverride.context.traits,
     },
     anonymousId: parametersOverride.anonymousId || 'default-anonymousId',
@@ -204,7 +204,7 @@ export const generateSimplifiedTrackPayload: any = (parametersOverride: any) => 
     rudderId: parametersOverride.rudderId || generateAlphanumericId(36),
     messageId: parametersOverride.messageId || generateAlphanumericId(36),
     context: removeUndefinedAndNullValues({
-      externalId: parametersOverride.externalId,
+      externalId: parametersOverride.context.externalId,
       traits: parametersOverride.context.traits,
     }),
     anonymousId: parametersOverride.anonymousId || 'default-anonymousId',

@@ -1,25 +1,31 @@
-import { V1BusinessTestScenarion } from './business';
-const oldV0TestCases = [
+import { ProxyV1TestData } from '../../../testTypes';
+import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
+
+const params = {
+  destination: 'clevertap',
+};
+const headers = {
+  'X-CleverTap-Account-Id': '476550467',
+  'X-CleverTap-Passcode':
+    'fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1',
+  'Content-Type': 'application/json',
+};
+export const V1BusinessTestScenarion: ProxyV1TestData[] = [
   {
+    id: 'clevertap_business_0',
+    scenario: 'business',
+    successCriteria: 'should return 200 status code with success message',
     name: 'clevertap',
-    description: 'Test 0',
+    description: '[business]:: create an user through identify call',
     feature: 'dataDelivery',
     module: 'destination',
-    version: 'v0',
+    version: 'v1',
     input: {
       request: {
-        body: {
-          version: '1',
-          type: 'REST',
-          method: 'POST',
-          endpoint: 'https://api.clevertap.com/1/upload/test1',
-          headers: {
-            'X-CleverTap-Account-Id': '476550467',
-            'X-CleverTap-Passcode':
-              'fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1',
-            'Content-Type': 'application/json',
-          },
-          body: {
+        body: generateProxyV1Payload(
+          {
+            params,
+            headers,
             JSON: {
               d: [
                 {
@@ -48,15 +54,10 @@ const oldV0TestCases = [
                 },
               ],
             },
-            JSON_ARRAY: {},
-            XML: {},
-            FORM: {},
+            endpoint: 'https://api.clevertap.com/1/upload/test1',
           },
-          files: {},
-          params: {
-            destination: 'clevertap',
-          },
-        },
+          [generateMetadata(123)],
+        ),
         method: 'POST',
       },
     },
@@ -67,32 +68,37 @@ const oldV0TestCases = [
           output: {
             status: 200,
             message: 'Request Processed Successfully',
-            destinationResponse: {
-              response: {
-                status: 'success',
-                processed: 1,
-                unprocessed: [],
+            response: [
+              {
+                metadata: generateMetadata(123),
+                error: '{"status":"success","processed":1,"unprocessed":[]}',
+                statusCode: 200,
               },
-              status: 200,
-            },
+            ],
           },
         },
       },
     },
   },
   {
+    id: 'clevertap_business_1',
+    scenario: 'business',
+    successCriteria: 'should return 401 status code with error message',
     name: 'clevertap',
-    description: 'Test 1',
+    description: '[business]:: event failed due to invalid credentials',
     feature: 'dataDelivery',
     module: 'destination',
-    version: 'v0',
+    version: 'v1',
     input: {
       request: {
-        body: {
-          body: {
-            XML: {},
-            JSON_ARRAY: {},
-            FORM: {},
+        body: generateProxyV1Payload(
+          {
+            params,
+            headers: {
+              'X-CleverTap-Account-Id': 'fakeId123',
+              'X-CleverTap-Passcode': 'fakePasscode123',
+              'Content-Type': 'application/json',
+            },
             JSON: {
               d: [
                 {
@@ -106,48 +112,36 @@ const oldV0TestCases = [
                 },
               ],
             },
+            endpoint: 'https://api.clevertap.com/1/upload/test2',
           },
-          type: 'REST',
-          files: {},
-          method: 'POST',
-          headers: {
-            'X-CleverTap-Account-Id': 'fakeId123',
-            'X-CleverTap-Passcode': 'fakePasscode123',
-            'Content-Type': 'application/json',
-          },
-          version: '1',
-          endpoint: 'https://api.clevertap.com/1/upload/test2',
-          params: {
-            destination: 'clevertap',
-          },
-        },
+          [generateMetadata(123)],
+        ),
         method: 'POST',
       },
     },
     output: {
       response: {
-        status: 401,
+        status: 200,
         body: {
           output: {
             status: 401,
             message: 'Request failed  with status: 401',
-            destinationResponse: {
-              response: {
-                status: 'fail',
-                error: 'Invalid Credentials',
-                code: 401,
+            response: [
+              {
+                metadata: generateMetadata(123),
+                error: '{"status":"fail","error":"Invalid Credentials","code":401}',
+                statusCode: 401,
               },
-              status: 401,
-            },
+            ],
             statTags: {
               destType: 'CLEVERTAP',
+              destinationId: 'default-destinationId',
               errorCategory: 'network',
-              destinationId: 'Non-determininable',
-              workspaceId: 'Non-determininable',
               errorType: 'aborted',
               feature: 'dataDelivery',
               implementation: 'native',
               module: 'destination',
+              workspaceId: 'default-workspaceId',
             },
           },
         },
@@ -155,18 +149,25 @@ const oldV0TestCases = [
     },
   },
   {
+    id: 'clevertap_business_2',
+    scenario: 'business',
+    successCriteria: 'should return 401 status code with error message',
     name: 'clevertap',
-    description: 'Test 2',
+    description: '[business]:: event failed due to invalid credentials',
     feature: 'dataDelivery',
     module: 'destination',
-    version: 'v0',
+    version: 'v1',
     input: {
       request: {
-        body: {
-          body: {
-            XML: {},
-            JSON_ARRAY: {},
-            FORM: {},
+        body: generateProxyV1Payload(
+          {
+            params,
+            headers: {
+              'X-CleverTap-Account-Id': '476550467',
+              'X-CleverTap-Passcode':
+                'fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1',
+              'Content-Type': 'application/json',
+            },
             JSON: {
               d: [
                 {
@@ -179,49 +180,36 @@ const oldV0TestCases = [
                 },
               ],
             },
+            endpoint: 'https://api.clevertap.com/1/upload/test3',
           },
-          type: 'REST',
-          files: {},
-          method: 'POST',
-          headers: {
-            'X-CleverTap-Account-Id': '476550467',
-            'X-CleverTap-Passcode':
-              'fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1',
-            'Content-Type': 'application/json',
-          },
-          version: '1',
-          endpoint: 'https://api.clevertap.com/1/upload/test3',
-          params: {
-            destination: 'clevertap',
-          },
-        },
+          [generateMetadata(123)],
+        ),
         method: 'POST',
       },
     },
     output: {
       response: {
-        status: 400,
+        status: 200,
         body: {
           output: {
             status: 400,
             message: 'Request failed  with status: 200',
-            destinationResponse: {
-              response: {
-                status: 'fail',
-                processed: 0,
-                unprocessed: [],
+            response: [
+              {
+                metadata: generateMetadata(123),
+                error: '{"status":"fail","processed":0,"unprocessed":[]}',
+                statusCode: 400,
               },
-              status: 200,
-            },
+            ],
             statTags: {
               destType: 'CLEVERTAP',
+              destinationId: 'default-destinationId',
               errorCategory: 'network',
-              destinationId: 'Non-determininable',
-              workspaceId: 'Non-determininable',
               errorType: 'aborted',
               feature: 'dataDelivery',
               implementation: 'native',
               module: 'destination',
+              workspaceId: 'default-workspaceId',
             },
           },
         },
@@ -229,5 +217,3 @@ const oldV0TestCases = [
     },
   },
 ];
-
-export const data = [...oldV0TestCases, ...V1BusinessTestScenarion];

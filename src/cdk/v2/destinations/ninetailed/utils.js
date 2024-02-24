@@ -24,7 +24,7 @@ const constructFullPayload = (message) => {
     default:
       break;
   }
-  payload = { ...payload, ...context };
+  payload.context = context ;
   return { ...payload, ...typeSpecifcPayload }; // merge base and type-specific payloads;
 };
 

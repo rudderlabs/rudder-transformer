@@ -1,43 +1,43 @@
 [
   {
-    "sourceKeys": "context.app.name",
+    "sourceKeys": "app.name",
     "required": true,
-    "destKey": "context.app.name"
+    "destKey": "app.name"
   },
   {
-    "sourceKeys": "context.app.version",
+    "sourceKeys": "app.version",
     "required": true,
-    "destKey": "context.app.version"
+    "destKey": "app.version"
   },
   {
-    "sourceKeys": "context.campaign",
-    "destKey": "context.campaign"
+    "sourceKeys": "campaign",
+    "destKey": "campaign"
   },
   {
-    "sourceKeys": "context.library.name",
+    "sourceKeys": "library.name",
     "required": true,
-    "destKey": "context.library.name"
+    "destKey": "library.name"
   },
   {
-    "sourceKeys": "context.library.version",
+    "sourceKeys": "library.version",
     "required": true,
-    "destKey": "context.library.version"
+    "destKey": "library.version"
   },
   {
-    "sourceKeys": "context.locale",
-    "destKey": "context.locale"
+    "sourceKeys": "locale",
+    "destKey": "locale"
   },
   {
-    "sourceKeys": "context.page",
-    "destKey": "context.page"
+    "sourceKeys": "page",
+    "destKey": "page"
   },
   {
-    "sourceKeys": "context.userAgent",
-    "destKey": "context.userAgent"
+    "sourceKeys": "userAgent",
+    "destKey": "userAgent"
   },
   {
-    "sourceKeys": "context.location",
+    "sourceKeys": "location",
     "required": true,
-    "destKey": "context.location"
+    "destKey": "location"
   }
 ]

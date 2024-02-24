@@ -15,11 +15,6 @@ export const destination = {
 export const metadata = {
   destinationId: 'dummyDestId',
 };
-
-// export const commonOutputHeaders = {
-//   accept: 'application/json',
-//   'content-type': 'application/json',
-// };
 export const commonProperties = {
   segment: 'SampleSegment',
   shipcountry: 'USA',
@@ -76,3 +71,33 @@ export const context = {
     timezone: 'America/Los_Angeles',
   },
 };
+
+export const commonInput = {
+  anonymousId: 'anon_123',
+  messageId: 'dummy_msg_id',
+  context,
+  channel: 'web',
+  integrations: {
+    All: true,
+  },
+  originalTimestamp: '2021-01-25T15:32:56.409Z',
+};
+
+export const commonOutput = {
+  anonymousId: 'anon_123',
+  messageId: 'dummy_msg_id',
+  context,
+  channel: 'web',
+  originalTimestamp: '2021-01-25T15:32:56.409Z',
+};
+
+export const endpoint =
+  'https://experience.ninetailed.co/v2/organizations/dummyOrganisationId/environments/main/events';
+export const instrumentationErrorStatTags = {
+  destType: 'NINETAILED',
+  errorCategory: 'dataValidation',
+  errorType: 'instrumentation',
+  feature: 'router',
+  implementation: 'cdkV2',
+  module: 'destination',
+}

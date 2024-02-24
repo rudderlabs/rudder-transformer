@@ -1,4 +1,4 @@
-import { destination, traits, context, metadata } from './commonConfig';
+import { destination, traits, context, metadata, instrumentationErrorStatTags } from '../commonConfig';
 import { transformResultBuilder } from '../../../testUtils';
 export const identify = [
   {
@@ -147,15 +147,7 @@ export const identify = [
             metadata: {
               destinationId: 'dummyDestId',
             },
-            statTags: {
-              destType: 'NINETAILED',
-              destinationId: 'dummyDestId',
-              errorCategory: 'dataValidation',
-              errorType: 'instrumentation',
-              feature: 'processor',
-              implementation: 'cdkV2',
-              module: 'destination',
-            },
+            statTags: instrumentationErrorStatTags,
             statusCode: 400,
           },
         ],

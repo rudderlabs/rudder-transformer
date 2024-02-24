@@ -1,4 +1,5 @@
-import { destination } from './commonConfig';
+import { instrumentationErrorStatTags } from '../commonConfig';
+import { destination } from '../commonConfig';
 
 export const validationFailures = [
   {
@@ -97,15 +98,7 @@ export const validationFailures = [
               destinationId: 'dummyDestId',
               jobId: '1',
             },
-            statTags: {
-              destType: 'NINETAILED',
-              destinationId: 'dummyDestId',
-              errorCategory: 'dataValidation',
-              errorType: 'instrumentation',
-              feature: 'processor',
-              implementation: 'cdkV2',
-              module: 'destination',
-            },
+            statTags: instrumentationErrorStatTags,
             statusCode: 400,
           },
         ],
@@ -162,15 +155,7 @@ export const validationFailures = [
               destinationId: 'dummyDestId',
               jobId: '1',
             },
-            statTags: {
-              destType: 'NINETAILED',
-              errorCategory: 'dataValidation',
-              destinationId: 'dummyDestId',
-              errorType: 'instrumentation',
-              feature: 'processor',
-              implementation: 'cdkV2',
-              module: 'destination',
-            },
+            statTags: instrumentationErrorStatTags,
             statusCode: 400,
           },
         ],

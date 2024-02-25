@@ -7,7 +7,7 @@ const errorResponseHandler = (destinationResponse, dest) => {
   if (status === 408) {
     throw new RetryableError(
       `[Intercom Response Handler] Request failed for destination ${dest} with status: ${status}`,
-      500,
+      status,
       destinationResponse,
     );
   }

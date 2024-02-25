@@ -1,4 +1,4 @@
-const { NetworkError } = require('@rudderstack/integrations-lib');
+const { NetworkError, AbortedError } = require('@rudderstack/integrations-lib');
 const { httpSend } = require('../../../adapters/network');
 const {
   processAxiosResponse,
@@ -38,7 +38,7 @@ const responseHandler = (responseParams) => {
   const msg = `[${DESTINATION} Response Handler] - Request Processed Successfully`;
   const { response, status } = destinationResponse;
   if (status === 400) {
-    throw new NetworkError(
+    throw new AbortedError(
       `Request failed with status: ${status} due to invalid Marketing Id`,
       400,
       {

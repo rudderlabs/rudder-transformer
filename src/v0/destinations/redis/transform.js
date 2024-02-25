@@ -4,6 +4,7 @@ const flatten = require('flat');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { isEmpty, isObject } = require('../../util');
 const { EventType } = require('../../../constants');
+const { handleRecordEventsForRedis } = require('./transformV2');
 
 // processValues:
 // 1. removes keys with empty values or still an object(empty) after flattening
@@ -35,7 +36,10 @@ const transformSubEventTypeProfiles = (message, workspaceId, destinationId) => {
   // form the hash
   const hash = `${workspaceId}:${destinationId}:${message.context.sources.profiles_entity}:${message.context.sources.profiles_id_type}:${message.userId}`;
   const key = `${message.context.sources.profiles_model}`;
-  const value = JSON.stringify(message.traits);
+  let value = JSON.stringify(message.traits);
+  if (message.type === EventType.RECORD) {
+    value = JSON.stringify(message.fields);
+  }
   return {
     message: {
       hash,
@@ -48,6 +52,11 @@ const transformSubEventTypeProfiles = (message, workspaceId, destinationId) => {
 
 const process = (event) => {
   const { message, destination, metadata } = event;
+  // seperate record events
+  if (message.type === EventType.RECORD) {
+    return handleRecordEventsForRedis(message, destination, metadata);
+  }
+
   const messageType = message && message.type && message.type.toLowerCase();
 
   if (messageType !== EventType.IDENTIFY) {
@@ -102,4 +111,7 @@ const process = (event) => {
   return result;
 };
 
-exports.process = process;
+module.exports = {
+  process,
+  transformSubEventTypeProfiles,
+};

@@ -13,7 +13,6 @@ const {
   isDefinedAndNotNullAndNotEmpty,
   getDestinationExternalID,
   getHashFromArrayWithDuplicate,
-  checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
 } = require('../../util');
 const { getContents, hashUserField } = require('./util');
@@ -690,10 +689,6 @@ const batchEvents = (eventsChunk) => {
   return events;
 };
 const processRouterDest = async (inputs, reqMetadata) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
   const trackResponseList = []; // list containing single track event in batched format
   const eventsChunk = []; // temporary variable to divide payload into chunks
   const errorRespList = [];

@@ -15,6 +15,7 @@ import logger from '../logger';
 import { getIntegrationVersion } from '../util/utils';
 import tags from '../v0/util/tags';
 import { DynamicConfigParser } from '../util/dynamicConfigParser';
+import { checkInvalidRtTfEvents } from '../v0/util';
 
 export class DestinationController {
   public static async destinationTransformAtProcessor(ctx: Context) {
@@ -101,6 +102,20 @@ export class DestinationController {
     const routerRequest = ctx.request.body as RouterTransformationRequest;
     const destination = routerRequest.destType;
     let events = routerRequest.input;
+    const errorRespEvents = checkInvalidRtTfEvents(events);
+    if (errorRespEvents.length > 0) {
+      errorRespEvents[0].metadata = [
+        {
+          destType: destination,
+        },
+      ];
+      logger.debug(
+        `[${destination}] Invalid router transform payload structure: ${JSON.stringify(events)}`,
+      );
+      ctx.body = { output: errorRespEvents };
+      ControllerUtility.postProcess(ctx);
+      return ctx;
+    }
     const metaTags = MiscService.getMetaTags(events[0].metadata);
     stats.histogram('dest_transform_input_events', events.length, {
       destination,

@@ -65,7 +65,7 @@ const getConversionActionId = async (headers, params) => {
       feature: 'transformation',
       endpointPath: `/googleAds:searchStream`,
       requestMethod: 'POST',
-      module: 'dataDelivery'
+      module: 'dataDelivery',
     });
     searchStreamResponse = processAxiosResponse(searchStreamResponse);
     if (!isHttpStatusSuccess(searchStreamResponse.status)) {

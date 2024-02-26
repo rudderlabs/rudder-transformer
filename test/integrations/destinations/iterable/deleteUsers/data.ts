@@ -1,14 +1,12 @@
-const destType = 'custify';
-const commonData = {
-  name: destType,
-  feature: 'userDeletion',
-  module: 'destination',
-  version: 'v0',
-};
+const destType = 'iterable';
 
 export const data = [
   {
+    name: destType,
     description: 'Test 0: should fail when config is not being sent',
+    feature: 'userDeletion',
+    module: 'destination',
+    version: 'v0',
     input: {
       request: {
         body: [
@@ -36,7 +34,11 @@ export const data = [
     },
   },
   {
+    name: destType,
     description: 'Test 1: should fail when apiKey is not present in config',
+    feature: 'userDeletion',
+    module: 'destination',
+    version: 'v0',
     input: {
       request: {
         body: [
@@ -66,9 +68,12 @@ export const data = [
       },
     },
   },
-
   {
-    description: 'Test 2: should pass when one of the users is not present in destination',
+    name: destType,
+    description: 'Test 2: should fail when one of the user-deletion requests fails',
+    feature: 'userDeletion',
+    module: 'destination',
+    version: 'v0',
     input: {
       request: {
         body: [
@@ -91,30 +96,38 @@ export const data = [
     },
     output: {
       response: {
-        status: 200,
-        body: [{ statusCode: 200, status: 'successful' }],
+        status: 400,
+        body: [
+          {
+            statusCode: 400,
+            error:
+              'User deletion request failed for userIds : [{"userId":"rudder2","Reason":"User does not exist. Email:  UserId: rudder2"}]',
+          },
+        ],
       },
     },
   },
-
   {
-    description:
-      'Test 3: should fail when one of the users is returning with 4xx(not 404) from destination',
+    name: destType,
+    description: 'Test 3: should fail when invalid api key is set in config',
+    feature: 'userDeletion',
+    module: 'destination',
+    version: 'v0',
     input: {
       request: {
         body: [
           {
             destType: destType.toUpperCase(),
             userAttributes: [
-              {
-                userId: 'rudder1',
-              },
               {
                 userId: 'rudder3',
               },
+              {
+                userId: 'rudder4',
+              },
             ],
             config: {
-              apiKey: 'dummyApiKey',
+              apiKey: 'invalidKey',
             },
           },
         ],
@@ -122,14 +135,22 @@ export const data = [
     },
     output: {
       response: {
-        status: 400,
-        body: [{ statusCode: 400, error: '{"error":"User: rudder3 has a problem"}' }],
+        status: 401,
+        body: [
+          {
+            error: 'User deletion request failed : Invalid API key',
+            statusCode: 401,
+          },
+        ],
       },
     },
   },
-
   {
-    description: 'Test 4: should fail when one of the userAttributes does not contain `userId`',
+    name: destType,
+    description: 'Test 4: should pass when proper apiKey & valid users are sent to destination',
+    feature: 'userDeletion',
+    module: 'destination',
+    version: 'v0',
     input: {
       request: {
         body: [
@@ -137,9 +158,11 @@ export const data = [
             destType: destType.toUpperCase(),
             userAttributes: [
               {
-                userId: 'rudder1',
+                userId: 'rudder5',
               },
-              {},
+              {
+                userId: 'rudder6',
+              },
             ],
             config: {
               apiKey: 'dummyApiKey',
@@ -150,9 +173,14 @@ export const data = [
     },
     output: {
       response: {
-        status: 400,
-        body: [{ statusCode: 400, error: 'User id for deletion not present' }],
+        status: 200,
+        body: [
+          {
+            statusCode: 200,
+            status: 'successful',
+          },
+        ],
       },
     },
   },
-].map((props) => ({ ...commonData, ...props }));
+];

@@ -3,7 +3,6 @@ const { InstrumentationError, ConfigurationError } = require('@rudderstack/integ
 const {
   defaultPutRequestConfig,
   handleRtTfSingleEventError,
-  checkInvalidRtTfEvents,
   constructPayload,
   defaultPostRequestConfig,
   isDefinedAndNotNull,
@@ -162,10 +161,6 @@ const getEventChunks = (event, identifyRespList, trackRespList) => {
 };
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
   let batchResponseList = [];
   const batchErrorRespList = [];
   const identifyRespList = [];

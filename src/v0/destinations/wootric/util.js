@@ -48,7 +48,7 @@ const getAccessToken = async (destination) => {
       feature: 'transformation',
       endpointPath: `/oauth/token`,
       requestMethod: 'POST',
-      module: 'router'
+      module: 'router',
     });
     const processedAuthResponse = processAxiosResponse(wootricAuthResponse);
     // If the request fails, throwing error.
@@ -103,7 +103,7 @@ const retrieveUserDetails = async (endUserId, externalId, accessToken) => {
     feature: 'transformation',
     endpointPath: `/v1/end_users/`,
     requestMethod: 'GET',
-    module: 'router'
+    module: 'router',
   });
   const processedUserResponse = processAxiosResponse(userResponse);
 

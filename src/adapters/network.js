@@ -57,7 +57,7 @@ const fireHTTPStats = (clientResponse, startTime, statTags) => {
     destType,
     endpointPath,
     requestMethod,
-    module
+    module,
   });
   stats.counter('outgoing_request_count', 1, {
     feature,
@@ -66,7 +66,7 @@ const fireHTTPStats = (clientResponse, startTime, statTags) => {
     success: clientResponse.success,
     statusCode,
     requestMethod,
-    module
+    module,
   });
 };
 

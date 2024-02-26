@@ -1,6 +1,7 @@
 import { AxiosError } from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { testScenariosForV1API } from './business';
+import { otheMarketoScenariosV1 } from './other';
 
 const legacyTests = [
   {
@@ -493,4 +494,4 @@ const legacyTests = [
   },
 ];
 
-export const data = [...legacyTests, ...testScenariosForV1API];
+export const data = [...legacyTests, ...testScenariosForV1API, ...otheMarketoScenariosV1];

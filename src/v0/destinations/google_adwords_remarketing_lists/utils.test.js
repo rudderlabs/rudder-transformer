@@ -9,20 +9,20 @@ describe('groupUserDataBasedOnConsentLevel', () => {
           add: [
             {
               email: 'user1@example.com',
-              rs_garl_adUserData: 'UNSPECIFIED',
-              rs_garl_adPersonalization: 'GRANTED',
+              adUserData_consent: 'UNSPECIFIED',
+              adPersonalization_consent: 'GRANTED',
             },
             {
               email: 'user2@example.com',
-              rs_garl_adUserData: 'DENIED',
-              rs_garl_adPersonalization: 'DENIED',
+              adUserData_consent: 'DENIED',
+              adPersonalization_consent: 'DENIED',
             },
           ],
           remove: [
             {
               email: 'user3@example.com',
-              rs_garl_adUserData: 'UNSPECIFIED',
-              rs_garl_adPersonalization: 'GRANTED',
+              adUserData_consent: 'UNSPECIFIED',
+              adPersonalization_consent: 'GRANTED',
             },
           ],
         },
@@ -87,16 +87,16 @@ describe('groupUserDataBasedOnConsentLevel', () => {
           add: [
             {
               email: 'user1@example.com',
-              rs_garl_adUserData: 'UNSPECIFIED',
-              rs_garl_adPersonalization: 'GRANTED',
+              adUserData_consent: 'UNSPECIFIED',
+              adPersonalization_consent: 'GRANTED',
             },
             {
               email: 'user2@example.com',
-              rs_garl_adUserData: 'DENIED',
-              rs_garl_adPersonalization: 'DENIED',
+              adUserData_consent: 'DENIED',
+              adPersonalization_consent: 'DENIED',
             },
           ],
-          remove: [{ email: 'user3@example.com', rs_garl_adPersonalization: 'GRANTED' }],
+          remove: [{ email: 'user3@example.com', adPersonalization_consent: 'GRANTED' }],
         },
       },
     };

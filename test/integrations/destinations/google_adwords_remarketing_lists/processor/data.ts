@@ -11922,18 +11922,18 @@ export const data = [
                   add: [
                     {
                       email: 'test1@mail.com',
-                      rs_garl_adUserData: 'RANDOM',
-                      rs_garl_adPersonalization: 'RANDOM',
+                      adUserData_consent: 'RANDOM',
+                      adPersonalization_consent: 'RANDOM',
                     },
                     {
                       email: 'test5@xmail.com',
-                      rs_garl_adUserData: 'RANDOM',
-                      rs_garl_adPersonalization: 'RANDOM',
+                      adUserData_consent: 'RANDOM',
+                      adPersonalization_consent: 'RANDOM',
                     },
                     {
                       email: 'test3@mail.com',
-                      rs_garl_adUserData: 'RANDOM',
-                      rs_garl_adPersonalization: 'RANDOM',
+                      adUserData_consent: 'RANDOM',
+                      adPersonalization_consent: 'RANDOM',
                     },
                   ],
                 },
@@ -12070,18 +12070,18 @@ export const data = [
                   add: [
                     {
                       email: 'test1@mail.com',
-                      rs_garl_adUserData: 'RANDOM',
-                      rs_garl_adPersonalization: 'RANDOM',
+                      adUserData_consent: 'RANDOM',
+                      adPersonalization_consent: 'RANDOM',
                     },
                     {
                       email: 'test5@xmail.com',
-                      rs_garl_adUserData: 'RANDOM',
-                      rs_garl_adPersonalization: 'RANDOM',
+                      adUserData_consent: 'RANDOM',
+                      adPersonalization_consent: 'RANDOM',
                     },
                     {
                       email: 'test3@mail.com',
-                      rs_garl_adUserData: 'RANDOM',
-                      rs_garl_adPersonalization: 'RANDOM',
+                      adUserData_consent: 'RANDOM',
+                      adPersonalization_consent: 'RANDOM',
                     },
                   ],
                 },
@@ -12218,18 +12218,18 @@ export const data = [
                   add: [
                     {
                       email: 'test1@mail.com',
-                      rs_garl_adUserData: 'GRANTED',
-                      rs_garl_adPersonalization: 'GRANTED',
+                      adUserData_consent: 'GRANTED',
+                      adPersonalization_consent: 'GRANTED',
                     },
                     {
                       email: 'test5@xmail.com',
-                      rs_garl_adUserData: 'RANDOM',
-                      rs_garl_adPersonalization: 'RANDOM',
+                      adUserData_consent: 'RANDOM',
+                      adPersonalization_consent: 'RANDOM',
                     },
                     {
                       email: 'test3@mail.com',
-                      rs_garl_adUserData: 'GRANTED',
-                      rs_garl_adPersonalization: 'GRANTED',
+                      adUserData_consent: 'GRANTED',
+                      adPersonalization_consent: 'GRANTED',
                     },
                   ],
                 },

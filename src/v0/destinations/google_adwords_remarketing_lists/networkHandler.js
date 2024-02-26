@@ -41,6 +41,8 @@ const createJob = async (endpoint, headers, method, params) => {
     destType: 'google_adwords_remarketing_lists',
     feature: 'proxy',
     endpointPath: '/customers/create',
+    requestMethod: 'POST',
+    module: 'dataDelivery',
   });
   return response;
 };
@@ -65,6 +67,8 @@ const addUserToJob = async (endpoint, headers, method, jobId, body) => {
     destType: 'google_adwords_remarketing_lists',
     feature: 'proxy',
     endpointPath: '/addOperations',
+    requestMethod: 'POST',
+    module: 'dataDelivery',
   });
   return response;
 };
@@ -87,6 +91,8 @@ const runTheJob = async (endpoint, headers, method, jobId) => {
     destType: 'google_adwords_remarketing_lists',
     feature: 'proxy',
     endpointPath: '/run',
+    requestMethod: 'POST',
+    module: 'dataDelivery',
   });
   return response;
 };

@@ -1,25 +1,29 @@
 [
   {
-    "sourceKeys": "properties.orderId",
+    "sourceKeys": ["properties.orderId", "properties.order_id"],
     "required": true,
     "destKey": "ord"
   },
   {
-    "sourceKeys": ["properties.tr", "properties.ranSiteID"],
+    "sourceKeys": ["properties.tr", "properties.ranSiteID", "properties.ran_site_id"],
     "required": true,
     "destKey": "tr"
   },
   {
-    "sourceKeys": ["properties.land", "properties.landTime"],
+    "sourceKeys": ["properties.land", "properties.landTime", "properties.land_time"],
     "required": true,
     "destKey": "land"
   },
   {
-    "sourceKeys": ["properties.date", "properties.orderCompletedTime"],
+    "sourceKeys": [
+      "properties.date",
+      "properties.orderCompletedTime",
+      "properties.order_completed_time"
+    ],
     "destKey": "date"
   },
   {
-    "sourceKeys": ["properties.altord", "properties.alterOrderId"],
+    "sourceKeys": ["properties.altord", "properties.alterOrderId", "properties.alter_order_id"],
     "destKey": "altord"
   },
   {
@@ -27,15 +31,15 @@
     "destKey": "cur"
   },
   {
-    "sourceKeys": "properties.creditCardType",
+    "sourceKeys": ["properties.creditCardType", "properties.credit_card_type"],
     "destKey": "cc"
   },
   {
-    "sourceKeys": "properties.commReason",
+    "sourceKeys": ["properties.commReason", "properties.comm_reason"],
     "destKey": "commreason"
   },
   {
-    "sourceKeys": "properties.isComm",
+    "sourceKeys": ["properties.isComm", "properties.is_comm"],
     "destKey": "iscomm"
   },
   {
@@ -47,27 +51,48 @@
     "destKey": "coupon"
   },
   {
-    "sourceKeys": ["properties.custId", "properties.customerId", "properties.userId"],
+    "sourceKeys": [
+      "properties.custId",
+      "properties.cust_id",
+      "properties.customerId",
+      "properties.customer_id",
+      "properties.userId"
+    ],
     "destKey": "custid"
   },
   {
-    "sourceKeys": ["properties.custScore", "properties.customerScore"],
+    "sourceKeys": [
+      "properties.custScore",
+      "properties.cust_score",
+      "properties.customerScore",
+      "properties.customer_score"
+    ],
     "destKey": "custscore"
   },
   {
-    "sourceKeys": ["properties.custStatus", "properties.customerStatus"],
+    "sourceKeys": [
+      "properties.custStatus",
+      "properties.cust_status",
+      "properties.customerStatus",
+      "properties.customer_status"
+    ],
     "destKey": "custstatus"
   },
   {
-    "sourceKeys": ["properties.dId", "properties.advertisingId"],
+    "sourceKeys": ["properties.dId", "properties.advertisingId", "properties.advertising_id"],
     "destKey": "did"
   },
   {
-    "sourceKeys": ["properties.disamt", "properties.discountAmout"],
+    "sourceKeys": ["properties.disamt", "properties.discountAmount", "properties.discount_amount"],
     "destKey": "disamt"
   },
   {
-    "sourceKeys": ["properties.ordStatus", "properties.orderStatus"],
+    "sourceKeys": [
+      "properties.ordStatus",
+      "properties.ord_status",
+      "properties.orderStatus",
+      "properties.order_status"
+    ],
     "destKey": "ordstatus"
   },
   {
@@ -75,7 +100,7 @@
     "destKey": "segment"
   },
   {
-    "sourceKeys": "properties.shipcountry",
+    "sourceKeys": ["properties.shipcountry", "properties.ship_country"],
     "destKey": "shipcountry"
   },
   {
@@ -83,15 +108,25 @@
     "destKey": "shipped"
   },
   {
-    "sourceKeys": ["properties.sitename", "properties.url", "context.page.url"],
+    "sourceKeys": [
+      "properties.sitename",
+      "properties.site_name",
+      "properties.url",
+      "context.page.url"
+    ],
     "destKey": "sitename"
   },
   {
-    "sourceKeys": "properties.storeId",
+    "sourceKeys": ["properties.storeId", "properties.store_id"],
     "destKey": "storeid"
   },
   {
-    "sourceKeys": ["properties.storecat", "properties.storeCategory"],
+    "sourceKeys": [
+      "properties.storecat",
+      "properties.store_cat",
+      "properties.storeCategory",
+      "properties.store_category"
+    ],
     "destKey": "storecat"
   },
   {

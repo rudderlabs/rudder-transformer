@@ -46,7 +46,7 @@ export const transformationFailures = [
         body: [
           {
             error:
-              'Missing required value from "properties.orderId": Workflow: procWorkflow, Step: prepareTrackPayload, ChildStep: undefined, OriginalError: Missing required value from "properties.orderId"',
+              'Missing required value from ["properties.orderId","properties.order_id"]: Workflow: procWorkflow, Step: prepareTrackPayload, ChildStep: undefined, OriginalError: Missing required value from ["properties.orderId","properties.order_id"]',
             metadata: {
               destinationId: 'dummyDestId',
               jobId: '1',
@@ -245,7 +245,7 @@ export const transformationFailures = [
         body: [
           {
             error:
-              'Missing required value from ["properties.tr","properties.ranSiteID"]: Workflow: procWorkflow, Step: prepareTrackPayload, ChildStep: undefined, OriginalError: Missing required value from ["properties.tr","properties.ranSiteID"]',
+              'Missing required value from ["properties.tr","properties.ranSiteID","properties.ran_site_id"]: Workflow: procWorkflow, Step: prepareTrackPayload, ChildStep: undefined, OriginalError: Missing required value from ["properties.tr","properties.ranSiteID","properties.ran_site_id"]',
             metadata: {
               destinationId: 'dummyDestId',
               jobId: '1',
@@ -312,7 +312,7 @@ export const transformationFailures = [
         body: [
           {
             error:
-              'Missing required value from ["properties.land","properties.landTime"]: Workflow: procWorkflow, Step: prepareTrackPayload, ChildStep: undefined, OriginalError: Missing required value from ["properties.land","properties.landTime"]',
+              'Missing required value from ["properties.land","properties.landTime","properties.land_time"]: Workflow: procWorkflow, Step: prepareTrackPayload, ChildStep: undefined, OriginalError: Missing required value from ["properties.land","properties.landTime","properties.land_time"]',
             metadata: {
               destinationId: 'dummyDestId',
               jobId: '1',

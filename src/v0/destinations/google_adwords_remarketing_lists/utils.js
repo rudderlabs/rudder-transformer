@@ -73,8 +73,8 @@ function groupUserDataBasedOnConsentLevel(input) {
       .map((detail) => ({
         ...detail,
         // Validate 'adUserData' and 'adPersonalization', or use 'UNSPECIFIED' for undefined values
-        adUserData: validateAndTransformConsent(detail.adUserData),
-        adPersonalization: validateAndTransformConsent(detail.adPersonalization),
+        adUserData: validateAndTransformConsent(detail.rs_garl_adUserData),
+        adPersonalization: validateAndTransformConsent(detail.rs_garl_adPersonalization),
       }))
       .groupBy((detail) => `${detail.adUserData}-${detail.adPersonalization}`)
       .map((group, key) => {
@@ -83,7 +83,14 @@ function groupUserDataBasedOnConsentLevel(input) {
         //           const actionKey = action === 'add' ? 'create' : action;
         return {
           consent: { adUserData: consentParts[0], adPersonalization: consentParts[1] },
-          [action]: group.map((detail) => lodash.omit(detail, ['adUserData', 'adPersonalization'])),
+          [action]: group.map((detail) =>
+            lodash.omit(detail, [
+              'rs_garl_adUserData',
+              'rs_garl_adPersonalization',
+              'adPersonalization',
+              'adUserData',
+            ]),
+          ),
         };
       })
       .value();

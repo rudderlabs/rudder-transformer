@@ -11922,18 +11922,18 @@ export const data = [
                   add: [
                     {
                       email: 'test1@mail.com',
-                      adUserData: 'RANDOM',
-                      adPersonalization: 'RANDOM',
+                      rs_garl_adUserData: 'RANDOM',
+                      rs_garl_adPersonalization: 'RANDOM',
                     },
                     {
                       email: 'test5@xmail.com',
-                      adUserData: 'RANDOM',
-                      adPersonalization: 'RANDOM',
+                      rs_garl_adUserData: 'RANDOM',
+                      rs_garl_adPersonalization: 'RANDOM',
                     },
                     {
                       email: 'test3@mail.com',
-                      adUserData: 'RANDOM',
-                      adPersonalization: 'RANDOM',
+                      rs_garl_adUserData: 'RANDOM',
+                      rs_garl_adPersonalization: 'RANDOM',
                     },
                   ],
                 },
@@ -12070,18 +12070,18 @@ export const data = [
                   add: [
                     {
                       email: 'test1@mail.com',
-                      adUserData: 'RANDOM',
-                      adPersonalization: 'RANDOM',
+                      rs_garl_adUserData: 'RANDOM',
+                      rs_garl_adPersonalization: 'RANDOM',
                     },
                     {
                       email: 'test5@xmail.com',
-                      adUserData: 'RANDOM',
-                      adPersonalization: 'RANDOM',
+                      rs_garl_adUserData: 'RANDOM',
+                      rs_garl_adPersonalization: 'RANDOM',
                     },
                     {
                       email: 'test3@mail.com',
-                      adUserData: 'RANDOM',
-                      adPersonalization: 'RANDOM',
+                      rs_garl_adUserData: 'RANDOM',
+                      rs_garl_adPersonalization: 'RANDOM',
                     },
                   ],
                 },
@@ -12218,18 +12218,18 @@ export const data = [
                   add: [
                     {
                       email: 'test1@mail.com',
-                      adUserData: 'GRANTED',
-                      adPersonalization: 'GRANTED',
+                      rs_garl_adUserData: 'GRANTED',
+                      rs_garl_adPersonalization: 'GRANTED',
                     },
                     {
                       email: 'test5@xmail.com',
-                      adUserData: 'RANDOM',
-                      adPersonalization: 'RANDOM',
+                      rs_garl_adUserData: 'RANDOM',
+                      rs_garl_adPersonalization: 'RANDOM',
                     },
                     {
                       email: 'test3@mail.com',
-                      adUserData: 'GRANTED',
-                      adPersonalization: 'GRANTED',
+                      rs_garl_adUserData: 'GRANTED',
+                      rs_garl_adPersonalization: 'GRANTED',
                     },
                   ],
                 },

@@ -5281,7 +5281,7 @@ export const data = [
           {
             message: {
               description:
-                '[HS] (newApi): get contact from hs with email (lookupField) having no contacts',
+                '[HS] (newApi): check converion to empty string if hs property is null',
               channel: 'web',
               context: {
                 app: {
@@ -5295,13 +5295,13 @@ export const data = [
                   firstname: null,
                   gender: '',
                   lookupField: 'email',
-                }
+                },
               },
               type: 'identify',
               userId: '12345',
               integrations: {
                 All: true,
-              }
+              },
             },
             destination: {
               Config: {

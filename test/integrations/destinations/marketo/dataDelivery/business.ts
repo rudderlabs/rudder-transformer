@@ -2,10 +2,6 @@ import { ProxyMetdata } from '../../../../../src/types';
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateProxyV1Payload } from '../../../testUtils';
 
-const commonHeaders = {
-  'Content-Type': 'application/json',
-};
-
 const statTags = {
   aborted: {
     destType: 'MARKETO',

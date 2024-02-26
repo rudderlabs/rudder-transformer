@@ -1,5 +1,3 @@
-import { AxiosError } from 'axios';
-import MockAdapter from 'axios-mock-adapter';
 import { testScenariosForV1API } from './business';
 import { otheMarketoScenariosV1 } from './other';
 

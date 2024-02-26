@@ -1,5 +1,6 @@
 const lodash = require('lodash');
-const { GOOGLE_ALLOWED_CONSENT_STATUS } = require('../../util/googleUtils');
+
+const GOOGLE_ALLOWED_CONSENT_STATUS = ['UNSPECIFIED', 'UNKNOWN', 'GRANTED', 'DENIED'];
 
 // Helper to validate and transform consent values
 const validateAndTransformConsent = (consentValue) => {

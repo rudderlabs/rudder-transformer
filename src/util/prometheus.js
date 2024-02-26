@@ -533,7 +533,15 @@ class Prometheus {
         name: 'outgoing_request_count',
         help: 'Outgoing HTTP requests count',
         type: 'counter',
-        labelNames: ['feature', 'destType', 'endpointPath', 'success', 'statusCode', 'requestMethod' , 'module'],
+        labelNames: [
+          'feature',
+          'destType',
+          'endpointPath',
+          'success',
+          'statusCode',
+          'requestMethod',
+          'module',
+        ],
       },
 
       // Gauges

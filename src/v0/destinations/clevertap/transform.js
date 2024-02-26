@@ -22,7 +22,6 @@ const {
   handleRtTfSingleEventError,
   batchMultiplexedEvents,
   getSuccessRespEvents,
-  checkInvalidRtTfEvents,
 } = require('../../util');
 const { generateClevertapBatchedPayload } = require('./utils');
 
@@ -389,13 +388,6 @@ const processEvent = (message, destination) => {
 const process = (event) => processEvent(event.message, event.destination);
 
 const processRouterDest = (inputs, reqMetadata) => {
-  // const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
-  // return respList;
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
-
   const eventsChunk = [];
   const errorRespList = [];
   // const { destination } = inputs[0];

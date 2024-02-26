@@ -4126,8 +4126,8 @@ export const data = [
                     operations: {
                       create: {
                         consent: {
-                          ad_personalization: 'UNSPECIFIED',
-                          ad_user_data: 'UNSPECIFIED',
+                          adPersonalization: 'UNSPECIFIED',
+                          adUserData: 'UNSPECIFIED',
                         },
                         transaction_attribute: {
                           store_attribute: {
@@ -4462,8 +4462,8 @@ export const data = [
                     operations: {
                       create: {
                         consent: {
-                          ad_personalization: 'UNSPECIFIED',
-                          ad_user_data: 'UNSPECIFIED',
+                          adPersonalization: 'UNSPECIFIED',
+                          adUserData: 'UNSPECIFIED',
                         },
                         transaction_attribute: {
                           store_attribute: {
@@ -4661,8 +4661,8 @@ export const data = [
                     operations: {
                       create: {
                         consent: {
-                          ad_personalization: 'UNSPECIFIED',
-                          ad_user_data: 'UNSPECIFIED',
+                          adPersonalization: 'UNSPECIFIED',
+                          adUserData: 'UNSPECIFIED',
                         },
                         transaction_attribute: {
                           store_attribute: {
@@ -4863,8 +4863,8 @@ export const data = [
                     operations: {
                       create: {
                         consent: {
-                          ad_personalization: 'UNSPECIFIED',
-                          ad_user_data: 'UNSPECIFIED',
+                          adPersonalization: 'UNSPECIFIED',
+                          adUserData: 'UNSPECIFIED',
                         },
                         transaction_attribute: {
                           store_attribute: {
@@ -5027,8 +5027,8 @@ export const data = [
                     operations: {
                       create: {
                         consent: {
-                          ad_personalization: 'UNSPECIFIED',
-                          ad_user_data: 'UNSPECIFIED',
+                          adPersonalization: 'UNSPECIFIED',
+                          adUserData: 'UNSPECIFIED',
                         },
                         transaction_attribute: {
                           store_attribute: {
@@ -5187,8 +5187,8 @@ export const data = [
                     operations: {
                       create: {
                         consent: {
-                          ad_personalization: 'UNSPECIFIED',
-                          ad_user_data: 'UNSPECIFIED',
+                          adPersonalization: 'UNSPECIFIED',
+                          adUserData: 'UNSPECIFIED',
                         },
                         transaction_attribute: {
                           store_attribute: {
@@ -5345,8 +5345,8 @@ export const data = [
                     operations: {
                       create: {
                         consent: {
-                          ad_personalization: 'UNSPECIFIED',
-                          ad_user_data: 'UNSPECIFIED',
+                          adPersonalization: 'UNSPECIFIED',
+                          adUserData: 'UNSPECIFIED',
                         },
                         transaction_attribute: {
                           store_attribute: {

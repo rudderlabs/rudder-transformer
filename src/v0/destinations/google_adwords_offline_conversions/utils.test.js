@@ -276,7 +276,7 @@ describe('getClickConversionPayloadAndEndpoint util tests', () => {
 });
 
 describe('populateConsentForGoogleDestinations', () => {
-  // Returns an object with ad_user_data and ad_personalization properties set to UNSPECIFIED when no consents are provided
+  // Returns an object with adUserData and adPersonalization properties set to UNSPECIFIED when no consents are provided
   it('GOOGLE_ADWORDS_OFFLINE_CONVERSIONS : store sales conversion without any mention in integrations object', () => {
     const message = {};
     const conversionType = 'store';
@@ -284,8 +284,8 @@ describe('populateConsentForGoogleDestinations', () => {
     const result = populateConsentForGoogleDestinations(message, conversionType);
 
     expect(result).toEqual({
-      ad_user_data: 'UNSPECIFIED',
-      ad_personalization: 'UNSPECIFIED',
+      adUserData: 'UNSPECIFIED',
+      adPersonalization: 'UNSPECIFIED',
     });
   });
 
@@ -306,12 +306,12 @@ describe('populateConsentForGoogleDestinations', () => {
     const result = populateConsentForGoogleDestinations(message, conversionType);
 
     expect(result).toEqual({
-      ad_personalization: 'DENIED',
-      ad_user_data: 'GRANTED',
+      adPersonalization: 'DENIED',
+      adUserData: 'GRANTED',
     });
   });
 
-  // Returns an object with ad_user_data and ad_personalization properties set to the provided consents when they are valid and present in the message properties
+  // Returns an object with adUserData and adPersonalization properties set to the provided consents when they are valid and present in the message properties
   it('GOOGLE_ADWORDS_OFFLINE_CONVERSIONS: click conversion with integration object of allowed types', () => {
     const message = {
       integrations: {
@@ -333,7 +333,7 @@ describe('populateConsentForGoogleDestinations', () => {
     });
   });
 
-  // Returns an object with ad_user_data and ad_personalization properties set to UNSPECIFIED when the provided consents are not valid or not present in the message properties
+  // Returns an object with adUserData and adPersonalization properties set to UNSPECIFIED when the provided consents are not valid or not present in the message properties
   it('GOOGLE_ADWORDS_OFFLINE_CONVERSIONS : click conversion with invalid consent value', () => {
     const message = {
       integrations: {

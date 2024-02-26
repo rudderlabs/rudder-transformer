@@ -512,8 +512,8 @@ export const data = [
                           {
                             create: {
                               consent: {
-                                ad_personalization: 'UNSPECIFIED',
-                                ad_user_data: 'UNSPECIFIED',
+                                adPersonalization: 'UNSPECIFIED',
+                                adUserData: 'UNSPECIFIED',
                               },
                               transaction_attribute: {
                                 store_attribute: { store_code: 'store code' },
@@ -533,8 +533,8 @@ export const data = [
                           {
                             create: {
                               consent: {
-                                ad_personalization: 'UNSPECIFIED',
-                                ad_user_data: 'UNSPECIFIED',
+                                adPersonalization: 'UNSPECIFIED',
+                                adUserData: 'UNSPECIFIED',
                               },
                               transaction_attribute: {
                                 store_attribute: { store_code: 'store code2' },

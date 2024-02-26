@@ -1,11 +1,17 @@
 import { VERSION } from '../../../../../src/v0/destinations/facebook_pixel/config';
-import {
-  overrideDestination,
-  transformResultBuilder,
-  generateTrackPayload,
-} from '../../../testUtils';
+import { overrideDestination, generateTrackPayload } from '../../../testUtils';
 
 const commonDestination = {
+  ID: '12335',
+  Name: 'sample-destination',
+  DestinationDefinition: {
+    ID: '123',
+    Name: 'facebook_pixel',
+    DisplayName: 'Facebook Pixel',
+    Config: {},
+  },
+  WorkspaceID: '123',
+  Transformations: [],
   Config: {
     limitedDataUSage: true,
     blacklistPiiProperties: [

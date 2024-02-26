@@ -1,6 +1,16 @@
 import { VERSION } from '../../../../../src/v0/destinations/facebook_pixel/config';
 import { generateSimplifiedPageOrScreenPayload, overrideDestination } from '../../../testUtils';
 const commonDestination = {
+  ID: '12335',
+  Name: 'sample-destination',
+  DestinationDefinition: {
+    ID: '123',
+    Name: 'facebook_pixel',
+    DisplayName: 'Facebook Pixel',
+    Config: {},
+  },
+  WorkspaceID: '123',
+  Transformations: [],
   Config: {
     blacklistPiiProperties: [
       {

@@ -41,7 +41,8 @@ const proxyRequest = async (request) => {
   return response;
 };
 
-const responseHandler = (destinationResponse) => {
+const responseHandler = (responseParams) => {
+  const { destinationResponse } = responseParams;
   const message = 'Request Processed Successfully';
   const { response, status } = destinationResponse;
 

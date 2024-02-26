@@ -18,7 +18,13 @@ const proxyRequest = async (request, destType) => {
     headers,
     method,
   };
-  const response = await httpSend(requestOptions, { feature: 'proxy', destType });
+  const response = await httpSend(requestOptions, {
+    feature: 'proxy',
+    destType,
+    endpointPath: '/ep',
+    requestMethod: 'GET',
+    module: 'dataDelivery',
+  });
   return response;
 };
 const extractContent = (xmlPayload, tagName) => {
@@ -27,7 +33,8 @@ const extractContent = (xmlPayload, tagName) => {
   return match ? match[1] : null;
 };
 
-const responseHandler = (destinationResponse) => {
+const responseHandler = (responseParams) => {
+  const { destinationResponse } = responseParams;
   const msg = `[${DESTINATION} Response Handler] - Request Processed Successfully`;
   const { response, status } = destinationResponse;
   if (status === 400) {
@@ -99,5 +106,5 @@ class networkHandler {
 
 module.exports = {
   networkHandler,
-  responseHandler
+  responseHandler,
 };

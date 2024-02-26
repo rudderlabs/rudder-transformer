@@ -44,7 +44,13 @@ const getToken = async (clientId, clientSecret, subdomain) => {
       {
         'Content-Type': JSON_MIME_TYPE,
       },
-      { destType: 'sfmc', feature: 'transformation' },
+      {
+        destType: 'sfmc',
+        feature: 'transformation',
+        endpointPath: '/token',
+        requestMethod: 'POST',
+        module: 'router',
+      },
     );
     if (resp && resp.data) {
       return resp.data.access_token;

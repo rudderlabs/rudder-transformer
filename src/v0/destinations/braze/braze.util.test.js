@@ -305,7 +305,14 @@ describe('dedup utility tests', () => {
           },
           timeout: 10000,
         },
-        { destType: 'braze', feature: 'transformation' },
+        {
+          destType: 'braze',
+          feature: 'transformation',
+          endpointPath: '/users/export/ids',
+          feature: 'transformation',
+          module: 'router',
+          requestMethod: 'POST',
+        },
       );
     });
 

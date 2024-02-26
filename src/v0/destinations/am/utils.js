@@ -111,16 +111,16 @@ const getUnsetObj = (message) => {
 };
 
 /**
- * Check for evType as in some cases, like when the page name is absent, 
+ * Check for evType as in some cases, like when the page name is absent,
  * either the template depends only on the event.name or there is no template provided by user
- * @param {*} evType 
+ * @param {*} evType
  */
 const validateEventType = (evType) => {
-    if (!isDefinedAndNotNull(evType) || (typeof evType === "string" && evType.length ===0)) {
-      throw new InstrumentationError(
-        'Event type is missing. Please send it under `event.type`. For page/screen events, send it under `event.name`',
-      );
-    }
+  if (!isDefinedAndNotNull(evType) || (typeof evType === 'string' && evType.length === 0)) {
+    throw new InstrumentationError(
+      'Event type is missing. Please send it under `event.type`. For page/screen events, send it under `event.name`',
+    );
+  }
 };
 module.exports = {
   getOSName,
@@ -131,5 +131,5 @@ module.exports = {
   getBrand,
   getEventId,
   getUnsetObj,
-  validateEventType
+  validateEventType,
 };

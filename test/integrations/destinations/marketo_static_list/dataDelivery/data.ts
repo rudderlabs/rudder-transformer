@@ -1,4 +1,6 @@
-export const data = [
+import { testScenariosForV1API } from './business';
+
+const legacyTests = [
   {
     name: 'marketo_static_list',
     description: 'Test 0',
@@ -158,21 +160,7 @@ export const data = [
           },
           body: {
             FORM: {},
-            JSON: {
-              action: 'createOrUpdate',
-              input: [
-                {
-                  City: 'Tokyo',
-                  Country: 'JP',
-                  Email: 'gabi29@gmail.com',
-                  PostalCode: '100-0001',
-                  Title: 'Owner',
-                  id: 1328328,
-                  userId: 'gabi_userId_45',
-                },
-              ],
-              lookupField: 'id',
-            },
+            JSON: {},
             JSON_ARRAY: {},
             XML: {},
           },
@@ -234,30 +222,7 @@ export const data = [
           params: {},
           body: {
             FORM: {},
-            JSON: {
-              action: 'createOrUpdate',
-              input: [
-                {
-                  City: 'Tokyo',
-                  Country: 'JP',
-                  Email: 'gabi29@gmail.com',
-                  PostalCode: '100-0001',
-                  Title: 'Owner',
-                  id: 1328328,
-                  userId: 'gabi_userId_45',
-                },
-                {
-                  City: 'Tokyo',
-                  Country: 'JP',
-                  Email: 'b@s.com',
-                  PostalCode: '100-0001',
-                  Title: 'Owner',
-                  id: 1328329,
-                  userId: 'ben_userId_45',
-                },
-              ],
-              lookupField: 'id',
-            },
+            JSON: {},
             JSON_ARRAY: {},
             XML: {},
           },
@@ -373,3 +338,5 @@ export const data = [
     },
   },
 ];
+
+export const data = [...legacyTests, ...testScenariosForV1API];

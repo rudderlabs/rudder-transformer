@@ -5269,4 +5269,102 @@ export const data = [
       },
     },
   },
+  {
+    name: 'hs',
+    description: 'Test coversion of null to string values',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              description:
+                '[HS] (newApi): get contact from hs with email (lookupField) having no contacts',
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                traits: {
+                  email: 'noname@email.com',
+                  firstname: null,
+                  gender: '',
+                  lookupField: 'email',
+                }
+              },
+              type: 'identify',
+              userId: '12345',
+              integrations: {
+                All: true,
+              }
+            },
+            destination: {
+              Config: {
+                authorizationType: 'newPrivateAppApi',
+                accessToken: 'dummy-access-token',
+                hubID: 'dummy-hubId',
+                apiKey: 'dummy-apikey',
+                apiVersion: 'newApi',
+                lookupField: 'email',
+                hubspotEvents: [],
+                eventFilteringOption: 'disable',
+                blacklistedEvents: [
+                  {
+                    eventName: '',
+                  },
+                ],
+                whitelistedEvents: [
+                  {
+                    eventName: '',
+                  },
+                ],
+              },
+              Enabled: true,
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              userId: '',
+              method: 'POST',
+              endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer dummy-access-token',
+              },
+              params: {},
+              operation: 'createContacts',
+              body: {
+                JSON: {
+                  properties: {
+                    email: 'noname@email.com',
+                    firstname: '',
+                    gender: ''
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];

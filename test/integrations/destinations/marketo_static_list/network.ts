@@ -92,30 +92,6 @@ const deliveryCallsData = [
   {
     httpReq: {
       url: 'https://marketo_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=5&id=6',
-      data: {
-        action: 'createOrUpdate',
-        input: [
-          {
-            City: 'Tokyo',
-            Country: 'JP',
-            Email: 'gabi29@gmail.com',
-            PostalCode: '100-0001',
-            Title: 'Owner',
-            id: 1328328,
-            userId: 'gabi_userId_45',
-          },
-          {
-            City: 'Tokyo',
-            Country: 'JP',
-            Email: 'b@s.com',
-            PostalCode: '100-0001',
-            Title: 'Owner',
-            id: 1328329,
-            userId: 'ben_userId_45',
-          },
-        ],
-        lookupField: 'id',
-      },
       params: {},
       headers: {
         Authorization: 'Bearer token',

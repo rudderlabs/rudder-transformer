@@ -1,4 +1,5 @@
 import { testScenariosForV1API } from './business';
+import { otherScenariosV1 } from './other';
 
 const legacyTests = [
   {
@@ -276,30 +277,7 @@ const legacyTests = [
           params: {},
           body: {
             FORM: {},
-            JSON: {
-              action: 'createOrUpdate',
-              input: [
-                {
-                  City: 'Tokyo',
-                  Country: 'JP',
-                  Email: 'gabi29@gmail.com',
-                  PostalCode: '100-0001',
-                  Title: 'Owner',
-                  id: 1328328,
-                  userId: 'gabi_userId_45',
-                },
-                {
-                  City: 'Tokyo',
-                  Country: 'JP',
-                  Email: 'b@s.com',
-                  PostalCode: '100-0001',
-                  Title: 'Owner',
-                  id: 1328329,
-                  userId: 'ben_userId_45',
-                },
-              ],
-              lookupField: 'id',
-            },
+            JSON: {},
             JSON_ARRAY: {},
             XML: {},
           },
@@ -339,4 +317,4 @@ const legacyTests = [
   },
 ];
 
-export const data = [...legacyTests, ...testScenariosForV1API];
+export const data = [...legacyTests, ...testScenariosForV1API, ...otherScenariosV1];

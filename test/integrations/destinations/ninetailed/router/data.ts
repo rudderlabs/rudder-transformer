@@ -1,11 +1,16 @@
-import { commonInput, destination, commonOutput,instrumentationErrorStatTags } from '../commonConfig';
+import {
+  commonInput,
+  destination,
+  commonOutput,
+  routerInstrumentationErrorStatTags,
+} from '../commonConfig';
 import { trackProperties, pageProperties, traits } from './basicProperties';
 import { defaultMockFns } from '../mocks';
 
 export const data = [
   {
     name: 'ninetailed',
-    id: 'Test 0',
+    id: 'Test 0 - router',
     description: 'Batch calls with all three type of calls as success',
     scenario: 'Framework+Buisness',
     successCriteria: 'All events should be transformed successfully and status code should be 200',
@@ -109,14 +114,14 @@ export const data = [
         },
       },
     },
-
   },
   {
     name: 'ninetailed',
-    id: 'Test 1',
+    id: 'Test 1 - router',
     description: 'Batch calls with one fail invalid event and two valid events',
     scenario: 'Framework+Buisness',
-    successCriteria: 'Two events should be transformed successfully and one should fail and status code should be 200',
+    successCriteria:
+      'Two events should be transformed successfully and one should fail and status code should be 200',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -182,7 +187,7 @@ export const data = [
               destination,
               error: 'Missing required value from "userIdOnly"',
               metadata: [{ jobId: 3, userId: 'u1' }],
-              statTags: instrumentationErrorStatTags,
+              statTags: routerInstrumentationErrorStatTags,
               statusCode: 400,
             },
             {
@@ -230,13 +235,15 @@ export const data = [
         },
       },
     },
+    mockFns: defaultMockFns,
   },
   {
     name: 'ninetailed',
-    id: 'Test 3',
+    id: 'Test 2 - router',
     description: 'Batch calls with 3 succesfull events and 1 failed event',
     scenario: 'Framework+Buisness',
-    successCriteria: '3 successful events should be distributed in two and 1 failed in one hence total batches should be 3 and status code should be 200',
+    successCriteria:
+      '3 successful events should be distributed in two and 1 failed in one hence total batches should be 3 and status code should be 200',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -296,6 +303,14 @@ export const data = [
         body: {
           output: [
             {
+              batched: false,
+              destination,
+              error: 'Missing required value from "userIdOnly"',
+              metadata: [{ jobId: 4, userId: 'u1' }],
+              statTags: routerInstrumentationErrorStatTags,
+              statusCode: 400,
+            },
+            {
               batchedRequest: {
                 version: '1',
                 type: 'REST',
@@ -317,7 +332,7 @@ export const data = [
                         ...commonOutput,
                         type: 'page',
                         properties: pageProperties,
-                      }
+                      },
                     ],
                   },
                   JSON_ARRAY: {},
@@ -364,20 +379,10 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                { jobId: 3, userId: 'u1' },
-              ],
+              metadata: [{ jobId: 3, userId: 'u1' }],
               batched: true,
               statusCode: 200,
               destination,
-            },
-            {
-              batched: false,
-              destination,
-              error: 'Missing required value from "userIdOnly"',
-              metadata: [{ jobId: 4, userId: 'u1' }],
-              statTags: instrumentationErrorStatTags,
-              statusCode: 400,
             },
           ],
         },
@@ -385,4 +390,4 @@ export const data = [
     },
     mockFns: defaultMockFns,
   },
-]; 
+];

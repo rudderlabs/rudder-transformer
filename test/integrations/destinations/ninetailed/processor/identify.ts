@@ -1,4 +1,4 @@
-import { destination, traits, context, metadata, instrumentationErrorStatTags } from '../commonConfig';
+import { destination, traits, commonInput, metadata, processInstrumentationErrorStatTags } from '../commonConfig';
 import { transformResultBuilder } from '../../../testUtils';
 export const identify = [
   {
@@ -17,12 +17,9 @@ export const identify = [
             destination,
             message: {
               type: 'identify',
-              context,
+              ...commonInput,
               userId: 'sajal12',
-              channel: 'mobile',
-              messageId: '1611588776408-ee5a3212-fbf9-4cbb-bbad-3ed0f7c6a2ce',
               traits: traits,
-              anonymousId: '9c6bd77ea9da3e68',
               integrations: {
                 All: true,
               },
@@ -88,11 +85,11 @@ export const identify = [
                       },
                     },
                     type: 'identify',
-                    channel: 'mobile',
+                    channel: 'web',
                     userId: 'sajal12',
-                    messageId: '1611588776408-ee5a3212-fbf9-4cbb-bbad-3ed0f7c6a2ce',
+                    messageId: 'dummy_msg_id',
                     traits: traits,
-                    anonymousId: '9c6bd77ea9da3e68',
+                    anonymousId: 'anon_123',
                     originalTimestamp: '2021-01-25T15:32:56.409Z',
                   },
                 ],
@@ -121,16 +118,11 @@ export const identify = [
           {
             destination,
             message: {
-              context,
+              ...commonInput,
               type: 'identify',
               channel: 'mobile',
-              messageId: '1611588776408-ee5a3212-fbf9-4cbb-bbad-3ed0f7c6a2ce',
+              messageId: 'dummy_msg_id',
               traits: traits,
-              anonymousId: '9c6bd77ea9da3e68',
-              integrations: {
-                All: true,
-              },
-              originalTimestamp: '2021-01-25T15:32:56.409Z',
             },
             metadata,
           },
@@ -147,7 +139,7 @@ export const identify = [
             metadata: {
               destinationId: 'dummyDestId',
             },
-            statTags: instrumentationErrorStatTags,
+            statTags: processInstrumentationErrorStatTags,
             statusCode: 400,
           },
         ],

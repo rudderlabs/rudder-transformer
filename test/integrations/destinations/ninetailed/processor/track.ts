@@ -1,4 +1,4 @@
-import { destination, context, commonProperties, metadata } from './commonConfig';
+import { destination, context, commonProperties, metadata } from '../commonConfig';
 import { transformResultBuilder } from '../../../testUtils';
 export const track = [
   {
@@ -59,9 +59,9 @@ export const track = [
               event: 'product purchased',
               userId: 'sajal12',
               channel: 'mobile',
-              messageId: '1611588776408-ee5a3212-fbf9-4cbb-bbad-3ed0f7c6a2ce',
+              messageId: 'dummy_msg_id',
               properties: commonProperties,
-              anonymousId: '9c6bd77ea9da3e68',
+              anonymousId: 'anon_123',
               integrations: {
                 All: true,
               },
@@ -129,9 +129,9 @@ export const track = [
                     type: 'track',
                     event: 'product purchased',
                     channel: 'mobile',
-                    messageId: '1611588776408-ee5a3212-fbf9-4cbb-bbad-3ed0f7c6a2ce',
+                    messageId: 'dummy_msg_id',
                     properties: commonProperties,
-                    anonymousId: '9c6bd77ea9da3e68',
+                    anonymousId: 'anon_123',
                     originalTimestamp: '2021-01-25T15:32:56.409Z',
                   },
                 ],
@@ -163,9 +163,9 @@ export const track = [
               context,
               type: 'track',
               channel: 'mobile',
-              messageId: '1611588776408-ee5a3212-fbf9-4cbb-bbad-3ed0f7c6a2ce',
+              messageId: 'dummy_msg_id',
               properties: commonProperties,
-              anonymousId: '9c6bd77ea9da3e68',
+              anonymousId: 'anon_123',
               integrations: {
                 All: true,
               },

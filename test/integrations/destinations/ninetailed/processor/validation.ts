@@ -1,5 +1,4 @@
-import { instrumentationErrorStatTags } from '../commonConfig';
-import { destination } from '../commonConfig';
+import { processInstrumentationErrorStatTags , destination, context } from '../commonConfig';
 
 export const validationFailures = [
   {
@@ -21,56 +20,7 @@ export const validationFailures = [
               event: 'product purchased',
               sentAt: '2021-01-25T16:12:02.048Z',
               userId: 'sajal12',
-              context: {
-                app: {
-                  name: 'RudderLabs JavaScript SDK',
-                  version: '1.0.0',
-                },
-                campaign: {
-                  name: 'campign_123',
-                  source: 'social marketing',
-                  medium: 'facebook',
-                  term: '1 year',
-                },
-                library: {
-                  name: 'RudderstackSDK',
-                  version: 'Ruddderstack SDK version',
-                },
-                locale: 'en-US',
-                page: {
-                  path: '/signup',
-                  referrer: 'https://rudderstack.medium.com/',
-                  search: '?type=freetrial',
-                  url: 'https://app.rudderstack.com/signup?type=freetrial',
-                },
-                userAgent:
-                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
-                location: {
-                  coordinates: {
-                    latitude: 40.7128,
-                    longitude: -74.006,
-                  },
-                  city: 'San Francisco',
-                  postalCode: '94107',
-                  region: 'CA',
-                  regionCode: 'CA',
-                  country: '  United States',
-                  countryCode: 'United States of America',
-                  continent: 'North America',
-                  timezone: 'America/Los_Angeles',
-                },
-                type: 'track',
-                event: 'product purchased',
-                userId: 'sajal12',
-                channel: 'mobile',
-                messageId: '1611588776408-ee5a3212-fbf9-4cbb-bbad-3ed0f7c6a2ce',
-                properties: {},
-                anonymousId: '9c6bd77ea9da3e68',
-                integrations: {
-                  All: true,
-                },
-                originalTimestamp: '2021-01-25T15:32:56.409Z',
-              },
+              context,
               properties: {
                 products: [{}],
               },
@@ -98,7 +48,7 @@ export const validationFailures = [
               destinationId: 'dummyDestId',
               jobId: '1',
             },
-            statTags: instrumentationErrorStatTags,
+            statTags: processInstrumentationErrorStatTags,
             statusCode: 400,
           },
         ],
@@ -125,12 +75,12 @@ export const validationFailures = [
               userId: 'sajal12',
               channel: 'mobile',
               rudderId: 'b7b24f86-f7bf-46d8-b2b4-ccafc080239c',
-              messageId: '1611588776408-ee5a3212-fbf9-4cbb-bbad-3ed0f7c6a2ce',
+              messageId: 'dummy_msg_id',
               traits: {
                 orderId: 'ord 123',
                 products: [],
               },
-              anonymousId: '9c6bd77ea9da3e68',
+              anonymousId: 'anon_123',
               integrations: {
                 All: true,
               },
@@ -155,7 +105,7 @@ export const validationFailures = [
               destinationId: 'dummyDestId',
               jobId: '1',
             },
-            statTags: instrumentationErrorStatTags,
+            statTags: processInstrumentationErrorStatTags,
             statusCode: 400,
           },
         ],

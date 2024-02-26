@@ -93,11 +93,20 @@ export const commonOutput = {
 
 export const endpoint =
   'https://experience.ninetailed.co/v2/organizations/dummyOrganisationId/environments/main/events';
-export const instrumentationErrorStatTags = {
+export const routerInstrumentationErrorStatTags = {
   destType: 'NINETAILED',
   errorCategory: 'dataValidation',
   errorType: 'instrumentation',
   feature: 'router',
   implementation: 'cdkV2',
   module: 'destination',
-}
+};
+export const processInstrumentationErrorStatTags = {
+  destType: 'NINETAILED',
+  errorCategory: 'dataValidation',
+  errorType: 'instrumentation',
+  feature: 'processor',
+  implementation: 'cdkV2',
+  module: 'destination',
+  destinationId: 'dummyDestId', 
+};

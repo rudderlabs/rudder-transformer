@@ -22,8 +22,10 @@ const ConfigCategories = {
     name: 'pageMapping',
   },
 };
-const MAX_BATCH_SIZE = 200; // Maximum number of events to send in a single batch
+
+// MAX_BATCH_SIZE : // Maximum number of events to send in a single batch
 const mappingConfig = getMappingConfig(ConfigCategories, __dirname);
 const batchEndpoint =
   'https://experience.ninetailed.co/v2/organizations/{{organisationId}}/environments/{{environment}}/events';
-module.exports = { ConfigCategories, mappingConfig, batchEndpoint, MAX_BATCH_SIZE };
+
+module.exports = { ConfigCategories, mappingConfig, batchEndpoint, MAX_BATCH_SIZE:200 };

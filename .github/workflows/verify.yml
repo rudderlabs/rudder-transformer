@@ -1,0 +1,36 @@
+name: Verify
+
+on:
+  pull_request:
+
+jobs:
+  formatting-lint:
+    name: Check for formatting & lint errors
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
+        with:
+          # Make sure the actual branch is checked out when running on pull requests
+          ref: ${{ github.head_ref }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v3.7.0
+        with:
+          node-version-file: .nvmrc
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Lint Checks
+        run: |
+          npm run lint
+
+      - run: git diff --exit-code
+
+      - name: Error message
+        if: ${{ failure() }}
+        run: |
+          echo 'Eslint check is failing Ensure you have run `npm run lint` and committed the files locally.'

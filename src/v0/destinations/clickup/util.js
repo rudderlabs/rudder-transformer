@@ -217,6 +217,9 @@ const retrieveCustomFields = async (listId, apiToken) => {
   const customFieldsResponse = await httpGET(endpoint, requestOptions, {
     destType: 'clickup',
     feature: 'transformation',
+    endpointPath: '/list/listId/field',
+    requestMethod: 'GET',
+    module: 'router',
   });
   const processedCustomFieldsResponse = processAxiosResponse(customFieldsResponse);
 

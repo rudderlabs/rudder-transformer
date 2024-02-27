@@ -296,6 +296,10 @@ describe('getAccessToken', () => {
     expect(handleHttpRequest).toHaveBeenCalledWith('get', url, {
       destType: 'marketo_bulk_upload',
       feature: 'transformation',
+      endpointPath: '/identity/oauth/token',
+      feature: 'transformation',
+      module: 'router',
+      requestMethod: 'GET',
     });
   });
 

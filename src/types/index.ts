@@ -205,6 +205,7 @@ type DeliveryV1Response = {
   status: number;
   message: string;
   statTags?: object;
+  destinationResponse?: any;
   authErrorCategory?: string;
   response: DeliveryJobState[];
 };

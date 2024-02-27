@@ -1,3 +1,4 @@
+import { ProxyV1TestData } from '../../../testTypes';
 import { generateProxyV0Payload, generateProxyV1Payload } from '../../../testUtils';
 
 export const otherScenariosV0 = [
@@ -231,7 +232,7 @@ export const otherScenariosV0 = [
   },
 ];
 
-export const otherScenariosV1 = [
+export const otherScenariosV1: ProxyV1TestData[] = [
   {
     id: 'cm360_v1_other_scenario_1',
     name: 'campaign_manager',

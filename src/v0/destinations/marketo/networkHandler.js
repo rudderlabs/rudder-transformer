@@ -4,7 +4,7 @@ const { proxyRequest, prepareProxyRequest } = require('../../../adapters/network
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 
 const responseHandler = (responseParams) => {
-  const { destinationResponse, destType,rudderJobMetadata } = responseParams;
+  const { destinationResponse, destType, rudderJobMetadata } = responseParams;
   const message = 'Request Processed Successfully';
   const { status } = destinationResponse;
   const authCache = v0Utils.getDestAuthCacheInstance(destType);

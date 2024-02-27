@@ -183,6 +183,9 @@ const searchContactIds = async (message, Config, baseUrl) => {
     {
       destType: 'mautic',
       feature: 'transformation',
+      endpointPath: '/contacts',
+      requestMethod: 'GET',
+      module: 'router',
     },
   );
   searchContactsResponse = processAxiosResponse(searchContactsResponse);

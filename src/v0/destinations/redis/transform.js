@@ -38,7 +38,17 @@ const transformSubEventTypeProfiles = (message, workspaceId, destinationId) => {
   const key = `${message.context.sources.profiles_model}`;
   let value = JSON.stringify(message.traits);
   if (message.type === EventType.RECORD) {
-    value = JSON.stringify(message.fields);
+    const { action, userId, fields } = message;
+    value = JSON.stringify(fields);
+    return {
+      message: {
+        hash,
+        key,
+        value,
+        action,
+      },
+      userId,
+    };
   }
   return {
     message: {

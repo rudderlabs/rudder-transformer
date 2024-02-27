@@ -17,7 +17,6 @@ const {
   getDestinationExternalID,
   getFieldValueFromMessage,
   getHashFromArrayWithDuplicate,
-  checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
   batchMultiplexedEvents,
 } = require('../../util');
@@ -247,10 +246,6 @@ const processRouterDest = async (inputs, reqMetadata) => {
   const { Config } = destination;
   if (Config?.version === 'v2') {
     return processRouterDestV2(inputs, reqMetadata);
-  }
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
   }
 
   const trackResponseList = []; // list containing single track event in batched format

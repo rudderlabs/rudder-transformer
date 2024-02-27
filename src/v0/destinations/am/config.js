@@ -136,5 +136,5 @@ module.exports = {
   batchEventsWithUserIdLengthLowerThanFive,
   IDENTIFY_AM,
   AMBatchSizeLimit,
-  AMBatchEventLimit
+  AMBatchEventLimit,
 };

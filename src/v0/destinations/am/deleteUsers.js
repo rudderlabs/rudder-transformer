@@ -43,6 +43,8 @@ const userDeletionHandler = async (userAttributes, config) => {
         destType: 'am',
         feature: 'deleteUsers',
         endpointPath,
+        requestMethod: 'POST',
+        module: 'deletion',
       });
       const handledDelResponse = processAxiosResponse(resp);
       if (!isHttpStatusSuccess(handledDelResponse.status)) {
@@ -51,6 +53,7 @@ const userDeletionHandler = async (userAttributes, config) => {
           handledDelResponse.status,
           {
             [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(handledDelResponse.status),
+            [tags.TAG_NAMES.STATUS]: handledDelResponse.status,
           },
           handledDelResponse,
         );

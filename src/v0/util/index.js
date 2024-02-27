@@ -52,6 +52,7 @@ const removeUndefinedAndNullAndEmptyValues = (obj) =>
   lodash.pickBy(obj, isDefinedAndNotNullAndNotEmpty);
 const isBlank = (value) => lodash.isEmpty(lodash.toString(value));
 const flattenMap = (collection) => lodash.flatMap(collection, (x) => x);
+const isNull = (x) => lodash.isNull(x);
 // ========================================================================
 // GENERIC UTLITY
 // ========================================================================
@@ -2266,6 +2267,7 @@ module.exports = {
   isDefinedAndNotNullAndNotEmpty,
   isEmpty,
   isNotEmpty,
+  isNull,
   isEmptyObject,
   isHttpStatusRetryable,
   isHttpStatusSuccess,

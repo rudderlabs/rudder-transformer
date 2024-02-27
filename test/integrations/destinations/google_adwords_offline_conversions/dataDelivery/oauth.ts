@@ -1,5 +1,8 @@
-import { ProxyMetdata } from '../../../../../src/types';
-import { generateProxyV1Payload, generateProxyV0Payload } from '../../../testUtils';
+import {
+  generateMetadata,
+  generateProxyV1Payload,
+  generateProxyV0Payload,
+} from '../../../testUtils';
 
 const commonHeaders1 = {
   Authorization: 'Bearer abcd1234',
@@ -150,18 +153,16 @@ const invalidCredsRequestPayload2 = {
   partialFailure: true,
 };
 
-const proxyMetdata: ProxyMetdata = {
-  jobId: 1,
-  attemptNum: 1,
-  userId: 'dummyUserId',
-  sourceId: 'dummySourceId',
-  destinationId: 'dummyDestinationId',
-  workspaceId: 'dummyWorkspaceId',
-  secret: {},
-  dontBatch: false,
+const expectedStatTags = {
+  destType: 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS',
+  destinationId: 'default-destinationId',
+  errorCategory: 'network',
+  errorType: 'aborted',
+  feature: 'dataDelivery',
+  implementation: 'native',
+  module: 'destination',
+  workspaceId: 'default-workspaceId',
 };
-
-const metadata = [proxyMetdata];
 
 export const v0oauthScenarios = [
   {
@@ -202,16 +203,7 @@ export const v0oauthScenarios = [
                 status: 'UNAUTHENTICATED',
               },
             },
-            statTags: {
-              destType: 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS',
-              destinationId: 'default-destinationId',
-              errorCategory: 'network',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'default-workspaceId',
-            },
+            statTags: expectedStatTags,
           },
         },
       },
@@ -258,16 +250,7 @@ export const v0oauthScenarios = [
                 },
               },
             ],
-            statTags: {
-              destType: 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS',
-              destinationId: 'default-destinationId',
-              errorCategory: 'network',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'default-workspaceId',
-            },
+            statTags: expectedStatTags,
           },
         },
       },
@@ -288,16 +271,12 @@ export const v1oauthScenarios = [
     version: 'v1',
     input: {
       request: {
-        body: generateProxyV1Payload(
-          {
-            headers: commonHeaders1,
-            params: commonParams1,
-            JSON: invalidCredsRequestPayload1,
-            endpoint:
-              'https://googleads.googleapis.com/v14/customers/customerid/offlineUserDataJobs',
-          },
-          metadata,
-        ),
+        body: generateProxyV1Payload({
+          headers: commonHeaders1,
+          params: commonParams1,
+          JSON: invalidCredsRequestPayload1,
+          endpoint: 'https://googleads.googleapis.com/v14/customers/customerid/offlineUserDataJobs',
+        }),
         method: 'POST',
       },
     },
@@ -313,29 +292,11 @@ export const v1oauthScenarios = [
               {
                 error:
                   '[Google Ads Offline Conversions]:: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project. during google_ads_offline_store_conversions Job Creation',
-                metadata: {
-                  attemptNum: 1,
-                  destinationId: 'dummyDestinationId',
-                  dontBatch: false,
-                  jobId: 1,
-                  secret: {},
-                  sourceId: 'dummySourceId',
-                  userId: 'dummyUserId',
-                  workspaceId: 'dummyWorkspaceId',
-                },
+                metadata: generateMetadata(1),
                 statusCode: 401,
               },
             ],
-            statTags: {
-              destType: 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS',
-              destinationId: 'dummyDestinationId',
-              errorCategory: 'network',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'dummyWorkspaceId',
-            },
+            statTags: expectedStatTags,
             status: 401,
           },
         },
@@ -354,16 +315,13 @@ export const v1oauthScenarios = [
     version: 'v1',
     input: {
       request: {
-        body: generateProxyV1Payload(
-          {
-            headers: commonHeaders2,
-            params: commonParams2,
-            JSON: invalidCredsRequestPayload2,
-            endpoint:
-              'https://googleads.googleapis.com/v14/customers/1234567890:uploadClickConversions',
-          },
-          metadata,
-        ),
+        body: generateProxyV1Payload({
+          headers: commonHeaders2,
+          params: commonParams2,
+          JSON: invalidCredsRequestPayload2,
+          endpoint:
+            'https://googleads.googleapis.com/v14/customers/1234567890:uploadClickConversions',
+        }),
         method: 'POST',
       },
     },
@@ -379,29 +337,11 @@ export const v1oauthScenarios = [
               {
                 error:
                   '[Google Ads Offline Conversions]:: [{"error":{"code":401,"message":"Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.","status":"UNAUTHENTICATED"}}] during google_ads_offline_conversions response transformation',
-                metadata: {
-                  attemptNum: 1,
-                  destinationId: 'dummyDestinationId',
-                  dontBatch: false,
-                  jobId: 1,
-                  secret: {},
-                  sourceId: 'dummySourceId',
-                  userId: 'dummyUserId',
-                  workspaceId: 'dummyWorkspaceId',
-                },
+                metadata: generateMetadata(1),
                 statusCode: 401,
               },
             ],
-            statTags: {
-              destType: 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS',
-              destinationId: 'dummyDestinationId',
-              errorCategory: 'network',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'dummyWorkspaceId',
-            },
+            statTags: expectedStatTags,
             status: 401,
           },
         },

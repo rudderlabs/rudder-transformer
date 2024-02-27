@@ -1,16 +1,8 @@
-import { ProxyMetdata } from '../../../../../src/types';
-import { generateProxyV0Payload, generateProxyV1Payload } from '../../../testUtils';
-
-const proxyMetdata: ProxyMetdata = {
-  jobId: 1,
-  attemptNum: 1,
-  userId: 'dummyUserId',
-  sourceId: 'dummySourceId',
-  destinationId: 'dummyDestinationId',
-  workspaceId: 'dummyWorkspaceId',
-  secret: {},
-  dontBatch: false,
-};
+import {
+  generateMetadata,
+  generateProxyV0Payload,
+  generateProxyV1Payload,
+} from '../../../testUtils';
 
 const transactionAttribute = {
   CUSTOM_KEY: 'CUSTOM_VALUE',
@@ -212,7 +204,16 @@ const notAllowedToAccessFeatureRequestPayload = {
   ],
 };
 
-const metadata = [proxyMetdata];
+const expectedStatTags = {
+  destType: 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS',
+  destinationId: 'default-destinationId',
+  errorCategory: 'network',
+  errorType: 'aborted',
+  feature: 'dataDelivery',
+  implementation: 'native',
+  module: 'destination',
+  workspaceId: 'default-workspaceId',
+};
 
 export const testScenariosForV0API = [
   {
@@ -284,16 +285,7 @@ export const testScenariosForV0API = [
                 status: 'INVALID_ARGUMENT',
               },
             },
-            statTags: {
-              destType: 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS',
-              destinationId: 'default-destinationId',
-              errorCategory: 'network',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'default-workspaceId',
-            },
+            statTags: expectedStatTags,
           },
         },
       },
@@ -303,7 +295,7 @@ export const testScenariosForV0API = [
     id: 'gaoc_v0_scenario_2',
     name: 'google_adwords_offline_conversions',
     description:
-      '[Proxy v0 API] :: Test for a valid request with a successful 200 response from the destination',
+      '[Proxy v0 API] :: Test for a valid operations request with a successful 200 response from the destination',
     successCriteria: 'Should return 200 with no error with destination response',
     scenario: 'Business',
     feature: 'dataDelivery',
@@ -393,7 +385,7 @@ export const testScenariosForV0API = [
     id: 'gaoc_v0_scenario_4',
     name: 'google_adwords_offline_conversions',
     description:
-      '[Proxy v0 API] :: Test for a valid request with a successful 200 response from the destination',
+      '[Proxy v0 API] :: Test for a valid conversion action request with a successful 200 response from the destination',
     successCriteria: 'Should return 200 with no error with destination response',
     scenario: 'Business',
     feature: 'dataDelivery',
@@ -453,16 +445,13 @@ export const testScenariosForV1API = [
     version: 'v1',
     input: {
       request: {
-        body: generateProxyV1Payload(
-          {
-            headers: headers.header1,
-            params: params.param1,
-            JSON: invalidArgumentRequestPayload,
-            endpoint:
-              'https://googleads.googleapis.com/v14/customers/11122233331/offlineUserDataJobs',
-          },
-          metadata,
-        ),
+        body: generateProxyV1Payload({
+          headers: headers.header1,
+          params: params.param1,
+          JSON: invalidArgumentRequestPayload,
+          endpoint:
+            'https://googleads.googleapis.com/v14/customers/11122233331/offlineUserDataJobs',
+        }),
         method: 'POST',
       },
     },
@@ -477,29 +466,11 @@ export const testScenariosForV1API = [
               {
                 error:
                   '[Google Ads Offline Conversions]:: Request contains an invalid argument. during google_ads_offline_store_conversions Add Conversion',
-                metadata: {
-                  attemptNum: 1,
-                  destinationId: 'dummyDestinationId',
-                  dontBatch: false,
-                  jobId: 1,
-                  secret: {},
-                  sourceId: 'dummySourceId',
-                  userId: 'dummyUserId',
-                  workspaceId: 'dummyWorkspaceId',
-                },
+                metadata: generateMetadata(1),
                 statusCode: 400,
               },
             ],
-            statTags: {
-              destType: 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS',
-              destinationId: 'dummyDestinationId',
-              errorCategory: 'network',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'dummyWorkspaceId',
-            },
+            statTags: expectedStatTags,
             status: 400,
           },
         },
@@ -510,24 +481,20 @@ export const testScenariosForV1API = [
     id: 'gaoc_v1_scenario_2',
     name: 'google_adwords_offline_conversions',
     description:
-      '[Proxy v1 API] :: Test for a valid request with a successful 200 response from the destination',
+      '[Proxy v1 API] :: Test for a valid operations request with a successful 200 response from the destination',
     successCriteria: 'Should return 200 with no error with destination response',
     scenario: 'Business',
     feature: 'dataDelivery',
     module: 'destination',
-    version: 'v0',
+    version: 'v1',
     input: {
       request: {
-        body: generateProxyV1Payload(
-          {
-            headers: headers.header1,
-            params: params.param1,
-            JSON: validRequestPayload1,
-            endpoint:
-              'https://googleads.googleapis.com/v14/customers/1112223333/offlineUserDataJobs',
-          },
-          metadata,
-        ),
+        body: generateProxyV1Payload({
+          headers: headers.header1,
+          params: params.param1,
+          JSON: validRequestPayload1,
+          endpoint: 'https://googleads.googleapis.com/v14/customers/1112223333/offlineUserDataJobs',
+        }),
         method: 'POST',
       },
     },
@@ -536,14 +503,26 @@ export const testScenariosForV1API = [
         status: 200,
         body: {
           output: {
-            destinationResponse: {
-              response: {
-                name: 'customers/111-222-3333/operations/abcd=',
-              },
-              status: 200,
-            },
             message:
               '[Google Ads Offline Conversions Response Handler] - Request processed successfully',
+            response: [
+              {
+                error: '{"name":"customers/111-222-3333/operations/abcd="}',
+                metadata: {
+                  attemptNum: 1,
+                  destinationId: 'default-destinationId',
+                  dontBatch: false,
+                  jobId: 1,
+                  secret: {
+                    accessToken: 'default-accessToken',
+                  },
+                  sourceId: 'default-sourceId',
+                  userId: 'default-userId',
+                  workspaceId: 'default-workspaceId',
+                },
+                statusCode: 200,
+              },
+            ],
             status: 200,
           },
         },
@@ -562,16 +541,13 @@ export const testScenariosForV1API = [
     version: 'v1',
     input: {
       request: {
-        body: generateProxyV1Payload(
-          {
-            headers: headers.header2,
-            params: params.param2,
-            JSON: validRequestPayload2,
-            endpoint:
-              'https://googleads.googleapis.com/v14/customers/1234567891:uploadClickConversions',
-          },
-          metadata,
-        ),
+        body: generateProxyV1Payload({
+          headers: headers.header2,
+          params: params.param2,
+          JSON: validRequestPayload2,
+          endpoint:
+            'https://googleads.googleapis.com/v14/customers/1234567891:uploadClickConversions',
+        }),
         method: 'POST',
       },
     },
@@ -586,16 +562,7 @@ export const testScenariosForV1API = [
               {
                 error:
                   '[{"adjustmentType":"ENHANCEMENT","conversionAction":"customers/1234567891/conversionActions/874224905","adjustmentDateTime":"2021-01-01 12:32:45-08:00","gclidDateTimePair":{"gclid":"1234","conversionDateTime":"2021-01-01 12:32:45-08:00"},"orderId":"12345"}]',
-                metadata: {
-                  attemptNum: 1,
-                  destinationId: 'dummyDestinationId',
-                  dontBatch: false,
-                  jobId: 1,
-                  secret: {},
-                  sourceId: 'dummySourceId',
-                  userId: 'dummyUserId',
-                  workspaceId: 'dummyWorkspaceId',
-                },
+                metadata: generateMetadata(1),
                 statusCode: 200,
               },
             ],
@@ -609,7 +576,7 @@ export const testScenariosForV1API = [
     id: 'gaoc_v1_scenario_4',
     name: 'google_adwords_offline_conversions',
     description:
-      '[Proxy v1 API] :: Test for a valid request with a successful 200 response from the destination',
+      '[Proxy v1 API] :: Test for a valid conversion action request with a successful 200 response from the destination',
     successCriteria: 'Should return 200 with no error with destination response',
     scenario: 'Business',
     feature: 'dataDelivery',
@@ -617,16 +584,13 @@ export const testScenariosForV1API = [
     version: 'v1',
     input: {
       request: {
-        body: generateProxyV1Payload(
-          {
-            headers: headers.header2,
-            params: params.param3,
-            JSON: validRequestPayload2,
-            endpoint:
-              'https://googleads.googleapis.com/v14/customers/1234567891:uploadClickConversions',
-          },
-          metadata,
-        ),
+        body: generateProxyV1Payload({
+          headers: headers.header2,
+          params: params.param3,
+          JSON: validRequestPayload2,
+          endpoint:
+            'https://googleads.googleapis.com/v14/customers/1234567891:uploadClickConversions',
+        }),
         method: 'POST',
       },
     },
@@ -641,16 +605,7 @@ export const testScenariosForV1API = [
               {
                 error:
                   '[{"adjustmentType":"ENHANCEMENT","conversionAction":"customers/1234567891/conversionActions/874224905","adjustmentDateTime":"2021-01-01 12:32:45-08:00","gclidDateTimePair":{"gclid":"1234","conversionDateTime":"2021-01-01 12:32:45-08:00"},"orderId":"12345"}]',
-                metadata: {
-                  attemptNum: 1,
-                  destinationId: 'dummyDestinationId',
-                  dontBatch: false,
-                  jobId: 1,
-                  secret: {},
-                  sourceId: 'dummySourceId',
-                  userId: 'dummyUserId',
-                  workspaceId: 'dummyWorkspaceId',
-                },
+                metadata: generateMetadata(1),
                 statusCode: 200,
               },
             ],
@@ -672,16 +627,13 @@ export const testScenariosForV1API = [
     version: 'v1',
     input: {
       request: {
-        body: generateProxyV1Payload(
-          {
-            headers: headers.header2,
-            params: params.param4,
-            JSON: notAllowedToAccessFeatureRequestPayload,
-            endpoint:
-              'https://googleads.googleapis.com/v14/customers/1234567893:uploadClickConversions',
-          },
-          metadata,
-        ),
+        body: generateProxyV1Payload({
+          headers: headers.header2,
+          params: params.param4,
+          JSON: notAllowedToAccessFeatureRequestPayload,
+          endpoint:
+            'https://googleads.googleapis.com/v14/customers/1234567893:uploadClickConversions',
+        }),
         method: 'POST',
       },
     },
@@ -696,29 +648,11 @@ export const testScenariosForV1API = [
               {
                 error:
                   '[Google Ads Offline Conversions]:: partialFailureError - Customer is not allowlisted for accessing this feature., at conversions[0].conversion_environment',
-                metadata: {
-                  attemptNum: 1,
-                  destinationId: 'dummyDestinationId',
-                  dontBatch: false,
-                  jobId: 1,
-                  secret: {},
-                  sourceId: 'dummySourceId',
-                  userId: 'dummyUserId',
-                  workspaceId: 'dummyWorkspaceId',
-                },
+                metadata: generateMetadata(1),
                 statusCode: 400,
               },
             ],
-            statTags: {
-              destType: 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS',
-              destinationId: 'dummyDestinationId',
-              errorCategory: 'network',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'dummyWorkspaceId',
-            },
+            statTags: expectedStatTags,
             status: 400,
           },
         },

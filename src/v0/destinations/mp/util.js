@@ -1,7 +1,6 @@
 const lodash = require('lodash');
 const set = require('set-value');
 const get = require('get-value');
-const Handlebars = require('handlebars');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
   isDefined,
@@ -309,6 +308,10 @@ function trimTraits(traits, contextTraits, setOnceProperties) {
  * @param {string} userDefinedEventTemplate - The user-defined event template to be used for generating the event name.
  * @throws {ConfigurationError} If the event template is missing.
  * @returns {string} The generated custom event name.
+ * @example
+ * const userDefinedEventTemplate = "Viewed {{ category }} {{ name }} Page";
+ * const message = {name: 'Home', properties: {category: 'Index'}};
+ * output: "Viewed Index Home Page"
  */
 const generatePageOrScreenCustomEventName = (message, userDefinedEventTemplate) => {
   if (!userDefinedEventTemplate) {
@@ -316,8 +319,21 @@ const generatePageOrScreenCustomEventName = (message, userDefinedEventTemplate) 
       'Event template is missing. Please provide a valid event template in `Page/Screen Event Name Template` setting',
     );
   }
-  const eventTemplate = Handlebars.compile(userDefinedEventTemplate);
-  return eventTemplate(message);
+
+  let eventName = userDefinedEventTemplate
+    .replace('{{ category }}', message.properties?.category || '')
+    .trim();
+  eventName = eventName.replace('{{ name }}', message.name || '').trim();
+  // Remove any extra space between placeholders
+  eventName = eventName.replace(/\s{2,}/g, ' ');
+
+  // Check if any placeholders remain
+  if (eventName.includes('{{')) {
+    // Handle the case where either name or category is missing
+    eventName = eventName.replace(/{{\s*\w+\s*}}/g, '');
+  }
+
+  return eventName.trim();
 };
 
 module.exports = {

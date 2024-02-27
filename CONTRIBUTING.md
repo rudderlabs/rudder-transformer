@@ -35,7 +35,6 @@ See the project's [README](README.md) for further information about working in t
    - Include instructions on how to test your changes.
 3. Your branch may be merged once all configured checks pass, including:
    - A review from appropriate maintainers
-4. Along with the PR in transformer raise a PR against [config-generator][config-generator] with the configurations.
 
 ## Committing
 

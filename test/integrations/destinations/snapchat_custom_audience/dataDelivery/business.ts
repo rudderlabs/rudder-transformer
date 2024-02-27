@@ -1,5 +1,6 @@
 import { ProxyV1TestData } from '../../../testTypes';
 import {
+  generateMetadata,
   generateProxyV0Payload,
   generateProxyV1Payload,
 } from '../../../testUtils';
@@ -22,7 +23,7 @@ const commonRequestParameters = {
   },
 };
 
-export const businessTestScenarios = [
+export const businessV0TestScenarios = [
   {
     id: 'snapchat_custom_audience_v0_oauth_scenario_1',
     name: 'snapchat_custom_audience',
@@ -71,8 +72,11 @@ export const businessTestScenarios = [
       },
     },
   },
+];
+
+export const businessV1TestScenarios: ProxyV1TestData[] = [
   {
-    id: 'snapchat_custom_audience_v0_oauth_scenario_1',
+    id: 'snapchat_custom_audience_v1_oauth_scenario_1',
     name: 'snapchat_custom_audience',
     description: '[Proxy v1 API] :: successfull oauth',
     successCriteria: 'Proper response from destination is received',
@@ -103,18 +107,7 @@ export const businessTestScenarios = [
               {
                 error: `{\"request_status\":\"SUCCESS\",\"request_id\":\"12345\",\"users\":[{\"sub_request_status\":\"SUCCESS\",\"user\":{\"number_uploaded_users\":1}}]}`,
                 statusCode: 200,
-                metadata: {
-                  jobId: 1,
-                  attemptNum: 1,
-                  userId: 'default-userId',
-                  destinationId: 'default-destinationId',
-                  workspaceId: 'default-workspaceId',
-                  sourceId: 'default-sourceId',
-                  secret: {
-                    accessToken: 'default-accessToken',
-                  },
-                  dontBatch: false,
-                },
+                metadata: generateMetadata(1),
               },
             ],
           },

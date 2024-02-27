@@ -1,5 +1,9 @@
 import { ProxyV1TestData } from '../../../testTypes';
-import { generateProxyV1Payload, generateProxyV0Payload } from '../../../testUtils';
+import {
+  generateMetadata,
+  generateProxyV0Payload,
+  generateProxyV1Payload,
+} from '../../../testUtils';
 
 const commonHeaders = {
   Authorization: 'Bearer abcd123',
@@ -30,6 +34,28 @@ const commonDeleteRequestParameters = {
       },
     ],
   },
+};
+
+const retryStatTags = {
+  destType: 'SNAPCHAT_CUSTOM_AUDIENCE',
+  errorCategory: 'network',
+  destinationId: 'default-destinationId',
+  workspaceId: 'default-workspaceId',
+  errorType: 'retryable',
+  feature: 'dataDelivery',
+  implementation: 'native',
+  module: 'destination',
+};
+
+const abortStatTags = {
+  destType: 'SNAPCHAT_CUSTOM_AUDIENCE',
+  errorCategory: 'network',
+  destinationId: 'default-destinationId',
+  workspaceId: 'default-workspaceId',
+  errorType: 'aborted',
+  feature: 'dataDelivery',
+  implementation: 'native',
+  module: 'destination',
 };
 
 export const v0OauthScenarios = [
@@ -68,16 +94,7 @@ export const v0OauthScenarios = [
             },
             message:
               'Failed with unauthorized during snapchat_custom_audience response transformation',
-            statTags: {
-              destType: 'SNAPCHAT_CUSTOM_AUDIENCE',
-              errorCategory: 'network',
-              destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
-              errorType: 'retryable',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-            },
+            statTags: retryStatTags,
             authErrorCategory: 'REFRESH_TOKEN',
           },
         },
@@ -126,16 +143,7 @@ export const v0OauthScenarios = [
               status: 403,
             },
             message: 'undefined during snapchat_custom_audience response transformation',
-            statTags: {
-              destType: 'SNAPCHAT_CUSTOM_AUDIENCE',
-              errorCategory: 'network',
-              destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-            },
+            statTags: abortStatTags,
           },
         },
       },
@@ -176,30 +184,10 @@ export const v1OauthScenarios: ProxyV1TestData[] = [
               {
                 error: '"unauthorized"',
                 statusCode: 500,
-                metadata: {
-                  jobId: 1,
-                  attemptNum: 1,
-                  userId: 'default-userId',
-                  destinationId: 'default-destinationId',
-                  workspaceId: 'default-workspaceId',
-                  sourceId: 'default-sourceId',
-                  secret: {
-                    accessToken: 'default-accessToken',
-                  },
-                  dontBatch: false,
-                },
+                metadata: generateMetadata(1),
               },
             ],
-            statTags: {
-              errorCategory: 'network',
-              errorType: 'retryable',
-              destType: 'SNAPCHAT_CUSTOM_AUDIENCE',
-              module: 'destination',
-              implementation: 'native',
-              feature: 'dataDelivery',
-              destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
-            },
+            statTags: retryStatTags,
             authErrorCategory: 'REFRESH_TOKEN',
             message:
               'Failed with unauthorized during snapchat_custom_audience response transformation',
@@ -241,30 +229,10 @@ export const v1OauthScenarios: ProxyV1TestData[] = [
               {
                 error: `{"request_status":"ERROR","request_id":"98e2a602-3cf4-4596-a8f9-7f034161f89a","debug_message":"Caller does not have permission","display_message":"We're sorry, but the requested resource is not available at this time","error_code":"E3002"}`,
                 statusCode: 400,
-                metadata: {
-                  jobId: 1,
-                  attemptNum: 1,
-                  userId: 'default-userId',
-                  destinationId: 'default-destinationId',
-                  workspaceId: 'default-workspaceId',
-                  sourceId: 'default-sourceId',
-                  secret: {
-                    accessToken: 'default-accessToken',
-                  },
-                  dontBatch: false,
-                },
+                metadata: generateMetadata(1),
               },
             ],
-            statTags: {
-              errorCategory: 'network',
-              errorType: 'aborted',
-              destType: 'SNAPCHAT_CUSTOM_AUDIENCE',
-              module: 'destination',
-              implementation: 'native',
-              feature: 'dataDelivery',
-              destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
-            },
+            statTags: abortStatTags,
             message: 'undefined during snapchat_custom_audience response transformation',
             status: 400,
             authErrorCategory: 'AUTH_STATUS_INACTIVE',

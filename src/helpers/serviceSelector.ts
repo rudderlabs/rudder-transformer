@@ -79,7 +79,7 @@ export class ServiceSelector {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public static getSourceService(arg: unknown) {
-    // Implement source event based descision logic for selecting service
+    // Implement source event based decision logic for selecting service
   }
 
   public static getDestinationService(

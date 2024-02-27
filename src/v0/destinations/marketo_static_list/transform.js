@@ -1,6 +1,10 @@
 const lodash = require('lodash');
 const cloneDeep = require('lodash/cloneDeep');
-const { InstrumentationError, UnauthorizedError } = require('@rudderstack/integrations-lib');
+const {
+  InstrumentationError,
+  UnauthorizedError,
+  getErrorRespEvents,
+} = require('@rudderstack/integrations-lib');
 const {
   defaultPostRequestConfig,
   defaultDeleteRequestConfig,
@@ -9,11 +13,7 @@ const {
 } = require('../../util');
 const { AUTH_CACHE_TTL, JSON_MIME_TYPE } = require('../../util/constant');
 const { getIds, validateMessageType } = require('./util');
-const {
-  getDestinationExternalID,
-  defaultRequestConfig,
-  getErrorRespEvents,
-} = require('../../util');
+const { getDestinationExternalID, defaultRequestConfig } = require('../../util');
 const { formatConfig, MAX_LEAD_IDS_SIZE } = require('./config');
 const Cache = require('../../util/cache');
 const { getAuthToken } = require('../marketo/transform');

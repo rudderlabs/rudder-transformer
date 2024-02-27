@@ -23,7 +23,9 @@ async function evaluateModule(isolate, context, moduleCode) {
 }
 
 async function loadModule(isolateInternal, contextInternal, moduleName, moduleCode) {
-  const module = await isolateInternal.compileModule(moduleCode, { filename: `library ${moduleName}` });
+  const module = await isolateInternal.compileModule(moduleCode, {
+    filename: `library ${moduleName}`,
+  });
   await module.instantiate(contextInternal, () => {});
   return module;
 }
@@ -256,7 +258,7 @@ async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) 
     }
   });
 
-  await jail.set('extractStackTrace', function(trace, stringLiterals) {
+  await jail.set('extractStackTrace', function (trace, stringLiterals) {
     return extractStackTraceUptoLastSubstringMatch(trace, stringLiterals);
   });
 
@@ -346,7 +348,9 @@ async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) 
   // Now we can execute the script we just compiled:
   const bootstrapScriptResult = await bootstrap.run(context);
   // const customScript = await isolate.compileScript(`${library} ;\n; ${code}`);
-  const customScriptModule = await isolate.compileModule(`${codeWithWrapper}`, { filename: 'base transformation' });
+  const customScriptModule = await isolate.compileModule(`${codeWithWrapper}`, {
+    filename: 'base transformation',
+  });
   await customScriptModule.instantiate(context, async (spec) => {
     if (librariesMap[spec]) {
       return compiledModules[spec].module;

@@ -216,7 +216,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
               ),
               statusCode: v0Response.status,
               metadata,
-            } as DeliveryJobState),
+            }) as DeliveryJobState,
         );
         responseProxy = {
           response: jobStates,

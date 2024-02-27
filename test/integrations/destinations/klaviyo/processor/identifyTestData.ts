@@ -20,7 +20,6 @@ const commonTraits = {
   userId: 'user@1',
   title: 'Developer',
   organization: 'Rudder',
-  street: '63, Shibuya',
   city: 'Tokyo',
   region: 'Kanto',
   country: 'JP',
@@ -33,6 +32,8 @@ const commonTraits = {
     consent: ['email', 'sms'],
   },
 };
+
+const commonTraits2 = { ...commonTraits, street: '63, Shibuya' };
 
 const commonOutputUserProps = {
   external_id: 'user@1',
@@ -47,13 +48,17 @@ const commonOutputUserProps = {
     region: 'Kanto',
     country: 'JP',
     zip: '100-0001',
-    address1: '63, Shibuya',
   },
   properties: {
     Flagged: false,
     Residence: 'Shibuya',
-    street: '63, Shibuya',
   },
+};
+
+const commonOutputUserProps2 = {
+  ...commonOutputUserProps,
+  location: { ...commonOutputUserProps.location, address1: '63, Shibuya' },
+  properties: { ...commonOutputUserProps.properties, street: '63, Shibuya' },
 };
 
 const commonOutputSubscriptionProps = {
@@ -105,7 +110,7 @@ export const identifyData = [
             destination,
             message: generateSimplifiedIdentifyPayload({
               context: {
-                traits: commonTraits,
+                traits: commonTraits2,
               },
               anonymousId,
               userId,
@@ -128,7 +133,7 @@ export const identifyData = [
               JSON: {
                 data: {
                   type: 'profile',
-                  attributes: commonOutputUserProps,
+                  attributes: commonOutputUserProps2,
                   id: '01GW3PHVY0MTCDGS0A1612HARX',
                 },
               },
@@ -174,7 +179,7 @@ export const identifyData = [
               userId,
               context: {
                 traits: {
-                  ...commonTraits,
+                  ...commonTraits2,
                   friend: {
                     names: {
                       first: 'Alice',
@@ -206,9 +211,9 @@ export const identifyData = [
                   type: 'profile',
                   id: '01GW3PHVY0MTCDGS0A1612HARX',
                   attributes: {
-                    ...commonOutputUserProps,
+                    ...commonOutputUserProps2,
                     properties: {
-                      ...commonOutputUserProps.properties,
+                      ...commonOutputUserProps2.properties,
                       'friend.age': 25,
                       'friend.names.first': 'Alice',
                       'friend.names.last': 'Smith',
@@ -263,7 +268,7 @@ export const identifyData = [
               userId,
               context: {
                 traits: {
-                  ...commonTraits,
+                  ...commonTraits2,
                   email: 'test3@rudderstack.com',
                 },
               },
@@ -315,7 +320,7 @@ export const identifyData = [
               userId,
               context: {
                 traits: {
-                  ...commonTraits,
+                  ...commonTraits2,
                   properties: { ...commonTraits.properties, subscribe: false },
                 },
               },
@@ -338,7 +343,7 @@ export const identifyData = [
               JSON: {
                 data: {
                   type: 'profile',
-                  attributes: commonOutputUserProps,
+                  attributes: commonOutputUserProps2,
                   id: '01GW3PHVY0MTCDGS0A1612HARX',
                 },
               },
@@ -369,7 +374,7 @@ export const identifyData = [
               sentAt,
               userId,
               context: {
-                traits: commonTraits,
+                traits: commonTraits2,
               },
               anonymousId,
               originalTimestamp,
@@ -392,9 +397,9 @@ export const identifyData = [
                 data: {
                   type: 'profile',
                   attributes: removeUndefinedAndNullValues({
-                    ...commonOutputUserProps,
+                    ...commonOutputUserProps2,
                     properties: {
-                      ...commonOutputUserProps.properties,
+                      ...commonOutputUserProps2.properties,
                       _id: userId,
                     },
                     // remove external_id from the payload
@@ -428,6 +433,80 @@ export const identifyData = [
   {
     id: 'klaviyo-identify-test-6',
     name: 'klaviyo',
+    description: 'Identify call without user custom Properties',
+    scenario: 'Business',
+    successCriteria:
+      'Response should contain two payloads one for profile updation and other for subscription, response status code should be 200, for the profile updation payload does not have any custom properties in the payload',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: destination,
+            message: generateSimplifiedIdentifyPayload({
+              sentAt,
+              userId,
+              context: {
+                traits: removeUndefinedAndNullValues({
+                  ...commonTraits,
+                  Flagged: undefined,
+                  Residence: undefined,
+                }),
+              },
+              anonymousId,
+              originalTimestamp,
+            }),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              userId: '',
+              method: 'PATCH',
+              endpoint: commonUserUpdateEndpoint,
+              headers: commonOutputHeaders,
+              JSON: {
+                data: {
+                  type: 'profile',
+                  attributes: removeUndefinedAndNullValues({
+                    ...commonOutputUserProps,
+                    properties: undefined,
+                  }),
+                  id: '01GW3PHVY0MTCDGS0A1612HARX',
+                },
+              },
+            }),
+            statusCode: 200,
+          },
+          {
+            output: transformResultBuilder({
+              userId: '',
+              method: 'POST',
+              endpoint: subscribeEndpoint,
+              headers: commonOutputHeaders,
+              JSON: {
+                data: {
+                  type: 'profile-subscription-bulk-create-job',
+                  attributes: commonOutputSubscriptionProps,
+                },
+              },
+            }),
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'klaviyo-identify-test-7',
+    name: 'klaviyo',
     description: 'Identify call without email and phone & enforceEmailAsPrimary enabled from UI',
     scenario: 'Business',
     successCriteria:
@@ -445,7 +524,7 @@ export const identifyData = [
               userId,
               context: {
                 traits: removeUndefinedAndNullValues({
-                  ...commonTraits,
+                  ...commonTraits2,
                   email: undefined,
                   phone: undefined,
                 }),

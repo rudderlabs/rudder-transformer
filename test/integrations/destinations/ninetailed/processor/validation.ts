@@ -58,7 +58,7 @@ export const validationFailures = [
   {
     id: 'Ninetailed-test-4',
     name: 'ninetailed',
-    description: 'Unsupported message type -> Identify',
+    description: 'Unsupported message type -> group',
     scenario: 'Framework',
     successCriteria: 'Transformationn Error for Unsupported message type',
     feature: 'processor',

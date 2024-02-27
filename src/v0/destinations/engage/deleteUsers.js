@@ -42,6 +42,9 @@ const userDeletionHandler = async (userAttributes, config) => {
           {
             destType: 'engage',
             feature: 'deleteUsers',
+            requestMethod: 'DELETE',
+            endpointPath: '/users/userId',
+            module: 'deletion',
           },
         );
         const handledDelResponse = processAxiosResponse(response);
@@ -51,6 +54,7 @@ const userDeletionHandler = async (userAttributes, config) => {
             handledDelResponse.status,
             {
               [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(handledDelResponse.status),
+              [tags.TAG_NAMES.STATUS]: handledDelResponse.status,
             },
             handledDelResponse,
           );

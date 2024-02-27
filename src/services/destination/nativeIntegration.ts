@@ -212,7 +212,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
               error: JSON.stringify(v0Response.destinationResponse?.response),
               statusCode: v0Response.status,
               metadata,
-            } as DeliveryJobState),
+            }) as DeliveryJobState,
         );
         responseProxy = {
           response: jobStates,

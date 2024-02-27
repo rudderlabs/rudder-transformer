@@ -1,8 +1,10 @@
 import { AxiosResponse } from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import {
+  DeliveryV1Response,
   ProcessorTransformationRequest,
   ProcessorTransformationResponse,
+  ProxyV1Request,
   RouterTransformationRequest,
   RouterTransformationResponse,
 } from '../../src/types';
@@ -96,6 +98,32 @@ export type RouterTestData = {
       status: number;
       body: {
         output: RouterTransformationResponse[];
+      };
+    };
+  };
+};
+
+export type ProxyV1TestData = {
+  id: string;
+  name: string;
+  description: string;
+  comment?: string;
+  scenario: string;
+  successCriteria: string;
+  feature: string;
+  module: string;
+  version: string;
+  input: {
+    request: {
+      body: ProxyV1Request;
+      method: string;
+    };
+  };
+  output: {
+    response: {
+      status: number;
+      body: {
+        output: DeliveryV1Response;
       };
     };
   };

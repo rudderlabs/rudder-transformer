@@ -12,7 +12,6 @@ const {
   getSuccessRespEvents,
   isAppleFamily,
   getValidDynamicFormConfig,
-  checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
   batchMultiplexedEvents,
 } = require('../../util');
@@ -358,11 +357,6 @@ const process = (event) => {
 };
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
-
   const eventsChunk = []; // temporary variable to divide payload into chunks
   const errorRespList = [];
   inputs.forEach((event) => {

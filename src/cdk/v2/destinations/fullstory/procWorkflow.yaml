@@ -5,7 +5,7 @@ bindings:
     exportAll: true
   - name: removeUndefinedAndNullValues
     path: ../../../../v0/util
-  
+
 steps:
   - name: validateInput
     template: |
@@ -28,7 +28,7 @@ steps:
       $.context.payload.uid = .message.userId;
       $.context.payload.email = .message.context.traits.email;
       $.context.payload.display_name = .message.context.traits.name;
-  
+
   - name: trackPayload
     condition: $.context.messageType == "track"
     template: |
@@ -42,9 +42,9 @@ steps:
     condition: $.context.messageType == "track"
     template: |
       $.assert(.message.event, "event is required for track call")
-  
+
   - name: mapContextFieldsForTrack
-    condition: $.context.messageType == "track" 
+    condition: $.context.messageType == "track"
     template: |
       $.context.payload.context.browser = {
         "url": .message.context.page.url,
@@ -67,7 +67,7 @@ steps:
         "region": .message.properties.region,
         "country": .message.properties.country,
       };
-  
+
   - name: mapIdsForTrack
     condition: $.context.messageType == "track"
     template: |
@@ -99,6 +99,3 @@ steps:
          "params": {},
          "files": {}
        })
-
-
-  

@@ -5280,8 +5280,7 @@ export const data = [
         body: [
           {
             message: {
-              description:
-                '[HS] (newApi): check converion to empty string if hs property is null',
+              description: '[HS] (newApi): check converion to empty string if hs property is null',
               channel: 'web',
               context: {
                 app: {
@@ -5352,7 +5351,7 @@ export const data = [
                   properties: {
                     email: 'noname@email.com',
                     firstname: '',
-                    gender: ''
+                    gender: '',
                   },
                 },
                 JSON_ARRAY: {},

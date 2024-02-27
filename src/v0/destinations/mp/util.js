@@ -316,7 +316,7 @@ function trimTraits(traits, contextTraits, setOnceProperties) {
 const generatePageOrScreenCustomEventName = (message, userDefinedEventTemplate) => {
   if (!userDefinedEventTemplate) {
     throw new ConfigurationError(
-      'Event template is missing. Please provide a valid event template in `Page/Screen Event Name Template` setting',
+      'Event name template is not configured. Please provide a valid value for the `Page/Screen Event Name Template` in the destination dashboard.',
     );
   }
 

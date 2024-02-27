@@ -1,4 +1,5 @@
 import { ProxyMetdata } from '../../../../../src/types';
+import { ProxyV1TestData } from '../../../testTypes';
 import { generateProxyV0Payload, generateProxyV1Payload } from '../../../testUtils';
 
 // Boilerplate data for the test cases
@@ -281,7 +282,7 @@ export const testScenariosForV0API = [
   },
 ];
 
-export const testScenariosForV1API = [
+export const testScenariosForV1API: ProxyV1TestData[] = [
   {
     id: 'cm360_v1_scenario_1',
     name: 'campaign_manager',

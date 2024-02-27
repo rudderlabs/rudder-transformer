@@ -26,6 +26,9 @@ const getPollStatus = async (event) => {
     {
       destType: 'marketo_bulk_upload',
       feature: 'transformation',
+      endpointPath: '/leads/batch/importId.json',
+      requestMethod: 'GET',
+      module: 'router',
     },
   );
   if (!isHttpStatusSuccess(pollStatus.status)) {

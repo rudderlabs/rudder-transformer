@@ -225,6 +225,7 @@ const getTransformedJSON = async (message, destination, propertyMap) => {
       const hsSupportedKey = formatKey(traitsKey);
       if (!rawPayload[traitsKey] && propertyMap[hsSupportedKey]) {
         // HS accepts empty string to remove the property from contact
+        // https://community.hubspot.com/t5/APIs-Integrations/Clearing-values-of-custom-properties-in-Hubspot-contact-using/m-p/409156
         let propValue = isNull(traits[traitsKey]) ? '' : traits[traitsKey];
         if (propertyMap[hsSupportedKey] === 'date') {
           propValue = getUTCMidnightTimeStampValue(propValue);

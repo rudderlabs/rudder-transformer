@@ -1,3 +1,45 @@
+import { Destination } from '../../../../../src/types';
+import { generateMetadata, generateSimplifiedIdentifyPayload } from '../../../testUtils';
+
+const commonOutputHeaders = {
+  'Content-Type': 'application/json',
+  Authorization: 'Bearer dummy-access-token',
+};
+
+const destination: Destination = {
+  Config: {
+    authorizationType: 'newPrivateAppApi',
+    accessToken: 'dummy-access-token',
+    hubID: 'dummy-hubId',
+    apiKey: 'dummy-apikey',
+    apiVersion: 'newApi',
+    lookupField: 'email',
+    hubspotEvents: [],
+    eventFilteringOption: 'disable',
+    blacklistedEvents: [
+      {
+        eventName: '',
+      },
+    ],
+    whitelistedEvents: [
+      {
+        eventName: '',
+      },
+    ],
+  },
+  Enabled: true,
+  ID: '123',
+  Name: 'hs',
+  DestinationDefinition: {
+    ID: '123',
+    Name: 'hs',
+    DisplayName: 'Hubspot',
+    Config: {},
+  },
+  WorkspaceID: '123',
+  Transformations: [],
+};
+
 export const data = [
   {
     name: 'hs',
@@ -5279,16 +5321,10 @@ export const data = [
       request: {
         body: [
           {
-            message: {
-              description: '[HS] (newApi): check converion to empty string if hs property is null',
-              channel: 'web',
+            destination,
+            message: generateSimplifiedIdentifyPayload({
+              userId: '12345',
               context: {
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
-                },
                 traits: {
                   email: 'noname@email.com',
                   firstname: null,
@@ -5296,35 +5332,8 @@ export const data = [
                   lookupField: 'email',
                 },
               },
-              type: 'identify',
-              userId: '12345',
-              integrations: {
-                All: true,
-              },
-            },
-            destination: {
-              Config: {
-                authorizationType: 'newPrivateAppApi',
-                accessToken: 'dummy-access-token',
-                hubID: 'dummy-hubId',
-                apiKey: 'dummy-apikey',
-                apiVersion: 'newApi',
-                lookupField: 'email',
-                hubspotEvents: [],
-                eventFilteringOption: 'disable',
-                blacklistedEvents: [
-                  {
-                    eventName: '',
-                  },
-                ],
-                whitelistedEvents: [
-                  {
-                    eventName: '',
-                  },
-                ],
-              },
-              Enabled: true,
-            },
+            }),
+            metadata: generateMetadata(1),
           },
         ],
       },
@@ -5340,13 +5349,12 @@ export const data = [
               userId: '',
               method: 'POST',
               endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: 'Bearer dummy-access-token',
-              },
-              params: {},
+              files: {},
+              headers: commonOutputHeaders,
               operation: 'createContacts',
+              params: {},
               body: {
+                FORM: {},
                 JSON: {
                   properties: {
                     email: 'noname@email.com',
@@ -5356,11 +5364,10 @@ export const data = [
                 },
                 JSON_ARRAY: {},
                 XML: {},
-                FORM: {},
               },
-              files: {},
             },
             statusCode: 200,
+            metadata: generateMetadata(1),
           },
         ],
       },

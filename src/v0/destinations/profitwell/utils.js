@@ -188,6 +188,9 @@ const getSubscriptionHistory = async (endpoint, options) => {
   const res = await httpGET(endpoint, requestOptions, {
     destType: 'profitwell',
     feature: 'transformation',
+    endpointPath: '/users/userId',
+    requestMethod: 'GET',
+    module: 'router',
   });
   return res;
 };

@@ -34,7 +34,7 @@ export class RegulationController {
         rudderDestInfo,
       );
       ctx.body = resplist;
-      ctx.status = resplist[0].statusCode;
+      ctx.status = resplist[0].statusCode; // TODO: check if this is the right way to set status
     } catch (error: CatchErr) {
       const metaTO = integrationService.getTags(
         userDeletionRequests[0].destType,
@@ -46,8 +46,8 @@ export class RegulationController {
       const errResp = DestinationPostTransformationService.handleUserDeletionFailureEvents(
         error,
         metaTO,
-      );
-      ctx.body = [{ error, statusCode: 500 }] as UserDeletionResponse[];
+      ); // TODO: this is not used. Fix it.
+      ctx.body = [{ error, statusCode: 500 }] as UserDeletionResponse[]; // TODO: responses array length is always 1. Is that okay?
       ctx.status = 500;
     }
     stats.timing('dest_transform_request_latency', startTime, {

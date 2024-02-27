@@ -14,7 +14,6 @@ const {
   getFieldValueFromMessage,
   getIntegrationsObj,
   getSuccessRespEvents,
-  checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
 } = require('../../util/index');
 const {
@@ -250,10 +249,6 @@ const process = (event) => {
 };
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
   const inputChunks = returnArrayOfSubarrays(inputs, MAX_BATCH_SIZE);
   const successList = [];
   const errorList = [];

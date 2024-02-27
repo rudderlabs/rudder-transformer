@@ -1,25 +1,34 @@
 [
   {
-    "sourceKeys": "properties.orderId",
+    "sourceKeys": ["properties.order_id", "properties.orderId"],
     "required": true,
     "destKey": "ord"
   },
   {
-    "sourceKeys": ["properties.tr", "properties.ranSiteID"],
+    "sourceKeys": ["properties.tr", "properties.ran_site_id", "properties.ranSiteID"],
     "required": true,
     "destKey": "tr"
   },
   {
-    "sourceKeys": ["properties.land", "properties.landTime"],
+    "sourceKeys": ["properties.land", "properties.land_time", "properties.landTime"],
     "required": true,
     "destKey": "land"
   },
   {
-    "sourceKeys": ["properties.date", "properties.orderCompletedTime"],
+    "sourceKeys": [
+      "properties.date",
+      "properties.order_completed_time",
+      "properties.orderCompletedTime"
+    ],
     "destKey": "date"
   },
   {
-    "sourceKeys": ["properties.altord", "properties.alterOrderId"],
+    "sourceKeys": [
+      "properties.alt_ord",
+      "properties.altord",
+      "properties.alter_order_id",
+      "properties.alterOrderId"
+    ],
     "destKey": "altord"
   },
   {
@@ -27,15 +36,15 @@
     "destKey": "cur"
   },
   {
-    "sourceKeys": "properties.creditCardType",
+    "sourceKeys": ["properties.credit_card_type", "properties.creditCardType"],
     "destKey": "cc"
   },
   {
-    "sourceKeys": "properties.commReason",
+    "sourceKeys": ["properties.comm_reason", "properties.commReason"],
     "destKey": "commreason"
   },
   {
-    "sourceKeys": "properties.isComm",
+    "sourceKeys": ["properties.is_comm", "properties.isComm"],
     "destKey": "iscomm"
   },
   {
@@ -47,27 +56,48 @@
     "destKey": "coupon"
   },
   {
-    "sourceKeys": ["properties.custId", "properties.customerId", "properties.userId"],
+    "sourceKeys": [
+      "properties.cust_id",
+      "properties.custId",
+      "properties.customer_id",
+      "properties.customerId",
+      "properties.userId"
+    ],
     "destKey": "custid"
   },
   {
-    "sourceKeys": ["properties.custScore", "properties.customerScore"],
+    "sourceKeys": [
+      "properties.cust_score",
+      "properties.custScore",
+      "properties.customer_score",
+      "properties.customerScore"
+    ],
     "destKey": "custscore"
   },
   {
-    "sourceKeys": ["properties.custStatus", "properties.customerStatus"],
+    "sourceKeys": [
+      "properties.cust_status",
+      "properties.custStatus",
+      "properties.customer_status",
+      "properties.customerStatus"
+    ],
     "destKey": "custstatus"
   },
   {
-    "sourceKeys": ["properties.dId", "properties.advertisingId"],
+    "sourceKeys": ["properties.dId", "properties.advertising_id", "properties.advertisingId"],
     "destKey": "did"
   },
   {
-    "sourceKeys": ["properties.disamt", "properties.discountAmout"],
+    "sourceKeys": ["properties.disamt", "properties.discount_amount", "properties.discountAmount"],
     "destKey": "disamt"
   },
   {
-    "sourceKeys": ["properties.ordStatus", "properties.orderStatus"],
+    "sourceKeys": [
+      "properties.ord_status",
+      "properties.ordStatus",
+      "properties.order_status",
+      "properties.orderStatus"
+    ],
     "destKey": "ordstatus"
   },
   {
@@ -75,7 +105,7 @@
     "destKey": "segment"
   },
   {
-    "sourceKeys": "properties.shipcountry",
+    "sourceKeys": ["properties.ship_country", "properties.shipcountry"],
     "destKey": "shipcountry"
   },
   {
@@ -83,15 +113,25 @@
     "destKey": "shipped"
   },
   {
-    "sourceKeys": ["properties.sitename", "properties.url", "context.page.url"],
+    "sourceKeys": [
+      "properties.site_name",
+      "properties.sitename",
+      "properties.url",
+      "context.page.url"
+    ],
     "destKey": "sitename"
   },
   {
-    "sourceKeys": "properties.storeId",
+    "sourceKeys": ["properties.store_id", "properties.storeId"],
     "destKey": "storeid"
   },
   {
-    "sourceKeys": ["properties.storecat", "properties.storeCategory"],
+    "sourceKeys": [
+      "properties.store_cat",
+      "properties.storecat",
+      "properties.store_category",
+      "properties.storeCategory"
+    ],
     "destKey": "storecat"
   },
   {

@@ -14,8 +14,8 @@ const getMappedEventNameFromConfig = (message, destination) => {
 
   // if event is mapped on dashboard, use the mapped event name
   if (Array.isArray(eventsMapping) && eventsMapping.length > 0) {
-    const keyMap = getHashFromArray(eventsMapping, 'from', 'to');
-    eventName = keyMap[event.toLowerCase()];
+    const keyMap = getHashFromArray(eventsMapping, 'from', 'to', false);
+    eventName = keyMap[event];
   }
 
   return eventName;

@@ -14,10 +14,10 @@ const {
   removeUndefinedValues,
   toUnixTimestampInMS,
   getFieldValueFromMessage,
-  checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
   groupEventsByType,
   parseConfigArray,
+  combineBatchRequestsWithSameJobIds,
 } = require('../../util');
 const {
   ConfigCategory,
@@ -33,7 +33,6 @@ const {
   createIdentifyResponse,
   isImportAuthCredentialsAvailable,
   buildUtmParams,
-  combineBatchRequestsWithSameJobIds,
   groupEventsByEndpoint,
   batchEvents,
   trimTraits,
@@ -460,11 +459,6 @@ const process = (event) => processSingleMessage(event.message, event.destination
 // Ref: https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel
 // Ref: https://help.mixpanel.com/hc/en-us/articles/115004561786-Track-UTM-Tags
 const processRouterDest = async (inputs, reqMetadata) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
-
   const groupedEvents = groupEventsByType(inputs);
   const response = await Promise.all(
     groupedEvents.map(async (listOfEvents) => {

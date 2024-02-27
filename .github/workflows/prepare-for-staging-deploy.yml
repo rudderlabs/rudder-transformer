@@ -68,7 +68,6 @@ jobs:
     secrets:
       DOCKERHUB_PROD_TOKEN: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 
-
   create-pull-request:
     name: Update Helm Charts For Staging and Create Pull Request
     runs-on: ubuntu-latest

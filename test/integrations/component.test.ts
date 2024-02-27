@@ -54,7 +54,7 @@ if (opts.generate === 'true') {
 
 let server: Server;
 
-const INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE = ['klaviyo', 'campaign_manager'];
+const INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE = ['klaviyo', 'campaign_manager', 'criteo_audience'];
 
 beforeAll(async () => {
   initaliseReport();

@@ -71,7 +71,7 @@ steps:
       payload;
 
   - name: identifyPayloadForLatestVersion
-    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}} && $.outputs.apiVersion !== "v1" 
+    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}} && $.outputs.apiVersion !== "v1"
     template: |
       const payload = .message.context.mappedToDestination ? $.outputs.rEtlPayload : $.outputs.identifyTransformationForLatestVersion;
       payload.name = $.getName(.message);
@@ -187,7 +187,7 @@ steps:
           template: |
             $.context.endpoint = $.getBaseEndpoint(.destination) + "/" + "companies";
       - name: prepareFinalPayload
-        template: 
+        template: |
           $.context.requestMethod = 'POST';
           $.removeUndefinedAndNullValues($.context.payload);
 

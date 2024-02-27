@@ -10,7 +10,6 @@ const {
   defaultPostRequestConfig,
   defaultBatchRequestConfig,
   removeUndefinedAndNullValues,
-  getErrorRespEvents,
   getSuccessRespEvents,
   handleRtTfSingleEventError,
 } = require('../../util');
@@ -191,11 +190,6 @@ function getEventChunks(event, identifyEventChunks, eventResponseList) {
 }
 
 const processRouterDest = (inputs, reqMetadata) => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, 'Invalid event array');
-    return [respEvents];
-  }
-
   const identifyEventChunks = []; // list containing identify events in batched format
   const eventResponseList = []; // list containing other events in batched format
   const errorRespList = [];

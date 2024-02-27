@@ -1,12 +1,6 @@
-const { 
-  setOpenFaasUserTransform,
-  runOpenFaasUserTransform,
-} = require('./customTransformer-faas');
+const { setOpenFaasUserTransform, runOpenFaasUserTransform } = require('./customTransformer-faas');
 
-const {
-  userTransformHandlerV1,
-  setUserTransformHandlerV1,
-} = require('./customTransformer-v1');
+const { userTransformHandlerV1, setUserTransformHandlerV1 } = require('./customTransformer-v1');
 
 const UserTransformHandlerFactory = (userTransformation) => {
   return {
@@ -23,20 +17,10 @@ const UserTransformHandlerFactory = (userTransformation) => {
       switch (userTransformation.language) {
         case 'pythonfaas':
         case 'python':
-          return runOpenFaasUserTransform(
-            events,
-            userTransformation,
-            libraryVersionIds,
-            testMode
-          );
+          return runOpenFaasUserTransform(events, userTransformation, libraryVersionIds, testMode);
 
         default:
-          return userTransformHandlerV1(
-            events,
-            userTransformation,
-            libraryVersionIds,
-            testMode
-          );
+          return userTransformHandlerV1(events, userTransformation, libraryVersionIds, testMode);
       }
     },
   };

@@ -22,7 +22,6 @@ const {
   handleRtTfSingleEventError,
   batchMultiplexedEvents,
   getSuccessRespEvents,
-  checkInvalidRtTfEvents,
 } = require('../../util');
 const { generateClevertapBatchedPayload } = require('./utils');
 
@@ -83,16 +82,21 @@ const responseWrapper = (payload, destination) => {
     }                                        
  *                                                    
   }
- * This function stringify the payload attributes if it's an array or objects.
+ * This function stringify the payload attributes if it's an array or objects. The keys that are not stringified are present in the `stringifyExcludeList` array.
  * @param {*} payload
  * @returns
  * return the final payload after converting to the relevant data-types.
  */
 const convertObjectAndArrayToString = (payload, event) => {
   const finalPayload = {};
+  const stringifyExcludeList = ['category-unsubscribe', 'category-resubscribe'];
   if (payload) {
     Object.keys(payload).forEach((key) => {
-      if (payload[key] && (Array.isArray(payload[key]) || typeof payload[key] === 'object')) {
+      if (
+        payload[key] &&
+        (Array.isArray(payload[key]) || typeof payload[key] === 'object') &&
+        !stringifyExcludeList.includes(key)
+      ) {
         finalPayload[key] = JSON.stringify(payload[key]);
       } else {
         finalPayload[key] = payload[key];
@@ -384,13 +388,6 @@ const processEvent = (message, destination) => {
 const process = (event) => processEvent(event.message, event.destination);
 
 const processRouterDest = (inputs, reqMetadata) => {
-  // const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
-  // return respList;
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
-
   const eventsChunk = [];
   const errorRespList = [];
   // const { destination } = inputs[0];

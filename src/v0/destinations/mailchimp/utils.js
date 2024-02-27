@@ -163,7 +163,13 @@ const checkIfMailExists = async (apiKey, datacenterId, audienceId, email) => {
           Authorization: `Basic ${basicAuth}`,
         },
       },
-      { destType: 'mailchimp', feature: 'transformation' },
+      {
+        destType: 'mailchimp',
+        feature: 'transformation',
+        endpointPath: '/lists/audienceId/members/email',
+        requestMethod: 'GET',
+        module: 'router',
+      },
     );
     if (response?.data?.contact_id) {
       userStatus.exists = true;
@@ -194,7 +200,13 @@ const checkIfDoubleOptIn = async (apiKey, datacenterId, audienceId) => {
           Authorization: `Basic ${basicAuth}`,
         },
       },
-      { destType: 'mailchimp', feature: 'transformation' },
+      {
+        destType: 'mailchimp',
+        feature: 'transformation',
+        endpointPath: '/lists/audienceId',
+        requestMethod: 'GET',
+        module: 'router',
+      },
     );
   } catch (error) {
     const status = error.status || 400;

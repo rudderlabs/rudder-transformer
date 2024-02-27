@@ -50,6 +50,8 @@ const createUpdateAccount = async (payload, Config) => {
     destType: 'freshmarketer',
     feature: 'transformation',
     endpointPath: `/crm/sales/api/sales_accounts/upsert`,
+    requestMethod: 'POST',
+    module: 'router',
   });
   accountResponse = processAxiosResponse(accountResponse);
   if (accountResponse.status !== 200 && accountResponse.status !== 201) {
@@ -95,6 +97,8 @@ const getUserAccountDetails = async (payload, userEmail, Config) => {
     destType: 'freshmarketer',
     feature: 'transformation',
     endpointPath: `crm/sales/api/contacts/upsert?include=sales_accounts`,
+    requestMethod: 'POST',
+    module: 'router',
   });
   userSalesAccountResponse = processAxiosResponse(userSalesAccountResponse);
   if (userSalesAccountResponse.status !== 200 && userSalesAccountResponse.status !== 201) {
@@ -145,6 +149,8 @@ const createOrUpdateListDetails = async (listName, Config) => {
     destType: 'freshmarketer',
     feature: 'transformation',
     endpointPath: `/crm/sales/api/lists`,
+    requestMethod: 'GET',
+    module: 'router',
   });
   listResponse = processAxiosResponse(listResponse);
   if (listResponse.status !== 200) {
@@ -165,6 +171,8 @@ const createOrUpdateListDetails = async (listName, Config) => {
     destType: 'freshmarketer',
     feature: 'transformation',
     endpointPath: `/crm/sales/api/lists`,
+    requestMethod: 'POST',
+    module: 'router',
   });
   listResponse = processAxiosResponse(listResponse);
   if (listResponse.status !== 200) {
@@ -240,6 +248,8 @@ const getContactsDetails = async (userEmail, Config) => {
     destType: 'freshmarketer',
     feature: 'transformation',
     endpointPath: `/crm/sales/api/contacts/upsert`,
+    requestMethod: 'POST',
+    module: 'router',
   });
   userResponse = processAxiosResponse(userResponse);
   if (userResponse.status !== 200 && userResponse.status !== 201) {
@@ -314,6 +324,8 @@ const UpdateContactWithLifeCycleStage = async (message, Config) => {
     destType: 'freshmarketer',
     feature: 'transformation',
     endpointPath: `/crm/sales/api/selector/lifecycle_stages`,
+    requestMethod: 'GET',
+    module: 'router',
   });
   lifeCycleStagesResponse = processAxiosResponse(lifeCycleStagesResponse);
   if (lifeCycleStagesResponse.status !== 200) {
@@ -400,6 +412,8 @@ const UpdateContactWithSalesActivity = async (payload, message, Config) => {
     destType: 'freshmarketer',
     feature: 'transformation',
     endpointPath: `/crm/sales/api/selector/sales_activity_types`,
+    requestMethod: 'GET',
+    module: 'router',
   });
   salesActivityResponse = processAxiosResponse(salesActivityResponse);
   if (salesActivityResponse.status !== 200) {

@@ -133,6 +133,9 @@ const getAccessToken = async (destination) => {
       {
         destType: 'salesforce',
         feature: 'transformation',
+        endpointPath: '/services/oauth2/token',
+        requestMethod: 'POST',
+        module: 'router',
       },
     );
     // If the request fails, throwing error.

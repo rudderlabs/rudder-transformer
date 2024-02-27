@@ -223,6 +223,9 @@ async function processIdentify(message, destination) {
     {
       destType: 'braze',
       feature: 'transformation',
+      requestMethod: 'POST',
+      module: 'router',
+      endpointPath: '/users/identify',
     },
   );
   if (!isHttpStatusSuccess(brazeIdentifyResp.status)) {

@@ -111,9 +111,7 @@
       "customer_id": "user-123",
       "delivery_id": "RAECAAFwnUSneIa0ZXkmq8EdkAM==",
       "headers": {
-        "Custom-Header": [
-          "custom-value"
-        ]
+        "Custom-Header": ["custom-value"]
       },
       "identifiers": {
         "id": "user-123"

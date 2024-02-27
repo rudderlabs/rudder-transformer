@@ -5,7 +5,6 @@ const {
   getValueFromMessage,
   getSuccessRespEvents,
   handleRtTfSingleEventError,
-  checkInvalidRtTfEvents,
 } = require('../../util');
 
 const SOURCE_KEYS = ['properties', 'traits', 'context.traits'];
@@ -111,10 +110,6 @@ const process = (event) => {
 const processRouterDest = async (inputs, reqMetadata) => {
   const successRespList = [];
   const errorRespList = [];
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
   await Promise.all(
     inputs.map(async (input) => {
       try {

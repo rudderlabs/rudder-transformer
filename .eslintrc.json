@@ -9,9 +9,9 @@
     "airbnb-base",
     "airbnb-typescript/base",
     "plugin:sonarjs/recommended",
-    "prettier",
     "plugin:json/recommended",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
   ],
   "plugins": ["@typescript-eslint", "unicorn"],
   "globals": {},

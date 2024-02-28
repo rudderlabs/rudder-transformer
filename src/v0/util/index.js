@@ -2204,21 +2204,20 @@ const combineBatchRequestsWithSameJobIds = (inputBatches) => {
 /**
  * This function validates the event and return it as string.
  * @param {*} isMandatory The event is a required field.
- * @param {*} converToLowercase The event should be converted to lower-case.
+ * @param {*} convertToLowerCase The event should be converted to lower-case.
  * @returns {string} Event name converted to string.
  */
-const validateEventAndLowerCaseConversion = (event, isMandatory, converToLowercase) => {
+const validateEventAndLowerCaseConversion = (event, isMandatory, convertToLowerCase) => {
   if (typeof event === 'object' || !isDefined(event)) {
-    throw new InstrumentationError('Event should not be a object, function or NaN and undefined');
+    throw new InstrumentationError('Event should not be a object, function, NaN or undefined');
   }
-  if (!isMandatory) {
-    return converToLowercase ? event.toString().toLowerCase() : event.toString();
-  }
+
   // handling 0 as it is a valid value
-  if (!event && event !== 0) {
+  if (isMandatory && !event && event !== 0) {
     throw new InstrumentationError('Event is a required field');
   }
-  return converToLowercase ? event.toString().toLowerCase() : event.toString();
+
+  return convertToLowerCase ? event.toString().toLowerCase() : event.toString();
 };
 
 // ========================================================================

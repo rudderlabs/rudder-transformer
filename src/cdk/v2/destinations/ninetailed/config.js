@@ -28,4 +28,4 @@ const mappingConfig = getMappingConfig(ConfigCategories, __dirname);
 const batchEndpoint =
   'https://experience.ninetailed.co/v2/organizations/{{organisationId}}/environments/{{environment}}/events';
 
-module.exports = { ConfigCategories, mappingConfig, batchEndpoint, MAX_BATCH_SIZE:200 };
+module.exports = { ConfigCategories, mappingConfig, batchEndpoint, MAX_BATCH_SIZE: 200 };

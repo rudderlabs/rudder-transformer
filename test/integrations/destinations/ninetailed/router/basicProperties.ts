@@ -23,11 +23,11 @@ export const pageProperties = {
 };
 
 export const traits = {
-    email: 'test@user.com',
-    firstname: 'John',
-    lastname: 'Doe',
-    phone: '+1(123)456-7890',
-    gender: 'Male',
-    birthday: '1980-01-02',
-    city: 'San Francisco',
-  };
+  email: 'test@user.com',
+  firstname: 'John',
+  lastname: 'Doe',
+  phone: '+1(123)456-7890',
+  gender: 'Male',
+  birthday: '1980-01-02',
+  city: 'San Francisco',
+};

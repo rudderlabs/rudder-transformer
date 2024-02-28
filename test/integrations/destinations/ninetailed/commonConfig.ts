@@ -108,5 +108,5 @@ export const processInstrumentationErrorStatTags = {
   feature: 'processor',
   implementation: 'cdkV2',
   module: 'destination',
-  destinationId: 'dummyDestId', 
+  destinationId: 'dummyDestId',
 };

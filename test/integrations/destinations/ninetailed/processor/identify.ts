@@ -1,4 +1,10 @@
-import { destination, traits, commonInput, metadata, processInstrumentationErrorStatTags } from '../commonConfig';
+import {
+  destination,
+  traits,
+  commonInput,
+  metadata,
+  processInstrumentationErrorStatTags,
+} from '../commonConfig';
 import { transformResultBuilder } from '../../../testUtils';
 export const identify = [
   {

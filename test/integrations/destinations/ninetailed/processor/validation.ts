@@ -1,4 +1,4 @@
-import { processInstrumentationErrorStatTags , destination, context } from '../commonConfig';
+import { processInstrumentationErrorStatTags, destination, context } from '../commonConfig';
 
 export const validationFailures = [
   {

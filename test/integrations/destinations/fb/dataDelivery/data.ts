@@ -1,5 +1,6 @@
 import { VERSION } from '../../../../../src/v0/destinations/fb/config';
 import { testScenariosForV1API } from './business';
+import { otherScenariosV1 } from './other';
 
 export const existingTestData = [
   {
@@ -373,4 +374,4 @@ export const existingTestData = [
   },
 ];
 
-export const data = [...existingTestData, ...testScenariosForV1API];
+export const data = [...existingTestData, ...testScenariosForV1API, ...otherScenariosV1];

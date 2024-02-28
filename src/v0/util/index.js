@@ -2208,7 +2208,7 @@ const combineBatchRequestsWithSameJobIds = (inputBatches) => {
  * @returns {string} Event name converted to string.
  */
 const validateEventAndLowerCaseConversion = (event, isMandatory, converToLowercase) => {
-  if (typeof event === 'object' || event === NaN || !isDefined(event)) {
+  if (typeof event === 'object' || !isDefined(event)) {
     throw new InstrumentationError('Event should not be a object, function or NaN and undefined');
   }
   if (!isMandatory) {

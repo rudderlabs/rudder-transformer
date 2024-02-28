@@ -1,7 +1,6 @@
 const lodash = require('lodash');
 const { TransformationError, InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
-  getErrorRespEvents,
   getSuccessRespEvents,
   defaultRequestConfig,
   defaultPostRequestConfig,
@@ -121,10 +120,6 @@ const batchEvents = (successRespList) => {
 };
 
 const processRouterDest = (inputs, reqMetadata) => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, 'Invalid event array');
-    return [respEvents];
-  }
   let batchResponseList = [];
   const batchErrorRespList = [];
   const successRespList = [];

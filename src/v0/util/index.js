@@ -22,6 +22,7 @@ const {
   PlatformError,
   TransformationError,
   OAuthSecretError,
+  getErrorRespEvents,
 } = require('@rudderstack/integrations-lib');
 const logger = require('../../logger');
 const stats = require('../../util/stats');
@@ -51,6 +52,7 @@ const removeUndefinedAndNullAndEmptyValues = (obj) =>
   lodash.pickBy(obj, isDefinedAndNotNullAndNotEmpty);
 const isBlank = (value) => lodash.isEmpty(lodash.toString(value));
 const flattenMap = (collection) => lodash.flatMap(collection, (x) => x);
+const isNull = (x) => lodash.isNull(x);
 // ========================================================================
 // GENERIC UTLITY
 // ========================================================================
@@ -480,16 +482,6 @@ const getSuccessRespEvents = (
   batched,
   statusCode,
   destination,
-});
-
-// Router transformer
-// Error responses
-const getErrorRespEvents = (metadata, statusCode, error, statTags, batched = false) => ({
-  metadata,
-  batched,
-  statusCode,
-  error,
-  statTags,
 });
 
 // ========================================================================
@@ -1661,7 +1653,7 @@ function getValidDynamicFormConfig(
  */
 const checkInvalidRtTfEvents = (inputs) => {
   if (!Array.isArray(inputs) || inputs.length === 0) {
-    const respEvents = getErrorRespEvents(null, 400, 'Invalid event array');
+    const respEvents = getErrorRespEvents([], 400, 'Invalid event array');
     return [respEvents];
   }
   return [];
@@ -1723,11 +1715,6 @@ const handleRtTfSingleEventError = (input, error, reqMetadata) => {
  * @returns
  */
 const simpleProcessRouterDest = async (inputs, singleTfFunc, reqMetadata, processParams) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
-
   const respList = await Promise.all(
     inputs.map(async (input) => {
       try {
@@ -1755,10 +1742,6 @@ const simpleProcessRouterDest = async (inputs, singleTfFunc, reqMetadata, proces
  * @returns
  */
 const simpleProcessRouterDestSync = async (inputs, singleTfFunc, reqMetadata, processParams) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
   const respList = [];
   // eslint-disable-next-line no-restricted-syntax
   for (const input of inputs) {
@@ -2254,7 +2237,6 @@ module.exports = {
   getDestinationExternalIDInfoForRetl,
   getDestinationExternalIDObjectForRetl,
   getDeviceModel,
-  getErrorRespEvents,
   getEventTime,
   getFieldValueFromMessage,
   getFirstAndLastName,
@@ -2285,6 +2267,7 @@ module.exports = {
   isDefinedAndNotNullAndNotEmpty,
   isEmpty,
   isNotEmpty,
+  isNull,
   isEmptyObject,
   isHttpStatusRetryable,
   isHttpStatusSuccess,

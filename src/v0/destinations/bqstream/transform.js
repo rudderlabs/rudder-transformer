@@ -5,7 +5,6 @@ const { EventType } = require('../../../constants');
 const {
   defaultBatchRequestConfig,
   getSuccessRespEvents,
-  checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
   groupEventsByType,
 } = require('../../util');
@@ -130,10 +129,6 @@ const processEachTypedEventList = (
 };
 
 const processRouterDest = (inputs) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs, DESTINATION);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
   const finalResp = [];
 
   const batchedEvents = groupEventsByType(inputs);

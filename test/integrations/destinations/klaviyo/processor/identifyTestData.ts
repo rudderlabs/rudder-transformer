@@ -3,13 +3,27 @@ import {
   overrideDestination,
   transformResultBuilder,
   generateSimplifiedIdentifyPayload,
+  generateMetadata,
 } from '../../../testUtils';
+import { ProcessorTestData } from '../../../testTypes';
+import { Destination } from '../../../../../src/types';
 
-const destination = {
+const destination: Destination = {
+  ID: '123',
+  Name: 'klaviyo',
+  DestinationDefinition: {
+    ID: '123',
+    Name: 'klaviyo',
+    DisplayName: 'klaviyo',
+    Config: {},
+  },
   Config: {
     publicApiKey: 'dummyPublicApiKey',
     privateApiKey: 'dummyPrivateApiKey',
   },
+  Enabled: true,
+  WorkspaceID: '123',
+  Transformations: [],
 };
 
 const commonTraits = {
@@ -89,7 +103,7 @@ const originalTimestamp = '2021-01-03T17:02:53.193Z';
 const commonUserUpdateEndpoint = 'https://a.klaviyo.com/api/profiles/01GW3PHVY0MTCDGS0A1612HARX';
 const subscribeEndpoint = 'https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs';
 
-export const identifyData = [
+export const identifyData: ProcessorTestData[] = [
   {
     id: 'klaviyo-identify-test-1',
     name: 'klaviyo',
@@ -116,6 +130,7 @@ export const identifyData = [
               userId,
               sentAt,
             }),
+            metadata: generateMetadata(1),
           },
         ],
       },
@@ -139,6 +154,7 @@ export const identifyData = [
               },
             }),
             statusCode: 200,
+            metadata: generateMetadata(1),
           },
           {
             output: transformResultBuilder({
@@ -154,6 +170,7 @@ export const identifyData = [
               },
             }),
             statusCode: 200,
+            metadata: generateMetadata(1),
           },
         ],
       },
@@ -192,6 +209,7 @@ export const identifyData = [
               anonymousId,
               originalTimestamp,
             }),
+            metadata: generateMetadata(2),
           },
         ],
       },
@@ -223,6 +241,7 @@ export const identifyData = [
               },
             }),
             statusCode: 200,
+            metadata: generateMetadata(2),
           },
           {
             output: transformResultBuilder({
@@ -238,6 +257,7 @@ export const identifyData = [
               },
             }),
             statusCode: 200,
+            metadata: generateMetadata(2),
           },
         ],
       },
@@ -257,12 +277,10 @@ export const identifyData = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                publicApiKey: 'dummyPublicApiKey',
-                privateApiKey: 'dummyPrivateApiKeyforfailure',
-              },
-            },
+            destination: overrideDestination(destination, {
+              publicApiKey: 'dummyPublicApiKey',
+              privateApiKey: 'dummyPrivateApiKeyforfailure',
+            }),
             message: generateSimplifiedIdentifyPayload({
               sentAt,
               userId,
@@ -275,6 +293,7 @@ export const identifyData = [
               anonymousId,
               originalTimestamp,
             }),
+            metadata: generateMetadata(3),
           },
         ],
       },
@@ -293,8 +312,11 @@ export const identifyData = [
               feature: 'processor',
               implementation: 'native',
               module: 'destination',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
             },
             statusCode: 500,
+            metadata: generateMetadata(3),
           },
         ],
       },
@@ -327,6 +349,7 @@ export const identifyData = [
               anonymousId,
               originalTimestamp,
             }),
+            metadata: generateMetadata(4),
           },
         ],
       },
@@ -350,6 +373,7 @@ export const identifyData = [
               userId: '',
             }),
             statusCode: 200,
+            metadata: generateMetadata(4),
           },
         ],
       },
@@ -379,6 +403,7 @@ export const identifyData = [
               anonymousId,
               originalTimestamp,
             }),
+            metadata: generateMetadata(5),
           },
         ],
       },
@@ -410,6 +435,7 @@ export const identifyData = [
               },
             }),
             statusCode: 200,
+            metadata: generateMetadata(5),
           },
           {
             output: transformResultBuilder({
@@ -425,6 +451,7 @@ export const identifyData = [
               },
             }),
             statusCode: 200,
+            metadata: generateMetadata(5),
           },
         ],
       },
@@ -458,6 +485,7 @@ export const identifyData = [
               anonymousId,
               originalTimestamp,
             }),
+            metadata: generateMetadata(6),
           },
         ],
       },
@@ -484,6 +512,7 @@ export const identifyData = [
               },
             }),
             statusCode: 200,
+            metadata: generateMetadata(6),
           },
           {
             output: transformResultBuilder({
@@ -499,6 +528,7 @@ export const identifyData = [
               },
             }),
             statusCode: 200,
+            metadata: generateMetadata(6),
           },
         ],
       },
@@ -532,6 +562,7 @@ export const identifyData = [
               anonymousId,
               originalTimestamp,
             }),
+            metadata: generateMetadata(7),
           },
         ],
       },
@@ -549,8 +580,11 @@ export const identifyData = [
               feature: 'processor',
               implementation: 'native',
               module: 'destination',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
             },
             statusCode: 400,
+            metadata: generateMetadata(7),
           },
         ],
       },

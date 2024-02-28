@@ -69,5 +69,3 @@ steps:
         "authorization": "API-Key " + .destination.Config.apiKey
       };
       response
-
-  

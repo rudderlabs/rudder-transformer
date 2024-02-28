@@ -52,6 +52,7 @@ export const data = [
                   state: 'WB',
                   street: '',
                 },
+                'category-unsubscribe': { email: ['Marketing', 'Transactional'] },
               },
               integrations: {
                 All: true,
@@ -98,10 +99,11 @@ export const data = [
                         msgSms: true,
                         msgemail: true,
                         msgwhatsapp: false,
-                        custom_tags: '["Test_User","Interested_User","DIY_Hobby"]',
                         custom_mappings: '{"Office":"Trastkiv","Country":"Russia"}',
+                        custom_tags: '["Test_User","Interested_User","DIY_Hobby"]',
                         address:
                           '{"city":"kolkata","country":"India","postalCode":789223,"state":"WB","street":""}',
+                        'category-unsubscribe': { email: ['Marketing', 'Transactional'] },
                       },
                       identity: 'anon_id',
                     },
@@ -242,8 +244,8 @@ export const data = [
                         msgSms: true,
                         msgemail: true,
                         msgwhatsapp: false,
-                        custom_tags: '["Test_User","Interested_User","DIY_Hobby"]',
                         custom_mappings: '{"Office":"Trastkiv","Country":"Russia"}',
+                        custom_tags: '["Test_User","Interested_User","DIY_Hobby"]',
                         address:
                           '{"city":"kolkata","country":"India","postalCode":789223,"state":"WB","street":""}',
                       },
@@ -968,8 +970,8 @@ export const data = [
                         msgSms: true,
                         msgemail: true,
                         msgwhatsapp: false,
-                        custom_tags: '["Test_User","Interested_User","DIY_Hobby"]',
                         custom_mappings: '{"Office":"Trastkiv","Country":"Russia"}',
+                        custom_tags: '["Test_User","Interested_User","DIY_Hobby"]',
                         address:
                           '{"city":"kolkata","country":"India","postalCode":789223,"state":"WB","street":""}',
                       },
@@ -1111,8 +1113,8 @@ export const data = [
                         msgSms: true,
                         msgemail: true,
                         msgwhatsapp: false,
-                        custom_tags: '["Test_User","Interested_User","DIY_Hobby"]',
                         custom_mappings: '{"Office":"Trastkiv","Country":"Russia"}',
+                        custom_tags: '["Test_User","Interested_User","DIY_Hobby"]',
                         address:
                           '{"city":"kolkata","country":"India","postalCode":789223,"state":"WB","street":""}',
                       },
@@ -1692,8 +1694,8 @@ export const data = [
                         msgSms: true,
                         msgemail: true,
                         msgwhatsapp: false,
-                        custom_tags: '["Test_User","Interested_User","DIY_Hobby"]',
                         custom_mappings: '{"Office":"Trastkiv","Country":"Russia"}',
+                        custom_tags: '["Test_User","Interested_User","DIY_Hobby"]',
                         address:
                           '{"city":"kolkata","country":"India","postalCode":789223,"state":"WB","street":""}',
                       },
@@ -2077,8 +2079,8 @@ export const data = [
                         msgSms: true,
                         msgemail: true,
                         msgwhatsapp: false,
-                        custom_tags: '["Test_User","Interested_User","DIY_Hobby"]',
                         custom_mappings: '{"Office":"Trastkiv","Country":"Russia"}',
+                        custom_tags: '["Test_User","Interested_User","DIY_Hobby"]',
                         address:
                           '{"city":"kolkata","country":"India","postalCode":789223,"state":"WB","street":""}',
                         first_name: 'John',
@@ -2230,8 +2232,8 @@ export const data = [
                         msgSms: true,
                         msgemail: true,
                         msgwhatsapp: false,
-                        custom_tags: '["Test_User","Interested_User","DIY_Hobby"]',
                         custom_mappings: '{"Office":"Trastkiv","Country":"Russia"}',
+                        custom_tags: '["Test_User","Interested_User","DIY_Hobby"]',
                         address:
                           '{"city":"kolkata","country":"India","postalCode":789223,"state":"WB","street":""}',
                         first_name: 'John',

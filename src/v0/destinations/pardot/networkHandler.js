@@ -65,7 +65,8 @@ const pardotRespHandler = (destResponse, stageMsg) => {
   );
 };
 
-const responseHandler = (destinationResponse) => {
+const responseHandler = (responseParams) => {
+  const { destinationResponse } = responseParams;
   const message = 'Request Processed Successfully';
   const { status } = destinationResponse;
   // else successfully return status, message and original destination response

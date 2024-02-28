@@ -16,6 +16,7 @@ import {
   getMockHttpCallsData,
   getAllTestMockDataFilePaths,
   addMock,
+  validateTestWithZOD,
 } from './testUtils';
 import tags from '../../src/v0/util/tags';
 import { Server } from 'http';
@@ -53,7 +54,7 @@ if (opts.generate === 'true') {
 
 let server: Server;
 
-const REPORT_COMPATIBLE_INTEGRATION = ['klaviyo'];
+const INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE = ['klaviyo', 'campaign_manager', 'criteo_audience'];
 
 beforeAll(async () => {
   initaliseReport();
@@ -147,7 +148,8 @@ const testRoute = async (route, tcData: TestCaseData) => {
 
   expect(response.status).toEqual(outputResp.status);
 
-  if (REPORT_COMPATIBLE_INTEGRATION.includes(tcData.name?.toLocaleLowerCase())) {
+  if (INTEGRATIONS_WITH_UPDATED_TEST_STRUCTURE.includes(tcData.name?.toLocaleLowerCase())) {
+    expect(validateTestWithZOD(tcData, response)).toEqual(true);
     const bodyMatched = _.isEqual(response.body, outputResp.body);
     const statusMatched = response.status === outputResp.status;
     if (bodyMatched && statusMatched) {

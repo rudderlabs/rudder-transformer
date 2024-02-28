@@ -2208,16 +2208,17 @@ const combineBatchRequestsWithSameJobIds = (inputBatches) => {
  * @returns {string} Event name converted to string.
  */
 const validateEventAndLowerCaseConversion = (event, isMandatory, converToLowercase) => {
-  if (!event && isMandatory) {
+  if (typeof event === 'object' || event === NaN || !isDefined(event)) {
+    throw new InstrumentationError('Event should not be a object, function or NaN and undefined');
+  }
+  if (!isMandatory) {
+    return converToLowercase ? event.toString().toLowerCase() : event.toString();
+  }
+  // handling 0 as it is a valid value
+  if (!event && event !== 0) {
     throw new InstrumentationError('Event is a required field');
   }
-
-  if (isMandatory && (!event || typeof event !== 'string')) {
-    throw new InstrumentationError('Event is a required field and should be a string');
-  }
-
- return converToLowercase ? event.toString().toLowerCase() : event.toString();
-
+  return converToLowercase ? event.toString().toLowerCase() : event.toString();
 };
 
 // ========================================================================
@@ -2336,5 +2337,5 @@ module.exports = {
   findExistingBatch,
   removeDuplicateMetadata,
   combineBatchRequestsWithSameJobIds,
-  validateEventAndLowerCaseConversion
+  validateEventAndLowerCaseConversion,
 };

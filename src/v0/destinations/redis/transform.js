@@ -4,7 +4,7 @@ const flatten = require('flat');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { isEmpty, isObject } = require('../../util');
 const { EventType } = require('../../../constants');
-const { handleRecordEventsForRedis } = require('./transformV2');
+const { handleRecordEvents } = require('./utils');
 
 // processValues:
 // 1. removes keys with empty values or still an object(empty) after flattening
@@ -64,7 +64,7 @@ const process = (event) => {
   const { message, destination, metadata } = event;
   // seperate record events
   if (message.type === EventType.RECORD) {
-    return handleRecordEventsForRedis(message, destination, metadata);
+    return handleRecordEvents(message, destination, metadata);
   }
 
   const messageType = message && message.type && message.type.toLowerCase();

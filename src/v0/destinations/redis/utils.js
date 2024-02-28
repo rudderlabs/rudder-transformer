@@ -32,7 +32,7 @@ const { transformSubEventTypeProfiles } = require('./transform');
 //     },
 // }
 
-function handleRecordEventsForRedis(message, destination, metadata) {
+function handleRecordEvents(message, destination, metadata) {
   // fields -> traits
   // metadata -> metadata
   // context.sources.profiles_<$$$> -> context.sources.profiles_<$$$>
@@ -42,4 +42,4 @@ function handleRecordEventsForRedis(message, destination, metadata) {
   return transformSubEventTypeProfiles(message, workspaceId, destinationId);
 }
 
-module.exports = { handleRecordEventsForRedis };
+module.exports = { handleRecordEvents };

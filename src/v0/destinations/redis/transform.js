@@ -4,7 +4,6 @@ const flatten = require('flat');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { isEmpty, isObject } = require('../../util');
 const { EventType } = require('../../../constants');
-const { handleRecordEvents } = require('./utils');
 
 // processValues:
 // 1. removes keys with empty values or still an object(empty) after flattening
@@ -59,6 +58,16 @@ const transformSubEventTypeProfiles = (message, workspaceId, destinationId) => {
     userId: message.userId,
   };
 };
+
+function handleRecordEvents(message, destination, metadata) {
+  // fields -> traits
+  // metadata -> metadata
+  // context.sources.profiles_<$$$> -> context.sources.profiles_<$$$>
+  const { workspaceId } = metadata;
+  const destinationId = destination.ID;
+
+  return transformSubEventTypeProfiles(message, workspaceId, destinationId);
+}
 
 const process = (event) => {
   const { message, destination, metadata } = event;
@@ -123,5 +132,4 @@ const process = (event) => {
 
 module.exports = {
   process,
-  transformSubEventTypeProfiles,
 };

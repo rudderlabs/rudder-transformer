@@ -1,7 +1,9 @@
 import { VERSION } from '../../../../../src/v0/destinations/facebook_pixel/config';
-import { overrideDestination } from '../../../testUtils';
+import { Destination } from '../../../../../src/types';
+import { generateMetadata, transformResultBuilder, overrideDestination } from '../../../testUtils';
+import { ProcessorTestData } from '../../../testTypes';
 
-const commonDestination = {
+const commonDestination: Destination = {
   ID: '12335',
   Name: 'sample-destination',
   DestinationDefinition: {
@@ -98,7 +100,7 @@ const commonStatTags = {
   feature: 'processor',
 };
 
-export const identifyTestData = [
+export const identifyTestData: ProcessorTestData[] = [
   {
     id: 'fbPixel-identify-test-1',
     name: 'facebook_pixel',
@@ -114,6 +116,7 @@ export const identifyTestData = [
         body: [
           {
             message: commonMessage,
+            metadata: generateMetadata(1),
             destination: overrideDestination(commonDestination, { advancedMapping: false }),
           },
         ],
@@ -127,15 +130,22 @@ export const identifyTestData = [
             statusCode: 400,
             error:
               'For identify events, "Advanced Mapping" configuration must be enabled on the RudderStack dashboard',
-            statTags: commonStatTags,
+            statTags: {
+              ...commonStatTags,
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
+            },
+            metadata: generateMetadata(1),
           },
         ],
       },
     },
   },
   {
+    id: 'fbPixel-identify-test-2',
     name: 'facebook_pixel',
     description: 'Identify event happy flow : without integrations object hashed true',
+    scenario: 'Business',
     successCriteria:
       ' Response should contain status code 200 and body should contain unhashed user traits',
     feature: 'processor',
@@ -146,6 +156,7 @@ export const identifyTestData = [
         body: [
           {
             message: commonMessage,
+            metadata: generateMetadata(1),
             destination: commonDestination,
           },
         ],
@@ -156,27 +167,23 @@ export const identifyTestData = [
         status: 200,
         body: [
           {
-            output: {
+            output: transformResultBuilder({
               version: '1',
               type: 'REST',
               method: 'POST',
               endpoint: `https://graph.facebook.com/${VERSION}/dummyPixelId/events?access_token=09876`,
               headers: {},
               params: {},
-              body: {
-                JSON: {},
-                JSON_ARRAY: {},
-                XML: {},
-                FORM: {
-                  data: [
-                    '{"user_data":{"external_id":"8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92","em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08","ph":"593a6d58f34eb5c3de4f47e38d1faaa7d389fafe332a85400b1e54498391c579","ge":"252f10c83610ebca1a059c0bae8255eba2f95be4d1d7bcfa89d7248a82d9f111","ln":"532eaabd9574880dbf76b9b8cc00832c20a6ec113d682299550d7a6e0f345e25","fn":"2c2ccf28d806f6f9a34b67aa874d2113b7ac1444f1a4092541b8b75b84771747","client_ip_address":"0.0.0.0","client_user_agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"},"event_name":"identify","event_time":1697278611,"event_id":"84e26acc-56a5-4835-8233-591137fca468","action_source":"website"}',
-                  ],
-                },
+              FORM: {
+                data: [
+                  '{"user_data":{"external_id":"8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92","em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08","ph":"593a6d58f34eb5c3de4f47e38d1faaa7d389fafe332a85400b1e54498391c579","ge":"252f10c83610ebca1a059c0bae8255eba2f95be4d1d7bcfa89d7248a82d9f111","ln":"532eaabd9574880dbf76b9b8cc00832c20a6ec113d682299550d7a6e0f345e25","fn":"2c2ccf28d806f6f9a34b67aa874d2113b7ac1444f1a4092541b8b75b84771747","client_ip_address":"0.0.0.0","client_user_agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"},"event_name":"identify","event_time":1697278611,"event_id":"84e26acc-56a5-4835-8233-591137fca468","action_source":"website"}',
+                ],
               },
               files: {},
               userId: '',
-            },
+            }),
             statusCode: 200,
+            metadata: generateMetadata(1),
           },
         ],
       },

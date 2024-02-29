@@ -1,6 +1,14 @@
 import { VERSION } from '../../../../../src/v0/destinations/facebook_pixel/config';
-import { generateSimplifiedPageOrScreenPayload, overrideDestination } from '../../../testUtils';
-const commonDestination = {
+import {
+  generateSimplifiedPageOrScreenPayload,
+  overrideDestination,
+  generateMetadata,
+  transformResultBuilder,
+} from '../../../testUtils';
+import { Destination } from '../../../../../src/types';
+import { ProcessorTestData } from '../../../testTypes';
+
+const commonDestination: Destination = {
   ID: '12335',
   Name: 'sample-destination',
   DestinationDefinition: {
@@ -89,11 +97,23 @@ const commonPageMessage = { ...commonMessage, type: 'page' };
 
 const commonScreenMessage = { ...commonMessage, type: 'screen' };
 
-export const pageScreenTestData = [
+const commonStatTags = {
+  errorCategory: 'dataValidation',
+  errorType: 'instrumentation',
+  destType: 'FACEBOOK_PIXEL',
+  module: 'destination',
+  implementation: 'native',
+  feature: 'processor',
+};
+
+export const pageScreenTestData: ProcessorTestData[] = [
   {
+    id: 'facebook_pixel-page-test-1',
     name: 'facebook_pixel',
     description:
       'Page call : Happy flow without standard page switched on and with name and properties',
+    scenario: 'Page',
+    successCriteria: 'Response should contain status code 200 and no error message',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -102,6 +122,7 @@ export const pageScreenTestData = [
         body: [
           {
             message: commonPageMessage,
+            metadata: generateMetadata(1),
             destination: commonDestination,
           },
         ],
@@ -112,35 +133,35 @@ export const pageScreenTestData = [
         status: 200,
         body: [
           {
-            output: {
+            output: transformResultBuilder({
               version: '1',
               type: 'REST',
               method: 'POST',
               endpoint: `https://graph.facebook.com/${VERSION}/dummyPixelId/events?access_token=09876`,
               headers: {},
               params: {},
-              body: {
-                JSON: {},
-                JSON_ARRAY: {},
-                XML: {},
-                FORM: {
-                  data: [
-                    '{"user_data":{"external_id":"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5","client_ip_address":"0.0.0.0","client_user_agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"},"event_name":"Viewed page ApplicationLoaded","event_time":1697278611,"event_source_url":"jkl","event_id":"5e10d13a-bf9a-44bf-b884-43a9e591ea71","action_source":"website","custom_data":{"path":"/abc","referrer":"xyz","search":"def","title":"ghi","url":"jkl"}}',
-                  ],
-                },
+              FORM: {
+                data: [
+                  '{"user_data":{"external_id":"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5","client_ip_address":"0.0.0.0","client_user_agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"},"event_name":"Viewed page ApplicationLoaded","event_time":1697278611,"event_source_url":"jkl","event_id":"5e10d13a-bf9a-44bf-b884-43a9e591ea71","action_source":"website","custom_data":{"path":"/abc","referrer":"xyz","search":"def","title":"ghi","url":"jkl"}}',
+                ],
               },
               files: {},
               userId: '',
-            },
+            }),
             statusCode: 200,
+            metadata: generateMetadata(1),
           },
         ],
       },
     },
   },
   {
+    id: 'facebook_pixel-page-test-2',
     name: 'facebook_pixel',
     description: 'Page call : with standard page switched on and no properties and no name',
+    scenario: 'Page',
+    successCriteria:
+      'Response should contain error message and status code should be 400, as we are not sending any other properties other than standard page properties',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -162,6 +183,7 @@ export const pageScreenTestData = [
               },
               'page',
             ),
+            metadata: generateMetadata(1),
             destination: overrideDestination(commonDestination, { standardPageCall: true }),
           },
         ],
@@ -174,13 +196,11 @@ export const pageScreenTestData = [
           {
             error:
               "After excluding opt_out,event_id,action_source, no fields are present in 'properties' for a standard event",
+            metadata: generateMetadata(1),
             statTags: {
-              destType: 'FACEBOOK_PIXEL',
-              errorCategory: 'dataValidation',
-              errorType: 'instrumentation',
-              feature: 'processor',
-              implementation: 'native',
-              module: 'destination',
+              ...commonStatTags,
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
             },
             statusCode: 400,
           },
@@ -189,8 +209,11 @@ export const pageScreenTestData = [
     },
   },
   {
+    id: 'facebook_pixel-page-test-3',
     name: 'facebook_pixel',
     description: 'Page call : with standard page switched on and properties',
+    scenario: 'Page',
+    successCriteria: 'Response should contain status code 200 and no error message',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -218,6 +241,7 @@ export const pageScreenTestData = [
               },
               'page',
             ),
+            metadata: generateMetadata(1),
             destination: overrideDestination(commonDestination, { standardPageCall: true }),
           },
         ],
@@ -228,35 +252,34 @@ export const pageScreenTestData = [
         status: 200,
         body: [
           {
-            output: {
+            output: transformResultBuilder({
               version: '1',
               type: 'REST',
               method: 'POST',
               endpoint: `https://graph.facebook.com/${VERSION}/dummyPixelId/events?access_token=09876`,
               headers: {},
               params: {},
-              body: {
-                JSON: {},
-                JSON_ARRAY: {},
-                XML: {},
-                FORM: {
-                  data: [
-                    '{"user_data":{"external_id":"470582f368e5aeec2cf487decd1e125b7d265e8b0b06b74a25e999e93bfb699f"},"event_name":"PageView","event_time":1697297576,"event_source_url":"jkl","action_source":"website","custom_data":{"path":"/abc","referrer":"xyz","search":"def","title":"ghi","url":"jkl"}}',
-                  ],
-                },
+              FORM: {
+                data: [
+                  '{"user_data":{"external_id":"470582f368e5aeec2cf487decd1e125b7d265e8b0b06b74a25e999e93bfb699f"},"event_name":"PageView","event_time":1697297576,"event_source_url":"jkl","action_source":"website","custom_data":{"path":"/abc","referrer":"xyz","search":"def","title":"ghi","url":"jkl"}}',
+                ],
               },
               files: {},
               userId: '',
-            },
+            }),
             statusCode: 200,
+            metadata: generateMetadata(1),
           },
         ],
       },
     },
   },
   {
+    id: 'facebook_pixel-page-test-4',
     name: 'facebook_pixel',
     description: 'Page call : with standard page switched off and with properties but no page name',
+    scenario: 'Page',
+    successCriteria: 'Response should contain status code 200 and no error message',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -284,6 +307,7 @@ export const pageScreenTestData = [
               },
               'page',
             ),
+            metadata: generateMetadata(1),
             destination: commonDestination,
           },
         ],
@@ -294,36 +318,35 @@ export const pageScreenTestData = [
         status: 200,
         body: [
           {
-            output: {
+            output: transformResultBuilder({
               version: '1',
               type: 'REST',
               method: 'POST',
               endpoint: `https://graph.facebook.com/${VERSION}/dummyPixelId/events?access_token=09876`,
               headers: {},
               params: {},
-              body: {
-                JSON: {},
-                JSON_ARRAY: {},
-                XML: {},
-                FORM: {
-                  data: [
-                    '{"user_data":{"external_id":"470582f368e5aeec2cf487decd1e125b7d265e8b0b06b74a25e999e93bfb699f"},"event_name":"PageView","event_time":1697297576,"event_source_url":"jkl","action_source":"website","custom_data":{"path":"/abc","referrer":"xyz","search":"def","title":"ghi","url":"jkl"}}',
-                  ],
-                },
+              FORM: {
+                data: [
+                  '{"user_data":{"external_id":"470582f368e5aeec2cf487decd1e125b7d265e8b0b06b74a25e999e93bfb699f"},"event_name":"PageView","event_time":1697297576,"event_source_url":"jkl","action_source":"website","custom_data":{"path":"/abc","referrer":"xyz","search":"def","title":"ghi","url":"jkl"}}',
+                ],
               },
               files: {},
               userId: '',
-            },
+            }),
             statusCode: 200,
+            metadata: generateMetadata(1),
           },
         ],
       },
     },
   },
   {
+    id: 'facebook_pixel-screen-test-1',
     name: 'facebook_pixel',
     description:
       'Screen call : Happy flow without standard page switched on and with name and properties',
+    scenario: 'Screen',
+    successCriteria: 'Response should contain status code 200 and no error message',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -332,6 +355,7 @@ export const pageScreenTestData = [
         body: [
           {
             message: commonScreenMessage,
+            metadata: generateMetadata(1),
             destination: commonDestination,
           },
         ],
@@ -342,35 +366,35 @@ export const pageScreenTestData = [
         status: 200,
         body: [
           {
-            output: {
+            output: transformResultBuilder({
               version: '1',
               type: 'REST',
               method: 'POST',
               endpoint: `https://graph.facebook.com/${VERSION}/dummyPixelId/events?access_token=09876`,
               headers: {},
               params: {},
-              body: {
-                JSON: {},
-                JSON_ARRAY: {},
-                XML: {},
-                FORM: {
-                  data: [
-                    '{"user_data":{"external_id":"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5","client_ip_address":"0.0.0.0","client_user_agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"},"event_name":"PageView","event_time":1697278611,"event_source_url":"jkl","event_id":"5e10d13a-bf9a-44bf-b884-43a9e591ea71","action_source":"website","custom_data":{"path":"/abc","referrer":"xyz","search":"def","title":"ghi","url":"jkl"}}',
-                  ],
-                },
+              FORM: {
+                data: [
+                  '{"user_data":{"external_id":"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5","client_ip_address":"0.0.0.0","client_user_agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"},"event_name":"PageView","event_time":1697278611,"event_source_url":"jkl","event_id":"5e10d13a-bf9a-44bf-b884-43a9e591ea71","action_source":"website","custom_data":{"path":"/abc","referrer":"xyz","search":"def","title":"ghi","url":"jkl"}}',
+                ],
               },
               files: {},
               userId: '',
-            },
+            }),
             statusCode: 200,
+            metadata: generateMetadata(1),
           },
         ],
       },
     },
   },
   {
+    id: 'facebook_pixel-screen-test-2',
     name: 'facebook_pixel',
     description: 'Screen call : with standard page switched on and no properties and no name',
+    scenario: 'Screen',
+    successCriteria:
+      'Response should contain error message and status code should be 400, as we are not sending any other properties other than standard page properties',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -392,6 +416,7 @@ export const pageScreenTestData = [
               },
               'screen',
             ),
+            metadata: generateMetadata(1),
             destination: overrideDestination(commonDestination, { standardPageCall: true }),
           },
         ],
@@ -405,13 +430,11 @@ export const pageScreenTestData = [
             error:
               "After excluding opt_out,event_id,action_source, no fields are present in 'properties' for a standard event",
             statTags: {
-              destType: 'FACEBOOK_PIXEL',
-              errorCategory: 'dataValidation',
-              errorType: 'instrumentation',
-              feature: 'processor',
-              implementation: 'native',
-              module: 'destination',
+              ...commonStatTags,
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
             },
+            metadata: generateMetadata(1),
             statusCode: 400,
           },
         ],
@@ -419,8 +442,11 @@ export const pageScreenTestData = [
     },
   },
   {
+    id: 'facebook_pixel-screen-test-3',
     name: 'facebook_pixel',
     description: 'Screen call : with standard page switched on and properties',
+    scenario: 'Screen',
+    successCriteria: 'Response should contain status code 200 and no error message',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -448,6 +474,7 @@ export const pageScreenTestData = [
               },
               'screen',
             ),
+            metadata: generateMetadata(1),
             destination: overrideDestination(commonDestination, { standardPageCall: true }),
           },
         ],
@@ -458,36 +485,35 @@ export const pageScreenTestData = [
         status: 200,
         body: [
           {
-            output: {
+            output: transformResultBuilder({
               version: '1',
               type: 'REST',
               method: 'POST',
               endpoint: `https://graph.facebook.com/${VERSION}/dummyPixelId/events?access_token=09876`,
               headers: {},
               params: {},
-              body: {
-                JSON: {},
-                JSON_ARRAY: {},
-                XML: {},
-                FORM: {
-                  data: [
-                    '{"user_data":{"external_id":"470582f368e5aeec2cf487decd1e125b7d265e8b0b06b74a25e999e93bfb699f"},"event_name":"PageView","event_time":1697297576,"event_source_url":"jkl","action_source":"website","custom_data":{"path":"/abc","referrer":"xyz","search":"def","title":"ghi","url":"jkl"}}',
-                  ],
-                },
+              FORM: {
+                data: [
+                  '{"user_data":{"external_id":"470582f368e5aeec2cf487decd1e125b7d265e8b0b06b74a25e999e93bfb699f"},"event_name":"PageView","event_time":1697297576,"event_source_url":"jkl","action_source":"website","custom_data":{"path":"/abc","referrer":"xyz","search":"def","title":"ghi","url":"jkl"}}',
+                ],
               },
               files: {},
               userId: '',
-            },
+            }),
             statusCode: 200,
+            metadata: generateMetadata(1),
           },
         ],
       },
     },
   },
   {
+    id: 'facebook_pixel-screen-test-4',
     name: 'facebook_pixel',
     description:
       'Screen call : with standard page switched off and with properties but no page name',
+    scenario: 'Screen',
+    successCriteria: 'Response should contain status code 200 and no error message',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -515,6 +541,7 @@ export const pageScreenTestData = [
               },
               'screen',
             ),
+            metadata: generateMetadata(1),
             destination: commonDestination,
           },
         ],
@@ -525,27 +552,23 @@ export const pageScreenTestData = [
         status: 200,
         body: [
           {
-            output: {
+            output: transformResultBuilder({
               version: '1',
               type: 'REST',
               method: 'POST',
               endpoint: `https://graph.facebook.com/${VERSION}/dummyPixelId/events?access_token=09876`,
               headers: {},
               params: {},
-              body: {
-                JSON: {},
-                JSON_ARRAY: {},
-                XML: {},
-                FORM: {
-                  data: [
-                    '{"user_data":{"external_id":"470582f368e5aeec2cf487decd1e125b7d265e8b0b06b74a25e999e93bfb699f"},"event_name":"PageView","event_time":1697297576,"event_source_url":"jkl","action_source":"website","custom_data":{"path":"/abc","referrer":"xyz","search":"def","title":"ghi","url":"jkl"}}',
-                  ],
-                },
+              FORM: {
+                data: [
+                  '{"user_data":{"external_id":"470582f368e5aeec2cf487decd1e125b7d265e8b0b06b74a25e999e93bfb699f"},"event_name":"PageView","event_time":1697297576,"event_source_url":"jkl","action_source":"website","custom_data":{"path":"/abc","referrer":"xyz","search":"def","title":"ghi","url":"jkl"}}',
+                ],
               },
               files: {},
               userId: '',
-            },
+            }),
             statusCode: 200,
+            metadata: generateMetadata(1),
           },
         ],
       },

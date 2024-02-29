@@ -61,7 +61,7 @@ steps:
       const filters = $.context.payload.filters;
       const objectIDs = $.context.payload.objectIDs;
       $.assert(!(filters && objectIDs), "event can't have both objectIds and filters at the same time.");
-      $.assert(filters || objectIDs, "Either filters or  objectIds is required.");
+      $.assert(filters.length || objectIDs.length, "Either filters or objectIds is required and must be non empty.");
 
   - name: validatePayloadForClickEvent
     condition: $.context.payload.eventType === "click"

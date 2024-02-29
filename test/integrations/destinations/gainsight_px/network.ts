@@ -219,4 +219,33 @@ export const networkCallsData = [
       status: 200,
     },
   },
+  // Axios Error
+  {
+    httpReq: {
+      url: 'https://api.aptrinsic.com/v1/users/myUId',
+      headers: { 'X-APTRINSIC-API-KEY': 'sample-api-key', 'Content-Type': 'application/json' },
+      method: 'GET',
+    },
+    httpRes: {
+      message: 'Request failed with status code 403',
+      name: 'AxiosError',
+      stack:
+        'AxiosError: Request failed with status code 403\n    at settle (/Users/saisankeerth/rudderstack/rudder-transformer/node_modules/axios/lib/core/settle.js:19:12)\n    at IncomingMessage.handleStreamEnd (/Users/saisankeerth/rudderstack/rudder-transformer/node_modules/axios/lib/adapters/http.js:589:11)\n    at IncomingMessage.emit (node:events:529:35)\n    at IncomingMessage.emit (node:domain:489:12)\n    at endReadableNT (node:internal/streams/readable:1400:12)\n    at processTicksAndRejections (node:internal/process/task_queues:82:21)',
+      config: {
+        headers: {
+          Accept: 'application/json, text/plain, */*',
+          'Content-Type': 'application/json',
+          'X-APTRINSIC-API-KEY': 'sample-api-key',
+          'User-Agent': 'axios/1.6.5',
+          'Accept-Encoding': 'gzip, compress, deflate, br',
+        },
+        method: 'get',
+        dummy: 'upgrade required', // keyword
+        url: 'https://api.aptrinsic.com/v1/users/myUId',
+      },
+      code: 'FORBIDDEN',
+      status: 403,
+      data: '\u003c!doctype html\u003e\u003cmeta charset="utf-8"\u003e\u003cmeta name=viewport content="width=device-width, initial-scale=1"\u003e\u003ctitle\u003e403\u003c/title\u003e403 Forbidden',
+    },
+  },
 ];

@@ -2,29 +2,6 @@ import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
 import { ProxyV1TestData } from '../../../testTypes';
 import { VERSION } from '../../../../../src/v0/destinations/fb/config';
 
-const statTags = {
-  destType: 'FB_CUSTOM_AUDIENCE',
-  destinationId: 'default-destinationId',
-  errorCategory: 'network',
-  errorType: 'aborted',
-  feature: 'dataDelivery',
-  implementation: 'native',
-  module: 'destination',
-  workspaceId: 'default-workspaceId',
-};
-
-const params = {
-  access_token: 'ABC',
-  payload: {
-    is_raw: true,
-    data_source: {
-      sub_type: 'ANYTHING',
-    },
-    schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
-    data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
-  },
-};
-
 export const testScenariosForV1API: ProxyV1TestData[] = [
   {
     id: 'fb_v1_scenario_1',

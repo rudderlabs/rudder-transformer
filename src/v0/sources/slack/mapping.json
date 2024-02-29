@@ -1,0 +1,10 @@
+[
+  {
+    "sourceKeys": "ts",
+    "destKeys": ["timestamp", "originalTimestamp"]
+  },
+  {
+    "sourceKeys": "type",
+    "destKeys": "event"
+  }
+]

@@ -1995,6 +1995,56 @@ const businessMockData = [
       statusText: 'OK',
     },
   },
+  {
+    description: 'Mock response for a failed lead request due to invalid header',
+    httpReq: {
+      url: 'https://mktId.mktorest.com/rest/v1/leads.json/test_invalid_header',
+      headers: {
+        Authorization: 'Bearer test_token_6',
+        'Content-Type': 'invalid',
+        'User-Agent': 'RudderLabs',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        success: false,
+        errors: [
+          {
+            code: '612',
+            message: 'Invalid Content Type',
+          },
+        ],
+      },
+      status: 200,
+      statusText: 'OK',
+    },
+  },
+  {
+    description: 'Mock response for a failed lead request due to length exceeded',
+    httpReq: {
+      url: 'https://mktId.mktorest.com/rest/v1/leads.json/test_exceeded_length',
+      headers: {
+        Authorization: 'Bearer test_token_6',
+        'Content-Type': 'application/json',
+        'User-Agent': 'RudderLabs',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        success: false,
+        errors: [
+          {
+            code: '1077',
+            message: 'Value for field exceeds max length',
+          },
+        ],
+      },
+      status: 400,
+      statusText: 'OK',
+    },
+  },
 ];
 
 export const networkCallsData = [...businessMockData, ...tfProxyMocksData];

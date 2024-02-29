@@ -1,4 +1,8 @@
-import { generateProxyV1Payload, generateProxyV0Payload } from '../../../testUtils';
+import {
+  generateMetadata,
+  generateProxyV1Payload,
+  generateProxyV0Payload,
+} from '../../../testUtils';
 
 const authorizationRequiredRequestPayload = {
   events: [
@@ -45,6 +49,17 @@ const commonRequestParameters = {
   JSON: authorizationRequiredRequestPayload,
 };
 
+const expectedStatTags = {
+  destType: 'REDDIT',
+  destinationId: 'default-destinationId',
+  errorCategory: 'network',
+  errorType: 'retryable',
+  feature: 'dataDelivery',
+  implementation: 'native',
+  module: 'destination',
+  workspaceId: 'default-workspaceId',
+};
+
 export const v0oauthScenarios = [
   {
     id: 'reddit_v0_oauth_scenario_1',
@@ -76,16 +91,7 @@ export const v0oauthScenarios = [
             },
             message:
               "Request failed due to Authorization Required 'during reddit response transformation'",
-            statTags: {
-              destType: 'REDDIT',
-              destinationId: 'default-destinationId',
-              errorCategory: 'network',
-              errorType: 'retryable',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'default-workspaceId',
-            },
+            statTags: expectedStatTags,
             status: 500,
           },
         },
@@ -106,10 +112,13 @@ export const v1oauthScenarios = [
     version: 'v1',
     input: {
       request: {
-        body: generateProxyV1Payload({
-          ...commonRequestParameters,
-          endpoint: 'https://ads-api.reddit.com/api/v2.0/conversions/events/a2_gsddXXXfsfd',
-        }),
+        body: generateProxyV1Payload(
+          {
+            ...commonRequestParameters,
+            endpoint: 'https://ads-api.reddit.com/api/v2.0/conversions/events/a2_gsddXXXfsfd',
+          },
+          [generateMetadata(1)],
+        ),
         method: 'POST',
       },
     },
@@ -124,31 +133,11 @@ export const v1oauthScenarios = [
             response: [
               {
                 error: '"Authorization Required"',
-                metadata: {
-                  attemptNum: 1,
-                  destinationId: 'default-destinationId',
-                  dontBatch: false,
-                  jobId: 1,
-                  secret: {
-                    accessToken: 'default-accessToken',
-                  },
-                  sourceId: 'default-sourceId',
-                  userId: 'default-userId',
-                  workspaceId: 'default-workspaceId',
-                },
+                metadata: generateMetadata(1),
                 statusCode: 500,
               },
             ],
-            statTags: {
-              destType: 'REDDIT',
-              destinationId: 'default-destinationId',
-              errorCategory: 'network',
-              errorType: 'retryable',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'default-workspaceId',
-            },
+            statTags: expectedStatTags,
             status: 500,
           },
         },

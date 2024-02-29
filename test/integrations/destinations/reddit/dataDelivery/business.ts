@@ -1,5 +1,8 @@
-import { ProxyMetdata } from '../../../../../src/types';
-import { generateProxyV0Payload, generateProxyV1Payload } from '../../../testUtils';
+import {
+  generateMetadata,
+  generateProxyV0Payload,
+  generateProxyV1Payload,
+} from '../../../testUtils';
 
 const validRequestPayload = {
   events: [
@@ -45,19 +48,6 @@ const commonRequestParameters = {
   headers: commonHeaders,
   JSON: validRequestPayload,
 };
-
-const proxyMetdata: ProxyMetdata = {
-  jobId: 1,
-  attemptNum: 1,
-  userId: 'dummyUserId',
-  sourceId: 'dummySourceId',
-  destinationId: 'dummyDestinationId',
-  workspaceId: 'dummyWorkspaceId',
-  secret: {},
-  dontBatch: false,
-};
-
-const metadataArray = [proxyMetdata];
 
 export const testScenariosForV0API = [
   {
@@ -115,7 +105,7 @@ export const testScenariosForV1API = [
             ...commonRequestParameters,
             endpoint: 'https://dfareporting.googleapis.com/test_url_for_valid_request',
           },
-          metadataArray,
+          [generateMetadata(1)],
         ),
         method: 'POST',
       },
@@ -128,16 +118,7 @@ export const testScenariosForV1API = [
             message: 'Request Processed Successfully',
             response: [
               {
-                metadata: {
-                  attemptNum: 1,
-                  destinationId: 'dummyDestinationId',
-                  dontBatch: false,
-                  jobId: 1,
-                  secret: {},
-                  sourceId: 'dummySourceId',
-                  userId: 'dummyUserId',
-                  workspaceId: 'dummyWorkspaceId',
-                },
+                metadata: generateMetadata(1),
                 statusCode: 500,
               },
             ],

@@ -75,7 +75,7 @@ export const data = [
                   }]
                 },
               },
-              endpoint: 'https://api2.getkoala.com/web/profiles/kkooaallaa321/batch',
+              endpoint: 'https://api2.getkoala.com/web/projects/kkooaallaa321/batch',
               files: {},
               params: {},
               type: 'REST',
@@ -171,7 +171,7 @@ export const data = [
                   }],
                 },
               },
-              endpoint: 'https://api2.getkoala.com/web/profiles/kkooaallaa321/batch',
+              endpoint: 'https://api2.getkoala.com/web/projects/kkooaallaa321/batch',
               files: {},
               params: {},
               type: 'REST',

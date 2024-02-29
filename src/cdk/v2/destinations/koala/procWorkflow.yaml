@@ -61,7 +61,7 @@ steps:
       template: |
         const response = $.defaultRequestConfig();
         response.body.JSON = $.context.payload;
-        response.endpoint = "https://api2.getkoala.com/web/profiles/" + .destination.Config.publicKey + "/batch";
+        response.endpoint = "https://api2.getkoala.com/web/projects/" + .destination.Config.publicKey + "/batch";
         response.headers = {
           "User-Agent": 'rudderstack/1.0.0',
           "content-type": "application/json"

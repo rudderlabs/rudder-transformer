@@ -496,4 +496,13 @@ describe('validateEventAndLowerCaseConversion Tests', () => {
       validateEventAndLowerCaseConversion(undefined, false, true);
     }).toThrow(InstrumentationError);
   });
+
+  it('should throw error for boolean values', () => {
+    expect(() => {
+      validateEventAndLowerCaseConversion(true, true, true);
+    }).toThrow(InstrumentationError);
+    expect(() => {
+      validateEventAndLowerCaseConversion(false, false, false);
+    }).toThrow(InstrumentationError);
+  });
 });

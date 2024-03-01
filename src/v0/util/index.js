@@ -2201,6 +2201,25 @@ const combineBatchRequestsWithSameJobIds = (inputBatches) => {
   return combineBatches(combineBatches(inputBatches));
 };
 
+/**
+ * This function validates the event and return it as string.
+ * @param {*} isMandatory The event is a required field.
+ * @param {*} convertToLowerCase The event should be converted to lower-case.
+ * @returns {string} Event name converted to string.
+ */
+const validateEventAndLowerCaseConversion = (event, isMandatory, convertToLowerCase) => {
+  if (!isDefined(event) || typeof event === 'object' || typeof event === 'boolean') {
+    throw new InstrumentationError('Event should not be a object, NaN, boolean or undefined');
+  }
+
+  // handling 0 as it is a valid value
+  if (isMandatory && !event && event !== 0) {
+    throw new InstrumentationError('Event is a required field');
+  }
+
+  return convertToLowerCase ? event.toString().toLowerCase() : event.toString();
+};
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -2317,4 +2336,5 @@ module.exports = {
   findExistingBatch,
   removeDuplicateMetadata,
   combineBatchRequestsWithSameJobIds,
+  validateEventAndLowerCaseConversion,
 };

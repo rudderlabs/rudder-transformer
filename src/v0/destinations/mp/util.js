@@ -339,7 +339,7 @@ const generatePageOrScreenCustomEventName = (message, userDefinedEventTemplate) 
     eventName = eventName.replace(/\s{{\s*name\s*}}\s/g, ' ');
   }
 
-  return eventName.trim();
+  return eventName;
 };
 
 module.exports = {

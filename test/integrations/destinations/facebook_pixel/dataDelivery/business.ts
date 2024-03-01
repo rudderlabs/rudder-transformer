@@ -5,9 +5,6 @@ import { VERSION } from '../../../../../src/v0/destinations/facebook_pixel/confi
 const testData = [
   '{"user_data":{"external_id":"c58f05b5e3cc4796f3181cf07349d306547c00b20841a175b179c6860e6a34ab","client_ip_address":"32.122.223.26","client_user_agent":"Mozilla/5.0 (iPhone; CPU iPhone OS 15_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Mobile/15E148 Safari/604.1"},"event_name":"Checkout Step Viewed","event_time":1654772112,"event_source_url":"https://www.my.kaiser.com/checkout","event_id":"4f002656-a7b2-4c17-b9bd-8caa5a29190a","custom_data":{"checkout_id":"26SF29B","site":"www.my.kaiser.com","step":1}}',
 ];
-const testData2 = [
-  '{"user_data":{"external_id":"c58f05b5e3cc4796f3181cf07349d306547c00b20841a175b179c6860e6a34ab","client_ip_address":"32.122.223.26","client_user_agent":"Mozilla/5.0 (iPhone; CPU iPhone OS 15_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Mobile/15E148 Safari/604.1"},"event_name":"Checkout Step Viewed","event_time":1654773112,"event_source_url":"https://www.my.kaiser.com/checkout","event_id":"4f002656-a7b2-4c17-b9bd-8caa5a29190a","custom_data":{"checkout_id":"26SF29B","site":"www.my.kaiser.com","step":1}}',
-];
 const statTags = {
   destType: 'FACEBOOK_PIXEL',
   errorCategory: 'network',
@@ -33,7 +30,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         body: generateProxyV1Payload({
           endpoint: `https://graph.facebook.com/${VERSION}/1234567891234567/events?access_token=invalid_access_token`,
           FORM: {
-            data: testData2,
+            data: testData,
           },
         }),
         method: 'POST',
@@ -81,7 +78,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             destination: 'facebook_pixel',
           },
           FORM: {
-            data: testData2,
+            data: testData,
           },
         }),
         method: 'POST',

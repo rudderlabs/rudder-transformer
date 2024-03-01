@@ -65,7 +65,8 @@
     "TIKTOK_AUDIENCE": true,
     "REDDIT": true,
     "THE_TRADE_DESK": true,
-    "INTERCOM": true
+    "INTERCOM": true,
+    "NINETAILED": true
   },
   "regulations": [
     "BRAZE",

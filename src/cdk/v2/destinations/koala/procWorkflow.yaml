@@ -36,7 +36,7 @@ steps:
   - name: preparePayloadForTrack
     condition: $.context.messageType === {{$.EventType.TRACK}}
     template: |
-      const properties = .message.properties ?? .message.context.properties ?? {};
+      const properties = .message.properties ??  {};
       const basePayload = {
         ip: .message.request_ip ?? message.context.ip, 
         email: .message.().({{{{$.getGenericPaths("email")}}}}),

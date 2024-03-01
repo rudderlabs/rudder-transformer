@@ -1,0 +1,43 @@
+[
+  {
+    "sourceKeys": "app.name",
+    "required": true,
+    "destKey": "app.name"
+  },
+  {
+    "sourceKeys": "app.version",
+    "required": true,
+    "destKey": "app.version"
+  },
+  {
+    "sourceKeys": "campaign",
+    "destKey": "campaign"
+  },
+  {
+    "sourceKeys": "library.name",
+    "required": true,
+    "destKey": "library.name"
+  },
+  {
+    "sourceKeys": "library.version",
+    "required": true,
+    "destKey": "library.version"
+  },
+  {
+    "sourceKeys": "locale",
+    "destKey": "locale"
+  },
+  {
+    "sourceKeys": "page",
+    "destKey": "page"
+  },
+  {
+    "sourceKeys": "userAgent",
+    "destKey": "userAgent"
+  },
+  {
+    "sourceKeys": "location",
+    "required": true,
+    "destKey": "location"
+  }
+]

@@ -1,6 +1,8 @@
 import { VERSION } from '../../../../../src/v0/destinations/facebook_pixel/config';
+import { testScenariosForV1API } from './business';
+import { otherScenariosV1 } from './other';
 
-export const data = [
+export const existingTestData = [
   {
     name: 'facebook_pixel',
     description: 'Test 0',
@@ -577,3 +579,5 @@ export const data = [
     },
   },
 ];
+
+export const data = [...existingTestData, ...testScenariosForV1API, ...otherScenariosV1];

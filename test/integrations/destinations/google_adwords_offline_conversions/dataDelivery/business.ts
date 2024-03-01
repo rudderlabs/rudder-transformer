@@ -204,6 +204,8 @@ const notAllowedToAccessFeatureRequestPayload = {
   ],
 };
 
+const metadataArray = [generateMetadata(1)];
+
 const expectedStatTags = {
   destType: 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS',
   destinationId: 'default-destinationId',
@@ -445,13 +447,16 @@ export const testScenariosForV1API = [
     version: 'v1',
     input: {
       request: {
-        body: generateProxyV1Payload({
-          headers: headers.header1,
-          params: params.param1,
-          JSON: invalidArgumentRequestPayload,
-          endpoint:
-            'https://googleads.googleapis.com/v14/customers/11122233331/offlineUserDataJobs',
-        }),
+        body: generateProxyV1Payload(
+          {
+            headers: headers.header1,
+            params: params.param1,
+            JSON: invalidArgumentRequestPayload,
+            endpoint:
+              'https://googleads.googleapis.com/v14/customers/11122233331/offlineUserDataJobs',
+          },
+          metadataArray,
+        ),
         method: 'POST',
       },
     },
@@ -489,12 +494,16 @@ export const testScenariosForV1API = [
     version: 'v1',
     input: {
       request: {
-        body: generateProxyV1Payload({
-          headers: headers.header1,
-          params: params.param1,
-          JSON: validRequestPayload1,
-          endpoint: 'https://googleads.googleapis.com/v14/customers/1112223333/offlineUserDataJobs',
-        }),
+        body: generateProxyV1Payload(
+          {
+            headers: headers.header1,
+            params: params.param1,
+            JSON: validRequestPayload1,
+            endpoint:
+              'https://googleads.googleapis.com/v14/customers/1112223333/offlineUserDataJobs',
+          },
+          metadataArray,
+        ),
         method: 'POST',
       },
     },
@@ -508,18 +517,7 @@ export const testScenariosForV1API = [
             response: [
               {
                 error: '{"name":"customers/111-222-3333/operations/abcd="}',
-                metadata: {
-                  attemptNum: 1,
-                  destinationId: 'default-destinationId',
-                  dontBatch: false,
-                  jobId: 1,
-                  secret: {
-                    accessToken: 'default-accessToken',
-                  },
-                  sourceId: 'default-sourceId',
-                  userId: 'default-userId',
-                  workspaceId: 'default-workspaceId',
-                },
+                metadata: generateMetadata(1),
                 statusCode: 200,
               },
             ],
@@ -541,13 +539,16 @@ export const testScenariosForV1API = [
     version: 'v1',
     input: {
       request: {
-        body: generateProxyV1Payload({
-          headers: headers.header2,
-          params: params.param2,
-          JSON: validRequestPayload2,
-          endpoint:
-            'https://googleads.googleapis.com/v14/customers/1234567891:uploadClickConversions',
-        }),
+        body: generateProxyV1Payload(
+          {
+            headers: headers.header2,
+            params: params.param2,
+            JSON: validRequestPayload2,
+            endpoint:
+              'https://googleads.googleapis.com/v14/customers/1234567891:uploadClickConversions',
+          },
+          metadataArray,
+        ),
         method: 'POST',
       },
     },
@@ -584,13 +585,16 @@ export const testScenariosForV1API = [
     version: 'v1',
     input: {
       request: {
-        body: generateProxyV1Payload({
-          headers: headers.header2,
-          params: params.param3,
-          JSON: validRequestPayload2,
-          endpoint:
-            'https://googleads.googleapis.com/v14/customers/1234567891:uploadClickConversions',
-        }),
+        body: generateProxyV1Payload(
+          {
+            headers: headers.header2,
+            params: params.param3,
+            JSON: validRequestPayload2,
+            endpoint:
+              'https://googleads.googleapis.com/v14/customers/1234567891:uploadClickConversions',
+          },
+          metadataArray,
+        ),
         method: 'POST',
       },
     },
@@ -627,13 +631,16 @@ export const testScenariosForV1API = [
     version: 'v1',
     input: {
       request: {
-        body: generateProxyV1Payload({
-          headers: headers.header2,
-          params: params.param4,
-          JSON: notAllowedToAccessFeatureRequestPayload,
-          endpoint:
-            'https://googleads.googleapis.com/v14/customers/1234567893:uploadClickConversions',
-        }),
+        body: generateProxyV1Payload(
+          {
+            headers: headers.header2,
+            params: params.param4,
+            JSON: notAllowedToAccessFeatureRequestPayload,
+            endpoint:
+              'https://googleads.googleapis.com/v14/customers/1234567893:uploadClickConversions',
+          },
+          metadataArray,
+        ),
         method: 'POST',
       },
     },

@@ -6975,7 +6975,7 @@ export const data = [
   },
   {
     name: 'tiktok_ads',
-    description: 'Test 8',
+    description: 'Testing if the event name provided as a string or not',
     feature: 'processor',
     module: 'destination',
     version: 'v0',

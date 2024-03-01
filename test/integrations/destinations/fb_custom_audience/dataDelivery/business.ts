@@ -2,7 +2,7 @@ import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
 import { ProxyV1TestData } from '../../../testTypes';
 import { getEndPoint } from '../../../../../src/v0/destinations/fb_custom_audience/config';
 
-const statTags = {
+export const statTags = {
   destType: 'FB_CUSTOM_AUDIENCE',
   destinationId: 'default-destinationId',
   errorCategory: 'network',
@@ -13,7 +13,45 @@ const statTags = {
   workspaceId: 'default-workspaceId',
 };
 
-const params = {
+const testParams1 = {
+  access_token: 'ABC',
+  payload: {
+    is_raw: true,
+    data_source: {
+      sub_type: 'ANYTHING',
+    },
+    schema: [
+      'EMAIL',
+      'DOBM',
+      'DOBD',
+      'DOBY',
+      'PHONE',
+      'GEN',
+      'FI',
+      'MADID',
+      'ZIP',
+      'ST',
+      'COUNTRY',
+    ],
+    data: [
+      [
+        'shrouti@abc.com',
+        '2',
+        '13',
+        '2013',
+        '@09432457768',
+        'f',
+        'Ms.',
+        'ABC',
+        'ZIP ',
+        '123abc ',
+        'IN',
+      ],
+    ],
+  },
+};
+
+export const testParams2 = {
   access_token: 'ABC',
   payload: {
     is_raw: true,
@@ -22,6 +60,18 @@ const params = {
     },
     schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
     data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
+  },
+};
+
+const testParams3 = {
+  access_token: 'BCD',
+  payload: {
+    is_raw: true,
+    data_source: {
+      sub_type: 'ANYTHING',
+    },
+    schema: ['DOBM', 'DOBD', 'DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
+    data: [['2', '13', '2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
   },
 };
 
@@ -43,43 +93,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           headers: {
             'test-dest-response-key': 'successResponse',
           },
-          params: {
-            access_token: 'ABC',
-            payload: {
-              is_raw: true,
-              data_source: {
-                sub_type: 'ANYTHING',
-              },
-              schema: [
-                'EMAIL',
-                'DOBM',
-                'DOBD',
-                'DOBY',
-                'PHONE',
-                'GEN',
-                'FI',
-                'MADID',
-                'ZIP',
-                'ST',
-                'COUNTRY',
-              ],
-              data: [
-                [
-                  'shrouti@abc.com',
-                  '2',
-                  '13',
-                  '2013',
-                  '@09432457768',
-                  'f',
-                  'Ms.',
-                  'ABC',
-                  'ZIP ',
-                  '123abc ',
-                  'IN',
-                ],
-              ],
-            },
-          },
+          params: testParams1,
         }),
         method: 'POST',
       },
@@ -121,30 +135,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           headers: {
             'test-dest-response-key': 'permissionMissingError',
           },
-          params: {
-            access_token: 'BCD',
-            payload: {
-              is_raw: true,
-              data_source: {
-                sub_type: 'ANYTHING',
-              },
-              schema: [
-                'DOBM',
-                'DOBD',
-                'DOBY',
-                'PHONE',
-                'GEN',
-                'FI',
-                'MADID',
-                'ZIP',
-                'ST',
-                'COUNTRY',
-              ],
-              data: [
-                ['2', '13', '2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN'],
-              ],
-            },
-          },
+          params: testParams3,
         }),
         method: 'POST',
       },
@@ -188,7 +179,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           headers: {
             'test-dest-response-key': 'audienceUnavailableError',
           },
-          params,
+          params: testParams2,
         }),
         method: 'POST',
       },
@@ -232,7 +223,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           headers: {
             'test-dest-response-key': 'audienceDeletedError',
           },
-          params,
+          params: testParams2,
         }),
         method: 'POST',
       },
@@ -274,7 +265,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           headers: {
             'test-dest-response-key': 'failedToUpdateAudienceError',
           },
-          params,
+          params: testParams2,
         }),
         method: 'POST',
       },
@@ -317,7 +308,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           headers: {
             'test-dest-response-key': 'parameterExceededError',
           },
-          params,
+          params: testParams2,
         }),
         method: 'POST',
       },
@@ -359,7 +350,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           headers: {
             'test-dest-response-key': 'code200PermissionError',
           },
-          params,
+          params: testParams2,
         }),
         method: 'POST',
       },
@@ -401,7 +392,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           headers: {
             'test-dest-response-key': 'accessTokenInvalidError',
           },
-          params,
+          params: testParams2,
         }),
         method: 'POST',
       },
@@ -415,15 +406,10 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             message:
               'Error validating access token: Session has expired on Tuesday, 01-Aug-23 10:12:14 PDT. The current time is Sunday, 28-Jan-24 16:01:17 PST.',
             statTags: {
-              destType: 'FB_CUSTOM_AUDIENCE',
-              destinationId: 'default-destinationId',
+              ...statTags,
               errorCategory: 'dataValidation',
               errorType: 'configuration',
               meta: 'accessTokenExpired',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'default-workspaceId',
             },
             response: [
               {

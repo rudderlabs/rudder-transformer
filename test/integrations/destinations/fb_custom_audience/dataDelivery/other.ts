@@ -1,6 +1,7 @@
 import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
 import { ProxyV1TestData } from '../../../testTypes';
 import { getEndPoint } from '../../../../../src/v0/destinations/fb_custom_audience/config';
+import { statTags, testParams2 as testParams } from './business';
 
 export const otherScenariosV1: ProxyV1TestData[] = [
   {
@@ -21,17 +22,7 @@ export const otherScenariosV1: ProxyV1TestData[] = [
           headers: {
             'test-dest-response-key': 'tooManyCallsError',
           },
-          params: {
-            access_token: 'ABC',
-            payload: {
-              is_raw: true,
-              data_source: {
-                sub_type: 'ANYTHING',
-              },
-              schema: ['DOBY', 'PHONE', 'GEN', 'FI', 'MADID', 'ZIP', 'ST', 'COUNTRY'],
-              data: [['2013', '@09432457768', 'f', 'Ms.', 'ABC', 'ZIP ', '123abc ', 'IN']],
-            },
-          },
+          params: testParams,
         }),
         method: 'POST',
       },
@@ -43,14 +34,8 @@ export const otherScenariosV1: ProxyV1TestData[] = [
           output: {
             message: 'There have been too many calls to this ad-account.',
             statTags: {
-              destType: 'FB_CUSTOM_AUDIENCE',
-              destinationId: 'default-destinationId',
-              errorCategory: 'network',
+              ...statTags,
               errorType: 'throttled',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'default-workspaceId',
             },
             status: 429,
             response: [

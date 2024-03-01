@@ -35,7 +35,7 @@ const transformSubEventTypeProfiles = (message, workspaceId, destinationId) => {
   // form the hash
   const hash = `${workspaceId}:${destinationId}:${message.context.sources.profiles_entity}:${message.context.sources.profiles_id_type}:${message.userId}`;
   const key = `${message.context.sources.profiles_model}`;
-  let value = JSON.stringify(message.traits);
+  let value;
   if (message.type === EventType.RECORD) {
     const { action, userId, fields } = message;
     value = JSON.stringify(fields);
@@ -49,6 +49,7 @@ const transformSubEventTypeProfiles = (message, workspaceId, destinationId) => {
       userId,
     };
   }
+  value = JSON.stringify(message.traits);
   return {
     message: {
       hash,

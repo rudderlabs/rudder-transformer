@@ -450,18 +450,31 @@ describe('Unit test cases for trimTraits', () => {
 });
 
 describe('generatePageOrScreenCustomEventName', () => {
+  it('should throw a ConfigurationError when userDefinedEventTemplate is not provided', () => {
+    const message = { name: 'Home' };
+    const userDefinedEventTemplate = undefined;
+    expect(() => {
+      generatePageOrScreenCustomEventName(message, userDefinedEventTemplate);
+    }).toThrow(ConfigurationError);
+  });
+
   it('should generate a custom event name when userDefinedEventTemplate contains event template and message object is provided', () => {
-    const message = { name: 'Doc', properties: { category: 'Integration' } };
+    let message = { name: 'Doc', properties: { category: 'Integration' } };
     const userDefinedEventTemplate = 'Viewed {{ category }} {{ name }} page';
-    const expected = 'Viewed Integration Doc page';
-    const result = generatePageOrScreenCustomEventName(message, userDefinedEventTemplate);
+    let expected = 'Viewed Integration Doc page';
+    let result = generatePageOrScreenCustomEventName(message, userDefinedEventTemplate);
+    expect(result).toBe(expected);
+
+    message = { name: true, properties: { category: 0 } };
+    expected = 'Viewed 0 true page';
+    result = generatePageOrScreenCustomEventName(message, userDefinedEventTemplate);
     expect(result).toBe(expected);
   });
 
   it('should generate a custom event name when userDefinedEventTemplate contains event template and category or name is missing in message object', () => {
-    const message = { name: 'Doc' };
-    const userDefinedEventTemplate = 'Viewed {{ category }} {{ name }} page';
-    const expected = 'Viewed Doc page';
+    const message = { name: 'Doc', properties: { category: undefined } };
+    const userDefinedEventTemplate = 'Viewed   {{ category }}   {{ name }} page  someKeyword';
+    const expected = 'Viewed     Doc page  someKeyword';
     const result = generatePageOrScreenCustomEventName(message, userDefinedEventTemplate);
     expect(result).toBe(expected);
   });
@@ -474,14 +487,6 @@ describe('generatePageOrScreenCustomEventName', () => {
     expect(result).toBe(expected);
   });
 
-  it('should throw a ConfigurationError when userDefinedEventTemplate is not provided', () => {
-    const message = { name: 'Home' };
-    const userDefinedEventTemplate = undefined;
-    expect(() => {
-      generatePageOrScreenCustomEventName(message, userDefinedEventTemplate);
-    }).toThrow(ConfigurationError);
-  });
-
   it('should return the userDefinedEventTemplate when it does not contain placeholder {{}}', () => {
     const message = { name: 'Index' };
     const userDefinedEventTemplate = 'Viewed a Home page';
@@ -492,8 +497,8 @@ describe('generatePageOrScreenCustomEventName', () => {
 
   it('should return a event name when message object is not provided/empty', () => {
     const message = {};
-    const userDefinedEventTemplate = 'Viewed {{ category }} {{ name }} page';
-    const expected = 'Viewed page';
+    const userDefinedEventTemplate = 'Viewed  {{ category }}  {{ name }}  page  someKeyword';
+    const expected = 'Viewed    page  someKeyword';
     const result = generatePageOrScreenCustomEventName(message, userDefinedEventTemplate);
     expect(result).toBe(expected);
   });

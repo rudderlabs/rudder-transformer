@@ -1,6 +1,29 @@
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateProxyV1Payload } from '../../../testUtils';
 
+const statTags = {
+  errorCategory: 'network',
+  errorType: 'retryable',
+  destType: 'SALESFORCE',
+  module: 'destination',
+  implementation: 'native',
+  feature: 'dataDelivery',
+  destinationId: 'default-destinationId',
+  workspaceId: 'default-workspaceId',
+};
+const metadata = {
+  jobId: 1,
+  attemptNum: 1,
+  userId: 'default-userId',
+  destinationId: 'default-destinationId',
+  workspaceId: 'default-workspaceId',
+  sourceId: 'default-sourceId',
+  secret: {
+    accessToken: 'default-accessToken',
+  },
+  dontBatch: false,
+};
+
 export const otherSalesforceScenariosV1: ProxyV1TestData[] = [
   {
     id: 'salesforce_v1_other_scenario_1',
@@ -30,30 +53,10 @@ export const otherSalesforceScenariosV1: ProxyV1TestData[] = [
                 error:
                   '{"error":{"message":"Service Unavailable","description":"The server is currently unable to handle the request due to temporary overloading or maintenance of the server. Please try again later."}}',
                 statusCode: 500,
-                metadata: {
-                  jobId: 1,
-                  attemptNum: 1,
-                  userId: 'default-userId',
-                  destinationId: 'default-destinationId',
-                  workspaceId: 'default-workspaceId',
-                  sourceId: 'default-sourceId',
-                  secret: {
-                    accessToken: 'default-accessToken',
-                  },
-                  dontBatch: false,
-                },
+                metadata,
               },
             ],
-            statTags: {
-              errorCategory: 'network',
-              errorType: 'retryable',
-              destType: 'SALESFORCE',
-              module: 'destination',
-              implementation: 'native',
-              feature: 'dataDelivery',
-              destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
-            },
+            statTags,
             message:
               'Salesforce Request Failed - due to "{"error":{"message":"Service Unavailable","description":"The server is currently unable to handle the request due to temporary overloading or maintenance of the server. Please try again later."}}", (Retryable) during Salesforce Response Handling',
             status: 500,
@@ -88,30 +91,10 @@ export const otherSalesforceScenariosV1: ProxyV1TestData[] = [
               {
                 error: '"Internal Server Error"',
                 statusCode: 500,
-                metadata: {
-                  jobId: 1,
-                  attemptNum: 1,
-                  userId: 'default-userId',
-                  destinationId: 'default-destinationId',
-                  workspaceId: 'default-workspaceId',
-                  sourceId: 'default-sourceId',
-                  secret: {
-                    accessToken: 'default-accessToken',
-                  },
-                  dontBatch: false,
-                },
+                metadata,
               },
             ],
-            statTags: {
-              errorCategory: 'network',
-              errorType: 'retryable',
-              destType: 'SALESFORCE',
-              module: 'destination',
-              implementation: 'native',
-              feature: 'dataDelivery',
-              destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
-            },
+            statTags,
             message:
               'Salesforce Request Failed - due to ""Internal Server Error"", (Retryable) during Salesforce Response Handling',
             status: 500,

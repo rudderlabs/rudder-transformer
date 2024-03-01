@@ -1448,23 +1448,6 @@ export const data = [
               anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
               channel: 'web',
               context: {
-                device: {
-                  id: 'df16bffa-5c3d-4fbb-9bce-3bab098129a7R',
-                  manufacturer: 'Xiaomi',
-                  model: 'Redmi 6',
-                  name: 'xiaomi',
-                },
-                network: {
-                  carrier: 'Banglalink',
-                },
-                os: {
-                  name: 'android',
-                  version: '8.1.0',
-                },
-                screen: {
-                  height: '100',
-                  density: 50,
-                },
                 traits: {
                   email: '    aBc@gmail.com   ',
                   address: {
@@ -1482,7 +1465,6 @@ export const data = [
                 content_type: 'product_group',
                 revenue: 400,
                 additional_bet_index: 0,
-                delivery_category: 'home_delivery',
                 products: [
                   {
                     product_id: 1234,
@@ -1511,17 +1493,7 @@ export const data = [
                     to: '',
                   },
                 ],
-                eventCustomProperties: [
-                  {
-                    eventCustomProperties: '',
-                  },
-                ],
                 removeExternalId: true,
-                whitelistPiiProperties: [
-                  {
-                    whitelistPiiProperties: '',
-                  },
-                ],
                 actionSource: 'website',
               },
               Enabled: true,
@@ -1548,7 +1520,7 @@ export const data = [
                 JSON_ARRAY: {},
                 FORM: {
                   data: [
-                    '{"user_data":{"em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08","zp":"03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"},"event_name":"Purchase","event_time":1699784211,"action_source":"website","custom_data":{"content_type":"product_group","revenue":400,"additional_bet_index":0,"delivery_category":"home_delivery","products":[{"product_id":1234,"quantity":5,"price":55}],"content_ids":[1234],"contents":[{"id":1234,"quantity":5,"item_price":55,"delivery_category":"home_delivery"}],"currency":"USD","value":400,"num_items":1}}',
+                    '{"user_data":{"em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08","zp":"03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"},"event_name":"Purchase","event_time":1699784211,"action_source":"website","custom_data":{"content_type":"product_group","revenue":400,"additional_bet_index":0,"products":[{"product_id":1234,"quantity":5,"price":55}],"content_ids":[1234],"contents":[{"id":1234,"quantity":5,"item_price":55}],"currency":"USD","value":400,"num_items":1}}',
                   ],
                 },
               },

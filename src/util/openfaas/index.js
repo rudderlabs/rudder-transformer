@@ -11,6 +11,8 @@ const stats = require('../stats');
 const { getMetadata, getTransformationMetadata } = require('../../v0/util');
 const { HTTP_STATUS_CODES } = require('../../v0/util/constant');
 
+const FAAS_GUNICORN_WORKERS = process.env.FAAS_GUNICORN_WORKERS || '1';
+const FAAS_GUNICORN_THREADS = process.env.FAAS_GUNICORN_THREADS || '1';
 const FAAS_BASE_IMG = process.env.FAAS_BASE_IMG || 'rudderlabs/openfaas-flask:main';
 const FAAS_MAX_PODS_IN_TEXT = process.env.FAAS_MAX_PODS_IN_TEXT || '40';
 const FAAS_MIN_PODS_IN_TEXT = process.env.FAAS_MIN_PODS_IN_TEXT || '1';
@@ -135,7 +137,11 @@ const deployFaasFunction = async (
       envProcess = `${envProcess} --code "${code}" --config-backend-url ${CONFIG_BACKEND_URL} --lvids "${lvidsString}"`;
     }
 
-    const envVars = {};
+    const envVars = {
+      GUNICORN_WORKER_COUNT: FAAS_GUNICORN_WORKERS,
+      GUNICORN_THREAD_COUNT: FAAS_GUNICORN_THREADS,
+    };
+
     if (FAAS_ENABLE_WATCHDOG_ENV_VARS.trim().toLowerCase() === 'true') {
       envVars.max_inflight = FAAS_MAX_INFLIGHT;
       envVars.exec_timeout = FAAS_EXEC_TIMEOUT;
@@ -247,24 +253,13 @@ const executeFaasFunction = async (
   try {
     if (testMode) await awaitFunctionReadiness(name);
     return await invokeFunction(name, events);
-
   } catch (error) {
     logger.error(`Error while invoking ${name}: ${error.message}`);
     errorRaised = error;
 
-    if (
-      error.statusCode === 404 &&
-      error.message.includes(`error finding function ${name}`)
-    ) {
+    if (error.statusCode === 404 && error.message.includes(`error finding function ${name}`)) {
       removeFunctionFromCache(name);
-      await setupFaasFunction(
-        name,
-        null,
-        versionId,
-        libraryVersionIDs,
-        testMode,
-        trMetadata,
-      );
+      await setupFaasFunction(name, null, versionId, libraryVersionIDs, testMode, trMetadata);
       throw new RetryRequestError(`${name} not found`);
     }
 
@@ -284,22 +279,23 @@ const executeFaasFunction = async (
   } finally {
     // delete the function created, if it's called as part of testMode
     if (testMode) {
-      deleteFunction(name).catch((err) => 
-        logger.error(`[Faas] Error while deleting ${name}: ${err.message}`))
+      deleteFunction(name).catch((err) =>
+        logger.error(`[Faas] Error while deleting ${name}: ${err.message}`),
+      );
     }
 
     // setup the tags for observability and then fire the stats
     const tags = {
-      identifier: "openfaas",
+      identifier: 'openfaas',
       testMode: testMode,
       errored: errorRaised ? true : false,
       statusCode: errorRaised ? errorRaised.statusCode : HTTP_STATUS_CODES.OK, // default statuscode is 200OK
-      ...events.length && events[0].metadata ? getMetadata(events[0].metadata) : {},
-      ...events.length && events[0].metadata ? getTransformationMetadata(events[0].metadata) : {},
-    }
+      ...(events.length && events[0].metadata ? getMetadata(events[0].metadata) : {}),
+      ...(events.length && events[0].metadata ? getTransformationMetadata(events[0].metadata) : {}),
+    };
 
-    stats.counter('user_transform_function_input_events', events.length, tags)
-    stats.timing('user_transform_function_latency', startTime, tags)
+    stats.counter('user_transform_function_input_events', events.length, tags);
+    stats.timing('user_transform_function_latency', startTime, tags);
   }
 };
 

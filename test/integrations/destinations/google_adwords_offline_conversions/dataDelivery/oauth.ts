@@ -153,6 +153,8 @@ const invalidCredsRequestPayload2 = {
   partialFailure: true,
 };
 
+const metadataArray = [generateMetadata(1)];
+
 const expectedStatTags = {
   destType: 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS',
   destinationId: 'default-destinationId',
@@ -271,12 +273,16 @@ export const v1oauthScenarios = [
     version: 'v1',
     input: {
       request: {
-        body: generateProxyV1Payload({
-          headers: commonHeaders1,
-          params: commonParams1,
-          JSON: invalidCredsRequestPayload1,
-          endpoint: 'https://googleads.googleapis.com/v14/customers/customerid/offlineUserDataJobs',
-        }),
+        body: generateProxyV1Payload(
+          {
+            headers: commonHeaders1,
+            params: commonParams1,
+            JSON: invalidCredsRequestPayload1,
+            endpoint:
+              'https://googleads.googleapis.com/v14/customers/customerid/offlineUserDataJobs',
+          },
+          metadataArray,
+        ),
         method: 'POST',
       },
     },
@@ -315,13 +321,16 @@ export const v1oauthScenarios = [
     version: 'v1',
     input: {
       request: {
-        body: generateProxyV1Payload({
-          headers: commonHeaders2,
-          params: commonParams2,
-          JSON: invalidCredsRequestPayload2,
-          endpoint:
-            'https://googleads.googleapis.com/v14/customers/1234567890:uploadClickConversions',
-        }),
+        body: generateProxyV1Payload(
+          {
+            headers: commonHeaders2,
+            params: commonParams2,
+            JSON: invalidCredsRequestPayload2,
+            endpoint:
+              'https://googleads.googleapis.com/v14/customers/1234567890:uploadClickConversions',
+          },
+          metadataArray,
+        ),
         method: 'POST',
       },
     },

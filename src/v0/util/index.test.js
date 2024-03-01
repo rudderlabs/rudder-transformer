@@ -1,4 +1,4 @@
-const { TAG_NAMES } = require('@rudderstack/integrations-lib');
+const { TAG_NAMES, InstrumentationError } = require('@rudderstack/integrations-lib');
 const utilities = require('.');
 const { getFuncTestData } = require('../../../test/testHelper');
 const { FilteredEventsError } = require('./errorTypes');
@@ -7,6 +7,7 @@ const {
   flattenJson,
   generateExclusionList,
   combineBatchRequestsWithSameJobIds,
+  validateEventAndLowerCaseConversion,
 } = require('./index');
 
 // Names of the utility functions to test
@@ -36,7 +37,6 @@ describe('Utility Functions Tests', () => {
     test.each(funcTestData)('$description', async ({ description, input, output }) => {
       try {
         let result;
-
         // This is to allow sending multiple arguments to the function
         if (Array.isArray(input)) {
           result = utilities[funcName](...input);
@@ -454,5 +454,55 @@ describe('Unit test cases for combineBatchRequestsWithSameJobIds', () => {
       },
     ];
     expect(combineBatchRequestsWithSameJobIds(input)).toEqual(expectedOutput);
+  });
+});
+
+describe('validateEventAndLowerCaseConversion Tests', () => {
+  it('should return string conversion of number types', () => {
+    const ev = 0;
+    expect(validateEventAndLowerCaseConversion(ev, false, true)).toBe('0');
+    expect(validateEventAndLowerCaseConversion(ev, true, false)).toBe('0');
+  });
+
+  it('should convert string types to lowercase', () => {
+    const ev = 'Abc';
+    expect(validateEventAndLowerCaseConversion(ev, true, true)).toBe('abc');
+  });
+
+  it('should throw error if event is object type', () => {
+    expect(() => {
+      validateEventAndLowerCaseConversion({}, true, true);
+    }).toThrow(InstrumentationError);
+    expect(() => {
+      validateEventAndLowerCaseConversion([1, 2], false, true);
+    }).toThrow(InstrumentationError);
+    expect(() => {
+      validateEventAndLowerCaseConversion({ a: 1 }, true, true);
+    }).toThrow(InstrumentationError);
+  });
+
+  it('should convert string to lowercase', () => {
+    expect(validateEventAndLowerCaseConversion('Abc', true, true)).toBe('abc');
+    expect(validateEventAndLowerCaseConversion('ABC', true, false)).toBe('ABC');
+    expect(validateEventAndLowerCaseConversion('abc55', false, true)).toBe('abc55');
+    expect(validateEventAndLowerCaseConversion(123, false, true)).toBe('123');
+  });
+
+  it('should throw error for null and undefined', () => {
+    expect(() => {
+      validateEventAndLowerCaseConversion(null, true, true);
+    }).toThrow(InstrumentationError);
+    expect(() => {
+      validateEventAndLowerCaseConversion(undefined, false, true);
+    }).toThrow(InstrumentationError);
+  });
+
+  it('should throw error for boolean values', () => {
+    expect(() => {
+      validateEventAndLowerCaseConversion(true, true, true);
+    }).toThrow(InstrumentationError);
+    expect(() => {
+      validateEventAndLowerCaseConversion(false, false, false);
+    }).toThrow(InstrumentationError);
   });
 });

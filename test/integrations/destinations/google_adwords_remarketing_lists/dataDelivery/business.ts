@@ -1,5 +1,8 @@
-import { ProxyMetdata } from '../../../../../src/types';
-import { generateProxyV0Payload, generateProxyV1Payload } from '../../../testUtils';
+import {
+  generateMetadata,
+  generateProxyV0Payload,
+  generateProxyV1Payload,
+} from '../../../testUtils';
 
 const commonHeaders = {
   Authorization: 'Bearer dummy-access',
@@ -87,18 +90,18 @@ const invalidArgumentRequestPayload = {
   ],
 };
 
-const proxyMetdata: ProxyMetdata = {
-  jobId: 1,
-  attemptNum: 1,
-  userId: 'dummyUserId',
-  sourceId: 'dummySourceId',
-  destinationId: 'dummyDestinationId',
-  workspaceId: 'dummyWorkspaceId',
-  secret: {},
-  dontBatch: false,
-};
+const metadataArray = [generateMetadata(1)];
 
-const metadata = [proxyMetdata];
+const expectedStatTags = {
+  destType: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
+  destinationId: 'default-destinationId',
+  errorCategory: 'network',
+  errorType: 'aborted',
+  feature: 'dataDelivery',
+  implementation: 'native',
+  module: 'destination',
+  workspaceId: 'default-workspaceId',
+};
 
 export const testScenariosForV0API = [
   {
@@ -192,16 +195,7 @@ export const testScenariosForV0API = [
                 status: 'INVALID_ARGUMENT',
               },
             },
-            statTags: {
-              destType: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
-              errorCategory: 'network',
-              destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-            },
+            statTags: expectedStatTags,
           },
         },
       },
@@ -264,7 +258,7 @@ export const testScenariosForV1API = [
             endpoint:
               'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
           },
-          metadata,
+          metadataArray,
         ),
         method: 'POST',
       },
@@ -278,16 +272,7 @@ export const testScenariosForV1API = [
             response: [
               {
                 error: '""',
-                metadata: {
-                  attemptNum: 1,
-                  destinationId: 'dummyDestinationId',
-                  dontBatch: false,
-                  jobId: 1,
-                  secret: {},
-                  sourceId: 'dummySourceId',
-                  userId: 'dummyUserId',
-                  workspaceId: 'dummyWorkspaceId',
-                },
+                metadata: generateMetadata(1),
                 statusCode: 200,
               },
             ],
@@ -317,7 +302,7 @@ export const testScenariosForV1API = [
             endpoint:
               'https://googleads.googleapis.com/v15/customers/7693729834/offlineUserDataJobs',
           },
-          metadata,
+          metadataArray,
         ),
         method: 'POST',
       },
@@ -333,29 +318,11 @@ export const testScenariosForV1API = [
               {
                 error:
                   'Request contains an invalid argument. during ga_audience response transformation',
-                metadata: {
-                  attemptNum: 1,
-                  destinationId: 'dummyDestinationId',
-                  dontBatch: false,
-                  jobId: 1,
-                  secret: {},
-                  sourceId: 'dummySourceId',
-                  userId: 'dummyUserId',
-                  workspaceId: 'dummyWorkspaceId',
-                },
+                metadata: generateMetadata(1),
                 statusCode: 400,
               },
             ],
-            statTags: {
-              destType: 'GOOGLE_ADWORDS_REMARKETING_LISTS',
-              destinationId: 'dummyDestinationId',
-              errorCategory: 'network',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'dummyWorkspaceId',
-            },
+            statTags: expectedStatTags,
             status: 400,
           },
         },
@@ -382,7 +349,7 @@ export const testScenariosForV1API = [
             endpoint:
               'https://googleads.googleapis.com/v15/customers/7693729833/offlineUserDataJobs',
           },
-          metadata,
+          metadataArray,
         ),
         method: 'POST',
       },
@@ -396,16 +363,7 @@ export const testScenariosForV1API = [
             response: [
               {
                 error: '""',
-                metadata: {
-                  attemptNum: 1,
-                  destinationId: 'dummyDestinationId',
-                  dontBatch: false,
-                  jobId: 1,
-                  secret: {},
-                  sourceId: 'dummySourceId',
-                  userId: 'dummyUserId',
-                  workspaceId: 'dummyWorkspaceId',
-                },
+                metadata: generateMetadata(1),
                 statusCode: 200,
               },
             ],

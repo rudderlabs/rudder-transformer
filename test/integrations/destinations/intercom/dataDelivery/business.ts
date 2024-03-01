@@ -1,5 +1,8 @@
-import { ProxyMetdata } from '../../../../../src/types';
-import { generateProxyV0Payload, generateProxyV1Payload } from '../../../testUtils';
+import {
+  generateMetadata,
+  generateProxyV0Payload,
+  generateProxyV1Payload,
+} from '../../../testUtils';
 
 const commonHeaders = {
   'Content-Type': 'application/json',
@@ -36,18 +39,18 @@ const commonRequestParameters = {
   headers: commonHeaders,
 };
 
-const proxyMetdata: ProxyMetdata = {
-  jobId: 1,
-  attemptNum: 1,
-  userId: 'dummyUserId',
-  sourceId: 'dummySourceId',
-  destinationId: 'dummyDestinationId',
-  workspaceId: 'dummyWorkspaceId',
-  secret: {},
-  dontBatch: false,
+const expectedStatTags = {
+  destType: 'INTERCOM',
+  destinationId: 'default-destinationId',
+  errorCategory: 'network',
+  errorType: 'retryable',
+  feature: 'dataDelivery',
+  implementation: 'native',
+  module: 'destination',
+  workspaceId: 'default-workspaceId',
 };
 
-const metadataArray = [proxyMetdata];
+const metadataArray = [generateMetadata(1)];
 
 export const testScenariosForV0API = [
   {
@@ -89,16 +92,7 @@ export const testScenariosForV0API = [
               },
               status: 408,
             },
-            statTags: {
-              destType: 'INTERCOM',
-              errorCategory: 'network',
-              destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
-              errorType: 'retryable',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-            },
+            statTags: expectedStatTags,
           },
         },
       },
@@ -139,29 +133,11 @@ export const testScenariosForV1API = [
               {
                 error:
                   '{"type":"error.list","request_id":"000on04msi4jpk7d3u60","errors":[{"code":"Request Timeout","message":"The server would not wait any longer for the client"}]}',
-                metadata: {
-                  attemptNum: 1,
-                  destinationId: 'dummyDestinationId',
-                  dontBatch: false,
-                  jobId: 1,
-                  secret: {},
-                  sourceId: 'dummySourceId',
-                  userId: 'dummyUserId',
-                  workspaceId: 'dummyWorkspaceId',
-                },
+                metadata: generateMetadata(1),
                 statusCode: 500,
               },
             ],
-            statTags: {
-              destType: 'INTERCOM',
-              destinationId: 'dummyDestinationId',
-              errorCategory: 'network',
-              errorType: 'retryable',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'dummyWorkspaceId',
-            },
+            statTags: expectedStatTags,
             status: 500,
           },
         },

@@ -1,3 +1,3 @@
-import { testScenariosForV1API } from './business';
+import { testScenariosForV0API, testScenariosForV1API } from './business';
 
-export const data = [...testScenariosForV1API];
+export const data = [...testScenariosForV0API, ...testScenariosForV1API];

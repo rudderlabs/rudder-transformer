@@ -1,5 +1,9 @@
-import { ProxyMetdata } from '../../../../../src/types';
-import { generateProxyV1Payload } from '../../../testUtils';
+import { ProxyV1TestData } from '../../../testTypes';
+import {
+  generateMetadata,
+  generateProxyV0Payload,
+  generateProxyV1Payload,
+} from '../../../testUtils';
 import { JSON_MIME_TYPE } from '../../../../../src/v0/util/constant';
 
 const headers = {
@@ -79,20 +83,145 @@ const invalidParameterValueRequest = {
   non_personalized_ads: true,
 };
 
-const proxyMetdata: ProxyMetdata = {
-  jobId: 1,
-  attemptNum: 1,
-  userId: 'dummyUserId',
-  sourceId: 'dummySourceId',
-  destinationId: 'dummyDestinationId',
-  workspaceId: 'dummyWorkspaceId',
-  secret: {},
-  dontBatch: false,
+const metadataArray = [generateMetadata(1)];
+
+const expectedStatTags = {
+  destType: 'GA4',
+  destinationId: 'default-destinationId',
+  errorCategory: 'network',
+  errorType: 'aborted',
+  feature: 'dataDelivery',
+  implementation: 'native',
+  module: 'destination',
+  workspaceId: 'default-workspaceId',
 };
 
-const metadataArray = [proxyMetdata];
+export const testScenariosForV0API = [
+  {
+    id: 'ga4_v0_scenario_1',
+    name: 'ga4',
+    description:
+      '[Proxy v0 API] :: Test for a valid request - where the destination responds with 200 without any error',
+    successCriteria: 'Should return 200 with no error with destination response',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: generateProxyV0Payload({
+          headers,
+          params,
+          JSON: validRequest,
+          endpoint: 'https://www.google-analytics.com/debug/mp/collect',
+        }),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            destinationResponse: {
+              response: {
+                validationMessages: [],
+              },
+              status: 200,
+            },
+            message: '[GA4 Response Handler] - Request Processed Successfully',
+            status: 200,
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'ga4_v0_scenario_2',
+    name: 'ga4',
+    description:
+      '[Proxy v0 API] :: Test for a invalid event name - where the destination responds with 200 with error for invalid event name',
+    successCriteria: 'Should return 200 with error with destination response',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: generateProxyV0Payload({
+          headers,
+          params,
+          JSON: invalidEventNameRequest,
+          endpoint: 'https://www.google-analytics.com/debug/mp/collect',
+        }),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 400,
+        body: {
+          output: {
+            destinationResponse:
+              'Event at index: [0] has invalid name [campaign@details]. Only alphanumeric characters and underscores are allowed.',
+            message:
+              'Validation Server Response Handler:: Validation Error for ga4 of field path :events | NAME_INVALID-Event at index: [0] has invalid name [campaign@details]. Only alphanumeric characters and underscores are allowed.',
+            statTags: expectedStatTags,
+            status: 400,
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'ga4_v0_scenario_3',
+    name: 'ga4',
+    description:
+      '[Proxy v0 API] :: Test for a invalid parameter value - where the destination responds with 200 with error for invalid parameter value',
+    successCriteria: 'Should return 200 with error with destination response',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: generateProxyV0Payload({
+          headers,
+          params,
+          JSON: invalidParameterValueRequest,
+          endpoint: 'https://www.google-analytics.com/debug/mp/collect',
+        }),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 400,
+        body: {
+          output: {
+            destinationResponse:
+              'Validation of item.price should prevent conversion from unsupported value [string_value: "$19"]',
+            message:
+              'Validation Server Response Handler:: Validation Error for ga4 of field path :undefined | INTERNAL_ERROR-Validation of item.price should prevent conversion from unsupported value [string_value: "$19"]',
+            statTags: {
+              destType: 'GA4',
+              destinationId: 'default-destinationId',
+              errorCategory: 'network',
+              errorType: 'aborted',
+              feature: 'dataDelivery',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'default-workspaceId',
+            },
+            status: 400,
+          },
+        },
+      },
+    },
+  },
+];
 
-export const testScenariosForV1API = [
+export const testScenariosForV1API: ProxyV1TestData[] = [
   {
     id: 'ga4_v1_scenario_1',
     name: 'ga4',
@@ -126,16 +255,7 @@ export const testScenariosForV1API = [
             response: [
               {
                 error: '{"validationMessages":[]}',
-                metadata: {
-                  attemptNum: 1,
-                  destinationId: 'dummyDestinationId',
-                  dontBatch: false,
-                  jobId: 1,
-                  secret: {},
-                  sourceId: 'dummySourceId',
-                  userId: 'dummyUserId',
-                  workspaceId: 'dummyWorkspaceId',
-                },
+                metadata: generateMetadata(1),
                 statusCode: 200,
               },
             ],
@@ -180,29 +300,11 @@ export const testScenariosForV1API = [
               {
                 error:
                   'Validation Server Response Handler:: Validation Error for ga4 of field path :events | NAME_INVALID-Event at index: [0] has invalid name [campaign@details]. Only alphanumeric characters and underscores are allowed.',
-                metadata: {
-                  attemptNum: 1,
-                  destinationId: 'dummyDestinationId',
-                  dontBatch: false,
-                  jobId: 1,
-                  secret: {},
-                  sourceId: 'dummySourceId',
-                  userId: 'dummyUserId',
-                  workspaceId: 'dummyWorkspaceId',
-                },
+                metadata: generateMetadata(1),
                 statusCode: 400,
               },
             ],
-            statTags: {
-              destType: 'GA4',
-              destinationId: 'dummyDestinationId',
-              errorCategory: 'network',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'dummyWorkspaceId',
-            },
+            statTags: expectedStatTags,
             status: 400,
           },
         },
@@ -244,29 +346,11 @@ export const testScenariosForV1API = [
               {
                 error:
                   'Validation Server Response Handler:: Validation Error for ga4 of field path :undefined | INTERNAL_ERROR-Validation of item.price should prevent conversion from unsupported value [string_value: "$19"]',
-                metadata: {
-                  attemptNum: 1,
-                  destinationId: 'dummyDestinationId',
-                  dontBatch: false,
-                  jobId: 1,
-                  secret: {},
-                  sourceId: 'dummySourceId',
-                  userId: 'dummyUserId',
-                  workspaceId: 'dummyWorkspaceId',
-                },
+                metadata: generateMetadata(1),
                 statusCode: 400,
               },
             ],
-            statTags: {
-              destType: 'GA4',
-              destinationId: 'dummyDestinationId',
-              errorCategory: 'network',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'dummyWorkspaceId',
-            },
+            statTags: expectedStatTags,
             status: 400,
           },
         },

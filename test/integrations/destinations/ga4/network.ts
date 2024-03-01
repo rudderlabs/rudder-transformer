@@ -7,7 +7,7 @@ const params = {
   api_secret: 'dymmyApiSecret',
 };
 
-const businessMockData = [
+const dataDeliveryMocksData = [
   {
     description: 'Mock response from destination depicting a valid request',
     httpReq: {
@@ -136,4 +136,4 @@ const businessMockData = [
   },
 ];
 
-export const networkCallsData = [...businessMockData];
+export const networkCallsData = [...dataDeliveryMocksData];

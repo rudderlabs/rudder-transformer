@@ -17,6 +17,8 @@ const FAAS_SCALE_TARGET = process.env.FAAS_SCALE_TARGET || '4';
 const FAAS_SCALE_TARGET_PROPORTION = process.env.FAAS_SCALE_TARGET_PROPORTION || '0.70';
 const FAAS_SCALE_ZERO = process.env.FAAS_SCALE_ZERO || 'false';
 const FAAS_SCALE_ZERO_DURATION = process.env.FAAS_SCALE_ZERO_DURATION || '15m';
+const FAAS_GUNICORN_WORKERS = process.env.FAAS_GUNICORN_WORKERS || '1';
+const FAAS_GUNICORN_THREADS = process.env.FAAS_GUNICORN_THREADS || '1';
 const FAAS_BASE_IMG = process.env.FAAS_BASE_IMG || 'rudderlabs/openfaas-flask:main';
 const FAAS_MAX_PODS_IN_TEXT = process.env.FAAS_MAX_PODS_IN_TEXT || '40';
 const FAAS_MIN_PODS_IN_TEXT = process.env.FAAS_MIN_PODS_IN_TEXT || '1';
@@ -147,6 +149,7 @@ const updateFaasFunction = async (
     await updateFunction(functionName, payload);
     // wait for function to be ready and then set it in cache
     await awaitFunctionReadiness(functionName);
+    // set the function in cache
     setFunctionInCache(functionName);
   } catch (error) {
     // 404 is statuscode returned from openfaas community edition
@@ -342,7 +345,6 @@ const executeFaasFunction = async (
 
     if (error.statusCode === 404 && error.message.includes(`error finding function ${name}`)) {
       removeFunctionFromCache(name);
-
       await setupFaasFunction(name, null, versionId, libraryVersionIDs, testMode, trMetadata);
       throw new RetryRequestError(`${name} not found`);
     }

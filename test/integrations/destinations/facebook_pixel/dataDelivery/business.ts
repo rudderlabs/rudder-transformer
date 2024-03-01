@@ -2,6 +2,22 @@ import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
 import { ProxyV1TestData } from '../../../testTypes';
 import { VERSION } from '../../../../../src/v0/destinations/facebook_pixel/config';
 
+const testData = [
+  '{"user_data":{"external_id":"c58f05b5e3cc4796f3181cf07349d306547c00b20841a175b179c6860e6a34ab","client_ip_address":"32.122.223.26","client_user_agent":"Mozilla/5.0 (iPhone; CPU iPhone OS 15_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Mobile/15E148 Safari/604.1"},"event_name":"Checkout Step Viewed","event_time":1654772112,"event_source_url":"https://www.my.kaiser.com/checkout","event_id":"4f002656-a7b2-4c17-b9bd-8caa5a29190a","custom_data":{"checkout_id":"26SF29B","site":"www.my.kaiser.com","step":1}}',
+];
+const testData2 = [
+  '{"user_data":{"external_id":"c58f05b5e3cc4796f3181cf07349d306547c00b20841a175b179c6860e6a34ab","client_ip_address":"32.122.223.26","client_user_agent":"Mozilla/5.0 (iPhone; CPU iPhone OS 15_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Mobile/15E148 Safari/604.1"},"event_name":"Checkout Step Viewed","event_time":1654773112,"event_source_url":"https://www.my.kaiser.com/checkout","event_id":"4f002656-a7b2-4c17-b9bd-8caa5a29190a","custom_data":{"checkout_id":"26SF29B","site":"www.my.kaiser.com","step":1}}',
+];
+const statTags = {
+  destType: 'FACEBOOK_PIXEL',
+  errorCategory: 'network',
+  destinationId: 'default-destinationId',
+  workspaceId: 'default-workspaceId',
+  errorType: 'aborted',
+  feature: 'dataDelivery',
+  implementation: 'native',
+  module: 'destination',
+};
 export const testScenariosForV1API: ProxyV1TestData[] = [
   {
     id: 'facebook_pixel_v1_scenario_1',
@@ -16,13 +32,8 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
       request: {
         body: generateProxyV1Payload({
           endpoint: `https://graph.facebook.com/${VERSION}/1234567891234567/events?access_token=invalid_access_token`,
-          params: {
-            destination: 'facebook_pixel',
-          },
           FORM: {
-            data: [
-              '{"user_data":{"external_id":"c58f05b5e3cc4796f3181cf07349d306547c00b20841a175b179c6860e6a34ab","client_ip_address":"32.122.223.26","client_user_agent":"Mozilla/5.0 (iPhone; CPU iPhone OS 15_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Mobile/15E148 Safari/604.1"},"event_name":"Checkout Step Viewed","event_time":1654773112,"event_source_url":"https://www.my.kaiser.com/checkout","event_id":"4f002656-a7b2-4c17-b9bd-8caa5a29190a","custom_data":{"checkout_id":"26SF29B","site":"www.my.kaiser.com","step":1}}',
-            ],
+            data: testData2,
           },
         }),
         method: 'POST',
@@ -36,15 +47,10 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             status: 400,
             message: 'Invalid OAuth 2.0 access token',
             statTags: {
-              destType: 'FACEBOOK_PIXEL',
+              ...statTags,
               errorCategory: 'dataValidation',
-              destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
               errorType: 'configuration',
               meta: 'accessTokenExpired',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
             },
             response: [
               {
@@ -75,9 +81,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             destination: 'facebook_pixel',
           },
           FORM: {
-            data: [
-              '{"user_data":{"external_id":"c58f05b5e3cc4796f3181cf07349d306547c00b20841a175b179c6860e6a34ab","client_ip_address":"32.122.223.26","client_user_agent":"Mozilla/5.0 (iPhone; CPU iPhone OS 15_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Mobile/15E148 Safari/604.1"},"event_name":"Checkout Step Viewed","event_time":1654773112,"event_source_url":"https://www.my.kaiser.com/checkout","event_id":"4f002656-a7b2-4c17-b9bd-8caa5a29190a","custom_data":{"checkout_id":"26SF29B","site":"www.my.kaiser.com","step":1}}',
-            ],
+            data: testData2,
           },
         }),
         method: 'POST',
@@ -115,13 +119,8 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
       request: {
         body: generateProxyV1Payload({
           endpoint: `https://graph.facebook.com/${VERSION}/1234567891234567/events?access_token=invalid_timestamp_correct_access_token`,
-          params: {
-            destination: 'facebook_pixel',
-          },
           FORM: {
-            data: [
-              '{"user_data":{"external_id":"c58f05b5e3cc4796f3181cf07349d306547c00b20841a175b179c6860e6a34ab","client_ip_address":"32.122.223.26","client_user_agent":"Mozilla/5.0 (iPhone; CPU iPhone OS 15_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Mobile/15E148 Safari/604.1"},"event_name":"Checkout Step Viewed","event_time":1654772112,"event_source_url":"https://www.my.kaiser.com/checkout","event_id":"4f002656-a7b2-4c17-b9bd-8caa5a29190a","custom_data":{"checkout_id":"26SF29B","site":"www.my.kaiser.com","step":1}}',
-            ],
+            data: testData,
           },
         }),
         method: 'POST',
@@ -134,16 +133,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           output: {
             status: 400,
             message: 'Event Timestamp Too Old',
-            statTags: {
-              destType: 'FACEBOOK_PIXEL',
-              errorCategory: 'network',
-              destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-            },
+            statTags,
             response: [
               {
                 error: 'Event Timestamp Too Old',
@@ -169,13 +159,8 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
       request: {
         body: generateProxyV1Payload({
           endpoint: `https://graph.facebook.com/${VERSION}/1234567891234567/events?access_token=invalid_account_id_valid_access_token`,
-          params: {
-            destination: 'facebook_pixel',
-          },
           FORM: {
-            data: [
-              '{"user_data":{"external_id":"c58f05b5e3cc4796f3181cf07349d306547c00b20841a175b179c6860e6a34ab","client_ip_address":"32.122.223.26","client_user_agent":"Mozilla/5.0 (iPhone; CPU iPhone OS 15_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Mobile/15E148 Safari/604.1"},"event_name":"Checkout Step Viewed","event_time":1654772112,"event_source_url":"https://www.my.kaiser.com/checkout","event_id":"4f002656-a7b2-4c17-b9bd-8caa5a29190a","custom_data":{"checkout_id":"26SF29B","site":"www.my.kaiser.com","step":1}}',
-            ],
+            data: testData,
           },
         }),
         method: 'POST',
@@ -189,16 +174,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             status: 400,
             message:
               "Object with ID 'PIXEL_ID' / 'DATASET_ID' / 'AUDIENCE_ID' does not exist, cannot be loaded due to missing permissions, or does not support this operation",
-            statTags: {
-              destType: 'FACEBOOK_PIXEL',
-              errorCategory: 'network',
-              destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-            },
+            statTags,
             response: [
               {
                 error:
@@ -225,9 +201,6 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
       request: {
         body: generateProxyV1Payload({
           endpoint: `https://graph.facebook.com/${VERSION}/1234567891234567/events?access_token=not_found_access_token`,
-          params: {
-            destination: 'facebook_pixel',
-          },
           FORM: {
             data: [
               '{"user_data":{"external_id":"d58f05b5e3cc4796f3181cf07349d306547c00b20841a175b179c6860e6a34ab","client_ip_address":"32.122.223.26","client_user_agent":"Mozilla/5.0 (iPhone; CPU iPhone OS 15_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Mobile/15E148 Safari/604.1"},"event_name":"Checkout Step Viewed","event_time":1654772112,"event_source_url":"https://www.my.kaiser.com/checkout","event_id":"4f002656-a7b2-4c17-b9bd-8caa5a29190a","custom_data":{"checkout_id":"26SF29B","site":"www.my.kaiser.com","step":1}}',
@@ -244,16 +217,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           output: {
             status: 400,
             message: 'Invalid Parameter',
-            statTags: {
-              destType: 'FACEBOOK_PIXEL',
-              errorCategory: 'network',
-              destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-            },
+            statTags,
             response: [
               {
                 error: 'Invalid Parameter',
@@ -279,13 +243,8 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
       request: {
         body: generateProxyV1Payload({
           endpoint: `https://graph.facebook.com/${VERSION}/1234567891234570/events?access_token=valid_access_token`,
-          params: {
-            destination: 'facebook_pixel',
-          },
           FORM: {
-            data: [
-              '{"user_data":{"external_id":"c58f05b5e3cc4796f3181cf07349d306547c00b20841a175b179c6860e6a34ab","client_ip_address":"32.122.223.26","client_user_agent":"Mozilla/5.0 (iPhone; CPU iPhone OS 15_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Mobile/15E148 Safari/604.1"},"event_name":"Checkout Step Viewed","event_time":1654772112,"event_source_url":"https://www.my.kaiser.com/checkout","event_id":"4f002656-a7b2-4c17-b9bd-8caa5a29190a","custom_data":{"checkout_id":"26SF29B","site":"www.my.kaiser.com","step":1}}',
-            ],
+            data: testData,
           },
         }),
         method: 'POST',
@@ -298,16 +257,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           output: {
             status: 400,
             message: 'Invalid Parameter',
-            statTags: {
-              destType: 'FACEBOOK_PIXEL',
-              errorCategory: 'network',
-              destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-            },
+            statTags,
             response: [
               {
                 error: 'Invalid Parameter',
@@ -333,13 +283,8 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
       request: {
         body: generateProxyV1Payload({
           endpoint: `https://graph.facebook.com/${VERSION}/1234567891234571/events?access_token=valid_access_token`,
-          params: {
-            destination: 'facebook_pixel',
-          },
           FORM: {
-            data: [
-              '{"user_data":{"external_id":"c58f05b5e3cc4796f3181cf07349d306547c00b20841a175b179c6860e6a34ab","client_ip_address":"32.122.223.26","client_user_agent":"Mozilla/5.0 (iPhone; CPU iPhone OS 15_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Mobile/15E148 Safari/604.1"},"event_name":"Checkout Step Viewed","event_time":1654772112,"event_source_url":"https://www.my.kaiser.com/checkout","event_id":"4f002656-a7b2-4c17-b9bd-8caa5a29190a","custom_data":{"checkout_id":"26SF29B","site":"www.my.kaiser.com","step":1}}',
-            ],
+            data: testData,
           },
         }),
         method: 'POST',
@@ -352,16 +297,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           output: {
             status: 400,
             message: 'Capability or permissions issue.',
-            statTags: {
-              destType: 'FACEBOOK_PIXEL',
-              errorCategory: 'network',
-              destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-            },
+            statTags,
             response: [
               {
                 error: 'Capability or permissions issue.',
@@ -387,13 +323,8 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
       request: {
         body: generateProxyV1Payload({
           endpoint: `https://graph.facebook.com/${VERSION}/1234567891234572/events?access_token=valid_access_token_unhandled_response`,
-          params: {
-            destination: 'facebook_pixel',
-          },
           FORM: {
-            data: [
-              '{"user_data":{"external_id":"c58f05b5e3cc4796f3181cf07349d306547c00b20841a175b179c6860e6a34ab","client_ip_address":"32.122.223.26","client_user_agent":"Mozilla/5.0 (iPhone; CPU iPhone OS 15_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Mobile/15E148 Safari/604.1"},"event_name":"Checkout Step Viewed","event_time":1654772112,"event_source_url":"https://www.my.kaiser.com/checkout","event_id":"4f002656-a7b2-4c17-b9bd-8caa5a29190a","custom_data":{"checkout_id":"26SF29B","site":"www.my.kaiser.com","step":1}}',
-            ],
+            data: testData,
           },
         }),
         method: 'POST',
@@ -407,15 +338,9 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
             status: 500,
             message: 'Unhandled random error',
             statTags: {
-              destType: 'FACEBOOK_PIXEL',
-              errorCategory: 'network',
-              destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
+              ...statTags,
               errorType: 'retryable',
-              feature: 'dataDelivery',
-              implementation: 'native',
               meta: 'unhandledStatusCode',
-              module: 'destination',
             },
             response: [
               {

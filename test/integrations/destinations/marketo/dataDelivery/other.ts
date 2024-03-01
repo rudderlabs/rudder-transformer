@@ -1,6 +1,30 @@
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateProxyV1Payload } from '../../../testUtils';
 
+const statTags = {
+  destType: 'MARKETO',
+  destinationId: 'default-destinationId',
+  errorCategory: 'network',
+  errorType: 'aborted',
+  feature: 'dataDelivery',
+  implementation: 'native',
+  module: 'destination',
+  workspaceId: 'default-workspaceId',
+};
+
+const metadata = {
+  jobId: 1,
+  secret: {
+    accessToken: 'default-accessToken',
+  },
+  attemptNum: 1,
+  userId: 'default-userId',
+  sourceId: 'default-sourceId',
+  destinationId: 'default-destinationId',
+  workspaceId: 'default-workspaceId',
+  dontBatch: false,
+};
+
 export const otheMarketoScenariosV1: ProxyV1TestData[] = [
   {
     id: 'marketo_v1_other_scenario_1',
@@ -285,6 +309,43 @@ export const otheMarketoScenariosV1: ProxyV1TestData[] = [
             },
             message: 'Request failed  with status: 500',
             status: 500,
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'marketo_v1_scenario_6',
+    name: 'marketo',
+    description: '[Proxy v1 API] :: Test for DNS lookup failed scenario',
+    successCriteria: 'Should return a 400 status code with empty response',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload({
+          endpoint: 'https://random_test_url/dns_lookup_failure',
+        }),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 400,
+            statTags,
+            message: 'Request failed  with status: 400',
+            response: [
+              {
+                error: '{}',
+                metadata,
+                statusCode: 400,
+              },
+            ],
           },
         },
       },

@@ -1,20 +1,26 @@
+const userObject = {
+  City: 'Tokyo',
+  Country: 'JP',
+  Email: 'gabi29@gmail.com',
+  PostalCode: '100-0001',
+  Title: 'Owner',
+  id: 1328328,
+  userId: 'gabi_userId_45',
+};
+
+const headerObject = {
+  Authorization: 'Bearer test_token_2',
+  'Content-Type': 'application/json',
+  'User-Agent': 'RudderLabs',
+};
+
 const tfProxyMocksData = [
   {
     httpReq: {
       url: 'https://mktId.mktorest.com/rest/v1/leads.json/test1',
       data: {
         action: 'createOrUpdate',
-        input: [
-          {
-            City: 'Tokyo',
-            Country: 'JP',
-            Email: 'gabi29@gmail.com',
-            PostalCode: '100-0001',
-            Title: 'Owner',
-            id: 1328328,
-            userId: 'gabi_userId_45',
-          },
-        ],
+        input: [userObject],
         lookupField: 'id',
       },
       headers: {
@@ -44,24 +50,10 @@ const tfProxyMocksData = [
       url: 'https://mktId.mktorest.com/rest/v1/leads.json/test2',
       data: {
         action: 'createOrUpdate',
-        input: [
-          {
-            City: 'Tokyo',
-            Country: 'JP',
-            Email: 'gabi29@gmail.com',
-            PostalCode: '100-0001',
-            Title: 'Owner',
-            id: 1328328,
-            userId: 'gabi_userId_45',
-          },
-        ],
+        input: [userObject],
         lookupField: 'id',
       },
-      headers: {
-        Authorization: 'Bearer test_token_2',
-        'Content-Type': 'application/json',
-        'User-Agent': 'RudderLabs',
-      },
+      headers: headerObject,
       method: 'POST',
     },
     httpRes: {
@@ -84,17 +76,7 @@ const tfProxyMocksData = [
       url: 'https://mktId.mktorest.com/rest/v1/leads.json/test3',
       data: {
         action: 'createOrUpdate',
-        input: [
-          {
-            City: 'Tokyo',
-            Country: 'JP',
-            Email: 'gabi29@gmail.com',
-            PostalCode: '100-0001',
-            Title: 'Owner',
-            id: 1328328,
-            userId: 'gabi_userId_45',
-          },
-        ],
+        input: [userObject],
         lookupField: 'id',
       },
       headers: {
@@ -124,17 +106,7 @@ const tfProxyMocksData = [
       url: 'https://mktId.mktorest.com/rest/v1/leads.json/test4',
       data: {
         action: 'createOrUpdate',
-        input: [
-          {
-            City: 'Tokyo',
-            Country: 'JP',
-            Email: 'gabi29@gmail.com',
-            PostalCode: '100-0001',
-            Title: 'Owner',
-            id: 1328328,
-            userId: 'gabi_userId_45',
-          },
-        ],
+        input: [userObject],
         lookupField: 'id',
       },
       headers: {
@@ -151,17 +123,7 @@ const tfProxyMocksData = [
       url: 'https://mktId.mktorest.com/rest/v1/leads.json/test5',
       data: {
         action: 'createOrUpdate',
-        input: [
-          {
-            City: 'Tokyo',
-            Country: 'JP',
-            Email: 'gabi29@gmail.com',
-            PostalCode: '100-0001',
-            Title: 'Owner',
-            id: 1328328,
-            userId: 'gabi_userId_45',
-          },
-        ],
+        input: [userObject],
         lookupField: 'id',
       },
       headers: {
@@ -178,17 +140,7 @@ const tfProxyMocksData = [
       url: 'https://mktId.mktorest.com/rest/v1/leads.json/test6',
       data: {
         action: 'createOrUpdate',
-        input: [
-          {
-            City: 'Tokyo',
-            Country: 'JP',
-            Email: 'gabi29@gmail.com',
-            PostalCode: '100-0001',
-            Title: 'Owner',
-            id: 1328328,
-            userId: 'gabi_userId_45',
-          },
-        ],
+        input: [userObject],
         lookupField: 'id',
       },
       headers: {
@@ -978,17 +930,7 @@ const businessMockData = [
       url: 'https://mktId.mktorest.com/rest/v1/leads.json/test1',
       data: {
         action: 'createOrUpdate',
-        input: [
-          {
-            City: 'Tokyo',
-            Country: 'JP',
-            Email: 'gabi29@gmail.com',
-            PostalCode: '100-0001',
-            Title: 'Owner',
-            id: 1328328,
-            userId: 'gabi_userId_45',
-          },
-        ],
+        input: [userObject],
         lookupField: 'id',
       },
       headers: {
@@ -1019,24 +961,10 @@ const businessMockData = [
       url: 'https://mktId.mktorest.com/rest/v1/leads.json/test2',
       data: {
         action: 'createOrUpdate',
-        input: [
-          {
-            City: 'Tokyo',
-            Country: 'JP',
-            Email: 'gabi29@gmail.com',
-            PostalCode: '100-0001',
-            Title: 'Owner',
-            id: 1328328,
-            userId: 'gabi_userId_45',
-          },
-        ],
+        input: [userObject],
         lookupField: 'id',
       },
-      headers: {
-        Authorization: 'Bearer test_token_2',
-        'Content-Type': 'application/json',
-        'User-Agent': 'RudderLabs',
-      },
+      headers: headerObject,
       method: 'POST',
     },
     httpRes: {
@@ -1060,17 +988,7 @@ const businessMockData = [
       url: 'https://mktId.mktorest.com/rest/v1/leads.json/test3',
       data: {
         action: 'createOrUpdate',
-        input: [
-          {
-            City: 'Tokyo',
-            Country: 'JP',
-            Email: 'gabi29@gmail.com',
-            PostalCode: '100-0001',
-            Title: 'Owner',
-            id: 1328328,
-            userId: 'gabi_userId_45',
-          },
-        ],
+        input: [userObject],
         lookupField: 'id',
       },
       headers: {
@@ -1101,17 +1019,7 @@ const businessMockData = [
       url: 'https://mktId.mktorest.com/rest/v1/leads.json/test4',
       data: {
         action: 'createOrUpdate',
-        input: [
-          {
-            City: 'Tokyo',
-            Country: 'JP',
-            Email: 'gabi29@gmail.com',
-            PostalCode: '100-0001',
-            Title: 'Owner',
-            id: 1328328,
-            userId: 'gabi_userId_45',
-          },
-        ],
+        input: [userObject],
         lookupField: 'id',
       },
       headers: {
@@ -1129,17 +1037,7 @@ const businessMockData = [
       url: 'https://mktId.mktorest.com/rest/v1/leads.json/test5',
       data: {
         action: 'createOrUpdate',
-        input: [
-          {
-            City: 'Tokyo',
-            Country: 'JP',
-            Email: 'gabi29@gmail.com',
-            PostalCode: '100-0001',
-            Title: 'Owner',
-            id: 1328328,
-            userId: 'gabi_userId_45',
-          },
-        ],
+        input: [userObject],
         lookupField: 'id',
       },
       headers: {
@@ -1157,17 +1055,7 @@ const businessMockData = [
       url: 'https://mktId.mktorest.com/rest/v1/leads.json/test6',
       data: {
         action: 'createOrUpdate',
-        input: [
-          {
-            City: 'Tokyo',
-            Country: 'JP',
-            Email: 'gabi29@gmail.com',
-            PostalCode: '100-0001',
-            Title: 'Owner',
-            id: 1328328,
-            userId: 'gabi_userId_45',
-          },
-        ],
+        input: [userObject],
         lookupField: 'id',
       },
       headers: {
@@ -1189,17 +1077,7 @@ const businessMockData = [
       url: 'https://unhandled_exception_in_proxy_req.mktorest.com/rest/v1/leads.json',
       data: {
         action: 'createOrUpdate',
-        input: [
-          {
-            City: 'Tokyo',
-            Country: 'JP',
-            Email: 'gabi29@gmail.com',
-            PostalCode: '100-0001',
-            Title: 'Owner',
-            id: 1328328,
-            userId: 'gabi_userId_45',
-          },
-        ],
+        input: [userObject],
         lookupField: 'id',
       },
       headers: {

@@ -6,5 +6,9 @@
   {
     "sourceKeys": "type",
     "destKeys": "event"
+  },
+  {
+    "sourceKeys": "channel",
+    "destKeys": "properties.slackChannel"
   }
 ]

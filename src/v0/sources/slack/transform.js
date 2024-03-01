@@ -31,8 +31,8 @@ function processNormalEvent(slackPayload) {
   message.setPropertiesV2(slackPayload, mapping);
   /* deleting properties already mapped in
   the payload's root */
-  delete message.properties.triggerTime;
-  delete message.properties.userId;
+  delete message.properties?.ts;
+  delete message.properties?.type;
   return message;
 }
 
@@ -43,14 +43,15 @@ function processNormalEvent(slackPayload) {
 // this will be sent when the webhook is added to an item in monday.
 
 function isChallengeEvent(event) {
-  return !!event?.challenge;
+  return event?.type === 'url_verification' && !!event?.challenge;
 }
 
 // sending challenge event object back to Monday
 function processChallengeEvent(event) {
+  const response = { challenge: event?.challenge };
   return {
     outputToSource: {
-      body: Buffer.from(JSON.stringify(event)).toString('base64'),
+      body: Buffer.from(JSON.stringify(response)).toString('base64'),
       contentType: JSON_MIME_TYPE,
     },
     statusCode: 200,

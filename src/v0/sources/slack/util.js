@@ -4,7 +4,7 @@ const fs = require('fs');
 
 const mapping = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mapping.json'), 'utf-8'));
 
-// turning underscore-seperated Monday events into Rudder format
+// turning underscore-seperated Slack events into Rudder format
 function formEventName(evtName) {
   return evtName
     .split('_')

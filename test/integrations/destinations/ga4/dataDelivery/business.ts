@@ -203,16 +203,7 @@ export const testScenariosForV0API = [
               'Validation of item.price should prevent conversion from unsupported value [string_value: "$19"]',
             message:
               'Validation Server Response Handler:: Validation Error for ga4 of field path :undefined | INTERNAL_ERROR-Validation of item.price should prevent conversion from unsupported value [string_value: "$19"]',
-            statTags: {
-              destType: 'GA4',
-              destinationId: 'default-destinationId',
-              errorCategory: 'network',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'default-workspaceId',
-            },
+            statTags: expectedStatTags,
             status: 400,
           },
         },

@@ -1,3 +1,75 @@
+const metadata = {
+  userId: '9a7820d0-0ff2-4451-b655-682cec15cbd2',
+  jobId: 1,
+  sourceId: '1s9eG8UCer6YSKsD8ZlQCyLa3pj',
+  destinationId: 'desId2',
+  attemptNum: 0,
+  receivedAt: '2021-06-25T14:29:52.911+05:30',
+  createdAt: '2021-06-25T08:59:56.329Z',
+  firstAttemptedAt: '',
+  transformAt: 'router',
+};
+const destination2 = {
+  ID: 'desId2',
+  Name: 'gainsight-px-dest',
+  DestinationDefinition: {
+    ID: 'destDef1',
+    Name: 'GAINSIGHT_PX',
+    DisplayName: 'Gainsight PX',
+    Config: {
+      destConfig: {
+        defaultConfig: [
+          'apiKey',
+          'productTagKey',
+          'userAttributeMap',
+          'accountAttributeMap',
+          'globalContextMap',
+        ],
+      },
+      excludeKeys: [],
+      includeKeys: [],
+      saveDestinationResponse: true,
+      secretKeys: ['apiKey', 'productTagKey'],
+      supportedSourceTypes: [
+        'android',
+        'ios',
+        'web',
+        'unity',
+        'amp',
+        'cloud',
+        'reactnative',
+        'flutter',
+      ],
+      transformAt: 'router',
+      transformAtV1: 'router',
+    },
+    ResponseRules: {},
+  },
+  Config: {
+    accountAttributeMap: [
+      { from: 'LAST_INVOICE_DATE', to: 'last_invoice_date' },
+      { from: 'LAST_INVOICE_PLAN', to: 'last_invoice_plan' },
+      { from: 'LANGUAGE', to: 'language' },
+      { from: 'REGION', to: 'region2' },
+      { from: 'LAST_INVOICE_CURRENCY', to: 'last_invoice_currency' },
+      { from: 'IBR_PLAN', to: 'ibr_plan' },
+      { from: 'WH_COUNTRY', to: 'wh_country' },
+      { from: 'inboxready_signup_date', to: 'inboxready_signup_date' },
+      { from: 'gpt_setup', to: 'gpt_setup' },
+    ],
+    oneTrustCookieCategories: [],
+    apiKey: 'sample-api-key',
+    eventDelivery: false,
+    eventDeliveryTS: 1624472902670,
+    globalContextMap: [{ from: 'kubrickTest', to: 'value' }],
+    productTagKey: 'AP-SAMPLE-2',
+    userAttributeMap: [{ from: 'hobbyCustomField', to: 'hobby' }],
+  },
+  Enabled: true,
+  Transformations: [],
+  IsProcessorEnabled: true,
+};
+
 export const data = [
   {
     name: 'gainsight_px',
@@ -457,6 +529,87 @@ export const data = [
                 Transformations: [],
                 IsProcessorEnabled: true,
               },
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'gainsight_px',
+    description: 'Test 1: Group call -- AxiosError thrown',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                type: 'group',
+                sentAt: '2024-02-16T06:00:54.075Z',
+                traits: {
+                  name: ',sleep(100)',
+                  REGION: 'MEA',
+                  USERID: 'myUId',
+                  groupId: 'myGId',
+                  IBR_PLAN: 'free_ir',
+                  LANGUAGE: 'EN',
+                  gpt_setup: false,
+                  ACCOUNT_ID: 'myGId',
+                  WH_COUNTRY: 'MA',
+                  LAST_INVOICE_DATE: 1706810675000,
+                  LAST_INVOICE_PLAN: 'foundation_trial',
+                  LAST_INVOICE_CURRENCY: 'USD',
+                  inboxready_signup_date: 1680254544705,
+                },
+                userId: 'myUId',
+                channel: 'sources',
+                context: {
+                  sources: {
+                    job_run_id: 'cn7fjonu4d9b3u706u2g',
+                    task_run_id: 'cn7fjonu4d9b3u706u3g',
+                  },
+                },
+                recordId: '111111',
+                rudderId: 'dummy-rudder-id',
+                timestamp: '2024-02-16T06:00:52.581Z',
+                receivedAt: '2024-02-16T06:00:52.582Z',
+                request_ip: '10.7.150.126',
+                anonymousId: 'myUId',
+                integrations: { limitAPIForGroup: true },
+                originalTimestamp: '2024-02-16T06:00:54.075Z',
+              },
+              metadata,
+              destination: destination2,
+            },
+          ],
+          destType: 'gainsight_px',
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              error:
+                '{"message":"error while fetching user: \\"<!doctype html><meta charset=\\\\\\"utf-8\\\\\\"><meta name=viewport content=\\\\\\"width=device-width, initial-scale=1\\\\\\"><title>403</title>403 Forbidden\\"","destinationResponse":"<!doctype html><meta charset=\\"utf-8\\"><meta name=viewport content=\\"width=device-width, initial-scale=1\\"><title>403</title>403 Forbidden"}',
+              statTags: {
+                destType: 'GAINSIGHT_PX',
+                destinationId: destination2.ID,
+                errorCategory: 'network',
+                errorType: 'aborted',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+              },
+              statusCode: 403,
+              metadata: [metadata],
+              batched: false,
+              destination: destination2,
             },
           ],
         },

@@ -1,7 +1,7 @@
 const sha256 = require('sha256');
 const { TransformationError } = require('@rudderstack/integrations-lib');
 const Message = require('../message');
-const { mapping, formEventName } = require('./util');
+const { mapping, tsToISODate, formEventName } = require('./util');
 const { generateUUID, removeUndefinedAndNullValues } = require('../../util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -27,12 +27,13 @@ function processNormalEvent(slackPayload) {
   } else {
     throw new TransformationError('UserId not found');
   }
-
+  // Set the standard event property originalTimestamp
+  message.setProperty('originalTimestamp', tsToISODate(slackPayload.ts || slackPayload.event_ts));
+  // Map the remaining standard event properties according to mappings for the payload properties
   message.setPropertiesV2(slackPayload, mapping);
-  /* deleting properties already mapped in
-  the payload's root */
-  delete message.properties?.ts;
-  delete message.properties?.type;
+  // Copy the complete Slack payload to message.properties
+  if (!message.properties) message.properties = {};
+  Object.assign(message.properties, slackPayload);
   return message;
 }
 

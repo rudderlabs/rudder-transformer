@@ -1,14 +1,6 @@
 [
   {
-    "sourceKeys": "ts",
-    "destKeys": ["timestamp", "originalTimestamp"]
-  },
-  {
     "sourceKeys": "type",
     "destKeys": "event"
-  },
-  {
-    "sourceKeys": "channel",
-    "destKeys": "properties.slackChannel"
   }
 ]

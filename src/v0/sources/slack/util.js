@@ -37,12 +37,22 @@ function tsToISODate(slackTs) {
   return date.toISOString();
 }
 
-// turning underscore-seperated Slack events into Rudder format
-function formEventName(evtName) {
+/**
+ * Converts an event name from snake_case to a RudderStack format - space-separated string with each word capitalized.
+ * @param {string} evtName - The event name in snake_case format to be normalized.
+ * @returns {string} The normalized event name with spaces between words and each word capitalized.
+ *
+ * @example
+ * // Convert a slack event name to RudderStack format
+ * const eventName = "member_joined_channel";
+ * const normalizedEventName = normalizeEventName(eventName);
+ * console.log(normalizedEventName); // Output: "Member Joined Channel"
+ */
+function normalizeEventName(evtName) {
   return evtName
     .split('_')
     .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
     .join(' ');
 }
 
-module.exports = { mapping, tsToISODate, formEventName };
+module.exports = { mapping, tsToISODate, normalizeEventName };

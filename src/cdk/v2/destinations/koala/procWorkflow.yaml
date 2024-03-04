@@ -38,7 +38,7 @@ steps:
     template: |
       const properties = .message.properties ??  {};
       const basePayload = {
-        ip: .message.context.ip ?? .message.request_ip ?? , 
+        ip: .message.context.ip ?? .message.request_ip, 
         email: .message.().({{{{$.getGenericPaths("email")}}}}),
         profile_id: .message.traits.ko_profile_id ?? .message.context.traits.ko_profile_id,
         events: [{

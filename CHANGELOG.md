@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.57.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.56.1...v1.57.0) (2024-02-29)
+
+
+### Features
+
+* add event mapping support for branch destination ([#3135](https://github.com/rudderlabs/rudder-transformer/issues/3135)) ([cc94bba](https://github.com/rudderlabs/rudder-transformer/commit/cc94bba682f667877a721f63627adc6ff6a7386a))
+
+
+### Bug Fixes
+
+* marketo bulk upload zero and null value allowed ([#3134](https://github.com/rudderlabs/rudder-transformer/issues/3134)) ([4dcbf8f](https://github.com/rudderlabs/rudder-transformer/commit/4dcbf8fb189a39bb40b950742425a0b9da2d8d7c))
+
 ### [1.56.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.56.0...v1.56.1) (2024-02-21)
 
 

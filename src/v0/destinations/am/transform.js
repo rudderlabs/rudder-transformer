@@ -268,7 +268,7 @@ const updateConfigProperty = (message, payload, mappingJson, validatePayload, Co
     }
   });
 };
-const identifyBuilder = (message, destination, rawPayload) => {
+const userPropertiesHandler = (message, destination, rawPayload) => {
   // update payload user_properties from userProperties/traits/context.traits/nested traits of Rudder message
   // traits like address converted to top level user properties (think we can skip this extra processing as AM supports nesting upto 40 levels)
   let traits = getFieldValueFromMessage(message, 'traits');
@@ -335,6 +335,57 @@ const getDefaultResponseData = (message, rawPayload, evType, groupInfo) => {
   const groups = groupInfo && cloneDeep(groupInfo);
   return { groups, rawPayload };
 };
+
+const userPropertiesPostProcess = (rawPayload) => {
+  const operationList = [
+    '$setOnce',
+    '$add',
+    '$unset',
+    '$append',
+    '$prepend',
+    '$preInsert',
+    '$postInsert',
+    '$remove',
+  ];
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  const { user_properties } = rawPayload;
+  const userPropertiesKeys = Object.keys(user_properties).filter(
+    (key) => !operationList.includes(key),
+  );
+  const duplicatekeys = new Set();
+  // eslint-disable-next-line no-restricted-syntax, guard-for-in
+  for (const key of userPropertiesKeys) {
+    // check if any of the keys are present in the user_properties $setOnce, $add, $unset, $append, $prepend, $preInsert, $postInsert, $remove keys as well as root level
+
+    if (
+      operationList.some(
+        (operation) => user_properties[operation] && user_properties[operation][key],
+      )
+    ) {
+      duplicatekeys.add(key);
+    }
+  }
+  // eslint-disable-next-line no-restricted-syntax, guard-for-in
+  for (const key of duplicatekeys) {
+    delete user_properties[key];
+  }
+
+  const setProps = {};
+  // eslint-disable-next-line no-restricted-syntax
+  for (const [key, value] of Object.entries(user_properties)) {
+    if (!operationList.includes(key)) {
+      setProps[key] = value;
+      delete user_properties[key];
+    }
+  }
+
+  if (Object.keys(setProps).length > 0) {
+    user_properties.$set = setProps;
+  }
+
+  rawPayload.user_properties = user_properties;
+  return rawPayload;
+};
 const getResponseData = (evType, destination, rawPayload, message, groupInfo) => {
   let groups;
 
@@ -342,7 +393,7 @@ const getResponseData = (evType, destination, rawPayload, message, groupInfo) =>
     case EventType.IDENTIFY:
       // event_type for identify event is $identify
       rawPayload.event_type = IDENTIFY_AM;
-      rawPayload = identifyBuilder(message, destination, rawPayload);
+      rawPayload = userPropertiesHandler(message, destination, rawPayload);
       break;
     case EventType.GROUP:
       // event_type for identify event is $identify
@@ -357,7 +408,14 @@ const getResponseData = (evType, destination, rawPayload, message, groupInfo) =>
     case EventType.ALIAS:
       break;
     default:
+      if (destination.Config.enableEnhncedUserOpertaions) {
+        // handle all other events like track, page, screen for user properties
+        rawPayload = userPropertiesHandler(message, destination, rawPayload);
+      }
       ({ groups, rawPayload } = getDefaultResponseData(message, rawPayload, evType, groupInfo));
+  }
+  if (destination.Config.enableEnhncedUserOpertaions) {
+    rawPayload = userPropertiesPostProcess(rawPayload);
   }
   return { rawPayload, groups };
 };

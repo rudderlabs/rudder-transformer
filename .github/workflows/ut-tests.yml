@@ -41,7 +41,7 @@ jobs:
         run: kubectl apply -f https://raw.githubusercontent.com/openfaas/faas-netes/master/namespaces.yml
 
       - name: Setup Helm
-        uses: azure/setup-helm@v3
+        uses: azure/setup-helm@v4
         with:
           version: v3.10.0
 

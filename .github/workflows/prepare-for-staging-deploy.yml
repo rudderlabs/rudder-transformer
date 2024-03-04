@@ -101,7 +101,7 @@ jobs:
           cd rudder-devops
           BRANCH_NAME="shared-transformer-$TAG_NAME"
           echo $BRANCH_NAME
-          if [ `git ls-remote --heads origin $BRANCH_NAME 2>/dev/null` ]
+          if [ -n `git ls-remote --heads origin $BRANCH_NAME 2>/dev/null` ]
           then
             echo "Staging deployment branch already exists!"
           else

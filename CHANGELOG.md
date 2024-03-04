@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.57.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.57.0...v1.57.1) (2024-03-04)
+
+
+### Bug Fixes
+
+* amplitude fix for user operations ([7f2364e](https://github.com/rudderlabs/rudder-transformer/commit/7f2364e41167611c41003559de65cee1fece5464))
+* amplitude fix for user operations ([#3153](https://github.com/rudderlabs/rudder-transformer/issues/3153)) ([31869fb](https://github.com/rudderlabs/rudder-transformer/commit/31869fb114bb141d545de01c56f57b97e5aa54a6))
+
 ## [1.57.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.56.1...v1.57.0) (2024-02-29)
 
 

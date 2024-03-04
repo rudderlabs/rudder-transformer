@@ -336,56 +336,7 @@ const getDefaultResponseData = (message, rawPayload, evType, groupInfo) => {
   return { groups, rawPayload };
 };
 
-const userPropertiesPostProcess = (rawPayload) => {
-  const operationList = [
-    '$setOnce',
-    '$add',
-    '$unset',
-    '$append',
-    '$prepend',
-    '$preInsert',
-    '$postInsert',
-    '$remove',
-  ];
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  const { user_properties } = rawPayload;
-  const userPropertiesKeys = Object.keys(user_properties).filter(
-    (key) => !operationList.includes(key),
-  );
-  const duplicatekeys = new Set();
-  // eslint-disable-next-line no-restricted-syntax, guard-for-in
-  for (const key of userPropertiesKeys) {
-    // check if any of the keys are present in the user_properties $setOnce, $add, $unset, $append, $prepend, $preInsert, $postInsert, $remove keys as well as root level
 
-    if (
-      operationList.some(
-        (operation) => user_properties[operation] && user_properties[operation][key],
-      )
-    ) {
-      duplicatekeys.add(key);
-    }
-  }
-  // eslint-disable-next-line no-restricted-syntax, guard-for-in
-  for (const key of duplicatekeys) {
-    delete user_properties[key];
-  }
-
-  const setProps = {};
-  // eslint-disable-next-line no-restricted-syntax
-  for (const [key, value] of Object.entries(user_properties)) {
-    if (!operationList.includes(key)) {
-      setProps[key] = value;
-      delete user_properties[key];
-    }
-  }
-
-  if (Object.keys(setProps).length > 0) {
-    user_properties.$set = setProps;
-  }
-
-  rawPayload.user_properties = user_properties;
-  return rawPayload;
-};
 const getResponseData = (evType, destination, rawPayload, message, groupInfo) => {
   let groups;
 
@@ -408,14 +359,14 @@ const getResponseData = (evType, destination, rawPayload, message, groupInfo) =>
     case EventType.ALIAS:
       break;
     default:
-      if (destination.Config.enableEnhncedUserOpertaions) {
+      if (destination.Config.enableEnhancedUserOperations) {
         // handle all other events like track, page, screen for user properties
         rawPayload = userPropertiesHandler(message, destination, rawPayload);
       }
       ({ groups, rawPayload } = getDefaultResponseData(message, rawPayload, evType, groupInfo));
   }
-  if (destination.Config.enableEnhncedUserOpertaions) {
-    rawPayload = userPropertiesPostProcess(rawPayload);
+  if (destination.Config.enableEnhancedUserOperations) {
+    rawPayload = AMUtils.userPropertiesPostProcess(rawPayload);
   }
   return { rawPayload, groups };
 };

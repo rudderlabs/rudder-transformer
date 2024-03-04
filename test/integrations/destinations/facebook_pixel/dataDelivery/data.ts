@@ -1,6 +1,7 @@
 import { VERSION } from '../../../../../src/v0/destinations/facebook_pixel/config';
 import { testScenariosForV1API, testFormData, statTags as baseStatTags } from './business';
 import { otherScenariosV1 } from './other';
+import { oauthScenariosV1 } from './oauth';
 
 const statTags = {
   ...baseStatTags,
@@ -488,4 +489,9 @@ export const v0TestData = [
   },
 ];
 
-export const data = [...v0TestData, ...testScenariosForV1API, ...otherScenariosV1];
+export const data = [
+  ...v0TestData,
+  ...testScenariosForV1API,
+  ...otherScenariosV1,
+  ...oauthScenariosV1,
+];

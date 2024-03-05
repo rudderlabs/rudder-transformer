@@ -69,9 +69,16 @@ const commonProperties = {
   image_url: 'https://www.website.com/product/path.webp',
 };
 
+const customProperties = {
+  key1: 'value1',
+  key2: true,
+  key3: ['value3'],
+  key4: { key5: { key6: 'value6' } },
+};
+
 const trackTestProperties = {
-  'Product Added': commonProperties,
-  'Product Viewed': commonProperties,
+  'Product Added': { ...commonProperties, ...customProperties },
+  'Product Viewed': { ...commonProperties, ...customProperties },
   'Order Completed': {
     checkout_id: '70324a1f0eaf000000000000',
     order_id: '40684e8f0eaf000000000000',

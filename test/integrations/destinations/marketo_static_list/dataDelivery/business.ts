@@ -2,7 +2,7 @@ import { ProxyMetdata } from '../../../../../src/types';
 import { ProxyV1TestData } from '../../../testTypes';
 import { generateProxyV1Payload } from '../../../testUtils';
 
-const statTags = {
+export const statTags = {
   aborted: {
     destType: 'MARKETO_STATIC_LIST',
     destinationId: 'dummyDestinationId',
@@ -15,13 +15,13 @@ const statTags = {
   },
   retryable: {
     destType: 'MARKETO_STATIC_LIST',
-    destinationId: 'dummyDestinationId',
+    destinationId: 'default-destinationId',
     errorCategory: 'network',
     errorType: 'retryable',
     feature: 'dataDelivery',
     implementation: 'native',
     module: 'destination',
-    workspaceId: 'dummyWorkspaceId',
+    workspaceId: 'default-workspaceId',
   },
   throttled: {
     destType: 'MARKETO_STATIC_LIST',
@@ -40,8 +40,8 @@ export const proxyMetdata: ProxyMetdata = {
   attemptNum: 1,
   userId: 'dummyUserId',
   sourceId: 'dummySourceId',
-  destinationId: 'dummyDestinationId',
-  workspaceId: 'dummyWorkspaceId',
+  destinationId: 'default-destinationId',
+  workspaceId: 'default-workspaceId',
   secret: {},
   dontBatch: false,
 };

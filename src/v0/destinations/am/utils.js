@@ -123,7 +123,6 @@ const validateEventType = (evType) => {
   }
 };
 
-
 const userPropertiesPostProcess = (rawPayload) => {
   const operationList = [
     '$setOnce',
@@ -187,5 +186,5 @@ module.exports = {
   getEventId,
   getUnsetObj,
   validateEventType,
-  userPropertiesPostProcess
+  userPropertiesPostProcess,
 };

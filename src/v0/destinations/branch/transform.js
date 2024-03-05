@@ -13,6 +13,7 @@ const {
   simpleProcessRouterDest,
 } = require('../../util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { getMappedEventNameFromConfig } = require('./utils');
 
 function responseBuilder(payload, message, destination, category) {
   const response = defaultRequestConfig();
@@ -213,24 +214,21 @@ function getCommonPayload(message, category, evName) {
   return rawPayload;
 }
 
-// function getTrackPayload(message) {
-//   const rawPayload = {};
-//   const { name, category } = getCategoryAndName(message.event);
-//   rawPayload.name = name;
-//
-//   return commonPayload(message, rawPayload, category);
-// }
-
 function processMessage(message, destination) {
   let evName;
   let category;
   switch (message.type) {
-    case EventType.TRACK:
+    case EventType.TRACK: {
       if (!message.event) {
         throw new InstrumentationError('Event name is required');
       }
       ({ evName, category } = getCategoryAndName(message.event));
+      const eventNameFromConfig = getMappedEventNameFromConfig(message, destination);
+      if (eventNameFromConfig) {
+        evName = eventNameFromConfig;
+      }
       break;
+    }
     case EventType.IDENTIFY:
       ({ evName, category } = getCategoryAndName(message.userId));
       break;

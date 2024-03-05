@@ -122,6 +122,61 @@ const validateEventType = (evType) => {
     );
   }
 };
+
+
+const userPropertiesPostProcess = (rawPayload) => {
+  const operationList = [
+    '$setOnce',
+    '$add',
+    '$unset',
+    '$append',
+    '$prepend',
+    '$preInsert',
+    '$postInsert',
+    '$remove',
+  ];
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  const { user_properties } = rawPayload;
+  const userPropertiesKeys = Object.keys(user_properties).filter(
+    (key) => !operationList.includes(key),
+  );
+  const duplicatekeys = new Set();
+  // eslint-disable-next-line no-restricted-syntax, guard-for-in
+  for (const key of userPropertiesKeys) {
+    // check if any of the keys are present in the user_properties $setOnce, $add, $unset, $append, $prepend, $preInsert, $postInsert, $remove keys as well as root level
+
+    if (
+      operationList.some(
+        (operation) => user_properties[operation] && user_properties[operation][key],
+      )
+    ) {
+      duplicatekeys.add(key);
+    }
+  }
+  // eslint-disable-next-line no-restricted-syntax, guard-for-in
+  for (const key of duplicatekeys) {
+    delete user_properties[key];
+  }
+
+  // Moving root level properties that doesn't belong to any operation under $set
+  const setProps = {};
+  // eslint-disable-next-line no-restricted-syntax
+  for (const [key, value] of Object.entries(user_properties)) {
+    if (!operationList.includes(key)) {
+      setProps[key] = value;
+      delete user_properties[key];
+    }
+  }
+
+  if (Object.keys(setProps).length > 0) {
+    user_properties.$set = setProps;
+  }
+
+  // eslint-disable-next-line no-param-reassign
+  rawPayload.user_properties = user_properties;
+  return rawPayload;
+};
+
 module.exports = {
   getOSName,
   getOSVersion,
@@ -132,4 +187,5 @@ module.exports = {
   getEventId,
   getUnsetObj,
   validateEventType,
+  userPropertiesPostProcess
 };

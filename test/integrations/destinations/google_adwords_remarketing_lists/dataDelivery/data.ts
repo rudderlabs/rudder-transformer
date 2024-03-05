@@ -21,7 +21,7 @@ export const data = [
             destination: 'google_adwords_remarketing_lists',
             listId: '709078448',
             customerId: '7693729833',
-            consent: {},
+            consent: { adPersonalization: 'UNSPECIFIED', adUserData: 'UNSPECIFIED' },
           },
           body: {
             JSON: {
@@ -101,7 +101,7 @@ export const data = [
             listId: '709078448',
             customerId: '7693729833',
             destination: 'google_adwords_remarketing_lists',
-            consent: {},
+            consent: { adPersonalization: 'UNSPECIFIED', adUserData: 'UNSPECIFIED' },
           },
           body: {
             JSON: {
@@ -200,7 +200,7 @@ export const data = [
             listId: '709078448',
             customerId: '7693729833',
             destination: 'google_adwords_remarketing_lists',
-            consent: {},
+            consent: { adPersonalization: 'UNSPECIFIED', adUserData: 'UNSPECIFIED' },
           },
           body: {
             JSON: {

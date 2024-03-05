@@ -144,7 +144,7 @@ export const configLevelFeaturesTestData: ProcessorTestData[] = [
     },
   },
   {
-    id: 'facebook_pixel-test-1',
+    id: 'facebook_pixel-test-2',
     name: 'facebook_pixel',
     scenario: 'configuration',
     description:
@@ -200,7 +200,7 @@ export const configLevelFeaturesTestData: ProcessorTestData[] = [
     },
   },
   {
-    id: 'facebook_pixel-test-1',
+    id: 'facebook_pixel-test-3',
     name: 'facebook_pixel',
     description:
       'config feature : ContentCategoryMapping table is filled up, and category is passed with properties along with contentType via integrations object',
@@ -260,7 +260,7 @@ export const configLevelFeaturesTestData: ProcessorTestData[] = [
     },
   },
   {
-    id: 'facebook_pixel-test-1',
+    id: 'facebook_pixel-test-4',
     name: 'facebook_pixel',
     description:
       'config feature : Config mapped whiteList and blackListed properties with marked hashed within integrations object, along with default pii property email in the properties',
@@ -335,7 +335,7 @@ export const configLevelFeaturesTestData: ProcessorTestData[] = [
     },
   },
   {
-    id: 'facebook_pixel-test-1',
+    id: 'facebook_pixel-test-5',
     name: 'facebook_pixel',
     description:
       'config feature : Config mapped whiteList and blackListed properties without marked hashed within integrations object but marked hashed true from UI, along with default pii property email in the properties',
@@ -407,7 +407,7 @@ export const configLevelFeaturesTestData: ProcessorTestData[] = [
     },
   },
   {
-    id: 'facebook_pixel-test-1',
+    id: 'facebook_pixel-test-6',
     name: 'facebook_pixel',
     description:
       'config feature : Config mapped whiteList and blackListed properties marked hashed within integrations object but marked hashed true from UI, along with default pii property email in the properties',
@@ -478,6 +478,66 @@ export const configLevelFeaturesTestData: ProcessorTestData[] = [
             }),
             statusCode: 200,
             metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'facebook_pixel-test-7',
+    name: 'facebook_pixel',
+    description:
+      'properties.content_type is given priority over populating it from categoryToContent mapping.',
+    scenario: 'configuration',
+    successCriteria: 'Response should contain content_type as product_group and not newClothing',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: generateTrackPayload({
+              event: 'product list viewed',
+              properties: { ...piiPropertiesForAllowDeny, content_type: 'product_group' },
+              context: {
+                traits: commonUserTraits,
+              },
+              timestamp: commonTimestamp,
+              integrations: {
+                FacebookPixel: {
+                  hashed: true,
+                },
+              },
+            }),
+            metadata: generateMetadata(1),
+            destination: commonDestination,
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: `https://graph.facebook.com/${VERSION}/dummyPixelId/events?access_token=09876`,
+              headers: {},
+              params: {},
+              FORM: {
+                data: [
+                  '{"user_data":{"external_id":"default-user-id","em":"abc@gmail.com","client_user_agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0"},"event_name":"ViewContent","event_time":1697241600,"event_id":"12345","action_source":"website","custom_data":{"email":"abc@gmail.com","anonymousId":"c82cbdff-e5be-4009-ac78-cdeea09ab4b1","whitelistProp1":"val1","blacklistProp2":"val2","blacklistProp3":"val3","category":"dummy","quantity":10,"value":100,"product_id":"12345","content_type":"product_group","content_ids":["dummy"],"contents":[{"id":"dummy","quantity":1}],"content_category":"dummy","currency":"USD"}}',
+                ],
+              },
+              files: {},
+              userId: '',
+            }),
+            metadata: generateMetadata(1),
+            statusCode: 200,
           },
         ],
       },

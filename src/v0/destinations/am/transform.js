@@ -268,7 +268,7 @@ const updateConfigProperty = (message, payload, mappingJson, validatePayload, Co
     }
   });
 };
-const identifyBuilder = (message, destination, rawPayload) => {
+const userPropertiesHandler = (message, destination, rawPayload) => {
   // update payload user_properties from userProperties/traits/context.traits/nested traits of Rudder message
   // traits like address converted to top level user properties (think we can skip this extra processing as AM supports nesting upto 40 levels)
   let traits = getFieldValueFromMessage(message, 'traits');
@@ -335,6 +335,7 @@ const getDefaultResponseData = (message, rawPayload, evType, groupInfo) => {
   const groups = groupInfo && cloneDeep(groupInfo);
   return { groups, rawPayload };
 };
+
 const getResponseData = (evType, destination, rawPayload, message, groupInfo) => {
   let groups;
 
@@ -342,7 +343,7 @@ const getResponseData = (evType, destination, rawPayload, message, groupInfo) =>
     case EventType.IDENTIFY:
       // event_type for identify event is $identify
       rawPayload.event_type = IDENTIFY_AM;
-      rawPayload = identifyBuilder(message, destination, rawPayload);
+      rawPayload = userPropertiesHandler(message, destination, rawPayload);
       break;
     case EventType.GROUP:
       // event_type for identify event is $identify
@@ -357,7 +358,14 @@ const getResponseData = (evType, destination, rawPayload, message, groupInfo) =>
     case EventType.ALIAS:
       break;
     default:
+      if (destination.Config.enableEnhancedUserOperations) {
+        // handle all other events like track, page, screen for user properties
+        rawPayload = userPropertiesHandler(message, destination, rawPayload);
+      }
       ({ groups, rawPayload } = getDefaultResponseData(message, rawPayload, evType, groupInfo));
+  }
+  if (destination.Config.enableEnhancedUserOperations) {
+    rawPayload = AMUtils.userPropertiesPostProcess(rawPayload);
   }
   return { rawPayload, groups };
 };

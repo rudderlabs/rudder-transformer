@@ -1,8 +1,10 @@
 import { AxiosError } from 'axios';
 import MockAxiosAdapter from 'axios-mock-adapter';
 import lodash from 'lodash';
+import { V1BusinessTestScenarion } from './business';
+import { v1OtherScenarios } from './other';
 
-export const data = [
+const oldV0TestCases = [
   {
     name: 'tiktok_ads',
     description: 'Test 0',
@@ -670,3 +672,5 @@ export const data = [
     },
   },
 ];
+
+export const data = [...oldV0TestCases, ...V1BusinessTestScenarion, ...v1OtherScenarios];

@@ -1,6 +1,8 @@
 import { getEndPoint } from '../../../../../src/v0/destinations/fb_custom_audience/config';
+import { testScenariosForV1API } from './business';
+import { otherScenariosV1 } from './other';
 
-export const data = [
+export const existingTestData = [
   {
     name: 'fb_custom_audience',
     description: 'successfully adding users to audience',
@@ -645,3 +647,5 @@ export const data = [
     },
   },
 ];
+
+export const data = [...existingTestData, ...testScenariosForV1API, ...otherScenariosV1];

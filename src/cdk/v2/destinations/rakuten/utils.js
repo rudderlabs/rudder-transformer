@@ -59,7 +59,7 @@ const constructLineItems = (properties) => {
     }
 
     if (product.price) {
-        return product.quantity * product.price * 100;
+      return product.quantity * product.price * 100;
     }
     return product.amount * 100;
   });

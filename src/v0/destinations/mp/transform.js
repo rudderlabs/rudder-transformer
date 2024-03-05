@@ -14,7 +14,6 @@ const {
   removeUndefinedValues,
   toUnixTimestampInMS,
   getFieldValueFromMessage,
-  checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
   groupEventsByType,
   parseConfigArray,
@@ -37,6 +36,7 @@ const {
   groupEventsByEndpoint,
   batchEvents,
   trimTraits,
+  generatePageOrScreenCustomEventName,
 } = require('./util');
 const { CommonUtils } = require('../../../util/common');
 
@@ -298,17 +298,25 @@ const processIdentifyEvents = async (message, type, destination) => {
 };
 
 const processPageOrScreenEvents = (message, type, destination) => {
+  const {
+    token,
+    identityMergeApi,
+    useUserDefinedPageEventName,
+    userDefinedPageEventTemplate,
+    useUserDefinedScreenEventName,
+    userDefinedScreenEventTemplate,
+  } = destination.Config;
   const mappedProperties = constructPayload(message, mPEventPropertiesConfigJson);
   let properties = {
     ...get(message, 'context.traits'),
     ...message.properties,
     ...mappedProperties,
-    token: destination.Config.token,
+    token,
     distinct_id: message.userId || message.anonymousId,
     time: toUnixTimestampInMS(message.timestamp || message.originalTimestamp),
     ...buildUtmParams(message.context?.campaign),
   };
-  if (destination.Config?.identityMergeApi === 'simplified') {
+  if (identityMergeApi === 'simplified') {
     properties = {
       ...properties,
       distinct_id: message.userId || `$device:${message.anonymousId}`,
@@ -327,7 +335,18 @@ const processPageOrScreenEvents = (message, type, destination) => {
     properties.$browser = browser.name;
     properties.$browser_version = browser.version;
   }
-  const eventName = type === 'page' ? 'Loaded a Page' : 'Loaded a Screen';
+
+  let eventName;
+  if (type === 'page') {
+    eventName = useUserDefinedPageEventName
+      ? generatePageOrScreenCustomEventName(message, userDefinedPageEventTemplate)
+      : 'Loaded a Page';
+  } else {
+    eventName = useUserDefinedScreenEventName
+      ? generatePageOrScreenCustomEventName(message, userDefinedScreenEventTemplate)
+      : 'Loaded a Screen';
+  }
+
   const payload = {
     event: eventName,
     properties,
@@ -460,11 +479,6 @@ const process = (event) => processSingleMessage(event.message, event.destination
 // Ref: https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel
 // Ref: https://help.mixpanel.com/hc/en-us/articles/115004561786-Track-UTM-Tags
 const processRouterDest = async (inputs, reqMetadata) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
-
   const groupedEvents = groupEventsByType(inputs);
   const response = await Promise.all(
     groupedEvents.map(async (listOfEvents) => {

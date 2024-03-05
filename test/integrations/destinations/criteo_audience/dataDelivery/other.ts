@@ -1,7 +1,8 @@
+import { ProxyV1TestData } from '../../../testTypes';
 import { params, headers } from './business';
 import { generateProxyV1Payload, generateMetadata } from '../../../testUtils';
 
-export const v1OtherScenarios = [
+export const v1OtherScenarios: ProxyV1TestData[] = [
   {
     id: 'criteo_audience_other_0',
     name: 'criteo_audience',

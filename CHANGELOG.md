@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.58.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.57.1...v1.58.0) (2024-03-04)
+
+
+### Features
+
+* add support for interaction events in sfmc ([#3109](https://github.com/rudderlabs/rudder-transformer/issues/3109)) ([0486049](https://github.com/rudderlabs/rudder-transformer/commit/0486049ba2ad96b50d8f29e96b46b96a8a5c9f76))
+* add support of custom page/screen event name in mixpanel ([#3098](https://github.com/rudderlabs/rudder-transformer/issues/3098)) ([0eb2393](https://github.com/rudderlabs/rudder-transformer/commit/0eb2393939fba2452ef7f07a1d149d87f18290c3))
+* consent mode support for google adwords remarketing list  ([#3143](https://github.com/rudderlabs/rudder-transformer/issues/3143)) ([7532c90](https://github.com/rudderlabs/rudder-transformer/commit/7532c90d7e1feac00f12961c56da18757010f44a))
+* **facebook:** update content_type mapping logic for fb pixel and fb conversions ([#3113](https://github.com/rudderlabs/rudder-transformer/issues/3113)) ([aea417c](https://github.com/rudderlabs/rudder-transformer/commit/aea417cd2691547399010c034cadbc5db6b0c6ee))
+* klaviyo profile mapping ([#3105](https://github.com/rudderlabs/rudder-transformer/issues/3105)) ([2761786](https://github.com/rudderlabs/rudder-transformer/commit/2761786ff3fc99ed6d4d3b7a6c2400226b1cfb12))
+* onboard new destination ninetailed ([#3106](https://github.com/rudderlabs/rudder-transformer/issues/3106)) ([0e2588e](https://github.com/rudderlabs/rudder-transformer/commit/0e2588ecd87f3b2c6877a099aa1cbf2d5325966c))
+
+
+### Bug Fixes
+
+* add error handling for tiktok ads ([#3144](https://github.com/rudderlabs/rudder-transformer/issues/3144)) ([e93e47f](https://github.com/rudderlabs/rudder-transformer/commit/e93e47f33e098104fb532916932fe38bbfeaa4a1))
+* **algolia:** added check for objectIds or filters to be non empty ([#3126](https://github.com/rudderlabs/rudder-transformer/issues/3126)) ([d619c97](https://github.com/rudderlabs/rudder-transformer/commit/d619c9769cd270cb2d16dad0865683ff4beb2d19))
+* clevertap remove stringification of array object properties ([#3048](https://github.com/rudderlabs/rudder-transformer/issues/3048)) ([69e43b6](https://github.com/rudderlabs/rudder-transformer/commit/69e43b6ffadeaec87b7440da34a341890ceba252))
+* convert to string from null in hs ([#3136](https://github.com/rudderlabs/rudder-transformer/issues/3136)) ([75e9f46](https://github.com/rudderlabs/rudder-transformer/commit/75e9f462b0ff9b9a8abab3c78dc7d147926e9e5e))
+* event fix and added utility ([#3142](https://github.com/rudderlabs/rudder-transformer/issues/3142)) ([9b705b7](https://github.com/rudderlabs/rudder-transformer/commit/9b705b71a9d3a595ea0fbf532602c3941b0a18db))
+* metadata structure correction ([#3119](https://github.com/rudderlabs/rudder-transformer/issues/3119)) ([8351b5c](https://github.com/rudderlabs/rudder-transformer/commit/8351b5cbbf81bbc14b2f884feaae4ad3ca59a39a))
+* one_signal:  Encode external_id in endpoint ([#3140](https://github.com/rudderlabs/rudder-transformer/issues/3140)) ([8a20886](https://github.com/rudderlabs/rudder-transformer/commit/8a2088608d6da4b35bbb506db2fc3df1e4d41f3b))
+* rakuten: sync property mapping sourcekeys to rudderstack standard spec ([#3129](https://github.com/rudderlabs/rudder-transformer/issues/3129)) ([2ebff95](https://github.com/rudderlabs/rudder-transformer/commit/2ebff956ff2aa74b008a8de832a31d8774d2d47e))
+* reddit revenue mapping for floating point values ([#3118](https://github.com/rudderlabs/rudder-transformer/issues/3118)) ([41f4078](https://github.com/rudderlabs/rudder-transformer/commit/41f4078011ef54334bb9ecc11a7b2ccc8831a4aa))
+* version deprecation failure false positive ([#3104](https://github.com/rudderlabs/rudder-transformer/issues/3104)) ([657b780](https://github.com/rudderlabs/rudder-transformer/commit/657b7805eb01da25a007d978198d5debf03917fd))
+
 ### [1.57.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.57.0...v1.57.1) (2024-03-04)
 
 

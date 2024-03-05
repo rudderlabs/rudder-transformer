@@ -52,18 +52,13 @@ steps:
       };
 
       $.context.payload = basePayload
-  - name: buildResponse
-    description: In batchMode we return payload directly
-    condition: $.batchMode
-    template: .message
-    else:
-      name: buildResponseForProcessTransformation
-      template: |
-        const response = $.defaultRequestConfig();
-        response.body.JSON = $.context.payload;
-        response.endpoint = "https://api2.getkoala.com/web/projects/" + .destination.Config.publicKey + "/batch";
-        response.headers = {
-          "User-Agent": 'rudderstack/1.0.0',
-          "content-type": "application/json"
-        };
-        response
+  - name: buildResponseForProcessTransformation
+    template: |
+      const response = $.defaultRequestConfig();
+      response.body.JSON = $.context.payload;
+      response.endpoint = "https://api2.getkoala.com/web/projects/" + .destination.Config.publicKey + "/batch";
+      response.headers = {
+        "User-Agent": 'rudderstack/1.0.0',
+        "content-type": "application/json"
+      };
+      response

@@ -29,25 +29,24 @@ function processNormalEvent(slackPayload) {
       break;
   }
   message.setEventName(normalizeEventName(slackPayload.event.type));
-  if (slackPayload.event.user) {
-    const stringifiedUserId =
-      typeof slackPayload.event.user === 'object'
-        ? slackPayload.event.user.id
-        : slackPayload.event.user;
-    message.setProperty(
-      'anonymousId',
-      stringifiedUserId ? sha256(stringifiedUserId).toString().substring(0, 36) : generateUUID(),
-    );
-    // Set the user id received from Slack into externalId
-    message.context.externalId = [
-      {
-        type: 'slackUserId',
-        id: stringifiedUserId,
-      },
-    ];
-  } else {
+  if (!slackPayload.event.user) {
     throw new TransformationError('UserId not found');
   }
+  const stringifiedUserId =
+    typeof slackPayload.event.user === 'object'
+      ? slackPayload.event.user.id
+      : slackPayload.event.user;
+  message.setProperty(
+    'anonymousId',
+    stringifiedUserId ? sha256(stringifiedUserId).toString().substring(0, 36) : generateUUID(),
+  );
+  // Set the user id received from Slack into externalId
+  message.context.externalId = [
+    {
+      type: 'slackUserId',
+      id: stringifiedUserId,
+    },
+  ];
   // Set the standard common event fields. More info at https://www.rudderstack.com/docs/event-spec/standard-events/common-fields/
   // originalTimestamp - The actual time (in UTC) when the event occurred
   message.setProperty(

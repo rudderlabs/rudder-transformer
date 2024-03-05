@@ -1,4 +1,4 @@
-const { getUnsetObj, validateEventType } = require('./utils');
+const { getUnsetObj, validateEventType, userPropertiesPostProcess } = require('./utils');
 
 describe('getUnsetObj', () => {
   it("should return undefined when 'message.integrations.Amplitude.fieldsToUnset' is not array", () => {
@@ -95,5 +95,72 @@ describe('validateEventType', () => {
     }).toThrow(
       'Event type is missing. Please send it under `event.type`. For page/screen events, send it under `event.name`',
     );
+  });
+});
+
+describe('userPropertiesPostProcess', () => {
+  // The function correctly removes duplicate keys found in both operation keys and root level keys.
+  it('should remove duplicate keys from user_properties', () => {
+    // Arrange
+    const rawPayload = {
+      user_properties: {
+        $setOnce: {
+          key1: 'value1',
+        },
+        $add: {
+          key2: 'value2',
+        },
+        key3: 'value3',
+        key1: 'value4',
+      },
+    };
+
+    // Act
+    const result = userPropertiesPostProcess(rawPayload);
+
+    // Assert
+    expect(result.user_properties).toEqual({
+      $setOnce: {
+        key1: 'value1',
+      },
+      $add: {
+        key2: 'value2',
+      },
+      $set: {
+        key3: 'value3',
+      },
+    });
+  });
+
+  // The function correctly moves root level properties to $set operation.
+  it('should move root level properties to $set operation when they dont belong to any other operation', () => {
+    // Arrange
+    const rawPayload = {
+      user_properties: {
+        $setOnce: {
+          key1: 'value1',
+        },
+        $add: {
+          key2: 'value2',
+        },
+        key3: 'value3',
+      },
+    };
+
+    // Act
+    const result = userPropertiesPostProcess(rawPayload);
+
+    // Assert
+    expect(result.user_properties).toEqual({
+      $set: {
+        key3: 'value3',
+      },
+      $setOnce: {
+        key1: 'value1',
+      },
+      $add: {
+        key2: 'value2',
+      },
+    });
   });
 });

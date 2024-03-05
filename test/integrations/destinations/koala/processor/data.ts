@@ -25,10 +25,8 @@ export const data = [
               event: 'User Signed Up',
               type: 'track',
               messageId: '84e26acc-56a5-4835-8233-591137fca468',
-              traits: {
-                email: 'johndoe@somemail.com'
-              },
               properties: {
+                email: 'johndoe@somemail.com',
                 label: 'test',
                 value: 10,
               },

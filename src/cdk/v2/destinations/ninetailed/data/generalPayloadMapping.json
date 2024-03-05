@@ -1,0 +1,25 @@
+[
+  {
+    "sourceKeys": "anonymousId",
+    "required": true,
+    "destKey": "anonymousId"
+  },
+  {
+    "sourceKeys": "messageId",
+    "required": true,
+    "destKey": "messageId"
+  },
+  {
+    "sourceKeys": "channel",
+    "required": true,
+    "destKey": "channel"
+  },
+  {
+    "sourceKeys": "type",
+    "destKey": "type"
+  },
+  {
+    "sourceKeys": "originalTimestamp",
+    "destKey": "originalTimestamp"
+  }
+]

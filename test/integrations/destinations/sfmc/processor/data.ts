@@ -1732,4 +1732,166 @@ export const data = [
       },
     },
   },
+  {
+    name: 'sfmc',
+    description: 'Test 12',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              event: 'message event',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                campaign: {
+                  name: 'Demo Campaign',
+                  source: 'facebook',
+                  medium: 'online',
+                  term: 'Demo terms',
+                  content: 'Demo content',
+                },
+                traits: {
+                  email: 'tonmoy@rudderstack.com',
+                  name: 'Tonmoy Labs',
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                locale: 'en-GB',
+                ip: '0.0.0.0',
+                screen: {
+                  density: 2,
+                  height: 860,
+                  width: 1280,
+                },
+              },
+              type: 'track',
+              userId: '12345',
+              properties: {
+                id: 'id101',
+                contactId: 'cid101',
+                email: 'testemail@gmail.com',
+                accountNumber: '99110099',
+                patronName: 'SP',
+              },
+              sentAt: '2019-10-14T09:03:22.563Z',
+              integrations: {
+                All: true,
+              },
+            },
+            destination: {
+              ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+              Name: 'SFMC',
+              DestinationDefinition: {
+                ID: '1pYpYSeQd8OeN6xPdw6VGDzqUd1',
+                Name: 'SFMC',
+                DisplayName: 'Salesforce Marketing Cloud',
+                Config: {
+                  destConfig: [],
+                  excludeKeys: [],
+                  includeKeys: [],
+                  saveDestinationResponse: false,
+                  supportedSourceTypes: [],
+                  transformAt: 'processor',
+                },
+                ResponseRules: {},
+              },
+              Config: {
+                clientId: 'vcn7AQ2W9GGIAZSsN6Mfq',
+                clientSecret: 'vcn7AQ2W9GGIAZSsN6Mfq',
+                createOrUpdateContacts: false,
+                eventDelivery: true,
+                eventDeliveryTS: 1615371070621,
+                eventToExternalKey: [
+                  {
+                    from: 'Event Name',
+                    to: 'C500FD37-155C-49BD-A21B-AFCEF3D1A9CB',
+                  },
+                  {
+                    from: 'Watch',
+                    to: 'C500FD37-155C-49BD-A21B-AFCEF3D1A9CB',
+                  },
+                ],
+                eventToPrimaryKey: [
+                  {
+                    from: 'userId',
+                    to: 'User Key',
+                  },
+                  {
+                    from: 'watch',
+                    to: 'Guest Key, Contact Key',
+                  },
+                ],
+                eventToUUID: [
+                  {
+                    event: 'Event Name',
+                    uuid: true,
+                  },
+                ],
+                eventToDefinitionMapping: [
+                  {
+                    from: 'message event',
+                    to: 'test-event-definition',
+                  },
+                ],
+                externalKey: 'f3ffa19b-e0b3-4967-829f-549b781080e6',
+                subDomain: 'vcn7AQ2W9GGIAZSsN6Mfq',
+              },
+              Enabled: true,
+              Transformations: [],
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              body: {
+                XML: {},
+                JSON_ARRAY: {},
+                FORM: {},
+                JSON: {
+                  ContactKey: 'cid101',
+                  Data: {
+                    accountNumber: '99110099',
+                    email: 'testemail@gmail.com',
+                    id: 'id101',
+                    patronName: 'SP',
+                  },
+                  EventDefinitionKey: 'test-event-definition',
+                },
+              },
+              type: 'REST',
+              files: {},
+              method: 'POST',
+              params: {},
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer yourAuthToken',
+              },
+              version: '1',
+              endpoint:
+                'https://vcn7AQ2W9GGIAZSsN6Mfq.rest.marketingcloudapis.com/interaction/v1/events',
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];

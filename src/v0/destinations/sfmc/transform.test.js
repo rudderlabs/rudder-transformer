@@ -1,7 +1,7 @@
 const { ConfigurationError } = require('@rudderstack/integrations-lib');
 const axios = require('axios');
 const MockAxiosAdapter = require('axios-mock-adapter');
-const { responseBuilderSimple } = require('./transform');
+const { responseBuilderSimple, responseBuilderForMessageEvent } = require('./transform');
 beforeAll(() => {
   const mock = new MockAxiosAdapter(axios);
   mock
@@ -121,5 +121,45 @@ describe('responseBuilderSimple', () => {
     expect(response).toHaveProperty('method');
     expect(response).toHaveProperty('body.JSON');
     expect(response).toHaveProperty('headers');
+  });
+
+  it('should build response object with correct details for message event', () => {
+    const message = {
+      userId: 'u123',
+      event: 'testEvent',
+      properties: {
+        contactId: '12345',
+        prop1: 'value1',
+        prop2: 'value2',
+      },
+    };
+    const subDomain = 'subdomain';
+    const authToken = 'token';
+    const hashMapEventDefinition = {
+      testevent: 'eventDefinitionKey',
+    };
+
+    const response = responseBuilderForMessageEvent(
+      message,
+      subDomain,
+      authToken,
+      hashMapEventDefinition,
+    );
+    expect(response.method).toBe('POST');
+    expect(response.endpoint).toBe(
+      'https://subdomain.rest.marketingcloudapis.com/interaction/v1/events',
+    );
+    expect(response.headers).toEqual({
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer token',
+    });
+    expect(response.body.JSON).toEqual({
+      ContactKey: '12345',
+      EventDefinitionKey: 'eventDefinitionKey',
+      Data: {
+        prop1: 'value1',
+        prop2: 'value2',
+      },
+    });
   });
 });

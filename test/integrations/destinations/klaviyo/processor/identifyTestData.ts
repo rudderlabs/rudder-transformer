@@ -47,6 +47,8 @@ const commonTraits = {
   },
 };
 
+const commonTraits2 = { ...commonTraits, street: '63, Shibuya' };
+
 const commonOutputUserProps = {
   external_id: 'user@1',
   email: 'test@rudderstack.com',
@@ -65,6 +67,12 @@ const commonOutputUserProps = {
     Flagged: false,
     Residence: 'Shibuya',
   },
+};
+
+const commonOutputUserProps2 = {
+  ...commonOutputUserProps,
+  location: { ...commonOutputUserProps.location, address1: '63, Shibuya' },
+  properties: { ...commonOutputUserProps.properties, street: '63, Shibuya' },
 };
 
 const commonOutputSubscriptionProps = {
@@ -116,7 +124,7 @@ export const identifyData: ProcessorTestData[] = [
             destination,
             message: generateSimplifiedIdentifyPayload({
               context: {
-                traits: commonTraits,
+                traits: commonTraits2,
               },
               anonymousId,
               userId,
@@ -140,7 +148,7 @@ export const identifyData: ProcessorTestData[] = [
               JSON: {
                 data: {
                   type: 'profile',
-                  attributes: commonOutputUserProps,
+                  attributes: commonOutputUserProps2,
                   id: '01GW3PHVY0MTCDGS0A1612HARX',
                 },
               },
@@ -188,7 +196,7 @@ export const identifyData: ProcessorTestData[] = [
               userId,
               context: {
                 traits: {
-                  ...commonTraits,
+                  ...commonTraits2,
                   friend: {
                     names: {
                       first: 'Alice',
@@ -221,9 +229,9 @@ export const identifyData: ProcessorTestData[] = [
                   type: 'profile',
                   id: '01GW3PHVY0MTCDGS0A1612HARX',
                   attributes: {
-                    ...commonOutputUserProps,
+                    ...commonOutputUserProps2,
                     properties: {
-                      ...commonOutputUserProps.properties,
+                      ...commonOutputUserProps2.properties,
                       'friend.age': 25,
                       'friend.names.first': 'Alice',
                       'friend.names.last': 'Smith',
@@ -278,7 +286,7 @@ export const identifyData: ProcessorTestData[] = [
               userId,
               context: {
                 traits: {
-                  ...commonTraits,
+                  ...commonTraits2,
                   email: 'test3@rudderstack.com',
                 },
               },
@@ -334,7 +342,7 @@ export const identifyData: ProcessorTestData[] = [
               userId,
               context: {
                 traits: {
-                  ...commonTraits,
+                  ...commonTraits2,
                   properties: { ...commonTraits.properties, subscribe: false },
                 },
               },
@@ -358,7 +366,7 @@ export const identifyData: ProcessorTestData[] = [
               JSON: {
                 data: {
                   type: 'profile',
-                  attributes: commonOutputUserProps,
+                  attributes: commonOutputUserProps2,
                   id: '01GW3PHVY0MTCDGS0A1612HARX',
                 },
               },
@@ -390,7 +398,7 @@ export const identifyData: ProcessorTestData[] = [
               sentAt,
               userId,
               context: {
-                traits: commonTraits,
+                traits: commonTraits2,
               },
               anonymousId,
               originalTimestamp,
@@ -414,9 +422,9 @@ export const identifyData: ProcessorTestData[] = [
                 data: {
                   type: 'profile',
                   attributes: removeUndefinedAndNullValues({
-                    ...commonOutputUserProps,
+                    ...commonOutputUserProps2,
                     properties: {
-                      ...commonOutputUserProps.properties,
+                      ...commonOutputUserProps2.properties,
                       _id: userId,
                     },
                     // remove external_id from the payload
@@ -546,7 +554,7 @@ export const identifyData: ProcessorTestData[] = [
               userId,
               context: {
                 traits: removeUndefinedAndNullValues({
-                  ...commonTraits,
+                  ...commonTraits2,
                   email: undefined,
                   phone: undefined,
                 }),

@@ -9,7 +9,6 @@ const {
   removeUndefinedAndNullValues,
   isDefinedAndNotNullAndNotEmpty,
   getHashFromArrayWithDuplicate,
-  checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
   getSuccessRespEvents,
   defaultBatchRequestConfig,
@@ -199,11 +198,6 @@ const batchEvents = (eventChunksArray) => {
 };
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
-
   const batchErrorRespList = [];
   const eventChunksArray = [];
   const { destination } = inputs[0];

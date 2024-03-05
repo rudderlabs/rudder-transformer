@@ -1,7 +1,7 @@
 /**
  * --------------------------------------
  * --------------------------------------
- * ---------TO BE DEPRICIATED------------
+ * ---------TO BE DEPRECATED-------------
  * --------------------------------------
  * --------------------------------------
  */
@@ -96,11 +96,15 @@ const DestProxyController = {
         destination,
       });
 
-      response = generateErrorObject(err, {
-        [tags.TAG_NAMES.DEST_TYPE]: destination.toUpperCase(),
-        [tags.TAG_NAMES.MODULE]: tags.MODULES.DESTINATION,
-        [tags.TAG_NAMES.FEATURE]: tags.FEATURES.DATA_DELIVERY,
-      }, false);
+      response = generateErrorObject(
+        err,
+        {
+          [tags.TAG_NAMES.DEST_TYPE]: destination.toUpperCase(),
+          [tags.TAG_NAMES.MODULE]: tags.MODULES.DESTINATION,
+          [tags.TAG_NAMES.FEATURE]: tags.FEATURES.DATA_DELIVERY,
+        },
+        false,
+      );
       response.message = `[TransformerProxyTest] Error occurred while testing proxy for destination ("${destination}"): "${err.message}"`;
       logger.error(response.message);
       logger.error(err);

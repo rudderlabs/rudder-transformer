@@ -90,7 +90,13 @@ const lookupContact = async (term, destination) => {
           Authorization: `Bearer ${destination.Config.apiToken}`,
         },
       },
-      { destType: 'trengo', feature: 'transformation' },
+      {
+        destType: 'trengo',
+        feature: 'transformation',
+        endpointPath: '/contacts',
+        requestMethod: 'GET',
+        module: 'router',
+      },
     );
   } catch (err) {
     // check if exists err.response && err.response.status else 500

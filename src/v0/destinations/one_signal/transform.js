@@ -122,7 +122,7 @@ const trackResponseBuilder = (message, { Config }) => {
   if (!externalUserId) {
     throw new InstrumentationError('userId is required for track events/updating a device');
   }
-  endpoint = `${endpoint}/${appId}/users/${externalUserId}`;
+  endpoint = `${endpoint}/${appId}/users/${encodeURIComponent(externalUserId)}`;
   const payload = {};
   const tags = {};
   /* Populating event as true in tags.
@@ -163,7 +163,7 @@ const groupResponseBuilder = (message, { Config }) => {
   if (!externalUserId) {
     throw new InstrumentationError('userId is required for group events');
   }
-  endpoint = `${endpoint}/${appId}/users/${externalUserId}`;
+  endpoint = `${endpoint}/${appId}/users/${encodeURIComponent(externalUserId)}`;
   const payload = {};
   const tags = {
     groupId,

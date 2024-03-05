@@ -41,6 +41,8 @@ const createUpdateCompany = async (companyPayload, Config) => {
       destType: 'custify',
       feature: 'transformation',
       endpointPath: `/company`,
+      requestMethod: 'POST',
+      module: 'router',
     },
   );
   const processedCompanyResponse = processAxiosResponse(companyResponse);

@@ -24,8 +24,8 @@ steps:
       const traits = .message.traits ?? .message.context.traits ?? {};
       const koTraits = traits{~['ko_profile_id']}
       const basePayload = {
-        email: .message.().({{{{$.getGenericPaths("email")}}}}),
-        profile_id: traits.ko_profile_id,
+        email: $.context.email, 
+        profile_id: $.context.ko_profile_id,
         identifies: [{
           type: $.context.messageType,
           event: .message.event, 

@@ -1,18 +1,10 @@
-import { enhanceRequestOptions, getFormData } from '../../../../src/adapters/network';
+import { getFormData } from '../../../../src/adapters/network';
 
 export const networkCallsData = [
-  // 2nd proxy test-case
   {
     httpReq: {
       url: 'https://pi.pardot.com/api/prospect/version/4/do/upsert/email/Roger_12@waltair.io',
-      data: getFormData({
-        first_name: 'Roger_12',
-        last_name: 'Federer_12',
-        website: 'https://rudderstack.com',
-        score: 14,
-        campaign_id: 42213,
-        format: 'json',
-      }).toString(),
+      data: 'first_name=Roger12&last_name=Federer12&website=https%3A%2F%2Frud',
       params: { destination: 'pardot' },
       headers: {
         Authorization: 'Bearer myToken',
@@ -135,7 +127,6 @@ export const networkCallsData = [
       statusText: 'Created',
     },
   },
-  // 4th proxy test-case
   {
     httpReq: {
       url: 'https://pi.pardot.com/api/prospect/version/4/do/upsert/email/rolex_waltair@mywebsite.io',
@@ -169,7 +160,6 @@ export const networkCallsData = [
       statusText: 'Unauthorized',
     },
   },
-  // 1st proxy test-case
   {
     httpReq: {
       url: 'https://pi.pardot.com/api/prospect/version/4/do/upsert/id/123435',
@@ -303,7 +293,6 @@ export const networkCallsData = [
       statusText: 'OK',
     },
   },
-  // 3rd proxy test-case
   {
     httpReq: {
       url: 'https://pi.pardot.com/api/prospect/version/4/do/upsert/fid/00Q6r000002LKhTPVR',

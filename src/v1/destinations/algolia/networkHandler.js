@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 const { TransformerProxyError } = require('../../../v0/util/errorTypes');
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../../v0/util/index');
@@ -9,7 +10,7 @@ const {
 const tags = require('../../../v0/util/tags');
 
 const responseHandler = (responseParams) => {
-  let { destinationResponse, rudderJobMetadata } = responseParams;
+  const { destinationResponse, rudderJobMetadata } = responseParams;
   const message = `[ALGOLIA Response V1 Handler] - Request Processed Successfully`;
   const responseWithIndividualEvents = [];
   // response:
@@ -41,8 +42,8 @@ const responseHandler = (responseParams) => {
   // in case of non 2xx status sending 500 for every event, populate response and update dontBatch to true
   const errorMessage = response?.error?.message || response?.message || 'unknown error format';
   let serverStatus = 400;
-  for (let metadata of rudderJobMetadata) {
-    //handling case if dontBatch is true, and again we got invalid from destination
+  for (const metadata of rudderJobMetadata) {
+    // handling case if dontBatch is true, and again we got invalid from destination
     if (metadata.dontBatch && status === 422) {
       responseWithIndividualEvents.push({
         statusCode: 400,

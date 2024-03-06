@@ -127,7 +127,6 @@ export const data = [
                 version: '1',
                 method: 'POST',
                 headers: {
-                  'User-Agent': 'rudderstack/1.0.0',
                   'content-type': 'application/json',
                 },
               },
@@ -176,7 +175,6 @@ export const data = [
                 version: '1',
                 method: 'POST',
                 headers: {
-                  'User-Agent': 'rudderstack/1.0.0',
                   'content-type': 'application/json',
                 },
               },

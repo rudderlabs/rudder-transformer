@@ -83,5 +83,5 @@
     "SPRIG"
   ],
   "supportSourceTransformV1": true,
-  "supportTransformerProxyV1": false
+  "supportTransformerProxyV1": true
 }

@@ -2,7 +2,7 @@ bindings:
   - path: ../../../../v0/destinations/algolia/config
   - name: handleRtTfSingleEventError
     path: ../../../../v0/util/index
-
+  - path: ./util
 steps:
   - name: validateInput
     template: |
@@ -28,6 +28,10 @@ steps:
       $.outputs.transform#idx.error.(
         $.handleRtTfSingleEventError(^[idx], .originalError ?? ., {})
       )[]
+  - name: separateDontBatchEventForProxy
+    template: |
+      const payload = $.constructFullPayload(^, $.outputs.successfulEvents);
+      payload
   - name: batchSuccessfulEvents
     description: Batches the successfulEvents
     template: |

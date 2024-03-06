@@ -2,7 +2,6 @@ bindings:
   - path: ../../../../v0/destinations/algolia/config
   - name: handleRtTfSingleEventError
     path: ../../../../v0/util/index
-  - path: ./util
 steps:
   - name: validateInput
     template: |
@@ -28,14 +27,18 @@ steps:
       $.outputs.transform#idx.error.(
         $.handleRtTfSingleEventError(^[idx], .originalError ?? ., {})
       )[]
+
   - name: separateDontBatchEventForProxy
     template: |
-      const payload = $.constructFullPayload(^, $.outputs.successfulEvents);
-      payload
-  - name: batchSuccessfulEvents
+      {
+        dontBatchTrueEvents: $.outputs.successfulEvents{.metadata.dontBatch}[],
+        dontBatchFalseEvents: $.outputs.successfulEvents{!.metadata.dontBatch}[]
+      }
+
+  - name: batchSuccessfulEventsDontBatchTrue
     description: Batches the successfulEvents
     template: |
-      let batches = $.chunk($.outputs.successfulEvents, $.MAX_BATCH_SIZE);
+      let batches = $.chunk($.outputs.separateDontBatchEventForProxy.dontBatchTrueEvents, 1);
       batches@batch.({
         "batchedRequest": {
           "body": {
@@ -60,6 +63,41 @@ steps:
         "statusCode": 200,
         "destination": batch[0].destination
       })[];
+
+  - name: batchSuccessfulEventsDontBatchFalse
+    description: Batches the successfulEvents
+    template: |
+      let batches = $.chunk($.outputs.separateDontBatchEventForProxy.dontBatchFalseEvents, $.MAX_BATCH_SIZE);
+      batches@batch.({
+        "batchedRequest": {
+          "body": {
+            "JSON": {"events": ~r batch.output[]},
+            "JSON_ARRAY": {},
+            "XML": {},
+            "FORM": {}
+          },
+          "version": "1",
+          "type": "REST",
+          "method": "POST",
+          "endpoint": {{$.ENDPOINT}},
+          "headers": batch[0].destination.Config.().({
+            "X-Algolia-Application-Id": .applicationId,
+            "X-Algolia-API-Key": .apiKey
+          }),
+          "params": {},
+          "files": {}
+        },
+        "metadata": ~r batch.metadata[],
+        "batched": true,
+        "statusCode": 200,
+        "destination": batch[0].destination
+      })[];
+
+  - name: combineSuccessfulEvents
+    description: Combines the successfulEvents
+    template: |
+      [...$.outputs.batchSuccessfulEventsDontBatchFalse, ...$.outputs.batchSuccessfulEventsDontBatchTrue]
+
   - name: finalPayload
     template: |
-      [...$.outputs.failedEvents, ...$.outputs.batchSuccessfulEvents]
+      [...$.outputs.failedEvents, ...$.outputs.combineSuccessfulEvents]

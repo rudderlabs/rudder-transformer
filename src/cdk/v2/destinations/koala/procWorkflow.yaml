@@ -28,7 +28,6 @@ steps:
         profile_id: $.context.ko_profile_id,
         identifies: [{
           type: $.context.messageType,
-          event: .message.event, 
           sent_at: .message.().({{{{$.getGenericPaths("timestamp")}}}}),
           traits: koTraits 
         }]

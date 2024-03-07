@@ -12,7 +12,7 @@ steps:
       $.assert(.message.type in {{$.EventType.([.IDENTIFY, .TRACK])}}, 
         "message type " + .message.type + " is not supported");
       $.assertConfig(.destination.Config.publicKey, "publicKey is not present. Aborting message");
-      $.context.email = .message.().({{{{$.getGenericPaths("email")}}}});
+      $.context.email = .message.().({{{{$.getGenericPaths("emailOnly")}}}});
       $.context.ko_profile_id = .message.traits.ko_profile_id ?? .message.context.traits.ko_profile_id ?? .message.properties.ko_profile_id;
       $.assert($.context.email || $.context.ko_profile_id, "Neither email or ko_profile_id are present on traits. Aborting message");
   - name: setMessageType

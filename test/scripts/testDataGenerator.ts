@@ -18,6 +18,10 @@ command
   .option('-id, --id <string>', 'Enter unique "Id" of the test case you want to run')
   .option('-dp, --dataPlane <string>', 'Enter Data Plane URL')
   .option('-wk, --writeKey <string>', 'Enter Write Key')
+  .option(
+    '-fk, --filterKeys <string>',
+    'Enter Keys to filter from the test data(originalTimestamp, timestamp, messageId etc)',
+  )
   .parse();
 
 const opts = command.opts();
@@ -25,6 +29,8 @@ const opts = command.opts();
 if (opts.destination === undefined) {
   throw new Error('Destination is not provided');
 }
+
+const filterKeys = opts.filterKeys ? opts.filterKeys.split(',') : [];
 
 const rootDir = __dirname;
 const resolvedpath = path.resolve(rootDir, '../integrations');
@@ -44,7 +50,7 @@ destinationTestDataPaths.forEach((testDataPath) => {
     });
   }
   console.log('Writing test data to ../../temp/test_data.json');
-  produceTestData(testData);
+  produceTestData(testData, filterKeys);
 
   if (opts.dataPlane && opts.writeKey) {
     // read file ../../temp/test_data.json

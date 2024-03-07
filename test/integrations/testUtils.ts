@@ -97,7 +97,7 @@ export const overrideDestination = (destination: Destination, overrideConfigValu
   });
 };
 
-export const produceTestData = (testData: TestCaseData[]) => {
+export const produceTestData = (testData: TestCaseData[], filterKeys = []) => {
   const result: any = [];
   testData.forEach((tcData) => {
     let events;
@@ -120,7 +120,12 @@ export const produceTestData = (testData: TestCaseData[]) => {
     }
 
     events.forEach((event) => {
-      result.push(event.message);
+      const { message } = event;
+      // remove unwanted keys
+      filterKeys.forEach((key) => {
+        delete message[key];
+      });
+      result.push(message);
     });
   });
 

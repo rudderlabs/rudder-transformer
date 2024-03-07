@@ -96,7 +96,7 @@ export const data = [
   },
   {
     name: 'koala',
-    description: 'Successful indentity event',
+    description: 'Successful identify event',
     feature: 'processor',
     module: 'destination',
     version: 'v0',

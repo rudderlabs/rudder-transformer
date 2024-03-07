@@ -246,11 +246,20 @@ const searchContact = async (message, destination) => {
   const headers = getHeaders(destination);
   const baseEndPoint = getBaseEndpoint(destination);
   const endpoint = `${baseEndPoint}/${SEARCH_CONTACT_ENDPOINT}`;
-  const response = await httpPOST(endpoint, data, {
-    headers,
-    destType: 'intercom',
-    feature: 'transformation',
-  });
+  const response = await httpPOST(
+    endpoint,
+    data,
+    {
+      headers,
+    },
+    {
+      destType: 'intercom',
+      feature: 'transformation',
+      endpointPath: '/contacts/search',
+      requestMethod: 'POST',
+      module: 'router',
+    },
+  );
   const processedUserResponse = processAxiosResponse(response);
   if (isHttpStatusSuccess(processedUserResponse.status)) {
     return processedUserResponse.response?.data.length > 0
@@ -280,11 +289,20 @@ const createOrUpdateCompany = async (payload, destination) => {
   const finalPayload = JSON.stringify(removeUndefinedAndNullValues(payload));
   const baseEndPoint = getBaseEndpoint(destination);
   const endpoint = `${baseEndPoint}/${CREATE_OR_UPDATE_COMPANY_ENDPOINT}`;
-  const response = await httpPOST(endpoint, finalPayload, {
-    headers,
-    destType: 'intercom',
-    feature: 'transformation',
-  });
+  const response = await httpPOST(
+    endpoint,
+    finalPayload,
+    {
+      headers,
+    },
+    {
+      destType: 'intercom',
+      feature: 'transformation',
+      endpointPath: '/companies',
+      requestMethod: 'POST',
+      module: 'router',
+    },
+  );
 
   const processedResponse = processAxiosResponse(response);
   if (isHttpStatusSuccess(processedResponse.status)) {

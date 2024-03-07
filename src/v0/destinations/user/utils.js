@@ -238,6 +238,8 @@ const createCompany = async (message, destination) => {
     destType: 'user',
     feature: 'transformation',
     endpointPath: `/companies/`,
+    requestMethod: 'POST',
+    module: 'router',
   });
   const data = processAxiosResponse(response);
   return data.response;
@@ -279,6 +281,8 @@ const updateCompany = async (message, destination, company) => {
     destType: 'user',
     feature: 'transformation',
     endpointPath: `/companies/`,
+    requestMethod: 'PUT',
+    module: 'router',
   });
   const data = processAxiosResponse(response);
   return data.response;
@@ -306,6 +310,8 @@ const getUserByUserKey = async (apiKey, userKey, appSubdomain) => {
     destType: 'user',
     feature: 'transformation',
     endpointPath: `/users/search`,
+    requestMethod: 'GET',
+    module: 'router',
   });
   const processedUserResponse = processAxiosResponse(userResponse);
   if (processedUserResponse.status === 200) {
@@ -340,6 +346,8 @@ const getUserByEmail = async (apiKey, email, appSubdomain) => {
     destType: 'user',
     feature: 'transformation',
     endpointPath: `/users/search/?email`,
+    requestMethod: 'GET',
+    module: 'router',
   });
   const processedUserResponse = processAxiosResponse(userResponse);
 
@@ -379,6 +387,8 @@ const getUserByPhoneNumber = async (apiKey, phoneNumber, appSubdomain) => {
     destType: 'user',
     feature: 'transformation',
     endpointPath: `/users/search/?phone_number`,
+    requestMethod: 'GET',
+    module: 'router',
   });
   const processedUserResponse = processAxiosResponse(userResponse);
 
@@ -424,6 +434,8 @@ const getUserByCustomId = async (message, destination) => {
     destType: 'user',
     feature: 'transformation',
     endpointPath: `/users-by-id/`,
+    requestMethod: 'GET',
+    module: 'router',
   });
   const processedUserResponse = processAxiosResponse(userResponse);
 
@@ -460,6 +472,8 @@ const getCompanyByCustomId = async (message, destination) => {
     destType: 'user',
     feature: 'transformation',
     endpointPath: `/companies-by-id/`,
+    requestMethod: 'GET',
+    module: 'router',
   });
   const processedUserResponse = processAxiosResponse(response);
   if (processedUserResponse.status === 200) {

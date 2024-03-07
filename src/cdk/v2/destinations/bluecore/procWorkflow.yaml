@@ -54,7 +54,7 @@ steps:
             $.verifyPayload(newPayload, ^.message);
             $.removeUndefinedNullValuesAndEmptyObjectArray(newPayload)
           )[];
-  
+
   - name: buildResponse
     template: |
       $.context.payloads.(

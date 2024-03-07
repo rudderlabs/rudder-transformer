@@ -218,7 +218,7 @@ const processEvent = async (metadata, message, destination) => {
     }
 
     Object.values(createdPayload).forEach((data) => {
-      const consentObj = populateConsentForGoogleDestinations(message.properties);
+      const consentObj = populateConsentForGoogleDestinations(destination.Config);
       response.push(responseBuilder(metadata, data, destination, message, consentObj));
     });
     return response;

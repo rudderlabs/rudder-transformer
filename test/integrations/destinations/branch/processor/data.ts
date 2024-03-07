@@ -1490,4 +1490,160 @@ export const data = [
       },
     },
   },
+  {
+    name: 'branch',
+    description: 'Map event name to branch standard event name in track call',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                branchKey: 'test_branch_key',
+                eventsMapping: [
+                  {
+                    from: 'Order Completed',
+                    to: 'PURCHASE',
+                  },
+                ],
+                useNativeSDK: false,
+              },
+              DestinationDefinition: {
+                DisplayName: 'Branch Metrics',
+                ID: '1WTpBSTiL3iAUHUdW7rHT4sawgU',
+                Name: 'BRANCH',
+              },
+              Enabled: true,
+              ID: '1WTpIHpH7NTBgjeiUPW1kCUgZGI',
+              Name: 'branch test',
+              Transformations: [],
+            },
+            message: {
+              anonymousId: 'anonId123',
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                device: {
+                  adTrackingEnabled: true,
+                  advertisingId: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
+                  id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
+                  manufacturer: 'Google',
+                  model: 'AOSP on IA Emulator',
+                  name: 'generic_x86_arm',
+                  type: 'ios',
+                  attTrackingStatus: 3,
+                },
+                ip: '0.0.0.0',
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                locale: 'en-US',
+                os: {
+                  name: 'iOS',
+                  version: '14.4.1',
+                },
+                screen: {
+                  density: 2,
+                },
+                traits: {
+                  anonymousId: 'anonId123',
+                  email: 'test_user@gmail.com',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
+              },
+              event: 'Order Completed',
+              integrations: {
+                All: true,
+              },
+              messageId: 'ea5cfab2-3961-4d8a-8187-3d1858c90a9f',
+              originalTimestamp: '2020-01-17T04:53:51.185Z',
+              properties: {
+                name: 't-shirt',
+                revenue: '10',
+                currency: 'USD',
+                key1: 'value1',
+                key2: 'value2',
+                order_id: 'order123',
+              },
+              receivedAt: '2020-01-17T10:23:52.688+05:30',
+              request_ip: '[::1]:64059',
+              sentAt: '2020-01-17T04:53:52.667Z',
+              timestamp: '2020-01-17T10:23:51.206+05:30',
+              type: 'track',
+              userId: 'userId123',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api2.branch.io/v2/event/standard',
+              headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  branch_key: 'test_branch_key',
+                  name: 'PURCHASE',
+                  content_items: [
+                    {
+                      $product_name: 't-shirt',
+                    },
+                  ],
+                  event_data: {
+                    revenue: '10',
+                    currency: 'USD',
+                  },
+                  custom_data: {
+                    key1: 'value1',
+                    key2: 'value2',
+                    order_id: 'order123',
+                  },
+                  user_data: {
+                    os: 'iOS',
+                    os_version: '14.4.1',
+                    app_version: '1.0.0',
+                    screen_dpi: 2,
+                    developer_identity: 'userId123',
+                    idfa: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
+                    idfv: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
+                    limit_ad_tracking: false,
+                    model: 'AOSP on IA Emulator',
+                    user_agent:
+                      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
+                  },
+                },
+                XML: {},
+                JSON_ARRAY: {},
+                FORM: {},
+              },
+              files: {},
+              userId: 'anonId123',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];

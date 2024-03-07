@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-nested-ternary */
 const {
   NetworkError,
@@ -44,7 +45,13 @@ const getToken = async (clientId, clientSecret, subdomain) => {
       {
         'Content-Type': JSON_MIME_TYPE,
       },
-      { destType: 'sfmc', feature: 'transformation' },
+      {
+        destType: 'sfmc',
+        feature: 'transformation',
+        endpointPath: '/token',
+        requestMethod: 'POST',
+        module: 'router',
+      },
     );
     if (resp && resp.data) {
       return resp.data.access_token;
@@ -182,6 +189,26 @@ const responseBuilderForInsertData = (
   return response;
 };
 
+// DOC : https://developer.salesforce.com/docs/marketing/marketing-cloud/references/mc_rest_interaction/postEvent.html
+
+const responseBuilderForMessageEvent = (message, subDomain, authToken, hashMapEventDefinition) => {
+  const contactKey = message.properties.contactId;
+  delete message.properties.contactId;
+  const response = defaultRequestConfig();
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.endpoint = `https://${subDomain}.${ENDPOINTS.EVENT}`;
+  response.headers = {
+    'Content-Type': JSON_MIME_TYPE,
+    Authorization: `Bearer ${authToken}`,
+  };
+  response.body.JSON = {
+    ContactKey: contactKey,
+    EventDefinitionKey: hashMapEventDefinition[message.event.toLowerCase()],
+    Data: { ...message.properties },
+  };
+  return response;
+};
+
 const responseBuilderSimple = async (message, category, destination) => {
   const {
     clientId,
@@ -192,6 +219,7 @@ const responseBuilderSimple = async (message, category, destination) => {
     eventToExternalKey,
     eventToPrimaryKey,
     eventToUUID,
+    eventToDefinitionMapping,
   } = destination.Config;
   // map from an event name to an external key of a data extension.
   const hashMapExternalKey = getHashFromArray(eventToExternalKey, 'from', 'to');
@@ -201,6 +229,8 @@ const responseBuilderSimple = async (message, category, destination) => {
   const hashMapUUID = getHashFromArray(eventToUUID, 'event', 'uuid');
   // token needed for authorization for subsequent calls
   const authToken = await getToken(clientId, clientSecret, subDomain);
+  // map from an event name to an event definition key.
+  const hashMapEventDefinition = getHashFromArray(eventToDefinitionMapping, 'from', 'to');
   // if createOrUpdateContacts is true identify calls for create and update of contacts will not occur.
   if (category.type === 'identify' && !createOrUpdateContacts) {
     // first call to identify the contact
@@ -234,10 +264,12 @@ const responseBuilderSimple = async (message, category, destination) => {
     if (typeof message.event !== 'string') {
       throw new ConfigurationError('Event name must be a string');
     }
+    if (hashMapEventDefinition[message.event.toLowerCase()]) {
+      return responseBuilderForMessageEvent(message, subDomain, authToken, hashMapEventDefinition);
+    }
     if (!isDefinedAndNotNull(hashMapExternalKey[message.event.toLowerCase()])) {
       throw new ConfigurationError('Event not mapped for this track call');
     }
-
     return responseBuilderForInsertData(
       message,
       hashMapExternalKey[message.event.toLowerCase()],
@@ -287,4 +319,9 @@ const processRouterDest = async (inputs, reqMetadata) => {
   return respList;
 };
 
-module.exports = { process, processRouterDest, responseBuilderSimple };
+module.exports = {
+  process,
+  processRouterDest,
+  responseBuilderSimple,
+  responseBuilderForMessageEvent,
+};

@@ -18,6 +18,7 @@ const {
   getIntegrationsObj,
   removeUndefinedAndNullValues,
   simpleProcessRouterDest,
+  validateEventAndLowerCaseConversion,
 } = require('../../util');
 
 const {
@@ -307,7 +308,7 @@ const processTrackEvent = (message, adobeEventName, destinationConfig, extras = 
     destinationConfig;
   const { event: rawMessageEvent, properties } = message;
   const { overrideEventString, overrideProductString } = properties;
-  const event = rawMessageEvent.toLowerCase();
+  const event = validateEventAndLowerCaseConversion(rawMessageEvent, true, true);
   const adobeEventArr = adobeEventName ? adobeEventName.split(',') : [];
   // adobeEventArr is an array of events which is defined as
   // ["eventName", "mapped Adobe Event=mapped merchproperty's value", "mapped Adobe Event=mapped merchproperty's value", . . .]

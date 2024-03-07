@@ -128,6 +128,9 @@ const getAccessToken = async (config) => {
   const { processedResponse: accessTokenResponse } = await handleHttpRequest('get', url, {
     destType: 'marketo_bulk_upload',
     feature: 'transformation',
+    endpointPath: '/identity/oauth/token',
+    requestMethod: 'GET',
+    module: 'router',
   });
 
   // sample response : {response: '[ENOTFOUND] :: DNS lookup failed', status: 400}
@@ -352,6 +355,9 @@ const getFieldSchemaMap = async (accessToken, munchkinId) => {
     {
       destType: 'marketo_bulk_upload',
       feature: 'transformation',
+      endpointPath: '/leads/describe2.json',
+      requestMethod: 'GET',
+      module: 'router',
     },
   );
 

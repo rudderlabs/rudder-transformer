@@ -5,7 +5,6 @@ const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 
 const {
-  getErrorRespEvents,
   getSuccessRespEvents,
   defaultRequestConfig,
   addExternalIdToTraits,
@@ -174,10 +173,6 @@ const batchEvents = (successRespList) => {
 };
 
 const processRouterDest = (inputs, reqMetadata) => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, 'Invalid event array');
-    return [respEvents];
-  }
   let batchResponseList = [];
   const batchErrorRespList = [];
   const successRespList = [];

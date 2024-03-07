@@ -51,7 +51,7 @@ export class ControllerUtility {
 
   private static convertSourceInputv0Tov1(sourceEvents: unknown[]): SourceInput[] {
     return sourceEvents.map(
-      (sourceEvent) => ({ event: sourceEvent, source: undefined } as SourceInput),
+      (sourceEvent) => ({ event: sourceEvent, source: undefined }) as SourceInput,
     );
   }
 

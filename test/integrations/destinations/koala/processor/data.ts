@@ -255,7 +255,7 @@ export const data = [
   },
   {
     name: 'koala',
-    description: 'Validate track event with invalid message type',
+    description: 'Invalid message type page',
     feature: 'processor',
     module: 'destination',
     version: 'v0',

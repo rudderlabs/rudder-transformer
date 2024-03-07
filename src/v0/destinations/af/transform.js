@@ -113,7 +113,12 @@ function getEventValueForUnIdentifiedTrackEvent(message) {
   return { eventValue };
 }
 
-function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport, addPropertiesAtRoot) {
+function getEventValueMapFromMappingJson(
+  message,
+  mappingJson,
+  isMultiSupport,
+  addPropertiesAtRoot,
+) {
   let eventValue = {};
 
   if (addPropertiesAtRoot) {

@@ -79,6 +79,7 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
+                consent: { adPersonalization: 'UNSPECIFIED', adUserData: 'UNSPECIFIED' },
               },
               body: {
                 JSON: {
@@ -212,6 +213,7 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
+                consent: { adPersonalization: 'UNSPECIFIED', adUserData: 'UNSPECIFIED' },
               },
               body: {
                 JSON: {
@@ -330,6 +332,7 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
+                consent: { adPersonalization: 'UNSPECIFIED', adUserData: 'UNSPECIFIED' },
               },
               body: {
                 JSON: {
@@ -1431,6 +1434,7 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
+                consent: { adPersonalization: 'UNSPECIFIED', adUserData: 'UNSPECIFIED' },
               },
               body: {
                 JSON: {
@@ -2825,6 +2829,7 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
+                consent: { adPersonalization: 'UNSPECIFIED', adUserData: 'UNSPECIFIED' },
               },
               body: {
                 JSON: {
@@ -2904,6 +2909,7 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
+                consent: { adPersonalization: 'UNSPECIFIED', adUserData: 'UNSPECIFIED' },
               },
               body: {
                 JSON: {
@@ -4116,6 +4122,7 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
+                consent: { adPersonalization: 'UNSPECIFIED', adUserData: 'UNSPECIFIED' },
               },
               body: {
                 JSON: {
@@ -5415,6 +5422,7 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
+                consent: { adPersonalization: 'UNSPECIFIED', adUserData: 'UNSPECIFIED' },
               },
               body: {
                 JSON: {
@@ -6791,6 +6799,7 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
+                consent: { adPersonalization: 'UNSPECIFIED', adUserData: 'UNSPECIFIED' },
               },
               body: {
                 JSON: {
@@ -8100,6 +8109,7 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
+                consent: { adPersonalization: 'UNSPECIFIED', adUserData: 'UNSPECIFIED' },
               },
               body: {
                 JSON: {
@@ -9399,6 +9409,7 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
+                consent: { adPersonalization: 'UNSPECIFIED', adUserData: 'UNSPECIFIED' },
               },
               body: {
                 JSON: {
@@ -10793,6 +10804,7 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
+                consent: { adPersonalization: 'UNSPECIFIED', adUserData: 'UNSPECIFIED' },
               },
               body: {
                 JSON: {
@@ -10872,6 +10884,7 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
+                consent: { adPersonalization: 'UNSPECIFIED', adUserData: 'UNSPECIFIED' },
               },
               body: {
                 JSON: {
@@ -11046,6 +11059,7 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
+                consent: { adPersonalization: 'UNSPECIFIED', adUserData: 'UNSPECIFIED' },
               },
               body: {
                 JSON: {
@@ -11123,6 +11137,7 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
+                consent: { adPersonalization: 'UNSPECIFIED', adUserData: 'UNSPECIFIED' },
               },
               body: {
                 JSON: {
@@ -11266,6 +11281,7 @@ export const data = [
               params: {
                 listId: 'list111',
                 customerId: '7693729833',
+                consent: { adPersonalization: 'UNSPECIFIED', adUserData: 'UNSPECIFIED' },
               },
               body: {
                 JSON: {
@@ -11472,6 +11488,7 @@ export const data = [
               params: {
                 listId: 'aud1234',
                 customerId: '7693729833',
+                consent: { adPersonalization: 'UNSPECIFIED', adUserData: 'UNSPECIFIED' },
               },
               body: {
                 JSON: {
@@ -11610,6 +11627,7 @@ export const data = [
               params: {
                 listId: '830441345',
                 customerId: '7693729833',
+                consent: { adPersonalization: 'UNSPECIFIED', adUserData: 'UNSPECIFIED' },
               },
               body: {
                 JSON: {
@@ -11747,6 +11765,7 @@ export const data = [
               params: {
                 listId: '830441345',
                 customerId: '7693729833',
+                consent: { adPersonalization: 'UNSPECIFIED', adUserData: 'UNSPECIFIED' },
               },
               body: {
                 JSON: {
@@ -11817,6 +11836,8 @@ export const data = [
                 userSchema: ['email', 'phone', 'addressInfo'],
                 isHashRequired: true,
                 typeOfList: 'General',
+                userDataConsent: 'UNSPECIFIED',
+                personalizationConsent: 'GRANTED',
               },
             },
             message: {
@@ -11841,8 +11862,6 @@ export const data = [
               event: 'Add_Audience',
               messageId: 'bd2d67ca-0c9a-4d3b-a2f8-35a3c3f75ba7',
               properties: {
-                userDataConsent: 'UNSPECIFIED',
-                personalizationConsent: 'GRANTED',
                 listData: {
                   add: [
                     {
@@ -11886,6 +11905,10 @@ export const data = [
               params: {
                 listId: '830441345',
                 customerId: '7693729833',
+                consent: {
+                  adUserData: 'UNSPECIFIED',
+                  adPersonalization: 'GRANTED',
+                },
               },
               body: {
                 JSON: {
@@ -11956,6 +11979,8 @@ export const data = [
                 userSchema: ['email', 'phone', 'addressInfo'],
                 isHashRequired: true,
                 typeOfList: 'General',
+                userDataConsent: 'RANDOM',
+                personalizationConsent: 'RANDOM',
               },
             },
             message: {
@@ -11980,8 +12005,6 @@ export const data = [
               event: 'Add_Audience',
               messageId: 'bd2d67ca-0c9a-4d3b-a2f8-35a3c3f75ba7',
               properties: {
-                userDataConsent: 'RANDOM',
-                personalizationConsent: 'RANDOM',
                 listData: {
                   add: [
                     {
@@ -12025,6 +12048,7 @@ export const data = [
               params: {
                 listId: '830441345',
                 customerId: '7693729833',
+                consent: { adPersonalization: 'UNKNOWN', adUserData: 'UNKNOWN' },
               },
               body: {
                 JSON: {

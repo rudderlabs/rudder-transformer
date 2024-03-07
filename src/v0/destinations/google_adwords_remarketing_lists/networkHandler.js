@@ -23,6 +23,9 @@ const createJob = async (endpoint, headers, method, params) => {
   const customerMatchUserListMetadata = {
     userList: `customers/${params.customerId}/userLists/${params.listId}`,
   };
+  if (Object.keys(params.consent).length > 0) {
+    customerMatchUserListMetadata.consent = params.consent;
+  }
   const jobCreatingRequest = {
     url: jobCreatingUrl,
     data: {

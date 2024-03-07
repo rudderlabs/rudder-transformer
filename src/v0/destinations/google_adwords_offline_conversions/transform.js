@@ -9,7 +9,6 @@ const {
   handleRtTfSingleEventError,
   defaultBatchRequestConfig,
   getSuccessRespEvents,
-  checkInvalidRtTfEvents,
   combineBatchRequestsWithSameJobIds,
 } = require('../../util');
 const {
@@ -73,7 +72,7 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
       payload.addConversionPayload.operations.create.consent = consentObject;
     }
   }
-  
+
   if (conversionType !== 'store') {
     // transform originalTimestamp to conversionDateTime format (yyyy-mm-dd hh:mm:ss+|-hh:mm)
     // e.g 2019-10-14T11:15:18.299Z -> 2019-10-14 16:10:29+0530
@@ -200,11 +199,6 @@ const batchEvents = (storeSalesEvents) => {
 };
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
-
   const storeSalesEvents = []; // list containing store sales events in batched format
   const clickCallEvents = []; // list containing click and call events in batched format
   const errorRespList = [];

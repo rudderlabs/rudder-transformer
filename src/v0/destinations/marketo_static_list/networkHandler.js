@@ -7,7 +7,7 @@ const { DESTINATION } = require('./config');
 const responseHandler = (responseParams) => {
   const { destinationResponse, destType, rudderJobMetadata } = responseParams;
   const message = 'Request Processed Successfully';
-  const { status} = destinationResponse;
+  const { status } = destinationResponse;
   const authCache = v0Utils.getDestAuthCacheInstance(destType);
   // check for marketo application level failures
   marketoResponseHandler(

@@ -57,7 +57,12 @@
       "traits.address.region",
       "context.traits.region",
       "context.traits.address.region",
-      "properties.region"
+      "properties.region",
+      "traits.state",
+      "traits.address.state",
+      "context.traits.address.state",
+      "context.traits.state",
+      "properties.state"
     ],
     "required": false
   },
@@ -77,14 +82,19 @@
     "sourceKeys": [
       "traits.zip",
       "traits.postalcode",
+      "traits.postalCode",
       "traits.address.zip",
       "traits.address.postalcode",
+      "traits.address.postalCode",
       "context.traits.zip",
       "context.traits.postalcode",
+      "context.traits.postalCode",
       "context.traits.address.zip",
       "context.traits.address.postalcode",
+      "context.traits.address.postalCode",
       "properties.zip",
-      "properties.postalcode"
+      "properties.postalcode",
+      "properties.postalCode"
     ],
     "required": false
   },
@@ -96,6 +106,17 @@
   {
     "destKey": "location.timezone",
     "sourceKeys": ["traits.timezone", "context.traits.timezone", "properties.timezone"],
+    "required": false
+  },
+  {
+    "destKey": "location.address1",
+    "sourceKeys": [
+      "traits.street",
+      "traits.address.street",
+      "context.traits.street",
+      "context.traits.address.street",
+      "properties.street"
+    ],
     "required": false
   }
 ]

@@ -1,7 +1,7 @@
 const lodash = require('lodash');
 const set = require('set-value');
 const get = require('get-value');
-const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
   isDefined,
   constructPayload,
@@ -16,6 +16,7 @@ const {
   IsGzipSupported,
   isObject,
   isDefinedAndNotNullAndNotEmpty,
+  isDefinedAndNotNull,
 } = require('../../util');
 const {
   ConfigCategory,
@@ -301,6 +302,46 @@ function trimTraits(traits, contextTraits, setOnceProperties) {
   };
 }
 
+/**
+ * Generates a custom event name for a page or screen.
+ *
+ * @param {Object} message - The message object
+ * @param {string} userDefinedEventTemplate - The user-defined event template to be used for generating the event name.
+ * @throws {ConfigurationError} If the event template is missing.
+ * @returns {string} The generated custom event name.
+ * @example
+ * const userDefinedEventTemplate = "Viewed {{ category }} {{ name }} Page";
+ * const message = {name: 'Home', properties: {category: 'Index'}};
+ * output: "Viewed Index Home Page"
+ */
+const generatePageOrScreenCustomEventName = (message, userDefinedEventTemplate) => {
+  if (!userDefinedEventTemplate) {
+    throw new ConfigurationError(
+      'Event name template is not configured. Please provide a valid value for the `Page/Screen Event Name Template` in the destination dashboard.',
+    );
+  }
+
+  let eventName = userDefinedEventTemplate;
+
+  if (isDefinedAndNotNull(message.properties?.category)) {
+    // Replace {{ category }} with actual values
+    eventName = eventName.replace(/{{\s*category\s*}}/g, message.properties.category);
+  } else {
+    // find {{ category }} surrounded by whitespace characters and replace it with a single whitespace character
+    eventName = eventName.replace(/\s{{\s*category\s*}}\s/g, ' ');
+  }
+
+  if (isDefinedAndNotNull(message.name)) {
+    // Replace {{ name }} with actual values
+    eventName = eventName.replace(/{{\s*name\s*}}/g, message.name);
+  } else {
+    // find {{ name }} surrounded by whitespace characters and replace it with a single whitespace character
+    eventName = eventName.replace(/\s{{\s*name\s*}}\s/g, ' ');
+  }
+
+  return eventName;
+};
+
 module.exports = {
   createIdentifyResponse,
   isImportAuthCredentialsAvailable,
@@ -309,4 +350,5 @@ module.exports = {
   generateBatchedPayloadForArray,
   batchEvents,
   trimTraits,
+  generatePageOrScreenCustomEventName,
 };

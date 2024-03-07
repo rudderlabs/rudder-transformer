@@ -50,18 +50,16 @@ const responseHandler = (responseParams) => {
         metadata,
         error: errorMessage,
       });
-      continue;
+    } else {
+      serverStatus = 500;
+      metadata.dontBatch = true;
+      responseWithIndividualEvents.push({
+        statusCode: 500,
+        metadata,
+        error: errorMessage,
+      });
     }
-    serverStatus = 500;
-    metadata.dontBatch = true;
-    responseWithIndividualEvents.push({
-      statusCode: 500,
-      metadata,
-      error: errorMessage,
-    });
   }
-
-  // 400 ... 500 ...not going through individual status
 
   // sending back 500 for retry
   throw new TransformerProxyError(

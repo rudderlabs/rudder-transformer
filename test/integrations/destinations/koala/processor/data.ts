@@ -64,6 +64,7 @@ export const data = [
                     sent_at: '2024-01-23T08:35:17.562Z',
                     message_id: '84e26acc-56a5-4835-8233-591137fca468',
                     properties: {
+                      email: 'johndoe@somemail.com',
                       label: 'test',
                       value: 10,
                     },

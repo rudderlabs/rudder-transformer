@@ -38,7 +38,7 @@ steps:
     condition: $.context.messageType === {{$.EventType.TRACK}}
     template: |
       const properties = .message.properties ??  {};
-      const koProperties = properties{~['ko_profile_id', 'email']}
+      const koProperties = properties{~['ko_profile_id']}
       const basePayload = {
         ip: .message.context.ip ?? .message.request_ip, 
         email: $.context.email, 

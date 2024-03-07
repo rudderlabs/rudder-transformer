@@ -57,7 +57,7 @@ export const reqMetadataArrayWithSecret = [proxyMetdataWithSecret];
 
 export const testScenariosForV1API: ProxyV1TestData[] = [
   {
-    id: 'salesforce_v1_scenario_8',
+    id: 'salesforce_v1_scenario_1',
     name: 'salesforce_oauth',
     description: '[Proxy v1 API] :: Test with expired access token scenario',
     successCriteria:

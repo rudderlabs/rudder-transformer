@@ -199,7 +199,7 @@ export const data = [
                 headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
                 version: '1',
                 endpoint:
-                  'https://onesignal.com/api/v1/apps/random-818c-4a28-b98e-6cd8a994eb22/users/user@27',
+                  'https://onesignal.com/api/v1/apps/random-818c-4a28-b98e-6cd8a994eb22/users/user%4027',
               },
               metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,

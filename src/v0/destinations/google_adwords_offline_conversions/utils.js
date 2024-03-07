@@ -64,6 +64,8 @@ const getConversionActionId = async (headers, params) => {
       destType: 'google_adwords_offline_conversions',
       feature: 'transformation',
       endpointPath: `/googleAds:searchStream`,
+      requestMethod: 'POST',
+      module: 'dataDelivery',
     });
     searchStreamResponse = processAxiosResponse(searchStreamResponse);
     if (!isHttpStatusSuccess(searchStreamResponse.status)) {

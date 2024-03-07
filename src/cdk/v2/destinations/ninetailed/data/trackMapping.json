@@ -1,0 +1,12 @@
+[
+  {
+    "sourceKeys": "properties",
+    "required": true,
+    "destKey": "properties"
+  },
+  {
+    "sourceKeys": "event",
+    "required": true,
+    "destKey": "event"
+  }
+]

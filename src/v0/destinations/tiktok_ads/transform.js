@@ -17,7 +17,6 @@ const {
   getDestinationExternalID,
   getFieldValueFromMessage,
   getHashFromArrayWithDuplicate,
-  checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
   batchMultiplexedEvents,
 } = require('../../util');
@@ -130,12 +129,10 @@ const getTrackResponse = (message, Config, event) => {
 
 const trackResponseBuilder = async (message, { Config }) => {
   const { eventsToStandard, sendCustomEvents } = Config;
-
-  let event = message.event?.toLowerCase().trim();
-  if (!event) {
-    throw new InstrumentationError('Event name is required');
+  if (!message.event || typeof message.event !== 'string') {
+    throw new InstrumentationError('Either event name is not present or it is not a string');
   }
-
+  let event = message.event?.toLowerCase().trim();
   const standardEventsMap = getHashFromArrayWithDuplicate(eventsToStandard);
 
   if (!sendCustomEvents && eventNameMapping[event] === undefined && !standardEventsMap[event]) {
@@ -247,10 +244,6 @@ const processRouterDest = async (inputs, reqMetadata) => {
   const { Config } = destination;
   if (Config?.version === 'v2') {
     return processRouterDestV2(inputs, reqMetadata);
-  }
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
   }
 
   const trackResponseList = []; // list containing single track event in batched format

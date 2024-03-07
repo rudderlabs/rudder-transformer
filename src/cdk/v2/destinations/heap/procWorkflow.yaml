@@ -58,5 +58,3 @@ steps:
           "Content-Type": "application/json"
         };
         response
-
-        

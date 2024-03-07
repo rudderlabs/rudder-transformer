@@ -5,7 +5,6 @@ const {
   defaultRequestConfig,
   defaultPostRequestConfig,
   getSuccessRespEvents,
-  getErrorRespEvents,
   constructPayload,
   defaultBatchRequestConfig,
   removeUndefinedAndNullValues,
@@ -172,11 +171,6 @@ const batchEvents = (successRespList) => {
 };
 
 const processRouterDest = (inputs, reqMetadata) => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, 'Invalid event array');
-    return [respEvents];
-  }
-
   const successRespList = [];
   const batchErrorRespList = [];
   inputs.forEach((input) => {

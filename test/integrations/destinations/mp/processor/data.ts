@@ -121,7 +121,10 @@ export const data = [
       request: {
         body: [
           {
-            destination: sampleDestination,
+            destination: overrideDestination(sampleDestination, {
+              useUserDefinedPageEventName: true,
+              userDefinedPageEventTemplate: 'Viewed a {{ name }} page',
+            }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'web',
@@ -195,7 +198,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"event":"Loaded a Page","properties":{"ip":"0.0.0.0","$user_id":"hjikl","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"dd266c67-9199-4a52-ba32-f46ddde67312","token":"dummyApiKey","distinct_id":"hjikl","time":1579847342402,"name":"Contact Us","category":"Contact","$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
+                    '[{"event":"Viewed a Contact Us page","properties":{"ip":"0.0.0.0","$user_id":"hjikl","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"dd266c67-9199-4a52-ba32-f46ddde67312","token":"dummyApiKey","distinct_id":"hjikl","time":1579847342402,"name":"Contact Us","category":"Contact","$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
                 },
                 XML: {},
                 FORM: {},

@@ -1,5 +1,4 @@
-const { getShopifyTopic,
-} = require('./util');
+const { getShopifyTopic } = require('./util');
 jest.mock('ioredis', () => require('../../../../test/__mocks__/redis'));
 describe('Shopify Utils Test', () => {
   describe('Fetching Shopify Topic Test Cases', () => {
@@ -58,5 +57,4 @@ describe('Shopify Utils Test', () => {
       }
     });
   });
-
 });

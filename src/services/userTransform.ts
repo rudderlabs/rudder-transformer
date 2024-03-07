@@ -158,7 +158,7 @@ export class UserTransformService {
                   statusCode: status,
                   metadata: e.metadata,
                   error: errorString,
-                } as ProcessorTransformationResponse),
+                }) as ProcessorTransformationResponse,
             ),
           );
           stats.counter('user_transform_errors', eventsToProcess.length, {

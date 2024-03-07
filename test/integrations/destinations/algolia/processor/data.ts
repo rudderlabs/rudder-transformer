@@ -380,7 +380,7 @@ export const data = [
         body: [
           {
             error:
-              'Either filters or  objectIds is required.: Workflow: procWorkflow, Step: validateDestPayload, ChildStep: undefined, OriginalError: Either filters or  objectIds is required.',
+              'Either filters or objectIds is required and must be non empty.: Workflow: procWorkflow, Step: validateDestPayload, ChildStep: undefined, OriginalError: Either filters or objectIds is required and must be non empty.',
             statTags: {
               destType: 'ALGOLIA',
               errorCategory: 'dataValidation',
@@ -1397,6 +1397,216 @@ export const data = [
           {
             error:
               'event name should be a string: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: event name should be a string',
+            statTags: {
+              destType: 'ALGOLIA',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'cdkV2',
+              module: 'destination',
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            statusCode: 400,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'algolia',
+    description: 'Eventype must be one of click, conversion pr view',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                traits: {
+                  email: 'testone@gmail.com',
+                  firstName: 'test',
+                  lastName: 'one',
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                locale: 'en-US',
+                ip: '0.0.0.0',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                screen: {
+                  density: 2,
+                },
+                page: {
+                  path: '/destinations/ometria',
+                  referrer: '',
+                  search: '',
+                  title: '',
+                  url: 'https://docs.rudderstack.com/destinations/ometria',
+                  category: 'destination',
+                  initial_referrer: 'https://docs.rudderstack.com',
+                  initial_referring_domain: 'docs.rudderstack.com',
+                },
+              },
+              type: 'track',
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
+              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+              originalTimestamp: '2019-10-14T09:03:17.562Z',
+              anonymousId: '123456',
+              event: 'product clicked',
+              userId: 'testuserId1',
+              properties: {
+                index: 'products',
+                filters: ['field1:hello', 'val1:val2'],
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T09:03:22.563Z',
+            },
+            destination: {
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                  excludeKeys: [],
+                  includeKeys: [],
+                },
+              },
+              Config: {
+                apiKey: 'dummyApiKey',
+                applicationId: 'O2YARRI15I',
+                eventTypeSettings: [
+                  {
+                    from: 'product clicked',
+                    to: 'abcd',
+                  },
+                ],
+              },
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              'eventType can be either click, view or conversion: Workflow: procWorkflow, Step: preparePayload, ChildStep: undefined, OriginalError: eventType can be either click, view or conversion',
+            statTags: {
+              destType: 'ALGOLIA',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              feature: 'processor',
+              implementation: 'cdkV2',
+              module: 'destination',
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            statusCode: 400,
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'algolia',
+    description: 'filters or objectIds must be non empty',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'track',
+              event: 'product clicked',
+              sentAt: '2024-02-25T17:55:36.882Z',
+              userId: '12345',
+              channel: 'web',
+              properties: {
+                index: 'products',
+                list_id: 'search_results_page',
+                queryId: '8e737',
+                products: [],
+                eventName: 'productListView',
+                list_name: 'Search Results Page',
+                objectIds: [],
+                positions: [],
+                userToken: 'e494',
+                additional_attributes: {},
+              },
+              receivedAt: '2024-02-25T17:55:38.089Z',
+              request_ip: '107.130.37.100',
+              anonymousId: '68e9f4b8-fd4d-4c56-8ca4-858de2fd1df8',
+              integrations: {
+                All: true,
+              },
+              originalTimestamp: '2024-02-25T17:55:36.880Z',
+            },
+            destination: {
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                  excludeKeys: [],
+                  includeKeys: [],
+                },
+              },
+              Config: {
+                apiKey: 'dummyApiKey',
+                applicationId: 'O2YARRI15I',
+                eventTypeSettings: [
+                  {
+                    from: 'product clicked',
+                    to: 'cLick ',
+                  },
+                ],
+              },
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              'Either filters or objectIds is required and must be non empty.: Workflow: procWorkflow, Step: validateDestPayload, ChildStep: undefined, OriginalError: Either filters or objectIds is required and must be non empty.',
             statTags: {
               destType: 'ALGOLIA',
               errorCategory: 'dataValidation',

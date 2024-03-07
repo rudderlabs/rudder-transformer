@@ -6,7 +6,6 @@ const {
   getHashFromArray,
   removeUndefinedAndNullValues,
   getSuccessRespEvents,
-  getErrorRespEvents,
 } = require('../../util');
 
 const filterConfigTopics = (message, destination) => {
@@ -38,10 +37,6 @@ const filterConfigTopics = (message, destination) => {
 
 const batch = (destEvents) => {
   const respList = [];
-  if (!Array.isArray(destEvents) || destEvents.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, 'Invalid event array');
-    return [respEvents];
-  }
 
   // Grouping the events by topic
   const groupedEvents = groupBy(destEvents, (event) => event.message.topic);

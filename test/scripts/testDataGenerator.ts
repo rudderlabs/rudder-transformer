@@ -43,10 +43,12 @@ destinationTestDataPaths.forEach((testDataPath) => {
       return false;
     });
   }
+  console.log('Writing test data to ../../temp/test_data.json');
   produceTestData(testData);
 
   if (opts.dataPlane && opts.writeKey) {
     // read file ../../temp/test_data.json
+    console.log('Sending data to data plane URL: ', opts.dataPlane);
 
     const resolvedpathForData = path.resolve(rootDir, '../../temp/test_data.json');
 
@@ -64,7 +66,7 @@ destinationTestDataPaths.forEach((testDataPath) => {
             {
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer ${opts.writeKey}`,
+                Authorization: `Basic ${Buffer.from(opts.writeKey + ':').toString('base64')}`,
               },
             },
           )

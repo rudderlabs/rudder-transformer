@@ -114,10 +114,12 @@ export const produceTestData = (testData: TestCaseData[]) => {
           break;
       }
     } catch (e) {
-      throw new Error(`Error in producing test data: ${e}`);
+      throw new Error(
+        `Error in producing test data for destination:${tcData.name}, id:${tcData.id}: ${e}`,
+      );
     }
 
-    events.map((event) => {
+    events.forEach((event) => {
       result.push(event.message);
     });
   });

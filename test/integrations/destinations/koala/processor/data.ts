@@ -191,7 +191,7 @@ export const data = [
   },
   {
     name: 'koala',
-    description: 'Missing required email field in traits',
+    description: 'Missing required email or ko_profile_id fields in traits',
     feature: 'processor',
     module: 'destination',
     version: 'v0',

@@ -594,7 +594,10 @@ class Prometheus {
         help: 'tp_request_size',
         type: 'histogram',
         labelNames: ['sourceType', 'destinationType', 'k8_namespace'],
-        buckets: [1024, 102400, 524288, 1048576, 10485760, 20971520, 52428800, 104857600, 209715200, 524288000],
+        buckets: [
+          1024, 102400, 524288, 1048576, 10485760, 20971520, 52428800, 104857600, 209715200,
+          524288000,
+        ],
       },
       {
         name: 'tp_request_latency',
@@ -662,7 +665,10 @@ class Prometheus {
           'destinationType',
           'k8_namespace',
         ],
-        buckets: [1024, 102400, 524288, 1048576, 10485760, 20971520, 52428800, 104857600, 209715200, 524288000], // 1KB, 100KB, 0.5MB, 1MB, 10MB, 20MB, 50MB, 100MB, 200MB, 500MB
+        buckets: [
+          1024, 102400, 524288, 1048576, 10485760, 20971520, 52428800, 104857600, 209715200,
+          524288000,
+        ], // 1KB, 100KB, 0.5MB, 1MB, 10MB, 20MB, 50MB, 100MB, 200MB, 500MB
       },
       {
         name: 'source_transform_request_latency',

@@ -31,8 +31,71 @@ const {
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const Cache = require('../../util/cache');
 const helper = require('./helper');
+const {
+  GOOGLE_ALLOWED_CONSENT_STATUS,
+  UNKNOWN_CONSENT,
+  UNSPECIFIED_CONSENT,
+} = require('../../util/googleUtils');
 
 const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
+
+/**
+ * Populates the consent object based on the provided properties.
+ *
+ * @param {object} properties - message.properties containing properties related to consent.
+ * @returns {object} - An object containing consent information.
+ *  * ref :
+ * 1) For click conversion :
+ *  a) https://developers.google.com/google-ads/api/rest/reference/rest/v15/customers/uploadClickConversions#ClickConversion
+ *  b) https://developers.google.com/google-ads/api/reference/rpc/v15/ClickConversion#consent
+ * 2) For Call conversion :
+ *  a) https://developers.google.com/google-ads/api/rest/reference/rest/v15/customers/uploadCallConversions#CallConversion
+ *  b) https://developers.google.com/google-ads/api/reference/rpc/v15/CallConversion#consent
+ * 3) For Store sales conversion :
+ *  a) https://developers.google.com/google-ads/api/reference/rpc/v15/UserData
+ *  b) https://developers.google.com/google-ads/api/reference/rpc/v15/UserData#consent
+ */
+
+const populateConsentForGoogleDestinations = (message, conversionType, destConfig) => {
+  const integrationObj =
+    conversionType === 'store'
+      ? {}
+      : getIntegrationsObj(message, 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS') || {};
+  const consents = integrationObj?.consents || {};
+
+  // Define a function to process consent based on type
+  const processConsent = (consentType) => {
+    // Access the default consent values from destConfig based on the consentType
+    let defaultConsentValue;
+    if (consentType === 'adUserData') {
+      defaultConsentValue = destConfig?.userDataConsent;
+    } else if (consentType === 'adPersonalization') {
+      defaultConsentValue = destConfig?.personalizationConsent;
+    } else {
+      defaultConsentValue = UNSPECIFIED_CONSENT;
+    }
+
+    if (!consents[consentType]) {
+      return defaultConsentValue || UNSPECIFIED_CONSENT;
+    }
+    if (GOOGLE_ALLOWED_CONSENT_STATUS.includes(consents[consentType])) {
+      return consents[consentType];
+    }
+    return defaultConsentValue || UNKNOWN_CONSENT;
+  };
+
+  // Common consent fields to process
+  const consentFields = ['adUserData', 'adPersonalization'];
+
+  // Construct consentObj based on the common consent fields
+  const consentObj = consentFields.reduce((obj, consentType) => {
+    // eslint-disable-next-line no-param-reassign
+    obj[consentType] = processConsent(consentType);
+    return obj;
+  }, {});
+
+  return consentObj;
+};
 
 /**
  * validate destination config and check for existence of data
@@ -273,6 +336,9 @@ const getAddConversionPayload = (message, Config) => {
       set(payload, 'operations.create.userIdentifiers[0]', {});
     }
   }
+  // add consent support for store conversions
+  const consentObject = populateConsentForGoogleDestinations(message, 'store', Config);
+  set(payload, 'operations.create.consent', consentObject);
   return payload;
 };
 
@@ -360,56 +426,11 @@ const getClickConversionPayloadAndEndpoint = (message, Config, filteredCustomerI
   if (!properties.conversionEnvironment && conversionEnvironment !== 'none') {
     set(payload, 'conversions[0].conversionEnvironment', conversionEnvironment);
   }
+
+  // add consent support for click conversions
+  const consentObject = populateConsentForGoogleDestinations(message, 'click', Config);
+  set(payload, 'conversions[0].consent', consentObject);
   return { payload, endpoint };
-};
-
-const GOOGLE_ALLOWED_CONSENT_STATUS = ['UNSPECIFIED', 'UNKNOWN', 'GRANTED', 'DENIED'];
-
-/**
- * Populates the consent object based on the provided properties.
- *
- * @param {object} properties - message.properties containing properties related to consent.
- * @returns {object} - An object containing consent information.
- *  * ref :
- * 1) For click conversion :
- *  a) https://developers.google.com/google-ads/api/rest/reference/rest/v15/customers/uploadClickConversions#ClickConversion
- *  b) https://developers.google.com/google-ads/api/reference/rpc/v15/ClickConversion#consent
- * 2) For Call conversion :
- *  a) https://developers.google.com/google-ads/api/rest/reference/rest/v15/customers/uploadCallConversions#CallConversion
- *  b) https://developers.google.com/google-ads/api/reference/rpc/v15/CallConversion#consent
- * 3) For Store sales conversion :
- *  a) https://developers.google.com/google-ads/api/reference/rpc/v15/UserData
- *  b) https://developers.google.com/google-ads/api/reference/rpc/v15/UserData#consent
- */
-
-const populateConsentForGoogleDestinations = (message) => {
-  const integrationObj = getIntegrationsObj(message, 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS') || {};
-  const consents = integrationObj.consents || {};
-
-  // Define a function to process consent based on type
-  const processConsent = (consentType) => {
-    if (!consents[consentType]) return 'UNSPECIFIED';
-    if (GOOGLE_ALLOWED_CONSENT_STATUS.includes(consents[consentType])) {
-      return consents[consentType];
-    }
-    return 'UNKNOWN';
-  };
-
-  // Common consent fields to process
-  const consentFields = {
-    adUserData: 'adUserData',
-    adPersonalization: 'adPersonalization',
-  };
-
-  // Construct consentObj based on the common consent fields
-  const consentObj = Object.keys(consentFields).reduce((obj, consentType) => {
-    const key = consentFields[consentType];
-    // eslint-disable-next-line no-param-reassign
-    obj[key] = processConsent(consentType);
-    return obj;
-  }, {});
-
-  return consentObj;
 };
 
 module.exports = {

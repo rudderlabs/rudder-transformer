@@ -56,21 +56,10 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
     endpoint = STORE_CONVERSION_CONFIG.replace(':customerId', filteredCustomerId);
   } else {
     // call conversions
+    const consentObject = populateConsentForGoogleDestinations(message, conversionType, Config);
     payload = constructPayload(message, trackCallConversionsMapping);
     endpoint = CALL_CONVERSION.replace(':customerId', filteredCustomerId);
-  }
-  const consentObject = populateConsentForGoogleDestinations(message, conversionType);
-  if (Object.keys(consentObject)?.length > 0) {
-    if (payload?.conversions?.length > 0) {
-      if (conversionType === 'click' || conversionType === 'call') {
-        payload.conversions[0].consent = consentObject;
-      }
-    } else if (
-      Object.keys(payload?.addConversionPayload?.operations?.create)?.length > 0 &&
-      conversionType === 'store'
-    ) {
-      payload.addConversionPayload.operations.create.consent = consentObject;
-    }
+    payload.conversions[0].consent = consentObject;
   }
 
   if (conversionType !== 'store') {

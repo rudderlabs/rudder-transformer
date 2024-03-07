@@ -1,5 +1,8 @@
 const GOOGLE_ALLOWED_CONSENT_STATUS = ['UNSPECIFIED', 'UNKNOWN', 'GRANTED', 'DENIED'];
 
+const UNSPECIFIED_CONSENT = 'UNSPECIFIED';
+const UNKNOWN_CONSENT = 'UNKNOWN';
+
 /**
  * Populates the consent object based on the provided properties.
  *
@@ -33,4 +36,9 @@ const populateConsentForGoogleDestinations = (config) => {
   return consent;
 };
 
-module.exports = { populateConsentForGoogleDestinations };
+module.exports = {
+  populateConsentForGoogleDestinations,
+  UNSPECIFIED_CONSENT,
+  UNKNOWN_CONSENT,
+  GOOGLE_ALLOWED_CONSENT_STATUS,
+};

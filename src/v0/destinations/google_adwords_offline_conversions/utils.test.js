@@ -168,6 +168,10 @@ describe('getClickConversionPayloadAndEndpoint util tests', () => {
           {
             conversionDateTime: '2022-01-01 12:32:45-08:00',
             conversionEnvironment: 'WEB',
+            consent: {
+              adPersonalization: 'UNSPECIFIED',
+              adUserData: 'UNSPECIFIED',
+            },
             userIdentifiers: [
               {
                 hashedEmail: 'fa922cb41ff930664d4c9ced3c472ce7ecf29a0f8248b7018456e990177fff75',
@@ -193,6 +197,10 @@ describe('getClickConversionPayloadAndEndpoint util tests', () => {
         conversions: [
           {
             conversionDateTime: '2022-01-01 12:32:45-08:00',
+            consent: {
+              adPersonalization: 'UNSPECIFIED',
+              adUserData: 'UNSPECIFIED',
+            },
             conversionEnvironment: 'WEB',
             userIdentifiers: [
               {
@@ -259,6 +267,10 @@ describe('getClickConversionPayloadAndEndpoint util tests', () => {
             cartData: { items: [{ productId: 1234, quantity: 2, unitPrice: 10 }] },
             conversionDateTime: '2022-01-01 12:32:45-08:00',
             conversionEnvironment: 'WEB',
+            consent: {
+              adPersonalization: 'UNSPECIFIED',
+              adUserData: 'UNSPECIFIED',
+            },
             userIdentifiers: [
               {
                 hashedEmail: 'fa922cb41ff930664d4c9ced3c472ce7ecf29a0f8248b7018456e990177fff75',
@@ -277,7 +289,7 @@ describe('getClickConversionPayloadAndEndpoint util tests', () => {
 
 describe('populateConsentForGoogleDestinations', () => {
   // Returns an object with adUserData and adPersonalization properties set to UNSPECIFIED when no consents are provided
-  it('GOOGLE_ADWORDS_OFFLINE_CONVERSIONS : store sales conversion without any mention in integrations object', () => {
+  it('GOOGLE_ADWORDS_OFFLINE_CONVERSIONS : store sales conversion without consent related field in destination config', () => {
     const message = {};
     const conversionType = 'store';
 
@@ -289,8 +301,7 @@ describe('populateConsentForGoogleDestinations', () => {
     });
   });
 
-  // Returns an empty object when the destination name is not recognized
-  it('GOOGLE_ADWORDS_OFFLINE_CONVERSIONS: store sales conversions with integrations object', () => {
+  it('GOOGLE_ADWORDS_OFFLINE_CONVERSIONS: store sales conversions with integrations object but without consent fields in config', () => {
     const message = {
       integrations: {
         google_adwords_offline_conversions: {
@@ -304,6 +315,32 @@ describe('populateConsentForGoogleDestinations', () => {
     const conversionType = 'store';
 
     const result = populateConsentForGoogleDestinations(message, conversionType);
+
+    expect(result).toEqual({
+      adPersonalization: 'UNSPECIFIED',
+      adUserData: 'UNSPECIFIED',
+    });
+  });
+
+  it('GOOGLE_ADWORDS_OFFLINE_CONVERSIONS: store sales conversions with integrations object along with consent fields in config', () => {
+    const message = {
+      integrations: {
+        google_adwords_offline_conversions: {
+          consents: {
+            adUserData: 'GRANTED',
+            adPersonalization: 'DENIED',
+          },
+        },
+      },
+    };
+    const conversionType = 'store';
+
+    const destConfig = {
+      userDataConsent: 'GRANTED',
+      personalizationConsent: 'DENIED',
+    };
+
+    const result = populateConsentForGoogleDestinations(message, conversionType, destConfig);
 
     expect(result).toEqual({
       adPersonalization: 'DENIED',
@@ -365,6 +402,72 @@ describe('populateConsentForGoogleDestinations', () => {
     expect(result).toEqual({
       adUserData: 'UNSPECIFIED',
       adPersonalization: 'UNSPECIFIED',
+    });
+  });
+
+  it('GOOGLE_ADWORDS_OFFLINE_CONVERSIONS : click conversion without integrations', () => {
+    const message = {
+      integrations: {
+        google_adwords_offline_conversions: {},
+      },
+    };
+    const conversionType = 'click';
+
+    const destConfig = {
+      userDataConsent: 'GRANTED',
+      personalizationConsent: 'DENIED',
+    };
+
+    const result = populateConsentForGoogleDestinations(message, conversionType, destConfig);
+
+    expect(result).toEqual({
+      adUserData: 'GRANTED',
+      adPersonalization: 'DENIED',
+    });
+  });
+
+  it('GOOGLE_ADWORDS_OFFLINE_CONVERSIONS : click conversion without integrations and UI config has partial data', () => {
+    const message = {
+      integrations: {
+        google_adwords_offline_conversions: {},
+      },
+    };
+    const conversionType = 'click';
+
+    const destConfig = {
+      userDataConsent: 'GRANTED',
+    };
+
+    const result = populateConsentForGoogleDestinations(message, conversionType, destConfig);
+
+    expect(result).toEqual({
+      adUserData: 'GRANTED',
+      adPersonalization: 'UNSPECIFIED',
+    });
+  });
+
+  it('GOOGLE_ADWORDS_OFFLINE_CONVERSIONS : click conversion with partial data present in integrations object', () => {
+    const message = {
+      integrations: {
+        google_adwords_offline_conversions: {
+          consents: {
+            adUserData: 'GRANTED',
+          },
+        },
+      },
+    };
+
+    const destConfig = {
+      userDataConsent: 'GRANTED',
+      personalizationConsent: 'DENIED',
+    };
+    const conversionType = 'click';
+
+    const result = populateConsentForGoogleDestinations(message, conversionType, destConfig);
+
+    expect(result).toEqual({
+      adUserData: 'GRANTED',
+      adPersonalization: 'DENIED',
     });
   });
 });

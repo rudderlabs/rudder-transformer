@@ -28,17 +28,13 @@ steps:
         $.handleRtTfSingleEventError(^[idx], .originalError ?? ., {})
       )[]
 
-  - name: separateDontBatchEventForProxy
-    template: |
-      {
-        dontBatchTrueEvents: $.outputs.successfulEvents{.metadata.dontBatch}[],
-        dontBatchFalseEvents: $.outputs.successfulEvents{!.metadata.dontBatch}[]
-      }
-
-  - name: batchSuccessfulEventsDontBatchTrue
+  - name: batchSuccessfulEvents
     description: Batches the successfulEvents
     template: |
-      let batches = $.chunk($.outputs.separateDontBatchEventForProxy.dontBatchTrueEvents, 1);
+      const dontBatchTrueEvents =  $.outputs.successfulEvents{.metadata.dontBatch}[];
+      const dontBatchFalseEvents = $.outputs.successfulEvents{!.metadata.dontBatch}[];
+
+      let batches = [...$.chunk(dontBatchFalseEvents, $.MAX_BATCH_SIZE), ...$.chunk(dontBatchTrueEvents, 1)];
       batches@batch.({
         "batchedRequest": {
           "body": {
@@ -63,41 +59,7 @@ steps:
         "statusCode": 200,
         "destination": batch[0].destination
       })[];
-
-  - name: batchSuccessfulEventsDontBatchFalse
-    description: Batches the successfulEvents
-    template: |
-      let batches = $.chunk($.outputs.separateDontBatchEventForProxy.dontBatchFalseEvents, $.MAX_BATCH_SIZE);
-      batches@batch.({
-        "batchedRequest": {
-          "body": {
-            "JSON": {"events": ~r batch.output[]},
-            "JSON_ARRAY": {},
-            "XML": {},
-            "FORM": {}
-          },
-          "version": "1",
-          "type": "REST",
-          "method": "POST",
-          "endpoint": {{$.ENDPOINT}},
-          "headers": batch[0].destination.Config.().({
-            "X-Algolia-Application-Id": .applicationId,
-            "X-Algolia-API-Key": .apiKey
-          }),
-          "params": {},
-          "files": {}
-        },
-        "metadata": ~r batch.metadata[],
-        "batched": true,
-        "statusCode": 200,
-        "destination": batch[0].destination
-      })[];
-
-  - name: combineSuccessfulEvents
-    description: Combines the successfulEvents
-    template: |
-      [...$.outputs.batchSuccessfulEventsDontBatchFalse, ...$.outputs.batchSuccessfulEventsDontBatchTrue]
 
   - name: finalPayload
     template: |
-      [...$.outputs.failedEvents, ...$.outputs.combineSuccessfulEvents]
+      [...$.outputs.failedEvents, ...$.outputs.batchSuccessfulEvents]

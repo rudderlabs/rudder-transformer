@@ -129,12 +129,10 @@ const getTrackResponse = (message, Config, event) => {
 
 const trackResponseBuilder = async (message, { Config }) => {
   const { eventsToStandard, sendCustomEvents } = Config;
-
-  let event = message.event?.toLowerCase().trim();
-  if (!event) {
-    throw new InstrumentationError('Event name is required');
+  if (!message.event || typeof message.event !== 'string') {
+    throw new InstrumentationError('Either event name is not present or it is not a string');
   }
-
+  let event = message.event?.toLowerCase().trim();
   const standardEventsMap = getHashFromArrayWithDuplicate(eventsToStandard);
 
   if (!sendCustomEvents && eventNameMapping[event] === undefined && !standardEventsMap[event]) {

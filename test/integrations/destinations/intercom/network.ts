@@ -89,6 +89,8 @@ const deleteNwData = [
       },
     },
   },
+];
+const deliveryCallsData = [
   {
     httpReq: {
       method: 'post',
@@ -374,8 +376,6 @@ const deleteNwData = [
       },
     },
   },
-];
-const deliveryCallsData = [
   {
     httpReq: {
       url: 'https://api.intercom.io/users/test1',
@@ -388,23 +388,14 @@ const deliveryCallsData = [
         update_last_request_at: true,
         user_id: 'test_user_id_1',
         custom_attributes: {
-          anonymousId: '58b21c2d-f8d5-4410-a2d0-b268a26b7e33',
-          key1: 'value1',
           'address.city': 'Kolkata',
           'address.state': 'West Bengal',
-          'originalArray[0].nested_field': 'nested value',
-          'originalArray[0].tags[0]': 'tag_1',
-          'originalArray[0].tags[1]': 'tag_2',
-          'originalArray[0].tags[2]': 'tag_3',
-          'originalArray[1].nested_field': 'nested value',
-          'originalArray[1].tags[0]': 'tag_1',
-          'originalArray[2].nested_field': 'nested value',
         },
       },
       params: {},
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer intercomApiKey',
+        Authorization: 'Bearer testApiKey',
         Accept: 'application/json',
         'Intercom-Version': '1.4',
         'User-Agent': 'RudderLabs',
@@ -423,6 +414,198 @@ const deliveryCallsData = [
         ],
       },
       status: 408,
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.intercom.io/users/test1',
+      data: {
+        email: 'test_1@test.com',
+        phone: '9876543210',
+        name: 'Test Name',
+        signed_up_at: 1601493060,
+        last_seen_user_agent: 'unknown',
+        update_last_request_at: true,
+        user_id: 'test_user_id_1',
+        custom_attributes: {
+          'address.city': 'Kolkata',
+          'address.state': 'West Bengal',
+        },
+      },
+      params: {},
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer invalidApiKey',
+        Accept: 'application/json',
+        'Intercom-Version': '1.4',
+        'User-Agent': 'RudderLabs',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        type: 'error.list',
+        request_id: 'request123',
+        errors: [
+          {
+            code: 'unauthorized',
+            message: 'Access Token Invalid',
+          },
+        ],
+      },
+      status: 401,
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.intercom.io/messages',
+      data: {
+        from: {
+          type: 'user',
+          id: 'id@1',
+        },
+        body: 'heyy, how are you',
+        referer: 'https://twitter.com/bob',
+      },
+      params: {},
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer testApiKey',
+        Accept: 'application/json',
+        'Intercom-Version': '1.4',
+        'User-Agent': 'RudderLabs',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        type: 'error.list',
+        request_id: 'request124',
+        errors: [
+          {
+            code: 'api_plan_restricted',
+            message: 'Active subscription needed.',
+          },
+        ],
+      },
+      status: 403,
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.intercom.io/users/test1',
+      data: {
+        email: 'test_1@test.com',
+        phone: '9876543211',
+        name: 'Sample Name',
+        signed_up_at: 1601493060,
+        update_last_request_at: true,
+        user_id: 'test_user_id_1',
+        custom_attributes: {
+          'address.city': 'Kolkata',
+          'address.state': 'West Bengal',
+        },
+      },
+      params: {},
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer testApiKey',
+        Accept: 'application/json',
+        'Intercom-Version': '1.4',
+        'User-Agent': 'RudderLabs',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        type: 'error.list',
+        request_id: 'request125',
+        errors: [
+          {
+            code: 'rate_limit_exceeded',
+            message: 'The rate limit for the App has been exceeded',
+          },
+        ],
+      },
+      status: 429,
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.intercom.io/contacts',
+      data: {
+        email: 'test_1@test.com',
+        name: 'Rudder Labs',
+        signed_up_at: 1601496060,
+        last_seen_user_agent: 'unknown',
+        update_last_request_at: true,
+        user_id: 'test_user_id_2',
+        custom_attributes: {
+          'address.city': 'Kolkata',
+          'address.state': 'West Bengal',
+        },
+      },
+      params: {},
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer testApiKey',
+        Accept: 'application/json',
+        'Intercom-Version': '2.10',
+        'User-Agent': 'RudderLabs',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        type: 'error.list',
+        request_id: 'request126',
+        errors: [
+          {
+            code: 'conflict',
+            message: 'A contact matching those details already exists with id=test1',
+          },
+        ],
+      },
+      status: 409,
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.intercom.io/users',
+      data: {
+        email: 'test_1@test.com',
+        phone: '9876543210',
+        name: 'Test Name',
+        signed_up_at: 1601493060,
+        last_seen_user_agent: 'unknown',
+        update_last_request_at: true,
+        user_id: 'test_user_id_1',
+        custom_attributes: {
+          'address.city': 'Kolkata',
+          'address.state': 'West Bengal',
+        },
+      },
+      params: {},
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer testApiKey',
+        Accept: 'application/json',
+        'Intercom-Version': '2.10',
+        'User-Agent': 'RudderLabs',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        errors: [
+          {
+            code: 'media_type_not_acceptable',
+            message: 'The Accept header should send a media type of application/json',
+          },
+        ],
+        type: 'error.list',
+      },
+      status: 406,
     },
   },
 ];

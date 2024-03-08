@@ -37,6 +37,7 @@ export interface mockType {
 }
 
 export interface TestCaseData {
+  id?: string;
   name: string;
   description: string;
   scenario?: string;

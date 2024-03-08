@@ -1,4 +1,4 @@
-const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const { InstrumentationError, isDefined } = require('@rudderstack/integrations-lib');
 const {
   getHashFromArray,
   getFieldValueFromMessage,
@@ -34,7 +34,7 @@ function responseBuilderSimple(message, destination) {
   // columnNames with trait's values from rudder payload
   Object.keys(fieldHashmap).forEach((key) => {
     const val = traits[fieldHashmap[key]];
-    if (val) {
+    if (isDefined(val)) {
       payload[key] = val;
     }
   });

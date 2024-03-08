@@ -1,3 +1,48 @@
+const commonHeaders = {
+  Accept: 'application/json',
+  Authorization: 'Bearer testApiKey',
+  'Content-Type': 'application/json',
+};
+
+const v0VersionHeaders = {
+  'Content-Type': 'application/json',
+  Authorization: 'Bearer testApiKey',
+  Accept: 'application/json',
+  'Intercom-Version': '1.4',
+  'User-Agent': 'RudderLabs',
+};
+
+const v1VersionHeaders = {
+  'Content-Type': 'application/json',
+  Authorization: 'Bearer testApiKey',
+  Accept: 'application/json',
+  'Intercom-Version': '2.10',
+  'User-Agent': 'RudderLabs',
+};
+
+const userPayload = {
+  email: 'test_1@test.com',
+  phone: '9876543210',
+  name: 'Test Name',
+  signed_up_at: 1601493060,
+  last_seen_user_agent: 'unknown',
+  update_last_request_at: true,
+  user_id: 'test_user_id_1',
+  custom_attributes: {
+    'address.city': 'Kolkata',
+    'address.state': 'West Bengal',
+  },
+};
+
+const companyPayload = {
+  company_id: 'rudderlabs',
+  name: 'RudderStack',
+  website: 'www.rudderstack.com',
+  plan: 'enterprise',
+  size: 500,
+  industry: 'CDP',
+};
+
 const deleteNwData = [
   {
     httpReq: {
@@ -6,11 +51,7 @@ const deleteNwData = [
       data: {
         intercom_user_id: '1',
       },
-      headers: {
-        Accept: 'application/json',
-        Authorization: 'Bearer testApiKey',
-        'Content-Type': 'application/json',
-      },
+      headers: commonHeaders,
     },
     httpRes: {
       data: {
@@ -33,11 +74,7 @@ const deleteNwData = [
       data: {
         intercom_user_id: '12',
       },
-      headers: {
-        Accept: 'application/json',
-        Authorization: 'Bearer testApiKey',
-        'Content-Type': 'application/json',
-      },
+      headers: commonHeaders,
     },
     httpRes: {
       status: 200,
@@ -54,11 +91,7 @@ const deleteNwData = [
       data: {
         intercom_user_id: '7',
       },
-      headers: {
-        Accept: 'application/json',
-        Authorization: 'Bearer testApiKey',
-        'Content-Type': 'application/json',
-      },
+      headers: commonHeaders,
     },
     httpRes: {
       status: 200,
@@ -75,11 +108,7 @@ const deleteNwData = [
       data: {
         intercom_user_id: '9',
       },
-      headers: {
-        Accept: 'application/json',
-        Authorization: 'Bearer testApiKey',
-        'Content-Type': 'application/json',
-      },
+      headers: commonHeaders,
     },
     httpRes: {
       status: 200,
@@ -101,11 +130,7 @@ const deliveryCallsData = [
           value: [{ field: 'email', operator: '=', value: 'test@rudderlabs.com' }],
         },
       },
-      headers: {
-        Accept: 'application/json',
-        Authorization: 'Bearer testApiKey',
-        'Content-Type': 'application/json',
-      },
+      headers: commonHeaders,
     },
     httpRes: {
       status: 200,
@@ -133,11 +158,7 @@ const deliveryCallsData = [
           value: [{ field: 'email', operator: '=', value: 'test+2@rudderlabs.com' }],
         },
       },
-      headers: {
-        Accept: 'application/json',
-        Authorization: 'Bearer testApiKey',
-        'Content-Type': 'application/json',
-      },
+      headers: commonHeaders,
     },
     httpRes: {
       status: 200,
@@ -174,11 +195,7 @@ const deliveryCallsData = [
           value: [{ field: 'email', operator: '=', value: 'test+5@rudderlabs.com' }],
         },
       },
-      headers: {
-        Accept: 'application/json',
-        Authorization: 'Bearer testApiKey',
-        'Content-Type': 'application/json',
-      },
+      headers: commonHeaders,
     },
     httpRes: {
       status: 200,
@@ -215,11 +232,7 @@ const deliveryCallsData = [
           value: [{ field: 'phone', operator: '=', value: '+91 9299999999' }],
         },
       },
-      headers: {
-        Accept: 'application/json',
-        Authorization: 'Bearer testApiKey',
-        'Content-Type': 'application/json',
-      },
+      headers: commonHeaders,
     },
     httpRes: {
       status: 200,
@@ -256,11 +269,7 @@ const deliveryCallsData = [
           value: [{ field: 'email', operator: '=', value: 'test+4@rudderlabs.com' }],
         },
       },
-      headers: {
-        Accept: 'application/json',
-        Authorization: 'Bearer testApiKey',
-        'Content-Type': 'application/json',
-      },
+      headers: commonHeaders,
     },
     httpRes: {
       status: 200,
@@ -312,19 +321,8 @@ const deliveryCallsData = [
     httpReq: {
       method: 'post',
       url: 'https://api.eu.intercom.io/companies',
-      data: {
-        company_id: 'rudderlabs',
-        name: 'RudderStack',
-        website: 'www.rudderstack.com',
-        plan: 'enterprise',
-        size: 500,
-        industry: 'CDP',
-      },
-      headers: {
-        Accept: 'application/json',
-        Authorization: 'Bearer testApiKey',
-        'Content-Type': 'application/json',
-      },
+      data: companyPayload,
+      headers: commonHeaders,
     },
     httpRes: {
       status: 200,
@@ -348,19 +346,10 @@ const deliveryCallsData = [
       method: 'post',
       url: 'https://api.eu.intercom.io/companies',
       data: {
-        company_id: 'rudderlabs',
-        name: 'RudderStack',
-        website: 'www.rudderstack.com',
-        plan: 'enterprise',
-        size: 500,
-        industry: 'CDP',
+        ...companyPayload,
         custom_attributes: { isOpenSource: true },
       },
-      headers: {
-        Accept: 'application/json',
-        Authorization: 'Bearer testApiKey',
-        'Content-Type': 'application/json',
-      },
+      headers: commonHeaders,
     },
     httpRes: {
       status: 401,
@@ -379,27 +368,9 @@ const deliveryCallsData = [
   {
     httpReq: {
       url: 'https://api.intercom.io/users/test1',
-      data: {
-        email: 'test_1@test.com',
-        phone: '9876543210',
-        name: 'Test Name',
-        signed_up_at: 1601493060,
-        last_seen_user_agent: 'unknown',
-        update_last_request_at: true,
-        user_id: 'test_user_id_1',
-        custom_attributes: {
-          'address.city': 'Kolkata',
-          'address.state': 'West Bengal',
-        },
-      },
+      data: userPayload,
       params: {},
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer testApiKey',
-        Accept: 'application/json',
-        'Intercom-Version': '1.4',
-        'User-Agent': 'RudderLabs',
-      },
+      headers: v0VersionHeaders,
       method: 'POST',
     },
     httpRes: {
@@ -419,19 +390,7 @@ const deliveryCallsData = [
   {
     httpReq: {
       url: 'https://api.intercom.io/users/test1',
-      data: {
-        email: 'test_1@test.com',
-        phone: '9876543210',
-        name: 'Test Name',
-        signed_up_at: 1601493060,
-        last_seen_user_agent: 'unknown',
-        update_last_request_at: true,
-        user_id: 'test_user_id_1',
-        custom_attributes: {
-          'address.city': 'Kolkata',
-          'address.state': 'West Bengal',
-        },
-      },
+      data: userPayload,
       params: {},
       headers: {
         'Content-Type': 'application/json',
@@ -468,13 +427,7 @@ const deliveryCallsData = [
         referer: 'https://twitter.com/bob',
       },
       params: {},
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer testApiKey',
-        Accept: 'application/json',
-        'Intercom-Version': '1.4',
-        'User-Agent': 'RudderLabs',
-      },
+      headers: v0VersionHeaders,
       method: 'POST',
     },
     httpRes: {
@@ -507,13 +460,7 @@ const deliveryCallsData = [
         },
       },
       params: {},
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer testApiKey',
-        Accept: 'application/json',
-        'Intercom-Version': '1.4',
-        'User-Agent': 'RudderLabs',
-      },
+      headers: v0VersionHeaders,
       method: 'POST',
     },
     httpRes: {
@@ -546,13 +493,7 @@ const deliveryCallsData = [
         },
       },
       params: {},
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer testApiKey',
-        Accept: 'application/json',
-        'Intercom-Version': '2.10',
-        'User-Agent': 'RudderLabs',
-      },
+      headers: v1VersionHeaders,
       method: 'POST',
     },
     httpRes: {
@@ -572,27 +513,9 @@ const deliveryCallsData = [
   {
     httpReq: {
       url: 'https://api.intercom.io/users',
-      data: {
-        email: 'test_1@test.com',
-        phone: '9876543210',
-        name: 'Test Name',
-        signed_up_at: 1601493060,
-        last_seen_user_agent: 'unknown',
-        update_last_request_at: true,
-        user_id: 'test_user_id_1',
-        custom_attributes: {
-          'address.city': 'Kolkata',
-          'address.state': 'West Bengal',
-        },
-      },
+      data: userPayload,
       params: {},
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer testApiKey',
-        Accept: 'application/json',
-        'Intercom-Version': '2.10',
-        'User-Agent': 'RudderLabs',
-      },
+      headers: v1VersionHeaders,
       method: 'POST',
     },
     httpRes: {

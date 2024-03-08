@@ -141,7 +141,7 @@ export const testScenariosForV0API = [
     name: 'ga4',
     description:
       '[Proxy v0 API] :: Test for a invalid event name - where the destination responds with 200 with error for invalid event name',
-    successCriteria: 'Should return 200 with error with destination response',
+    successCriteria: 'Should return 400 with error and destination response',
     scenario: 'Business',
     feature: 'dataDelivery',
     module: 'destination',
@@ -178,7 +178,7 @@ export const testScenariosForV0API = [
     name: 'ga4',
     description:
       '[Proxy v0 API] :: Test for a invalid parameter value - where the destination responds with 200 with error for invalid parameter value',
-    successCriteria: 'Should return 200 with error with destination response',
+    successCriteria: 'Should return 400 with error and destination response',
     scenario: 'Business',
     feature: 'dataDelivery',
     module: 'destination',
@@ -261,7 +261,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
     name: 'ga4',
     description:
       '[Proxy v1 API] :: Test for a invalid event name - where the destination responds with 200 with error for invalid event name',
-    successCriteria: 'Should return 200 with error with destination response',
+    successCriteria: 'Should return 400 with error and destination response',
     scenario: 'Business',
     feature: 'dataDelivery',
     module: 'destination',

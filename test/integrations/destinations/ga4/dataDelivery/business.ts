@@ -83,6 +83,11 @@ const invalidParameterValueRequest = {
   non_personalized_ads: true,
 };
 
+const invalidParameterErrorMessage =
+  'Validation Server Response Handler:: Validation Error for ga4 of field path :undefined | INTERNAL_ERROR-Validation of item.price should prevent conversion from unsupported value [string_value: "$19"]';
+const invalidEventNameErrorMessage =
+  'Validation Server Response Handler:: Validation Error for ga4 of field path :events | NAME_INVALID-Event at index: [0] has invalid name [campaign@details]. Only alphanumeric characters and underscores are allowed.';
+
 const metadataArray = [generateMetadata(1)];
 
 const expectedStatTags = {
@@ -164,8 +169,7 @@ export const testScenariosForV0API = [
           output: {
             destinationResponse:
               'Event at index: [0] has invalid name [campaign@details]. Only alphanumeric characters and underscores are allowed.',
-            message:
-              'Validation Server Response Handler:: Validation Error for ga4 of field path :events | NAME_INVALID-Event at index: [0] has invalid name [campaign@details]. Only alphanumeric characters and underscores are allowed.',
+            message: invalidEventNameErrorMessage,
             statTags: expectedStatTags,
             status: 400,
           },
@@ -201,8 +205,7 @@ export const testScenariosForV0API = [
           output: {
             destinationResponse:
               'Validation of item.price should prevent conversion from unsupported value [string_value: "$19"]',
-            message:
-              'Validation Server Response Handler:: Validation Error for ga4 of field path :undefined | INTERNAL_ERROR-Validation of item.price should prevent conversion from unsupported value [string_value: "$19"]',
+            message: invalidParameterErrorMessage,
             statTags: expectedStatTags,
             status: 400,
           },
@@ -285,12 +288,10 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         status: 200,
         body: {
           output: {
-            message:
-              'Validation Server Response Handler:: Validation Error for ga4 of field path :events | NAME_INVALID-Event at index: [0] has invalid name [campaign@details]. Only alphanumeric characters and underscores are allowed.',
+            message: invalidEventNameErrorMessage,
             response: [
               {
-                error:
-                  'Validation Server Response Handler:: Validation Error for ga4 of field path :events | NAME_INVALID-Event at index: [0] has invalid name [campaign@details]. Only alphanumeric characters and underscores are allowed.',
+                error: invalidEventNameErrorMessage,
                 metadata: generateMetadata(1),
                 statusCode: 400,
               },
@@ -331,12 +332,10 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         status: 200,
         body: {
           output: {
-            message:
-              'Validation Server Response Handler:: Validation Error for ga4 of field path :undefined | INTERNAL_ERROR-Validation of item.price should prevent conversion from unsupported value [string_value: "$19"]',
+            message: invalidParameterErrorMessage,
             response: [
               {
-                error:
-                  'Validation Server Response Handler:: Validation Error for ga4 of field path :undefined | INTERNAL_ERROR-Validation of item.price should prevent conversion from unsupported value [string_value: "$19"]',
+                error: invalidParameterErrorMessage,
                 metadata: generateMetadata(1),
                 statusCode: 400,
               },

@@ -5,8 +5,7 @@ const destTypeInUpperCase = 'THE_TRADE_DESK';
 const advertiserId = 'test-advertiser-id';
 const dataProviderId = 'rudderstack';
 const segmentName = 'test-segment';
-
-const trackerId = 'test-trackerId';
+const firstPartyDataEndpoint = 'https://sin-data.adsrvr.org/data/advertiser';
 
 const sampleDestination: Destination = {
   Config: {
@@ -48,6 +47,20 @@ const sampleContext = {
   sources: sampleSource,
 };
 
+const proxyV1NetworkErrorStatTags = {
+  destType: destTypeInUpperCase,
+  destinationId: 'default-destinationId',
+  errorCategory: 'network',
+  errorType: 'aborted',
+  feature: 'dataDelivery',
+  implementation: 'native',
+  module: 'destination',
+  workspaceId: 'default-workspaceId',
+};
+
+const { errorType: _, ...proxyV1PlatformErrorStatTags } = proxyV1NetworkErrorStatTags;
+proxyV1PlatformErrorStatTags.errorCategory = 'platform';
+
 export {
   destType,
   destTypeInUpperCase,
@@ -56,4 +69,7 @@ export {
   segmentName,
   sampleDestination,
   sampleContext,
+  proxyV1NetworkErrorStatTags,
+  proxyV1PlatformErrorStatTags,
+  firstPartyDataEndpoint,
 };

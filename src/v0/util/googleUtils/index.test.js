@@ -1,7 +1,5 @@
 const { populateConsentFromConfig, finaliseConsent } = require('./index');
 
-const destinationAllowedConsentKeys = ['adUserData', 'adPersonalization'];
-
 describe('unit test for populateConsentFromConfig', () => {
   it('should return an UNSPECIFIED object when no properties are provided', () => {
     const result = populateConsentFromConfig({});

@@ -2,6 +2,7 @@ const {
   getClickConversionPayloadAndEndpoint,
   buildAndGetAddress,
   getExisitingUserIdentifier,
+  getConsentsDataFromIntegrationObj,
 } = require('./utils');
 
 const getTestMessage = () => {
@@ -283,5 +284,48 @@ describe('getClickConversionPayloadAndEndpoint util tests', () => {
     expect(getClickConversionPayloadAndEndpoint(fittingPayload, config, '9625812972')).toEqual(
       expectedOutput,
     );
+  });
+});
+
+describe('getConsentsDataFromIntegrationObj', () => {
+  it('should return an empty object when conversionType is "store"', () => {
+    const message = {};
+    const conversionType = 'store';
+    const result = getConsentsDataFromIntegrationObj(message, conversionType);
+    expect(result).toEqual({});
+  });
+
+  it('should return an empty object when conversionType is not "store" and getIntegrationsObj returns undefined', () => {
+    const message = {};
+    const conversionType = 'click';
+    const result = getConsentsDataFromIntegrationObj(message, conversionType);
+    expect(result).toEqual({});
+  });
+
+  it('should return an empty object when conversionType is not "store" and getIntegrationsObj returns null', () => {
+    const message = {};
+    const conversionType = 'call';
+    const getIntegrationsObj = jest.fn(() => null);
+    const result = getConsentsDataFromIntegrationObj(message, conversionType);
+    expect(result).toEqual({});
+  });
+
+  it('should return the consent object when conversion type is call', () => {
+    const message = {
+      integrations: {
+        GOOGLE_ADWORDS_OFFLINE_CONVERSIONS: {
+          consents: {
+            adUserData: 'GRANTED',
+            adPersonalization: 'DENIED',
+          },
+        },
+      },
+    };
+    const conversionType = 'call';
+    const result = getConsentsDataFromIntegrationObj(message, conversionType);
+    expect(result).toEqual({
+      adPersonalization: 'DENIED',
+      adUserData: 'GRANTED',
+    });
   });
 });

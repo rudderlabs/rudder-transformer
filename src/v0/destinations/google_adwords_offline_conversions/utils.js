@@ -17,6 +17,7 @@ const {
   isDefinedAndNotNull,
   getAuthErrCategoryFromStCode,
   getAccessToken,
+  getIntegrationsObj,
 } = require('../../util');
 const {
   SEARCH_STREAM,
@@ -376,6 +377,14 @@ const getClickConversionPayloadAndEndpoint = (
   return { payload, endpoint };
 };
 
+const getConsentsDataFromIntegrationObj = (message, conversionType) => {
+  const integrationObj =
+    conversionType === 'store'
+      ? {}
+      : getIntegrationsObj(message, 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS') || {};
+  return integrationObj?.consents || {};
+};
+
 module.exports = {
   validateDestinationConfig,
   generateItemListFromProducts,
@@ -386,4 +395,5 @@ module.exports = {
   buildAndGetAddress,
   getClickConversionPayloadAndEndpoint,
   getExisitingUserIdentifier,
+  getConsentsDataFromIntegrationObj,
 };

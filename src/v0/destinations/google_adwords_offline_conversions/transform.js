@@ -10,7 +10,6 @@ const {
   defaultBatchRequestConfig,
   getSuccessRespEvents,
   combineBatchRequestsWithSameJobIds,
-  getIntegrationsObj,
 } = require('../../util');
 const {
   CALL_CONVERSION,
@@ -23,17 +22,10 @@ const {
   getStoreConversionPayload,
   requestBuilder,
   getClickConversionPayloadAndEndpoint,
+  getConsentsDataFromIntegrationObj,
 } = require('./utils');
 const { finaliseConsent } = require('../../util/googleUtils');
 const helper = require('./helper');
-
-const getConsentsDataFromIntegrationObj = (message, conversionType) => {
-  const integrationObj =
-    conversionType === 'store'
-      ? {}
-      : getIntegrationsObj(message, 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS') || {};
-  return integrationObj?.consents || {};
-};
 
 /**
  * get conversions depending on the type set from dashboard
@@ -52,7 +44,7 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
   const { properties, timestamp, originalTimestamp } = message;
 
   const filteredCustomerId = removeHyphens(customerId);
-  const eventLevelConsentsData = getConsentFromIntegrationObj(message, conversionType);
+  const eventLevelConsentsData = getConsentsDataFromIntegrationObj(message, conversionType);
 
   if (conversionType === 'click') {
     // click conversion
@@ -60,16 +52,21 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
       message,
       Config,
       filteredCustomerId,
-      userSentConsentValues,
+      eventLevelConsentsData,
     );
     payload = convertedPayload.payload;
     endpoint = convertedPayload.endpoint;
   } else if (conversionType === 'store') {
-    payload = getStoreConversionPayload(message, Config, filteredCustomerId, userSentConsentValues);
+    payload = getStoreConversionPayload(
+      message,
+      Config,
+      filteredCustomerId,
+      eventLevelConsentsData,
+    );
     endpoint = STORE_CONVERSION_CONFIG.replace(':customerId', filteredCustomerId);
   } else {
     // call conversions
-    const consentObject = finaliseConsent(userSentConsentValues, Config, consentFields);
+    const consentObject = finaliseConsent(eventLevelConsentsData, Config, consentFields);
     payload = constructPayload(message, trackCallConversionsMapping);
     endpoint = CALL_CONVERSION.replace(':customerId', filteredCustomerId);
     payload.conversions[0].consent = consentObject;

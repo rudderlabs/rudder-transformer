@@ -10,6 +10,18 @@ const headers = {
     'fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1',
   'Content-Type': 'application/json',
 };
+
+const statTags = {
+  destType: 'CLEVERTAP',
+  destinationId: 'default-destinationId',
+  errorCategory: 'network',
+  errorType: 'aborted',
+  feature: 'dataDelivery',
+  implementation: 'native',
+  module: 'destination',
+  workspaceId: 'default-workspaceId',
+};
+
 export const V1BusinessTestScenarion: ProxyV1TestData[] = [
   {
     id: 'clevertap_business_0',
@@ -133,16 +145,7 @@ export const V1BusinessTestScenarion: ProxyV1TestData[] = [
                 statusCode: 401,
               },
             ],
-            statTags: {
-              destType: 'CLEVERTAP',
-              destinationId: 'default-destinationId',
-              errorCategory: 'network',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'default-workspaceId',
-            },
+            statTags,
           },
         },
       },
@@ -201,16 +204,78 @@ export const V1BusinessTestScenarion: ProxyV1TestData[] = [
                 statusCode: 400,
               },
             ],
-            statTags: {
-              destType: 'CLEVERTAP',
-              destinationId: 'default-destinationId',
-              errorCategory: 'network',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-              workspaceId: 'default-workspaceId',
+            statTags,
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'clevertap_business_3',
+    scenario: 'business',
+    successCriteria: 'should return 200 status code with success message',
+    name: 'clevertap',
+    description: '[business]:: create an user through identify call',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            params,
+            headers,
+            JSON: {
+              d: [
+                {
+                  identity: 'testUser1',
+                  type: 'profile',
+                  profileData: {
+                    Name: 'Test User1',
+                    Email: 'test1@testMail.com',
+                  },
+                },
+                {
+                  evtData: {
+                    name: 1234,
+                    revenue: 4.99,
+                  },
+                  type: 'event',
+                  identity: 'user123',
+                },
+                {
+                  identity: 'testUser2',
+                  type: 'profile',
+                  profileData: {
+                    Name: 'Test User2',
+                    Email: 'test2@testMail.com',
+                  },
+                },
+              ],
             },
+            endpoint: 'https://api.clevertap.com/1/upload/test4',
+          },
+          [generateMetadata(123)],
+        ),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            statTags,
+            status: 400,
+            message: 'Request failed  with status: 200',
+            response: [
+              {
+                metadata: generateMetadata(123),
+                error:
+                  '{"status":"partial","processed":2,"unprocessed":[{"status":"fail","code":509,"error":"Event Name is incorrect. ErrorCode: 509 - Event name is mandatory. Skipped record number : 2","record":{"evtData":{"name":1234,"revenue":4.99},"type":"event","identity":"user123"}}]}',
+                statusCode: 400,
+              },
+            ],
           },
         },
       },

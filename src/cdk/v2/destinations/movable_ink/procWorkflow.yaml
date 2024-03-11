@@ -53,13 +53,19 @@ steps:
       }
 
   - name: buildResponse
+    description: In batchMode we return payload directly
+    condition: $.batchMode
     template: |
-      const response = $.defaultRequestConfig();
-      response.body.JSON = $.context.payload;
-      response.endpoint = .destination.Config.endpoint;
-      response.method = "POST";
-      response.headers = {
-        "Content-Type": "application/json",
-        "Authorization": "Basic " + $.base64Convertor(.destination.Config.accessKey + ":" + .destination.Config.accessSecret)
-      }
-      response;
+      $.context.payload
+    else:
+      name: buildResponseForProcessTransformation
+      template: |
+        const response = $.defaultRequestConfig();
+        response.body.JSON = $.context.payload;
+        response.endpoint = .destination.Config.endpoint;
+        response.method = "POST";
+        response.headers = {
+          "Content-Type": "application/json",
+          "Authorization": "Basic " + $.base64Convertor(.destination.Config.accessKey + ":" + .destination.Config.accessSecret)
+        }
+        response;

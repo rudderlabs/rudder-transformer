@@ -1,6 +1,6 @@
 import { RouterTestData } from '../../../testTypes';
 import { RouterTransformationRequest } from '../../../../../src/types';
-import { generateMetadata, transformResultBuilder } from '../../../testUtils';
+import { generateMetadata } from '../../../testUtils';
 import {
   destType,
   channel,
@@ -101,15 +101,31 @@ export const data: RouterTestData[] = [
                 params: {},
                 body: {
                   JSON: {
-                    type: 'identify',
-                    userId: traits.email,
-                    anonymousId: 'anonId123',
-                    traits,
-                    integrations: {
-                      All: true,
-                    },
-                    originalTimestamp: '2024-03-04T15:32:56.409Z',
-                    timestamp: 1709566376409,
+                    events: [
+                      {
+                        type: 'identify',
+                        userId: traits.email,
+                        anonymousId: 'anonId123',
+                        traits,
+                        integrations: {
+                          All: true,
+                        },
+                        originalTimestamp: '2024-03-04T15:32:56.409Z',
+                        timestamp: 1709566376409,
+                      },
+                      {
+                        type: 'track',
+                        channel,
+                        userId: 'userId123',
+                        anonymousId: 'anonId123',
+                        properties: trackTestProperties['Product Added'],
+                        integrations: {
+                          All: true,
+                        },
+                        originalTimestamp: '2024-03-04T15:32:56.409Z',
+                        timestamp: 1709566376409,
+                      },
+                    ],
                   },
                   JSON_ARRAY: {},
                   XML: {},
@@ -117,40 +133,8 @@ export const data: RouterTestData[] = [
                 },
                 files: {},
               },
-              metadata: [generateMetadata(1)],
-              batched: false,
-              statusCode: 200,
-              destination,
-            },
-            {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: destination.Config.endpoint,
-                headers,
-                params: {},
-                body: {
-                  JSON: {
-                    type: 'track',
-                    channel,
-                    userId: 'userId123',
-                    anonymousId: 'anonId123',
-                    properties: trackTestProperties['Product Added'],
-                    integrations: {
-                      All: true,
-                    },
-                    originalTimestamp: '2024-03-04T15:32:56.409Z',
-                    timestamp: 1709566376409,
-                  },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
-                },
-                files: {},
-              },
-              metadata: [generateMetadata(3)],
-              batched: false,
+              metadata: [generateMetadata(1), generateMetadata(3)],
+              batched: true,
               statusCode: 200,
               destination,
             },

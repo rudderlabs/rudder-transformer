@@ -59,7 +59,7 @@ describe('unit test for populateConsentFromConfig', () => {
 
 describe('populateConsentForGAOC', () => {
   // Returns an object with adUserData and adPersonalization properties set to UNSPECIFIED when no consents are provided
-  it('GOOGLE_ADWORDS_OFFLINE_CONVERSIONS : store sales conversion without consent related field in destination config', () => {
+  it('store sales conversion without consent related field in destination config', () => {
     const message = {};
     const conversionType = 'store';
 
@@ -71,7 +71,7 @@ describe('populateConsentForGAOC', () => {
     });
   });
 
-  it('GOOGLE_ADWORDS_OFFLINE_CONVERSIONS: store sales conversions with integrations object but without consent fields in config', () => {
+  it('store sales conversions with integrations object but without consent fields in config', () => {
     const message = {
       integrations: {
         google_adwords_offline_conversions: {
@@ -92,7 +92,7 @@ describe('populateConsentForGAOC', () => {
     });
   });
 
-  it('GOOGLE_ADWORDS_OFFLINE_CONVERSIONS: store sales conversions with integrations object along with consent fields in config', () => {
+  it('store sales conversions with integrations object along with consent fields in config', () => {
     const message = {
       integrations: {
         google_adwords_offline_conversions: {
@@ -119,7 +119,7 @@ describe('populateConsentForGAOC', () => {
   });
 
   // Returns an object with adUserData and adPersonalization properties set to the provided consents when they are valid and present in the message properties
-  it('GOOGLE_ADWORDS_OFFLINE_CONVERSIONS: click conversion with integration object of allowed types', () => {
+  it('click conversion with integration object of allowed types', () => {
     const message = {
       integrations: {
         google_adwords_offline_conversions: {
@@ -141,7 +141,7 @@ describe('populateConsentForGAOC', () => {
   });
 
   // Returns an object with adUserData and adPersonalization properties set to UNSPECIFIED when the provided consents are not valid or not present in the message properties
-  it('GOOGLE_ADWORDS_OFFLINE_CONVERSIONS : click conversion with invalid consent value', () => {
+  it('click conversion with invalid consent value', () => {
     const message = {
       integrations: {
         google_adwords_offline_conversions: {
@@ -158,12 +158,12 @@ describe('populateConsentForGAOC', () => {
 
     expect(result).toEqual({
       adUserData: 'GRANTED',
-      adPersonalization: 'UNKNOWN',
+      adPersonalization: 'UNSPECIFIED',
     });
   });
 
   // Returns an empty object when the integration object is not present in the message
-  it('GOOGLE_ADWORDS_OFFLINE_CONVERSIONS : call conversion without integrations object consent ', () => {
+  it('call conversion without integrations object consent ', () => {
     const message = {};
     const conversionType = 'call';
 
@@ -175,7 +175,7 @@ describe('populateConsentForGAOC', () => {
     });
   });
 
-  it('GOOGLE_ADWORDS_OFFLINE_CONVERSIONS : click conversion without integrations', () => {
+  it('click conversion without integrations', () => {
     const message = {
       integrations: {
         google_adwords_offline_conversions: {},
@@ -196,7 +196,7 @@ describe('populateConsentForGAOC', () => {
     });
   });
 
-  it('GOOGLE_ADWORDS_OFFLINE_CONVERSIONS : click conversion without integrations and UI config has partial data', () => {
+  it('click conversion without integrations and UI config has partial data', () => {
     const message = {
       integrations: {
         google_adwords_offline_conversions: {},
@@ -216,7 +216,7 @@ describe('populateConsentForGAOC', () => {
     });
   });
 
-  it('GOOGLE_ADWORDS_OFFLINE_CONVERSIONS : click conversion with partial data present in integrations object', () => {
+  it('click conversion with partial data present in integrations object', () => {
     const message = {
       integrations: {
         google_adwords_offline_conversions: {

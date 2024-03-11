@@ -62,25 +62,17 @@ const populateConsentForGAOC = (message, conversionType, destConfig) => {
       : getIntegrationsObj(message, 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS') || {};
   const consents = integrationObj?.consents || {};
 
+  const defaultConsentBlock = populateConsentFromConfig(destConfig);
+
   // Define a function to process consent based on type
   const processConsent = (consentType) => {
-    // Access the default consent values from destConfig based on the consentType
-    let defaultConsentValue;
-    if (consentType === 'adUserData') {
-      defaultConsentValue = destConfig?.userDataConsent;
-    } else if (consentType === 'adPersonalization') {
-      defaultConsentValue = destConfig?.personalizationConsent;
-    } else {
-      defaultConsentValue = UNSPECIFIED_CONSENT;
-    }
-
     if (!consents[consentType]) {
-      return defaultConsentValue || UNSPECIFIED_CONSENT;
+      return defaultConsentBlock[consentType] || UNSPECIFIED_CONSENT;
     }
     if (GOOGLE_ALLOWED_CONSENT_STATUS.includes(consents[consentType])) {
       return consents[consentType];
     }
-    return defaultConsentValue || UNKNOWN_CONSENT;
+    return defaultConsentBlock[consentType] || UNKNOWN_CONSENT;
   };
 
   // Common consent fields to process

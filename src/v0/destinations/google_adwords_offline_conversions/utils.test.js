@@ -162,7 +162,7 @@ describe('getExisitingUserIdentifier util tests', () => {
 describe('getClickConversionPayloadAndEndpoint util tests', () => {
   it('getClickConversionPayloadAndEndpoint flow check when default field identifier is present', () => {
     let expectedOutput = {
-      endpoint: 'https://googleads.googleapis.com/v15/customers/9625812972:uploadClickConversions',
+      endpoint: 'https://googleads.googleapis.com/v16/customers/9625812972:uploadClickConversions',
       payload: {
         conversions: [
           {
@@ -192,7 +192,7 @@ describe('getClickConversionPayloadAndEndpoint util tests', () => {
     delete fittingPayload.traits.email;
     delete fittingPayload.properties.email;
     let expectedOutput = {
-      endpoint: 'https://googleads.googleapis.com/v15/customers/9625812972:uploadClickConversions',
+      endpoint: 'https://googleads.googleapis.com/v16/customers/9625812972:uploadClickConversions',
       payload: {
         conversions: [
           {
@@ -224,7 +224,7 @@ describe('getClickConversionPayloadAndEndpoint util tests', () => {
     delete fittingPayload.traits.phone;
     delete fittingPayload.properties.email;
     let expectedOutput = {
-      endpoint: 'https://googleads.googleapis.com/v15/customers/9625812972:uploadClickConversions',
+      endpoint: 'https://googleads.googleapis.com/v16/customers/9625812972:uploadClickConversions',
       payload: {
         conversions: [
           {
@@ -246,7 +246,7 @@ describe('getClickConversionPayloadAndEndpoint util tests', () => {
     ).toThrow('Either of email or phone is required for user identifier');
   });
 
-  it('getClickConversionPayloadAndEndpoint flow check when default field identifier is present and product list present', () => {
+  it('populateConsentForGAOC', () => {
     let fittingPayload = { ...getTestMessage() };
     fittingPayload.properties.products = [
       {
@@ -260,7 +260,7 @@ describe('getClickConversionPayloadAndEndpoint util tests', () => {
       },
     ];
     let expectedOutput = {
-      endpoint: 'https://googleads.googleapis.com/v15/customers/9625812972:uploadClickConversions',
+      endpoint: 'https://googleads.googleapis.com/v16/customers/9625812972:uploadClickConversions',
       payload: {
         conversions: [
           {

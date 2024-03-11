@@ -10,7 +10,7 @@ const UNKNOWN_CONSENT = 'UNKNOWN';
  *
  * @param {object} properties - message.properties containing properties related to consent.
  * @returns {object} - An object containing consent information.
- * ref : https://developers.google.com/google-ads/api/rest/reference/rest/v15/Consent
+ * ref : https://developers.google.com/google-ads/api/rest/reference/rest/v16/Consent
  */
 
 const populateConsentFromConfig = (config) => {
@@ -45,14 +45,14 @@ const populateConsentFromConfig = (config) => {
  * @returns {object} - An object containing consent information.
  *  * ref :
  * 1) For click conversion :
- *  a) https://developers.google.com/google-ads/api/rest/reference/rest/v15/customers/uploadClickConversions#ClickConversion
- *  b) https://developers.google.com/google-ads/api/reference/rpc/v15/ClickConversion#consent
+ *  a) https://developers.google.com/google-ads/api/rest/reference/rest/v16/customers/uploadClickConversions#ClickConversion
+ *  b) https://developers.google.com/google-ads/api/reference/rpc/v16/ClickConversion#consent
  * 2) For Call conversion :
- *  a) https://developers.google.com/google-ads/api/rest/reference/rest/v15/customers/uploadCallConversions#CallConversion
- *  b) https://developers.google.com/google-ads/api/reference/rpc/v15/CallConversion#consent
+ *  a) https://developers.google.com/google-ads/api/rest/reference/rest/v16/customers/uploadCallConversions#CallConversion
+ *  b) https://developers.google.com/google-ads/api/reference/rpc/v16/CallConversion#consent
  * 3) For Store sales conversion :
- *  a) https://developers.google.com/google-ads/api/reference/rpc/v15/UserData
- *  b) https://developers.google.com/google-ads/api/reference/rpc/v15/UserData#consent
+ *  a) https://developers.google.com/google-ads/api/reference/rpc/v16/UserData
+ *  b) https://developers.google.com/google-ads/api/reference/rpc/v16/UserData#consent
  */
 
 const populateConsentForGAOC = (message, conversionType, destConfig) => {

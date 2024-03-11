@@ -57,7 +57,6 @@ describe(`Source Tests`, () => {
           const output = await transformer.process(dataPoint.input);
           expect(output).toEqual(dataPoint.output);
         } catch (error) {
-          console.error(error);
           expect(error.message).toEqual(dataPoint.output.error);
         }
       });

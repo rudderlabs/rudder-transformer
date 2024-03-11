@@ -336,7 +336,6 @@ const getDefaultResponseData = (message, rawPayload, evType, groupInfo) => {
   return { groups, rawPayload };
 };
 
-
 const getResponseData = (evType, destination, rawPayload, message, groupInfo) => {
   let groups;
 

@@ -102,7 +102,24 @@ export const trackTestData: ProcessorTestData[] = [
               params: {},
               FORM: {
                 data: [
-                  '{"user_data":{"external_id":"3ffc8a075f330402d82aa0a86c596b0d2fe70df38b22c5be579f86a18e4aca47","em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08","client_user_agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0"},"event_name":"spin_result","event_time":1697241600,"event_id":"12345","action_source":"website","custom_data":{"additional_bet_index":0,"email":"abc@gmail.com","value":400}}',
+                  JSON.stringify({
+                    user_data: {
+                      external_id:
+                        '3ffc8a075f330402d82aa0a86c596b0d2fe70df38b22c5be579f86a18e4aca47',
+                      em: '48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08',
+                      client_user_agent:
+                        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0',
+                    },
+                    event_name: 'spin_result',
+                    event_time: 1697241600,
+                    event_id: '12345',
+                    action_source: 'website',
+                    custom_data: {
+                      additional_bet_index: 0,
+                      email: 'abc@gmail.com',
+                      value: 400,
+                    },
+                  }),
                 ],
               },
               files: {},
@@ -158,7 +175,24 @@ export const trackTestData: ProcessorTestData[] = [
               params: {},
               FORM: {
                 data: [
-                  '{"user_data":{"external_id":"3ffc8a075f330402d82aa0a86c596b0d2fe70df38b22c5be579f86a18e4aca47","em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08","client_user_agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0"},"event_name":"AddToWishlist","event_time":1697241600,"event_id":"12345","action_source":"website","custom_data":{"additional_bet_index":0,"email":"abc@gmail.com","value":400}}',
+                  JSON.stringify({
+                    user_data: {
+                      external_id:
+                        '3ffc8a075f330402d82aa0a86c596b0d2fe70df38b22c5be579f86a18e4aca47',
+                      em: '48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08',
+                      client_user_agent:
+                        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0',
+                    },
+                    event_name: 'AddToWishlist',
+                    event_time: 1697241600,
+                    event_id: '12345',
+                    action_source: 'website',
+                    custom_data: {
+                      additional_bet_index: 0,
+                      email: 'abc@gmail.com',
+                      value: 400,
+                    },
+                  }),
                 ],
               },
               files: {},

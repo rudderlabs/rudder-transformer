@@ -175,7 +175,9 @@ export const pageScreenTestData: ProcessorTestData[] = [
                 sentAt: '2021-01-25T16:12:02.048Z',
                 userId: 'sajal12',
                 context: {
-                  traits: {},
+                  traits: {
+                    email: 'abc@example.com',
+                  },
                 },
                 properties: {},
                 anonymousId: '9c6bd77ea9da3e68',
@@ -227,7 +229,9 @@ export const pageScreenTestData: ProcessorTestData[] = [
                 sentAt: '2021-01-25T16:12:02.048Z',
                 userId: 'sajal12',
                 context: {
-                  traits: {},
+                  traits: {
+                    email: 'abc@example.com',
+                  },
                 },
                 properties: {
                   path: '/abc',
@@ -261,7 +265,24 @@ export const pageScreenTestData: ProcessorTestData[] = [
               params: {},
               FORM: {
                 data: [
-                  '{"user_data":{"external_id":"470582f368e5aeec2cf487decd1e125b7d265e8b0b06b74a25e999e93bfb699f"},"event_name":"PageView","event_time":1697297576,"event_source_url":"jkl","action_source":"website","custom_data":{"path":"/abc","referrer":"xyz","search":"def","title":"ghi","url":"jkl"}}',
+                  JSON.stringify({
+                    user_data: {
+                      external_id:
+                        '470582f368e5aeec2cf487decd1e125b7d265e8b0b06b74a25e999e93bfb699f',
+                      em: '9eceb13483d7f187ec014fd6d4854d1420cfc634328af85f51d0323ba8622e21',
+                    },
+                    event_name: 'PageView',
+                    event_time: 1697297576,
+                    event_source_url: 'jkl',
+                    action_source: 'website',
+                    custom_data: {
+                      path: '/abc',
+                      referrer: 'xyz',
+                      search: 'def',
+                      title: 'ghi',
+                      url: 'jkl',
+                    },
+                  }),
                 ],
               },
               files: {},

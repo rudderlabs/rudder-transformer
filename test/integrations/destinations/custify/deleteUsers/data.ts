@@ -129,8 +129,7 @@ export const data = [
   },
 
   {
-    description:
-      'Test 4: should fail when one of the userAttributes does not contain `userId`',
+    description: 'Test 4: should fail when one of the userAttributes does not contain `userId`',
     input: {
       request: {
         body: [
@@ -140,8 +139,7 @@ export const data = [
               {
                 userId: 'rudder1',
               },
-              {
-              },
+              {},
             ],
             config: {
               apiKey: 'dummyApiKey',

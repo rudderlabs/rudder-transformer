@@ -209,10 +209,14 @@ export class NativeIntegrationDestinationService implements DestinationService {
         const jobStates = (deliveryRequest as ProxyV1Request).metadata.map(
           (metadata) =>
             ({
-              error: JSON.stringify(v0Response.destinationResponse?.response),
+              error: JSON.stringify(
+                v0Response.destinationResponse?.response === undefined
+                  ? v0Response.destinationResponse
+                  : v0Response.destinationResponse?.response,
+              ),
               statusCode: v0Response.status,
               metadata,
-            } as DeliveryJobState),
+            }) as DeliveryJobState,
         );
         responseProxy = {
           response: jobStates,

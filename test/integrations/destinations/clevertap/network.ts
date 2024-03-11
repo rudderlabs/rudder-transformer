@@ -65,7 +65,8 @@ const dataDeliveryMocksData = [
       method: 'POST',
     },
     httpRes: {
-      data: { status: 'fail', error: 'Invalid Credentials', code: 401 }, status: 401
+      data: { status: 'fail', error: 'Invalid Credentials', code: 401 },
+      status: 401,
     },
   },
   {

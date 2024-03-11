@@ -1,6 +1,15 @@
 import { VERSION } from '../../../../../src/v0/destinations/facebook_pixel/config';
+import { testScenariosForV1API, testFormData, statTags as baseStatTags } from './business';
+import { otherScenariosV1 } from './other';
+import { oauthScenariosV1 } from './oauth';
 
-export const data = [
+const statTags = {
+  ...baseStatTags,
+  destinationId: 'Non-determininable',
+  workspaceId: 'Non-determininable',
+};
+
+export const v0TestData = [
   {
     name: 'facebook_pixel',
     description: 'Test 0',
@@ -12,11 +21,7 @@ export const data = [
         body: {
           body: {
             XML: {},
-            FORM: {
-              data: [
-                '{"user_data":{"external_id":"c58f05b5e3cc4796f3181cf07349d306547c00b20841a175b179c6860e6a34ab","client_ip_address":"32.122.223.26","client_user_agent":"Mozilla/5.0 (iPhone; CPU iPhone OS 15_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Mobile/15E148 Safari/604.1"},"event_name":"Checkout Step Viewed","event_time":1654773112,"event_source_url":"https://www.my.kaiser.com/checkout","event_id":"4f002656-a7b2-4c17-b9bd-8caa5a29190a","custom_data":{"checkout_id":"26SF29B","site":"www.my.kaiser.com","step":1}}',
-              ],
-            },
+            FORM: testFormData,
             JSON: {},
             JSON_ARRAY: {},
           },
@@ -51,15 +56,10 @@ export const data = [
               status: 500,
             },
             statTags: {
-              destType: 'FACEBOOK_PIXEL',
+              ...statTags,
               errorCategory: 'dataValidation',
-              destinationId: 'Non-determininable',
-              workspaceId: 'Non-determininable',
               errorType: 'configuration',
               meta: 'accessTokenExpired',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
             },
           },
         },
@@ -77,11 +77,7 @@ export const data = [
         body: {
           body: {
             XML: {},
-            FORM: {
-              data: [
-                '{"user_data":{"external_id":"c58f05b5e3cc4796f3181cf07349d306547c00b20841a175b179c6860e6a34ab","client_ip_address":"32.122.223.26","client_user_agent":"Mozilla/5.0 (iPhone; CPU iPhone OS 15_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Mobile/15E148 Safari/604.1"},"event_name":"Checkout Step Viewed","event_time":1654773112,"event_source_url":"https://www.my.kaiser.com/checkout","event_id":"4f002656-a7b2-4c17-b9bd-8caa5a29190a","custom_data":{"checkout_id":"26SF29B","site":"www.my.kaiser.com","step":1}}',
-              ],
-            },
+            FORM: testFormData,
             JSON: {},
             JSON_ARRAY: {},
           },
@@ -126,11 +122,7 @@ export const data = [
         body: {
           body: {
             XML: {},
-            FORM: {
-              data: [
-                '{"user_data":{"external_id":"c58f05b5e3cc4796f3181cf07349d306547c00b20841a175b179c6860e6a34ab","client_ip_address":"32.122.223.26","client_user_agent":"Mozilla/5.0 (iPhone; CPU iPhone OS 15_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Mobile/15E148 Safari/604.1"},"event_name":"Checkout Step Viewed","event_time":1654772112,"event_source_url":"https://www.my.kaiser.com/checkout","event_id":"4f002656-a7b2-4c17-b9bd-8caa5a29190a","custom_data":{"checkout_id":"26SF29B","site":"www.my.kaiser.com","step":1}}',
-              ],
-            },
+            FORM: testFormData,
             JSON: {},
             JSON_ARRAY: {},
           },
@@ -169,16 +161,7 @@ export const data = [
               },
               status: 400,
             },
-            statTags: {
-              destType: 'FACEBOOK_PIXEL',
-              errorCategory: 'network',
-              destinationId: 'Non-determininable',
-              workspaceId: 'Non-determininable',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-            },
+            statTags,
           },
         },
       },
@@ -195,11 +178,7 @@ export const data = [
         body: {
           body: {
             XML: {},
-            FORM: {
-              data: [
-                '{"user_data":{"external_id":"c58f05b5e3cc4796f3181cf07349d306547c00b20841a175b179c6860e6a34ab","client_ip_address":"32.122.223.26","client_user_agent":"Mozilla/5.0 (iPhone; CPU iPhone OS 15_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Mobile/15E148 Safari/604.1"},"event_name":"Checkout Step Viewed","event_time":1654772112,"event_source_url":"https://www.my.kaiser.com/checkout","event_id":"4f002656-a7b2-4c17-b9bd-8caa5a29190a","custom_data":{"checkout_id":"26SF29B","site":"www.my.kaiser.com","step":1}}',
-              ],
-            },
+            FORM: testFormData,
             JSON: {},
             JSON_ARRAY: {},
           },
@@ -234,14 +213,8 @@ export const data = [
               status: 500,
             },
             statTags: {
-              destType: 'FACEBOOK_PIXEL',
-              errorCategory: 'network',
-              destinationId: 'Non-determininable',
-              workspaceId: 'Non-determininable',
+              ...statTags,
               errorType: 'throttled',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
             },
           },
         },
@@ -259,11 +232,7 @@ export const data = [
         body: {
           body: {
             XML: {},
-            FORM: {
-              data: [
-                '{"user_data":{"external_id":"c58f05b5e3cc4796f3181cf07349d306547c00b20841a175b179c6860e6a34ab","client_ip_address":"32.122.223.26","client_user_agent":"Mozilla/5.0 (iPhone; CPU iPhone OS 15_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Mobile/15E148 Safari/604.1"},"event_name":"Checkout Step Viewed","event_time":1654772112,"event_source_url":"https://www.my.kaiser.com/checkout","event_id":"4f002656-a7b2-4c17-b9bd-8caa5a29190a","custom_data":{"checkout_id":"26SF29B","site":"www.my.kaiser.com","step":1}}',
-              ],
-            },
+            FORM: testFormData,
             JSON: {},
             JSON_ARRAY: {},
           },
@@ -300,16 +269,7 @@ export const data = [
               },
               status: 400,
             },
-            statTags: {
-              destType: 'FACEBOOK_PIXEL',
-              errorCategory: 'network',
-              destinationId: 'Non-determininable',
-              workspaceId: 'Non-determininable',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-            },
+            statTags,
           },
         },
       },
@@ -326,11 +286,7 @@ export const data = [
         body: {
           body: {
             XML: {},
-            FORM: {
-              data: [
-                '{"user_data":{"external_id":"d58f05b5e3cc4796f3181cf07349d306547c00b20841a175b179c6860e6a34ab","client_ip_address":"32.122.223.26","client_user_agent":"Mozilla/5.0 (iPhone; CPU iPhone OS 15_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Mobile/15E148 Safari/604.1"},"event_name":"Checkout Step Viewed","event_time":1654772112,"event_source_url":"https://www.my.kaiser.com/checkout","event_id":"4f002656-a7b2-4c17-b9bd-8caa5a29190a","custom_data":{"checkout_id":"26SF29B","site":"www.my.kaiser.com","step":1}}',
-              ],
-            },
+            FORM: testFormData,
             JSON: {},
             JSON_ARRAY: {},
           },
@@ -365,16 +321,7 @@ export const data = [
               },
               status: 404,
             },
-            statTags: {
-              destType: 'FACEBOOK_PIXEL',
-              errorCategory: 'network',
-              destinationId: 'Non-determininable',
-              workspaceId: 'Non-determininable',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-            },
+            statTags,
           },
         },
       },
@@ -391,11 +338,7 @@ export const data = [
         body: {
           body: {
             XML: {},
-            FORM: {
-              data: [
-                '{"user_data":{"external_id":"c58f05b5e3cc4796f3181cf07349d306547c00b20841a175b179c6860e6a34ab","client_ip_address":"32.122.223.26","client_user_agent":"Mozilla/5.0 (iPhone; CPU iPhone OS 15_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Mobile/15E148 Safari/604.1"},"event_name":"Checkout Step Viewed","event_time":1654772112,"event_source_url":"https://www.my.kaiser.com/checkout","event_id":"4f002656-a7b2-4c17-b9bd-8caa5a29190a","custom_data":{"checkout_id":"26SF29B","site":"www.my.kaiser.com","step":1}}',
-              ],
-            },
+            FORM: testFormData,
             JSON: {},
             JSON_ARRAY: {},
           },
@@ -430,16 +373,7 @@ export const data = [
               },
               status: 400,
             },
-            statTags: {
-              destType: 'FACEBOOK_PIXEL',
-              errorCategory: 'network',
-              destinationId: 'Non-determininable',
-              workspaceId: 'Non-determininable',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-            },
+            statTags,
           },
         },
       },
@@ -456,11 +390,7 @@ export const data = [
         body: {
           body: {
             XML: {},
-            FORM: {
-              data: [
-                '{"user_data":{"external_id":"c58f05b5e3cc4796f3181cf07349d306547c00b20841a175b179c6860e6a34ab","client_ip_address":"32.122.223.26","client_user_agent":"Mozilla/5.0 (iPhone; CPU iPhone OS 15_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Mobile/15E148 Safari/604.1"},"event_name":"Checkout Step Viewed","event_time":1654772112,"event_source_url":"https://www.my.kaiser.com/checkout","event_id":"4f002656-a7b2-4c17-b9bd-8caa5a29190a","custom_data":{"checkout_id":"26SF29B","site":"www.my.kaiser.com","step":1}}',
-              ],
-            },
+            FORM: testFormData,
             JSON: {},
             JSON_ARRAY: {},
           },
@@ -495,16 +425,7 @@ export const data = [
               },
               status: 500,
             },
-            statTags: {
-              destType: 'FACEBOOK_PIXEL',
-              errorCategory: 'network',
-              destinationId: 'Non-determininable',
-              workspaceId: 'Non-determininable',
-              errorType: 'aborted',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
-            },
+            statTags,
           },
         },
       },
@@ -521,11 +442,7 @@ export const data = [
         body: {
           body: {
             XML: {},
-            FORM: {
-              data: [
-                '{"user_data":{"external_id":"c58f05b5e3cc4796f3181cf07349d306547c00b20841a175b179c6860e6a34ab","client_ip_address":"32.122.223.26","client_user_agent":"Mozilla/5.0 (iPhone; CPU iPhone OS 15_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Mobile/15E148 Safari/604.1"},"event_name":"Checkout Step Viewed","event_time":1654772112,"event_source_url":"https://www.my.kaiser.com/checkout","event_id":"4f002656-a7b2-4c17-b9bd-8caa5a29190a","custom_data":{"checkout_id":"26SF29B","site":"www.my.kaiser.com","step":1}}',
-              ],
-            },
+            FORM: testFormData,
             JSON: {},
             JSON_ARRAY: {},
           },
@@ -561,14 +478,8 @@ export const data = [
               status: 412,
             },
             statTags: {
-              destType: 'FACEBOOK_PIXEL',
-              errorCategory: 'network',
-              destinationId: 'Non-determininable',
-              workspaceId: 'Non-determininable',
+              ...statTags,
               errorType: 'retryable',
-              feature: 'dataDelivery',
-              implementation: 'native',
-              module: 'destination',
               meta: 'unhandledStatusCode',
             },
           },
@@ -576,4 +487,11 @@ export const data = [
       },
     },
   },
+];
+
+export const data = [
+  ...v0TestData,
+  ...testScenariosForV1API,
+  ...otherScenariosV1,
+  ...oauthScenariosV1,
 ];

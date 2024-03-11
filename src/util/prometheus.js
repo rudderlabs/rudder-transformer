@@ -497,7 +497,7 @@ class Prometheus {
         name: 'shopify_anon_id_resolve',
         help: 'shopify_anon_id_resolve',
         type: 'counter',
-        labelNames: ['method', 'writeKey', 'shopifyTopic'],
+        labelNames: ['method', 'writeKey', 'shopifyTopic', 'source'],
       },
       {
         name: 'shopify_redis_calls',
@@ -533,7 +533,15 @@ class Prometheus {
         name: 'outgoing_request_count',
         help: 'Outgoing HTTP requests count',
         type: 'counter',
-        labelNames: ['feature', 'destType', 'endpointPath', 'success', 'statusCode', 'requestMethod' , 'module'],
+        labelNames: [
+          'feature',
+          'destType',
+          'endpointPath',
+          'success',
+          'statusCode',
+          'requestMethod',
+          'module',
+        ],
       },
 
       // Gauges
@@ -702,7 +710,7 @@ class Prometheus {
         name: 'get_libraries_code_time',
         help: 'get_libraries_code_time',
         type: 'histogram',
-        labelNames: ['libraryVersionId', 'versionId', 'type'],
+        labelNames: ['libraryVersionId', 'versionId', 'type', 'version'],
       },
       {
         name: 'isolate_cpu_time',

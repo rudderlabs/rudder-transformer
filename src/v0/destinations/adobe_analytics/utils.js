@@ -93,7 +93,7 @@ function escapeToHTML(inputString) {
         '&': '&amp;',
         '<': '&lt;',
         '>': '&gt;',
-      }[match]),
+      })[match],
   );
 }
 

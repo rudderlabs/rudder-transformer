@@ -19,23 +19,23 @@ const CONFIG_CATEGORIES = {
 const PARTNER_NAME = 'RudderStack';
 
 const EVENT_NAME_MAPPING = {
-  'addpaymentinfo': 'AddPaymentInfo',
-  'addtocart': 'AddToCart',
-  'addtowishlist': 'AddToWishlist',
+  addpaymentinfo: 'AddPaymentInfo',
+  addtocart: 'AddToCart',
+  addtowishlist: 'AddToWishlist',
   'checkout started': 'InitiateCheckout',
   'checkout step completed': 'CompletePayment',
-  'clickbutton': 'ClickButton',
-  'completeregistration': 'CompleteRegistration',
-  'contact': 'Contact',
-  'download': 'Download',
+  clickbutton: 'ClickButton',
+  completeregistration: 'CompleteRegistration',
+  contact: 'Contact',
+  download: 'Download',
   'order completed': 'PlaceAnOrder',
   'payment info entered': 'AddPaymentInfo',
   'product added': 'AddToCart',
   'product added to wishlist': 'AddToWishlist',
-  'search': 'Search',
-  'submitform': 'SubmitForm',
-  'subscribe': 'Subscribe',
-  'viewcontent': 'ViewContent',
+  search: 'Search',
+  submitform: 'SubmitForm',
+  subscribe: 'Subscribe',
+  viewcontent: 'ViewContent',
 };
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 

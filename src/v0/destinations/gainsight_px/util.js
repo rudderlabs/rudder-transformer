@@ -6,13 +6,13 @@ const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const handleErrorResponse = (error, customErrMessage, expectedErrStatus, defaultStatus = 400) => {
+  let destResp;
   let errMessage = '';
   let errorStatus = defaultStatus;
 
   if (error.response && error.response.data) {
-    errMessage = error.response.data.externalapierror
-      ? JSON.stringify(error.response.data.externalapierror)
-      : JSON.stringify(error.response.data);
+    destResp = error.response?.data?.externalapierror ?? error.response?.data;
+    errMessage = JSON.stringify(destResp);
 
     errorStatus = error.response.status;
 
@@ -26,7 +26,7 @@ const handleErrorResponse = (error, customErrMessage, expectedErrStatus, default
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errorStatus),
     },
-    error,
+    destResp,
   );
 };
 

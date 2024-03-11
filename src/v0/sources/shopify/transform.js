@@ -143,7 +143,7 @@ const processEvent = async (inputEvent, metricMetadata) => {
       break;
     case 'carts_update':
       if (useRedisDatabase) {
-        redisData = await getDataFromRedis(event.id || event.token);
+        redisData = await getDataFromRedis(event.id || event.token, metricMetadata);
         const isValidEvent = await checkAndUpdateCartItems(inputEvent, redisData, metricMetadata);
         if (!isValidEvent) {
           return NO_OPERATION_SUCCESS;
@@ -155,7 +155,8 @@ const processEvent = async (inputEvent, metricMetadata) => {
       if (!SUPPORTED_TRACK_EVENTS.includes(shopifyTopic)) {
         stats.increment('invalid_shopify_event', {
           event: shopifyTopic,
-          ...metricMetadata,
+          source: metricMetadata.source,
+          shopifyTopic: metricMetadata.shopifyTopic,
         });
         return NO_OPERATION_SUCCESS;
       }
@@ -215,7 +216,8 @@ const processIdentifierEvent = async (event, metricMetadata) => {
       stats.increment('shopify_redis_calls', {
         type: 'set',
         field: 'itemsHash',
-        ...metricMetadata,
+        source: metricMetadata.source,
+        writeKey: metricMetadata.writeKey,
       });
       /* cart_token: {
            anonymousId: 'anon_id1',
@@ -236,14 +238,16 @@ const processIdentifierEvent = async (event, metricMetadata) => {
       stats.increment('shopify_redis_calls', {
         type: 'set',
         field,
-        ...metricMetadata,
+        source: metricMetadata.source,
+        writeKey: metricMetadata.writeKey,
       });
       await RedisDB.setVal(`${event.cartToken}`, value);
     } catch (e) {
       logger.debug(`{{SHOPIFY::}} cartToken map set call Failed due redis error ${e}`);
       stats.increment('shopify_redis_failures', {
         type: 'set',
-        ...metricMetadata,
+        source: metricMetadata.source,
+        writeKey: metricMetadata.writeKey,
       });
     }
   }

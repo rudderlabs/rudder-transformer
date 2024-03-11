@@ -26,11 +26,12 @@ const {
   trackAddStoreAddressConversionsMapping,
   trackClickConversionsMapping,
   CLICK_CONVERSION,
+  consentFields,
 } = require('./config');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const Cache = require('../../util/cache');
 const helper = require('./helper');
-const { populateConsentForGAOC } = require('../../util/googleUtils');
+const { finaliseConsent } = require('../../util/googleUtils');
 
 const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
 
@@ -221,7 +222,7 @@ function getExisitingUserIdentifier(userIdentifierInfo, defaultUserIdentifier) {
  * This Function create the add conversion payload
  * and returns the payload
  */
-const getAddConversionPayload = (message, Config) => {
+const getAddConversionPayload = (message, Config, eventLevelConsent) => {
   const { properties } = message;
   const { validateOnly, hashUserIdentifier, defaultUserIdentifier } = Config;
   const payload = constructPayload(message, trackAddStoreConversionsMapping);
@@ -274,24 +275,29 @@ const getAddConversionPayload = (message, Config) => {
     }
   }
   // add consent support for store conversions
-  const consentObject = populateConsentForGAOC(message, 'store', Config);
+  const consentObject = finaliseConsent(eventLevelConsent, Config, consentFields);
   set(payload, 'operations.create.consent', consentObject);
   return payload;
 };
 
-const getStoreConversionPayload = (message, Config, event) => {
+const getStoreConversionPayload = (message, Config, event, eventLevelConsent) => {
   const { validateOnly } = Config;
   const payload = {
     event,
     isStoreConversion: true,
     createJobPayload: getCreateJobPayload(message),
-    addConversionPayload: getAddConversionPayload(message, Config),
+    addConversionPayload: getAddConversionPayload(message, Config, eventLevelConsent),
     executeJobPayload: { validate_only: validateOnly },
   };
   return payload;
 };
 
-const getClickConversionPayloadAndEndpoint = (message, Config, filteredCustomerId) => {
+const getClickConversionPayloadAndEndpoint = (
+  message,
+  Config,
+  filteredCustomerId,
+  eventLevelConsent,
+) => {
   const email = getFieldValueFromMessage(message, 'emailOnly');
   const phone = getFieldValueFromMessage(message, 'phone');
   const { hashUserIdentifier, defaultUserIdentifier, UserIdentifierSource, conversionEnvironment } =
@@ -365,7 +371,7 @@ const getClickConversionPayloadAndEndpoint = (message, Config, filteredCustomerI
   }
 
   // add consent support for click conversions
-  const consentObject = populateConsentForGAOC(message, 'click', Config);
+  const consentObject = finaliseConsent(eventLevelConsent, Config, consentFields);
   set(payload, 'conversions[0].consent', consentObject);
   return { payload, endpoint };
 };
@@ -380,5 +386,4 @@ module.exports = {
   buildAndGetAddress,
   getClickConversionPayloadAndEndpoint,
   getExisitingUserIdentifier,
-  populateConsentForGAOC,
 };

@@ -10,20 +10,30 @@ const {
   defaultBatchRequestConfig,
   getSuccessRespEvents,
   combineBatchRequestsWithSameJobIds,
+  getIntegrationsObj,
 } = require('../../util');
 const {
   CALL_CONVERSION,
   trackCallConversionsMapping,
   STORE_CONVERSION_CONFIG,
+  consentFields,
 } = require('./config');
 const {
   validateDestinationConfig,
   getStoreConversionPayload,
   requestBuilder,
   getClickConversionPayloadAndEndpoint,
-  populateConsentForGAOC,
 } = require('./utils');
+const { finaliseConsent } = require('../../util/googleUtils');
 const helper = require('./helper');
+
+const getConsentFromIntegrationObj = (message, conversionType) => {
+  const integrationObj =
+    conversionType === 'store'
+      ? {}
+      : getIntegrationsObj(message, 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS') || {};
+  return integrationObj?.consents || {};
+};
 
 /**
  * get conversions depending on the type set from dashboard
@@ -42,21 +52,24 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
   const { properties, timestamp, originalTimestamp } = message;
 
   const filteredCustomerId = removeHyphens(customerId);
+  const userSentConsentValues = getConsentFromIntegrationObj(message, conversionType);
+
   if (conversionType === 'click') {
     // click conversion
     const convertedPayload = getClickConversionPayloadAndEndpoint(
       message,
       Config,
       filteredCustomerId,
+      userSentConsentValues,
     );
     payload = convertedPayload.payload;
     endpoint = convertedPayload.endpoint;
   } else if (conversionType === 'store') {
-    payload = getStoreConversionPayload(message, Config, filteredCustomerId);
+    payload = getStoreConversionPayload(message, Config, filteredCustomerId, userSentConsentValues);
     endpoint = STORE_CONVERSION_CONFIG.replace(':customerId', filteredCustomerId);
   } else {
     // call conversions
-    const consentObject = populateConsentForGAOC(message, conversionType, Config);
+    const consentObject = finaliseConsent(userSentConsentValues, Config, consentFields);
     payload = constructPayload(message, trackCallConversionsMapping);
     endpoint = CALL_CONVERSION.replace(':customerId', filteredCustomerId);
     payload.conversions[0].consent = consentObject;
@@ -122,7 +135,6 @@ const trackResponseBuilder = (message, metadata, destination) => {
 
 const process = async (event) => {
   const { message, metadata, destination } = event;
-
   if (!message.type) {
     throw new InstrumentationError('Message type is not present. Aborting message.');
   }

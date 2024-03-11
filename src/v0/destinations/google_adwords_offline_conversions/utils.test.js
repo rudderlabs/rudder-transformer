@@ -2,7 +2,6 @@ const {
   getClickConversionPayloadAndEndpoint,
   buildAndGetAddress,
   getExisitingUserIdentifier,
-  populateConsentForGAOC,
 } = require('./utils');
 
 const getTestMessage = () => {
@@ -246,7 +245,7 @@ describe('getClickConversionPayloadAndEndpoint util tests', () => {
     ).toThrow('Either of email or phone is required for user identifier');
   });
 
-  it('populateConsentForGAOC', () => {
+  it('finaliseConsent', () => {
     let fittingPayload = { ...getTestMessage() };
     fittingPayload.properties.products = [
       {

@@ -1,4 +1,6 @@
-const { populateConsentFromConfig, populateConsentForGAOC } = require('./index');
+const { populateConsentFromConfig, finaliseConsent } = require('./index');
+
+const destinationAllowedConsentKeys = ['adUserData', 'adPersonalization'];
 
 describe('unit test for populateConsentFromConfig', () => {
   it('should return an UNSPECIFIED object when no properties are provided', () => {
@@ -57,187 +59,85 @@ describe('unit test for populateConsentFromConfig', () => {
   });
 });
 
-describe('populateConsentForGAOC', () => {
-  // Returns an object with adUserData and adPersonalization properties set to UNSPECIFIED when no consents are provided
-  it('store sales conversion without consent related field in destination config', () => {
-    const message = {};
-    const conversionType = 'store';
+describe('finaliseConsent', () => {
+  // Returns an object containing consent information.
+  it('should return an object containing consent information when eventLevelConsent, destConfig, and destinationAllowedConsentKeys are provided', () => {
+    const eventLevelConsent = {
+      adUserData: 'GRANTED',
+      adPersonalization: 'DENIED',
+    };
+    const destConfig = {
+      userDataConsent: 'UNKNOWN',
+      personalizationConsent: 'GRANTED',
+    };
+    const destinationAllowedConsentKeys = ['adUserData', 'adPersonalization'];
 
-    const result = populateConsentForGAOC(message, conversionType);
+    const result = finaliseConsent(eventLevelConsent, destConfig, destinationAllowedConsentKeys);
 
+    expect(result).toEqual({
+      adUserData: 'GRANTED',
+      adPersonalization: 'DENIED',
+    });
+  });
+
+  // If destConfig is not provided, it does not return UNSPECIFIED_CONSENT.
+  it('should not return UNSPECIFIED_CONSENT when destConfig is not provided but event level consent is provided', () => {
+    const eventLevelConsent = {
+      adUserData: 'GRANTED',
+      adPersonalization: 'DENIED',
+    };
+    const destinationAllowedConsentKeys = ['adUserData', 'adPersonalization'];
+
+    const result = finaliseConsent(eventLevelConsent, undefined, destinationAllowedConsentKeys);
+
+    // Assert
+    expect(result).toEqual({
+      adUserData: 'GRANTED',
+      adPersonalization: 'DENIED',
+    });
+  });
+
+  it('should return UNSPECIFIED_CONSENT when both destConfig and event level consent is not provided', () => {
+    const destinationAllowedConsentKeys = ['adUserData', 'adPersonalization'];
+
+    const result = finaliseConsent(undefined, undefined, destinationAllowedConsentKeys);
+
+    // Assert
     expect(result).toEqual({
       adUserData: 'UNSPECIFIED',
       adPersonalization: 'UNSPECIFIED',
     });
   });
 
-  it('store sales conversions with integrations object but without consent fields in config', () => {
-    const message = {
-      integrations: {
-        google_adwords_offline_conversions: {
-          consents: {
-            adUserData: 'GRANTED',
-            adPersonalization: 'DENIED',
-          },
-        },
-      },
-    };
-    const conversionType = 'store';
-
-    const result = populateConsentForGAOC(message, conversionType);
-
-    expect(result).toEqual({
-      adPersonalization: 'UNSPECIFIED',
-      adUserData: 'UNSPECIFIED',
-    });
-  });
-
-  it('store sales conversions with integrations object along with consent fields in config', () => {
-    const message = {
-      integrations: {
-        google_adwords_offline_conversions: {
-          consents: {
-            adUserData: 'GRANTED',
-            adPersonalization: 'DENIED',
-          },
-        },
-      },
-    };
-    const conversionType = 'store';
+  it('should return UNKWOWN_CONSENT when destConfig is provided with wrong consent value', () => {
+    const destinationAllowedConsentKeys = ['adUserData', 'adPersonalization'];
 
     const destConfig = {
-      userDataConsent: 'GRANTED',
-      personalizationConsent: 'DENIED',
+      userDataConsent: 'UNKNOWN',
+      personalizationConsent: 'WRONG CONSENT',
     };
 
-    const result = populateConsentForGAOC(message, conversionType, destConfig);
+    const result = finaliseConsent(undefined, destConfig, destinationAllowedConsentKeys);
 
     expect(result).toEqual({
-      adPersonalization: 'DENIED',
-      adUserData: 'GRANTED',
+      adUserData: 'UNKNOWN',
+      adPersonalization: 'UNKNOWN',
     });
   });
 
-  // Returns an object with adUserData and adPersonalization properties set to the provided consents when they are valid and present in the message properties
-  it('click conversion with integration object of allowed types', () => {
-    const message = {
-      integrations: {
-        google_adwords_offline_conversions: {
-          consents: {
-            adUserData: 'GRANTED',
-            adPersonalization: 'DENIED',
-          },
-        },
-      },
-    };
-    const conversionType = 'click';
-
-    const result = populateConsentForGAOC(message, conversionType);
-
-    expect(result).toEqual({
-      adUserData: 'GRANTED',
-      adPersonalization: 'DENIED',
-    });
-  });
-
-  // Returns an object with adUserData and adPersonalization properties set to UNSPECIFIED when the provided consents are not valid or not present in the message properties
-  it('click conversion with invalid consent value', () => {
-    const message = {
-      integrations: {
-        google_adwords_offline_conversions: {
-          consents: {
-            adUserData: 'GRANTED',
-            adPersonalization: 'INVALID',
-          },
-        },
-      },
-    };
-    const conversionType = 'click';
-
-    const result = populateConsentForGAOC(message, conversionType);
-
-    expect(result).toEqual({
-      adUserData: 'GRANTED',
-      adPersonalization: 'UNSPECIFIED',
-    });
-  });
-
-  // Returns an empty object when the integration object is not present in the message
-  it('call conversion without integrations object consent ', () => {
-    const message = {};
-    const conversionType = 'call';
-
-    const result = populateConsentForGAOC(message, conversionType);
-
-    expect(result).toEqual({
-      adUserData: 'UNSPECIFIED',
-      adPersonalization: 'UNSPECIFIED',
-    });
-  });
-
-  it('click conversion without integrations', () => {
-    const message = {
-      integrations: {
-        google_adwords_offline_conversions: {},
-      },
-    };
-    const conversionType = 'click';
+  it('should return UNKWOWN_CONSENT when destConfig is provided with wrong consent value', () => {
+    const destinationAllowedConsentKeys = ['newKey1', 'newKey2'];
 
     const destConfig = {
-      userDataConsent: 'GRANTED',
-      personalizationConsent: 'DENIED',
+      userDataConsent: 'UNKNOWN',
+      personalizationConsent: 'WRONG CONSENT',
     };
 
-    const result = populateConsentForGAOC(message, conversionType, destConfig);
+    const result = finaliseConsent(undefined, destConfig, destinationAllowedConsentKeys);
 
     expect(result).toEqual({
-      adUserData: 'GRANTED',
-      adPersonalization: 'DENIED',
-    });
-  });
-
-  it('click conversion without integrations and UI config has partial data', () => {
-    const message = {
-      integrations: {
-        google_adwords_offline_conversions: {},
-      },
-    };
-    const conversionType = 'click';
-
-    const destConfig = {
-      userDataConsent: 'GRANTED',
-    };
-
-    const result = populateConsentForGAOC(message, conversionType, destConfig);
-
-    expect(result).toEqual({
-      adUserData: 'GRANTED',
-      adPersonalization: 'UNSPECIFIED',
-    });
-  });
-
-  it('click conversion with partial data present in integrations object', () => {
-    const message = {
-      integrations: {
-        google_adwords_offline_conversions: {
-          consents: {
-            adUserData: 'GRANTED',
-          },
-        },
-      },
-    };
-
-    const destConfig = {
-      userDataConsent: 'GRANTED',
-      personalizationConsent: 'DENIED',
-    };
-    const conversionType = 'click';
-
-    const result = populateConsentForGAOC(message, conversionType, destConfig);
-
-    expect(result).toEqual({
-      adUserData: 'GRANTED',
-      adPersonalization: 'DENIED',
+      newKey1: 'UNSPECIFIED',
+      newKey2: 'UNSPECIFIED',
     });
   });
 });

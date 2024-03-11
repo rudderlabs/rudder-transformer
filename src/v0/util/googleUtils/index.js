@@ -1,5 +1,3 @@
-const { getIntegrationsObj } = require('..');
-
 const GOOGLE_ALLOWED_CONSENT_STATUS = ['UNSPECIFIED', 'UNKNOWN', 'GRANTED', 'DENIED'];
 
 const UNSPECIFIED_CONSENT = 'UNSPECIFIED';
@@ -55,12 +53,8 @@ const populateConsentFromConfig = (config) => {
  *  b) https://developers.google.com/google-ads/api/reference/rpc/v16/UserData#consent
  */
 
-const populateConsentForGAOC = (message, conversionType, destConfig) => {
-  const integrationObj =
-    conversionType === 'store'
-      ? {}
-      : getIntegrationsObj(message, 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS') || {};
-  const consents = integrationObj?.consents || {};
+const finaliseConsent = (eventLevelConsent, destConfig, destinationAllowedConsentKeys) => {
+  const consents = eventLevelConsent || {};
 
   const defaultConsentBlock = populateConsentFromConfig(destConfig);
 
@@ -75,11 +69,8 @@ const populateConsentForGAOC = (message, conversionType, destConfig) => {
     return defaultConsentBlock[consentType] || UNKNOWN_CONSENT;
   };
 
-  // Common consent fields to process
-  const consentFields = ['adUserData', 'adPersonalization'];
-
   // Construct consentObj based on the common consent fields
-  const consentObj = consentFields.reduce((obj, consentType) => {
+  const consentObj = destinationAllowedConsentKeys.reduce((obj, consentType) => {
     // eslint-disable-next-line no-param-reassign
     obj[consentType] = processConsent(consentType);
     return obj;
@@ -93,5 +84,5 @@ module.exports = {
   UNSPECIFIED_CONSENT,
   UNKNOWN_CONSENT,
   GOOGLE_ALLOWED_CONSENT_STATUS,
-  populateConsentForGAOC,
+  finaliseConsent,
 };

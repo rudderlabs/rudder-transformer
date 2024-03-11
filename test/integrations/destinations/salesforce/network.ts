@@ -466,5 +466,5 @@ export const networkCallsData = [
   ...tfProxyMocksData,
   ...transformationMocksData,
   ...businessMockData,
-  ...otherMocksData
+  ...otherMocksData,
 ];

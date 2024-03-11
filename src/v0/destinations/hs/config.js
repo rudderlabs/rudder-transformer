@@ -64,6 +64,8 @@ const API_VERSION = {
   v3: 'newApi',
 };
 
+const MAX_CONTACTS_PER_REQUEST = 100;
+
 const ConfigCategory = {
   COMMON: {
     name: 'HSCommonConfig',
@@ -109,5 +111,6 @@ module.exports = {
   SEARCH_LIMIT_VALUE,
   RETL_SOURCE,
   RETL_CREATE_ASSOCIATION_OPERATION,
+  MAX_CONTACTS_PER_REQUEST,
   DESTINATION: 'HS',
 };

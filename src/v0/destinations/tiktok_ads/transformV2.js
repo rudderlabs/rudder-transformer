@@ -13,7 +13,6 @@ const {
   isDefinedAndNotNullAndNotEmpty,
   getDestinationExternalID,
   getHashFromArrayWithDuplicate,
-  checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
 } = require('../../util');
 const { getContents, hashUserField } = require('./util');
@@ -40,7 +39,7 @@ const getTrackResponsePayload = (message, destConfig, event) => {
   }
 
   // if contents is not present but we have properties.products present which has fields with superset of contents fields
-  if (payload.properties && !payload.properties.contents && message.properties.products) {
+  if (!payload.properties?.contents && message.properties?.products) {
     // retreiving data from products only when contents is not present
     payload.properties.contents = getContents(message, false);
   }
@@ -690,10 +689,6 @@ const batchEvents = (eventsChunk) => {
   return events;
 };
 const processRouterDest = async (inputs, reqMetadata) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
   const trackResponseList = []; // list containing single track event in batched format
   const eventsChunk = []; // temporary variable to divide payload into chunks
   const errorRespList = [];

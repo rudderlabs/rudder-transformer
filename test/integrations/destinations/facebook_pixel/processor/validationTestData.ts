@@ -1,5 +1,12 @@
 import { Destination } from '../../../../../src/types';
-import { generateSimplifiedGroupPayload, generateSimplifiedTrackPayload } from '../../../testUtils';
+import {
+  generateMetadata,
+  generateSimplifiedGroupPayload,
+  generateSimplifiedTrackPayload,
+  generateTrackPayload,
+  overrideDestination,
+} from '../../../testUtils';
+const commonTimestamp = new Date('2023-10-12');
 const commonDestination: Destination = {
   ID: '12335',
   Name: 'sample-destination',
@@ -19,8 +26,6 @@ const commonDestination: Destination = {
         blacklistPiiHash: false,
       },
     ],
-    accessToken: '09876',
-    pixelId: 'dummyPixelId',
     eventsToEvents: [
       {
         from: '',
@@ -68,7 +73,10 @@ export const validationTestData = [
       request: {
         body: [
           {
-            destination: commonDestination,
+            destination: overrideDestination(commonDestination, {
+              accessToken: '09876',
+              pixelId: 'dummyPixelId',
+            }),
             message: generateSimplifiedGroupPayload({
               userId: 'user123',
               groupId: 'XUepkK',
@@ -104,6 +112,113 @@ export const validationTestData = [
   {
     id: 'fbPixel-validation-test-2',
     name: 'facebook_pixel',
+    description:
+      'Track call : error in instrumentation as pixel id is not mentioned in destination object',
+    scenario: 'Business',
+    successCriteria:
+      'Error: Pixel Id not found. Aborting, as we are sending an event without pixel id and the status code should be 400',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: generateTrackPayload({
+              event: 'spin_result',
+              properties: {
+                revenue: 400,
+                additional_bet_index: 0,
+              },
+              context: {
+                traits: {
+                  email: 'abc@gmail.com',
+                },
+              },
+              timestamp: commonTimestamp,
+            }),
+            metadata: generateMetadata(1),
+            destination: commonDestination,
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'Pixel Id not found. Aborting',
+            metadata: generateMetadata(1),
+            statTags: {
+              ...commonStatTags,
+              destinationId: 'default-destinationId',
+              errorType: 'configuration',
+              workspaceId: 'default-workspaceId',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'fbPixel-validation-test-3',
+    name: 'facebook_pixel',
+    description: 'Track call : custom event calls with simple user properties and traits',
+    scenario: 'Business',
+    successCriteria:
+      'event not respecting the internal mapping and as well as UI mapping should be considered as a custom event and should be sent as it is',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: generateTrackPayload({
+              event: 'spin_result',
+              properties: {
+                revenue: 400,
+                additional_bet_index: 0,
+              },
+              context: {
+                traits: {
+                  email: 'abc@gmail.com',
+                },
+              },
+              timestamp: commonTimestamp,
+            }),
+            metadata: generateMetadata(1),
+            destination: overrideDestination(commonDestination, {
+              pixelId: 'dummyPixelId',
+            }),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'Access token not found. Aborting',
+            metadata: generateMetadata(1),
+            statTags: {
+              ...commonStatTags,
+              destinationId: 'default-destinationId',
+              errorType: 'configuration',
+              workspaceId: 'default-workspaceId',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'fbPixel-validation-test-3',
+    name: 'facebook_pixel',
     description: '[Error]: validate event date and time',
     scenario: 'Framework + business',
     successCriteria:
@@ -137,7 +252,10 @@ export const validationTestData = [
               anonymousId: '9c6bd77ea9da3e68',
               originalTimestamp: '2021-01-25T15:32:56.409Z',
             }),
-            destination: commonDestination,
+            destination: overrideDestination(commonDestination, {
+              accessToken: '09876',
+              pixelId: 'dummyPixelId',
+            }),
           },
         ],
       },
@@ -151,6 +269,102 @@ export const validationTestData = [
             error:
               'Events must be sent within seven days of their occurrence or up to one minute in the future.',
             statTags: commonStatTags,
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'fbPixel-validation-test-4',
+    name: 'facebook_pixel',
+    description:
+      'Track call : error in instrumentation as event name is not mentioned in track call',
+    scenario: 'Business',
+    successCriteria:
+      'event not respecting the internal mapping and as well as UI mapping should be considered as a custom event and should be sent as it is',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'track',
+              properties: {
+                revenue: 400,
+                additional_bet_index: 0,
+              },
+            },
+            metadata: generateMetadata(1),
+            destination: overrideDestination(commonDestination, {
+              pixelId: 'dummyPixelId',
+            }),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: "'event' is required",
+            metadata: generateMetadata(1),
+            statTags: {
+              ...commonStatTags,
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'fbPixel-validation-test-4',
+    name: 'facebook_pixel',
+    description: 'Track call : error in instrumentation as event name is not a string',
+    scenario: 'Business',
+    successCriteria:
+      'Error message should be event name should be string and status code should be 400, as we are sending an event which is not a string',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'track',
+              event: 1234,
+              properties: {
+                revenue: 400,
+                additional_bet_index: 0,
+              },
+            },
+            metadata: generateMetadata(1),
+            destination: overrideDestination(commonDestination, {
+              pixelId: 'dummyPixelId',
+            }),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'event name should be string',
+            metadata: generateMetadata(1),
+            statTags: {
+              ...commonStatTags,
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
+            },
+            statusCode: 400,
           },
         ],
       },

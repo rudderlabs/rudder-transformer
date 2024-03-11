@@ -1070,4 +1070,51 @@ export const ecommTestData: ProcessorTestData[] = [
       },
     },
   },
+  {
+    id: 'facebook_pixel-ecomm-test-12',
+    name: 'facebook_pixel',
+    description:
+      'Track call : product list viewed event call with properties without product array and revenue as string',
+    scenario: 'ecommerce',
+    successCriteria:
+      'Error : It should throw an error as revenue is not a number and should not be sent to the destination',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: generateTrackPayload({
+              event: 'product list viewed',
+              properties: { ...commonPropertiesWithoutProductArray, value: '$20' },
+              context: {
+                traits: commonUserTraits,
+              },
+              timestamp: commonTimestamp,
+            }),
+            metadata: generateMetadata(1),
+            destination: commonDestination,
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'Revenue could not be converted to number',
+            metadata: generateMetadata(1),
+            statTags: {
+              ...commonStatTags,
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
 ];

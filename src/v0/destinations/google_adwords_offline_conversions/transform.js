@@ -27,7 +27,7 @@ const {
 const { finaliseConsent } = require('../../util/googleUtils');
 const helper = require('./helper');
 
-const getConsentFromIntegrationObj = (message, conversionType) => {
+const getConsentsDataFromIntegrationObj = (message, conversionType) => {
   const integrationObj =
     conversionType === 'store'
       ? {}

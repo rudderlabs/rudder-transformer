@@ -52,7 +52,7 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
   const { properties, timestamp, originalTimestamp } = message;
 
   const filteredCustomerId = removeHyphens(customerId);
-  const userSentConsentValues = getConsentFromIntegrationObj(message, conversionType);
+  const eventLevelConsentsData = getConsentFromIntegrationObj(message, conversionType);
 
   if (conversionType === 'click') {
     // click conversion

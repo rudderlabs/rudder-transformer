@@ -3,6 +3,11 @@ const headerWithWrongAccessToken = {
   'Content-Type': 'application/json',
 };
 
+const headerWithRightAccessToken = {
+  Authorization: 'Bearer correctAccessToken',
+  'Content-Type': 'application/json',
+};
+
 const dataValue = {
   Email: 'danis.archurav@sbermarket.ru',
   Company: 'itus.ru',
@@ -25,6 +30,20 @@ const businessMockData = [
     httpRes: {
       data: [{ message: 'Session expired or invalid', errorCode: 'INVALID_SESSION_ID' }],
       status: 401,
+    },
+  },
+  {
+    description:
+      'Mock response from destination depicting a valid lead request, with no changed data',
+    httpReq: {
+      method: 'post',
+      url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/existing_unchanged_leadId',
+      data: dataValue,
+      headers: headerWithRightAccessToken,
+    },
+    httpRes: {
+      data: { statusText: 'No Content' },
+      status: 204,
     },
   },
 ];

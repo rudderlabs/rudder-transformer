@@ -6,6 +6,11 @@ const commonHeadersForWrongToken = {
   Authorization: 'Bearer expiredAccessToken',
   'Content-Type': 'application/json',
 };
+
+const commonHeadersForRightToken = {
+  Authorization: 'Bearer correctAccessToken',
+  'Content-Type': 'application/json',
+};
 const params = { destination: 'salesforce_oauth' };
 
 const users = [
@@ -32,13 +37,19 @@ const statTags = {
   },
 };
 
-const commonRequestParameters = {
+const commonRequestParametersWithWrongToken = {
   headers: commonHeadersForWrongToken,
   JSON: users[0],
   params,
 };
 
-export const proxyMetdataWithSecret: ProxyMetdata = {
+const commonRequestParametersWithRightToken = {
+  headers: commonHeadersForRightToken,
+  JSON: users[0],
+  params,
+};
+
+export const proxyMetdataWithSecretWithWrongAccessToken: ProxyMetdata = {
   jobId: 1,
   attemptNum: 1,
   userId: 'dummyUserId',
@@ -53,7 +64,23 @@ export const proxyMetdataWithSecret: ProxyMetdata = {
   dontBatch: false,
 };
 
-export const reqMetadataArrayWithSecret = [proxyMetdataWithSecret];
+export const proxyMetdataWithSecretWithRightAccessToken: ProxyMetdata = {
+  jobId: 1,
+  attemptNum: 1,
+  userId: 'dummyUserId',
+  sourceId: 'dummySourceId',
+  destinationId: 'dummyDestinationId',
+  workspaceId: 'dummyWorkspaceId',
+  secret: {
+    access_token: 'expiredRightToken',
+    instanceUrl: 'https://rudderstack.my.salesforce_oauth.com',
+  },
+  destInfo: { authKey: 'dummyDestinationId' },
+  dontBatch: false,
+};
+
+export const reqMetadataArrayWithWrongSecret = [proxyMetdataWithSecretWithWrongAccessToken];
+export const reqMetadataArray = [proxyMetdataWithSecretWithRightAccessToken];
 
 export const testScenariosForV1API: ProxyV1TestData[] = [
   {
@@ -70,11 +97,11 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
       request: {
         body: generateProxyV1Payload(
           {
-            ...commonRequestParameters,
+            ...commonRequestParametersWithWrongToken,
             endpoint:
               'https://rudderstack.my.salesforce_oauth.com/services/data/v50.0/sobjects/Lead/20',
           },
-          reqMetadataArrayWithSecret,
+          reqMetadataArrayWithWrongSecret,
         ),
         method: 'POST',
       },
@@ -92,11 +119,53 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
               {
                 error:
                   '[{"message":"Session expired or invalid","errorCode":"INVALID_SESSION_ID"}]',
-                metadata: proxyMetdataWithSecret,
+                metadata: proxyMetdataWithSecretWithWrongAccessToken,
                 statusCode: 500,
               },
             ],
             statTags: statTags.retryable,
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'salesforce_v1_scenario_2',
+    name: 'salesforce',
+    description:
+      '[Proxy v1 API] :: Test for a valid request - Lead creation with existing unchanged leadId and unchanged data',
+    successCriteria: 'Should return 200 with no error with destination response',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            ...commonRequestParametersWithRightToken,
+            endpoint:
+              'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/existing_unchanged_leadId',
+          },
+          reqMetadataArray,
+        ),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 200,
+            message: 'Request for destination: salesforce Processed Successfully',
+            response: [
+              {
+                error: '{"statusText":"No Content"}',
+                metadata: proxyMetdataWithSecretWithRightAccessToken,
+                statusCode: 200,
+              },
+            ],
           },
         },
       },

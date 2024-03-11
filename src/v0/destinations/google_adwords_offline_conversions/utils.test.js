@@ -2,7 +2,7 @@ const {
   getClickConversionPayloadAndEndpoint,
   buildAndGetAddress,
   getExisitingUserIdentifier,
-  populateConsentForGoogleDestinations,
+  populateConsentForGAOC,
 } = require('./utils');
 
 const getTestMessage = () => {
@@ -287,13 +287,13 @@ describe('getClickConversionPayloadAndEndpoint util tests', () => {
   });
 });
 
-describe('populateConsentForGoogleDestinations', () => {
+describe('populateConsentForGAOC', () => {
   // Returns an object with adUserData and adPersonalization properties set to UNSPECIFIED when no consents are provided
   it('GOOGLE_ADWORDS_OFFLINE_CONVERSIONS : store sales conversion without consent related field in destination config', () => {
     const message = {};
     const conversionType = 'store';
 
-    const result = populateConsentForGoogleDestinations(message, conversionType);
+    const result = populateConsentForGAOC(message, conversionType);
 
     expect(result).toEqual({
       adUserData: 'UNSPECIFIED',
@@ -314,7 +314,7 @@ describe('populateConsentForGoogleDestinations', () => {
     };
     const conversionType = 'store';
 
-    const result = populateConsentForGoogleDestinations(message, conversionType);
+    const result = populateConsentForGAOC(message, conversionType);
 
     expect(result).toEqual({
       adPersonalization: 'UNSPECIFIED',
@@ -340,7 +340,7 @@ describe('populateConsentForGoogleDestinations', () => {
       personalizationConsent: 'DENIED',
     };
 
-    const result = populateConsentForGoogleDestinations(message, conversionType, destConfig);
+    const result = populateConsentForGAOC(message, conversionType, destConfig);
 
     expect(result).toEqual({
       adPersonalization: 'DENIED',
@@ -362,7 +362,7 @@ describe('populateConsentForGoogleDestinations', () => {
     };
     const conversionType = 'click';
 
-    const result = populateConsentForGoogleDestinations(message, conversionType);
+    const result = populateConsentForGAOC(message, conversionType);
 
     expect(result).toEqual({
       adUserData: 'GRANTED',
@@ -384,7 +384,7 @@ describe('populateConsentForGoogleDestinations', () => {
     };
     const conversionType = 'click';
 
-    const result = populateConsentForGoogleDestinations(message, conversionType);
+    const result = populateConsentForGAOC(message, conversionType);
 
     expect(result).toEqual({
       adUserData: 'GRANTED',
@@ -397,7 +397,7 @@ describe('populateConsentForGoogleDestinations', () => {
     const message = {};
     const conversionType = 'call';
 
-    const result = populateConsentForGoogleDestinations(message, conversionType);
+    const result = populateConsentForGAOC(message, conversionType);
 
     expect(result).toEqual({
       adUserData: 'UNSPECIFIED',
@@ -418,7 +418,7 @@ describe('populateConsentForGoogleDestinations', () => {
       personalizationConsent: 'DENIED',
     };
 
-    const result = populateConsentForGoogleDestinations(message, conversionType, destConfig);
+    const result = populateConsentForGAOC(message, conversionType, destConfig);
 
     expect(result).toEqual({
       adUserData: 'GRANTED',
@@ -438,7 +438,7 @@ describe('populateConsentForGoogleDestinations', () => {
       userDataConsent: 'GRANTED',
     };
 
-    const result = populateConsentForGoogleDestinations(message, conversionType, destConfig);
+    const result = populateConsentForGAOC(message, conversionType, destConfig);
 
     expect(result).toEqual({
       adUserData: 'GRANTED',
@@ -463,7 +463,7 @@ describe('populateConsentForGoogleDestinations', () => {
     };
     const conversionType = 'click';
 
-    const result = populateConsentForGoogleDestinations(message, conversionType, destConfig);
+    const result = populateConsentForGAOC(message, conversionType, destConfig);
 
     expect(result).toEqual({
       adUserData: 'GRANTED',

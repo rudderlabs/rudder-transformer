@@ -21,7 +21,7 @@ const {
   getStoreConversionPayload,
   requestBuilder,
   getClickConversionPayloadAndEndpoint,
-  populateConsentForGoogleDestinations,
+  populateConsentForGAOC,
 } = require('./utils');
 const helper = require('./helper');
 
@@ -56,7 +56,7 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
     endpoint = STORE_CONVERSION_CONFIG.replace(':customerId', filteredCustomerId);
   } else {
     // call conversions
-    const consentObject = populateConsentForGoogleDestinations(message, conversionType, Config);
+    const consentObject = populateConsentForGAOC(message, conversionType, Config);
     payload = constructPayload(message, trackCallConversionsMapping);
     endpoint = CALL_CONVERSION.replace(':customerId', filteredCustomerId);
     payload.conversions[0].consent = consentObject;

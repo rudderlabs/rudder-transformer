@@ -31,7 +31,7 @@ export const data = [
                 value: 10,
               },
               context: {
-                network: 'wifi'
+                network: 'wifi',
               },
               originalTimestamp: '2024-01-23T08:35:17.562Z',
               sentAt: '2024-01-23T08:35:17.562Z',
@@ -58,20 +58,22 @@ export const data = [
                 JSON: {
                   ip: '192.11.22.33',
                   email: 'johndoe@somemail.com',
-                  events: [{
-                    type: 'track',
-                    event: 'User Signed Up',
-                    sent_at: '2024-01-23T08:35:17.562Z',
-                    message_id: '84e26acc-56a5-4835-8233-591137fca468',
-                    properties: {
-                      email: 'johndoe@somemail.com',
-                      label: 'test',
-                      value: 10,
+                  events: [
+                    {
+                      type: 'track',
+                      event: 'User Signed Up',
+                      sent_at: '2024-01-23T08:35:17.562Z',
+                      message_id: '84e26acc-56a5-4835-8233-591137fca468',
+                      properties: {
+                        email: 'johndoe@somemail.com',
+                        label: 'test',
+                        value: 10,
+                      },
+                      context: {
+                        network: 'wifi',
+                      },
                     },
-                    context: {
-                      network: 'wifi'
-                    },
-                  }]
+                  ],
                 },
               },
               endpoint: 'https://api2.getkoala.com/web/projects/kkooaallaa321/batch',
@@ -127,7 +129,7 @@ export const data = [
                   postalCode: '94107',
                 },
                 email: 'johndoe@somemail.com',
-                ko_profile_id: 'xxxx-2222-xxxx-xxxx'
+                ko_profile_id: 'xxxx-2222-xxxx-xxxx',
               },
               originalTimestamp: '2024-01-23T08:35:17.342Z',
               sentAt: '2024-01-23T08:35:35.234Z',
@@ -153,20 +155,22 @@ export const data = [
                 JSON: {
                   email: 'johndoe@somemail.com',
                   profile_id: 'xxxx-2222-xxxx-xxxx',
-                  identifies: [{
-                    type: 'identify',
-                    sent_at: '2024-01-23T08:35:17.342Z',
-                    traits: {
-                      FirstName: 'John',
-                      LastName: 'Doe',
-                      address: {
-                        city: 'San Francisco',
-                        state: 'CA',
-                        postalCode: '94107',
+                  identifies: [
+                    {
+                      type: 'identify',
+                      sent_at: '2024-01-23T08:35:17.342Z',
+                      traits: {
+                        FirstName: 'John',
+                        LastName: 'Doe',
+                        address: {
+                          city: 'San Francisco',
+                          state: 'CA',
+                          postalCode: '94107',
+                        },
+                        email: 'johndoe@somemail.com',
                       },
-                      email: 'johndoe@somemail.com',
                     },
-                  }],
+                  ],
                 },
               },
               endpoint: 'https://api2.getkoala.com/web/projects/kkooaallaa321/batch',

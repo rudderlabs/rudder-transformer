@@ -55,7 +55,7 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
     endpoint = STORE_CONVERSION_CONFIG.replace(':customerId', filteredCustomerId);
   } else {
     // call conversions
-    payload = { ...getCallConversionPayload(message, Config, eventLevelConsentsData) };
+    payload = getCallConversionPayload(message, Config, eventLevelConsentsData);
     endpoint = CALL_CONVERSION.replace(':customerId', filteredCustomerId);
   }
 

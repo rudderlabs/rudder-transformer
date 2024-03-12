@@ -3,6 +3,7 @@ const {
   buildAndGetAddress,
   getExisitingUserIdentifier,
   getConsentsDataFromIntegrationObj,
+  getCallConversionPayload,
 } = require('./utils');
 
 const getTestMessage = () => {
@@ -309,6 +310,95 @@ describe('getConsentsDataFromIntegrationObj', () => {
     expect(result).toEqual({
       adPersonalization: 'DENIED',
       adUserData: 'GRANTED',
+    });
+  });
+});
+
+describe('getCallConversionPayload', () => {
+  it('should call conversion payload with consent object', () => {
+    const message = {
+      properties: {
+        callerId: '1234',
+        callStartDateTime: '2022-01-01 12:32:45-08:00',
+        conversionDateTime: '2022-01-01 12:32:45-08:00',
+      },
+    };
+    const result = getCallConversionPayload(
+      message,
+      {
+        userDataConsent: 'GRANTED',
+        personalizationConsent: 'DENIED',
+      },
+      {
+        adUserData: 'GRANTED',
+        adPersonalization: 'GRANTED',
+      },
+    );
+    expect(result).toEqual({
+      conversions: [
+        {
+          callStartDateTime: '2022-01-01 12:32:45-08:00',
+          callerId: '1234',
+          consent: {
+            adPersonalization: 'GRANTED',
+            adUserData: 'GRANTED',
+          },
+          conversionDateTime: '2022-01-01 12:32:45-08:00',
+        },
+      ],
+    });
+  });
+  it('should call conversion payload with consent object', () => {
+    const message = {
+      properties: {
+        callerId: '1234',
+        callStartDateTime: '2022-01-01 12:32:45-08:00',
+        conversionDateTime: '2022-01-01 12:32:45-08:00',
+      },
+    };
+    const result = getCallConversionPayload(
+      message,
+      {
+        userDataConsent: 'GRANTED',
+        personalizationConsent: 'DENIED',
+      },
+      {},
+    );
+    expect(result).toEqual({
+      conversions: [
+        {
+          callStartDateTime: '2022-01-01 12:32:45-08:00',
+          callerId: '1234',
+          consent: {
+            adPersonalization: 'DENIED',
+            adUserData: 'GRANTED',
+          },
+          conversionDateTime: '2022-01-01 12:32:45-08:00',
+        },
+      ],
+    });
+  });
+  it('should call conversion payload with consent object even if no consent input from UI as well as event level', () => {
+    const message = {
+      properties: {
+        callerId: '1234',
+        callStartDateTime: '2022-01-01 12:32:45-08:00',
+        conversionDateTime: '2022-01-01 12:32:45-08:00',
+      },
+    };
+    const result = getCallConversionPayload(message, {}, {});
+    expect(result).toEqual({
+      conversions: [
+        {
+          callStartDateTime: '2022-01-01 12:32:45-08:00',
+          callerId: '1234',
+          consent: {
+            adPersonalization: 'UNSPECIFIED',
+            adUserData: 'UNSPECIFIED',
+          },
+          conversionDateTime: '2022-01-01 12:32:45-08:00',
+        },
+      ],
     });
   });
 });

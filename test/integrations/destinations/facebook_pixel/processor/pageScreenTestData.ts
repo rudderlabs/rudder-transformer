@@ -121,7 +121,29 @@ export const pageScreenTestData: ProcessorTestData[] = [
       request: {
         body: [
           {
-            message: commonPageMessage,
+            message: generateSimplifiedPageOrScreenPayload(
+              {
+                event: 'TestEven001',
+                sentAt: '2021-01-25T16:12:02.048Z',
+                userId: 'sajal12',
+                context: {
+                  traits: {
+                    email: 'abc@example.com',
+                  },
+                },
+                properties: {
+                  path: '/abc',
+                  referrer: 'xyz',
+                  search: 'def',
+                  title: 'ghi',
+                  url: 'jkl',
+                },
+                name: 'ApplicationLoaded',
+                anonymousId: '9c6bd77ea9da3e68',
+                originalTimestamp: '2023-10-14T15:32:56.409Z',
+              },
+              'page',
+            ),
             metadata: generateMetadata(1),
             destination: commonDestination,
           },
@@ -142,7 +164,24 @@ export const pageScreenTestData: ProcessorTestData[] = [
               params: {},
               FORM: {
                 data: [
-                  '{"user_data":{"external_id":"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5","client_ip_address":"0.0.0.0","client_user_agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"},"event_name":"Viewed page ApplicationLoaded","event_time":1697278611,"event_source_url":"jkl","event_id":"5e10d13a-bf9a-44bf-b884-43a9e591ea71","action_source":"website","custom_data":{"path":"/abc","referrer":"xyz","search":"def","title":"ghi","url":"jkl"}}',
+                  JSON.stringify({
+                    user_data: {
+                      external_id:
+                        '470582f368e5aeec2cf487decd1e125b7d265e8b0b06b74a25e999e93bfb699f',
+                      em: '9eceb13483d7f187ec014fd6d4854d1420cfc634328af85f51d0323ba8622e21',
+                    },
+                    event_name: 'Viewed page ApplicationLoaded',
+                    event_time: 1697297576,
+                    event_source_url: 'jkl',
+                    action_source: 'website',
+                    custom_data: {
+                      path: '/abc',
+                      referrer: 'xyz',
+                      search: 'def',
+                      title: 'ghi',
+                      url: 'jkl',
+                    },
+                  }),
                 ],
               },
               files: {},
@@ -348,7 +387,23 @@ export const pageScreenTestData: ProcessorTestData[] = [
               params: {},
               FORM: {
                 data: [
-                  '{"user_data":{"external_id":"470582f368e5aeec2cf487decd1e125b7d265e8b0b06b74a25e999e93bfb699f"},"event_name":"PageView","event_time":1697297576,"event_source_url":"jkl","action_source":"website","custom_data":{"path":"/abc","referrer":"xyz","search":"def","title":"ghi","url":"jkl"}}',
+                  JSON.stringify({
+                    user_data: {
+                      external_id:
+                        '470582f368e5aeec2cf487decd1e125b7d265e8b0b06b74a25e999e93bfb699f',
+                    },
+                    event_name: 'PageView',
+                    event_time: 1697297576,
+                    event_source_url: 'jkl',
+                    action_source: 'website',
+                    custom_data: {
+                      path: '/abc',
+                      referrer: 'xyz',
+                      search: 'def',
+                      title: 'ghi',
+                      url: 'jkl',
+                    },
+                  }),
                 ],
               },
               files: {},
@@ -375,7 +430,27 @@ export const pageScreenTestData: ProcessorTestData[] = [
       request: {
         body: [
           {
-            message: commonScreenMessage,
+            message: generateSimplifiedPageOrScreenPayload(
+              {
+                event: 'TestEven001',
+                sentAt: '2021-01-25T16:12:02.048Z',
+                userId: 'sajal12',
+                context: {
+                  traits: {},
+                },
+                properties: {
+                  path: '/abc',
+                  referrer: 'xyz',
+                  search: 'def',
+                  title: 'ghi',
+                  url: 'jkl',
+                },
+                anonymousId: '9c6bd77ea9da3e68',
+                name: 'ApplicationLoaded',
+                originalTimestamp: '2023-10-14T15:32:56.409Z',
+              },
+              'screen',
+            ),
             metadata: generateMetadata(1),
             destination: commonDestination,
           },
@@ -396,7 +471,23 @@ export const pageScreenTestData: ProcessorTestData[] = [
               params: {},
               FORM: {
                 data: [
-                  '{"user_data":{"external_id":"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5","client_ip_address":"0.0.0.0","client_user_agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"},"event_name":"PageView","event_time":1697278611,"event_source_url":"jkl","event_id":"5e10d13a-bf9a-44bf-b884-43a9e591ea71","action_source":"website","custom_data":{"path":"/abc","referrer":"xyz","search":"def","title":"ghi","url":"jkl"}}',
+                  JSON.stringify({
+                    user_data: {
+                      external_id:
+                        '470582f368e5aeec2cf487decd1e125b7d265e8b0b06b74a25e999e93bfb699f',
+                    },
+                    event_name: 'PageView',
+                    event_time: 1697297576,
+                    event_source_url: 'jkl',
+                    action_source: 'website',
+                    custom_data: {
+                      path: '/abc',
+                      referrer: 'xyz',
+                      search: 'def',
+                      title: 'ghi',
+                      url: 'jkl',
+                    },
+                  }),
                 ],
               },
               files: {},

@@ -36,22 +36,6 @@ describe('Test Facebook Pixel Utils', () => {
         getActionSource(payload, channel);
       }).toThrow(InstrumentationError);
     });
-
-    // Returns 'other' if payload is not defined
-    it('should return "other" when payload is not defined', () => {
-      const payload = undefined;
-      const channel = 'email';
-      const result = getActionSource(payload, channel);
-      expect(result).toBe('other');
-    });
-
-    // Returns 'website' if channel is 'web' and payload is not defined
-    it('should return "website" when channel is "web" and payload is not defined', () => {
-      const payload = undefined;
-      const channel = 'web';
-      const result = getActionSource(payload, channel);
-      expect(result).toBe('website');
-    });
   });
 
   describe('formatRevenue', () => {

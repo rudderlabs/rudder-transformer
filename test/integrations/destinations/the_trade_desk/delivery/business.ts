@@ -6,7 +6,7 @@ import {
   dataProviderId,
   segmentName,
   sampleDestination,
-  proxyV1NetworkErrorStatTags,
+  proxyV1AbortableErrorStatTags,
   firstPartyDataEndpoint,
 } from '../common';
 
@@ -165,7 +165,7 @@ export const businessProxyV1: ProxyV1TestData[] = [
                 statusCode: 400,
               },
             ],
-            statTags: proxyV1NetworkErrorStatTags,
+            statTags: proxyV1AbortableErrorStatTags,
             status: 400,
           },
         },

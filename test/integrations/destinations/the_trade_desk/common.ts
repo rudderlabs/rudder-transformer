@@ -47,7 +47,7 @@ const sampleContext = {
   sources: sampleSource,
 };
 
-const proxyV1NetworkErrorStatTags = {
+const proxyV1AbortableErrorStatTags = {
   destType: destTypeInUpperCase,
   destinationId: 'default-destinationId',
   errorCategory: 'network',
@@ -58,8 +58,10 @@ const proxyV1NetworkErrorStatTags = {
   workspaceId: 'default-workspaceId',
 };
 
-const { errorType: _, ...proxyV1PlatformErrorStatTags } = proxyV1NetworkErrorStatTags;
+const { errorType: _, ...proxyV1PlatformErrorStatTags } = proxyV1AbortableErrorStatTags;
 proxyV1PlatformErrorStatTags.errorCategory = 'platform';
+
+const proxyV1RetryableErrorStatTags = { ...proxyV1AbortableErrorStatTags, errorType: 'retryable' };
 
 export {
   destType,
@@ -69,7 +71,8 @@ export {
   segmentName,
   sampleDestination,
   sampleContext,
-  proxyV1NetworkErrorStatTags,
+  proxyV1AbortableErrorStatTags,
   proxyV1PlatformErrorStatTags,
+  proxyV1RetryableErrorStatTags,
   firstPartyDataEndpoint,
 };

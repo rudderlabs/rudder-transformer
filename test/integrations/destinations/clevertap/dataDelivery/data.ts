@@ -1,4 +1,5 @@
-export const data = [
+import { V1BusinessTestScenarion } from './business';
+const oldV0TestCases = [
   {
     name: 'clevertap',
     description: 'Test 0',
@@ -228,3 +229,5 @@ export const data = [
     },
   },
 ];
+
+export const data = [...oldV0TestCases, ...V1BusinessTestScenarion];

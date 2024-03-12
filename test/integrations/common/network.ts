@@ -81,4 +81,15 @@ export const networkCallsData = [
       status: 429,
     },
   },
+  {
+    description: 'Mock response depicting DNS lookup failure error',
+    httpReq: {
+      method: 'post',
+      url: 'https://random_test_url/dns_lookup_failure',
+    },
+    httpRes: {
+      data: {},
+      status: 400,
+    },
+  },
 ];

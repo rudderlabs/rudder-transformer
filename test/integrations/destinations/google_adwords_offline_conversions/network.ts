@@ -235,6 +235,8 @@ export const networkCallsData = [
     },
   },
   {
+    description:
+      'Mock response from destination depicting a request with invalid authentication credentials',
     httpReq: {
       url: 'https://googleads.googleapis.com/v14/customers/customerid/offlineUserDataJobs:create',
       data: {
@@ -269,6 +271,8 @@ export const networkCallsData = [
     },
   },
   {
+    description:
+      'Mock response from destination depicting a request with invalid authentication scopes',
     httpReq: {
       url: 'https://googleads.googleapis.com/v14/customers/1234/offlineUserDataJobs:create',
       data: {

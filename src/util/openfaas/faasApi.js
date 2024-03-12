@@ -17,58 +17,62 @@ const parseAxiosError = (error) => {
   return error;
 };
 
-const deleteFunction = async (functionName) =>
+const deleteFunction = async (functionName, auth = {}) =>
   new Promise((resolve, reject) => {
     const url = `${OPENFAAS_GATEWAY_URL}/system/functions`;
     axios
-      .delete(url, { data: { functionName } })
+      .delete(url, { data: { functionName } }, { auth: auth })
       .then(() => resolve())
       .catch((err) => reject(parseAxiosError(err)));
   });
 
-const getFunction = async (functionName) =>
+const getFunction = async (functionName, auth = {}) =>
   new Promise((resolve, reject) => {
     const url = `${OPENFAAS_GATEWAY_URL}/system/function/${functionName}`;
     axios
-      .get(url)
+      .get(url, { auth: auth })
       .then((resp) => resolve(resp.data))
       .catch((err) => reject(parseAxiosError(err)));
   });
 
-const getFunctionList = async () =>
+const getFunctionList = async (auth = {}) =>
   new Promise((resolve, reject) => {
     const url = `${OPENFAAS_GATEWAY_URL}/system/functions`;
     axios
-      .get(url)
+      .get(url, { auth: auth })
       .then((resp) => resolve(resp.data))
       .catch((err) => reject(parseAxiosError(err)));
   });
 
-const invokeFunction = async (functionName, payload) =>
+const invokeFunction = async (functionName, payload, auth = {}) =>
   new Promise((resolve, reject) => {
     const url = `${OPENFAAS_GATEWAY_URL}/function/${functionName}`;
     axios
-      .post(url, payload)
+      .post(url, payload, { auth: auth })
       .then((resp) => resolve(resp.data))
       .catch((err) => reject(parseAxiosError(err)));
   });
 
-const checkFunctionHealth = async (functionName) =>
+const checkFunctionHealth = async (functionName, auth = {}) =>
   new Promise((resolve, reject) => {
     const url = `${OPENFAAS_GATEWAY_URL}/function/${functionName}`;
     axios
-      .get(url, {
-        headers: { 'X-REQUEST-TYPE': 'HEALTH-CHECK' },
-      })
+      .get(
+        url,
+        {
+          headers: { 'X-REQUEST-TYPE': 'HEALTH-CHECK' },
+        },
+        { auth: auth },
+      )
       .then((resp) => resolve(resp))
       .catch((err) => reject(parseAxiosError(err)));
   });
 
-const deployFunction = async (payload) =>
+const deployFunction = async (payload, auth = {}) =>
   new Promise((resolve, reject) => {
     const url = `${OPENFAAS_GATEWAY_URL}/system/functions`;
     axios
-      .post(url, payload)
+      .post(url, payload, { auth: auth })
       .then((resp) => resolve(resp.data))
       .catch((err) => reject(parseAxiosError(err)));
   });

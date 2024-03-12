@@ -37,6 +37,10 @@ const { parserForImport } = require("../../src/util/parser");
 const { RetryRequestError, RespStatusError } = require("../../src/util/utils");
 
 const OPENFAAS_GATEWAY_URL = "http://localhost:8080";
+const defaultBasicAuth = {
+  "username": "",
+  "password": ""
+};
 
 const randomID = () =>
   Math.random()
@@ -1400,12 +1404,14 @@ describe("Python transformations", () => {
     expect(axios.post).toHaveBeenCalledTimes(1);
     expect(axios.post).toHaveBeenCalledWith(
       `${OPENFAAS_GATEWAY_URL}/system/functions`,
-      expect.objectContaining({ name: funcName, service: funcName })
+      expect.objectContaining({ name: funcName, service: funcName }),
+      { auth: defaultBasicAuth },
     );
     expect(axios.get).toHaveBeenCalledTimes(1);
     expect(axios.get).toHaveBeenCalledWith(
       `${OPENFAAS_GATEWAY_URL}/function/${funcName}`,
-      {"headers": {"X-REQUEST-TYPE": "HEALTH-CHECK"}}
+      {"headers": {"X-REQUEST-TYPE": "HEALTH-CHECK"}},
+      { auth: defaultBasicAuth },
     );
   });
 
@@ -1622,7 +1628,8 @@ describe("Python transformations", () => {
     expect(axios.post).toHaveBeenCalledTimes(1);
     expect(axios.post).toHaveBeenCalledWith(
       `${OPENFAAS_GATEWAY_URL}/function/${funcName}`,
-      inputData
+      inputData,
+      { auth: defaultBasicAuth },
     );
   });
 
@@ -1655,17 +1662,20 @@ describe("Python transformations", () => {
     expect(axios.post).toHaveBeenCalledTimes(2);
     expect(axios.post).toHaveBeenCalledWith(
       `${OPENFAAS_GATEWAY_URL}/function/${funcName}`,
-      inputData
+      inputData,
+      { auth: defaultBasicAuth },
     );
     expect(axios.post).toHaveBeenCalledWith(
       `${OPENFAAS_GATEWAY_URL}/system/functions`,
-      expect.objectContaining({ name: funcName, service: funcName })
+      expect.objectContaining({ name: funcName, service: funcName }),
+      { auth: defaultBasicAuth },
     );
 
     expect(axios.get).toHaveBeenCalledTimes(1);
     expect(axios.get).toHaveBeenCalledWith(
       `${OPENFAAS_GATEWAY_URL}/function/${funcName}`,
-      {"headers": {"X-REQUEST-TYPE": "HEALTH-CHECK"}}
+      {"headers": {"X-REQUEST-TYPE": "HEALTH-CHECK"}},
+      { auth: defaultBasicAuth },
     );
   });
 

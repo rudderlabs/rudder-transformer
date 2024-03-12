@@ -11,6 +11,13 @@ const stats = require('../stats');
 const { getMetadata, getTransformationMetadata } = require('../../v0/util');
 const { HTTP_STATUS_CODES } = require('../../v0/util/constant');
 
+const FAAS_GATEWAY_USERNAME = process.env.FAAS_GATEWAY_USERNAME || '';
+const FAAS_GATEWAY_PASSWORD = process.env.FAAS_GATEWAY_PASSWORD || '';
+const FAAS_SCALE_TYPE = process.env.FAAS_SCALE_TYPE || 'capacity';
+const FAAS_SCALE_TARGET = process.env.FAAS_SCALE_TARGET || '4';
+const FAAS_SCALE_TARGET_PROPORTION = process.env.FAAS_SCALE_TARGET_PROPORTION || '0.70';
+const FAAS_SCALE_ZERO = process.env.FAAS_SCALE_ZERO || 'false';
+const FAAS_SCALE_ZERO_DURATION = process.env.FAAS_SCALE_ZERO_DURATION || '15m';
 const FAAS_BASE_IMG = process.env.FAAS_BASE_IMG || 'rudderlabs/openfaas-flask:main';
 const FAAS_MAX_PODS_IN_TEXT = process.env.FAAS_MAX_PODS_IN_TEXT || '40';
 const FAAS_MIN_PODS_IN_TEXT = process.env.FAAS_MIN_PODS_IN_TEXT || '1';
@@ -58,6 +65,7 @@ const callWithRetry = async (
 
 const awaitFunctionReadiness = async (
   functionName,
+  auth,
   maxWaitInMs = 22000,
   waitBetweenIntervalsInMs = 250,
 ) => {
@@ -69,6 +77,7 @@ const awaitFunctionReadiness = async (
         waitBetweenIntervalsInMs,
         Math.floor(maxWaitInMs / waitBetweenIntervalsInMs),
         functionName,
+        auth,
       );
 
       resolve(true);
@@ -149,6 +158,11 @@ const deployFaasFunction = async (
       'parent-component': 'openfaas',
       'com.openfaas.scale.max': FAAS_MAX_PODS_IN_TEXT,
       'com.openfaas.scale.min': FAAS_MIN_PODS_IN_TEXT,
+      'com.openfaas.scale.zero': FAAS_SCALE_ZERO,
+      'com.openfaas.scale.zero-duration': FAAS_SCALE_ZERO_DURATION,
+      'com.openfaas.scale.target': FAAS_SCALE_TARGET,
+      'com.openfaas.scale.target.proportion': FAAS_SCALE_TARGET_PROPORTION,
+      'com.openfaas.scale.type': FAAS_SCALE_TYPE,
       transformationId: trMetadata.transformationId,
       workspaceId: trMetadata.workspaceId,
     };
@@ -180,7 +194,10 @@ const deployFaasFunction = async (
       },
     };
 
-    await deployFunction(payload);
+    await deployFunction(payload, {
+      username: FAAS_GATEWAY_USERNAME,
+      password: FAAS_GATEWAY_PASSWORD,
+    });
     logger.debug('[Faas] Deployed a faas function');
   } catch (error) {
     logger.error(`[Faas] Error while deploying ${functionName}: ${error.message}`);
@@ -245,8 +262,15 @@ const executeFaasFunction = async (
   let errorRaised;
 
   try {
-    if (testMode) await awaitFunctionReadiness(name);
-    return await invokeFunction(name, events);
+    if (testMode)
+      await awaitFunctionReadiness(name, {
+        username: FAAS_GATEWAY_USERNAME,
+        password: FAAS_GATEWAY_PASSWORD,
+      });
+    return await invokeFunction(name, events, {
+      username: FAAS_GATEWAY_USERNAME,
+      password: FAAS_GATEWAY_PASSWORD,
+    });
   } catch (error) {
     logger.error(`Error while invoking ${name}: ${error.message}`);
     errorRaised = error;
@@ -273,9 +297,10 @@ const executeFaasFunction = async (
   } finally {
     // delete the function created, if it's called as part of testMode
     if (testMode) {
-      deleteFunction(name).catch((err) =>
-        logger.error(`[Faas] Error while deleting ${name}: ${err.message}`),
-      );
+      deleteFunction(name, {
+        username: FAAS_GATEWAY_USERNAME,
+        password: FAAS_GATEWAY_PASSWORD,
+      }).catch((err) => logger.error(`[Faas] Error while deleting ${name}: ${err.message}`));
     }
 
     // setup the tags for observability and then fire the stats

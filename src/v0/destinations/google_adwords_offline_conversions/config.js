@@ -42,8 +42,6 @@ const CONVERSION_CUSTOM_VARIABLE_CACHE_TTL = process.env.CONVERSION_CUSTOM_VARIA
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
-const consentFields = ['adUserData', 'adPersonalization'];
-
 module.exports = {
   trackClickConversionsMapping:
     MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_CLICK_CONVERSIONS_CONFIG.name],
@@ -60,5 +58,4 @@ module.exports = {
     MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_STORE_CONVERSION_CONFIG_ADD_CONVERSION.name],
   trackAddStoreAddressConversionsMapping:
     MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_STORE_ADDRESS_IDENTIFIER.name],
-  consentFields,
 };

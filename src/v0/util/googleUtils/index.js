@@ -2,6 +2,7 @@ const GOOGLE_ALLOWED_CONSENT_STATUS = ['UNSPECIFIED', 'UNKNOWN', 'GRANTED', 'DEN
 
 const UNSPECIFIED_CONSENT = 'UNSPECIFIED';
 const UNKNOWN_CONSENT = 'UNKNOWN';
+const ADWORDS_CONSENT_FILEDS = ['adUserData', 'adPersonalization'];
 
 /**
  * Populates the consent object based on the provided properties.
@@ -53,7 +54,7 @@ const populateConsentFromConfig = (config) => {
  *  b) https://developers.google.com/google-ads/api/reference/rpc/v16/UserData#consent
  */
 
-const finaliseConsent = (eventLevelConsent, destConfig, destinationAllowedConsentKeys) => {
+const finaliseConsent = (eventLevelConsent, destConfig) => {
   const consents = eventLevelConsent || {};
 
   const defaultConsentBlock = populateConsentFromConfig(destConfig);
@@ -70,7 +71,7 @@ const finaliseConsent = (eventLevelConsent, destConfig, destinationAllowedConsen
   };
 
   // Construct consentObj based on the common consent fields
-  const consentObj = destinationAllowedConsentKeys.reduce((obj, consentType) => {
+  const consentObj = ADWORDS_CONSENT_FILEDS.reduce((obj, consentType) => {
     // eslint-disable-next-line no-param-reassign
     obj[consentType] = processConsent(consentType);
     return obj;

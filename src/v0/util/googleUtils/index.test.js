@@ -68,13 +68,27 @@ describe('finaliseConsent', () => {
       userDataConsent: 'UNKNOWN',
       personalizationConsent: 'GRANTED',
     };
-    const destinationAllowedConsentKeys = ['adUserData', 'adPersonalization'];
 
-    const result = finaliseConsent(eventLevelConsent, destConfig, destinationAllowedConsentKeys);
+    const result = finaliseConsent(eventLevelConsent, destConfig);
 
     expect(result).toEqual({
       adUserData: 'GRANTED',
       adPersonalization: 'DENIED',
+    });
+  });
+
+  it('should return an object containing consent information from destConfig when evenLevelConsent is empty object', () => {
+    const eventLevelConsent = {}; // for store conversion we will use this
+    const destConfig = {
+      userDataConsent: 'UNKNOWN',
+      personalizationConsent: 'GRANTED',
+    };
+
+    const result = finaliseConsent(eventLevelConsent, destConfig);
+
+    expect(result).toEqual({
+      adUserData: 'UNKNOWN',
+      adPersonalization: 'GRANTED',
     });
   });
 
@@ -84,9 +98,7 @@ describe('finaliseConsent', () => {
       adUserData: 'GRANTED',
       adPersonalization: 'DENIED',
     };
-    const destinationAllowedConsentKeys = ['adUserData', 'adPersonalization'];
-
-    const result = finaliseConsent(eventLevelConsent, undefined, destinationAllowedConsentKeys);
+    const result = finaliseConsent(eventLevelConsent, undefined);
 
     // Assert
     expect(result).toEqual({
@@ -96,9 +108,7 @@ describe('finaliseConsent', () => {
   });
 
   it('should return UNSPECIFIED_CONSENT when both destConfig and event level consent is not provided', () => {
-    const destinationAllowedConsentKeys = ['adUserData', 'adPersonalization'];
-
-    const result = finaliseConsent(undefined, undefined, destinationAllowedConsentKeys);
+    const result = finaliseConsent(undefined, undefined);
 
     // Assert
     expect(result).toEqual({
@@ -108,14 +118,12 @@ describe('finaliseConsent', () => {
   });
 
   it('should return UNKWOWN_CONSENT when destConfig is provided with wrong consent value', () => {
-    const destinationAllowedConsentKeys = ['adUserData', 'adPersonalization'];
-
     const destConfig = {
       userDataConsent: 'UNKNOWN',
       personalizationConsent: 'WRONG CONSENT',
     };
 
-    const result = finaliseConsent(undefined, destConfig, destinationAllowedConsentKeys);
+    const result = finaliseConsent(undefined, destConfig);
 
     expect(result).toEqual({
       adUserData: 'UNKNOWN',
@@ -124,18 +132,16 @@ describe('finaliseConsent', () => {
   });
 
   it('should return UNKWOWN_CONSENT when destConfig is provided with wrong consent value', () => {
-    const destinationAllowedConsentKeys = ['newKey1', 'newKey2'];
-
     const destConfig = {
       userDataConsent: 'UNKNOWN',
       personalizationConsent: 'WRONG CONSENT',
     };
 
-    const result = finaliseConsent(undefined, destConfig, destinationAllowedConsentKeys);
+    const result = finaliseConsent(undefined, destConfig);
 
     expect(result).toEqual({
-      newKey1: 'UNSPECIFIED',
-      newKey2: 'UNSPECIFIED',
+      adPersonalization: 'UNKNOWN',
+      adUserData: 'UNKNOWN',
     });
   });
 });

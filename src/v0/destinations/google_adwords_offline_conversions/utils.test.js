@@ -290,26 +290,9 @@ describe('getClickConversionPayloadAndEndpoint util tests', () => {
 describe('getConsentsDataFromIntegrationObj', () => {
   it('should return an empty object when conversionType is "store"', () => {
     const message = {};
-    const conversionType = 'store';
-    const result = getConsentsDataFromIntegrationObj(message, conversionType);
+    const result = getConsentsDataFromIntegrationObj(message);
     expect(result).toEqual({});
   });
-
-  it('should return an empty object when conversionType is not "store" and getIntegrationsObj returns undefined', () => {
-    const message = {};
-    const conversionType = 'click';
-    const result = getConsentsDataFromIntegrationObj(message, conversionType);
-    expect(result).toEqual({});
-  });
-
-  it('should return an empty object when conversionType is not "store" and getIntegrationsObj returns null', () => {
-    const message = {};
-    const conversionType = 'call';
-    const getIntegrationsObj = jest.fn(() => null);
-    const result = getConsentsDataFromIntegrationObj(message, conversionType);
-    expect(result).toEqual({});
-  });
-
   it('should return the consent object when conversion type is call', () => {
     const message = {
       integrations: {

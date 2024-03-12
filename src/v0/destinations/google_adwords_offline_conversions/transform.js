@@ -15,7 +15,6 @@ const {
   CALL_CONVERSION,
   trackCallConversionsMapping,
   STORE_CONVERSION_CONFIG,
-  consentFields,
 } = require('./config');
 const {
   validateDestinationConfig,
@@ -44,7 +43,7 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
   const { properties, timestamp, originalTimestamp } = message;
 
   const filteredCustomerId = removeHyphens(customerId);
-  const eventLevelConsentsData = getConsentsDataFromIntegrationObj(message, conversionType);
+  const eventLevelConsentsData = getConsentsDataFromIntegrationObj(message);
 
   if (conversionType === 'click') {
     // click conversion
@@ -57,16 +56,11 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
     payload = convertedPayload.payload;
     endpoint = convertedPayload.endpoint;
   } else if (conversionType === 'store') {
-    payload = getStoreConversionPayload(
-      message,
-      Config,
-      filteredCustomerId,
-      eventLevelConsentsData,
-    );
+    payload = getStoreConversionPayload(message, Config, filteredCustomerId);
     endpoint = STORE_CONVERSION_CONFIG.replace(':customerId', filteredCustomerId);
   } else {
     // call conversions
-    const consentObject = finaliseConsent(eventLevelConsentsData, Config, consentFields);
+    const consentObject = finaliseConsent(eventLevelConsentsData, Config);
     payload = constructPayload(message, trackCallConversionsMapping);
     endpoint = CALL_CONVERSION.replace(':customerId', filteredCustomerId);
     payload.conversions[0].consent = consentObject;

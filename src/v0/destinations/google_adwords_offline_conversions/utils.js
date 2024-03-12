@@ -27,7 +27,6 @@ const {
   trackAddStoreAddressConversionsMapping,
   trackClickConversionsMapping,
   CLICK_CONVERSION,
-  consentFields,
 } = require('./config');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const Cache = require('../../util/cache');
@@ -223,7 +222,7 @@ function getExisitingUserIdentifier(userIdentifierInfo, defaultUserIdentifier) {
  * This Function create the add conversion payload
  * and returns the payload
  */
-const getAddConversionPayload = (message, Config, eventLevelConsent) => {
+const getAddConversionPayload = (message, Config) => {
   const { properties } = message;
   const { validateOnly, hashUserIdentifier, defaultUserIdentifier } = Config;
   const payload = constructPayload(message, trackAddStoreConversionsMapping);
@@ -276,18 +275,18 @@ const getAddConversionPayload = (message, Config, eventLevelConsent) => {
     }
   }
   // add consent support for store conversions
-  const consentObject = finaliseConsent(eventLevelConsent, Config, consentFields);
+  const consentObject = finaliseConsent({}, Config);
   set(payload, 'operations.create.consent', consentObject);
   return payload;
 };
 
-const getStoreConversionPayload = (message, Config, event, eventLevelConsent) => {
+const getStoreConversionPayload = (message, Config, event) => {
   const { validateOnly } = Config;
   const payload = {
     event,
     isStoreConversion: true,
     createJobPayload: getCreateJobPayload(message),
-    addConversionPayload: getAddConversionPayload(message, Config, eventLevelConsent),
+    addConversionPayload: getAddConversionPayload(message, Config),
     executeJobPayload: { validate_only: validateOnly },
   };
   return payload;
@@ -372,16 +371,13 @@ const getClickConversionPayloadAndEndpoint = (
   }
 
   // add consent support for click conversions
-  const consentObject = finaliseConsent(eventLevelConsent, Config, consentFields);
+  const consentObject = finaliseConsent(eventLevelConsent, Config);
   set(payload, 'conversions[0].consent', consentObject);
   return { payload, endpoint };
 };
 
-const getConsentsDataFromIntegrationObj = (message, conversionType) => {
-  const integrationObj =
-    conversionType === 'store'
-      ? {}
-      : getIntegrationsObj(message, 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS') || {};
+const getConsentsDataFromIntegrationObj = (message) => {
+  const integrationObj = getIntegrationsObj(message, 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS') || {};
   return integrationObj?.consents || {};
 };
 

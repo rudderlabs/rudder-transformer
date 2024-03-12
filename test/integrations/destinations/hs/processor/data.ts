@@ -1,3 +1,45 @@
+import { Destination } from '../../../../../src/types';
+import { generateMetadata, generateSimplifiedIdentifyPayload } from '../../../testUtils';
+
+const commonOutputHeaders = {
+  'Content-Type': 'application/json',
+  Authorization: 'Bearer dummy-access-token',
+};
+
+const destination: Destination = {
+  Config: {
+    authorizationType: 'newPrivateAppApi',
+    accessToken: 'dummy-access-token',
+    hubID: 'dummy-hubId',
+    apiKey: 'dummy-apikey',
+    apiVersion: 'newApi',
+    lookupField: 'email',
+    hubspotEvents: [],
+    eventFilteringOption: 'disable',
+    blacklistedEvents: [
+      {
+        eventName: '',
+      },
+    ],
+    whitelistedEvents: [
+      {
+        eventName: '',
+      },
+    ],
+  },
+  Enabled: true,
+  ID: '123',
+  Name: 'hs',
+  DestinationDefinition: {
+    ID: '123',
+    Name: 'hs',
+    DisplayName: 'Hubspot',
+    Config: {},
+  },
+  WorkspaceID: '123',
+  Transformations: [],
+};
+
 export const data = [
   {
     name: 'hs',
@@ -5264,6 +5306,68 @@ export const data = [
               module: 'destination',
             },
             statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'hs',
+    description: 'Test coversion of null to string values',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination,
+            message: generateSimplifiedIdentifyPayload({
+              userId: '12345',
+              context: {
+                traits: {
+                  email: 'noname@email.com',
+                  firstname: null,
+                  gender: '',
+                  lookupField: 'email',
+                },
+              },
+            }),
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              userId: '',
+              method: 'POST',
+              endpoint: 'https://api.hubapi.com/crm/v3/objects/contacts',
+              files: {},
+              headers: commonOutputHeaders,
+              operation: 'createContacts',
+              params: {},
+              body: {
+                FORM: {},
+                JSON: {
+                  properties: {
+                    email: 'noname@email.com',
+                    firstname: '',
+                    gender: '',
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+              },
+            },
+            statusCode: 200,
+            metadata: generateMetadata(1),
           },
         ],
       },

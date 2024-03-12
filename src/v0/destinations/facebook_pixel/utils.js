@@ -53,13 +53,9 @@ const getActionSource = (payload, channel) => {
  * Handles order completed and checkout started types of specific events
  */
 const handleOrder = (message, categoryToContent) => {
-  const { products, revenue } = message.properties;
-  const value = formatRevenue(revenue);
-
-  const contentType = getContentType(message, 'product', categoryToContent);
-  const contentIds = [];
-  const contents = [];
   const {
+    products,
+    revenue,
     category,
     quantity,
     price,
@@ -67,6 +63,12 @@ const handleOrder = (message, categoryToContent) => {
     contentName,
     delivery_category: deliveryCategory,
   } = message.properties;
+  const value = formatRevenue(revenue);
+  let { content_type: contentType } = message.properties;
+  contentType = contentType || getContentType(message, 'product', categoryToContent);
+  const contentIds = [];
+  const contents = [];
+
   if (products) {
     if (products.length > 0 && Array.isArray(products)) {
       products.forEach((singleProduct) => {
@@ -109,10 +111,17 @@ const handleOrder = (message, categoryToContent) => {
  * Handles product list viewed
  */
 const handleProductListViewed = (message, categoryToContent) => {
-  let contentType;
+  let defaultContentType;
   const contentIds = [];
   const contents = [];
-  const { products, category, quantity, value, contentName } = message.properties;
+  const {
+    products,
+    category,
+    quantity,
+    value,
+    contentName,
+    content_type: contentType,
+  } = message.properties;
   if (products && products.length > 0 && Array.isArray(products)) {
     products.forEach((product, index) => {
       if (isObject(product)) {
@@ -132,7 +141,7 @@ const handleProductListViewed = (message, categoryToContent) => {
   }
 
   if (contentIds.length > 0) {
-    contentType = 'product';
+    defaultContentType = 'product';
     //  for viewContent event content_ids and content arrays are not mandatory
   } else if (category) {
     contentIds.push(category);
@@ -140,12 +149,12 @@ const handleProductListViewed = (message, categoryToContent) => {
       id: category,
       quantity: 1,
     });
-    contentType = 'product_group';
+    defaultContentType = 'product_group';
   }
 
   return {
     content_ids: contentIds,
-    content_type: getContentType(message, contentType, categoryToContent),
+    content_type: contentType || getContentType(message, defaultContentType, categoryToContent),
     contents,
     content_category: getContentCategory(category),
     content_name: contentName,
@@ -165,7 +174,8 @@ const handleProduct = (message, categoryToContent, valueFieldIdentifier) => {
   const useValue = valueFieldIdentifier === 'properties.value';
   const contentId =
     message.properties?.product_id || message.properties?.sku || message.properties?.id;
-  const contentType = getContentType(message, 'product', categoryToContent);
+  const contentType =
+    message.properties?.content_type || getContentType(message, 'product', categoryToContent);
   const contentName = message.properties.product_name || message.properties.name || '';
   const contentCategory = message.properties.category || '';
   const currency = message.properties.currency || 'USD';

@@ -152,6 +152,7 @@ const DestCanonicalNames = {
     'the trade desk',
   ],
   INTERCOM: ['INTERCOM', 'intercom', 'Intercom'],
+  koala: ['Koala', 'koala', 'KOALA'],
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

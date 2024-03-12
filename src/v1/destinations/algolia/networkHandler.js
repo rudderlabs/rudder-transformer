@@ -41,30 +41,19 @@ const responseHandler = (responseParams) => {
 
   // in case of non 2xx status sending 500 for every event, populate response and update dontBatch to true
   const errorMessage = response?.error?.message || response?.message || 'unknown error format';
-  let serverStatus = 400;
   for (const metadata of rudderJobMetadata) {
-    // handling case if dontBatch is true, and again we got invalid from destination
-    if (metadata.dontBatch && status === 422) {
-      responseWithIndividualEvents.push({
-        statusCode: 400,
-        metadata,
-        error: errorMessage,
-      });
-    } else {
-      serverStatus = 500;
-      metadata.dontBatch = true;
-      responseWithIndividualEvents.push({
-        statusCode: 500,
-        metadata,
-        error: errorMessage,
-      });
-    }
+    metadata.dontBatch = true;
+    responseWithIndividualEvents.push({
+      statusCode: 500,
+      metadata,
+      error: errorMessage,
+    });
   }
 
   // sending back 500 for retry
   throw new TransformerProxyError(
     `ALGOLIA: Error transformer proxy v1 during ALGOLIA response transformation`,
-    serverStatus,
+    500,
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },

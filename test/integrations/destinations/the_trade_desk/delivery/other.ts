@@ -32,6 +32,7 @@ const validRequestPayload1 = {
 
 const metadataArray = [generateMetadata(1)];
 
+// https://partner.thetradedesk.com/v3/portal/data/doc/post-data-advertiser-external#error-codes-messages
 export const otherProxyV1: ProxyV1TestData[] = [
   {
     id: 'ttd_v1_other_scenario_1',

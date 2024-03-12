@@ -87,6 +87,35 @@ const dataDeliveryMocksData = [
     },
     httpRes: { data: { status: 'fail', processed: 0, unprocessed: [] }, status: 200 },
   },
+  {
+    httpReq: {
+      url: 'https://api.clevertap.com/1/upload/test4',
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        status: 'partial',
+        processed: 2,
+        unprocessed: [
+          {
+            status: 'fail',
+            code: 509,
+            error:
+              'Event Name is incorrect. ErrorCode: 509 - Event name is mandatory. Skipped record number : 2',
+            record: {
+              evtData: {
+                name: 1234,
+                revenue: 4.99,
+              },
+              type: 'event',
+              identity: 'user123',
+            },
+          },
+        ],
+      },
+      status: 200,
+    },
+  },
 ];
 const deleteNwData = [
   {

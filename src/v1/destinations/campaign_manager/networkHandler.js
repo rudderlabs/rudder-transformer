@@ -69,7 +69,7 @@ const responseHandler = (responseParams) => {
   const errorMessage = response.error?.message || 'unknown error format';
   for (const metadata of rudderJobMetadata) {
     responseWithIndividualEvents.push({
-      statusCode: 500,
+      statusCode: status,
       metadata,
       error: errorMessage,
     });
@@ -77,7 +77,7 @@ const responseHandler = (responseParams) => {
 
   throw new TransformerProxyError(
     `Campaign Manager: Error transformer proxy v1 during CAMPAIGN_MANAGER response transformation`,
-    500,
+    status,
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },

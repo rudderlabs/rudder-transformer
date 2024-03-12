@@ -3,7 +3,6 @@ const { InstrumentationError, ConfigurationError } = require('@rudderstack/integ
 const { EventType } = require('../../../constants');
 const {
   getHashFromArrayWithDuplicate,
-  constructPayload,
   removeHyphens,
   getHashFromArray,
   handleRtTfSingleEventError,
@@ -11,19 +10,15 @@ const {
   getSuccessRespEvents,
   combineBatchRequestsWithSameJobIds,
 } = require('../../util');
-const {
-  CALL_CONVERSION,
-  trackCallConversionsMapping,
-  STORE_CONVERSION_CONFIG,
-} = require('./config');
+const { CALL_CONVERSION, STORE_CONVERSION_CONFIG } = require('./config');
 const {
   validateDestinationConfig,
   getStoreConversionPayload,
   requestBuilder,
   getClickConversionPayloadAndEndpoint,
   getConsentsDataFromIntegrationObj,
+  getCallConversionPayload,
 } = require('./utils');
-const { finaliseConsent } = require('../../util/googleUtils');
 const helper = require('./helper');
 
 /**
@@ -60,10 +55,8 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
     endpoint = STORE_CONVERSION_CONFIG.replace(':customerId', filteredCustomerId);
   } else {
     // call conversions
-    const consentObject = finaliseConsent(eventLevelConsentsData, Config);
-    payload = constructPayload(message, trackCallConversionsMapping);
+    payload = { ...getCallConversionPayload(message, Config, eventLevelConsentsData) };
     endpoint = CALL_CONVERSION.replace(':customerId', filteredCustomerId);
-    payload.conversions[0].consent = consentObject;
   }
 
   if (conversionType !== 'store') {

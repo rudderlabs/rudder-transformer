@@ -123,6 +123,48 @@ export const v0oauthScenarios = [
       },
     },
   },
+  {
+    id: 'gaoc_v0_oauth_scenario_2',
+    name: 'google_adwords_offline_conversions',
+    description:
+      '[Proxy v0 API] :: Oauth  where ACCESS_TOKEN_SCOPE_INSUFFICIENT error as mock response from destination',
+    successCriteria:
+      'Since the error from the destination is 403 - the proxy should return 403 with authErrorCategory as AUTH_STATUS_INACTIVE',
+    scenario: 'Oauth',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: generateProxyV0Payload({
+          ...commonRequestParameters,
+          endpoint: 'https://googleads.googleapis.com/v14/customers/1234/offlineUserDataJobs',
+        }),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 403,
+        body: {
+          output: {
+            authErrorCategory: 'AUTH_STATUS_INACTIVE',
+            destinationResponse: {
+              error: {
+                code: 403,
+                message: 'Request had insufficient authentication scopes',
+                status: 'PERMISSION_DENIED',
+              },
+            },
+            message:
+              '[Google Ads Offline Conversions]:: Request had insufficient authentication scopes during google_ads_offline_store_conversions Job Creation',
+            statTags: expectedStatTags,
+            status: 403,
+          },
+        },
+      },
+    },
+  },
 ];
 
 export const v1oauthScenarios = [
@@ -167,6 +209,52 @@ export const v1oauthScenarios = [
             ],
             statTags: expectedStatTags,
             status: 401,
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'gaoc_v1_oauth_scenario_2',
+    name: 'google_adwords_offline_conversions',
+    description:
+      '[Proxy v1 API] :: Oauth  where ACCESS_TOKEN_SCOPE_INSUFFICIENT error as mock response from destination',
+    successCriteria:
+      'Since the error from the destination is 403 - the proxy should return 403 with authErrorCategory as AUTH_STATUS_INACTIVE',
+    scenario: 'Oauth',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            ...commonRequestParameters,
+            endpoint: 'https://googleads.googleapis.com/v14/customers/1234/offlineUserDataJobs',
+          },
+          metadataArray,
+        ),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 403,
+        body: {
+          output: {
+            authErrorCategory: 'AUTH_STATUS_INACTIVE',
+            message:
+              '[Google Ads Offline Conversions]:: Request had insufficient authentication scopes during google_ads_offline_store_conversions Job Creation',
+            response: [
+              {
+                error:
+                  '[Google Ads Offline Conversions]:: Request had insufficient authentication scopes during google_ads_offline_store_conversions Job Creation',
+                metadata: generateMetadata(1),
+                statusCode: 403,
+              },
+            ],
+            statTags: expectedStatTags,
+            status: 403,
           },
         },
       },

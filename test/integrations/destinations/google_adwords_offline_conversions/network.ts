@@ -270,6 +270,39 @@ export const networkCallsData = [
   },
   {
     httpReq: {
+      url: 'https://googleads.googleapis.com/v14/customers/1234/offlineUserDataJobs:create',
+      data: {
+        job: {
+          storeSalesMetadata: {
+            custom_key: 'CUSTOM_KEY',
+            loyaltyFraction: 1,
+            transaction_upload_fraction: '1',
+          },
+          type: 'STORE_SALES_UPLOAD_FIRST_PARTY',
+        },
+      },
+      params: { destination: 'google_adwords_offline_conversion' },
+      headers: {
+        Authorization: 'Bearer abcd1234',
+        'Content-Type': 'application/json',
+        'developer-token': 'ijkl91011',
+        'login-customer-id': 'logincustomerid',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      status: 403,
+      data: {
+        error: {
+          code: 403,
+          message: 'Request had insufficient authentication scopes',
+          status: 'PERMISSION_DENIED',
+        },
+      },
+    },
+  },
+  {
+    httpReq: {
       url: 'https://googleads.googleapis.com/v14/customers/1234567890/googleAds:searchStream',
       data: {
         query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = 'Sign-up - click'`,

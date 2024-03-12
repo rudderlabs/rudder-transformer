@@ -710,7 +710,7 @@ class Prometheus {
         name: 'get_libraries_code_time',
         help: 'get_libraries_code_time',
         type: 'histogram',
-        labelNames: ['libraryVersionId', 'versionId', 'type'],
+        labelNames: ['libraryVersionId', 'versionId', 'type', 'version'],
       },
       {
         name: 'isolate_cpu_time',

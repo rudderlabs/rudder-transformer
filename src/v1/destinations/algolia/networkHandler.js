@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 /* eslint-disable no-restricted-syntax */
 const { TransformerProxyError } = require('../../../v0/util/errorTypes');
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
@@ -10,50 +9,25 @@ const {
 } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../../v0/util/tags');
 
-function isEventAbortableAndExtractErrMsg(element, proxyOutputObj) {
-  let isAbortable = false;
-  let errorMsg = '';
-  // success event
-  if (!element.errors) {
-    return isAbortable;
-  }
-  for (const err of element.errors) {
-    errorMsg += `${err.message}, `;
-    // if code is any of these, event is not retryable
-    if (
-      err.code === 'PERMISSION_DENIED' ||
-      err.code === 'INVALID_ARGUMENT' ||
-      err.code === 'NOT_FOUND'
-    ) {
-      isAbortable = true;
-    }
-  }
-  if (errorMsg) {
-    proxyOutputObj.error = errorMsg;
-  }
-  return isAbortable;
-}
-
 const responseHandler = (responseParams) => {
   const { destinationResponse, rudderJobMetadata } = responseParams;
-  const message = `[CAMPAIGN_MANAGER Response V1 Handler] - Request Processed Successfully`;
+  const message = `[ALGOLIA Response V1 Handler] - Request Processed Successfully`;
   const responseWithIndividualEvents = [];
+  // response:
+  // {status: 200, message: 'OK'}
+  // {response:'[ENOTFOUND] :: DNS lookup failed', status: 400}
+  // destinationResponse = {
+  //   response: {"status": 422, "message": "EventType must be one of \"click\", \"conversion\" or \"view\""}, status: 422
+  // }
   const { response, status } = destinationResponse;
 
   if (isHttpStatusSuccess(status)) {
-    // check for Partial Event failures and Successes
-    const destPartialStatus = response.status;
-
-    for (const [idx, element] of destPartialStatus.entries()) {
+    for (const mData of rudderJobMetadata) {
       const proxyOutputObj = {
         statusCode: 200,
-        metadata: rudderJobMetadata[idx],
+        metadata: mData,
         error: 'success',
       };
-      // update status of partial event if abortable
-      if (isEventAbortableAndExtractErrMsg(element, proxyOutputObj)) {
-        proxyOutputObj.statusCode = 400;
-      }
       responseWithIndividualEvents.push(proxyOutputObj);
     }
 
@@ -65,19 +39,32 @@ const responseHandler = (responseParams) => {
     };
   }
 
-  // in case of failure status, populate response to maintain len(metadata)=len(response)
-  const errorMessage = response.error?.message || 'unknown error format';
+  // in case of non 2xx status sending 500 for every event, populate response and update dontBatch to true
+  const errorMessage = response?.error?.message || response?.message || 'unknown error format';
+  let serverStatus = 400;
   for (const metadata of rudderJobMetadata) {
-    responseWithIndividualEvents.push({
-      statusCode: status,
-      metadata,
-      error: errorMessage,
-    });
+    // handling case if dontBatch is true, and again we got invalid from destination
+    if (metadata.dontBatch && status === 422) {
+      responseWithIndividualEvents.push({
+        statusCode: 400,
+        metadata,
+        error: errorMessage,
+      });
+    } else {
+      serverStatus = 500;
+      metadata.dontBatch = true;
+      responseWithIndividualEvents.push({
+        statusCode: 500,
+        metadata,
+        error: errorMessage,
+      });
+    }
   }
 
+  // sending back 500 for retry
   throw new TransformerProxyError(
-    `Campaign Manager: Error transformer proxy v1 during CAMPAIGN_MANAGER response transformation`,
-    status,
+    `ALGOLIA: Error transformer proxy v1 during ALGOLIA response transformation`,
+    serverStatus,
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },

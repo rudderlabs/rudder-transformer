@@ -27,14 +27,14 @@ export const data = [
                 type: 'track',
                 messageId: '84e26acc-56a5-4835-8233-591137fca468',
                 traits: {
-                  email: 'johndoe@somemail.com'
+                  email: 'johndoe@somemail.com',
                 },
                 properties: {
                   label: 'test',
                   value: 10,
                 },
                 context: {
-                  network: 'wifi'
+                  network: 'wifi',
                 },
                 originalTimestamp: '2024-01-23T08:35:17.562Z',
                 sentAt: '2024-01-23T08:35:17.562Z',
@@ -44,8 +44,8 @@ export const data = [
                 jobId: 1,
                 userId: 'u1',
                 destinationId: 'destId',
-                workspaceId: 'wspId'
-              }
+                workspaceId: 'wspId',
+              },
             },
             {
               destination: {
@@ -65,14 +65,14 @@ export const data = [
                 type: 'track',
                 messageId: '8bc79b03-2a5c-4615-b2da-54c0aaaaaae8',
                 traits: {
-                  ko_profile_id: '123456'
+                  ko_profile_id: '123456',
                 },
                 properties: {
                   attr1: 'foo',
-                  attr2: 'bar'
+                  attr2: 'bar',
                 },
                 context: {
-                  network: 'wifi'
+                  network: 'wifi',
                 },
                 originalTimestamp: '2024-01-23T08:35:17.562Z',
                 sentAt: '2024-01-23T08:35:17.562Z',
@@ -82,14 +82,14 @@ export const data = [
                 jobId: 2,
                 userId: 'u1',
                 destinationId: 'destId',
-                workspaceId: 'wspId'
-              }
+                workspaceId: 'wspId',
+              },
             },
           ],
           destType: 'koala',
         },
-        method: 'POST'
-      }
+        method: 'POST',
+      },
     },
     output: {
       response: {
@@ -105,19 +105,21 @@ export const data = [
                   JSON: {
                     ip: '192.11.22.33',
                     email: 'johndoe@somemail.com',
-                    events: [{
-                      type: 'track',
-                      event: 'User Signed Up',
-                      sent_at: '2024-01-23T08:35:17.562Z',
-                      message_id: '84e26acc-56a5-4835-8233-591137fca468',
-                      properties: {
-                        label: 'test',
-                        value: 10,
+                    events: [
+                      {
+                        type: 'track',
+                        event: 'User Signed Up',
+                        sent_at: '2024-01-23T08:35:17.562Z',
+                        message_id: '84e26acc-56a5-4835-8233-591137fca468',
+                        properties: {
+                          label: 'test',
+                          value: 10,
+                        },
+                        context: {
+                          network: 'wifi',
+                        },
                       },
-                      context: {
-                        network: 'wifi'
-                      },
-                    }]
+                    ],
                   },
                 },
                 endpoint: 'https://api2.getkoala.com/web/projects/kkooaallaa321/batch',
@@ -153,19 +155,21 @@ export const data = [
                   JSON: {
                     ip: '192.11.55.1',
                     profile_id: '123456',
-                    events: [{
-                      type: 'track',
-                      event: 'User Deleted account',
-                      sent_at: '2024-01-23T08:35:17.562Z',
-                      message_id: '8bc79b03-2a5c-4615-b2da-54c0aaaaaae8',
-                      properties: {
-                        attr1: 'foo',
-                        attr2: 'bar'
+                    events: [
+                      {
+                        type: 'track',
+                        event: 'User Deleted account',
+                        sent_at: '2024-01-23T08:35:17.562Z',
+                        message_id: '8bc79b03-2a5c-4615-b2da-54c0aaaaaae8',
+                        properties: {
+                          attr1: 'foo',
+                          attr2: 'bar',
+                        },
+                        context: {
+                          network: 'wifi',
+                        },
                       },
-                      context: {
-                        network: 'wifi'
-                      },
-                    }]
+                    ],
                   },
                 },
                 endpoint: 'https://api2.getkoala.com/web/projects/kkooaallaa321/batch',
@@ -191,10 +195,10 @@ export const data = [
                   },
                 },
               },
-            }
-          ]
-        }
-      }
-    }
-  }
-]
+            },
+          ],
+        },
+      },
+    },
+  },
+];

@@ -1,0 +1,65 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+
+steps:
+  - name: validateInput
+    template: |
+      $.assert(.message.type, "message Type is not present. Aborting message");
+      $.assert(.message.type in {{$.EventType.([.IDENTIFY, .TRACK])}}, 
+        "message type " + .message.type + " is not supported");
+      $.assertConfig(.destination.Config.publicKey, "publicKey is not present. Aborting message");
+      $.context.email = .message.().({{{{$.getGenericPaths("emailOnly")}}}});
+      $.context.ko_profile_id = .message.traits.ko_profile_id ?? .message.context.traits.ko_profile_id ?? .message.properties.ko_profile_id;
+      $.assert($.context.email || $.context.ko_profile_id, "Neither email or ko_profile_id are present on traits. Aborting message");
+  - name: setMessageType
+    template: |
+      $.context.messageType = .message.type.toLowerCase();
+  - name: preparePayloadForIdentify
+    condition: $.context.messageType === {{$.EventType.IDENTIFY}}
+    template: |
+      const traits = .message.traits ?? .message.context.traits ?? {};
+      const koTraits = traits{~['ko_profile_id']}
+      const basePayload = {
+        email: $.context.email, 
+        profile_id: $.context.ko_profile_id,
+        identifies: [{
+          type: $.context.messageType,
+          sent_at: .message.().({{{{$.getGenericPaths("timestamp")}}}}),
+          traits: koTraits 
+        }]
+      };
+
+      $.context.payload = basePayload
+  - name: preparePayloadForTrack
+    condition: $.context.messageType === {{$.EventType.TRACK}}
+    template: |
+      const properties = .message.properties ??  {};
+      const koProperties = properties{~['ko_profile_id']}
+      const basePayload = {
+        ip: .message.context.ip ?? .message.request_ip, 
+        email: $.context.email, 
+        profile_id: $.context.ko_profile_id, 
+        events: [{
+          type: $.context.messageType,
+          event: .message.event,
+          message_id: .message.messageId,
+          sent_at: .message.().({{{{$.getGenericPaths("timestamp")}}}}),
+          properties: koProperties,
+          context: .message.context
+        }]
+      };
+
+      $.context.payload = basePayload
+  - name: buildResponseForProcessTransformation
+    template: |
+      const response = $.defaultRequestConfig();
+      response.body.JSON = $.context.payload;
+      response.endpoint = "https://api2.getkoala.com/web/projects/" + .destination.Config.publicKey + "/batch";
+      response.headers = {
+        "content-type": "application/json"
+      };
+      response

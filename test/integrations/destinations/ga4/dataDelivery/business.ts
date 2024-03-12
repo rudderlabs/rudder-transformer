@@ -83,8 +83,9 @@ const invalidParameterValueRequest = {
   non_personalized_ads: true,
 };
 
-const invalidParameterErrorMessage =
-  'Validation Server Response Handler:: Validation Error for ga4 of field path :undefined | INTERNAL_ERROR-Validation of item.price should prevent conversion from unsupported value [string_value: "$19"]';
+const invalidParamMessage =
+  'Validation of item.price should prevent conversion from unsupported value [string_value: "$19"]';
+const invalidParameterErrorMessage = `Validation Server Response Handler:: Validation Error for ga4 of field path :undefined | INTERNAL_ERROR-${invalidParamMessage}`;
 const invalidEventNameErrorMessage =
   'Validation Server Response Handler:: Validation Error for ga4 of field path :events | NAME_INVALID-Event at index: [0] has invalid name [campaign@details]. Only alphanumeric characters and underscores are allowed.';
 
@@ -203,8 +204,7 @@ export const testScenariosForV0API = [
         status: 400,
         body: {
           output: {
-            destinationResponse:
-              'Validation of item.price should prevent conversion from unsupported value [string_value: "$19"]',
+            destinationResponse: invalidParamMessage,
             message: invalidParameterErrorMessage,
             statTags: expectedStatTags,
             status: 400,

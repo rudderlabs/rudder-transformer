@@ -90,6 +90,127 @@ export const otherScenariosV0 = [
       },
     },
   },
+  {
+    id: 'intercom_v0_other_scenario_2',
+    name: 'intercom',
+    description:
+      '[Proxy v0 API] :: Scenario for testing Service Unavailable error from destination',
+    successCriteria: 'Should return 503 status code with destination response',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: generateProxyV0Payload({
+          ...commonRequestParameters,
+          endpoint: 'https://api.intercom.io/users/test2',
+        }),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 503,
+        body: {
+          output: {
+            status: 503,
+            message: 'Request Processed Successfully',
+            destinationResponse: {
+              type: 'error.list',
+              request_id: 'request127',
+              errors: [
+                {
+                  code: 'service_unavailable',
+                  message: 'Sorry, the API service is temporarily unavailable',
+                },
+              ],
+            },
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'intercom_v0_other_scenario_3',
+    name: 'intercom',
+    description: '[Proxy v0 API] :: Scenario for testing Internal Server error from destination',
+    successCriteria: 'Should return 500 status code with destination response',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: generateProxyV0Payload({
+          ...commonRequestParameters,
+          endpoint: 'https://api.intercom.io/users/test3',
+        }),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 500,
+        body: {
+          output: {
+            destinationResponse: {
+              errors: [
+                {
+                  code: 'client_error',
+                  message: 'Unknown server error',
+                },
+              ],
+              request_id: 'request128',
+              type: 'error.list',
+            },
+            message: 'Request Processed Successfully',
+            status: 500,
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'intercom_v0_other_scenario_4',
+    name: 'intercom',
+    description: '[Proxy v0 API] :: Scenario for testing Gateway Time Out error from destination',
+    successCriteria: 'Should return 504 status code with destination response',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: generateProxyV0Payload({
+          ...commonRequestParameters,
+          endpoint: 'https://api.intercom.io/users/test4',
+        }),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 504,
+        body: {
+          output: {
+            destinationResponse: {
+              errors: [
+                {
+                  code: 'server_timeout',
+                  message: 'Server timed out when making request',
+                },
+              ],
+              request_id: 'request129',
+              type: 'error.list',
+            },
+            message: 'Request Processed Successfully',
+            status: 504,
+          },
+        },
+      },
+    },
+  },
 ];
 
 export const otherScenariosV1: ProxyV1TestData[] = [
@@ -131,6 +252,130 @@ export const otherScenariosV1: ProxyV1TestData[] = [
             ],
             statTags: expectedStatTags,
             status: 500,
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'intercom_v1_other_scenario_2',
+    name: 'intercom',
+    description:
+      '[Proxy v1 API] :: Scenario for testing Service Unavailable error from destination',
+    successCriteria: 'Should return 503 status code with destination response',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            ...commonRequestParameters,
+            endpoint: 'https://api.intercom.io/users/test2',
+          },
+          metadataArray,
+        ),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            message: 'Request Processed Successfully',
+            response: [
+              {
+                error:
+                  '{"type":"error.list","request_id":"request127","errors":[{"code":"service_unavailable","message":"Sorry, the API service is temporarily unavailable"}]}',
+                metadata: generateMetadata(1),
+                statusCode: 503,
+              },
+            ],
+            status: 503,
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'intercom_v1_other_scenario_3',
+    name: 'intercom',
+    description: '[Proxy v1 API] :: Scenario for testing Internal Server error from destination',
+    successCriteria: 'Should return 500 status code with destination response',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            ...commonRequestParameters,
+            endpoint: 'https://api.intercom.io/users/test3',
+          },
+          metadataArray,
+        ),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            message: 'Request Processed Successfully',
+            response: [
+              {
+                error:
+                  '{"type":"error.list","request_id":"request128","errors":[{"code":"client_error","message":"Unknown server error"}]}',
+                metadata: generateMetadata(1),
+                statusCode: 500,
+              },
+            ],
+            status: 500,
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'intercom_v1_other_scenario_4',
+    name: 'intercom',
+    description: '[Proxy v1 API] :: Scenario for testing Gateway Time Out error from destination',
+    successCriteria: 'Should return 504 status code with destination response',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            ...commonRequestParameters,
+            endpoint: 'https://api.intercom.io/users/test4',
+          },
+          metadataArray,
+        ),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            message: 'Request Processed Successfully',
+            response: [
+              {
+                error:
+                  '{"type":"error.list","request_id":"request129","errors":[{"code":"server_timeout","message":"Server timed out when making request"}]}',
+                metadata: generateMetadata(1),
+                statusCode: 504,
+              },
+            ],
+            status: 504,
           },
         },
       },

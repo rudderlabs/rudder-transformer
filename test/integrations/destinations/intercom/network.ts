@@ -531,5 +531,71 @@ const deliveryCallsData = [
       status: 406,
     },
   },
+  {
+    httpReq: {
+      url: 'https://api.intercom.io/users/test2',
+      data: userPayload,
+      params: {},
+      headers: v0VersionHeaders,
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        type: 'error.list',
+        request_id: 'request127',
+        errors: [
+          {
+            code: 'service_unavailable',
+            message: 'Sorry, the API service is temporarily unavailable',
+          },
+        ],
+      },
+      status: 503,
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.intercom.io/users/test3',
+      data: userPayload,
+      params: {},
+      headers: v0VersionHeaders,
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        type: 'error.list',
+        request_id: 'request128',
+        errors: [
+          {
+            code: 'client_error',
+            message: 'Unknown server error',
+          },
+        ],
+      },
+      status: 500,
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.intercom.io/users/test4',
+      data: userPayload,
+      params: {},
+      headers: v0VersionHeaders,
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        type: 'error.list',
+        request_id: 'request129',
+        errors: [
+          {
+            code: 'server_timeout',
+            message: 'Server timed out when making request',
+          },
+        ],
+      },
+      status: 504,
+    },
+  },
 ];
 export const networkCallsData = [...deleteNwData, ...deliveryCallsData];

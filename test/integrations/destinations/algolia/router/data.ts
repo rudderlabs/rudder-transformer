@@ -2220,4 +2220,2406 @@ export const data = [
       },
     },
   },
+  {
+    name: 'algolia',
+    description: 'dontBatch true for all',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              destination: {
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: true,
+                  },
+                },
+                Config: {
+                  cdkV2Enabled: true,
+                  apiKey: 'dummyApiKey',
+                  applicationId: 'O2YARRI15I',
+                  eventTypeSettings: [
+                    {
+                      from: 'Product List Filtered',
+                      to: 'click',
+                    },
+                    {
+                      from: 'Product List Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Order Completed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Added',
+                      to: 'conversion',
+                    },
+                    {
+                      from: 'Product Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Clicked',
+                      to: 'click',
+                    },
+                  ],
+                  pixelId: '123456789',
+                  advertiserId: '429047995',
+                  eventId: '429047995',
+                  enhancedMatch: true,
+                  enableDeduplication: true,
+                  deduplicationKey: 'messageId',
+                  sendingUnHashedData: true,
+                  customProperties: [
+                    {
+                      properties: 'presentclass',
+                    },
+                    {
+                      properties: 'presentgrade',
+                    },
+                  ],
+                  eventsMapping: [
+                    {
+                      from: 'ABC Searched',
+                      to: 'WatchVideo',
+                    },
+                  ],
+                },
+                ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+                Name: 'ALGOLIA',
+                Enabled: true,
+                cdkV2Enabled: true,
+                Transformations: [],
+              },
+              message: {
+                channel: 'web',
+                context: {
+                  traits: {
+                    email: 'testone@gmail.com',
+                    firstName: 'test',
+                    lastName: 'one',
+                  },
+                },
+                type: 'track',
+                anonymousId: '345345',
+                event: 'product clicked',
+                userId: 'test',
+                properties: {
+                  index: 'products',
+                  filters: ['field1:hello', 'val1:val2'],
+                },
+                integrations: {
+                  All: true,
+                },
+              },
+              metadata: {
+                jobId: 1,
+                attemptNum: 0,
+                userId: '',
+                sourceId: '2bAiFXtSLvENPDRAxVRxf0Udfaz',
+                destinationId: '2dH3xYIQnTNqfgPCqfVs88gWQdQ',
+                workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
+                secret: null,
+                dontBatch: true,
+              },
+            },
+            {
+              destination: {
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: true,
+                  },
+                },
+                Config: {
+                  cdkV2Enabled: true,
+                  apiKey: 'dummyApiKey',
+                  applicationId: 'O2YARRI15I',
+                  eventTypeSettings: [
+                    {
+                      from: 'Product List Filtered',
+                      to: 'click',
+                    },
+                    {
+                      from: 'Product List Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Order Completed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Added',
+                      to: 'conversion',
+                    },
+                    {
+                      from: 'Product Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Clicked',
+                      to: 'click',
+                    },
+                  ],
+                  pixelId: '123456789',
+                  advertiserId: '429047995',
+                  eventId: '429047995',
+                  enhancedMatch: true,
+                  enableDeduplication: true,
+                  deduplicationKey: 'messageId',
+                  sendingUnHashedData: true,
+                  customProperties: [
+                    {
+                      properties: 'presentclass',
+                    },
+                    {
+                      properties: 'presentgrade',
+                    },
+                  ],
+                  eventsMapping: [
+                    {
+                      from: 'ABC Searched',
+                      to: 'WatchVideo',
+                    },
+                  ],
+                },
+                ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+                Name: 'ALGOLIA',
+                Enabled: true,
+                cdkV2Enabled: true,
+                Transformations: [],
+              },
+              message: {
+                channel: 'web',
+                context: {
+                  traits: {
+                    email: 'testone@gmail.com',
+                    firstName: 'test',
+                    lastName: 'one',
+                  },
+                },
+                type: 'track',
+                anonymousId: '345345',
+                event: 'product clicked',
+                userId: 'test',
+                properties: {
+                  index: 'products',
+                  filters: ['field1:hello', 'val1:val2'],
+                },
+                integrations: {
+                  All: true,
+                },
+              },
+              metadata: {
+                jobId: 2,
+                attemptNum: 0,
+                userId: '',
+                sourceId: '2bAiFXtSLvENPDRAxVRxf0Udfaz',
+                destinationId: '2dH3xYIQnTNqfgPCqfVs88gWQdQ',
+                workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
+                secret: null,
+                dontBatch: true,
+              },
+            },
+            {
+              destination: {
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: true,
+                  },
+                },
+                Config: {
+                  cdkV2Enabled: true,
+                  apiKey: 'dummyApiKey',
+                  applicationId: 'O2YARRI15I',
+                  eventTypeSettings: [
+                    {
+                      from: 'Product List Filtered',
+                      to: 'click',
+                    },
+                    {
+                      from: 'Product List Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Order Completed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Added',
+                      to: 'conversion',
+                    },
+                    {
+                      from: 'Product Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Clicked',
+                      to: 'click',
+                    },
+                  ],
+                  pixelId: '123456789',
+                  advertiserId: '429047995',
+                  eventId: '429047995',
+                  enhancedMatch: true,
+                  enableDeduplication: true,
+                  deduplicationKey: 'messageId',
+                  sendingUnHashedData: true,
+                  customProperties: [
+                    {
+                      properties: 'presentclass',
+                    },
+                    {
+                      properties: 'presentgrade',
+                    },
+                  ],
+                  eventsMapping: [
+                    {
+                      from: 'ABC Searched',
+                      to: 'WatchVideo',
+                    },
+                  ],
+                },
+                ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+                Name: 'ALGOLIA',
+                Enabled: true,
+                cdkV2Enabled: true,
+                Transformations: [],
+              },
+              message: {
+                channel: 'web',
+                context: {
+                  traits: {
+                    email: 'testone@gmail.com',
+                    firstName: 'test',
+                    lastName: 'one',
+                  },
+                },
+                type: 'track',
+                anonymousId: '345345',
+                event: 'product clicked',
+                userId: 'test',
+                properties: {
+                  index: 'products',
+                  filters: ['field1:hello', 'val1:val2'],
+                },
+                integrations: {
+                  All: true,
+                },
+              },
+              metadata: {
+                jobId: 3,
+                attemptNum: 0,
+                userId: '',
+                sourceId: '2bAiFXtSLvENPDRAxVRxf0Udfaz',
+                destinationId: '2dH3xYIQnTNqfgPCqfVs88gWQdQ',
+                workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
+                secret: null,
+                dontBatch: true,
+              },
+            },
+            {
+              destination: {
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: true,
+                  },
+                },
+                Config: {
+                  cdkV2Enabled: true,
+                  apiKey: 'dummyApiKey',
+                  applicationId: 'O2YARRI15I',
+                  eventTypeSettings: [
+                    {
+                      from: 'Product List Filtered',
+                      to: 'click',
+                    },
+                    {
+                      from: 'Product List Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Order Completed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Added',
+                      to: 'conversion',
+                    },
+                    {
+                      from: 'Product Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Clicked',
+                      to: 'click',
+                    },
+                  ],
+                  pixelId: '123456789',
+                  advertiserId: '429047995',
+                  eventId: '429047995',
+                  enhancedMatch: true,
+                  enableDeduplication: true,
+                  deduplicationKey: 'messageId',
+                  sendingUnHashedData: true,
+                  customProperties: [
+                    {
+                      properties: 'presentclass',
+                    },
+                    {
+                      properties: 'presentgrade',
+                    },
+                  ],
+                  eventsMapping: [
+                    {
+                      from: 'ABC Searched',
+                      to: 'WatchVideo',
+                    },
+                  ],
+                },
+                ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+                Name: 'ALGOLIA',
+                Enabled: true,
+                cdkV2Enabled: true,
+                Transformations: [],
+              },
+              message: {
+                channel: 'web',
+                context: {
+                  traits: {
+                    email: 'testone@gmail.com',
+                    firstName: 'test',
+                    lastName: 'one',
+                  },
+                },
+                type: 'track',
+                anonymousId: '345345',
+                event: 'product clicked',
+                userId: 'test',
+                properties: {
+                  index: 'products',
+                  filters: ['field1:hello', 'val1:val2'],
+                },
+                integrations: {
+                  All: true,
+                },
+              },
+              metadata: {
+                jobId: 4,
+                attemptNum: 0,
+                userId: '',
+                sourceId: '2bAiFXtSLvENPDRAxVRxf0Udfaz',
+                destinationId: '2dH3xYIQnTNqfgPCqfVs88gWQdQ',
+                workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
+                secret: null,
+                dontBatch: true,
+              },
+            },
+          ],
+          destType: 'algolia',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                body: {
+                  JSON: {
+                    events: [
+                      {
+                        index: 'products',
+                        filters: ['field1:hello', 'val1:val2'],
+                        userToken: 'test',
+                        eventName: 'product clicked',
+                        eventType: 'click',
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://insights.algolia.io/1/events',
+                headers: {
+                  'X-Algolia-Application-Id': 'O2YARRI15I',
+                  'X-Algolia-API-Key': 'dummyApiKey',
+                },
+                params: {},
+                files: {},
+              },
+              metadata: [
+                {
+                  jobId: 1,
+                  attemptNum: 0,
+                  userId: '',
+                  sourceId: '2bAiFXtSLvENPDRAxVRxf0Udfaz',
+                  destinationId: '2dH3xYIQnTNqfgPCqfVs88gWQdQ',
+                  workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
+                  secret: null,
+                  dontBatch: true,
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: true,
+                  },
+                },
+                Config: {
+                  cdkV2Enabled: true,
+                  apiKey: 'dummyApiKey',
+                  applicationId: 'O2YARRI15I',
+                  eventTypeSettings: [
+                    {
+                      from: 'Product List Filtered',
+                      to: 'click',
+                    },
+                    {
+                      from: 'Product List Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Order Completed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Added',
+                      to: 'conversion',
+                    },
+                    {
+                      from: 'Product Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Clicked',
+                      to: 'click',
+                    },
+                  ],
+                  pixelId: '123456789',
+                  advertiserId: '429047995',
+                  eventId: '429047995',
+                  enhancedMatch: true,
+                  enableDeduplication: true,
+                  deduplicationKey: 'messageId',
+                  sendingUnHashedData: true,
+                  customProperties: [
+                    {
+                      properties: 'presentclass',
+                    },
+                    {
+                      properties: 'presentgrade',
+                    },
+                  ],
+                  eventsMapping: [
+                    {
+                      from: 'ABC Searched',
+                      to: 'WatchVideo',
+                    },
+                  ],
+                },
+                ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+                Name: 'ALGOLIA',
+                Enabled: true,
+                cdkV2Enabled: true,
+                Transformations: [],
+              },
+            },
+            {
+              batchedRequest: {
+                body: {
+                  JSON: {
+                    events: [
+                      {
+                        index: 'products',
+                        filters: ['field1:hello', 'val1:val2'],
+                        userToken: 'test',
+                        eventName: 'product clicked',
+                        eventType: 'click',
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://insights.algolia.io/1/events',
+                headers: {
+                  'X-Algolia-Application-Id': 'O2YARRI15I',
+                  'X-Algolia-API-Key': 'dummyApiKey',
+                },
+                params: {},
+                files: {},
+              },
+              metadata: [
+                {
+                  jobId: 2,
+                  attemptNum: 0,
+                  userId: '',
+                  sourceId: '2bAiFXtSLvENPDRAxVRxf0Udfaz',
+                  destinationId: '2dH3xYIQnTNqfgPCqfVs88gWQdQ',
+                  workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
+                  secret: null,
+                  dontBatch: true,
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: true,
+                  },
+                },
+                Config: {
+                  cdkV2Enabled: true,
+                  apiKey: 'dummyApiKey',
+                  applicationId: 'O2YARRI15I',
+                  eventTypeSettings: [
+                    {
+                      from: 'Product List Filtered',
+                      to: 'click',
+                    },
+                    {
+                      from: 'Product List Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Order Completed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Added',
+                      to: 'conversion',
+                    },
+                    {
+                      from: 'Product Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Clicked',
+                      to: 'click',
+                    },
+                  ],
+                  pixelId: '123456789',
+                  advertiserId: '429047995',
+                  eventId: '429047995',
+                  enhancedMatch: true,
+                  enableDeduplication: true,
+                  deduplicationKey: 'messageId',
+                  sendingUnHashedData: true,
+                  customProperties: [
+                    {
+                      properties: 'presentclass',
+                    },
+                    {
+                      properties: 'presentgrade',
+                    },
+                  ],
+                  eventsMapping: [
+                    {
+                      from: 'ABC Searched',
+                      to: 'WatchVideo',
+                    },
+                  ],
+                },
+                ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+                Name: 'ALGOLIA',
+                Enabled: true,
+                cdkV2Enabled: true,
+                Transformations: [],
+              },
+            },
+            {
+              batchedRequest: {
+                body: {
+                  JSON: {
+                    events: [
+                      {
+                        index: 'products',
+                        filters: ['field1:hello', 'val1:val2'],
+                        userToken: 'test',
+                        eventName: 'product clicked',
+                        eventType: 'click',
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://insights.algolia.io/1/events',
+                headers: {
+                  'X-Algolia-Application-Id': 'O2YARRI15I',
+                  'X-Algolia-API-Key': 'dummyApiKey',
+                },
+                params: {},
+                files: {},
+              },
+              metadata: [
+                {
+                  jobId: 3,
+                  attemptNum: 0,
+                  userId: '',
+                  sourceId: '2bAiFXtSLvENPDRAxVRxf0Udfaz',
+                  destinationId: '2dH3xYIQnTNqfgPCqfVs88gWQdQ',
+                  workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
+                  secret: null,
+                  dontBatch: true,
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: true,
+                  },
+                },
+                Config: {
+                  cdkV2Enabled: true,
+                  apiKey: 'dummyApiKey',
+                  applicationId: 'O2YARRI15I',
+                  eventTypeSettings: [
+                    {
+                      from: 'Product List Filtered',
+                      to: 'click',
+                    },
+                    {
+                      from: 'Product List Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Order Completed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Added',
+                      to: 'conversion',
+                    },
+                    {
+                      from: 'Product Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Clicked',
+                      to: 'click',
+                    },
+                  ],
+                  pixelId: '123456789',
+                  advertiserId: '429047995',
+                  eventId: '429047995',
+                  enhancedMatch: true,
+                  enableDeduplication: true,
+                  deduplicationKey: 'messageId',
+                  sendingUnHashedData: true,
+                  customProperties: [
+                    {
+                      properties: 'presentclass',
+                    },
+                    {
+                      properties: 'presentgrade',
+                    },
+                  ],
+                  eventsMapping: [
+                    {
+                      from: 'ABC Searched',
+                      to: 'WatchVideo',
+                    },
+                  ],
+                },
+                ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+                Name: 'ALGOLIA',
+                Enabled: true,
+                cdkV2Enabled: true,
+                Transformations: [],
+              },
+            },
+            {
+              batchedRequest: {
+                body: {
+                  JSON: {
+                    events: [
+                      {
+                        index: 'products',
+                        filters: ['field1:hello', 'val1:val2'],
+                        userToken: 'test',
+                        eventName: 'product clicked',
+                        eventType: 'click',
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://insights.algolia.io/1/events',
+                headers: {
+                  'X-Algolia-Application-Id': 'O2YARRI15I',
+                  'X-Algolia-API-Key': 'dummyApiKey',
+                },
+                params: {},
+                files: {},
+              },
+              metadata: [
+                {
+                  jobId: 4,
+                  attemptNum: 0,
+                  userId: '',
+                  sourceId: '2bAiFXtSLvENPDRAxVRxf0Udfaz',
+                  destinationId: '2dH3xYIQnTNqfgPCqfVs88gWQdQ',
+                  workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
+                  secret: null,
+                  dontBatch: true,
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: true,
+                  },
+                },
+                Config: {
+                  cdkV2Enabled: true,
+                  apiKey: 'dummyApiKey',
+                  applicationId: 'O2YARRI15I',
+                  eventTypeSettings: [
+                    {
+                      from: 'Product List Filtered',
+                      to: 'click',
+                    },
+                    {
+                      from: 'Product List Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Order Completed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Added',
+                      to: 'conversion',
+                    },
+                    {
+                      from: 'Product Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Clicked',
+                      to: 'click',
+                    },
+                  ],
+                  pixelId: '123456789',
+                  advertiserId: '429047995',
+                  eventId: '429047995',
+                  enhancedMatch: true,
+                  enableDeduplication: true,
+                  deduplicationKey: 'messageId',
+                  sendingUnHashedData: true,
+                  customProperties: [
+                    {
+                      properties: 'presentclass',
+                    },
+                    {
+                      properties: 'presentgrade',
+                    },
+                  ],
+                  eventsMapping: [
+                    {
+                      from: 'ABC Searched',
+                      to: 'WatchVideo',
+                    },
+                  ],
+                },
+                ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+                Name: 'ALGOLIA',
+                Enabled: true,
+                cdkV2Enabled: true,
+                Transformations: [],
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'algolia',
+    description: 'dontBatch Partial true for events in a batch',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              destination: {
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: true,
+                  },
+                },
+                Config: {
+                  cdkV2Enabled: true,
+                  apiKey: 'dummyApiKey',
+                  applicationId: 'O2YARRI15I',
+                  eventTypeSettings: [
+                    {
+                      from: 'Product List Filtered',
+                      to: 'click',
+                    },
+                    {
+                      from: 'Product List Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Order Completed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Added',
+                      to: 'conversion',
+                    },
+                    {
+                      from: 'Product Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Clicked',
+                      to: 'click',
+                    },
+                  ],
+                  pixelId: '123456789',
+                  advertiserId: '429047995',
+                  eventId: '429047995',
+                  enhancedMatch: true,
+                  enableDeduplication: true,
+                  deduplicationKey: 'messageId',
+                  sendingUnHashedData: true,
+                  customProperties: [
+                    {
+                      properties: 'presentclass',
+                    },
+                    {
+                      properties: 'presentgrade',
+                    },
+                  ],
+                  eventsMapping: [
+                    {
+                      from: 'ABC Searched',
+                      to: 'WatchVideo',
+                    },
+                  ],
+                },
+                ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+                Name: 'ALGOLIA',
+                Enabled: true,
+                cdkV2Enabled: true,
+                Transformations: [],
+              },
+              message: {
+                channel: 'web',
+                context: {
+                  traits: {
+                    email: 'testone@gmail.com',
+                    firstName: 'test',
+                    lastName: 'one',
+                  },
+                },
+                type: 'track',
+                anonymousId: '345345',
+                event: 'product clicked',
+                userId: 'test',
+                properties: {
+                  index: 'products',
+                  filters: ['field1:hello', 'val1:val2'],
+                },
+                integrations: {
+                  All: true,
+                },
+              },
+              metadata: {
+                jobId: 1,
+                attemptNum: 0,
+                userId: '',
+                sourceId: '2bAiFXtSLvENPDRAxVRxf0Udfaz',
+                destinationId: '2dH3xYIQnTNqfgPCqfVs88gWQdQ',
+                workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
+                secret: null,
+                dontBatch: false,
+              },
+            },
+            {
+              destination: {
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: true,
+                  },
+                },
+                Config: {
+                  cdkV2Enabled: true,
+                  apiKey: 'dummyApiKey',
+                  applicationId: 'O2YARRI15I',
+                  eventTypeSettings: [
+                    {
+                      from: 'Product List Filtered',
+                      to: 'click',
+                    },
+                    {
+                      from: 'Product List Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Order Completed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Added',
+                      to: 'conversion',
+                    },
+                    {
+                      from: 'Product Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Clicked',
+                      to: 'click',
+                    },
+                  ],
+                  pixelId: '123456789',
+                  advertiserId: '429047995',
+                  eventId: '429047995',
+                  enhancedMatch: true,
+                  enableDeduplication: true,
+                  deduplicationKey: 'messageId',
+                  sendingUnHashedData: true,
+                  customProperties: [
+                    {
+                      properties: 'presentclass',
+                    },
+                    {
+                      properties: 'presentgrade',
+                    },
+                  ],
+                  eventsMapping: [
+                    {
+                      from: 'ABC Searched',
+                      to: 'WatchVideo',
+                    },
+                  ],
+                },
+                ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+                Name: 'ALGOLIA',
+                Enabled: true,
+                cdkV2Enabled: true,
+                Transformations: [],
+              },
+              message: {
+                channel: 'web',
+                context: {
+                  traits: {
+                    email: 'testone@gmail.com',
+                    firstName: 'test',
+                    lastName: 'one',
+                  },
+                },
+                type: 'track',
+                anonymousId: '345345',
+                event: 'product clicked',
+                userId: 'test',
+                properties: {
+                  index: 'products',
+                  filters: ['field1:hello', 'val1:val2'],
+                },
+                integrations: {
+                  All: true,
+                },
+              },
+              metadata: {
+                jobId: 2,
+                attemptNum: 0,
+                userId: '',
+                sourceId: '2bAiFXtSLvENPDRAxVRxf0Udfaz',
+                destinationId: '2dH3xYIQnTNqfgPCqfVs88gWQdQ',
+                workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
+                secret: null,
+                dontBatch: false,
+              },
+            },
+            {
+              destination: {
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: true,
+                  },
+                },
+                Config: {
+                  cdkV2Enabled: true,
+                  apiKey: 'dummyApiKey',
+                  applicationId: 'O2YARRI15I',
+                  eventTypeSettings: [
+                    {
+                      from: 'Product List Filtered',
+                      to: 'click',
+                    },
+                    {
+                      from: 'Product List Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Order Completed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Added',
+                      to: 'conversion',
+                    },
+                    {
+                      from: 'Product Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Clicked',
+                      to: 'click',
+                    },
+                  ],
+                  pixelId: '123456789',
+                  advertiserId: '429047995',
+                  eventId: '429047995',
+                  enhancedMatch: true,
+                  enableDeduplication: true,
+                  deduplicationKey: 'messageId',
+                  sendingUnHashedData: true,
+                  customProperties: [
+                    {
+                      properties: 'presentclass',
+                    },
+                    {
+                      properties: 'presentgrade',
+                    },
+                  ],
+                  eventsMapping: [
+                    {
+                      from: 'ABC Searched',
+                      to: 'WatchVideo',
+                    },
+                  ],
+                },
+                ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+                Name: 'ALGOLIA',
+                Enabled: true,
+                cdkV2Enabled: true,
+                Transformations: [],
+              },
+              message: {
+                channel: 'web',
+                context: {
+                  traits: {
+                    email: 'testone@gmail.com',
+                    firstName: 'test',
+                    lastName: 'one',
+                  },
+                },
+                type: 'track',
+                anonymousId: '345345',
+                event: 'product clicked',
+                userId: 'test',
+                properties: {
+                  index: 'products',
+                  filters: ['field1:hello', 'val1:val2'],
+                },
+                integrations: {
+                  All: true,
+                },
+              },
+              metadata: {
+                jobId: 3,
+                attemptNum: 0,
+                userId: '',
+                sourceId: '2bAiFXtSLvENPDRAxVRxf0Udfaz',
+                destinationId: '2dH3xYIQnTNqfgPCqfVs88gWQdQ',
+                workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
+                secret: null,
+                dontBatch: false,
+              },
+            },
+            {
+              destination: {
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: true,
+                  },
+                },
+                Config: {
+                  cdkV2Enabled: true,
+                  apiKey: 'dummyApiKey',
+                  applicationId: 'O2YARRI15I',
+                  eventTypeSettings: [
+                    {
+                      from: 'Product List Filtered',
+                      to: 'click',
+                    },
+                    {
+                      from: 'Product List Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Order Completed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Added',
+                      to: 'conversion',
+                    },
+                    {
+                      from: 'Product Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Clicked',
+                      to: 'click',
+                    },
+                  ],
+                  pixelId: '123456789',
+                  advertiserId: '429047995',
+                  eventId: '429047995',
+                  enhancedMatch: true,
+                  enableDeduplication: true,
+                  deduplicationKey: 'messageId',
+                  sendingUnHashedData: true,
+                  customProperties: [
+                    {
+                      properties: 'presentclass',
+                    },
+                    {
+                      properties: 'presentgrade',
+                    },
+                  ],
+                  eventsMapping: [
+                    {
+                      from: 'ABC Searched',
+                      to: 'WatchVideo',
+                    },
+                  ],
+                },
+                ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+                Name: 'ALGOLIA',
+                Enabled: true,
+                cdkV2Enabled: true,
+                Transformations: [],
+              },
+              message: {
+                channel: 'web',
+                context: {
+                  traits: {
+                    email: 'testone@gmail.com',
+                    firstName: 'test',
+                    lastName: 'one',
+                  },
+                },
+                type: 'track',
+                anonymousId: '345345',
+                event: 'product clicked',
+                userId: 'test',
+                properties: {
+                  index: 'products',
+                  filters: ['field1:hello', 'val1:val2'],
+                },
+                integrations: {
+                  All: true,
+                },
+              },
+              metadata: {
+                jobId: 4,
+                attemptNum: 0,
+                userId: '',
+                sourceId: '2bAiFXtSLvENPDRAxVRxf0Udfaz',
+                destinationId: '2dH3xYIQnTNqfgPCqfVs88gWQdQ',
+                workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
+                secret: null,
+                dontBatch: true,
+              },
+            },
+            {
+              destination: {
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: true,
+                  },
+                },
+                Config: {
+                  cdkV2Enabled: true,
+                  apiKey: 'dummyApiKey',
+                  applicationId: 'O2YARRI15I',
+                  eventTypeSettings: [
+                    {
+                      from: 'Product List Filtered',
+                      to: 'click',
+                    },
+                    {
+                      from: 'Product List Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Order Completed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Added',
+                      to: 'conversion',
+                    },
+                    {
+                      from: 'Product Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Clicked',
+                      to: 'click',
+                    },
+                  ],
+                  pixelId: '123456789',
+                  advertiserId: '429047995',
+                  eventId: '429047995',
+                  enhancedMatch: true,
+                  enableDeduplication: true,
+                  deduplicationKey: 'messageId',
+                  sendingUnHashedData: true,
+                  customProperties: [
+                    {
+                      properties: 'presentclass',
+                    },
+                    {
+                      properties: 'presentgrade',
+                    },
+                  ],
+                  eventsMapping: [
+                    {
+                      from: 'ABC Searched',
+                      to: 'WatchVideo',
+                    },
+                  ],
+                },
+                ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+                Name: 'ALGOLIA',
+                Enabled: true,
+                cdkV2Enabled: true,
+                Transformations: [],
+              },
+              message: {
+                channel: 'web',
+                context: {
+                  traits: {
+                    email: 'testone@gmail.com',
+                    firstName: 'test',
+                    lastName: 'one',
+                  },
+                },
+                type: 'track',
+                anonymousId: '345345',
+                event: 'product clicked',
+                userId: 'test',
+                properties: {
+                  index: 'products',
+                  filters: ['field1:hello', 'val1:val2'],
+                },
+                integrations: {
+                  All: true,
+                },
+              },
+              metadata: {
+                jobId: 5,
+                attemptNum: 0,
+                userId: '',
+                sourceId: '2bAiFXtSLvENPDRAxVRxf0Udfaz',
+                destinationId: '2dH3xYIQnTNqfgPCqfVs88gWQdQ',
+                workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
+                secret: null,
+                dontBatch: true,
+              },
+            },
+          ],
+          destType: 'algolia',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                body: {
+                  JSON: {
+                    events: [
+                      {
+                        index: 'products',
+                        filters: ['field1:hello', 'val1:val2'],
+                        userToken: 'test',
+                        eventName: 'product clicked',
+                        eventType: 'click',
+                      },
+                      {
+                        index: 'products',
+                        filters: ['field1:hello', 'val1:val2'],
+                        userToken: 'test',
+                        eventName: 'product clicked',
+                        eventType: 'click',
+                      },
+                      {
+                        index: 'products',
+                        filters: ['field1:hello', 'val1:val2'],
+                        userToken: 'test',
+                        eventName: 'product clicked',
+                        eventType: 'click',
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://insights.algolia.io/1/events',
+                headers: {
+                  'X-Algolia-Application-Id': 'O2YARRI15I',
+                  'X-Algolia-API-Key': 'dummyApiKey',
+                },
+                params: {},
+                files: {},
+              },
+              metadata: [
+                {
+                  jobId: 1,
+                  attemptNum: 0,
+                  userId: '',
+                  sourceId: '2bAiFXtSLvENPDRAxVRxf0Udfaz',
+                  destinationId: '2dH3xYIQnTNqfgPCqfVs88gWQdQ',
+                  workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
+                  secret: null,
+                  dontBatch: false,
+                },
+                {
+                  jobId: 2,
+                  attemptNum: 0,
+                  userId: '',
+                  sourceId: '2bAiFXtSLvENPDRAxVRxf0Udfaz',
+                  destinationId: '2dH3xYIQnTNqfgPCqfVs88gWQdQ',
+                  workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
+                  secret: null,
+                  dontBatch: false,
+                },
+                {
+                  jobId: 3,
+                  attemptNum: 0,
+                  userId: '',
+                  sourceId: '2bAiFXtSLvENPDRAxVRxf0Udfaz',
+                  destinationId: '2dH3xYIQnTNqfgPCqfVs88gWQdQ',
+                  workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
+                  secret: null,
+                  dontBatch: false,
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: true,
+                  },
+                },
+                Config: {
+                  cdkV2Enabled: true,
+                  apiKey: 'dummyApiKey',
+                  applicationId: 'O2YARRI15I',
+                  eventTypeSettings: [
+                    {
+                      from: 'Product List Filtered',
+                      to: 'click',
+                    },
+                    {
+                      from: 'Product List Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Order Completed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Added',
+                      to: 'conversion',
+                    },
+                    {
+                      from: 'Product Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Clicked',
+                      to: 'click',
+                    },
+                  ],
+                  pixelId: '123456789',
+                  advertiserId: '429047995',
+                  eventId: '429047995',
+                  enhancedMatch: true,
+                  enableDeduplication: true,
+                  deduplicationKey: 'messageId',
+                  sendingUnHashedData: true,
+                  customProperties: [
+                    {
+                      properties: 'presentclass',
+                    },
+                    {
+                      properties: 'presentgrade',
+                    },
+                  ],
+                  eventsMapping: [
+                    {
+                      from: 'ABC Searched',
+                      to: 'WatchVideo',
+                    },
+                  ],
+                },
+                ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+                Name: 'ALGOLIA',
+                Enabled: true,
+                cdkV2Enabled: true,
+                Transformations: [],
+              },
+            },
+            {
+              batchedRequest: {
+                body: {
+                  JSON: {
+                    events: [
+                      {
+                        index: 'products',
+                        filters: ['field1:hello', 'val1:val2'],
+                        userToken: 'test',
+                        eventName: 'product clicked',
+                        eventType: 'click',
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://insights.algolia.io/1/events',
+                headers: {
+                  'X-Algolia-Application-Id': 'O2YARRI15I',
+                  'X-Algolia-API-Key': 'dummyApiKey',
+                },
+                params: {},
+                files: {},
+              },
+              metadata: [
+                {
+                  jobId: 4,
+                  attemptNum: 0,
+                  userId: '',
+                  sourceId: '2bAiFXtSLvENPDRAxVRxf0Udfaz',
+                  destinationId: '2dH3xYIQnTNqfgPCqfVs88gWQdQ',
+                  workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
+                  secret: null,
+                  dontBatch: true,
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: true,
+                  },
+                },
+                Config: {
+                  cdkV2Enabled: true,
+                  apiKey: 'dummyApiKey',
+                  applicationId: 'O2YARRI15I',
+                  eventTypeSettings: [
+                    {
+                      from: 'Product List Filtered',
+                      to: 'click',
+                    },
+                    {
+                      from: 'Product List Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Order Completed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Added',
+                      to: 'conversion',
+                    },
+                    {
+                      from: 'Product Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Clicked',
+                      to: 'click',
+                    },
+                  ],
+                  pixelId: '123456789',
+                  advertiserId: '429047995',
+                  eventId: '429047995',
+                  enhancedMatch: true,
+                  enableDeduplication: true,
+                  deduplicationKey: 'messageId',
+                  sendingUnHashedData: true,
+                  customProperties: [
+                    {
+                      properties: 'presentclass',
+                    },
+                    {
+                      properties: 'presentgrade',
+                    },
+                  ],
+                  eventsMapping: [
+                    {
+                      from: 'ABC Searched',
+                      to: 'WatchVideo',
+                    },
+                  ],
+                },
+                ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+                Name: 'ALGOLIA',
+                Enabled: true,
+                cdkV2Enabled: true,
+                Transformations: [],
+              },
+            },
+            {
+              batchedRequest: {
+                body: {
+                  JSON: {
+                    events: [
+                      {
+                        index: 'products',
+                        filters: ['field1:hello', 'val1:val2'],
+                        userToken: 'test',
+                        eventName: 'product clicked',
+                        eventType: 'click',
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://insights.algolia.io/1/events',
+                headers: {
+                  'X-Algolia-Application-Id': 'O2YARRI15I',
+                  'X-Algolia-API-Key': 'dummyApiKey',
+                },
+                params: {},
+                files: {},
+              },
+              metadata: [
+                {
+                  jobId: 5,
+                  attemptNum: 0,
+                  userId: '',
+                  sourceId: '2bAiFXtSLvENPDRAxVRxf0Udfaz',
+                  destinationId: '2dH3xYIQnTNqfgPCqfVs88gWQdQ',
+                  workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
+                  secret: null,
+                  dontBatch: true,
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: true,
+                  },
+                },
+                Config: {
+                  cdkV2Enabled: true,
+                  apiKey: 'dummyApiKey',
+                  applicationId: 'O2YARRI15I',
+                  eventTypeSettings: [
+                    {
+                      from: 'Product List Filtered',
+                      to: 'click',
+                    },
+                    {
+                      from: 'Product List Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Order Completed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Added',
+                      to: 'conversion',
+                    },
+                    {
+                      from: 'Product Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Clicked',
+                      to: 'click',
+                    },
+                  ],
+                  pixelId: '123456789',
+                  advertiserId: '429047995',
+                  eventId: '429047995',
+                  enhancedMatch: true,
+                  enableDeduplication: true,
+                  deduplicationKey: 'messageId',
+                  sendingUnHashedData: true,
+                  customProperties: [
+                    {
+                      properties: 'presentclass',
+                    },
+                    {
+                      properties: 'presentgrade',
+                    },
+                  ],
+                  eventsMapping: [
+                    {
+                      from: 'ABC Searched',
+                      to: 'WatchVideo',
+                    },
+                  ],
+                },
+                ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+                Name: 'ALGOLIA',
+                Enabled: true,
+                cdkV2Enabled: true,
+                Transformations: [],
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'algolia',
+    description: 'dontBatch false for all events, all events are batched in 1',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              destination: {
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: true,
+                  },
+                },
+                Config: {
+                  cdkV2Enabled: true,
+                  apiKey: 'dummyApiKey',
+                  applicationId: 'O2YARRI15I',
+                  eventTypeSettings: [
+                    {
+                      from: 'Product List Filtered',
+                      to: 'click',
+                    },
+                    {
+                      from: 'Product List Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Order Completed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Added',
+                      to: 'conversion',
+                    },
+                    {
+                      from: 'Product Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Clicked',
+                      to: 'click',
+                    },
+                  ],
+                  pixelId: '123456789',
+                  advertiserId: '429047995',
+                  eventId: '429047995',
+                  enhancedMatch: true,
+                  enableDeduplication: true,
+                  deduplicationKey: 'messageId',
+                  sendingUnHashedData: true,
+                  customProperties: [
+                    {
+                      properties: 'presentclass',
+                    },
+                    {
+                      properties: 'presentgrade',
+                    },
+                  ],
+                  eventsMapping: [
+                    {
+                      from: 'ABC Searched',
+                      to: 'WatchVideo',
+                    },
+                  ],
+                },
+                ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+                Name: 'ALGOLIA',
+                Enabled: true,
+                cdkV2Enabled: true,
+                Transformations: [],
+              },
+              message: {
+                channel: 'web',
+                context: {
+                  traits: {
+                    email: 'testone@gmail.com',
+                    firstName: 'test',
+                    lastName: 'one',
+                  },
+                },
+                type: 'track',
+                anonymousId: '345345',
+                event: 'product clicked',
+                userId: 'test',
+                properties: {
+                  index: 'products',
+                  filters: ['field1:hello', 'val1:val2'],
+                },
+                integrations: {
+                  All: true,
+                },
+              },
+              metadata: {
+                jobId: 1,
+                attemptNum: 0,
+                userId: '',
+                sourceId: '2bAiFXtSLvENPDRAxVRxf0Udfaz',
+                destinationId: '2dH3xYIQnTNqfgPCqfVs88gWQdQ',
+                workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
+                secret: null,
+                dontBatch: false,
+              },
+            },
+            {
+              destination: {
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: true,
+                  },
+                },
+                Config: {
+                  cdkV2Enabled: true,
+                  apiKey: 'dummyApiKey',
+                  applicationId: 'O2YARRI15I',
+                  eventTypeSettings: [
+                    {
+                      from: 'Product List Filtered',
+                      to: 'click',
+                    },
+                    {
+                      from: 'Product List Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Order Completed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Added',
+                      to: 'conversion',
+                    },
+                    {
+                      from: 'Product Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Clicked',
+                      to: 'click',
+                    },
+                  ],
+                  pixelId: '123456789',
+                  advertiserId: '429047995',
+                  eventId: '429047995',
+                  enhancedMatch: true,
+                  enableDeduplication: true,
+                  deduplicationKey: 'messageId',
+                  sendingUnHashedData: true,
+                  customProperties: [
+                    {
+                      properties: 'presentclass',
+                    },
+                    {
+                      properties: 'presentgrade',
+                    },
+                  ],
+                  eventsMapping: [
+                    {
+                      from: 'ABC Searched',
+                      to: 'WatchVideo',
+                    },
+                  ],
+                },
+                ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+                Name: 'ALGOLIA',
+                Enabled: true,
+                cdkV2Enabled: true,
+                Transformations: [],
+              },
+              message: {
+                channel: 'web',
+                context: {
+                  traits: {
+                    email: 'testone@gmail.com',
+                    firstName: 'test',
+                    lastName: 'one',
+                  },
+                },
+                type: 'track',
+                anonymousId: '345345',
+                event: 'product clicked',
+                userId: 'test',
+                properties: {
+                  index: 'products',
+                  filters: ['field1:hello', 'val1:val2'],
+                },
+                integrations: {
+                  All: true,
+                },
+              },
+              metadata: {
+                jobId: 2,
+                attemptNum: 0,
+                userId: '',
+                sourceId: '2bAiFXtSLvENPDRAxVRxf0Udfaz',
+                destinationId: '2dH3xYIQnTNqfgPCqfVs88gWQdQ',
+                workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
+                secret: null,
+                dontBatch: false,
+              },
+            },
+            {
+              destination: {
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: true,
+                  },
+                },
+                Config: {
+                  cdkV2Enabled: true,
+                  apiKey: 'dummyApiKey',
+                  applicationId: 'O2YARRI15I',
+                  eventTypeSettings: [
+                    {
+                      from: 'Product List Filtered',
+                      to: 'click',
+                    },
+                    {
+                      from: 'Product List Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Order Completed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Added',
+                      to: 'conversion',
+                    },
+                    {
+                      from: 'Product Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Clicked',
+                      to: 'click',
+                    },
+                  ],
+                  pixelId: '123456789',
+                  advertiserId: '429047995',
+                  eventId: '429047995',
+                  enhancedMatch: true,
+                  enableDeduplication: true,
+                  deduplicationKey: 'messageId',
+                  sendingUnHashedData: true,
+                  customProperties: [
+                    {
+                      properties: 'presentclass',
+                    },
+                    {
+                      properties: 'presentgrade',
+                    },
+                  ],
+                  eventsMapping: [
+                    {
+                      from: 'ABC Searched',
+                      to: 'WatchVideo',
+                    },
+                  ],
+                },
+                ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+                Name: 'ALGOLIA',
+                Enabled: true,
+                cdkV2Enabled: true,
+                Transformations: [],
+              },
+              message: {
+                channel: 'web',
+                context: {
+                  traits: {
+                    email: 'testone@gmail.com',
+                    firstName: 'test',
+                    lastName: 'one',
+                  },
+                },
+                type: 'track',
+                anonymousId: '345345',
+                event: 'product clicked',
+                userId: 'test',
+                properties: {
+                  index: 'products',
+                  filters: ['field1:hello', 'val1:val2'],
+                },
+                integrations: {
+                  All: true,
+                },
+              },
+              metadata: {
+                jobId: 3,
+                attemptNum: 0,
+                userId: '',
+                sourceId: '2bAiFXtSLvENPDRAxVRxf0Udfaz',
+                destinationId: '2dH3xYIQnTNqfgPCqfVs88gWQdQ',
+                workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
+                secret: null,
+                dontBatch: false,
+              },
+            },
+            {
+              destination: {
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: true,
+                  },
+                },
+                Config: {
+                  cdkV2Enabled: true,
+                  apiKey: 'dummyApiKey',
+                  applicationId: 'O2YARRI15I',
+                  eventTypeSettings: [
+                    {
+                      from: 'Product List Filtered',
+                      to: 'click',
+                    },
+                    {
+                      from: 'Product List Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Order Completed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Added',
+                      to: 'conversion',
+                    },
+                    {
+                      from: 'Product Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Clicked',
+                      to: 'click',
+                    },
+                  ],
+                  pixelId: '123456789',
+                  advertiserId: '429047995',
+                  eventId: '429047995',
+                  enhancedMatch: true,
+                  enableDeduplication: true,
+                  deduplicationKey: 'messageId',
+                  sendingUnHashedData: true,
+                  customProperties: [
+                    {
+                      properties: 'presentclass',
+                    },
+                    {
+                      properties: 'presentgrade',
+                    },
+                  ],
+                  eventsMapping: [
+                    {
+                      from: 'ABC Searched',
+                      to: 'WatchVideo',
+                    },
+                  ],
+                },
+                ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+                Name: 'ALGOLIA',
+                Enabled: true,
+                cdkV2Enabled: true,
+                Transformations: [],
+              },
+              message: {
+                channel: 'web',
+                context: {
+                  traits: {
+                    email: 'testone@gmail.com',
+                    firstName: 'test',
+                    lastName: 'one',
+                  },
+                },
+                type: 'track',
+                anonymousId: '345345',
+                event: 'product clicked',
+                userId: 'test',
+                properties: {
+                  index: 'products',
+                  filters: ['field1:hello', 'val1:val2'],
+                },
+                integrations: {
+                  All: true,
+                },
+              },
+              metadata: {
+                jobId: 4,
+                attemptNum: 0,
+                userId: '',
+                sourceId: '2bAiFXtSLvENPDRAxVRxf0Udfaz',
+                destinationId: '2dH3xYIQnTNqfgPCqfVs88gWQdQ',
+                workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
+                secret: null,
+                dontBatch: false,
+              },
+            },
+            {
+              destination: {
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: true,
+                  },
+                },
+                Config: {
+                  cdkV2Enabled: true,
+                  apiKey: 'dummyApiKey',
+                  applicationId: 'O2YARRI15I',
+                  eventTypeSettings: [
+                    {
+                      from: 'Product List Filtered',
+                      to: 'click',
+                    },
+                    {
+                      from: 'Product List Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Order Completed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Added',
+                      to: 'conversion',
+                    },
+                    {
+                      from: 'Product Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Clicked',
+                      to: 'click',
+                    },
+                  ],
+                  pixelId: '123456789',
+                  advertiserId: '429047995',
+                  eventId: '429047995',
+                  enhancedMatch: true,
+                  enableDeduplication: true,
+                  deduplicationKey: 'messageId',
+                  sendingUnHashedData: true,
+                  customProperties: [
+                    {
+                      properties: 'presentclass',
+                    },
+                    {
+                      properties: 'presentgrade',
+                    },
+                  ],
+                  eventsMapping: [
+                    {
+                      from: 'ABC Searched',
+                      to: 'WatchVideo',
+                    },
+                  ],
+                },
+                ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+                Name: 'ALGOLIA',
+                Enabled: true,
+                cdkV2Enabled: true,
+                Transformations: [],
+              },
+              message: {
+                channel: 'web',
+                context: {
+                  traits: {
+                    email: 'testone@gmail.com',
+                    firstName: 'test',
+                    lastName: 'one',
+                  },
+                },
+                type: 'track',
+                anonymousId: '345345',
+                event: 'product clicked',
+                userId: 'test',
+                properties: {
+                  index: 'products',
+                  filters: ['field1:hello', 'val1:val2'],
+                },
+                integrations: {
+                  All: true,
+                },
+              },
+              metadata: {
+                jobId: 5,
+                attemptNum: 0,
+                userId: '',
+                sourceId: '2bAiFXtSLvENPDRAxVRxf0Udfaz',
+                destinationId: '2dH3xYIQnTNqfgPCqfVs88gWQdQ',
+                workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
+                secret: null,
+                dontBatch: false,
+              },
+            },
+          ],
+          destType: 'algolia',
+        },
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: {
+                body: {
+                  JSON: {
+                    events: [
+                      {
+                        index: 'products',
+                        filters: ['field1:hello', 'val1:val2'],
+                        userToken: 'test',
+                        eventName: 'product clicked',
+                        eventType: 'click',
+                      },
+                      {
+                        index: 'products',
+                        filters: ['field1:hello', 'val1:val2'],
+                        userToken: 'test',
+                        eventName: 'product clicked',
+                        eventType: 'click',
+                      },
+                      {
+                        index: 'products',
+                        filters: ['field1:hello', 'val1:val2'],
+                        userToken: 'test',
+                        eventName: 'product clicked',
+                        eventType: 'click',
+                      },
+                      {
+                        index: 'products',
+                        filters: ['field1:hello', 'val1:val2'],
+                        userToken: 'test',
+                        eventName: 'product clicked',
+                        eventType: 'click',
+                      },
+                      {
+                        index: 'products',
+                        filters: ['field1:hello', 'val1:val2'],
+                        userToken: 'test',
+                        eventName: 'product clicked',
+                        eventType: 'click',
+                      },
+                    ],
+                  },
+                  JSON_ARRAY: {},
+                  XML: {},
+                  FORM: {},
+                },
+                version: '1',
+                type: 'REST',
+                method: 'POST',
+                endpoint: 'https://insights.algolia.io/1/events',
+                headers: {
+                  'X-Algolia-Application-Id': 'O2YARRI15I',
+                  'X-Algolia-API-Key': 'dummyApiKey',
+                },
+                params: {},
+                files: {},
+              },
+              metadata: [
+                {
+                  jobId: 1,
+                  attemptNum: 0,
+                  userId: '',
+                  sourceId: '2bAiFXtSLvENPDRAxVRxf0Udfaz',
+                  destinationId: '2dH3xYIQnTNqfgPCqfVs88gWQdQ',
+                  workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
+                  secret: null,
+                  dontBatch: false,
+                },
+                {
+                  jobId: 2,
+                  attemptNum: 0,
+                  userId: '',
+                  sourceId: '2bAiFXtSLvENPDRAxVRxf0Udfaz',
+                  destinationId: '2dH3xYIQnTNqfgPCqfVs88gWQdQ',
+                  workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
+                  secret: null,
+                  dontBatch: false,
+                },
+                {
+                  jobId: 3,
+                  attemptNum: 0,
+                  userId: '',
+                  sourceId: '2bAiFXtSLvENPDRAxVRxf0Udfaz',
+                  destinationId: '2dH3xYIQnTNqfgPCqfVs88gWQdQ',
+                  workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
+                  secret: null,
+                  dontBatch: false,
+                },
+                {
+                  jobId: 4,
+                  attemptNum: 0,
+                  userId: '',
+                  sourceId: '2bAiFXtSLvENPDRAxVRxf0Udfaz',
+                  destinationId: '2dH3xYIQnTNqfgPCqfVs88gWQdQ',
+                  workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
+                  secret: null,
+                  dontBatch: false,
+                },
+                {
+                  jobId: 5,
+                  attemptNum: 0,
+                  userId: '',
+                  sourceId: '2bAiFXtSLvENPDRAxVRxf0Udfaz',
+                  destinationId: '2dH3xYIQnTNqfgPCqfVs88gWQdQ',
+                  workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
+                  secret: null,
+                  dontBatch: false,
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: true,
+                  },
+                },
+                Config: {
+                  cdkV2Enabled: true,
+                  apiKey: 'dummyApiKey',
+                  applicationId: 'O2YARRI15I',
+                  eventTypeSettings: [
+                    {
+                      from: 'Product List Filtered',
+                      to: 'click',
+                    },
+                    {
+                      from: 'Product List Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Order Completed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Added',
+                      to: 'conversion',
+                    },
+                    {
+                      from: 'Product Viewed',
+                      to: 'view',
+                    },
+                    {
+                      from: 'Product Clicked',
+                      to: 'click',
+                    },
+                  ],
+                  pixelId: '123456789',
+                  advertiserId: '429047995',
+                  eventId: '429047995',
+                  enhancedMatch: true,
+                  enableDeduplication: true,
+                  deduplicationKey: 'messageId',
+                  sendingUnHashedData: true,
+                  customProperties: [
+                    {
+                      properties: 'presentclass',
+                    },
+                    {
+                      properties: 'presentgrade',
+                    },
+                  ],
+                  eventsMapping: [
+                    {
+                      from: 'ABC Searched',
+                      to: 'WatchVideo',
+                    },
+                  ],
+                },
+                ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+                Name: 'ALGOLIA',
+                Enabled: true,
+                cdkV2Enabled: true,
+                Transformations: [],
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
 ];

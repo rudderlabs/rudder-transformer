@@ -28,6 +28,7 @@ const {
   trackClickConversionsMapping,
   CLICK_CONVERSION,
   trackCallConversionsMapping,
+  consentConfigMap,
 } = require('./config');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const Cache = require('../../util/cache');
@@ -222,7 +223,11 @@ function getExisitingUserIdentifier(userIdentifierInfo, defaultUserIdentifier) {
 const getCallConversionPayload = (message, Config, eventLevelConsentsData) => {
   const payload = constructPayload(message, trackCallConversionsMapping);
   // here conversions[0] should be present because there are some mandatory properties mapped in the mapping json.
-  payload.conversions[0].consent = finaliseConsent(eventLevelConsentsData, Config);
+  payload.conversions[0].consent = finaliseConsent(
+    consentConfigMap,
+    eventLevelConsentsData,
+    Config,
+  );
   return payload;
 };
 
@@ -283,7 +288,7 @@ const getAddConversionPayload = (message, Config) => {
     }
   }
   // add consent support for store conversions. Note: No event level consent supported.
-  const consentObject = finaliseConsent({}, Config);
+  const consentObject = finaliseConsent(consentConfigMap, {}, Config);
   // create property should be present because there are some mandatory properties mapped in the mapping json.
   set(payload, 'operations.create.consent', consentObject);
   return payload;
@@ -380,7 +385,7 @@ const getClickConversionPayloadAndEndpoint = (
   }
 
   // add consent support for click conversions
-  const consentObject = finaliseConsent(eventLevelConsent, Config);
+  const consentObject = finaliseConsent(consentConfigMap, eventLevelConsent, Config);
   // here conversions[0] is expected to be present there are some mandatory properties mapped in the mapping json.
   set(payload, 'conversions[0].consent', consentObject);
   return { payload, endpoint };

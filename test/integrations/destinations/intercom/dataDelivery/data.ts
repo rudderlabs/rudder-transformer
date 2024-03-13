@@ -54,10 +54,10 @@ export const data = [
     },
     output: {
       response: {
-        status: 500,
+        status: 408,
         body: {
           output: {
-            status: 500,
+            status: 408,
             message:
               '[Intercom Response Handler] Request failed for destination intercom with status: 408',
             destinationResponse: {

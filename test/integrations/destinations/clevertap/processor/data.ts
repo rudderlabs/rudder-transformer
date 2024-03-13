@@ -124,6 +124,130 @@ export const data = [
   },
   {
     name: 'clevertap',
+    description: 'Should not load email from externalId',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                passcode: 'sample_passcode',
+                accountId: '476550467',
+                trackAnonymous: true,
+                enableObjectIdMapping: false,
+              },
+            },
+            message: {
+              channel: 'web',
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
+              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+              originalTimestamp: '2019-10-14T09:03:17.562Z',
+              anonymousId: 'anon_id',
+              type: 'identify',
+              traits: {
+                anonymousId: 'anon_id',
+                name: 'James Doe',
+                phone: '92374162212',
+                gender: 'M',
+                employed: true,
+                birthday: '1614775793',
+                education: 'Science',
+                graduate: true,
+                married: true,
+                customerType: 'Prime',
+                msg_push: true,
+                msgSms: true,
+                msgemail: true,
+                msgwhatsapp: false,
+                custom_tags: ['Test_User', 'Interested_User', 'DIY_Hobby'],
+                custom_mappings: {
+                  Office: 'Trastkiv',
+                  Country: 'Russia',
+                },
+                address: {
+                  city: 'kolkata',
+                  country: 'India',
+                  postalCode: 789223,
+                  state: 'WB',
+                  street: '',
+                },
+                'category-unsubscribe': { email: ['Marketing', 'Transactional'] },
+              },
+              context: {
+                externalId: [{ type: 'someId', id: 'someID' }],
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T09:03:22.563Z',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.clevertap.com/1/upload',
+              headers: {
+                'X-CleverTap-Account-Id': '476550467',
+                'X-CleverTap-Passcode': 'sample_passcode',
+                'Content-Type': 'application/json',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  d: [
+                    {
+                      type: 'profile',
+                      profileData: {
+                        Name: 'James Doe',
+                        Phone: '92374162212',
+                        Gender: 'M',
+                        Employed: true,
+                        DOB: '1614775793',
+                        Education: 'Science',
+                        Married: true,
+                        'Customer Type': 'Prime',
+                        graduate: true,
+                        msg_push: true,
+                        msgSms: true,
+                        msgemail: true,
+                        msgwhatsapp: false,
+                        custom_mappings: '{"Office":"Trastkiv","Country":"Russia"}',
+                        custom_tags: '["Test_User","Interested_User","DIY_Hobby"]',
+                        address:
+                          '{"city":"kolkata","country":"India","postalCode":789223,"state":"WB","street":""}',
+                        'category-unsubscribe': { email: ['Marketing', 'Transactional'] },
+                      },
+                      identity: 'anon_id',
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'clevertap',
     description: 'Test 1',
     feature: 'processor',
     module: 'destination',

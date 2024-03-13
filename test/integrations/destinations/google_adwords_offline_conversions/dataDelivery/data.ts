@@ -1,7 +1,7 @@
 export const data = [
   {
     name: 'google_adwords_offline_conversions',
-    description: 'Test 0',
+    description: 'Invalid SHA256 format',
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v0',
@@ -142,7 +142,7 @@ export const data = [
   },
   {
     name: 'google_adwords_offline_conversions',
-    description: 'Test 1',
+    description: 'Success scenario v0 handler',
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v0',
@@ -238,7 +238,7 @@ export const data = [
   },
   {
     name: 'google_adwords_offline_conversions',
-    description: 'Test 2',
+    description: 'Expired Oauth token v0 handler',
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v0',
@@ -494,7 +494,7 @@ export const data = [
   },
   {
     name: 'google_adwords_offline_conversions',
-    description: 'Test 4',
+    description: 'Click Conversion Success v0 handler',
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v0',
@@ -635,7 +635,7 @@ export const data = [
   },
   {
     name: 'google_adwords_offline_conversions',
-    description: 'Test 5',
+    description: 'Click Conversion',
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v0',
@@ -760,6 +760,302 @@ export const data = [
             message:
               '[Google Ads Offline Conversions Response Handler] - Request processed successfully',
             status: 200,
+          },
+        },
+      },
+    },
+  },
+  {
+    name: 'google_adwords_offline_conversions',
+    description: 'Refresh token Flow V1 proxy',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: {
+          version: '1',
+          type: 'REST',
+          method: 'POST',
+          endpoint:
+            'https://googleads.googleapis.com/v14/customers/1234567890:uploadClickConversions',
+          headers: {
+            Authorization: 'Bearer abcd1234',
+            'Content-Type': 'application/json',
+            'developer-token': 'ijkl91011',
+          },
+          params: {
+            event: 'Sign-up - click',
+            customerId: '1234567890',
+            customVariables: [
+              {
+                from: 'value',
+                to: 'revenue',
+              },
+              {
+                from: 'total',
+                to: 'cost',
+              },
+            ],
+            properties: {
+              gbraid: 'gbraid',
+              wbraid: 'wbraid',
+              externalAttributionCredit: 10,
+              externalAttributionModel: 'externalAttributionModel',
+              conversionCustomVariable: 'conversionCustomVariable',
+              value: 'value',
+              merchantId: '9876merchantId',
+              feedCountryCode: 'feedCountryCode',
+              feedLanguageCode: 'feedLanguageCode',
+              localTransactionCost: 20,
+              products: [
+                {
+                  product_id: '507f1f77bcf86cd799439011',
+                  quantity: '2',
+                  price: '50',
+                  sku: '45790-32',
+                  name: 'Monopoly: 3rd Edition',
+                  position: '1',
+                  category: 'cars',
+                  url: 'https://www.example.com/product/path',
+                  image_url: 'https://www.example.com/product/path.jpg',
+                },
+              ],
+              userIdentifierSource: 'FIRST_PARTY',
+              conversionEnvironment: 'WEB',
+              gclid: 'gclid',
+              conversionDateTime: '2022-01-01 12:32:45-08:00',
+              conversionValue: '1',
+              currency: 'GBP',
+              orderId: 'PL-123QR',
+            },
+          },
+          body: {
+            JSON: {
+              conversions: [
+                {
+                  gbraid: 'gbraid',
+                  wbraid: 'wbraid',
+                  externalAttributionData: {
+                    externalAttributionCredit: 10,
+                    externalAttributionModel: 'externalAttributionModel',
+                  },
+                  cartData: {
+                    merchantId: 9876,
+                    feedCountryCode: 'feedCountryCode',
+                    feedLanguageCode: 'feedLanguageCode',
+                    localTransactionCost: 20,
+                    items: [
+                      {
+                        productId: '507f1f77bcf86cd799439011',
+                        quantity: 2,
+                        unitPrice: 50,
+                      },
+                    ],
+                  },
+                  userIdentifiers: [
+                    {
+                      userIdentifierSource: 'FIRST_PARTY',
+                      hashedEmail:
+                        '6db61e6dcbcf2390e4a46af426f26a133a3bee45021422fc7ae86e9136f14110',
+                    },
+                  ],
+                  conversionEnvironment: 'WEB',
+                  gclid: 'gclid',
+                  conversionDateTime: '2022-01-01 12:32:45-08:00',
+                  conversionValue: 1,
+                  currencyCode: 'GBP',
+                  orderId: 'PL-123QR',
+                },
+              ],
+              partialFailure: true,
+            },
+            JSON_ARRAY: {},
+            XML: {},
+            FORM: {},
+          },
+          metadata: [
+            {
+              jobId: 2,
+              attemptNum: 0,
+              userId: '',
+              sourceId: 'src',
+              destinationId: 'des',
+              workspaceId: 'wsp',
+              secret: {
+                access_token: 'secret',
+                refresh_token: 'refresh',
+                developer_token: 'developer_Token',
+              },
+            },
+          ],
+          files: {},
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 401,
+        body: {
+          output: {
+            status: 401,
+            message:
+              '[Google Ads Offline Conversions]:: [{"error":{"code":401,"message":"Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.","status":"UNAUTHENTICATED"}}] during google_ads_offline_conversions response transformation',
+            authErrorCategory: 'REFRESH_TOKEN',
+            statTags: {
+              destType: 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS',
+              destinationId: 'des',
+              errorCategory: 'network',
+              errorType: 'aborted',
+              feature: 'dataDelivery',
+              implementation: 'native',
+              module: 'destination',
+              workspaceId: 'wsp',
+            },
+            response: [
+              {
+                error:
+                  '[Google Ads Offline Conversions]:: [{"error":{"code":401,"message":"Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.","status":"UNAUTHENTICATED"}}] during google_ads_offline_conversions response transformation',
+                metadata: {
+                  attemptNum: 0,
+                  destinationId: 'des',
+                  jobId: 2,
+                  secret: {
+                    access_token: 'secret',
+                    developer_token: 'developer_Token',
+                    refresh_token: 'refresh',
+                  },
+                  sourceId: 'src',
+                  userId: '',
+                  workspaceId: 'wsp',
+                },
+                statusCode: 401,
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+  {
+    name: 'google_adwords_offline_conversions',
+    description: 'Success Call - v1 proxy',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: {
+          version: '1',
+          type: 'REST',
+          method: 'POST',
+          endpoint: 'https://googleads.googleapis.com/v14/customers/1112223333/offlineUserDataJobs',
+          headers: {
+            Authorization: 'Bearer abcd1234',
+            'Content-Type': 'application/json',
+            'developer-token': 'ijkl91011',
+            'login-customer-id': 'logincustomerid',
+          },
+          params: {
+            customerId: '1112223333',
+            event: 'Sign-up - click',
+          },
+          body: {
+            JSON: {
+              addConversionPayload: {
+                enable_partial_failure: false,
+                enable_warnings: false,
+                operations: [
+                  {
+                    create: {
+                      transaction_attribute: {
+                        CUSTOM_KEY: 'CUSTOM_VALUE',
+                        currency_code: 'INR',
+                        order_id: 'order id',
+                        store_attribute: {
+                          store_code: 'store code',
+                        },
+                        transaction_amount_micros: '100000000',
+                        transaction_date_time: '2019-10-14 11:15:18+00:00',
+                      },
+                      userIdentifiers: [
+                        {
+                          hashedEmail:
+                            '6db61e6dcbcf2390e4a46af426f26a133a3bee45021422fc7ae86e9136f14110',
+                          userIdentifierSource: 'UNSPECIFIED',
+                        },
+                      ],
+                    },
+                  },
+                ],
+                validate_only: false,
+              },
+              createJobPayload: {
+                job: {
+                  storeSalesMetadata: {
+                    custom_key: 'CUSTOM_KEY',
+                    loyaltyFraction: 1,
+                    transaction_upload_fraction: '1',
+                  },
+                  type: 'STORE_SALES_UPLOAD_FIRST_PARTY',
+                },
+              },
+              event: '1112223333',
+              executeJobPayload: {
+                validate_only: false,
+              },
+              isStoreConversion: true,
+            },
+            JSON_ARRAY: {},
+            XML: {},
+            FORM: {},
+          },
+          metadata: [
+            {
+              jobId: 1,
+              attemptNum: 0,
+              userId: '',
+              sourceId: 'src',
+              destinationId: 'des',
+              workspaceId: 'wsp',
+              secret: {
+                access_token: 'secret',
+                refresh_token: 'refresh',
+                developer_token: 'developer_Token',
+              },
+            },
+          ],
+          files: {},
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 200,
+            message:
+              '[Google Ads Offline Conversions Response Handler] - Request processed successfully',
+            response: [
+              {
+                error: '{"name":"customers/111-222-3333/operations/abcd="}',
+                metadata: {
+                  attemptNum: 0,
+                  destinationId: 'des',
+                  jobId: 1,
+                  secret: {
+                    access_token: 'secret',
+                    developer_token: 'developer_Token',
+                    refresh_token: 'refresh',
+                  },
+                  sourceId: 'src',
+                  userId: '',
+                  workspaceId: 'wsp',
+                },
+                statusCode: 200,
+              },
+            ],
           },
         },
       },

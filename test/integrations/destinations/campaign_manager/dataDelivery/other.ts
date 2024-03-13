@@ -260,7 +260,7 @@ export const otherScenariosV1: ProxyV1TestData[] = [
               {
                 error:
                   '{"error":{"message":"Service Unavailable","description":"The server is currently unable to handle the request due to temporary overloading or maintenance of the server. Please try again later."}}',
-                statusCode: 500,
+                statusCode: 503,
                 metadata: {
                   jobId: 1,
                   attemptNum: 1,
@@ -287,7 +287,7 @@ export const otherScenariosV1: ProxyV1TestData[] = [
             },
             message:
               'Campaign Manager: Error transformer proxy v1 during CAMPAIGN_MANAGER response transformation',
-            status: 500,
+            status: 503,
           },
         },
       },
@@ -376,7 +376,7 @@ export const otherScenariosV1: ProxyV1TestData[] = [
             response: [
               {
                 error: '"Gateway Timeout"',
-                statusCode: 500,
+                statusCode: 504,
                 metadata: {
                   jobId: 1,
                   attemptNum: 1,
@@ -403,7 +403,7 @@ export const otherScenariosV1: ProxyV1TestData[] = [
             },
             message:
               'Campaign Manager: Error transformer proxy v1 during CAMPAIGN_MANAGER response transformation',
-            status: 500,
+            status: 504,
           },
         },
       },

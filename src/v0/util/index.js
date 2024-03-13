@@ -1419,6 +1419,11 @@ function getStringValueOfJSON(json) {
   return output;
 }
 
+const getTrackingPlanMetadata = (metadata) => ({
+  trackingPlanId: metadata.trackingPlanId,
+  workspaceId: metadata.workspaceId,
+});
+
 const getMetadata = (metadata) => ({
   sourceType: metadata.sourceType,
   destinationType: metadata.destinationType,
@@ -2267,6 +2272,7 @@ module.exports = {
   getMappingConfig,
   getMetadata,
   getTransformationMetadata,
+  getTrackingPlanMetadata,
   getParsedIP,
   getStringValueOfJSON,
   getSuccessRespEvents,

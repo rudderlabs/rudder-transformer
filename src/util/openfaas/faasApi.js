@@ -1,6 +1,8 @@
 const axios = require('axios');
 const { RespStatusError, RetryRequestError } = require('../utils');
 
+//const logger = require('../../logger');
+
 const OPENFAAS_GATEWAY_URL = process.env.OPENFAAS_GATEWAY_URL || 'http://localhost:8080';
 const OPENFAAS_GATEWAY_USERNAME = process.env.OPENFAAS_GATEWAY_USERNAME || '';
 const OPENFAAS_GATEWAY_PASSWORD = process.env.OPENFAAS_GATEWAY_PASSWORD || '';
@@ -28,7 +30,7 @@ const deleteFunction = async (functionName) =>
   new Promise((resolve, reject) => {
     const url = `${OPENFAAS_GATEWAY_URL}/system/functions`;
     axios
-      .delete(url, { data: { functionName } }, { auth: basicAuth })
+      .delete(url, { data: { functionName }, auth: basicAuth })
       .then(() => resolve())
       .catch((err) => reject(parseAxiosError(err)));
   });
@@ -60,8 +62,10 @@ const invokeFunction = async (functionName, payload) =>
       .catch((err) => reject(parseAxiosError(err)));
   });
 
-const checkFunctionHealth = async (functionName) =>
-  new Promise((resolve, reject) => {
+const checkFunctionHealth = async (functionName) => {
+  //logger.error(`checking function health: ${functionName}`);
+
+  return new Promise((resolve, reject) => {
     const url = `${OPENFAAS_GATEWAY_URL}/function/${functionName}`;
     axios
       .get(
@@ -74,6 +78,7 @@ const checkFunctionHealth = async (functionName) =>
       .then((resp) => resolve(resp))
       .catch((err) => reject(parseAxiosError(err)));
   });
+};
 
 const deployFunction = async (payload) =>
   new Promise((resolve, reject) => {
@@ -81,7 +86,10 @@ const deployFunction = async (payload) =>
     axios
       .post(url, payload, { auth: basicAuth })
       .then((resp) => resolve(resp.data))
-      .catch((err) => reject(parseAxiosError(err)));
+      .catch((err) => {
+        //logger.error(err);
+        reject(parseAxiosError(err));
+      });
   });
 
 module.exports = {

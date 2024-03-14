@@ -66,6 +66,8 @@ const awaitFunctionReadiness = async (
   maxWaitInMs = 22000,
   waitBetweenIntervalsInMs = 250,
 ) => {
+  //logger.error(`awaiting function readiness: ${functionName}`);
+
   const executionPromise = new Promise(async (resolve) => {
     try {
       await callWithRetry(
@@ -129,7 +131,7 @@ const deployFaasFunction = async (
   trMetadata = {},
 ) => {
   try {
-    logger.debug('[Faas] Deploying a faas function');
+    logger.debug(`[Faas] Deploying a faas function: ${functionName}`);
     let envProcess = 'python index.py';
 
     const lvidsString = libraryVersionIDs.join(',');
@@ -207,6 +209,18 @@ const deployFaasFunction = async (
   }
 };
 
+async function removeFaasFunction(fname) {
+  logger.debug(`[Faas] Removing faas function: ${fname}`);
+  try {
+    await deleteFunction(fname);
+  } catch (error) {
+    if (error.statusCode !== 404) {
+      logger.error(`[Faas] Error while removing ${fname}: ${error.message}`);
+      throw error;
+    }
+  }
+}
+
 async function setupFaasFunction(
   functionName,
   code,
@@ -217,7 +231,7 @@ async function setupFaasFunction(
 ) {
   try {
     if (!testMode && isFunctionDeployed(functionName)) {
-      logger.debug(`[Faas] Function ${functionName} already deployed`);
+      logger.error(`[Faas] Function ${functionName} already deployed`);
       return;
     }
     // deploy faas function
@@ -266,6 +280,7 @@ const executeFaasFunction = async (
       error.message.includes(`error finding function ${name}`)
     ) {
       removeFunctionFromCache(name);
+      await removeFaasFunction(name);
       await setupFaasFunction(name, null, versionId, libraryVersionIDs, testMode, trMetadata);
       throw new RetryRequestError(`${name} not found`);
     }

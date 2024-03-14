@@ -261,7 +261,10 @@ const executeFaasFunction = async (
     logger.error(`Error while invoking ${name}: ${error.message}`);
     errorRaised = error;
 
-    if (error.statusCode === 404 && error.message.includes(`error finding function ${name}`)) {
+    if (
+      (error.statusCode === 404 || error.statusCode === 500) &&
+      error.message.includes(`error finding function ${name}`)
+    ) {
       removeFunctionFromCache(name);
       await setupFaasFunction(name, null, versionId, libraryVersionIDs, testMode, trMetadata);
       throw new RetryRequestError(`${name} not found`);

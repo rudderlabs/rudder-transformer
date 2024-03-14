@@ -5,6 +5,9 @@ bindings:
     exportAll: true
   - name: base64Convertor
     path: ../../../../v0/util
+  - name: BatchUtils
+    path: '@rudderstack/workflow-engine'
+  - path: ./config
 
 steps:
   - name: validateInput
@@ -38,7 +41,9 @@ steps:
   - name: batchSuccessfulEvents
     description: Batches the successfulEvents
     template: |
-      let batches = [$.outputs.successfulEvents];
+      let batches = $.BatchUtils.chunkArrayBySizeAndLength(
+      $.outputs.successfulEvents, {maxSizeInBytes: $.MAX_REQUEST_SIZE_IN_BYTES}).items;
+
       batches@batch.({
         "batchedRequest": {
           "body": {

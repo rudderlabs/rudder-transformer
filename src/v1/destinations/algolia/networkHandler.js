@@ -13,12 +13,6 @@ const responseHandler = (responseParams) => {
   const { destinationResponse, rudderJobMetadata } = responseParams;
   const message = `[ALGOLIA Response V1 Handler] - Request Processed Successfully`;
   const responseWithIndividualEvents = [];
-  // response:
-  // {status: 200, message: 'OK'}
-  // {response:'[ENOTFOUND] :: DNS lookup failed', status: 400}
-  // destinationResponse = {
-  //   response: {"status": 422, "message": "EventType must be one of \"click\", \"conversion\" or \"view\""}, status: 422
-  // }
   const { response, status } = destinationResponse;
 
   if (isHttpStatusSuccess(status)) {

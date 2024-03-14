@@ -1,14 +1,14 @@
 /* eslint-disable global-require, import/no-dynamic-require, @typescript-eslint/no-unused-vars */
 import { client as errNotificationClient } from '../util/errorNotifier';
 import logger from '../logger';
+import {
+  getJobStatusHandler,
+  getPollStatusHandler,
+  getDestFileUploadHandler,
+} from '../util/fetchDestinationHandlers';
 import { CatchErr, ContextBodySimple } from '../util/types';
 // TODO: To be refactored and redisgned
 
-const getDestFileUploadHandler = (version, dest) =>
-  require(`../${version}/destinations/${dest}/fileUpload`);
-const getPollStatusHandler = (version, dest) => require(`../${version}/destinations/${dest}/poll`);
-const getJobStatusHandler = (version, dest) =>
-  require(`../${version}/destinations/${dest}/fetchJobStatus`);
 const ERROR_MESSAGE_PROCESSOR_STRING = 'Error occurred while processing payload.';
 
 const getCommonMetadata = (ctx) =>

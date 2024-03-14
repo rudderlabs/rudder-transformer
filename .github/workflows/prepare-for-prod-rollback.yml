@@ -27,11 +27,14 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "noreply@github.com"
 
+      - name: Clone Devops Repo
+        run: |
+          git clone https://${{secrets.PAT}}@github.com/rudderlabs/rudder-devops.git
+
       - name: Update Helm Charts and Raise Pull Request
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
         run: |
-          git clone https://${{secrets.PAT}}@github.com/rudderlabs/rudder-devops.git
           cd rudder-devops
           git checkout -b shared-transformer-rollback-${{ steps.target-version.outputs.tag_name }}
 
@@ -55,5 +58,40 @@ jobs:
 
           git commit -m "chore: rollback shared transformers to ${{ steps.target-version.outputs.tag_name }}"
           git push -u origin shared-transformer-rollback-${{ steps.target-version.outputs.tag_name }}
+
+          gh pr create --fill
+
+      - name: Update helm charts and raise pull request for enterprise customers on dedicated transformers
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
+        run: |
+          cd rudder-devops
+          git checkout -b dedicated-transformer-rollback-${{ steps.target-version.outputs.tag_name }}
+
+          cd customer-objects
+
+          declare -a enabled_ut_customers=()
+          declare -a sub_directories=('enterprise-us' 'enterprise-eu')
+
+          # identify the customers enabled in sub-directories
+          for directory in "${sub_directories[@]}"; do
+            for f in "./$directory"/*; do
+              [[ -f $f ]] || continue
+
+              enabled="$(yq e '.spec.user_transformer.enabled' $f)"
+              if [ $enabled == "true" ]; then
+                  enabled_ut_customers+=( $f )
+              fi
+            done
+          done
+
+          # bump up the customers version and repository information
+          for customer in "${enabled_ut_customers[@]}"; do
+            yq eval -i ".spec.user_transformer.image.version=\"${{ steps.target-version.outputs.tag_name }}\"" $customer
+            git add $customer
+          done
+
+          git commit -m "chore: rollback dedicated transformers to ${{ steps.target-version.outputs.tag_name }}"
+          git push -u origin dedicated-transformer-rollback-${{ steps.target-version.outputs.tag_name }}
 
           gh pr create --fill

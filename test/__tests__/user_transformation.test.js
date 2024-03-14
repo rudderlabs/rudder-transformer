@@ -1648,6 +1648,10 @@ describe("Python transformations", () => {
         json: jest.fn().mockResolvedValue(respBody)
       });
 
+    axios.delete.mockResolvedValue({
+      response: { status: 404, data: `error finding function ${funcName}` }
+    }); // delete function
+
     axios.post
       .mockRejectedValueOnce({
         response: { status: 404, data: `error finding function ${funcName}` } // invoke function not found

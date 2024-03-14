@@ -56,7 +56,6 @@ const pardotRespHandler = (destResponse, stageMsg) => {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
       },
       response,
-      getAuthErrCategory(status),
     );
   }
 

@@ -67,9 +67,9 @@ export class CDKV2DestinationService implements DestinationService {
           tags.FEATURES.PROCESSOR,
         );
         metaTo.metadata = event.metadata;
-        const metadataWithSvcCtx = {
+        const metadataWithLoggingCtx = {
           ...requestMetadata,
-          serviceContext: MiscService.getLoggableData(metaTo.errorDetails),
+          loggerCtx: MiscService.getLoggableData(metaTo.errorDetails),
         };
         try {
           const transformedPayloads:
@@ -78,7 +78,7 @@ export class CDKV2DestinationService implements DestinationService {
             destinationType,
             event,
             tags.FEATURES.PROCESSOR,
-            metadataWithSvcCtx,
+            metadataWithLoggingCtx,
           );
 
           stats.increment('event_transform_success', {
@@ -132,9 +132,9 @@ export class CDKV2DestinationService implements DestinationService {
             tags.FEATURES.ROUTER,
           );
           metaTo.metadata = destInputArray[0].metadata;
-          const metadataWithSvcCtx = {
+          const metadataWithLoggingCtx = {
             ...requestMetadata,
-            serviceContext: MiscService.getLoggableData(metaTo.errorDetails),
+            loggerCtx: MiscService.getLoggableData(metaTo.errorDetails),
           };
           try {
             const doRouterTransformationResponse: RouterTransformationResponse[] =
@@ -142,7 +142,7 @@ export class CDKV2DestinationService implements DestinationService {
                 destinationType,
                 destInputArray,
                 tags.FEATURES.ROUTER,
-                metadataWithSvcCtx,
+                metadataWithLoggingCtx,
               );
             return DestinationPostTransformationService.handleRouterTransformSuccessEvents(
               doRouterTransformationResponse,

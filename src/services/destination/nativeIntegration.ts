@@ -71,16 +71,16 @@ export class NativeIntegrationDestinationService implements DestinationService {
           tags.FEATURES.PROCESSOR,
         );
         metaTO.metadata = event.metadata;
-        const metadataWithSvcCtx = {
+        const metadataWithLoggingCtx = {
           ...requestMetadata,
-          serviceContext: MiscService.getLoggableData(metaTO.errorDetails),
+          loggerCtx: MiscService.getLoggableData(metaTO.errorDetails),
         };
         try {
           const transformedPayloads:
             | ProcessorTransformationOutput
             | ProcessorTransformationOutput[] = await destHandler.process(
             event,
-            metadataWithSvcCtx,
+            metadataWithLoggingCtx,
           );
           return DestinationPostTransformationService.handleProcessorTransformSucessEvents(
             event,
@@ -121,12 +121,12 @@ export class NativeIntegrationDestinationService implements DestinationService {
           tags.FEATURES.ROUTER,
         );
         try {
-          const metadataWithSvcCtx = {
+          const metadataWithLoggingCtx = {
             ...requestMetadata,
-            serviceContext: MiscService.getLoggableData(metaTO.errorDetails),
+            loggerCtx: MiscService.getLoggableData(metaTO.errorDetails),
           };
           const doRouterTransformationResponse: RouterTransformationResponse[] =
-            await destHandler.processRouterDest(cloneDeep(destInputArray), metadataWithSvcCtx);
+            await destHandler.processRouterDest(cloneDeep(destInputArray), metadataWithLoggingCtx);
           metaTO.metadata = destInputArray[0].metadata;
           return DestinationPostTransformationService.handleRouterTransformSuccessEvents(
             doRouterTransformationResponse,
@@ -171,14 +171,14 @@ export class NativeIntegrationDestinationService implements DestinationService {
         tags.FEATURES.BATCH,
       );
       metaTO.metadatas = events.map((event) => event.metadata);
-      const metadataWithSvcCtx = {
+      const metadataWithLoggingCtx = {
         ...requestMetadata,
-        serviceContext: MiscService.getLoggableData(metaTO.errorDetails),
+        loggerCtx: MiscService.getLoggableData(metaTO.errorDetails),
       };
       try {
         const destBatchedRequests: RouterTransformationResponse[] = destHandler.batch(
           destEvents,
-          metadataWithSvcCtx,
+          metadataWithLoggingCtx,
         );
         return destBatchedRequests;
       } catch (error: any) {
@@ -283,7 +283,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
           const result: UserDeletionResponse = await destUserDeletionHandler.processDeleteUsers({
             ...request,
             rudderDestInfo,
-            serviceContext: MiscService.getLoggableData(metaTO.errorDetails),
+            loggerCtx: MiscService.getLoggableData(metaTO.errorDetails),
           });
           stats.timing('regulation_worker_requests_dest_latency', startTime, {
             feature: tags.FEATURES.USER_DELETION,

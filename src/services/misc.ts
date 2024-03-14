@@ -2,10 +2,10 @@
 import fs from 'fs';
 import path from 'path';
 import { Context } from 'koa';
+import customLogger from '@rudderstack/integrations-lib';
 import { DestHandlerMap } from '../constants/destinationCanonicalNames';
 import { ErrorDetailer, LoggableExtraData, Metadata } from '../types';
 import { getCPUProfile, getHeapProfile } from '../middleware';
-import customLogger from '@rudderstack/integrations-lib';
 
 export class MiscService {
   public static getDestHandler(dest: string, version: string) {
@@ -32,7 +32,7 @@ export class MiscService {
       namespace: 'Unknown',
       cluster: 'Unknown',
       features: ctx.state?.features || {},
-      serviceContext: {},
+      loggerCtx: {},
     };
   }
 

@@ -22,6 +22,7 @@ export class ErrorDetailsExtractorBuilder {
   messageDetails: MessageDetails;
 
   stat: Stat;
+
   constructor() {
     this.status = 0;
     this.messageDetails = {};

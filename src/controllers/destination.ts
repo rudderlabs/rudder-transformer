@@ -1,4 +1,5 @@
 import { Context } from 'koa';
+import customLogger from "@rudderstack/integrations-lib/build/structured-logger";
 import { MiscService } from '../services/misc';
 import { DestinationPreTransformationService } from '../services/destination/preTransformation';
 import { DestinationPostTransformationService } from '../services/destination/postTransformation';
@@ -11,7 +12,6 @@ import {
 import { ServiceSelector } from '../helpers/serviceSelector';
 import { ControllerUtility } from './util';
 import stats from '../util/stats';
-import logger from '@rudderstack/integrations-lib';
 import { getIntegrationVersion } from '../util/utils';
 import tags from '../v0/util/tags';
 import { DynamicConfigParser } from '../util/dynamicConfigParser';
@@ -19,7 +19,7 @@ import { DynamicConfigParser } from '../util/dynamicConfigParser';
 export class DestinationController {
   public static async destinationTransformAtProcessor(ctx: Context) {
     const startTime = new Date();
-    logger.debug(
+    customLogger.debug(
       'Native(Process-Transform):: Requst to transformer::',
       JSON.stringify(ctx.request.body),
     );
@@ -68,7 +68,7 @@ export class DestinationController {
     }
     ctx.body = resplist;
     ControllerUtility.postProcess(ctx);
-    logger.debug(
+    customLogger.debug(
       'Native(Process-Transform):: Response from transformer::',
       JSON.stringify(ctx.body),
     );
@@ -93,7 +93,7 @@ export class DestinationController {
 
   public static async destinationTransformAtRouter(ctx: Context) {
     const startTime = new Date();
-    logger.debug(
+    customLogger.debug(
       'Native(Router-Transform):: Requst to transformer::',
       JSON.stringify(ctx.request.body),
     );
@@ -140,7 +140,7 @@ export class DestinationController {
       version: 'v0',
       ...metaTags,
     });
-    logger.debug(
+    customLogger.debug(
       'Native(Router-Transform):: Response from transformer::',
       JSON.stringify(ctx.body),
     );
@@ -154,7 +154,7 @@ export class DestinationController {
   }
 
   public static batchProcess(ctx: Context) {
-    logger.debug(
+    customLogger.debug(
       'Native(Process-Transform-Batch):: Requst to transformer::',
       JSON.stringify(ctx.request.body),
     );
@@ -189,7 +189,7 @@ export class DestinationController {
       ctx.body = [errResp];
     }
     ControllerUtility.postProcess(ctx);
-    logger.debug(
+    customLogger.debug(
       'Native(Process-Transform-Batch):: Response from transformer::',
       JSON.stringify(ctx.body),
     );

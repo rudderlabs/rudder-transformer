@@ -1,5 +1,6 @@
 import groupBy from 'lodash/groupBy';
 import isEmpty from 'lodash/isEmpty';
+import customLogger from "@rudderstack/integrations-lib/build/structured-logger";
 import { userTransformHandler } from '../routerUtils';
 import {
   UserTransformationLibrary,
@@ -16,7 +17,6 @@ import {
 } from '../util/utils';
 import { getMetadata, isNonFuncObject } from '../v0/util';
 import { SUPPORTED_FUNC_NAMES } from '../util/ivmFactory';
-import logger from '@rudderstack/integrations-lib';
 import stats from '../util/stats';
 import { CommonUtils } from '../util/common';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -76,7 +76,7 @@ export class UserTransformService {
 
         if (!transformationVersionId) {
           const errorMessage = 'Transformation VersionID not found';
-          logger.error(`[CT] ${errorMessage}`);
+          customLogger.error(`[CT] ${errorMessage}`);
           transformedEvents.push({
             statusCode: 400,
             error: errorMessage,
@@ -141,7 +141,7 @@ export class UserTransformService {
 
           transformedEvents.push(...transformedEventsWithMetadata);
         } catch (error: CatchErr) {
-          logger.error(error);
+          customLogger.error(error);
           let status = 400;
           const errorString = error.toString();
           if (error instanceof RetryRequestError) {
@@ -198,7 +198,7 @@ export class UserTransformService {
         throw new Error('Invalid request. Missing events');
       }
 
-      logger.debug(`[CT] Test Input Events: ${JSON.stringify(events)}`);
+      customLogger.debug(`[CT] Test Input Events: ${JSON.stringify(events)}`);
       // eslint-disable-next-line no-param-reassign
       trRevCode.versionId = 'testVersionId';
       response.body = await userTransformHandler()(
@@ -208,7 +208,7 @@ export class UserTransformService {
         trRevCode,
         true,
       );
-      logger.debug(`[CT] Test Output Events: ${JSON.stringify(response.body.transformedEvents)}`);
+      customLogger.debug(`[CT] Test Output Events: ${JSON.stringify(response.body.transformedEvents)}`);
       response.status = 200;
     } catch (error: CatchErr) {
       response.status = 400;

@@ -1,6 +1,6 @@
 /* eslint-disable global-require, import/no-dynamic-require, @typescript-eslint/no-unused-vars */
+import customLogger from "@rudderstack/integrations-lib/build/structured-logger";
 import { client as errNotificationClient } from '../util/errorNotifier';
-import logger from '@rudderstack/integrations-lib';
 import { CatchErr, ContextBodySimple } from '../util/types';
 // TODO: To be refactored and redisgned
 
@@ -31,7 +31,7 @@ const getReqMetadata = (ctx) => {
 };
 
 export const fileUpload = async (ctx) => {
-  logger.debug(
+  customLogger.debug(
     'Native(Bulk-Upload): Request to transformer:: /fileUpload route',
     JSON.stringify(ctx.request.body),
   );
@@ -69,7 +69,7 @@ export const fileUpload = async (ctx) => {
     });
   }
   ctx.body = response;
-  logger.debug(
+  customLogger.debug(
     'Native(Bulk-Upload): Response from transformer:: /fileUpload route',
     JSON.stringify(ctx.body),
   );
@@ -77,7 +77,7 @@ export const fileUpload = async (ctx) => {
 };
 
 export const pollStatus = async (ctx) => {
-  logger.debug(
+  customLogger.debug(
     'Native(Bulk-Upload): Request to transformer:: /pollStatus route',
     JSON.stringify(ctx.request.body),
   );
@@ -104,7 +104,7 @@ export const pollStatus = async (ctx) => {
     });
   }
   ctx.body = response;
-  logger.debug(
+  customLogger.debug(
     'Native(Bulk-Upload): Request from transformer:: /pollStatus route',
     JSON.stringify(ctx.body),
   );
@@ -112,7 +112,7 @@ export const pollStatus = async (ctx) => {
 };
 
 export const getWarnJobStatus = async (ctx) => {
-  logger.debug(
+  customLogger.debug(
     'Native(Bulk-Upload): Request to transformer:: /getWarningJobs route',
     JSON.stringify(ctx.request.body),
   );
@@ -140,7 +140,7 @@ export const getWarnJobStatus = async (ctx) => {
     });
   }
   ctx.body = response;
-  logger.debug(
+  customLogger.debug(
     'Native(Bulk-Upload): Request from transformer:: /getWarningJobs route',
     JSON.stringify(ctx.body),
   );
@@ -148,7 +148,7 @@ export const getWarnJobStatus = async (ctx) => {
 };
 
 export const getFailedJobStatus = async (ctx) => {
-  logger.debug(
+  customLogger.debug(
     'Native(Bulk-Upload): Request to transformer:: /getFailedJobs route',
     JSON.stringify(ctx.request.body),
   );
@@ -176,7 +176,7 @@ export const getFailedJobStatus = async (ctx) => {
     });
   }
   ctx.body = response;
-  logger.debug(
+  customLogger.debug(
     'Native(Bulk-Upload): Request from transformer:: /getFailedJobs route',
     JSON.stringify(ctx.body),
   );

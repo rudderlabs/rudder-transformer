@@ -1,4 +1,4 @@
-import logger from '@rudderstack/integrations-lib';
+import customLogger from "@rudderstack/integrations-lib/build/structured-logger";
 import { RetryRequestError, RespStatusError, constructValidationErrors } from '../util/utils';
 import { getMetadata } from '../v0/util';
 import eventValidator from '../util/eventValidation';
@@ -44,7 +44,7 @@ export class TrackingPlanservice {
         }
       } catch (error) {
         const errMessage = `Error occurred while validating : ${error}`;
-        logger.error(errMessage);
+        customLogger.error(errMessage);
         let status = 200;
         if (error instanceof RetryRequestError) {
           ctxStatusCode = error.statusCode;

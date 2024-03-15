@@ -147,7 +147,6 @@ describe('Google Analytics 4 utils test', () => {
         const output = validateEventName('Grisly1234567_Open_General_Setting');
         expect(output).toEqual();
       } catch (error) {
-        console.log(error.message);
         expect(error.message).toEqual();
       }
     });

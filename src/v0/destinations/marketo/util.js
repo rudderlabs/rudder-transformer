@@ -247,6 +247,9 @@ const sendGetRequest = async (url, options) => {
   const clientResponse = await httpGET(url, options, {
     destType: 'marketo',
     feature: 'transformation',
+    endpointPath: `/v1/leads`,
+    requestMethod: 'GET',
+    module: 'router',
   });
   const processedResponse = processAxiosResponse(clientResponse);
   return processedResponse;
@@ -262,6 +265,9 @@ const sendPostRequest = async (url, data, options) => {
   const clientResponse = await httpPOST(url, data, options, {
     destType: 'marketo',
     feature: 'transformation',
+    endpointPath: `/v1/leads`,
+    requestMethod: 'POST',
+    module: 'router',
   });
   const processedResponse = processAxiosResponse(clientResponse);
   return processedResponse;

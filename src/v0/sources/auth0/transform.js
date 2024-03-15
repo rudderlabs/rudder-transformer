@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { removeUndefinedAndNullValues } = require('../../util');
 const { getGroupId } = require('./util');
 // import mapping json using JSON.parse to preserve object key order
@@ -73,7 +74,11 @@ function process(events) {
   if (!Array.isArray(events)) {
     eventList = events.logs || [events];
   }
-  return processEvents(eventList);
+  const responses = processEvents(eventList);
+  if (responses.length === 0) {
+    throw new InstrumentationError('UserId is not present');
+  }
+  return responses;
 }
 
 exports.process = process;

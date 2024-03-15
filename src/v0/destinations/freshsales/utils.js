@@ -47,6 +47,9 @@ const createUpdateAccount = async (payload, Config) => {
   let accountResponse = await httpPOST(endPoint, payloadBody, requestOptions, {
     destType: 'freshsales',
     feature: 'transformation',
+    endpointPath: `/crm/sales/api/sales_accounts/upsert`,
+    requestMethod: 'POST',
+    module: 'router',
   });
   accountResponse = processAxiosResponse(accountResponse);
   if (accountResponse.status !== 200 && accountResponse.status !== 201) {
@@ -90,6 +93,9 @@ const getUserAccountDetails = async (payload, userEmail, Config) => {
   let userSalesAccountResponse = await httpPOST(endPoint, userPayload, requestOptions, {
     destType: 'freshsales',
     feature: 'transformation',
+    endpointPath: `/crm/sales/api/contacts/upsert?include=sales_accounts`,
+    requestMethod: 'POST',
+    module: 'router',
   });
   userSalesAccountResponse = processAxiosResponse(userSalesAccountResponse);
   if (userSalesAccountResponse.status !== 200 && userSalesAccountResponse.status !== 201) {
@@ -145,6 +151,9 @@ const getContactsDetails = async (userEmail, Config) => {
   let userResponse = await httpPOST(endPoint, userPayload, requestOptions, {
     destType: 'freshsales',
     feature: 'transformation',
+    endpointPath: `/crm/sales/api/contacts/upsert`,
+    requestMethod: 'POST',
+    module: 'router',
   });
   userResponse = processAxiosResponse(userResponse);
   if (userResponse.status !== 200 && userResponse.status !== 201) {
@@ -235,6 +244,9 @@ const UpdateContactWithSalesActivity = async (payload, message, Config) => {
   let salesActivityResponse = await httpGET(endPoint, requestOptions, {
     destType: 'freshsales',
     feature: 'transformation',
+    endpointPath: `/crm/sales/api/sales_activity_types`,
+    requestMethod: 'GET',
+    module: 'router',
   });
   salesActivityResponse = processAxiosResponse(salesActivityResponse);
   if (salesActivityResponse.status !== 200) {
@@ -314,6 +326,9 @@ const UpdateContactWithLifeCycleStage = async (message, Config) => {
   let lifeCycleStagesResponse = await httpGET(endPoint, requestOptions, {
     destType: 'freshsales',
     feature: 'transformation',
+    endpointPath: `/crm/sales/api/lifecycle_stages`,
+    requestMethod: 'GET',
+    module: 'router',
   });
   lifeCycleStagesResponse = processAxiosResponse(lifeCycleStagesResponse);
   if (lifeCycleStagesResponse.status !== 200) {

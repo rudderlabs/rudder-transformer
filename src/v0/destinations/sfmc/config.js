@@ -4,6 +4,7 @@ const ENDPOINTS = {
   GET_TOKEN: `auth.marketingcloudapis.com/v2/token`,
   CONTACTS: `rest.marketingcloudapis.com/contacts/v1/contacts`,
   INSERT_CONTACTS: `rest.marketingcloudapis.com/hub/v1/dataevents/key:`,
+  EVENT: 'rest.marketingcloudapis.com/interaction/v1/events',
 };
 
 const CONFIG_CATEGORIES = {

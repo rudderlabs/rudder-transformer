@@ -32,7 +32,6 @@ const {
   addExternalIdToTraits,
   adduserIdFromExternalId,
   getSuccessRespEvents,
-  checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
   flattenJson,
   isNewStatusCodesAccepted,
@@ -156,6 +155,9 @@ const trackRequestHandler = (message, category, destination) => {
   const payload = {};
   const { privateApiKey, flattenProperties } = destination.Config;
   let event = get(message, 'event');
+  if (event && typeof event !== 'string') {
+    throw new InstrumentationError('Event type should be a string');
+  }
   event = event ? event.trim().toLowerCase() : event;
   let attributes = {};
   if (ecomEvents.includes(event) && message.properties) {
@@ -317,10 +319,6 @@ const getEventChunks = (event, subscribeRespList, nonSubscribeRespList) => {
 };
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
   let batchResponseList = [];
   const batchErrorRespList = [];
   const subscribeRespList = [];

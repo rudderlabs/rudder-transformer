@@ -21,10 +21,7 @@ export const data = [
                     city: 'Banglore',
                     email: 'test@user.com',
                     phone: '7267286346802347827',
-                    address: {
-                      city: 'ahmedabad',
-                      state: 'india',
-                    },
+                    address: { city: 'ahmedabad', state: 'india' },
                     lastName: 'user',
                     username: 'testUser',
                     firstName: 'test',
@@ -38,9 +35,7 @@ export const data = [
                 request_ip: '[::1]',
                 originalTimestamp: '2022-10-11T13:10:54.877+05:30',
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               destination: {
                 Config: {
                   apiKey: 'dummyApiKey',
@@ -75,10 +70,7 @@ export const data = [
                     firstName: 'test',
                     lastName: 'user',
                     phone: '7267286346802347827',
-                    userAddress: {
-                      city: 'ahmedabad',
-                      state: 'india',
-                    },
+                    userAddress: { city: 'ahmedabad', state: 'india' },
                     userCountry: 'india',
                     userId: 'user@45',
                     username: 'testUser',
@@ -109,7 +101,7 @@ export const data = [
                   whitelistedEvents: [{ eventName: '' }],
                 },
               },
-              metadata: [{ jobId: 1 }],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               statusCode: 200,
             },
           ],
@@ -161,10 +153,7 @@ export const data = [
                     firstName: 'test',
                     userCountry: 'india',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.1.2',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.1.2' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36',
                 },
@@ -176,30 +165,16 @@ export const data = [
                   currency: 'IND',
                   order_id: '5241735',
                   products: [
-                    {
-                      id: 'product-bacon-jam',
-                      category: 'Merch',
-                      brand: '',
-                    },
-                    {
-                      id: 'product-t-shirt',
-                      category: 'Merch',
-                      brand: 'Levis',
-                    },
-                    {
-                      id: 'offer-t-shirt',
-                      category: 'Merch',
-                      brand: 'Levis',
-                    },
+                    { id: 'product-bacon-jam', category: 'Merch', brand: '' },
+                    { id: 'product-t-shirt', category: 'Merch', brand: 'Levis' },
+                    { id: 'offer-t-shirt', category: 'Merch', brand: 'Levis' },
                   ],
                 },
                 receivedAt: '2022-10-11T13:38:29.178+05:30',
                 request_ip: '[::1]',
                 originalTimestamp: '2022-10-11T13:38:31.827+05:30',
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               destination: {
                 Config: {
                   apiKey: 'dummyApiKey',
@@ -227,11 +202,7 @@ export const data = [
               batched: false,
               batchedRequest: {
                 body: {
-                  FORM: {
-                    email: 'test@user.com',
-                    event: 'Product Searched',
-                    id: 'user@45',
-                  },
+                  FORM: { email: 'test@user.com', event: 'Product Searched', id: 'user@45' },
                   JSON: {},
                   JSON_ARRAY: {},
                   XML: {},
@@ -258,7 +229,7 @@ export const data = [
                   whitelistedEvents: [{ eventName: '' }],
                 },
               },
-              metadata: [{ jobId: 2 }],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               statusCode: 200,
             },
           ],
@@ -280,10 +251,7 @@ export const data = [
               message: {
                 type: 'group',
                 sentAt: '2015-02-23T22:28:55.111Z',
-                traits: {
-                  name: 'rudder ventures',
-                  email: 'business@rudderstack.com',
-                },
+                traits: { name: 'rudder ventures', email: 'business@rudderstack.com' },
                 userId: 'test@12',
                 channel: 'browser',
                 context: {
@@ -297,9 +265,7 @@ export const data = [
                 integrations: { All: true },
                 originalTimestamp: '2022-10-11T13:51:00.906+05:30',
               },
-              metadata: {
-                jobId: 3,
-              },
+              metadata: { jobId: 3, userId: 'u1' },
               destination: {
                 Config: {
                   accountAttributesMapping: [{ from: 'email', to: 'businessEmail' }],
@@ -361,7 +327,7 @@ export const data = [
                   whitelistedEvents: [{ eventName: '' }],
                 },
               },
-              metadata: [{ jobId: 3 }],
+              metadata: [{ jobId: 3, userId: 'u1' }],
               statusCode: 200,
             },
           ],

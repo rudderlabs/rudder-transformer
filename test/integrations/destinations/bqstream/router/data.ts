@@ -14,18 +14,10 @@ export const data = [
                 type: 'track',
                 event: 'insert product',
                 userId: 'user12345',
-
-                properties: {
-                  count: 10,
-                  productId: 10,
-                  productName: 'Product-10',
-                },
+                properties: { count: 10, productId: 10, productName: 'Product-10' },
                 anonymousId: 'd8b2ed61-7fa5-4ef8-bd92-6a506157c0cf',
               },
-              metadata: {
-                jobId: 1,
-                userId: 'user12345',
-              },
+              metadata: { jobId: 1, userId: 'user12345' },
               destination: {
                 Config: {
                   rudderAccountId: '1z8LpaSAuFR9TPWL6fECZfjmRa-',
@@ -36,7 +28,6 @@ export const data = [
                   eventDelivery: true,
                   eventDeliveryTS: 1636965406397,
                 },
-
                 ID: '1WXjIHpu7ETXgjfiGPW3kCUgZFR',
                 Name: 'bqstream test',
               },
@@ -46,16 +37,9 @@ export const data = [
                 type: 'track',
                 event: 'insert product',
                 userId: 'user12345',
-                properties: {
-                  count: 20,
-                  productId: 20,
-                  productName: 'Product-20',
-                },
+                properties: { count: 20, productId: 20, productName: 'Product-20' },
               },
-              metadata: {
-                jobId: 2,
-                userId: 'user12345',
-              },
+              metadata: { jobId: 2, userId: 'user12345' },
               destination: {
                 Config: {
                   rudderAccountId: '1z8LpaSAuFR9TPWL6fECZfjmRa-',
@@ -66,7 +50,6 @@ export const data = [
                   eventDelivery: true,
                   eventDeliveryTS: 1636965406397,
                 },
-
                 ID: '1WXjIHpu7ETXgjfiGPW3kCUgZFR',
                 Name: 'bqstream test',
               },
@@ -76,17 +59,10 @@ export const data = [
                 type: 'identify',
                 event: 'insert product',
                 userId: 'user12345',
-                traits: {
-                  count: 20,
-                  productId: 20,
-                  productName: 'Product-20',
-                },
+                traits: { count: 20, productId: 20, productName: 'Product-20' },
                 anonymousId: 'd8b2ed61-7fa5-4ef8-bd92-6a506157c0cf',
               },
-              metadata: {
-                jobId: 3,
-                userId: 'user12345',
-              },
+              metadata: { jobId: 3, userId: 'user12345' },
               destination: {
                 Config: {
                   rudderAccountId: '1z8LpaSAuFR9TPWL6fECZfjmRa-',
@@ -97,7 +73,6 @@ export const data = [
                   eventDelivery: true,
                   eventDeliveryTS: 1636965406397,
                 },
-
                 ID: '1WXjIHpu7ETXgjfiGPW3kCUgZFR',
                 Name: 'bqstream test',
               },
@@ -107,17 +82,10 @@ export const data = [
                 type: 'track',
                 event: 'insert product',
                 userId: 'user12345',
-                properties: {
-                  count: 20,
-                  productId: 20,
-                  productName: 'Product-20',
-                },
+                properties: { count: 20, productId: 20, productName: 'Product-20' },
                 anonymousId: 'd8b2ed61-7fa5-4ef8-bd92-6a506157c0cf',
               },
-              metadata: {
-                jobId: 5,
-                userId: 'user123',
-              },
+              metadata: { jobId: 5, userId: 'user123' },
               destination: {
                 Config: {
                   rudderAccountId: '1z8LpaSAuFR9TPWL6fECZfjmRa-',
@@ -128,7 +96,6 @@ export const data = [
                   eventDelivery: true,
                   eventDeliveryTS: 1636965406397,
                 },
-
                 ID: '1WXjIHpu7ETXgjfiGPW3kCUgZFR',
                 Name: 'bqstream test',
               },
@@ -138,17 +105,10 @@ export const data = [
                 type: 'track',
                 event: 'insert product',
                 userId: 'user12345',
-                properties: {
-                  count: 20,
-                  productId: 20,
-                  productName: 'Product-20',
-                },
+                properties: { count: 20, productId: 20, productName: 'Product-20' },
                 anonymousId: 'd8b2ed61-7fa5-4ef8-bd92-6a506157c0cf',
               },
-              metadata: {
-                jobId: 6,
-                userId: 'user124',
-              },
+              metadata: { jobId: 6, userId: 'user124' },
               destination: {
                 Config: {
                   rudderAccountId: '1z8LpaSAuFR9TPWL6fECZfjmRa-',
@@ -159,22 +119,13 @@ export const data = [
                   eventDelivery: true,
                   eventDeliveryTS: 1636965406397,
                 },
-
                 ID: '1WXjIHpu7ETXgjfiGPW3kCUgZFR',
                 Name: 'bqstream test',
               },
             },
             {
-              message: {
-                type: 'track',
-                event: 'insert product',
-
-                userId: 'user12345',
-              },
-              metadata: {
-                jobId: 7,
-                userId: 'user124',
-              },
+              message: { type: 'track', event: 'insert product', userId: 'user12345' },
+              metadata: { jobId: 7, userId: 'user124' },
               destination: {
                 Config: {
                   rudderAccountId: '1z8LpaSAuFR9TPWL6fECZfjmRa-',
@@ -185,21 +136,13 @@ export const data = [
                   eventDelivery: true,
                   eventDeliveryTS: 1636965406397,
                 },
-
                 ID: '1WXjIHpu7ETXgjfiGPW3kCUgZFR',
                 Name: 'bqstream test',
               },
             },
             {
-              message: {
-                type: 'track',
-                event: 'insert product',
-                userId: 'user12345',
-              },
-              metadata: {
-                jobId: 8,
-                userId: 'user125',
-              },
+              message: { type: 'track', event: 'insert product', userId: 'user12345' },
+              metadata: { jobId: 8, userId: 'user125' },
               destination: {
                 Config: {
                   rudderAccountId: '1z8LpaSAuFR9TPWL6fECZfjmRa-',
@@ -210,7 +153,6 @@ export const data = [
                   eventDelivery: true,
                   eventDeliveryTS: 1636965406397,
                 },
-
                 ID: '1WXjIHpu7ETXgjfiGPW3kCUgZFR',
                 Name: 'bqstream test',
               },
@@ -219,14 +161,9 @@ export const data = [
               message: {
                 type: 'identify',
                 event: 'insert product',
-
                 userId: 'user12345',
-
                 context: {
-                  os: {
-                    Name: '',
-                    version: '',
-                  },
+                  os: { Name: '', version: '' },
                   app: {
                     Name: 'RudderLabs JavaScript SDK',
                     build: '1.0.0',
@@ -253,27 +190,16 @@ export const data = [
                     innerHeight: 776,
                   },
                   traits: {},
-                  library: {
-                    Name: 'RudderLabs JavaScript SDK',
-                    version: '1.1.18',
-                  },
+                  library: { Name: 'RudderLabs JavaScript SDK', version: '1.1.18' },
                   campaign: {},
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.77 Safari/537.36',
                 },
-
-                traits: {
-                  count: 20,
-                  productId: 20,
-                  productName: 'Product-20',
-                },
+                traits: { count: 20, productId: 20, productName: 'Product-20' },
                 receivedAt: '2021-11-15T14:06:42.497+05:30',
                 anonymousId: 'd8b2ed61-7fa5-4ef8-bd92-6a506157c0cf',
               },
-              metadata: {
-                jobId: 9,
-                userId: 'user125',
-              },
+              metadata: { jobId: 9, userId: 'user125' },
               destination: {
                 Config: {
                   rudderAccountId: '1z8LpaSAuFR9TPWL6fECZfjmRa-',
@@ -284,7 +210,6 @@ export const data = [
                   eventDelivery: true,
                   eventDeliveryTS: 1636965406397,
                 },
-
                 ID: '1WXjIHpu7ETXgjfiGPW3kCUgZFR',
                 Name: 'bqstream test',
               },
@@ -306,30 +231,10 @@ export const data = [
                 datasetId: 'gc_dataset',
                 projectId: 'gc-project-id',
                 properties: [
-                  {
-                    count: 10,
-                    insertId: '10',
-                    productId: 10,
-                    productName: 'Product-10',
-                  },
-                  {
-                    count: 20,
-                    insertId: '20',
-                    productId: 20,
-                    productName: 'Product-20',
-                  },
-                  {
-                    count: 20,
-                    insertId: '20',
-                    productId: 20,
-                    productName: 'Product-20',
-                  },
-                  {
-                    count: 20,
-                    insertId: '20',
-                    productId: 20,
-                    productName: 'Product-20',
-                  },
+                  { count: 10, insertId: '10', productId: 10, productName: 'Product-10' },
+                  { count: 20, insertId: '20', productId: 20, productName: 'Product-20' },
+                  { count: 20, insertId: '20', productId: 20, productName: 'Product-20' },
+                  { count: 20, insertId: '20', productId: 20, productName: 'Product-20' },
                 ],
                 tableId: 'gc_table',
               },
@@ -347,22 +252,10 @@ export const data = [
                 Name: 'bqstream test',
               },
               metadata: [
-                {
-                  jobId: 1,
-                  userId: 'user12345',
-                },
-                {
-                  jobId: 2,
-                  userId: 'user12345',
-                },
-                {
-                  jobId: 5,
-                  userId: 'user123',
-                },
-                {
-                  jobId: 6,
-                  userId: 'user124',
-                },
+                { jobId: 1, userId: 'user12345' },
+                { jobId: 2, userId: 'user12345' },
+                { jobId: 5, userId: 'user123' },
+                { jobId: 6, userId: 'user124' },
               ],
               statusCode: 200,
             },
@@ -383,14 +276,8 @@ export const data = [
               },
               error: 'Invalid payload for the destination',
               metadata: [
-                {
-                  jobId: 7,
-                  userId: 'user124',
-                },
-                {
-                  jobId: 8,
-                  userId: 'user125',
-                },
+                { jobId: 7, userId: 'user124' },
+                { jobId: 8, userId: 'user125' },
               ],
               statTags: {
                 destType: 'BQSTREAM',
@@ -417,17 +304,10 @@ export const data = [
                 ID: '1WXjIHpu7ETXgjfiGPW3kCUgZFR',
                 Name: 'bqstream test',
               },
-
               error: 'Message Type not supported: identify',
               metadata: [
-                {
-                  jobId: 3,
-                  userId: 'user12345',
-                },
-                {
-                  jobId: 9,
-                  userId: 'user125',
-                },
+                { jobId: 3, userId: 'user12345' },
+                { jobId: 9, userId: 'user125' },
               ],
               statTags: {
                 destType: 'BQSTREAM',

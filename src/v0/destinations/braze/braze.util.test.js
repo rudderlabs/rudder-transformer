@@ -305,7 +305,14 @@ describe('dedup utility tests', () => {
           },
           timeout: 10000,
         },
-        { destType: 'braze', feature: 'transformation' },
+        {
+          destType: 'braze',
+          feature: 'transformation',
+          endpointPath: '/users/export/ids',
+          feature: 'transformation',
+          module: 'router',
+          requestMethod: 'POST',
+        },
       );
     });
 
@@ -660,9 +667,19 @@ describe('dedup utility tests', () => {
         color: 'green',
         age: 30,
         gender: 'male',
+        country: 'US',
+        language: 'en',
+        email_subscribe: true,
+        push_subscribe: false,
+        subscription_groups: ['group1', 'group2'],
       };
       const storeData = {
         external_id: '123',
+        country: 'US',
+        language: 'en',
+        email_subscribe: true,
+        push_subscribe: false,
+        subscription_groups: ['group1', 'group2'],
         custom_attributes: {
           color: 'blue',
           age: 25,
@@ -676,6 +693,49 @@ describe('dedup utility tests', () => {
         color: 'green',
         age: 30,
         gender: 'male',
+        country: 'US',
+        language: 'en',
+        email_subscribe: true,
+        push_subscribe: false,
+        subscription_groups: ['group1', 'group2'],
+      });
+    });
+
+    test('deduplicates user data correctly 2', () => {
+      const userData = {
+        external_id: '123',
+        color: 'green',
+        age: 30,
+        gender: 'male',
+        language: 'en',
+        email_subscribe: true,
+        push_subscribe: false,
+        subscription_groups: ['group1', 'group2'],
+      };
+      const storeData = {
+        external_id: '123',
+        country: 'US',
+        language: 'en',
+        email_subscribe: true,
+        push_subscribe: false,
+        subscription_groups: ['group1', 'group2'],
+        custom_attributes: {
+          color: 'blue',
+          age: 25,
+        },
+      };
+      store.set('123', storeData);
+      const result = BrazeDedupUtility.deduplicate(userData, store);
+      expect(store.size).toBe(1);
+      expect(result).toEqual({
+        external_id: '123',
+        color: 'green',
+        age: 30,
+        gender: 'male',
+        language: 'en',
+        email_subscribe: true,
+        push_subscribe: false,
+        subscription_groups: ['group1', 'group2'],
       });
     });
 

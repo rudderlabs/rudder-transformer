@@ -12,12 +12,12 @@ const {
   getTimeDifference,
   getValuesAsArrayFromConfig,
   removeUndefinedValues,
-  toUnixTimestamp,
+  toUnixTimestampInMS,
   getFieldValueFromMessage,
-  checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
   groupEventsByType,
   parseConfigArray,
+  combineBatchRequestsWithSameJobIds,
 } = require('../../util');
 const {
   ConfigCategory,
@@ -33,10 +33,10 @@ const {
   createIdentifyResponse,
   isImportAuthCredentialsAvailable,
   buildUtmParams,
-  combineBatchRequestsWithSameJobIds,
   groupEventsByEndpoint,
   batchEvents,
   trimTraits,
+  generatePageOrScreenCustomEventName,
 } = require('./util');
 const { CommonUtils } = require('../../../util/common');
 
@@ -174,7 +174,8 @@ const getEventValueForTrackEvent = (message, destination) => {
   if (mappedProperties.$insert_id) {
     mappedProperties.$insert_id = mappedProperties.$insert_id.slice(-36);
   }
-  const unixTimestamp = toUnixTimestamp(message.timestamp);
+
+  const unixTimestamp = toUnixTimestampInMS(message.timestamp || message.originalTimestamp);
   let properties = {
     ...message.properties,
     ...get(message, 'context.traits'),
@@ -297,17 +298,25 @@ const processIdentifyEvents = async (message, type, destination) => {
 };
 
 const processPageOrScreenEvents = (message, type, destination) => {
+  const {
+    token,
+    identityMergeApi,
+    useUserDefinedPageEventName,
+    userDefinedPageEventTemplate,
+    useUserDefinedScreenEventName,
+    userDefinedScreenEventTemplate,
+  } = destination.Config;
   const mappedProperties = constructPayload(message, mPEventPropertiesConfigJson);
   let properties = {
     ...get(message, 'context.traits'),
     ...message.properties,
     ...mappedProperties,
-    token: destination.Config.token,
+    token,
     distinct_id: message.userId || message.anonymousId,
-    time: toUnixTimestamp(message.timestamp),
+    time: toUnixTimestampInMS(message.timestamp || message.originalTimestamp),
     ...buildUtmParams(message.context?.campaign),
   };
-  if (destination.Config?.identityMergeApi === 'simplified') {
+  if (identityMergeApi === 'simplified') {
     properties = {
       ...properties,
       distinct_id: message.userId || `$device:${message.anonymousId}`,
@@ -326,7 +335,18 @@ const processPageOrScreenEvents = (message, type, destination) => {
     properties.$browser = browser.name;
     properties.$browser_version = browser.version;
   }
-  const eventName = type === 'page' ? 'Loaded a Page' : 'Loaded a Screen';
+
+  let eventName;
+  if (type === 'page') {
+    eventName = useUserDefinedPageEventName
+      ? generatePageOrScreenCustomEventName(message, userDefinedPageEventTemplate)
+      : 'Loaded a Page';
+  } else {
+    eventName = useUserDefinedScreenEventName
+      ? generatePageOrScreenCustomEventName(message, userDefinedScreenEventTemplate)
+      : 'Loaded a Screen';
+  }
+
   const payload = {
     event: eventName,
     properties,
@@ -441,7 +461,9 @@ const processSingleMessage = (message, destination) => {
       return processIdentifyEvents(clonedMessage, clonedMessage.type, destination);
     case EventType.ALIAS:
       if (destination.Config?.identityMergeApi === 'simplified') {
-        throw new InstrumentationError('Alias call is deprecated in `Simplified ID merge`');
+        throw new InstrumentationError(
+          'The use of the alias call in the context of the `Simplified ID merge` feature is not supported anymore.',
+        );
       }
       return processAliasEvents(message, message.type, destination);
     case EventType.GROUP:
@@ -457,11 +479,6 @@ const process = (event) => processSingleMessage(event.message, event.destination
 // Ref: https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel
 // Ref: https://help.mixpanel.com/hc/en-us/articles/115004561786-Track-UTM-Tags
 const processRouterDest = async (inputs, reqMetadata) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
-
   const groupedEvents = groupEventsByType(inputs);
   const response = await Promise.all(
     groupedEvents.map(async (listOfEvents) => {

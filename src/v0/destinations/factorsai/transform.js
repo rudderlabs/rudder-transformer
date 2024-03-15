@@ -13,6 +13,14 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const { ConfigCategories, mappingConfig, BASE_URL } = require('./config');
 
+function populateIpDetails(requestJson, message) {
+  const payload = requestJson;
+  if (message.context || message.request_ip) {
+    payload.context = { ...(payload.context || {}), ip: message.context?.ip || message.request_ip };
+  }
+  return payload;
+}
+
 // build final response
 function buildResponse(payload, factorsAIApiKey) {
   const response = defaultRequestConfig();
@@ -29,13 +37,15 @@ function buildResponse(payload, factorsAIApiKey) {
 
 // process identify call
 function processIdentify(message, factorsAIApiKey) {
-  const requestJson = constructPayload(message, mappingConfig[ConfigCategories.IDENTIFY.name]);
+  let requestJson = constructPayload(message, mappingConfig[ConfigCategories.IDENTIFY.name]);
+  requestJson = populateIpDetails(requestJson, message);
   return buildResponse(requestJson, factorsAIApiKey);
 }
 
 // process track call
 function processTrack(message, factorsAIApiKey) {
-  const requestJson = constructPayload(message, mappingConfig[ConfigCategories.TRACK.name]);
+  let requestJson = constructPayload(message, mappingConfig[ConfigCategories.TRACK.name]);
+  requestJson = populateIpDetails(requestJson, message);
   // flatten json as factorsAi do not support nested properties
   requestJson.properties = flattenJson(requestJson.properties);
   return buildResponse(requestJson, factorsAIApiKey);
@@ -43,7 +53,8 @@ function processTrack(message, factorsAIApiKey) {
 
 // process Page Call
 function processPageAndGroup(message, factorsAIApiKey, category) {
-  const requestJson = constructPayload(message, mappingConfig[category]);
+  let requestJson = constructPayload(message, mappingConfig[category]);
+  requestJson = populateIpDetails(requestJson, message);
   requestJson.type = message.type;
   return buildResponse(requestJson, factorsAIApiKey);
 }

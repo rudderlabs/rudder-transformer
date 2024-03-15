@@ -17,9 +17,7 @@ export const data = [
                   datacenterEU: false,
                 },
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               message: {
                 context: {
                   app: {
@@ -51,9 +49,7 @@ export const data = [
                   datacenterEU: false,
                 },
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               message: {
                 context: {
                   ip: '14.5.67.21',
@@ -67,16 +63,8 @@ export const data = [
                     type: 'Android',
                     attTrackingStatus: 3,
                   },
-                  os: {
-                    name: 'Android',
-                    version: '9',
-                  },
-                  network: {
-                    bluetooth: false,
-                    carrier: 'Android',
-                    cellular: true,
-                    wifi: true,
-                  },
+                  os: { name: 'Android', version: '9' },
+                  network: { bluetooth: false, carrier: 'Android', cellular: true, wifi: true },
                   address: {
                     city: 'kolkata',
                     country: 'India',
@@ -87,9 +75,7 @@ export const data = [
                     street: 'rajnagar',
                   },
                 },
-                properties: {
-                  cookie: '1234abcd-efghijkj-1234kfjadslk-34iu123',
-                },
+                properties: { cookie: '1234abcd-efghijkj-1234kfjadslk-34iu123' },
                 messageId: '34abcd-efghijkj-1234kf',
                 type: 'track',
                 event: 'identify',
@@ -104,9 +90,7 @@ export const data = [
                   datacenterEU: false,
                 },
               },
-              metadata: {
-                jobId: 3,
-              },
+              metadata: { jobId: 3, userId: 'u1' },
               message: {
                 channel: 'web',
                 context: {
@@ -116,21 +100,13 @@ export const data = [
                     namespace: 'com.rudderlabs.javascript',
                     version: '1.0.0',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-US',
                   ip: '0.0.0.0',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                 },
                 messageId: '84e26acc-56a5-4835-8233-591137fca468',
                 session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
@@ -157,10 +133,7 @@ export const data = [
                   msgemail: true,
                   msgwhatsapp: false,
                   custom_tags: ['Test_User', 'Interested_User', 'DIY_Hobby'],
-                  custom_mappings: {
-                    Office: 'Trastkiv',
-                    Country: 'Russia',
-                  },
+                  custom_mappings: { Office: 'Trastkiv', Country: 'Russia' },
                   address: {
                     city: 'kolkata',
                     country: 'India',
@@ -169,9 +142,7 @@ export const data = [
                     street: '',
                   },
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
             },
@@ -210,11 +181,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -259,11 +226,7 @@ export const data = [
                 version: '1',
                 endpoint: 'https://api.getblueshift.com/api/v1/event',
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -307,10 +270,7 @@ export const data = [
                     msgemail: true,
                     msgwhatsapp: false,
                     custom_tags: ['Test_User', 'Interested_User', 'DIY_Hobby'],
-                    custom_mappings: {
-                      Office: 'Trastkiv',
-                      Country: 'Russia',
-                    },
+                    custom_mappings: { Office: 'Trastkiv', Country: 'Russia' },
                     address: {
                       city: 'kolkata',
                       country: 'India',
@@ -325,11 +285,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 3,
-                },
-              ],
+              metadata: [{ jobId: 3, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {

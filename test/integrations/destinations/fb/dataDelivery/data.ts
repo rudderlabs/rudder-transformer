@@ -1,6 +1,8 @@
 import { VERSION } from '../../../../../src/v0/destinations/fb/config';
+import { testScenariosForV1API } from './business';
+import { otherScenariosV1 } from './other';
 
-export const data = [
+export const existingTestData = [
   {
     name: 'fb',
     description: 'Test 0',
@@ -57,19 +59,20 @@ export const data = [
             message: 'Invalid OAuth 2.0 access token',
             destinationResponse: {
               error: {
-                message: 'The access token could not be decrypted',
-                type: 'OAuthException',
                 code: 190,
                 fbtrace_id: 'fbpixel_trace_id',
+                message: 'The access token could not be decrypted',
+                type: 'OAuthException',
               },
               status: 500,
             },
             statTags: {
               destType: 'FB',
-              errorCategory: 'network',
+              errorCategory: 'dataValidation',
               destinationId: 'Non-determininable',
               workspaceId: 'Non-determininable',
-              errorType: 'aborted',
+              errorType: 'configuration',
+              meta: 'accessTokenExpired',
               feature: 'dataDelivery',
               implementation: 'native',
               module: 'destination',
@@ -370,3 +373,5 @@ export const data = [
     },
   },
 ];
+
+export const data = [...existingTestData, ...testScenariosForV1API, ...otherScenariosV1];

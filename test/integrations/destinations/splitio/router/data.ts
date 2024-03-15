@@ -1,10 +1,8 @@
-import { FEATURES } from '../../../../../src/v0/util/tags';
-
 export const data = [
   {
     name: 'splitio',
     description: 'Test 0',
-    feature: FEATURES.ROUTER,
+    feature: 'router',
     module: 'destination',
     version: 'v0',
     input: {
@@ -14,7 +12,7 @@ export const data = [
             {
               message: {
                 traits: {
-                  martin: 21.565000000000001,
+                  martin: 21.565,
                   trafficTypeName: 'user',
                   vertical: 'restaurant',
                   eventTypeId: 'page_load end to end',
@@ -26,14 +24,8 @@ export const data = [
                 rudderId: 'bda76e3e-87eb-4153-9d1e-e9c2ed48b7a5',
                 context: {
                   ip: '14.5.67.21',
-                  traits: {
-                    abc: 'new-val',
-                    key: 'key_user_0',
-                    value: '0.93',
-                  },
-                  library: {
-                    name: 'http',
-                  },
+                  traits: { abc: 'new-val', key: 'key_user_0', value: '0.93' },
+                  library: { name: 'http' },
                 },
                 type: 'group',
                 groupId: 'group1',
@@ -42,15 +34,9 @@ export const data = [
                 receivedAt: '2021-04-19T14:53:18.215+05:30',
                 requestIP: '[::1]',
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               destination: {
-                Config: {
-                  apiKey: 'abcde',
-                  environment: 'staging',
-                  trafficType: 'user',
-                },
+                Config: { apiKey: 'abcde', environment: 'staging', trafficType: 'user' },
               },
             },
           ],
@@ -70,10 +56,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://events.split.io/api/events',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: 'Bearer abcde',
-                },
+                headers: { 'Content-Type': 'application/json', Authorization: 'Bearer abcde' },
                 params: {},
                 body: {
                   JSON: {
@@ -82,11 +65,7 @@ export const data = [
                     timestamp: 1579566094208,
                     environmentName: 'staging',
                     trafficTypeName: 'user',
-                    properties: {
-                      martin: 21.565,
-                      vertical: 'restaurant',
-                      GMV: false,
-                    },
+                    properties: { martin: 21.565, vertical: 'restaurant', GMV: false },
                   },
                   XML: {},
                   JSON_ARRAY: {},
@@ -94,19 +73,11 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
-                Config: {
-                  apiKey: 'abcde',
-                  environment: 'staging',
-                  trafficType: 'user',
-                },
+                Config: { apiKey: 'abcde', environment: 'staging', trafficType: 'user' },
               },
             },
           ],
@@ -117,7 +88,7 @@ export const data = [
   {
     name: 'splitio',
     description: 'Test 1',
-    feature: FEATURES.ROUTER,
+    feature: 'router',
     module: 'destination',
     version: 'v0',
     input: {
@@ -127,7 +98,7 @@ export const data = [
             {
               message: {
                 traits: {
-                  martin: 21.565000000000001,
+                  martin: 21.565,
                   trafficTypeName: 'user',
                   eventTypeId: 'page_load end to end',
                   timestamp: 1513357833000,
@@ -137,13 +108,8 @@ export const data = [
                 rudderId: 'bda76e3e-87eb-4153-9d1e-e9c2ed48b7a5',
                 context: {
                   ip: '14.5.67.21',
-                  traits: {
-                    abc: 'new-val',
-                    key: 'key_user_0',
-                  },
-                  library: {
-                    name: 'http',
-                  },
+                  traits: { abc: 'new-val', key: 'key_user_0' },
+                  library: { name: 'http' },
                 },
                 type: 'identify',
                 timestamp: '2020-01-21T00:21:34.208Z',
@@ -151,15 +117,9 @@ export const data = [
                 receivedAt: '2021-04-19T14:53:18.215+05:30',
                 requestIP: '[::1]',
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               destination: {
-                Config: {
-                  apiKey: 'abcde',
-                  environment: 'staging',
-                  trafficType: 'user',
-                },
+                Config: { apiKey: 'abcde', environment: 'staging', trafficType: 'user' },
               },
             },
           ],
@@ -179,10 +139,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://events.split.io/api/events',
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: 'Bearer abcde',
-                },
+                headers: { 'Content-Type': 'application/json', Authorization: 'Bearer abcde' },
                 params: {},
                 body: {
                   JSON: {
@@ -191,9 +148,7 @@ export const data = [
                     timestamp: 1579566094208,
                     environmentName: 'staging',
                     trafficTypeName: 'user',
-                    properties: {
-                      martin: 21.565,
-                    },
+                    properties: { martin: 21.565 },
                   },
                   XML: {},
                   JSON_ARRAY: {},
@@ -201,19 +156,11 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
-                Config: {
-                  apiKey: 'abcde',
-                  environment: 'staging',
-                  trafficType: 'user',
-                },
+                Config: { apiKey: 'abcde', environment: 'staging', trafficType: 'user' },
               },
             },
           ],

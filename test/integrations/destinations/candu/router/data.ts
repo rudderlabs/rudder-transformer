@@ -18,9 +18,7 @@ export const data = [
                   Name: 'CANDU',
                   DisplayName: 'Candu',
                   Config: {
-                    destConfig: {
-                      defaultConfig: ['apiKey'],
-                    },
+                    destConfig: { defaultConfig: ['apiKey'] },
                     excludeKeys: [],
                     includeKeys: [
                       'apiKey',
@@ -47,16 +45,12 @@ export const data = [
                   },
                   ResponseRules: {},
                 },
-                Config: {
-                  apiKey: 'FXLkLUEhGJyvmY4',
-                },
+                Config: { apiKey: 'FXLkLUEhGJyvmY4' },
                 Enabled: true,
                 Transformations: [],
                 IsProcessorEnabled: true,
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               message: {
                 anonymousId: 'a1b2c3d4e5f6g7h8i9j10',
                 channel: 'mobile',
@@ -77,32 +71,21 @@ export const data = [
                     attTrackingStatus: 3,
                   },
                   ip: '0.0.0.0',
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   locale: 'en-US',
-                  os: {
-                    name: 'watchos',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: 'watchos' },
+                  screen: { density: 2 },
                   traits: {
                     email: 'sampath@gmail.com',
                     name: 'Joker',
                     Gender: 'male',
-                    foo: {
-                      foo: 'bar',
-                    },
+                    foo: { foo: 'bar' },
                   },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
                 },
                 event: 'product added',
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 messageId: 'ea5cfab2-3961-4d8a-8187-3d1858c90a9f',
                 originalTimestamp: '2020-01-17T04:53:51.185Z',
                 receivedAt: '2020-01-17T10:23:52.688+05:30',
@@ -156,11 +139,7 @@ export const data = [
                 },
                 files: {},
               },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {

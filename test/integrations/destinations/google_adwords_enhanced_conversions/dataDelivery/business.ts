@@ -280,5 +280,5 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         },
       },
     },
-  }
+  },
 ];

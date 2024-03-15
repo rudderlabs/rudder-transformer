@@ -153,6 +153,7 @@ const DestCanonicalNames = {
   ],
   INTERCOM: ['INTERCOM', 'intercom', 'Intercom'],
   koala: ['Koala', 'koala', 'KOALA'],
+  bloomreach: ['Bloomreach', 'bloomreach', 'BLOOMREACH'],
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

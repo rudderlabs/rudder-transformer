@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 const { TransformerProxyError } = require('../../../v0/util/errorTypes');
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
-const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../../v0/util/index');
+const { isHttpStatusSuccess } = require('../../../v0/util/index');
 
 const {
   processAxiosResponse,
@@ -44,15 +44,29 @@ const responseHandler = (responseParams) => {
     });
   }
 
-  // sending back 500 for retry
+  // At least one event in the batch is invalid.
+  if (status === 422) {
+    // sending back 500 for retry
+    throw new TransformerProxyError(
+      `ALGOLIA: Error transformer proxy v1 during ALGOLIA response transformation`,
+      500,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(500),
+      },
+      destinationResponse,
+      '',
+      responseWithIndividualEvents,
+    );
+  }
+
   throw new TransformerProxyError(
     `ALGOLIA: Error transformer proxy v1 during ALGOLIA response transformation`,
-    500,
+    status,
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },
     destinationResponse,
-    getAuthErrCategoryFromStCode(status),
+    '',
     responseWithIndividualEvents,
   );
 };

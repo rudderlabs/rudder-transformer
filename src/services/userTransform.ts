@@ -14,7 +14,7 @@ import {
   RetryRequestError,
   extractStackTraceUptoLastSubstringMatch,
 } from '../util/utils';
-import { getMetadata, isNonFuncObject } from '../v0/util';
+import { getMetadata, getTransformationMetadata, isNonFuncObject } from '../v0/util';
 import { SUPPORTED_FUNC_NAMES } from '../util/ivmFactory';
 import logger from '../logger';
 import stats from '../util/stats';
@@ -28,6 +28,7 @@ export class UserTransformService {
   public static async transformRoutine(
     events: ProcessorTransformationRequest[],
     features: FeatureFlags = {},
+    requestSize = 0,
   ): Promise<UserTransformationServiceResponse> {
     let retryStatus = 200;
     const groupedEvents: NonNullable<unknown> = groupBy(
@@ -162,16 +163,19 @@ export class UserTransformService {
             ),
           );
           stats.counter('user_transform_errors', eventsToProcess.length, {
-            transformationId: eventsToProcess[0]?.metadata?.transformationId,
-            workspaceId: eventsToProcess[0]?.metadata?.workspaceId,
             status,
             ...metaTags,
+            ...getTransformationMetadata(eventsToProcess[0]?.metadata),
           });
         } finally {
           stats.timing('user_transform_request_latency', userFuncStartTime, {
-            workspaceId: eventsToProcess[0]?.metadata?.workspaceId,
-            transformationId: eventsToProcess[0]?.metadata?.transformationId,
             ...metaTags,
+            ...getTransformationMetadata(eventsToProcess[0]?.metadata),
+          });
+
+          stats.histogram('user_transform_batch_size', requestSize, {
+            ...metaTags,
+            ...getTransformationMetadata(eventsToProcess[0]?.metadata),
           });
         }
 

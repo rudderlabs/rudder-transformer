@@ -28,6 +28,7 @@ export class UserTransformService {
   public static async transformRoutine(
     events: ProcessorTransformationRequest[],
     features: FeatureFlags = {},
+    requestSize = 0,
   ): Promise<UserTransformationServiceResponse> {
     let retryStatus = 200;
     const groupedEvents: NonNullable<unknown> = groupBy(
@@ -162,24 +163,20 @@ export class UserTransformService {
             ),
           );
           stats.counter('user_transform_errors', eventsToProcess.length, {
-            ...getTransformationMetadata(eventsToProcess[0]?.metadata),
             status,
             ...metaTags,
+            ...getTransformationMetadata(eventsToProcess[0]?.metadata),
           });
         } finally {
           stats.timing('user_transform_request_latency', userFuncStartTime, {
-            ...getTransformationMetadata(eventsToProcess[0]?.metadata),
             ...metaTags,
+            ...getTransformationMetadata(eventsToProcess[0]?.metadata),
           });
 
-          stats.histogram(
-            'user_transform_request_size',
-            Buffer.byteLength(JSON.stringify(eventsToProcess)),
-            {
-              ...getTransformationMetadata(eventsToProcess[0]?.metadata),
-              ...metaTags,
-            },
-          );
+          stats.histogram('user_transform_batch_size', requestSize, {
+            ...metaTags,
+            ...getTransformationMetadata(eventsToProcess[0]?.metadata),
+          });
         }
 
         stats.counter('user_transform_requests', 1, {});

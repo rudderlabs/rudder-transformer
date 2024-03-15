@@ -675,8 +675,8 @@ class Prometheus {
         ],
       },
       {
-        name: 'user_transform_request_size',
-        help: 'user_transform_request_size',
+        name: 'user_transform_batch_size',
+        help: 'user_transform_batch_size',
         type: 'histogram',
         labelNames: [
           'workspaceId',

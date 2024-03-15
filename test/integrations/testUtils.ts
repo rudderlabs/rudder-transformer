@@ -216,6 +216,7 @@ export const generateTrackPayload: any = (parametersOverride: any) => {
       campaign: {},
       userAgent:
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0',
+      dataProcessingOptions: parametersOverride.context.dataProcessingOptions,
     }),
     rudderId: parametersOverride.rudderId || generateAlphanumericId(36),
     messageId: parametersOverride.messageId || generateAlphanumericId(36),
@@ -310,6 +311,7 @@ export const generateSimplifiedPageOrScreenPayload: any = (
     userId: parametersOverride.userId || 'default-userId',
     type: eventType || 'page',
     event: parametersOverride.event,
+    name: parametersOverride.name,
     properties: parametersOverride.properties,
     integrations: parametersOverride.integrations,
     rudderId: parametersOverride.rudderId || generateAlphanumericId(36),

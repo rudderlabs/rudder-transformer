@@ -122,7 +122,7 @@ const responseHandler = (responseParams) => {
     // Ref - https://github.com/googleapis/googleapis/blob/master/google/rpc/code.proto
     if (partialFailureError && partialFailureError.code !== 0) {
       throw new NetworkError(
-        `[Google Ads Offline Conversions]:: partialFailureError - ${JSON.stringify(
+        `[Google Adwords Enhanced Conversions]:: partialFailureError - ${JSON.stringify(
           partialFailureError,
         )}`,
         400,

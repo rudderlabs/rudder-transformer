@@ -1,102 +1,21 @@
 import { ProxyV1TestData } from '../../../testTypes';
-import {
-  generateMetadata,
-  generateProxyV0Payload,
-  generateProxyV1Payload,
-} from '../../../testUtils';
-import { commonRequestParameters } from './constant';
-
-const pardotResponseRogerEmail = {
-  '@attributes': { stat: 'ok', version: 1 },
-  prospect: {
-    id: 123435,
-    campaign_id: 42213,
-    salutation: null,
-    first_name: 'Roger_12',
-    last_name: 'Federer_12',
-    email: 'Roger_12@federer.io',
-    password: null,
-    company: null,
-    website: 'https://rudderstack.com',
-    job_title: null,
-    department: null,
-    country: 'AU',
-    address_one: null,
-    address_two: null,
-    city: null,
-    state: null,
-    territory: null,
-    zip: null,
-    phone: null,
-    fax: null,
-    source: null,
-    annual_revenue: null,
-    employees: null,
-    industry: null,
-    years_in_business: null,
-    comments: null,
-    notes: null,
-    score: 14,
-    grade: null,
-    last_activity_at: null,
-    recent_interaction: 'Never active.',
-    crm_lead_fid: '00Q6r000002LKhTPVR',
-    crm_contact_fid: null,
-    crm_owner_fid: '00G2v000004WYXaEAO',
-    crm_account_fid: null,
-    salesforce_fid: '00Q6r000002LKhTPVR',
-    crm_last_sync: '2022-01-21 18:47:37',
-    crm_url: 'https://testcompany.my.salesforce.com/00Q6r000002LKhTPVR',
-    is_do_not_email: null,
-    is_do_not_call: null,
-    opted_out: null,
-    is_reviewed: 1,
-    is_starred: null,
-    created_at: '2022-01-21 18:21:46',
-    updated_at: '2022-01-21 18:48:41',
-    campaign: { id: 42113, name: 'Test', crm_fid: '7012y000000MNOCLL4' },
-    assigned_to: {
-      user: {
-        id: 38443703,
-        email: 'test_rudderstack@testcompany.com',
-        first_name: 'Rudderstack',
-        last_name: 'User',
-        job_title: null,
-        role: 'Administrator',
-        account: 489853,
-        created_at: '2021-02-26 06:25:17',
-        updated_at: '2021-02-26 06:25:17',
-      },
-    },
-    Are_you_shipping_large_fragile_or_bulky_items: false,
-    Calendly: false,
-    Country_Code: 'AU',
-    Currency: 'AUD',
-    Inventory_or_Warehouse_Management_System: false,
-    Lead_Status: 'New',
-    Marketing_Stage: 'SAL',
-    Record_Type_ID: 'TestCompany Lead',
-    profile: {
-      id: 304,
-      name: 'Default',
-      profile_criteria: [
-        { id: 1500, name: 'Shipping Volume', matches: 'Unknown' },
-        { id: 1502, name: 'Industry', matches: 'Unknown' },
-        { id: 1506, name: 'Job Title', matches: 'Unknown' },
-        { id: 1508, name: 'Department', matches: 'Unknown' },
-      ],
-    },
-    visitors: null,
-    visitor_activities: null,
-    lists: null,
-  },
+import { generateProxyV0Payload, generateProxyV1Payload } from '../../../testUtils';
+import { abortStatTags, commonRequestProperties, metadataArray, retryStatTags } from './constant';
+const proxyMetdata3 = {
+  jobId: 3,
+  attemptNum: 1,
+  userId: 'dummyUserId',
+  sourceId: 'dummySourceId',
+  destinationId: 'dummyDestinationId',
+  workspaceId: 'dummyWorkspaceId',
+  secret: {},
+  dontBatch: false,
 };
-
 export const testScenariosForV0API = [
   {
     id: 'algolia_v0_bussiness_scenario_1',
     name: 'algolia',
-    description: '[Proxy v0 API] :: algolia all valid events no batching',
+    description: '[Proxy v0 API] :: algolia all valid events',
     successCriteria: 'Proper response from destination is received',
     scenario: 'Business',
     feature: 'dataDelivery',
@@ -105,7 +24,7 @@ export const testScenariosForV0API = [
     input: {
       request: {
         body: generateProxyV0Payload({
-          ...commonRequestParameters,
+          ...commonRequestProperties.commonHeaders,
           endpoint: 'https://insights.algolia.io/1/events',
         }),
         method: 'POST',
@@ -132,10 +51,10 @@ export const testScenariosForV0API = [
     },
   },
   {
-    id: 'algolia_v0_bussiness_scenario_1',
+    id: 'algolia_v0_bussiness_scenario_2',
     name: 'algolia',
-    description: '[Proxy v0 API] :: algolia all valid events with batching batching',
-    successCriteria: 'Proper response from destination is received',
+    description: '[Proxy v0 API] :: algolia with invalid event',
+    successCriteria: 'Error Response from destination is received',
     scenario: 'Business',
     feature: 'dataDelivery',
     module: 'destination',
@@ -143,27 +62,69 @@ export const testScenariosForV0API = [
     input: {
       request: {
         body: generateProxyV0Payload({
-          ...commonRequestParameters,
+          ...commonRequestProperties.commonHeaders,
           endpoint: 'https://insights.algolia.io/1/events',
+          JSON: commonRequestProperties.singleInValidEvent,
         }),
         method: 'POST',
       },
     },
     output: {
       response: {
-        status: 200,
+        status: 422,
         body: {
           output: {
-            status: 200,
+            status: 422,
             message:
-              '[Generic Response Handler] Request for destination: algolia Processed Successfully',
+              '[Generic Response Handler] Request failed for destination algolia with status: 422',
             destinationResponse: {
               response: {
-                message: 'OK',
-                status: 200,
+                status: 422,
+                message: 'EventType must be one of "click", "conversion" or "view"',
               },
-              status: 200,
+              status: 422,
             },
+            statTags: abortStatTags,
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'algolia_v0_bussiness_scenario_3',
+    name: 'algolia',
+    description: '[Proxy v0 API] :: algolia with invalid events in batch',
+    successCriteria: 'Error Response from destination is received',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: generateProxyV0Payload({
+          ...commonRequestProperties.commonHeaders,
+          endpoint: 'https://insights.algolia.io/1/events',
+          JSON: commonRequestProperties.combinedValidInvalidEvents,
+        }),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 422,
+        body: {
+          output: {
+            status: 422,
+            message:
+              '[Generic Response Handler] Request failed for destination algolia with status: 422',
+            destinationResponse: {
+              response: {
+                status: 422,
+                message: 'EventType must be one of "click", "conversion" or "view"',
+              },
+              status: 422,
+            },
+            statTags: abortStatTags,
           },
         },
       },
@@ -175,18 +136,71 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
   {
     id: 'algolia_v1_bussiness_scenario_1',
     name: 'algolia',
-    description: '[Proxy v1 API] :: pardot email type upsert',
-    successCriteria: 'Proper response from destination is received',
-    scenario: 'business',
+    description: '[Proxy v1 API] :: algolia all valid events in batch',
+    successCriteria: 'Success response from destination is received',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            ...commonRequestProperties.commonHeaders,
+            endpoint: 'https://insights.algolia.io/1/events',
+            JSON: commonRequestProperties.multipleValidEvent,
+          },
+          metadataArray,
+        ),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 200,
+            message: '[ALGOLIA Response V1 Handler] - Request Processed Successfully',
+            destinationResponse: {
+              response: {
+                message: 'OK',
+                status: 200,
+              },
+              status: 200,
+            },
+            response: [
+              {
+                error: 'success',
+                metadata: metadataArray[0],
+                statusCode: 200,
+              },
+              {
+                error: 'success',
+                metadata: metadataArray[1],
+                statusCode: 200,
+              },
+            ],
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'algolia_v1_bussiness_scenario_2',
+    name: 'algolia',
+    description: '[Proxy v1 API] :: algolia all invalid events in batch',
+    successCriteria: 'Send response with dontBatch as true',
+    scenario: 'Business',
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v1',
     input: {
       request: {
         body: generateProxyV1Payload({
-          ...commonRequestParameters,
-          endpoint:
-            'https://pi.pardot.com/api/prospect/version/4/do/upsert/email/Roger_12@waltair.io',
+          ...commonRequestProperties.commonHeaders,
+          endpoint: 'https://insights.algolia.io/1/events',
+          JSON: commonRequestProperties.singleInValidEvent,
         }),
         method: 'POST',
       },
@@ -196,15 +210,119 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
         status: 200,
         body: {
           output: {
-            status: 201,
-            message: 'Request Processed Successfully',
+            status: 500,
+            message: 'ALGOLIA: Error transformer proxy v1 during ALGOLIA response transformation',
             response: [
               {
-                statusCode: 201,
-                metadata: generateMetadata(1),
-                error: JSON.stringify('{}'),
+                error:
+                  '{"status":422,"message":"EventType must be one of \\"click\\", \\"conversion\\" or \\"view\\""}',
+                metadata: {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'default-userId',
+                  destinationId: 'default-destinationId',
+                  workspaceId: 'default-workspaceId',
+                  sourceId: 'default-sourceId',
+                  secret: {
+                    accessToken: 'default-accessToken',
+                  },
+                  dontBatch: true,
+                },
+                statusCode: 500,
               },
             ],
+            statTags: {
+              errorCategory: 'network',
+              errorType: 'retryable',
+              destType: 'ALGOLIA',
+              module: 'destination',
+              implementation: 'native',
+              feature: 'dataDelivery',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
+            },
+          },
+        },
+      },
+    },
+  },
+  {
+    id: 'algolia_v1_bussiness_scenario_3',
+    name: 'algolia',
+    description: '[Proxy v1 API] :: algolia combination of valid and invalid events in batch',
+    successCriteria: 'Should use dontBatch true and proper response returned',
+    scenario: 'Business',
+    feature: 'dataDelivery',
+    module: 'destination',
+    version: 'v1',
+    input: {
+      request: {
+        body: generateProxyV1Payload(
+          {
+            ...commonRequestProperties.commonHeaders,
+            endpoint: 'https://insights.algolia.io/1/events',
+            JSON: commonRequestProperties.combinedValidInvalidEvents,
+          },
+          [...metadataArray, proxyMetdata3],
+        ),
+        method: 'POST',
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: {
+            status: 500,
+            message: 'ALGOLIA: Error transformer proxy v1 during ALGOLIA response transformation',
+            response: [
+              {
+                error:
+                  '{"status":422,"message":"EventType must be one of \\"click\\", \\"conversion\\" or \\"view\\""}',
+                metadata: {
+                  jobId: 1,
+                  attemptNum: 1,
+                  userId: 'dummyUserId',
+                  sourceId: 'dummySourceId',
+                  destinationId: 'dummyDestinationId',
+                  workspaceId: 'dummyWorkspaceId',
+                  secret: {},
+                  dontBatch: true,
+                },
+                statusCode: 500,
+              },
+              {
+                error:
+                  '{"status":422,"message":"EventType must be one of \\"click\\", \\"conversion\\" or \\"view\\""}',
+                metadata: {
+                  jobId: 2,
+                  attemptNum: 1,
+                  userId: 'dummyUserId',
+                  sourceId: 'dummySourceId',
+                  destinationId: 'dummyDestinationId',
+                  workspaceId: 'dummyWorkspaceId',
+                  secret: {},
+                  dontBatch: true,
+                },
+                statusCode: 500,
+              },
+              {
+                error:
+                  '{"status":422,"message":"EventType must be one of \\"click\\", \\"conversion\\" or \\"view\\""}',
+                metadata: {
+                  jobId: 3,
+                  attemptNum: 1,
+                  userId: 'dummyUserId',
+                  sourceId: 'dummySourceId',
+                  destinationId: 'dummyDestinationId',
+                  workspaceId: 'dummyWorkspaceId',
+                  secret: {},
+                  dontBatch: true,
+                },
+                statusCode: 500,
+              },
+            ],
+            statTags: retryStatTags,
           },
         },
       },

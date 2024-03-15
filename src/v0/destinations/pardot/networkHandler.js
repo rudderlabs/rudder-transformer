@@ -46,6 +46,19 @@ const getStatus = (code) => {
 const pardotRespHandler = (destResponse, stageMsg) => {
   const { status, response } = destResponse;
   const respAttributes = response['@attributes'];
+
+  // to handle errors like service unavilable, wrong url, no response
+  if (!respAttributes) {
+    throw new NetworkError(
+      `${JSON.stringify(response)} ${stageMsg}`,
+      status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+      },
+      response,
+    );
+  }
+
   const { stat, err_code: errorCode } = respAttributes;
 
   if (isHttpStatusSuccess(status) && stat !== 'fail') {

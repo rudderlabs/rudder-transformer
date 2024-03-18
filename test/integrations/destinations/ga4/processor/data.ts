@@ -14948,7 +14948,7 @@ export const data = [
                 externalId: [
                   {
                     type: 'ga4AppInstanceId',
-                    id: 'f0dd99b6f979fb551ce583373900f937',
+                    id: 'dummyGA4AppInstanceId',
                   },
                   {
                     type: 'ga4ClientId',
@@ -14977,7 +14977,7 @@ export const data = [
             destination: {
               Config: {
                 apiSecret: 'dummyApiSecret',
-                measurementId: 'G-T40PE6KET4',
+                measurementId: 'G-123456',
                 firebaseAppId: '',
                 blockPageViewEvent: false,
                 typesOfClient: 'gtag',
@@ -15020,7 +15020,7 @@ export const data = [
               },
               params: {
                 api_secret: 'dummyApiSecret',
-                measurement_id: 'G-T40PE6KET4',
+                measurement_id: 'G-123456',
               },
               body: {
                 JSON: {
@@ -15103,7 +15103,7 @@ export const data = [
                 externalId: [
                   {
                     type: 'ga4AppInstanceId',
-                    id: 'f0dd99b6f979fb551ce583373900f937',
+                    id: 'dummyGA4AppInstanceId',
                   },
                   {
                     type: 'ga4ClientId',
@@ -15132,7 +15132,7 @@ export const data = [
             destination: {
               Config: {
                 apiSecret: 'dummyApiSecret',
-                measurementId: 'G-T40PE6KET4',
+                measurementId: 'G-123456',
                 firebaseAppId: '',
                 blockPageViewEvent: false,
                 typesOfClient: 'gtag',
@@ -15175,7 +15175,7 @@ export const data = [
               },
               params: {
                 api_secret: 'dummyApiSecret',
-                measurement_id: 'G-T40PE6KET4',
+                measurement_id: 'G-123456',
               },
               body: {
                 JSON: {

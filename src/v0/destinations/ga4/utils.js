@@ -7,6 +7,7 @@ const {
   isEmptyObject,
   extractCustomFields,
   isDefinedAndNotNull,
+  getIntegrationsObj,
 } = require('../../util');
 const { mappingConfig, ConfigCategory } = require('./config');
 
@@ -432,11 +433,39 @@ const prepareUserProperties = (message, piiPropertiesToIgnore = []) => {
   return validatedUserProperties;
 };
 
+/**
+ * Returns user consents
+ * Ref : https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference?client_type=gtag#payload_consent
+ * @param {*} message
+ * @returns
+ */
+const prepareUserConsents = (message) => {
+  const consents = {};
+  const GOOGLE_ALLOWED_CONSENT_STATUS = ['GRANTED', 'DENIED'];
+  const integrationObj = getIntegrationsObj(message, 'ga4') || {};
+  const eventLevelConsentsData = integrationObj?.consents || {};
+
+  if (
+    eventLevelConsentsData.adPersonalization &&
+    GOOGLE_ALLOWED_CONSENT_STATUS.includes(eventLevelConsentsData.adPersonalization)
+  ) {
+    consents.ad_personalization = eventLevelConsentsData.adPersonalization;
+  }
+  if (
+    eventLevelConsentsData.adUserData &&
+    GOOGLE_ALLOWED_CONSENT_STATUS.includes(eventLevelConsentsData.adUserData)
+  ) {
+    consents.ad_user_data = eventLevelConsentsData.adUserData;
+  }
+  return consents;
+};
+
 module.exports = {
   getItem,
   getItemList,
   getItemsArray,
   validateEventName,
+  prepareUserConsents,
   removeInvalidParams,
   isReservedEventName,
   getGA4ExclusionList,

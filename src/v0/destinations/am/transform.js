@@ -525,6 +525,9 @@ const responseBuilderSimple = (
     ...campaign,
   };
 
+  // we are updating the payload with skip_user_properties_sync
+  AMUtils.updateWithSkipAttribute(message, rawPayload);
+
   const respData = getResponseData(evType, destination, rawPayload, message, groupInfo);
   const { groups, rawPayload: updatedRawPayload } = respData;
 

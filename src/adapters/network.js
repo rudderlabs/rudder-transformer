@@ -49,11 +49,15 @@ const fireHTTPStats = (clientResponse, startTime, statTags) => {
   const destType = statTags.destType ? statTags.destType : '';
   const feature = statTags.feature ? statTags.feature : '';
   const endpointPath = statTags.endpointPath ? statTags.endpointPath : '';
+  const requestMethod = statTags.requestMethod ? statTags.requestMethod : '';
+  const module = statTags.module ? statTags.module : '';
   const statusCode = clientResponse.success ? clientResponse.response.status : '';
   stats.timing('outgoing_request_latency', startTime, {
     feature,
     destType,
     endpointPath,
+    requestMethod,
+    module,
   });
   stats.counter('outgoing_request_count', 1, {
     feature,
@@ -61,6 +65,8 @@ const fireHTTPStats = (clientResponse, startTime, statTags) => {
     endpointPath,
     success: clientResponse.success,
     statusCode,
+    requestMethod,
+    module,
   });
 };
 
@@ -287,7 +293,7 @@ function getFormData(payload) {
  * @returns
  */
 const prepareProxyRequest = (request) => {
-  const { body, method, params, endpoint, headers } = request;
+  const { body, method, params, endpoint, headers, destinationConfig: config } = request;
   const { payload, payloadFormat } = getPayloadData(body);
   let data;
 
@@ -313,7 +319,7 @@ const prepareProxyRequest = (request) => {
   }
   // Ref: https://github.com/rudderlabs/rudder-server/blob/master/router/network.go#L164
   headers['User-Agent'] = 'RudderLabs';
-  return removeUndefinedValues({ endpoint, data, params, headers, method });
+  return removeUndefinedValues({ endpoint, data, params, headers, method, config });
 };
 
 /**

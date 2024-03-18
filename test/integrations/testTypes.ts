@@ -1,5 +1,13 @@
 import { AxiosResponse } from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import {
+  DeliveryV1Response,
+  ProcessorTransformationRequest,
+  ProcessorTransformationResponse,
+  ProxyV1Request,
+  RouterTransformationRequest,
+  RouterTransformationResponse,
+} from '../../src/types';
 
 export interface requestType {
   method: string;
@@ -31,6 +39,9 @@ export interface mockType {
 export interface TestCaseData {
   name: string;
   description: string;
+  scenario?: string;
+  successCriteria?: string;
+  comment?: string;
   feature: string;
   module: string;
   version?: string;
@@ -43,4 +54,77 @@ export interface TestCaseData {
 export type MockHttpCallsData = {
   httpReq: Record<string, any>;
   httpRes: Partial<AxiosResponse>;
+};
+
+export type ProcessorTestData = {
+  id: string;
+  name: string;
+  description: string;
+  scenario: string;
+  successCriteria: string;
+  comment?: string;
+  feature: string;
+  module: string;
+  version: string;
+  input: {
+    request: {
+      body: ProcessorTransformationRequest[];
+    };
+  };
+  output: {
+    response: {
+      status: number;
+      body: ProcessorTransformationResponse[];
+    };
+  };
+};
+export type RouterTestData = {
+  id: string;
+  name: string;
+  description: string;
+  comment?: string;
+  scenario: string;
+  successCriteria: string;
+  feature: string;
+  module: string;
+  version: string;
+  input: {
+    request: {
+      body: RouterTransformationRequest;
+    };
+  };
+  output: {
+    response: {
+      status: number;
+      body: {
+        output: RouterTransformationResponse[];
+      };
+    };
+  };
+};
+
+export type ProxyV1TestData = {
+  id: string;
+  name: string;
+  description: string;
+  comment?: string;
+  scenario: string;
+  successCriteria: string;
+  feature: string;
+  module: string;
+  version: string;
+  input: {
+    request: {
+      body: ProxyV1Request;
+      method: string;
+    };
+  };
+  output: {
+    response: {
+      status: number;
+      body: {
+        output: DeliveryV1Response;
+      };
+    };
+  };
 };

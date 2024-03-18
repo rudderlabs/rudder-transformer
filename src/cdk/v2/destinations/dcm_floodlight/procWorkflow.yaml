@@ -84,7 +84,6 @@ steps:
         $.transformCustomVariable(conversionEvent.customVariables || [], .message)
       );
       $.context.salesTag = conversionEvent.salesTag;
-      console.log("$.context.salesTag", $.context.salesTag);
   - name: handleSalesTag
     condition: $.context.salesTag
     template: |

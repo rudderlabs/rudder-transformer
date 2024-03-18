@@ -17,10 +17,10 @@ const {
   getDestinationExternalID,
   getFieldValueFromMessage,
   getHashFromArrayWithDuplicate,
-  checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
   batchMultiplexedEvents,
 } = require('../../util');
+const { process: processV2, processRouterDest: processRouterDestV2 } = require('./transformV2');
 const { getContents } = require('./util');
 const {
   trackMapping,
@@ -129,12 +129,10 @@ const getTrackResponse = (message, Config, event) => {
 
 const trackResponseBuilder = async (message, { Config }) => {
   const { eventsToStandard, sendCustomEvents } = Config;
-
-  let event = message.event?.toLowerCase().trim();
-  if (!event) {
-    throw new InstrumentationError('Event name is required');
+  if (!message.event || typeof message.event !== 'string') {
+    throw new InstrumentationError('Either event name is not present or it is not a string');
   }
-
+  let event = message.event?.toLowerCase().trim();
   const standardEventsMap = getHashFromArrayWithDuplicate(eventsToStandard);
 
   if (!sendCustomEvents && eventNameMapping[event] === undefined && !standardEventsMap[event]) {
@@ -155,7 +153,8 @@ const trackResponseBuilder = async (message, { Config }) => {
     return responseList;
   }
   // Doc https://ads.tiktok.com/help/article/standard-events-parameters?lang=en
-  event = eventNameMapping[event] || event;
+  // For custom event we do not want to lower case the event or trim it we just want to send those as it is
+  event = eventNameMapping[event] || message.event;
   // if there exists no event mapping we will build payload with custom event recieved
   responseList.push(getTrackResponse(message, Config, event));
 
@@ -164,7 +163,9 @@ const trackResponseBuilder = async (message, { Config }) => {
 
 const process = async (event) => {
   const { message, destination } = event;
-
+  if (destination.Config?.version === 'v2') {
+    return processV2(event);
+  }
   if (!destination.Config.accessToken) {
     throw new ConfigurationError('Access Token not found. Aborting ');
   }
@@ -239,9 +240,10 @@ function getEventChunks(event, trackResponseList, eventsChunk) {
 }
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
+  const { destination } = inputs[0];
+  const { Config } = destination;
+  if (Config?.version === 'v2') {
+    return processRouterDestV2(inputs, reqMetadata);
   }
 
   const trackResponseList = []; // list containing single track event in batched format

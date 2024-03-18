@@ -10,14 +10,8 @@ export const data = [
         body: {
           input: [
             {
-              destination: {
-                Config: {
-                  apiKey: 'abcde',
-                },
-              },
-              metadata: {
-                jobId: 2,
-              },
+              destination: { Config: { apiKey: 'abcde' } },
+              metadata: { jobId: 2, userId: 'u1' },
               message: {
                 anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                 context: {
@@ -27,25 +21,15 @@ export const data = [
                     model: 'Redmi 6',
                     name: 'xiaomi',
                   },
-                  network: {
-                    carrier: 'Banglalink',
-                  },
-                  os: {
-                    name: 'android',
-                    version: '8.1.0',
-                  },
+                  network: { carrier: 'Banglalink' },
+                  os: { name: 'android', version: '8.1.0' },
                   traits: {
-                    address: {
-                      city: 'Dhaka',
-                      country: 'Bangladesh',
-                    },
+                    address: { city: 'Dhaka', country: 'Bangladesh' },
                     anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
                   },
                 },
                 event: 'spin_result',
-                integrations: {
-                  AM: true,
-                },
+                integrations: { AM: true },
                 message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
                 properties: {
                   additional_bet_index: 0,
@@ -90,14 +74,8 @@ export const data = [
               },
             },
             {
-              destination: {
-                Config: {
-                  apiKey: 'abcde',
-                },
-              },
-              metadata: {
-                jobId: 2,
-              },
+              destination: { Config: { apiKey: 'abcde' } },
+              metadata: { jobId: 3, userId: 'u1' },
               message: {
                 channel: 'web',
                 context: {
@@ -107,21 +85,13 @@ export const data = [
                     namespace: 'com.rudderlabs.javascript',
                     version: '1.0.0',
                   },
-                  library: {
-                    name: 'RudderLabs JavaScript SDK',
-                    version: '1.0.0',
-                  },
+                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
                   userAgent:
                     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
                   locale: 'en-US',
                   ip: '0.0.0.0',
-                  os: {
-                    name: '',
-                    version: '',
-                  },
-                  screen: {
-                    density: 2,
-                  },
+                  os: { name: '', version: '' },
+                  screen: { density: 2 },
                 },
                 messageId: '84e26acc-56a5-4835-8233-591137fca468',
                 session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
@@ -140,9 +110,7 @@ export const data = [
                     street: '',
                   },
                 },
-                integrations: {
-                  All: true,
-                },
+                integrations: { All: true },
                 sentAt: '2019-10-14T09:03:22.563Z',
               },
             },
@@ -220,18 +188,10 @@ export const data = [
                   userId: 'test_user_id',
                 },
               ],
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
-              destination: {
-                Config: {
-                  apiKey: 'abcde',
-                },
-              },
+              destination: { Config: { apiKey: 'abcde' } },
             },
             {
               batchedRequest: [
@@ -280,11 +240,7 @@ export const data = [
                   },
                   params: {},
                   body: {
-                    JSON: {
-                      previousId: 'anon_id',
-                      newId: '123456',
-                      apiKey: 'abcde',
-                    },
+                    JSON: { previousId: 'anon_id', newId: '123456', apiKey: 'abcde' },
                     XML: {},
                     JSON_ARRAY: {},
                     FORM: {},
@@ -293,18 +249,10 @@ export const data = [
                   userId: '123456',
                 },
               ],
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 3, userId: 'u1' }],
               batched: false,
               statusCode: 200,
-              destination: {
-                Config: {
-                  apiKey: 'abcde',
-                },
-              },
+              destination: { Config: { apiKey: 'abcde' } },
             },
           ],
         },

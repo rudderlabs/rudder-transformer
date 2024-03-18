@@ -6,13 +6,13 @@ const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const handleErrorResponse = (error, customErrMessage, expectedErrStatus, defaultStatus = 400) => {
+  let destResp;
   let errMessage = '';
   let errorStatus = defaultStatus;
 
   if (error.response && error.response.data) {
-    errMessage = error.response.data.externalapierror
-      ? JSON.stringify(error.response.data.externalapierror)
-      : JSON.stringify(error.response.data);
+    destResp = error.response?.data?.externalapierror ?? error.response?.data;
+    errMessage = JSON.stringify(destResp);
 
     errorStatus = error.response.status;
 
@@ -26,7 +26,7 @@ const handleErrorResponse = (error, customErrMessage, expectedErrStatus, default
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errorStatus),
     },
-    error,
+    destResp,
   );
 };
 
@@ -56,7 +56,13 @@ const objectExists = async (id, Config, objectType) => {
           'Content-Type': JSON_MIME_TYPE,
         },
       },
-      { destType: 'gainsight_px', feature: 'transformation' },
+      {
+        destType: 'gainsight_px',
+        feature: 'transformation',
+        requestMethod: 'GET',
+        endpointPath: '/accounts/accountId',
+        module: 'router',
+      },
     );
     if (response && response.status === 200) {
       return { success: true, err: null };
@@ -88,7 +94,13 @@ const createAccount = async (payload, Config) => {
           'Content-Type': JSON_MIME_TYPE,
         },
       },
-      { destType: 'gainsight_px', feature: 'transformation' },
+      {
+        destType: 'gainsight_px',
+        feature: 'transformation',
+        requestMethod: 'POST',
+        endpointPath: '/accounts',
+        module: 'router',
+      },
     );
     if (response && response.status === 201) {
       return { success: true, err: null };
@@ -121,7 +133,13 @@ const updateAccount = async (accountId, payload, Config) => {
           'Content-Type': JSON_MIME_TYPE,
         },
       },
-      { destType: 'gainsight_px', feature: 'transformation' },
+      {
+        destType: 'gainsight_px',
+        feature: 'transformation',
+        requestMethod: 'PUT',
+        endpointPath: '/accounts/accountId',
+        module: 'router',
+      },
     );
     if (response && response.status === 204) {
       return { success: true, err: null };

@@ -80,12 +80,12 @@ const buildDefaultTraitTemplate = (traitsList, traits, template) => {
   let generatedStringFromTemplate = template;
   // build template with whitelisted traits
   traitsList.forEach((trait) => {
-    generatedStringFromTemplate += `${trait}: {{${trait}}} `;
+    generatedStringFromTemplate += `${trait}: {{"${trait}"}} `;
   });
   // else with all traits
   if (traitsList.length === 0) {
     Object.keys(traits).forEach((traitKey) => {
-      generatedStringFromTemplate += `${traitKey}: {{${traitKey}}} `;
+      generatedStringFromTemplate += `${traitKey}: {{"${traitKey}"}} `;
     });
   }
   return generatedStringFromTemplate;

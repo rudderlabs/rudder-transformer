@@ -45,7 +45,7 @@ steps:
       $.context.payload._e = .message.event;
   - name: pageOrScreenPayload
     condition: $.context.messageType === {{$.EventType.PAGE}} ||
-               $.context.messageType === {{$.EventType.SCREEN}}
+      $.context.messageType === {{$.EventType.SCREEN}}
     template: |
       $.context.payload.event = .message.name
   - name: cleanPaylod
@@ -66,4 +66,3 @@ steps:
           "Content-Type": "application/json"
         };
         response
-

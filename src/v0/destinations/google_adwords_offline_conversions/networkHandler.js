@@ -33,6 +33,9 @@ const createJob = async (endpoint, headers, payload) => {
     {
       destType: 'google_adwords_offline_conversions',
       feature: 'proxy',
+      endpointPath: `/create`,
+      requestMethod: 'POST',
+      module: 'dataDelivery',
     },
   );
   createJobResponse = processAxiosResponse(createJobResponse);
@@ -57,6 +60,9 @@ const addConversionToJob = async (endpoint, headers, jobId, payload) => {
     {
       destType: 'google_adwords_offline_conversions',
       feature: 'proxy',
+      endpointPath: `/addOperations`,
+      requestMethod: 'POST',
+      module: 'dataDelivery',
     },
   );
   addConversionToJobResponse = processAxiosResponse(addConversionToJobResponse);
@@ -80,6 +86,9 @@ const runTheJob = async (endpoint, headers, payload, jobId) => {
     {
       destType: 'google_adwords_offline_conversions',
       feature: 'proxy',
+      endpointPath: `/run`,
+      requestMethod: 'POST',
+      module: 'dataDelivery',
     },
   );
   return executeJobResponse;
@@ -106,6 +115,9 @@ const getConversionCustomVariable = async (headers, params) => {
     let searchStreamResponse = await httpPOST(endpoint, data, requestOptions, {
       destType: 'google_adwords_offline_conversions',
       feature: 'proxy',
+      endpointPath: `/searchStream`,
+      requestMethod: 'POST',
+      module: 'dataDelivery',
     });
     searchStreamResponse = processAxiosResponse(searchStreamResponse);
     if (!isHttpStatusSuccess(searchStreamResponse.status)) {
@@ -190,9 +202,11 @@ const ProxyRequest = async (request) => {
     const addPayload = body.JSON.addConversionPayload;
     // Mapping Conversion Action
     const conversionId = await getConversionActionId(headers, params);
-    addPayload.operations.forEach((operation) => {
-      set(operation, 'create.transaction_attribute.conversion_action', conversionId);
-    });
+    if (Array.isArray(addPayload.operations)) {
+      addPayload.operations.forEach((operation) => {
+        set(operation, 'create.transaction_attribute.conversion_action', conversionId);
+      });
+    }
     await addConversionToJob(endpoint, headers, firstResponse, addPayload);
     const thirdResponse = await runTheJob(
       endpoint,
@@ -240,11 +254,15 @@ const ProxyRequest = async (request) => {
   const response = await httpSend(requestBody, {
     feature: 'proxy',
     destType: 'gogole_adwords_offline_conversions',
+    endpointPath: `/proxy`,
+    requestMethod: 'POST',
+    module: 'dataDelivery',
   });
   return response;
 };
 
-const responseHandler = (destinationResponse) => {
+const responseHandler = (responseParams) => {
+  const { destinationResponse } = responseParams;
   const message = `[Google Ads Offline Conversions Response Handler] - Request processed successfully`;
   const { status } = destinationResponse;
   if (isHttpStatusSuccess(status)) {

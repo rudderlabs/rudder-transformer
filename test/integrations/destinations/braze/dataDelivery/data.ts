@@ -1,6 +1,8 @@
 import MockAdapter from 'axios-mock-adapter';
+import { testScenariosForV1API } from './business';
+import { otherScenariosV1 } from './other';
 
-export const data = [
+export const existingTestData = [
   {
     name: 'braze',
     description: 'Test 0',
@@ -544,6 +546,7 @@ export const data = [
         status: 200,
         body: {
           output: {
+            message: 'Request for braze Processed Successfully',
             response: [
               {
                 error: '{"aliases_processed":1,"message":"success"}',
@@ -563,6 +566,7 @@ export const data = [
                 },
               },
             ],
+            status: 201,
           },
         },
       },
@@ -630,6 +634,7 @@ export const data = [
         status: 200,
         body: {
           output: {
+            status: 401,
             response: [
               {
                 error: '{"code":400,"message":"Bad Req","status":"Fail Case"}',
@@ -659,7 +664,6 @@ export const data = [
               module: 'destination',
               workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
             },
-            authErrorCategory: '',
             message: 'Request failed for braze with status: 401',
           },
         },
@@ -770,6 +774,7 @@ export const data = [
         status: 200,
         body: {
           output: {
+            status: 401,
             response: [
               {
                 error:
@@ -836,7 +841,6 @@ export const data = [
               module: 'destination',
               workspaceId: '2Csl0lSTbuM3qyHdaOQB2GcDH8o',
             },
-            authErrorCategory: '',
             message: 'Request failed for braze with status: 401',
           },
         },
@@ -844,3 +848,5 @@ export const data = [
     },
   },
 ];
+
+export const data = [...existingTestData, ...testScenariosForV1API, ...otherScenariosV1];

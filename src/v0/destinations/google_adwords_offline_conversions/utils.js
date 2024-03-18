@@ -1,4 +1,5 @@
 const sha256 = require('sha256');
+const SqlString = require('sqlstring');
 const { get, set, cloneDeep } = require('lodash');
 const {
   AbortedError,
@@ -53,8 +54,12 @@ const validateDestinationConfig = ({ Config }) => {
 const getConversionActionId = async (headers, params) => {
   const conversionActionIdKey = sha256(params.event + params.customerId).toString();
   return conversionActionIdCache.get(conversionActionIdKey, async () => {
+    const queryString = SqlString.format(
+      'SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = ?',
+      [params.event],
+    );
     const data = {
-      query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = '${params.event}'`,
+      query: queryString,
     };
     const endpoint = SEARCH_STREAM.replace(':customerId', params.customerId);
     const requestOptions = {

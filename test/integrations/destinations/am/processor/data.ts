@@ -10739,6 +10739,7 @@ export const data = [
               integrations: {
                 All: true,
                 Amplitude: {
+                  skipUserPropertiesSync: false,
                   event_id: 2,
                 },
               },
@@ -10894,6 +10895,7 @@ export const data = [
               integrations: {
                 All: true,
                 Amplitude: {
+                  skipUserPropertiesSync: true,
                   event_id: 2,
                 },
               },
@@ -10949,6 +10951,7 @@ export const data = [
                       insert_id: '5e10d13a-bf9a-44bf-b884-43a9e591ea71',
                       ip: '1.1.1.1',
                       event_id: 2,
+                      $skip_user_properties_sync: true,
                       user_properties: {
                         initial_referrer: 'https://docs.rudderstack.com',
                         initial_referring_domain: 'docs.rudderstack.com',

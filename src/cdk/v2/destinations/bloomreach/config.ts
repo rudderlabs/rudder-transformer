@@ -10,7 +10,7 @@ const CONFIG_CATEGORIES = {
   CUSTOMER_PROPERTIES_CONFIG: { name: 'BloomreachCustomerPropertiesConfig' },
 };
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
-export const EXCLUSION_FIELDS = [
+export const EXCLUSION_FIELDS: string[] = [
   'email',
   'firstName',
   'firstname',

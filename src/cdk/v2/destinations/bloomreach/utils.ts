@@ -1,6 +1,7 @@
 import { isObject, isEmptyObject, getIntegrationsObj } from '../../../../v0/util';
+import { RudderMessage, Destination } from '../../../../types';
 
-const getCustomerIDsFromIntegrationObject = (message) => {
+const getCustomerIDsFromIntegrationObject = (message: RudderMessage): any => {
   const integrationObj = getIntegrationsObj(message, 'bloomreach' as any) || {};
   const { hardID, softID } = integrationObj;
   const customerIDs = {};
@@ -20,7 +21,7 @@ const getCustomerIDsFromIntegrationObject = (message) => {
   return customerIDs;
 };
 
-export const prepareCustomerIDs = (message, destination) => {
+export const prepareCustomerIDs = (message: RudderMessage, destination: Destination): any => {
   const customerIDs = {
     [destination.Config.hardID]: message.userId,
     [destination.Config.softID]: message.anonymousId,

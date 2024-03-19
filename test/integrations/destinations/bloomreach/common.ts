@@ -72,6 +72,14 @@ const RouterInstrumentationErrorStatTags = {
   feature: 'router',
 };
 
+const proxyV1RetryableErrorStatTags = {
+  ...RouterInstrumentationErrorStatTags,
+  errorCategory: 'network',
+  errorType: 'retryable',
+  feature: 'dataDelivery',
+  implementation: 'native',
+};
+
 const headers = {
   'Content-Type': 'application/json',
   Authorization: 'Basic dGVzdC1hcGkta2V5OnRlc3QtYXBpLXNlY3JldA==',
@@ -87,4 +95,5 @@ export {
   headers,
   properties,
   endpoint,
+  proxyV1RetryableErrorStatTags,
 };

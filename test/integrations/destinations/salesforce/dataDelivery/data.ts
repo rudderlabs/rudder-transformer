@@ -1,7 +1,18 @@
 import { AxiosError } from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import { testScenariosForV1API } from './business';
+import { otherSalesforceScenariosV1 } from './other';
 
-export const data = [
+const legacyDataValue = {
+  Email: 'danis.archurav@sbermarket.ru',
+  Company: 'itus.ru',
+  LastName: 'Danis',
+  FirstName: 'Archurav',
+  LeadSource: 'App Signup',
+  account_type__c: 'free_trial',
+};
+
+const legacyTests = [
   {
     name: 'salesforce',
     description: 'Test 0',
@@ -24,14 +35,7 @@ export const data = [
           body: {
             XML: {},
             FORM: {},
-            JSON: {
-              Email: 'denis.kornilov@sbermarket.ru',
-              Company: 'sbermarket.ru',
-              LastName: 'Корнилов',
-              FirstName: 'Денис',
-              LeadSource: 'App Signup',
-              account_type__c: 'free_trial',
-            },
+            JSON: legacyDataValue,
             JSON_ARRAY: {},
           },
           metadata: {
@@ -86,14 +90,7 @@ export const data = [
           body: {
             XML: {},
             FORM: {},
-            JSON: {
-              Email: 'denis.kornilov@sbermarket.ru',
-              Company: 'sbermarket.ru',
-              LastName: 'Корнилов',
-              FirstName: 'Денис',
-              LeadSource: 'App Signup',
-              account_type__c: 'free_trial',
-            },
+            JSON: legacyDataValue,
             JSON_ARRAY: {},
           },
           metadata: {
@@ -162,14 +159,7 @@ export const data = [
           body: {
             XML: {},
             FORM: {},
-            JSON: {
-              Email: 'denis.kornilov@sbermarket.ru',
-              Company: 'sbermarket.ru',
-              LastName: 'Корнилов',
-              FirstName: 'Денис',
-              LeadSource: 'App Signup',
-              account_type__c: 'free_trial',
-            },
+            JSON: legacyDataValue,
             JSON_ARRAY: {},
           },
           metadata: {
@@ -238,14 +228,7 @@ export const data = [
           body: {
             XML: {},
             FORM: {},
-            JSON: {
-              Email: 'denis.kornilov@sbermarket.ru',
-              Company: 'sbermarket.ru',
-              LastName: 'Корнилов',
-              FirstName: 'Денис',
-              LeadSource: 'App Signup',
-              account_type__c: 'free_trial',
-            },
+            JSON: legacyDataValue,
             JSON_ARRAY: {},
           },
           metadata: {
@@ -314,14 +297,7 @@ export const data = [
           body: {
             XML: {},
             FORM: {},
-            JSON: {
-              Email: 'denis.kornilov@sbermarket.ru',
-              Company: 'sbermarket.ru',
-              LastName: 'Корнилов',
-              FirstName: 'Денис',
-              LeadSource: 'App Signup',
-              account_type__c: 'free_trial',
-            },
+            JSON: legacyDataValue,
             JSON_ARRAY: {},
           },
           metadata: {
@@ -390,14 +366,7 @@ export const data = [
           body: {
             XML: {},
             FORM: {},
-            JSON: {
-              Email: 'denis.kornilov@sbermarket.ru',
-              Company: 'sbermarket.ru',
-              LastName: 'Корнилов',
-              FirstName: 'Денис',
-              LeadSource: 'App Signup',
-              account_type__c: 'free_trial',
-            },
+            JSON: legacyDataValue,
             JSON_ARRAY: {},
           },
           metadata: {
@@ -464,14 +433,7 @@ export const data = [
           body: {
             XML: {},
             FORM: {},
-            JSON: {
-              Email: 'denis.kornilov@sbermarket.ru',
-              Company: 'sbermarket.ru',
-              LastName: 'Корнилов',
-              FirstName: 'Денис',
-              LeadSource: 'App Signup',
-              account_type__c: 'free_trial',
-            },
+            JSON: legacyDataValue,
             JSON_ARRAY: {},
           },
           metadata: {
@@ -781,3 +743,4 @@ export const data = [
     },
   },
 ];
+export const data = [...legacyTests, ...testScenariosForV1API, ...otherSalesforceScenariosV1];

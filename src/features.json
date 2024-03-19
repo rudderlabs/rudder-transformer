@@ -66,7 +66,9 @@
     "REDDIT": true,
     "THE_TRADE_DESK": true,
     "INTERCOM": true,
-    "NINETAILED": true
+    "NINETAILED": true,
+    "MOVABLE_INK": true,
+    "KOALA": true
   },
   "regulations": [
     "BRAZE",

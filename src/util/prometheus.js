@@ -590,14 +590,38 @@ class Prometheus {
         labelNames: ['method', 'route', 'code'],
       },
       {
-        name: 'tp_request_size',
-        help: 'tp_request_size',
+        name: 'tp_batch_size',
+        help: 'Size of batch of events for tracking plan validation',
         type: 'histogram',
-        labelNames: ['sourceType', 'destinationType', 'k8_namespace'],
+        buckets: [
+          1024, 102400, 524288, 1048576, 10485760, 20971520, 52428800, 104857600, 209715200,
+          524288000,
+        ],
+        labelNames: [
+          'sourceType',
+          'destinationType',
+          'k8_namespace',
+          'workspaceId',
+          'trackingPlanId',
+        ],
       },
       {
-        name: 'tp_request_latency',
-        help: 'tp_request_latency',
+        name: 'tp_event_validation_latency',
+        help: 'Latency of validating tracking plan at event level',
+        type: 'histogram',
+        labelNames: [
+          'sourceType',
+          'destinationType',
+          'k8_namespace',
+          'workspaceId',
+          'trackingPlanId',
+          'status',
+          'exception',
+        ],
+      },
+      {
+        name: 'tp_batch_validation_latency',
+        help: 'Latency of validating tracking plan at batch level',
         type: 'histogram',
         labelNames: [
           'sourceType',
@@ -649,6 +673,22 @@ class Prometheus {
           'destinationType',
           'k8_namespace',
         ],
+      },
+      {
+        name: 'user_transform_batch_size',
+        help: 'user_transform_batch_size',
+        type: 'histogram',
+        labelNames: [
+          'workspaceId',
+          'transformationId',
+          'sourceType',
+          'destinationType',
+          'k8_namespace',
+        ],
+        buckets: [
+          1024, 102400, 524288, 1048576, 10485760, 20971520, 52428800, 104857600, 209715200,
+          524288000,
+        ], // 1KB, 100KB, 0.5MB, 1MB, 10MB, 20MB, 50MB, 100MB, 200MB, 500MB
       },
       {
         name: 'source_transform_request_latency',
@@ -710,7 +750,7 @@ class Prometheus {
         name: 'get_libraries_code_time',
         help: 'get_libraries_code_time',
         type: 'histogram',
-        labelNames: ['libraryVersionId', 'versionId', 'type'],
+        labelNames: ['libraryVersionId', 'versionId', 'type', 'version'],
       },
       {
         name: 'isolate_cpu_time',

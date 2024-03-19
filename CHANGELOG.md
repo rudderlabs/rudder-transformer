@@ -17,18 +17,12 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Bug Fixes
 
-* am formatting issues ([4653b74](https://github.com/rudderlabs/rudder-transformer/commit/4653b74522cc917230c211ce1df1b57e8a607ad7))
 * api contract for v1 proxy ([#3049](https://github.com/rudderlabs/rudder-transformer/issues/3049)) ([93947db](https://github.com/rudderlabs/rudder-transformer/commit/93947db35cdaf1ca7ed87ec5f73567754af312ab))
 * email mapping for clevertap ([#3173](https://github.com/rudderlabs/rudder-transformer/issues/3173)) ([04eab92](https://github.com/rudderlabs/rudder-transformer/commit/04eab92e1c383f9e8cdd5c845530a42a0af2932a))
 * fb pixel test case refactor ([#3075](https://github.com/rudderlabs/rudder-transformer/issues/3075)) ([cff7d1c](https://github.com/rudderlabs/rudder-transformer/commit/cff7d1c4578087a37614c0ef4529058481873479))
 * fixed 500 status for algolia dontBatch ([#3178](https://github.com/rudderlabs/rudder-transformer/issues/3178)) ([6330888](https://github.com/rudderlabs/rudder-transformer/commit/6330888ad5c67e3a800037b56501fc08da09e4d1))
 * label not present in prometheus metrics ([#3176](https://github.com/rudderlabs/rudder-transformer/issues/3176)) ([01d460c](https://github.com/rudderlabs/rudder-transformer/commit/01d460c3edaf39b35c4686516c9e9140be46aa5e))
-* prepare-for-staging-deploy.yml ([afb2f45](https://github.com/rudderlabs/rudder-transformer/commit/afb2f450ddee0522e802327dce68ac33a04c9639))
-* prepare-for-staging-deploy.yml ([05ffe82](https://github.com/rudderlabs/rudder-transformer/commit/05ffe820e5c5a3b346f39c268dd49fca47568461))
-* release action git ([#3166](https://github.com/rudderlabs/rudder-transformer/issues/3166)) ([dff7eb9](https://github.com/rudderlabs/rudder-transformer/commit/dff7eb9b8072016a16e7083c60507a9d03302f17))
-* release fix feat, bug order ([#3165](https://github.com/rudderlabs/rudder-transformer/issues/3165)) ([17da0a9](https://github.com/rudderlabs/rudder-transformer/commit/17da0a9cd2efb7b3ae061db081c737cb38d30df2))
 * send proper status to server in cm360 ([#3127](https://github.com/rudderlabs/rudder-transformer/issues/3127)) ([229ce47](https://github.com/rudderlabs/rudder-transformer/commit/229ce473af1ddd62d946bea1b018c882b142a5ef))
-* upload js coverage to codecov ([#3179](https://github.com/rudderlabs/rudder-transformer/issues/3179)) ([d2eba21](https://github.com/rudderlabs/rudder-transformer/commit/d2eba21191dc4f7b610414158af68e5533016014))
 
 ## [1.58.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.57.1...v1.58.0) (2024-03-04)
 

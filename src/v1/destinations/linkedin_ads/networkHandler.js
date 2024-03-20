@@ -1,5 +1,3 @@
-/* eslint-disable no-param-reassign */
-/* eslint-disable no-restricted-syntax */
 const { TransformerProxyError } = require('../../../v0/util/errorTypes');
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../../v0/util/index');
@@ -9,30 +7,6 @@ const {
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../../v0/util/tags');
-
-function isEventAbortableAndExtractErrMsg(element, proxyOutputObj) {
-  let isAbortable = false;
-  let errorMsg = '';
-  // success event
-  if (!element.errors) {
-    return isAbortable;
-  }
-  for (const err of element.errors) {
-    errorMsg += `${err.message}, `;
-    // if code is any of these, event is not retryable
-    if (
-      err.code === 'PERMISSION_DENIED' ||
-      err.code === 'INVALID_ARGUMENT' ||
-      err.code === 'NOT_FOUND'
-    ) {
-      isAbortable = true;
-    }
-  }
-  if (errorMsg) {
-    proxyOutputObj.error = errorMsg;
-  }
-  return isAbortable;
-}
 
 function constructPartialStatus(errorMessage) {
   const errorPattern = /Index: (\d+), ERROR :: (.*?)\n/g;
@@ -49,57 +23,79 @@ function constructPartialStatus(errorMessage) {
   return errorMap;
 }
 
+function createResponseArray(metadata, partialStatus) {
+  // Convert destPartialStatus to an object for easier lookup
+  const errorMap = partialStatus.reduce((acc, [index, message]) => {
+    const jobId = metadata[index]?.jobId; // Get the jobId from the metadata array based on the index
+    if (jobId !== undefined) {
+      acc[jobId] = message;
+    }
+    return acc;
+  }, {});
+
+  return metadata.map((item) => {
+    const error = errorMap[item.jobId];
+    return {
+      statusCode: error ? 400 : 500,
+      metadata: item,
+      error: error || 'success',
+    };
+  });
+}
+
+// eslint-disable-next-line consistent-return
 const responseHandler = (responseParams) => {
   const { destinationResponse, rudderJobMetadata } = responseParams;
   const message = `[LINKEDIN_CONVERSION_API Response V1 Handler] - Request Processed Successfully`;
-  const responseWithIndividualEvents = [];
+  let responseWithIndividualEvents = [];
   const { response, status } = destinationResponse;
 
+  // even if a single event is unsuccessful, the entire batch will fail, we will filter that event out and retry others
   if (!isHttpStatusSuccess(status)) {
-    // check for Partial Event failures and Successes
-    const destPartialStatus = constructPartialStatus(response.error?.message);
-
-    for (const [idx, element] of destPartialStatus.entries()) {
-      const proxyOutputObj = {
-        statusCode: 500,
-        metadata: rudderJobMetadata[idx],
-        error: 'success',
-      };
-      // update status of partial event if abortable
-      if (isEventAbortableAndExtractErrMsg(element, proxyOutputObj)) {
-        proxyOutputObj.statusCode = 400;
-      }
-      responseWithIndividualEvents.push(proxyOutputObj);
+    if (status === 401 || status === 403) {
+      const errorMessage = response.error?.message || 'unknown error format';
+      responseWithIndividualEvents = rudderJobMetadata.map((metadata) => ({
+        statusCode: status,
+        metadata,
+        error: errorMessage,
+      }));
+      throw new TransformerProxyError(
+        `LinkedIn Conversion API: Error transformer proxy v1 during LinkedIn Conversion API response transformation`,
+        status,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+        },
+        destinationResponse,
+        getAuthErrCategoryFromStCode(status),
+        responseWithIndividualEvents,
+      );
     }
-
-    return {
-      status,
-      message,
-      destinationResponse,
-      response: responseWithIndividualEvents,
-    };
+    // if the status is 422, we need to parse the error message and construct the response array
+    if (status === 422) {
+      const destPartialStatus = constructPartialStatus(response.error?.message);
+      responseWithIndividualEvents = [...createResponseArray(rudderJobMetadata, destPartialStatus)];
+      return {
+        status,
+        message,
+        destinationResponse,
+        response: responseWithIndividualEvents,
+      };
+    }
   }
 
-  // in case of failure status, populate response to maintain len(metadata)=len(response)
-  const errorMessage = response.error?.message || 'unknown error format';
-  for (const metadata of rudderJobMetadata) {
-    responseWithIndividualEvents.push({
-      statusCode: status,
-      metadata,
-      error: errorMessage,
-    });
-  }
+  // otherwise all events are successful
+  responseWithIndividualEvents = rudderJobMetadata.map((metadata) => ({
+    statusCode: 200,
+    metadata,
+    error: 'success',
+  }));
 
-  throw new TransformerProxyError(
-    `Campaign Manager: Error transformer proxy v1 during LINKED_IN_CONVERSION_API response transformation`,
+  return {
     status,
-    {
-      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
-    },
+    message,
     destinationResponse,
-    getAuthErrCategoryFromStCode(status),
-    responseWithIndividualEvents,
-  );
+    response: responseWithIndividualEvents,
+  };
 };
 
 function networkHandler() {

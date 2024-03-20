@@ -1,4 +1,9 @@
-const { getUnsetObj, validateEventType, userPropertiesPostProcess } = require('./utils');
+const {
+  getUnsetObj,
+  validateEventType,
+  userPropertiesPostProcess,
+  updateWithSkipAttribute,
+} = require('./utils');
 
 describe('getUnsetObj', () => {
   it("should return undefined when 'message.integrations.Amplitude.fieldsToUnset' is not array", () => {
@@ -162,5 +167,33 @@ describe('userPropertiesPostProcess', () => {
         key2: 'value2',
       },
     });
+  });
+});
+
+describe('updateWithSkipAttribute', () => {
+  // when 'skipUserPropertiesSync ' is present in 'integrations.Amplitude', return the original payload.
+  it("should return the original payload when 'skipUserPropertiesSync' is present", () => {
+    const message = { integrations: { Amplitude: { skipUserPropertiesSync: true } } };
+    const payload = { key: 'value' };
+    const expectedPayload = { key: 'value', $skip_user_properties_sync: true };
+    updateWithSkipAttribute(message, payload);
+    expect(expectedPayload).toEqual(payload);
+  });
+
+  // When 'skipUserPropertiesSync' is not present in 'integrations.Amplitude', return the original payload.
+  it("should return the original payload when 'skipUserPropertiesSync' is not present", () => {
+    const message = { integrations: { Amplitude: {} } };
+    const payload = { key: 'value' };
+    const expectedPayload = { key: 'value' };
+    updateWithSkipAttribute(message, payload);
+    expect(payload).toEqual(expectedPayload);
+  });
+  // When 'message' is null, return null.
+  it("should return null when 'message' is null", () => {
+    const message = null;
+    const payload = { key: 'value' };
+    const expectedPayload = { key: 'value' };
+    updateWithSkipAttribute(message, payload);
+    expect(payload).toEqual(expectedPayload);
   });
 });

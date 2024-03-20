@@ -1,7 +1,7 @@
 /* eslint-disable prefer-destructuring */
 /* eslint-disable sonarjs/no-duplicate-string */
 import { Context } from 'koa';
-import customLogger from "@rudderstack/integrations-lib/build/structured-logger";
+import logger from "@rudderstack/integrations-lib/build/structured-logger";
 import { MiscService } from '../services/misc';
 import {
   DeliveriesResponse,
@@ -21,7 +21,7 @@ const NON_DETERMINABLE = 'Non-determinable';
 
 export class DeliveryController {
   public static async deliverToDestination(ctx: Context) {
-    customLogger.debug('Native(Delivery):: Request to transformer::', JSON.stringify(ctx.request.body));
+    logger.debug('Native(Delivery):: Request to transformer::', JSON.stringify(ctx.request.body));
     let deliveryResponse: DeliveryResponse;
     const requestMetadata = MiscService.getRequestMetadata(ctx);
     const deliveryRequest = ctx.request.body as ProxyDeliveryRequest;
@@ -51,12 +51,12 @@ export class DeliveryController {
     ctx.body = { output: deliveryResponse };
     ControllerUtility.deliveryPostProcess(ctx, deliveryResponse.status);
 
-    customLogger.debug('Native(Delivery):: Response from transformer::', JSON.stringify(ctx.body));
+    logger.debug('Native(Delivery):: Response from transformer::', JSON.stringify(ctx.body));
     return ctx;
   }
 
   public static async deliverToDestinationV1(ctx: Context) {
-    customLogger.debug('Native(Delivery):: Request to transformer::', JSON.stringify(ctx.request.body));
+    logger.debug('Native(Delivery):: Request to transformer::', JSON.stringify(ctx.request.body));
     let deliveryResponse: DeliveriesResponse;
     const requestMetadata = MiscService.getRequestMetadata(ctx);
     const deliveryRequest = ctx.request.body as ProxyDeliveriesRequest;
@@ -86,12 +86,12 @@ export class DeliveryController {
     ctx.body = { output: deliveryResponse };
     ControllerUtility.deliveryPostProcess(ctx, deliveryResponse.status);
 
-    customLogger.debug('Native(Delivery):: Response from transformer::', JSON.stringify(ctx.body));
+    logger.debug('Native(Delivery):: Response from transformer::', JSON.stringify(ctx.body));
     return ctx;
   }
 
   public static async testDestinationDelivery(ctx: Context) {
-    customLogger.debug(
+    logger.debug(
       'Native(Delivery-Test):: Request to transformer::',
       JSON.stringify(ctx.request.body),
     );
@@ -112,7 +112,7 @@ export class DeliveryController {
     );
     ctx.body = { output: response };
     ControllerUtility.postProcess(ctx);
-    customLogger.debug('Native(Delivery-Test):: Response from transformer::', JSON.stringify(ctx.body));
+    logger.debug('Native(Delivery-Test):: Response from transformer::', JSON.stringify(ctx.body));
     return ctx;
   }
 }

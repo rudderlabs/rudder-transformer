@@ -2,7 +2,7 @@ import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
 import gracefulShutdown from 'http-graceful-shutdown';
 import dotenv from 'dotenv';
-import customLogger from "@rudderstack/integrations-lib/build/structured-logger";
+import logger from "@rudderstack/integrations-lib/build/structured-logger";
 import cluster from './util/cluster';
 import { metricsRouter } from './routes/metricsRouter';
 import { addStatMiddleware, addRequestSizeMiddleware, initPyroscope } from './middleware';
@@ -32,13 +32,13 @@ app.use(
 addRequestSizeMiddleware(app);
 addSwaggerRoutes(app);
 
-customLogger.info('Using new routes');
+logger.info('Using new routes');
 applicationRoutes(app);
 
 function finalFunction() {
   RedisDB.disconnect();
-  customLogger.info('Redis client disconnected');
-  customLogger.error(`Process (pid: ${process.pid}) was gracefully shutdown`);
+  logger.info('Redis client disconnected');
+  logger.error(`Process (pid: ${process.pid}) was gracefully shutdown`);
   logProcessInfo();
 }
 
@@ -59,15 +59,15 @@ if (clusterEnabled) {
   const server = app.listen(port);
 
   process.on('SIGTERM', () => {
-    customLogger.error(`SIGTERM signal received`);
+    logger.error(`SIGTERM signal received`);
   });
 
   process.on('SIGINT', () => {
-    customLogger.error(`SIGINT signal received`);
+    logger.error(`SIGINT signal received`);
   });
 
   process.on('SIGSEGV', () => {
-    customLogger.error(`SIGSEGV - JavaScript memory error occurred`);
+    logger.error(`SIGSEGV - JavaScript memory error occurred`);
   });
 
   gracefulShutdown(server, {
@@ -77,7 +77,7 @@ if (clusterEnabled) {
     finally: finalFunction,
   });
 
-  customLogger.info(`App started. Listening on port: ${port}`);
+  logger.info(`App started. Listening on port: ${port}`);
 }
 
 export default app;

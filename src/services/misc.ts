@@ -2,9 +2,10 @@
 import fs from 'fs';
 import path from 'path';
 import { Context } from 'koa';
-import customLogger from '@rudderstack/integrations-lib';
+import { LoggableExtraData } from '@rudderstack/integrations-lib';
+import logger from "@rudderstack/integrations-lib/build/structured-logger";
 import { DestHandlerMap } from '../constants/destinationCanonicalNames';
-import { ErrorDetailer, LoggableExtraData, Metadata } from '../types';
+import { ErrorDetailer, Metadata } from '../types';
 import { getCPUProfile, getHeapProfile } from '../middleware';
 
 export class MiscService {
@@ -85,11 +86,23 @@ export class MiscService {
       ...(errorDetailer?.destType && { destType: errorDetailer.destType }),
       module: errorDetailer.module,
       implementation: errorDetailer.implementation,
+      feature: errorDetailer.feature,
     };
   }
 
   public static logError(errorMessage: string, errorDetailer: ErrorDetailer) {
     const loggableExtraData: Partial<LoggableExtraData> = this.getLoggableData(errorDetailer);
-    customLogger.errorw(errorMessage || '', loggableExtraData);
+    logger.errorw(errorMessage || '', loggableExtraData);
   }
+
+  public static logInfo(message: string, loggingDetails: ErrorDetailer) {
+    const loggableExtraData: Partial<LoggableExtraData> = this.getLoggableData(loggingDetails);
+    logger.infow(message || '', loggableExtraData);
+  }
+
+  public static logDebug(errorMessage: string, errorDetailer: ErrorDetailer) {
+    const loggableExtraData: Partial<LoggableExtraData> = this.getLoggableData(errorDetailer);
+    logger.debugw(errorMessage || '', loggableExtraData);
+  }
+
 }

@@ -6,7 +6,7 @@ import v8 from 'v8';
 
 import pprof, { heap } from '@datadog/pprof';
 import { promisify } from 'util';
-import customLogger from "@rudderstack/integrations-lib/build/structured-logger";
+import logger from "@rudderstack/integrations-lib/build/structured-logger";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CatchErr } from '../util/types';
 
@@ -17,8 +17,8 @@ const intervalBytes = parseInt(process.env.PROF_INTERVAL_BYTES || '524288', 10);
 // The maximum stack depth for samples collected.
 const stackDepth = parseInt(process.env.PROF_STACK_DEPTH || '64', 10);
 
-customLogger.info(`Stack Depth set: ${stackDepth}`);
-customLogger.info(`Interval Bytes set: ${intervalBytes}`);
+logger.info(`Stack Depth set: ${stackDepth}`);
+logger.info(`Interval Bytes set: ${intervalBytes}`);
 
 heap.start(intervalBytes, stackDepth);
 
@@ -44,7 +44,7 @@ export class ProfileService {
         resolve(Buffer.concat(chunks).toString());
       });
       readable.on('error', (err) => {
-        customLogger.error(err);
+        logger.error(err);
         reject(err);
       });
     });
@@ -69,7 +69,7 @@ export class ProfileService {
     });
 
     upload.on('httpUploadProgress', (progress) => {
-      customLogger.info(progress);
+      logger.info(progress);
     });
 
     const uploadResult = await upload.done();
@@ -82,7 +82,7 @@ export class ProfileService {
     try {
       const supportedCloudProvidersForDumpStorage = ['aws'];
       const shouldGenerateLocally = !credBucketDetails.sendTo;
-      customLogger.info('Before Heapsnapshot converted into a readable stream');
+      logger.info('Before Heapsnapshot converted into a readable stream');
       let fileName = '';
       // eslint-disable-next-line no-param-reassign
       format = 'pb.gz';
@@ -97,18 +97,18 @@ export class ProfileService {
         snapshotReadableStream = await pprof.encode(profile);
       }
 
-      customLogger.info('Heapsnapshot into a buffer');
+      logger.info('Heapsnapshot into a buffer');
       fileName = `heap_${moment.utc().format('YYYY-MM-DD_HH:mm:ss.sss')}.${format}`;
       let data;
       if (shouldGenerateLocally) {
-        customLogger.info('Before pipeline');
+        logger.info('Before pipeline');
         try {
           await writeFileProm(fileName, snapshotReadableStream);
         } catch (error: CatchErr) {
-          customLogger.error('Error occurred:', error);
+          logger.error('Error occurred:', error);
           throw new Error(error);
         }
-        customLogger.info('After pipeline');
+        logger.info('After pipeline');
       } else if (credBucketDetails.sendTo) {
         if (credBucketDetails.sendTo === 'aws') {
           data = await this.uploadToAWS(credBucketDetails, fileName, snapshotReadableStream);
@@ -121,7 +121,7 @@ export class ProfileService {
         }
       }
       // snapshotReadableStream.destroy();
-      customLogger.info('Success', data);
+      logger.info('Success', data);
       return {
         success: true,
         message: `Generated ${
@@ -129,7 +129,7 @@ export class ProfileService {
         } with filename: ${fileName}`,
       };
     } catch (error: CatchErr) {
-      customLogger.error(error);
+      logger.error(error);
       return {
         success: false,
         message: error.message,

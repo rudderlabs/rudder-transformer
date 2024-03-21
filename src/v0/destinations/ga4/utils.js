@@ -441,19 +441,19 @@ const prepareUserProperties = (message, piiPropertiesToIgnore = []) => {
  */
 const prepareUserConsents = (message) => {
   const consents = {};
-  const GOOGLE_ALLOWED_CONSENT_STATUS = ['GRANTED', 'DENIED'];
+  const GA4_ALLOWED_CONSENT_STATUS = ['GRANTED', 'DENIED'];
   const integrationObj = getIntegrationsObj(message, 'ga4') || {};
   const eventLevelConsentsData = integrationObj?.consents || {};
 
   if (
     eventLevelConsentsData.adPersonalization &&
-    GOOGLE_ALLOWED_CONSENT_STATUS.includes(eventLevelConsentsData.adPersonalization)
+    GA4_ALLOWED_CONSENT_STATUS.includes(eventLevelConsentsData.adPersonalization)
   ) {
     consents.ad_personalization = eventLevelConsentsData.adPersonalization;
   }
   if (
     eventLevelConsentsData.adUserData &&
-    GOOGLE_ALLOWED_CONSENT_STATUS.includes(eventLevelConsentsData.adUserData)
+    GA4_ALLOWED_CONSENT_STATUS.includes(eventLevelConsentsData.adUserData)
   ) {
     consents.ad_user_data = eventLevelConsentsData.adUserData;
   }

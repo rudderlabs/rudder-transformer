@@ -6,7 +6,7 @@ describe('formatEmail', () => {
   it('should return a hashed email when a valid email is passed as argument', () => {
     const email = 'test@example.com';
     const hashedEmail = crypto.createHash('sha256').update(email).digest('hex');
-    expect(formatEmail(email)).toEqual(hashedEmail);
+    expect(formatEmail(email, { hashData: true })).toEqual(hashedEmail);
   });
 
   // Returns null when an empty string is passed as argument.

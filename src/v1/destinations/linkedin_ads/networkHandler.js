@@ -13,7 +13,6 @@ function constructPartialStatus(errorMessage) {
   let match;
   const errorMap = {};
 
-  // Note the added parentheses around the assignment
   // eslint-disable-next-line no-cond-assign
   while ((match = errorPattern.exec(errorMessage)) !== null) {
     const [, index, message] = match;
@@ -24,8 +23,12 @@ function constructPartialStatus(errorMessage) {
 }
 
 function createResponseArray(metadata, partialStatus) {
+  const partialStatusArray = Object.entries(partialStatus).map(([index, message]) => [
+    Number(index),
+    message,
+  ]);
   // Convert destPartialStatus to an object for easier lookup
-  const errorMap = partialStatus.reduce((acc, [index, message]) => {
+  const errorMap = partialStatusArray.reduce((acc, [index, message]) => {
     const jobId = metadata[index]?.jobId; // Get the jobId from the metadata array based on the index
     if (jobId !== undefined) {
       acc[jobId] = message;
@@ -72,7 +75,7 @@ const responseHandler = (responseParams) => {
     }
     // if the status is 422, we need to parse the error message and construct the response array
     if (status === 422) {
-      const destPartialStatus = constructPartialStatus(response.error?.message);
+      const destPartialStatus = constructPartialStatus(response?.message);
       responseWithIndividualEvents = [...createResponseArray(rudderJobMetadata, destPartialStatus)];
       return {
         status,

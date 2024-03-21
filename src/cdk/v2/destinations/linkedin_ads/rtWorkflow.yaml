@@ -33,35 +33,10 @@ steps:
       })[]
 
   - name: batchSuccessfulEvents
-    description: Batches the successfulEvents using endpoint
-    condition: $.outputs.successfulEvents.length
+    description: Batches the successfulEvents
     template: |
-      let batches = $.batchEvents($.outputs.successfulEvents);
-      batches@batch.({
-        "batchedRequest": {
-          "body": {
-            "JSON": batch.message.body.JSON,
-            "JSON_ARRAY": {},
-            "XML": {},
-            "FORM": {}
-          },
-          "version": "1",
-          "type": "REST",
-          "method": "POST",
-          "endpoint": batch.message.endpoint,
-          "headers": batch.message.headers,
-          "params": {},
-          "files": {}
-        },
-        "metadata": batch.metadata,
-        "batched": true,
-        "statusCode": 200,
-        "destination": batch.destination
-      })[];
-    else:
-      name: returnEmptyOuput
-      template: '[]'
+      $.batchResponseBuilder($.outputs.successfulEvents);
 
   - name: finalPayload
     template: |
-      [...$.outputs.batchSuccessfulEvents, ...$.outputs.failedEvents]
+      [...$.outputs.failedEvents, ...$.outputs.batchSuccessfulEvents]

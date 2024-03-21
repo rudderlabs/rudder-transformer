@@ -107,34 +107,6 @@ const deduceConversionRules = (trackEventName, destConfig) => {
 
 const createConversionString = (ruleId) => `urn:lla:llaPartnerConversion:${ruleId}`;
 
-const batchEventChunks = (eventChunks) => {
-  const batchedEvents = [];
-  if (Array.isArray(eventChunks)) {
-    eventChunks.forEach((chunk) => {
-      const response = { destination: chunk[0].destination };
-      chunk.forEach((event, index) => {
-        if (index === 0) {
-          const [firstMessage] = event.message;
-          response.message = firstMessage;
-          response.destination = event.destination;
-          response.metadata = [event.metadata];
-        } else {
-          response.message.body.JSON.elements.push(...event.message[0].body.JSON.elements);
-          response.metadata.push(event.metadata);
-        }
-      });
-      batchedEvents.push(response);
-    });
-  }
-  return batchedEvents;
-};
-
-const batchEvents = (successfulEvents) => {
-  const eventChunks = lodash.chunk(successfulEvents, MAX_BATCH_SIZE);
-  const batchedEvents = batchEventChunks(eventChunks);
-  return batchedEvents;
-};
-
 const generateHeader = (accessToken) => {
   const headers = {
     'Content-Type': 'application/json',
@@ -166,6 +138,46 @@ const fetchAndVerifyConversionHappenedAt = (message) => {
   return timeInMilliseconds;
 };
 
+function batchResponseBuilder(successfulEvents) {
+  const constants = {
+    version: successfulEvents[0].message[0].version,
+    type: successfulEvents[0].message[0].type,
+    method: successfulEvents[0].message[0].method,
+    endpoint: successfulEvents[0].message[0].endpoint,
+    headers: successfulEvents[0].message[0].headers,
+    destination: successfulEvents[0].destination,
+  };
+
+  const allElements = successfulEvents.flatMap((event) => event.message[0].body.JSON.elements);
+  const allMetadata = successfulEvents.map((event) => event.metadata);
+
+  // Using lodash to chunk the elements into groups of up to 3
+  const chunkedElements = lodash.chunk(allElements, MAX_BATCH_SIZE);
+  const chunkedMetadata = lodash.chunk(allMetadata, MAX_BATCH_SIZE);
+
+  return chunkedElements.map((elementsBatch, index) => ({
+    batchedRequest: {
+      body: {
+        JSON: { elements: elementsBatch },
+        JSON_ARRAY: {},
+        XML: {},
+        FORM: {},
+      },
+      version: constants.version,
+      type: constants.type,
+      method: constants.method,
+      endpoint: constants.endpoint,
+      headers: constants.headers,
+      params: {},
+      files: {},
+    },
+    metadata: chunkedMetadata[index],
+    batched: true,
+    statusCode: 200,
+    destination: constants.destination,
+  }));
+}
+
 module.exports = {
   formatEmail,
   calculateConversionObject,
@@ -173,7 +185,7 @@ module.exports = {
   fetchUserIds,
   deduceConversionRules,
   createConversionString,
-  batchEvents,
   generateHeader,
   fetchAndVerifyConversionHappenedAt,
+  batchResponseBuilder,
 };

@@ -1,14 +1,55 @@
-import { VERSION } from '../../../../../src/v0/destinations/facebook_pixel/config';
-
 export const mockFns = (_) => {
   // @ts-ignore
   jest.useFakeTimers().setSystemTime(new Date('2023-10-15'));
 };
 
+const commonDestination = {
+  ID: '12335',
+  Name: 'sample-destination',
+  DestinationDefinition: {
+    ID: '123',
+    Name: 'linkedin_ads',
+    DisplayName: 'LinkedIn Ads',
+    Config: {
+      cdkV2Enabled: true,
+    },
+  },
+  WorkspaceID: '123',
+  Transformations: [],
+  Config: {
+    hashData: true,
+    deduplicationKey: 'properties.eventId',
+    conversionMapping: [
+      {
+        from: 'ABC Searched',
+        to: '1234567',
+      },
+      {
+        from: 'spin_result',
+        to: '23456',
+      },
+      {
+        from: 'ABC Searched',
+        to: '34567',
+      },
+    ],
+    oneTrustCookieCategories: [
+      {
+        oneTrustCookieCategory: 'Marketing',
+      },
+    ],
+  },
+  Enabled: true,
+};
+
 export const data = [
   {
-    name: 'facebook_pixel',
-    description: 'Test 0',
+    id: 'linkedin_ads-track-test-1',
+    name: 'linkedin_ads',
+    description: 'Track call : custom event calls with simple user properties and traits',
+    scenario: 'Business',
+    successCriteria:
+      'event not respecting the internal mapping and as well as UI mapping should be considered as a custom event and should be sent as it is',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -18,187 +59,229 @@ export const data = [
           input: [
             {
               message: {
-                anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-                destination_props: { Fb: { app_id: 'RudderFbApp' } },
+                type: 'track',
+                event: 'ABC Searched',
+                sentAt: '2020-08-14T05: 30: 30.118Z',
+                channel: 'web',
                 context: {
-                  device: {
-                    id: 'df16bffa-5c3d-4fbb-9bce-3bab098129a7R',
-                    manufacturer: 'Xiaomi',
-                    model: 'Redmi 6',
-                    name: 'xiaomi',
-                  },
-                  network: { carrier: 'Banglalink' },
-                  os: { name: 'android', version: '8.1.0' },
-                  screen: { height: '100', density: 50 },
+                  source: 'test',
+                  userAgent: 'chrome',
                   traits: {
+                    anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
                     email: 'abc@gmail.com',
-                    anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+                    phone: '+1234589947',
+                    gender: 'non-binary',
+                    db: '19950715',
+                    lastname: 'Rudderlabs',
+                    firstName: 'Test',
+                    address: {
+                      city: 'Kolkata',
+                      state: 'WB',
+                      zip: '700114',
+                      country: 'IN',
+                    },
+                  },
+                  device: {
+                    advertisingId: 'abc123',
+                  },
+                  library: {
+                    name: 'rudder-sdk-ruby-sync',
+                    version: '1.0.6',
                   },
                 },
-                event: 'spin_result',
-                integrations: { All: true },
-                message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
-                properties: { revenue: 400, additional_bet_index: 0 },
-                timestamp: '2023-10-14T15:46:51.693229+05:30',
-                type: 'track',
+                messageId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
+                timestamp: '2024-02-10T12:16:07.251Z',
+                properties: {
+                  tax: 2,
+                  total: 27.5,
+                  coupon: 'hasbros',
+                  revenue: 48,
+                  price: 25,
+                  quantity: 2,
+                  currency: 'USD',
+                  discount: 2.5,
+                  order_id: '50314b8e9bcf000000000000',
+                  requestIP: '123.0.0.0',
+                  optOutType: 'LDP',
+                  clickId: 'dummy_clickId',
+
+                  shipping: 3,
+                  subtotal: 22.5,
+                  affiliation: 'Google Store',
+                  checkout_id: 'fksdjfsdjfisjf9sdfjsd9f',
+                },
+                anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
+                integrations: {
+                  All: true,
+                },
               },
-              metadata: { jobId: 1, userId: 'u1' },
+              metadata: {
+                sourceType: '',
+                destinationType: '',
+                namespace: '',
+                jobId: 1,
+                secret: {
+                  accessToken: 'dummyToken',
+                },
+              },
               destination: {
+                DestinationDefinition: {
+                  Config: {
+                    cdkV2Enabled: true,
+                  },
+                },
+                ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+                Name: 'LINKEDIN_ADS',
                 Config: {
-                  limitedDataUsage: true,
-                  blacklistPiiProperties: [{ blacklistPiiProperties: '', blacklistPiiHash: false }],
-                  removeExternalId: true,
-                  accessToken: '09876',
-                  pixelId: 'dummyPixelId',
-                  eventsToEvents: [{ from: '', to: '' }],
-                  eventCustomProperties: [{ eventCustomProperties: '' }],
-                  valueFieldIdentifier: '',
-                  advancedMapping: false,
-                  whitelistPiiProperties: [{ whitelistPiiProperties: '' }],
+                  hashData: true,
+                  conversionMapping: [
+                    {
+                      from: 'ABC Searched',
+                      to: '1234567',
+                    },
+                  ],
+                  oneTrustCookieCategories: [
+                    {
+                      oneTrustCookieCategory: 'Marketing',
+                    },
+                  ],
                 },
                 Enabled: true,
+                Transformations: [],
               },
             },
             {
               message: {
+                type: 'track',
+                event: 'ABC Searched',
+                sentAt: '2020-08-14T05: 30: 30.118Z',
                 channel: 'web',
                 context: {
+                  source: 'test',
+                  userAgent: 'chrome',
                   traits: {
-                    name: 'Rudder Test',
+                    anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
                     email: 'abc@gmail.com',
-                    firstname: 'Test',
-                    lastname: 'Test',
-                    phone: 9000000000,
-                    gender: 'female',
+                    phone: '+1234589947',
+                    gender: 'non-binary',
+                    db: '19950715',
+                    lastname: 'Rudderlabs',
+                    firstName: 'Test',
+                    address: {
+                      city: 'Kolkata',
+                      state: 'WB',
+                      zip: '700114',
+                      country: 'IN',
+                    },
                   },
-                  app: {
-                    build: '1.0.0',
-                    name: 'RudderLabs JavaScript SDK',
-                    namespace: 'com.rudderlabs.javascript',
-                    version: '1.0.0',
+                  device: {
+                    advertisingId: 'abc123',
                   },
-                  library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
-                  userAgent:
-                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
-                  locale: 'en-US',
-                  ip: '0.0.0.0',
-                  os: { name: '', version: '' },
-                  screen: { density: 2 },
+                  library: {
+                    name: 'rudder-sdk-ruby-sync',
+                    version: '1.0.6',
+                  },
                 },
-                properties: { plan: 'standard plan', name: 'rudder test' },
-                type: 'identify',
-                messageId: '84e26acc-56a5-4835-8233-591137fca468',
-                originalTimestamp: '2023-10-14T00:00:00.693229+05:30',
-                anonymousId: '00000000000000000000000000',
-                userId: '123456',
-                integrations: { All: true },
-                sentAt: '2019-10-14T09:03:22.563Z',
-              },
-              metadata: { jobId: 2, userId: 'u1' },
-              destination: {
-                Config: {
-                  blacklistPiiProperties: [{ blacklistPiiProperties: '', blacklistPiiHash: false }],
-                  accessToken: '09876',
-                  pixelId: 'dummyPixelId',
-                  eventsToEvents: [{ from: '', to: '' }],
-                  eventCustomProperties: [{ eventCustomProperties: '' }],
-                  valueFieldIdentifier: '',
-                  advancedMapping: true,
-                  whitelistPiiProperties: [{ whitelistPiiProperties: '' }],
+                messageId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
+                timestamp: '2024-02-10T12:16:07.251Z',
+                properties: {
+                  tax: 2,
+                  total: 27.5,
+                  coupon: 'hasbros',
+                  revenue: 48,
+                  price: 25,
+                  quantity: 2,
+                  currency: 'USD',
+                  discount: 2.5,
+                  order_id: '50314b8e9bcf000000000000',
+                  requestIP: '123.0.0.0',
+                  optOutType: 'LDP',
+                  clickId: 'dummy_clickId',
+
+                  shipping: 3,
+                  subtotal: 22.5,
+                  affiliation: 'Google Store',
+                  checkout_id: 'fksdjfsdjfisjf9sdfjsd9f',
                 },
-                Enabled: true,
+                anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
+                integrations: {
+                  All: true,
+                },
               },
+              metadata: {
+                sourceType: '',
+                destinationType: '',
+                namespace: '',
+                jobId: 1,
+                secret: {
+                  accessToken: 'dummyToken',
+                },
+              },
+              destination: commonDestination,
             },
           ],
-          destType: 'facebook_pixel',
+          destType: 'linkedin_ads',
         },
         method: 'POST',
       },
     },
     output: {
-      response: {
-        status: 200,
+      output: {
+        version: '1',
+        type: 'REST',
+        method: 'POST',
+        endpoint: 'https://api.linkedin.com/rest/conversionEvents',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-RestLi-Method': 'BATCH_CREATE',
+          'X-Restli-Protocol-Version': '2.0.0',
+          'LinkedIn-Version': '202402',
+          Authorization: 'Bearer dummyToken',
+        },
+        params: {},
         body: {
-          output: [
-            {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://graph.facebook.com/v18.0/dummyPixelId/events?access_token=09876',
-                headers: {},
-                params: {},
-                body: {
-                  JSON: {},
-                  XML: {},
-                  JSON_ARRAY: {},
-                  FORM: {
-                    data: [
-                      '{"user_data":{"em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"},"event_name":"spin_result","event_time":1697278611,"action_source":"other","custom_data":{"additional_bet_index":0,"value":400}}',
-                    ],
+          JSON: {
+            elements: [
+              {
+                conversionHappenedAt: 1707567367251,
+                eventId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
+                conversionValue: {
+                  currencyCode: 'USD',
+                  amount: 50,
+                },
+                user: {
+                  userIds: [
+                    {
+                      idType: 'SHA256_EMAIL',
+                      idValue: '48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08',
+                    },
+                  ],
+                  userInfo: {
+                    firstName: 'Test',
+                    lastName: 'Rudderlabs',
                   },
                 },
-                files: {},
+                conversion: 'urn:lla:llaPartnerConversion:1234567',
               },
-              metadata: [{ jobId: 1, userId: 'u1' }],
-              batched: false,
-              statusCode: 200,
-              destination: {
-                Config: {
-                  limitedDataUsage: true,
-                  blacklistPiiProperties: [{ blacklistPiiProperties: '', blacklistPiiHash: false }],
-                  removeExternalId: true,
-                  accessToken: '09876',
-                  pixelId: 'dummyPixelId',
-                  eventsToEvents: [{ from: '', to: '' }],
-                  eventCustomProperties: [{ eventCustomProperties: '' }],
-                  valueFieldIdentifier: '',
-                  advancedMapping: false,
-                  whitelistPiiProperties: [{ whitelistPiiProperties: '' }],
-                },
-                Enabled: true,
-              },
-            },
-            {
-              batchedRequest: {
-                version: '1',
-                type: 'REST',
-                method: 'POST',
-                endpoint: 'https://graph.facebook.com/v18.0/dummyPixelId/events?access_token=09876',
-                headers: {},
-                params: {},
-                body: {
-                  JSON: {},
-                  XML: {},
-                  JSON_ARRAY: {},
-                  FORM: {
-                    data: [
-                      '{"user_data":{"external_id":"8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92","em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08","ph":"593a6d58f34eb5c3de4f47e38d1faaa7d389fafe332a85400b1e54498391c579","ge":"252f10c83610ebca1a059c0bae8255eba2f95be4d1d7bcfa89d7248a82d9f111","ln":"532eaabd9574880dbf76b9b8cc00832c20a6ec113d682299550d7a6e0f345e25","fn":"2c2ccf28d806f6f9a34b67aa874d2113b7ac1444f1a4092541b8b75b84771747","client_ip_address":"0.0.0.0","client_user_agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"},"event_name":"identify","event_time":1697221800,"event_id":"84e26acc-56a5-4835-8233-591137fca468","action_source":"website"}',
-                    ],
-                  },
-                },
-                files: {},
-              },
-              metadata: [{ jobId: 2, userId: 'u1' }],
-              batched: false,
-              statusCode: 200,
-              destination: {
-                Config: {
-                  blacklistPiiProperties: [{ blacklistPiiProperties: '', blacklistPiiHash: false }],
-                  accessToken: '09876',
-                  pixelId: 'dummyPixelId',
-                  eventsToEvents: [{ from: '', to: '' }],
-                  eventCustomProperties: [{ eventCustomProperties: '' }],
-                  valueFieldIdentifier: '',
-                  advancedMapping: true,
-                  whitelistPiiProperties: [{ whitelistPiiProperties: '' }],
-                },
-                Enabled: true,
-              },
-            },
-          ],
+            ],
+          },
+          JSON_ARRAY: {},
+          XML: {},
+          FORM: {},
+        },
+        files: {},
+        userId: '',
+      },
+      metadata: {
+        sourceType: '',
+        destinationType: '',
+        namespace: '',
+        jobId: 1,
+        secret: {
+          accessToken: 'dummyToken',
         },
       },
+      statusCode: 200,
     },
   },
 ].map((d) => ({ ...d, mockFns }));

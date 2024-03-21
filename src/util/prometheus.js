@@ -575,6 +575,30 @@ class Prometheus {
         type: 'gauge',
         labelNames: ['destination_id'],
       },
+      {
+        name: 'mixpanel_batch_engage_pack_size',
+        help: 'mixpanel_batch_engage_pack_size',
+        type: 'gauge',
+        labelNames: ['destination_id'],
+      },
+      {
+        name: 'mixpanel_batch_group_pack_size',
+        help: 'mixpanel_batch_group_pack_size',
+        type: 'gauge',
+        labelNames: ['destination_id'],
+      },
+      {
+        name: 'mixpanel_batch_track_pack_size',
+        help: 'mixpanel_batch_track_pack_size',
+        type: 'gauge',
+        labelNames: ['destination_id'],
+      },
+      {
+        name: 'mixpanel_batch_import_pack_size',
+        help: 'mixpanel_batch_import_pack_size',
+        type: 'gauge',
+        labelNames: ['destination_id'],
+      },
 
       // Histograms
       {

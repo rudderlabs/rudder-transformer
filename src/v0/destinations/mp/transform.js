@@ -39,6 +39,7 @@ const {
   generatePageOrScreenCustomEventName,
 } = require('./util');
 const { CommonUtils } = require('../../../util/common');
+const stats = require('../../../util/stats');
 
 // ref: https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel
 const mPEventPropertiesConfigJson = mappingConfig[ConfigCategory.EVENT_PROPERTIES.name];
@@ -479,6 +480,11 @@ const process = (event) => processSingleMessage(event.message, event.destination
 // Ref: https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel
 // Ref: https://help.mixpanel.com/hc/en-us/articles/115004561786-Track-UTM-Tags
 const processRouterDest = async (inputs, reqMetadata) => {
+  let engageBatchSize = 0;
+  let groupsBatchSize = 0;
+  let trackBatchSize = 0;
+  let importBatchSize = 0;
+
   const groupedEvents = groupEventsByType(inputs);
   const response = await Promise.all(
     groupedEvents.map(async (listOfEvents) => {
@@ -510,6 +516,11 @@ const processRouterDest = async (inputs, reqMetadata) => {
       const { engageEvents, groupsEvents, trackEvents, importEvents, batchErrorRespList } =
         groupEventsByEndpoint(transformedPayloads);
 
+      engageBatchSize += engageEvents.length;
+      groupsBatchSize += groupsEvents.length;
+      trackBatchSize += trackEvents.length;
+      importBatchSize += importEvents.length;
+
       const engageRespList = batchEvents(engageEvents, ENGAGE_MAX_BATCH_SIZE, reqMetadata);
       const groupsRespList = batchEvents(groupsEvents, GROUPS_MAX_BATCH_SIZE, reqMetadata);
       const trackRespList = batchEvents(trackEvents, TRACK_MAX_BATCH_SIZE, reqMetadata);
@@ -527,6 +538,21 @@ const processRouterDest = async (inputs, reqMetadata) => {
 
   // Flatten the response array containing batched events from multiple groups
   const allBatchedEvents = lodash.flatMap(response);
+
+  const { destination } = allBatchedEvents[0];
+  stats.gauge('mixpanel_batch_engage_pack_size', engageBatchSize, {
+    destination_id: destination.ID,
+  });
+  stats.gauge('mixpanel_batch_group_pack_size', groupsBatchSize, {
+    destination_id: destination.ID,
+  });
+  stats.gauge('mixpanel_batch_track_pack_size', trackBatchSize, {
+    destination_id: destination.ID,
+  });
+  stats.gauge('mixpanel_batch_import_pack_size', importBatchSize, {
+    destination_id: destination.ID,
+  });
+
   return combineBatchRequestsWithSameJobIds(allBatchedEvents);
 };
 

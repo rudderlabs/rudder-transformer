@@ -5,7 +5,7 @@ const UNSPECIFIED_CONSENT = 'UNSPECIFIED';
 const UNKNOWN_CONSENT = 'UNKNOWN';
 
 /**
- * Populates the consent object based on the provided configuration and consent mapping.
+ * Populates the consent object based on the provided configuration and consent config mapping.
  *
  * @param {Object} config - The configuration object containing consent values.
  * @param {Object} consentConfigMap - The mapping of consent keys to consent types.

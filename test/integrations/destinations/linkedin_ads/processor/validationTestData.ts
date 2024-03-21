@@ -1,71 +1,72 @@
-import { Destination } from '../../../../../src/types';
 import {
   generateMetadata,
-  generateSimplifiedGroupPayload,
-  generateSimplifiedTrackPayload,
   generateTrackPayload,
   overrideDestination,
+  transformResultBuilder,
 } from '../../../testUtils';
-const commonTimestamp = new Date('2023-10-12');
+import { Destination } from '../../../../../src/types';
+import { ProcessorTestData } from '../../../testTypes';
+
 const commonDestination: Destination = {
   ID: '12335',
   Name: 'sample-destination',
   DestinationDefinition: {
     ID: '123',
-    Name: 'facebook_pixel',
-    DisplayName: 'Facebook Pixel',
-    Config: {},
+    Name: 'linkedin_ads',
+    DisplayName: 'LinkedIn Ads',
+    Config: {
+      cdkV2Enabled: true,
+    },
   },
   WorkspaceID: '123',
   Transformations: [],
   Config: {
-    limitedDataUsage: true,
-    blacklistPiiProperties: [
+    hashData: true,
+    conversionMapping: [
       {
-        blacklistPiiProperties: '',
-        blacklistPiiHash: false,
+        from: 'ABC Searched',
+        to: '1234567',
+      },
+      {
+        from: 'spin_result',
+        to: '23456',
+      },
+      {
+        from: 'ABC Searched',
+        to: '34567',
       },
     ],
-    eventsToEvents: [
+    oneTrustCookieCategories: [
       {
-        from: '',
-        to: '',
-      },
-    ],
-    eventCustomProperties: [
-      {
-        eventCustomProperties: '',
-      },
-    ],
-    removeExternalId: true,
-    valueFieldIdentifier: '',
-    advancedMapping: true,
-    whitelistPiiProperties: [
-      {
-        whitelistPiiProperties: '',
+        oneTrustCookieCategory: 'Marketing',
       },
     ],
   },
   Enabled: true,
 };
 
-const commonStatTags = {
-  errorCategory: 'dataValidation',
-  errorType: 'instrumentation',
-  destType: 'FACEBOOK_PIXEL',
-  module: 'destination',
-  implementation: 'native',
-  feature: 'processor',
+const commonUserTraits = {
+  email: 'abc@gmail.com',
+  anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+  event_id: '12345',
 };
 
-export const validationTestData = [
+const commonUserProperties = {
+  revenue: 400,
+  additional_bet_index: 0,
+  eventId: '12345',
+};
+
+const commonTimestamp = new Date('2023-10-14');
+const olderTimestamp = new Date('2023-07-13');
+
+export const validationTestData: ProcessorTestData[] = [
   {
-    id: 'fbPixel-validation-test-1',
-    name: 'facebook_pixel',
-    description: '[Error]: Check for unsupported message type',
-    scenario: 'Framework',
-    successCriteria:
-      'Response should contain error message and status code should be 400, as we are sending a message type which is not supported by facebook pixel destination and the error message should be Event type random is not supported',
+    id: 'linkedin_ads-track-test-1',
+    name: 'linkedin_ads',
+    description: 'Track call : event is older than 90 days',
+    scenario: 'Business',
+    successCriteria: 'shoud throw error with status code 400 and error message',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -73,12 +74,119 @@ export const validationTestData = [
       request: {
         body: [
           {
-            destination: overrideDestination(commonDestination, {
-              accessToken: '09876',
-              pixelId: 'dummyPixelId',
+            message: generateTrackPayload({
+              event: 'spin_result',
+              properties: commonUserProperties,
+              context: {
+                traits: commonUserTraits,
+              },
+              timestamp: olderTimestamp,
+              messageId: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
             }),
-            message: generateSimplifiedGroupPayload({
+            metadata: generateMetadata(1),
+            destination: overrideDestination(commonDestination, { hashData: false }),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              'Events must be sent within ninety days of their occurrence.: Workflow: procWorkflow, Step: commonFields, ChildStep: undefined, OriginalError: Events must be sent within ninety days of their occurrence.',
+            metadata: generateMetadata(1),
+            statTags: {
+              destinationId: 'default-destinationId',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              implementation: 'cdkV2',
+              destType: 'LINKEDIN_ADS',
+              module: 'destination',
+              feature: 'processor',
+              workspaceId: 'default-workspaceId',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'linkedin_ads-track-test-1',
+    name: 'linkedin_ads',
+    description: 'Track call : event not mapped to conversion rule in UI',
+    scenario: 'Business',
+    successCriteria:
+      'should throw error with status code 400 and error message no matching conversion rule found for random event. Please provide a conversion rule. Aborting',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: generateTrackPayload({
+              event: 'random event',
+              properties: commonUserProperties,
+              context: {
+                traits: commonUserTraits,
+              },
+              timestamp: commonTimestamp,
+              messageId: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
+            }),
+            metadata: generateMetadata(1),
+            destination: overrideDestination(commonDestination, {
+              deduplicationKey: `properties.eventId`,
+            }),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              '[LinkedIn Conversion API] no matching conversion rule found for random event. Please provide a conversion rule. Aborting: Workflow: procWorkflow, Step: deduceConversionEventRules, ChildStep: undefined, OriginalError: [LinkedIn Conversion API] no matching conversion rule found for random event. Please provide a conversion rule. Aborting',
+            metadata: generateMetadata(1),
+            statTags: {
+              destinationId: 'default-destinationId',
+              errorCategory: 'dataValidation',
+              errorType: 'configuration',
+              implementation: 'cdkV2',
+              destType: 'LINKEDIN_ADS',
+              module: 'destination',
+              feature: 'processor',
+              workspaceId: 'default-workspaceId',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'linkedin_ads-validation-test-1',
+    name: 'linkedin_ads',
+    description: '[Error]: Check for unsupported message type',
+    scenario: 'Framework',
+    successCriteria:
+      'Response should contain error message and status code should be 400, as we are sending a message type which is not supported by linkedin_ads destination and the error message should be Event type random is not supported',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: commonDestination,
+            metadata: generateMetadata(1),
+            message: {
               userId: 'user123',
+              type: 'random',
               groupId: 'XUepkK',
               traits: {
                 subscribe: true,
@@ -87,112 +195,11 @@ export const validationTestData = [
                 traits: {
                   email: 'test@rudderstack.com',
                   phone: '+12 345 678 900',
-                  consent: ['email'],
+                  consent: 'email',
                 },
               },
-              timestamp: '2023-10-14T00:21:34.208Z',
-            }),
-          },
-        ],
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: [
-          {
-            error: 'Message type group not supported',
-            statTags: commonStatTags,
-            statusCode: 400,
-          },
-        ],
-      },
-    },
-  },
-  {
-    id: 'fbPixel-validation-test-2',
-    name: 'facebook_pixel',
-    description:
-      'Track call : error in instrumentation as pixel id is not mentioned in destination object',
-    scenario: 'Business',
-    successCriteria:
-      'Error: Pixel Id not found. Aborting, as we are sending an event without pixel id and the status code should be 400',
-    feature: 'processor',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: [
-          {
-            message: generateTrackPayload({
-              event: 'spin_result',
-              properties: {
-                revenue: 400,
-                additional_bet_index: 0,
-              },
-              context: {
-                traits: {
-                  email: 'abc@gmail.com',
-                },
-              },
-              timestamp: commonTimestamp,
-            }),
-            metadata: generateMetadata(1),
-            destination: commonDestination,
-          },
-        ],
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: [
-          {
-            error: 'Pixel Id not found. Aborting',
-            metadata: generateMetadata(1),
-            statTags: {
-              ...commonStatTags,
-              destinationId: 'default-destinationId',
-              errorType: 'configuration',
-              workspaceId: 'default-workspaceId',
+              timestamp: '2020-01-21T00:21:34.208Z',
             },
-            statusCode: 400,
-          },
-        ],
-      },
-    },
-  },
-  {
-    id: 'fbPixel-validation-test-3',
-    name: 'facebook_pixel',
-    description: 'Track call : custom event calls with simple user properties and traits',
-    scenario: 'Business',
-    successCriteria:
-      'event not respecting the internal mapping and as well as UI mapping should be considered as a custom event and should be sent as it is',
-    feature: 'processor',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: [
-          {
-            message: generateTrackPayload({
-              event: 'spin_result',
-              properties: {
-                revenue: 400,
-                additional_bet_index: 0,
-              },
-              context: {
-                traits: {
-                  email: 'abc@gmail.com',
-                },
-              },
-              timestamp: commonTimestamp,
-            }),
-            metadata: generateMetadata(1),
-            destination: overrideDestination(commonDestination, {
-              pixelId: 'dummyPixelId',
-            }),
           },
         ],
       },
@@ -202,166 +209,17 @@ export const validationTestData = [
         status: 200,
         body: [
           {
-            error: 'Access token not found. Aborting',
-            metadata: generateMetadata(1),
-            statTags: {
-              ...commonStatTags,
-              destinationId: 'default-destinationId',
-              errorType: 'configuration',
-              workspaceId: 'default-workspaceId',
-            },
-            statusCode: 400,
-          },
-        ],
-      },
-    },
-  },
-  {
-    id: 'fbPixel-validation-test-3',
-    name: 'facebook_pixel',
-    description: '[Error]: validate event date and time',
-    scenario: 'Framework + business',
-    successCriteria:
-      'Response should contain error message and status code should be 400, as we are sending an event which is older than 7 days and the error message should be Events must be sent within seven days of their occurrence or up to one minute in the future.',
-    feature: 'processor',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: [
-          {
-            message: generateSimplifiedTrackPayload({
-              type: 'track',
-              event: 'TestEven001',
-              sentAt: '2021-01-25T16:12:02.048Z',
-              userId: 'sajal12',
-              context: {
-                traits: {
-                  email: 'test@rudderstack.com',
-                  phone: '9112340375',
-                  plan_details: {
-                    plan_type: 'gold',
-                    duration: '3 months',
-                  },
-                },
-              },
-              properties: {
-                revenue: 400,
-                additional_bet_index: 0,
-              },
-              anonymousId: '9c6bd77ea9da3e68',
-              originalTimestamp: '2021-01-25T15:32:56.409Z',
-            }),
-            destination: overrideDestination(commonDestination, {
-              accessToken: '09876',
-              pixelId: 'dummyPixelId',
-            }),
-          },
-        ],
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: [
-          {
-            statusCode: 400,
             error:
-              'Events must be sent within seven days of their occurrence or up to one minute in the future.',
-            statTags: commonStatTags,
-          },
-        ],
-      },
-    },
-  },
-  {
-    id: 'fbPixel-validation-test-4',
-    name: 'facebook_pixel',
-    description:
-      'Track call : error in instrumentation as event name is not mentioned in track call',
-    scenario: 'Business',
-    successCriteria:
-      'event not respecting the internal mapping and as well as UI mapping should be considered as a custom event and should be sent as it is',
-    feature: 'processor',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: [
-          {
-            message: {
-              type: 'track',
-              properties: {
-                revenue: 400,
-                additional_bet_index: 0,
-              },
-            },
-            metadata: generateMetadata(1),
-            destination: overrideDestination(commonDestination, {
-              pixelId: 'dummyPixelId',
-            }),
-          },
-        ],
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: [
-          {
-            error: "'event' is required",
+              'message type random is not supported: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: message type random is not supported',
             metadata: generateMetadata(1),
             statTags: {
-              ...commonStatTags,
               destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
-            },
-            statusCode: 400,
-          },
-        ],
-      },
-    },
-  },
-  {
-    id: 'fbPixel-validation-test-4',
-    name: 'facebook_pixel',
-    description: 'Track call : error in instrumentation as event name is not a string',
-    scenario: 'Business',
-    successCriteria:
-      'Error message should be event name should be string and status code should be 400, as we are sending an event which is not a string',
-    feature: 'processor',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: [
-          {
-            message: {
-              type: 'track',
-              event: 1234,
-              properties: {
-                revenue: 400,
-                additional_bet_index: 0,
-              },
-            },
-            metadata: generateMetadata(1),
-            destination: overrideDestination(commonDestination, {
-              pixelId: 'dummyPixelId',
-            }),
-          },
-        ],
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: [
-          {
-            error: 'event name should be string',
-            metadata: generateMetadata(1),
-            statTags: {
-              ...commonStatTags,
-              destinationId: 'default-destinationId',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              implementation: 'cdkV2',
+              destType: 'LINKEDIN_ADS',
+              module: 'destination',
+              feature: 'processor',
               workspaceId: 'default-workspaceId',
             },
             statusCode: 400,

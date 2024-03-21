@@ -47,7 +47,7 @@ steps:
         "eventId": $.getOneByPaths(., ^.destination.Config.deduplicationKey) ?? .messageId,
         "conversionValue":$.calculateConversionObject(^.message),
         "user":{
-            "userIds":$.fetchUserIds(^.message),
+            "userIds":$.fetchUserIds(^.message,^.destination.Config),
             "userInfo":$.curateUserInfoObject(^.message)
         }
       });

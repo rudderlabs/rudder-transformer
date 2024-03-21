@@ -6,7 +6,7 @@ const {
   InstrumentationError,
   getHashFromArrayWithDuplicate,
   isDefinedAndNotNullAndNotEmpty,
-  ConfigurationAuthError,
+  ConfigurationError,
 } = require('@rudderstack/integrations-lib');
 const {
   getFieldValueFromMessage,
@@ -22,16 +22,19 @@ const {
   API_VERSION,
 } = require('./config');
 
-const formatEmail = (email) => {
+const formatEmail = (email, destConfig) => {
   if (email) {
-    return crypto.createHash('sha256').update(email).digest('hex');
+    if (destConfig.hashData === true) {
+      return crypto.createHash('sha256').update(email).digest('hex');
+    }
+    return email;
   }
   return null;
 };
 
-const fetchUserIds = (message) => {
+const fetchUserIds = (message, destConfig) => {
   const userIds = [];
-  const email = formatEmail(getFieldValueFromMessage(message, 'email'));
+  const email = formatEmail(getFieldValueFromMessage(message, 'email'), destConfig);
   const linkedinFirstPartyAdsTrackingUUID = getDestinationExternalID(
     message,
     'LINKEDIN_FIRST_PARTY_ADS_TRACKING_UUID',
@@ -100,7 +103,7 @@ const deduceConversionRules = (trackEventName, destConfig) => {
     const finalEvent = typeof conversionRule === 'string' ? [conversionRule] : [...conversionRule];
     return finalEvent;
   }
-  throw new ConfigurationAuthError(
+  throw new ConfigurationError(
     `[LinkedIn Conversion API] no matching conversion rule found for ${trackEventName}. Please provide a conversion rule. Aborting`,
   );
 };

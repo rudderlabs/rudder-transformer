@@ -15,7 +15,7 @@ const {
   getAccessToken,
 } = require('../../util');
 
-const { populateConsentForGoogleDestinations } = require('../../util/googleUtils');
+const { populateConsentFromConfig } = require('../../util/googleUtils');
 
 const {
   offlineDataJobsMapping,
@@ -24,6 +24,7 @@ const {
   attributeMapping,
   hashAttributes,
   TYPEOFLIST,
+  consentConfigMap,
 } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { MappedToDestinationKey } = require('../../../constants');
@@ -218,7 +219,7 @@ const processEvent = async (metadata, message, destination) => {
     }
 
     Object.values(createdPayload).forEach((data) => {
-      const consentObj = populateConsentForGoogleDestinations(destination.Config);
+      const consentObj = populateConsentFromConfig(destination.Config, consentConfigMap);
       response.push(responseBuilder(metadata, data, destination, message, consentObj));
     });
     return response;

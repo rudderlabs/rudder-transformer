@@ -10,6 +10,7 @@ const {
   getIntegrationsObj,
 } = require('../../util');
 const { mappingConfig, ConfigCategory } = require('./config');
+const { populateConsentFromConfig } = require('../../util/googleUtils');
 
 /**
  * Reserved event names cannot be used
@@ -440,23 +441,14 @@ const prepareUserProperties = (message, piiPropertiesToIgnore = []) => {
  * @returns
  */
 const prepareUserConsents = (message) => {
-  const consents = {};
-  const GA4_ALLOWED_CONSENT_STATUS = ['GRANTED', 'DENIED'];
   const integrationObj = getIntegrationsObj(message, 'ga4') || {};
   const eventLevelConsentsData = integrationObj?.consents || {};
+  const consentConfigMap = {
+    analyticsPersonalizationConsent: 'adPersonalization',
+    analyticsUserDataConsent: 'adUserData',
+  };
 
-  if (
-    eventLevelConsentsData.adPersonalization &&
-    GA4_ALLOWED_CONSENT_STATUS.includes(eventLevelConsentsData.adPersonalization)
-  ) {
-    consents.ad_personalization = eventLevelConsentsData.adPersonalization;
-  }
-  if (
-    eventLevelConsentsData.adUserData &&
-    GA4_ALLOWED_CONSENT_STATUS.includes(eventLevelConsentsData.adUserData)
-  ) {
-    consents.ad_user_data = eventLevelConsentsData.adUserData;
-  }
+  const consents = populateConsentFromConfig(eventLevelConsentsData, consentConfigMap);
   return consents;
 };
 

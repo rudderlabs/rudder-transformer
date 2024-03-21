@@ -487,8 +487,8 @@ describe('Google Analytics 4 utils test', () => {
         integrations: {
           GA4: {
             consents: {
-              adPersonalization: 'GRANTED',
-              adUserData: 'GRANTED',
+              personalizationConsent: 'GRANTED',
+              userDataConsent: 'GRANTED',
             },
           },
         },
@@ -505,8 +505,8 @@ describe('Google Analytics 4 utils test', () => {
         integrations: {
           GA4: {
             consents: {
-              adPersonalization: 'NOT_SPECIFIED',
-              adUserData: 'NOT_SPECIFIED',
+              personalizationConsent: 'NOT_SPECIFIED',
+              userDataConsent: 'NOT_SPECIFIED',
             },
           },
         },
@@ -520,8 +520,8 @@ describe('Google Analytics 4 utils test', () => {
         integrations: {
           GA4: {
             consents: {
-              adPersonalization: 'NOT_SPECIFIED',
-              adUserData: 'DENIED',
+              personalizationConsent: 'NOT_SPECIFIED',
+              userDataConsent: 'DENIED',
             },
           },
         },

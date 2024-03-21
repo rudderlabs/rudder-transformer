@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.59.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.57.1...v1.59.0) (2024-03-18)
+
+
+### Features
+
+* add Koala destination ([#3122](https://github.com/rudderlabs/rudder-transformer/issues/3122)) ([1ca039d](https://github.com/rudderlabs/rudder-transformer/commit/1ca039d64ebb1a18a0fc6b78ed5ee08528ad6b48))
+* add support of skip_user_properties_sync on Amplitude ([#3181](https://github.com/rudderlabs/rudder-transformer/issues/3181)) ([5e4ddbd](https://github.com/rudderlabs/rudder-transformer/commit/5e4ddbd8a591341a581a5721505d6dcb010f2eec))
+* adding zod validations ([#3066](https://github.com/rudderlabs/rudder-transformer/issues/3066)) ([325433b](https://github.com/rudderlabs/rudder-transformer/commit/325433b9188c8d1dbe740c7e193cdc2e58fdd751))
+* onboard destination movable ink ([#3167](https://github.com/rudderlabs/rudder-transformer/issues/3167)) ([7018b1e](https://github.com/rudderlabs/rudder-transformer/commit/7018b1e5e7f37ae177191c5ecf3a71cfe2f3d147))
+* update proxy tests for cm360 ([#3039](https://github.com/rudderlabs/rudder-transformer/issues/3039)) ([0504ffa](https://github.com/rudderlabs/rudder-transformer/commit/0504ffa898956f5b61771fb32ecfd0e0bf15248f))
+* use dontBatch directive in algolia ([#3169](https://github.com/rudderlabs/rudder-transformer/issues/3169)) ([916aaec](https://github.com/rudderlabs/rudder-transformer/commit/916aaecb1939160620d5fd3c4c0c0e33f2a371b2))
+
+
+### Bug Fixes
+
+* api contract for v1 proxy ([#3049](https://github.com/rudderlabs/rudder-transformer/issues/3049)) ([93947db](https://github.com/rudderlabs/rudder-transformer/commit/93947db35cdaf1ca7ed87ec5f73567754af312ab))
+* email mapping for clevertap ([#3173](https://github.com/rudderlabs/rudder-transformer/issues/3173)) ([04eab92](https://github.com/rudderlabs/rudder-transformer/commit/04eab92e1c383f9e8cdd5c845530a42a0af2932a))
+* fb pixel test case refactor ([#3075](https://github.com/rudderlabs/rudder-transformer/issues/3075)) ([cff7d1c](https://github.com/rudderlabs/rudder-transformer/commit/cff7d1c4578087a37614c0ef4529058481873479))
+* fixed 500 status for algolia dontBatch ([#3178](https://github.com/rudderlabs/rudder-transformer/issues/3178)) ([6330888](https://github.com/rudderlabs/rudder-transformer/commit/6330888ad5c67e3a800037b56501fc08da09e4d1))
+* label not present in prometheus metrics ([#3176](https://github.com/rudderlabs/rudder-transformer/issues/3176)) ([01d460c](https://github.com/rudderlabs/rudder-transformer/commit/01d460c3edaf39b35c4686516c9e9140be46aa5e))
+* send proper status to server in cm360 ([#3127](https://github.com/rudderlabs/rudder-transformer/issues/3127)) ([229ce47](https://github.com/rudderlabs/rudder-transformer/commit/229ce473af1ddd62d946bea1b018c882b142a5ef))
+
 ## [1.58.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.57.1...v1.58.0) (2024-03-04)
 
 

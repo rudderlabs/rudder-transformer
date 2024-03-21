@@ -128,4 +128,90 @@ export const validation: ProcessorTestData[] = [
       },
     },
   },
+  {
+    id: 'MovableInk-validation-test-4',
+    name: destType,
+    description: "Products Searched event - Missing 'query' property",
+    scenario: 'Framework',
+    successCriteria: 'Instrumentation Error',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination,
+            message: {
+              type: 'track',
+              userId: 'user123',
+              integrations: {
+                All: true,
+              },
+              event: 'Products Searched',
+              originalTimestamp: '2024-03-04T15:32:56.409Z',
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              "Missing 'query' property in properties. Aborting: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: Missing 'query' property in properties. Aborting",
+            metadata: generateMetadata(1),
+            statTags: processorInstrumentationErrorStatTags,
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'MovableInk-validation-test-5',
+    name: destType,
+    description: "Products Added event - Missing 'product_id' property",
+    scenario: 'Framework',
+    successCriteria: 'Instrumentation Error',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination,
+            message: {
+              type: 'track',
+              userId: 'user123',
+              integrations: {
+                All: true,
+              },
+              event: 'Product Added',
+              originalTimestamp: '2024-03-04T15:32:56.409Z',
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              "Missing 'product_id' property in properties. Aborting: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: Missing 'product_id' property in properties. Aborting",
+            metadata: generateMetadata(1),
+            statTags: processorInstrumentationErrorStatTags,
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
 ];

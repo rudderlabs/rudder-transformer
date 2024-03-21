@@ -33,6 +33,7 @@ steps:
       );
 
       $.assert(userId ?? email ?? .message.anonymousId, "Either one of userId or email or anonymousId is required. Aborting");
+      $.validateEventPayload(.message);
 
   - name: preparePayload
     description: Prepare payload for identify and track. This payload schema needs to be configured in the Movable Ink dashboard. Movable Ink will discard any additional fields from the input payload.

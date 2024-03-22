@@ -658,4 +658,86 @@ export const data = [
       },
     },
   },
+  {
+    name: 'redis',
+    description: 'Test 6: Record event with action insert',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                address: 'localhost:6379',
+                database: 'test',
+                prefix: 'TestPrefix',
+              },
+              DestinationDefinition: {
+                DisplayName: 'Redis',
+                ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
+                Name: 'REDIS',
+              },
+              Enabled: true,
+              ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
+              Name: 'Redis',
+              Transformations: [],
+            },
+            metadata: {
+              workspaceId: 'some-workspace-id',
+            },
+            message: {
+              type: 'record',
+              action: 'insert' /* insert, delete */,
+              channel: 'sources',
+              context: {
+                sources: {
+                  job_id: '2QZYNmlpjxJIoxywM1m2obqFyi7',
+                  version: 'v1.32.0',
+                  job_run_id: 'ck0c6g0u5hotr621tqu0',
+                  task_run_id: 'ck0c6g0u5hotr621tqug',
+                  profiles_model: 'some-model',
+                  profiles_entity: 'some-entity',
+                  profiles_id_type: 'some-id-type',
+                },
+              },
+              recordId: 'a111',
+              messageId: '260f9a8d-91a7-46b0-9199-6da961dd6109',
+              fields: {
+                MODEL_ID: '1691755780',
+                VALID_AT: '2023-08-11T11:32:44.963062Z',
+                USER_MAIN_ID: 'rid5530313526204a95efe71d98cd17d5a1',
+                CHURN_SCORE_7_DAYS: 0.027986,
+                PERCENTILE_CHURN_SCORE_7_DAYS: 0,
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              message: {
+                action: 'insert',
+                hash: 'some-workspace-id:1WhcOCGgj9asZu850HvugU2C3Aq:some-entity:some-id-type:undefined',
+                key: 'some-model',
+                value:
+                  '{"MODEL_ID":"1691755780","VALID_AT":"2023-08-11T11:32:44.963062Z","USER_MAIN_ID":"rid5530313526204a95efe71d98cd17d5a1","CHURN_SCORE_7_DAYS":0.027986,"PERCENTILE_CHURN_SCORE_7_DAYS":0}',
+              },
+              userId: '',
+            },
+            metadata: {
+              workspaceId: 'some-workspace-id',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];

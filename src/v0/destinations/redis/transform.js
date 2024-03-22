@@ -35,7 +35,21 @@ const transformSubEventTypeProfiles = (message, workspaceId, destinationId) => {
   // form the hash
   const hash = `${workspaceId}:${destinationId}:${message.context.sources.profiles_entity}:${message.context.sources.profiles_id_type}:${message.userId}`;
   const key = `${message.context.sources.profiles_model}`;
-  const value = JSON.stringify(message.traits);
+  let value;
+  if (message.type === EventType.RECORD) {
+    const { action, userId, fields } = message;
+    value = JSON.stringify(fields);
+    return {
+      message: {
+        hash,
+        key,
+        value,
+        action,
+      },
+      userId,
+    };
+  }
+  value = JSON.stringify(message.traits);
   return {
     message: {
       hash,
@@ -46,8 +60,23 @@ const transformSubEventTypeProfiles = (message, workspaceId, destinationId) => {
   };
 };
 
+function handleRecordEvents(message, destination, metadata) {
+  // fields -> traits
+  // metadata -> metadata
+  // context.sources.profiles_<$$$> -> context.sources.profiles_<$$$>
+  const { workspaceId } = metadata;
+  const destinationId = destination.ID;
+
+  return transformSubEventTypeProfiles(message, workspaceId, destinationId);
+}
+
 const process = (event) => {
   const { message, destination, metadata } = event;
+  // seperate record events
+  if (message.type === EventType.RECORD) {
+    return handleRecordEvents(message, destination, metadata);
+  }
+
   const messageType = message && message.type && message.type.toLowerCase();
 
   if (messageType !== EventType.IDENTIFY) {
@@ -102,4 +131,6 @@ const process = (event) => {
   return result;
 };
 
-exports.process = process;
+module.exports = {
+  process,
+};

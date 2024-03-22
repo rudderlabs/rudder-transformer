@@ -20,6 +20,7 @@ const {
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
   batchMultiplexedEvents,
+  validateEventName,
 } = require('../../util');
 const { process: processV2, processRouterDest: processRouterDestV2 } = require('./transformV2');
 const { getContents } = require('./util');
@@ -130,12 +131,11 @@ const getTrackResponse = (message, Config, event) => {
 
 const trackResponseBuilder = async (message, { Config }) => {
   const { eventsToStandard, sendCustomEvents } = Config;
-
-  let event = message.event?.toLowerCase().trim();
+  validateEventName(message.event);
+  let event = message.event.toLowerCase().trim();
   if (!event) {
     throw new InstrumentationError('Event name is required');
   }
-
   const standardEventsMap = getHashFromArrayWithDuplicate(eventsToStandard);
 
   if (!sendCustomEvents && eventNameMapping[event] === undefined && !standardEventsMap[event]) {

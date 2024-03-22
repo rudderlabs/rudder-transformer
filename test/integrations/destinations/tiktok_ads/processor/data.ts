@@ -1369,7 +1369,7 @@ export const data = [
         body: [
           {
             statusCode: 400,
-            error: 'Event name is required',
+            error: 'Event is a required field and should be a string',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',
@@ -6026,6 +6026,62 @@ export const data = [
           {
             message: {
               anonymousId: '21e13f4bc7ceddad',
+              channel: 'web',
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
+              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+              originalTimestamp: '2019-10-14T09:03:17.562Z',
+              timestamp: '2020-09-17T19:49:27Z',
+              type: 'track',
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T09:03:22.563Z',
+            },
+            destination: {
+              Config: {
+                accessToken: 'dummyAccessToken',
+                pixelCode: '{{PIXEL-CODE}}',
+                hashUserProperties: false,
+                version: 'v2',
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            statusCode: 400,
+            error: 'Event is a required field and should be a string',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'TIKTOK_ADS',
+              module: 'destination',
+              implementation: 'native',
+              feature: 'processor',
+            },
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'tiktok_ads',
+    description: 'Test 38-> V2 -> Event name found but include spaces only',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: '21e13f4bc7ceddad',
+              event: ' ',
               channel: 'web',
               messageId: '84e26acc-56a5-4835-8233-591137fca468',
               session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',

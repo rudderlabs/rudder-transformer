@@ -5,36 +5,59 @@ export const headerBlockWithCorrectAccessToken = {
   'X-RestLi-Method': 'BATCH_CREATE',
   'X-Restli-Protocol-Version': '2.0.0',
 };
+export const element = {
+  conversion: 'urn:lla:llaPartnerConversion:23456',
+  conversionHappenedAt: 1697241600000,
+  conversionValue: {
+    amount: 0,
+    currencyCode: 'USD',
+  },
+  eventId: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
+  user: {
+    userIds: [
+      {
+        idType: 'SHA256_EMAIL',
+        idValue: 'abc@gmail.com',
+      },
+    ],
+  },
+};
 
 export const testJSONData = {
+  elements: [{ ...element }],
+};
+
+export const testJSONDataWithDifferentTypeConversion = {
   elements: [
     {
-      conversion: 'urn:lla:llaPartnerConversion:23456',
-      conversionHappenedAt: 1697241600000,
-      conversionValue: {
-        amount: 0,
-        currencyCode: 'USD',
-      },
-      eventId: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
-      user: {
-        userIds: [
-          {
-            idType: 'SHA256_EMAIL',
-            idValue: 'abc@gmail.com',
-          },
-        ],
-      },
+      ...element,
+      conversion: 'urn:li:partner:differentConversion',
     },
   ],
 };
 
-const commonRequestParameters = {
-  headers: headerBlockWithCorrectAccessToken,
-  JSON: testJSONData,
+export const wrongFormatElement = {
+  conversion: 'urn:lla:llaPartnerConversion:23456',
+  conversionHappenedAt: 1697241600000,
+  conversionValue: {
+    currencyCode: 'USD',
+  },
+  eventId: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
+  user: {
+    userIds: [
+      {
+        idType: 'SHA256_EMAIL',
+        idValue: 'abc@gmail.com',
+      },
+    ],
+    userInfo: {
+      city: 'San Francisco',
+    },
+  },
 };
-const commonRequestParametersWithInvalidAccess = {
-  headers: { ...headerBlockWithCorrectAccessToken, Authorization: 'Bearer invalidToken' },
-  JSON: testJSONData,
+
+export const wrongFormattedTestJSONData = {
+  elements: [{ ...wrongFormatElement }],
 };
 
 // MOCK DATA
@@ -98,6 +121,63 @@ const businessMockData = [
         ],
       },
       status: 200,
+      statusText: 'OK',
+    },
+  },
+  {
+    description:
+      'Mock response from destination depicting request with a conversion created differently than choosing direct API',
+    httpReq: {
+      method: 'post',
+      url: 'https://api.linkedin.com/rest/conversionEvents',
+      headers: headerBlockWithCorrectAccessToken,
+      data: testJSONDataWithDifferentTypeConversion,
+    },
+    httpRes: {
+      data: {
+        message:
+          "Incorrect conversions information provided. Conversion's method should be CONVERSIONS_API, indices [0] (0-indexed)",
+        status: 400,
+      },
+      status: 400,
+      statusText: 'OK',
+    },
+  },
+  {
+    description:
+      'Mock response from destination depicting request with a conversion created differently than choosing direct API',
+    httpReq: {
+      method: 'post',
+      url: 'https://api.linkedin.com/rest/conversionEvents',
+      headers: headerBlockWithCorrectAccessToken,
+      data: testJSONDataWithDifferentTypeConversion,
+    },
+    httpRes: {
+      data: {
+        message:
+          "Incorrect conversions information provided. Conversion's method should be CONVERSIONS_API, indices [0] (0-indexed)",
+        status: 400,
+      },
+      status: 400,
+      statusText: 'OK',
+    },
+  },
+  {
+    description:
+      'Mock response from destination depicting request with a conversion created differently than choosing direct API',
+    httpReq: {
+      method: 'post',
+      url: 'https://api.linkedin.com/rest/conversionEvents',
+      headers: headerBlockWithCorrectAccessToken,
+      data: wrongFormattedTestJSONData,
+    },
+    httpRes: {
+      data: {
+        message:
+          'Index: 0, ERROR :: /conversionValue/amount :: field is required but not found and has no default value\nERROR :: /user/userInfo/firstName :: field is required but not found and has no default value\nERROR :: /user/userInfo/lastName :: field is required but not found and has no default value\n',
+        status: 422,
+      },
+      status: 422,
       statusText: 'OK',
     },
   },

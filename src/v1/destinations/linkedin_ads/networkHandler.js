@@ -55,13 +55,13 @@ const responseHandler = (responseParams) => {
 
   // even if a single event is unsuccessful, the entire batch will fail, we will filter that event out and retry others
   if (!isHttpStatusSuccess(status)) {
+    const errorMessage = response.message || 'unknown error format';
+    responseWithIndividualEvents = rudderJobMetadata.map((metadata) => ({
+      statusCode: status,
+      metadata,
+      error: errorMessage,
+    }));
     if (status === 401 || status === 403) {
-      const errorMessage = response.error?.message || 'unknown error format';
-      responseWithIndividualEvents = rudderJobMetadata.map((metadata) => ({
-        statusCode: status,
-        metadata,
-        error: errorMessage,
-      }));
       const finalStatus = status === 401 ? 500 : 400;
       const finalMessage =
         status === 401
@@ -89,6 +89,16 @@ const responseHandler = (responseParams) => {
         response: responseWithIndividualEvents,
       };
     }
+    throw new TransformerProxyError(
+      `LinkedIn Conversion API: Error transformer proxy v1 during LinkedIn Conversion API response transformation. ${errorMessage}`,
+      status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+      },
+      destinationResponse,
+      getAuthErrCategoryFromStCode(status),
+      responseWithIndividualEvents,
+    );
   }
 
   // otherwise all events are successful

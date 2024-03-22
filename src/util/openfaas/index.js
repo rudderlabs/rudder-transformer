@@ -11,6 +11,8 @@ const stats = require('../stats');
 const { getMetadata, getTransformationMetadata } = require('../../v0/util');
 const { HTTP_STATUS_CODES } = require('../../v0/util/constant');
 
+const FAAS_GUNICORN_WORKERS = process.env.FAAS_GUNICORN_WORKERS || '1';
+const FAAS_GUNICORN_THREADS = process.env.FAAS_GUNICORN_THREADS || '1';
 const FAAS_BASE_IMG = process.env.FAAS_BASE_IMG || 'rudderlabs/openfaas-flask:main';
 const FAAS_MAX_PODS_IN_TEXT = process.env.FAAS_MAX_PODS_IN_TEXT || '40';
 const FAAS_MIN_PODS_IN_TEXT = process.env.FAAS_MIN_PODS_IN_TEXT || '1';
@@ -135,7 +137,11 @@ const deployFaasFunction = async (
       envProcess = `${envProcess} --code "${code}" --config-backend-url ${CONFIG_BACKEND_URL} --lvids "${lvidsString}"`;
     }
 
-    const envVars = {};
+    const envVars = {
+      GUNICORN_WORKER_COUNT: FAAS_GUNICORN_WORKERS,
+      GUNICORN_THREAD_COUNT: FAAS_GUNICORN_THREADS,
+    };
+
     if (FAAS_ENABLE_WATCHDOG_ENV_VARS.trim().toLowerCase() === 'true') {
       envVars.max_inflight = FAAS_MAX_INFLIGHT;
       envVars.exec_timeout = FAAS_EXEC_TIMEOUT;

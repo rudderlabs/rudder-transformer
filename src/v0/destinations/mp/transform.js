@@ -518,11 +518,6 @@ const processRouterDest = async (inputs, reqMetadata) => {
       const { engageEvents, groupsEvents, trackEvents, importEvents, batchErrorRespList } =
         groupEventsByEndpoint(transformedPayloads);
 
-      batchSize.engage += engageEvents.length;
-      batchSize.groups += groupsEvents.length;
-      batchSize.track += trackEvents.length;
-      batchSize.import += importEvents.length;
-
       const engageRespList = batchEvents(engageEvents, ENGAGE_MAX_BATCH_SIZE, reqMetadata);
       const groupsRespList = batchEvents(groupsEvents, GROUPS_MAX_BATCH_SIZE, reqMetadata);
       const trackRespList = batchEvents(trackEvents, TRACK_MAX_BATCH_SIZE, reqMetadata);
@@ -533,6 +528,11 @@ const processRouterDest = async (inputs, reqMetadata) => {
         ...trackRespList,
         ...importRespList,
       ];
+
+      batchSize.engage += engageRespList.length;
+      batchSize.groups += groupsRespList.length;
+      batchSize.track += trackRespList.length;
+      batchSize.import += importRespList.length;
 
       return [...batchSuccessRespList, ...batchErrorRespList];
     }),

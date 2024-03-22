@@ -13,8 +13,9 @@ const errorResponseHandler = (destinationResponse, dest) => {
   }
 };
 
-const destResponseHandler = (destinationResponse, dest) => {
-  errorResponseHandler(destinationResponse, dest);
+const destResponseHandler = (responseParams) => {
+  const { destinationResponse, destType } = responseParams;
+  errorResponseHandler(destinationResponse, destType);
   return {
     destinationResponse: destinationResponse.response,
     message: 'Request Processed Successfully',

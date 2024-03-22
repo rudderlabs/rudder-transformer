@@ -14,18 +14,24 @@ const tags = require('../../util/tags');
  * @param listId
  * @param headers
  * @param method
+ * @consentBlock
+ * ref: https://developers.google.com/google-ads/api/rest/reference/rest/v15/CustomerMatchUserListMetadata
  */
 
-const createJob = async (endpoint, customerId, listId, headers, method) => {
+const createJob = async (endpoint, headers, method, params) => {
   const jobCreatingUrl = `${endpoint}:create`;
+  const customerMatchUserListMetadata = {
+    userList: `customers/${params.customerId}/userLists/${params.listId}`,
+  };
+  if (Object.keys(params.consent).length > 0) {
+    customerMatchUserListMetadata.consent = params.consent;
+  }
   const jobCreatingRequest = {
     url: jobCreatingUrl,
     data: {
       job: {
         type: 'CUSTOMER_MATCH_USER_LIST',
-        customerMatchUserListMetadata: {
-          userList: `customers/${customerId}/userLists/${listId}`,
-        },
+        customerMatchUserListMetadata,
       },
     },
     headers,
@@ -34,6 +40,9 @@ const createJob = async (endpoint, customerId, listId, headers, method) => {
   const response = await httpSend(jobCreatingRequest, {
     destType: 'google_adwords_remarketing_lists',
     feature: 'proxy',
+    endpointPath: '/customers/create',
+    requestMethod: 'POST',
+    module: 'dataDelivery',
   });
   return response;
 };
@@ -57,6 +66,9 @@ const addUserToJob = async (endpoint, headers, method, jobId, body) => {
   const response = await httpSend(secondRequest, {
     destType: 'google_adwords_remarketing_lists',
     feature: 'proxy',
+    endpointPath: '/addOperations',
+    requestMethod: 'POST',
+    module: 'dataDelivery',
   });
   return response;
 };
@@ -78,6 +90,9 @@ const runTheJob = async (endpoint, headers, method, jobId) => {
   const response = await httpSend(thirdRequest, {
     destType: 'google_adwords_remarketing_lists',
     feature: 'proxy',
+    endpointPath: '/run',
+    requestMethod: 'POST',
+    module: 'dataDelivery',
   });
   return response;
 };
@@ -91,11 +106,10 @@ const runTheJob = async (endpoint, headers, method, jobId) => {
 const gaAudienceProxyRequest = async (request) => {
   const { body, method, params, endpoint } = request;
   const { headers } = request;
-  const { customerId, listId } = params;
 
   // step1: offlineUserDataJobs creation
 
-  const firstResponse = await createJob(endpoint, customerId, listId, headers, method);
+  const firstResponse = await createJob(endpoint, headers, method, params);
   if (!firstResponse.success && !isHttpStatusSuccess(firstResponse?.response?.status)) {
     return firstResponse;
   }
@@ -145,7 +159,8 @@ const gaAudienceRespHandler = (destResponse, stageMsg) => {
   );
 };
 
-const responseHandler = (destinationResponse) => {
+const responseHandler = (responseParams) => {
+  const { destinationResponse } = responseParams;
   const message = `Request Processed Successfully`;
   const { status, response } = destinationResponse;
   if (isHttpStatusSuccess(status)) {

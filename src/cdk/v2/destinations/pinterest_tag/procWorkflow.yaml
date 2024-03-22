@@ -9,6 +9,8 @@ bindings:
     path: ../../../../v0/util
   - name: removeUndefinedAndNullAndEmptyValues
     path: ../../../../v0/util
+  - name: validateEventName
+    path: ../../../../v0/util
 steps:
   - name: checkIfProcessed
     condition: .message.statusCode
@@ -175,6 +177,7 @@ steps:
       name: eventNamesForOthers
       template: |
         let event = .message.event ?? .message.name;
+        $.validateEventName(event);
         let eventInLowerCase = event.toLowerCase();
         let eventNames = .destination.Config.eventsMapping.(){.from === event}.to[] ?? [];
         eventNames = $.convertToSnakeCase(eventNames);

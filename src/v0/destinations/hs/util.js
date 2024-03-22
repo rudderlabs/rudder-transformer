@@ -1,3 +1,5 @@
+/* eslint-disable no-await-in-loop */
+const lodash = require('lodash');
 const get = require('get-value');
 const {
   NetworkInstrumentationError,
@@ -17,6 +19,7 @@ const {
   getHashFromArray,
   getDestinationExternalIDInfoForRetl,
   getValueFromMessage,
+  isNull,
 } = require('../../util');
 const {
   CONTACT_PROPERTY_MAP_ENDPOINT,
@@ -25,6 +28,7 @@ const {
   SEARCH_LIMIT_VALUE,
   hsCommonConfigJson,
   DESTINATION,
+  MAX_CONTACTS_PER_REQUEST,
 } = require('./config');
 
 const tags = require('../../util/tags');
@@ -100,6 +104,9 @@ const getProperties = async (destination) => {
     hubspotPropertyMapResponse = await httpGET(CONTACT_PROPERTY_MAP_ENDPOINT, requestOptions, {
       destType: 'hs',
       feature: 'transformation',
+      endpointPath: `/properties/v1/contacts/properties`,
+      requestMethod: 'GET',
+      module: 'router',
     });
     hubspotPropertyMapResponse = processAxiosResponse(hubspotPropertyMapResponse);
   } else {
@@ -111,6 +118,9 @@ const getProperties = async (destination) => {
       {
         destType: 'hs',
         feature: 'transformation',
+        endpointPath: `/properties/v1/contacts/properties?hapikey`,
+        requestMethod: 'GET',
+        module: 'router',
       },
     );
     hubspotPropertyMapResponse = processAxiosResponse(hubspotPropertyMapResponse);
@@ -214,7 +224,9 @@ const getTransformedJSON = async (message, destination, propertyMap) => {
       // lowercase and replace ' ' & '.' with '_'
       const hsSupportedKey = formatKey(traitsKey);
       if (!rawPayload[traitsKey] && propertyMap[hsSupportedKey]) {
-        let propValue = traits[traitsKey];
+        // HS accepts empty string to remove the property from contact
+        // https://community.hubspot.com/t5/APIs-Integrations/Clearing-values-of-custom-properties-in-Hubspot-contact-using/m-p/409156
+        let propValue = isNull(traits[traitsKey]) ? '' : traits[traitsKey];
         if (propertyMap[hsSupportedKey] === 'date') {
           propValue = getUTCMidnightTimeStampValue(propValue);
         }
@@ -360,6 +372,8 @@ const searchContacts = async (message, destination) => {
         destType: 'hs',
         feature: 'transformation',
         endpointPath,
+        requestMethod: 'POST',
+        module: 'router',
       },
     );
     searchContactsResponse = processAxiosResponse(searchContactsResponse);
@@ -370,6 +384,8 @@ const searchContacts = async (message, destination) => {
       destType: 'hs',
       feature: 'transformation',
       endpointPath,
+      requestMethod: 'POST',
+      module: 'router',
     });
     searchContactsResponse = processAxiosResponse(searchContactsResponse);
   }
@@ -462,42 +478,129 @@ const getEventAndPropertiesFromConfig = (message, destination, payload) => {
 };
 
 /**
- * DOC: https://developers.hubspot.com/docs/api/crm/search
- * @param {*} inputs
- * @param {*} destination
+ * Validates object and identifier type is present in message
+ * @param {*} firstMessage
+ * @returns
  */
-const getExistingData = async (inputs, destination) => {
-  const { Config } = destination;
-  let values = [];
-  let searchResponse;
-  let updateHubspotIds = [];
-  const firstMessage = inputs[0].message;
-  let objectType = null;
-  let identifierType = null;
-
-  if (firstMessage) {
-    objectType = getDestinationExternalIDInfoForRetl(firstMessage, DESTINATION).objectType;
-    identifierType = getDestinationExternalIDInfoForRetl(firstMessage, DESTINATION).identifierType;
-    if (!objectType || !identifierType) {
-      throw new InstrumentationError('rETL - external Id not found.');
-    }
-  } else {
-    throw new InstrumentationError('rETL - objectType or identifier type not found. ');
+const getObjectAndIdentifierType = (firstMessage) => {
+  const { objectType, identifierType } = getDestinationExternalIDInfoForRetl(
+    firstMessage,
+    DESTINATION,
+  );
+  if (!objectType || !identifierType) {
+    throw new InstrumentationError('rETL - external Id not found.');
   }
-  inputs.map(async (input) => {
+  return { objectType, identifierType };
+};
+
+/**
+ * Returns values for search api call
+ * @param {*} inputs
+ * @returns
+ */
+const extractIDsForSearchAPI = (inputs) => {
+  const values = inputs.map((input) => {
     const { message } = input;
     const { destinationExternalId } = getDestinationExternalIDInfoForRetl(message, DESTINATION);
-    values.push(destinationExternalId.toString().toLowerCase());
+    return destinationExternalId.toString().toLowerCase();
   });
 
-  values = Array.from(new Set(values));
+  return Array.from(new Set(values));
+};
+
+/**
+ * Returns hubspot records
+ * Ref : https://developers.hubspot.com/docs/api/crm/search
+ * @param {*} data
+ * @param {*} requestOptions
+ * @param {*} objectType
+ * @param {*} identifierType
+ * @param {*} destination
+ * @returns
+ */
+const performHubSpotSearch = async (
+  reqdata,
+  reqOptions,
+  objectType,
+  identifierType,
+  destination,
+) => {
+  let checkAfter = 1;
+  const searchResults = [];
+  const requestData = reqdata;
+  const { Config } = destination;
+
+  const endpoint = IDENTIFY_CRM_SEARCH_ALL_OBJECTS.replace(':objectType', objectType);
+  const endpointPath = `objects/:objectType/search`;
+
+  const url =
+    Config.authorizationType === 'newPrivateAppApi'
+      ? endpoint
+      : `${endpoint}?hapikey=${Config.apiKey}`;
+
+  const requestOptions = Config.authorizationType === 'newPrivateAppApi' ? reqOptions : {};
+
+  /* *
+   * This is needed for processing paginated response when searching hubspot.
+   * we can't avoid await in loop as response to the request contains the pagination details
+   * */
+
+  while (checkAfter) {
+    const searchResponse = await httpPOST(url, requestData, requestOptions, {
+      destType: 'hs',
+      feature: 'transformation',
+      endpointPath,
+      requestMethod: 'POST',
+      module: 'router',
+    });
+
+    const processedResponse = processAxiosResponse(searchResponse);
+
+    if (processedResponse.status !== 200) {
+      throw new NetworkError(
+        `rETL - Error during searching object record. ${JSON.stringify(
+          processedResponse.response?.message,
+        )}`,
+        processedResponse.status,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedResponse.status),
+        },
+        processedResponse,
+      );
+    }
+
+    const after = processedResponse.response?.paging?.next?.after || 0;
+    requestData.after = after; // assigning to the new value of after
+    checkAfter = after; // assigning to the new value if no after we assign it to 0 and no more calls will take place
+
+    const results = processedResponse.response?.results;
+    if (results) {
+      searchResults.push(
+        ...results.map((result) => ({
+          id: result.id,
+          property: result.properties[identifierType],
+        })),
+      );
+    }
+  }
+
+  return searchResults;
+};
+
+/**
+ * Returns requestData
+ * @param {*} identifierType
+ * @param {*} chunk
+ * @returns
+ */
+const getRequestData = (identifierType, chunk) => {
   const requestData = {
     filterGroups: [
       {
         filters: [
           {
             propertyName: identifierType,
-            values,
+            values: chunk,
             operator: 'IN',
           },
         ],
@@ -508,65 +611,45 @@ const getExistingData = async (inputs, destination) => {
     after: 0,
   };
 
+  return requestData;
+};
+
+/**
+ * DOC: https://developers.hubspot.com/docs/api/crm/search
+ * @param {*} inputs
+ * @param {*} destination
+ */
+const getExistingContactsData = async (inputs, destination) => {
+  const { Config } = destination;
+  const updateHubspotIds = [];
+  const firstMessage = inputs[0].message;
+
+  if (!firstMessage) {
+    throw new InstrumentationError('rETL - objectType or identifier type not found.');
+  }
+
+  const { objectType, identifierType } = getObjectAndIdentifierType(firstMessage);
+
+  const values = extractIDsForSearchAPI(inputs);
+  const valuesChunk = lodash.chunk(values, MAX_CONTACTS_PER_REQUEST);
   const requestOptions = {
     headers: {
       'Content-Type': JSON_MIME_TYPE,
       Authorization: `Bearer ${Config.accessToken}`,
     },
   };
-  let checkAfter = 1; // variable to keep checking if we have more results
-
-  /* eslint-disable no-await-in-loop */
-
-  /* *
-   * This is needed for processing paginated response when searching hubspot.
-   * we can't avoid await in loop as response to the request contains the pagination details
-   * */
-
-  while (checkAfter) {
-    const endpoint = IDENTIFY_CRM_SEARCH_ALL_OBJECTS.replace(':objectType', objectType);
-    const endpointPath = `objects/:objectType/search`;
-
-    const url =
-      Config.authorizationType === 'newPrivateAppApi'
-        ? endpoint
-        : `${endpoint}?hapikey=${Config.apiKey}`;
-    searchResponse =
-      Config.authorizationType === 'newPrivateAppApi'
-        ? await httpPOST(url, requestData, requestOptions, {
-            destType: 'hs',
-            feature: 'transformation',
-            endpointPath,
-          })
-        : await httpPOST(url, requestData, {
-            destType: 'hs',
-            feature: 'transformation',
-            endpointPath,
-          });
-    searchResponse = processAxiosResponse(searchResponse);
-
-    if (searchResponse.status !== 200) {
-      throw new NetworkError(
-        `rETL - Error during searching object record. ${searchResponse.response?.message}`,
-        searchResponse.status,
-        {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(searchResponse.status),
-        },
-        searchResponse,
-      );
-    }
-
-    const after = searchResponse.response?.paging?.next?.after || 0;
-
-    requestData.after = after; // assigning to the new value of after
-    checkAfter = after; // assigning to the new value if no after we assign it to 0 and no more calls will take place
-
-    const results = searchResponse.response?.results;
-    if (results) {
-      updateHubspotIds = results.map((result) => {
-        const propertyValue = result.properties[identifierType];
-        return { id: result.id, property: propertyValue };
-      });
+  // eslint-disable-next-line no-restricted-syntax
+  for (const chunk of valuesChunk) {
+    const requestData = getRequestData(identifierType, chunk);
+    const searchResults = await performHubSpotSearch(
+      requestData,
+      requestOptions,
+      objectType,
+      identifierType,
+      destination,
+    );
+    if (searchResults.length > 0) {
+      updateHubspotIds.push(...searchResults);
     }
   }
   return updateHubspotIds;
@@ -599,7 +682,7 @@ const setHsSearchId = (input, id) => {
 
 const splitEventsForCreateUpdate = async (inputs, destination) => {
   // get all the id and properties of already existing objects needed for update.
-  const updateHubspotIds = await getExistingData(inputs, destination);
+  const updateHubspotIds = await getExistingContactsData(inputs, destination);
 
   const resultInput = inputs.map((input) => {
     const { message } = input;
@@ -678,4 +761,7 @@ module.exports = {
   validatePayloadDataTypes,
   getUTCMidnightTimeStampValue,
   populateTraits,
+  getObjectAndIdentifierType,
+  extractIDsForSearchAPI,
+  getRequestData,
 };

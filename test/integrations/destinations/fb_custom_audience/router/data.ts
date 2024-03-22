@@ -51,17 +51,10 @@ export const data = [
                     ],
                   },
                 },
-                context: {
-                  ip: '14.5.67.21',
-                  library: {
-                    name: 'http',
-                  },
-                },
+                context: { ip: '14.5.67.21', library: { name: 'http' } },
                 timestamp: '2020-02-02T00:23:09.544Z',
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
               destination: {
                 Config: {
                   accessToken: 'ABC',
@@ -131,17 +124,10 @@ export const data = [
                     ],
                   },
                 },
-                context: {
-                  ip: '14.5.67.21',
-                  library: {
-                    name: 'http',
-                  },
-                },
+                context: { ip: '14.5.67.21', library: { name: 'http' } },
                 timestamp: '2020-02-02T00:23:09.544Z',
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
               destination: {
                 Config: {
                   accessToken: 'ABC',
@@ -171,9 +157,7 @@ export const data = [
                 IsProcessorEnabled: true,
               },
               libraries: [],
-              request: {
-                query: {},
-              },
+              request: { query: {} },
             },
           ],
           destType: 'fb_custom_audience',
@@ -197,10 +181,7 @@ export const data = [
                     access_token: 'ABC',
                     payload: {
                       is_raw: true,
-                      data_source: {
-                        type: 'UNKNOWN',
-                        sub_type: 'ANYTHING',
-                      },
+                      data_source: { type: 'UNKNOWN', sub_type: 'ANYTHING' },
                       schema: [
                         'EMAIL',
                         'DOBM',
@@ -231,12 +212,7 @@ export const data = [
                       ],
                     },
                   },
-                  body: {
-                    JSON: {},
-                    JSON_ARRAY: {},
-                    XML: {},
-                    FORM: {},
-                  },
+                  body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
                   files: {},
                 },
                 {
@@ -249,10 +225,7 @@ export const data = [
                     access_token: 'ABC',
                     payload: {
                       is_raw: true,
-                      data_source: {
-                        type: 'UNKNOWN',
-                        sub_type: 'ANYTHING',
-                      },
+                      data_source: { type: 'UNKNOWN', sub_type: 'ANYTHING' },
                       schema: [
                         'EMAIL',
                         'DOBM',
@@ -283,20 +256,11 @@ export const data = [
                       ],
                     },
                   },
-                  body: {
-                    JSON: {},
-                    JSON_ARRAY: {},
-                    XML: {},
-                    FORM: {},
-                  },
+                  body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
                   files: {},
                 },
               ],
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -340,9 +304,7 @@ export const data = [
                     access_token: 'ABC',
                     payload: {
                       is_raw: true,
-                      data_source: {
-                        sub_type: 'ANYTHING',
-                      },
+                      data_source: { sub_type: 'ANYTHING' },
                       schema: [
                         'EMAIL',
                         'DOBM',
@@ -373,12 +335,7 @@ export const data = [
                       ],
                     },
                   },
-                  body: {
-                    JSON: {},
-                    JSON_ARRAY: {},
-                    XML: {},
-                    FORM: {},
-                  },
+                  body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
                   files: {},
                 },
                 {
@@ -391,9 +348,7 @@ export const data = [
                     access_token: 'ABC',
                     payload: {
                       is_raw: true,
-                      data_source: {
-                        sub_type: 'ANYTHING',
-                      },
+                      data_source: { sub_type: 'ANYTHING' },
                       schema: [
                         'EMAIL',
                         'DOBM',
@@ -424,20 +379,11 @@ export const data = [
                       ],
                     },
                   },
-                  body: {
-                    JSON: {},
-                    JSON_ARRAY: {},
-                    XML: {},
-                    FORM: {},
-                  },
+                  body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
                   files: {},
                 },
               ],
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -494,10 +440,7 @@ export const data = [
                 context: {
                   destinationFields: 'EMAIL, FN',
                   externalId: [
-                    {
-                      type: 'FB_CUSTOM_AUDIENCE-23848494844100489',
-                      identifierType: 'EMAIL',
-                    },
+                    { type: 'FB_CUSTOM_AUDIENCE-23848494844100489', identifierType: 'EMAIL' },
                   ],
                   mappedToDestination: 'true',
                   sources: {
@@ -512,46 +455,16 @@ export const data = [
                 properties: {
                   listData: {
                     add: [
-                      {
-                        EMAIL: 'dede@gmail.com',
-                        FN: 'vishwa',
-                      },
-                      {
-                        EMAIL: 'fchsjjn@gmail.com',
-                        FN: 'hskks',
-                      },
-                      {
-                        EMAIL: 'fghjnbjk@gmail.com',
-                        FN: 'ghfry',
-                      },
-                      {
-                        EMAIL: 'gvhjkk@gmail.com',
-                        FN: 'hbcwqe',
-                      },
-                      {
-                        EMAIL: 'qsdwert@egf.com',
-                        FN: 'dsfds',
-                      },
-                      {
-                        EMAIL: 'ascscxsaca@com',
-                        FN: 'scadscdvcda',
-                      },
-                      {
-                        EMAIL: 'abc@gmail.com',
-                        FN: 'subscribed',
-                      },
-                      {
-                        EMAIL: 'ddwnkl@gmail.com',
-                        FN: 'subscribed',
-                      },
-                      {
-                        EMAIL: 'subscribed@eewrfrd.com',
-                        FN: 'pending',
-                      },
-                      {
-                        EMAIL: 'acsdvdf@ddfvf.com',
-                        FN: 'pending',
-                      },
+                      { EMAIL: 'dede@gmail.com', FN: 'vishwa' },
+                      { EMAIL: 'fchsjjn@gmail.com', FN: 'hskks' },
+                      { EMAIL: 'fghjnbjk@gmail.com', FN: 'ghfry' },
+                      { EMAIL: 'gvhjkk@gmail.com', FN: 'hbcwqe' },
+                      { EMAIL: 'qsdwert@egf.com', FN: 'dsfds' },
+                      { EMAIL: 'ascscxsaca@com', FN: 'scadscdvcda' },
+                      { EMAIL: 'abc@gmail.com', FN: 'subscribed' },
+                      { EMAIL: 'ddwnkl@gmail.com', FN: 'subscribed' },
+                      { EMAIL: 'subscribed@eewrfrd.com', FN: 'pending' },
+                      { EMAIL: 'acsdvdf@ddfvf.com', FN: 'pending' },
                     ],
                   },
                 },
@@ -590,9 +503,7 @@ export const data = [
                 isConnectionEnabled: true,
                 isProcessorEnabled: true,
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
             },
             {
               message: {
@@ -603,10 +514,7 @@ export const data = [
                 event: 'Add_Audience',
                 context: {
                   externalId: [
-                    {
-                      type: 'FB_CUSTOM_AUDIENCE-23848494844100489',
-                      identifierType: 'EMAIL',
-                    },
+                    { type: 'FB_CUSTOM_AUDIENCE-23848494844100489', identifierType: 'EMAIL' },
                   ],
                   mappedToDestination: 'true',
                   sources: {
@@ -621,46 +529,16 @@ export const data = [
                 properties: {
                   listData: {
                     add: [
-                      {
-                        EMAIL: 'dede@gmail.com',
-                        FN: 'vishwa',
-                      },
-                      {
-                        EMAIL: 'fchsjjn@gmail.com',
-                        FN: 'hskks',
-                      },
-                      {
-                        EMAIL: 'fghjnbjk@gmail.com',
-                        FN: 'ghfry',
-                      },
-                      {
-                        EMAIL: 'gvhjkk@gmail.com',
-                        FN: 'hbcwqe',
-                      },
-                      {
-                        EMAIL: 'qsdwert@egf.com',
-                        FN: 'dsfds',
-                      },
-                      {
-                        EMAIL: 'ascscxsaca@com',
-                        FN: 'scadscdvcda',
-                      },
-                      {
-                        EMAIL: 'abc@gmail.com',
-                        FN: 'subscribed',
-                      },
-                      {
-                        EMAIL: 'ddwnkl@gmail.com',
-                        FN: 'subscribed',
-                      },
-                      {
-                        EMAIL: 'subscribed@eewrfrd.com',
-                        FN: 'pending',
-                      },
-                      {
-                        EMAIL: 'acsdvdf@ddfvf.com',
-                        FN: 'pending',
-                      },
+                      { EMAIL: 'dede@gmail.com', FN: 'vishwa' },
+                      { EMAIL: 'fchsjjn@gmail.com', FN: 'hskks' },
+                      { EMAIL: 'fghjnbjk@gmail.com', FN: 'ghfry' },
+                      { EMAIL: 'gvhjkk@gmail.com', FN: 'hbcwqe' },
+                      { EMAIL: 'qsdwert@egf.com', FN: 'dsfds' },
+                      { EMAIL: 'ascscxsaca@com', FN: 'scadscdvcda' },
+                      { EMAIL: 'abc@gmail.com', FN: 'subscribed' },
+                      { EMAIL: 'ddwnkl@gmail.com', FN: 'subscribed' },
+                      { EMAIL: 'subscribed@eewrfrd.com', FN: 'pending' },
+                      { EMAIL: 'acsdvdf@ddfvf.com', FN: 'pending' },
                     ],
                   },
                 },
@@ -699,9 +577,7 @@ export const data = [
                 isConnectionEnabled: true,
                 isProcessorEnabled: true,
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 3, userId: 'u1' },
             },
             {
               message: {
@@ -713,12 +589,7 @@ export const data = [
                 context: {
                   destinationFields:
                     'EMAIL, DOBM, DOBD, DOBY, PHONE, GEN, FI, MADID, ZIP, ST, COUNTRY',
-                  externalId: [
-                    {
-                      type: 'FB_CUSTOM_AUDIENCE-aud1',
-                      identifierType: 'EMAIL',
-                    },
-                  ],
+                  externalId: [{ type: 'FB_CUSTOM_AUDIENCE-aud1', identifierType: 'EMAIL' }],
                   mappedToDestination: 'true',
                   sources: {
                     job_run_id: 'cgiiurt8um7k7n5dq480',
@@ -26730,9 +26601,7 @@ export const data = [
                 isConnectionEnabled: true,
                 isProcessorEnabled: true,
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 4, userId: 'u1' },
             },
           ],
           destType: 'fb_custom_audience',
@@ -26757,33 +26626,24 @@ export const data = [
                     payload: {
                       schema: ['EMAIL', 'FN'],
                       data: [
-                        ['7625cab24612c37df6d2f724721bb38a25095d0295e29b807238ee188b8aca43', null],
-                        ['b2b4abadd72190af54305c0d3abf1977fec4935016bb13ff28040d5712318dfd', null],
-                        ['c4b007d1c3c9a5d31bd4082237a913e8e0db1767225c2a5ef33be2716df005fa', null],
-                        ['94639be1bd9f17c05820164e9d71ef78558f117a9e8bfab43cf8015e08aa0b27', null],
-                        ['39b456cfb4bb07f9e6bb18698aa173171ca49c731fccc4790e9ecea808d24ae6', null],
-                        ['769f73387add781a481ca08300008a08fb2f1816aaed196137efc2e05976d711', null],
-                        ['48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08', null],
-                        ['da2d431121cd10578fd81f8f80344b06db59ea2d05a7b5d27536c8789ddae8f0', null],
-                        ['b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36', null],
-                        ['0c1d1b0ba547a742013366d6fbc8f71dd77f566d94e41ed9f828a74b96928161', null],
+                        ['7625cab24612c37df6d2f724721bb38a25095d0295e29b807238ee188b8aca43', ''],
+                        ['b2b4abadd72190af54305c0d3abf1977fec4935016bb13ff28040d5712318dfd', ''],
+                        ['c4b007d1c3c9a5d31bd4082237a913e8e0db1767225c2a5ef33be2716df005fa', ''],
+                        ['94639be1bd9f17c05820164e9d71ef78558f117a9e8bfab43cf8015e08aa0b27', ''],
+                        ['39b456cfb4bb07f9e6bb18698aa173171ca49c731fccc4790e9ecea808d24ae6', ''],
+                        ['769f73387add781a481ca08300008a08fb2f1816aaed196137efc2e05976d711', ''],
+                        ['48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08', ''],
+                        ['da2d431121cd10578fd81f8f80344b06db59ea2d05a7b5d27536c8789ddae8f0', ''],
+                        ['b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36', ''],
+                        ['0c1d1b0ba547a742013366d6fbc8f71dd77f566d94e41ed9f828a74b96928161', ''],
                       ],
                     },
                   },
-                  body: {
-                    JSON: {},
-                    JSON_ARRAY: {},
-                    XML: {},
-                    FORM: {},
-                  },
+                  body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
                   files: {},
                 },
               ],
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {
@@ -26854,11 +26714,7 @@ export const data = [
               },
               error:
                 'context.destinationFields is required property for events mapped to destination ',
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 3, userId: 'u1' }],
               batched: false,
               statusCode: 400,
               statTags: {
@@ -33399,12 +33255,7 @@ export const data = [
                       ],
                     },
                   },
-                  body: {
-                    JSON: {},
-                    XML: {},
-                    JSON_ARRAY: {},
-                    FORM: {},
-                  },
+                  body: { JSON: {}, XML: {}, JSON_ARRAY: {}, FORM: {} },
                   files: {},
                 },
                 {
@@ -39934,12 +39785,7 @@ export const data = [
                       ],
                     },
                   },
-                  body: {
-                    JSON: {},
-                    XML: {},
-                    JSON_ARRAY: {},
-                    FORM: {},
-                  },
+                  body: { JSON: {}, XML: {}, JSON_ARRAY: {}, FORM: {} },
                   files: {},
                 },
                 {
@@ -46443,12 +46289,7 @@ export const data = [
                       ],
                     },
                   },
-                  body: {
-                    JSON: {},
-                    XML: {},
-                    JSON_ARRAY: {},
-                    FORM: {},
-                  },
+                  body: { JSON: {}, XML: {}, JSON_ARRAY: {}, FORM: {} },
                   files: {},
                 },
                 {
@@ -52952,20 +52793,11 @@ export const data = [
                       ],
                     },
                   },
-                  body: {
-                    JSON: {},
-                    XML: {},
-                    JSON_ARRAY: {},
-                    FORM: {},
-                  },
+                  body: { JSON: {}, XML: {}, JSON_ARRAY: {}, FORM: {} },
                   files: {},
                 },
               ],
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 4, userId: 'u1' }],
               batched: false,
               statusCode: 200,
               destination: {

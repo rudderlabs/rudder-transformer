@@ -41,12 +41,12 @@ jobs:
     runs-on: [self-hosted, Linux, ARM64]
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.5.3
+        uses: actions/checkout@v4.1.1
         with:
           fetch-depth: 1
 
       - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v2.9.1
+        uses: docker/setup-buildx-action@v3.0.0
 
       - name: Login to DockerHub
         uses: docker/login-action@v2.1.0
@@ -56,7 +56,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build Docker Image
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5.1.0
         with:
           context: .
           file: ${{ inputs.dockerfile }}
@@ -72,7 +72,7 @@ jobs:
           docker run ${{ inputs.build_tag }} npm run test:ts:ci
 
       - name: Build and Push Multi-platform Images
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5.1.0
         with:
           context: .
           file: ${{ inputs.dockerfile }}
@@ -92,12 +92,12 @@ jobs:
     runs-on: [self-hosted, Linux, X64]
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.5.3
+        uses: actions/checkout@v4.1.1
         with:
           fetch-depth: 1
 
       - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v2.9.1
+        uses: docker/setup-buildx-action@v3.0.0
 
       - name: Login to DockerHub
         uses: docker/login-action@v2.1.0
@@ -106,7 +106,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 
       - name: Build Docker Image
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5.1.0
         with:
           context: .
           file: ${{ inputs.dockerfile }}
@@ -122,7 +122,7 @@ jobs:
           docker run ${{ inputs.build_tag }} npm run test:ts:ci
 
       - name: Build and Push Multi-platform Images
-        uses: docker/build-push-action@v4.1.1
+        uses: docker/build-push-action@v5.1.0
         with:
           context: .
           file: ${{ inputs.dockerfile }}
@@ -144,7 +144,7 @@ jobs:
 
     steps:
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2.9.1
+        uses: docker/setup-buildx-action@v3.0.0
 
       - name: Login to DockerHub
         uses: docker/login-action@v2.1.0
@@ -161,7 +161,7 @@ jobs:
         if: ${{ inputs.build_type == 'dt' }}
         run: |
           docker buildx imagetools create -t rudderstack/rudder-transformer:latest ${{ inputs.push_tags }}-amd64 ${{ inputs.push_tags }}-arm64
-      
+
       - name: Create latest ut multi-arch manifest
         # To be triggered only for release/hotfix PR merges coming from `prepare-for-prod-ut-deploy.yaml`
         if: ${{ inputs.build_type == 'ut' }}

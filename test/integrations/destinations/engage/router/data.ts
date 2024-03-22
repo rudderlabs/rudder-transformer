@@ -12,19 +12,8 @@ export const data = [
             {
               message: {
                 groupId: '17',
-                context: {
-                  externalId: [
-                    {
-                      type: 'engageId',
-                      id: '246',
-                    },
-                  ],
-                },
-                traits: {
-                  lastName: 'garwal',
-                  type: 'Segments',
-                  operation: 'remove',
-                },
+                context: { externalId: [{ type: 'engageId', id: '246' }] },
+                traits: { lastName: 'garwal', type: 'Segments', operation: 'remove' },
                 type: 'group',
               },
               destination: {
@@ -32,18 +21,12 @@ export const data = [
                   publicKey: '49ur490rjfo34gi04y38r9go',
                   privateKey: 'n89g389yr389fgbef0u2rff',
                   listIds: [
-                    {
-                      listId: '9834trg3rgy3g08oi9893rgfb',
-                    },
-                    {
-                      listId: 'f39487tyh49go3h093gh2if2f2',
-                    },
+                    { listId: '9834trg3rgy3g08oi9893rgfb' },
+                    { listId: 'f39487tyh49go3h093gh2if2f2' },
                   ],
                 },
               },
-              metadata: {
-                jobId: 1,
-              },
+              metadata: { jobId: 1, userId: 'u1' },
             },
           ],
           destType: 'engage',
@@ -68,14 +51,7 @@ export const data = [
                     'Basic NDl1cjQ5MHJqZm8zNGdpMDR5MzhyOWdvOm44OWczODl5cjM4OWZnYmVmMHUycmZm',
                 },
                 params: {},
-                body: {
-                  JSON: {
-                    subscribed: true,
-                  },
-                  JSON_ARRAY: {},
-                  XML: {},
-                  FORM: {},
-                },
+                body: { JSON: { subscribed: true }, JSON_ARRAY: {}, XML: {}, FORM: {} },
                 files: {},
               },
               destination: {
@@ -83,20 +59,12 @@ export const data = [
                   publicKey: '49ur490rjfo34gi04y38r9go',
                   privateKey: 'n89g389yr389fgbef0u2rff',
                   listIds: [
-                    {
-                      listId: '9834trg3rgy3g08oi9893rgfb',
-                    },
-                    {
-                      listId: 'f39487tyh49go3h093gh2if2f2',
-                    },
+                    { listId: '9834trg3rgy3g08oi9893rgfb' },
+                    { listId: 'f39487tyh49go3h093gh2if2f2' },
                   ],
                 },
               },
-              metadata: [
-                {
-                  jobId: 1,
-                },
-              ],
+              metadata: [{ jobId: 1, userId: 'u1' }],
               batched: false,
               statusCode: 200,
             },
@@ -120,14 +88,8 @@ export const data = [
                 userId: '1',
                 context: {
                   externalId: [
-                    {
-                      type: 'engageListId',
-                      id: '100c983ry8934hf3094yfh348gf1',
-                    },
-                    {
-                      type: 'engageListId',
-                      id: '4r40hfio3rbfln',
-                    },
+                    { type: 'engageListId', id: '100c983ry8934hf3094yfh348gf1' },
+                    { type: 'engageListId', id: '4r40hfio3rbfln' },
                   ],
                 },
                 originalTimestamp: '2020-09-28T19:53:31.900Z',
@@ -136,14 +98,7 @@ export const data = [
                   lastName: 'Rudderlabs',
                   email: 'Test@r.com',
                   hasPurchased: 'yes',
-                  address: {
-                    Home: {
-                      city: 'iudcb',
-                    },
-                    Office: {
-                      abc: 'jbc',
-                    },
-                  },
+                  address: { Home: { city: 'iudcb' }, Office: { abc: 'jbc' } },
                   state: 'Delhi',
                   title: 'Mr',
                 },
@@ -155,18 +110,12 @@ export const data = [
                   publicKey: '49ur490rjfo34gi04y38r9go',
                   privateKey: 'n89g389yr389fgbef0u2rff',
                   listIds: [
-                    {
-                      listId: '9834trg3rgy3g08oi9893rgfb',
-                    },
-                    {
-                      listId: 'f39487tyh49go3h093gh2if2f2',
-                    },
+                    { listId: '9834trg3rgy3g08oi9893rgfb' },
+                    { listId: 'f39487tyh49go3h093gh2if2f2' },
                   ],
                 },
               },
-              metadata: {
-                jobId: 2,
-              },
+              metadata: { jobId: 2, userId: 'u1' },
             },
           ],
           destType: 'engage',
@@ -217,20 +166,12 @@ export const data = [
                   publicKey: '49ur490rjfo34gi04y38r9go',
                   privateKey: 'n89g389yr389fgbef0u2rff',
                   listIds: [
-                    {
-                      listId: '9834trg3rgy3g08oi9893rgfb',
-                    },
-                    {
-                      listId: 'f39487tyh49go3h093gh2if2f2',
-                    },
+                    { listId: '9834trg3rgy3g08oi9893rgfb' },
+                    { listId: 'f39487tyh49go3h093gh2if2f2' },
                   ],
                 },
               },
-              metadata: [
-                {
-                  jobId: 2,
-                },
-              ],
+              metadata: [{ jobId: 2, userId: 'u1' }],
               batched: false,
               statusCode: 200,
             },
@@ -253,11 +194,7 @@ export const data = [
               message: {
                 anonymousId: 'user123',
                 groupId: '17',
-                traits: {
-                  lastName: 'garwal',
-                  operation: 'remove',
-                  email: 'abc@xyz.com',
-                },
+                traits: { lastName: 'garwal', operation: 'remove', email: 'abc@xyz.com' },
                 type: 'group',
               },
               destination: {
@@ -265,18 +202,12 @@ export const data = [
                   publicKey: '49ur490rjfo34gi04y38r9go',
                   privateKey: 'n89g389yr389fgbef0u2rff',
                   listIds: [
-                    {
-                      listId: '9834trg3rgy3g08oi9893rgfb',
-                    },
-                    {
-                      listId: 'f39487tyh49go3h093gh2if2f2',
-                    },
+                    { listId: '9834trg3rgy3g08oi9893rgfb' },
+                    { listId: 'f39487tyh49go3h093gh2if2f2' },
                   ],
                 },
               },
-              metadata: {
-                jobId: 3,
-              },
+              metadata: { jobId: 3, userId: 'u1' },
             },
           ],
           destType: 'engage',
@@ -290,22 +221,14 @@ export const data = [
         body: {
           output: [
             {
-              metadata: [
-                {
-                  jobId: 3,
-                },
-              ],
+              metadata: [{ jobId: 3, userId: 'u1' }],
               destination: {
                 Config: {
                   publicKey: '49ur490rjfo34gi04y38r9go',
                   privateKey: 'n89g389yr389fgbef0u2rff',
                   listIds: [
-                    {
-                      listId: '9834trg3rgy3g08oi9893rgfb',
-                    },
-                    {
-                      listId: 'f39487tyh49go3h093gh2if2f2',
-                    },
+                    { listId: '9834trg3rgy3g08oi9893rgfb' },
+                    { listId: 'f39487tyh49go3h093gh2if2f2' },
                   ],
                 },
               },

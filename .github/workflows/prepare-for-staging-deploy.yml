@@ -20,7 +20,7 @@ jobs:
       tag_name_ut: ${{ steps.gen_tag_names.outputs.tag_name_ut }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.5.3
+        uses: actions/checkout@v4.1.1
         with:
           fetch-depth: 1
 
@@ -72,7 +72,6 @@ jobs:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 
-
   create-pull-request:
     name: Update Helm Charts For Staging and Create Pull Request
     runs-on: ubuntu-latest
@@ -82,7 +81,7 @@ jobs:
       UT_TAG_NAME: ${{ needs.generate-tag-names.outputs.tag_name_ut }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.5.3
+        uses: actions/checkout@v4.1.1
         with:
           fetch-depth: 1
 
@@ -106,7 +105,7 @@ jobs:
           cd rudder-devops
           BRANCH_NAME="shared-transformer-$TAG_NAME"
           echo $BRANCH_NAME
-          if [ `git ls-remote --heads origin $BRANCH_NAME 2>/dev/null` ]
+          if [ -n `git ls-remote --heads origin $BRANCH_NAME 2>/dev/null` ]
           then
             echo "Staging deployment branch already exists!"
           else

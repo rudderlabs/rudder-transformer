@@ -139,7 +139,13 @@ const fetchKustomer = async (url, destination) => {
           Authorization: `Bearer ${destination.Config.apiKey}`,
         },
       },
-      { destType: 'kustomer', feature: 'transformation' },
+      {
+        destType: 'kustomer',
+        feature: 'transformation',
+        endpointPath: '/customers/email',
+        requestMethod: 'GET',
+        module: 'processor',
+      },
     );
   } catch (err) {
     if (err.response) {

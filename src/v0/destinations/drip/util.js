@@ -31,7 +31,13 @@ const userExists = async (Config, id) => {
           'Content-Type': JSON_MIME_TYPE,
         },
       },
-      { destType: 'drip', feature: 'transformation' },
+      {
+        destType: 'drip',
+        feature: 'transformation',
+        requestMethod: 'GET',
+        endpointPath: '/subscribers/id',
+        module: 'router',
+      },
     );
     if (response && response.status) {
       return response.status === 200;
@@ -70,7 +76,13 @@ const createUpdateUser = async (finalpayload, Config, basicAuth) => {
           'Content-Type': JSON_MIME_TYPE,
         },
       },
-      { destType: 'drip', feature: 'transformation' },
+      {
+        destType: 'drip',
+        feature: 'transformation',
+        requestMethod: 'POST',
+        endpointPath: '/subscribers',
+        module: 'router',
+      },
     );
     if (response) {
       return response.status === 200 || response.status === 201;

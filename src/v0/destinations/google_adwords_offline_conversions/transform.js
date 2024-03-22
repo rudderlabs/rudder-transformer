@@ -9,7 +9,7 @@ const {
   handleRtTfSingleEventError,
   defaultBatchRequestConfig,
   getSuccessRespEvents,
-  checkInvalidRtTfEvents,
+  combineBatchRequestsWithSameJobIds,
 } = require('../../util');
 const {
   CALL_CONVERSION,
@@ -185,11 +185,6 @@ const batchEvents = (storeSalesEvents) => {
 };
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
-
   const storeSalesEvents = []; // list containing store sales events in batched format
   const clickCallEvents = []; // list containing click and call events in batched format
   const errorRespList = [];
@@ -229,7 +224,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
     .concat(storeSalesEventsBatchedResponseList)
     .concat(clickCallEvents)
     .concat(errorRespList);
-  return batchedResponseList;
+  return combineBatchRequestsWithSameJobIds(batchedResponseList);
 };
 
 module.exports = { process, processRouterDest };

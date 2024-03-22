@@ -27,6 +27,7 @@ const {
 const {
   getItemsArray,
   validateEventName,
+  prepareUserConsents,
   removeInvalidParams,
   isReservedEventName,
   getGA4ExclusionList,
@@ -236,6 +237,12 @@ const responseBuilder = (message, { Config }) => {
   const userProperties = prepareUserProperties(message, Config.piiPropertiesToIgnore);
   if (!isEmptyObject(userProperties)) {
     rawPayload.user_properties = userProperties;
+  }
+
+  // Prepare GA4 consents
+  const consents = prepareUserConsents(message);
+  if (!isEmptyObject(consents)) {
+    rawPayload.consent = consents;
   }
 
   payload = removeUndefinedAndNullValues(payload);

@@ -16,6 +16,11 @@ const TYPEOFLIST = Object.freeze({
   mobileDeviceID: 'mobileId',
 });
 
+const consentConfigMap = {
+  personalizationConsent: 'adPersonalization',
+  userDataConsent: 'adUserData',
+};
+
 module.exports = {
   BASE_ENDPOINT,
   TYPEOFLIST,
@@ -23,4 +28,5 @@ module.exports = {
   hashAttributes,
   offlineDataJobsMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.AUDIENCE_LIST.name],
   addressInfoMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.ADDRESSINFO.name],
+  consentConfigMap,
 };

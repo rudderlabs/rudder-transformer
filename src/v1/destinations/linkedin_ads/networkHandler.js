@@ -62,11 +62,16 @@ const responseHandler = (responseParams) => {
         metadata,
         error: errorMessage,
       }));
+      const finalStatus = status === 401 ? 500 : 400;
+      const finalMessage =
+        status === 401
+          ? 'Invalid or expired access token. Retrying'
+          : 'Lack of permissions to perform the operation. Aborting';
       throw new TransformerProxyError(
-        `LinkedIn Conversion API: Error transformer proxy v1 during LinkedIn Conversion API response transformation`,
-        status,
+        `LinkedIn Conversion API: Error transformer proxy v1 during LinkedIn Conversion API response transformation. ${finalMessage}`,
+        finalStatus,
         {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(finalStatus),
         },
         destinationResponse,
         getAuthErrCategoryFromStCode(status),

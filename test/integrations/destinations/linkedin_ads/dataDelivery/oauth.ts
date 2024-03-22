@@ -7,7 +7,7 @@ export const testJSONData = {
       conversion: 'urn:lla:llaPartnerConversion:23456',
       conversionHappenedAt: 1697241600000,
       conversionValue: {
-        amount: 0,
+        amount: '0',
         currencyCode: 'USD',
       },
       eventId: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
@@ -122,8 +122,8 @@ export const oauthScenariosV1: ProxyV1TestData[] = [
   {
     id: 'linkedin_ads_v1_scenario_1',
     name: 'linkedin_ads',
-    description: 'app event fails due to revoked access token error',
-    successCriteria: 'Should return 500 with revoked access token error',
+    description: 'app event fails due to invalid access token error',
+    successCriteria: 'Should return 500 with invalid access token error',
     scenario: 'Business',
     feature: 'dataDelivery',
     module: 'destination',
@@ -183,8 +183,8 @@ export const oauthScenariosV1: ProxyV1TestData[] = [
   {
     id: 'linkedin_ads_v1_scenario_1',
     name: 'linkedin_ads',
-    description: 'app event fails due to revoked access token error',
-    successCriteria: 'Should return 500 with revoked access token error',
+    description: 'success case',
+    successCriteria: 'Should return 200 response',
     scenario: 'Business',
     feature: 'dataDelivery',
     module: 'destination',

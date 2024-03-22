@@ -21,13 +21,13 @@ describe('calculateConversionObject', () => {
   it('should return a conversion object with currency code "USD" and amount 0 when message properties are empty', () => {
     const message = { properties: {} };
     const conversionObject = calculateConversionObject(message);
-    expect(conversionObject).toEqual({ currencyCode: 'USD', amount: 0 });
+    expect(conversionObject).toEqual({ currencyCode: 'USD', amount: '0' });
   });
 
   // Returns a conversion object with currency code 'USD' and amount 0 when message properties price is defined but quantity is 0
   it('should return a conversion object with currency code "USD" and amount 0 when message properties price is defined but quantity is 0', () => {
     const message = { properties: { price: 10, quantity: 0 } };
     const conversionObject = calculateConversionObject(message);
-    expect(conversionObject).toEqual({ currencyCode: 'USD', amount: 0 });
+    expect(conversionObject).toEqual({ currencyCode: 'USD', amount: '0' });
   });
 });

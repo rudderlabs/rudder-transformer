@@ -114,7 +114,7 @@ export const configLevelFeaturesTestData: ProcessorTestData[] = [
                     conversion: 'urn:lla:llaPartnerConversion:23456',
                     conversionHappenedAt: 1697241600000,
                     conversionValue: {
-                      amount: 0,
+                      amount: '0',
                       currencyCode: 'USD',
                     },
                     eventId: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
@@ -195,7 +195,7 @@ export const configLevelFeaturesTestData: ProcessorTestData[] = [
                     conversion: 'urn:lla:llaPartnerConversion:23456',
                     conversionHappenedAt: 1697241600000,
                     conversionValue: {
-                      amount: 0,
+                      amount: '0',
                       currencyCode: 'USD',
                     },
                     eventId: '12345',

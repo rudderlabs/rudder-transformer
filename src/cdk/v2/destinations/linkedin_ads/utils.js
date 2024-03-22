@@ -87,7 +87,7 @@ const calculateConversionObject = (message) => {
   };
   const conversionObject = {
     currencyCode: properties.currency || 'USD',
-    amount: calculateAmount() || 0,
+    amount: `${calculateAmount() || 0}`,
   };
   return conversionObject;
 };

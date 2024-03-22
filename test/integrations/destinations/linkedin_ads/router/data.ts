@@ -347,7 +347,7 @@ export const data = [
                         eventId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
                         conversionValue: {
                           currencyCode: 'USD',
-                          amount: 50,
+                          amount: '50',
                         },
                         user: {
                           userIds: [
@@ -369,7 +369,7 @@ export const data = [
                         eventId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
                         conversionValue: {
                           currencyCode: 'USD',
-                          amount: 50,
+                          amount: '50',
                         },
                         user: {
                           userIds: [
@@ -391,7 +391,7 @@ export const data = [
                         eventId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
                         conversionValue: {
                           currencyCode: 'USD',
-                          amount: 50,
+                          amount: '50',
                         },
                         user: {
                           userIds: [
@@ -413,7 +413,7 @@ export const data = [
                         eventId: '7208bbb6-2c4e-45bb-bf5b-ad426f3593e9',
                         conversionValue: {
                           currencyCode: 'USD',
-                          amount: 50,
+                          amount: '50',
                         },
                         user: {
                           userIds: [

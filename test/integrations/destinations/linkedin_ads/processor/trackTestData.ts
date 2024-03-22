@@ -137,7 +137,7 @@ export const trackTestData: ProcessorTestData[] = [
                     conversion: 'urn:lla:llaPartnerConversion:23456',
                     conversionHappenedAt: 1697241600000,
                     conversionValue: {
-                      amount: 0,
+                      amount: '0',
                       currencyCode: 'USD',
                     },
                     eventId: '12345',
@@ -216,7 +216,7 @@ export const trackTestData: ProcessorTestData[] = [
                     conversion: 'urn:lla:llaPartnerConversion:1234567',
                     conversionHappenedAt: 1697241600000,
                     conversionValue: {
-                      amount: 0,
+                      amount: '0',
                       currencyCode: 'USD',
                     },
                     eventId: '12345',
@@ -234,7 +234,7 @@ export const trackTestData: ProcessorTestData[] = [
                     conversion: 'urn:lla:llaPartnerConversion:34567',
                     conversionHappenedAt: 1697241600000,
                     conversionValue: {
-                      amount: 0,
+                      amount: '0',
                       currencyCode: 'USD',
                     },
                     eventId: '12345',
@@ -328,7 +328,7 @@ export const trackTestData: ProcessorTestData[] = [
                     conversion: 'urn:lla:llaPartnerConversion:23456',
                     conversionHappenedAt: 1697241600000,
                     conversionValue: {
-                      amount: 0,
+                      amount: '0',
                       currencyCode: 'USD',
                     },
                     eventId: '12345',
@@ -488,7 +488,7 @@ export const trackTestData: ProcessorTestData[] = [
                     conversion: 'urn:lla:llaPartnerConversion:23456',
                     conversionHappenedAt: 1697241600000,
                     conversionValue: {
-                      amount: 800,
+                      amount: '800',
                       currencyCode: 'USD',
                     },
                     eventId: '12345',
@@ -580,7 +580,7 @@ export const trackTestData: ProcessorTestData[] = [
                     conversion: 'urn:lla:llaPartnerConversion:23456',
                     conversionHappenedAt: 1697241600000,
                     conversionValue: {
-                      amount: 0,
+                      amount: '0',
                       currencyCode: 'USD',
                     },
                     eventId: '12345',

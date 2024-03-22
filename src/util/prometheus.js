@@ -587,7 +587,7 @@ class Prometheus {
         name: 'http_request_duration',
         help: 'Incoming HTTP requests duration in seconds',
         type: 'histogram',
-        labelNames: ['method', 'route', 'code'],
+        labelNames: ['method', 'route', 'code', 'destType'],
       },
       {
         name: 'tp_batch_size',

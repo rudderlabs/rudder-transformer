@@ -181,6 +181,48 @@ function batchResponseBuilder(successfulEvents) {
   }));
 }
 
+function constructPartialStatus(errorMessage) {
+  const errorPattern = /Index: (\d+), ERROR :: (.*?)\n/g;
+  let match;
+  const errorMap = {};
+
+  try {
+    // eslint-disable-next-line no-cond-assign
+    while ((match = errorPattern.exec(errorMessage)) !== null) {
+      const [, index, message] = match;
+      errorMap[index] = message;
+    }
+
+    return errorMap;
+  } catch (e) {
+    return null;
+  }
+}
+
+function createResponseArray(metadata, partialStatus) {
+  const partialStatusArray = Object.entries(partialStatus).map(([index, message]) => [
+    Number(index),
+    message,
+  ]);
+  // Convert destPartialStatus to an object for easier lookup
+  const errorMap = partialStatusArray.reduce((acc, [index, message]) => {
+    const jobId = metadata[index]?.jobId; // Get the jobId from the metadata array based on the index
+    if (jobId !== undefined) {
+      acc[jobId] = message;
+    }
+    return acc;
+  }, {});
+
+  return metadata.map((item) => {
+    const error = errorMap[item.jobId];
+    return {
+      statusCode: error ? 400 : 500,
+      metadata: item,
+      error: error || 'success',
+    };
+  });
+}
+
 module.exports = {
   formatEmail,
   calculateConversionObject,
@@ -191,4 +233,6 @@ module.exports = {
   generateHeader,
   fetchAndVerifyConversionHappenedAt,
   batchResponseBuilder,
+  constructPartialStatus,
+  createResponseArray,
 };

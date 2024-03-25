@@ -74,22 +74,38 @@ const curateUserInfoObject = (message) => {
   return null;
 };
 
+function checkIfPricePresent(properties) {
+  // Check if 'products' exists and is an array
+  if (Array.isArray(properties.products)) {
+    // Use 'some' to check if at least one object has a 'price' field
+    const hasPrice = properties.products.some((product) => product.hasOwnProperty('price'));
+    return hasPrice;
+  }
+  return !!properties.price;
+}
+
 const calculateConversionObject = (message) => {
-  const { properties } = message;
+  const { properties, event } = message;
+
   const calculateAmount = () => {
     if (properties.products && properties.products.length > 0) {
       return properties.products.reduce(
-        (acc, product) => acc + product.price * product.quantity,
+        (acc, product) => acc + (product.price || 0) * (product.quantity || 1),
         0,
       );
     }
-    return (properties.price || 0) * (properties.quantity ?? 1);
+    return properties.price * (properties.quantity ?? 1);
   };
-  const conversionObject = {
-    currencyCode: properties.currency || 'USD',
-    amount: `${calculateAmount() || 0}`,
-  };
-  return conversionObject;
+  if (checkIfPricePresent(properties)) {
+    const conversionObject = {
+      currencyCode: properties.currency || 'USD',
+      amount: `${calculateAmount()}`,
+    };
+    return conversionObject;
+  }
+  throw new InstrumentationError(
+    `[LinkedIn Conversion API]: Cannot map price for event ${event}. Aborting`,
+  );
 };
 
 const deduceConversionRules = (trackEventName, destConfig) => {
@@ -235,4 +251,5 @@ module.exports = {
   batchResponseBuilder,
   constructPartialStatus,
   createResponseArray,
+  checkIfPricePresent,
 };

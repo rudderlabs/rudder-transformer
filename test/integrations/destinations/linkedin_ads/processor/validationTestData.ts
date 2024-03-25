@@ -52,9 +52,21 @@ const commonUserTraits = {
 };
 
 const commonUserProperties = {
-  revenue: 400,
   additional_bet_index: 0,
   eventId: '12345',
+};
+
+const commonUserPropertiesWithProductWithoutPrice = {
+  additional_bet_index: 0,
+  eventId: '12345',
+  products: [
+    {
+      productId: '12345',
+    },
+    {
+      productId: '123456',
+    },
+  ],
 };
 
 const commonTimestamp = new Date('2023-10-14');
@@ -76,7 +88,7 @@ export const validationTestData: ProcessorTestData[] = [
           {
             message: generateTrackPayload({
               event: 'spin_result',
-              properties: commonUserProperties,
+              properties: { ...commonUserProperties, price: 400 },
               context: {
                 traits: commonUserTraits,
               },
@@ -114,7 +126,7 @@ export const validationTestData: ProcessorTestData[] = [
     },
   },
   {
-    id: 'linkedin_ads-track-test-1',
+    id: 'linkedin_ads-track-test-2',
     name: 'linkedin_ads',
     description: 'Track call : event not mapped to conversion rule in UI',
     scenario: 'Business',
@@ -129,7 +141,7 @@ export const validationTestData: ProcessorTestData[] = [
           {
             message: generateTrackPayload({
               event: 'random event',
-              properties: commonUserProperties,
+              properties: { ...commonUserProperties, price: 400 },
               context: {
                 traits: commonUserTraits,
               },
@@ -169,7 +181,7 @@ export const validationTestData: ProcessorTestData[] = [
     },
   },
   {
-    id: 'linkedin_ads-validation-test-1',
+    id: 'linkedin_ads-validation-test-3',
     name: 'linkedin_ads',
     description: '[Error]: Check for unsupported message type',
     scenario: 'Framework',
@@ -211,6 +223,116 @@ export const validationTestData: ProcessorTestData[] = [
           {
             error:
               'message type random is not supported: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: message type random is not supported',
+            metadata: generateMetadata(1),
+            statTags: {
+              destinationId: 'default-destinationId',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              implementation: 'cdkV2',
+              destType: 'LINKEDIN_ADS',
+              module: 'destination',
+              feature: 'processor',
+              workspaceId: 'default-workspaceId',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'linkedin_ads-track-test-4',
+    name: 'linkedin_ads',
+    description: 'Track call : properties without product array and no price',
+    scenario: 'Business',
+    successCriteria:
+      'should throw error with status code 400 and error message no matching conversion rule found for random event. Please provide a conversion rule. Aborting',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: generateTrackPayload({
+              event: 'random event',
+              properties: commonUserProperties,
+              context: {
+                traits: commonUserTraits,
+              },
+              timestamp: commonTimestamp,
+              messageId: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
+            }),
+            metadata: generateMetadata(1),
+            destination: overrideDestination(commonDestination, {
+              deduplicationKey: `properties.eventId`,
+            }),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              '[LinkedIn Conversion API]: Cannot map price for event random event. Aborting: Workflow: procWorkflow, Step: commonFields, ChildStep: undefined, OriginalError: [LinkedIn Conversion API]: Cannot map price for event random event. Aborting',
+            metadata: generateMetadata(1),
+            statTags: {
+              destinationId: 'default-destinationId',
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              implementation: 'cdkV2',
+              destType: 'LINKEDIN_ADS',
+              module: 'destination',
+              feature: 'processor',
+              workspaceId: 'default-workspaceId',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'linkedin_ads-track-test-5',
+    name: 'linkedin_ads',
+    description: 'Track call : properties without product array and no price',
+    scenario: 'Business',
+    successCriteria:
+      'should throw error with status code 400 and error message no matching conversion rule found for random event. Please provide a conversion rule. Aborting',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: generateTrackPayload({
+              event: 'random event',
+              properties: commonUserPropertiesWithProductWithoutPrice,
+              context: {
+                traits: commonUserTraits,
+              },
+              timestamp: commonTimestamp,
+              messageId: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
+            }),
+            metadata: generateMetadata(1),
+            destination: overrideDestination(commonDestination, {
+              deduplicationKey: `properties.eventId`,
+            }),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              '[LinkedIn Conversion API]: Cannot map price for event random event. Aborting: Workflow: procWorkflow, Step: commonFields, ChildStep: undefined, OriginalError: [LinkedIn Conversion API]: Cannot map price for event random event. Aborting',
             metadata: generateMetadata(1),
             statTags: {
               destinationId: 'default-destinationId',

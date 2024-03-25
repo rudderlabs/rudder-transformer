@@ -8,6 +8,7 @@ const {
   generateHeader,
   constructPartialStatus,
   createResponseArray,
+  checkIfPricePresent,
 } = require('./utils');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { API_HEADER_METHOD, API_PROTOCOL_VERSION, API_VERSION } = require('./config');
@@ -29,10 +30,11 @@ describe('formatEmail', () => {
 
 describe('calculateConversionObject', () => {
   // Returns a conversion object with currency code 'USD' and amount 0 when message properties are empty
-  it('should return a conversion object with currency code "USD" and amount 0 when message properties are empty', () => {
+  it('should throw instrumentation error when message properties are empty', () => {
     const message = { properties: {} };
-    const conversionObject = calculateConversionObject(message);
-    expect(conversionObject).toEqual({ currencyCode: 'USD', amount: '0' });
+    expect(() => {
+      fetchUserIds(calculateConversionObject(message));
+    }).toThrow(InstrumentationError);
   });
 
   // Returns a conversion object with currency code 'USD' and amount 0 when message properties price is defined but quantity is 0
@@ -264,5 +266,28 @@ describe('createResponseArray', () => {
         error: 'Partial status message 3',
       },
     ]);
+  });
+});
+
+describe('checkIfPricePresent', () => {
+  // Returns true if properties object has a 'price' field
+  it('should return true when properties object has a price field', () => {
+    const properties = { price: 10 };
+    const result = checkIfPricePresent(properties);
+    expect(result).toBe(true);
+  });
+
+  // Returns true if properties object has a 'products' array with an object containing a 'price' field and a 'price' field in the properties object
+  it('should return true when properties object has a products array with an object containing a price field and a price field in the properties object', () => {
+    const properties = { products: [{ price: 10 }, { quantity: 3 }], price: 20 };
+    const result = checkIfPricePresent(properties);
+    expect(result).toBe(true);
+  });
+
+  // Returns false if properties object does not have a 'price' field or a 'products' array with an object containing a 'price' field
+  it('should return false when properties object does not have a price field or a products array with an object containing a price field', () => {
+    const properties = { quantity: 5 };
+    const result = checkIfPricePresent(properties);
+    expect(result).toBe(false);
   });
 });

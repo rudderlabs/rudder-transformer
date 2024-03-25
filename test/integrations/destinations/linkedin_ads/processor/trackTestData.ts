@@ -48,7 +48,7 @@ const commonUserTraits = {
 };
 
 const commonUserProperties = {
-  revenue: 400,
+  price: 400,
   additional_bet_index: 0,
   eventId: '12345',
 };
@@ -65,6 +65,31 @@ const commonPropertiesWithProducts = {
       brand: 'xyz',
       variant: 'pqr',
       price: 100,
+      quantity: 2,
+    },
+    {
+      product_id: '456',
+      name: 'def',
+      category: 'abc',
+      brand: 'pqr',
+      variant: 'xyz',
+      price: 200,
+      quantity: 3,
+    },
+  ],
+};
+
+const commonPropertiesWithProductsPriceNotPresentInAll = {
+  revenue: 400,
+  additional_bet_index: 0,
+  eventId: '12345',
+  products: [
+    {
+      product_id: '123',
+      name: 'abc',
+      category: 'def',
+      brand: 'xyz',
+      variant: 'pqr',
       quantity: 2,
     },
     {
@@ -137,7 +162,7 @@ export const trackTestData: ProcessorTestData[] = [
                     conversion: 'urn:lla:llaPartnerConversion:23456',
                     conversionHappenedAt: 1697241600000,
                     conversionValue: {
-                      amount: '0',
+                      amount: '400',
                       currencyCode: 'USD',
                     },
                     eventId: '12345',
@@ -216,7 +241,7 @@ export const trackTestData: ProcessorTestData[] = [
                     conversion: 'urn:lla:llaPartnerConversion:1234567',
                     conversionHappenedAt: 1697241600000,
                     conversionValue: {
-                      amount: '0',
+                      amount: '400',
                       currencyCode: 'USD',
                     },
                     eventId: '12345',
@@ -234,7 +259,7 @@ export const trackTestData: ProcessorTestData[] = [
                     conversion: 'urn:lla:llaPartnerConversion:34567',
                     conversionHappenedAt: 1697241600000,
                     conversionValue: {
-                      amount: '0',
+                      amount: '400',
                       currencyCode: 'USD',
                     },
                     eventId: '12345',
@@ -328,7 +353,7 @@ export const trackTestData: ProcessorTestData[] = [
                     conversion: 'urn:lla:llaPartnerConversion:23456',
                     conversionHappenedAt: 1697241600000,
                     conversionValue: {
-                      amount: '0',
+                      amount: '400',
                       currencyCode: 'USD',
                     },
                     eventId: '12345',
@@ -580,7 +605,7 @@ export const trackTestData: ProcessorTestData[] = [
                     conversion: 'urn:lla:llaPartnerConversion:23456',
                     conversionHappenedAt: 1697241600000,
                     conversionValue: {
-                      amount: '0',
+                      amount: '400',
                       currencyCode: 'USD',
                     },
                     eventId: '12345',
@@ -596,6 +621,113 @@ export const trackTestData: ProcessorTestData[] = [
                         firstName: 'John',
                         lastName: 'Doe',
                       },
+                    },
+                  },
+                ],
+              },
+              userId: '',
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'linkedin_ads-track-test-5',
+    name: 'linkedin_ads',
+    description:
+      'Track call : track event containing product array where not all products contains price field',
+    scenario: 'Business',
+    successCriteria:
+      'the amount will be summation of product * quantity for all the products in the array',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: generateTrackPayload({
+              event: 'spin_result',
+              properties: commonPropertiesWithProductsPriceNotPresentInAll,
+              externalId: [
+                {
+                  id: 'test@rudderlabs.com',
+                  type: 'LINKEDIN_FIRST_PARTY_ADS_TRACKING_UUID',
+                },
+                {
+                  id: 'test@rudderlabs.com',
+                  type: 'ACXIOM_ID',
+                },
+                {
+                  id: 'test@rudderlabs.com',
+                  type: 'ORACLE_MOAT_ID',
+                },
+              ],
+              context: {
+                traits: commonUserTraits,
+              },
+              timestamp: commonTimestamp,
+              messageId: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
+            }),
+            metadata: generateMetadata(1),
+            destination: commonDestination,
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: `https://api.linkedin.com/rest/conversionEvents`,
+              headers: {
+                Authorization: 'Bearer default-accessToken',
+                'Content-Type': 'application/json',
+                'LinkedIn-Version': '202402',
+                'X-RestLi-Method': 'BATCH_CREATE',
+                'X-Restli-Protocol-Version': '2.0.0',
+              },
+              params: {},
+              FORM: {},
+              files: {},
+              JSON: {
+                elements: [
+                  {
+                    conversion: 'urn:lla:llaPartnerConversion:23456',
+                    conversionHappenedAt: 1697241600000,
+                    conversionValue: {
+                      amount: '600',
+                      currencyCode: 'USD',
+                    },
+                    eventId: '12345',
+                    user: {
+                      userIds: [
+                        {
+                          idType: 'SHA256_EMAIL',
+                          idValue:
+                            '48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08',
+                        },
+                        {
+                          idType: 'LINKEDIN_FIRST_PARTY_ADS_TRACKING_UUID',
+                          idValue: 'test@rudderlabs.com',
+                        },
+                        {
+                          idType: 'ACXIOM_ID',
+                          idValue: 'test@rudderlabs.com',
+                        },
+                        {
+                          idType: 'ORACLE_MOAT_ID',
+                          idValue: 'test@rudderlabs.com',
+                        },
+                      ],
                     },
                   },
                 ],

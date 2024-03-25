@@ -16,7 +16,7 @@ jobs:
     if: github.ref == 'refs/heads/main' && (github.actor == 'ItsSudip' || github.actor == 'krishna2020' || github.actor == 'koladilip' || github.actor == 'saikumarrs' || github.actor == 'sandeepdsvs' || github.actor == 'shrouti1507' || github.actor == 'anantjain45823' || github.actor == 'chandumlg' || github.actor == 'mihir-4116' || github.actor == 'utsabc') && (github.triggering_actor == 'ItsSudip' || github.triggering_actor == 'krishna2020' ||  github.triggering_actor == 'saikumarrs' || github.triggering_actor == 'sandeepdsvs' || github.triggering_actor == 'koladilip' || github.triggering_actor == 'shrouti1507' || github.triggering_actor == 'anantjain45823' || github.triggering_actor == 'chandumlg' || github.triggering_actor == 'mihir-4116' || github.triggering_actor == 'sanpj2292' || github.triggering_actor == 'utsabc')
     steps:
       - name: Create Branch
-        uses: peterjgrainger/action-create-branch@v2.4.0
+        uses: peterjgrainger/action-create-branch@v3.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
         with:

@@ -76,7 +76,7 @@ const curateUserInfoObject = (message) => {
 
 function checkIfPricePresent(properties) {
   // Check if 'products' exists and is an array
-  if (Array.isArray(properties.products)) {
+  if (Array.isArray(properties?.products)) {
     // Use 'some' to check if at least one object has a 'price' field
     const hasPrice = properties.products.some((product) => product.hasOwnProperty('price'));
     return hasPrice;
@@ -88,7 +88,7 @@ const calculateConversionObject = (message) => {
   const { properties, event } = message;
 
   const calculateAmount = () => {
-    if (properties.products && properties.products.length > 0) {
+    if (properties?.products && properties.products.length > 0) {
       return properties.products.reduce(
         (acc, product) => acc + (product.price || 0) * (product.quantity || 1),
         0,

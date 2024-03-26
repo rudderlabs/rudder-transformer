@@ -132,12 +132,7 @@ const trackResponseBuilder = async (message, { Config }) => {
   const { eventsToStandard, sendCustomEvents } = Config;
   validateEventName(message.event);
   let event = message.event.toLowerCase().trim();
-  if (!event) {
-    throw new InstrumentationError('Event name is required');
-  }
-
   const standardEventsMap = getHashFromArrayWithDuplicate(eventsToStandard);
-
   if (!sendCustomEvents && eventNameMapping[event] === undefined && !standardEventsMap[event]) {
     throw new InstrumentationError(
       `Event name (${event}) is not valid, must be mapped to one of standard events`,

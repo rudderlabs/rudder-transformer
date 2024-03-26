@@ -15,7 +15,9 @@ function extractContent(xmlPayload, tagName) {
   return match ? match[1] : null;
 }
 
-const responseHandler = (destinationResponse, dest) => {
+const responseHandler = (responseParams) => {
+  const { destinationResponse, destType } = responseParams;
+
   const message = `[${DESTINATION}] - Request Processed Successfully`;
   const { response, status } = destinationResponse;
 
@@ -27,11 +29,11 @@ const responseHandler = (destinationResponse, dest) => {
   if (responseStatus === 'FAILURE') {
     if (reason) {
       throw new InstrumentationError(
-        `[${DESTINATION} Response Handler] Request failed for destination ${dest} : ${reason}`,
+        `[${DESTINATION} Response Handler] Request failed for destination ${destType} : ${reason}`,
       );
     } else {
       throw new InstrumentationError(
-        `[${DESTINATION} Response Handler] Request failed for destination ${dest} with a general error`,
+        `[${DESTINATION} Response Handler] Request failed for destination ${destType} with a general error`,
       );
     }
   }

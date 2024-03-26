@@ -1,6 +1,7 @@
 const { get, set } = require('lodash');
 const sha256 = require('sha256');
 const { NetworkError, NetworkInstrumentationError } = require('@rudderstack/integrations-lib');
+const SqlString = require('sqlstring');
 const { prepareProxyRequest, handleHttpRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../util/index');
 const { CONVERSION_ACTION_ID_CACHE_TTL } = require('./config');
@@ -29,8 +30,12 @@ const ERROR_MSG_PATH = 'response[0].error.message';
 const getConversionActionId = async (method, headers, params) => {
   const conversionActionIdKey = sha256(params.event + params.customerId).toString();
   return conversionActionIdCache.get(conversionActionIdKey, async () => {
+    const queryString = SqlString.format(
+      'SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = ?',
+      [params.event],
+    );
     const data = {
-      query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = '${params.event}'`,
+      query: queryString,
     };
     const requestBody = {
       url: `${BASE_ENDPOINT}/${params.customerId}/googleAds:searchStream`,
@@ -45,6 +50,8 @@ const getConversionActionId = async (method, headers, params) => {
         destType: 'google_adwords_enhanced_conversions',
         feature: 'proxy',
         endpointPath: `/googleAds:searchStream`,
+        requestMethod: 'POST',
+        module: 'dataDelivery',
       },
     );
     if (!isHttpStatusSuccess(gaecConversionActionIdResponse.status)) {
@@ -98,11 +105,14 @@ const ProxyRequest = async (request) => {
     destType: 'google_adwords_enhanced_conversions',
     feature: 'proxy',
     endpointPath: `/googleAds:uploadOfflineUserData`,
+    requestMethod: 'POST',
+    module: 'dataDelivery',
   });
   return response;
 };
 
-const responseHandler = (destinationResponse) => {
+const responseHandler = (responseParams) => {
+  const { destinationResponse } = responseParams;
   const message = 'Request Processed Successfully';
   const { status } = destinationResponse;
   if (isHttpStatusSuccess(status)) {
@@ -112,7 +122,7 @@ const responseHandler = (destinationResponse) => {
     // Ref - https://github.com/googleapis/googleapis/blob/master/google/rpc/code.proto
     if (partialFailureError && partialFailureError.code !== 0) {
       throw new NetworkError(
-        `[Google Ads Offline Conversions]:: partialFailureError - ${JSON.stringify(
+        `[Google Adwords Enhanced Conversions]:: partialFailureError - ${JSON.stringify(
           partialFailureError,
         )}`,
         400,

@@ -11,7 +11,6 @@ const {
   removeUndefinedAndNullValues,
   getSuccessRespEvents,
   isDefinedAndNotNull,
-  checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
   getAccessToken,
 } = require('../../util');
@@ -252,7 +251,6 @@ const processRouterDest = async (inputs, reqMetadata) => {
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
-
   const batchErrorRespList = [];
   const eventChunksArray = [];
   const { destination } = inputs[0];

@@ -445,6 +445,9 @@ const fetchCustomFields = async (destination) => {
     const resonse = await httpGET(endpoint, requestOptions, {
       destType: 'sendgrid',
       feature: 'transformation',
+      endpointPath: '/marketing/field_definitions',
+      requestMethod: 'GET',
+      module: 'router',
     });
     const processedResponse = processAxiosResponse(resonse);
     if (isHttpStatusSuccess(processedResponse.status)) {

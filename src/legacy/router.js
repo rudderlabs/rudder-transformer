@@ -7,7 +7,8 @@ const Router = require('@koa/router');
 const lodash = require('lodash');
 const fs = require('fs');
 const path = require('path');
-const { PlatformError } = require('@rudderstack/integrations-lib');
+const logger = require('@rudderstack/integrations-lib/build/structured-logger');
+const { PlatformError, getErrorRespEvents } = require('@rudderstack/integrations-lib');
 const logger = require('@rudderstack/integrations-lib/build/structured-logger');
 const stats = require('../util/stats');
 const { SUPPORTED_VERSIONS, API_VERSION } = require('../routes/utils/constants');
@@ -18,7 +19,6 @@ const {
   isNonFuncObject,
   getMetadata,
   generateErrorObject,
-  getErrorRespEvents,
   isCdkDestination,
   checkAndCorrectUserId,
 } = require('../v0/util');

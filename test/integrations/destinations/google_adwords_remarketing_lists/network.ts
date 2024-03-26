@@ -7,7 +7,10 @@ export const networkCallsData = [
       data: {
         job: {
           type: 'CUSTOMER_MATCH_USER_LIST',
-          customerMatchUserListMetadata: { userList: 'customers/7693729833/userLists/709078448' },
+          customerMatchUserListMetadata: {
+            userList: 'customers/7693729833/userLists/709078448',
+            consent: { adPersonalization: 'UNSPECIFIED', adUserData: 'UNSPECIFIED' },
+          },
         },
       },
       headers: {
@@ -86,7 +89,10 @@ export const networkCallsData = [
       data: {
         job: {
           type: 'CUSTOMER_MATCH_USER_LIST',
-          customerMatchUserListMetadata: { userList: 'customers/7693729833/userLists/709078448' },
+          customerMatchUserListMetadata: {
+            userList: 'customers/7693729833/userLists/709078448',
+            consent: { adPersonalization: 'UNSPECIFIED', adUserData: 'UNSPECIFIED' },
+          },
         },
       },
       headers: {

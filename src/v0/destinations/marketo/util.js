@@ -248,6 +248,8 @@ const sendGetRequest = async (url, options) => {
     destType: 'marketo',
     feature: 'transformation',
     endpointPath: `/v1/leads`,
+    requestMethod: 'GET',
+    module: 'router',
   });
   const processedResponse = processAxiosResponse(clientResponse);
   return processedResponse;
@@ -264,6 +266,8 @@ const sendPostRequest = async (url, data, options) => {
     destType: 'marketo',
     feature: 'transformation',
     endpointPath: `/v1/leads`,
+    requestMethod: 'POST',
+    module: 'router',
   });
   const processedResponse = processAxiosResponse(clientResponse);
   return processedResponse;

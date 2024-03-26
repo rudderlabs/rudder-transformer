@@ -26,6 +26,8 @@ N/A
 
 N/A
 
+@coderabbitai review
+
 <hr>
 
 ### Developer checklist

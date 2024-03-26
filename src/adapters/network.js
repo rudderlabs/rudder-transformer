@@ -49,11 +49,15 @@ const fireHTTPStats = (clientResponse, startTime, statTags) => {
   const destType = statTags.destType ? statTags.destType : '';
   const feature = statTags.feature ? statTags.feature : '';
   const endpointPath = statTags.endpointPath ? statTags.endpointPath : '';
+  const requestMethod = statTags.requestMethod ? statTags.requestMethod : '';
+  const module = statTags.module ? statTags.module : '';
   const statusCode = clientResponse.success ? clientResponse.response.status : '';
   stats.timing('outgoing_request_latency', startTime, {
     feature,
     destType,
     endpointPath,
+    requestMethod,
+    module,
   });
   stats.counter('outgoing_request_count', 1, {
     feature,
@@ -61,6 +65,8 @@ const fireHTTPStats = (clientResponse, startTime, statTags) => {
     endpointPath,
     success: clientResponse.success,
     statusCode,
+    requestMethod,
+    module,
   });
 };
 

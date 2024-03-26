@@ -93,28 +93,26 @@ const populateCustomDataBasedOnCategory = (customData, message, category, catego
       );
 
       const contentCategory = eventTypeCustomData.content_category;
-      let contentType;
+      let defaultContentType;
       if (contentIds.length > 0) {
-        contentType = 'product';
+        defaultContentType = 'product';
       } else if (contentCategory) {
         contentIds.push(contentCategory);
         contents.push({
           id: contentCategory,
           quantity: 1,
         });
-        contentType = 'product_group';
+        defaultContentType = 'product_group';
       }
+      const contentType =
+        message.properties?.content_type ||
+        getContentType(message, defaultContentType, categoryToContent, DESTINATION.toLowerCase());
 
       eventTypeCustomData = {
         ...eventTypeCustomData,
         content_ids: contentIds,
         contents,
-        content_type: getContentType(
-          message,
-          contentType,
-          categoryToContent,
-          DESTINATION.toLowerCase(),
-        ),
+        content_type: contentType,
         content_category: getContentCategory(contentCategory),
       };
       break;
@@ -125,18 +123,20 @@ const populateCustomDataBasedOnCategory = (customData, message, category, catego
     case 'payment info entered':
     case 'product added to wishlist': {
       const contentCategory = eventTypeCustomData.content_category;
-      const contentType = eventTypeCustomData.content_type;
+      const contentType =
+        message.properties?.content_type ||
+        getContentType(
+          message,
+          eventTypeCustomData.content_type,
+          categoryToContent,
+          DESTINATION.toLowerCase(),
+        );
       const { contentIds, contents } = populateContentsAndContentIDs([message.properties]);
       eventTypeCustomData = {
         ...eventTypeCustomData,
         content_ids: contentIds,
         contents,
-        content_type: getContentType(
-          message,
-          contentType,
-          categoryToContent,
-          DESTINATION.toLowerCase(),
-        ),
+        content_type: contentType,
         content_category: getContentCategory(contentCategory),
       };
       validateProductSearchedData(eventTypeCustomData);
@@ -151,18 +151,20 @@ const populateCustomDataBasedOnCategory = (customData, message, category, catego
       );
 
       const contentCategory = eventTypeCustomData.content_category;
-      const contentType = eventTypeCustomData.content_type;
+      const contentType =
+        message.properties?.content_type ||
+        getContentType(
+          message,
+          eventTypeCustomData.content_type,
+          categoryToContent,
+          DESTINATION.toLowerCase(),
+        );
 
       eventTypeCustomData = {
         ...eventTypeCustomData,
         content_ids: contentIds,
         contents,
-        content_type: getContentType(
-          message,
-          contentType,
-          categoryToContent,
-          DESTINATION.toLowerCase(),
-        ),
+        content_type: contentType,
         content_category: getContentCategory(contentCategory),
         num_items: contentIds.length,
       };

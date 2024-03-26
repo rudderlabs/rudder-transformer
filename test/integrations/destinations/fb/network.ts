@@ -12,7 +12,7 @@ const fbPixelTcs = data
       return nw.httpReq.url === fbendpoint;
     })[0];
     const clonedFbpTc = cloneDeep(fbpTc);
-    const clonedFormData = cloneDeep(d.input.request.body.body.FORM);
+    const clonedFormData = cloneDeep(d.input.request.body.body?.FORM);
     clonedFbpTc.httpReq.data = getFormData(clonedFormData).toString();
     return clonedFbpTc;
   });
@@ -21,7 +21,7 @@ export const networkCallsData = [
   {
     httpReq: {
       url: `https://graph.facebook.com/${VERSION}/RudderFbApp/activities?access_token=invalid_access_token`,
-      data: getFormData(data[0].input.request.body.body.FORM).toString(),
+      data: getFormData(data[0].input.request.body.body?.FORM).toString(),
       params: { destination: 'fb' },
       headers: { 'User-Agent': 'RudderLabs' },
       method: 'POST',
@@ -41,7 +41,7 @@ export const networkCallsData = [
   {
     httpReq: {
       url: `https://graph.facebook.com/${VERSION}/RudderFbApp/activities?access_token=my_access_token`,
-      data: getFormData(data[1].input.request.body.body.FORM).toString(),
+      data: getFormData(data[1].input.request.body.body?.FORM).toString(),
       params: { destination: 'fb' },
       headers: { 'x-forwarded-for': '1.2.3.4', 'User-Agent': 'RudderLabs' },
       method: 'POST',

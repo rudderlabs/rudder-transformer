@@ -1,8 +1,10 @@
+import { Destination } from '../../../../src/types';
+
 const defaultMockFns = () => {
   jest.spyOn(Date, 'now').mockImplementation(() => new Date(Date.UTC(2020, 0, 25)).valueOf());
 };
 
-const sampleDestination = {
+const sampleDestination: Destination = {
   Config: {
     apiKey: 'dummyApiKey',
     token: 'dummyApiKey',
@@ -13,11 +15,13 @@ const sampleDestination = {
     DisplayName: 'Mixpanel',
     ID: '1WhbSZ6uA3H5ChVifHpfL2H6sie',
     Name: 'MP',
+    Config: undefined,
   },
   Enabled: true,
   ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
   Name: 'MP',
   Transformations: [],
+  WorkspaceID: '',
 };
 
 const destinationWithSetOnceProperty = {

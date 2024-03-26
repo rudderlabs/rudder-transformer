@@ -22,7 +22,13 @@ const searchGroup = async (groupName, Config) => {
           'Content-Type': JSON_MIME_TYPE,
         },
       },
-      { destType: 'gainsight', feature: 'transformation' },
+      {
+        destType: 'gainsight',
+        feature: 'transformation',
+        requestMethod: 'POST',
+        endpointPath: '/data/objects/query/Company',
+        module: 'router',
+      },
     );
   } catch (error) {
     let errMessage = '';
@@ -56,7 +62,13 @@ const createGroup = async (payload, Config) => {
           'Content-Type': JSON_MIME_TYPE,
         },
       },
-      { destType: 'gainsight', feature: 'transformation' },
+      {
+        destType: 'gainsight',
+        feature: 'transformation',
+        requestMethod: 'POST',
+        endpointPath: '/data/objects/Company',
+        module: 'router',
+      },
     );
   } catch (error) {
     let errMessage = '';
@@ -93,7 +105,13 @@ const updateGroup = async (payload, Config) => {
           keys: 'Name',
         },
       },
-      { destType: 'gainsight', feature: 'transformation' },
+      {
+        destType: 'gainsight',
+        feature: 'transformation',
+        requestMethod: 'PUT',
+        endpointPath: '/data/objects/Company',
+        module: 'router',
+      },
     );
   } catch (error) {
     let errMessage = '';

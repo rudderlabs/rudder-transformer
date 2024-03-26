@@ -2,8 +2,8 @@
 import logger from '@rudderstack/integrations-lib/build/structured-logger';
 import { DestinationService } from '../interfaces/DestinationService';
 import {
-  DeliveriesResponse,
-  DeliveryResponse,
+  DeliveryV0Response,
+  DeliveryV1Response,
   Destination,
   ErrorDetailer,
   MetaTransferObject,
@@ -370,7 +370,7 @@ export class ComparatorService implements DestinationService {
     destinationType: string,
     requestMetadata: NonNullable<unknown>,
     version: string,
-  ): Promise<DeliveryResponse | DeliveriesResponse> {
+  ): Promise<DeliveryV0Response | DeliveryV1Response> {
     const primaryResplist = await this.primaryService.deliver(
       event,
       destinationType,

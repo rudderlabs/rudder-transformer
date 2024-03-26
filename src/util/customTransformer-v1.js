@@ -55,7 +55,7 @@ async function userTransformHandlerV1(
   testMode = false,
 ) {
   if (!userTransformation.versionId) {
-    return { transformedEvents : events };
+    return { transformedEvents: events };
   }
 
   const isolatevmFactory = await getFactory(
@@ -88,9 +88,9 @@ async function userTransformHandlerV1(
     const tags = {
       identifier: 'v1',
       errored: transformationError ? true : false,
-      ...events.length && events[0].metadata ? getMetadata(events[0].metadata) : {},
-      ...events.length && events[0].metadata ? getTransformationMetadata(events[0].metadata) : {}
-    }
+      ...(events.length && events[0].metadata ? getMetadata(events[0].metadata) : {}),
+      ...(events.length && events[0].metadata ? getTransformationMetadata(events[0].metadata) : {}),
+    };
     stats.counter('user_transform_function_input_events', events.length, tags);
     stats.timing('user_transform_function_latency', invokeTime, tags);
   }

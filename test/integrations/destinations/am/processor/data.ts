@@ -10739,6 +10739,7 @@ export const data = [
               integrations: {
                 All: true,
                 Amplitude: {
+                  skipUserPropertiesSync: false,
                   event_id: 2,
                 },
               },
@@ -10894,6 +10895,7 @@ export const data = [
               integrations: {
                 All: true,
                 Amplitude: {
+                  skipUserPropertiesSync: true,
                   event_id: 2,
                 },
               },
@@ -10949,6 +10951,7 @@ export const data = [
                       insert_id: '5e10d13a-bf9a-44bf-b884-43a9e591ea71',
                       ip: '1.1.1.1',
                       event_id: 2,
+                      $skip_user_properties_sync: true,
                       user_properties: {
                         initial_referrer: 'https://docs.rudderstack.com',
                         initial_referring_domain: 'docs.rudderstack.com',
@@ -11322,6 +11325,59 @@ export const data = [
               userId: 'anon-id-new',
             },
             statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'am',
+    description:
+      'Test 78 -> Page call invalid event type as page name and template is not provided',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              request_ip: '1.1.1.1',
+              type: 'page',
+              userId: '12345',
+              properties: {},
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T11:15:53.296Z',
+            },
+            destination: {
+              Config: {
+                apiKey: 'abcde',
+                useUserDefinedPageEventName: true,
+                userProvidedPageEventString: '',
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            statusCode: 400,
+            error:
+              'Event type is missing. Please send it under `event.type`. For page/screen events, send it under `event.name`',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'AM',
+              module: 'destination',
+              implementation: 'native',
+              feature: 'processor',
+            },
           },
         ],
       },

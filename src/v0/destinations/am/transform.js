@@ -268,7 +268,7 @@ const updateConfigProperty = (message, payload, mappingJson, validatePayload, Co
     }
   });
 };
-const identifyBuilder = (message, destination, rawPayload) => {
+const userPropertiesHandler = (message, destination, rawPayload) => {
   // update payload user_properties from userProperties/traits/context.traits/nested traits of Rudder message
   // traits like address converted to top level user properties (think we can skip this extra processing as AM supports nesting upto 40 levels)
   let traits = getFieldValueFromMessage(message, 'traits');
@@ -335,6 +335,7 @@ const getDefaultResponseData = (message, rawPayload, evType, groupInfo) => {
   const groups = groupInfo && cloneDeep(groupInfo);
   return { groups, rawPayload };
 };
+
 const getResponseData = (evType, destination, rawPayload, message, groupInfo) => {
   let groups;
 
@@ -342,7 +343,7 @@ const getResponseData = (evType, destination, rawPayload, message, groupInfo) =>
     case EventType.IDENTIFY:
       // event_type for identify event is $identify
       rawPayload.event_type = IDENTIFY_AM;
-      rawPayload = identifyBuilder(message, destination, rawPayload);
+      rawPayload = userPropertiesHandler(message, destination, rawPayload);
       break;
     case EventType.GROUP:
       // event_type for identify event is $identify
@@ -357,7 +358,14 @@ const getResponseData = (evType, destination, rawPayload, message, groupInfo) =>
     case EventType.ALIAS:
       break;
     default:
+      if (destination.Config.enableEnhancedUserOperations) {
+        // handle all other events like track, page, screen for user properties
+        rawPayload = userPropertiesHandler(message, destination, rawPayload);
+      }
       ({ groups, rawPayload } = getDefaultResponseData(message, rawPayload, evType, groupInfo));
+  }
+  if (destination.Config.enableEnhancedUserOperations) {
+    rawPayload = AMUtils.userPropertiesPostProcess(rawPayload);
   }
   return { rawPayload, groups };
 };
@@ -517,6 +525,9 @@ const responseBuilderSimple = (
     ...campaign,
   };
 
+  // we are updating the payload with skip_user_properties_sync
+  AMUtils.updateWithSkipAttribute(message, rawPayload);
+
   const respData = getResponseData(evType, destination, rawPayload, message, groupInfo);
   const { groups, rawPayload: updatedRawPayload } = respData;
 
@@ -614,16 +625,16 @@ const processSingleMessage = (message, destination) => {
     case EventType.PAGE:
       if (useUserDefinedPageEventName) {
         const getMessagePath = userProvidedPageEventString
-          .substring(
+          ?.substring(
             userProvidedPageEventString.indexOf('{') + 2,
             userProvidedPageEventString.indexOf('}'),
           )
           .trim();
         evType =
-          userProvidedPageEventString.trim() === ''
+          userProvidedPageEventString?.trim() === ''
             ? name
             : userProvidedPageEventString
-                .trim()
+                ?.trim()
                 .replaceAll(/{{([^{}]+)}}/g, get(message, getMessagePath));
       } else {
         evType = `Viewed ${name || get(message, CATEGORY_KEY) || ''} Page`;
@@ -701,6 +712,7 @@ const processSingleMessage = (message, destination) => {
       logger.debugw('could not determine type');
       throw new InstrumentationError('message type not supported');
   }
+  AMUtils.validateEventType(evType);
   return responseBuilderSimple(
     groupInfo,
     payloadObjectName,

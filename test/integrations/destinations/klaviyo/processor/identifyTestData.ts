@@ -3,13 +3,27 @@ import {
   overrideDestination,
   transformResultBuilder,
   generateSimplifiedIdentifyPayload,
+  generateMetadata,
 } from '../../../testUtils';
+import { ProcessorTestData } from '../../../testTypes';
+import { Destination } from '../../../../../src/types';
 
-const destination = {
+const destination: Destination = {
+  ID: '123',
+  Name: 'klaviyo',
+  DestinationDefinition: {
+    ID: '123',
+    Name: 'klaviyo',
+    DisplayName: 'klaviyo',
+    Config: {},
+  },
   Config: {
     publicApiKey: 'dummyPublicApiKey',
     privateApiKey: 'dummyPrivateApiKey',
   },
+  Enabled: true,
+  WorkspaceID: '123',
+  Transformations: [],
 };
 
 const commonTraits = {
@@ -33,6 +47,8 @@ const commonTraits = {
   },
 };
 
+const commonTraits2 = { ...commonTraits, street: '63, Shibuya' };
+
 const commonOutputUserProps = {
   external_id: 'user@1',
   email: 'test@rudderstack.com',
@@ -51,6 +67,12 @@ const commonOutputUserProps = {
     Flagged: false,
     Residence: 'Shibuya',
   },
+};
+
+const commonOutputUserProps2 = {
+  ...commonOutputUserProps,
+  location: { ...commonOutputUserProps.location, address1: '63, Shibuya' },
+  properties: { ...commonOutputUserProps.properties, street: '63, Shibuya' },
 };
 
 const commonOutputSubscriptionProps = {
@@ -81,7 +103,7 @@ const originalTimestamp = '2021-01-03T17:02:53.193Z';
 const commonUserUpdateEndpoint = 'https://a.klaviyo.com/api/profiles/01GW3PHVY0MTCDGS0A1612HARX';
 const subscribeEndpoint = 'https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs';
 
-export const identifyData = [
+export const identifyData: ProcessorTestData[] = [
   {
     id: 'klaviyo-identify-test-1',
     name: 'klaviyo',
@@ -102,12 +124,13 @@ export const identifyData = [
             destination,
             message: generateSimplifiedIdentifyPayload({
               context: {
-                traits: commonTraits,
+                traits: commonTraits2,
               },
               anonymousId,
               userId,
               sentAt,
             }),
+            metadata: generateMetadata(1),
           },
         ],
       },
@@ -125,12 +148,13 @@ export const identifyData = [
               JSON: {
                 data: {
                   type: 'profile',
-                  attributes: commonOutputUserProps,
+                  attributes: commonOutputUserProps2,
                   id: '01GW3PHVY0MTCDGS0A1612HARX',
                 },
               },
             }),
             statusCode: 200,
+            metadata: generateMetadata(1),
           },
           {
             output: transformResultBuilder({
@@ -146,6 +170,7 @@ export const identifyData = [
               },
             }),
             statusCode: 200,
+            metadata: generateMetadata(1),
           },
         ],
       },
@@ -171,7 +196,7 @@ export const identifyData = [
               userId,
               context: {
                 traits: {
-                  ...commonTraits,
+                  ...commonTraits2,
                   friend: {
                     names: {
                       first: 'Alice',
@@ -184,6 +209,7 @@ export const identifyData = [
               anonymousId,
               originalTimestamp,
             }),
+            metadata: generateMetadata(2),
           },
         ],
       },
@@ -203,9 +229,9 @@ export const identifyData = [
                   type: 'profile',
                   id: '01GW3PHVY0MTCDGS0A1612HARX',
                   attributes: {
-                    ...commonOutputUserProps,
+                    ...commonOutputUserProps2,
                     properties: {
-                      ...commonOutputUserProps.properties,
+                      ...commonOutputUserProps2.properties,
                       'friend.age': 25,
                       'friend.names.first': 'Alice',
                       'friend.names.last': 'Smith',
@@ -215,6 +241,7 @@ export const identifyData = [
               },
             }),
             statusCode: 200,
+            metadata: generateMetadata(2),
           },
           {
             output: transformResultBuilder({
@@ -230,6 +257,7 @@ export const identifyData = [
               },
             }),
             statusCode: 200,
+            metadata: generateMetadata(2),
           },
         ],
       },
@@ -249,24 +277,23 @@ export const identifyData = [
       request: {
         body: [
           {
-            destination: {
-              Config: {
-                publicApiKey: 'dummyPublicApiKey',
-                privateApiKey: 'dummyPrivateApiKeyforfailure',
-              },
-            },
+            destination: overrideDestination(destination, {
+              publicApiKey: 'dummyPublicApiKey',
+              privateApiKey: 'dummyPrivateApiKeyforfailure',
+            }),
             message: generateSimplifiedIdentifyPayload({
               sentAt,
               userId,
               context: {
                 traits: {
-                  ...commonTraits,
+                  ...commonTraits2,
                   email: 'test3@rudderstack.com',
                 },
               },
               anonymousId,
               originalTimestamp,
             }),
+            metadata: generateMetadata(3),
           },
         ],
       },
@@ -285,8 +312,11 @@ export const identifyData = [
               feature: 'processor',
               implementation: 'native',
               module: 'destination',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
             },
             statusCode: 500,
+            metadata: generateMetadata(3),
           },
         ],
       },
@@ -312,13 +342,14 @@ export const identifyData = [
               userId,
               context: {
                 traits: {
-                  ...commonTraits,
+                  ...commonTraits2,
                   properties: { ...commonTraits.properties, subscribe: false },
                 },
               },
               anonymousId,
               originalTimestamp,
             }),
+            metadata: generateMetadata(4),
           },
         ],
       },
@@ -335,13 +366,14 @@ export const identifyData = [
               JSON: {
                 data: {
                   type: 'profile',
-                  attributes: commonOutputUserProps,
+                  attributes: commonOutputUserProps2,
                   id: '01GW3PHVY0MTCDGS0A1612HARX',
                 },
               },
               userId: '',
             }),
             statusCode: 200,
+            metadata: generateMetadata(4),
           },
         ],
       },
@@ -366,11 +398,12 @@ export const identifyData = [
               sentAt,
               userId,
               context: {
-                traits: commonTraits,
+                traits: commonTraits2,
               },
               anonymousId,
               originalTimestamp,
             }),
+            metadata: generateMetadata(5),
           },
         ],
       },
@@ -389,9 +422,9 @@ export const identifyData = [
                 data: {
                   type: 'profile',
                   attributes: removeUndefinedAndNullValues({
-                    ...commonOutputUserProps,
+                    ...commonOutputUserProps2,
                     properties: {
-                      ...commonOutputUserProps.properties,
+                      ...commonOutputUserProps2.properties,
                       _id: userId,
                     },
                     // remove external_id from the payload
@@ -402,6 +435,7 @@ export const identifyData = [
               },
             }),
             statusCode: 200,
+            metadata: generateMetadata(5),
           },
           {
             output: transformResultBuilder({
@@ -417,6 +451,7 @@ export const identifyData = [
               },
             }),
             statusCode: 200,
+            metadata: generateMetadata(5),
           },
         ],
       },
@@ -450,6 +485,7 @@ export const identifyData = [
               anonymousId,
               originalTimestamp,
             }),
+            metadata: generateMetadata(6),
           },
         ],
       },
@@ -476,6 +512,7 @@ export const identifyData = [
               },
             }),
             statusCode: 200,
+            metadata: generateMetadata(6),
           },
           {
             output: transformResultBuilder({
@@ -491,6 +528,7 @@ export const identifyData = [
               },
             }),
             statusCode: 200,
+            metadata: generateMetadata(6),
           },
         ],
       },
@@ -516,7 +554,7 @@ export const identifyData = [
               userId,
               context: {
                 traits: removeUndefinedAndNullValues({
-                  ...commonTraits,
+                  ...commonTraits2,
                   email: undefined,
                   phone: undefined,
                 }),
@@ -524,6 +562,7 @@ export const identifyData = [
               anonymousId,
               originalTimestamp,
             }),
+            metadata: generateMetadata(7),
           },
         ],
       },
@@ -541,8 +580,11 @@ export const identifyData = [
               feature: 'processor',
               implementation: 'native',
               module: 'destination',
+              destinationId: 'default-destinationId',
+              workspaceId: 'default-workspaceId',
             },
             statusCode: 400,
+            metadata: generateMetadata(7),
           },
         ],
       },

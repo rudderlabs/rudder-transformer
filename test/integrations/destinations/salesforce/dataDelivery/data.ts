@@ -1,7 +1,18 @@
 import { AxiosError } from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import { testScenariosForV1API } from './business';
+import { otherSalesforceScenariosV1 } from './other';
 
-export const data = [
+const legacyDataValue = {
+  Email: 'danis.archurav@sbermarket.ru',
+  Company: 'itus.ru',
+  LastName: 'Danis',
+  FirstName: 'Archurav',
+  LeadSource: 'App Signup',
+  account_type__c: 'free_trial',
+};
+
+const legacyTests = [
   {
     name: 'salesforce',
     description: 'Test 0',
@@ -24,14 +35,7 @@ export const data = [
           body: {
             XML: {},
             FORM: {},
-            JSON: {
-              Email: 'denis.kornilov@sbermarket.ru',
-              Company: 'sbermarket.ru',
-              LastName: 'Корнилов',
-              FirstName: 'Денис',
-              LeadSource: 'App Signup',
-              account_type__c: 'free_trial',
-            },
+            JSON: legacyDataValue,
             JSON_ARRAY: {},
           },
           metadata: {
@@ -58,11 +62,6 @@ export const data = [
                 statusText: 'No Content',
               },
               status: 204,
-              rudderJobMetadata: {
-                destInfo: {
-                  authKey: '2HezPl1w11opbFSxnLDEgZ7kWTf',
-                },
-              },
             },
           },
         },
@@ -91,14 +90,7 @@ export const data = [
           body: {
             XML: {},
             FORM: {},
-            JSON: {
-              Email: 'denis.kornilov@sbermarket.ru',
-              Company: 'sbermarket.ru',
-              LastName: 'Корнилов',
-              FirstName: 'Денис',
-              LeadSource: 'App Signup',
-              account_type__c: 'free_trial',
-            },
+            JSON: legacyDataValue,
             JSON_ARRAY: {},
           },
           metadata: {
@@ -128,11 +120,6 @@ export const data = [
                   errorCode: 'INVALID_SESSION_ID',
                 },
               ],
-              rudderJobMetadata: {
-                destInfo: {
-                  authKey: '2HezPl1w11opbFSxnLDEgZ7kWTf',
-                },
-              },
               status: 401,
             },
             statTags: {
@@ -172,14 +159,7 @@ export const data = [
           body: {
             XML: {},
             FORM: {},
-            JSON: {
-              Email: 'denis.kornilov@sbermarket.ru',
-              Company: 'sbermarket.ru',
-              LastName: 'Корнилов',
-              FirstName: 'Денис',
-              LeadSource: 'App Signup',
-              account_type__c: 'free_trial',
-            },
+            JSON: legacyDataValue,
             JSON_ARRAY: {},
           },
           metadata: {
@@ -210,11 +190,6 @@ export const data = [
                 },
               ],
               status: 401,
-              rudderJobMetadata: {
-                destInfo: {
-                  authKey: '2HezPl1w11opbFSxnLDEgZ7kWTf',
-                },
-              },
             },
             statTags: {
               destType: 'SALESFORCE',
@@ -253,14 +228,7 @@ export const data = [
           body: {
             XML: {},
             FORM: {},
-            JSON: {
-              Email: 'denis.kornilov@sbermarket.ru',
-              Company: 'sbermarket.ru',
-              LastName: 'Корнилов',
-              FirstName: 'Денис',
-              LeadSource: 'App Signup',
-              account_type__c: 'free_trial',
-            },
+            JSON: legacyDataValue,
             JSON_ARRAY: {},
           },
           metadata: {
@@ -291,11 +259,6 @@ export const data = [
                 },
               ],
               status: 403,
-              rudderJobMetadata: {
-                destInfo: {
-                  authKey: '2HezPl1w11opbFSxnLDEgZ7kWTf',
-                },
-              },
             },
             statTags: {
               destType: 'SALESFORCE',
@@ -334,14 +297,7 @@ export const data = [
           body: {
             XML: {},
             FORM: {},
-            JSON: {
-              Email: 'denis.kornilov@sbermarket.ru',
-              Company: 'sbermarket.ru',
-              LastName: 'Корнилов',
-              FirstName: 'Денис',
-              LeadSource: 'App Signup',
-              account_type__c: 'free_trial',
-            },
+            JSON: legacyDataValue,
             JSON_ARRAY: {},
           },
           metadata: {
@@ -372,11 +328,6 @@ export const data = [
                 },
               ],
               status: 503,
-              rudderJobMetadata: {
-                destInfo: {
-                  authKey: '2HezPl1w11opbFSxnLDEgZ7kWTf',
-                },
-              },
             },
             statTags: {
               destType: 'SALESFORCE',
@@ -415,14 +366,7 @@ export const data = [
           body: {
             XML: {},
             FORM: {},
-            JSON: {
-              Email: 'denis.kornilov@sbermarket.ru',
-              Company: 'sbermarket.ru',
-              LastName: 'Корнилов',
-              FirstName: 'Денис',
-              LeadSource: 'App Signup',
-              account_type__c: 'free_trial',
-            },
+            JSON: legacyDataValue,
             JSON_ARRAY: {},
           },
           metadata: {
@@ -451,11 +395,6 @@ export const data = [
                 error_description: 'authentication failure',
               },
               status: 400,
-              rudderJobMetadata: {
-                destInfo: {
-                  authKey: '2HezPl1w11opbFSxnLDEgZ7kWTf',
-                },
-              },
             },
             statTags: {
               destType: 'SALESFORCE',
@@ -494,14 +433,7 @@ export const data = [
           body: {
             XML: {},
             FORM: {},
-            JSON: {
-              Email: 'denis.kornilov@sbermarket.ru',
-              Company: 'sbermarket.ru',
-              LastName: 'Корнилов',
-              FirstName: 'Денис',
-              LeadSource: 'App Signup',
-              account_type__c: 'free_trial',
-            },
+            JSON: legacyDataValue,
             JSON_ARRAY: {},
           },
           metadata: {
@@ -525,11 +457,6 @@ export const data = [
               response: {
                 errorCode: 'SERVER_UNAVAILABLE',
                 message: 'Server Unavailable',
-              },
-              rudderJobMetadata: {
-                destInfo: {
-                  authKey: '2HezPl1w11opbFSxnLDEgZ7kWTf',
-                },
               },
               status: 503,
             },
@@ -619,11 +546,6 @@ export const data = [
                 ],
               },
               status: 200,
-              rudderJobMetadata: {
-                destInfo: {
-                  authKey: '2HezPl1w11opbFSxnLDEgZ7kWTf',
-                },
-              },
             },
           },
         },
@@ -685,11 +607,6 @@ export const data = [
             destinationResponse: {
               response: '[ECONNABORTED] :: Connection aborted',
               status: 500,
-              rudderJobMetadata: {
-                destInfo: {
-                  authKey: '2HezPl1w11opbFSxnLDEgZ7kWTf',
-                },
-              },
             },
             statTags: {
               destType: 'SALESFORCE',
@@ -783,11 +700,6 @@ export const data = [
             destinationResponse: {
               response: '[EAI_AGAIN] :: Temporary failure in name resolution',
               status: 500,
-              rudderJobMetadata: {
-                destInfo: {
-                  authKey: '2HezPl1w11opbFSxnLDEgZ7kWTf',
-                },
-              },
             },
             statTags: {
               destType: 'SALESFORCE',
@@ -831,3 +743,4 @@ export const data = [
     },
   },
 ];
+export const data = [...legacyTests, ...testScenariosForV1API, ...otherSalesforceScenariosV1];

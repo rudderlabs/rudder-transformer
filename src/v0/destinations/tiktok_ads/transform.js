@@ -17,7 +17,6 @@ const {
   getDestinationExternalID,
   getFieldValueFromMessage,
   getHashFromArrayWithDuplicate,
-  checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
   batchMultiplexedEvents,
   validateEventName,
@@ -136,6 +135,7 @@ const trackResponseBuilder = async (message, { Config }) => {
   if (!event) {
     throw new InstrumentationError('Event name is required');
   }
+
   const standardEventsMap = getHashFromArrayWithDuplicate(eventsToStandard);
 
   if (!sendCustomEvents && eventNameMapping[event] === undefined && !standardEventsMap[event]) {
@@ -247,10 +247,6 @@ const processRouterDest = async (inputs, reqMetadata) => {
   const { Config } = destination;
   if (Config?.version === 'v2') {
     return processRouterDestV2(inputs, reqMetadata);
-  }
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
   }
 
   const trackResponseList = []; // list containing single track event in batched format

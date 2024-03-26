@@ -7029,4 +7029,49 @@ export const data = [
       },
     },
   },
+  {
+    name: 'tiktok_ads',
+    description: 'Testing if the event name provided as a string or not',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'track',
+              event: 123,
+            },
+            destination: {
+              Config: {
+                accessToken: 'dummyAccessToken',
+                pixelCode: '{{PIXEL-CODE}}',
+                hashUserProperties: false,
+              },
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            statusCode: 400,
+            error: 'Either event name is not present or it is not a string',
+            statTags: {
+              errorCategory: 'dataValidation',
+              errorType: 'instrumentation',
+              destType: 'TIKTOK_ADS',
+              module: 'destination',
+              implementation: 'native',
+              feature: 'processor',
+            },
+          },
+        ],
+      },
+    },
+  },
 ];

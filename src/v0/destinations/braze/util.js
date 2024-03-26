@@ -163,6 +163,9 @@ const BrazeDedupUtility = {
           {
             destType: 'braze',
             feature: 'transformation',
+            requestMethod: 'POST',
+            module: 'router',
+            endpointPath: '/users/export/ids',
           },
         );
         stats.counter('braze_lookup_failure_count', 1, {

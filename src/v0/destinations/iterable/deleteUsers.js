@@ -36,6 +36,9 @@ const userDeletionHandler = async (userAttributes, config) => {
       const resp = await httpDELETE(url, requestOptions, {
         destType: 'iterable',
         feature: 'deleteUsers',
+        endpointPath: '/users/byUserId/uId',
+        requestMethod: 'DELETE',
+        module: 'deletion',
       });
       const handledDelResponse = processAxiosResponse(resp);
       if (!isHttpStatusSuccess(handledDelResponse.status) && handledDelResponse.status !== 404) {
@@ -46,6 +49,7 @@ const userDeletionHandler = async (userAttributes, config) => {
             handledDelResponse.status,
             {
               [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(handledDelResponse.status),
+              [tags.TAG_NAMES.STATUS]: handledDelResponse.status,
             },
             handledDelResponse,
           );

@@ -1,9 +1,13 @@
+import { Destination } from '../../../../src/types';
+
 const destType = 'the_trade_desk';
 const destTypeInUpperCase = 'THE_TRADE_DESK';
 const advertiserId = 'test-advertiser-id';
 const dataProviderId = 'rudderstack';
 const segmentName = 'test-segment';
-const sampleDestination = {
+const firstPartyDataEndpoint = 'https://sin-data.adsrvr.org/data/advertiser';
+
+const sampleDestination: Destination = {
   Config: {
     advertiserId,
     advertiserSecretKey: 'test-advertiser-secret-key',
@@ -11,7 +15,17 @@ const sampleDestination = {
     ttlInDays: 30,
     audienceId: segmentName,
   },
-  DestinationDefinition: { Config: { cdkV2Enabled: true } },
+  DestinationDefinition: {
+    Config: { cdkV2Enabled: true },
+    ID: '123',
+    Name: 'TRADEDESK',
+    DisplayName: 'Trade Desk',
+  },
+  ID: '345',
+  Name: 'Test',
+  Enabled: true,
+  WorkspaceID: '',
+  Transformations: [],
 };
 
 const sampleSource = {
@@ -33,6 +47,22 @@ const sampleContext = {
   sources: sampleSource,
 };
 
+const proxyV1AbortableErrorStatTags = {
+  destType: destTypeInUpperCase,
+  destinationId: 'default-destinationId',
+  errorCategory: 'network',
+  errorType: 'aborted',
+  feature: 'dataDelivery',
+  implementation: 'native',
+  module: 'destination',
+  workspaceId: 'default-workspaceId',
+};
+
+const { errorType: _, ...proxyV1PlatformErrorStatTags } = proxyV1AbortableErrorStatTags;
+proxyV1PlatformErrorStatTags.errorCategory = 'platform';
+
+const proxyV1RetryableErrorStatTags = { ...proxyV1AbortableErrorStatTags, errorType: 'retryable' };
+
 export {
   destType,
   destTypeInUpperCase,
@@ -41,4 +71,8 @@ export {
   segmentName,
   sampleDestination,
   sampleContext,
+  proxyV1AbortableErrorStatTags,
+  proxyV1PlatformErrorStatTags,
+  proxyV1RetryableErrorStatTags,
+  firstPartyDataEndpoint,
 };

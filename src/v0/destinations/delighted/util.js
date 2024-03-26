@@ -61,7 +61,13 @@ const userValidity = async (channel, Config, userId) => {
         },
         params: paramsdata,
       },
-      { destType: 'delighted', feature: 'transformation' },
+      {
+        destType: 'delighted',
+        feature: 'transformation',
+        requestMethod: 'GET',
+        endpointPath: '/people.json',
+        module: 'router',
+      },
     );
     if (response && response.data && response.status === 200 && Array.isArray(response.data)) {
       return response.data.length > 0;

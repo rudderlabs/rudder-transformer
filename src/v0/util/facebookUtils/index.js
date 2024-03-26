@@ -298,4 +298,5 @@ module.exports = {
   transformedPayloadData,
   formingFinalResponse,
   fetchUserData,
+  deduceFbcParam,
 };

@@ -13,17 +13,19 @@ function init() {
 
   switch (statsClientType) {
     case 'statsd':
-      logger.info("setting up statsd client")
+      logger.info('setting up statsd client');
       statsClient = new statsd.Statsd();
       break;
 
     case 'prometheus':
-      logger.info("setting up prometheus client")
+      logger.info('setting up prometheus client');
       statsClient = new prometheus.Prometheus();
       break;
 
     default:
-      logger.error(`invalid stats client type: ${statsClientType}, supported values are 'statsd' and 'prometheues'`)
+      logger.error(
+        `invalid stats client type: ${statsClientType}, supported values are 'statsd' and 'prometheues'`,
+      );
   }
 }
 

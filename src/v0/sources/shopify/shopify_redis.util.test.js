@@ -1,5 +1,9 @@
 const { getAnonymousIdAndSessionId, checkAndUpdateCartItems } = require('./util');
 jest.mock('ioredis', () => require('../../../../test/__mocks__/redis'));
+const metricMetadata = {
+  writeKey: 'dummyKey',
+  source: 'src',
+};
 describe('Shopify Utils Test', () => {
   describe('Check for valid cart update event test cases', () => {
     it('Event containing token and nothing is retreived from redis and less than req. time difference between created_at and uadated_at', async () => {
@@ -14,7 +18,7 @@ describe('Shopify Utils Test', () => {
         created_at: '2023-02-10T12:05:04.402Z',
       };
       const expectedOutput = false;
-      const output = await checkAndUpdateCartItems(input);
+      const output = await checkAndUpdateCartItems(input, null, metricMetadata);
       expect(output).toEqual(expectedOutput);
     });
     it('Event containing token and nothing is retreived from redis', async () => {
@@ -28,7 +32,7 @@ describe('Shopify Utils Test', () => {
         ],
       };
       const expectedOutput = true;
-      const output = await checkAndUpdateCartItems(input);
+      const output = await checkAndUpdateCartItems(input, null, metricMetadata);
       expect(output).toEqual(expectedOutput);
     });
 
@@ -44,7 +48,7 @@ describe('Shopify Utils Test', () => {
       };
 
       const expectedOutput = true;
-      const output = await checkAndUpdateCartItems(input);
+      const output = await checkAndUpdateCartItems(input, null, metricMetadata);
       expect(output).toEqual(expectedOutput);
     });
 
@@ -60,7 +64,7 @@ describe('Shopify Utils Test', () => {
       };
 
       const expectedOutput = false;
-      const output = await checkAndUpdateCartItems(input);
+      const output = await checkAndUpdateCartItems(input, null, metricMetadata);
       expect(output).toEqual(expectedOutput);
     });
 
@@ -76,7 +80,7 @@ describe('Shopify Utils Test', () => {
       };
 
       const expectedOutput = true;
-      const output = await checkAndUpdateCartItems(input);
+      const output = await checkAndUpdateCartItems(input, null, metricMetadata);
       expect(output).toEqual(expectedOutput);
     });
   });

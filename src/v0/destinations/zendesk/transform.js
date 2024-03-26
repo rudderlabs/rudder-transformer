@@ -36,7 +36,7 @@ const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const CONTEXT_TRAITS_KEY_PATH = 'context.traits';
-
+const endpointPath = '/users/search.json';
 function responseBuilder(message, headers, payload, endpoint) {
   const response = defaultRequestConfig();
 
@@ -102,6 +102,9 @@ const payloadBuilderforUpdatingEmail = async (userId, headers, userEmail, baseEn
     const res = await httpGET(url, config, {
       destType: 'zendesk',
       feature: 'transformation',
+      endpointPath: 'users/userId/identities',
+      requestMethod: 'POST',
+      module: 'router',
     });
     if (res?.response?.data?.count > 0) {
       const { identities } = res.response.data;
@@ -147,6 +150,9 @@ async function createUserFields(url, config, newFields, fieldJson) {
         const response = await myAxios.post(url, fieldData, config, {
           destType: 'zendesk',
           feature: 'transformation',
+          endpointPath: '/users/userId/identities',
+          requestMethod: 'POST',
+          module: 'router',
         });
         if (response.status !== 201) {
           logger.debug(`${NAME}:: Failed to create User Field : `, field);
@@ -176,6 +182,8 @@ async function checkAndCreateUserFields(
     const response = await myAxios.get(url, config, {
       destType: 'zendesk',
       feature: 'transformation',
+      requestMethod: 'POST',
+      module: 'router',
     });
     const fields = get(response.data, fieldJson);
     if (response.data && fields) {
@@ -253,6 +261,9 @@ const getUserIdByExternalId = async (message, headers, baseEndpoint) => {
     const resp = await httpGET(url, config, {
       destType: 'zendesk',
       feature: 'transformation',
+      endpointPath,
+      requestMethod: 'GET',
+      module: 'router',
     });
 
     if (resp?.response?.data?.count > 0) {
@@ -283,6 +294,9 @@ async function getUserId(message, headers, baseEndpoint, type) {
     const resp = await myAxios.get(url, config, {
       destType: 'zendesk',
       feature: 'transformation',
+      endpointPath,
+      requestMethod: 'GET',
+      module: 'router',
     });
     if (!resp || !resp.data || resp.data.count === 0) {
       logger.debug(`${NAME}:: User not found`);
@@ -307,6 +321,9 @@ async function isUserAlreadyAssociated(userId, orgId, headers, baseEndpoint) {
     const response = await myAxios.get(url, config, {
       destType: 'zendesk',
       feature: 'transformation',
+      endpointPath: '/users/userId/organization_memberships.json',
+      requestMethod: 'GET',
+      module: 'router',
     });
     if (response?.data?.organization_memberships?.[0]?.organization_id === orgId) {
       return true;
@@ -339,6 +356,9 @@ async function createUser(message, headers, destinationConfig, baseEndpoint, typ
     const resp = await myAxios.post(url, payload, config, {
       destType: 'zendesk',
       feature: 'transformation',
+      endpointPath: '/users/create_or_update.json',
+      requestMethod: 'POST',
+      module: 'router',
     });
 
     if (!resp.data || !resp.data.user || !resp.data.user.id) {
@@ -420,6 +440,9 @@ async function createOrganization(message, category, headers, destinationConfig,
     const resp = await myAxios.post(url, payload, config, {
       destType: 'zendesk',
       feature: 'transformation',
+      endpointPath: '/organizations/create_or_update.json',
+      requestMethod: 'POST',
+      module: 'router',
     });
 
     if (!resp.data || !resp.data.organization) {
@@ -488,6 +511,9 @@ async function processIdentify(message, destinationConfig, headers, baseEndpoint
         const response = await myAxios.get(membershipUrl, config, {
           destType: 'zendesk',
           feature: 'transformation',
+          endpointPath: '/users/userId/organization_memberships.json',
+          requestMethod: 'GET',
+          module: 'router',
         });
         if (
           response.data &&
@@ -535,6 +561,9 @@ async function processTrack(message, destinationConfig, headers, baseEndpoint) {
     const userResponse = await myAxios.get(url, config, {
       destType: 'zendesk',
       feature: 'transformation',
+      endpointPath,
+      requestMethod: 'GET',
+      module: 'router',
     });
     if (!get(userResponse, 'data.users.0.id') || userResponse.data.count === 0) {
       const { zendeskUserId, email } = await createUser(

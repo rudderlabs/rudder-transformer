@@ -14,6 +14,11 @@ const {
 } = require('../../../cdk/v2/destinations/linkedin_ads/utils');
 
 // eslint-disable-next-line consistent-return
+// ref :
+// 1) https://learn.microsoft.com/en-us/linkedin/shared/api-guide/concepts/error-handling
+// 2) https://learn.microsoft.com/en-us/linkedin/marketing/integrations/ads-reporting/conversions-api?view=li-lms-2024-02&tabs=http#api-error-details
+// statusCode : 422 we have found by trial and error, not documented in their doc
+
 const responseHandler = (responseParams) => {
   const { destinationResponse, rudderJobMetadata } = responseParams;
   const message = `[LINKEDIN_CONVERSION_API Response V1 Handler] - Request Processed Successfully`;

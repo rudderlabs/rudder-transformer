@@ -69,6 +69,17 @@ const commonUserPropertiesWithProductWithoutPrice = {
   ],
 };
 
+const commonStats = {
+  destinationId: 'default-destinationId',
+  errorCategory: 'dataValidation',
+  errorType: 'instrumentation',
+  implementation: 'cdkV2',
+  destType: 'LINKEDIN_ADS',
+  module: 'destination',
+  feature: 'processor',
+  workspaceId: 'default-workspaceId',
+};
+
 const commonTimestamp = new Date('2023-10-14');
 const olderTimestamp = new Date('2023-07-13');
 
@@ -164,16 +175,7 @@ export const validationTestData: ProcessorTestData[] = [
             error:
               '[LinkedIn Conversion API] no matching conversion rule found for random event. Please provide a conversion rule. Aborting: Workflow: procWorkflow, Step: deduceConversionEventRules, ChildStep: undefined, OriginalError: [LinkedIn Conversion API] no matching conversion rule found for random event. Please provide a conversion rule. Aborting',
             metadata: generateMetadata(1),
-            statTags: {
-              destinationId: 'default-destinationId',
-              errorCategory: 'dataValidation',
-              errorType: 'configuration',
-              implementation: 'cdkV2',
-              destType: 'LINKEDIN_ADS',
-              module: 'destination',
-              feature: 'processor',
-              workspaceId: 'default-workspaceId',
-            },
+            statTags: { ...commonStats, errorType: 'configuration' },
             statusCode: 400,
           },
         ],
@@ -224,16 +226,7 @@ export const validationTestData: ProcessorTestData[] = [
             error:
               'message type random is not supported: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: message type random is not supported',
             metadata: generateMetadata(1),
-            statTags: {
-              destinationId: 'default-destinationId',
-              errorCategory: 'dataValidation',
-              errorType: 'instrumentation',
-              implementation: 'cdkV2',
-              destType: 'LINKEDIN_ADS',
-              module: 'destination',
-              feature: 'processor',
-              workspaceId: 'default-workspaceId',
-            },
+            statTags: commonStats,
             statusCode: 400,
           },
         ],
@@ -334,16 +327,7 @@ export const validationTestData: ProcessorTestData[] = [
             error:
               '[LinkedIn Conversion API]: Cannot map price for event random event. Aborting: Workflow: procWorkflow, Step: commonFields, ChildStep: undefined, OriginalError: [LinkedIn Conversion API]: Cannot map price for event random event. Aborting',
             metadata: generateMetadata(1),
-            statTags: {
-              destinationId: 'default-destinationId',
-              errorCategory: 'dataValidation',
-              errorType: 'instrumentation',
-              implementation: 'cdkV2',
-              destType: 'LINKEDIN_ADS',
-              module: 'destination',
-              feature: 'processor',
-              workspaceId: 'default-workspaceId',
-            },
+            statTags: commonStats,
             statusCode: 400,
           },
         ],

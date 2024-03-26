@@ -24,7 +24,8 @@
   },
   {
     "destKey": "countryCode",
-    "sourceKeys": "context.traits.countryCode",
+    "sourceKeys": "countryCode",
+    "sourceFromGenericMap": true,
     "required": false
   }
 ]

@@ -106,6 +106,17 @@ const commonPropertiesWithProductsPriceNotPresentInAll = {
 
 const commonTimestamp = new Date('2023-10-14');
 
+const commonStatTags = {
+  destinationId: 'default-destinationId',
+  errorCategory: 'dataValidation',
+  errorType: 'instrumentation',
+  implementation: 'cdkV2',
+  destType: 'LINKEDIN_ADS',
+  module: 'destination',
+  feature: 'processor',
+  workspaceId: 'default-workspaceId',
+};
+
 export const trackTestData: ProcessorTestData[] = [
   {
     id: 'linkedin_ads-track-test-1',
@@ -428,16 +439,7 @@ export const trackTestData: ProcessorTestData[] = [
             error:
               '[LinkedIn Conversion API] no matching user id found. Please provide at least one of the following: email, linkedinFirstPartyAdsTrackingUUID, acxiomId, oracleMoatId: Workflow: procWorkflow, Step: commonFields, ChildStep: undefined, OriginalError: [LinkedIn Conversion API] no matching user id found. Please provide at least one of the following: email, linkedinFirstPartyAdsTrackingUUID, acxiomId, oracleMoatId',
             metadata: generateMetadata(1),
-            statTags: {
-              destinationId: 'default-destinationId',
-              errorCategory: 'dataValidation',
-              errorType: 'instrumentation',
-              implementation: 'cdkV2',
-              destType: 'LINKEDIN_ADS',
-              module: 'destination',
-              feature: 'processor',
-              workspaceId: 'default-workspaceId',
-            },
+            statTags: commonStatTags,
             statusCode: 400,
           },
         ],

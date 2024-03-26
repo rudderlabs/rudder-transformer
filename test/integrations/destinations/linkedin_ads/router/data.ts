@@ -3,6 +3,30 @@ export const mockFns = (_) => {
   jest.useFakeTimers().setSystemTime(new Date('2023-10-15'));
 };
 
+const config = {
+  hashData: true,
+  deduplicationKey: 'properties.eventId',
+  conversionMapping: [
+    {
+      from: 'ABC Searched',
+      to: '1234567',
+    },
+    {
+      from: 'spin_result',
+      to: '23456',
+    },
+    {
+      from: 'ABC Searched',
+      to: '34567',
+    },
+  ],
+  oneTrustCookieCategories: [
+    {
+      oneTrustCookieCategory: 'Marketing',
+    },
+  ],
+};
+
 const commonDestination = {
   ID: '12335',
   Name: 'sample-destination',
@@ -16,29 +40,7 @@ const commonDestination = {
   },
   WorkspaceID: '123',
   Transformations: [],
-  Config: {
-    hashData: true,
-    deduplicationKey: 'properties.eventId',
-    conversionMapping: [
-      {
-        from: 'ABC Searched',
-        to: '1234567',
-      },
-      {
-        from: 'spin_result',
-        to: '23456',
-      },
-      {
-        from: 'ABC Searched',
-        to: '34567',
-      },
-    ],
-    oneTrustCookieCategories: [
-      {
-        oneTrustCookieCategory: 'Marketing',
-      },
-    ],
-  },
+  Config: config,
   Enabled: true,
 };
 
@@ -299,29 +301,7 @@ export const data = [
                 },
                 WorkspaceID: '123',
                 Transformations: [],
-                Config: {
-                  hashData: true,
-                  deduplicationKey: 'properties.eventId',
-                  conversionMapping: [
-                    {
-                      from: 'ABC Searched',
-                      to: '1234567',
-                    },
-                    {
-                      from: 'spin_result',
-                      to: '23456',
-                    },
-                    {
-                      from: 'ABC Searched',
-                      to: '34567',
-                    },
-                  ],
-                  oneTrustCookieCategories: [
-                    {
-                      oneTrustCookieCategory: 'Marketing',
-                    },
-                  ],
-                },
+                Config: config,
                 Enabled: true,
               },
               batched: false,
@@ -472,44 +452,7 @@ export const data = [
               ],
               batched: true,
               statusCode: 200,
-              destination: {
-                ID: '12335',
-                Name: 'sample-destination',
-                DestinationDefinition: {
-                  ID: '123',
-                  Name: 'linkedin_ads',
-                  DisplayName: 'LinkedIn Ads',
-                  Config: {
-                    cdkV2Enabled: true,
-                  },
-                },
-                WorkspaceID: '123',
-                Transformations: [],
-                Config: {
-                  hashData: true,
-                  deduplicationKey: 'properties.eventId',
-                  conversionMapping: [
-                    {
-                      from: 'ABC Searched',
-                      to: '1234567',
-                    },
-                    {
-                      from: 'spin_result',
-                      to: '23456',
-                    },
-                    {
-                      from: 'ABC Searched',
-                      to: '34567',
-                    },
-                  ],
-                  oneTrustCookieCategories: [
-                    {
-                      oneTrustCookieCategory: 'Marketing',
-                    },
-                  ],
-                },
-                Enabled: true,
-              },
+              destination: commonDestination,
             },
           ],
         },

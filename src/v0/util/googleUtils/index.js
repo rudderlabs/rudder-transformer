@@ -83,6 +83,12 @@ const finaliseConsent = (consentConfigMap, eventLevelConsent = {}, destConfig = 
   return consentObj;
 };
 
+/**
+ * Populates the consent object based on the provided configuration and consent mapping.
+ * @param {*} consentConfigMap 
+ * @param {*} eventLevelConsent 
+ * @returns 
+ */
 const finaliseAnalyticsConsents = (consentConfigMap, eventLevelConsent = {}) => {
   const consentObj = {};
   // Iterate through each key in consentConfigMap to set the consent
@@ -92,12 +98,14 @@ const finaliseAnalyticsConsents = (consentConfigMap, eventLevelConsent = {}) => 
     // Set consent only if valid
     if (
       eventLevelConsent &&
-      eventLevelConsent.hasOwnProperty(consentKey) &&
-      GA4_ALLOWED_CONSENT_STATUS.includes(eventLevelConsent[consentKey])
+      eventLevelConsent.hasOwnProperty(configKey) &&
+      GA4_ALLOWED_CONSENT_STATUS.includes(eventLevelConsent[configKey])
     ) {
-      consentObj[consentKey] = eventLevelConsent[consentKey];
+      consentObj[consentKey] = eventLevelConsent[configKey];
     }
   });
+
+  return consentObj;
 };
 
 module.exports = {

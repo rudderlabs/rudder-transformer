@@ -7060,7 +7060,7 @@ export const data = [
         body: [
           {
             statusCode: 400,
-            error: 'Either event name is not present or it is not a string',
+            error: 'Event is a required field and should be a string',
             statTags: {
               errorCategory: 'dataValidation',
               errorType: 'instrumentation',

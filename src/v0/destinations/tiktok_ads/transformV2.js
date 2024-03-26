@@ -14,6 +14,7 @@ const {
   getDestinationExternalID,
   getHashFromArrayWithDuplicate,
   handleRtTfSingleEventError,
+  validateEventName,
 } = require('../../util');
 const { getContents, hashUserField } = require('./util');
 const config = require('./config');
@@ -59,7 +60,7 @@ const getTrackResponsePayload = (message, destConfig, event) => {
 
 const trackResponseBuilder = async (message, { Config }) => {
   const { eventsToStandard, sendCustomEvents, accessToken, pixelCode } = Config;
-
+  validateEventName(message.event);
   let event = message.event?.toLowerCase().trim();
   if (!event) {
     throw new InstrumentationError('Event name is required');

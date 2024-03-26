@@ -522,39 +522,6 @@ export const data = [
                 anonymousId: '1231241234123',
                 channel: 'mobile',
                 context: {
-                  app: {
-                    build: '1',
-                    name: 'AMTestProject',
-                    namespace: 'com.rudderstack.android.rudderstack.sampleAndroidApp',
-                    version: '1.0',
-                  },
-                  device: {
-                    id: '8d872292709c6fbe',
-                    manufacturer: 'Google',
-                    model: 'AOSP on IA Emulator',
-                    name: 'generic_x86_arm',
-                    type: 'android',
-                  },
-                  library: {
-                    name: 'com.rudderstack.android.sdk.core',
-                    version: '1.0.2',
-                  },
-                  locale: 'en-US',
-                  network: {
-                    carrier: 'Android',
-                    bluetooth: false,
-                    cellular: true,
-                    wifi: true,
-                  },
-                  os: {
-                    name: 'Android',
-                    version: '9',
-                  },
-                  screen: {
-                    density: 420,
-                    height: 1794,
-                    width: 1080,
-                  },
                   timezone: 'Asia/Kolkata',
                   traits: {
                     address: {
@@ -601,68 +568,6 @@ export const data = [
               message: {
                 anonymousId: '345345435',
                 channel: 'mobile',
-                context: {
-                  app: {
-                    build: '1',
-                    name: 'AMTestProject',
-                    namespace: 'com.rudderstack.android.rudderstack.sampleAndroidApp',
-                    version: '1.0',
-                  },
-                  device: {
-                    id: '8d872292709c6fbe',
-                    manufacturer: 'Google',
-                    model: 'AOSP on IA Emulator',
-                    name: 'generic_x86_arm',
-                    type: 'android',
-                  },
-                  library: {
-                    name: 'com.rudderstack.android.sdk.core',
-                    version: '1.0.2',
-                  },
-                  locale: 'en-US',
-                  network: {
-                    carrier: 'Android',
-                    bluetooth: false,
-                    cellular: true,
-                    wifi: true,
-                  },
-                  os: {
-                    name: 'Android',
-                    version: '9',
-                  },
-                  screen: {
-                    density: 420,
-                    height: 1794,
-                    width: 1080,
-                  },
-                  timezone: 'Asia/Kolkata',
-                  traits: {
-                    address: {
-                      city: 'Kolkata',
-                      country: 'India',
-                      postalcode: '700096',
-                      state: 'West bengal',
-                      street: 'Park Street',
-                    },
-                    age: '30',
-                    anonymousId: '8d872292709c6fbe',
-                    birthday: '2020-05-26',
-                    createdat: '18th March 2020',
-                    description: 'Premium User for 3 years',
-                    email: 'identify3@test.com',
-                    firstname: 'John',
-                    userId: 'sample_user_id',
-                    lastname: 'Sparrow',
-                    name: 'John Sparrow',
-                    id: 'sample_user_id',
-                    phone: '9876543210',
-                    username: 'john_sparrow',
-                    quantity: '5',
-                    price: '56.0',
-                  },
-                  userAgent:
-                    'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
-                },
                 event: 'identify',
                 integrations: {
                   All: true,
@@ -802,39 +707,6 @@ export const data = [
                     anonymousId: '1231241234123',
                     channel: 'mobile',
                     context: {
-                      app: {
-                        build: '1',
-                        name: 'AMTestProject',
-                        namespace: 'com.rudderstack.android.rudderstack.sampleAndroidApp',
-                        version: '1.0',
-                      },
-                      device: {
-                        id: '8d872292709c6fbe',
-                        manufacturer: 'Google',
-                        model: 'AOSP on IA Emulator',
-                        name: 'generic_x86_arm',
-                        type: 'android',
-                      },
-                      library: {
-                        name: 'com.rudderstack.android.sdk.core',
-                        version: '1.0.2',
-                      },
-                      locale: 'en-US',
-                      network: {
-                        carrier: 'Android',
-                        bluetooth: false,
-                        cellular: true,
-                        wifi: true,
-                      },
-                      os: {
-                        name: 'Android',
-                        version: '9',
-                      },
-                      screen: {
-                        density: 420,
-                        height: 1794,
-                        width: 1080,
-                      },
                       timezone: 'Asia/Kolkata',
                       traits: {
                         address: {
@@ -900,68 +772,6 @@ export const data = [
                   JSON: {
                     anonymousId: '345345435',
                     channel: 'mobile',
-                    context: {
-                      app: {
-                        build: '1',
-                        name: 'AMTestProject',
-                        namespace: 'com.rudderstack.android.rudderstack.sampleAndroidApp',
-                        version: '1.0',
-                      },
-                      device: {
-                        id: '8d872292709c6fbe',
-                        manufacturer: 'Google',
-                        model: 'AOSP on IA Emulator',
-                        name: 'generic_x86_arm',
-                        type: 'android',
-                      },
-                      library: {
-                        name: 'com.rudderstack.android.sdk.core',
-                        version: '1.0.2',
-                      },
-                      locale: 'en-US',
-                      network: {
-                        carrier: 'Android',
-                        bluetooth: false,
-                        cellular: true,
-                        wifi: true,
-                      },
-                      os: {
-                        name: 'Android',
-                        version: '9',
-                      },
-                      screen: {
-                        density: 420,
-                        height: 1794,
-                        width: 1080,
-                      },
-                      timezone: 'Asia/Kolkata',
-                      traits: {
-                        address: {
-                          city: 'Kolkata',
-                          country: 'India',
-                          postalcode: '700096',
-                          state: 'West bengal',
-                          street: 'Park Street',
-                        },
-                        age: '30',
-                        anonymousId: '8d872292709c6fbe',
-                        birthday: '2020-05-26',
-                        createdat: '18th March 2020',
-                        description: 'Premium User for 3 years',
-                        email: 'identify3@test.com',
-                        firstname: 'John',
-                        userId: 'sample_user_id',
-                        lastname: 'Sparrow',
-                        name: 'John Sparrow',
-                        id: 'sample_user_id',
-                        phone: '9876543210',
-                        username: 'john_sparrow',
-                        quantity: '5',
-                        price: '56.0',
-                      },
-                      userAgent:
-                        'Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)',
-                    },
                     event: 'identify',
                     integrations: {
                       All: true,

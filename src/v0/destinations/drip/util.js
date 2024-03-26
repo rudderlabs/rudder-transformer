@@ -93,7 +93,7 @@ const createList = (productList) => {
       if (itemPayload.name && isDefinedAndNotNull(itemPayload.price)) {
         itemList.push(itemPayload);
       } else {
-        logger.error(`Item at index ${index} dropped. Name and price is required`);
+        logger.errorw(`Item at index ${index} dropped. Name and price is required`);
       }
     });
   }

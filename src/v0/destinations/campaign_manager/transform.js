@@ -1,6 +1,6 @@
+const logger = require('@rudderstack/integrations-lib/build/structured-logger');
+
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
-import logger from "@rudderstack/integrations-lib/build/structured-logger";
-import { MiscService } from '../../../services/misc';
 const lodash = require('lodash');
 const { EventType } = require('../../../constants');
 const {

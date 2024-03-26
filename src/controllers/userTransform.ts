@@ -1,7 +1,7 @@
 import { Context } from 'koa';
+import logger from '@rudderstack/integrations-lib/build/structured-logger';
 import { ProcessorTransformationRequest, UserTransformationServiceResponse } from '../types/index';
 import { UserTransformService } from '../services/userTransform';
-import logger from '../logger';
 import {
   setupUserTransformHandler,
   extractLibraries,
@@ -13,7 +13,7 @@ export class UserTransformController {
   public static async transform(ctx: Context) {
     logger.debug(
       '(User transform - router:/customTransform ):: Request to transformer',
-      JSON.stringify(ctx.request.body),
+      ctx.request.body,
     );
     const events = ctx.request.body as ProcessorTransformationRequest[];
     const processedRespone: UserTransformationServiceResponse =
@@ -22,7 +22,7 @@ export class UserTransformController {
     ControllerUtility.postProcess(ctx, processedRespone.retryStatus);
     logger.debug(
       '(User transform - router:/customTransform ):: Response from transformer',
-      JSON.stringify(ctx.response.body),
+      ctx.response.body,
     );
     return ctx;
   }
@@ -30,7 +30,7 @@ export class UserTransformController {
   public static async testTransform(ctx: Context) {
     logger.debug(
       '(User transform - router:/transformation/test ):: Request to transformer',
-      JSON.stringify(ctx.request.body),
+      ctx.request.body,
     );
     const { events, trRevCode, libraryVersionIDs = [] } = ctx.request.body as any;
     const response = await UserTransformService.testTransformRoutine(
@@ -42,7 +42,7 @@ export class UserTransformController {
     ControllerUtility.postProcess(ctx, response.status);
     logger.debug(
       '(User transform - router:/transformation/test ):: Response from transformer',
-      JSON.stringify(ctx.response.body),
+      ctx.response.body,
     );
     return ctx;
   }
@@ -50,7 +50,7 @@ export class UserTransformController {
   public static async testTransformLibrary(ctx: Context) {
     logger.debug(
       '(User transform - router:/transformationLibrary/test ):: Request to transformer',
-      JSON.stringify(ctx.request.body),
+      ctx.request.body,
     );
     try {
       const { code, language = 'javascript' } = ctx.request.body as any;
@@ -65,7 +65,7 @@ export class UserTransformController {
     }
     logger.debug(
       '(User transform - router:/transformationLibrary/test ):: Response from transformer',
-      JSON.stringify(ctx.response.body),
+      ctx.response.body,
     );
     return ctx;
   }
@@ -73,7 +73,7 @@ export class UserTransformController {
   public static async testTransformSethandle(ctx: Context) {
     logger.debug(
       '(User transform - router:/transformation/sethandle ):: Request to transformer',
-      JSON.stringify(ctx.request.body),
+      ctx.request.body,
     );
     try {
       const { trRevCode, libraryVersionIDs = [] } = ctx.request.body as any;
@@ -95,7 +95,7 @@ export class UserTransformController {
     }
     logger.debug(
       '(User transform - router:/transformation/sethandle ):: Response from transformer',
-      JSON.stringify(ctx.request.body),
+      ctx.request.body,
     );
     return ctx;
   }
@@ -103,7 +103,7 @@ export class UserTransformController {
   public static async extractLibhandle(ctx: Context) {
     logger.debug(
       '(User transform - router:/extractLibs ):: Request to transformer',
-      JSON.stringify(ctx.request.body),
+      ctx.request.body,
     );
     try {
       const {
@@ -133,7 +133,7 @@ export class UserTransformController {
     }
     logger.debug(
       '(User transform - router:/extractLibs ):: Response from transformer',
-      JSON.stringify(ctx.request.body),
+      ctx.request.body,
     );
     return ctx;
   }

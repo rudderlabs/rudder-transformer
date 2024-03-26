@@ -822,14 +822,14 @@ function formatValues(formattedVal, formattingType, typeFormat, integrationsObj)
     IsBoolean: () => {
       curFormattedVal = true;
       if (!(typeof formattedVal === 'boolean')) {
-        logger.debug('Boolean value missing, so dropping it');
+        logger.debugw('Boolean value missing, so dropping it');
         curFormattedVal = false;
       }
     },
     IsArray: () => {
       curFormattedVal = formattedVal;
       if (!Array.isArray(formattedVal)) {
-        logger.debug('Array value missing, so dropping it');
+        logger.debugw('Array value missing, so dropping it');
         curFormattedVal = undefined;
       }
     },
@@ -1360,7 +1360,7 @@ function extractCustomFields(message, payload, keys, exclusionFields) {
       }
     });
   } else {
-    logger.debug('unable to parse keys');
+    logger.debugw('unable to parse keys');
   }
 
   return payload;
@@ -1500,7 +1500,7 @@ const getErrorStatusCode = (error, defaultStatusCode = HTTP_STATUS_CODES.INTERNA
       .find((stCode) => lodash.isNumber(stCode));
     return errStCode || defaultStCode;
   } catch (err) {
-    logger.error('Failed in getErrorStatusCode', err);
+    logger.errorw('Failed in getErrorStatusCode', err);
     return defaultStatusCode;
   }
 };

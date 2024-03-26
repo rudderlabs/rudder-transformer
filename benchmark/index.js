@@ -16,7 +16,7 @@ const cdkV2Handler = require('../src/cdk/v2/handler');
 
 const supportedDestinations = ['algolia', 'pinterest_tag'];
 
-logger.info();
+logger.infow();
 
 const command = new Commander.Command();
 command
@@ -52,10 +52,10 @@ const getTestData = (intgList, fileNameSuffixes) => {
           }),
         );
       } catch (err) {
-        // logger.error(
+        // logger.errorw(
         //   `Unable to load the data for: "${intg}" suffix: "${fileNameSuffix}"`
         // );
-        // logger.error(`Raw error: "${err}"`);
+        // logger.errorw(`Raw error: "${err}"`);
       }
     });
   });
@@ -69,8 +69,8 @@ const destinationsList = cmdOpts.destinations
   .split(',')
   .map((x) => x.trim())
   .filter((x) => x !== '');
-logger.info('Destinations:', destinationsList, 'feature:', cmdOpts.feature);
-logger.info();
+logger.infow('Destinations:', destinationsList, 'feature:', cmdOpts.feature);
+logger.infow();
 const destDataset = getTestData(destinationsList, ['_input', '']);
 
 const nativeDestHandlers = {};
@@ -99,9 +99,9 @@ async function initializeHandlers() {
 }
 
 async function runDataset(suitDesc, input, intg, params) {
-  logger.info('==========================================');
-  logger.info(suitDesc);
-  logger.info('==========================================');
+  logger.infow('==========================================');
+  logger.infow(suitDesc);
+  logger.infow('==========================================');
 
   const results = {};
   const suite = new Benchmark(suitDesc, benchmarkType);
@@ -113,7 +113,7 @@ async function runDataset(suitDesc, input, intg, params) {
       try {
         await handler(...args);
       } catch (err) {
-        // logger.info(err);
+        // logger.infow(err);
         // Do nothing
       }
     });
@@ -124,23 +124,23 @@ async function runDataset(suitDesc, input, intg, params) {
       results[result.end.name] = { stats: result.end.stats };
     })
     .on('complete', (result) => {
-      logger.info(
+      logger.infow(
         benchmarkType === 'Operations' ? 'Fastest: ' : 'Memory intensive: ',
         `"${result.end.name}"`,
       );
-      logger.info();
+      logger.infow();
       Object.keys(results).forEach((impl) => {
-        logger.info(`"${impl}" - `, suite.formatStats(results[impl].stats));
+        logger.infow(`"${impl}" - `, suite.formatStats(results[impl].stats));
 
         if (result.end.name !== impl) {
           if (benchmarkType === 'Operations') {
-            logger.info(
+            logger.infow(
               `-> "${result.end.name}" is faster by ${(
                 results[impl].stats.mean / result.end.stats.mean
               ).toFixed(1)} times to "${impl}"`,
             );
           } else {
-            logger.info(
+            logger.infow(
               `-> "${result.end.name}" consumed ${(
                 result.end.stats.mean / results[impl].stats.mean
               ).toFixed(1)} times memory compared to "${impl}"`,
@@ -148,7 +148,7 @@ async function runDataset(suitDesc, input, intg, params) {
           }
         }
 
-        logger.info();
+        logger.infow();
       });
     });
 

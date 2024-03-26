@@ -1,5 +1,5 @@
 const { fetchWithProxy } = require('./fetch');
-const logger = require('../logger');
+const logger = require('@rudderstack/integrations-lib/build/structured-logger');
 const { responseStatusHandler } = require('./utils');
 const stats = require('./stats');
 
@@ -35,7 +35,7 @@ async function getTransformationCodeV1(versionId) {
     transformationCache[versionId] = myJson;
     return myJson;
   } catch (error) {
-    logger.error(error);
+    logger.errorw(error);
     stats.increment('get_transformation_code', { success: 'false', ...tags });
     throw error;
   }
@@ -60,7 +60,7 @@ async function getLibraryCodeV1(versionId) {
     libraryCache[versionId] = myJson;
     return myJson;
   } catch (error) {
-    logger.error(error);
+    logger.errorw(error);
     stats.increment('get_libraries_code', { success: 'false', ...tags });
     throw error;
   }
@@ -87,7 +87,7 @@ async function getRudderLibByImportName(importName) {
     rudderLibraryCache[importName] = myJson;
     return myJson;
   } catch (error) {
-    logger.error(error);
+    logger.errorw(error);
     stats.increment('get_libraries_code', { success: 'false', ...tags });
     throw error;
   }

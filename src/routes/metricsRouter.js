@@ -1,5 +1,5 @@
 const KoaRouter = require('@koa/router');
-const logger = require('../logger');
+const logger = require('@rudderstack/integrations-lib/build/structured-logger');
 const stats = require('../util/stats');
 
 const metricsRouter = new KoaRouter();
@@ -11,7 +11,7 @@ if (enableStats) {
     try {
       await stats.metricsController(ctx);
     } catch (error) {
-      logger.error(error);
+      logger.errorw(error);
       ctx.status = 400;
       ctx.body = error.message;
     }

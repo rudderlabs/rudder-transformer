@@ -76,7 +76,7 @@ const getEventId = (payload, sourceKey) => {
 
   if (isDefinedAndNotNull(eventId)) {
     if (typeof eventId === 'string') {
-      logger.info(`event_id should be integer only`);
+      logger.infow(`event_id should be integer only`);
     } else return eventId;
   }
   return undefined;

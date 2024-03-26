@@ -230,7 +230,7 @@ const handleFetchJobStatusResponse = (resp, type) => {
   const marketoReposnseStatus = resp.status;
 
   if (!isHttpStatusSuccess(marketoReposnseStatus)) {
-    logger.info('[Network Error]:Failed during fetching job status', { marketoResponse, type });
+    logger.infow('[Network Error]:Failed during fetching job status', { marketoResponse, type });
     throw new NetworkError(
       `Unable to fetch job status: due to error ${JSON.stringify(marketoResponse)}`,
       hydrateStatusForServer(marketoReposnseStatus, 'During fetching job status'),
@@ -238,7 +238,7 @@ const handleFetchJobStatusResponse = (resp, type) => {
   }
 
   if (marketoResponse?.success === false) {
-    logger.info('[Application Error]Failed during fetching job status', { marketoResponse, type });
+    logger.infow('[Application Error]Failed during fetching job status', { marketoResponse, type });
     throw new RetryableError(
       `Failure during fetching job status due to error : ${marketoResponse}`,
       500,

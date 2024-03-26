@@ -118,7 +118,7 @@ function populateCustomAttributesWithOperation(
         });
     }
   } catch (exp) {
-    logger.info('Failure occurred during custom attributes operations', exp);
+    logger.infow('Failure occurred during custom attributes operations', exp);
   }
 }
 
@@ -538,7 +538,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
     try {
       lookedUpUsers = await BrazeDedupUtility.doLookup(inputs);
     } catch (error) {
-      logger.error('Error while fetching user store', error);
+      logger.errorw('Error while fetching user store', error);
     }
 
     BrazeDedupUtility.updateUserStore(userStore, lookedUpUsers, destination.ID);

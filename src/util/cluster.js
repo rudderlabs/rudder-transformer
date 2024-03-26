@@ -1,6 +1,6 @@
 const cluster = require('cluster');
 const gracefulShutdown = require('http-graceful-shutdown');
-const logger = require('../logger');
+const logger = require('@rudderstack/integrations-lib/build/structured-logger');
 const { logProcessInfo } = require('./utils');
 const { RedisDB } = require('./redis/redisConnector');
 
@@ -8,11 +8,11 @@ const numWorkers = parseInt(process.env.NUM_PROCS || '1', 10);
 const metricsPort = parseInt(process.env.METRICS_PORT || '9091', 10);
 
 function finalFunction() {
-  logger.info('Process exit event received');
+  logger.infow('Process exit event received');
   RedisDB.disconnect();
-  logger.info('Redis client disconnected');
+  logger.infow('Redis client disconnected');
 
-  logger.error(`Worker (pid: ${process.pid}) was gracefully shutdown`);
+  logger.errorw(`Worker (pid: ${process.pid}) was gracefully shutdown`);
   logProcessInfo();
 }
 
@@ -21,13 +21,13 @@ function finalFunction() {
 function shutdownWorkers() {
   Object.values(cluster.workers).forEach((worker) => {
     process.kill(worker.process.pid);
-    logger.error(`Sent kill signal to worker ${worker.id} (pid: ${worker.process.pid})`);
+    logger.errorw(`Sent kill signal to worker ${worker.id} (pid: ${worker.process.pid})`);
   });
 }
 
 function start(port, app, metricsApp) {
   if (cluster.isMaster) {
-    logger.info(`Master (pid: ${process.pid}) has started`);
+    logger.infow(`Master (pid: ${process.pid}) has started`);
 
     // HTTP server for exposing metrics
     if (process.env.STATS_CLIENT === 'prometheus') {
@@ -46,15 +46,15 @@ function start(port, app, metricsApp) {
     }
 
     cluster.on('online', (worker) => {
-      logger.info(`Worker (pid: ${worker.process.pid}) is online`);
+      logger.infow(`Worker (pid: ${worker.process.pid}) is online`);
       // To provide caching at pod-level
     });
 
     let isShuttingDown = false;
     cluster.on('exit', (worker) => {
       if (!isShuttingDown) {
-        logger.error(`Worker (pid: ${worker.process.pid}) died`);
-        logger.error(`Killing other workers to avoid any side effects of the dead worker`);
+        logger.errorw(`Worker (pid: ${worker.process.pid}) died`);
+        logger.errorw(`Killing other workers to avoid any side effects of the dead worker`);
         logProcessInfo();
         isShuttingDown = true;
         shutdownWorkers();
@@ -62,21 +62,21 @@ function start(port, app, metricsApp) {
     });
 
     process.on('SIGTERM', () => {
-      logger.error('SIGTERM signal received. Closing workers...');
+      logger.errorw('SIGTERM signal received. Closing workers...');
       logProcessInfo();
       isShuttingDown = true;
       shutdownWorkers();
     });
 
     process.on('SIGINT', () => {
-      logger.error('SIGINT signal received. Closing workers...');
+      logger.errorw('SIGINT signal received. Closing workers...');
       logProcessInfo();
       isShuttingDown = true;
       shutdownWorkers();
     });
 
     process.on('SIGSEGV', () => {
-      logger.error('SIGSEGV - JavaScript memory error occurred. Closing workers...');
+      logger.errorw('SIGSEGV - JavaScript memory error occurred. Closing workers...');
       logProcessInfo();
       isShuttingDown = true;
       shutdownWorkers();
@@ -91,19 +91,19 @@ function start(port, app, metricsApp) {
     });
 
     process.on('SIGTERM', () => {
-      logger.error(`SIGTERM signal received in the worker`);
+      logger.errorw(`SIGTERM signal received in the worker`);
     });
 
     process.on('SIGINT', () => {
-      logger.error(`SIGINT signal received in the worker`);
+      logger.errorw(`SIGINT signal received in the worker`);
     });
 
     process.on('SIGSEGV', () => {
-      logger.error(`SIGSEGV - JavaScript memory error occurred in the worker`);
+      logger.errorw(`SIGSEGV - JavaScript memory error occurred in the worker`);
     });
 
-    logger.info(`Worker (pid: ${process.pid}) has started`);
-    logger.info(`App started. Listening on port: ${port}`);
+    logger.infow(`Worker (pid: ${process.pid}) has started`);
+    logger.infow(`App started. Listening on port: ${port}`);
   }
 }
 

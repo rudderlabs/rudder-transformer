@@ -97,7 +97,7 @@ const payloadValidator = (payload) => {
           }
         });
       } else {
-        logger.error(`item at index ${index} dropped. to field is mandatory`);
+        logger.errorw(`item at index ${index} dropped. to field is mandatory`);
       }
       updatedPayload.personalizations[index].to = personalizationsArr;
     });
@@ -106,11 +106,11 @@ const payloadValidator = (payload) => {
     payload.attachments.forEach((attachment, index) => {
       if (!attachment.content || !attachment.filename) {
         updatedPayload.attachments[index] = null;
-        logger.error('content and filename are required for attachments');
+        logger.errorw('content and filename are required for attachments');
       }
       if (payload.attachments.content && !isValidBase64(payload.attachments.content)) {
         updatedPayload.attachments[index] = null;
-        logger.error('content should be base64 encoded');
+        logger.errorw('content should be base64 encoded');
       }
     });
   }
@@ -132,11 +132,11 @@ const payloadValidator = (payload) => {
     delete updatedPayload.reply_to;
   }
   if (payload.reply_to && !payload.reply_to.email) {
-    logger.error('reply_to object requires email field');
+    logger.errorw('reply_to object requires email field');
     delete updatedPayload.reply_to;
   }
   if (payload.asm && payload.asm.groups_to_display && !payload.asm.group_id) {
-    logger.error('group Id parameter is required in asm');
+    logger.errorw('group Id parameter is required in asm');
     delete updatedPayload.asm;
   }
   if (isEmptyObject(payload.asm)) {
@@ -170,7 +170,7 @@ const createContent = (Config) => {
       if (content.type && content.value) {
         contentList.push(content);
       } else if (index < len) {
-        logger.error(`item at index ${index} dropped. type and value are required fields`);
+        logger.errorw(`item at index ${index} dropped. type and value are required fields`);
       }
     });
   }
@@ -185,7 +185,7 @@ const createAttachments = (Config) => {
       if (attachment.content && attachment.filename) {
         attachmentList.push(removeUndefinedAndNullAndEmptyValues(attachment));
       } else if (index < len) {
-        logger.error(`item at index ${index} dropped. content and type are required fields`);
+        logger.errorw(`item at index ${index} dropped. content and type are required fields`);
       }
     });
   }

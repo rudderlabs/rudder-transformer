@@ -170,7 +170,7 @@ const checkIfMailExists = async (apiKey, datacenterId, audienceId, email) => {
       userStatus.subscriptionStatus = response.data.status;
     }
   } catch (error) {
-    logger.info(`[Mailchimp] :: Email does not exists, Error: ${error.message}`);
+    logger.infow(`[Mailchimp] :: Email does not exists, Error: ${error.message}`);
   }
   return userStatus;
 };

@@ -9,7 +9,7 @@ export class SourceController {
   public static async sourceTransform(ctx: Context) {
     logger.debug(
       'Native(Source-Transform):: Request to transformer::',
-      JSON.stringify(ctx.request.body),
+      ctx.request.body,
     );
     const requestMetadata = MiscService.getRequestMetadata(ctx);
     const events = ctx.request.body as object[];
@@ -36,7 +36,7 @@ export class SourceController {
     ControllerUtility.postProcess(ctx);
     logger.debug(
       'Native(Source-Transform):: Response from transformer::',
-      JSON.stringify(ctx.body),
+      ctx.body,
     );
     return ctx;
   }

@@ -76,7 +76,7 @@ export class UserTransformService {
 
         if (!transformationVersionId) {
           const errorMessage = 'Transformation VersionID not found';
-          logger.error(`[CT] ${errorMessage}`);
+          logger.errorw(`[CT] ${errorMessage}`);
           transformedEvents.push({
             statusCode: 400,
             error: errorMessage,
@@ -141,7 +141,7 @@ export class UserTransformService {
 
           transformedEvents.push(...transformedEventsWithMetadata);
         } catch (error: CatchErr) {
-          logger.error(error);
+          logger.errorw(error);
           let status = 400;
           const errorString = error.toString();
           if (error instanceof RetryRequestError) {
@@ -198,7 +198,7 @@ export class UserTransformService {
         throw new Error('Invalid request. Missing events');
       }
 
-      logger.debug(`[CT] Test Input Events: ${JSON.stringify(events)}`);
+      logger.debugw(`[CT] Test Input Events: ${JSON.stringify(events)}`);
       // eslint-disable-next-line no-param-reassign
       trRevCode.versionId = 'testVersionId';
       response.body = await userTransformHandler()(
@@ -208,7 +208,7 @@ export class UserTransformService {
         trRevCode,
         true,
       );
-      logger.debug(`[CT] Test Output Events: ${JSON.stringify(response.body.transformedEvents)}`);
+      logger.debugw(`[CT] Test Output Events: ${JSON.stringify(response.body.transformedEvents)}`);
       response.status = 200;
     } catch (error: CatchErr) {
       response.status = 400;

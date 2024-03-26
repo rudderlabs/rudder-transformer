@@ -120,9 +120,9 @@ const payloadBuilderforUpdatingEmail = async (userId, headers, userEmail, baseEn
         }
       }
     }
-    logger.debug(`${NAME}:: Failed in fetching Identity details`);
+    logger.debugw(`${NAME}:: Failed in fetching Identity details`);
   } catch (error) {
-    logger.debug(`${NAME}:: Error :`, error.response ? error.response.data : error);
+    logger.debugw(`${NAME}:: Error :`, error.response ? error.response.data : error);
   }
   return {};
 };
@@ -149,11 +149,11 @@ async function createUserFields(url, config, newFields, fieldJson) {
           feature: 'transformation',
         });
         if (response.status !== 201) {
-          logger.debug(`${NAME}:: Failed to create User Field : `, field);
+          logger.debugw(`${NAME}:: Failed to create User Field : `, field);
         }
       } catch (error) {
         if (error.response && error.response.status !== 422) {
-          logger.debug(`${NAME}:: Cannot create User field `, field, error);
+          logger.debugw(`${NAME}:: Cannot create User field `, field, error);
         }
       }
     }),
@@ -194,7 +194,7 @@ async function checkAndCreateUserFields(
       }
     }
   } catch (error) {
-    logger.debug(`${NAME}:: Error :`, error.response ? error.response.data : error);
+    logger.debugw(`${NAME}:: Error :`, error.response ? error.response.data : error);
   }
 }
 
@@ -243,7 +243,7 @@ function getIdentifyPayload(message, category, destinationConfig, type) {
 const getUserIdByExternalId = async (message, headers, baseEndpoint) => {
   const externalId = getFieldValueFromMessage(message, 'userIdOnly');
   if (!externalId) {
-    logger.debug(`${NAME}:: externalId is required for getting zenuserId`);
+    logger.debugw(`${NAME}:: externalId is required for getting zenuserId`);
     return undefined;
   }
   const url = `${baseEndpoint}users/search.json?query=${externalId}`;
@@ -259,9 +259,9 @@ const getUserIdByExternalId = async (message, headers, baseEndpoint) => {
       const zendeskUserId = get(resp, 'response.data.users.0.id');
       return zendeskUserId;
     }
-    logger.debug(`${NAME}:: Failed in fetching User details`);
+    logger.debugw(`${NAME}:: Failed in fetching User details`);
   } catch (error) {
-    logger.debug(`${NAME}:: Cannot get userId for externalId : ${externalId}`, error.response);
+    logger.debugw(`${NAME}:: Cannot get userId for externalId : ${externalId}`, error.response);
   }
   return undefined;
 };
@@ -273,7 +273,7 @@ async function getUserId(message, headers, baseEndpoint, type) {
       : getFieldValueFromMessage(message, 'traits');
   const userEmail = traits?.email || traits?.primaryEmail;
   if (!userEmail) {
-    logger.debug(`${NAME}:: Email ID is required for getting zenuserId`);
+    logger.debugw(`${NAME}:: Email ID is required for getting zenuserId`);
     return undefined;
   }
   const url = `${baseEndpoint}users/search.json?query=${userEmail}`;
@@ -285,14 +285,14 @@ async function getUserId(message, headers, baseEndpoint, type) {
       feature: 'transformation',
     });
     if (!resp || !resp.data || resp.data.count === 0) {
-      logger.debug(`${NAME}:: User not found`);
+      logger.debugw(`${NAME}:: User not found`);
       return undefined;
     }
 
     const zendeskUserId = resp?.data?.users?.[0]?.id;
     return zendeskUserId;
   } catch (error) {
-    // logger.debug(
+    // logger.debugw(
     //   `Cannot get userId for externalId : ${externalId}`,
     //   error.response
     // );
@@ -312,8 +312,8 @@ async function isUserAlreadyAssociated(userId, orgId, headers, baseEndpoint) {
       return true;
     }
   } catch (error) {
-    logger.debug(`${NAME}:: Error :`);
-    logger.debug(error?.response?.data || error);
+    logger.debugw(`${NAME}:: Error :`);
+    logger.debugw(error?.response?.data || error);
   }
   return false;
 }
@@ -342,7 +342,7 @@ async function createUser(message, headers, destinationConfig, baseEndpoint, typ
     });
 
     if (!resp.data || !resp.data.user || !resp.data.user.id) {
-      logger.debug(`${NAME}:: Couldn't create User: ${name}`);
+      logger.debugw(`${NAME}:: Couldn't create User: ${name}`);
       throw new NetworkInstrumentationError('user not found');
     }
 
@@ -350,8 +350,8 @@ async function createUser(message, headers, destinationConfig, baseEndpoint, typ
     const userEmail = resp?.data?.user.email;
     return { zendeskUserId: userID, email: userEmail };
   } catch (error) {
-    logger.debug(error);
-    logger.debug(`Couldn't find user: ${name}`);
+    logger.debugw(error);
+    logger.debugw(`Couldn't find user: ${name}`);
     throw new NetworkInstrumentationError(`Couldn't find user: ${name}`);
   }
 }
@@ -423,14 +423,14 @@ async function createOrganization(message, category, headers, destinationConfig,
     });
 
     if (!resp.data || !resp.data.organization) {
-      logger.debug(`${NAME}:: Couldn't create Organization: ${message.traits.name}`);
+      logger.debugw(`${NAME}:: Couldn't create Organization: ${message.traits.name}`);
       return undefined;
     }
 
     const orgId = resp?.data?.organization?.id;
     return orgId;
   } catch (error) {
-    logger.debug(`${NAME}:: Couldn't create Organization: ${message.traits.name}`);
+    logger.debugw(`${NAME}:: Couldn't create Organization: ${message.traits.name}`);
     return undefined;
   }
 }
@@ -508,7 +508,7 @@ async function processIdentify(message, destinationConfig, headers, baseEndpoint
           returnList.push(deleteResponse);
         }
       } catch (error) {
-        logger.debug(`${NAME}:: ${error}`);
+        logger.debugw(`${NAME}:: ${error}`);
       }
     }
   }

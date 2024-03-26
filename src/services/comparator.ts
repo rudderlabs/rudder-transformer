@@ -1,4 +1,5 @@
 /* eslint-disable class-methods-use-this */
+import logger from '@rudderstack/integrations-lib/build/structured-logger';
 import { DestinationService } from '../interfaces/DestinationService';
 import {
   DeliveriesResponse,
@@ -16,7 +17,6 @@ import {
 } from '../types';
 import tags from '../v0/util/tags';
 import stats from '../util/stats';
-import logger from '../logger';
 import { CommonUtils } from '../util/common';
 
 const NS_PER_SEC = 1e9;
@@ -90,17 +90,17 @@ export class ComparatorService implements DestinationService {
           )}`,
         );
 
-        //   logger.error(
+        //   logger.errorw(
         //     `[LIVE_COMPARE_TEST] failed for  destinationId=${destinationId}, destType=${destination}, feature=${feature}, diff=${JSON.stringify(
         //       objectDiff,
         //     )}`,
         //   );
-        //   logger.error(
+        //   logger.errorw(
         //     `[LIVE_COMPARE_TEST] failed for  destinationId=${destinationId}, destType=${destination}, feature=${feature}, input=${JSON.stringify(
         //       events[0],
         //     )}`,
         //   );
-        //   logger.error(
+        //   logger.errorw(
         //     `[LIVE_COMPARE_TEST] failed for  destinationId=${destinationId}, destType=${destination}, feature=${feature}, results=${JSON.stringify(
         //       {
         //         primaryResult: primaryResplist[index],
@@ -377,7 +377,7 @@ export class ComparatorService implements DestinationService {
       requestMetadata,
       version,
     );
-    logger.error('[LIVE_COMPARE_TEST] not implemented for delivery routine');
+    logger.errorw('[LIVE_COMPARE_TEST] not implemented for delivery routine');
     return primaryResplist;
   }
 

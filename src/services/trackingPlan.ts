@@ -44,7 +44,7 @@ export class TrackingPlanservice {
         }
       } catch (error) {
         const errMessage = `Error occurred while validating : ${error}`;
-        logger.error(errMessage);
+        logger.errorw(errMessage);
         let status = 200;
         if (error instanceof RetryRequestError) {
           ctxStatusCode = error.statusCode;

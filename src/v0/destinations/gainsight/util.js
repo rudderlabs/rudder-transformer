@@ -140,7 +140,7 @@ const renameCustomFieldsFromMap = (payload, fieldsMap, exlusionKeys) => {
     } else if (fieldMapKeys.includes(key)) {
       mappedPayload[fieldsMap[key]] = payload[key];
     } else {
-      logger.info(`dropping key ${key}`);
+      logger.infow(`dropping key ${key}`);
     }
   });
   return mappedPayload;

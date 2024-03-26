@@ -79,7 +79,7 @@ const getUrl = (urlParams) => {
   const { externalId, category, email, nonProperExtId } = urlParams;
   let properUrl = `${category.endPointUpsert}/email/${email}`;
   if (nonProperExtId) {
-    logger.debug(`${DESTINATION}: externalId doesn't exist/invalid datastructure`);
+    logger.debugw(`${DESTINATION}: externalId doesn't exist/invalid datastructure`);
     return properUrl;
   }
   // when there is a proper externalId object defined
@@ -91,7 +91,7 @@ const getUrl = (urlParams) => {
       properUrl = `${category.endPointUpsert}/fid/${externalId.id}`;
       break;
     default:
-      logger.debug(`${DESTINATION}: externalId type is different from the ones supported`);
+      logger.debugw(`${DESTINATION}: externalId type is different from the ones supported`);
       break;
   }
   return properUrl;

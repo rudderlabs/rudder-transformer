@@ -112,7 +112,7 @@ function processSingleMessage(message, destination) {
       evType = 'group';
       break;
     default:
-      logger.error(`could not determine type ${messageType}`);
+      logger.errorw(`could not determine type ${messageType}`);
       throw new InstrumentationError(`could not determine type ${messageType}`);
   }
   evName = evName ? String(evName) : evName;

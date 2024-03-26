@@ -32,18 +32,18 @@ const genericpayloadValidator = (payload) => {
   }
   if (payload.filters && !Array.isArray(payload.filters)) {
     updatedPayload.filters = null;
-    logger.error('filters should be an array of strings.');
+    logger.errorw('filters should be an array of strings.');
   }
   if (payload.queryID) {
     const re = /[\dA-Fa-f]{6}/;
     if (payload.queryID.length !== 32 || !re.test(String(payload.queryID))) {
       updatedPayload.queryID = null;
-      logger.error('queryId must be 32 characters hexadecimal string.');
+      logger.errorw('queryId must be 32 characters hexadecimal string.');
     }
   }
   if (payload.objectIDs && !Array.isArray(payload.objectIDs)) {
     updatedPayload.objectIDs = null;
-    logger.error('objectIds must be an array of strings');
+    logger.errorw('objectIds must be an array of strings');
   }
   if (payload.objectIDs && payload.objectIDs.length > 20) {
     updatedPayload.objectIDs.splice(20);
@@ -52,7 +52,7 @@ const genericpayloadValidator = (payload) => {
     const diff = Date.now() - payload.timestamp;
     if (diff > 345600000) {
       updatedPayload.timestamp = null;
-      logger.error('timestamp must be max 4 days old.');
+      logger.errorw('timestamp must be max 4 days old.');
     }
   }
   if (payload.eventType !== 'click' && payload.positions) {
@@ -74,7 +74,7 @@ const createObjectArray = (objects, eventType) => {
             objectList.push(object.objectId);
             positionList.push(object.position);
           } else {
-            logger.info(
+            logger.infow(
               `object at index ${index} dropped. position is required if eventType is click`,
             );
           }
@@ -82,7 +82,7 @@ const createObjectArray = (objects, eventType) => {
           objectList.push(object.objectId);
         }
       } else {
-        logger.error(`object at index ${index} dropped. objectId is required.`);
+        logger.errorw(`object at index ${index} dropped. objectId is required.`);
       }
     });
   }
@@ -94,7 +94,7 @@ const clickPayloadValidator = (payload) => {
   if (payload.positions) {
     if (!Array.isArray(payload.positions)) {
       updatedPayload.positions = null;
-      logger.error('positions should be an array of integers.');
+      logger.errorw('positions should be an array of integers.');
     }
     updatedPayload.positions.forEach((num, index) => {
       if (!Number.isNaN(Number(num)) && Number.isInteger(Number(num))) {

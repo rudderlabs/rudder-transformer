@@ -49,7 +49,7 @@ const buildResponse = (
     payload,
   };
   response.statusCode = 200;
-  logger.debug(response);
+  logger.debugw(response);
   return response;
 };
 
@@ -57,7 +57,7 @@ const processIdentify = (message, destination) => {
   const identifyTemplateConfig = destination.Config.identifyTemplate;
   const traitsList = getWhiteListedTraits(destination);
   const defaultIdentifyTemplate = 'Identified {{name}}';
-  logger.debug('defaulTraitsList:: ', traitsList);
+  logger.debugw('defaulTraitsList:: ', traitsList);
   const uName = getName(message);
 
   const template = Handlebars.compile(
@@ -72,7 +72,7 @@ const processIdentify = (message, destination) => {
         defaultIdentifyTemplate || {},
       ),
   );
-  logger.debug(
+  logger.debugw(
     'identifyTemplateConfig: ',
     (identifyTemplateConfig
       ? identifyTemplateConfig.trim()?.length === 0
@@ -112,8 +112,8 @@ const getChannelForEventName = (eventChannelSettings, eventName) => {
 
     if (configEventName && isDefinedAndNotNull(channelWebhook)) {
       if (channelConfig.eventRegex) {
-        logger.debug('regex: ', `${configEventName} trying to match with ${eventName}`);
-        logger.debug(
+        logger.debugw('regex: ', `${configEventName} trying to match with ${eventName}`);
+        logger.debugw(
           'match:: ',
           configEventName,
           eventName,
@@ -137,8 +137,8 @@ const getChannelNameForEvent = (eventChannelSettings, eventName) => {
       channelConfig?.eventChannel?.trim()?.length > 0 ? channelConfig.eventChannel : null;
     if (configEventName && configEventChannel) {
       if (channelConfig.eventRegex) {
-        logger.debug('regex: ', `${configEventName} trying to match with ${eventName}`);
-        logger.debug(
+        logger.debugw('regex: ', `${configEventName} trying to match with ${eventName}`);
+        logger.debugw(
           'match:: ',
           configEventName,
           eventName,
@@ -177,7 +177,7 @@ const buildtemplateList = (templateListForThisEvent, eventTemplateSettings, even
 };
 
 const processTrack = (message, destination) => {
-  // logger.debug(JSON.stringify(destination));
+  // logger.debugw(JSON.stringify(destination));
   const { Config } = destination;
   const { eventChannelSettings, eventTemplateSettings, incomingWebhooksType, denyListOfEvents } =
     Config;
@@ -217,7 +217,7 @@ const processTrack = (message, destination) => {
   buildtemplateList(templateListForThisEvent, eventTemplateSettings, eventName);
   const templateListArray = Array.from(templateListForThisEvent);
 
-  logger.debug(
+  logger.debugw(
     'templateListForThisEvent: ',
     templateListArray,
     templateListArray.length > 0 ? templateListArray[0] : undefined,
@@ -244,7 +244,7 @@ const processTrack = (message, destination) => {
     traitsList: identityTraits,
   };
 
-  logger.debug('templateInputTrack: ', templateInput);
+  logger.debugw('templateInputTrack: ', templateInput);
 
   let resultText;
   try {
@@ -267,8 +267,8 @@ const processTrack = (message, destination) => {
 };
 
 const process = (event) => {
-  logger.debug('=====start=====');
-  logger.debug(JSON.stringify(event));
+  logger.debugw('=====start=====');
+  logger.debugw(JSON.stringify(event));
   const respList = [];
   let response;
   const { message, destination } = event;
@@ -276,7 +276,7 @@ const process = (event) => {
     throw new InstrumentationError('Event type is required');
   }
   const messageType = message.type.toLowerCase();
-  logger.debug('messageType: ', messageType);
+  logger.debugw('messageType: ', messageType);
 
   switch (messageType) {
     case EventType.IDENTIFY:
@@ -290,11 +290,11 @@ const process = (event) => {
       respList.push(response);
       break;
     default:
-      logger.debug('Message type not supported');
+      logger.debugw('Message type not supported');
       throw new InstrumentationError(`Event type ${messageType} is not supported`);
   }
-  logger.debug(JSON.stringify(respList));
-  logger.debug('=====end======');
+  logger.debugw(JSON.stringify(respList));
+  logger.debugw('=====end======');
   return respList;
 };
 

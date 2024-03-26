@@ -1,5 +1,5 @@
 const prometheusClient = require('prom-client');
-const logger = require('../logger');
+const logger = require('@rudderstack/integrations-lib/build/structured-logger');
 
 const clusterEnabled = process.env.CLUSTER_ENABLED !== 'false';
 const instanceID = process.env.INSTANCE_ID || 'localhost';
@@ -98,7 +98,7 @@ class Prometheus {
       }
       metric.observe(tags, value);
     } catch (e) {
-      logger.error(`Prometheus: Summary metric ${name} failed with error ${e}`);
+      logger.errorw(`Prometheus: Summary metric ${name} failed with error ${e}`);
     }
   }
 
@@ -113,7 +113,7 @@ class Prometheus {
       }
       metric.observe(tags, (new Date() - start) / 1000);
     } catch (e) {
-      logger.error(`Prometheus: Timing metric ${name} failed with error ${e}`);
+      logger.errorw(`Prometheus: Timing metric ${name} failed with error ${e}`);
     }
   }
 
@@ -128,7 +128,7 @@ class Prometheus {
       }
       metric.observe(tags, value);
     } catch (e) {
-      logger.error(`Prometheus: Histogram metric ${name} failed with error ${e}`);
+      logger.errorw(`Prometheus: Histogram metric ${name} failed with error ${e}`);
     }
   }
 
@@ -147,7 +147,7 @@ class Prometheus {
       }
       metric.inc(tags, delta);
     } catch (e) {
-      logger.error(`Prometheus: Counter metric ${name} failed with error ${e}. Value: ${delta}`);
+      logger.errorw(`Prometheus: Counter metric ${name} failed with error ${e}. Value: ${delta}`);
     }
   }
 
@@ -162,7 +162,7 @@ class Prometheus {
       }
       metric.set(tags, value);
     } catch (e) {
-      logger.error(`Prometheus: Gauge metric ${name} failed with error ${e}. Value: ${value}`);
+      logger.errorw(`Prometheus: Gauge metric ${name} failed with error ${e}. Value: ${value}`);
     }
   }
 
@@ -971,12 +971,12 @@ class Prometheus {
             metric.buckets,
           );
         } else {
-          logger.error(
+          logger.errorw(
             `Prometheus: Metric creation failed. Name: ${metric.name}. Invalid type: ${metric.type}`,
           );
         }
       } catch (e) {
-        logger.error(`Prometheus: Metric creation failed. Name: ${metric.name}. Error ${e}`);
+        logger.errorw(`Prometheus: Metric creation failed. Name: ${metric.name}. Error ${e}`);
       }
     });
   }

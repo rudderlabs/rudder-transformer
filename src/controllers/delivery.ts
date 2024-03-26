@@ -21,7 +21,7 @@ const NON_DETERMINABLE = 'Non-determinable';
 
 export class DeliveryController {
   public static async deliverToDestination(ctx: Context) {
-    logger.debug('Native(Delivery):: Request to transformer::', JSON.stringify(ctx.request.body));
+    logger.debug('Native(Delivery):: Request to transformer::', ctx.request.body);
     let deliveryResponse: DeliveryResponse;
     const requestMetadata = MiscService.getRequestMetadata(ctx);
     const deliveryRequest = ctx.request.body as ProxyDeliveryRequest;
@@ -51,12 +51,12 @@ export class DeliveryController {
     ctx.body = { output: deliveryResponse };
     ControllerUtility.deliveryPostProcess(ctx, deliveryResponse.status);
 
-    logger.debug('Native(Delivery):: Response from transformer::', JSON.stringify(ctx.body));
+    logger.debug('Native(Delivery):: Response from transformer::', ctx.body);
     return ctx;
   }
 
   public static async deliverToDestinationV1(ctx: Context) {
-    logger.debug('Native(Delivery):: Request to transformer::', JSON.stringify(ctx.request.body));
+    logger.debug('Native(Delivery):: Request to transformer::', ctx.request.body);
     let deliveryResponse: DeliveriesResponse;
     const requestMetadata = MiscService.getRequestMetadata(ctx);
     const deliveryRequest = ctx.request.body as ProxyDeliveriesRequest;
@@ -86,14 +86,14 @@ export class DeliveryController {
     ctx.body = { output: deliveryResponse };
     ControllerUtility.deliveryPostProcess(ctx, deliveryResponse.status);
 
-    logger.debug('Native(Delivery):: Response from transformer::', JSON.stringify(ctx.body));
+    logger.debug('Native(Delivery):: Response from transformer::', ctx.body);
     return ctx;
   }
 
   public static async testDestinationDelivery(ctx: Context) {
     logger.debug(
       'Native(Delivery-Test):: Request to transformer::',
-      JSON.stringify(ctx.request.body),
+      ctx.request.body,
     );
     const { destination }: { destination: string } = ctx.params;
     const { version }: { version: string } = ctx.params;
@@ -112,7 +112,7 @@ export class DeliveryController {
     );
     ctx.body = { output: response };
     ControllerUtility.postProcess(ctx);
-    logger.debug('Native(Delivery-Test):: Response from transformer::', JSON.stringify(ctx.body));
+    logger.debug('Native(Delivery-Test):: Response from transformer::', ctx.body);
     return ctx;
   }
 }

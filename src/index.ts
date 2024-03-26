@@ -32,13 +32,13 @@ app.use(
 addRequestSizeMiddleware(app);
 addSwaggerRoutes(app);
 
-logger.info('Using new routes');
+logger.infow('Using new routes');
 applicationRoutes(app);
 
 function finalFunction() {
   RedisDB.disconnect();
-  logger.info('Redis client disconnected');
-  logger.error(`Process (pid: ${process.pid}) was gracefully shutdown`);
+  logger.infow('Redis client disconnected');
+  logger.errorw(`Process (pid: ${process.pid}) was gracefully shutdown`);
   logProcessInfo();
 }
 
@@ -59,15 +59,15 @@ if (clusterEnabled) {
   const server = app.listen(port);
 
   process.on('SIGTERM', () => {
-    logger.error(`SIGTERM signal received`);
+    logger.errorw(`SIGTERM signal received`);
   });
 
   process.on('SIGINT', () => {
-    logger.error(`SIGINT signal received`);
+    logger.errorw(`SIGINT signal received`);
   });
 
   process.on('SIGSEGV', () => {
-    logger.error(`SIGSEGV - JavaScript memory error occurred`);
+    logger.errorw(`SIGSEGV - JavaScript memory error occurred`);
   });
 
   gracefulShutdown(server, {
@@ -77,7 +77,7 @@ if (clusterEnabled) {
     finally: finalFunction,
   });
 
-  logger.info(`App started. Listening on port: ${port}`);
+  logger.infow(`App started. Listening on port: ${port}`);
 }
 
 export default app;

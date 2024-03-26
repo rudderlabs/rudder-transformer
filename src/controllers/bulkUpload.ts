@@ -31,9 +31,9 @@ const getReqMetadata = (ctx) => {
 };
 
 export const fileUpload = async (ctx) => {
-  logger.debug(
+  logger.debugw(
     'Native(Bulk-Upload): Request to transformer:: /fileUpload route',
-    JSON.stringify(ctx.request.body),
+    ctx.request.body,
   );
   const getReqMetadataFileUpload = () => {
     try {
@@ -69,17 +69,17 @@ export const fileUpload = async (ctx) => {
     });
   }
   ctx.body = response;
-  logger.debug(
+  logger.debugw(
     'Native(Bulk-Upload): Response from transformer:: /fileUpload route',
-    JSON.stringify(ctx.body),
+    ctx.body,
   );
   return ctx.body;
 };
 
 export const pollStatus = async (ctx) => {
-  logger.debug(
+  logger.debugw(
     'Native(Bulk-Upload): Request to transformer:: /pollStatus route',
-    JSON.stringify(ctx.request.body),
+    ctx.request.body,
   );
 
   const { destType }: ContextBodySimple = ctx.request.body;
@@ -104,17 +104,17 @@ export const pollStatus = async (ctx) => {
     });
   }
   ctx.body = response;
-  logger.debug(
+  logger.debugw(
     'Native(Bulk-Upload): Request from transformer:: /pollStatus route',
-    JSON.stringify(ctx.body),
+    ctx.body,
   );
   return ctx.body;
 };
 
 export const getWarnJobStatus = async (ctx) => {
-  logger.debug(
+  logger.debugw(
     'Native(Bulk-Upload): Request to transformer:: /getWarningJobs route',
-    JSON.stringify(ctx.request.body),
+    ctx.request.body,
   );
 
   const { destType }: ContextBodySimple = ctx.request.body;
@@ -140,17 +140,17 @@ export const getWarnJobStatus = async (ctx) => {
     });
   }
   ctx.body = response;
-  logger.debug(
+  logger.debugw(
     'Native(Bulk-Upload): Request from transformer:: /getWarningJobs route',
-    JSON.stringify(ctx.body),
+    ctx.body,
   );
   return ctx.body;
 };
 
 export const getFailedJobStatus = async (ctx) => {
-  logger.debug(
+  logger.debugw(
     'Native(Bulk-Upload): Request to transformer:: /getFailedJobs route',
-    JSON.stringify(ctx.request.body),
+    ctx.request.body,
   );
 
   const { destType }: ContextBodySimple = ctx.request.body;
@@ -176,9 +176,9 @@ export const getFailedJobStatus = async (ctx) => {
     });
   }
   ctx.body = response;
-  logger.debug(
+  logger.debugw(
     'Native(Bulk-Upload): Request from transformer:: /getFailedJobs route',
-    JSON.stringify(ctx.body),
+    ctx.body,
   );
   return ctx.body;
 };

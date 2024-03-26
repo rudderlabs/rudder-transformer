@@ -240,7 +240,7 @@ const processIdentifierEvent = async (event, metricMetadata) => {
       });
       await RedisDB.setVal(`${event.cartToken}`, value);
     } catch (e) {
-      logger.debug(`{{SHOPIFY::}} cartToken map set call Failed due redis error ${e}`);
+      logger.debugw(`{{SHOPIFY::}} cartToken map set call Failed due redis error ${e}`);
       stats.increment('shopify_redis_failures', {
         type: 'set',
         ...metricMetadata,

@@ -48,7 +48,7 @@ const retrieveUserId = async (apiKey, message) => {
       endpointPath: `/v1/users/retrieve`,
     },
   );
-  logger.debug(response);
+  logger.debugw(response);
   // If the request fails, throwing error.
   if (response.success === false) {
     throw new NetworkError(

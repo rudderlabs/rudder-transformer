@@ -8,10 +8,10 @@
 
 const match = require('match-json');
 const jsonDiff = require('json-diff');
+const logger = require('@rudderstack/integrations-lib/build/structured-logger');
 const networkHandlerFactory = require('../adapters/networkHandlerFactory');
 const { getPayloadData } = require('../adapters/network');
 const { generateErrorObject } = require('../v0/util');
-const logger = require('../logger');
 const tags = require('../v0/util/tags');
 const stats = require('../util/stats');
 
@@ -60,18 +60,18 @@ const DestProxyController = {
           destination,
         });
 
-        logger.error(`[TransformerProxyTest] Destination request payload mismatch!`);
-        logger.error(
+        logger.errorw(`[TransformerProxyTest] Destination request payload mismatch!`);
+        logger.errorw(
           `[TransformerProxyTest] Delivery payload (router): ${JSON.stringify(
             routerDeliveryPayload,
           )}`,
         );
-        logger.error(
+        logger.errorw(
           `[TransformerProxyTest] Destination request payload (router): ${JSON.stringify(
             routerDestReqPayload,
           )}`,
         );
-        logger.error(
+        logger.errorw(
           `[TransformerProxyTest] Destination request payload (proxy): ${JSON.stringify(
             proxyDestReqPayload,
           )} `,
@@ -79,7 +79,7 @@ const DestProxyController = {
 
         // Compute output difference
         const outputDiff = jsonDiff.diffString(routerDestReqPayload, proxyDestReqPayload);
-        logger.error(
+        logger.errorw(
           `[TransformerProxyTest] Destination request payload difference: ${outputDiff}`,
         );
         response = {
@@ -102,14 +102,14 @@ const DestProxyController = {
         [tags.TAG_NAMES.FEATURE]: tags.FEATURES.DATA_DELIVERY,
       }, false);
       response.message = `[TransformerProxyTest] Error occurred while testing proxy for destination ("${destination}"): "${err.message}"`;
-      logger.error(response.message);
-      logger.error(err);
-      logger.error(
+      logger.errorw(response.message);
+      logger.errorw(err);
+      logger.errorw(
         `[TransformerProxyTest] Delivery payload (router): ${JSON.stringify(
           routerDeliveryPayload,
         )}`,
       );
-      logger.error(
+      logger.errorw(
         `[TransformerProxyTest] Destination request payload (router): ${JSON.stringify(
           routerDestReqPayload,
         )}`,

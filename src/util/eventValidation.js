@@ -7,7 +7,7 @@ const addFormats = require('ajv-formats');
 
 const NodeCache = require('node-cache');
 const hash = require('object-hash');
-const logger = require('../logger');
+const logger = require('@rudderstack/integrations-lib/build/structured-logger');
 const trackingPlan = require('./trackingPlan');
 
 const SECONDS_IN_DAY = 60 * 60 * 24 * 1;
@@ -241,7 +241,7 @@ async function validate(event) {
     });
     return validationErrors;
   } catch (error) {
-    logger.error(`TP event validation error: ${error.message}`);
+    logger.errorw(`TP event validation error: ${error.message}`);
     throw error;
   }
 }
@@ -257,7 +257,7 @@ function handleValidationErrors(validationErrors, metadata, curDropEvent, curVio
   const violationsByType = new Set(validationErrors.map((err) => err.type));
 
   const handleUnknownOption = (value, key) => {
-    logger.error(
+    logger.errorw(
       `Unknown option ${value} in ${key} for destId ${destinationId}, destType ${destinationType}`,
     );
   };
@@ -377,7 +377,7 @@ async function handleValidation(event) {
       validationErrors,
     };
   } catch (error) {
-    logger.error(`TP handle validation error: ${error.message}`);
+    logger.errorw(`TP handle validation error: ${error.message}`);
     throw error;
   }
 }

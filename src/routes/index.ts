@@ -4,6 +4,7 @@ import { existsSync, readFileSync } from 'fs';
 import dotenv from 'dotenv';
 import { koaSwagger } from 'koa2-swagger-ui';
 import path from 'path';
+import logger from '@rudderstack/integrations-lib/build/structured-logger';
 import userTransformRoutes from './userTransform';
 import bulkUploadRoutes from './bulkUpload';
 import proxyRoutes from './delivery';
@@ -12,7 +13,6 @@ import miscRoutes from './misc';
 import sourceRoutes from './source';
 import testEventRoutes from './testEvents';
 import { trackingPlanRoutes } from './trackingPlan';
-import logger from '../logger';
 import { isNotEmpty } from '../v0/util';
 
 dotenv.config();
@@ -43,16 +43,16 @@ export function addSwaggerRoutes(app: Koa<any, object>) {
       });
       if (isNotEmpty(rawContent)) {
         const spec = JSON.parse(rawContent);
-        logger.info('Transformer: Swagger route loading');
+        logger.infow('Transformer: Swagger route loading');
         router.get(
           '/docs',
           koaSwagger({ routePrefix: false, swaggerOptions: { spec, deepLinking: true } }),
         );
-        logger.info('Transformer: Swagger route loaded');
+        logger.infow('Transformer: Swagger route loaded');
         app.use(router.routes());
       }
     } else {
-      logger.error('Swagger file does not exist!');
+      logger.errorw('Swagger file does not exist!');
     }
   } catch (err) {
     logger.error('Error while loading swagger file', err);

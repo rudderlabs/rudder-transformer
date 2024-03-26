@@ -21,7 +21,7 @@ export class DestinationController {
     const startTime = new Date();
     logger.info(
       'Native(Process-Transform):: Requst to transformer::',
-      JSON.stringify(ctx.request.body),
+      ctx.request.body,
     );
     let resplist: ProcessorTransformationResponse[];
     const requestMetadata = MiscService.getRequestMetadata(ctx);
@@ -70,7 +70,7 @@ export class DestinationController {
     ControllerUtility.postProcess(ctx);
     logger.info(
       'Native(Process-Transform):: Response from transformer::',
-      JSON.stringify(ctx.body),
+      ctx.body,
     );
     stats.histogram('dest_transform_output_events', resplist.length, {
       destination,
@@ -142,7 +142,7 @@ export class DestinationController {
     });
     logger.info(
       'Native(Router-Transform):: Response from transformer::',
-      JSON.stringify(ctx.body),
+      ctx.body,
     );
     stats.timing('dest_transform_request_latency', startTime, {
       destination,
@@ -156,7 +156,7 @@ export class DestinationController {
   public static batchProcess(ctx: Context) {
     logger.info(
       'Native(Process-Transform-Batch):: Requst to transformer::',
-      JSON.stringify(ctx.request.body),
+      ctx.request.body,
     );
     const startTime = new Date();
     const requestMetadata = MiscService.getRequestMetadata(ctx);
@@ -191,7 +191,7 @@ export class DestinationController {
     ControllerUtility.postProcess(ctx);
     logger.info(
       'Native(Process-Transform-Batch):: Response from transformer::',
-      JSON.stringify(ctx.body),
+      ctx.body,
     );
     stats.timing('dest_transform_request_latency', startTime, {
       destination,

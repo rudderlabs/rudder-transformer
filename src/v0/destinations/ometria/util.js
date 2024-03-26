@@ -29,7 +29,7 @@ const createVariantList = (variants) => {
       if (variantPayload.id && variantPayload.type && variantPayload.label) {
         variantList.push(variantPayload);
       } else {
-        logger.error(`variant at index ${index} dropped. Id, type and label are required.`);
+        logger.errorw(`variant at index ${index} dropped. Id, type and label are required.`);
       }
     });
   }
@@ -48,7 +48,7 @@ const createLineItems = (items) => {
       ) {
         const variantList = item.variant_options;
         if (!variantList || !Array.isArray(variantList)) {
-          logger.error('variant options must be an array of objects.');
+          logger.errorw('variant options must be an array of objects.');
         } else {
           const variantOptions = createVariantList(variantList);
           if (variantOptions && variantOptions.length > 0) {
@@ -72,7 +72,7 @@ const createLineItems = (items) => {
         }
         itemList.push(removeUndefinedAndNullValues(itemPayload));
       } else {
-        logger.error(
+        logger.errorw(
           `item at index ${index} dropped. Product id , quantity and either unit_price or subtotal are required.`,
         );
       }
@@ -83,7 +83,7 @@ const createLineItems = (items) => {
 
 const addressMappper = (address) => {
   if (!isObject(address)) {
-    logger.error('billing address or shipping address should be an object.');
+    logger.errorw('billing address or shipping address should be an object.');
     return null;
   }
   const res = {
@@ -100,25 +100,25 @@ const contactPayloadValidator = (payload) => {
   const FORCE_OPT_IN_KEY = '@force_optin';
   if (payload[FORCE_OPT_IN_KEY] && typeof payload[FORCE_OPT_IN_KEY] !== 'boolean') {
     updatedPayload[FORCE_OPT_IN_KEY] = null;
-    logger.error('forceOptin must contain only boolean value.');
+    logger.errorw('forceOptin must contain only boolean value.');
   }
   if (payload.phone_number && !isValidPhone(payload.phone_number)) {
     updatedPayload.phone_number = null;
-    logger.error('phone number format must be E.164.');
+    logger.errorw('phone number format must be E.164.');
   }
 
   const TIMESTAMP_FORMAT_ERR_MSG = 'timestamp format must be ISO 8601';
   if (payload.timestamp_acquired && !isValidTimestamp(payload.timestamp_acquired)) {
     updatedPayload.timestamp_acquired = null;
-    logger.error(TIMESTAMP_FORMAT_ERR_MSG);
+    logger.errorw(TIMESTAMP_FORMAT_ERR_MSG);
   }
   if (payload.timestamp_subscribed && !isValidTimestamp(payload.timestamp_subscribed)) {
     updatedPayload.timestamp_subscribed = null;
-    logger.error(TIMESTAMP_FORMAT_ERR_MSG);
+    logger.errorw(TIMESTAMP_FORMAT_ERR_MSG);
   }
   if (payload.timestamp_unsubscribed && !isValidTimestamp(payload.timestamp_unsubscribed)) {
     updatedPayload.timestamp_unsubscribed = null;
-    logger.error(TIMESTAMP_FORMAT_ERR_MSG);
+    logger.errorw(TIMESTAMP_FORMAT_ERR_MSG);
   }
   return updatedPayload;
 };

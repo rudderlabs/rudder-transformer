@@ -354,7 +354,7 @@ function processSingleMessage(message, destination) {
       updatedEvent = processEventTypeGeneric(message, baseEvent, fbEventName);
       break;
     default:
-      logger.error('could not determine type');
+      logger.errorw('could not determine type');
       throw new InstrumentationError(`Message type ${message.type} not supported`);
   }
 

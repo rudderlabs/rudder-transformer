@@ -2,7 +2,7 @@ const ivm = require('isolated-vm');
 
 const { getFactory } = require('./ivmFactory');
 const { getMetadata, getTransformationMetadata } = require('../v0/util');
-const logger = require('../logger');
+const logger = require('@rudderstack/integrations-lib/build/structured-logger');
 const stats = require('./stats');
 
 const userTransformTimeout = parseInt(process.env.USER_TRANSFORM_TIMEOUT || '600000', 10);
@@ -66,7 +66,7 @@ async function userTransformHandlerV1(
     testMode,
   );
 
-  logger.debug(`Creating IsolateVM`);
+  logger.debugw(`Creating IsolateVM`);
   const isolatevm = await isolatevmFactory.create();
 
   const invokeTime = new Date();
@@ -78,11 +78,11 @@ async function userTransformHandlerV1(
     transformedEvents = await transform(isolatevm, events);
     logs = isolatevm.logs;
   } catch (err) {
-    logger.error(`Error encountered while executing transformation: ${err.message}`);
+    logger.errorw(`Error encountered while executing transformation: ${err.message}`);
     transformationError = err;
     throw err;
   } finally {
-    logger.debug(`Destroying IsolateVM`);
+    logger.debugw(`Destroying IsolateVM`);
     isolatevmFactory.destroy(isolatevm);
     // send the observability stats
     const tags = {

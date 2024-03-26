@@ -150,7 +150,7 @@ const createOrUpdateListDetails = async (listName, Config) => {
   if (listResponse.status !== 200) {
     const errMessage = listResponse.response.errors?.message || '';
     const errorStatus = listResponse.response.errors?.code || '500';
-    logger.error(`failed to fetch list ${errMessage}`, errorStatus);
+    logger.errorw(`failed to fetch list ${errMessage}`, errorStatus);
   }
   const listsDetails = listResponse.response?.lists;
 
@@ -170,7 +170,7 @@ const createOrUpdateListDetails = async (listName, Config) => {
   if (listResponse.status !== 200) {
     const errMessage = listResponse.response.errors?.message || '';
     const errorStatus = listResponse.response.errors?.code || '500';
-    logger.error(`failed to create list ${errMessage}`, errorStatus);
+    logger.errorw(`failed to create list ${errMessage}`, errorStatus);
   }
   const listId = listResponse.response?.list?.id;
   return listId;

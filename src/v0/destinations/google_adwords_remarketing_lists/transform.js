@@ -111,7 +111,7 @@ const populateIdentifiers = (attributeArray, { Config }) => {
         if (element[attribute]) {
           userIdentifier.push({ [attribute]: element[attribute] });
         } else {
-          logger.info(` ${attribute} is not present in index:`, index);
+          logger.infow(` ${attribute} is not present in index:`, index);
         }
       } else {
         attribute.forEach((attributeElement, index2) => {
@@ -124,7 +124,7 @@ const populateIdentifiers = (attributeArray, { Config }) => {
               [`${attributeMapping[attributeElement]}`]: element[`${attributeElement}`],
             });
           } else {
-            logger.info(` ${attribute[index2]} is not present in index:`, index);
+            logger.infow(` ${attribute[index2]} is not present in index:`, index);
           }
         });
       }
@@ -153,7 +153,7 @@ const createPayload = (message, destination) => {
     if (properties.includes(key)) {
       const userIdentifiersList = populateIdentifiers(listData[key], destination);
       if (userIdentifiersList.length === 0) {
-        logger.info(
+        logger.infow(
           `Google_adwords_remarketing_list]:: No attributes are present in the '${key}' property.`,
         );
         return;
@@ -190,7 +190,7 @@ const createPayload = (message, destination) => {
         default:
       }
     } else {
-      logger.info(`listData "${key}" is not valid. Supported types are "add" and "remove"`);
+      logger.infow(`listData "${key}" is not valid. Supported types are "add" and "remove"`);
     }
   });
 

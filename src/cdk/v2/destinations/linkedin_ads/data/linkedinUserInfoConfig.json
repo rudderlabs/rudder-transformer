@@ -1,31 +1,30 @@
 [
-    {
-      "destKey": "firstName",
-      "sourceKeys": "firstName",
-      "required": false,
-      "sourceFromGenericMap": true
-    },
-    {
-      "destKey": "lastName",
-      "sourceKeys": "lastName",
-      "required": false,
-      "sourceFromGenericMap": true
-    },
-    {
-        "destKey": "title",
-        "sourceKeys": "title",
-        "required": false,
-        "sourceFromGenericMap": true
-      },
-    {
-      "destKey": "companyName",
-      "sourceKeys": "context.traits.companyName",
-      "required": false
-    },
-    {
-        "destKey": "countryCode",
-        "sourceKeys": "context.traits.countryCode",
-        "required": false
-      }
-  ]
-  
+  {
+    "destKey": "firstName",
+    "sourceKeys": "firstName",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "lastName",
+    "sourceKeys": "lastName",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "title",
+    "sourceKeys": "title",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "companyName",
+    "sourceKeys": "context.traits.companyName",
+    "required": false
+  },
+  {
+    "destKey": "countryCode",
+    "sourceKeys": "context.traits.countryCode",
+    "required": false
+  }
+]

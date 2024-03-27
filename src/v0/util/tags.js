@@ -13,6 +13,7 @@ const TAG_NAMES = {
   DESTINATION_ID: 'destinationId',
   WORKSPACE_ID: 'workspaceId',
   SOURCE_ID: 'sourceId',
+  STATUS: 'statusCode',
 };
 
 const MODULES = {

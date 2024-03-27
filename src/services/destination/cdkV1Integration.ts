@@ -4,7 +4,7 @@ import path from 'path';
 import { TransformationError } from '@rudderstack/integrations-lib';
 import { DestinationService } from '../../interfaces/DestinationService';
 import {
-  DeliveryResponse,
+  DeliveryV0Response,
   ErrorDetailer,
   MetaTransferObject,
   ProcessorTransformationRequest,
@@ -14,7 +14,7 @@ import {
   UserDeletionRequest,
   UserDeletionResponse,
   ProxyRequest,
-  DeliveriesResponse,
+  DeliveryV1Response,
 } from '../../types/index';
 import { DestinationPostTransformationService } from './postTransformation';
 import tags from '../../v0/util/tags';
@@ -121,7 +121,7 @@ export class CDKV1DestinationService implements DestinationService {
     _event: ProxyRequest,
     _destinationType: string,
     _requestMetadata: NonNullable<unknown>,
-  ): Promise<DeliveryResponse | DeliveriesResponse> {
+  ): Promise<DeliveryV0Response | DeliveryV1Response> {
     throw new TransformationError('CDV1 Does not Implement Delivery Routine');
   }
 

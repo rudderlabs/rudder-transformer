@@ -3,24 +3,21 @@ const { InstrumentationError, ConfigurationError } = require('@rudderstack/integ
 const { EventType } = require('../../../constants');
 const {
   getHashFromArrayWithDuplicate,
-  constructPayload,
   removeHyphens,
   getHashFromArray,
   handleRtTfSingleEventError,
   defaultBatchRequestConfig,
   getSuccessRespEvents,
-  checkInvalidRtTfEvents,
+  combineBatchRequestsWithSameJobIds,
 } = require('../../util');
-const {
-  CALL_CONVERSION,
-  trackCallConversionsMapping,
-  STORE_CONVERSION_CONFIG,
-} = require('./config');
+const { CALL_CONVERSION, STORE_CONVERSION_CONFIG } = require('./config');
 const {
   validateDestinationConfig,
   getStoreConversionPayload,
   requestBuilder,
   getClickConversionPayloadAndEndpoint,
+  getConsentsDataFromIntegrationObj,
+  getCallConversionPayload,
 } = require('./utils');
 const helper = require('./helper');
 
@@ -41,12 +38,15 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
   const { properties, timestamp, originalTimestamp } = message;
 
   const filteredCustomerId = removeHyphens(customerId);
+  const eventLevelConsentsData = getConsentsDataFromIntegrationObj(message);
+
   if (conversionType === 'click') {
     // click conversion
     const convertedPayload = getClickConversionPayloadAndEndpoint(
       message,
       Config,
       filteredCustomerId,
+      eventLevelConsentsData,
     );
     payload = convertedPayload.payload;
     endpoint = convertedPayload.endpoint;
@@ -55,7 +55,7 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
     endpoint = STORE_CONVERSION_CONFIG.replace(':customerId', filteredCustomerId);
   } else {
     // call conversions
-    payload = constructPayload(message, trackCallConversionsMapping);
+    payload = getCallConversionPayload(message, Config, eventLevelConsentsData);
     endpoint = CALL_CONVERSION.replace(':customerId', filteredCustomerId);
   }
 
@@ -119,7 +119,6 @@ const trackResponseBuilder = (message, metadata, destination) => {
 
 const process = async (event) => {
   const { message, metadata, destination } = event;
-
   if (!message.type) {
     throw new InstrumentationError('Message type is not present. Aborting message.');
   }
@@ -185,11 +184,6 @@ const batchEvents = (storeSalesEvents) => {
 };
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
-
   const storeSalesEvents = []; // list containing store sales events in batched format
   const clickCallEvents = []; // list containing click and call events in batched format
   const errorRespList = [];
@@ -229,7 +223,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
     .concat(storeSalesEventsBatchedResponseList)
     .concat(clickCallEvents)
     .concat(errorRespList);
-  return batchedResponseList;
+  return combineBatchRequestsWithSameJobIds(batchedResponseList);
 };
 
 module.exports = { process, processRouterDest };

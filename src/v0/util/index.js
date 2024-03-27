@@ -22,6 +22,7 @@ const {
   PlatformError,
   TransformationError,
   OAuthSecretError,
+  getErrorRespEvents,
 } = require('@rudderstack/integrations-lib');
 const logger = require('../../logger');
 const stats = require('../../util/stats');
@@ -33,6 +34,7 @@ const {
   AUTH_STATUS_INACTIVE,
 } = require('../../adapters/networkhandler/authConstants');
 const { FEATURE_FILTER_CODE, FEATURE_GZIP_SUPPORT } = require('./constant');
+const { CommonUtils } = require('../../util/common');
 
 // ========================================================================
 // INLINERS
@@ -50,6 +52,7 @@ const removeUndefinedAndNullAndEmptyValues = (obj) =>
   lodash.pickBy(obj, isDefinedAndNotNullAndNotEmpty);
 const isBlank = (value) => lodash.isEmpty(lodash.toString(value));
 const flattenMap = (collection) => lodash.flatMap(collection, (x) => x);
+const isNull = (x) => lodash.isNull(x);
 // ========================================================================
 // GENERIC UTLITY
 // ========================================================================
@@ -479,16 +482,6 @@ const getSuccessRespEvents = (
   batched,
   statusCode,
   destination,
-});
-
-// Router transformer
-// Error responses
-const getErrorRespEvents = (metadata, statusCode, error, statTags, batched = false) => ({
-  metadata,
-  batched,
-  statusCode,
-  error,
-  statTags,
 });
 
 // ========================================================================
@@ -1280,6 +1273,31 @@ function getFullName(message) {
 }
 
 /**
+ * Generates an exclusion list from mapping config.
+ *
+ * @param {Array} mappingConfig - The mapping config.
+ *   [
+ *     {
+ *       "destKey": "item_code",
+ *       "sourceKeys": [
+ *         "product_id",
+ *         "sku"
+ *       ]
+ *     },
+ *     {
+ *       "destKey": "name",
+ *       "sourceKeys": "name"
+ *     }
+ *   ]
+ * @returns {Array} - The generated exclusion list.
+ *   ["product_id", "sku", "name"]
+ */
+const generateExclusionList = (mappingConfig) =>
+  mappingConfig.flatMap((mapping) =>
+    Array.isArray(mapping.sourceKeys) ? [...mapping.sourceKeys] : [mapping.sourceKeys],
+  );
+
+/**
  * Extract fileds from message with exclusions
  * Pass the keys of message for extraction and
  * exclusion fields to exlude and the payload to map into
@@ -1305,10 +1323,10 @@ function getFullName(message) {
  * )
  * -------------------------------------------
  * The above call will map the fields other than the
- * exlusion list from the given keys to the destination payload
+ * exclusion list from the given keys to the destination payload
  *
  */
-function extractCustomFields(message, destination, keys, exclusionFields) {
+function extractCustomFields(message, payload, keys, exclusionFields) {
   const mappingKeys = [];
   if (Array.isArray(keys)) {
     keys.forEach((key) => {
@@ -1319,7 +1337,7 @@ function extractCustomFields(message, destination, keys, exclusionFields) {
         });
         mappingKeys.forEach((mappingKey) => {
           if (!(typeof messageContext[mappingKey] === 'undefined')) {
-            set(destination, mappingKey, get(messageContext, mappingKey));
+            set(payload, mappingKey, get(messageContext, mappingKey));
           }
         });
       }
@@ -1330,14 +1348,14 @@ function extractCustomFields(message, destination, keys, exclusionFields) {
     });
     mappingKeys.forEach((mappingKey) => {
       if (!(typeof message[mappingKey] === 'undefined')) {
-        set(destination, mappingKey, get(message, mappingKey));
+        set(payload, mappingKey, get(message, mappingKey));
       }
     });
   } else {
     logger.debug('unable to parse keys');
   }
 
-  return destination;
+  return payload;
 }
 
 // Deleting nested properties from objects
@@ -1400,6 +1418,11 @@ function getStringValueOfJSON(json) {
   });
   return output;
 }
+
+const getTrackingPlanMetadata = (metadata) => ({
+  trackingPlanId: metadata.trackingPlanId,
+  workspaceId: metadata.workspaceId,
+});
 
 const getMetadata = (metadata) => ({
   sourceType: metadata.sourceType,
@@ -1635,7 +1658,7 @@ function getValidDynamicFormConfig(
  */
 const checkInvalidRtTfEvents = (inputs) => {
   if (!Array.isArray(inputs) || inputs.length === 0) {
-    const respEvents = getErrorRespEvents(null, 400, 'Invalid event array');
+    const respEvents = getErrorRespEvents([], 400, 'Invalid event array');
     return [respEvents];
   }
   return [];
@@ -1697,11 +1720,6 @@ const handleRtTfSingleEventError = (input, error, reqMetadata) => {
  * @returns
  */
 const simpleProcessRouterDest = async (inputs, singleTfFunc, reqMetadata, processParams) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
-
   const respList = await Promise.all(
     inputs.map(async (input) => {
       try {
@@ -1729,10 +1747,6 @@ const simpleProcessRouterDest = async (inputs, singleTfFunc, reqMetadata, proces
  * @returns
  */
 const simpleProcessRouterDestSync = async (inputs, singleTfFunc, reqMetadata, processParams) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
   const respList = [];
   // eslint-disable-next-line no-restricted-syntax
   for (const input of inputs) {
@@ -2111,6 +2125,106 @@ const parseConfigArray = (arr, key) => {
   return arr.map((item) => item[key]);
 };
 
+/**
+ * Finds an existing batch based on metadata JobIds from the provided batch and metadataMap.
+ * @param {*} batch
+ * @param {*} metadataMap The map containing metadata items indexed by JobIds.
+ * @returns
+ */
+const findExistingBatch = (batch, metadataMap) => {
+  const existingMetadataItem = batch.metadata.find((metadataItem) =>
+    metadataMap.has(metadataItem.jobId),
+  );
+  return existingMetadataItem ? metadataMap.get(existingMetadataItem.jobId) : null;
+};
+
+/**
+ * Removes duplicate metadata within each merged batch object.
+ * @param {*} mergedBatches An array of merged batch objects.
+ */
+const removeDuplicateMetadata = (mergedBatches) => {
+  mergedBatches.forEach((batch) => {
+    const metadataSet = new Set();
+    // eslint-disable-next-line no-param-reassign
+    batch.metadata = batch.metadata.filter((metadataItem) => {
+      if (!metadataSet.has(metadataItem.jobId)) {
+        metadataSet.add(metadataItem.jobId);
+        return true;
+      }
+      return false;
+    });
+  });
+};
+
+/**
+ * Combines batched requests with the same JobIds.
+ * @param {*} inputBatches The array of batched request objects.
+ * @returns  The combined batched requests with merged JobIds.
+ *
+ */
+const combineBatchRequestsWithSameJobIds = (inputBatches) => {
+  const combineBatches = (batches) => {
+    const clonedBatches = [...batches];
+    const mergedBatches = [];
+    const metadataMap = new Map();
+
+    clonedBatches.forEach((batch) => {
+      const existingBatch = findExistingBatch(batch, metadataMap);
+
+      if (existingBatch) {
+        // Merge batchedRequests arrays
+        existingBatch.batchedRequest = [
+          ...CommonUtils.toArray(existingBatch.batchedRequest),
+          ...CommonUtils.toArray(batch.batchedRequest),
+        ];
+
+        // Merge metadata
+        batch.metadata.forEach((metadataItem) => {
+          if (!metadataMap.has(metadataItem.jobId)) {
+            metadataMap.set(metadataItem.jobId, existingBatch);
+          }
+          existingBatch.metadata.push(metadataItem);
+        });
+      } else {
+        mergedBatches.push(batch);
+        batch.metadata.forEach((metadataItem) => {
+          metadataMap.set(metadataItem.jobId, batch);
+        });
+      }
+    });
+
+    // Remove duplicate metadata within each merged object
+    removeDuplicateMetadata(mergedBatches);
+
+    return mergedBatches;
+  };
+  // We need to run this twice because in first pass some batches might not get merged
+  // and in second pass they might get merged
+  // Example: [[{jobID:1}, {jobID:2}], [{jobID:3}], [{jobID:1}, {jobID:3}]]
+  // 1st pass: [[{jobID:1}, {jobID:2}, {jobID:3}], [{jobID:3}]]
+  // 2nd pass: [[{jobID:1}, {jobID:2}, {jobID:3}]]
+  return combineBatches(combineBatches(inputBatches));
+};
+
+/**
+ * This function validates the event and return it as string.
+ * @param {*} isMandatory The event is a required field.
+ * @param {*} convertToLowerCase The event should be converted to lower-case.
+ * @returns {string} Event name converted to string.
+ */
+const validateEventAndLowerCaseConversion = (event, isMandatory, convertToLowerCase) => {
+  if (!isDefined(event) || typeof event === 'object' || typeof event === 'boolean') {
+    throw new InstrumentationError('Event should not be a object, NaN, boolean or undefined');
+  }
+
+  // handling 0 as it is a valid value
+  if (isMandatory && !event && event !== 0) {
+    throw new InstrumentationError('Event is a required field');
+  }
+
+  return convertToLowerCase ? event.toString().toLowerCase() : event.toString();
+};
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -2132,6 +2246,7 @@ module.exports = {
   defaultPutRequestConfig,
   defaultRequestConfig,
   deleteObjectProperty,
+  generateExclusionList,
   extractCustomFields,
   flattenJson,
   flattenMap,
@@ -2146,7 +2261,6 @@ module.exports = {
   getDestinationExternalIDInfoForRetl,
   getDestinationExternalIDObjectForRetl,
   getDeviceModel,
-  getErrorRespEvents,
   getEventTime,
   getFieldValueFromMessage,
   getFirstAndLastName,
@@ -2158,6 +2272,7 @@ module.exports = {
   getMappingConfig,
   getMetadata,
   getTransformationMetadata,
+  getTrackingPlanMetadata,
   getParsedIP,
   getStringValueOfJSON,
   getSuccessRespEvents,
@@ -2177,6 +2292,7 @@ module.exports = {
   isDefinedAndNotNullAndNotEmpty,
   isEmpty,
   isNotEmpty,
+  isNull,
   isEmptyObject,
   isHttpStatusRetryable,
   isHttpStatusSuccess,
@@ -2223,4 +2339,8 @@ module.exports = {
   isNewStatusCodesAccepted,
   IsGzipSupported,
   parseConfigArray,
+  findExistingBatch,
+  removeDuplicateMetadata,
+  combineBatchRequestsWithSameJobIds,
+  validateEventAndLowerCaseConversion,
 };

@@ -141,6 +141,30 @@ const DestCanonicalNames = {
     'TWITTER_ADS',
   ],
   BRAZE: ['BRAZE', 'Braze', 'braze'],
+  THE_TRADE_DESK: [
+    'THE_TRADE_DESK',
+    'the_trade_desk',
+    'The_Trade_Desk',
+    'The Trade Desk',
+    'thetradedesk',
+    'theTradeDesk',
+    'TheTradeDesk',
+    'the trade desk',
+  ],
+  INTERCOM: ['INTERCOM', 'intercom', 'Intercom'],
+  GOOGLE_ADWORDS_REMARKETING_LISTS: [
+    'GOOGLE_ADWORDS_REMARKETING_LISTS',
+    'google_adwords_remarketing_lists',
+    'Google Adwords Remarketing Lists',
+    'google adwords remarketing lists',
+  ],
+  GOOGLE_ADWORDS_OFFLINE_CONVERSIONS: [
+    'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS',
+    'google_adwords_offline_conversions',
+    'Google Adwords Offline Conversions',
+    'google adwords offline conversions',
+  ],
+  koala: ['Koala', 'koala', 'KOALA'],
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

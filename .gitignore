@@ -132,9 +132,10 @@ dist
 
 # Others
 **/.DS_Store
-
+.dccache
 
 .idea
 
 # component test report
 test_reports/
+temp/

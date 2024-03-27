@@ -1,7 +1,7 @@
 const lodash = require('lodash');
 const set = require('set-value');
 const get = require('get-value');
-const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
   isDefined,
   constructPayload,
@@ -16,6 +16,7 @@ const {
   IsGzipSupported,
   isObject,
   isDefinedAndNotNullAndNotEmpty,
+  isDefinedAndNotNull,
 } = require('../../util');
 const {
   ConfigCategory,
@@ -24,6 +25,7 @@ const {
   mappingConfig,
 } = require('./config');
 const { CommonUtils } = require('../../../util/common');
+const stats = require('../../../util/stats');
 
 const mPIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 const mPProfileAndroidConfigJson = mappingConfig[ConfigCategory.PROFILE_ANDROID.name];
@@ -140,44 +142,6 @@ const isImportAuthCredentialsAvailable = (destination) =>
     destination.Config.projectId);
 
 /**
- * Finds an existing batch based on metadata JobIds from the provided batch and metadataMap.
- * @param {*} batch
- * @param {*} metadataMap The map containing metadata items indexed by JobIds.
- * @returns
- */
-const findExistingBatch = (batch, metadataMap) => {
-  let existingBatch = null;
-
-  // eslint-disable-next-line no-restricted-syntax
-  for (const metadataItem of batch.metadata) {
-    if (metadataMap.has(metadataItem.jobId)) {
-      existingBatch = metadataMap.get(metadataItem.jobId);
-      break;
-    }
-  }
-
-  return existingBatch;
-};
-
-/**
- * Removes duplicate metadata within each merged batch object.
- * @param {*} mergedBatches An array of merged batch objects.
- */
-const removeDuplicateMetadata = (mergedBatches) => {
-  mergedBatches.forEach((batch) => {
-    const metadataSet = new Set();
-    // eslint-disable-next-line no-param-reassign
-    batch.metadata = batch.metadata.filter((metadataItem) => {
-      if (!metadataSet.has(metadataItem.jobId)) {
-        metadataSet.add(metadataItem.jobId);
-        return true;
-      }
-      return false;
-    });
-  });
-};
-
-/**
  * Builds UTM parameters from a campaign object.
  *
  * @param {Object} campaign - The campaign object containing the campaign details.
@@ -272,58 +236,6 @@ const batchEvents = (successRespList, maxBatchSize, reqMetadata) => {
 };
 
 /**
- * Combines batched requests with the same JobIds.
- * @param {*} inputBatches The array of batched request objects.
- * @returns  The combined batched requests with merged JobIds.
- *
- */
-const combineBatchRequestsWithSameJobIds = (inputBatches) => {
-  const combineBatches = (batches) => {
-    const clonedBatches = [...batches];
-    const mergedBatches = [];
-    const metadataMap = new Map();
-
-    clonedBatches.forEach((batch) => {
-      const existingBatch = findExistingBatch(batch, metadataMap);
-
-      if (existingBatch) {
-        // Merge batchedRequests arrays
-        existingBatch.batchedRequest = [
-          ...(Array.isArray(existingBatch.batchedRequest)
-            ? existingBatch.batchedRequest
-            : [existingBatch.batchedRequest]),
-          ...(Array.isArray(batch.batchedRequest) ? batch.batchedRequest : [batch.batchedRequest]),
-        ];
-
-        // Merge metadata
-        batch.metadata.forEach((metadataItem) => {
-          if (!metadataMap.has(metadataItem.jobId)) {
-            metadataMap.set(metadataItem.jobId, existingBatch);
-          }
-          existingBatch.metadata.push(metadataItem);
-        });
-      } else {
-        mergedBatches.push(batch);
-        batch.metadata.forEach((metadataItem) => {
-          metadataMap.set(metadataItem.jobId, batch);
-        });
-      }
-    });
-
-    // Remove duplicate metadata within each merged object
-    removeDuplicateMetadata(mergedBatches);
-
-    return mergedBatches;
-  };
-  // We need to run this twice because in first pass some batches might not get merged
-  // and in second pass they might get merged
-  // Example: [[{jobID:1}, {jobID:2}], [{jobID:3}], [{jobID:1}, {jobID:3}]]
-  // 1st pass: [[{jobID:1}, {jobID:2}, {jobID:3}], [{jobID:3}]]
-  // 2nd pass: [[{jobID:1}, {jobID:2}, {jobID:3}]]
-  return combineBatches(combineBatches(inputBatches));
-};
-
-/**
  * Trims the traits and contextTraits objects based on the setOnceProperties array and returns an object containing the modified traits, contextTraits, and setOnce properties.
  *
  * @param {object} traits - An object representing the traits.
@@ -389,6 +301,68 @@ function trimTraits(traits, contextTraits, setOnceProperties) {
   };
 }
 
+/**
+ * Generates a custom event name for a page or screen.
+ *
+ * @param {Object} message - The message object
+ * @param {string} userDefinedEventTemplate - The user-defined event template to be used for generating the event name.
+ * @throws {ConfigurationError} If the event template is missing.
+ * @returns {string} The generated custom event name.
+ * @example
+ * const userDefinedEventTemplate = "Viewed {{ category }} {{ name }} Page";
+ * const message = {name: 'Home', properties: {category: 'Index'}};
+ * output: "Viewed Index Home Page"
+ */
+const generatePageOrScreenCustomEventName = (message, userDefinedEventTemplate) => {
+  if (!userDefinedEventTemplate) {
+    throw new ConfigurationError(
+      'Event name template is not configured. Please provide a valid value for the `Page/Screen Event Name Template` in the destination dashboard.',
+    );
+  }
+
+  let eventName = userDefinedEventTemplate;
+
+  if (isDefinedAndNotNull(message.properties?.category)) {
+    // Replace {{ category }} with actual values
+    eventName = eventName.replace(/{{\s*category\s*}}/g, message.properties.category);
+  } else {
+    // find {{ category }} surrounded by whitespace characters and replace it with a single whitespace character
+    eventName = eventName.replace(/\s{{\s*category\s*}}\s/g, ' ');
+  }
+
+  if (isDefinedAndNotNull(message.name)) {
+    // Replace {{ name }} with actual values
+    eventName = eventName.replace(/{{\s*name\s*}}/g, message.name);
+  } else {
+    // find {{ name }} surrounded by whitespace characters and replace it with a single whitespace character
+    eventName = eventName.replace(/\s{{\s*name\s*}}\s/g, ' ');
+  }
+
+  return eventName;
+};
+
+/**
+ * Records the batch size metrics for different endpoints.
+ *
+ * @param {Object} batchSize - The object containing the batch size for different endpoints.
+ * @param {number} batchSize.engage - The batch size for engage endpoint.
+ * @param {number} batchSize.groups - The batch size for group endpoint.
+ * @param {number} batchSize.import - The batch size for import endpoint.
+ * @param {string} destinationId - The ID of the destination.
+ * @returns {void}
+ */
+const recordBatchSizeMetrics = (batchSize, destinationId) => {
+  stats.gauge('mixpanel_batch_engage_pack_size', batchSize.engage, {
+    destination_id: destinationId,
+  });
+  stats.gauge('mixpanel_batch_group_pack_size', batchSize.groups, {
+    destination_id: destinationId,
+  });
+  stats.gauge('mixpanel_batch_import_pack_size', batchSize.import, {
+    destination_id: destinationId,
+  });
+};
+
 module.exports = {
   createIdentifyResponse,
   isImportAuthCredentialsAvailable,
@@ -396,6 +370,7 @@ module.exports = {
   groupEventsByEndpoint,
   generateBatchedPayloadForArray,
   batchEvents,
-  combineBatchRequestsWithSameJobIds,
   trimTraits,
+  generatePageOrScreenCustomEventName,
+  recordBatchSizeMetrics,
 };

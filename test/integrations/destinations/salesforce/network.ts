@@ -1,15 +1,22 @@
+const commonHeaders = {
+  Authorization: 'Bearer token',
+  'Content-Type': 'application/json',
+};
+
+const dataValue = {
+  Email: 'danis.archurav@sbermarket.ru',
+  Company: 'itus.ru',
+  LastName: 'Danis',
+  FirstName: 'Archurav',
+  LeadSource: 'App Signup',
+  account_type__c: 'free_trial',
+};
+
 const tfProxyMocksData = [
   {
     httpReq: {
       url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/1',
-      data: {
-        Email: 'denis.kornilov@sbermarket.ru',
-        Company: 'sbermarket.ru',
-        LastName: 'Корнилов',
-        FirstName: 'Денис',
-        LeadSource: 'App Signup',
-        account_type__c: 'free_trial',
-      },
+      data: dataValue,
       params: { destination: 'salesforce' },
       headers: {
         'Content-Type': 'application/json',
@@ -26,14 +33,7 @@ const tfProxyMocksData = [
   {
     httpReq: {
       url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/3',
-      data: {
-        Email: 'denis.kornilov@sbermarket.ru',
-        Company: 'sbermarket.ru',
-        LastName: 'Корнилов',
-        FirstName: 'Денис',
-        LeadSource: 'App Signup',
-        account_type__c: 'free_trial',
-      },
+      data: dataValue,
       params: { destination: 'salesforce' },
       headers: {
         'Content-Type': 'application/json',
@@ -50,19 +50,11 @@ const tfProxyMocksData = [
   {
     httpReq: {
       url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/2',
-      data: {
-        Email: 'denis.kornilov@sbermarket.ru',
-        Company: 'sbermarket.ru',
-        LastName: 'Корнилов',
-        FirstName: 'Денис',
-        LeadSource: 'App Signup',
-        account_type__c: 'free_trial',
-      },
+      data: dataValue,
       params: { destination: 'salesforce' },
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer Incorrect_token',
-        'User-Agent': 'RudderLabs',
+        Authorization: 'Bearer token',
       },
       method: 'POST',
     },
@@ -74,14 +66,7 @@ const tfProxyMocksData = [
   {
     httpReq: {
       url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/4',
-      data: {
-        Email: 'denis.kornilov@sbermarket.ru',
-        Company: 'sbermarket.ru',
-        LastName: 'Корнилов',
-        FirstName: 'Денис',
-        LeadSource: 'App Signup',
-        account_type__c: 'free_trial',
-      },
+      data: dataValue,
       params: { destination: 'salesforce' },
       headers: {
         'Content-Type': 'application/json',
@@ -98,14 +83,7 @@ const tfProxyMocksData = [
   {
     httpReq: {
       url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/5',
-      data: {
-        Email: 'denis.kornilov@sbermarket.ru',
-        Company: 'sbermarket.ru',
-        LastName: 'Корнилов',
-        FirstName: 'Денис',
-        LeadSource: 'App Signup',
-        account_type__c: 'free_trial',
-      },
+      data: dataValue,
       params: { destination: 'salesforce' },
       headers: {
         'Content-Type': 'application/json',
@@ -122,14 +100,7 @@ const tfProxyMocksData = [
   {
     httpReq: {
       url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/6',
-      data: {
-        Email: 'denis.kornilov@sbermarket.ru',
-        Company: 'sbermarket.ru',
-        LastName: 'Корнилов',
-        FirstName: 'Денис',
-        LeadSource: 'App Signup',
-        account_type__c: 'free_trial',
-      },
+      data: dataValue,
       params: { destination: 'salesforce' },
       headers: {
         'Content-Type': 'application/json',
@@ -146,19 +117,11 @@ const tfProxyMocksData = [
   {
     httpReq: {
       url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/7',
-      data: {
-        Email: 'denis.kornilov@sbermarket.ru',
-        Company: 'sbermarket.ru',
-        LastName: 'Корнилов',
-        FirstName: 'Денис',
-        LeadSource: 'App Signup',
-        account_type__c: 'free_trial',
-      },
+      data: dataValue,
       params: { destination: 'salesforce' },
       headers: {
         'Content-Type': 'application/json',
         Authorization: 'Bearer token',
-        'User-Agent': 'RudderLabs',
       },
       method: 'POST',
     },
@@ -323,4 +286,185 @@ const transformationMocksData = [
     },
   },
 ];
-export const networkCallsData = [...tfProxyMocksData, ...transformationMocksData];
+
+const businessMockData = [
+  {
+    description:
+      'Mock response from destination depicting a valid lead request, with no changed data',
+    httpReq: {
+      method: 'post',
+      url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/existing_unchanged_leadId',
+      data: dataValue,
+      headers: commonHeaders,
+    },
+    httpRes: {
+      data: { statusText: 'No Content' },
+      status: 204,
+    },
+  },
+  {
+    description: 'Mock response from destination depicting a invalid session id',
+    httpReq: {
+      method: 'post',
+      url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/invalid_session_id',
+      data: dataValue,
+      headers: commonHeaders,
+    },
+    httpRes: {
+      data: [{ message: 'Session expired or invalid', errorCode: 'INVALID_SESSION_ID' }],
+      status: 500,
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/2',
+      data: dataValue,
+      params: { destination: 'salesforce' },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer Incorrect_token',
+        'User-Agent': 'RudderLabs',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: [{ message: 'INVALID_HEADER_TYPE', errorCode: 'INVALID_AUTH_HEADER' }],
+      status: 401,
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/4',
+      data: dataValue,
+      params: { destination: 'salesforce' },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer token',
+        'User-Agent': 'RudderLabs',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: [{ message: 'Request limit exceeded', errorCode: 'REQUEST_LIMIT_EXCEEDED' }],
+      status: 403,
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/5',
+      data: dataValue,
+      params: { destination: 'salesforce' },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer token',
+        'User-Agent': 'RudderLabs',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: [{ message: 'Server Unavailable', errorCode: 'SERVER_UNAVAILABLE' }],
+      status: 503,
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/6',
+      data: dataValue,
+      params: { destination: 'salesforce' },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer token',
+        'User-Agent': 'RudderLabs',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: { error: 'invalid_grant', error_description: 'authentication failure' },
+      status: 400,
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/7',
+      data: dataValue,
+      params: { destination: 'salesforce' },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer token',
+        'User-Agent': 'RudderLabs',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        message: 'Server Unavailable',
+        errorCode: 'SERVER_UNAVAILABLE',
+      },
+      status: 503,
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://rudderstack.my.salesforce.com/services/data/v50.0/parameterizedSearch/?q=123&sobject=object_name&in=External_ID__c&object_name.fields=id,External_ID__c',
+      data: { Planning_Categories__c: 'pc', External_ID__c: 123 },
+      params: { destination: 'salesforce' },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer token',
+        'User-Agent': 'RudderLabs',
+      },
+      method: 'POST',
+    },
+    httpRes: {
+      data: {
+        searchRecords: [
+          {
+            attributes: {
+              type: 'object_name',
+              url: '/services/data/v50.0/sobjects/object_name/a0J75100002w97gEAA',
+            },
+            Id: 'a0J75100002w97gEAA',
+            External_ID__c: 'external_id',
+          },
+          {
+            attributes: {
+              type: 'object_name',
+              url: '/services/data/v50.0/sobjects/object_name/a0J75200002w9ZsEAI',
+            },
+            Id: 'a0J75200002w9ZsEAI',
+            External_ID__c: 'external_id TEST',
+          },
+        ],
+      },
+      status: 200,
+    },
+  },
+];
+
+const otherMocksData = [
+  {
+    description:
+      'Mock response from destination depicting a valid lead request, with no changed data',
+    httpReq: {
+      method: 'post',
+      url: 'https://sf_test_url/test_for_service_not_available',
+    },
+    httpRes: {
+      data: {
+        error: {
+          message: 'Service Unavailable',
+          description:
+            'The server is currently unable to handle the request due to temporary overloading or maintenance of the server. Please try again later.',
+        },
+      },
+      status: 503,
+    },
+  },
+];
+
+export const networkCallsData = [
+  ...tfProxyMocksData,
+  ...transformationMocksData,
+  ...businessMockData,
+  ...otherMocksData,
+];

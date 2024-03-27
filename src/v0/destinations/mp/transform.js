@@ -14,10 +14,10 @@ const {
   removeUndefinedValues,
   toUnixTimestampInMS,
   getFieldValueFromMessage,
-  checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
   groupEventsByType,
   parseConfigArray,
+  combineBatchRequestsWithSameJobIds,
 } = require('../../util');
 const {
   ConfigCategory,
@@ -32,10 +32,11 @@ const {
   createIdentifyResponse,
   isImportAuthCredentialsAvailable,
   buildUtmParams,
-  combineBatchRequestsWithSameJobIds,
   groupEventsByEndpoint,
   batchEvents,
   trimTraits,
+  generatePageOrScreenCustomEventName,
+  recordBatchSizeMetrics,
 } = require('./util');
 const { CommonUtils } = require('../../../util/common');
 
@@ -48,11 +49,11 @@ const setImportCredentials = (destConfig) => {
   const params = { strict: destConfig.strictMode ? 1 : 0 };
   const { serviceAccountUserName, serviceAccountSecret, projectId, token } = destConfig;
   let credentials;
-  if (serviceAccountUserName && serviceAccountSecret && projectId) {
+  if (token) {
+    credentials = `${token}:`;
+  } else if (serviceAccountUserName && serviceAccountSecret && projectId) {
     credentials = `${serviceAccountUserName}:${serviceAccountSecret}`;
     params.projectId = projectId;
-  } else {
-    credentials = `${token}:`;
   }
   const headers = {
     'Content-Type': 'application/json',
@@ -285,17 +286,25 @@ const processIdentifyEvents = async (message, type, destination) => {
 };
 
 const processPageOrScreenEvents = (message, type, destination) => {
+  const {
+    token,
+    identityMergeApi,
+    useUserDefinedPageEventName,
+    userDefinedPageEventTemplate,
+    useUserDefinedScreenEventName,
+    userDefinedScreenEventTemplate,
+  } = destination.Config;
   const mappedProperties = constructPayload(message, mPEventPropertiesConfigJson);
   let properties = {
     ...get(message, 'context.traits'),
     ...message.properties,
     ...mappedProperties,
-    token: destination.Config.token,
+    token,
     distinct_id: message.userId || message.anonymousId,
     time: toUnixTimestampInMS(message.timestamp || message.originalTimestamp),
     ...buildUtmParams(message.context?.campaign),
   };
-  if (destination.Config?.identityMergeApi === 'simplified') {
+  if (identityMergeApi === 'simplified') {
     properties = {
       ...properties,
       distinct_id: message.userId || `$device:${message.anonymousId}`,
@@ -314,7 +323,18 @@ const processPageOrScreenEvents = (message, type, destination) => {
     properties.$browser = browser.name;
     properties.$browser_version = browser.version;
   }
-  const eventName = type === 'page' ? 'Loaded a Page' : 'Loaded a Screen';
+
+  let eventName;
+  if (type === 'page') {
+    eventName = useUserDefinedPageEventName
+      ? generatePageOrScreenCustomEventName(message, userDefinedPageEventTemplate)
+      : 'Loaded a Page';
+  } else {
+    eventName = useUserDefinedScreenEventName
+      ? generatePageOrScreenCustomEventName(message, userDefinedScreenEventTemplate)
+      : 'Loaded a Screen';
+  }
+
   const payload = {
     event: eventName,
     properties,
@@ -447,10 +467,11 @@ const process = (event) => processSingleMessage(event.message, event.destination
 // Ref: https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel
 // Ref: https://help.mixpanel.com/hc/en-us/articles/115004561786-Track-UTM-Tags
 const processRouterDest = async (inputs, reqMetadata) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
+  const batchSize = {
+    engage: 0,
+    groups: 0,
+    import: 0,
+  };
 
   const groupedEvents = groupEventsByType(inputs);
   const response = await Promise.all(
@@ -488,12 +509,19 @@ const processRouterDest = async (inputs, reqMetadata) => {
       const importRespList = batchEvents(importEvents, IMPORT_MAX_BATCH_SIZE, reqMetadata);
       const batchSuccessRespList = [...engageRespList, ...groupsRespList, ...importRespList];
 
+      batchSize.engage += engageRespList.length;
+      batchSize.groups += groupsRespList.length;
+      batchSize.import += importRespList.length;
+
       return [...batchSuccessRespList, ...batchErrorRespList];
     }),
   );
 
   // Flatten the response array containing batched events from multiple groups
   const allBatchedEvents = lodash.flatMap(response);
+
+  const { destination } = allBatchedEvents[0];
+  recordBatchSizeMetrics(batchSize, destination.ID);
   return combineBatchRequestsWithSameJobIds(allBatchedEvents);
 };
 

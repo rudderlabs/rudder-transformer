@@ -18,6 +18,24 @@ const FETCH_FAILURE_JOB_STATUS_ERR_MSG = 'Could not fetch failure job status';
 const FETCH_WARNING_JOB_STATUS_ERR_MSG = 'Could not fetch warning job status';
 const ACCESS_TOKEN_FETCH_ERR_MSG = 'Error during fetching access token';
 
+const SCHEMA_DATA_TYPE_MAP = {
+  string: 'string',
+  number: 'number',
+  boolean: 'boolean',
+  undefined: 'undefined',
+  float: 'number',
+  text: 'string',
+  currency: 'string',
+  integer: 'number',
+  reference: 'string',
+  datetime: 'string',
+  date: 'string',
+  email: 'string',
+  phone: 'string',
+  url: 'string',
+  object: 'object',
+};
+
 module.exports = {
   ABORTABLE_CODES,
   RETRYABLE_CODES,
@@ -33,4 +51,5 @@ module.exports = {
   FETCH_FAILURE_JOB_STATUS_ERR_MSG,
   FETCH_WARNING_JOB_STATUS_ERR_MSG,
   ACCESS_TOKEN_FETCH_ERR_MSG,
+  SCHEMA_DATA_TYPE_MAP,
 };

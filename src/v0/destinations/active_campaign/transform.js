@@ -62,6 +62,8 @@ const syncContact = async (contactPayload, category, destination) => {
     destType: 'active_campaign',
     feature: 'transformation',
     endpointPath: endPoint,
+    requestMethod: 'POST',
+    module: 'router',
   });
   if (res.success === false) {
     errorHandler(res, 'Failed to create new contact');
@@ -129,6 +131,8 @@ const customTagProcessor = async (message, category, destination, contactId) => 
           destType: 'active_campaign',
           feature: 'transformation',
           endpointPath: `/api/3/tags`,
+          requestMethod: 'GET',
+          module: 'router',
         });
         promises.push(resp);
       }
@@ -253,6 +257,8 @@ const customFieldProcessor = async (message, category, destination) => {
         destType: 'active_campaign',
         feature: 'transformation',
         endpointPath: `/api/3/fields`,
+        requestMethod: 'GET',
+        module: 'router',
       });
       promises.push(resp);
     }
@@ -351,6 +357,8 @@ const customListProcessor = async (message, category, destination, contactId) =>
         destType: 'active_campaign',
         feature: 'transformation',
         endpointPath: mergeListWithContactUrl,
+        requestMethod: 'POST',
+        module: 'router',
       });
       promises.push(res);
     }
@@ -409,6 +417,8 @@ const screenRequestHandler = async (message, category, destination) => {
     destType: 'active_campaign',
     feature: 'transformation',
     endpointPath: `/api/3/eventTrackingEvents`,
+    requestMethod: 'GET',
+    module: 'router',
   });
   if (res.success === false) {
     errorHandler(res, 'Failed to retrieve events');
@@ -473,6 +483,8 @@ const trackRequestHandler = async (message, category, destination) => {
     destType: 'active_campaign',
     feature: 'transformation',
     endpointPath: `/api/3/eventTrackingEvents`,
+    requestMethod: 'GET',
+    module: 'router',
   });
 
   if (res.success === false) {

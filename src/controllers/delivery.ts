@@ -2,7 +2,6 @@
 /* eslint-disable sonarjs/no-duplicate-string */
 import { Context } from 'koa';
 import logger from "@rudderstack/integrations-lib/build/structured-logger";
-=======
 import { isDefinedAndNotNullAndNotEmpty } from '@rudderstack/integrations-lib';
 import { MiscService } from '../services/misc';
 import {

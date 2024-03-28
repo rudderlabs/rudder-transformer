@@ -33,5 +33,10 @@
       "context.traits.action_source",
       "properties.action_source"
     ]
+  },
+  {
+    "destKey": "advertiser_tracking_enabled",
+    "sourceKeys": "context.device.adTrackingEnabled",
+    "required": false
   }
 ]

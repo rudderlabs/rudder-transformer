@@ -165,6 +165,7 @@ const DestCanonicalNames = {
     'google adwords offline conversions',
   ],
   koala: ['Koala', 'koala', 'KOALA'],
+  bloomreach: ['Bloomreach', 'bloomreach', 'BLOOMREACH'],
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

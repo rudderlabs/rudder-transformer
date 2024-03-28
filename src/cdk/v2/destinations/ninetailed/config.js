@@ -17,10 +17,6 @@ const ConfigCategories = {
     type: 'identify',
     name: 'identifyMapping',
   },
-  PAGE: {
-    type: 'page',
-    name: 'pageMapping',
-  },
 };
 
 // MAX_BATCH_SIZE : // Maximum number of events to send in a single batch

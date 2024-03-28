@@ -12,7 +12,7 @@ export const data = [
       request: {
         body: [
           {
-            destination: overrideDestination(sampleDestination, { token: 'dummyApiKey' }),
+            destination: overrideDestination(sampleDestination, { token: 'test_api_token' }),
             message: {
               anonymousId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
               channel: 'web',
@@ -87,14 +87,17 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api.mixpanel.com/track/',
-              headers: {},
-              params: {},
+              endpoint: 'https://api.mixpanel.com/import/',
+              headers: {
+                Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
+                'Content-Type': 'application/json',
+              },
+              params: { strict: 0 },
               body: {
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"event":"Loaded a Page","properties":{"ip":"0.0.0.0","campaign_id":"test_name","$user_id":"hjikl","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"dd266c67-9199-4a52-ba32-f46ddde67312","token":"dummyApiKey","distinct_id":"hjikl","time":1579847342402,"utm_campaign":"test_name","utm_source":"rudder","utm_medium":"test_medium","utm_term":"test_tem","utm_content":"test_content","utm_test":"test","utm_keyword":"test_keyword","name":"Contact Us","$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
+                    '[{"event":"Loaded a Page","properties":{"ip":"0.0.0.0","campaign_id":"test_name","$user_id":"hjikl","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"dd266c67-9199-4a52-ba32-f46ddde67312","token":"test_api_token","distinct_id":"hjikl","time":1579847342402,"utm_campaign":"test_name","utm_source":"rudder","utm_medium":"test_medium","utm_term":"test_tem","utm_content":"test_content","utm_test":"test","utm_keyword":"test_keyword","name":"Contact Us","$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
                 },
                 XML: {},
                 FORM: {},
@@ -191,14 +194,17 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api.mixpanel.com/track/',
-              headers: {},
-              params: {},
+              endpoint: 'https://api.mixpanel.com/import/',
+              headers: {
+                Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
+                'Content-Type': 'application/json',
+              },
+              params: { strict: 0 },
               body: {
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"event":"Viewed a Contact Us page","properties":{"ip":"0.0.0.0","$user_id":"hjikl","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"dd266c67-9199-4a52-ba32-f46ddde67312","token":"dummyApiKey","distinct_id":"hjikl","time":1579847342402,"name":"Contact Us","category":"Contact","$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
+                    '[{"event":"Viewed a Contact Us page","properties":{"ip":"0.0.0.0","$user_id":"hjikl","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"dd266c67-9199-4a52-ba32-f46ddde67312","token":"test_api_token","distinct_id":"hjikl","time":1579847342402,"name":"Contact Us","category":"Contact","$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
                 },
                 XML: {},
                 FORM: {},
@@ -272,14 +278,17 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api.mixpanel.com/track/',
-              headers: {},
-              params: {},
+              endpoint: 'https://api.mixpanel.com/import/',
+              headers: {
+                Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
+                'Content-Type': 'application/json',
+              },
+              params: { strict: 0 },
               body: {
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"event":"Loaded a Screen","properties":{"category":"communication","ip":"0.0.0.0","$user_id":"hjikl","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"dd266c67-9199-4a52-ba32-f46ddde67312","token":"dummyApiKey","distinct_id":"hjikl","time":1579847342402,"name":"Contact Us"}}]',
+                    '[{"event":"Loaded a Screen","properties":{"category":"communication","ip":"0.0.0.0","$user_id":"hjikl","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"dd266c67-9199-4a52-ba32-f46ddde67312","token":"test_api_token","distinct_id":"hjikl","time":1579847342402,"name":"Contact Us"}}]',
                 },
                 XML: {},
                 FORM: {},
@@ -360,14 +369,17 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api.mixpanel.com/track/',
-              headers: {},
-              params: {},
+              endpoint: 'https://api.mixpanel.com/import/',
+              headers: {
+                Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
+                'Content-Type': 'application/json',
+              },
+              params: { strict: 0 },
               body: {
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"event":"Loaded a Screen","properties":{"path":"/tests/html/index2.html","referrer":"","search":"","title":"","url":"http://localhost/tests/html/index2.html","ip":"0.0.0.0","$user_id":"hjiklmk","$screen_dpi":2,"mp_lib":"RudderLabs Android SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"dd266c67-9199-4a52-ba32-f46ddde67312","token":"dummyApiKey","distinct_id":"hjiklmk","time":1579847342402,"name":"Contact Us","category":"Contact"}}]',
+                    '[{"event":"Loaded a Screen","properties":{"path":"/tests/html/index2.html","referrer":"","search":"","title":"","url":"http://localhost/tests/html/index2.html","ip":"0.0.0.0","$user_id":"hjiklmk","$screen_dpi":2,"mp_lib":"RudderLabs Android SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"dd266c67-9199-4a52-ba32-f46ddde67312","token":"test_api_token","distinct_id":"hjiklmk","time":1579847342402,"name":"Contact Us","category":"Contact"}}]',
                 },
                 XML: {},
                 FORM: {},
@@ -440,14 +452,17 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api.mixpanel.com/track/',
-              headers: {},
-              params: {},
+              endpoint: 'https://api.mixpanel.com/import/',
+              headers: {
+                Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
+                'Content-Type': 'application/json',
+              },
+              params: { strict: 0 },
               body: {
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"event":"Loaded a Screen","properties":{"ip":"0.0.0.0","$user_id":"hjikl","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"dd266c67-9199-4a52-ba32-f46ddde67312","token":"dummyApiKey","distinct_id":"hjikl","time":1579847342402,"name":"Contact Us"}}]',
+                    '[{"event":"Loaded a Screen","properties":{"ip":"0.0.0.0","$user_id":"hjikl","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"dd266c67-9199-4a52-ba32-f46ddde67312","token":"test_api_token","distinct_id":"hjikl","time":1579847342402,"name":"Contact Us"}}]',
                 },
                 XML: {},
                 FORM: {},
@@ -550,7 +565,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$set":{"$created":"2020-01-23T08:54:02.362Z","$email":"mickey@disney.com","$first_name":"Mickey","$last_name":"Mouse","$country_code":"USA","$city":"Disney","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$name":"Mickey Mouse","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"dummyApiKey","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","$ip":"0.0.0.0","$time":1579847342402}]',
+                    '[{"$set":{"$created":"2020-01-23T08:54:02.362Z","$email":"mickey@disney.com","$first_name":"Mickey","$last_name":"Mouse","$country_code":"USA","$city":"Disney","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$name":"Mickey Mouse","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"test_api_token","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","$ip":"0.0.0.0","$time":1579847342402}]',
                 },
                 XML: {},
                 FORM: {},
@@ -664,7 +679,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$append":{"$transactions":{"$time":"2020-01-24T06:29:02.403Z","$amount":45.89}},"$token":"dummyApiKey","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca"}]',
+                    '[{"$append":{"$transactions":{"$time":"2020-01-24T06:29:02.403Z","$amount":45.89}},"$token":"test_api_token","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca"}]',
                 },
                 XML: {},
                 FORM: {},
@@ -686,7 +701,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$add":{"counter":1,"item_purchased":"2"},"$token":"dummyApiKey","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca"}]',
+                    '[{"$add":{"counter":1,"item_purchased":"2"},"$token":"test_api_token","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca"}]',
                 },
                 XML: {},
                 FORM: {},
@@ -701,14 +716,17 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api.mixpanel.com/track/',
-              headers: {},
-              params: {},
+              endpoint: 'https://api.mixpanel.com/import/',
+              headers: {
+                Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
+                'Content-Type': 'application/json',
+              },
+              params: { strict: 0 },
               body: {
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"event":"test revenue MIXPANEL","properties":{"currency":"USD","revenue":45.89,"counter":1,"item_purchased":"2","number_of_logins":"","city":"Disney","country":"USA","email":"mickey@disney.com","firstName":"Mickey","ip":"0.0.0.0","campaign_id":"test_name","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"a6a0ad5a-bd26-4f19-8f75-38484e580fc7","token":"dummyApiKey","distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","time":1579847342403,"utm_campaign":"test_name","utm_source":"rudder","utm_medium":"test_medium","utm_term":"test_tem","utm_content":"test_content","utm_test":"test","utm_keyword":"test_keyword","$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
+                    '[{"event":"test revenue MIXPANEL","properties":{"currency":"USD","revenue":45.89,"counter":1,"item_purchased":"2","number_of_logins":"","city":"Disney","country":"USA","email":"mickey@disney.com","firstName":"Mickey","ip":"0.0.0.0","campaign_id":"test_name","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"a6a0ad5a-bd26-4f19-8f75-38484e580fc7","token":"test_api_token","distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","time":1579847342403,"utm_campaign":"test_name","utm_source":"rudder","utm_medium":"test_medium","utm_term":"test_tem","utm_content":"test_content","utm_test":"test","utm_keyword":"test_keyword","$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
                 },
                 XML: {},
                 FORM: {},
@@ -796,14 +814,17 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api.mixpanel.com/track/',
-              headers: {},
-              params: {},
+              endpoint: 'https://api.mixpanel.com/import/',
+              headers: {
+                Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
+                'Content-Type': 'application/json',
+              },
+              params: { strict: 0 },
               body: {
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"event":"$create_alias","properties":{"distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","alias":"1234abc","token":"dummyApiKey"}}]',
+                    '[{"event":"$create_alias","properties":{"distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","alias":"1234abc","token":"test_api_token"}}]',
                 },
                 XML: {},
                 FORM: {},
@@ -933,7 +954,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$append":{"$transactions":{"$time":"2020-01-24T06:29:02.402Z","$amount":25}},"$token":"dummyApiKey","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca"}]',
+                    '[{"$append":{"$transactions":{"$time":"2020-01-24T06:29:02.402Z","$amount":25}},"$token":"test_api_token","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca"}]',
                 },
                 XML: {},
                 FORM: {},
@@ -948,14 +969,17 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api.mixpanel.com/track/',
-              headers: {},
-              params: {},
+              endpoint: 'https://api.mixpanel.com/import/',
+              headers: {
+                Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
+                'Content-Type': 'application/json',
+              },
+              params: { strict: 0 },
               body: {
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"event":"KM Order Completed","properties":{"affiliation":"Google Store","checkout_id":"fksdjfsdjfisjf9sdfjsd9f","coupon":"hasbros","currency":"USD","discount":2.5,"order_id":"50314b8e9bcf000000000000","products":[{"category":"Games","image_url":"https:///www.example.com/product/path.jpg","name":"Monopoly: 3rd Edition","price":19,"product_id":"507f1f77bcf86cd799439011","quantity":1,"sku":"45790-32","url":"https://www.example.com/product/path"},{"category":"Games","name":"Uno Card Game","price":3,"product_id":"505bd76785ebb509fc183733","quantity":2,"sku":"46493-32"}],"revenue":25,"shipping":3,"subtotal":22.5,"tax":2,"total":27.5,"city":"Disney","country":"USA","email":"mickey@disney.com","firstName":"Mickey","ip":"0.0.0.0","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a","token":"dummyApiKey","distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","time":1579847342402,"$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
+                    '[{"event":"KM Order Completed","properties":{"affiliation":"Google Store","checkout_id":"fksdjfsdjfisjf9sdfjsd9f","coupon":"hasbros","currency":"USD","discount":2.5,"order_id":"50314b8e9bcf000000000000","products":[{"category":"Games","image_url":"https:///www.example.com/product/path.jpg","name":"Monopoly: 3rd Edition","price":19,"product_id":"507f1f77bcf86cd799439011","quantity":1,"sku":"45790-32","url":"https://www.example.com/product/path"},{"category":"Games","name":"Uno Card Game","price":3,"product_id":"505bd76785ebb509fc183733","quantity":2,"sku":"46493-32"}],"revenue":25,"shipping":3,"subtotal":22.5,"tax":2,"total":27.5,"city":"Disney","country":"USA","email":"mickey@disney.com","firstName":"Mickey","ip":"0.0.0.0","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a","token":"test_api_token","distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","time":1579847342402,"$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
                 },
                 XML: {},
                 FORM: {},
@@ -1089,7 +1113,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$append":{"$transactions":{"$time":"2020-01-24T06:29:02.402Z","$amount":34}},"$token":"dummyApiKey","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca"}]',
+                    '[{"$append":{"$transactions":{"$time":"2020-01-24T06:29:02.402Z","$amount":34}},"$token":"test_api_token","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca"}]',
                 },
                 XML: {},
                 FORM: {},
@@ -1104,14 +1128,17 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api.mixpanel.com/track/',
-              headers: {},
-              params: {},
+              endpoint: 'https://api.mixpanel.com/import/',
+              headers: {
+                Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
+                'Content-Type': 'application/json',
+              },
+              params: { strict: 0 },
               body: {
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"event":"KM Order Completed","properties":{"affiliation":"Google Store","checkout_id":"fksdjfsdjfisjf9sdfjsd9f","coupon":"hasbros","currency":"USD","discount":2.5,"order_id":"50314b8e9bcf000000000000","revenue":34,"key_1":{"child_key1":"child_value1","child_key2":{"child_key21":"child_value21","child_key22":"child_value22"}},"products":[{"category":"Games","image_url":"https:///www.example.com/product/path.jpg","name":"Monopoly: 3rd Edition","price":19,"product_id":"507f1f77bcf86cd799439011","quantity":1,"sku":"45790-32","url":"https://www.example.com/product/path"},{"category":"Games","name":"Uno Card Game","price":3,"product_id":"505bd76785ebb509fc183733","quantity":2,"sku":"46493-32"}],"shipping":3,"subtotal":22.5,"tax":2,"total":27.5,"city":"Disney","country":"USA","email":"mickey@disney.com","first_name":"Mickey","lastName":"Mouse","name":"Mickey Mouse","ip":"0.0.0.0","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a","token":"dummyApiKey","distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","time":1579847342402,"$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
+                    '[{"event":"KM Order Completed","properties":{"affiliation":"Google Store","checkout_id":"fksdjfsdjfisjf9sdfjsd9f","coupon":"hasbros","currency":"USD","discount":2.5,"order_id":"50314b8e9bcf000000000000","revenue":34,"key_1":{"child_key1":"child_value1","child_key2":{"child_key21":"child_value21","child_key22":"child_value22"}},"products":[{"category":"Games","image_url":"https:///www.example.com/product/path.jpg","name":"Monopoly: 3rd Edition","price":19,"product_id":"507f1f77bcf86cd799439011","quantity":1,"sku":"45790-32","url":"https://www.example.com/product/path"},{"category":"Games","name":"Uno Card Game","price":3,"product_id":"505bd76785ebb509fc183733","quantity":2,"sku":"46493-32"}],"shipping":3,"subtotal":22.5,"tax":2,"total":27.5,"city":"Disney","country":"USA","email":"mickey@disney.com","first_name":"Mickey","lastName":"Mouse","name":"Mickey Mouse","ip":"0.0.0.0","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a","token":"test_api_token","distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","time":1579847342402,"$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
                 },
                 XML: {},
                 FORM: {},
@@ -1235,14 +1262,17 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api.mixpanel.com/track/',
-              headers: {},
-              params: {},
+              endpoint: 'https://api.mixpanel.com/import/',
+              headers: {
+                Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
+                'Content-Type': 'application/json',
+              },
+              params: { strict: 0 },
               body: {
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"event":" new Order Completed totally","properties":{"affiliation":"Google Store","checkout_id":"fksdjfsdjfisjf9sdfjsd9f","coupon":"hasbros","currency":"USD","discount":2.5,"total":23,"order_id":"50314b8e9bcf000000000000","key_1":{"child_key1":"child_value1","child_key2":{"child_key21":"child_value21","child_key22":"child_value22"}},"products":[{"category":"Games","image_url":"https:///www.example.com/product/path.jpg","name":"Monopoly: 3rd Edition","price":19,"product_id":"507f1f77bcf86cd799439011","quantity":1,"sku":"45790-32","url":"https://www.example.com/product/path"},{"category":"Games","name":"Uno Card Game","price":3,"product_id":"505bd76785ebb509fc183733","quantity":2,"sku":"46493-32"}],"shipping":3,"subtotal":22.5,"tax":2,"city":"Disney","country":"USA","email":"mickey@disney.com","firstName":"Mickey","ip":"0.0.0.0","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a","token":"dummyApiKey","distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","time":1579847342402,"$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
+                    '[{"event":" new Order Completed totally","properties":{"affiliation":"Google Store","checkout_id":"fksdjfsdjfisjf9sdfjsd9f","coupon":"hasbros","currency":"USD","discount":2.5,"total":23,"order_id":"50314b8e9bcf000000000000","key_1":{"child_key1":"child_value1","child_key2":{"child_key21":"child_value21","child_key22":"child_value22"}},"products":[{"category":"Games","image_url":"https:///www.example.com/product/path.jpg","name":"Monopoly: 3rd Edition","price":19,"product_id":"507f1f77bcf86cd799439011","quantity":1,"sku":"45790-32","url":"https://www.example.com/product/path"},{"category":"Games","name":"Uno Card Game","price":3,"product_id":"505bd76785ebb509fc183733","quantity":2,"sku":"46493-32"}],"shipping":3,"subtotal":22.5,"tax":2,"city":"Disney","country":"USA","email":"mickey@disney.com","firstName":"Mickey","ip":"0.0.0.0","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a","token":"test_api_token","distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","time":1579847342402,"$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
                 },
                 XML: {},
                 FORM: {},
@@ -1366,14 +1396,17 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api.mixpanel.com/track/',
-              headers: {},
-              params: {},
+              endpoint: 'https://api.mixpanel.com/import/',
+              headers: {
+                Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
+                'Content-Type': 'application/json',
+              },
+              params: { strict: 0 },
               body: {
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"event":" Order Completed ","properties":{"affiliation":"Google Store","checkout_id":"fksdjfsdjfisjf9sdfjsd9f","coupon":"hasbros","currency":"USD","discount":2.5,"total":23,"order_id":"50314b8e9bcf000000000000","key_1":{"child_key1":"child_value1","child_key2":{"child_key21":"child_value21","child_key22":"child_value22"}},"products":[{"category":"Games","image_url":"https:///www.example.com/product/path.jpg","name":"Monopoly: 3rd Edition","price":19,"product_id":"507f1f77bcf86cd799439011","quantity":1,"sku":"45790-32","url":"https://www.example.com/product/path"},{"category":"Games","name":"Uno Card Game","price":3,"product_id":"505bd76785ebb509fc183733","quantity":2,"sku":"46493-32"}],"shipping":3,"subtotal":22.5,"tax":2,"Billing Amount":"77","city":"Disney","country":"USA","email":"mickey@disney.com","firstName":"Mickey","ip":"0.0.0.0","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a","token":"dummyApiKey","distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","time":1579847342402,"$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
+                    '[{"event":" Order Completed ","properties":{"affiliation":"Google Store","checkout_id":"fksdjfsdjfisjf9sdfjsd9f","coupon":"hasbros","currency":"USD","discount":2.5,"total":23,"order_id":"50314b8e9bcf000000000000","key_1":{"child_key1":"child_value1","child_key2":{"child_key21":"child_value21","child_key22":"child_value22"}},"products":[{"category":"Games","image_url":"https:///www.example.com/product/path.jpg","name":"Monopoly: 3rd Edition","price":19,"product_id":"507f1f77bcf86cd799439011","quantity":1,"sku":"45790-32","url":"https://www.example.com/product/path"},{"category":"Games","name":"Uno Card Game","price":3,"product_id":"505bd76785ebb509fc183733","quantity":2,"sku":"46493-32"}],"shipping":3,"subtotal":22.5,"tax":2,"Billing Amount":"77","city":"Disney","country":"USA","email":"mickey@disney.com","firstName":"Mickey","ip":"0.0.0.0","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a","token":"test_api_token","distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","time":1579847342402,"$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
                 },
                 XML: {},
                 FORM: {},
@@ -1541,7 +1574,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$set":{"$email":"mickey@disney.com","$country_code":"USA","$city":"Disney","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$firstName":"Mickey","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"dummyApiKey","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","$ip":"0.0.0.0","$time":1579847342402}]',
+                    '[{"$set":{"$email":"mickey@disney.com","$country_code":"USA","$city":"Disney","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$firstName":"Mickey","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"test_api_token","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","$ip":"0.0.0.0","$time":1579847342402}]',
                 },
                 XML: {},
                 FORM: {},
@@ -1628,7 +1661,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$token":"dummyApiKey","$distinct_id":"hjikl","$set":{"company":["testComp"]},"$ip":"0.0.0.0"}]',
+                    '[{"$token":"test_api_token","$distinct_id":"hjikl","$set":{"company":["testComp"]},"$ip":"0.0.0.0"}]',
                 },
                 XML: {},
                 FORM: {},
@@ -1650,7 +1683,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$token":"dummyApiKey","$group_key":"company","$group_id":"testComp","$set":{"company":"testComp"}}]',
+                    '[{"$token":"test_api_token","$group_key":"company","$group_id":"testComp","$set":{"company":"testComp"}}]',
                 },
                 XML: {},
                 FORM: {},
@@ -1737,7 +1770,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$token":"dummyApiKey","$distinct_id":"hjikl","$set":{"company":["testComp","testComp1"]},"$ip":"0.0.0.0"}]',
+                    '[{"$token":"test_api_token","$distinct_id":"hjikl","$set":{"company":["testComp","testComp1"]},"$ip":"0.0.0.0"}]',
                 },
                 XML: {},
                 FORM: {},
@@ -1759,7 +1792,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$token":"dummyApiKey","$group_key":"company","$group_id":"testComp","$set":{"company":["testComp","testComp1"]}}]',
+                    '[{"$token":"test_api_token","$group_key":"company","$group_id":"testComp","$set":{"company":["testComp","testComp1"]}}]',
                 },
                 XML: {},
                 FORM: {},
@@ -1781,7 +1814,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$token":"dummyApiKey","$group_key":"company","$group_id":"testComp1","$set":{"company":["testComp","testComp1"]}}]',
+                    '[{"$token":"test_api_token","$group_key":"company","$group_id":"testComp1","$set":{"company":["testComp","testComp1"]}}]',
                 },
                 XML: {},
                 FORM: {},
@@ -1869,7 +1902,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$token":"dummyApiKey","$distinct_id":"hjikl","$set":{"company":["testComp"]},"$ip":"0.0.0.0"}]',
+                    '[{"$token":"test_api_token","$distinct_id":"hjikl","$set":{"company":["testComp"]},"$ip":"0.0.0.0"}]',
                 },
                 XML: {},
                 FORM: {},
@@ -1891,7 +1924,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$token":"dummyApiKey","$group_key":"company","$group_id":"testComp","$set":{"company":"testComp"}}]',
+                    '[{"$token":"test_api_token","$group_key":"company","$group_id":"testComp","$set":{"company":"testComp"}}]',
                 },
                 XML: {},
                 FORM: {},
@@ -2019,7 +2052,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$append":{"$transactions":{"$time":"2020-01-24T06:29:02.402Z","$amount":25}},"$token":"dummyApiKey","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca"}]',
+                    '[{"$append":{"$transactions":{"$time":"2020-01-24T06:29:02.402Z","$amount":25}},"$token":"test_api_token","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca"}]',
                 },
                 XML: {},
                 FORM: {},
@@ -2034,14 +2067,17 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api-eu.mixpanel.com/track/',
-              headers: {},
-              params: {},
+              endpoint: 'https://api-eu.mixpanel.com/import/',
+              headers: {
+                Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
+                'Content-Type': 'application/json',
+              },
+              params: { strict: 0 },
               body: {
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"event":"KM Order Completed","properties":{"affiliation":"Google Store","checkout_id":"fksdjfsdjfisjf9sdfjsd9f","coupon":"hasbros","currency":"USD","discount":2.5,"order_id":"50314b8e9bcf000000000000","products":[{"category":"Games","image_url":"https:///www.example.com/product/path.jpg","name":"Monopoly: 3rd Edition","price":19,"product_id":"507f1f77bcf86cd799439011","quantity":1,"sku":"45790-32","url":"https://www.example.com/product/path"},{"category":"Games","name":"Uno Card Game","price":3,"product_id":"505bd76785ebb509fc183733","quantity":2,"sku":"46493-32"}],"revenue":25,"shipping":3,"subtotal":22.5,"tax":2,"total":27.5,"city":"Disney","country":"USA","email":"mickey@disney.com","firstname":"Mickey","lastname":"Mouse","ip":"0.0.0.0","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a","token":"dummyApiKey","distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","time":1579847342402,"$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
+                    '[{"event":"KM Order Completed","properties":{"affiliation":"Google Store","checkout_id":"fksdjfsdjfisjf9sdfjsd9f","coupon":"hasbros","currency":"USD","discount":2.5,"order_id":"50314b8e9bcf000000000000","products":[{"category":"Games","image_url":"https:///www.example.com/product/path.jpg","name":"Monopoly: 3rd Edition","price":19,"product_id":"507f1f77bcf86cd799439011","quantity":1,"sku":"45790-32","url":"https://www.example.com/product/path"},{"category":"Games","name":"Uno Card Game","price":3,"product_id":"505bd76785ebb509fc183733","quantity":2,"sku":"46493-32"}],"revenue":25,"shipping":3,"subtotal":22.5,"tax":2,"total":27.5,"city":"Disney","country":"USA","email":"mickey@disney.com","firstname":"Mickey","lastname":"Mouse","ip":"0.0.0.0","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"aa5f5e44-8756-40ad-ad1e-b0d3b9fa710a","token":"test_api_token","distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","time":1579847342402,"$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
                 },
                 XML: {},
                 FORM: {},
@@ -2129,7 +2165,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$set":{"$carrier":"Android","$manufacturer":"Google","$model":"Android SDK built for x86","$screen_height":1794,"$screen_width":1080,"$wifi":true,"anonymousId":"5094f5704b9cf2b3","$android_devices":["test_device_token"],"$os":"Android","$android_model":"Android SDK built for x86","$android_os_version":"8.1.0","$android_manufacturer":"Google","$android_app_version":"1.0","$android_app_version_code":"1.0","$android_brand":"Google"},"$token":"dummyApiKey","$distinct_id":"5094f5704b9cf2b3","$time":1584003903421}]',
+                    '[{"$set":{"$carrier":"Android","$manufacturer":"Google","$model":"Android SDK built for x86","$screen_height":1794,"$screen_width":1080,"$wifi":true,"anonymousId":"5094f5704b9cf2b3","$android_devices":["test_device_token"],"$os":"Android","$android_model":"Android SDK built for x86","$android_os_version":"8.1.0","$android_manufacturer":"Google","$android_app_version":"1.0","$android_app_version_code":"1.0","$android_brand":"Google"},"$token":"test_api_token","$distinct_id":"5094f5704b9cf2b3","$time":1584003903421}]',
                 },
                 XML: {},
                 FORM: {},
@@ -2216,7 +2252,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$set":{"$carrier":"Android","$manufacturer":"Google","$model":"Android SDK built for x86","$screen_height":1794,"$screen_width":1080,"$wifi":true,"anonymousId":"5094f5704b9cf2b3","userId":"test_user_id","$ios_devices":["test_device_token"],"$os":"iOS","$ios_device_model":"Android SDK built for x86","$ios_version":"8.1.0","$ios_app_release":"1","$ios_app_version":"1.0"},"$token":"dummyApiKey","$distinct_id":"test_user_id","$time":1584003903421}]',
+                    '[{"$set":{"$carrier":"Android","$manufacturer":"Google","$model":"Android SDK built for x86","$screen_height":1794,"$screen_width":1080,"$wifi":true,"anonymousId":"5094f5704b9cf2b3","userId":"test_user_id","$ios_devices":["test_device_token"],"$os":"iOS","$ios_device_model":"Android SDK built for x86","$ios_version":"8.1.0","$ios_app_release":"1","$ios_app_version":"1.0"},"$token":"test_api_token","$distinct_id":"test_user_id","$time":1584003903421}]',
                 },
                 XML: {},
                 FORM: {},
@@ -2233,7 +2269,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api-eu.mixpanel.com/import/',
               headers: {
-                Authorization: 'Basic c29tZV9hcGlfc2VjcmV0Og==',
+                Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
                 'Content-Type': 'application/json',
               },
               params: { strict: 0 },
@@ -2241,7 +2277,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"event":"$merge","properties":{"$distinct_ids":["test_user_id","5094f5704b9cf2b3"],"token":"dummyApiKey"}}]',
+                    '[{"event":"$merge","properties":{"$distinct_ids":["test_user_id","5094f5704b9cf2b3"],"token":"test_api_token"}}]',
                 },
                 XML: {},
                 FORM: {},
@@ -2328,14 +2364,17 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api.mixpanel.com/track/',
-              headers: {},
-              params: {},
+              endpoint: 'https://api.mixpanel.com/import/',
+              headers: {
+                Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
+                'Content-Type': 'application/json',
+              },
+              params: { strict: 0 },
               body: {
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"event":"Loaded a Page","properties":{"path":"/tests/html/index2.html","referrer":"","search":"","title":"","url":"http://localhost/tests/html/index2.html","category":"communication","ip":"0.0.0.0","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"dd266c67-9199-4a52-ba32-f46ddde67312","token":"dummyApiKey","distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","time":1579847342402,"name":"Contact Us","$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
+                    '[{"event":"Loaded a Page","properties":{"path":"/tests/html/index2.html","referrer":"","search":"","title":"","url":"http://localhost/tests/html/index2.html","category":"communication","ip":"0.0.0.0","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"dd266c67-9199-4a52-ba32-f46ddde67312","token":"test_api_token","distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","time":1579847342402,"name":"Contact Us","$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
                 },
                 XML: {},
                 FORM: {},
@@ -2423,14 +2462,17 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api.mixpanel.com/track/',
-              headers: {},
-              params: {},
+              endpoint: 'https://api.mixpanel.com/import/',
+              headers: {
+                Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
+                'Content-Type': 'application/json',
+              },
+              params: { strict: 0 },
               body: {
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"event":"$create_alias","properties":{"distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","alias":"1234abc","token":"dummyApiKey"}}]',
+                    '[{"event":"$create_alias","properties":{"distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","alias":"1234abc","token":"test_api_token"}}]',
                 },
                 XML: {},
                 FORM: {},
@@ -2523,7 +2565,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$set":{"$carrier":"Android","$manufacturer":"Google","$model":"Android SDK built for x86","$screen_height":1794,"$screen_width":1080,"$wifi":true,"anonymousId":"5094f5704b9cf2b3","userId":"test_user_id","createdat":"2020-01-23T08:54:02.362Z","$ios_devices":["test_device_token"],"$ios_device_model":"Android SDK built for x86","$ios_app_release":"1","$ios_app_version":"1.0"},"$token":"dummyApiKey","$distinct_id":"test_user_id","$time":1584003903421}]',
+                    '[{"$set":{"$carrier":"Android","$manufacturer":"Google","$model":"Android SDK built for x86","$screen_height":1794,"$screen_width":1080,"$wifi":true,"anonymousId":"5094f5704b9cf2b3","userId":"test_user_id","createdat":"2020-01-23T08:54:02.362Z","$ios_devices":["test_device_token"],"$ios_device_model":"Android SDK built for x86","$ios_app_release":"1","$ios_app_version":"1.0"},"$token":"test_api_token","$distinct_id":"test_user_id","$time":1584003903421}]',
                 },
                 XML: {},
                 FORM: {},
@@ -2540,7 +2582,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api-eu.mixpanel.com/import/',
               headers: {
-                Authorization: 'Basic c29tZV9hcGlfc2VjcmV0Og==',
+                Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
                 'Content-Type': 'application/json',
               },
               params: { strict: 0 },
@@ -2548,7 +2590,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"event":"$merge","properties":{"$distinct_ids":["test_user_id","5094f5704b9cf2b3"],"token":"dummyApiKey"}}]',
+                    '[{"event":"$merge","properties":{"$distinct_ids":["test_user_id","5094f5704b9cf2b3"],"token":"test_api_token"}}]',
                 },
                 XML: {},
                 FORM: {},
@@ -2641,7 +2683,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$set":{"$email":"mickey@disney.com","$country_code":"USA","$city":"Disney","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$name":"Mickey Mouse","$firstName":"Mickey","$lastName":"Mouse","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"dummyApiKey","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","$ip":"0.0.0.0","$time":1579847342402}]',
+                    '[{"$set":{"$email":"mickey@disney.com","$country_code":"USA","$city":"Disney","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$name":"Mickey Mouse","$firstName":"Mickey","$lastName":"Mouse","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"test_api_token","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","$ip":"0.0.0.0","$time":1579847342402}]',
                 },
                 XML: {},
                 FORM: {},
@@ -2733,7 +2775,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$set":{"$email":"mickey@disney.com","$country_code":"USA","$city":"Disney","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$firstName":"Mickey","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"dummyApiKey","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","$ip":"0.0.0.0","$time":1579847342402}]',
+                    '[{"$set":{"$email":"mickey@disney.com","$country_code":"USA","$city":"Disney","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$firstName":"Mickey","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"test_api_token","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","$ip":"0.0.0.0","$time":1579847342402}]',
                 },
                 XML: {},
                 FORM: {},
@@ -2826,7 +2868,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$set":{"$email":"mickey@disney.com","$name":"Mickey Mouse","$country_code":"USA","$city":"Disney","$region":"US","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$firstName":"Mickey","$lastName":"Mouse","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"dummyApiKey","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","$ip":"0.0.0.0","$time":1579847342402}]',
+                    '[{"$set":{"$email":"mickey@disney.com","$name":"Mickey Mouse","$country_code":"USA","$city":"Disney","$region":"US","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$firstName":"Mickey","$lastName":"Mouse","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"test_api_token","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","$ip":"0.0.0.0","$time":1579847342402}]',
                 },
                 XML: {},
                 FORM: {},
@@ -2924,7 +2966,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$set":{"$email":"mickey@disney.com","$country_code":"USA","$city":"Disney","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$name":"Mickey Mouse","$firstName":"Mickey","$lastName":"Mouse","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"dummyApiKey","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","$ip":"0.0.0.0","$time":1579847342402}]',
+                    '[{"$set":{"$email":"mickey@disney.com","$country_code":"USA","$city":"Disney","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$name":"Mickey Mouse","$firstName":"Mickey","$lastName":"Mouse","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"test_api_token","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","$ip":"0.0.0.0","$time":1579847342402}]',
                 },
                 XML: {},
                 FORM: {},
@@ -3020,7 +3062,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$set":{"$email":"mickey@disney.com","$name":"Mouse","$country_code":"USA","$city":"Disney","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$firstName":"Mickey","$lastName":"Mouse","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"dummyApiKey","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","$ip":"0.0.0.0","$time":1579847342402}]',
+                    '[{"$set":{"$email":"mickey@disney.com","$name":"Mouse","$country_code":"USA","$city":"Disney","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$firstName":"Mickey","$lastName":"Mouse","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"test_api_token","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","$ip":"0.0.0.0","$time":1579847342402}]',
                 },
                 XML: {},
                 FORM: {},
@@ -3115,7 +3157,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$set":{"$email":"mickey@disney.com","$first_name":"Mickey","$last_name":"Mouse","$country_code":"USA","$city":"Disney","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$name":"Mickey Mouse","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"dummyApiKey","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","$ip":"0.0.0.0","$time":1579847342402}]',
+                    '[{"$set":{"$email":"mickey@disney.com","$first_name":"Mickey","$last_name":"Mouse","$country_code":"USA","$city":"Disney","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$name":"Mickey Mouse","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"test_api_token","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","$ip":"0.0.0.0","$time":1579847342402}]',
                 },
                 XML: {},
                 FORM: {},
@@ -3209,7 +3251,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$set":{"$email":"mickey@disney.com","$first_name":"Mickey","$country_code":"USA","$city":"Disney","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"dummyApiKey","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","$ip":"0.0.0.0","$time":1579847342402}]',
+                    '[{"$set":{"$email":"mickey@disney.com","$first_name":"Mickey","$country_code":"USA","$city":"Disney","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"test_api_token","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","$ip":"0.0.0.0","$time":1579847342402}]',
                 },
                 XML: {},
                 FORM: {},
@@ -3304,7 +3346,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$set":{"$email":"mickey@disney.com","$first_name":"Mickey","$last_name":"Mouse","$name":"Mickey Mouse","$country_code":"USA","$city":"Disney","$region":"US","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"dummyApiKey","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","$ip":"0.0.0.0","$time":1579847342402}]',
+                    '[{"$set":{"$email":"mickey@disney.com","$first_name":"Mickey","$last_name":"Mouse","$name":"Mickey Mouse","$country_code":"USA","$city":"Disney","$region":"US","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"test_api_token","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","$ip":"0.0.0.0","$time":1579847342402}]',
                 },
                 XML: {},
                 FORM: {},
@@ -3405,7 +3447,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$set":{"$email":"mickey@disney.com","$first_name":"Mickey","$last_name":"Mouse","$country_code":"USA","$city":"Disney","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$name":"Mickey Mouse","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"dummyApiKey","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","$ip":"0.0.0.0","$time":1579847342402}]',
+                    '[{"$set":{"$email":"mickey@disney.com","$first_name":"Mickey","$last_name":"Mouse","$country_code":"USA","$city":"Disney","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$name":"Mickey Mouse","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"test_api_token","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","$ip":"0.0.0.0","$time":1579847342402}]',
                 },
                 XML: {},
                 FORM: {},
@@ -3502,17 +3544,29 @@ export const data = [
         status: 200,
         body: [
           {
-            error:
-              'Event timestamp is older than 5 days and no API secret or service account credentials (i.e. username, secret and projectId) are provided in destination configuration',
-            statTags: {
-              destType: 'MP',
-              errorCategory: 'dataValidation',
-              errorType: 'instrumentation',
-              feature: 'processor',
-              implementation: 'native',
-              module: 'destination',
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://api.mixpanel.com/import/',
+              headers: {
+                Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
+                'Content-Type': 'application/json',
+              },
+              params: { strict: 0 },
+              body: {
+                JSON: {},
+                JSON_ARRAY: {
+                  batch:
+                    '[{"event":"FirstTrackCall12","properties":{"foo":"bar","$deviceId":"nkasdnkasd","anonymousId":"ea776ad0-3136-44fb-9216-5b1578609a2b","userId":"as09sufa09usaf09as0f9uasf","id":"as09sufa09usaf09as0f9uasf","firstName":"Bob","lastName":"Marley","name":"Bob Marley","age":43,"email":"bob@marleymail.com","phone":"+447748544123","birthday":"1987-01-01T20:08:59+0000","createdAt":"2022-01-21T14:10:12+0000","address":"51,B.L.T road, Kolkata-700060","description":"I am great","gender":"male","title":"Founder","username":"bobm","website":"https://bobm.com","randomProperty":"randomValue","$user_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","$current_url":"http://127.0.0.1:7307/Testing/App_for_testingTool/","$referrer":"http://127.0.0.1:7307/Testing/","$screen_height":900,"$screen_width":1440,"$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.1.18","$insert_id":"0d5c1a4a-27e4-41da-a246-4d01f44e74bd","token":"test_api_token","distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","time":1632986123523,"$browser":"Chrome","$browser_version":"93.0.4577.82"}}]',
+                },
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: 'e6ab2c5e-2cda-44a9-a962-e2f67df78bca',
             },
-            statusCode: 400,
+            statusCode: 200,
           },
         ],
       },
@@ -3686,7 +3740,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api-eu.mixpanel.com/import/',
               headers: {
-                Authorization: 'Basic c29tZV9hcGlfc2VjcmV0Og==',
+                Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
                 'Content-Type': 'application/json',
               },
               params: { strict: 0 },
@@ -3694,7 +3748,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"event":"MainActivity","properties":{"name":"MainActivity","automatic":true,"anonymousId":"5094f5704b9cf2b3","userId":"test_user_id","$user_id":"test_user_id","$os":"iOS","$screen_height":1794,"$screen_width":1080,"$screen_dpi":420,"$carrier":"Android","$os_version":"8.1.0","$device":"generic_x86","$manufacturer":"Google","$model":"Android SDK built for x86","mp_device_model":"Android SDK built for x86","$wifi":true,"$bluetooth_enabled":false,"mp_lib":"com.rudderstack.android.sdk.core","$app_build_number":"1","$app_version_string":"1.0","$insert_id":"id2","token":"dummyApiKey","distinct_id":"test_user_id","time":1520845503421}}]',
+                    '[{"event":"MainActivity","properties":{"name":"MainActivity","automatic":true,"anonymousId":"5094f5704b9cf2b3","userId":"test_user_id","$user_id":"test_user_id","$os":"iOS","$screen_height":1794,"$screen_width":1080,"$screen_dpi":420,"$carrier":"Android","$os_version":"8.1.0","$device":"generic_x86","$manufacturer":"Google","$model":"Android SDK built for x86","mp_device_model":"Android SDK built for x86","$wifi":true,"$bluetooth_enabled":false,"mp_lib":"com.rudderstack.android.sdk.core","$app_build_number":"1","$app_version_string":"1.0","$insert_id":"id2","token":"test_api_token","distinct_id":"test_user_id","time":1520845503421}}]',
                 },
                 XML: {},
                 FORM: {},
@@ -3965,7 +4019,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$set":{"$created":"2020-01-23T08:54:02.362Z","$email":"mickey@disney.com","$first_name":"Mickey","$last_name":"Mouse","$country_code":"USA","$city":"Disney","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$name":"Mickey Mouse","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"dummyApiKey","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","$ip":"0.0.0.0","$time":1579847342402,"$ignore_time":true}]',
+                    '[{"$set":{"$created":"2020-01-23T08:54:02.362Z","$email":"mickey@disney.com","$first_name":"Mickey","$last_name":"Mouse","$country_code":"USA","$city":"Disney","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$name":"Mickey Mouse","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"test_api_token","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","$ip":"0.0.0.0","$time":1579847342402,"$ignore_time":true}]',
                 },
                 XML: {},
                 FORM: {},
@@ -4071,7 +4125,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$set":{"$created":"2020-01-23T08:54:02.362Z","$email":"mickey@disney.com","$first_name":"Mickey","$last_name":"Mouse","$country_code":"USA","$city":"Disney","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$name":"Mickey Mouse","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"dummyApiKey","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","$ip":"0.0.0.0","$time":1579847342402}]',
+                    '[{"$set":{"$created":"2020-01-23T08:54:02.362Z","$email":"mickey@disney.com","$first_name":"Mickey","$last_name":"Mouse","$country_code":"USA","$city":"Disney","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$name":"Mickey Mouse","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"test_api_token","$distinct_id":"e6ab2c5e-2cda-44a9-a962-e2f67df78bca","$ip":"0.0.0.0","$time":1579847342402}]',
                 },
                 XML: {},
                 FORM: {},
@@ -4276,7 +4330,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$set":{"$created":"2020-01-23T08:54:02.362Z","$email":"mickey@disney.com","$first_name":"Mickey","$last_name":"Mouse","$country_code":"USA","$city":"Disney","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$name":"Mickey Mouse","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"dummyApiKey","$distinct_id":"user1234","$ip":"0.0.0.0","$time":1579847342402}]',
+                    '[{"$set":{"$created":"2020-01-23T08:54:02.362Z","$email":"mickey@disney.com","$first_name":"Mickey","$last_name":"Mouse","$country_code":"USA","$city":"Disney","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$name":"Mickey Mouse","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"test_api_token","$distinct_id":"user1234","$ip":"0.0.0.0","$time":1579847342402}]',
                 },
                 XML: {},
                 FORM: {},
@@ -4294,15 +4348,14 @@ export const data = [
               endpoint: 'https://api.mixpanel.com/import/',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization:
-                  'Basic cnVkZGVyLmQyYTNmMS5tcC1zZXJ2aWNlLWFjY291bnQ6amF0cFF4Y2pNaDhlZXRrMXhySDNLalFJYnp5NGlYOGI=',
+                Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
               },
-              params: { project_id: '123456', strict: 0 },
+              params: { strict: 0 },
               body: {
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"event":"$merge","properties":{"$distinct_ids":["user1234","e6ab2c5e-2cda-44a9-a962-e2f67df78bca"],"token":"dummyApiKey"}}]',
+                    '[{"event":"$merge","properties":{"$distinct_ids":["user1234","e6ab2c5e-2cda-44a9-a962-e2f67df78bca"],"token":"test_api_token"}}]',
                 },
                 XML: {},
                 FORM: {},
@@ -4387,7 +4440,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/import/',
               headers: {
-                Authorization: 'Basic ZHVtbXlBcGlLZXk6',
+                Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
                 'Content-Type': 'application/json',
               },
               params: { strict: 0 },
@@ -4395,7 +4448,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"event":"Application Installed","properties":{"build":4,"version":"1.0","anonymousId":"39da706ec83d0e90","$os":"Android","$screen_height":2984,"$screen_width":1440,"$screen_dpi":560,"$carrier":"T-Mobile","$os_version":"12","$device":"emu64a","$manufacturer":"Google","$model":"sdk_gphone64_arm64","mp_device_model":"sdk_gphone64_arm64","$wifi":true,"$bluetooth_enabled":true,"mp_lib":"com.rudderstack.android.sdk.core","$app_build_number":"4","$app_version_string":"1.0","$insert_id":"168cf720-6227-4b56-a98e-c49bdc7279e9","$session_id":"1662363980","token":"dummyApiKey","distinct_id":"39da706ec83d0e90","time":1662363980290}}]',
+                    '[{"event":"Application Installed","properties":{"build":4,"version":"1.0","anonymousId":"39da706ec83d0e90","$os":"Android","$screen_height":2984,"$screen_width":1440,"$screen_dpi":560,"$carrier":"T-Mobile","$os_version":"12","$device":"emu64a","$manufacturer":"Google","$model":"sdk_gphone64_arm64","mp_device_model":"sdk_gphone64_arm64","$wifi":true,"$bluetooth_enabled":true,"mp_lib":"com.rudderstack.android.sdk.core","$app_build_number":"4","$app_version_string":"1.0","$insert_id":"168cf720-6227-4b56-a98e-c49bdc7279e9","$session_id":"1662363980","token":"test_api_token","distinct_id":"39da706ec83d0e90","time":1662363980290}}]',
                 },
                 XML: {},
                 FORM: {},
@@ -4477,7 +4530,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/import/',
               headers: {
-                Authorization: 'Basic ZHVtbXlBcGlLZXk6',
+                Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
                 'Content-Type': 'application/json',
               },
               params: { strict: 0 },
@@ -4485,7 +4538,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"event":"Application Opened","properties":{"build":4,"version":"1.0","anonymousId":"39da706ec83d0e90","$os":"Android","$screen_height":2984,"$screen_width":1440,"$screen_dpi":560,"$carrier":"T-Mobile","$os_version":"12","$device":"emu64a","$manufacturer":"Google","$model":"sdk_gphone64_arm64","mp_device_model":"sdk_gphone64_arm64","$wifi":true,"$bluetooth_enabled":true,"mp_lib":"com.rudderstack.android.sdk.core","$app_build_number":"4","$app_version_string":"1.0","$insert_id":"168cf720-6227-4b56-a98e-c49bdc7279e9","$session_id":"1662363980","token":"dummyApiKey","distinct_id":"39da706ec83d0e90","time":1662363980290}}]',
+                    '[{"event":"Application Opened","properties":{"build":4,"version":"1.0","anonymousId":"39da706ec83d0e90","$os":"Android","$screen_height":2984,"$screen_width":1440,"$screen_dpi":560,"$carrier":"T-Mobile","$os_version":"12","$device":"emu64a","$manufacturer":"Google","$model":"sdk_gphone64_arm64","mp_device_model":"sdk_gphone64_arm64","$wifi":true,"$bluetooth_enabled":true,"mp_lib":"com.rudderstack.android.sdk.core","$app_build_number":"4","$app_version_string":"1.0","$insert_id":"168cf720-6227-4b56-a98e-c49bdc7279e9","$session_id":"1662363980","token":"test_api_token","distinct_id":"39da706ec83d0e90","time":1662363980290}}]',
                 },
                 XML: {},
                 FORM: {},
@@ -4573,7 +4626,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$token":"dummyApiKey","$distinct_id":"hjikl","$set":{"groupId":["testGroupId"]},"$ip":"0.0.0.0"}]',
+                    '[{"$token":"test_api_token","$distinct_id":"hjikl","$set":{"groupId":["testGroupId"]},"$ip":"0.0.0.0"}]',
                 },
                 XML: {},
                 FORM: {},
@@ -4595,7 +4648,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$token":"dummyApiKey","$group_key":"groupId","$group_id":"testGroupId","$set":{"company":"testComp","groupId":"groupIdInTraits"}}]',
+                    '[{"$token":"test_api_token","$group_key":"groupId","$group_id":"testGroupId","$set":{"company":"testComp","groupId":"groupIdInTraits"}}]',
                 },
                 XML: {},
                 FORM: {},
@@ -4622,7 +4675,7 @@ export const data = [
             description:
               'Track: set device id and user id when simplified id merge api is selected',
             destination: overrideDestination(sampleDestination, {
-              token: 'apiToken123',
+              token: 'test_api_token',
               identityMergeApi: 'simplified',
             }),
             message: {
@@ -4678,14 +4731,17 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api.mixpanel.com/track/',
-              headers: {},
-              params: {},
+              endpoint: 'https://api.mixpanel.com/import/',
+              headers: {
+                Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
+                'Content-Type': 'application/json',
+              },
+              params: { strict: 0 },
               body: {
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"event":"Product Viewed","properties":{"name":"T-Shirt","$user_id":"userId01","$os":"iOS","$screen_height":1794,"$screen_width":1080,"$screen_dpi":420,"$carrier":"Android","$os_version":"8.1.0","$device":"generic_x86","$manufacturer":"Google","$model":"Android SDK built for x86","mp_device_model":"Android SDK built for x86","$wifi":true,"$bluetooth_enabled":false,"mp_lib":"com.rudderstack.android.sdk.core","$app_build_number":"1","$app_version_string":"1.0","$insert_id":"id2","token":"apiToken123","distinct_id":"userId01","time":1579847342402,"$device_id":"anonId01"}}]',
+                    '[{"event":"Product Viewed","properties":{"name":"T-Shirt","$user_id":"userId01","$os":"iOS","$screen_height":1794,"$screen_width":1080,"$screen_dpi":420,"$carrier":"Android","$os_version":"8.1.0","$device":"generic_x86","$manufacturer":"Google","$model":"Android SDK built for x86","mp_device_model":"Android SDK built for x86","$wifi":true,"$bluetooth_enabled":false,"mp_lib":"com.rudderstack.android.sdk.core","$app_build_number":"1","$app_version_string":"1.0","$insert_id":"id2","token":"test_api_token","distinct_id":"userId01","time":1579847342402,"$device_id":"anonId01"}}]',
                 },
                 XML: {},
                 FORM: {},
@@ -4714,7 +4770,7 @@ export const data = [
           {
             description: 'Identify: skip merge event when simplified id merge api is selected',
             destination: overrideDestination(sampleDestination, {
-              token: 'apiToken123',
+              token: 'test_api_token',
               identityMergeApi: 'simplified',
             }),
             message: {
@@ -4795,7 +4851,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$set":{"$created":"2020-01-23T08:54:02.362Z","$email":"mickey@disney.com","$country_code":"USA","$city":"Disney","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$name":"Mickey Mouse","$firstName":"Mickey","$lastName":"Mouse","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"apiToken123","$distinct_id":"userId01","$ip":"0.0.0.0","$time":1579847342402}]',
+                    '[{"$set":{"$created":"2020-01-23T08:54:02.362Z","$email":"mickey@disney.com","$country_code":"USA","$city":"Disney","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$name":"Mickey Mouse","$firstName":"Mickey","$lastName":"Mouse","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"test_api_token","$distinct_id":"userId01","$ip":"0.0.0.0","$time":1579847342402}]',
                 },
                 XML: {},
                 FORM: {},
@@ -4823,7 +4879,7 @@ export const data = [
               'Identify: append $device: to deviceId while creating the user when simplified id merge api is selected',
             destination: overrideDestination(sampleDestination, {
               apiKey: 'apiKey123',
-              token: 'apiToken123',
+              token: 'test_api_token',
               identityMergeApi: 'simplified',
             }),
             message: {
@@ -4903,7 +4959,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$set":{"$created":"2020-01-23T08:54:02.362Z","$email":"mickey@disney.com","$country_code":"USA","$city":"Disney","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$name":"Mickey Mouse","$firstName":"Mickey","$lastName":"Mouse","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"apiToken123","$distinct_id":"$device:anonId01","$ip":"0.0.0.0","$time":1579847342402}]',
+                    '[{"$set":{"$created":"2020-01-23T08:54:02.362Z","$email":"mickey@disney.com","$country_code":"USA","$city":"Disney","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$name":"Mickey Mouse","$firstName":"Mickey","$lastName":"Mouse","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"test_api_token","$distinct_id":"$device:anonId01","$ip":"0.0.0.0","$time":1579847342402}]',
                 },
                 XML: {},
                 FORM: {},
@@ -4930,7 +4986,7 @@ export const data = [
             description: 'Unsupported alias call when simplified id merge api is selected',
             destination: overrideDestination(sampleDestination, {
               apiKey: 'apiKey123',
-              token: 'apiToken123',
+              token: 'test_api_token',
               identityMergeApi: 'simplified',
             }),
             message: {
@@ -5019,7 +5075,7 @@ export const data = [
               'Track revenue event: set device id and user id when simplified id merge api is selected',
             destination: overrideDestination(sampleDestination, {
               apiKey: 'apiKey123',
-              token: 'apiToken123',
+              token: 'test_api_token',
               identityMergeApi: 'simplified',
             }),
             message: {
@@ -5090,7 +5146,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$append":{"$transactions":{"$time":"2020-01-24T06:29:02.403Z","$amount":18.9}},"$token":"apiToken123","$distinct_id":"userId01"}]',
+                    '[{"$append":{"$transactions":{"$time":"2020-01-24T06:29:02.403Z","$amount":18.9}},"$token":"test_api_token","$distinct_id":"userId01"}]',
                 },
                 XML: {},
                 FORM: {},
@@ -5105,14 +5161,17 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api.mixpanel.com/track/',
-              headers: {},
-              params: {},
+              endpoint: 'https://api.mixpanel.com/import/',
+              headers: {
+                Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
+                'Content-Type': 'application/json',
+              },
+              params: { strict: 0 },
               body: {
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"event":"test revenue MIXPANEL","properties":{"currency":"USD","revenue":18.9,"city":"Disney","country":"USA","email":"mickey@disney.com","firstName":"Mickey","ip":"0.0.0.0","$user_id":"userId01","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"a6a0ad5a-bd26-4f19-8f75-38484e580fc7","token":"apiToken123","distinct_id":"userId01","time":1579847342403,"$device_id":"anonId01","$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
+                    '[{"event":"test revenue MIXPANEL","properties":{"currency":"USD","revenue":18.9,"city":"Disney","country":"USA","email":"mickey@disney.com","firstName":"Mickey","ip":"0.0.0.0","$user_id":"userId01","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"a6a0ad5a-bd26-4f19-8f75-38484e580fc7","token":"test_api_token","distinct_id":"userId01","time":1579847342403,"$device_id":"anonId01","$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
                 },
                 XML: {},
                 FORM: {},
@@ -5142,7 +5201,7 @@ export const data = [
             description: 'Page with anonymous user when simplified api is selected',
             destination: overrideDestination(sampleDestination, {
               apiKey: 'apiKey123',
-              token: 'apiToken123',
+              token: 'test_api_token',
               identityMergeApi: 'simplified',
             }),
             message: {
@@ -5209,14 +5268,17 @@ export const data = [
               version: '1',
               type: 'REST',
               method: 'POST',
-              endpoint: 'https://api.mixpanel.com/track/',
-              headers: {},
-              params: {},
+              endpoint: 'https://api.mixpanel.com/import/',
+              headers: {
+                Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
+                'Content-Type': 'application/json',
+              },
+              params: { strict: 0 },
               body: {
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"event":"Loaded a Page","properties":{"ip":"0.0.0.0","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"dd266c67-9199-4a52-ba32-f46ddde67312","token":"apiToken123","distinct_id":"$device:anonId01","time":1579847342402,"$device_id":"anonId01","name":"Contact Us","$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
+                    '[{"event":"Loaded a Page","properties":{"ip":"0.0.0.0","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"dd266c67-9199-4a52-ba32-f46ddde67312","token":"test_api_token","distinct_id":"$device:anonId01","time":1579847342402,"$device_id":"anonId01","name":"Contact Us","$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
                 },
                 XML: {},
                 FORM: {},
@@ -5246,7 +5308,7 @@ export const data = [
             description: 'Group call with anonymous user when simplified api is selected',
             destination: overrideDestination(sampleDestination, {
               apiKey: 'apiKey123',
-              token: 'apiToken123',
+              token: 'test_api_token',
               identityMergeApi: 'simplified',
               groupKeySettings: [{ groupKey: 'company' }],
             }),
@@ -5309,7 +5371,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$token":"apiToken123","$distinct_id":"$device:anonId01","$set":{"company":["testComp"]},"$ip":"0.0.0.0"}]',
+                    '[{"$token":"test_api_token","$distinct_id":"$device:anonId01","$set":{"company":["testComp"]},"$ip":"0.0.0.0"}]',
                 },
                 XML: {},
                 FORM: {},
@@ -5331,7 +5393,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$token":"apiToken123","$group_key":"company","$group_id":"testComp","$set":{"company":"testComp"}}]',
+                    '[{"$token":"test_api_token","$group_key":"company","$group_id":"testComp","$set":{"company":"testComp"}}]',
                 },
                 XML: {},
                 FORM: {},
@@ -5357,7 +5419,7 @@ export const data = [
           {
             destination: overrideDestination(sampleDestination, {
               apiKey: 'apiKey123',
-              token: 'apiToken123',
+              token: 'test_api_token',
               identityMergeApi: 'simplified',
               groupKeySettings: [{ groupKey: 'company' }],
             }),
@@ -5476,7 +5538,7 @@ export const data = [
             },
             destination: overrideDestination(sampleDestination, {
               apiKey: 'dummyApiKey',
-              token: 'dummyApiKey',
+              token: 'test_api_token',
               apiSecret: 'dummyApiKey',
               useNewMapping: true,
             }),
@@ -5502,7 +5564,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$append":{"$transactions":{"$time":"2022-09-05T07:46:20.290Z","$amount":12.13}},"$token":"dummyApiKey","$distinct_id":"39da706ec83d0e90"}]',
+                    '[{"$append":{"$transactions":{"$time":"2022-09-05T07:46:20.290Z","$amount":12.13}},"$token":"test_api_token","$distinct_id":"39da706ec83d0e90"}]',
                 },
                 XML: {},
                 FORM: {},
@@ -5519,7 +5581,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/import/',
               headers: {
-                Authorization: 'Basic ZHVtbXlBcGlLZXk6',
+                Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
                 'Content-Type': 'application/json',
               },
               params: { strict: 0 },
@@ -5527,7 +5589,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"event":"Application Installed","properties":{"build":4,"version":"1.0","revenue":12.13,"anonymousId":"39da706ec83d0e90","$os":"Android","$screen_height":2984,"$screen_width":1440,"$screen_dpi":560,"$carrier":"T-Mobile","$os_version":"12","$device":"emu64a","$manufacturer":"Google","$model":"sdk_gphone64_arm64","mp_device_model":"sdk_gphone64_arm64","$wifi":true,"$bluetooth_enabled":true,"mp_lib":"com.rudderstack.android.sdk.core","$app_build_number":"4","$app_version_string":"1.0","$insert_id":"168cf720-6227-4b56-a98e-c49bdc7279e9","$session_id":"1662363980","token":"dummyApiKey","distinct_id":"39da706ec83d0e90","time":1662363980290}}]',
+                    '[{"event":"Application Installed","properties":{"build":4,"version":"1.0","revenue":12.13,"anonymousId":"39da706ec83d0e90","$os":"Android","$screen_height":2984,"$screen_width":1440,"$screen_dpi":560,"$carrier":"T-Mobile","$os_version":"12","$device":"emu64a","$manufacturer":"Google","$model":"sdk_gphone64_arm64","mp_device_model":"sdk_gphone64_arm64","$wifi":true,"$bluetooth_enabled":true,"mp_lib":"com.rudderstack.android.sdk.core","$app_build_number":"4","$app_version_string":"1.0","$insert_id":"168cf720-6227-4b56-a98e-c49bdc7279e9","$session_id":"1662363980","token":"test_api_token","distinct_id":"39da706ec83d0e90","time":1662363980290}}]',
                 },
                 XML: {},
                 FORM: {},
@@ -5591,7 +5653,7 @@ export const data = [
             },
             destination: overrideDestination(sampleDestination, {
               apiKey: 'dummyApiKey',
-              token: 'dummyApiKey',
+              token: 'test_api_token',
               apiSecret: 'dummyApiKey',
               useNewMapping: true,
             }),
@@ -5617,7 +5679,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$append":{"$transactions":{"$time":"2022-09-05T07:46:20.290Z","$amount":23.45}},"$token":"dummyApiKey","$distinct_id":"39da706ec83d0e90"}]',
+                    '[{"$append":{"$transactions":{"$time":"2022-09-05T07:46:20.290Z","$amount":23.45}},"$token":"test_api_token","$distinct_id":"39da706ec83d0e90"}]',
                 },
                 XML: {},
                 FORM: {},
@@ -5634,7 +5696,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api.mixpanel.com/import/',
               headers: {
-                Authorization: 'Basic ZHVtbXlBcGlLZXk6',
+                Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
                 'Content-Type': 'application/json',
               },
               params: { strict: 0 },
@@ -5642,7 +5704,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"event":"Application Installed","properties":{"build":4,"version":"1.0","revenue":23.45,"anonymousId":"39da706ec83d0e90","$os":"Android","$screen_height":2984,"$screen_width":1440,"$screen_dpi":560,"$carrier":"T-Mobile","$os_version":"12","$device":"emu64a","$manufacturer":"Google","$model":"sdk_gphone64_arm64","mp_device_model":"sdk_gphone64_arm64","$wifi":true,"$bluetooth_enabled":true,"mp_lib":"com.rudderstack.android.sdk.core","$app_build_number":"4","$app_version_string":"1.0","$insert_id":"168cf720-6227-4b56-a98e-c49bdc7279e9","$session_id":"1662363980","token":"dummyApiKey","distinct_id":"39da706ec83d0e90","time":null}}]',
+                    '[{"event":"Application Installed","properties":{"build":4,"version":"1.0","revenue":23.45,"anonymousId":"39da706ec83d0e90","$os":"Android","$screen_height":2984,"$screen_width":1440,"$screen_dpi":560,"$carrier":"T-Mobile","$os_version":"12","$device":"emu64a","$manufacturer":"Google","$model":"sdk_gphone64_arm64","mp_device_model":"sdk_gphone64_arm64","$wifi":true,"$bluetooth_enabled":true,"mp_lib":"com.rudderstack.android.sdk.core","$app_build_number":"4","$app_version_string":"1.0","$insert_id":"168cf720-6227-4b56-a98e-c49bdc7279e9","$session_id":"1662363980","token":"test_api_token","distinct_id":"39da706ec83d0e90","time":null}}]',
                 },
                 XML: {},
                 FORM: {},
@@ -5669,7 +5731,7 @@ export const data = [
             description: 'Track: with strict mode enabled',
             destination: overrideDestination(sampleDestination, {
               apiKey: 'dummyApiKey',
-              token: 'dummyApiKey',
+              token: 'test_api_token',
               apiSecret: 'some_api_secret',
               dataResidency: 'eu',
               strictMode: true,
@@ -5733,7 +5795,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$set":{"$carrier":"Android","$manufacturer":"Google","$model":"Android SDK built for x86","$screen_height":1794,"$screen_width":1080,"$wifi":true,"anonymousId":"5094f5704b9cf2b3","userId":"test_user_id","$ios_devices":["test_device_token"],"$os":"iOS","$ios_device_model":"Android SDK built for x86","$ios_version":"8.1.0","$ios_app_release":"1","$ios_app_version":"1.0"},"$token":"dummyApiKey","$distinct_id":"test_user_id","$time":1584003903421}]',
+                    '[{"$set":{"$carrier":"Android","$manufacturer":"Google","$model":"Android SDK built for x86","$screen_height":1794,"$screen_width":1080,"$wifi":true,"anonymousId":"5094f5704b9cf2b3","userId":"test_user_id","$ios_devices":["test_device_token"],"$os":"iOS","$ios_device_model":"Android SDK built for x86","$ios_version":"8.1.0","$ios_app_release":"1","$ios_app_version":"1.0"},"$token":"test_api_token","$distinct_id":"test_user_id","$time":1584003903421}]',
                 },
                 XML: {},
                 FORM: {},
@@ -5750,7 +5812,7 @@ export const data = [
               method: 'POST',
               endpoint: 'https://api-eu.mixpanel.com/import/',
               headers: {
-                Authorization: 'Basic c29tZV9hcGlfc2VjcmV0Og==',
+                Authorization: 'Basic dGVzdF9hcGlfdG9rZW46',
                 'Content-Type': 'application/json',
               },
               params: { strict: 1 },
@@ -5758,7 +5820,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"event":"$merge","properties":{"$distinct_ids":["test_user_id","5094f5704b9cf2b3"],"token":"dummyApiKey"}}]',
+                    '[{"event":"$merge","properties":{"$distinct_ids":["test_user_id","5094f5704b9cf2b3"],"token":"test_api_token"}}]',
                 },
                 XML: {},
                 FORM: {},

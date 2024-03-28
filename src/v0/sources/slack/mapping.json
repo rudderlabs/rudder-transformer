@@ -1,0 +1,50 @@
+[
+  {
+    "sourceKeys": "event.type",
+    "destKeys": "event"
+  },
+  {
+    "sourceKeys": "event.user.tz",
+    "destKeys": "timezone"
+  },
+  {
+    "sourceKeys": "event.user.profile.email",
+    "destKeys": "context.traits.email"
+  },
+  {
+    "sourceKeys": "event.user.profile.phone",
+    "destKeys": "context.traits.phone"
+  },
+  {
+    "sourceKeys": "event.user.profile.real_name_normalized",
+    "destKeys": "context.traits.name"
+  },
+  {
+    "sourceKeys": "event.user.profile.real_name",
+    "destKeys": "context.traits.name"
+  },
+  {
+    "sourceKeys": "event.user.profile.display_name_normalized",
+    "destKeys": "context.traits.name"
+  },
+  {
+    "sourceKeys": "event.user.profile.display_name",
+    "destKeys": "context.traits.name"
+  },
+  {
+    "sourceKeys": "event.user.profile.first_name",
+    "destKeys": "context.traits.firstName"
+  },
+  {
+    "sourceKeys": "event.user.profile.last_name",
+    "destKeys": "context.traits.lastName"
+  },
+  {
+    "sourceKeys": "event.user.profile.image_original",
+    "destKeys": "context.traits.avatar"
+  },
+  {
+    "sourceKeys": "event.user.profile.title",
+    "destKeys": "context.traits.title"
+  }
+]

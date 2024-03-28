@@ -149,7 +149,7 @@ describe("User transformation fetch tests", () => {
       }
       `
     };
-    const errMsg = "request to https://abc.xyz.com/dummyUrl failed, reason: Invalid IP address: unable to resolve IP address for abc.xyz.com";
+    const errMsg = "request to https://abc.xyz.com/dummyUrl failed, reason: unable to resolve IP address for abc.xyz.com";
     
     mockResolver.mockRejectedValue('invalid host');
     const output = await userTransformHandler(inputData, versionId, [], trRevCode, true);
@@ -305,7 +305,7 @@ describe("User transformation fetch tests", () => {
         }
       `
     };
-    const errMsg = "request to https://abc.xyz.com/dummyUrl failed, reason: Invalid IP address: cannot use 127.0.0.1 as IP address";
+    const errMsg = "request to https://abc.xyz.com/dummyUrl failed, reason: cannot use 127.0.0.1 as IP address";
     
     mockResolver.mockResolvedValue(['3.122.122.122', '127.0.0.1']);
     const output = await userTransformHandler(inputData, versionId, [], trRevCode, true);

@@ -57,7 +57,7 @@ async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) 
       }
     });
 
-    // Extract ruddder libraries from import names
+    // Extract rudder libraries from import names
     const rudderLibImportNames = extractedLibraries.filter((name) =>
       RUDDER_LIBRARY_REGEX.test(name),
     );

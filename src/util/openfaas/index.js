@@ -73,7 +73,7 @@ const awaitFunctionReadiness = async (
 
       resolve(true);
     } catch (error) {
-      logger.error(`Error while waiting for function ${functionName} to be ready: ${error}`);
+      logger.errorw(`Error while waiting for function ${functionName} to be ready: ${error}`);
       resolve(error.message);
     }
   });
@@ -124,7 +124,7 @@ const deployFaasFunction = async (
   trMetadata = {},
 ) => {
   try {
-    logger.debug('[Faas] Deploying a faas function');
+    logger.debugw('[Faas] Deploying a faas function');
     let envProcess = 'python index.py';
 
     const lvidsString = libraryVersionIDs.join(',');
@@ -181,9 +181,9 @@ const deployFaasFunction = async (
     };
 
     await deployFunction(payload);
-    logger.debug('[Faas] Deployed a faas function');
+    logger.debugw('[Faas] Deployed a faas function');
   } catch (error) {
-    logger.error(`[Faas] Error while deploying ${functionName}: ${error.message}`);
+    logger.errorw(`[Faas] Error while deploying ${functionName}: ${error.message}`);
     // To handle concurrent create requests,
     // throw retry error if deployment or service already exists so that request can be retried
     if (
@@ -207,7 +207,7 @@ async function setupFaasFunction(
 ) {
   try {
     if (!testMode && isFunctionDeployed(functionName)) {
-      logger.debug(`[Faas] Function ${functionName} already deployed`);
+      logger.debugw(`[Faas] Function ${functionName} already deployed`);
       return;
     }
     // deploy faas function
@@ -224,9 +224,9 @@ async function setupFaasFunction(
     await awaitFunctionReadiness(functionName);
 
     setFunctionInCache(functionName);
-    logger.debug(`[Faas] Finished deploying faas function ${functionName}`);
+    logger.debugw(`[Faas] Finished deploying faas function ${functionName}`);
   } catch (error) {
-    logger.error(`[Faas] Error while setting function ${functionName}: ${error.message}`);
+    logger.errorw(`[Faas] Error while setting function ${functionName}: ${error.message}`);
     throw error;
   }
 }
@@ -239,7 +239,7 @@ const executeFaasFunction = async (
   testMode,
   trMetadata = {},
 ) => {
-  logger.debug(`Executing faas function: ${name}`);
+  logger.debugw(`Executing faas function: ${name}`);
 
   const startTime = new Date();
   let errorRaised;
@@ -248,7 +248,7 @@ const executeFaasFunction = async (
     if (testMode) await awaitFunctionReadiness(name);
     return await invokeFunction(name, events);
   } catch (error) {
-    logger.error(`Error while invoking ${name}: ${error.message}`);
+    logger.errorw(`Error while invoking ${name}: ${error.message}`);
     errorRaised = error;
 
     if (error.statusCode === 404 && error.message.includes(`error finding function ${name}`)) {
@@ -274,7 +274,7 @@ const executeFaasFunction = async (
     // delete the function created, if it's called as part of testMode
     if (testMode) {
       deleteFunction(name).catch((err) =>
-        logger.error(`[Faas] Error while deleting ${name}: ${err.message}`),
+        logger.errorw(`[Faas] Error while deleting ${name}: ${err.message}`),
       );
     }
 

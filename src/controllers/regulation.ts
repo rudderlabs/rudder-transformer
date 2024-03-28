@@ -1,5 +1,5 @@
 import { Context } from 'koa';
-import logger from '../logger';
+import logger from "@rudderstack/integrations-lib/build/structured-logger";
 import { UserDeletionRequest, UserDeletionResponse } from '../types';
 import { ServiceSelector } from '../helpers/serviceSelector';
 import tags from '../v0/util/tags';
@@ -12,7 +12,7 @@ export class RegulationController {
   public static async deleteUsers(ctx: Context) {
     logger.debug(
       'Native(Process-Transform):: Requst to transformer::',
-      JSON.stringify(ctx.request.body),
+      ctx.request.body,
     );
     const startTime = new Date();
     let rudderDestInfo: any;
@@ -23,7 +23,7 @@ export class RegulationController {
         rudderDestInfo = destInfoHeader;
       }
     } catch (error) {
-      logger.error(`Error while getting rudderDestInfo header value: ${error}`);
+      logger.errorw(`Error while getting rudderDestInfo header value: ${error}`);
     }
 
     const userDeletionRequests = ctx.request.body as UserDeletionRequest[];

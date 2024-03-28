@@ -1,6 +1,6 @@
 const NodeCache = require('node-cache');
 const { fetchWithProxy } = require('./fetch');
-const logger = require('../logger');
+const logger = require('@rudderstack/integrations-lib/build/structured-logger');
 const { responseStatusHandler } = require('./utils');
 const stats = require('./stats');
 
@@ -34,7 +34,7 @@ async function getTrackingPlan(tpId, version, workspaceId) {
     tpCache.set(`${tpId}::${version}`, myJson);
     return myJson;
   } catch (error) {
-    logger.error(`Failed during trackingPlan fetch : ${error}`);
+    logger.errorw(`Failed during trackingPlan fetch : ${error}`);
     stats.increment('get_tracking_plan_error');
     throw error;
   }
@@ -71,7 +71,7 @@ async function getEventSchema(tpId, tpVersion, eventType, eventName, workspaceId
     }
     return eventSchema;
   } catch (error) {
-    logger.info(`Failed during eventSchema fetch : ${JSON.stringify(error)}`);
+    logger.infow(`Failed during eventSchema fetch : ${JSON.stringify(error)}`);
     stats.increment('get_eventSchema_error');
     throw error;
   }

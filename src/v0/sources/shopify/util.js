@@ -44,7 +44,7 @@ const getDataFromRedis = async (key, metricMetadata) => {
     }
     return redisData;
   } catch (e) {
-    logger.debug(`{{SHOPIFY::}} Get call Failed due redis error ${e}`);
+    logger.debugw(`{{SHOPIFY::}} Get call Failed due redis error ${e}`);
     stats.increment('shopify_redis_failures', {
       type: 'get',
       writeKey: metricMetadata.writeKey,
@@ -61,7 +61,7 @@ const getDataFromRedis = async (key, metricMetadata) => {
  */
 const getShopifyTopic = (event) => {
   const { query_parameters: qParams } = event;
-  logger.debug(`[Shopify] Input event: query_params: ${JSON.stringify(qParams)}`);
+  logger.debugw(`[Shopify] Input event: query_params: ${JSON.stringify(qParams)}`);
   if (!qParams) {
     throw new TransformationError('Query_parameters is missing');
   }
@@ -227,7 +227,7 @@ const updateCartItemsInRedis = async (cartToken, newCartItemsHash, metricMetadat
     });
     await RedisDB.setVal(`${cartToken}`, value);
   } catch (e) {
-    logger.debug(`{{SHOPIFY::}} itemsHash set call Failed due redis error ${e}`);
+    logger.debugw(`{{SHOPIFY::}} itemsHash set call Failed due redis error ${e}`);
     stats.increment('shopify_redis_failures', {
       type: 'set',
       writeKey: metricMetadata.writeKey,

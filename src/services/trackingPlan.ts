@@ -1,4 +1,4 @@
-import logger from '../logger';
+import logger from '@rudderstack/integrations-lib/build/structured-logger';
 import { RetryRequestError, RespStatusError, constructValidationErrors } from '../util/utils';
 import { getMetadata, getTrackingPlanMetadata } from '../v0/util';
 import eventValidator from '../util/eventValidation';

@@ -6,13 +6,13 @@ logger.setLogLevel(Number.POSITIVE_INFINITY);
 
 const debug = (...args) => {
   logger.setLogLevel(logger.levelDebug);
-  logger.debug(...args);
+  logger.debugw(...args);
   logger.setLogLevel(Number.POSITIVE_INFINITY);
 };
 
 const info = (...args) => {
   logger.setLogLevel(logger.levelInfo);
-  logger.info(...args);
+  logger.infow(...args);
   logger.setLogLevel(Number.POSITIVE_INFINITY);
 };
 
@@ -24,7 +24,7 @@ const warn = (...args) => {
 
 const error = (...args) => {
   logger.setLogLevel(logger.levelError);
-  logger.error(...args);
+  logger.errorw(...args);
   logger.setLogLevel(Number.POSITIVE_INFINITY);
 };
 

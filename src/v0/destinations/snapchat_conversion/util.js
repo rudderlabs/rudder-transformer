@@ -80,7 +80,7 @@ function getItemIds(message) {
       if (pId) {
         itemIds.push(pId);
       } else {
-        logger.debug(`product_id not present for product at index ${index}`);
+        logger.debugw(`product_id not present for product at index ${index}`);
       }
     });
   } else {

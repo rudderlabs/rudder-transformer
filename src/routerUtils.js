@@ -1,6 +1,6 @@
 /* eslint-disable global-require */
 /* eslint-disable import/no-dynamic-require */
-const logger = require('./logger');
+const logger = require('@rudderstack/integrations-lib/build/structured-logger');
 const { proxyRequest } = require('./adapters/network');
 const { nodeSysErrorToStatus } = require('./adapters/utils/networkUtils');
 
@@ -21,7 +21,7 @@ const userTransformHandler = () => {
 
 async function sendToDestination(destination, payload) {
   let parsedResponse;
-  logger.info('Request recieved for destination', destination);
+  logger.infow('Request recieved for destination', destination);
   const resp = await proxyRequest(payload);
 
   if (resp.success) {

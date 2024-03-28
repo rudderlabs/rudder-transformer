@@ -1,10 +1,10 @@
 import match from 'match-json';
 import jsonDiff from 'json-diff';
+import logger from '@rudderstack/integrations-lib/build/structured-logger';
 import networkHandlerFactory from '../../adapters/networkHandlerFactory';
 import { getPayloadData } from '../../adapters/network';
 import { generateErrorObject } from '../../v0/util';
 import stats from '../../util/stats';
-import logger from '../../logger';
 import tags from '../../v0/util/tags';
 
 export class DeliveryTestService {
@@ -48,26 +48,26 @@ export class DeliveryTestService {
           destination,
         });
 
-        logger.error(`[TransformerProxyTest] Destination request payload mismatch!`);
-        logger.error(
-          `[TransformerProxyTest] Delivery payload (router): ${JSON.stringify(
-            routerDeliveryPayload,
+        logger.errorw(`[TransformerProxyTest] Destination request payload mismatch!`);
+        logger.errorw(
+          `[TransformerProxyTest] Delivery payload (router): ${
+            routerDeliveryPayload}
           )}`,
         );
-        logger.error(
-          `[TransformerProxyTest] Destination request payload (router): ${JSON.stringify(
-            routerDestReqPayload,
-          )}`,
+        logger.errorw(
+          `[TransformerProxyTest] Destination request payload (router): 
+          ${routerDestReqPayload}
+          }`,
         );
-        logger.error(
-          `[TransformerProxyTest] Destination request payload (proxy): ${JSON.stringify(
-            proxyDestReqPayload,
+        logger.errorw(
+          `[TransformerProxyTest] Destination request payload (proxy): ${
+            proxyDestReqPayload}
           )} `,
         );
 
         // Compute output difference
         const outputDiff = jsonDiff.diffString(routerDestReqPayload, proxyDestReqPayload);
-        logger.error(
+        logger.errorw(
           `[TransformerProxyTest] Destination request payload difference: ${outputDiff}`,
         );
         response = {
@@ -90,17 +90,17 @@ export class DeliveryTestService {
         [tags.TAG_NAMES.FEATURE]: tags.FEATURES.DATA_DELIVERY,
       });
       response.message = `[TransformerProxyTest] Error occurred while testing proxy for destination ("${destination}"): "${err.message}"`;
-      logger.error(response.message);
-      logger.error(err);
-      logger.error(
-        `[TransformerProxyTest] Delivery payload (router): ${JSON.stringify(
-          routerDeliveryPayload,
-        )}`,
+      logger.errorw(response.message);
+      logger.errorw(err);
+      logger.errorw(
+        `[TransformerProxyTest] Delivery payload (router): 
+          ${routerDeliveryPayload},
+        }`,
       );
-      logger.error(
-        `[TransformerProxyTest] Destination request payload (router): ${JSON.stringify(
-          routerDestReqPayload,
-        )}`,
+      logger.errorw(
+        `[TransformerProxyTest] Destination request payload (router): ${
+          routerDestReqPayload
+        }`,
       );
     }
     return response;

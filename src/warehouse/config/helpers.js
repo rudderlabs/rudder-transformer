@@ -10,7 +10,7 @@ const isBlank = (value) => {
   try {
     return _.isEmpty(_.toString(value));
   } catch (e) {
-    logger.error(`Error in isBlank: ${e.message}`);
+    logger.errorw(`Error in isBlank: ${e.message}`);
     return false;
   }
 };

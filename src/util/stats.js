@@ -1,6 +1,7 @@
+import logger from '@rudderstack/integrations-lib/build/structured-logger';
+
 const statsd = require('./statsd');
 const prometheus = require('./prometheus');
-const logger = require('../logger');
 
 const enableStats = process.env.ENABLE_STATS !== 'false';
 const statsClientType = process.env.STATS_CLIENT || 'statsd';

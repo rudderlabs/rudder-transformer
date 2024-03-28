@@ -1,3 +1,5 @@
+const logger = require('@rudderstack/integrations-lib/build/structured-logger');
+
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const lodash = require('lodash');
 const { EventType } = require('../../../constants');
@@ -244,6 +246,11 @@ const batchEvents = (eventChunksArray) => {
 };
 
 const processRouterDest = async (inputs, reqMetadata) => {
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
+  logger.debugw('infow processing batch request for', reqMetadata.loggerCtx);
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
+  }
   const batchErrorRespList = [];
   const eventChunksArray = [];
   const { destination } = inputs[0];

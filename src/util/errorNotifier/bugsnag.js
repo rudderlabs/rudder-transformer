@@ -76,7 +76,7 @@ function init() {
       },
     });
   } else {
-    logger.error(`Invalid Bugsnag API key: ${apiKey}`);
+    logger.errorw(`Invalid Bugsnag API key: ${apiKey}`);
   }
 }
 

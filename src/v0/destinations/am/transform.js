@@ -435,7 +435,7 @@ const nonAliasResponsebuilder = (
   }
 
   if (!payload.user_id && !payload.device_id) {
-    logger.debug('Either of user ID or device ID fields must be specified');
+    logger.debugw('Either of user ID or device ID fields must be specified');
     throw new InstrumentationError('Either of user ID or device ID fields must be specified');
   }
 
@@ -592,7 +592,7 @@ const getGroupInfo = (destination, groupInfo, groupTraits) => {
       updatedGroupInfo.group_properties = groupTraits;
       return updatedGroupInfo;
     }
-    logger.debug('Group call parameters are not valid');
+    logger.debugw('Group call parameters are not valid');
     throw new InstrumentationError('Group call parameters are not valid');
   }
   return groupInfo;
@@ -709,7 +709,7 @@ const processSingleMessage = (message, destination) => {
       }
       break;
     default:
-      logger.debug('could not determine type');
+      logger.debugw('could not determine type');
       throw new InstrumentationError('message type not supported');
   }
   AMUtils.validateEventType(evType);

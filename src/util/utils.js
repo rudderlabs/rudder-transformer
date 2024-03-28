@@ -5,7 +5,7 @@ const { Resolver } = require('dns').promises;
 const fetch = require('node-fetch');
 
 const util = require('util');
-const logger = require('../logger');
+const logger = require('@rudderstack/integrations-lib/build/structured-logger');
 const stats = require('./stats');
 
 const resolver = new Resolver();
@@ -169,7 +169,7 @@ function processInfo() {
 }
 
 function logProcessInfo() {
-  logger.error(`Process info: `, util.inspect(processInfo(), false, null, true));
+  logger.errorw(`Process info: `, util.inspect(processInfo(), false, null, true));
 }
 
 // stringLiterals expected to be an array of strings. A line in trace should contain

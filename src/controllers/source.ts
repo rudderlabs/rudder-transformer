@@ -1,15 +1,15 @@
 import { Context } from 'koa';
+import logger from "@rudderstack/integrations-lib/build/structured-logger";
 import { MiscService } from '../services/misc';
 import { ServiceSelector } from '../helpers/serviceSelector';
 import { ControllerUtility } from './util';
-import logger from '../logger';
 import { SourcePostTransformationService } from '../services/source/postTransformation';
 
 export class SourceController {
   public static async sourceTransform(ctx: Context) {
     logger.debug(
       'Native(Source-Transform):: Request to transformer::',
-      JSON.stringify(ctx.request.body),
+      ctx.request.body,
     );
     const requestMetadata = MiscService.getRequestMetadata(ctx);
     const events = ctx.request.body as object[];
@@ -36,7 +36,7 @@ export class SourceController {
     ControllerUtility.postProcess(ctx);
     logger.debug(
       'Native(Source-Transform):: Response from transformer::',
-      JSON.stringify(ctx.body),
+      ctx.body,
     );
     return ctx;
   }

@@ -50,7 +50,7 @@ const retrieveUserId = async (apiKey, message) => {
       module: 'processor',
     },
   );
-  logger.debug(response);
+  logger.debugw(response);
   // If the request fails, throwing error.
   if (response.success === false) {
     throw new NetworkError(

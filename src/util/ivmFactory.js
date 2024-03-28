@@ -4,7 +4,7 @@ const _ = require('lodash');
 
 const { getLibraryCodeV1, getRudderLibByImportName } = require('./customTransforrmationsStore-v1');
 const { extractStackTraceUptoLastSubstringMatch } = require('./utils');
-const logger = require('../logger');
+const logger = require('@rudderstack/integrations-lib/build/structured-logger');
 const stats = require('./stats');
 const { fetchWithDnsWrapper } = require('./utils');
 

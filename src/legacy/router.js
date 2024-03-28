@@ -7,8 +7,9 @@ const Router = require('@koa/router');
 const lodash = require('lodash');
 const fs = require('fs');
 const path = require('path');
+const logger = require('@rudderstack/integrations-lib/build/structured-logger');
 const { PlatformError, getErrorRespEvents } = require('@rudderstack/integrations-lib');
-const logger = require('../logger');
+const logger = require('@rudderstack/integrations-lib/build/structured-logger');
 const stats = require('../util/stats');
 const { SUPPORTED_VERSIONS, API_VERSION } = require('../routes/utils/constants');
 const { client: errNotificationClient } = require('../util/errorNotifier');
@@ -139,7 +140,7 @@ async function handleDest(ctx, version, destination) {
     throw new PlatformError('Event is missing or in inappropriate format');
   }
   const reqParams = ctx.request.query;
-  logger.debug(`[DT] Input events: ${JSON.stringify(events)}`);
+  logger.debugw(`[DT] Input events: ${JSON.stringify(events)}`);
 
   const metaTags =
     events && events.length > 0 && events[0].metadata ? getMetadata(events[0].metadata) : {};
@@ -183,7 +184,7 @@ async function handleDest(ctx, version, destination) {
         }
         return undefined;
       } catch (error) {
-        logger.error(error);
+        logger.errorw(error);
 
         let implementation = tags.IMPLEMENTATIONS.NATIVE;
         let errCtx = 'Processor Transformation';
@@ -222,7 +223,7 @@ async function handleDest(ctx, version, destination) {
     destination,
     ...metaTags,
   });
-  logger.debug(`[DT] Output events: ${JSON.stringify(respList)}`);
+  logger.debugw(`[DT] Output events: ${JSON.stringify(respList)}`);
   stats.histogram('dest_transform_output_events', respList.length, {
     destination,
     version,
@@ -275,7 +276,7 @@ async function handleValidation(ctx) {
       }
     } catch (error) {
       const errMessage = `Error occurred while validating : ${error}`;
-      logger.error(errMessage);
+      logger.errorw(errMessage);
       let status = 200;
       if (error instanceof RetryRequestError) {
         ctxStatusCode = error.statusCode;
@@ -402,7 +403,7 @@ async function routerHandleDest(ctx) {
         };
       });
   } catch (error) {
-    logger.error(error);
+    logger.errorw(error);
 
     const errObj = generateErrorObject(error, defTags);
 
@@ -522,7 +523,7 @@ if (startDestTransformer) {
       const startTime = new Date();
       const events = ctx.request.body;
       const { processSessions } = ctx.query;
-      logger.debug(`[CT] Input events: ${JSON.stringify(events)}`);
+      logger.debugw(`[CT] Input events: ${JSON.stringify(events)}`);
       stats.histogram('user_transform_input_events', events.length, {
         processSessions,
       });
@@ -551,7 +552,7 @@ if (startDestTransformer) {
       }
       await Promise.all(
         Object.entries(groupedEvents).map(async ([dest, destEvents]) => {
-          logger.debug(`dest: ${dest}`);
+          logger.debugw(`dest: ${dest}`);
           const transformationVersionId =
             destEvents[0] &&
             destEvents[0].destination &&
@@ -604,7 +605,7 @@ if (startDestTransformer) {
                 }),
               );
             } catch (error) {
-              logger.error(error);
+              logger.errorw(error);
               let status = 400;
               const errorString = error.toString();
               if (error instanceof RetryRequestError) {
@@ -627,7 +628,7 @@ if (startDestTransformer) {
             }
           } else {
             const errorMessage = 'Transformation VersionID not found';
-            logger.error(`[CT] ${errorMessage}`);
+            logger.errorw(`[CT] ${errorMessage}`);
             transformedEvents.push({
               statusCode: 400,
               error: errorMessage,
@@ -641,7 +642,7 @@ if (startDestTransformer) {
           }
         }),
       );
-      logger.debug(`[CT] Output events: ${JSON.stringify(transformedEvents)}`);
+      logger.debugw(`[CT] Output events: ${JSON.stringify(transformedEvents)}`);
       ctx.body = transformedEvents;
       ctx.status = ctxStatusCode;
       ctx.set('apiVersion', API_VERSION);
@@ -668,7 +669,7 @@ if (transformerTestModeEnabled) {
         throw new Error('Invalid request. Missing events');
       }
 
-      logger.debug(`[CT] Test Input Events: ${JSON.stringify(events)}`);
+      logger.debugw(`[CT] Test Input Events: ${JSON.stringify(events)}`);
       trRevCode.versionId = 'testVersionId';
       const res = await userTransformHandler()(
         events,
@@ -677,7 +678,7 @@ if (transformerTestModeEnabled) {
         trRevCode,
         true,
       );
-      logger.debug(`[CT] Test Output Events: ${JSON.stringify(res.transformedEvents)}`);
+      logger.debugw(`[CT] Test Output Events: ${JSON.stringify(res.transformedEvents)}`);
       ctx.body = res;
     } catch (error) {
       ctx.status = error.statusCode || 400;
@@ -713,7 +714,7 @@ if (transformerTestModeEnabled) {
         throw new Error('Invalid Request. Missing parameters in transformation code block');
       }
 
-      logger.debug(`[CT] Setting up a transformation ${testName}`);
+      logger.debugw(`[CT] Setting up a transformation ${testName}`);
       if (!trRevCode.versionId) {
         trRevCode.versionId = 'testVersionId';
       }
@@ -721,7 +722,7 @@ if (transformerTestModeEnabled) {
         trRevCode.workspaceId = 'workspaceId';
       }
       const res = await setupUserTransformHandler(libraryVersionIDs, trRevCode);
-      logger.debug(`[CT] Finished setting up transformation: ${testName}`);
+      logger.debugw(`[CT] Finished setting up transformation: ${testName}`);
       ctx.body = res;
     } catch (error) {
       ctx.status = 400;
@@ -742,7 +743,7 @@ async function handleSource(ctx, version, source) {
 
   const sourceHandler = getSourceHandler(version, source);
   const events = ctx.request.body;
-  logger.debug(`[ST] Input source events: ${JSON.stringify(events)}`);
+  logger.debugw(`[ST] Input source events: ${JSON.stringify(events)}`);
   stats.counter('source_transform_input_events', events.length, {
     source,
     version,
@@ -766,7 +767,7 @@ async function handleSource(ctx, version, source) {
           respList.push({ output: { batch: [respEvents] } });
         }
       } catch (error) {
-        logger.error(error);
+        logger.errorw(error);
 
         // TODO: Update the data contact for source transformation
         // and then send the following additional information
@@ -803,7 +804,7 @@ async function handleSource(ctx, version, source) {
       }
     }),
   );
-  logger.debug(`[ST] Output source events: ${JSON.stringify(respList)}`);
+  logger.debugw(`[ST] Output source events: ${JSON.stringify(respList)}`);
   stats.increment('source_transform_output_events', respList.length, {
     source,
     version,
@@ -873,8 +874,8 @@ async function handleProxyRequest(destination, ctx) {
       destination,
     });
   } catch (err) {
-    logger.error('Error occurred while completing proxy request:');
-    logger.error(err);
+    logger.errorw('Error occurred while completing proxy request:');
+    logger.errorw(err);
 
     const errObj = generateErrorObject(
       err,
@@ -1169,7 +1170,7 @@ const handleDeletionOfUsers = async (ctx) => {
         return destInfoHeader;
       }
     } catch (error) {
-      logger.error(`Error while getting rudderDestInfo header value: ${error}`);
+      logger.errorw(`Error while getting rudderDestInfo header value: ${error}`);
     }
     return {};
   };
@@ -1219,7 +1220,7 @@ const handleDeletionOfUsers = async (ctx) => {
         };
 
         respList.push(resp);
-        logger.error(`Error Response List: ${JSON.stringify(respList, null, 2)}`);
+        logger.errorw(`Error Response List: ${JSON.stringify(respList, null, 2)}`);
 
         errNotificationClient.notify(error, 'User Deletion', {
           ...resp,

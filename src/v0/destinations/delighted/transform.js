@@ -42,11 +42,11 @@ const identifyResponseBuilder = (message, { Config }) => {
   if (userIdType === 'email' && payload.phone_number) {
     if (!isValidPhone(payload.phone_number)) {
       payload.phone_number = null;
-      logger.error('Phone number format must be E.164.');
+      logger.errorw('Phone number format must be E.164.');
     }
   } else if (userIdType === 'phone_number' && payload.email && !isValidEmail(payload.email)) {
     payload.email = null;
-    logger.error('Email format is not correct.');
+    logger.errorw('Email format is not correct.');
   }
 
   payload.send = false;

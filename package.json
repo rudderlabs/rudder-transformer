@@ -116,6 +116,7 @@
     "unset-value": "^2.0.1",
     "uuid": "^9.0.0",
     "valid-url": "^1.0.9",
+    "winston": "^3.11.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {

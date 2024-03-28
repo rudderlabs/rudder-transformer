@@ -1,6 +1,6 @@
 const NodeCache = require('node-cache');
 const { fetchWithProxy } = require('./fetch');
-const logger = require('../logger');
+const logger = require('@rudderstack/integrations-lib/build/structured-logger');
 const { responseStatusHandler } = require('./utils');
 const stats = require('./stats');
 
@@ -28,7 +28,7 @@ async function getTransformationCode(versionId) {
     myCache.set(versionId, myJson);
     return myJson;
   } catch (error) {
-    logger.error(error);
+    logger.errorw(error);
     stats.increment('get_transformation_code', { versionId, success: 'false' });
     throw error;
   }

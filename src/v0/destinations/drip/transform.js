@@ -44,7 +44,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
   let email = getFieldValueFromMessage(message, 'email');
   if (!isValidEmail(email)) {
     email = null;
-    logger.error('Email format is incorrect');
+    logger.errorw('Email format is incorrect');
   }
 
   const userId = getFieldValueFromMessage(message, 'userId');
@@ -149,7 +149,7 @@ const trackResponseBuilder = async (message, { Config }) => {
   ]);
   if (!isValidEmail(email)) {
     email = null;
-    logger.error('Enter correct email format.');
+    logger.errorw('Enter correct email format.');
   }
   if (!id && !email) {
     throw new InstrumentationError('Drip Id or email is required.');
@@ -176,7 +176,7 @@ const trackResponseBuilder = async (message, { Config }) => {
 
     if (payload.occurred_at && !isValidTimestamp(payload.occurred_at)) {
       payload.occurred_at = null;
-      logger.error('Timestamp format must be ISO-8601.');
+      logger.errorw('Timestamp format must be ISO-8601.');
     }
     const productList = getValueFromMessage(message, 'properties.products');
     if (productList) {
@@ -204,7 +204,7 @@ const trackResponseBuilder = async (message, { Config }) => {
   payload.email = email;
   if (payload.occurred_at && !isValidTimestamp(payload.occurred_at)) {
     payload.occurred_at = null;
-    logger.error('Timestamp format must be ISO-8601.');
+    logger.errorw('Timestamp format must be ISO-8601.');
   }
 
   if (!payload.properties) {

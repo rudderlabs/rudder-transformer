@@ -67,8 +67,9 @@
     "THE_TRADE_DESK": true,
     "INTERCOM": true,
     "NINETAILED": true,
-    "MOVABLE_INK": true,
-    "KOALA": true
+    "KOALA": true,
+    "LINKEDIN_ADS": true,
+    "MOVABLE_INK": true
   },
   "regulations": [
     "BRAZE",

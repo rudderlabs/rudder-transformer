@@ -76,7 +76,7 @@ steps:
         "use_most_recent": .message.properties.useMostRecent,
       };
       $.context.payload.user = {
-        "id": .message.properties.userId ?? .message.userId,
+        "uid": .message.properties.userId ?? .message.userId,
       }
 
   - name: cleanPayload

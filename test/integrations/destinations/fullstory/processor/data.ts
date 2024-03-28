@@ -149,7 +149,7 @@ export const data = [
                     id: 's001',
                   },
                   user: {
-                    id: 'u001',
+                    uid: 'u001',
                   },
                 },
                 JSON_ARRAY: {},

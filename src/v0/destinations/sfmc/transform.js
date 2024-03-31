@@ -7,7 +7,6 @@ const {
   isDefinedAndNotNull,
   isEmpty,
 } = require('@rudderstack/integrations-lib');
-const myAxios = require('../../../util/myAxios');
 const { EventType } = require('../../../constants');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG, ENDPOINTS } = require('./config');
 const {
@@ -28,6 +27,7 @@ const {
 } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { handleHttpRequest } = require('../../../adapters/network');
 
 const CONTACT_KEY_KEY = 'Contact Key';
 
@@ -35,7 +35,8 @@ const CONTACT_KEY_KEY = 'Contact Key';
 
 const getToken = async (clientId, clientSecret, subdomain) => {
   try {
-    const resp = await myAxios.post(
+    const { processedResponse: processedResponseSfmc } = await handleHttpRequest(
+      'post',
       `https://${subdomain}.${ENDPOINTS.GET_TOKEN}`,
       {
         grant_type: 'client_credentials',
@@ -53,17 +54,16 @@ const getToken = async (clientId, clientSecret, subdomain) => {
         module: 'router',
       },
     );
-    if (resp && resp.data) {
-      return resp.data.access_token;
+    if (processedResponseSfmc.response) {
+      return processedResponseSfmc.response.access_token;
     }
-    const status = resp.status || 400;
     throw new NetworkError(
       'Could not retrieve access token',
-      status,
+      processedResponseSfmc.status || 400,
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedResponseSfmc.status || 400),
       },
-      resp,
+      JSON.stringify(processedResponseSfmc),
     );
   } catch (error) {
     if (!isEmpty(error.response)) {

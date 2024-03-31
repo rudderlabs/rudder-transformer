@@ -67,6 +67,18 @@ export const statTags = {
   module: 'destination',
 };
 
+export const metadata = {
+  jobId: 1,
+  attemptNum: 1,
+  userId: 'default-userId',
+  destinationId: 'default-destinationId',
+  workspaceId: 'default-workspaceId',
+  sourceId: 'default-sourceId',
+  secret: {
+    accessToken: 'default-accessToken',
+  },
+  dontBatch: false,
+};
 export const headerBlockWithCorrectAccessToken = {
   Authorization: 'Bearer default-accessToken',
   'Content-Type': 'application/json',
@@ -116,30 +128,10 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                 error:
                   '{"message":"Incorrect conversions information provided. Conversion\'s method should be CONVERSIONS_API, indices [0] (0-indexed)","status":400}',
                 statusCode: 400,
-                metadata: {
-                  jobId: 1,
-                  attemptNum: 1,
-                  userId: 'default-userId',
-                  destinationId: 'default-destinationId',
-                  workspaceId: 'default-workspaceId',
-                  sourceId: 'default-sourceId',
-                  secret: {
-                    accessToken: 'default-accessToken',
-                  },
-                  dontBatch: false,
-                },
+                metadata,
               },
             ],
-            statTags: {
-              errorCategory: 'network',
-              errorType: 'aborted',
-              destType: 'LINKEDIN_ADS',
-              module: 'destination',
-              implementation: 'native',
-              feature: 'dataDelivery',
-              destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
-            },
+            statTags,
             status: 400,
           },
         },
@@ -147,7 +139,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
     },
   },
   {
-    id: 'linkedin_ads_v1_scenario_1',
+    id: 'linkedin_ads_v1_scenario_2',
     name: 'linkedin_ads',
     description: 'Event fails due to wrong format payload sent to linkedin',
     successCriteria: 'Should return 400 with appropriate reason of failure',
@@ -184,18 +176,7 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
                 error:
                   '/conversionValue/amount :: field is required but not found and has no default value',
                 statusCode: 400,
-                metadata: {
-                  jobId: 1,
-                  attemptNum: 1,
-                  userId: 'default-userId',
-                  destinationId: 'default-destinationId',
-                  workspaceId: 'default-workspaceId',
-                  sourceId: 'default-sourceId',
-                  secret: {
-                    accessToken: 'default-accessToken',
-                  },
-                  dontBatch: false,
-                },
+                metadata,
               },
             ],
             status: 422,

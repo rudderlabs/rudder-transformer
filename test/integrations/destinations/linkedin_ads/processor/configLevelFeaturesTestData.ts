@@ -61,7 +61,7 @@ const commonTimestamp = new Date('2023-10-14');
 
 export const configLevelFeaturesTestData: ProcessorTestData[] = [
   {
-    id: 'linkedin_ads-track-test-1',
+    id: 'linkedin_ads-config-test-1',
     name: 'linkedin_ads',
     description: 'Track call : hashData is set to false and no deduplication key is provided',
     scenario: 'Business',
@@ -139,7 +139,7 @@ export const configLevelFeaturesTestData: ProcessorTestData[] = [
     },
   },
   {
-    id: 'linkedin_ads-track-test-1',
+    id: 'linkedin_ads-config-test-2',
     name: 'linkedin_ads',
     description: 'Track call : hashData is set to true and deduplication key is provided',
     scenario: 'Business',

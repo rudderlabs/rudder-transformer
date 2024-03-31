@@ -33,6 +33,19 @@ export const statTags = {
   module: 'destination',
 };
 
+export const metadata = {
+  jobId: 1,
+  attemptNum: 1,
+  userId: 'default-userId',
+  destinationId: 'default-destinationId',
+  workspaceId: 'default-workspaceId',
+  sourceId: 'default-sourceId',
+  secret: {
+    accessToken: 'default-accessToken',
+  },
+  dontBatch: false,
+};
+
 export const headerBlockWithCorrectAccessToken = {
   Authorization: 'Bearer default-accessToken',
   'Content-Type': 'application/json',
@@ -59,7 +72,7 @@ const commonRequestParametersWithRevokedAccess = {
 
 export const oauthScenariosV1: ProxyV1TestData[] = [
   {
-    id: 'linkedin_ads_v1_scenario_1',
+    id: 'linkedin_ads_v1_oauth_scenario_1',
     name: 'linkedin_ads',
     description: 'app event fails due to revoked access token error',
     successCriteria: 'Should return 500 with revoked access token error',
@@ -86,30 +99,10 @@ export const oauthScenariosV1: ProxyV1TestData[] = [
                 error:
                   '{"status":401,"serviceErrorCode":65601,"code":"REVOKED_ACCESS_TOKEN","message":"The token used in the request has been revoked by the user"}',
                 statusCode: 500,
-                metadata: {
-                  jobId: 1,
-                  attemptNum: 1,
-                  userId: 'default-userId',
-                  destinationId: 'default-destinationId',
-                  workspaceId: 'default-workspaceId',
-                  sourceId: 'default-sourceId',
-                  secret: {
-                    accessToken: 'revokedToken',
-                  },
-                  dontBatch: false,
-                },
+                metadata: { ...metadata, secret: { accessToken: 'revokedToken' } },
               },
             ],
-            statTags: {
-              errorCategory: 'network',
-              errorType: 'retryable',
-              destType: 'LINKEDIN_ADS',
-              module: 'destination',
-              implementation: 'native',
-              feature: 'dataDelivery',
-              destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
-            },
+            statTags: { ...statTags, errorType: 'retryable' },
             authErrorCategory: 'REFRESH_TOKEN',
             message:
               'LinkedIn Conversion API: Error transformer proxy v1 during LinkedIn Conversion API response transformation. Invalid or expired access token. Retrying',
@@ -120,7 +113,7 @@ export const oauthScenariosV1: ProxyV1TestData[] = [
     },
   },
   {
-    id: 'linkedin_ads_v1_scenario_1',
+    id: 'linkedin_ads_v1_oauth_scenario_2',
     name: 'linkedin_ads',
     description: 'app event fails due to invalid access token error',
     successCriteria: 'Should return 500 with invalid access token error',
@@ -147,30 +140,10 @@ export const oauthScenariosV1: ProxyV1TestData[] = [
                 error:
                   '{"status":401,"serviceErrorCode":65600,"code":"INVALID_ACCESS_TOKEN","message":"Invalid access token"}',
                 statusCode: 500,
-                metadata: {
-                  jobId: 1,
-                  attemptNum: 1,
-                  userId: 'default-userId',
-                  destinationId: 'default-destinationId',
-                  workspaceId: 'default-workspaceId',
-                  sourceId: 'default-sourceId',
-                  secret: {
-                    accessToken: 'invalidToken',
-                  },
-                  dontBatch: false,
-                },
+                metadata: { ...metadata, secret: { accessToken: 'invalidToken' } },
               },
             ],
-            statTags: {
-              errorCategory: 'network',
-              errorType: 'retryable',
-              destType: 'LINKEDIN_ADS',
-              module: 'destination',
-              implementation: 'native',
-              feature: 'dataDelivery',
-              destinationId: 'default-destinationId',
-              workspaceId: 'default-workspaceId',
-            },
+            statTags: { ...statTags, errorType: 'retryable' },
             authErrorCategory: 'REFRESH_TOKEN',
             message:
               'LinkedIn Conversion API: Error transformer proxy v1 during LinkedIn Conversion API response transformation. Invalid or expired access token. Retrying',
@@ -181,7 +154,7 @@ export const oauthScenariosV1: ProxyV1TestData[] = [
     },
   },
   {
-    id: 'linkedin_ads_v1_scenario_1',
+    id: 'linkedin_ads_v1_oauth_scenario_3',
     name: 'linkedin_ads',
     description: 'success case',
     successCriteria: 'Should return 200 response',

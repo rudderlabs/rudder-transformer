@@ -1,9 +1,4 @@
-import {
-  generateMetadata,
-  generateTrackPayload,
-  overrideDestination,
-  transformResultBuilder,
-} from '../../../testUtils';
+import { generateMetadata, generateTrackPayload, overrideDestination } from '../../../testUtils';
 import { Destination } from '../../../../../src/types';
 import { ProcessorTestData } from '../../../testTypes';
 
@@ -85,7 +80,7 @@ const olderTimestamp = new Date('2023-07-13');
 
 export const validationTestData: ProcessorTestData[] = [
   {
-    id: 'linkedin_ads-track-test-1',
+    id: 'linkedin_ads-validation-test-1',
     name: 'linkedin_ads',
     description: 'Track call : event is older than 90 days',
     scenario: 'Business',
@@ -137,7 +132,7 @@ export const validationTestData: ProcessorTestData[] = [
     },
   },
   {
-    id: 'linkedin_ads-track-test-2',
+    id: 'linkedin_ads-validation-test-2',
     name: 'linkedin_ads',
     description: 'Track call : event not mapped to conversion rule in UI',
     scenario: 'Business',
@@ -234,7 +229,7 @@ export const validationTestData: ProcessorTestData[] = [
     },
   },
   {
-    id: 'linkedin_ads-track-test-4',
+    id: 'linkedin_ads-validation-test-4',
     name: 'linkedin_ads',
     description: 'Track call : properties without product array and no price',
     scenario: 'Business',
@@ -272,16 +267,7 @@ export const validationTestData: ProcessorTestData[] = [
             error:
               '[LinkedIn Conversion API]: Cannot map price for event random event. Aborting: Workflow: procWorkflow, Step: commonFields, ChildStep: undefined, OriginalError: [LinkedIn Conversion API]: Cannot map price for event random event. Aborting',
             metadata: generateMetadata(1),
-            statTags: {
-              destinationId: 'default-destinationId',
-              errorCategory: 'dataValidation',
-              errorType: 'instrumentation',
-              implementation: 'cdkV2',
-              destType: 'LINKEDIN_ADS',
-              module: 'destination',
-              feature: 'processor',
-              workspaceId: 'default-workspaceId',
-            },
+            statTags: commonStats,
             statusCode: 400,
           },
         ],
@@ -289,7 +275,7 @@ export const validationTestData: ProcessorTestData[] = [
     },
   },
   {
-    id: 'linkedin_ads-track-test-5',
+    id: 'linkedin_ads-validation-test-5',
     name: 'linkedin_ads',
     description: 'Track call : properties without product array and no price',
     scenario: 'Business',

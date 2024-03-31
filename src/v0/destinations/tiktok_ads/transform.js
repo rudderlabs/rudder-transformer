@@ -19,6 +19,7 @@ const {
   getHashFromArrayWithDuplicate,
   handleRtTfSingleEventError,
   batchMultiplexedEvents,
+  validateEventName,
 } = require('../../util');
 const { process: processV2, processRouterDest: processRouterDestV2 } = require('./transformV2');
 const { getContents } = require('./util');
@@ -129,12 +130,9 @@ const getTrackResponse = (message, Config, event) => {
 
 const trackResponseBuilder = async (message, { Config }) => {
   const { eventsToStandard, sendCustomEvents } = Config;
-  if (!message.event || typeof message.event !== 'string') {
-    throw new InstrumentationError('Either event name is not present or it is not a string');
-  }
-  let event = message.event?.toLowerCase().trim();
+  validateEventName(message.event);
+  let event = message.event.toLowerCase().trim();
   const standardEventsMap = getHashFromArrayWithDuplicate(eventsToStandard);
-
   if (!sendCustomEvents && eventNameMapping[event] === undefined && !standardEventsMap[event]) {
     throw new InstrumentationError(
       `Event name (${event}) is not valid, must be mapped to one of standard events`,

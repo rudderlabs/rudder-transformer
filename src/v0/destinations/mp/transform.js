@@ -37,6 +37,7 @@ const {
   batchEvents,
   trimTraits,
   generatePageOrScreenCustomEventName,
+  recordBatchSizeMetrics,
 } = require('./util');
 const { CommonUtils } = require('../../../util/common');
 
@@ -479,6 +480,13 @@ const process = (event) => processSingleMessage(event.message, event.destination
 // Ref: https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel
 // Ref: https://help.mixpanel.com/hc/en-us/articles/115004561786-Track-UTM-Tags
 const processRouterDest = async (inputs, reqMetadata) => {
+  const batchSize = {
+    engage: 0,
+    groups: 0,
+    track: 0,
+    import: 0,
+  };
+
   const groupedEvents = groupEventsByType(inputs);
   const response = await Promise.all(
     groupedEvents.map(async (listOfEvents) => {
@@ -521,12 +529,20 @@ const processRouterDest = async (inputs, reqMetadata) => {
         ...importRespList,
       ];
 
+      batchSize.engage += engageRespList.length;
+      batchSize.groups += groupsRespList.length;
+      batchSize.track += trackRespList.length;
+      batchSize.import += importRespList.length;
+
       return [...batchSuccessRespList, ...batchErrorRespList];
     }),
   );
 
   // Flatten the response array containing batched events from multiple groups
   const allBatchedEvents = lodash.flatMap(response);
+
+  const { destination } = allBatchedEvents[0];
+  recordBatchSizeMetrics(batchSize, destination.ID);
   return combineBatchRequestsWithSameJobIds(allBatchedEvents);
 };
 

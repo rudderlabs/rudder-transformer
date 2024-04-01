@@ -1,7 +1,5 @@
-import logger from '@rudderstack/integrations-lib/build/structured-logger';
-
 const sha256 = require('sha256');
-const { TransformationError } = require('@rudderstack/integrations-lib');
+const { TransformationError, structuredLogger: logger } = require('@rudderstack/integrations-lib');
 const Message = require('../message');
 const { voterMapping, authorMapping, checkForRequiredFields } = require('./util');
 

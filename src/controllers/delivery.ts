@@ -1,7 +1,9 @@
 /* eslint-disable prefer-destructuring */
 /* eslint-disable sonarjs/no-duplicate-string */
-import { isDefinedAndNotNullAndNotEmpty } from '@rudderstack/integrations-lib';
-import logger from '@rudderstack/integrations-lib/build/structured-logger';
+import {
+  isDefinedAndNotNullAndNotEmpty,
+  structuredLogger as logger,
+} from '@rudderstack/integrations-lib';
 import { Context } from 'koa';
 import { ServiceSelector } from '../helpers/serviceSelector';
 import { DeliveryTestService } from '../services/delivertTest/deliveryTest';

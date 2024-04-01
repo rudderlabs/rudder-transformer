@@ -1,5 +1,5 @@
 /* eslint-disable global-require, import/no-dynamic-require, @typescript-eslint/no-unused-vars */
-import logger from '@rudderstack/integrations-lib/build/structured-logger';
+import { structuredLogger as logger } from '@rudderstack/integrations-lib';
 import { client as errNotificationClient } from '../util/errorNotifier';
 import {
   getDestFileUploadHandler,

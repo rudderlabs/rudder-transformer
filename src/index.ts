@@ -1,4 +1,4 @@
-import logger from '@rudderstack/integrations-lib/build/structured-logger';
+import { structuredLogger as logger } from '@rudderstack/integrations-lib';
 import dotenv from 'dotenv';
 import gracefulShutdown from 'http-graceful-shutdown';
 import Koa from 'koa';

@@ -1,6 +1,4 @@
-import logger from '@rudderstack/integrations-lib/build/structured-logger';
-
-const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const { InstrumentationError, structuredLogger: logger } = require('@rudderstack/integrations-lib');
 const lodash = require('lodash');
 const { EventType } = require('../../../constants');
 const {
@@ -246,7 +244,7 @@ const batchEvents = (eventChunksArray) => {
 };
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  logger.debugw(
+  logger.debug(
     `Transformation router request received for ${reqMetadata.loggerCtx.destType}: with size ${inputs.length}`,
     reqMetadata.loggerCtx,
   );

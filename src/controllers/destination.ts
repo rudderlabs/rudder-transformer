@@ -1,4 +1,4 @@
-import logger from '@rudderstack/integrations-lib/build/structured-logger';
+import { structuredLogger as logger } from '@rudderstack/integrations-lib';
 import { Context } from 'koa';
 import { ServiceSelector } from '../helpers/serviceSelector';
 import { DestinationPostTransformationService } from '../services/destination/postTransformation';
@@ -21,7 +21,6 @@ export class DestinationController {
   public static async destinationTransformAtProcessor(ctx: Context) {
     const startTime = new Date();
     logger.debug('Native(Process-Transform):: Requst to transformer::', ctx.request.body);
-    // logger.info('Array', JSON.stringify([1, 3, 5]));
     let resplist: ProcessorTransformationResponse[];
     const requestMetadata = MiscService.getRequestMetadata(ctx);
     let events = ctx.request.body as ProcessorTransformationRequest[];

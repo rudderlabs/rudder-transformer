@@ -1,4 +1,4 @@
-import logger from '@rudderstack/integrations-lib/build/structured-logger';
+import { structuredLogger as logger } from '@rudderstack/integrations-lib';
 import { Context } from 'koa';
 import { UserTransformService } from '../services/userTransform';
 import { ProcessorTransformationRequest, UserTransformationServiceResponse } from '../types/index';

@@ -1,6 +1,5 @@
 /* eslint-disable global-require, import/no-dynamic-require */
-import { LoggableExtraData } from '@rudderstack/integrations-lib';
-import logger from '@rudderstack/integrations-lib/build/structured-logger';
+import { LoggableExtraData, structuredLogger as logger } from '@rudderstack/integrations-lib';
 import fs from 'fs';
 import { Context } from 'koa';
 import path from 'path';
@@ -84,9 +83,9 @@ export class MiscService {
       ...(errorDetailer?.sourceId && { sourceId: errorDetailer.sourceId }),
       ...(errorDetailer?.workspaceId && { workspaceId: errorDetailer.workspaceId }),
       ...(errorDetailer?.destType && { destType: errorDetailer.destType }),
-      module: errorDetailer.module,
-      implementation: errorDetailer.implementation,
-      feature: errorDetailer.feature,
+      ...(errorDetailer?.module && { module: errorDetailer.module }),
+      ...(errorDetailer?.implementation && { implementation: errorDetailer.implementation }),
+      ...(errorDetailer?.feature && { feature: errorDetailer.feature }),
     };
   }
 

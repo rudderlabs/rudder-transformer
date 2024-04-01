@@ -1,8 +1,10 @@
-import logger from '@rudderstack/integrations-lib/build/structured-logger';
-
 const get = require('get-value');
 const md5 = require('md5');
-const { InstrumentationError, NetworkError } = require('@rudderstack/integrations-lib');
+const {
+  InstrumentationError,
+  NetworkError,
+  structuredLogger: logger,
+} = require('@rudderstack/integrations-lib');
 const myAxios = require('../../../util/myAxios');
 const { MappedToDestinationKey } = require('../../../constants');
 const {
@@ -177,7 +179,7 @@ const checkIfMailExists = async (apiKey, datacenterId, audienceId, email) => {
       userStatus.subscriptionStatus = response.data.status;
     }
   } catch (error) {
-    logger.infow(`[Mailchimp] :: Email does not exists, Error: ${error.message}`);
+    logger.info(`[Mailchimp] :: Email does not exists, Error: ${error.message}`);
   }
   return userStatus;
 };

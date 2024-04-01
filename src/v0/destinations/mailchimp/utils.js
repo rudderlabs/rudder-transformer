@@ -3,7 +3,7 @@ const md5 = require('md5');
 const { InstrumentationError, NetworkError } = require('@rudderstack/integrations-lib');
 const myAxios = require('../../../util/myAxios');
 const { MappedToDestinationKey } = require('../../../constants');
-const logger = require('../../../logger');
+import logger from '@rudderstack/integrations-lib/build/structured-logger';
 const {
   isDefinedAndNotNull,
   isDefined,
@@ -176,7 +176,7 @@ const checkIfMailExists = async (apiKey, datacenterId, audienceId, email) => {
       userStatus.subscriptionStatus = response.data.status;
     }
   } catch (error) {
-    logger.info(`[Mailchimp] :: Email does not exists, Error: ${error.message}`);
+    logger.infow(`[Mailchimp] :: Email does not exists, Error: ${error.message}`);
   }
   return userStatus;
 };

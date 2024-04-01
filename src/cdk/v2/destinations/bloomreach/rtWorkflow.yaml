@@ -5,6 +5,8 @@ bindings:
     exportAll: true
   - name: base64Convertor
     path: ../../../../v0/util
+  - name: toUnixTimestamp
+    path: ../../../../v0/util
   - name: BatchUtils
     path: '@rudderstack/workflow-engine'
   - path: ./config
@@ -42,12 +44,12 @@ steps:
     description: Batches the successfulEvents
     template: |
       let batches = $.BatchUtils.chunkArrayBySizeAndLength(
-      $.outputs.successfulEvents, {maxSizeInBytes: $.MAX_REQUEST_SIZE_IN_BYTES, maxItems: $.MAX_BATCH_SIZE}).items;
+      $.outputs.successfulEvents, {maxItems: $.MAX_BATCH_SIZE}).items;
 
       batches@batch.({
         "batchedRequest": {
           "body": {
-            "JSON": {"events": ~r batch.batchedRequest[]},
+            "JSON": {"commands": ~r batch.batchedRequest[]},
             "JSON_ARRAY": {},
             "XML": {},
             "FORM": {}
@@ -55,10 +57,10 @@ steps:
           "version": "1",
           "type": "REST",
           "method": "POST",
-          "endpoint": batch[0].destination.Config.().(.endpoint),
+          "endpoint": batch[0].destination.Config.().($.getBatchEndpoint(.apiBaseUrl, .projectToken)),
           "headers": batch[0].destination.Config.().({
             "Content-Type": "application/json",
-            "Authorization": "Basic " + $.base64Convertor(.accessKey + ":" + .accessSecret)
+            "Authorization": "Basic " + $.base64Convertor(.apiKey + ":" + .apiSecret)
           }),
           "params": {},
           "files": {}

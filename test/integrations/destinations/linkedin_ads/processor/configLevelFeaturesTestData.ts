@@ -59,6 +59,14 @@ const commonUserProperties = {
 
 const commonTimestamp = new Date('2023-10-14');
 
+const commonHeader = {
+  Authorization: 'Bearer default-accessToken',
+  'Content-Type': 'application/json',
+  'LinkedIn-Version': '202402',
+  'X-RestLi-Method': 'BATCH_CREATE',
+  'X-Restli-Protocol-Version': '2.0.0',
+};
+
 export const configLevelFeaturesTestData: ProcessorTestData[] = [
   {
     id: 'linkedin_ads-config-test-1',
@@ -98,13 +106,7 @@ export const configLevelFeaturesTestData: ProcessorTestData[] = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://api.linkedin.com/rest/conversionEvents`,
-              headers: {
-                Authorization: 'Bearer default-accessToken',
-                'Content-Type': 'application/json',
-                'LinkedIn-Version': '202402',
-                'X-RestLi-Method': 'BATCH_CREATE',
-                'X-Restli-Protocol-Version': '2.0.0',
-              },
+              headers: commonHeader,
               params: {},
               FORM: {},
               files: {},
@@ -179,13 +181,7 @@ export const configLevelFeaturesTestData: ProcessorTestData[] = [
               type: 'REST',
               method: 'POST',
               endpoint: `https://api.linkedin.com/rest/conversionEvents`,
-              headers: {
-                Authorization: 'Bearer default-accessToken',
-                'Content-Type': 'application/json',
-                'LinkedIn-Version': '202402',
-                'X-RestLi-Method': 'BATCH_CREATE',
-                'X-Restli-Protocol-Version': '2.0.0',
-              },
+              headers: commonHeader,
               params: {},
               FORM: {},
               files: {},

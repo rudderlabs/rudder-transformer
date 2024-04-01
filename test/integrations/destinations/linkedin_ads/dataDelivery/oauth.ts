@@ -1,4 +1,4 @@
-import { generateProxyV1Payload } from '../../../testUtils';
+import { generateMetadata, generateProxyV1Payload } from '../../../testUtils';
 import { ProxyV1TestData } from '../../../testTypes';
 
 export const testJSONData = {
@@ -195,18 +195,7 @@ export const oauthScenariosV1: ProxyV1TestData[] = [
             response: [
               {
                 statusCode: 200,
-                metadata: {
-                  destinationId: 'default-destinationId',
-                  jobId: 1,
-                  attemptNum: 1,
-                  userId: 'default-userId',
-                  sourceId: 'default-sourceId',
-                  workspaceId: 'default-workspaceId',
-                  secret: {
-                    accessToken: 'default-accessToken',
-                  },
-                  dontBatch: false,
-                },
+                metadata: generateMetadata(1),
                 error: 'success',
               },
             ],

@@ -234,7 +234,7 @@ export const validationTestData: ProcessorTestData[] = [
     description: 'Track call : properties without product array and no price',
     scenario: 'Business',
     successCriteria:
-      'should throw error with status code 400 and error message no matching conversion rule found for random event. Please provide a conversion rule. Aborting',
+      'should throw error with status code 400 and error message regarding price is a mandatory field for linkedin conversions',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -277,10 +277,10 @@ export const validationTestData: ProcessorTestData[] = [
   {
     id: 'linkedin_ads-validation-test-5',
     name: 'linkedin_ads',
-    description: 'Track call : properties without product array and no price',
+    description: 'Track call : properties with product array and no price',
     scenario: 'Business',
     successCriteria:
-      'should throw error with status code 400 and error message no matching conversion rule found for random event. Please provide a conversion rule. Aborting',
+      'should throw error with status code 400 and error message regarding price is a mandatory field for linkedin conversions',
     feature: 'processor',
     module: 'destination',
     version: 'v0',

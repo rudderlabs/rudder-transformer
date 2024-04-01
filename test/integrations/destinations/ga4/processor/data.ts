@@ -14967,8 +14967,8 @@ export const data = [
                 All: true,
                 GA4: {
                   consents: {
-                    personalizationConsent: 'GRANTED',
-                    userDataConsent: 'GRANTED',
+                    ad_personalization: 'GRANTED',
+                    ad_user_data: 'GRANTED',
                   },
                 },
               },
@@ -15122,8 +15122,8 @@ export const data = [
                 All: true,
                 GA4: {
                   consents: {
-                    personalizationConsent: 'NOT_SPECIFIED',
-                    userDataConsent: 'DENIED',
+                    ad_personalization: 'NOT_SPECIFIED',
+                    ad_user_data: 'DENIED',
                   },
                 },
               },

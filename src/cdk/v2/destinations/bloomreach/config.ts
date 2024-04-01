@@ -3,6 +3,8 @@ import { getMappingConfig } from '../../../../v0/util';
 export const CUSTOMER_COMMAND = 'customers';
 export const CUSTOMER_EVENT_COMMAND = 'customers/events';
 export const MAX_BATCH_SIZE = 50;
+
+// ref:- https://documentation.bloomreach.com/engagement/reference/batch-commands-2
 export const getBatchEndpoint = (apiBaseUrl: string, projectToken: string): string =>
   `${apiBaseUrl}/track/v2/projects/${projectToken}/batch`;
 

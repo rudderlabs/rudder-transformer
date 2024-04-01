@@ -34,7 +34,7 @@ const responseHandler = (responseParams) => {
       error: errorMessage,
     }));
     if (status === 401 || status === 403) {
-      const finalStatus = status === 401 ? 500 : 400;
+      const finalStatus = status === 401 && response.code !== 'REVOKED_ACCESS_TOKEN' ? 500 : 400;
       const finalMessage =
         status === 401
           ? 'Invalid or expired access token. Retrying'

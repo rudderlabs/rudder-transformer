@@ -91,22 +91,22 @@ export const oauthScenariosV1: ProxyV1TestData[] = [
     },
     output: {
       response: {
-        status: 500,
+        status: 400,
         body: {
           output: {
             response: [
               {
                 error:
                   '{"status":401,"serviceErrorCode":65601,"code":"REVOKED_ACCESS_TOKEN","message":"The token used in the request has been revoked by the user"}',
-                statusCode: 500,
+                statusCode: 400,
                 metadata: { ...metadata, secret: { accessToken: 'revokedToken' } },
               },
             ],
-            statTags: { ...statTags, errorType: 'retryable' },
+            statTags,
             authErrorCategory: 'REFRESH_TOKEN',
             message:
               'LinkedIn Conversion API: Error transformer proxy v1 during LinkedIn Conversion API response transformation. Invalid or expired access token. Retrying',
-            status: 500,
+            status: 400,
           },
         },
       },

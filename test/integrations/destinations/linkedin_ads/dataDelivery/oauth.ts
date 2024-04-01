@@ -75,7 +75,7 @@ export const oauthScenariosV1: ProxyV1TestData[] = [
     id: 'linkedin_ads_v1_oauth_scenario_1',
     name: 'linkedin_ads',
     description: 'app event fails due to revoked access token error',
-    successCriteria: 'Should return 500 with revoked access token error',
+    successCriteria: 'Should return 400 with revoked access token error',
     scenario: 'Business',
     feature: 'dataDelivery',
     module: 'destination',
@@ -103,7 +103,7 @@ export const oauthScenariosV1: ProxyV1TestData[] = [
               },
             ],
             statTags,
-            authErrorCategory: 'REFRESH_TOKEN',
+            authErrorCategory: 'AUTH_STATUS_INACTIVE',
             message:
               'LinkedIn Conversion API: Error transformer proxy v1 during LinkedIn Conversion API response transformation. Invalid or expired access token. Retrying',
             status: 400,

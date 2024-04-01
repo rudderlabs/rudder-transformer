@@ -21,6 +21,10 @@ const {
   API_PROTOCOL_VERSION,
   API_VERSION,
 } = require('./config');
+const {
+  AUTH_STATUS_INACTIVE,
+  REFRESH_TOKEN,
+} = require('../../../../adapters/networkhandler/authConstants');
 
 const formatEmail = (email, destConfig) => {
   if (email) {
@@ -239,6 +243,23 @@ function createResponseArray(metadata, partialStatus) {
   });
 }
 
+const getAuthErrCategoryFromStCode = (destinationResponse) => {
+  const { status, response } = destinationResponse;
+  if (status === 401) {
+    if (response.code === 'REVOKED_ACCESS_TOKEN') {
+      // ACCESS_DENIED
+      return AUTH_STATUS_INACTIVE;
+    }
+    // UNAUTHORIZED
+    return REFRESH_TOKEN;
+  }
+  if (status === 403) {
+    // ACCESS_DENIED
+    return AUTH_STATUS_INACTIVE;
+  }
+  return '';
+};
+
 module.exports = {
   formatEmail,
   calculateConversionObject,
@@ -252,4 +273,5 @@ module.exports = {
   constructPartialStatus,
   createResponseArray,
   checkIfPricePresent,
+  getAuthErrCategoryFromStCode,
 };

@@ -1,7 +1,7 @@
 const lodash = require('lodash');
 const { TransformerProxyError } = require('../../../v0/util/errorTypes');
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
-const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../../v0/util/index');
+const { isHttpStatusSuccess } = require('../../../v0/util/index');
 
 const {
   processAxiosResponse,
@@ -11,6 +11,7 @@ const tags = require('../../../v0/util/tags');
 const {
   constructPartialStatus,
   createResponseArray,
+  getAuthErrCategoryFromStCode,
 } = require('../../../cdk/v2/destinations/linkedin_ads/utils');
 
 // eslint-disable-next-line consistent-return
@@ -46,7 +47,7 @@ const responseHandler = (responseParams) => {
           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(finalStatus),
         },
         destinationResponse,
-        getAuthErrCategoryFromStCode(status),
+        getAuthErrCategoryFromStCode(destinationResponse),
         responseWithIndividualEvents,
       );
     }

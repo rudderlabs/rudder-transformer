@@ -64,7 +64,7 @@
     "@koa/router": "^12.0.0",
     "@ndhoule/extend": "^2.0.0",
     "@pyroscope/nodejs": "^0.2.6",
-    "@rudderstack/integrations-lib": "^0.2.4",
+    "@rudderstack/integrations-lib": "^0.2.8",
     "@rudderstack/workflow-engine": "^0.7.2",
     "@shopify/jest-koa-mocks": "^5.1.1",
     "ajv": "^8.12.0",

@@ -243,6 +243,11 @@ function createResponseArray(metadata, partialStatus) {
   });
 }
 
+/**
+ *
+ * @param {*} destinationResponse example: {status : 401, response {"status":401,"serviceErrorCode":65601,"code":"REVOKED_ACCESS_TOKEN","message":"The token used in the request has been revoked by the user"}}
+ * @returns proper auth error category
+ */
 const getAuthErrCategoryFromStCode = (destinationResponse) => {
   const { status, response } = destinationResponse;
   if (status === 401) {

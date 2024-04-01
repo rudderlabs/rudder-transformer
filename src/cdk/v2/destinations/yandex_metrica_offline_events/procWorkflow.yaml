@@ -23,8 +23,7 @@ steps:
       let data = .message.traits
       let identifierType = .message.context.externalId[0].identifierType;
       let identifierValue = .message.context.externalId[0].id;
-      let ClientId = identifierValue;
-      data.ClientId = ClientId;
+      data = $.setIdentifier(data, identifierType, identifierValue)
       data
 
   - name: buildResponseForProcessTransformation
@@ -34,8 +33,3 @@ steps:
       response.body.JSON = $.outputs.prepareData
       console.log(JSON.stringify(response));
       response
-    
-
-    # header should change to clientID, YCLID etc
-    # batching support -> rtWorkflow
-    

@@ -259,13 +259,13 @@ describe('unit test for finaliseAnalyticsConsents', () => {
   });
 
   it('Should set ad_user_data property of consent object when userDataConsent property is provided and its value is one of the allowed consent statuses', () => {
-    const properties = { userDataConsent: 'GRANTED' };
+    const properties = { ad_user_data: 'GRANTED' };
     const result = finaliseAnalyticsConsents(consentConfigMap, properties);
     expect(result).toEqual({ ad_user_data: 'GRANTED' });
   });
 
   it('Should set ad_personalization property of consent object when personalizationConsent property is provided and its value is one of the allowed consent statuses', () => {
-    const properties = { personalizationConsent: 'DENIED' };
+    const properties = { ad_personalization: 'DENIED' };
     const result = finaliseAnalyticsConsents(consentConfigMap, properties);
     expect(result).toEqual({ ad_personalization: 'DENIED' });
   });

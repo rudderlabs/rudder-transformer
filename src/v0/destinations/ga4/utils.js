@@ -444,8 +444,8 @@ const prepareUserConsents = (message) => {
   const integrationObj = getIntegrationsObj(message, 'ga4') || {};
   const eventLevelConsentsData = integrationObj?.consents || {};
   const consentConfigMap = {
-    personalizationConsent: 'ad_personalization',
-    userDataConsent: 'ad_user_data',
+    analyticsPersonalizationConsent: 'ad_user_data',
+    analyticsUserDataConsent: 'ad_personalization',
   };
 
   const consents = finaliseAnalyticsConsents(consentConfigMap, eventLevelConsentsData);

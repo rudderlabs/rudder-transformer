@@ -1,15 +1,24 @@
 import { ProcessorTestData } from '../../../testTypes';
 import { generateMetadata, transformResultBuilder } from '../../../testUtils';
-import { destType, destination, traits, headers } from '../common';
+import { destType, destination, headers, endpoint } from '../common';
 
-export const identify: ProcessorTestData[] = [
+const properties = {
+  category: 'Docs',
+  path: '',
+  referrer: '',
+  search: '',
+  title: '',
+  url: '',
+};
+
+export const page: ProcessorTestData[] = [
   {
-    id: 'MovableInk-identify-test-1',
+    id: 'bloomreach-page-test-1',
     name: destType,
-    description: 'Identify call with traits and anonymousId',
+    description: 'Page call with category, name',
     scenario: 'Framework+Business',
     successCriteria:
-      'Response should contain the input payload with few additional mappings configured in transformer and status code should be 200',
+      'Response should contain event_name = "Viewed {{ category }} {{ name }} Page" and properties and status code should be 200',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -19,9 +28,10 @@ export const identify: ProcessorTestData[] = [
           {
             destination,
             message: {
-              type: 'identify',
+              type: 'page',
               anonymousId: 'anonId123',
-              traits,
+              name: 'Integration',
+              properties,
               integrations: {
                 All: true,
               },
@@ -40,18 +50,16 @@ export const identify: ProcessorTestData[] = [
             output: transformResultBuilder({
               method: 'POST',
               userId: '',
-              endpoint: destination.Config.endpoint,
+              endpoint,
               headers,
               JSON: {
-                type: 'identify',
-                userId: traits.email,
-                anonymousId: 'anonId123',
-                traits,
-                integrations: {
-                  All: true,
+                data: {
+                  customer_ids: { cookie: 'anonId123' },
+                  properties,
+                  timestamp: 1709566376,
+                  event_type: 'Viewed Docs Integration Page',
                 },
-                originalTimestamp: '2024-03-04T15:32:56.409Z',
-                timestamp: 1709566376409,
+                name: 'customers/events',
               },
             }),
             statusCode: 200,

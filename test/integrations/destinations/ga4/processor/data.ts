@@ -14900,4 +14900,313 @@ export const data = [
     },
     mockFns: defaultMockFns,
   },
+  {
+    name: 'ga4',
+    description: '(gtag) send consents setting to ga4 with login event',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              channel: 'web',
+              messageId: 'ec5481b6-a926-4d2e-b293-0b3a77c4d3be',
+              originalTimestamp: '2022-04-26T05:17:09Z',
+              anonymousId: 'ea5cfab2-3961-4d8a-8187-3d1858c99090',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                device: {
+                  adTrackingEnabled: 'false',
+                  advertisingId: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
+                  id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
+                  manufacturer: 'Google',
+                  model: 'AOSP on IA Emulator',
+                  name: 'generic_x86_arm',
+                  type: 'ios',
+                  attTrackingStatus: 3,
+                },
+                ip: '0.0.0.0',
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                locale: 'en-US',
+                os: {
+                  name: 'iOS',
+                  version: '14.4.1',
+                },
+                screen: {
+                  density: 2,
+                },
+                externalId: [
+                  {
+                    type: 'ga4AppInstanceId',
+                    id: 'dummyGA4AppInstanceId',
+                  },
+                  {
+                    type: 'ga4ClientId',
+                    id: 'client_id',
+                  },
+                ],
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
+              },
+              type: 'track',
+              event: 'login',
+              properties: {
+                method: 'Google',
+              },
+              integrations: {
+                All: true,
+                GA4: {
+                  consents: {
+                    ad_personalization: 'GRANTED',
+                    ad_user_data: 'GRANTED',
+                  },
+                },
+              },
+              sentAt: '2022-04-20T15:20:57Z',
+            },
+            destination: {
+              Config: {
+                apiSecret: 'dummyApiSecret',
+                measurementId: 'G-123456',
+                firebaseAppId: '',
+                blockPageViewEvent: false,
+                typesOfClient: 'gtag',
+                extendPageViewParams: false,
+                sendUserId: false,
+                eventFilteringOption: 'disable',
+                blacklistedEvents: [
+                  {
+                    eventName: '',
+                  },
+                ],
+                whitelistedEvents: [
+                  {
+                    eventName: '',
+                  },
+                ],
+                enableServerSideIdentify: false,
+                sendLoginSignup: false,
+                generateLead: false,
+              },
+              Enabled: true,
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              headers: {
+                HOST: 'www.google-analytics.com',
+                'Content-Type': 'application/json',
+              },
+              params: {
+                api_secret: 'dummyApiSecret',
+                measurement_id: 'G-123456',
+              },
+              body: {
+                JSON: {
+                  client_id: 'client_id',
+                  consent: {
+                    ad_personalization: 'GRANTED',
+                    ad_user_data: 'GRANTED',
+                  },
+                  timestamp_micros: 1650950229000000,
+                  non_personalized_ads: true,
+                  events: [
+                    {
+                      name: 'login',
+                      params: {
+                        method: 'Google',
+                        engagement_time_msec: 1,
+                      },
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+    mockFns: defaultMockFns,
+  },
+  {
+    name: 'ga4',
+    description: '(gtag) send consents setting to ga4 with login event',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              channel: 'web',
+              messageId: 'ec5481b6-a926-4d2e-b293-0b3a77c4d3be',
+              originalTimestamp: '2022-04-26T05:17:09Z',
+              anonymousId: 'ea5cfab2-3961-4d8a-8187-3d1858c99090',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                device: {
+                  adTrackingEnabled: 'false',
+                  advertisingId: 'T0T0T072-5e28-45a1-9eda-ce22a3e36d1a',
+                  id: '3f034872-5e28-45a1-9eda-ce22a3e36d1a',
+                  manufacturer: 'Google',
+                  model: 'AOSP on IA Emulator',
+                  name: 'generic_x86_arm',
+                  type: 'ios',
+                  attTrackingStatus: 3,
+                },
+                ip: '0.0.0.0',
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                locale: 'en-US',
+                os: {
+                  name: 'iOS',
+                  version: '14.4.1',
+                },
+                screen: {
+                  density: 2,
+                },
+                externalId: [
+                  {
+                    type: 'ga4AppInstanceId',
+                    id: 'dummyGA4AppInstanceId',
+                  },
+                  {
+                    type: 'ga4ClientId',
+                    id: 'client_id',
+                  },
+                ],
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
+              },
+              type: 'track',
+              event: 'login',
+              properties: {
+                method: 'Google',
+              },
+              integrations: {
+                All: true,
+                GA4: {
+                  consents: {
+                    ad_personalization: 'NOT_SPECIFIED',
+                    ad_user_data: 'DENIED',
+                  },
+                },
+              },
+              sentAt: '2022-04-20T15:20:57Z',
+            },
+            destination: {
+              Config: {
+                apiSecret: 'dummyApiSecret',
+                measurementId: 'G-123456',
+                firebaseAppId: '',
+                blockPageViewEvent: false,
+                typesOfClient: 'gtag',
+                extendPageViewParams: false,
+                sendUserId: false,
+                eventFilteringOption: 'disable',
+                blacklistedEvents: [
+                  {
+                    eventName: '',
+                  },
+                ],
+                whitelistedEvents: [
+                  {
+                    eventName: '',
+                  },
+                ],
+                enableServerSideIdentify: false,
+                sendLoginSignup: false,
+                generateLead: false,
+              },
+              Enabled: true,
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              headers: {
+                HOST: 'www.google-analytics.com',
+                'Content-Type': 'application/json',
+              },
+              params: {
+                api_secret: 'dummyApiSecret',
+                measurement_id: 'G-123456',
+              },
+              body: {
+                JSON: {
+                  client_id: 'client_id',
+                  consent: {
+                    ad_user_data: 'DENIED',
+                  },
+                  timestamp_micros: 1650950229000000,
+                  non_personalized_ads: true,
+                  events: [
+                    {
+                      name: 'login',
+                      params: {
+                        method: 'Google',
+                        engagement_time_msec: 1,
+                      },
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+    mockFns: defaultMockFns,
+  },
 ];

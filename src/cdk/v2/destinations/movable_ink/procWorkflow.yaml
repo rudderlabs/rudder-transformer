@@ -24,6 +24,7 @@ steps:
       $.assertConfig(.destination.Config.accessKey, "Access key is not present . Aborting");
       $.assertConfig(.destination.Config.accessSecret, "Access Secret is not present. Aborting");
       $.assert(.message.timestamp ?? .message.originalTimestamp, "Timestamp is not present. Aborting");
+      $.assert(!(messageType === {{$.EventType.TRACK}} && !(.message.event)), "Event name is not present. Aborting");
 
       const userId = .message.().(
           {{{{$.getGenericPaths("userIdOnly")}}}};

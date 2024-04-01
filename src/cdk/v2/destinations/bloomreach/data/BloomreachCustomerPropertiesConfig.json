@@ -1,0 +1,36 @@
+[
+  {
+    "destKey": "first_name",
+    "sourceKeys": "firstName",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "last_name",
+    "sourceKeys": "lastName",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "email",
+    "sourceKeys": "emailOnly",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "phone",
+    "sourceKeys": "phone",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "city",
+    "sourceKeys": "city",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "country",
+    "sourceKeys": ["traits.address.country", "context.traits.address.country"]
+  },
+  {
+    "destKey": "birthday",
+    "sourceKeys": "birthday",
+    "sourceFromGenericMap": true
+  }
+]

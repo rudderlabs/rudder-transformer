@@ -1,9 +1,10 @@
+import logger from '@rudderstack/integrations-lib/build/structured-logger';
+
 const get = require('get-value');
 const md5 = require('md5');
 const { InstrumentationError, NetworkError } = require('@rudderstack/integrations-lib');
 const myAxios = require('../../../util/myAxios');
 const { MappedToDestinationKey } = require('../../../constants');
-import logger from '@rudderstack/integrations-lib/build/structured-logger';
 const {
   isDefinedAndNotNull,
   isDefined,

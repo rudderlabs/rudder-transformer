@@ -1,6 +1,7 @@
+import logger from '@rudderstack/integrations-lib/build/structured-logger';
+
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const lodash = require('lodash');
-import logger from '@rudderstack/integrations-lib/build/structured-logger';
 const { EventType } = require('../../../constants');
 const {
   constructPayload,

@@ -37,7 +37,10 @@
   },
   {
     "sourceKeys": "location",
-    "required": true,
+    "required": false,
+    "metadata": {
+      "defaultValue": {}
+    },
     "destKey": "location"
   }
 ]

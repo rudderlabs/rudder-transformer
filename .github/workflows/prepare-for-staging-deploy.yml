@@ -115,7 +115,7 @@ jobs:
             cd ../../../../config-be-rudder-transformer/environment/staging
             yq eval -i ".config-be-rudder-transformer.image.tag=\"$TAG_NAME\"" base.yaml
             yq eval -i ".config-be-user-transformer.image.tag=\"$TAG_NAME\"" base.yaml
-            git add values.staging.yaml
+            git add base.yaml
 
             git commit -m "chore: upgrade staging env transformers to \"$TAG_NAME\""
             git push -u origin $BRANCH_NAME

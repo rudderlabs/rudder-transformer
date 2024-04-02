@@ -67,8 +67,10 @@
     "THE_TRADE_DESK": true,
     "INTERCOM": true,
     "NINETAILED": true,
-    "MOVABLE_INK": true,
-    "KOALA": true
+    "KOALA": true,
+    "LINKEDIN_ADS": true,
+    "BLOOMREACH": true,
+    "MOVABLE_INK": true
   },
   "regulations": [
     "BRAZE",
@@ -85,5 +87,5 @@
     "SPRIG"
   ],
   "supportSourceTransformV1": true,
-  "supportTransformerProxyV1": false
+  "supportTransformerProxyV1": true
 }

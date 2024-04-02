@@ -1,5 +1,5 @@
-import { z } from 'zod';
 import { isDefinedAndNotNullAndNotEmpty } from '@rudderstack/integrations-lib';
+import { z } from 'zod';
 import { isHttpStatusSuccess } from '../v0/util';
 
 const ProcessorTransformationOutputSchema = z.object({

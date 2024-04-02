@@ -2789,4 +2789,163 @@ export const trackTestData: ProcessorTestData[] = [
     },
     mockFns: defaultMockFns,
   },
+  {
+    id: 'ga4-track-test-38',
+    name: 'ga4',
+    description: 'Send consents setting to ga4 with login event',
+    scenario: 'Business',
+    successCriteria:
+      'Response status code should be 200 and response should contain all consent settings',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination,
+            message: {
+              type: 'track',
+              event: 'login',
+              userId,
+              anonymousId,
+              sentAt,
+              context: {
+                device: deviceInfo,
+                externalId,
+                campaign,
+              },
+              originalTimestamp,
+              integrations: {
+                All: true,
+                GA4: {
+                  consents: {
+                    ad_personalization: 'GRANTED',
+                    ad_user_data: 'GRANTED',
+                  },
+                },
+              },
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              method: 'POST',
+              endpoint: eventEndPoint,
+              headers: commonOutputHeaders,
+              params: commonOutputParams,
+              JSON: {
+                client_id: anonymousId,
+                timestamp_micros,
+                user_id: userId,
+                non_personalized_ads,
+                consent: {
+                  ad_personalization: 'GRANTED',
+                  ad_user_data: 'GRANTED',
+                },
+                events: [
+                  {
+                    name: 'login',
+                    params: {
+                      engagement_time_msec: defaultEngagementTimeMsec,
+                    },
+                  },
+                ],
+              },
+              userId: '',
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    mockFns: defaultMockFns,
+  },
+  {
+    id: 'ga4-track-test-39',
+    name: 'ga4',
+    description: 'Send invalid consents settings to ga4 with login event',
+    scenario: 'Business',
+    successCriteria:
+      'Response status code should be 200 and response should contain only valid consent setting',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination,
+            message: {
+              type: 'track',
+              event: 'login',
+              userId,
+              anonymousId,
+              sentAt,
+              context: {
+                device: deviceInfo,
+                externalId,
+                campaign,
+              },
+              originalTimestamp,
+              integrations: {
+                All: true,
+                GA4: {
+                  consents: {
+                    ad_personalization: 'NOT_SPECIFIED',
+                    ad_user_data: 'DENIED',
+                  },
+                },
+              },
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: transformResultBuilder({
+              method: 'POST',
+              endpoint: eventEndPoint,
+              headers: commonOutputHeaders,
+              params: commonOutputParams,
+              JSON: {
+                client_id: anonymousId,
+                timestamp_micros,
+                user_id: userId,
+                non_personalized_ads,
+                consent: {
+                  ad_user_data: 'DENIED',
+                },
+                events: [
+                  {
+                    name: 'login',
+                    params: {
+                      engagement_time_msec: defaultEngagementTimeMsec,
+                    },
+                  },
+                ],
+              },
+              userId: '',
+            }),
+            statusCode: 200,
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    mockFns: defaultMockFns,
+  },
 ];

@@ -1,4 +1,5 @@
 const GOOGLE_ALLOWED_CONSENT_STATUS = ['UNSPECIFIED', 'UNKNOWN', 'GRANTED', 'DENIED'];
+const GA4_ALLOWED_CONSENT_STATUS = ['GRANTED', 'DENIED'];
 
 const UNSPECIFIED_CONSENT = 'UNSPECIFIED';
 const UNKNOWN_CONSENT = 'UNKNOWN';
@@ -82,10 +83,36 @@ const finaliseConsent = (consentConfigMap, eventLevelConsent = {}, destConfig = 
   return consentObj;
 };
 
+/**
+ * Populates the consent object based on the provided configuration and consent mapping.
+ * @param {*} consentConfigMap
+ * @param {*} eventLevelConsent
+ * @returns
+ */
+const finaliseAnalyticsConsents = (consentConfigMap, eventLevelConsent = {}) => {
+  const consentObj = {};
+  // Iterate through each key in consentConfigMap to set the consent
+  Object.keys(consentConfigMap).forEach((configKey) => {
+    const consentKey = consentConfigMap[configKey]; // e.g., 'ad_user_data'
+
+    // Set consent only if valid
+    if (
+      eventLevelConsent &&
+      eventLevelConsent.hasOwnProperty(consentKey) &&
+      GA4_ALLOWED_CONSENT_STATUS.includes(eventLevelConsent[consentKey])
+    ) {
+      consentObj[consentKey] = eventLevelConsent[consentKey];
+    }
+  });
+
+  return consentObj;
+};
+
 module.exports = {
   populateConsentFromConfig,
   UNSPECIFIED_CONSENT,
   UNKNOWN_CONSENT,
   GOOGLE_ALLOWED_CONSENT_STATUS,
   finaliseConsent,
+  finaliseAnalyticsConsents,
 };

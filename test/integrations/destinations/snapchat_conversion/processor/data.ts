@@ -4671,7 +4671,7 @@ export const data = [
                 rudderEventsToSnapEvents: [
                   {
                     from: 'Custom Event',
-                    to: 'LEVEL_COMPLETE',
+                    to: 'level_complete',
                   },
                 ],
               },

@@ -42,7 +42,7 @@ steps:
     description: Batches the successfulEvents
     template: |
       let batches = $.BatchUtils.chunkArrayBySizeAndLength(
-      $.outputs.successfulEvents, {maxSizeInBytes: $.MAX_REQUEST_SIZE_IN_BYTES}).items;
+      $.outputs.successfulEvents, {maxSizeInBytes: $.MAX_REQUEST_SIZE_IN_BYTES, maxItems: $.MAX_BATCH_SIZE}).items;
 
       batches@batch.({
         "batchedRequest": {

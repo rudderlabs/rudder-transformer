@@ -8,7 +8,7 @@ All notable changes to this project will be documented in this file. See [standa
 ### Features
 
 * consent field support for ga4 ([#3213](https://github.com/rudderlabs/rudder-transformer/issues/3213)) ([92515a5](https://github.com/rudderlabs/rudder-transformer/commit/92515a5fd8a2798c48010078f62b360ec6a49979))
-* consent field support for gaoc for API v15 and upgrade the api version from v14 to v16 ([#3121](https://github.com/rudderlabs/rudder-transformer/issues/3121)) ([2aac2a6](https://github.com/rudderlabs/rudder-transformer/commit/2aac2a62547b7a7c617735fc3d6e88e0a1bed76e)), closes [#3190](https://github.com/rudderlabs/rudder-transformer/issues/3190)
+* consent field support for gaoc and upgrade the api version from v14 to v16 ([#3121](https://github.com/rudderlabs/rudder-transformer/issues/3121)) ([2aac2a6](https://github.com/rudderlabs/rudder-transformer/commit/2aac2a62547b7a7c617735fc3d6e88e0a1bed76e)), closes [#3190](https://github.com/rudderlabs/rudder-transformer/issues/3190)
 * onboard new destination bloomreach ([#3185](https://github.com/rudderlabs/rudder-transformer/issues/3185)) ([d9b7e1f](https://github.com/rudderlabs/rudder-transformer/commit/d9b7e1f70565d59979aee3e62f60e39edb9a23c7))
 * onboarding linkedin conversion api ([#3194](https://github.com/rudderlabs/rudder-transformer/issues/3194)) ([eb7b197](https://github.com/rudderlabs/rudder-transformer/commit/eb7b197322c617b14c2579de8cb4d4dacf8e1df3))
 * update movable ink batch size ([#3223](https://github.com/rudderlabs/rudder-transformer/issues/3223)) ([667095f](https://github.com/rudderlabs/rudder-transformer/commit/667095fa8316cd95a066f15b848ad503c6b4af80))

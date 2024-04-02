@@ -16,12 +16,9 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Bug Fixes
 
-* deployment file paths ([#3216](https://github.com/rudderlabs/rudder-transformer/issues/3216)) ([808727d](https://github.com/rudderlabs/rudder-transformer/commit/808727de17e400ed102a843ab3b30f81f8900f24))
 * fixed userId mapping, now mapping to uid instead of id ([#3192](https://github.com/rudderlabs/rudder-transformer/issues/3192)) ([70a468b](https://github.com/rudderlabs/rudder-transformer/commit/70a468bf16ecd5ee0b6fecee4b837895d19c525f))
-* merge conflict with main ([#3233](https://github.com/rudderlabs/rudder-transformer/issues/3233)) ([042dd6d](https://github.com/rudderlabs/rudder-transformer/commit/042dd6d16236dede8126984ea590fa167d4a4a87)), closes [#3216](https://github.com/rudderlabs/rudder-transformer/issues/3216)
 * ninetailed: remove  page support ([#3218](https://github.com/rudderlabs/rudder-transformer/issues/3218)) ([2f30c56](https://github.com/rudderlabs/rudder-transformer/commit/2f30c56af62e983d09b5d4f2da9a0ba22f5c1612))
 * shopify invalid_event metric prometheus label ([#3200](https://github.com/rudderlabs/rudder-transformer/issues/3200)) ([345c87d](https://github.com/rudderlabs/rudder-transformer/commit/345c87d7c530c621ae3fd6c504d64e5a14e31f22))
-* update correct staging deployment file ([#3189](https://github.com/rudderlabs/rudder-transformer/issues/3189)) ([ac7e887](https://github.com/rudderlabs/rudder-transformer/commit/ac7e8879fcd230dae09f757a759fb42e4cdc09d0))
 
 ## [1.60.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.57.1...v1.60.0) (2024-03-20)
 

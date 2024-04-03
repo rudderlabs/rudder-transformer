@@ -1,134 +1,132 @@
-const {
-  ConfigurationError,
-  RetryableError,
-  NetworkError,
-} = require('@rudderstack/integrations-lib');
-const myAxios = require('../../../util/myAxios');
+const { NetworkError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const logger = require('../../../logger');
 const { ENDPOINTS, getLookupPayload } = require('./config');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { handleHttpRequest } = require('../../../adapters/network');
+const { isHttpStatusSuccess } = require('../../util');
+const { RetryRequestError } = require('../../../util/utils');
 
 const searchGroup = async (groupName, Config) => {
-  let resp;
-  try {
-    resp = await myAxios.post(
-      `${ENDPOINTS.groupSearchEndpoint(Config.domain)}`,
-      getLookupPayload(groupName),
-      {
-        headers: {
-          Accesskey: Config.accessKey,
-          'Content-Type': JSON_MIME_TYPE,
-        },
+  const { processedResponse } = await handleHttpRequest(
+    'post',
+    `${ENDPOINTS.groupSearchEndpoint(Config.domain)}`,
+    getLookupPayload(groupName),
+    {
+      headers: {
+        Accesskey: Config.accessKey,
+        'Content-Type': JSON_MIME_TYPE,
       },
+    },
+    {
+      destType: 'gainsight',
+      feature: 'transformation',
+      requestMethod: 'POST',
+      endpointPath: '/data/objects/query/Company',
+      module: 'router',
+    },
+  );
+
+  if (!isHttpStatusSuccess(processedResponse.status)) {
+    throw new NetworkError(
+      `failed to search group ${JSON.stringify(processedResponse.response)}`,
+      processedResponse.status,
       {
-        destType: 'gainsight',
-        feature: 'transformation',
-        requestMethod: 'POST',
-        endpointPath: '/data/objects/query/Company',
-        module: 'router',
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedResponse.status),
       },
+      processedResponse,
     );
-  } catch (error) {
-    let errMessage = '';
-    let errorStatus = 500;
-    if (error.response && error.response.data) {
-      errMessage = error.response.data.errorDesc;
-      errorStatus = error.response.status;
-    }
-    throw new NetworkError(`failed to search group ${errMessage}`, errorStatus, {
-      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errorStatus),
-    });
   }
 
-  if (!resp || !resp.data || resp.status !== 200) {
-    throw new RetryableError('failed to search group');
+  if (!processedResponse || !processedResponse.response || processedResponse.status !== 200) {
+    throw new RetryRequestError('failed to search group');
   }
-  return resp;
+
+  return processedResponse.response;
 };
 
 const createGroup = async (payload, Config) => {
-  let resp;
-  try {
-    resp = await myAxios.post(
-      `${ENDPOINTS.groupCreateEndpoint(Config.domain)}`,
-      {
-        records: [payload],
+  const { processedResponse } = await handleHttpRequest(
+    'post',
+    `${ENDPOINTS.groupCreateEndpoint(Config.domain)}`,
+    {
+      records: [payload],
+    },
+    {
+      headers: {
+        Accesskey: Config.accessKey,
+        'Content-Type': JSON_MIME_TYPE,
       },
+    },
+    {
+      destType: 'gainsight',
+      feature: 'transformation',
+      requestMethod: 'POST',
+      endpointPath: '/data/objects/Company',
+      module: 'router',
+    },
+  );
+
+  if (!isHttpStatusSuccess(processedResponse.status)) {
+    throw new NetworkError(
+      `failed to create group ${JSON.stringify(processedResponse.response)}`,
+      processedResponse.status,
       {
-        headers: {
-          Accesskey: Config.accessKey,
-          'Content-Type': JSON_MIME_TYPE,
-        },
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedResponse.status),
       },
-      {
-        destType: 'gainsight',
-        feature: 'transformation',
-        requestMethod: 'POST',
-        endpointPath: '/data/objects/Company',
-        module: 'router',
-      },
+      processedResponse,
     );
-  } catch (error) {
-    let errMessage = '';
-    let errorStatus = 500;
-    if (error.response && error.response.data) {
-      errMessage = error.response.data.errorDesc;
-      errorStatus = error.response.status;
-    }
-    throw new NetworkError(`failed to create group ${errMessage}`, errorStatus, {
-      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errorStatus),
-    });
   }
 
-  if (!resp || !resp.data || resp.status !== 200) {
-    throw new RetryableError('failed to create group');
+  if (!processedResponse || !processedResponse.response || processedResponse.status !== 200) {
+    throw new RetryRequestError('failed to create group');
   }
-  return resp.data.data.records[0].Gsid;
+
+  return processedResponse.response.data.records[0].Gsid;
 };
 
 const updateGroup = async (payload, Config) => {
-  let resp;
-  try {
-    resp = await myAxios.put(
-      `${ENDPOINTS.groupUpdateEndpoint(Config.domain)}`,
-      {
-        records: [payload],
+  const { processedResponse } = await handleHttpRequest(
+    'put',
+    `${ENDPOINTS.groupUpdateEndpoint(Config.domain)}`,
+    {
+      records: [payload],
+    },
+    {
+      headers: {
+        Accesskey: Config.accessKey,
+        'Content-Type': JSON_MIME_TYPE,
       },
-      {
-        headers: {
-          Accesskey: Config.accessKey,
-          'Content-Type': JSON_MIME_TYPE,
-        },
-        params: {
-          keys: 'Name',
-        },
+      params: {
+        keys: 'Name',
       },
+    },
+    {
+      destType: 'gainsight',
+      feature: 'transformation',
+      requestMethod: 'PUT',
+      endpointPath: '/data/objects/Company',
+      module: 'router',
+    },
+  );
+
+  if (!isHttpStatusSuccess(processedResponse.status)) {
+    throw new NetworkError(
+      `failed to update group ${JSON.stringify(processedResponse.response)}`,
+      processedResponse.status,
       {
-        destType: 'gainsight',
-        feature: 'transformation',
-        requestMethod: 'PUT',
-        endpointPath: '/data/objects/Company',
-        module: 'router',
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedResponse.status),
       },
+      processedResponse,
     );
-  } catch (error) {
-    let errMessage = '';
-    let errorStatus = 500;
-    if (error.response && error.response.data) {
-      errMessage = error.response.data.errorDesc;
-      errorStatus = error.response.status;
-    }
-    throw new NetworkError(`failed to update group ${errMessage}`, errorStatus, {
-      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errorStatus),
-    });
   }
 
-  if (!resp || !resp.data || resp.status !== 200) {
-    throw new RetryableError('failed to update group');
+  if (!processedResponse || !processedResponse.response || processedResponse.status !== 200) {
+    throw new RetryRequestError('failed to update group');
   }
-  return resp.data.data.records[0].Gsid;
+
+  return processedResponse.response.data.records[0].Gsid;
 };
 
 /**

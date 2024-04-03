@@ -1,6 +1,6 @@
 import { ProcessorTestData } from '../../../testTypes';
 import { generateMetadata, transformResultBuilder } from '../../../testUtils';
-import { destType, channel, destination, traits, headers } from '../common';
+import { destType, destination, traits, headers } from '../common';
 
 export const identify: ProcessorTestData[] = [
   {

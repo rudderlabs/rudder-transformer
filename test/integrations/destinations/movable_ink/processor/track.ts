@@ -23,7 +23,6 @@ export const track: ProcessorTestData[] = [
               channel,
               anonymousId: 'anonId123',
               userId: 'userId123',
-              event: 'Product Added',
               properties: trackTestProperties['Product Added'],
               integrations: {
                 All: true,
@@ -50,7 +49,6 @@ export const track: ProcessorTestData[] = [
                 channel,
                 userId: 'userId123',
                 anonymousId: 'anonId123',
-                event: 'Product Added',
                 properties: trackTestProperties['Product Added'],
                 integrations: {
                   All: true,
@@ -86,7 +84,6 @@ export const track: ProcessorTestData[] = [
               channel,
               anonymousId: 'anonId123',
               userId: 'userId123',
-              event: 'Order Completed',
               properties: trackTestProperties['Order Completed'],
               integrations: {
                 All: true,
@@ -113,7 +110,6 @@ export const track: ProcessorTestData[] = [
                 channel,
                 userId: 'userId123',
                 anonymousId: 'anonId123',
-                event: 'Order Completed',
                 properties: trackTestProperties['Order Completed'],
                 integrations: {
                   All: true,
@@ -149,7 +145,6 @@ export const track: ProcessorTestData[] = [
               channel,
               anonymousId: 'anonId123',
               userId: 'userId123',
-              event: 'Custom Event',
               properties: trackTestProperties['Custom Event'],
               integrations: {
                 All: true,
@@ -176,7 +171,6 @@ export const track: ProcessorTestData[] = [
                 channel,
                 userId: 'userId123',
                 anonymousId: 'anonId123',
-                event: 'Custom Event',
                 properties: trackTestProperties['Custom Event'],
                 integrations: {
                   All: true,

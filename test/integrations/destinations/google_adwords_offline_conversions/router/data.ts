@@ -487,7 +487,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint:
-                    'https://googleads.googleapis.com/v16/customers/7693729833/offlineUserDataJobs',
+                    'https://googleads.googleapis.com/v14/customers/7693729833/offlineUserDataJobs',
                   headers: {
                     Authorization: 'Bearer abcd1234',
                     'Content-Type': 'application/json',
@@ -511,10 +511,6 @@ export const data = [
                         operations: [
                           {
                             create: {
-                              consent: {
-                                adPersonalization: 'UNSPECIFIED',
-                                adUserData: 'UNSPECIFIED',
-                              },
                               transaction_attribute: {
                                 store_attribute: { store_code: 'store code' },
                                 transaction_amount_micros: '100000000',
@@ -532,10 +528,6 @@ export const data = [
                           },
                           {
                             create: {
-                              consent: {
-                                adPersonalization: 'UNSPECIFIED',
-                                adUserData: 'UNSPECIFIED',
-                              },
                               transaction_attribute: {
                                 store_attribute: { store_code: 'store code2' },
                                 transaction_amount_micros: '100000000',
@@ -569,7 +561,7 @@ export const data = [
                   type: 'REST',
                   method: 'POST',
                   endpoint:
-                    'https://googleads.googleapis.com/v16/customers/7693729833:uploadCallConversions',
+                    'https://googleads.googleapis.com/v14/customers/7693729833:uploadCallConversions',
                   headers: {
                     Authorization: 'Bearer abcd1234',
                     'Content-Type': 'application/json',
@@ -597,10 +589,6 @@ export const data = [
                     JSON: {
                       conversions: [
                         {
-                          consent: {
-                            adPersonalization: 'UNSPECIFIED',
-                            adUserData: 'UNSPECIFIED',
-                          },
                           callerId: '1234',
                           callStartDateTime: '2019-10-14T11:15:18.299Z',
                           conversionDateTime: '2019-10-14 16:45:18+05:30',
@@ -685,7 +673,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint:
-                  'https://googleads.googleapis.com/v16/customers/9625812972:uploadClickConversions',
+                  'https://googleads.googleapis.com/v14/customers/9625812972:uploadClickConversions',
                 headers: {
                   Authorization: 'Bearer abcd1234',
                   'Content-Type': 'application/json',
@@ -734,10 +722,6 @@ export const data = [
                   JSON: {
                     conversions: [
                       {
-                        consent: {
-                          adPersonalization: 'UNSPECIFIED',
-                          adUserData: 'UNSPECIFIED',
-                        },
                         gbraid: 'gbraid',
                         wbraid: 'wbraid',
                         externalAttributionData: {
@@ -822,7 +806,7 @@ export const data = [
                 type: 'REST',
                 method: 'POST',
                 endpoint:
-                  'https://googleads.googleapis.com/v16/customers/9625812972:uploadCallConversions',
+                  'https://googleads.googleapis.com/v14/customers/9625812972:uploadCallConversions',
                 headers: {
                   Authorization: 'Bearer abcd1234',
                   'Content-Type': 'application/json',
@@ -871,10 +855,6 @@ export const data = [
                   JSON: {
                     conversions: [
                       {
-                        consent: {
-                          adPersonalization: 'UNSPECIFIED',
-                          adUserData: 'UNSPECIFIED',
-                        },
                         callerId: 'callerId',
                         callStartDateTime: '2022-08-28 15:01:30+05:30',
                         conversionDateTime: '2022-01-01 12:32:45-08:00',

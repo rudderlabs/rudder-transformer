@@ -176,7 +176,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/9625812972:uploadClickConversions',
+                'https://googleads.googleapis.com/v14/customers/9625812972:uploadClickConversions',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -263,10 +263,6 @@ export const data = [
                       conversionValue: 1,
                       currencyCode: 'GBP',
                       orderId: 'PL-123QR',
-                      consent: {
-                        adPersonalization: 'UNSPECIFIED',
-                        adUserData: 'UNSPECIFIED',
-                      },
                     },
                   ],
                   partialFailure: true,
@@ -469,7 +465,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/9625812972:uploadClickConversions',
+                'https://googleads.googleapis.com/v14/customers/9625812972:uploadClickConversions',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -524,10 +520,6 @@ export const data = [
                 JSON: {
                   conversions: [
                     {
-                      consent: {
-                        adPersonalization: 'UNSPECIFIED',
-                        adUserData: 'UNSPECIFIED',
-                      },
                       gbraid: 'gbraid',
                       wbraid: 'wbraid',
                       externalAttributionData: {
@@ -762,7 +754,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/9625812972:uploadClickConversions',
+                'https://googleads.googleapis.com/v14/customers/9625812972:uploadClickConversions',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -817,10 +809,6 @@ export const data = [
                 JSON: {
                   conversions: [
                     {
-                      consent: {
-                        adPersonalization: 'UNSPECIFIED',
-                        adUserData: 'UNSPECIFIED',
-                      },
                       gbraid: 'gbraid',
                       wbraid: 'wbraid',
                       externalAttributionData: {
@@ -1055,7 +1043,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/9625812972:uploadCallConversions',
+                'https://googleads.googleapis.com/v14/customers/9625812972:uploadCallConversions',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -1111,10 +1099,6 @@ export const data = [
                   conversions: [
                     {
                       callerId: 'callerId',
-                      consent: {
-                        adPersonalization: 'UNSPECIFIED',
-                        adUserData: 'UNSPECIFIED',
-                      },
                       callStartDateTime: '2022-08-28 15:01:30+05:30',
                       conversionDateTime: '2022-01-01 12:32:45-08:00',
                       conversionValue: 1,
@@ -2031,7 +2015,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/9625812972:uploadClickConversions',
+                'https://googleads.googleapis.com/v14/customers/9625812972:uploadClickConversions',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -2088,10 +2072,6 @@ export const data = [
                 JSON: {
                   conversions: [
                     {
-                      consent: {
-                        adPersonalization: 'UNSPECIFIED',
-                        adUserData: 'UNSPECIFIED',
-                      },
                       gbraid: 'gbraid',
                       wbraid: 'wbraid',
                       externalAttributionData: {
@@ -2148,7 +2128,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/9625812972:uploadCallConversions',
+                'https://googleads.googleapis.com/v14/customers/9625812972:uploadCallConversions',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -2205,10 +2185,6 @@ export const data = [
                 JSON: {
                   conversions: [
                     {
-                      consent: {
-                        adPersonalization: 'UNSPECIFIED',
-                        adUserData: 'UNSPECIFIED',
-                      },
                       callerId: 'callerId',
                       callStartDateTime: '2022-08-28 15:01:30+05:30',
                       conversionDateTime: '2022-01-01 12:32:45-08:00',
@@ -2374,7 +2350,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/9625812972:uploadClickConversions',
+                'https://googleads.googleapis.com/v14/customers/9625812972:uploadClickConversions',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -2403,10 +2379,6 @@ export const data = [
                 JSON: {
                   conversions: [
                     {
-                      consent: {
-                        adPersonalization: 'UNSPECIFIED',
-                        adUserData: 'UNSPECIFIED',
-                      },
                       gclid: 'gclid',
                       conversionDateTime: '2022-01-01 12:32:45-08:00',
                       userIdentifiers: [
@@ -2574,7 +2546,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/9625812972:uploadCallConversions',
+                'https://googleads.googleapis.com/v14/customers/9625812972:uploadCallConversions',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -2603,10 +2575,6 @@ export const data = [
                 JSON: {
                   conversions: [
                     {
-                      consent: {
-                        adPersonalization: 'UNSPECIFIED',
-                        adUserData: 'UNSPECIFIED',
-                      },
                       callerId: 'callerId',
                       callStartDateTime: '2022-08-28 15:01:30+05:30',
                       conversionDateTime: '2022-01-01 12:32:45-08:00',
@@ -2810,7 +2778,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/9625812972:uploadCallConversions',
+                'https://googleads.googleapis.com/v14/customers/9625812972:uploadCallConversions',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -2864,10 +2832,6 @@ export const data = [
                 JSON: {
                   conversions: [
                     {
-                      consent: {
-                        adPersonalization: 'UNSPECIFIED',
-                        adUserData: 'UNSPECIFIED',
-                      },
                       callerId: 'callerId',
                       callStartDateTime: '2022-08-28 15:01:30+05:30',
                       conversionDateTime: '2022-09-20 08:50:04+05:30',
@@ -3033,7 +2997,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/9625812972:uploadClickConversions',
+                'https://googleads.googleapis.com/v14/customers/9625812972:uploadClickConversions',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -3061,10 +3025,6 @@ export const data = [
                 JSON: {
                   conversions: [
                     {
-                      consent: {
-                        adPersonalization: 'UNSPECIFIED',
-                        adUserData: 'UNSPECIFIED',
-                      },
                       gclid: 'gclid',
                       conversionDateTime: '2022-01-01 12:32:45-08:00',
                       userIdentifiers: [
@@ -3541,7 +3501,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/9625812972:uploadClickConversions',
+                'https://googleads.googleapis.com/v14/customers/9625812972:uploadClickConversions',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -3572,10 +3532,6 @@ export const data = [
                 JSON: {
                   conversions: [
                     {
-                      consent: {
-                        adPersonalization: 'UNSPECIFIED',
-                        adUserData: 'UNSPECIFIED',
-                      },
                       cartData: {
                         items: [
                           {
@@ -3905,7 +3861,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/9625812972:uploadClickConversions',
+                'https://googleads.googleapis.com/v14/customers/9625812972:uploadClickConversions',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -3936,10 +3892,6 @@ export const data = [
                 JSON: {
                   conversions: [
                     {
-                      consent: {
-                        adPersonalization: 'UNSPECIFIED',
-                        adUserData: 'UNSPECIFIED',
-                      },
                       cartData: {
                         items: [
                           {
@@ -4097,7 +4049,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/1112223333/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v14/customers/1112223333/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -4125,10 +4077,6 @@ export const data = [
                   addConversionPayload: {
                     operations: {
                       create: {
-                        consent: {
-                          adPersonalization: 'UNSPECIFIED',
-                          adUserData: 'UNSPECIFIED',
-                        },
                         transaction_attribute: {
                           store_attribute: {
                             store_code: 'store code',
@@ -4434,7 +4382,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/1112223333/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v14/customers/1112223333/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -4461,10 +4409,6 @@ export const data = [
                   addConversionPayload: {
                     operations: {
                       create: {
-                        consent: {
-                          adPersonalization: 'UNSPECIFIED',
-                          adUserData: 'UNSPECIFIED',
-                        },
                         transaction_attribute: {
                           store_attribute: {
                             store_code: 'store code',
@@ -4633,7 +4577,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/1112223333/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v14/customers/1112223333/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -4660,10 +4604,6 @@ export const data = [
                   addConversionPayload: {
                     operations: {
                       create: {
-                        consent: {
-                          adPersonalization: 'UNSPECIFIED',
-                          adUserData: 'UNSPECIFIED',
-                        },
                         transaction_attribute: {
                           store_attribute: {
                             store_code: 'store code',
@@ -4835,7 +4775,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/1112223333/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v14/customers/1112223333/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -4862,10 +4802,6 @@ export const data = [
                   addConversionPayload: {
                     operations: {
                       create: {
-                        consent: {
-                          adPersonalization: 'UNSPECIFIED',
-                          adUserData: 'UNSPECIFIED',
-                        },
                         transaction_attribute: {
                           store_attribute: {
                             store_code: 'store code',
@@ -4999,7 +4935,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/1112223333/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v14/customers/1112223333/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -5026,10 +4962,6 @@ export const data = [
                   addConversionPayload: {
                     operations: {
                       create: {
-                        consent: {
-                          adPersonalization: 'UNSPECIFIED',
-                          adUserData: 'UNSPECIFIED',
-                        },
                         transaction_attribute: {
                           store_attribute: {
                             store_code: 'store code',
@@ -5159,7 +5091,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/1112223333/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v14/customers/1112223333/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -5186,10 +5118,6 @@ export const data = [
                   addConversionPayload: {
                     operations: {
                       create: {
-                        consent: {
-                          adPersonalization: 'UNSPECIFIED',
-                          adUserData: 'UNSPECIFIED',
-                        },
                         transaction_attribute: {
                           store_attribute: {
                             store_code: 'store code',
@@ -5317,7 +5245,7 @@ export const data = [
               type: 'REST',
               method: 'POST',
               endpoint:
-                'https://googleads.googleapis.com/v16/customers/1112223333/offlineUserDataJobs',
+                'https://googleads.googleapis.com/v14/customers/1112223333/offlineUserDataJobs',
               headers: {
                 Authorization: 'Bearer abcd1234',
                 'Content-Type': 'application/json',
@@ -5344,326 +5272,6 @@ export const data = [
                   addConversionPayload: {
                     operations: {
                       create: {
-                        consent: {
-                          adPersonalization: 'UNSPECIFIED',
-                          adUserData: 'UNSPECIFIED',
-                        },
-                        transaction_attribute: {
-                          store_attribute: {
-                            store_code: 'store code',
-                          },
-                          transaction_amount_micros: '100000000',
-                          currency_code: 'INR',
-                          transaction_date_time: '2019-10-14 16:45:18+05:30',
-                        },
-                        userIdentifiers: [{}],
-                      },
-                    },
-                    enable_partial_failure: false,
-                    enable_warnings: false,
-                    validate_only: false,
-                  },
-                  executeJobPayload: {
-                    validate_only: false,
-                  },
-                },
-                JSON_ARRAY: {},
-                XML: {},
-                FORM: {},
-              },
-              files: {},
-              userId: '',
-            },
-            metadata: {
-              secret: {
-                access_token: 'abcd1234',
-                refresh_token: 'efgh5678',
-                developer_token: 'ijkl91011',
-              },
-            },
-            statusCode: 200,
-          },
-        ],
-      },
-    },
-    mockFns: timestampMock,
-  },
-  {
-    name: 'google_adwords_offline_conversions',
-    description: 'Test 26 : store conversion consent mapped from UI config',
-    feature: 'processor',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: [
-          {
-            message: {
-              channel: 'web',
-              context: {
-                traits: {},
-              },
-              event: 'Product Clicked',
-              type: 'track',
-              messageId: '5e10d13a-bf9a-44bf-b884-43a9e591ea71',
-              anonymousId: '00000000000000000000000000',
-              userId: '12345',
-              properties: {
-                item_id: 'item id',
-                merchant_id: 'merchant id',
-                currency: 'INR',
-                revenue: '100',
-                store_code: 'store code',
-                gclid: 'gclid',
-                conversionDateTime: '2019-10-14T11:15:18.299Z',
-                product_id: '123445',
-                quantity: 123,
-              },
-              integrations: {
-                All: true,
-              },
-              name: 'ApplicationLoaded',
-              sentAt: '2019-10-14T11:15:53.296Z',
-            },
-            metadata: {
-              secret: {
-                access_token: 'abcd1234',
-                refresh_token: 'efgh5678',
-                developer_token: 'ijkl91011',
-              },
-            },
-            destination: {
-              Config: {
-                isCustomerAllowed: false,
-                customerId: '111-222-3333',
-                subAccount: true,
-                loginCustomerId: 'login-customer-id',
-                userDataConsent: 'GRANTED',
-                personalizationConsent: 'DENIED',
-                eventsToOfflineConversionsTypeMapping: [
-                  {
-                    from: 'Product Clicked',
-                    to: 'store',
-                  },
-                ],
-                eventsToConversionsNamesMapping: [
-                  {
-                    from: 'Product Clicked',
-                    to: 'Sign-up - click',
-                  },
-                ],
-                hashUserIdentifier: true,
-                defaultUserIdentifier: 'phone',
-                validateOnly: false,
-                rudderAccountId: '2EOknn1JNH7WK1MfNkgr4t3u4fGYKkRK',
-              },
-            },
-          },
-        ],
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: [
-          {
-            output: {
-              version: '1',
-              type: 'REST',
-              method: 'POST',
-              endpoint:
-                'https://googleads.googleapis.com/v16/customers/1112223333/offlineUserDataJobs',
-              headers: {
-                Authorization: 'Bearer abcd1234',
-                'Content-Type': 'application/json',
-                'developer-token': 'ijkl91011',
-                'login-customer-id': 'logincustomerid',
-              },
-              params: {
-                event: 'Sign-up - click',
-                customerId: '1112223333',
-              },
-              body: {
-                JSON: {
-                  event: '1112223333',
-                  isStoreConversion: true,
-                  createJobPayload: {
-                    job: {
-                      type: 'STORE_SALES_UPLOAD_FIRST_PARTY',
-                      storeSalesMetadata: {
-                        loyaltyFraction: '1',
-                        transaction_upload_fraction: '1',
-                      },
-                    },
-                  },
-                  addConversionPayload: {
-                    operations: {
-                      create: {
-                        consent: {
-                          adPersonalization: 'DENIED',
-                          adUserData: 'GRANTED',
-                        },
-                        transaction_attribute: {
-                          store_attribute: {
-                            store_code: 'store code',
-                          },
-                          transaction_amount_micros: '100000000',
-                          currency_code: 'INR',
-                          transaction_date_time: '2019-10-14 16:45:18+05:30',
-                        },
-                        userIdentifiers: [{}],
-                      },
-                    },
-                    enable_partial_failure: false,
-                    enable_warnings: false,
-                    validate_only: false,
-                  },
-                  executeJobPayload: {
-                    validate_only: false,
-                  },
-                },
-                JSON_ARRAY: {},
-                XML: {},
-                FORM: {},
-              },
-              files: {},
-              userId: '',
-            },
-            metadata: {
-              secret: {
-                access_token: 'abcd1234',
-                refresh_token: 'efgh5678',
-                developer_token: 'ijkl91011',
-              },
-            },
-            statusCode: 200,
-          },
-        ],
-      },
-    },
-    mockFns: timestampMock,
-  },
-  {
-    name: 'google_adwords_offline_conversions',
-    description:
-      'Test 27 : store conversion consent mapped from UI config even though integration object is present',
-    feature: 'processor',
-    module: 'destination',
-    version: 'v0',
-    input: {
-      request: {
-        body: [
-          {
-            message: {
-              channel: 'web',
-              context: {
-                traits: {},
-              },
-              event: 'Product Clicked',
-              type: 'track',
-              messageId: '5e10d13a-bf9a-44bf-b884-43a9e591ea71',
-              anonymousId: '00000000000000000000000000',
-              userId: '12345',
-              properties: {
-                item_id: 'item id',
-                merchant_id: 'merchant id',
-                currency: 'INR',
-                revenue: '100',
-                store_code: 'store code',
-                gclid: 'gclid',
-                conversionDateTime: '2019-10-14T11:15:18.299Z',
-                product_id: '123445',
-                quantity: 123,
-              },
-              integrations: {
-                google_adwords_offline_conversion: {
-                  consent: {
-                    adUserdata: 'UNSPECIFIED',
-                    adPersonalization: 'GRANTED',
-                  },
-                },
-              },
-              name: 'ApplicationLoaded',
-              sentAt: '2019-10-14T11:15:53.296Z',
-            },
-            metadata: {
-              secret: {
-                access_token: 'abcd1234',
-                refresh_token: 'efgh5678',
-                developer_token: 'ijkl91011',
-              },
-            },
-            destination: {
-              Config: {
-                isCustomerAllowed: false,
-                customerId: '111-222-3333',
-                subAccount: true,
-                loginCustomerId: 'login-customer-id',
-                userDataConsent: 'GRANTED',
-                personalizationConsent: 'DENIED',
-                eventsToOfflineConversionsTypeMapping: [
-                  {
-                    from: 'Product Clicked',
-                    to: 'store',
-                  },
-                ],
-                eventsToConversionsNamesMapping: [
-                  {
-                    from: 'Product Clicked',
-                    to: 'Sign-up - click',
-                  },
-                ],
-                hashUserIdentifier: true,
-                defaultUserIdentifier: 'phone',
-                validateOnly: false,
-                rudderAccountId: '2EOknn1JNH7WK1MfNkgr4t3u4fGYKkRK',
-              },
-            },
-          },
-        ],
-      },
-    },
-    output: {
-      response: {
-        status: 200,
-        body: [
-          {
-            output: {
-              version: '1',
-              type: 'REST',
-              method: 'POST',
-              endpoint:
-                'https://googleads.googleapis.com/v16/customers/1112223333/offlineUserDataJobs',
-              headers: {
-                Authorization: 'Bearer abcd1234',
-                'Content-Type': 'application/json',
-                'developer-token': 'ijkl91011',
-                'login-customer-id': 'logincustomerid',
-              },
-              params: {
-                event: 'Sign-up - click',
-                customerId: '1112223333',
-              },
-              body: {
-                JSON: {
-                  event: '1112223333',
-                  isStoreConversion: true,
-                  createJobPayload: {
-                    job: {
-                      type: 'STORE_SALES_UPLOAD_FIRST_PARTY',
-                      storeSalesMetadata: {
-                        loyaltyFraction: '1',
-                        transaction_upload_fraction: '1',
-                      },
-                    },
-                  },
-                  addConversionPayload: {
-                    operations: {
-                      create: {
-                        consent: {
-                          adPersonalization: 'DENIED',
-                          adUserData: 'GRANTED',
-                        },
                         transaction_attribute: {
                           store_attribute: {
                             store_code: 'store code',

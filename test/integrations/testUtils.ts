@@ -484,7 +484,7 @@ export const generateProxyV1Payload = (
       workspaceId: 'default-workspaceId',
       sourceId: 'default-sourceId',
       secret: {
-        accessToken: payloadParameters.accessToken || 'default-accessToken',
+        accessToken: 'default-accessToken',
       },
       dontBatch: false,
     },

@@ -31,6 +31,12 @@ const constructFullPayload = (message) => {
         config.mappingConfig[config.ConfigCategories.IDENTIFY.name],
       );
       break;
+    case 'page':
+      typeSpecifcPayload = constructPayload(
+        message,
+        config.mappingConfig[config.ConfigCategories.PAGE.name],
+      );
+      break;
     default:
       break;
   }

@@ -154,7 +154,7 @@ const processEvent = async (inputEvent, metricMetadata) => {
     default:
       if (!SUPPORTED_TRACK_EVENTS.includes(shopifyTopic)) {
         stats.increment('invalid_shopify_event', {
-          writeKey: metricMetadata.writeKey,
+          event: shopifyTopic,
           source: metricMetadata.source,
           shopifyTopic: metricMetadata.shopifyTopic,
         });

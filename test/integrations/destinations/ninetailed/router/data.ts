@@ -33,6 +33,15 @@ export const data = [
             },
             {
               message: {
+                ...commonInput,
+                type: 'page',
+                properties: pageProperties,
+              },
+              metadata: { jobId: 2, userId: 'u1' },
+              destination,
+            },
+            {
+              message: {
                 type: 'identify',
                 ...commonInput,
                 userId: 'testuserId1',
@@ -72,6 +81,11 @@ export const data = [
                         properties: trackProperties,
                       },
                       {
+                        ...commonOutput,
+                        type: 'page',
+                        properties: pageProperties,
+                      },
+                      {
                         type: 'identify',
                         ...commonOutput,
                         userId: 'testuserId1',
@@ -89,6 +103,7 @@ export const data = [
               },
               metadata: [
                 { jobId: 1, userId: 'u1' },
+                { jobId: 2, userId: 'u1' },
                 { jobId: 3, userId: 'u1' },
               ],
               batched: true,
@@ -127,9 +142,21 @@ export const data = [
             {
               message: {
                 ...commonInput,
-                type: 'track',
-                event: 'product added',
-                properties: trackProperties,
+                type: 'page',
+                properties: {
+                  title: 'Sample Page',
+                  url: 'https://example.com/?utm_campaign=example_campaign&utm_content=example_content',
+                  path: '/',
+                  hash: '',
+                  search: '?utm_campaign=example_campaign&utm_content=example_content',
+                  width: '1920',
+                  height: '1080',
+                  query: {
+                    utm_campaign: 'example_campaign',
+                    utm_content: 'example_content',
+                  },
+                  referrer: '',
+                },
               },
               metadata: { jobId: 2, userId: 'u1' },
               destination,
@@ -183,9 +210,8 @@ export const data = [
                       },
                       {
                         ...commonOutput,
-                        type: 'track',
-                        event: 'product added',
-                        properties: trackProperties,
+                        type: 'page',
+                        properties: pageProperties,
                       },
                     ],
                   },
@@ -238,9 +264,8 @@ export const data = [
             {
               message: {
                 ...commonInput,
-                type: 'track',
-                event: 'product added',
-                properties: trackProperties,
+                type: 'page',
+                properties: pageProperties,
               },
               metadata: { jobId: 2, userId: 'u1' },
               destination,
@@ -305,9 +330,8 @@ export const data = [
                       },
                       {
                         ...commonOutput,
-                        type: 'track',
-                        event: 'product added',
-                        properties: trackProperties,
+                        type: 'page',
+                        properties: pageProperties,
                       },
                     ],
                   },

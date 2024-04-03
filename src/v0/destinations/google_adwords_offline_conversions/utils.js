@@ -18,7 +18,6 @@ const {
   isDefinedAndNotNull,
   getAuthErrCategoryFromStCode,
   getAccessToken,
-  getIntegrationsObj,
 } = require('../../util');
 const {
   SEARCH_STREAM,
@@ -28,13 +27,10 @@ const {
   trackAddStoreAddressConversionsMapping,
   trackClickConversionsMapping,
   CLICK_CONVERSION,
-  trackCallConversionsMapping,
-  consentConfigMap,
 } = require('./config');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const Cache = require('../../util/cache');
 const helper = require('./helper');
-const { finaliseConsent } = require('../../util/googleUtils');
 
 const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
 
@@ -225,17 +221,6 @@ function getExisitingUserIdentifier(userIdentifierInfo, defaultUserIdentifier) {
   return result;
 }
 
-const getCallConversionPayload = (message, Config, eventLevelConsentsData) => {
-  const payload = constructPayload(message, trackCallConversionsMapping);
-  // here conversions[0] should be present because there are some mandatory properties mapped in the mapping json.
-  payload.conversions[0].consent = finaliseConsent(
-    consentConfigMap,
-    eventLevelConsentsData,
-    Config,
-  );
-  return payload;
-};
-
 /**
  * This Function create the add conversion payload
  * and returns the payload
@@ -292,10 +277,6 @@ const getAddConversionPayload = (message, Config) => {
       set(payload, 'operations.create.userIdentifiers[0]', {});
     }
   }
-  // add consent support for store conversions. Note: No event level consent supported.
-  const consentObject = finaliseConsent(consentConfigMap, {}, Config);
-  // create property should be present because there are some mandatory properties mapped in the mapping json.
-  set(payload, 'operations.create.consent', consentObject);
   return payload;
 };
 
@@ -311,12 +292,7 @@ const getStoreConversionPayload = (message, Config, event) => {
   return payload;
 };
 
-const getClickConversionPayloadAndEndpoint = (
-  message,
-  Config,
-  filteredCustomerId,
-  eventLevelConsent,
-) => {
+const getClickConversionPayloadAndEndpoint = (message, Config, filteredCustomerId) => {
   const email = getFieldValueFromMessage(message, 'emailOnly');
   const phone = getFieldValueFromMessage(message, 'phone');
   const { hashUserIdentifier, defaultUserIdentifier, UserIdentifierSource, conversionEnvironment } =
@@ -388,17 +364,7 @@ const getClickConversionPayloadAndEndpoint = (
   if (!properties.conversionEnvironment && conversionEnvironment !== 'none') {
     set(payload, 'conversions[0].conversionEnvironment', conversionEnvironment);
   }
-
-  // add consent support for click conversions
-  const consentObject = finaliseConsent(consentConfigMap, eventLevelConsent, Config);
-  // here conversions[0] is expected to be present there are some mandatory properties mapped in the mapping json.
-  set(payload, 'conversions[0].consent', consentObject);
   return { payload, endpoint };
-};
-
-const getConsentsDataFromIntegrationObj = (message) => {
-  const integrationObj = getIntegrationsObj(message, 'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS') || {};
-  return integrationObj?.consents || {};
 };
 
 module.exports = {
@@ -411,6 +377,4 @@ module.exports = {
   buildAndGetAddress,
   getClickConversionPayloadAndEndpoint,
   getExisitingUserIdentifier,
-  getConsentsDataFromIntegrationObj,
-  getCallConversionPayload,
 };

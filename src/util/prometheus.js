@@ -575,30 +575,6 @@ class Prometheus {
         type: 'gauge',
         labelNames: ['destination_id'],
       },
-      {
-        name: 'mixpanel_batch_engage_pack_size',
-        help: 'mixpanel_batch_engage_pack_size',
-        type: 'gauge',
-        labelNames: ['destination_id'],
-      },
-      {
-        name: 'mixpanel_batch_group_pack_size',
-        help: 'mixpanel_batch_group_pack_size',
-        type: 'gauge',
-        labelNames: ['destination_id'],
-      },
-      {
-        name: 'mixpanel_batch_track_pack_size',
-        help: 'mixpanel_batch_track_pack_size',
-        type: 'gauge',
-        labelNames: ['destination_id'],
-      },
-      {
-        name: 'mixpanel_batch_import_pack_size',
-        help: 'mixpanel_batch_import_pack_size',
-        type: 'gauge',
-        labelNames: ['destination_id'],
-      },
 
       // Histograms
       {
@@ -611,7 +587,7 @@ class Prometheus {
         name: 'http_request_duration',
         help: 'Incoming HTTP requests duration in seconds',
         type: 'histogram',
-        labelNames: ['method', 'route', 'code', 'destType'],
+        labelNames: ['method', 'route', 'code'],
       },
       {
         name: 'tp_batch_size',

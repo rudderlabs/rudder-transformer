@@ -55,7 +55,6 @@ const eventNameMapping = {
   save: 'SAVE',
   subscribe: 'SUBSCRIBE',
   complete_tutorial: 'COMPLETE_TUTORIAL',
-  level_complete: 'LEVEL_COMPLETE',
   invite: 'INVITE',
   login: 'LOGIN',
   share: 'SHARE',

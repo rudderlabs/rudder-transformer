@@ -1,6 +1,10 @@
 const { processWarehouseMessage } = require('../../../warehouse');
 
-const provider = 'bq';
+const bigquery = 'bq';
+
+function processSingleMessage(message, options) {
+  return processWarehouseMessage(message, options);
+}
 
 function getDataTypeOverride() {}
 
@@ -9,7 +13,8 @@ function process(event) {
   const whIDResolve = event.request.query.whIDResolve === 'true' || false;
   const whStoreEvent = event.destination.Config.storeFullEvent === true;
   const destJsonPaths = event.destination?.Config?.jsonPaths || '';
-  return processWarehouseMessage(event.message, {
+  const provider = bigquery;
+  return processSingleMessage(event.message, {
     metadata: event.metadata,
     whSchemaVersion,
     whStoreEvent,
@@ -18,12 +23,10 @@ function process(event) {
     provider,
     sourceCategory: event.metadata ? event.metadata.sourceCategory : null,
     destJsonPaths,
-    destConfig: event.destination?.Config,
   });
 }
 
 module.exports = {
-  provider,
   process,
   getDataTypeOverride,
 };

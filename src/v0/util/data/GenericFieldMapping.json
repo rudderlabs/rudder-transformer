@@ -116,11 +116,5 @@
     "context.traits.address.postal_code",
     "context.traits.address.postalCode"
   ],
-  "sessionId": ["session_id", "context.sessionId"],
-  "countryCode": [
-    "traits.countryCode",
-    "traits.address.countryCode",
-    "context.traits.address.countryCode",
-    "context.traits.countryCode"
-  ]
+  "sessionId": ["session_id", "context.sessionId"]
 }

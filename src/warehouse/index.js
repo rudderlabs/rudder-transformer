@@ -154,7 +154,7 @@ function setDataFromColumnMappingAndComputeColumnTypes(
     const columnName = utils.safeColumnName(options, key);
     // do not set column if val is null/empty/object
     if (typeof val === 'object' || isBlank(val)) {
-      // delete in output and columnTypes, to remove if the user
+      // delete in output and columnTypes, so as to remove if we user
       // has set property with same name
       // eslint-disable-next-line no-param-reassign
       delete output[columnName];
@@ -565,10 +565,8 @@ function processWarehouseMessage(message, options) {
       : {};
   const responses = [];
   const eventType = message.type?.toLowerCase();
-  const skipTracksTable =
-    options.destConfig?.skipTracksTable || options.integrationOptions.skipTracksTable || false;
-  const skipUsersTable =
-    options.destConfig?.skipUsersTable || options.integrationOptions.skipUsersTable || false;
+  const skipTracksTable = options.integrationOptions.skipTracksTable || false;
+  const skipUsersTable = options.integrationOptions.skipUsersTable || false;
   const skipReservedKeywordsEscaping =
     options.integrationOptions.skipReservedKeywordsEscaping || false;
 

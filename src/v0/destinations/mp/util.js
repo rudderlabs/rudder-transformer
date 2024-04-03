@@ -25,7 +25,6 @@ const {
   mappingConfig,
 } = require('./config');
 const { CommonUtils } = require('../../../util/common');
-const stats = require('../../../util/stats');
 
 const mPIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 const mPProfileAndroidConfigJson = mappingConfig[ConfigCategory.PROFILE_ANDROID.name];
@@ -343,32 +342,6 @@ const generatePageOrScreenCustomEventName = (message, userDefinedEventTemplate) 
   return eventName;
 };
 
-/**
- * Records the batch size metrics for different endpoints.
- *
- * @param {Object} batchSize - The object containing the batch size for different endpoints.
- * @param {number} batchSize.engage - The batch size for engage endpoint.
- * @param {number} batchSize.groups - The batch size for group endpoint.
- * @param {number} batchSize.track - The batch size for track endpoint.
- * @param {number} batchSize.import - The batch size for import endpoint.
- * @param {string} destinationId - The ID of the destination.
- * @returns {void}
- */
-const recordBatchSizeMetrics = (batchSize, destinationId) => {
-  stats.gauge('mixpanel_batch_engage_pack_size', batchSize.engage, {
-    destination_id: destinationId,
-  });
-  stats.gauge('mixpanel_batch_group_pack_size', batchSize.groups, {
-    destination_id: destinationId,
-  });
-  stats.gauge('mixpanel_batch_track_pack_size', batchSize.track, {
-    destination_id: destinationId,
-  });
-  stats.gauge('mixpanel_batch_import_pack_size', batchSize.import, {
-    destination_id: destinationId,
-  });
-};
-
 module.exports = {
   createIdentifyResponse,
   isImportAuthCredentialsAvailable,
@@ -378,5 +351,4 @@ module.exports = {
   batchEvents,
   trimTraits,
   generatePageOrScreenCustomEventName,
-  recordBatchSizeMetrics,
 };

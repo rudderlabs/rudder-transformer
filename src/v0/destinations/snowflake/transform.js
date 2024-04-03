@@ -1,6 +1,10 @@
 const { processWarehouseMessage } = require('../../../warehouse');
 
-const provider = 'snowflake';
+const snowflake = 'snowflake';
+
+function processSingleMessage(message, options) {
+  return processWarehouseMessage(message, options);
+}
 
 function getDataTypeOverride(key, val, options, jsonKey = false) {
   if (key === 'violationErrors' || jsonKey) {
@@ -14,7 +18,8 @@ function process(event) {
   const whIDResolve = event.request.query.whIDResolve === 'true' || false;
   const whStoreEvent = event.destination.Config.storeFullEvent === true;
   const destJsonPaths = event.destination?.Config?.jsonPaths || '';
-  return processWarehouseMessage(event.message, {
+  const provider = snowflake;
+  return processSingleMessage(event.message, {
     metadata: event.metadata,
     whSchemaVersion,
     whStoreEvent,
@@ -23,12 +28,10 @@ function process(event) {
     provider,
     sourceCategory: event.metadata ? event.metadata.sourceCategory : null,
     destJsonPaths,
-    destConfig: event.destination?.Config,
   });
 }
 
 module.exports = {
-  provider,
   process,
   getDataTypeOverride,
 };

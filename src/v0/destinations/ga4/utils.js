@@ -7,10 +7,8 @@ const {
   isEmptyObject,
   extractCustomFields,
   isDefinedAndNotNull,
-  getIntegrationsObj,
 } = require('../../util');
 const { mappingConfig, ConfigCategory } = require('./config');
-const { finaliseAnalyticsConsents } = require('../../util/googleUtils');
 
 /**
  * Reserved event names cannot be used
@@ -434,30 +432,11 @@ const prepareUserProperties = (message, piiPropertiesToIgnore = []) => {
   return validatedUserProperties;
 };
 
-/**
- * Returns user consents
- * Ref : https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference?client_type=gtag#payload_consent
- * @param {*} message
- * @returns
- */
-const prepareUserConsents = (message) => {
-  const integrationObj = getIntegrationsObj(message, 'ga4') || {};
-  const eventLevelConsentsData = integrationObj?.consents || {};
-  const consentConfigMap = {
-    analyticsPersonalizationConsent: 'ad_user_data',
-    analyticsUserDataConsent: 'ad_personalization',
-  };
-
-  const consents = finaliseAnalyticsConsents(consentConfigMap, eventLevelConsentsData);
-  return consents;
-};
-
 module.exports = {
   getItem,
   getItemList,
   getItemsArray,
   validateEventName,
-  prepareUserConsents,
   removeInvalidParams,
   isReservedEventName,
   getGA4ExclusionList,

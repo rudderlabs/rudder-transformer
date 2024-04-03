@@ -1,6 +1,10 @@
 const { processWarehouseMessage } = require('../../../warehouse');
 
-const provider = 'postgres';
+const postgres = 'postgres';
+
+function processSingleMessage(message, options) {
+  return processWarehouseMessage(message, options);
+}
 
 function getDataTypeOverride(key, val, options, jsonKey = false) {
   if (key === 'violationErrors' || jsonKey) {
@@ -13,7 +17,8 @@ function process(event) {
   const whSchemaVersion = event.request.query.whSchemaVersion || 'v1';
   const whStoreEvent = event.destination.Config.storeFullEvent === true;
   const destJsonPaths = event.destination?.Config?.jsonPaths || '';
-  return processWarehouseMessage(event.message, {
+  const provider = postgres;
+  return processSingleMessage(event.message, {
     metadata: event.metadata,
     whSchemaVersion,
     whStoreEvent,
@@ -21,12 +26,10 @@ function process(event) {
     provider,
     sourceCategory: event.metadata ? event.metadata.sourceCategory : null,
     destJsonPaths,
-    destConfig: event.destination?.Config,
   });
 }
 
 module.exports = {
-  provider,
   process,
   getDataTypeOverride,
 };

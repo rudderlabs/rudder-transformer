@@ -1,5 +1,4 @@
 const Pyroscope = require('@pyroscope/nodejs');
-const { getDestTypeFromContext } = require('@rudderstack/integrations-lib');
 const stats = require('./util/stats');
 
 function initPyroscope() {
@@ -27,7 +26,6 @@ function durationMiddleware() {
       method: ctx.method,
       code: ctx.status,
       route: ctx.request.url,
-      destType: getDestTypeFromContext(ctx),
     };
     stats.timing('http_request_duration', startTime, labels);
   };

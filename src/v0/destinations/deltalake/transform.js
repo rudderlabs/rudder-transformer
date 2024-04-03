@@ -1,22 +1,25 @@
 const { processWarehouseMessage } = require('../../../warehouse');
 
-const provider = 'deltalake';
+const deltalake = 'deltalake';
+
+function processSingleMessage(message, options) {
+  return processWarehouseMessage(message, options);
+}
+
+function getDataTypeOverride() {}
 
 function process(event) {
   const whSchemaVersion = event.request.query.whSchemaVersion || 'v1';
   const whStoreEvent = event.destination.Config.storeFullEvent === true;
-  return processWarehouseMessage(event.message, {
+  const provider = deltalake;
+  return processSingleMessage(event.message, {
     metadata: event.metadata,
     whSchemaVersion,
     whStoreEvent,
-    getDataTypeOverride: () => {},
+    getDataTypeOverride,
     provider,
     sourceCategory: event.metadata ? event.metadata.sourceCategory : null,
-    destConfig: event.destination?.Config,
   });
 }
 
-module.exports = {
-  provider,
-  process,
-};
+exports.process = process;

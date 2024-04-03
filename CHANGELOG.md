@@ -19,6 +19,7 @@ All notable changes to this project will be documented in this file. See [standa
 * fixed userId mapping, now mapping to uid instead of id ([#3192](https://github.com/rudderlabs/rudder-transformer/issues/3192)) ([70a468b](https://github.com/rudderlabs/rudder-transformer/commit/70a468bf16ecd5ee0b6fecee4b837895d19c525f))
 * ninetailed: remove  page support ([#3218](https://github.com/rudderlabs/rudder-transformer/issues/3218)) ([2f30c56](https://github.com/rudderlabs/rudder-transformer/commit/2f30c56af62e983d09b5d4f2da9a0ba22f5c1612))
 * shopify invalid_event metric prometheus label ([#3200](https://github.com/rudderlabs/rudder-transformer/issues/3200)) ([345c87d](https://github.com/rudderlabs/rudder-transformer/commit/345c87d7c530c621ae3fd6c504d64e5a14e31f22))
+* fix: snapchat conversion: add event level_complete ([#3231](https://github.com/rudderlabs/rudder-transformer/issues/3231)) ([39368a0](https://github.com/rudderlabs/rudder-transformer/commit/39368a09e48acc324faa855186bc623e5c347881))
 
 ## [1.60.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.57.1...v1.60.0) (2024-03-20)
 

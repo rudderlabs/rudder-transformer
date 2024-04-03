@@ -245,7 +245,7 @@ export const transformationFailures = [
         body: [
           {
             error:
-              'Missing required value from ["properties.tr","properties.ran_site_id","properties.ranSiteID"]: Workflow: procWorkflow, Step: prepareTrackPayload, ChildStep: undefined, OriginalError: Missing required value from ["properties.tr","properties.ran_site_id","properties.ranSiteID"]',
+              'Missing required value from ["properties.land","properties.land_time","properties.landTime"]: Workflow: procWorkflow, Step: prepareTrackPayload, ChildStep: undefined, OriginalError: Missing required value from ["properties.land","properties.land_time","properties.landTime"]',
             metadata: {
               destinationId: 'dummyDestId',
               jobId: '1',

@@ -136,7 +136,7 @@ const createIdentifyResponse = (message, type, destination, responseBuilderSimpl
  * @returns
  */
 const isImportAuthCredentialsAvailable = (destination) =>
-  destination.Config.apiSecret ||
+  destination.Config.token ||
   (destination.Config.serviceAccountSecret &&
     destination.Config.serviceAccountUserName &&
     destination.Config.projectId);

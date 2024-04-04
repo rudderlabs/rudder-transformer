@@ -8,6 +8,7 @@ const {
   isEmpty,
 } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
+const { handleHttpRequest } = require('../../../adapters/network');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG, ENDPOINTS } = require('./config');
 const {
   removeUndefinedAndNullValues,
@@ -21,64 +22,48 @@ const {
   getHashFromArray,
   simpleProcessRouterDest,
 } = require('../../util');
-const {
-  getDynamicErrorType,
-  nodeSysErrorToStatus,
-} = require('../../../adapters/utils/networkUtils');
+const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
+const { isHttpStatusSuccess } = require('../../util');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-const { handleHttpRequest } = require('../../../adapters/network');
 
 const CONTACT_KEY_KEY = 'Contact Key';
 
 // DOC: https://developer.salesforce.com/docs/atlas.en-us.mc-app-development.meta/mc-app-development/access-token-s2s.htm
 
 const getToken = async (clientId, clientSecret, subdomain) => {
-  try {
-    const { processedResponse: processedResponseSfmc } = await handleHttpRequest(
-      'post',
-      `https://${subdomain}.${ENDPOINTS.GET_TOKEN}`,
-      {
-        grant_type: 'client_credentials',
-        client_id: clientId,
-        client_secret: clientSecret,
-      },
-      {
-        'Content-Type': JSON_MIME_TYPE,
-      },
-      {
-        destType: 'sfmc',
-        feature: 'transformation',
-        endpointPath: '/token',
-        requestMethod: 'POST',
-        module: 'router',
-      },
-    );
-    if (processedResponseSfmc.response) {
-      return processedResponseSfmc.response.access_token;
-    }
+  const { processedResponse: processedResponseSfmc } = await handleHttpRequest(
+    'post',
+    `https://${subdomain}.${ENDPOINTS.GET_TOKEN}`,
+    {
+      grant_type: 'client_credentials',
+      client_id: clientId,
+      client_secret: clientSecret,
+    },
+    {
+      'Content-Type': JSON_MIME_TYPE,
+    },
+    {
+      destType: 'sfmc',
+      feature: 'transformation',
+      endpointPath: '/token',
+      requestMethod: 'POST',
+      module: 'router',
+    },
+  );
+
+  if (!isHttpStatusSuccess(processedResponseSfmc.status)) {
     throw new NetworkError(
       'Could not retrieve access token',
       processedResponseSfmc.status || 400,
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedResponseSfmc.status || 400),
       },
-      JSON.stringify(processedResponseSfmc),
+      processedResponseSfmc.response?.message || JSON.stringify(processedResponseSfmc),
     );
-  } catch (error) {
-    if (!isEmpty(error.response)) {
-      const status = error.status || 400;
-      throw new NetworkError(`Authorization Failed ${error.response.statusText}`, status, {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
-      });
-    } else {
-      const httpError = nodeSysErrorToStatus(error.code);
-      const status = httpError.status || 400;
-      throw new NetworkError(`Authorization Failed ${httpError.message}`, status, {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
-      });
-    }
   }
+
+  return processedResponseSfmc.response.access_token;
 };
 
 // DOC : https://developer.salesforce.com/docs/atlas.en-us.noversion.mc-apis.meta/mc-apis/createContacts.htm

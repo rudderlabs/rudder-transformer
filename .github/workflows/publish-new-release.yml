@@ -99,7 +99,7 @@ jobs:
           channel-id: ${{ secrets.SLACK_RELEASE_CHANNEL_ID }}
           payload: |
             {
-              "text": "*<${{env.RELEASES_URL}}v${{ steps.extract-version.outputs.release_version }}|v${{ steps.extract-version.outputs.release_version }}>*\nCC: <@U03KG4BK1L1> <@U02AE5GMMHV> <@U01LVJ30QEB>",
+              "text": "*<${{env.RELEASES_URL}}v${{ steps.extract-version.outputs.release_version }}|v${{ steps.extract-version.outputs.release_version }}>*\nCC: <@U03KG4BK1L1> <@U024YF8CR53> <@U01LVJ30QEB>",
               "blocks": [
                 {
                   "type": "header",
@@ -115,7 +115,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "*<${{env.RELEASES_URL}}v${{ steps.extract-version.outputs.release_version }}|v${{ steps.extract-version.outputs.release_version }}>*\nCC: <@U03KG4BK1L1> <@U02AE5GMMHV> <@U01LVJ30QEB>"
+                    "text": "*<${{env.RELEASES_URL}}v${{ steps.extract-version.outputs.release_version }}|v${{ steps.extract-version.outputs.release_version }}>*\nCC: <@U03KG4BK1L1> <@U024YF8CR53> <@U01LVJ30QEB>"
                   }
                 }
               ]

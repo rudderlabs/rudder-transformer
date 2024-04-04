@@ -63,7 +63,7 @@
     "@datadog/pprof": "^3.1.0",
     "@koa/router": "^12.0.0",
     "@ndhoule/extend": "^2.0.0",
-    "@pyroscope/nodejs": "^0.2.6",
+    "@pyroscope/nodejs": "^0.2.9",
     "@rudderstack/integrations-lib": "^0.2.7",
     "@rudderstack/workflow-engine": "^0.7.5",
     "@shopify/jest-koa-mocks": "^5.1.1",

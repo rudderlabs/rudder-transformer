@@ -152,7 +152,20 @@ const DestCanonicalNames = {
     'the trade desk',
   ],
   INTERCOM: ['INTERCOM', 'intercom', 'Intercom'],
+  GOOGLE_ADWORDS_REMARKETING_LISTS: [
+    'GOOGLE_ADWORDS_REMARKETING_LISTS',
+    'google_adwords_remarketing_lists',
+    'Google Adwords Remarketing Lists',
+    'google adwords remarketing lists',
+  ],
+  GOOGLE_ADWORDS_OFFLINE_CONVERSIONS: [
+    'GOOGLE_ADWORDS_OFFLINE_CONVERSIONS',
+    'google_adwords_offline_conversions',
+    'Google Adwords Offline Conversions',
+    'google adwords offline conversions',
+  ],
   koala: ['Koala', 'koala', 'KOALA'],
+  bloomreach: ['Bloomreach', 'bloomreach', 'BLOOMREACH'],
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

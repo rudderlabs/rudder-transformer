@@ -40,7 +40,9 @@ steps:
       });
       .message.properties.idempotencyKey ? 
         ($.context.payload.idempotency_key = .message.properties.idempotencyKey);
-
+  - name: validateuserId
+    template: |
+      $.assert($.context.payload.identity, "userId is required");
   - name: finalPayload
     description: In batchMode we return payload directly
     condition: $.batchMode

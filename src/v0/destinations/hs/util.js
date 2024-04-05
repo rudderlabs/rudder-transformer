@@ -435,7 +435,7 @@ const getEventAndPropertiesFromConfig = (message, destination, payload) => {
   if (!hubspotEvents) {
     throw new InstrumentationError('Event and property mappings are required for track call');
   }
-  event = event.trim().toLowerCase();
+  event = String(event).trim().toLowerCase();
   let eventName;
   let eventProperties;
   const properties = {};

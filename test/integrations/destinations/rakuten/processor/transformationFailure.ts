@@ -202,9 +202,9 @@ export const transformationFailures = [
   {
     id: 'rakuten-test-5',
     name: 'rakuten',
-    description: 'No eligible property available for required field tr present',
+    description: 'No eligible property available for required field land present',
     scenario: 'Framework',
-    successCriteria: 'Transformationn Error for required field tr not present',
+    successCriteria: 'Transformationn Error for required field land not present',
     feature: 'processor',
     module: 'destination',
     version: 'v0',

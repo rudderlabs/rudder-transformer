@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 const lodash = require('lodash');
 const get = require('get-value');
+const { RedisError } = require('@rudderstack/integrations-lib');
 const stats = require('../../../util/stats');
 const {
   getShopifyTopic,
@@ -249,16 +250,11 @@ const processIdentifierEvent = async (event, metricMetadata) => {
         source: metricMetadata.source,
         writeKey: metricMetadata.writeKey,
       });
+      // returning 500 as status code in case of redis failure
+      throw new RedisError(`${e}`, 500);
     }
   }
-  const result = {
-    outputToSource: {
-      body: Buffer.from('OK').toString('base64'),
-      contentType: 'text/plain',
-    },
-    statusCode: 200,
-  };
-  return result;
+  return NO_OPERATION_SUCCESS;
 };
 const process = async (event) => {
   const metricMetadata = {

@@ -162,6 +162,9 @@ const fetchAndVerifyConversionHappenedAt = (message) => {
 };
 
 function batchResponseBuilder(successfulEvents) {
+  if (successfulEvents.length === 0) {
+    return [];
+  }
   const constants = {
     version: successfulEvents[0].message[0].version,
     type: successfulEvents[0].message[0].type,

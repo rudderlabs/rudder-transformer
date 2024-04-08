@@ -1,6 +1,6 @@
-const { calculateRevenue, calculateRevenueField } = require('./utils');
+const { calculateDefaultRevenue, populateRevenueField } = require('./utils');
 
-describe('calculateRevenue', () => {
+describe('calculateDefaultRevenue', () => {
   // Calculates revenue for a single product with defined price and quantity
   it('should calculate revenue for a single product with defined price and quantity', () => {
     const properties = {
@@ -8,7 +8,7 @@ describe('calculateRevenue', () => {
       quantity: 2,
     };
 
-    const result = calculateRevenue(properties);
+    const result = calculateDefaultRevenue(properties);
 
     expect(result).toBe(20);
   });
@@ -17,7 +17,7 @@ describe('calculateRevenue', () => {
   it('should return null for price parameter being undefined', () => {
     const properties = { products: [{ quantity: 1 }] };
 
-    const result = calculateRevenue(properties);
+    const result = calculateDefaultRevenue(properties);
 
     expect(result).toBeNull();
   });
@@ -28,7 +28,7 @@ describe('calculateRevenue', () => {
       price: 10,
     };
 
-    const result = calculateRevenue(properties);
+    const result = calculateDefaultRevenue(properties);
 
     expect(result).toBe(10);
   });
@@ -39,7 +39,7 @@ describe('calculateRevenue', () => {
       products: [{ price: 10, quantity: 2 }, { quantity: 3 }],
     };
 
-    const result = calculateRevenue(properties);
+    const result = calculateDefaultRevenue(properties);
 
     expect(result).toBe(20);
   });
@@ -50,13 +50,13 @@ describe('calculateRevenue', () => {
       products: [{ price: 10 }, { price: 5 }],
     };
 
-    const result = calculateRevenue(properties);
+    const result = calculateDefaultRevenue(properties);
 
     expect(result).toBe(15);
   });
 });
 
-describe('calculateRevenueField', () => {
+describe('populateRevenueField', () => {
   // Returns revenue in cents for Purchase event type with valid revenue property
   it('should return revenue in cents when Purchase event type has valid revenue property', () => {
     const eventType = 'Purchase';
@@ -65,7 +65,7 @@ describe('calculateRevenueField', () => {
     };
     const expected = 1050;
 
-    const result = calculateRevenueField(eventType, properties);
+    const result = populateRevenueField(eventType, properties);
 
     expect(result).toBe(expected);
   });
@@ -78,7 +78,7 @@ describe('calculateRevenueField', () => {
     };
     const expected = null;
 
-    const result = calculateRevenueField(eventType, properties);
+    const result = populateRevenueField(eventType, properties);
 
     expect(result).toBe(expected);
   });
@@ -92,7 +92,7 @@ describe('calculateRevenueField', () => {
     };
     const expected = 2100;
 
-    const result = calculateRevenueField(eventType, properties);
+    const result = populateRevenueField(eventType, properties);
 
     expect(result).toBe(expected);
   });
@@ -114,7 +114,7 @@ describe('calculateRevenueField', () => {
     };
     const expected = 3675;
 
-    const result = calculateRevenueField(eventType, properties);
+    const result = populateRevenueField(eventType, properties);
 
     expect(result).toBe(expected);
   });

@@ -152,8 +152,8 @@ const deployFaasFunction = async (
       'com.openfaas.scale.min': FAAS_MIN_PODS_IN_TEXT,
       transformationId: trMetadata.transformationId,
       workspaceId: trMetadata.workspaceId,
-      team: 'data-managment',
-      service: 'openfaas',
+      team: 'data-management',
+      service: 'openfaas-fn',
       customer: 'shared',
       'customer-tier': CUSTOMER_TIER
     };

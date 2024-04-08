@@ -12,7 +12,6 @@ const {
   defaultPatchRequestConfig,
   getFieldValueFromMessage,
   getSuccessRespEvents,
-  addExternalIdToTraits,
   defaultBatchRequestConfig,
   removeUndefinedAndNullValues,
   getDestinationExternalID,
@@ -42,6 +41,7 @@ const {
   getEventAndPropertiesFromConfig,
   getHsSearchId,
   populateTraits,
+  addExternalIdToTraits,
 } = require('./util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 

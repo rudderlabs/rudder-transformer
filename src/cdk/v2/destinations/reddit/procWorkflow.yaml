@@ -60,7 +60,7 @@ steps:
         condition: $.outputs.prepareTrackPayload.eventType.tracking_type in ['Purchase', 'AddToCart', 'ViewContent']
         reference: 'https://ads-api.reddit.com/docs/v2/#tag/Conversions/paths/~1api~1v2.0~1conversions~1events~1%7Baccount_id%7D/post'
         template: |
-          const revenue_in_cents = $.calculateRevenueField($.outputs.prepareTrackPayload.eventType.tracking_type,^.message.properties)
+          const revenue_in_cents = $.populateRevenueField($.outputs.prepareTrackPayload.eventType.tracking_type,^.message.properties)
           const customFields = .message.().({
             "currency": .properties.currency,
             "value_decimal": revenue_in_cents ? revenue_in_cents / 100,

@@ -29,7 +29,7 @@ const batchEvents = (successfulEvents) => {
   return batchedEvents;
 };
 
-const calculateRevenue = (properties) => {
+const calculateDefaultRevenue = (properties) => {
   // Check if working with products array
   if (properties?.products && properties.products.length > 0) {
     // Check if all product prices are undefined
@@ -50,7 +50,7 @@ const calculateRevenue = (properties) => {
   return properties.price * (properties.quantity ?? 1);
 };
 
-const calculateRevenueField = (eventType, properties) => {
+const populateRevenueField = (eventType, properties) => {
   let revenueInCents;
   switch (eventType) {
     case 'Purchase':
@@ -68,7 +68,7 @@ const calculateRevenueField = (eventType, properties) => {
     default:
       // for viewContent
       // eslint-disable-next-line no-case-declarations
-      const revenue = calculateRevenue(properties);
+      const revenue = calculateDefaultRevenue(properties);
       revenueInCents = revenue ? revenue * 100 : null;
       break;
   }
@@ -81,6 +81,6 @@ const calculateRevenueField = (eventType, properties) => {
 };
 module.exports = {
   batchEvents,
-  calculateRevenueField,
-  calculateRevenue,
+  populateRevenueField,
+  calculateDefaultRevenue,
 };

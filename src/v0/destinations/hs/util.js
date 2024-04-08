@@ -20,6 +20,7 @@ const {
   getDestinationExternalIDInfoForRetl,
   getValueFromMessage,
   isNull,
+  validateEventName,
 } = require('../../util');
 const {
   CONTACT_PROPERTY_MAP_ENDPOINT,
@@ -435,7 +436,8 @@ const getEventAndPropertiesFromConfig = (message, destination, payload) => {
   if (!hubspotEvents) {
     throw new InstrumentationError('Event and property mappings are required for track call');
   }
-  event = String(event).trim().toLowerCase();
+  validateEventName(event);
+  event = event.trim().toLowerCase();
   let eventName;
   let eventProperties;
   const properties = {};

@@ -27,6 +27,7 @@ const FAAS_AST_VID = 'ast';
 const FAAS_AST_FN_NAME = 'fn-ast';
 const CUSTOM_NETWORK_POLICY_WORKSPACE_IDS = process.env.CUSTOM_NETWORK_POLICY_WORKSPACE_IDS || '';
 const customNetworkPolicyWorkspaceIds = CUSTOM_NETWORK_POLICY_WORKSPACE_IDS.split(',');
+const CUSTOMER_TIER = process.env.CUSTOMER_TIER || 'shared';
 
 // Initialise node cache
 const functionListCache = new NodeCache();
@@ -151,6 +152,10 @@ const deployFaasFunction = async (
       'com.openfaas.scale.min': FAAS_MIN_PODS_IN_TEXT,
       transformationId: trMetadata.transformationId,
       workspaceId: trMetadata.workspaceId,
+      team: 'data-managment',
+      service: 'openfaas',
+      customer: 'shared',
+      'customer-tier': CUSTOMER_TIER
     };
     if (
       trMetadata.workspaceId &&

@@ -7,7 +7,7 @@
   },
   {
     "destKey": "CustomerEmail",
-    "sourceKeys": "email",
+    "sourceKeys": "emailOnly",
     "sourceFromGenericMap": true,
     "required": false
   },

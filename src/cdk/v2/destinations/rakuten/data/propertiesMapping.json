@@ -8,7 +8,7 @@
     "sourceKeys": ["properties.tr", "properties.ran_site_id", "properties.ranSiteID"],
     "destKey": "tr",
     "metadata": {
-      "defaultValue": "0000"
+      "defaultValue": " "
     }
   },
   {

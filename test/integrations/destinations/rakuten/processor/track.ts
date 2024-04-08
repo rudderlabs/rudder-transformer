@@ -453,8 +453,7 @@ export const trackSuccess = [
   {
     id: 'rakuten-test-track-success-5',
     name: 'rakuten',
-    description:
-      'Track call with properties.products with all properties in payload and one product containing all product properties and other containg some',
+    description: 'Track call no ranSiteId in input',
     scenario: 'Business',
     successCriteria:
       'Response should contain only properties with tr as empty string (ransiteId) and product payload and status code should be 200',
@@ -545,7 +544,7 @@ export const trackSuccess = [
                 itmstatuslist: 'In Stock||',
                 isclearancelist: 'Y||',
                 ord: 'SampleOrderId',
-                tr: '0000',
+                tr: ' ',
                 land: '20240129_1200',
                 date: '20240129_1300',
                 altord: 'SampleAlternateOrderId',

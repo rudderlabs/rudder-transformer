@@ -44,7 +44,11 @@ const buildProductPayloadString = (payload) => {
 // ref: https://wiki.awin.com/index.php/Advertiser_Tracking_Guide/Product_Level_Tracking#PLT_Via_Conversion_Pixel
 const trackProduct = (properties, advertiserId, commissionParts) => {
   const transformedProductInfoObj = {};
-  if (properties?.products && properties.products.length > 0) {
+  if (
+    properties?.products &&
+    Array.isArray(properties?.products) &&
+    properties.products.length > 0
+  ) {
     const productsArray = properties.products;
     let productIndex = 0;
     productsArray.forEach((product) => {

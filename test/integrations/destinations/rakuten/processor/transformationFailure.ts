@@ -202,9 +202,9 @@ export const transformationFailures = [
   {
     id: 'rakuten-test-5',
     name: 'rakuten',
-    description: 'No eligible property available for required field tr present',
+    description: 'No eligible property available for required field land present',
     scenario: 'Framework',
-    successCriteria: 'Transformationn Error for required field tr not present',
+    successCriteria: 'Transformationn Error for required field land not present',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -245,7 +245,7 @@ export const transformationFailures = [
         body: [
           {
             error:
-              'Missing required value from ["properties.tr","properties.ran_site_id","properties.ranSiteID"]: Workflow: procWorkflow, Step: prepareTrackPayload, ChildStep: undefined, OriginalError: Missing required value from ["properties.tr","properties.ran_site_id","properties.ranSiteID"]',
+              'Missing required value from ["properties.land","properties.land_time","properties.landTime"]: Workflow: procWorkflow, Step: prepareTrackPayload, ChildStep: undefined, OriginalError: Missing required value from ["properties.land","properties.land_time","properties.landTime"]',
             metadata: {
               destinationId: 'dummyDestId',
               jobId: '1',

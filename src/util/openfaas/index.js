@@ -155,7 +155,7 @@ const deployFaasFunction = async (
       team: 'data-management',
       service: 'openfaas-fn',
       customer: 'shared',
-      'customer-tier': CUSTOMER_TIER
+      'customer-tier': CUSTOMER_TIER,
     };
     if (
       trMetadata.workspaceId &&

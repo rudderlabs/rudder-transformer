@@ -3,6 +3,7 @@ const {
   RetryableError,
   NetworkError,
   TransformationError,
+  isDefinedAndNotNull,
 } = require('@rudderstack/integrations-lib');
 const { handleHttpRequest } = require('../../../adapters/network');
 const tags = require('../../util/tags');
@@ -360,7 +361,6 @@ const getFieldSchemaMap = async (accessToken, munchkinId) => {
       module: 'router',
     },
   );
-
   if (fieldSchemaMapping.response.errors) {
     handleCommonErrorResponse(
       fieldSchemaMapping,
@@ -411,7 +411,11 @@ const checkEventStatusViaSchemaMatching = (event, fieldMap) => {
       const expectedDataType = SCHEMA_DATA_TYPE_MAP[fieldMap[paramName]];
       const actualDataType = typeof paramValue;
 
-      if (!mismatchedFields[job_id] && actualDataType !== expectedDataType) {
+      if (
+        isDefinedAndNotNull(paramValue) &&
+        !mismatchedFields[job_id] &&
+        actualDataType !== expectedDataType
+      ) {
         mismatchedFields[job_id] = `invalid ${paramName}`;
       }
     });

@@ -59,7 +59,7 @@ const getToken = async (clientId, clientSecret, subdomain) => {
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedResponseSfmc.status || 400),
       },
-      processedResponseSfmc.response?.message || JSON.stringify(processedResponseSfmc),
+      JSON.stringify(processedResponseSfmc),
     );
   }
 

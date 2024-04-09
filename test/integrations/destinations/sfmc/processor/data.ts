@@ -2059,7 +2059,7 @@ export const data = [
         body: [
           {
             error:
-              '{"message":"Could not retrieve access token","destinationResponse":"Your requests are temporarily blocked."}',
+              '{"message":"Could not retrieve access token","destinationResponse":"{\\"response\\":{\\"message\\":\\"Your requests are temporarily blocked.\\",\\"errorcode\\":50200,\\"documentation\\":\\"https://developer.salesforce.com/docs/atlas.en-us.mc-apis.meta/mc-apis/error-handling.htm\\"},\\"status\\":429}"}',
             statTags: {
               destType: 'SFMC',
               errorCategory: 'network',

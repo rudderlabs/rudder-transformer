@@ -214,4 +214,48 @@ export const validation: ProcessorTestData[] = [
       },
     },
   },
+  {
+    id: 'MovableInk-validation-test-6',
+    name: destType,
+    description: 'Missing event name',
+    scenario: 'Framework',
+    successCriteria: 'Instrumentation Error',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination,
+            message: {
+              type: 'track',
+              anonymousId: 'anonId123',
+              userId: 'userId123',
+              properties: {},
+              integrations: {
+                All: true,
+              },
+              originalTimestamp: '2024-03-04T15:32:56.409Z',
+            },
+            metadata: generateMetadata(1),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              'Event name is not present. Aborting: Workflow: procWorkflow, Step: validateInput, ChildStep: undefined, OriginalError: Event name is not present. Aborting',
+            metadata: generateMetadata(1),
+            statTags: processorInstrumentationErrorStatTags,
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
 ];

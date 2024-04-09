@@ -19,7 +19,7 @@ import {
   UserDeletionResponse,
 } from '../../types/index';
 import stats from '../../util/stats';
-import { CatchErr } from '../../util/types';
+import { CatchErr, FixMe } from '../../util/types';
 import tags from '../../v0/util/tags';
 import { MiscService } from '../misc';
 import { DestinationPostTransformationService } from './postTransformation';
@@ -56,6 +56,7 @@ export class CDKV2DestinationService implements DestinationService {
     destinationType: string,
     _version: string,
     requestMetadata: NonNullable<unknown>,
+    logger: any,
   ): Promise<ProcessorTransformationResponse[]> {
     // TODO: Change the promise type
     const respList: ProcessorTransformationResponse[][] = await Promise.all(
@@ -67,10 +68,7 @@ export class CDKV2DestinationService implements DestinationService {
           tags.FEATURES.PROCESSOR,
         );
         metaTo.metadata = event.metadata;
-        const metadataWithLoggingCtx = {
-          ...requestMetadata,
-          loggerCtx: MiscService.getLoggableData(metaTo.errorDetails),
-        };
+        const loggerWithCtx = logger.child({ ...MiscService.getLoggableData(metaTo.errorDetails) });
         try {
           const transformedPayloads:
             | ProcessorTransformationOutput
@@ -78,7 +76,8 @@ export class CDKV2DestinationService implements DestinationService {
             destinationType,
             event,
             tags.FEATURES.PROCESSOR,
-            metadataWithLoggingCtx,
+            loggerWithCtx,
+            requestMetadata,
           );
           stats.increment('event_transform_success', {
             destType: destinationType,
@@ -116,6 +115,7 @@ export class CDKV2DestinationService implements DestinationService {
     destinationType: string,
     _version: string,
     requestMetadata: NonNullable<unknown>,
+    logger: FixMe,
   ): Promise<RouterTransformationResponse[]> {
     const allDestEvents: object = groupBy(
       events,
@@ -131,17 +131,17 @@ export class CDKV2DestinationService implements DestinationService {
             tags.FEATURES.ROUTER,
           );
           metaTo.metadata = destInputArray[0].metadata;
-          const metadataWithLoggingCtx = {
-            ...requestMetadata,
-            loggerCtx: MiscService.getLoggableData(metaTo.errorDetails),
-          };
+          const loggerWithCtx = logger.child({
+            ...MiscService.getLoggableData(metaTo.errorDetails),
+          });
           try {
             const doRouterTransformationResponse: RouterTransformationResponse[] =
               await processCdkV2Workflow(
                 destinationType,
                 destInputArray,
                 tags.FEATURES.ROUTER,
-                metadataWithLoggingCtx,
+                loggerWithCtx,
+                requestMetadata,
               );
             return DestinationPostTransformationService.handleRouterTransformSuccessEvents(
               doRouterTransformationResponse,

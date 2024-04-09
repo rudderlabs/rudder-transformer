@@ -12,6 +12,7 @@ export class SourceController {
     const events = ctx.request.body as object[];
     const { version, source }: { version: string; source: string } = ctx.params;
     const integrationService = ServiceSelector.getNativeSourceService();
+    const loggerWithCtx = logger.child({ version, source });
     try {
       const { implementationVersion, input } = ControllerUtility.adaptInputToVersion(
         source,
@@ -23,6 +24,7 @@ export class SourceController {
         source,
         implementationVersion,
         requestMetadata,
+        loggerWithCtx,
       );
       ctx.body = resplist;
     } catch (err: any) {
@@ -31,7 +33,7 @@ export class SourceController {
       ctx.body = [resp];
     }
     ControllerUtility.postProcess(ctx);
-    logger.debug('Native(Source-Transform):: Response from transformer::', ctx.body);
+    loggerWithCtx.debug('Native(Source-Transform):: Response from transformer::', ctx.body);
     return ctx;
   }
 }

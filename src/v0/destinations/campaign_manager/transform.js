@@ -1,4 +1,4 @@
-const { InstrumentationError, structuredLogger: logger } = require('@rudderstack/integrations-lib');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const lodash = require('lodash');
 const { EventType } = require('../../../constants');
 const {
@@ -243,11 +243,8 @@ const batchEvents = (eventChunksArray) => {
   return batchedResponseList;
 };
 
-const processRouterDest = async (inputs, reqMetadata) => {
-  logger.debug(
-    `Transformation router request received for ${reqMetadata.loggerCtx.destType}: with size ${inputs.length}`,
-    reqMetadata.loggerCtx,
-  );
+const processRouterDest = async (inputs, reqMetadata, logger) => {
+  logger.debug(`Transformation router request received with size ${inputs.length}`);
   const batchErrorRespList = [];
   const eventChunksArray = [];
   const { destination } = inputs[0];

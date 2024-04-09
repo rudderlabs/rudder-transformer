@@ -1,4 +1,8 @@
-const { populateConsentFromConfig, finaliseConsent } = require('./index');
+const {
+  finaliseConsent,
+  populateConsentFromConfig,
+  finaliseAnalyticsConsents,
+} = require('./index');
 
 describe('unit test for populateConsentFromConfig', () => {
   const consentConfigMap = {
@@ -241,5 +245,51 @@ describe('finaliseConsent', () => {
       newKey1: 'DENIED',
       newKey2: 'UNKNOWN',
     });
+  });
+});
+
+describe('unit test for finaliseAnalyticsConsents', () => {
+  const consentConfigMap = {
+    personalizationConsent: 'ad_personalization',
+    userDataConsent: 'ad_user_data',
+  };
+  it('Should return an empty object when no valid consents are provided', () => {
+    const result = finaliseAnalyticsConsents(consentConfigMap, {});
+    expect(result).toEqual({});
+  });
+
+  it('Should set ad_user_data property of consent object when userDataConsent property is provided and its value is one of the allowed consent statuses', () => {
+    const properties = { ad_user_data: 'GRANTED' };
+    const result = finaliseAnalyticsConsents(consentConfigMap, properties);
+    expect(result).toEqual({ ad_user_data: 'GRANTED' });
+  });
+
+  it('Should set ad_personalization property of consent object when personalizationConsent property is provided and its value is one of the allowed consent statuses', () => {
+    const properties = { ad_personalization: 'DENIED' };
+    const result = finaliseAnalyticsConsents(consentConfigMap, properties);
+    expect(result).toEqual({ ad_personalization: 'DENIED' });
+  });
+
+  it('Should return an empty object when properties parameter is not provided', () => {
+    const result = finaliseAnalyticsConsents(consentConfigMap, undefined);
+    expect(result).toEqual({});
+  });
+
+  it('Should return an empty object when properties parameter is null', () => {
+    const result = finaliseAnalyticsConsents(consentConfigMap, null);
+    expect(result).toEqual({});
+  });
+
+  it('Should return an empty object when properties parameter is an UNSPECIFIED object', () => {
+    const result = finaliseAnalyticsConsents(consentConfigMap, {});
+    expect(result).toEqual({});
+  });
+
+  it('should return empty object when properties parameter contains ad_user_data and ad_personalization with non-allowed values', () => {
+    const result = finaliseAnalyticsConsents(consentConfigMap, {
+      userDataConsent: 'RANDOM',
+      personalizationConsent: 'RANDOM',
+    });
+    expect(result).toEqual({});
   });
 });

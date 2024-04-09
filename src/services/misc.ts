@@ -32,7 +32,6 @@ export class MiscService {
       namespace: 'Unknown',
       cluster: 'Unknown',
       features: ctx.state?.features || {},
-      loggerCtx: {},
     };
   }
 

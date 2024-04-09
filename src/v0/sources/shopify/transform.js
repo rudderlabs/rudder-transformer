@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 const lodash = require('lodash');
 const get = require('get-value');
-const { structuredLogger: logger } = require('@rudderstack/integrations-lib');
 const stats = require('../../../util/stats');
 const {
   getShopifyTopic,
@@ -205,7 +204,7 @@ const processEvent = async (inputEvent, metricMetadata) => {
 };
 const isIdentifierEvent = (event) =>
   ['rudderIdentifier', 'rudderSessionIdentifier'].includes(event?.event);
-const processIdentifierEvent = async (event, metricMetadata) => {
+const processIdentifierEvent = async (event, metricMetadata, logger) => {
   if (useRedisDatabase) {
     let value;
     let field;
@@ -243,7 +242,7 @@ const processIdentifierEvent = async (event, metricMetadata) => {
       });
       await RedisDB.setVal(`${event.cartToken}`, value);
     } catch (e) {
-      logger.debugw(`{{SHOPIFY::}} cartToken map set call Failed due redis error ${e}`);
+      logger.debug(`{{SHOPIFY::}} cartToken map set call Failed due redis error ${e}`);
       stats.increment('shopify_redis_failures', {
         type: 'set',
         source: metricMetadata.source,
@@ -260,13 +259,13 @@ const processIdentifierEvent = async (event, metricMetadata) => {
   };
   return result;
 };
-const process = async (event) => {
+const process = async (event, logger) => {
   const metricMetadata = {
     writeKey: event.query_parameters?.writeKey?.[0],
     source: 'SHOPIFY',
   };
   if (isIdentifierEvent(event)) {
-    return processIdentifierEvent(event, metricMetadata);
+    return processIdentifierEvent(event, metricMetadata, logger);
   }
   const response = await processEvent(event, metricMetadata);
   return response;

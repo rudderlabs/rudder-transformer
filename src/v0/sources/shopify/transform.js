@@ -16,7 +16,6 @@ const {
 const { RedisDB } = require('../../../util/redis/redisConnector');
 const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../util');
 const Message = require('../message');
-const logger = require('../../../logger');
 const { EventType } = require('../../../constants');
 const {
   INTEGERATION,
@@ -206,7 +205,7 @@ const processEvent = async (inputEvent, metricMetadata) => {
 };
 const isIdentifierEvent = (event) =>
   ['rudderIdentifier', 'rudderSessionIdentifier'].includes(event?.event);
-const processIdentifierEvent = async (event, metricMetadata) => {
+const processIdentifierEvent = async (event, metricMetadata, logger) => {
   if (useRedisDatabase) {
     let value;
     let field;
@@ -256,13 +255,13 @@ const processIdentifierEvent = async (event, metricMetadata) => {
   }
   return NO_OPERATION_SUCCESS;
 };
-const process = async (event) => {
+const process = async (event, logger) => {
   const metricMetadata = {
     writeKey: event.query_parameters?.writeKey?.[0],
     source: 'SHOPIFY',
   };
   if (isIdentifierEvent(event)) {
-    return processIdentifierEvent(event, metricMetadata);
+    return processIdentifierEvent(event, metricMetadata, logger);
   }
   const response = await processEvent(event, metricMetadata);
   return response;

@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 const { v5 } = require('uuid');
 const sha256 = require('sha256');
-const { TransformationError } = require('@rudderstack/integrations-lib');
+const { TransformationError, structuredLogger: logger } = require('@rudderstack/integrations-lib');
 const stats = require('../../../util/stats');
 const {
   constructPayload,
@@ -12,7 +12,6 @@ const {
   isDefinedAndNotNull,
 } = require('../../util');
 const { RedisDB } = require('../../../util/redis/redisConnector');
-const logger = require('../../../logger');
 const {
   lineItemsMappingJSON,
   productMappingJSON,

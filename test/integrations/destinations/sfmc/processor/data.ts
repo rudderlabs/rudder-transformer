@@ -1987,7 +1987,7 @@ export const data = [
         body: [
           {
             error:
-              '{"message":"Could not retrieve access token","destinationResponse":"{\\"response\\":{\\"error\\":\\"invalid_client\\",\\"error_description\\":\\"Invalid client ID. Use the client ID in Marketing Cloud Installed Packages.\\",\\"error_uri\\":\\"https://developer.salesforce.com/docs\\"},\\"status\\":401}"}',
+              '{"message":"Could not retrieve access token","destinationResponse":{"error":"invalid_client","error_description":"Invalid client ID. Use the client ID in Marketing Cloud Installed Packages.","error_uri":"https://developer.salesforce.com/docs"}}',
             statTags: {
               destType: 'SFMC',
               errorCategory: 'network',
@@ -2059,7 +2059,7 @@ export const data = [
         body: [
           {
             error:
-              '{"message":"Could not retrieve access token","destinationResponse":"{\\"response\\":{\\"message\\":\\"Your requests are temporarily blocked.\\",\\"errorcode\\":50200,\\"documentation\\":\\"https://developer.salesforce.com/docs/atlas.en-us.mc-apis.meta/mc-apis/error-handling.htm\\"},\\"status\\":429}"}',
+              '{"message":"Could not retrieve access token","destinationResponse":{"message":"Your requests are temporarily blocked.","errorcode":50200,"documentation":"https://developer.salesforce.com/docs/atlas.en-us.mc-apis.meta/mc-apis/error-handling.htm"}}',
             statTags: {
               destType: 'SFMC',
               errorCategory: 'network',
@@ -2130,8 +2130,7 @@ export const data = [
         status: 200,
         body: [
           {
-            error:
-              '{"message":"Could not retrieve access token","destinationResponse":"{\\"response\\":{},\\"status\\":400}"}',
+            error: '{"message":"Could not retrieve access token","destinationResponse":{}}',
             statTags: {
               destType: 'SFMC',
               errorCategory: 'network',
@@ -2202,8 +2201,7 @@ export const data = [
         status: 200,
         body: [
           {
-            error:
-              '{"message":"Could not retrieve access token","destinationResponse":"{\\"response\\":\\"\\",\\"status\\":500}"}',
+            error: 'Could not retrieve access token',
             statTags: {
               destType: 'SFMC',
               errorCategory: 'network',

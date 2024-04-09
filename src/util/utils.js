@@ -5,6 +5,7 @@ const { Resolver } = require('dns').promises;
 const fetch = require('node-fetch');
 
 const util = require('util');
+const NodeCache = require('node-cache');
 const logger = require('../logger');
 const stats = require('./stats');
 
@@ -16,11 +17,30 @@ const LOCAL_HOST_NAMES_LIST = ['localhost', '127.0.0.1', '[::]', '[::1]'];
 const LOCALHOST_OCTET = '127.';
 const RECORD_TYPE_A = 4; // ipv4
 
+const DNS_CACHE_ENABLED = process.env.DNS_CACHE_ENABLED === 'true';
+const DNS_CACHE_TTL = process.env.DNS_CACHE_TTL ? parseInt(process.env.DNS_CACHE_TTL, 10) : 300;
+const dnsCache = new NodeCache({
+  useClones: false,
+  stdTTL: DNS_CACHE_TTL,
+  checkperiod: DNS_CACHE_TTL,
+});
+
+const fetchResolvedIps = async (hostname) => {
+  let ips = dnsCache.get(hostname);
+  if (ips === undefined) {
+    ips = await resolver.resolve4(hostname);
+    if (ips?.length > 0) {
+      dnsCache.set(hostname, ips);
+    }
+  }
+  return ips;
+};
+
 const staticLookup = (transformerVersionId) => async (hostname, _, cb) => {
   let ips;
   const resolveStartTime = new Date();
   try {
-    ips = await resolver.resolve4(hostname);
+    ips = DNS_CACHE_ENABLED ? await fetchResolvedIps(hostname) : await resolver.resolve4(hostname);
   } catch (error) {
     logger.error(`DNS Error Code: ${error.code} | Message : ${error.message}`);
     stats.timing('fetch_dns_resolve_time', resolveStartTime, {

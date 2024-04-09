@@ -65,11 +65,8 @@
       }
     },
     "output": {
-      "outputToSource": {
-        "body": "T0s=",
-        "contentType": "text/plain"
-      },
-      "statusCode": 200
+      "error": "Error: Error setting value in Redis due Error: Connection is Closed",
+      "statusCode": 500
     }
   },
   {

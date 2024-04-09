@@ -51,7 +51,7 @@
   },
   {
     "destKey": "conversionAdjustments[0].userIdentifiers[0].hashedEmail",
-    "sourceKeys": "email",
+    "sourceKeys": "emailOnly",
     "sourceFromGenericMap": true,
     "required": false,
     "metadata": {

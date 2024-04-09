@@ -506,3 +506,50 @@ describe('validateEventAndLowerCaseConversion Tests', () => {
     }).toThrow(InstrumentationError);
   });
 });
+
+describe('extractCustomFields', () => {
+  // Handle reserved words in message keys
+  it('should handle reserved words in message keys when keys are provided', () => {
+    const message = {
+      traits: {
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john.doe@example.com',
+      },
+      context: {
+        traits: {
+          phone: '1234567890',
+          city: 'New York',
+          country: 'USA',
+        },
+      },
+      properties: {
+        title: 'Developer',
+        organization: 'ABC Company',
+        zip: '12345',
+        prototype: 'reserved',
+      },
+    };
+
+    const payload = {};
+
+    const keys = ['properties', 'context.traits', 'traits'];
+
+    const exclusionFields = [
+      'firstName',
+      'lastName',
+      'phone',
+      'title',
+      'organization',
+      'city',
+      'region',
+      'country',
+      'zip',
+      'image',
+      'timezone',
+    ];
+    expect(() => {
+      utilities.extractCustomFields(message, payload, keys, exclusionFields);
+    }).toThrow(InstrumentationError);
+  });
+});

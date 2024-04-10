@@ -1,9 +1,8 @@
-import { structuredLogger as logger } from '@rudderstack/integrations-lib';
-import { FetchHandler } from '../../../helpers/fetchHandlers';
-import { RudderMessage, SourceTransformationResponse } from '../../../types/index';
-import stats from '../../../util/stats';
 import { NativeIntegrationSourceService } from '../nativeIntegration';
 import { SourcePostTransformationService } from '../postTransformation';
+import { SourceTransformationResponse, RudderMessage } from '../../../types/index';
+import stats from '../../../util/stats';
+import { FetchHandler } from '../../../helpers/fetchHandlers';
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -44,13 +43,7 @@ describe('NativeIntegration Source Service', () => {
       });
 
     const service = new NativeIntegrationSourceService();
-    const resp = await service.sourceTransformRoutine(
-      events,
-      sourceType,
-      version,
-      requestMetadata,
-      logger,
-    );
+    const resp = await service.sourceTransformRoutine(events, sourceType, version, requestMetadata);
 
     expect(resp).toEqual(tresponse);
 
@@ -87,13 +80,7 @@ describe('NativeIntegration Source Service', () => {
     jest.spyOn(stats, 'increment').mockImplementation(() => {});
 
     const service = new NativeIntegrationSourceService();
-    const resp = await service.sourceTransformRoutine(
-      events,
-      sourceType,
-      version,
-      requestMetadata,
-      logger,
-    );
+    const resp = await service.sourceTransformRoutine(events, sourceType, version, requestMetadata);
 
     expect(resp).toEqual(tresponse);
 

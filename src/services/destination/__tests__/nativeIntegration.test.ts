@@ -1,12 +1,11 @@
-import { structuredLogger as logger } from '@rudderstack/integrations-lib';
-import { FetchHandler } from '../../../helpers/fetchHandlers';
-import {
-  ProcessorTransformationOutput,
-  ProcessorTransformationRequest,
-  ProcessorTransformationResponse,
-} from '../../../types/index';
 import { NativeIntegrationDestinationService } from '../nativeIntegration';
 import { DestinationPostTransformationService } from '../postTransformation';
+import {
+  ProcessorTransformationRequest,
+  ProcessorTransformationOutput,
+  ProcessorTransformationResponse,
+} from '../../../types/index';
+import { FetchHandler } from '../../../helpers/fetchHandlers';
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -48,7 +47,6 @@ describe('NativeIntegration Service', () => {
       destType,
       version,
       requestMetadata,
-      logger,
     );
 
     expect(resp).toEqual(tresponse);
@@ -79,7 +77,6 @@ describe('NativeIntegration Service', () => {
       destType,
       version,
       requestMetadata,
-      logger,
     );
 
     const expected = [

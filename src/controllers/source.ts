@@ -1,18 +1,20 @@
-import { structuredLogger as logger } from '@rudderstack/integrations-lib';
 import { Context } from 'koa';
-import { ServiceSelector } from '../helpers/serviceSelector';
 import { MiscService } from '../services/misc';
-import { SourcePostTransformationService } from '../services/source/postTransformation';
+import { ServiceSelector } from '../helpers/serviceSelector';
 import { ControllerUtility } from './util';
+import logger from '../logger';
+import { SourcePostTransformationService } from '../services/source/postTransformation';
 
 export class SourceController {
   public static async sourceTransform(ctx: Context) {
-    logger.debug('Native(Source-Transform):: Request to transformer::', ctx.request.body);
+    logger.debug(
+      'Native(Source-Transform):: Request to transformer::',
+      JSON.stringify(ctx.request.body),
+    );
     const requestMetadata = MiscService.getRequestMetadata(ctx);
     const events = ctx.request.body as object[];
     const { version, source }: { version: string; source: string } = ctx.params;
     const integrationService = ServiceSelector.getNativeSourceService();
-    const loggerWithCtx = logger.child({ version, source });
     try {
       const { implementationVersion, input } = ControllerUtility.adaptInputToVersion(
         source,
@@ -24,7 +26,6 @@ export class SourceController {
         source,
         implementationVersion,
         requestMetadata,
-        loggerWithCtx,
       );
       ctx.body = resplist;
     } catch (err: any) {
@@ -33,7 +34,10 @@ export class SourceController {
       ctx.body = [resp];
     }
     ControllerUtility.postProcess(ctx);
-    loggerWithCtx.debug('Native(Source-Transform):: Response from transformer::', ctx.body);
+    logger.debug(
+      'Native(Source-Transform):: Response from transformer::',
+      JSON.stringify(ctx.body),
+    );
     return ctx;
   }
 }

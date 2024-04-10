@@ -1,5 +1,4 @@
 /* eslint-disable class-methods-use-this */
-import { structuredLogger as logger } from '@rudderstack/integrations-lib';
 import { DestinationService } from '../interfaces/DestinationService';
 import {
   DeliveryV0Response,
@@ -15,9 +14,10 @@ import {
   UserDeletionRequest,
   UserDeletionResponse,
 } from '../types';
-import { CommonUtils } from '../util/common';
-import stats from '../util/stats';
 import tags from '../v0/util/tags';
+import stats from '../util/stats';
+import logger from '../logger';
+import { CommonUtils } from '../util/common';
 
 const NS_PER_SEC = 1e9;
 
@@ -204,7 +204,6 @@ export class ComparatorService implements DestinationService {
       destinationType,
       version,
       requestMetadata,
-      logger,
     );
     const primaryTimeDiff = process.hrtime(primaryStartTime);
     const primaryTime = primaryTimeDiff[0] * NS_PER_SEC + primaryTimeDiff[1];
@@ -263,7 +262,6 @@ export class ComparatorService implements DestinationService {
       destinationType,
       version,
       requestMetadata,
-      logger,
     );
     const primaryTimeDiff = process.hrtime(primaryStartTime);
     const primaryTime = primaryTimeDiff[0] * NS_PER_SEC + primaryTimeDiff[1];
@@ -322,7 +320,6 @@ export class ComparatorService implements DestinationService {
       destinationType,
       version,
       requestMetadata,
-      {},
     );
     const primaryTimeDiff = process.hrtime(primaryStartTime);
     const primaryTime = primaryTimeDiff[0] * NS_PER_SEC + primaryTimeDiff[1];

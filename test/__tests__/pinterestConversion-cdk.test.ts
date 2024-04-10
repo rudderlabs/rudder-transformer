@@ -1,7 +1,6 @@
-import { structuredLogger as logger } from '@rudderstack/integrations-lib';
 import fs from 'fs';
 import path from 'path';
-import { executeWorkflow, getWorkflowEngine, processCdkV2Workflow } from '../../src/cdk/v2/handler';
+import { processCdkV2Workflow, getWorkflowEngine, executeWorkflow } from '../../src/cdk/v2/handler';
 import tags from '../../src/v0/util/tags';
 
 const integration = 'pinterest_tag';
@@ -23,12 +22,7 @@ describe(`${name} Tests`, () => {
       it(`${name} - payload: ${index}`, async () => {
         const expected = expectedData[index];
         try {
-          const output = await processCdkV2Workflow(
-            integration,
-            input,
-            tags.FEATURES.PROCESSOR,
-            logger,
-          );
+          const output = await processCdkV2Workflow(integration, input, tags.FEATURES.PROCESSOR);
           expect(output).toEqual(expected);
         } catch (error: any) {
           expect(error.message).toEqual(expected.error);
@@ -52,12 +46,7 @@ describe(`${name} Tests`, () => {
       it(`${name} - payload: ${index}`, async () => {
         const expected = expectedData[index];
         try {
-          const output = await processCdkV2Workflow(
-            integration,
-            input,
-            tags.FEATURES.PROCESSOR,
-            logger,
-          );
+          const output = await processCdkV2Workflow(integration, input, tags.FEATURES.PROCESSOR);
           expect(output).toEqual(expected);
         } catch (error: any) {
           expect(error.message).toEqual(expected.error);
@@ -102,7 +91,6 @@ describe(`${name} Tests`, () => {
         integration,
         inputRouterErrorData,
         tags.FEATURES.ROUTER,
-        logger,
       );
       expect(output).toEqual(expectedRouterErrorData);
     });
@@ -110,12 +98,7 @@ describe(`${name} Tests`, () => {
     describe('Default Batch size', () => {
       inputRouterData.forEach((input, index) => {
         it(`Payload: ${index}`, async () => {
-          const output = await processCdkV2Workflow(
-            integration,
-            input,
-            tags.FEATURES.ROUTER,
-            logger,
-          );
+          const output = await processCdkV2Workflow(integration, input, tags.FEATURES.ROUTER);
           expect(output).toEqual(expectedRouterData[index]);
         });
       });

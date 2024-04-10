@@ -976,4 +976,184 @@ export const data = [
       },
     },
   },
+  {
+    name: 'gainsight',
+    description: 'Gainsight rate limit test',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                domain: 'demo-domain.gainsightcloud.com',
+                accessKey: 'sample-access-key',
+                sharedSecret: 'sample-shared-secret',
+                personMap: [],
+                companyMap: [],
+                eventNameMap: [],
+                eventVersionMap: [],
+              },
+            },
+            message: {
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                locale: 'en-US',
+                ip: '0.0.0.0',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                screen: {
+                  density: 2,
+                },
+                traits: {
+                  email: 'test@rudderstack.com',
+                },
+              },
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
+              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+              originalTimestamp: '2019-10-14T09:03:17.562Z',
+              anonymousId: 'anon_id',
+              type: 'group',
+              traits: {
+                name: 'Rudderstack',
+                industry: 'CDP',
+                employees: '100',
+                status: 'complete',
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T09:03:22.563Z',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              '{"message":"failed to search group {\\"result\\":false,\\"errorCode\\":\\"GU_2400\\",\\"errorDesc\\":\\"Too many request\\",\\"requestId\\":\\"request-2\\",\\"data\\":null,\\"message\\":null}","destinationResponse":{"response":{"result":false,"errorCode":"GU_2400","errorDesc":"Too many request","requestId":"request-2","data":null,"message":null},"status":429}}',
+            statTags: {
+              destType: 'GAINSIGHT',
+              errorCategory: 'network',
+              errorType: 'throttled',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+            },
+            statusCode: 429,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'gainsight',
+    description: 'Gainsight server error test',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                domain: 'demo-domain.gainsightcloud.com',
+                accessKey: 'sample-access-key',
+                sharedSecret: 'sample-shared-secret',
+                personMap: [],
+                companyMap: [],
+                eventNameMap: [],
+                eventVersionMap: [],
+              },
+            },
+            message: {
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                locale: 'en-US',
+                ip: '0.0.0.0',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                screen: {
+                  density: 2,
+                },
+                traits: {
+                  email: 'test@rudderlabs.com',
+                },
+              },
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
+              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+              originalTimestamp: '2019-10-14T09:03:17.562Z',
+              anonymousId: 'anon_id',
+              type: 'group',
+              traits: {
+                name: 'Rudderlabs',
+                industry: 'CDP',
+                employees: '100',
+                status: 'complete',
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T09:03:22.563Z',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              '{"message":"failed to search group {\\"result\\":false,\\"errorCode\\":\\"GU_1101\\",\\"errorDesc\\":\\"Oops, something went wrong.\\",\\"requestId\\":\\"request-3\\",\\"data\\":null,\\"message\\":null}","destinationResponse":{"response":{"result":false,"errorCode":"GU_1101","errorDesc":"Oops, something went wrong.","requestId":"request-3","data":null,"message":null},"status":500}}',
+            statTags: {
+              destType: 'GAINSIGHT',
+              errorCategory: 'network',
+              errorType: 'retryable',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+            },
+            statusCode: 500,
+          },
+        ],
+      },
+    },
+  },
 ];

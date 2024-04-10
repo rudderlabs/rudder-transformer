@@ -47,7 +47,7 @@ const isValidUserIdOrError = (channel, userId) => {
  * @returns
  */
 const getErrorStatus = (status) => {
-  let errStatus = status;
+  let errStatus;
   switch (status) {
     case 422:
     case 401:
@@ -60,7 +60,7 @@ const getErrorStatus = (status) => {
       errStatus = 500;
       break;
     default:
-      errStatus = 400;
+      errStatus = status;
   }
   return errStatus;
 };

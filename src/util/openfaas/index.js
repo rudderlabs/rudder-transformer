@@ -11,6 +11,8 @@ const stats = require('../stats');
 const { getMetadata, getTransformationMetadata } = require('../../v0/util');
 const { HTTP_STATUS_CODES } = require('../../v0/util/constant');
 
+const FAAS_GUNICORN_WORKERS = process.env.FAAS_GUNICORN_WORKERS || '1';
+const FAAS_GUNICORN_THREADS = process.env.FAAS_GUNICORN_THREADS || '1';
 const FAAS_SCALE_TYPE = process.env.FAAS_SCALE_TYPE || 'capacity';
 const FAAS_SCALE_TARGET = process.env.FAAS_SCALE_TARGET || '4';
 const FAAS_SCALE_TARGET_PROPORTION = process.env.FAAS_SCALE_TARGET_PROPORTION || '0.70';
@@ -142,7 +144,11 @@ const deployFaasFunction = async (
       envProcess = `${envProcess} --code "${code}" --config-backend-url ${CONFIG_BACKEND_URL} --lvids "${lvidsString}"`;
     }
 
-    const envVars = {};
+    const envVars = {
+      GUNICORN_WORKER_COUNT: FAAS_GUNICORN_WORKERS,
+      GUNICORN_THREAD_COUNT: FAAS_GUNICORN_THREADS,
+    };
+
     if (FAAS_ENABLE_WATCHDOG_ENV_VARS.trim().toLowerCase() === 'true') {
       envVars.max_inflight = FAAS_MAX_INFLIGHT;
       envVars.exec_timeout = FAAS_EXEC_TIMEOUT;

@@ -165,7 +165,7 @@ const deployFaasFunction = async (
       'com.openfaas.scale.zero': FAAS_SCALE_ZERO,
       'com.openfaas.scale.zero-duration': FAAS_SCALE_ZERO_DURATION,
       'com.openfaas.scale.target': FAAS_SCALE_TARGET,
-      'com.openfaas.scale.target.proportion': FAAS_SCALE_TARGET_PROPORTION,
+      'com.openfaas.scale.target-proportion': FAAS_SCALE_TARGET_PROPORTION,
       'com.openfaas.scale.type': FAAS_SCALE_TYPE,
       transformationId: trMetadata.transformationId,
       workspaceId: trMetadata.workspaceId,

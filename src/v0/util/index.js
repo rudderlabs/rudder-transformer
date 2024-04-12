@@ -1338,12 +1338,7 @@ function extractCustomFields(message, payload, keys, exclusionFields) {
       const messageContext = get(message, key);
       if (messageContext) {
         Object.keys(messageContext).forEach((k) => {
-          if (isReservedWord(k)) {
-            throw new InstrumentationError(
-              `The property name ${k} is a reserved word. This cannot be used to build a payload`,
-            );
-          }
-          if (!exclusionFields.includes(k)) {
+          if (!exclusionFields.includes(k) && !isReservedWord(k)) {
             mappingKeys.push(k);
           }
         });
@@ -1356,12 +1351,7 @@ function extractCustomFields(message, payload, keys, exclusionFields) {
     });
   } else if (keys === 'root') {
     Object.keys(message).forEach((k) => {
-      if (!exclusionFields.includes(k)) {
-        if (isReservedWord(k)) {
-          throw new InstrumentationError(
-            `The property name ${k} is a reserved word. This cannot be used to build a payload`,
-          );
-        }
+      if (!exclusionFields.includes(k) && !isReservedWord(k)) {
         mappingKeys.push(k);
       }
     });

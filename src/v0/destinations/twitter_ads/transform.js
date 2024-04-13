@@ -156,7 +156,8 @@ function validateRequest(message) {
   }
 }
 
-function process(event) {
+function process(event, requestMetadata, logger) {
+  logger.info(`[TWITTER ADS]: Transforming request received with info`);
   const { message, metadata, destination } = event;
 
   validateRequest(message);

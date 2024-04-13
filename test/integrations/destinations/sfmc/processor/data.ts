@@ -1894,4 +1894,326 @@ export const data = [
       },
     },
   },
+  {
+    name: 'sfmc',
+    description: 'Tests 401 un authenticated code from sfmc',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              event: 'message event',
+              type: 'track',
+              userId: '12345',
+              properties: {
+                id: 'id101',
+                contactId: 'cid101',
+                email: 'testemail@gmail.com',
+                accountNumber: '99110099',
+                patronName: 'SP',
+              },
+            },
+            destination: {
+              ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+              Name: 'SFMC',
+              DestinationDefinition: {
+                ID: '1pYpYSeQd8OeN6xPdw6VGDzqUd1',
+                Name: 'SFMC',
+                DisplayName: 'Salesforce Marketing Cloud',
+                Config: {
+                  destConfig: [],
+                  excludeKeys: [],
+                  includeKeys: [],
+                  saveDestinationResponse: false,
+                  supportedSourceTypes: [],
+                  transformAt: 'processor',
+                },
+                ResponseRules: {},
+              },
+              Config: {
+                clientId: 'testHandleHttpRequest401',
+                clientSecret: 'testHandleHttpRequest401',
+                createOrUpdateContacts: false,
+                eventDelivery: true,
+                eventDeliveryTS: 1615371070621,
+                eventToExternalKey: [
+                  {
+                    from: 'Event Name',
+                    to: 'C500FD37-155C-49BD-A21B-AFCEF3D1A9CB',
+                  },
+                  {
+                    from: 'Watch',
+                    to: 'C500FD37-155C-49BD-A21B-AFCEF3D1A9CB',
+                  },
+                ],
+                eventToPrimaryKey: [
+                  {
+                    from: 'userId',
+                    to: 'User Key',
+                  },
+                  {
+                    from: 'watch',
+                    to: 'Guest Key, Contact Key',
+                  },
+                ],
+                eventToUUID: [
+                  {
+                    event: 'Event Name',
+                    uuid: true,
+                  },
+                ],
+                eventToDefinitionMapping: [
+                  {
+                    from: 'message event',
+                    to: 'test-event-definition',
+                  },
+                ],
+                externalKey: 'f3ffa19b-e0b3-4967-829f-549b781080e6',
+                subDomain: 'testHandleHttpRequest401',
+              },
+              Enabled: true,
+              Transformations: [],
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              '{"message":"Could not retrieve access token","destinationResponse":{"error":"invalid_client","error_description":"Invalid client ID. Use the client ID in Marketing Cloud Installed Packages.","error_uri":"https://developer.salesforce.com/docs"}}',
+            statTags: {
+              destType: 'SFMC',
+              errorCategory: 'network',
+              errorType: 'aborted',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+            },
+            statusCode: 401,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'sfmc',
+    description: 'Tests 429 status code from sfmc',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              event: 'message event',
+              type: 'track',
+              userId: '12345',
+              properties: {
+                id: 'id101',
+                contactId: 'cid101',
+                email: 'testemail@gmail.com',
+                accountNumber: '99110099',
+                patronName: 'SP',
+              },
+            },
+            destination: {
+              ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+              Name: 'SFMC',
+              DestinationDefinition: {
+                ID: '1pYpYSeQd8OeN6xPdw6VGDzqUd1',
+                Name: 'SFMC',
+                DisplayName: 'Salesforce Marketing Cloud',
+                Config: {
+                  destConfig: [],
+                  excludeKeys: [],
+                  includeKeys: [],
+                  saveDestinationResponse: false,
+                  supportedSourceTypes: [],
+                  transformAt: 'processor',
+                },
+                ResponseRules: {},
+              },
+              Config: {
+                clientId: 'testHandleHttpRequest429',
+                clientSecret: 'testHandleHttpRequest429',
+                subDomain: 'testHandleHttpRequest429',
+              },
+              Enabled: true,
+              Transformations: [],
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              '{"message":"Could not retrieve access token","destinationResponse":{"message":"Your requests are temporarily blocked.","errorcode":50200,"documentation":"https://developer.salesforce.com/docs/atlas.en-us.mc-apis.meta/mc-apis/error-handling.htm"}}',
+            statTags: {
+              destType: 'SFMC',
+              errorCategory: 'network',
+              errorType: 'throttled',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+            },
+            statusCode: 429,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'sfmc',
+    description: 'Tests DNS lookup failure for sfmc',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              event: 'message event',
+              type: 'track',
+              userId: '12345',
+              properties: {
+                id: 'id101',
+                contactId: 'cid101',
+                email: 'testemail@gmail.com',
+                accountNumber: '99110099',
+                patronName: 'SP',
+              },
+            },
+            destination: {
+              ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+              Name: 'SFMC',
+              DestinationDefinition: {
+                ID: '1pYpYSeQd8OeN6xPdw6VGDzqUd1',
+                Name: 'SFMC',
+                DisplayName: 'Salesforce Marketing Cloud',
+                Config: {
+                  destConfig: [],
+                  excludeKeys: [],
+                  includeKeys: [],
+                  saveDestinationResponse: false,
+                  supportedSourceTypes: [],
+                  transformAt: 'processor',
+                },
+                ResponseRules: {},
+              },
+              Config: {
+                clientId: 'testHandleHttpRequest-dns',
+                clientSecret: 'testHandleHttpRequest-dns',
+                subDomain: 'testHandleHttpRequest-dns',
+              },
+              Enabled: true,
+              Transformations: [],
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: '{"message":"Could not retrieve access token","destinationResponse":{}}',
+            statTags: {
+              destType: 'SFMC',
+              errorCategory: 'network',
+              errorType: 'aborted',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+            },
+            statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'sfmc',
+    description: 'Test 500 status failure for sfmc',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              event: 'message event',
+              type: 'track',
+              userId: '12345',
+              properties: {
+                id: 'id101',
+                contactId: 'cid101',
+                email: 'testemail@gmail.com',
+                accountNumber: '99110099',
+                patronName: 'SP',
+              },
+            },
+            destination: {
+              ID: '1pYpzzvcn7AQ2W9GGIAZSsN6Mfq',
+              Name: 'SFMC',
+              DestinationDefinition: {
+                ID: '1pYpYSeQd8OeN6xPdw6VGDzqUd1',
+                Name: 'SFMC',
+                DisplayName: 'Salesforce Marketing Cloud',
+                Config: {
+                  destConfig: [],
+                  excludeKeys: [],
+                  includeKeys: [],
+                  saveDestinationResponse: false,
+                  supportedSourceTypes: [],
+                  transformAt: 'processor',
+                },
+                ResponseRules: {},
+              },
+              Config: {
+                clientId: 'testHandleHttpRequest-null',
+                clientSecret: 'testHandleHttpRequest-null',
+                subDomain: 'testHandleHttpRequest-null',
+              },
+              Enabled: true,
+              Transformations: [],
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error: 'Could not retrieve access token',
+            statTags: {
+              destType: 'SFMC',
+              errorCategory: 'network',
+              errorType: 'retryable',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+            },
+            statusCode: 500,
+          },
+        ],
+      },
+    },
+  },
 ];

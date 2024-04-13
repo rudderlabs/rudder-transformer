@@ -514,7 +514,7 @@ describe('checkEventStatusViaSchemaMatching', () => {
   });
 
   // The function correctly handles events with null values.
-  it('should correctly handle events with null values', () => {
+  it('should ignore event properties with null values', () => {
     const event = {
       input: [
         {
@@ -537,8 +537,6 @@ describe('checkEventStatusViaSchemaMatching', () => {
 
     const result = checkEventStatusViaSchemaMatching(event, fieldSchemaMapping);
 
-    expect(result).toEqual({
-      job1: 'invalid id',
-    });
+    expect(result).toEqual({});
   });
 });

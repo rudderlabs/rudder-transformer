@@ -102,7 +102,7 @@ const populateProductProperties = (productsMapping, properties) => {
       }
     });
   } else {
-    // Not providing product level mapping here as following are fetched from properties level and product level
+    // Not providing product level mapping here as following are fetched from properties level
     const index = 1;
     productProperties[getPropertyName('ItemBrand', index)] = brand;
     productProperties[getPropertyName('ItemCategory', index)] = category;

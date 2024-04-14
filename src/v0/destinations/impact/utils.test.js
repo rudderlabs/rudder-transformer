@@ -13,6 +13,7 @@ describe('populateProductProperties', () => {
       { to: 'ItemPromoCode', from: 'PromoCode' },
       { to: 'ItemQuantity', from: 'Quantity' },
       { to: 'ItemSku', from: 'Sku' },
+      { to: 'dummyRHS', from: 'dummyLHS' },
     ];
     const properties = {
       products: [
@@ -24,6 +25,7 @@ describe('populateProductProperties', () => {
           PromoCode: 'PromoCode1',
           Quantity: 1,
           Sku: 'Sku1',
+          dummyLHS: 'DummyValue',
         },
         {
           Brand: 'Brand2',
@@ -32,7 +34,6 @@ describe('populateProductProperties', () => {
           Price: 20,
           PromoCode: 'PromoCode2',
           Quantity: 2,
-          Sku: 'Sku2',
         },
       ],
       brand: 'Brand3',
@@ -62,7 +63,7 @@ describe('populateProductProperties', () => {
       ItemPrice2: 20,
       ItemPromoCode2: 'PromoCode2',
       ItemQuantity2: 2,
-      ItemSku2: 'Sku2',
+      dummyRHS1: 'DummyValue',
     });
   });
 
@@ -94,8 +95,13 @@ describe('populateProductProperties', () => {
       ItemSku1: 'Sku3',
     });
   });
-  it('should return product properties with custom mappings from properties', () => {
-    const productsMapping = [{ from: 'dummy_LHS', to: 'dummy_RHS' }];
+  it('should return product properties with custom mappings', () => {
+    const productsMapping = [
+      {
+        from: 'dummy_LHS',
+        to: 'dummy_RHS',
+      },
+    ];
     const properties = {
       products: [
         {

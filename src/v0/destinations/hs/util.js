@@ -815,7 +815,7 @@ const populateTraits = async (propertyMap, traits, destination) => {
   return populatedTraits;
 };
 
-const addExternalIdToTraits = (message) => {
+const addExternalIdToHSTraits = (message) => {
   const externalIdObj = message.context?.externalId?.[0];
   if (externalIdObj.useSecondaryObject) {
     /* this condition help us to NOT override the primary key value with the secondary key value
@@ -830,7 +830,7 @@ const addExternalIdToTraits = (message) => {
 
 module.exports = {
   validateDestinationConfig,
-  addExternalIdToTraits,
+  addExternalIdToHSTraits,
   formatKey,
   fetchFinalSetOfTraits,
   getProperties,

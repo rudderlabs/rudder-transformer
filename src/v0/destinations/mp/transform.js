@@ -86,8 +86,7 @@ const responseBuilderSimple = (payload, message, eventType, destConfig) => {
       };
       break;
     }
-    case 'merge':
-      // eslint-disable-next-line no-case-declarations
+    case 'merge': {
       const credentials = setImportCredentials(destConfig);
       response.endpoint = credentials.endpoint;
       response.headers = credentials.headers;
@@ -96,6 +95,7 @@ const responseBuilderSimple = (payload, message, eventType, destConfig) => {
         strict: credentials.params.strict,
       };
       break;
+    }
     default:
       response.endpoint =
         dataResidency === 'eu' ? `${BASE_ENDPOINT_EU}/engage/` : `${BASE_ENDPOINT}/engage/`;

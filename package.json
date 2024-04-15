@@ -133,7 +133,7 @@
     "benchmark-suite": "^0.1.8",
     "commander": "^10.0.1",
     "commitizen": "^4.3.0",
-    "commitlint": "^17.6.3",
+    "commitlint": "^19.2.2",
     "conventional-github-releaser": "^3.1.5",
     "eslint": "^8.40.0",
     "eslint-config-airbnb-base": "^15.0.0",

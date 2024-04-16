@@ -244,7 +244,7 @@ const populatePayload = (message, Config, boardDeatailsResponse) => {
       throw new InstrumentationError('Item name is required to create an item');
     }
     const groupId = getGroupId(groupTitle, boardDeatailsResponse.response?.data);
-    payload.query = `mutation { create_item (board_id: ${boardId}, group_id: ${JSON.stringify(groupId)} item_name: ${JSON.stringify(
+    payload.query = `mutation { create_item (board_id: ${boardId}, group_id: ${JSON.stringify(groupId)}, item_name: ${JSON.stringify(
       message.properties?.name,
     )}, column_values: ${JSON.stringify(columnValues)}) {id}}`;
   } else {

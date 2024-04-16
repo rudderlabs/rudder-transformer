@@ -159,7 +159,7 @@ export const data = [
                 body: {
                   JSON: {
                     query:
-                      'mutation { create_item (board_id: 339283933, group_id: "group_title" item_name: "Task 1", column_values: "{\\"status\\":{\\"label\\":\\"Done\\"},\\"email\\":{\\"email\\":\\"abc@email.com\\",\\"text\\":\\"emailId\\"}}") {id}}',
+                      'mutation { create_item (board_id: 339283933, group_id: "group_title", item_name: "Task 1", column_values: "{\\"status\\":{\\"label\\":\\"Done\\"},\\"email\\":{\\"email\\":\\"abc@email.com\\",\\"text\\":\\"emailId\\"}}") {id}}',
                   },
                   JSON_ARRAY: {},
                   XML: {},

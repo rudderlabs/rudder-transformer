@@ -77,7 +77,7 @@ jobs:
           npx replace $CURRENT_VERSION_VALUE $NEW_VERSION_VALUE sonar-project.properties
           git add sonar-project.properties
           # npm run release -- -a --skip.tag --no-verify
-          npm run release
+          npm run release:new
           git push
 
       - name: Create Pull Request

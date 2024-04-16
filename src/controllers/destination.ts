@@ -166,7 +166,7 @@ export class DestinationController {
   }
 
   public static batchProcess(ctx: Context) {
-    logger.info('Native(Process-Transform-Batch):: Requst to transformer::', ctx.request.body);
+    logger.debug('Native(Process-Transform-Batch):: Requst to transformer::', ctx.request.body);
     const startTime = new Date();
     const requestMetadata = MiscService.getRequestMetadata(ctx);
     const routerRequest = ctx.request.body as RouterTransformationRequest;

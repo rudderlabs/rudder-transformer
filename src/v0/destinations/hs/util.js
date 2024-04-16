@@ -752,11 +752,18 @@ const splitEventsForCreateUpdate = async (inputs, destination) => {
     }
     const secondaryProp = primaryToSecondaryFields[identifierType];
     if (secondaryProp) {
-      // second condition is for secondary property for identifier type
+      /* second condition is for secondary property for identifier type
+       For example:
+       update[secondaryProp] = "abc@e.com;cd@e.com;k@w.com"
+       destinationExternalId = "cd@e.com"
+       So we are splitting all the emails in update[secondaryProp] into an array using ';'
+       and then checking if array includes  destinationExternalId
+       */
       const filteredInfoForSecondaryProp = hsIdsToBeUpdated.filter((update) =>
         update[secondaryProp]
           ?.toString()
           .toLowerCase()
+          .split(';')
           .includes(destinationExternalId.toString().toLowerCase()),
       );
       if (filteredInfoForSecondaryProp.length > 0) {

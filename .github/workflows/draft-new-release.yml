@@ -60,8 +60,8 @@ jobs:
           echo "Release type is $release_type"
           echo "New version is $new_version"
           echo "New release branch name is $branch_name"
-          git checkout -b "$branch_name"
-          git push --set-upstream origin "$branch_name"
+          # git checkout -b "$branch_name"
+          # git push --set-upstream origin "$branch_name"
 
           echo "source_branch_name=$source_branch_name" >> $GITHUB_OUTPUT
           echo "branch_name=$branch_name" >> $GITHUB_OUTPUT

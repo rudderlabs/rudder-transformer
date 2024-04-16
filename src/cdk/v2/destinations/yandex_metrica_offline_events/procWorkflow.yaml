@@ -15,7 +15,7 @@ steps:
     template: |
       let messageType = .message.type;
       $.assert(messageType, "message Type is not present. Aborting message.");
-      $.assert(.message.type.toLowerCase() ==='identify' || .message.type.toLowerCase() ==='track', "Event type " + .message.type.toLowerCase() + " is not supported. Aborting message.");
+      $.assert(.message.type.toLowerCase() ==='identify', "Event type " + .message.type.toLowerCase() + " is not supported. Aborting message.");
       $.assert(.message.traits || .message.properties, "Message traits/properties not present. Aborting message.");
 
   - name: prepareData
@@ -31,5 +31,4 @@ steps:
     template: |
       const response = $.defaultRequestConfig();
       response.body.JSON = $.outputs.prepareData
-      console.log(JSON.stringify(response));
       response

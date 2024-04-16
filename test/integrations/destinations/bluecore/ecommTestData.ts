@@ -73,7 +73,7 @@ const commonOutputHeaders = {
   'Content-Type': 'application/json',
 };
 
-const eventEndPoint = 'https://api.bluecore.com/api/track/mobile/v1';
+const eventEndPoint = 'https://api.bluecore.app/api/track/mobile/v1';
 
 export const ecomTestData = [
   {
@@ -297,6 +297,7 @@ export const ecomTestData = [
                     age: '22',
                     email: 'test@rudderstack.com',
                   },
+                  product_id: '123',
                   products: [
                     {
                       id: '123',
@@ -304,9 +305,11 @@ export const ecomTestData = [
                       property2: 'value2',
                     },
                   ],
+                  property1: 'value1',
+                  property2: 'value2',
+                  token: 'dummy_sandbox',
                 },
                 event: 'viewed_product',
-                token: 'dummy_sandbox',
               },
               userId: '',
             }),
@@ -379,6 +382,7 @@ export const ecomTestData = [
               JSON: {
                 properties: {
                   distinct_id: 'user@1',
+                  product_id: '123',
                   customer: {
                     age: '22',
                   },
@@ -389,9 +393,11 @@ export const ecomTestData = [
                       property2: 'value2',
                     },
                   ],
+                  property1: 'value1',
+                  property2: 'value2',
+                  token: 'dummy_sandbox',
                 },
                 event: 'wishlist',
-                token: 'dummy_sandbox',
               },
               userId: '',
             }),
@@ -406,6 +412,7 @@ export const ecomTestData = [
               JSON: {
                 properties: {
                   distinct_id: 'user@1',
+                  product_id: '123',
                   customer: {
                     age: '22',
                   },
@@ -416,9 +423,11 @@ export const ecomTestData = [
                       property2: 'value2',
                     },
                   ],
+                  token: 'dummy_sandbox',
+                  property1: 'value1',
+                  property2: 'value2',
                 },
                 event: 'add_to_cart',
-                token: 'dummy_sandbox',
               },
               userId: '',
             }),

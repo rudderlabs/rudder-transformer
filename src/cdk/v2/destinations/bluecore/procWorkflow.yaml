@@ -26,7 +26,7 @@ steps:
     condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
     template: |
       const payload = $.constructProperties(.message);
-      payload.token = .destination.Config.bluecoreNamespace;
+      payload.properties.token = .destination.Config.bluecoreNamespace;
       $.verifyPayload(payload, .message);
       payload.event = payload.event ?? 'customer_patch';
       payload.properties.distinct_id = $.populateAccurateDistinctId(payload, .message);
@@ -50,7 +50,7 @@ steps:
             const temporaryProductArray = newPayload.properties.products ?? $.createProductForStandardEcommEvent(^.message, eventName);
             newPayload.properties.products = $.normalizeProductArray(temporaryProductArray);
             newPayload.event = eventName;
-            newPayload.token = ^.destination.Config.bluecoreNamespace;
+            newPayload.properties.token = ^.destination.Config.bluecoreNamespace;
             $.verifyPayload(newPayload, ^.message);
             $.removeUndefinedNullValuesAndEmptyObjectArray(newPayload)
           )[];
@@ -61,7 +61,7 @@ steps:
         const response = $.defaultRequestConfig();
         response.body.JSON = .;
         response.method = "POST";
-        response.endpoint = "https://api.bluecore.com/api/track/mobile/v1";
+        response.endpoint = "https://api.bluecore.app/api/track/mobile/v1";
         response.headers = {
           "Content-Type": "application/json"
         };

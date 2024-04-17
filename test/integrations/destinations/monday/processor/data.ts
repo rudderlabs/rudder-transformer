@@ -74,7 +74,7 @@ export const data = [
                 FORM: {},
                 JSON: {
                   query:
-                    'mutation { create_item (board_id: 339283933,  item_name: "Task 1", column_values: "{}") {id}}',
+                    'mutation { create_item (board_id: 339283933, item_name: "Task 1", column_values: "{}") {id}}',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -172,7 +172,7 @@ export const data = [
                 FORM: {},
                 JSON: {
                   query:
-                    'mutation { create_item (board_id: 339283933,  item_name: "Task 1", column_values: "{}") {id}}',
+                    'mutation { create_item (board_id: 339283933, item_name: "Task 1", column_values: "{}") {id}}',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -716,7 +716,7 @@ export const data = [
               body: {
                 JSON: {
                   query:
-                    'mutation { create_item (board_id: 339283933,  item_name: "Task 1", column_values: "{\\"status\\":{\\"label\\":\\"Done\\"},\\"email\\":{\\"email\\":\\"abc@email.com\\",\\"text\\":\\"emailId\\"}}") {id}}',
+                    'mutation { create_item (board_id: 339283933, item_name: "Task 1", column_values: "{\\"status\\":{\\"label\\":\\"Done\\"},\\"email\\":{\\"email\\":\\"abc@email.com\\",\\"text\\":\\"emailId\\"}}") {id}}',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -827,7 +827,7 @@ export const data = [
               body: {
                 JSON: {
                   query:
-                    'mutation { create_item (board_id: 339283933, group_id: group_title item_name: "Task 1", column_values: "{\\"status\\":{\\"label\\":\\"Done\\"},\\"email\\":{\\"email\\":\\"abc@email.com\\",\\"text\\":\\"emailId\\"}}") {id}}',
+                    'mutation { create_item (board_id: 339283933, item_name: "Task 1", column_values: "{\\"status\\":{\\"label\\":\\"Done\\"},\\"email\\":{\\"email\\":\\"abc@email.com\\",\\"text\\":\\"emailId\\"}}", group_id: "group_title") {id}}',
                 },
                 JSON_ARRAY: {},
                 XML: {},
@@ -1188,7 +1188,7 @@ export const data = [
               body: {
                 JSON: {
                   query:
-                    'mutation { create_item (board_id: 339283933, group_id: group_title item_name: "Task 1", column_values: "{\\"status\\":{\\"label\\":\\"Done\\"},\\"email\\":{\\"email\\":\\"abc@email.com\\",\\"text\\":\\"emailId\\"},\\"checkbox\\":{\\"checked\\":true},\\"numbers\\":\\"45\\",\\"text\\":\\"texting\\",\\"country\\":{\\"countryName\\":\\"Unites States\\",\\"countryCode\\":\\"US\\"},\\"location\\":{\\"address\\":\\"New York\\",\\"lat\\":\\"51.23\\",\\"lng\\":\\"35.3\\"},\\"phone\\":{\\"phone\\":\\"2626277272\\",\\"countryShortName\\":\\"US\\"},\\"rating\\":3,\\"link\\":{\\"url\\":\\"demo.com\\",\\"text\\":\\"websiteLink\\"},\\"long_text\\":{\\"text\\":\\"property description\\"},\\"world_clock\\":{\\"timezone\\":\\"America/New_York\\"}}") {id}}',
+                    'mutation { create_item (board_id: 339283933, item_name: "Task 1", column_values: "{\\"status\\":{\\"label\\":\\"Done\\"},\\"email\\":{\\"email\\":\\"abc@email.com\\",\\"text\\":\\"emailId\\"},\\"checkbox\\":{\\"checked\\":true},\\"numbers\\":\\"45\\",\\"text\\":\\"texting\\",\\"country\\":{\\"countryName\\":\\"Unites States\\",\\"countryCode\\":\\"US\\"},\\"location\\":{\\"address\\":\\"New York\\",\\"lat\\":\\"51.23\\",\\"lng\\":\\"35.3\\"},\\"phone\\":{\\"phone\\":\\"2626277272\\",\\"countryShortName\\":\\"US\\"},\\"rating\\":3,\\"link\\":{\\"url\\":\\"demo.com\\",\\"text\\":\\"websiteLink\\"},\\"long_text\\":{\\"text\\":\\"property description\\"},\\"world_clock\\":{\\"timezone\\":\\"America/New_York\\"}}", group_id: "group_title") {id}}',
                 },
                 JSON_ARRAY: {},
                 XML: {},

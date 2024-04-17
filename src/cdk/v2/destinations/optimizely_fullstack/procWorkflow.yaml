@@ -90,7 +90,7 @@ steps:
         "account_id": .destination.Config.accountId,
         "project_id": .destination.Config.projectId,
         "anonymize_ip": .destination.Config.anonymizeIp || false,
-        "enrich_decisions": .destination.Config.enrichDecisions || true,
+        "enrich_decisions": .destination.Config.enrichDecisions ?? true,
         ...$.CLIENT_INFO
       }
       $.removeUndefinedNullEmptyExclBoolInt(commonPayload);

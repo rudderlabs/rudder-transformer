@@ -120,7 +120,7 @@ const groupResponseBuilder = (message, Config) => {
   let { method } = ConfigCategories.GROUP;
   const { genericFields, name } = ConfigCategories.GROUP;
   let endpoint = `${ConfigCategories.GROUP.endpoint.replace('id', groupId)}`;
-  const subscriberStatus = context?.traits?.subscriberStatus || true;
+  const subscriberStatus = context?.traits?.subscriberStatus ?? true;
   let payload = { subscribed: subscriberStatus };
   if (uid) {
     endpoint = `${endpoint}/${uid}`;

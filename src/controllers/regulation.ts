@@ -1,19 +1,16 @@
+import { structuredLogger as logger } from '@rudderstack/integrations-lib';
 import { Context } from 'koa';
-import logger from '../logger';
-import { UserDeletionRequest, UserDeletionResponse } from '../types';
 import { ServiceSelector } from '../helpers/serviceSelector';
-import tags from '../v0/util/tags';
-import stats from '../util/stats';
 import { DestinationPostTransformationService } from '../services/destination/postTransformation';
+import { UserDeletionRequest, UserDeletionResponse } from '../types';
+import stats from '../util/stats';
+import tags from '../v0/util/tags';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CatchErr } from '../util/types';
 
 export class RegulationController {
   public static async deleteUsers(ctx: Context) {
-    logger.debug(
-      'Native(Process-Transform):: Requst to transformer::',
-      JSON.stringify(ctx.request.body),
-    );
+    logger.debug('Native(Process-Transform):: Requst to transformer::', ctx.request.body);
     const startTime = new Date();
     let rudderDestInfo: any;
     try {

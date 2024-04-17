@@ -38,6 +38,7 @@ const {
   removeReservedParameterPrefixNames,
 } = require('./utils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { handleCustomMappings } = require('./customMappingsHandler');
 
 /**
  * returns client_id
@@ -304,6 +305,11 @@ const process = (event) => {
   }
 
   const messageType = message.type.toLowerCase();
+
+  if (Array.isArray(Config.eventsMapping) && Config.eventsMapping.length > 0) {
+    // custom mappings flow
+    return handleCustomMappings(message, Config);
+  }
   let response;
   switch (messageType) {
     case EventType.TRACK:

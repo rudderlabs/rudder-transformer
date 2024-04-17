@@ -296,6 +296,9 @@ export const ecomTestData = [
                   customer: {
                     age: '22',
                     email: 'test@rudderstack.com',
+                    anonymousId: '9c6bd77ea9da3e68',
+                    id: 'user@1',
+                    phone: '9112340375',
                   },
                   product_id: '123',
                   products: [
@@ -385,6 +388,8 @@ export const ecomTestData = [
                   product_id: '123',
                   customer: {
                     age: '22',
+                    anonymousId: '9c6bd77ea9da3e68',
+                    id: 'user@1',
                   },
                   products: [
                     {
@@ -415,6 +420,8 @@ export const ecomTestData = [
                   product_id: '123',
                   customer: {
                     age: '22',
+                    anonymousId: '9c6bd77ea9da3e68',
+                    id: 'user@1',
                   },
                   products: [
                     {

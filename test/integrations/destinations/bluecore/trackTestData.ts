@@ -140,6 +140,9 @@ export const trackTestData = [
                   customer: {
                     age: '22',
                     email: 'test@rudderstack.com',
+                    anonymousId: '9c6bd77ea9da3e68',
+                    id: 'user@1',
+                    phone: '9112340375',
                   },
                   products: [
                     {
@@ -225,6 +228,9 @@ export const trackTestData = [
                   customer: {
                     age: '22',
                     email: 'test@rudderstack.com',
+                    anonymousId: '9c6bd77ea9da3e68',
+                    id: 'user@1',
+                    phone: '9112340375',
                   },
                 },
                 event: 'TestEven001',
@@ -288,7 +294,10 @@ export const trackTestData = [
                   distinct_id: 'test@rudderstack.com',
                   customer: {
                     age: '22',
+                    anonymousId: '9c6bd77ea9da3e68',
                     email: 'test@rudderstack.com',
+                    id: 'user@1',
+                    phone: '9112340375',
                   },
                   product_id: '123',
                   property1: 'value1',
@@ -360,7 +369,10 @@ export const trackTestData = [
                   token: 'dummy_sandbox',
                   customer: {
                     age: '22',
+                    anonymousId: '9c6bd77ea9da3e68',
+                    id: 'user@1',
                     email: 'test@rudderstack.com',
+                    phone: '9112340375',
                   },
                 },
                 event: 'unsubscribe',
@@ -420,6 +432,8 @@ export const trackTestData = [
                   customer: {
                     age: '22',
                     email: 'abc@gmail.com',
+                    anonymousId: '9c6bd77ea9da3e68',
+                    id: 'user@1',
                   },
                   products: [
                     {

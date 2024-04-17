@@ -169,19 +169,21 @@ const normalizeProductArray = (products) => {
 };
 
 const mapCustomProperties = (message) => {
+  let customerProperties;
   const customProperties = { properties: {} };
   const messageType = message.type.toUpperCase();
   switch (messageType) {
     case 'IDENTIFY':
-      customProperties.properties.customer = extractCustomFields(
+      customerProperties = extractCustomFields(
         message,
         {},
         ['traits', 'context.traits'],
         IDENTIFY_EXCLUSION_LIST,
       );
+      customProperties.properties.customer = customerProperties;
       break;
     case 'TRACK':
-      const customerProperties = extractCustomFields(
+      customerProperties = extractCustomFields(
         message,
         {},
         ['traits', 'context.traits'],

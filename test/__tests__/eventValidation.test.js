@@ -509,42 +509,6 @@ const eventValidationTestCases = [
     }
   },
   {
-    testCase: "Group is part of new Tracking Plan + additional property violation",
-    event: {
-      metadata: {
-        trackingPlanId: "dummy_tracking_plan_id_new",
-        trackingPlanVersion: "dummy_version_new",
-        workspaceId: "dummy_workspace_id",
-        mergedTpConfig,
-        sourceTpConfig
-      },
-      message: {
-        type: "group",
-        userId: "user12345",
-        groupId: "group1",
-        traits: {
-          company: "Company",
-          employees: 123
-        },
-        context: {
-          traits: {
-            trait1: "new-val"
-          },
-          ip: "14.5.67.21",
-          library: {
-            name: "http"
-          }
-        },
-        timestamp: "2020-01-21T00:21:34.208Z"
-      }
-    },
-    trackingPlan: newTrackingPlan,
-    output: {
-      dropEvent: true,
-      violationType: violationTypes.AdditionalProperties
-    }
-  },
-  {
     testCase: "Identify is not part of Tracking Plan",
     event: {
       metadata: {
@@ -1209,52 +1173,6 @@ const eventValidationTestCases = [
   },
   {
     testCase:
-      "Compatibility for Spread sheet plugin + Track is not part of new Tracking Plan and allowUnplannedEvents is set to text TRUE",
-    event: {
-      metadata: {
-        trackingPlanId: "dummy_tracking_plan_id_new",
-        trackingPlanVersion: "dummy_version_new",
-        workspaceId: "dummy_workspace_id",
-        mergedTpConfig: {
-          allowUnplannedEvents: "TRUE",
-          ajvOptions: {}
-        },
-        sourceTpConfig: {
-          track: {
-            allowUnplannedEvents: "TRUE",
-            ajvOptions: {}
-          },
-          global: {
-            allowUnplannedEvents: "FALSE",
-            ajvOptions: {}
-          }
-        }
-      },
-      message: {
-        type: "track",
-        userId: "user-demo",
-        event: "New Product clicked",
-        properties: {
-          name: "Rubik's Cube",
-          revenue: 4.99,
-          prop_integer: 2,
-          prop_float: 2.3,
-          email: "demo@rudderstack.com"
-        },
-        context: {
-          ip: "14.5.67.21"
-        },
-        timestamp: "2020-02-02T00:23:09.544Z"
-      }
-    },
-    trackingPlan: newTrackingPlan,
-    output: {
-      dropEvent: false,
-      violationType: "None"
-    }
-  },
-  {
-    testCase:
       "Compatibility for Spread sheet plugin + Track is not part of Tracking Plan and allowUnplannedEvents is set to text FALSE",
     event: {
       metadata: {
@@ -1337,49 +1255,6 @@ const eventValidationTestCases = [
       }
     },
     trackingPlan,
-    output: {
-      dropEvent: true,
-      violationType: violationTypes.AdditionalProperties
-    }
-  },
-  {
-    testCase:
-      "Track is part of new Tracking Plan + no track config and unplannedProperties is set to drop",
-    event: {
-      metadata: {
-        trackingPlanId: "dummy_tracking_plan_id_new",
-        trackingPlanVersion: "dummy_version_new",
-        workspaceId: "dummy_workspace_id",
-        mergedTpConfig: {
-          unplannedProperties: "drop",
-          ajvOptions: {}
-        },
-        sourceTpConfig: {
-          global: {
-            unplannedProperties: "drop",
-            ajvOptions: {}
-          }
-        }
-      },
-      message: {
-        type: "track",
-        userId: "user-demo",
-        event: "Product clicked new",
-        properties: {
-          name: "Rubik's Cube",
-          revenue: 4.99,
-          prop_integer: 2,
-          prop_float: 2.3,
-          email: "demo@rudderstack.com",
-          mobile: "999888777666"
-        },
-        context: {
-          ip: "14.5.67.21"
-        },
-        timestamp: "2020-02-02T00:23:09.544Z"
-      }
-    },
-    trackingPlan: newTrackingPlan,
     output: {
       dropEvent: true,
       violationType: violationTypes.AdditionalProperties
@@ -1580,6 +1455,134 @@ const eventValidationTestCases = [
   }
 ];
 
+const eventValidationWithNewPlanTestCases = [
+  {
+    testCase: "Group is part of new Tracking Plan + additional property violation",
+    event: {
+      metadata: {
+        trackingPlanId: "dummy_tracking_plan_id_new",
+        trackingPlanVersion: "dummy_version_new",
+        workspaceId: "dummy_workspace_id",
+        mergedTpConfig,
+        sourceTpConfig
+      },
+      message: {
+        type: "group",
+        userId: "user12345",
+        groupId: "group1",
+        traits: {
+          company: "Company",
+          employees: 123
+        },
+        context: {
+          traits: {
+            trait1: "new-val"
+          },
+          ip: "14.5.67.21",
+          library: {
+            name: "http"
+          }
+        },
+        timestamp: "2020-01-21T00:21:34.208Z"
+      }
+    },
+    trackingPlan: newTrackingPlan,
+    output: {
+      dropEvent: true,
+      violationType: violationTypes.AdditionalProperties
+    }
+  },
+  {
+    testCase:
+      "Compatibility for Spread sheet plugin + Track is not part of new Tracking Plan and allowUnplannedEvents is set to text TRUE",
+    event: {
+      metadata: {
+        trackingPlanId: "dummy_tracking_plan_id_new",
+        trackingPlanVersion: "dummy_version_new",
+        workspaceId: "dummy_workspace_id",
+        mergedTpConfig: {
+          allowUnplannedEvents: "TRUE",
+          ajvOptions: {}
+        },
+        sourceTpConfig: {
+          track: {
+            allowUnplannedEvents: "TRUE",
+            ajvOptions: {}
+          },
+          global: {
+            allowUnplannedEvents: "FALSE",
+            ajvOptions: {}
+          }
+        }
+      },
+      message: {
+        type: "track",
+        userId: "user-demo",
+        event: "New Product clicked",
+        properties: {
+          name: "Rubik's Cube",
+          revenue: 4.99,
+          prop_integer: 2,
+          prop_float: 2.3,
+          email: "demo@rudderstack.com"
+        },
+        context: {
+          ip: "14.5.67.21"
+        },
+        timestamp: "2020-02-02T00:23:09.544Z"
+      }
+    },
+    trackingPlan: newTrackingPlan,
+    output: {
+      dropEvent: false,
+      violationType: "None"
+    }
+  },
+  {
+    testCase:
+      "Track is part of new Tracking Plan + no track config and unplannedProperties is set to drop",
+    event: {
+      metadata: {
+        trackingPlanId: "dummy_tracking_plan_id_new",
+        trackingPlanVersion: "dummy_version_new",
+        workspaceId: "dummy_workspace_id",
+        mergedTpConfig: {
+          unplannedProperties: "drop",
+          ajvOptions: {}
+        },
+        sourceTpConfig: {
+          global: {
+            unplannedProperties: "drop",
+            ajvOptions: {}
+          }
+        }
+      },
+      message: {
+        type: "track",
+        userId: "user-demo",
+        event: "Product clicked new",
+        properties: {
+          name: "Rubik's Cube",
+          revenue: 4.99,
+          prop_integer: 2,
+          prop_float: 2.3,
+          email: "demo@rudderstack.com",
+          mobile: "999888777666"
+        },
+        context: {
+          ip: "14.5.67.21"
+        },
+        timestamp: "2020-02-02T00:23:09.544Z"
+      }
+    },
+    trackingPlan: newTrackingPlan,
+    output: {
+      dropEvent: true,
+      violationType: violationTypes.AdditionalProperties
+    }
+  },
+];
+
 describe("Supported Event types testing", () => {
   eventTypesTestCases.forEach(testCase => {
     it(`should return isSupportedOrNot ${testCase.output} for this input eventType ${testCase.eventType} everytime`, () => {
@@ -1591,6 +1594,22 @@ describe("Supported Event types testing", () => {
 
 describe("Handle validation", () => {
   eventValidationTestCases.forEach(testCase => {
+    it(`should return dropEvent: ${testCase.output.dropEvent}, violationType: ${testCase.output.violationType}`, async () => {
+      fetch.mockResolvedValue({
+        json: jest.fn().mockResolvedValue(testCase.trackingPlan),
+        status: 200
+      });
+      const { dropEvent, violationType } = await handleValidation(
+        testCase.event
+      );
+      expect(dropEvent).toEqual(testCase.output.dropEvent);
+      expect(violationType).toEqual(testCase.output.violationType);
+    });
+  });
+});
+
+describe("Handle validation with new tracking plan payload", () => {
+  eventValidationWithNewPlanTestCases.forEach(testCase => {
     it(`should return dropEvent: ${testCase.output.dropEvent}, violationType: ${testCase.output.violationType}`, async () => {
       fetch.mockResolvedValue({
         json: jest.fn().mockResolvedValue(testCase.trackingPlan),

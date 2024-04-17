@@ -181,7 +181,7 @@ const mapCustomProperties = (message) => {
       );
       break;
     case 'TRACK':
-      customProperties.properties.customer = extractCustomFields(
+      const customerProperties = extractCustomFields(
         message,
         {},
         ['traits', 'context.traits'],
@@ -193,6 +193,7 @@ const mapCustomProperties = (message) => {
         ['properties'],
         TRACK_EXCLUSION_LIST,
       );
+      customProperties.properties.customer = customerProperties;
       break;
     default:
       break;

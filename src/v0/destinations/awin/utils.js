@@ -54,7 +54,11 @@ const trackProduct = (properties, advertiserId, commissionParts) => {
     productsArray.forEach((product) => {
       const productPayloadNew = {
         advertiserId,
-        orderReference: properties.order_id || properties.orderId,
+        orderReference:
+          properties.order_id ||
+          properties.orderId ||
+          properties.orderReference ||
+          properties.order_reference,
         productId: product.product_id || product.productId,
         productName: product.name,
         productItemPrice: product.price,

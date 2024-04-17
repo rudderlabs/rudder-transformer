@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.62.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.61.1...v1.62.0) (2024-04-15)
+
+
+### Features
+
+* do away myaxios ([#3222](https://github.com/rudderlabs/rudder-transformer/issues/3222)) ([9214594](https://github.com/rudderlabs/rudder-transformer/commit/9214594bab2c86a4ae6f75e12531f778490cf127))
+* for reddit adding currency and value for addToCart, viewConent event as well ([#3239](https://github.com/rudderlabs/rudder-transformer/issues/3239)) ([ad235e7](https://github.com/rudderlabs/rudder-transformer/commit/ad235e785bf6039e11231a915be098130b25ec3b))
+* logger upgrade in services, dest, source ([#3228](https://github.com/rudderlabs/rudder-transformer/issues/3228)) ([c204113](https://github.com/rudderlabs/rudder-transformer/commit/c204113eab37a782f217488d0d626a8d6df345d3))
+* rakuten: adding a default value for tr ([#3240](https://github.com/rudderlabs/rudder-transformer/issues/3240)) ([3748f24](https://github.com/rudderlabs/rudder-transformer/commit/3748f24e21634fc74c5e5b3761551c64c8e69942))
+
+
+### Bug Fixes
+
+* adding check for reserved key words in extract custom fields  ([#3264](https://github.com/rudderlabs/rudder-transformer/issues/3264)) ([3399c47](https://github.com/rudderlabs/rudder-transformer/commit/3399c47fdce1b3d19e29306ca3c5692a2fbc30fb))
+* deployment file paths ([#3216](https://github.com/rudderlabs/rudder-transformer/issues/3216)) ([808727d](https://github.com/rudderlabs/rudder-transformer/commit/808727de17e400ed102a843ab3b30f81f8900f24))
+* email mappings ([#3247](https://github.com/rudderlabs/rudder-transformer/issues/3247)) ([791cbf5](https://github.com/rudderlabs/rudder-transformer/commit/791cbf55fc6940af4e3208212b82c891c6618fc3))
+* fixed userId mapping, now mapping to uid instead of id ([#3262](https://github.com/rudderlabs/rudder-transformer/issues/3262)) ([9c6b251](https://github.com/rudderlabs/rudder-transformer/commit/9c6b251a6c784cc391f27e846a008fbe2901e2c8))
+* hs bugsnag error ([#3252](https://github.com/rudderlabs/rudder-transformer/issues/3252)) ([9daf1c9](https://github.com/rudderlabs/rudder-transformer/commit/9daf1c989258bd410d5780c1b11c4f6df9654af5))
+* hubspot: search for contact using secondary prop ([#3258](https://github.com/rudderlabs/rudder-transformer/issues/3258)) ([0b57204](https://github.com/rudderlabs/rudder-transformer/commit/0b5720446693efe1fd0ccdfc141bd7f21b2c32ae))
+* impact: support custom product mapping ([#3249](https://github.com/rudderlabs/rudder-transformer/issues/3249)) ([cb8ff2f](https://github.com/rudderlabs/rudder-transformer/commit/cb8ff2fb943c49df4ac083bd179d9674b40eb602))
+* marketo bulk ignore null while checking data type mismatch ([#3263](https://github.com/rudderlabs/rudder-transformer/issues/3263)) ([6e3274b](https://github.com/rudderlabs/rudder-transformer/commit/6e3274bfba9e7838d1f81d845a070427b67e75f5))
+* shopify: send 500 for identifier call in case of failure ([#3235](https://github.com/rudderlabs/rudder-transformer/issues/3235)) ([8eb4c4e](https://github.com/rudderlabs/rudder-transformer/commit/8eb4c4e9b8daebbaeb1d12ff0c17915fe19c2b50))
+
 ### [1.61.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.61.0...v1.61.1) (2024-04-03)
 
 ## [1.61.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.60.0...v1.61.0) (2024-04-02)

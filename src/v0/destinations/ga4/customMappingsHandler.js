@@ -1,4 +1,4 @@
-import { validateEventName } from './utils';
+const { validateEventName } = require('./utils');
 
 const {
   get,
@@ -40,7 +40,7 @@ const findGA4Event = (eventsMapping, event) => {
   return { eventName: ga4EventName, eventProperties } || {};
 };
 
-export const handleCustomMappings = (message, Config) => {
+const handleCustomMappings = (message, Config) => {
   const { eventsMapping } = Config;
 
   let rsEvent = get(message, 'event');
@@ -190,4 +190,8 @@ const setValueGeneric = (data, pathArr, value) => {
     currentObject = currentObject[key];
   }
   currentObject[pathArr[pathArr.length - 1].key] = value;
+};
+
+module.exports = {
+  handleCustomMappings,
 };

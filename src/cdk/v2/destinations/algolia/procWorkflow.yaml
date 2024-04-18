@@ -49,7 +49,7 @@ steps:
       $.context.payload = $.genericpayloadValidator(payload);
 
   - name: prepareObjectDataBlock
-    condition: $.context.payload.eventType === "conversion"
+    condition: $.context.payload.eventType === "conversion" && $.isDefinedAndNotNull(^.message.properties.products) && Array.isArray(^.message.properties.products)
     description: |
       Populate list of objectData
     template: |
@@ -61,7 +61,7 @@ steps:
           "discount": $.isDefinedAndNotNull(.discount) ? String(.discount) : null
       })
       };
-      const products = .message.properties.products
+      const products = ^.message.properties.products
       products.map(function(singleProduct) {
             $.removeUndefinedAndNullValues(populateObjectData(singleProduct)) 
       })[]

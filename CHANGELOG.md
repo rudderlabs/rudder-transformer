@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.62.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.62.0...v1.62.1) (2024-04-18)
+
+
+### Bug Fixes
+
+* revert mixpanel deprecate /track ([#3291](https://github.com/rudderlabs/rudder-transformer/issues/3291)) ([ec068b4](https://github.com/rudderlabs/rudder-transformer/commit/ec068b49bd4a5652a762c60a8257c883e4709d1a))
+
 ## [1.62.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.61.1...v1.62.0) (2024-04-15)
 
 

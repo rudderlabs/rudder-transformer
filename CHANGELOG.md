@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.62.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.62.1...v1.62.2) (2024-04-18)
+
+
+### Bug Fixes
+
+* twitter_ads logger ([#3295](https://github.com/rudderlabs/rudder-transformer/issues/3295)) ([e92b052](https://github.com/rudderlabs/rudder-transformer/commit/e92b052e03182deb41b20b3ec3741306afa50380))
+
 ### [1.62.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.62.0...v1.62.1) (2024-04-18)
 
 

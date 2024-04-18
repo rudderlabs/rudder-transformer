@@ -136,7 +136,7 @@ const createIdentifyResponse = (message, type, destination, responseBuilderSimpl
  * @returns
  */
 const isImportAuthCredentialsAvailable = (destination) =>
-  destination.Config.token ||
+  destination.Config.apiSecret ||
   (destination.Config.serviceAccountSecret &&
     destination.Config.serviceAccountUserName &&
     destination.Config.projectId);
@@ -179,6 +179,7 @@ const groupEventsByEndpoint = (events) => {
   const eventMap = {
     engage: [],
     groups: [],
+    track: [],
     import: [],
   };
   const batchErrorRespList = [];
@@ -203,6 +204,7 @@ const groupEventsByEndpoint = (events) => {
   return {
     engageEvents: eventMap.engage,
     groupsEvents: eventMap.groups,
+    trackEvents: eventMap.track,
     importEvents: eventMap.import,
     batchErrorRespList,
   };
@@ -347,6 +349,7 @@ const generatePageOrScreenCustomEventName = (message, userDefinedEventTemplate) 
  * @param {Object} batchSize - The object containing the batch size for different endpoints.
  * @param {number} batchSize.engage - The batch size for engage endpoint.
  * @param {number} batchSize.groups - The batch size for group endpoint.
+ * @param {number} batchSize.track - The batch size for track endpoint.
  * @param {number} batchSize.import - The batch size for import endpoint.
  * @param {string} destinationId - The ID of the destination.
  * @returns {void}
@@ -356,6 +359,9 @@ const recordBatchSizeMetrics = (batchSize, destinationId) => {
     destination_id: destinationId,
   });
   stats.gauge('mixpanel_batch_group_pack_size', batchSize.groups, {
+    destination_id: destinationId,
+  });
+  stats.gauge('mixpanel_batch_track_pack_size', batchSize.track, {
     destination_id: destinationId,
   });
   stats.gauge('mixpanel_batch_import_pack_size', batchSize.import, {

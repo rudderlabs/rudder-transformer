@@ -7,7 +7,7 @@ const defaultMockFns = () => {
 const sampleDestination: Destination = {
   Config: {
     apiKey: 'dummyApiKey',
-    token: 'test_api_token',
+    token: 'dummyApiKey',
     prefixProperties: true,
     useNativeSDK: false,
   },

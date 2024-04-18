@@ -1,4 +1,4 @@
-const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const { InstrumentationError, isDefinedNotNullNotEmpty } = require('@rudderstack/integrations-lib');
 
 const setIdentifier = (data, identifierType, identifierValue) => {
   const updatedData = data;
@@ -18,7 +18,7 @@ const setIdentifier = (data, identifierType, identifierValue) => {
 
 const validateData = (data) => {
   const { Price } = data;
-  if (!data) {
+  if (!isDefinedNotNullNotEmpty(data)) {
     throw new InstrumentationError('No traits found in the payload. Aborting!');
   }
   if (Price && typeof Price !== 'number') {

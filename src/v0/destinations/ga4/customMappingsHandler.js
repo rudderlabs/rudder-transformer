@@ -65,7 +65,7 @@ const handleCustomMappings = (message, Config) => {
   for (let propertyMapping of eventPropertiesMappings) {
     // { from: properties.products.product_id, to: events[0].params.items.item_id }
     const { from, to } = propertyMapping;
-    let updatedTopath;
+    let updatedTopath = to;
     let isEventProp = false;
     // if it starts with events.$ then
     if (to.startsWith('events.$')) {

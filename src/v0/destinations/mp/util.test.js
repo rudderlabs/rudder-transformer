@@ -18,6 +18,7 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
     expect(result).toEqual({
       engageEvents: [],
       groupsEvents: [],
+      trackEvents: [],
       importEvents: [],
       batchErrorRespList: [],
     });
@@ -115,6 +116,19 @@ describe('Unit test cases for groupEventsByEndpoint', () => {
             body: {
               JSON_ARRAY: {
                 batch: '[{prop:3}]',
+              },
+            },
+            userId: 'user1',
+          },
+        },
+      ],
+      trackEvents: [
+        {
+          message: {
+            endpoint: '/track',
+            body: {
+              JSON_ARRAY: {
+                batch: '[{prop:4}]',
               },
             },
             userId: 'user1',

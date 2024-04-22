@@ -30,15 +30,39 @@ const areAllValuesDefined = (obj) =>
   lodash.every(lodash.values(obj), (value) => !lodash.isUndefined(value));
 
 const buildProductPayloadString = (payload) => {
-  // URL-encode each value, and join back with the same key.
   const encodedPayload = Object.entries(payload).reduce((acc, [key, value]) => {
-    // Encode each value. Assuming that all values are either strings or can be
-    // safely converted to strings.
     acc[key] = encodeURIComponent(value);
     return acc;
   }, {});
 
-  return `AW:P|${encodedPayload.advertiserId}|${encodedPayload.orderReference}|${encodedPayload.productId}|${encodedPayload.productName}|${encodedPayload.productItemPrice}|${encodedPayload.productQuantity}|${encodedPayload.productSku}|${encodedPayload.commissionGroupCode}|${encodedPayload.productCategory}`;
+  const {
+    advertiserId,
+    orderReference,
+    productId,
+    productName,
+    productItemPrice,
+    productQuantity,
+    productSku,
+    commissionGroupCode,
+    productCategory,
+    ...customProperties
+  } = encodedPayload;
+
+  // Build the base string without custom properties
+  let baseString = `AW:P|${advertiserId}|${orderReference}|${productId}|${productName}|${productItemPrice}|${productQuantity}|${productSku}|${commissionGroupCode}|${productCategory}`;
+
+  // Check if there are any custom properties
+  if (Object.keys(customProperties).length > 0) {
+    // Map custom properties to strings with indexed keys, starting from 1
+    const customPropsString = Object.values(customProperties)
+      .map((value, index) => `&p${index + 1}=${value}`)
+      .join('');
+    // Append the custom properties to the base string
+    baseString += customPropsString;
+  }
+
+  // Return the final payload string
+  return baseString;
 };
 
 // ref: https://wiki.awin.com/index.php/Advertiser_Tracking_Guide/Product_Level_Tracking#PLT_Via_Conversion_Pixel
@@ -52,6 +76,9 @@ const trackProduct = (properties, advertiserId, commissionParts) => {
     const productsArray = properties.products;
     let productIndex = 0;
     productsArray.forEach((product) => {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      const { product_id, productId, name, price, quantity, sku, category, ...customProperties } =
+        product;
       const productPayloadNew = {
         advertiserId,
         orderReference:
@@ -59,13 +86,14 @@ const trackProduct = (properties, advertiserId, commissionParts) => {
           properties.orderId ||
           properties.orderReference ||
           properties.order_reference,
-        productId: product.product_id || product.productId,
-        productName: product.name,
-        productItemPrice: product.price,
-        productQuantity: product.quantity,
-        productSku: product.sku || '',
+        productId: product_id || productId,
+        productName: name,
+        productItemPrice: price,
+        productQuantity: quantity,
+        productSku: sku || '',
         commissionGroupCode: commissionParts || 'DEFAULT',
-        productCategory: product.category || '',
+        productCategory: category || '',
+        ...customProperties,
       };
       if (areAllValuesDefined(productPayloadNew)) {
         transformedProductInfoObj[`bd[${productIndex}]`] =

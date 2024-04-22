@@ -1018,7 +1018,7 @@ export const data = [
         body: [
           {
             error:
-              '{"message":"Error occurred while checking user : {}","destinationResponse":{"response":{},"status":429}}',
+              '{"message":"Error occurred while checking user: {}","destinationResponse":{"response":{},"status":429}}',
             statTags: {
               destType: 'DELIGHTED',
               errorCategory: 'network',

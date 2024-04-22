@@ -1,10 +1,6 @@
-const {
-  NetworkInstrumentationError,
-  InstrumentationError,
-  NetworkError,
-} = require('@rudderstack/integrations-lib');
+const { InstrumentationError, NetworkError } = require('@rudderstack/integrations-lib');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
-const { getValueFromMessage, isHttpStatusSuccess } = require('../../util');
+const { getValueFromMessage } = require('../../util');
 const { ENDPOINT } = require('./config');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
@@ -93,28 +89,19 @@ const userValidity = async (channel, Config, userId) => {
     },
   );
 
-  if (!isHttpStatusSuccess(processedResponse.status)) {
-    const errStatus = getErrorStatus(processedResponse.status);
-    throw new NetworkError(
-      `Error occurred while checking user : ${JSON.stringify(processedResponse.response)}`,
-      errStatus,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errStatus),
-      },
-      processedResponse,
-    );
-  }
-
-  if (
-    processedResponse &&
-    processedResponse.response &&
-    processedResponse.status === 200 &&
-    Array.isArray(processedResponse.response)
-  ) {
+  if (processedResponse.status === 200 && Array.isArray(processedResponse?.response)) {
     return processedResponse.response.length > 0;
   }
 
-  throw new NetworkInstrumentationError('Invalid response');
+  const errStatus = getErrorStatus(processedResponse.status);
+  throw new NetworkError(
+    `Error occurred while checking user: ${JSON.stringify(processedResponse?.response || 'Invalid response')}`,
+    errStatus,
+    {
+      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errStatus),
+    },
+    processedResponse,
+  );
 };
 const eventValidity = (Config, message) => {
   const event = getValueFromMessage(message, 'event');

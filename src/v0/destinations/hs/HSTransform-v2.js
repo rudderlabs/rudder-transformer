@@ -12,7 +12,6 @@ const {
   defaultPatchRequestConfig,
   getFieldValueFromMessage,
   getSuccessRespEvents,
-  addExternalIdToTraits,
   defaultBatchRequestConfig,
   removeUndefinedAndNullValues,
   getDestinationExternalID,
@@ -42,6 +41,7 @@ const {
   getEventAndPropertiesFromConfig,
   getHsSearchId,
   populateTraits,
+  addExternalIdToHSTraits,
 } = require('./util');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -110,7 +110,7 @@ const processIdentify = async (message, destination, propertyMap) => {
     GENERIC_TRUE_VALUES.includes(mappedToDestination.toString()) &&
     operation
   ) {
-    addExternalIdToTraits(message);
+    addExternalIdToHSTraits(message);
     if (!objectType) {
       throw new InstrumentationError('objectType not found');
     }

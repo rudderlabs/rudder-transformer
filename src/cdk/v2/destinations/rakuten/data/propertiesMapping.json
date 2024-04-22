@@ -6,8 +6,10 @@
   },
   {
     "sourceKeys": ["properties.tr", "properties.ran_site_id", "properties.ranSiteID"],
-    "required": true,
-    "destKey": "tr"
+    "destKey": "tr",
+    "metadata": {
+      "defaultValue": " "
+    }
   },
   {
     "sourceKeys": ["properties.land", "properties.land_time", "properties.landTime"],

@@ -506,3 +506,187 @@ describe('validateEventAndLowerCaseConversion Tests', () => {
     }).toThrow(InstrumentationError);
   });
 });
+
+describe('extractCustomFields', () => {
+  // Handle reserved words in message keys
+  it('should handle reserved word "prototype" in message keys when keys are provided', () => {
+    const message = {
+      traits: {
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john.doe@example.com',
+        prototype: 'reserved',
+      },
+      context: {
+        traits: {
+          phone: '1234567890',
+          city: 'New York',
+          country: 'USA',
+          prototype: 'reserved',
+        },
+      },
+      properties: {
+        title: 'Developer',
+        organization: 'ABC Company',
+        zip: '12345',
+        prototype: 'reserved',
+      },
+    };
+
+    const payload = {};
+
+    const keys = ['properties', 'context.traits', 'traits'];
+
+    const exclusionFields = [
+      'firstName',
+      'lastName',
+      'phone',
+      'title',
+      'organization',
+      'city',
+      'region',
+      'country',
+      'zip',
+      'image',
+      'timezone',
+    ];
+
+    const result = utilities.extractCustomFields(message, payload, keys, exclusionFields);
+
+    expect(result).toEqual({
+      email: 'john.doe@example.com',
+    });
+  });
+
+  it('should handle reserved word "__proto__" in message keys when keys are provided', () => {
+    const message = {
+      traits: {
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john.doe@example.com',
+        __proto__: 'reserved',
+      },
+      context: {
+        traits: {
+          phone: '1234567890',
+          city: 'New York',
+          country: 'USA',
+          __proto__: 'reserved',
+        },
+      },
+      properties: {
+        title: 'Developer',
+        organization: 'ABC Company',
+        zip: '12345',
+        __proto__: 'reserved',
+      },
+    };
+
+    const payload = {};
+
+    const keys = ['properties', 'context.traits', 'traits'];
+
+    const exclusionFields = [
+      'firstName',
+      'lastName',
+      'phone',
+      'title',
+      'organization',
+      'city',
+      'region',
+      'country',
+      'zip',
+      'image',
+      'timezone',
+    ];
+    const result = utilities.extractCustomFields(message, payload, keys, exclusionFields);
+    expect(result).toEqual({
+      email: 'john.doe@example.com',
+    });
+  });
+
+  it('should handle reserved word "constructor" in message keys when keys are provided', () => {
+    const message = {
+      traits: {
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john.doe@example.com',
+        constructor: 'reserved',
+      },
+      context: {
+        traits: {
+          phone: '1234567890',
+          city: 'New York',
+          country: 'USA',
+          constructor: 'reserved',
+        },
+      },
+      properties: {
+        title: 'Developer',
+        organization: 'ABC Company',
+        zip: '12345',
+        constructor: 'reserved',
+      },
+    };
+
+    const payload = {};
+
+    const keys = ['properties', 'context.traits', 'traits'];
+
+    const exclusionFields = [
+      'firstName',
+      'lastName',
+      'phone',
+      'title',
+      'organization',
+      'city',
+      'region',
+      'country',
+      'zip',
+      'image',
+      'timezone',
+    ];
+    const result = utilities.extractCustomFields(message, payload, keys, exclusionFields);
+    expect(result).toEqual({
+      email: 'john.doe@example.com',
+    });
+  });
+
+  it('should handle reserved words in message keys when key is root', () => {
+    const message = {
+      firstName: 'John',
+      lastName: 'Doe',
+      email: 'john.doe@example.com',
+      prototype: 'reserved',
+      phone: '1234567890',
+      city: 'New York',
+      country: 'USA',
+      __proto__: 'reserved',
+      constructor: 'reserved',
+    };
+
+    const payload = {};
+
+    const keys = 'root';
+
+    const exclusionFields = [
+      'firstName',
+      'lastName',
+      'phone',
+      'title',
+      'organization',
+      'city',
+      'region',
+      'country',
+      'zip',
+      'image',
+      'timezone',
+    ];
+
+    const result = utilities.extractCustomFields(message, payload, keys, exclusionFields);
+
+    expect(result).toEqual({
+      email: 'john.doe@example.com',
+    });
+  });
+});

@@ -22,6 +22,7 @@ const staticLookup = (transformerVersionId) => async (hostname, _, cb) => {
   try {
     ips = await resolver.resolve4(hostname);
   } catch (error) {
+    logger.error(`DNS Error Code: ${error.code} | Message : ${error.message}`);
     stats.timing('fetch_dns_resolve_time', resolveStartTime, {
       transformerVersionId,
       error: 'true',

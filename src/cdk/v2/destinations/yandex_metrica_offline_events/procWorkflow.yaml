@@ -21,10 +21,11 @@ steps:
   - name: prepareData
     template: |
       let data = .message.traits
-      data = $.validateData(data)
       let identifierType = .message.context.externalId[0].identifierType;
       let identifierValue = .message.context.externalId[0].id;
+      identifierValue = String(identifierValue);
       data = $.setIdentifier(data, identifierType, identifierValue)
+      data = $.validateData(data)
       data
 
   - name: buildResponseForProcessTransformation

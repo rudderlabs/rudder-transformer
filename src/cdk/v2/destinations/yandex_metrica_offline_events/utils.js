@@ -1,4 +1,6 @@
+/* eslint-disable no-param-reassign */
 const { InstrumentationError, isDefinedNotNullNotEmpty } = require('@rudderstack/integrations-lib');
+const moment = require('moment');
 
 const setIdentifier = (data, identifierType, identifierValue) => {
   const updatedData = data;
@@ -16,13 +18,27 @@ const setIdentifier = (data, identifierType, identifierValue) => {
   return updatedData;
 };
 
+function isUnixTimestamp(datetime) {
+  if (moment.unix(datetime).isValid()) {
+    return datetime;
+  }
+  const unixTimestamp = moment(datetime).unix();
+  if (moment.unix(unixTimestamp).isValid()) {
+    return unixTimestamp;
+  }
+  throw new InstrumentationError('Invalid timestamp. Aborting!');
+}
+
 const validateData = (data) => {
-  const { Price } = data;
+  const { Price, DateTime } = data;
   if (!isDefinedNotNullNotEmpty(data)) {
     throw new InstrumentationError('No traits found in the payload. Aborting!');
   }
   if (Price && typeof Price !== 'number') {
     throw new InstrumentationError('Price can only be a numerical value. Aborting!');
+  }
+  if (DateTime) {
+    data.DateTime = String(isUnixTimestamp(DateTime));
   }
   return data;
 };
@@ -30,4 +46,5 @@ const validateData = (data) => {
 module.exports = {
   setIdentifier,
   validateData,
+  isUnixTimestamp,
 };

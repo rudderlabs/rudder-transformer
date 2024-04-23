@@ -37,7 +37,7 @@ const validateData = (data) => {
   if (Price && typeof Price !== 'number') {
     throw new InstrumentationError('Price can only be a numerical value. Aborting!');
   }
-  if (DateTime) {
+  if (isDefinedNotNullNotEmpty(DateTime)) {
     data.DateTime = String(isUnixTimestamp(DateTime));
   }
   return data;

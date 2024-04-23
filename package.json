@@ -157,7 +157,7 @@
     "prettier": "^3.2.4",
     "semver": "^7.5.3",
     "standard-version": "^9.5.0",
-    "supertest": "^6.3.3",
+    "supertest": "^6.3.4",
     "swagger-cli": "^4.0.4",
     "ts-jest": "^29.1.0",
     "typescript": "^5.0.4"

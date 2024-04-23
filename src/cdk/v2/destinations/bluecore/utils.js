@@ -12,9 +12,10 @@ const {
   validateEventName,
   constructPayload,
   getDestinationExternalID,
+  extractCustomFields,
 } = require('../../../../v0/util');
 const { CommonUtils } = require('../../../../util/common');
-const { EVENT_NAME_MAPPING } = require('./config');
+const { EVENT_NAME_MAPPING, IDENTIFY_EXCLUSION_LIST, TRACK_EXCLUSION_LIST } = require('./config');
 const { EventType } = require('../../../../constants');
 const { MAPPING_CONFIG, CONFIG_CATEGORIES } = require('./config');
 
@@ -167,6 +168,41 @@ const normalizeProductArray = (products) => {
   return finalProductArray;
 };
 
+const mapCustomProperties = (message) => {
+  let customerProperties;
+  const customProperties = { properties: {} };
+  const messageType = message.type.toUpperCase();
+  switch (messageType) {
+    case 'IDENTIFY':
+      customerProperties = extractCustomFields(
+        message,
+        {},
+        ['traits', 'context.traits'],
+        IDENTIFY_EXCLUSION_LIST,
+      );
+      customProperties.properties.customer = customerProperties;
+      break;
+    case 'TRACK':
+      customerProperties = extractCustomFields(
+        message,
+        {},
+        ['traits', 'context.traits'],
+        IDENTIFY_EXCLUSION_LIST,
+      );
+      customProperties.properties = extractCustomFields(
+        message,
+        {},
+        ['properties'],
+        TRACK_EXCLUSION_LIST,
+      );
+      customProperties.properties.customer = customerProperties;
+      break;
+    default:
+      break;
+  }
+  return customProperties;
+};
+
 /**
  * Constructs properties based on the given message.
  *
@@ -178,7 +214,12 @@ const constructProperties = (message) => {
   const commonPayload = constructPayload(message, MAPPING_CONFIG[commonCategory.name]);
   const category = CONFIG_CATEGORIES[message.type.toUpperCase()];
   const typeSpecificPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
-  const finalPayload = lodash.merge(commonPayload, typeSpecificPayload);
+  const typeSpecificCustomProperties = mapCustomProperties(message);
+  const finalPayload = lodash.merge(
+    commonPayload,
+    typeSpecificPayload,
+    typeSpecificCustomProperties,
+  );
   return finalPayload;
 };
 

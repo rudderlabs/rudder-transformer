@@ -27,4 +27,18 @@ export const networkCallsData = [
       status: 200,
     },
   },
+  {
+    httpReq: {
+      url: 'https://api.delighted.com/v1/people.json',
+      method: 'GET',
+      headers: { Authorization: `Basic ZHVtbXlBcGlLZXlmb3JmYWlsdXJl` },
+      params: {
+        email: 'test@rudderlabs.com',
+      },
+    },
+    httpRes: {
+      status: 429,
+      data: {},
+    },
+  },
 ];

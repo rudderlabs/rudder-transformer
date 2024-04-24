@@ -24,8 +24,8 @@ const {
   mappingConfig,
   BASE_ENDPOINT,
   BASE_ENDPOINT_EU,
-  IMPORT_MAX_BATCH_SIZE,
   TRACK_MAX_BATCH_SIZE,
+  IMPORT_MAX_BATCH_SIZE,
   ENGAGE_MAX_BATCH_SIZE,
   GROUPS_MAX_BATCH_SIZE,
 } = require('./config');
@@ -109,6 +109,7 @@ const responseBuilderSimple = (payload, message, eventType, destConfig) => {
         strict: credentials.params.strict,
       };
       break;
+
     default:
       response.endpoint =
         dataResidency === 'eu' ? `${BASE_ENDPOINT_EU}/engage/` : `${BASE_ENDPOINT}/engage/`;

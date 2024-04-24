@@ -35,7 +35,7 @@
   },
   {
     "destKey": "properties.customer.email",
-    "sourceKeys": "email",
+    "sourceKeys": "emailOnly",
     "required": false,
     "sourceFromGenericMap": true
   },

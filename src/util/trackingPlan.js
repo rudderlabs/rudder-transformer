@@ -55,6 +55,11 @@ async function getEventSchema(tpId, tpVersion, eventType, eventName, workspaceId
     let eventSchema;
     const tp = await getTrackingPlan(tpId, tpVersion, workspaceId);
 
+    if (Object.hasOwn(tp, 'events')) {
+      const ev = tp.events.find((e) => e.name === eventName && e.eventType === eventType);
+      return ev?.rules;
+    }
+
     if (eventType !== 'track') {
       if (Object.prototype.hasOwnProperty.call(tp.rules, eventType)) {
         eventSchema = tp.rules[eventType];

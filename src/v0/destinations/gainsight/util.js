@@ -42,7 +42,7 @@ const searchGroup = async (groupName, Config) => {
     );
   }
 
-  if (!processedResponse || !processedResponse.response || processedResponse.status !== 200) {
+  if (!processedResponse?.response || processedResponse.status !== 200) {
     throw new RetryableError('failed to search group', 500, processedResponse);
   }
 
@@ -82,7 +82,7 @@ const createGroup = async (payload, Config) => {
     );
   }
 
-  if (!processedResponse || !processedResponse.response || processedResponse.status !== 200) {
+  if (!processedResponse?.response || processedResponse.status !== 200) {
     throw new RetryableError('failed to create group', 500, processedResponse);
   }
 
@@ -125,7 +125,7 @@ const updateGroup = async (payload, Config) => {
     );
   }
 
-  if (!processedResponse || !processedResponse.response || processedResponse.status !== 200) {
+  if (!processedResponse?.response || processedResponse.status !== 200) {
     throw new RetryableError('failed to update group', 500, processedResponse);
   }
 

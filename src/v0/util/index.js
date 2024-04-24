@@ -1328,12 +1328,19 @@ const generateExclusionList = (mappingConfig) =>
  */
 function extractCustomFields(message, payload, keys, exclusionFields) {
   const mappingKeys = [];
+  // Define reserved words
+  const reservedWords = ['__proto__', 'constructor', 'prototype'];
+
+  const isReservedWord = (key) => reservedWords.includes(key);
+
   if (Array.isArray(keys)) {
     keys.forEach((key) => {
       const messageContext = get(message, key);
       if (messageContext) {
         Object.keys(messageContext).forEach((k) => {
-          if (!exclusionFields.includes(k)) mappingKeys.push(k);
+          if (!exclusionFields.includes(k) && !isReservedWord(k)) {
+            mappingKeys.push(k);
+          }
         });
         mappingKeys.forEach((mappingKey) => {
           if (!(typeof messageContext[mappingKey] === 'undefined')) {
@@ -1344,7 +1351,9 @@ function extractCustomFields(message, payload, keys, exclusionFields) {
     });
   } else if (keys === 'root') {
     Object.keys(message).forEach((k) => {
-      if (!exclusionFields.includes(k)) mappingKeys.push(k);
+      if (!exclusionFields.includes(k) && !isReservedWord(k)) {
+        mappingKeys.push(k);
+      }
     });
     mappingKeys.forEach((mappingKey) => {
       if (!(typeof message[mappingKey] === 'undefined')) {

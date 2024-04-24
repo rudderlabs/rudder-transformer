@@ -1,13 +1,13 @@
 import fs from 'fs';
-import path from 'path';
-import request from 'supertest';
 import { createHttpTerminator } from 'http-terminator';
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
+import path from 'path';
 import setValue from 'set-value';
-import { applicationRoutes } from '../../src/routes';
-import { FetchHandler } from '../../src/helpers/fetchHandlers';
+import request from 'supertest';
 import networkHandlerFactory from '../../src/adapters/networkHandlerFactory';
+import { FetchHandler } from '../../src/helpers/fetchHandlers';
+import { applicationRoutes } from '../../src/routes';
 
 let server: any;
 const OLD_ENV = process.env;

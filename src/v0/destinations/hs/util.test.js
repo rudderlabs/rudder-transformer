@@ -4,6 +4,7 @@ const {
   validatePayloadDataTypes,
   getObjectAndIdentifierType,
 } = require('./util');
+const { primaryToSecondaryFields } = require('./config');
 
 const propertyMap = {
   firstName: 'string',
@@ -205,7 +206,7 @@ describe('extractUniqueValues utility test cases', () => {
 describe('getRequestDataAndRequestOptions utility test cases', () => {
   it('Should return an object with requestData and requestOptions', () => {
     const identifierType = 'email';
-    const chunk = 'test1@gmail.com';
+    const chunk = ['test1@gmail.com'];
     const accessToken = 'dummyAccessToken';
 
     const expectedRequestData = {
@@ -219,8 +220,17 @@ describe('getRequestDataAndRequestOptions utility test cases', () => {
             },
           ],
         },
+        {
+          filters: [
+            {
+              propertyName: primaryToSecondaryFields[identifierType],
+              values: chunk,
+              operator: 'IN',
+            },
+          ],
+        },
       ],
-      properties: [identifierType],
+      properties: [identifierType, primaryToSecondaryFields[identifierType]],
       limit: 100,
       after: 0,
     };

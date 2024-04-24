@@ -4297,7 +4297,10 @@ export const data = [
                 Authorization:
                   'Basic cnVkZGVyLmQyYTNmMS5tcC1zZXJ2aWNlLWFjY291bnQ6amF0cFF4Y2pNaDhlZXRrMXhySDNLalFJYnp5NGlYOGI=',
               },
-              params: { project_id: '123456', strict: 0 },
+              params: {
+                project_id: '123456',
+                strict: 0,
+              },
               body: {
                 JSON: {},
                 JSON_ARRAY: {
@@ -4622,7 +4625,7 @@ export const data = [
             description:
               'Track: set device id and user id when simplified id merge api is selected',
             destination: overrideDestination(sampleDestination, {
-              token: 'apiToken123',
+              token: 'dummyApiKey',
               identityMergeApi: 'simplified',
             }),
             message: {
@@ -4685,7 +4688,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"event":"Product Viewed","properties":{"name":"T-Shirt","$user_id":"userId01","$os":"iOS","$screen_height":1794,"$screen_width":1080,"$screen_dpi":420,"$carrier":"Android","$os_version":"8.1.0","$device":"generic_x86","$manufacturer":"Google","$model":"Android SDK built for x86","mp_device_model":"Android SDK built for x86","$wifi":true,"$bluetooth_enabled":false,"mp_lib":"com.rudderstack.android.sdk.core","$app_build_number":"1","$app_version_string":"1.0","$insert_id":"id2","token":"apiToken123","distinct_id":"userId01","time":1579847342402,"$device_id":"anonId01"}}]',
+                    '[{"event":"Product Viewed","properties":{"name":"T-Shirt","$user_id":"userId01","$os":"iOS","$screen_height":1794,"$screen_width":1080,"$screen_dpi":420,"$carrier":"Android","$os_version":"8.1.0","$device":"generic_x86","$manufacturer":"Google","$model":"Android SDK built for x86","mp_device_model":"Android SDK built for x86","$wifi":true,"$bluetooth_enabled":false,"mp_lib":"com.rudderstack.android.sdk.core","$app_build_number":"1","$app_version_string":"1.0","$insert_id":"id2","token":"dummyApiKey","distinct_id":"userId01","time":1579847342402,"$device_id":"anonId01"}}]',
                 },
                 XML: {},
                 FORM: {},
@@ -4714,7 +4717,7 @@ export const data = [
           {
             description: 'Identify: skip merge event when simplified id merge api is selected',
             destination: overrideDestination(sampleDestination, {
-              token: 'apiToken123',
+              token: 'dummyApiKey',
               identityMergeApi: 'simplified',
             }),
             message: {
@@ -4795,7 +4798,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$set":{"$created":"2020-01-23T08:54:02.362Z","$email":"mickey@disney.com","$country_code":"USA","$city":"Disney","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$name":"Mickey Mouse","$firstName":"Mickey","$lastName":"Mouse","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"apiToken123","$distinct_id":"userId01","$ip":"0.0.0.0","$time":1579847342402}]',
+                    '[{"$set":{"$created":"2020-01-23T08:54:02.362Z","$email":"mickey@disney.com","$country_code":"USA","$city":"Disney","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$name":"Mickey Mouse","$firstName":"Mickey","$lastName":"Mouse","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"dummyApiKey","$distinct_id":"userId01","$ip":"0.0.0.0","$time":1579847342402}]',
                 },
                 XML: {},
                 FORM: {},
@@ -4823,7 +4826,7 @@ export const data = [
               'Identify: append $device: to deviceId while creating the user when simplified id merge api is selected',
             destination: overrideDestination(sampleDestination, {
               apiKey: 'apiKey123',
-              token: 'apiToken123',
+              token: 'dummyApiKey',
               identityMergeApi: 'simplified',
             }),
             message: {
@@ -4903,7 +4906,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$set":{"$created":"2020-01-23T08:54:02.362Z","$email":"mickey@disney.com","$country_code":"USA","$city":"Disney","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$name":"Mickey Mouse","$firstName":"Mickey","$lastName":"Mouse","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"apiToken123","$distinct_id":"$device:anonId01","$ip":"0.0.0.0","$time":1579847342402}]',
+                    '[{"$set":{"$created":"2020-01-23T08:54:02.362Z","$email":"mickey@disney.com","$country_code":"USA","$city":"Disney","$initial_referrer":"https://docs.rudderstack.com","$initial_referring_domain":"docs.rudderstack.com","$name":"Mickey Mouse","$firstName":"Mickey","$lastName":"Mouse","$browser":"Chrome","$browser_version":"79.0.3945.117"},"$token":"dummyApiKey","$distinct_id":"$device:anonId01","$ip":"0.0.0.0","$time":1579847342402}]',
                 },
                 XML: {},
                 FORM: {},
@@ -4930,7 +4933,7 @@ export const data = [
             description: 'Unsupported alias call when simplified id merge api is selected',
             destination: overrideDestination(sampleDestination, {
               apiKey: 'apiKey123',
-              token: 'apiToken123',
+              token: 'dummyApiKey',
               identityMergeApi: 'simplified',
             }),
             message: {
@@ -5019,7 +5022,7 @@ export const data = [
               'Track revenue event: set device id and user id when simplified id merge api is selected',
             destination: overrideDestination(sampleDestination, {
               apiKey: 'apiKey123',
-              token: 'apiToken123',
+              token: 'dummyApiKey',
               identityMergeApi: 'simplified',
             }),
             message: {
@@ -5090,7 +5093,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$append":{"$transactions":{"$time":"2020-01-24T06:29:02.403Z","$amount":18.9}},"$token":"apiToken123","$distinct_id":"userId01"}]',
+                    '[{"$append":{"$transactions":{"$time":"2020-01-24T06:29:02.403Z","$amount":18.9}},"$token":"dummyApiKey","$distinct_id":"userId01"}]',
                 },
                 XML: {},
                 FORM: {},
@@ -5112,7 +5115,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"event":"test revenue MIXPANEL","properties":{"currency":"USD","revenue":18.9,"city":"Disney","country":"USA","email":"mickey@disney.com","firstName":"Mickey","ip":"0.0.0.0","$user_id":"userId01","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"a6a0ad5a-bd26-4f19-8f75-38484e580fc7","token":"apiToken123","distinct_id":"userId01","time":1579847342403,"$device_id":"anonId01","$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
+                    '[{"event":"test revenue MIXPANEL","properties":{"currency":"USD","revenue":18.9,"city":"Disney","country":"USA","email":"mickey@disney.com","firstName":"Mickey","ip":"0.0.0.0","$user_id":"userId01","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"a6a0ad5a-bd26-4f19-8f75-38484e580fc7","token":"dummyApiKey","distinct_id":"userId01","time":1579847342403,"$device_id":"anonId01","$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
                 },
                 XML: {},
                 FORM: {},
@@ -5142,7 +5145,7 @@ export const data = [
             description: 'Page with anonymous user when simplified api is selected',
             destination: overrideDestination(sampleDestination, {
               apiKey: 'apiKey123',
-              token: 'apiToken123',
+              token: 'dummyApiKey',
               identityMergeApi: 'simplified',
             }),
             message: {
@@ -5216,7 +5219,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"event":"Loaded a Page","properties":{"ip":"0.0.0.0","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"dd266c67-9199-4a52-ba32-f46ddde67312","token":"apiToken123","distinct_id":"$device:anonId01","time":1579847342402,"$device_id":"anonId01","name":"Contact Us","$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
+                    '[{"event":"Loaded a Page","properties":{"ip":"0.0.0.0","$current_url":"https://docs.rudderstack.com/destinations/mixpanel","$screen_dpi":2,"mp_lib":"RudderLabs JavaScript SDK","$app_build_number":"1.0.0","$app_version_string":"1.0.5","$insert_id":"dd266c67-9199-4a52-ba32-f46ddde67312","token":"dummyApiKey","distinct_id":"$device:anonId01","time":1579847342402,"$device_id":"anonId01","name":"Contact Us","$browser":"Chrome","$browser_version":"79.0.3945.117"}}]',
                 },
                 XML: {},
                 FORM: {},
@@ -5246,7 +5249,7 @@ export const data = [
             description: 'Group call with anonymous user when simplified api is selected',
             destination: overrideDestination(sampleDestination, {
               apiKey: 'apiKey123',
-              token: 'apiToken123',
+              token: 'dummyApiKey',
               identityMergeApi: 'simplified',
               groupKeySettings: [{ groupKey: 'company' }],
             }),
@@ -5309,7 +5312,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$token":"apiToken123","$distinct_id":"$device:anonId01","$set":{"company":["testComp"]},"$ip":"0.0.0.0"}]',
+                    '[{"$token":"dummyApiKey","$distinct_id":"$device:anonId01","$set":{"company":["testComp"]},"$ip":"0.0.0.0"}]',
                 },
                 XML: {},
                 FORM: {},
@@ -5331,7 +5334,7 @@ export const data = [
                 JSON: {},
                 JSON_ARRAY: {
                   batch:
-                    '[{"$token":"apiToken123","$group_key":"company","$group_id":"testComp","$set":{"company":"testComp"}}]',
+                    '[{"$token":"dummyApiKey","$group_key":"company","$group_id":"testComp","$set":{"company":"testComp"}}]',
                 },
                 XML: {},
                 FORM: {},
@@ -5357,7 +5360,7 @@ export const data = [
           {
             destination: overrideDestination(sampleDestination, {
               apiKey: 'apiKey123',
-              token: 'apiToken123',
+              token: 'dummyApiKey',
               identityMergeApi: 'simplified',
               groupKeySettings: [{ groupKey: 'company' }],
             }),

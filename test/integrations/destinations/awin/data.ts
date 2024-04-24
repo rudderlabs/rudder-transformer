@@ -1206,9 +1206,9 @@ export const data = [
                     quantity: 1,
                     sku: undefined,
                     category: 'Category 1',
-                    customProp1: 'customVal1',
-                    customProp2: 'customVal2',
-                    customProp3: 'customVal3',
+                    p1: 'customVal1',
+                    p2: 'customVal2',
+                    p3: 'customVal3',
                   },
                   {
                     product_id: '456',
@@ -1217,6 +1217,9 @@ export const data = [
                     quantity: 2,
                     sku: 'SKU456',
                     category: undefined,
+                    customP1: 'customVal1',
+                    customP2: 'customVal2',
+                    P1: 'customValue1',
                   },
                 ],
               },
@@ -1304,7 +1307,7 @@ export const data = [
                 ref: 'QW123',
                 'bd[0]':
                   'AW:P|1234|QW123|123|Product%201|10|1||sales%3A500|Category%201&p1=customVal1&p2=customVal2&p3=customVal3',
-                'bd[1]': 'AW:P|1234|QW123|456|Product%202|20|2|SKU456|sales%3A500|',
+                'bd[1]': 'AW:P|1234|QW123|456|Product%202|20|2|SKU456|sales%3A500|&p1=customValue1',
               },
               body: {
                 JSON: {},

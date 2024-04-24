@@ -1,4 +1,5 @@
 import { MetaTransferObject, SourceTransformationResponse } from '../types/index';
+import { FixMe } from '../util/types';
 
 export interface SourceService {
   getTags(): MetaTransferObject;
@@ -8,5 +9,6 @@ export interface SourceService {
     sourceType: string,
     version: string,
     requestMetadata: NonNullable<unknown>,
+    logger: FixMe,
   ): Promise<SourceTransformationResponse[]>;
 }

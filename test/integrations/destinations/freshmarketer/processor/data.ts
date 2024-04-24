@@ -375,7 +375,7 @@ export const data = [
         status: 200,
         body: [
           {
-            error: 'Missing required value from "email"',
+            error: 'Missing required value from "emailOnly"',
             statTags: {
               destType: 'FRESHMARKETER',
               errorCategory: 'dataValidation',
@@ -964,7 +964,7 @@ export const data = [
         status: 200,
         body: [
           {
-            error: 'Missing required value from "email"',
+            error: 'Missing required value from "emailOnly"',
             statTags: {
               destType: 'FRESHMARKETER',
               errorCategory: 'dataValidation',

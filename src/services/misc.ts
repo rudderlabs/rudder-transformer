@@ -1,10 +1,11 @@
 /* eslint-disable global-require, import/no-dynamic-require */
+import { LoggableExtraData, structuredLogger as logger } from '@rudderstack/integrations-lib';
 import fs from 'fs';
-import path from 'path';
 import { Context } from 'koa';
+import path from 'path';
 import { DestHandlerMap } from '../constants/destinationCanonicalNames';
-import { Metadata } from '../types';
 import { getCPUProfile, getHeapProfile } from '../middleware';
+import { ErrorDetailer, Metadata } from '../types';
 
 export class MiscService {
   public static getDestHandler(dest: string, version: string) {
@@ -73,5 +74,22 @@ export class MiscService {
 
   public static async getHeapProfile() {
     return getHeapProfile();
+  }
+
+  public static getLoggableData(errorDetailer: ErrorDetailer): Partial<LoggableExtraData> {
+    return {
+      ...(errorDetailer?.destinationId && { destinationId: errorDetailer.destinationId }),
+      ...(errorDetailer?.sourceId && { sourceId: errorDetailer.sourceId }),
+      ...(errorDetailer?.workspaceId && { workspaceId: errorDetailer.workspaceId }),
+      ...(errorDetailer?.destType && { destType: errorDetailer.destType }),
+      ...(errorDetailer?.module && { module: errorDetailer.module }),
+      ...(errorDetailer?.implementation && { implementation: errorDetailer.implementation }),
+      ...(errorDetailer?.feature && { feature: errorDetailer.feature }),
+    };
+  }
+
+  public static logError(message: string, errorDetailer: ErrorDetailer) {
+    const loggableExtraData: Partial<LoggableExtraData> = this.getLoggableData(errorDetailer);
+    logger.errorw(message || '', loggableExtraData);
   }
 }

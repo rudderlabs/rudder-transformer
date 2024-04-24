@@ -2,6 +2,13 @@ const axios = require('axios');
 const { RespStatusError, RetryRequestError } = require('../utils');
 
 const OPENFAAS_GATEWAY_URL = process.env.OPENFAAS_GATEWAY_URL || 'http://localhost:8080';
+const OPENFAAS_GATEWAY_USERNAME = process.env.OPENFAAS_GATEWAY_USERNAME || '';
+const OPENFAAS_GATEWAY_PASSWORD = process.env.OPENFAAS_GATEWAY_PASSWORD || '';
+
+const basicAuth = {
+  username: OPENFAAS_GATEWAY_USERNAME,
+  password: OPENFAAS_GATEWAY_PASSWORD,
+};
 
 const parseAxiosError = (error) => {
   if (error.response) {
@@ -21,7 +28,7 @@ const deleteFunction = async (functionName) =>
   new Promise((resolve, reject) => {
     const url = `${OPENFAAS_GATEWAY_URL}/system/functions`;
     axios
-      .delete(url, { data: { functionName } })
+      .delete(url, { data: { functionName }, auth: basicAuth })
       .then(() => resolve())
       .catch((err) => reject(parseAxiosError(err)));
   });
@@ -30,7 +37,7 @@ const getFunction = async (functionName) =>
   new Promise((resolve, reject) => {
     const url = `${OPENFAAS_GATEWAY_URL}/system/function/${functionName}`;
     axios
-      .get(url)
+      .get(url, { auth: basicAuth })
       .then((resp) => resolve(resp.data))
       .catch((err) => reject(parseAxiosError(err)));
   });
@@ -39,7 +46,7 @@ const getFunctionList = async () =>
   new Promise((resolve, reject) => {
     const url = `${OPENFAAS_GATEWAY_URL}/system/functions`;
     axios
-      .get(url)
+      .get(url, { auth: basicAuth })
       .then((resp) => resolve(resp.data))
       .catch((err) => reject(parseAxiosError(err)));
   });
@@ -48,29 +55,36 @@ const invokeFunction = async (functionName, payload) =>
   new Promise((resolve, reject) => {
     const url = `${OPENFAAS_GATEWAY_URL}/function/${functionName}`;
     axios
-      .post(url, payload)
+      .post(url, payload, { auth: basicAuth })
       .then((resp) => resolve(resp.data))
       .catch((err) => reject(parseAxiosError(err)));
   });
 
-const checkFunctionHealth = async (functionName) =>
-  new Promise((resolve, reject) => {
+const checkFunctionHealth = async (functionName) => {
+  return new Promise((resolve, reject) => {
     const url = `${OPENFAAS_GATEWAY_URL}/function/${functionName}`;
     axios
-      .get(url, {
-        headers: { 'X-REQUEST-TYPE': 'HEALTH-CHECK' },
-      })
+      .get(
+        url,
+        {
+          headers: { 'X-REQUEST-TYPE': 'HEALTH-CHECK' },
+        },
+        { auth: basicAuth },
+      )
       .then((resp) => resolve(resp))
       .catch((err) => reject(parseAxiosError(err)));
   });
+};
 
 const deployFunction = async (payload) =>
   new Promise((resolve, reject) => {
     const url = `${OPENFAAS_GATEWAY_URL}/system/functions`;
     axios
-      .post(url, payload)
+      .post(url, payload, { auth: basicAuth })
       .then((resp) => resolve(resp.data))
-      .catch((err) => reject(parseAxiosError(err)));
+      .catch((err) => {
+        reject(parseAxiosError(err));
+      });
   });
 
 module.exports = {

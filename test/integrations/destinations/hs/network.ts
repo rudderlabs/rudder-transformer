@@ -465,6 +465,37 @@ export const networkCallsData = [
       url: 'https://api.hubapi.com/crm/v3/objects/contacts/search',
       method: 'POST',
       headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer dummy-access-token-hs-additonal-email',
+      },
+    },
+    httpRes: {
+      data: {
+        total: 1,
+        results: [
+          {
+            id: '103689',
+            properties: {
+              createdate: '2022-07-15T15:25:08.975Z',
+              email: 'primary@email.com',
+              hs_object_id: '103604',
+              hs_additional_emails: 'abc@extraemail.com;secondary@email.com',
+              lastmodifieddate: '2022-07-15T15:26:49.590Z',
+            },
+            createdAt: '2022-07-15T15:25:08.975Z',
+            updatedAt: '2022-07-15T15:26:49.590Z',
+            archived: false,
+          },
+        ],
+      },
+      status: 200,
+    },
+  },
+  {
+    httpReq: {
+      url: 'https://api.hubapi.com/crm/v3/objects/contacts/search',
+      method: 'POST',
+      headers: {
         Authorization: 'Bearer dummy-access-tokenmultiple',
       },
     },

@@ -126,7 +126,7 @@ async function validate(event) {
       trackingPlanId,
       trackingPlanVersion,
       event.message.type,
-      event.message.event,
+      event.message.type === 'track' ? event.message.event : '',
       workspaceId,
     );
 

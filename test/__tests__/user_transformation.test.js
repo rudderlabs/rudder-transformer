@@ -7,9 +7,11 @@ jest.mock("axios", () => ({
   ...jest.requireActual("axios"),
   get: jest.fn(),
   post: jest.fn(),
-  delete: jest.fn()
+  delete: jest.fn(),
+  put: jest.fn()
 }));
 
+const { generateFunctionName } = require('../../src/util/customTransformer-faas.js');
 const { Response, Headers } = jest.requireActual("node-fetch");
 const lodashCore = require("lodash/core");
 const _ = require("lodash");
@@ -35,6 +37,7 @@ const {
 } = require("../../src/util/customTransformer");
 const { parserForImport } = require("../../src/util/parser");
 const { RetryRequestError, RespStatusError } = require("../../src/util/utils");
+const { buildOpenfaasFn } = require("../../src/util/openfaas/index");
 
 const OPENFAAS_GATEWAY_URL = "http://localhost:8080";
 const defaultBasicAuth = {
@@ -88,8 +91,12 @@ const pyLibCode = (name, versionId) => {
   }
 }
 
-const pyfaasFuncName = (workspaceId, versionId, libraryVersionIds=[]) => {
-  const ids = [workspaceId, versionId].concat(libraryVersionIds.sort());
+const pyfaasFuncName = (workspaceId, versionId, libraryVersionIds=[], hashSecret="") => {
+  let ids = [workspaceId, versionId].concat(libraryVersionIds.sort());
+  if (hashSecret !== "") {
+    ids = ids.concat([hashSecret]);
+  }
+
   const hash = crypto.createHash('md5').update(`${ids}`).digest('hex');
 
   return `fn-${workspaceId}-${hash}`
@@ -104,6 +111,19 @@ const getfetchResponse = (resp, url) =>
   );
 
 let importNameLibraryVersionIdsMap;
+
+describe("User transformation utils", () => {
+
+  it("generates the openfaas-fn name correctly", () => {
+    const fnName = generateFunctionName(
+      {workspaceId: 'workspaceId', transformationId: 'transformationId'},
+      [],
+      false,
+      'hash-secret');
+    expect(fnName).toEqual('fn-workspaceid-34a32ade07ebbc7bc5ea795b8200de9f');
+  });
+
+});
 
 describe("User transformation", () => {
   beforeEach(() => {
@@ -1620,11 +1640,18 @@ describe("Python transformations", () => {
         json: jest.fn().mockResolvedValue(respBody)
       });
 
+    axios.put.mockResolvedValue({});
     axios.post.mockResolvedValue({ data: { transformedEvents: outputData } });
 
     const output = await userTransformHandler(inputData, versionId, []);
     expect(output).toEqual(outputData);
 
+
+    expect(axios.put).toHaveBeenCalledTimes(1);
+    expect(axios.put).toHaveBeenCalledWith(
+      `${OPENFAAS_GATEWAY_URL}/system/functions`,
+      buildOpenfaasFn(funcName, null, versionId, [], false, {}),
+      { auth: defaultBasicAuth });
     expect(axios.post).toHaveBeenCalledTimes(1);
     expect(axios.post).toHaveBeenCalledWith(
       `${OPENFAAS_GATEWAY_URL}/function/${funcName}`,
@@ -1648,6 +1675,11 @@ describe("Python transformations", () => {
         json: jest.fn().mockResolvedValue(respBody)
       });
 
+
+    axios.put.mockRejectedValueOnce({
+      response: { status: 404, data: `deployment not found`}
+    });
+
     axios.post
       .mockRejectedValueOnce({
         response: { status: 404, data: `error finding function ${funcName}` } // invoke function not found
@@ -1659,6 +1691,12 @@ describe("Python transformations", () => {
       await userTransformHandler(inputData, versionId, []);
     }).rejects.toThrow(RetryRequestError);
 
+    expect(axios.put).toHaveBeenCalledTimes(1);
+    expect(axios.put).toHaveBeenCalledWith(
+      `${OPENFAAS_GATEWAY_URL}/system/functions`,
+      buildOpenfaasFn(funcName, null, versionId, [], false, {}),
+      { auth: defaultBasicAuth },
+    );
     expect(axios.post).toHaveBeenCalledTimes(2);
     expect(axios.post).toHaveBeenCalledWith(
       `${OPENFAAS_GATEWAY_URL}/function/${funcName}`,

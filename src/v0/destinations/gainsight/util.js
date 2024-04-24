@@ -1,4 +1,8 @@
-const { NetworkError, ConfigurationError } = require('@rudderstack/integrations-lib');
+const {
+  NetworkError,
+  ConfigurationError,
+  RetryableError,
+} = require('@rudderstack/integrations-lib');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const logger = require('../../../logger');
 const { ENDPOINTS, getLookupPayload } = require('./config');
@@ -6,7 +10,6 @@ const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util');
-const { RetryRequestError } = require('../../../util/utils');
 
 const searchGroup = async (groupName, Config) => {
   const { processedResponse } = await handleHttpRequest(
@@ -40,7 +43,7 @@ const searchGroup = async (groupName, Config) => {
   }
 
   if (!processedResponse || !processedResponse.response || processedResponse.status !== 200) {
-    throw new RetryRequestError('failed to search group');
+    throw new RetryableError('failed to search group', 500, processedResponse);
   }
 
   return processedResponse.response;
@@ -80,7 +83,7 @@ const createGroup = async (payload, Config) => {
   }
 
   if (!processedResponse || !processedResponse.response || processedResponse.status !== 200) {
-    throw new RetryRequestError('failed to create group');
+    throw new RetryableError('failed to create group', 500, processedResponse);
   }
 
   return processedResponse.response.data.records[0].Gsid;
@@ -123,7 +126,7 @@ const updateGroup = async (payload, Config) => {
   }
 
   if (!processedResponse || !processedResponse.response || processedResponse.status !== 200) {
-    throw new RetryRequestError('failed to update group');
+    throw new RetryableError('failed to update group', 500, processedResponse);
   }
 
   return processedResponse.response.data.records[0].Gsid;

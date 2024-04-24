@@ -1,5 +1,6 @@
 /* eslint-disable no-await-in-loop */
 const lodash = require('lodash');
+const set = require('set-value');
 const get = require('get-value');
 const {
   NetworkInstrumentationError,
@@ -20,6 +21,7 @@ const {
   getDestinationExternalIDInfoForRetl,
   getValueFromMessage,
   isNull,
+  validateEventName,
 } = require('../../util');
 const {
   CONTACT_PROPERTY_MAP_ENDPOINT,
@@ -27,6 +29,7 @@ const {
   IDENTIFY_CRM_SEARCH_ALL_OBJECTS,
   SEARCH_LIMIT_VALUE,
   hsCommonConfigJson,
+  primaryToSecondaryFields,
   DESTINATION,
   MAX_CONTACTS_PER_REQUEST,
 } = require('./config');
@@ -435,6 +438,7 @@ const getEventAndPropertiesFromConfig = (message, destination, payload) => {
   if (!hubspotEvents) {
     throw new InstrumentationError('Event and property mappings are required for track call');
   }
+  validateEventName(event);
   event = event.trim().toLowerCase();
   let eventName;
   let eventProperties;
@@ -574,16 +578,30 @@ const performHubSpotSearch = async (
     checkAfter = after; // assigning to the new value if no after we assign it to 0 and no more calls will take place
 
     const results = processedResponse.response?.results;
+    const extraProp = primaryToSecondaryFields[identifierType];
     if (results) {
       searchResults.push(
-        ...results.map((result) => ({
-          id: result.id,
-          property: result.properties[identifierType],
-        })),
+        ...results.map((result) => {
+          const contact = {
+            id: result.id,
+            property: result.properties[identifierType],
+          };
+          // Following maps the extra property to the contact object which
+          // help us to know if the contact was found using secondary property
+          if (extraProp) {
+            contact[extraProp] = result.properties?.[extraProp];
+          }
+          return contact;
+        }),
       );
     }
   }
-
+  /*
+  searchResults = {
+    id: 'existing_contact_id',
+    property: 'existing_contact_email', // when email is identifier 
+    hs_additional_emails: ['secondary_email'] // when email is identifier 
+  } */
   return searchResults;
 };
 
@@ -610,7 +628,25 @@ const getRequestData = (identifierType, chunk) => {
     limit: SEARCH_LIMIT_VALUE,
     after: 0,
   };
-
+  /* In case of email as identifier we add a filter for hs_additional_emails field
+   * and append hs_additional_emails to properties list
+   * We are doing this because there might be emails exisitng as hs_additional_emails for some conatct but
+   * will not come up in search API until we search with hs_additional_emails as well.
+   * Not doing this resulted in erro 409 Duplicate records found
+   */
+  const secondaryProp = primaryToSecondaryFields[identifierType];
+  if (secondaryProp) {
+    requestData.filterGroups.push({
+      filters: [
+        {
+          propertyName: secondaryProp,
+          values: chunk,
+          operator: 'IN',
+        },
+      ],
+    });
+    requestData.properties.push(secondaryProp);
+  }
   return requestData;
 };
 
@@ -621,7 +657,7 @@ const getRequestData = (identifierType, chunk) => {
  */
 const getExistingContactsData = async (inputs, destination) => {
   const { Config } = destination;
-  const updateHubspotIds = [];
+  const hsIdsToBeUpdated = [];
   const firstMessage = inputs[0].message;
 
   if (!firstMessage) {
@@ -649,13 +685,19 @@ const getExistingContactsData = async (inputs, destination) => {
       destination,
     );
     if (searchResults.length > 0) {
-      updateHubspotIds.push(...searchResults);
+      hsIdsToBeUpdated.push(...searchResults);
     }
   }
-  return updateHubspotIds;
+  return hsIdsToBeUpdated;
 };
-
-const setHsSearchId = (input, id) => {
+/**
+ * This functions sets HsSearchId in the externalId array
+ * @param {*} input -> Input message
+ * @param {*} id -> Id to be added
+ * @param {*} useSecondaryProp -> Let us know if that id was found using secondary property and not primnary
+ * @returns
+ */
+const setHsSearchId = (input, id, useSecondaryProp = false) => {
   const { message } = input;
   const resultExternalId = [];
   const externalIdArray = message.context?.externalId;
@@ -665,6 +707,11 @@ const setHsSearchId = (input, id) => {
       const extIdObjParam = extIdObj;
       if (type.includes(DESTINATION)) {
         extIdObjParam.hsSearchId = id;
+      }
+      if (useSecondaryProp) {
+        // we are using it so that when final payload is made
+        // then primary key shouldn't be overidden
+        extIdObjParam.useSecondaryObject = useSecondaryProp;
       }
       resultExternalId.push(extIdObjParam);
     });
@@ -678,20 +725,24 @@ const setHsSearchId = (input, id) => {
  * We do search for all the objects before router transform and assign the type (create/update)
  * accordingly to context.hubspotOperation
  *
+ * For email as primary key we use `hs_additional_emails` as well property to search existing contacts
  * */
 
 const splitEventsForCreateUpdate = async (inputs, destination) => {
   // get all the id and properties of already existing objects needed for update.
-  const updateHubspotIds = await getExistingContactsData(inputs, destination);
+  const hsIdsToBeUpdated = await getExistingContactsData(inputs, destination);
 
   const resultInput = inputs.map((input) => {
     const { message } = input;
     const inputParam = input;
-    const { destinationExternalId } = getDestinationExternalIDInfoForRetl(message, DESTINATION);
+    const { destinationExternalId, identifierType } = getDestinationExternalIDInfoForRetl(
+      message,
+      DESTINATION,
+    );
 
-    const filteredInfo = updateHubspotIds.filter(
+    const filteredInfo = hsIdsToBeUpdated.filter(
       (update) =>
-        update.property.toString().toLowerCase() === destinationExternalId.toString().toLowerCase(),
+        update.property.toString().toLowerCase() === destinationExternalId.toString().toLowerCase(), // second condition is for secondary property for identifier type
     );
 
     if (filteredInfo.length > 0) {
@@ -699,6 +750,33 @@ const splitEventsForCreateUpdate = async (inputs, destination) => {
       inputParam.message.context.hubspotOperation = 'updateObject';
       return inputParam;
     }
+    const secondaryProp = primaryToSecondaryFields[identifierType];
+    if (secondaryProp) {
+      /* second condition is for secondary property for identifier type
+       For example:
+       update[secondaryProp] = "abc@e.com;cd@e.com;k@w.com"
+       destinationExternalId = "cd@e.com"
+       So we are splitting all the emails in update[secondaryProp] into an array using ';'
+       and then checking if array includes  destinationExternalId
+       */
+      const filteredInfoForSecondaryProp = hsIdsToBeUpdated.filter((update) =>
+        update[secondaryProp]
+          ?.toString()
+          .toLowerCase()
+          .split(';')
+          .includes(destinationExternalId.toString().toLowerCase()),
+      );
+      if (filteredInfoForSecondaryProp.length > 0) {
+        inputParam.message.context.externalId = setHsSearchId(
+          input,
+          filteredInfoForSecondaryProp[0].id,
+          true,
+        );
+        inputParam.message.context.hubspotOperation = 'updateObject';
+        return inputParam;
+      }
+    }
+    // if not found in the existing contacts, then it's a new contact
     inputParam.message.context.hubspotOperation = 'createObject';
     return inputParam;
   });
@@ -746,8 +824,22 @@ const populateTraits = async (propertyMap, traits, destination) => {
   return populatedTraits;
 };
 
+const addExternalIdToHSTraits = (message) => {
+  const externalIdObj = message.context?.externalId?.[0];
+  if (externalIdObj.useSecondaryObject) {
+    /* this condition help us to NOT override the primary key value with the secondary key value
+     example: 
+     for `email` as primary key and `hs_additonal_emails` as secondary key we don't want to override `email` with `hs_additional_emails`.
+    neither we want to map anything for `hs_additional_emails` as this property can not be set 
+     */
+    return;
+  }
+  set(getFieldValueFromMessage(message, 'traits'), externalIdObj.identifierType, externalIdObj.id);
+};
+
 module.exports = {
   validateDestinationConfig,
+  addExternalIdToHSTraits,
   formatKey,
   fetchFinalSetOfTraits,
   getProperties,

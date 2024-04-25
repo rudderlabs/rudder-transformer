@@ -25,22 +25,29 @@ const dnsCache = new NodeCache({
   checkperiod: DNS_CACHE_TTL,
 });
 
-const fetchResolvedIps = async (hostname) => {
-  let ips = dnsCache.get(hostname);
-  if (ips === undefined) {
-    ips = await resolver.resolve4(hostname);
-    if (ips?.length > 0) {
-      dnsCache.set(hostname, ips);
-    }
-  }
-  return ips;
+const fetchResolvedIp = async (hostname) => {
+  // ex: [{ address: '108.157.0.0', ttl: 600 }]
+  const addresses = await resolver.resolve4(hostname, { ttl: true });
+  return addresses.length > 0 ? addresses[0] : {};
 };
 
 const staticLookup = (transformerVersionId) => async (hostname, _, cb) => {
-  let ips;
+  let ip;
   const resolveStartTime = new Date();
+  let dnsHit = false;
   try {
-    ips = DNS_CACHE_ENABLED ? await fetchResolvedIps(hostname) : await resolver.resolve4(hostname);
+    if (DNS_CACHE_ENABLED) {
+      ip = dnsCache.get(hostname);
+      if (ip !== undefined) {
+        dnsHit = true;
+      } else {
+        const { address, ttl } = await fetchResolvedIp(hostname);
+        ip = address;
+        dnsCache.set(hostname, ip, ttl || DNS_CACHE_TTL);
+      }
+    }
+    const { address } = await fetchResolvedIp(hostname);
+    ip = address;
   } catch (error) {
     logger.error(`DNS Error Code: ${error.code} | Message : ${error.message}`);
     stats.timing('fetch_dns_resolve_time', resolveStartTime, {
@@ -50,22 +57,19 @@ const staticLookup = (transformerVersionId) => async (hostname, _, cb) => {
     cb(null, `unable to resolve IP address for ${hostname}`, RECORD_TYPE_A);
     return;
   }
-  stats.timing('fetch_dns_resolve_time', resolveStartTime, { transformerVersionId });
+  stats.timing('fetch_dns_resolve_time', resolveStartTime, { transformerVersionId, dnsHit });
 
-  if (ips.length === 0) {
+  if (!ip) {
     cb(null, `resolved empty list of IP address for ${hostname}`, RECORD_TYPE_A);
     return;
   }
 
-  // eslint-disable-next-line no-restricted-syntax
-  for (const ip of ips) {
-    if (ip.startsWith(LOCALHOST_OCTET)) {
-      cb(null, `cannot use ${ip} as IP address`, RECORD_TYPE_A);
-      return;
-    }
+  if (ip.startsWith(LOCALHOST_OCTET)) {
+    cb(null, `cannot use ${ip} as IP address`, RECORD_TYPE_A);
+    return;
   }
 
-  cb(null, ips[0], RECORD_TYPE_A);
+  cb(null, ip, RECORD_TYPE_A);
 };
 
 const httpAgentWithDnsLookup = (scheme, transformerVersionId) => {

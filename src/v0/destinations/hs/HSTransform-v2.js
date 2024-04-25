@@ -110,11 +110,11 @@ const processIdentify = async (message, destination, propertyMap) => {
     GENERIC_TRUE_VALUES.includes(mappedToDestination.toString()) &&
     operation
   ) {
-    addExternalIdToHSTraits(message);
     if (!objectType) {
       throw new InstrumentationError('objectType not found');
     }
     if (operation === 'createObject') {
+      addExternalIdToHSTraits(message);
       endpoint = CRM_CREATE_UPDATE_ALL_OBJECTS.replace(':objectType', objectType);
     } else if (operation === 'updateObject' && getHsSearchId(message)) {
       const { hsSearchId } = getHsSearchId(message);

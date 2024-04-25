@@ -26,11 +26,8 @@ steps:
       $.assert(.message.properties.index, 'Missing required value from "properties.index"');
       let eventTypeMap = $.eventTypeMapping(.destination.Config);
       let event = .message.event.trim().toLowerCase();
-      let eventType = .message.properties.eventType ?? eventTypeMap[event];
-      let eventSubType = .message.properties.eventSubtype && eventType === 'conversion' ? 
-                .message.properties.eventSubtype in $.ALLOWED_EVENT_SUBTYPES ? 
-                  .message.properties.eventSubtype : null
-                : null;
+      let eventType = .message.properties?.eventType ?? eventTypeMap[event];
+      let eventSubType = .message.properties?.eventSubtype in $.ALLOWED_EVENT_SUBTYPES && eventType === 'conversion'  ? .message.properties.eventSubtype: null;
       $.assert(eventType, "eventType is mandatory for track call");
       let payload = .message.().({
         index: .properties.index,

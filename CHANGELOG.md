@@ -7,7 +7,6 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Features
 
-* remove redundant data from traits in hubspot ([2a63f12](https://github.com/rudderlabs/rudder-transformer/commit/2a63f128c562bd527491cdd653ced3f689d73a06))
 * remove redundant data from traits in hubspot ([#3310](https://github.com/rudderlabs/rudder-transformer/issues/3310)) ([4b21f13](https://github.com/rudderlabs/rudder-transformer/commit/4b21f1353d3d9a431a0d5446d019f66a543b977b))
 
 ### [1.62.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.62.1...v1.62.2) (2024-04-18)

@@ -1,9 +1,9 @@
 import {
-  WorkflowEngine,
-  WorkflowEngineFactory,
-  TemplateType,
   ExecutionBindings,
   StepOutput,
+  TemplateType,
+  WorkflowEngine,
+  WorkflowEngineFactory,
 } from '@rudderstack/workflow-engine';
 import { FixMe } from '../../util/types';
 
@@ -11,9 +11,9 @@ import tags from '../../v0/util/tags';
 
 import {
   getErrorInfo,
+  getPlatformBindingsPaths,
   getRootPathForDestination,
   getWorkflowPath,
-  getPlatformBindingsPaths,
   isCdkV2Destination,
 } from './utils';
 
@@ -82,10 +82,12 @@ export async function processCdkV2Workflow(
   destType: string,
   parsedEvent: FixMe,
   feature: string,
+  logger: FixMe,
   requestMetadata: NonNullable<unknown> = {},
   bindings: Record<string, FixMe> = {},
 ) {
   try {
+    logger.debug(`Processing cdkV2 workflow`);
     const workflowEngine = await getCachedWorkflowEngine(destType, feature, bindings);
     return await executeWorkflow(workflowEngine, parsedEvent, requestMetadata);
   } catch (error) {

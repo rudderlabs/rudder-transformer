@@ -243,7 +243,8 @@ const batchEvents = (eventChunksArray) => {
   return batchedResponseList;
 };
 
-const processRouterDest = async (inputs, reqMetadata) => {
+const processRouterDest = async (inputs, reqMetadata, logger) => {
+  logger.debug(`Transformation router request received with size ${inputs.length}`);
   const batchErrorRespList = [];
   const eventChunksArray = [];
   const { destination } = inputs[0];

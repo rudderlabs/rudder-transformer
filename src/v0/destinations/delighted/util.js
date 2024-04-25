@@ -1,14 +1,10 @@
-const {
-  NetworkInstrumentationError,
-  InstrumentationError,
-  NetworkError,
-} = require('@rudderstack/integrations-lib');
-const myAxios = require('../../../util/myAxios');
+const { InstrumentationError, NetworkError } = require('@rudderstack/integrations-lib');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { getValueFromMessage } = require('../../util');
 const { ENDPOINT } = require('./config');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { handleHttpRequest } = require('../../../adapters/network');
 
 const isValidEmail = (email) => {
   const re =
@@ -41,6 +37,30 @@ const isValidUserIdOrError = (channel, userId) => {
   };
 };
 
+/**
+ * Returns final status
+ * @param {*} status
+ * @returns
+ */
+const getErrorStatus = (status) => {
+  let errStatus;
+  switch (status) {
+    case 422:
+    case 401:
+    case 406:
+    case 403:
+      errStatus = 400;
+      break;
+    case 500:
+    case 503:
+      errStatus = 500;
+      break;
+    default:
+      errStatus = status;
+  }
+  return errStatus;
+};
+
 const userValidity = async (channel, Config, userId) => {
   const paramsdata = {};
   if (channel === 'email') {
@@ -50,53 +70,38 @@ const userValidity = async (channel, Config, userId) => {
   }
 
   const basicAuth = Buffer.from(Config.apiKey).toString('base64');
-  let response;
-  try {
-    response = await myAxios.get(
-      `${ENDPOINT}`,
-      {
-        headers: {
-          Authorization: `Basic ${basicAuth}`,
-          'Content-Type': JSON_MIME_TYPE,
-        },
-        params: paramsdata,
+  const { processedResponse } = await handleHttpRequest(
+    'get',
+    `${ENDPOINT}`,
+    {
+      headers: {
+        Authorization: `Basic ${basicAuth}`,
+        'Content-Type': JSON_MIME_TYPE,
       },
-      {
-        destType: 'delighted',
-        feature: 'transformation',
-        requestMethod: 'GET',
-        endpointPath: '/people.json',
-        module: 'router',
-      },
-    );
-    if (response && response.data && response.status === 200 && Array.isArray(response.data)) {
-      return response.data.length > 0;
-    }
-    throw new NetworkInstrumentationError('Invalid response');
-  } catch (error) {
-    let errMsg = '';
-    let errStatus = 400;
-    if (error.response && error.response.data) {
-      errMsg = JSON.stringify(error.response.data);
-      switch (error.response.status) {
-        case 422:
-        case 401:
-        case 406:
-        case 403:
-          errStatus = 400;
-          break;
-        case 500:
-        case 503:
-          errStatus = 500;
-          break;
-        default:
-          errStatus = 400;
-      }
-    }
-    throw new NetworkError(`Error occurred while checking user : ${errMsg}`, errStatus, {
-      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errStatus),
-    });
+      params: paramsdata,
+    },
+    {
+      destType: 'delighted',
+      feature: 'transformation',
+      requestMethod: 'GET',
+      endpointPath: '/people.json',
+      module: 'router',
+    },
+  );
+
+  if (processedResponse.status === 200 && Array.isArray(processedResponse?.response)) {
+    return processedResponse.response.length > 0;
   }
+
+  const errStatus = getErrorStatus(processedResponse.status);
+  throw new NetworkError(
+    `Error occurred while checking user: ${JSON.stringify(processedResponse?.response || 'Invalid response')}`,
+    errStatus,
+    {
+      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errStatus),
+    },
+    processedResponse,
+  );
 };
 const eventValidity = (Config, message) => {
   const event = getValueFromMessage(message, 'event');

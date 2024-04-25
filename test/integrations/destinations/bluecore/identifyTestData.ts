@@ -55,6 +55,10 @@ const commonOutputCustomerProperties = {
   first_name: 'Test',
   last_name: 'Rudderlabs',
   sex: 'non-binary',
+  anonymousId: '50be5c78-6c3f-4b60-be84-97805a316fb1',
+  db: '19950715',
+  gender: 'non-binary',
+  phone: '+1234589947',
   address: {
     city: 'Kolkata',
     state: 'WB',
@@ -71,7 +75,7 @@ const anonymousId = '97c46c81-3140-456d-b2a9-690d70aaca35';
 const userId = 'user@1';
 const sentAt = '2021-01-03T17:02:53.195Z';
 const originalTimestamp = '2021-01-03T17:02:53.193Z';
-const commonEndpoint = 'https://api.bluecore.com/api/track/mobile/v1';
+const commonEndpoint = 'https://api.bluecore.app/api/track/mobile/v1';
 
 export const identifyData = [
   {
@@ -118,8 +122,8 @@ export const identifyData = [
                 properties: {
                   distinct_id: 'abc@gmail.com',
                   customer: { ...commonOutputCustomerProperties, email: 'abc@gmail.com' },
+                  token: 'dummy_sandbox',
                 },
-                token: 'dummy_sandbox',
                 event: 'customer_patch',
               },
             }),
@@ -302,8 +306,9 @@ export const identifyData = [
                 properties: {
                   distinct_id: 'user@1',
                   customer: { ...commonOutputCustomerProperties, email: 'abc@gmail.com' },
+                  token: 'dummy_sandbox',
                 },
-                token: 'dummy_sandbox',
+
                 event: 'identify',
               },
             }),
@@ -361,8 +366,8 @@ export const identifyData = [
                 properties: {
                   distinct_id: '54321',
                   customer: { ...commonOutputCustomerProperties, email: 'abc@gmail.com' },
+                  token: 'dummy_sandbox',
                 },
-                token: 'dummy_sandbox',
                 event: 'customer_patch',
               },
             }),

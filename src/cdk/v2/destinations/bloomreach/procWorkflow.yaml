@@ -39,7 +39,7 @@ steps:
       const userId = .message.().(
           {{{{$.getGenericPaths("userIdOnly")}}}};
       );
-      $.assert(userId ?? .message.anonymousId, "Either one of userId or anonymousId is required. Aborting");
+      $.assert(userId || .message.anonymousId, "Either one of userId or anonymousId is required. Aborting");
 
   - name: prepareIdentifyPayload
     condition: $.context.messageType === {{$.EventType.IDENTIFY}}
@@ -64,7 +64,7 @@ steps:
       - name: pageEventName
         condition: $.context.messageType === {{$.EventType.PAGE}}
         template: |
-          const category = .message.category ?? .message.properties.category;
+          const category = .message.category || .message.properties.category;
           const name = .message.name || .message.properties.name;
           const eventNameArray = ["Viewed"];
           category ? eventNameArray.push(category);
@@ -74,7 +74,7 @@ steps:
       - name: screenEventName
         condition: $.context.messageType === {{$.EventType.SCREEN}}
         template: |
-          const category = .message.category ?? .message.properties.category;
+          const category = .message.category || .message.properties.category;
           const name = .message.name || .message.properties.name;
           const eventNameArray = ["Viewed"];
           category ? eventNameArray.push(category);

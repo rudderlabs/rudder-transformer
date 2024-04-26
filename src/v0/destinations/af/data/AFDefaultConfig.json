@@ -1,5 +1,6 @@
 {
   "properties.revenue": "af_revenue",
   "properties.quantity": "af_quantity",
-  "properties.price": "af_price"
+  "properties.price": "af_price",
+  "properties.currency": "af_currency"
 }

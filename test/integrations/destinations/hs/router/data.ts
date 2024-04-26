@@ -1033,7 +1033,6 @@ export const data = [
                           firstname: 'Test Hubspot',
                           anonymousId: '12345',
                           country: 'India',
-                          email: 'testhubspot2@email.com',
                         },
                         id: '103605',
                       },

@@ -20,6 +20,7 @@ export const identify: ProcessorTestData[] = [
             destination,
             message: {
               type: 'identify',
+              userId: '',
               anonymousId: 'anonId123',
               traits,
               integrations: {

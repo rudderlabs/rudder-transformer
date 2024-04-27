@@ -16,7 +16,7 @@ const CONFIG_CATEGORIES = {
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
 module.exports = {
-  MAX_BATCH_SIZE: 5000,
+  MAX_BATCH_SIZE: 1000,
   BATCH_ENDPOINT,
   API_HEADER_METHOD,
   API_VERSION,

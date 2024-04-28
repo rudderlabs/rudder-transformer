@@ -127,35 +127,66 @@ const deduceEndPoint = (message, destConfig, batchGroupId = undefined) => {
   return endPoint;
 };
 
+function estimateJsonSize(obj) {
+  return new Blob([JSON.stringify(obj)]).size;
+}
+
+function createPayload(keyId, contacts, contactListId) {
+  return { key_id: keyId, contacts, contact_list_id: contactListId };
+}
+
+function ensureSizeConstraints(contacts) {
+  const MAX_SIZE_BYTES = 8000000; // 8 MB
+  const chunks = [];
+  let currentBatch = [];
+
+  contacts.forEach((contact) => {
+    // Start a new batch if adding the next contact exceeds size limits
+    if (
+      currentBatch.length === 0 ||
+      estimateJsonSize([...currentBatch, contact]) < MAX_SIZE_BYTES
+    ) {
+      currentBatch.push(contact);
+    } else {
+      chunks.push(currentBatch);
+      currentBatch = [contact];
+    }
+  });
+
+  // Add the remaining batch if not empty
+  if (currentBatch.length > 0) {
+    chunks.push(currentBatch);
+  }
+
+  return chunks;
+}
+
 function createIdentifyBatches(events) {
-  // Grouping the payloads based on key_id and contact_list_id
+  // Grouping payloads by key_id and contact_list_id
   const groupedIdentifyPayload = lodash.groupBy(
     events,
     (item) =>
       `${item.message.body.JSON.destinationPayload.key_id}-${item.message.body.JSON.destinationPayload.contact_list_id}`,
   );
 
-  // Combining the contacts within each group and maintaining the payload structure
-  const combinedPayloads = Object.keys(groupedIdentifyPayload).map((key) => {
-    const group = groupedIdentifyPayload[key];
-
-    // Reduce the group to a single payload with combined contacts
-    const combinedContacts = group.reduce(
-      (acc, item) => acc.concat(item.message.body.JSON.destinationPayload.contacts),
-      [],
-    );
-
-    // Use the first item to extract key_id and contact_list_id
+  // Process each group
+  return lodash.flatMap(groupedIdentifyPayload, (group) => {
     const firstItem = group[0].message.body.JSON.destinationPayload;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const { key_id, contact_list_id } = firstItem;
 
-    return {
-      key_id: firstItem.key_id,
-      contacts: combinedContacts,
-      contact_list_id: firstItem.contact_list_id,
-    };
+    // Collect all contacts
+    const allContacts = lodash.flatMap(
+      group,
+      (item) => item.message.body.JSON.destinationPayload.contacts,
+    );
+    // Chunk by the number of items first, then size
+    const initialChunks = lodash.chunk(allContacts, MAX_BATCH_SIZE);
+    const finalChunks = lodash.flatMap(initialChunks, ensureSizeConstraints);
+
+    // Create payloads for each chunk
+    return finalChunks.map((contacts) => createPayload(key_id, contacts, contact_list_id));
   });
-
-  return combinedPayloads;
 }
 
 function createGroupBatches(events) {
@@ -166,7 +197,7 @@ function createGroupBatches(events) {
   );
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  return Object.entries(grouped).map(([key, group]) => {
+  return Object.entries(grouped).flatMap(([key, group]) => {
     const keyId = group[0].message.body.JSON.destinationPayload.payload.key_id;
     const { contactListId } = group[0].message.body.JSON.destinationPayload;
     const combinedExternalIds = group.reduce((acc, item) => {
@@ -174,26 +205,59 @@ function createGroupBatches(events) {
       return acc.concat(ids);
     }, []);
 
-    return {
+    const idChunks = lodash.chunk(combinedExternalIds, MAX_BATCH_SIZE);
+    // Map each chunk to a payload configuration
+    return idChunks.map((chunk) => ({
       endpoint: `https://api.emarsys.net/api/v2/contactlist/${contactListId}/add`,
       payload: {
         key_id: keyId,
-        external_ids: combinedExternalIds,
+        external_ids: chunk,
       },
-    };
+    }));
   });
 }
-function formatPayloadsWithEndpoint(combinedPayloads, endpointUrl = '') {
+function formatIdentifyPayloadsWithEndpoint(combinedPayloads, endpointUrl = '') {
   return combinedPayloads.map((payload) => ({
-    endpoint: endpointUrl, // You can dynamically determine or pass this value
+    endpoint: endpointUrl,
     payload,
   }));
 }
 
+function buildBatchedRequest(batches, method, constants) {
+  return batches.map((batch) => ({
+    batchedRequest: {
+      body: {
+        JSON: batch.payload, // Directly use the payload from the batch
+        JSON_ARRAY: {},
+        XML: {},
+        FORM: {},
+      },
+      version: constants.version,
+      type: constants.type,
+      method,
+      endpoint: batch.endpoint,
+      headers: constants.headers,
+      params: {},
+      files: {},
+    },
+    metadata: chunkedMetadata,
+    batched: true,
+    statusCode: 200,
+    destination: constants.destination,
+  }));
+}
+
 function batchResponseBuilder(successfulEvents) {
+  const finaloutput = [];
   const groupedSuccessfulPayload = {
-    identify: {},
-    group: {},
+    identify: {
+      method: 'PUT',
+      batches: [],
+    },
+    group: {
+      method: 'POST',
+      batches: [],
+    },
   };
   let batchesOfIdentifyEvents;
   if (successfulEvents.length === 0) {
@@ -202,7 +266,6 @@ function batchResponseBuilder(successfulEvents) {
   const constants = {
     version: successfulEvents[0].message[0].version,
     type: successfulEvents[0].message[0].type,
-    method: successfulEvents[0].message[0].method,
     headers: successfulEvents[0].message[0].headers,
     destination: successfulEvents[0].destination,
   };
@@ -215,41 +278,40 @@ function batchResponseBuilder(successfulEvents) {
     switch (eachEventGroup) {
       case EVENT_TYPE.IDENTIFY:
         batchesOfIdentifyEvents = createIdentifyBatches(eachEventGroup);
-        groupedSuccessfulPayload.identify = formatPayloadsWithEndpoint(
+        groupedSuccessfulPayload.identify.batches = formatIdentifyPayloadsWithEndpoint(
           batchesOfIdentifyEvents,
           'https://api.emarsys.net/api/v2/contact/?create_if_not_exists=1',
         );
         break;
       case EVENT_TYPE.GROUP:
-        groupedSuccessfulPayload.group = createGroupBatches(eachEventGroup);
+        groupedSuccessfulPayload.group.batches = createGroupBatches(eachEventGroup);
         break;
       default:
         break;
     }
     return groupedSuccessfulPayload;
   });
+  // Process each identify batch
+  if (groupedSuccessfulPayload.identify) {
+    const identifyBatches = buildBatchedRequest(
+      groupedSuccessfulPayload.identify.batches,
+      groupedSuccessfulPayload.identify.method,
+      constants,
+    );
+    finaloutput.push(...identifyBatches);
+  }
 
-  return chunkedElements.map((elementsBatch, index) => ({
-    batchedRequest: {
-      body: {
-        JSON: { elements: elementsBatch },
-        JSON_ARRAY: {},
-        XML: {},
-        FORM: {},
-      },
-      version: constants.version,
-      type: constants.type,
-      method: constants.method,
-      endpoint: constants.endpoint,
-      headers: constants.headers,
-      params: {},
-      files: {},
-    },
-    metadata: chunkedMetadata[index],
-    batched: true,
-    statusCode: 200,
-    destination: constants.destination,
-  }));
+  // Process each group batch
+  if (groupedSuccessfulPayload.group) {
+    const groupBatches = buildBatchedRequest(
+      groupedSuccessfulPayload.group.batches,
+      groupedSuccessfulPayload.group.method,
+      constants,
+    );
+    finaloutput.push(...groupBatches);
+  }
+
+  return finaloutput;
 }
 module.exports = {
   buildIdentifyPayload,

@@ -1,7 +1,11 @@
 const get = require('get-value');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EventType } = require('../../../constants');
-const { handleRtTfSingleEventError, getDestinationExternalIDInfoForRetl } = require('../../util');
+const {
+  handleRtTfSingleEventError,
+  getDestinationExternalIDInfoForRetl,
+  groupEventsByType: batchEventsInOrder,
+} = require('../../util');
 const { API_VERSION } = require('./config');
 const {
   processLegacyIdentify,
@@ -66,6 +70,7 @@ const process = async (event) => {
 
 // we are batching by default at routerTransform
 const processRouterDest = async (inputs, reqMetadata) => {
+  const tempNewInputs = batchEventsInOrder(inputs);
   let tempInputs = inputs;
 
   const successRespList = [];
@@ -99,7 +104,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
   }
 
   await Promise.all(
-    tempInputs.map(async (input) => {
+    tempNewInputs.map(async (input) => {
       try {
         if (input.message.statusCode) {
           // already transformed event

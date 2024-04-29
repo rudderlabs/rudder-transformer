@@ -38,7 +38,7 @@ steps:
   - name: preparePayloadForIdentify
     description: |
       Builds identify payload.
-      ref: https://learn.microsoft.com/en-us/linkedin/marketing/integrations/ads-reporting/conversions-api?view=li-lms-2024-02&tabs=curl#adding-multiple-conversion-events-in-a-batch
+      ref:
     template: |
       $.context.payload = $.buildIdentifyPayload(.message, .destination.Config,);
   - name: preparePayloadForGroup

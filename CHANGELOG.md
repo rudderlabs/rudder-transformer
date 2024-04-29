@@ -8,9 +8,7 @@ All notable changes to this project will be documented in this file. See [standa
 ### Features
 
 * adding custom properties support to bluecore ([#3282](https://github.com/rudderlabs/rudder-transformer/issues/3282)) ([8592e66](https://github.com/rudderlabs/rudder-transformer/commit/8592e664eb568e70a00261e275ab2faed8f6f618))
-* **iterable:** component test refactor ([#3250](https://github.com/rudderlabs/rudder-transformer/issues/3250)) ([650ea9c](https://github.com/rudderlabs/rudder-transformer/commit/650ea9ca9ca6351aadc51bfb5038b8b2507990ec))
 * onboard Yandex Metrica Offline Events Destination ([#3232](https://github.com/rudderlabs/rudder-transformer/issues/3232)) ([8f79f53](https://github.com/rudderlabs/rudder-transformer/commit/8f79f53d30326e07fc92dd624e799015ff9f87c2))
-* **refiner:** component test refactor ([#3221](https://github.com/rudderlabs/rudder-transformer/issues/3221)) ([7b1d11b](https://github.com/rudderlabs/rudder-transformer/commit/7b1d11b306f3fa3a5698061c31acfbf53bc78dd1))
 
 
 ### Bug Fixes

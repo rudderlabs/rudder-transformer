@@ -80,11 +80,8 @@ steps:
     steps:
       - name: getTrimmedEvent
         template: |
-          let customEvent = "";
           const event = .message.event;
-          .destination.Config.orttoEventsMapping@order.(
-            customEvent = event === .rsEventName ? .orttoEventName : null;
-          )
+          const customEvent = .destination.Config.orttoEventsMapping.{.rsEventName === event}.orttoEventName;
           $.assert(customEvent, "Event names is not mapped");
           "act:cm:"+customEvent.trim().toLowerCase().replace(new RegExp('\\s+', 'g'),'-');
 

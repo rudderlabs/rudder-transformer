@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.64.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.63.0...v1.64.0) (2024-04-29)
+
+
+### Features
+
+* adding custom properties support to bluecore ([#3282](https://github.com/rudderlabs/rudder-transformer/issues/3282)) ([8592e66](https://github.com/rudderlabs/rudder-transformer/commit/8592e664eb568e70a00261e275ab2faed8f6f618))
+* **iterable:** component test refactor ([#3250](https://github.com/rudderlabs/rudder-transformer/issues/3250)) ([650ea9c](https://github.com/rudderlabs/rudder-transformer/commit/650ea9ca9ca6351aadc51bfb5038b8b2507990ec))
+* onboard Yandex Metrica Offline Events Destination ([#3232](https://github.com/rudderlabs/rudder-transformer/issues/3232)) ([8f79f53](https://github.com/rudderlabs/rudder-transformer/commit/8f79f53d30326e07fc92dd624e799015ff9f87c2))
+* **refiner:** component test refactor ([#3221](https://github.com/rudderlabs/rudder-transformer/issues/3221)) ([7b1d11b](https://github.com/rudderlabs/rudder-transformer/commit/7b1d11b306f3fa3a5698061c31acfbf53bc78dd1))
+
+
+### Bug Fixes
+
+* algolia enhancement ( adding currency, price, subType and objectData support ) ([#3290](https://github.com/rudderlabs/rudder-transformer/issues/3290)) ([f06ebde](https://github.com/rudderlabs/rudder-transformer/commit/f06ebde110693fe32f8e450dc395f1f4019defab))
+* **delighted:** replace myAxios utility with handleHttpRequest utility ([#3237](https://github.com/rudderlabs/rudder-transformer/issues/3237)) ([bac3cc5](https://github.com/rudderlabs/rudder-transformer/commit/bac3cc5670c149454a6063a55a4b901043b0ff02))
+* handle empty userId ([5402b21](https://github.com/rudderlabs/rudder-transformer/commit/5402b219ccdeaafb710c8c2828e983e9864a415f))
+* handle empty userId (movable ink, bloomreach) ([#3300](https://github.com/rudderlabs/rudder-transformer/issues/3300)) ([038c1aa](https://github.com/rudderlabs/rudder-transformer/commit/038c1aa04049aaa1caa1bf82cf6c69611b5d3fd9))
+* send content_ids as a string if there is only one value ([#3317](https://github.com/rudderlabs/rudder-transformer/issues/3317)) ([54eca32](https://github.com/rudderlabs/rudder-transformer/commit/54eca3220ea48fae64c655813fe4430dd704639e))
+
 ## [1.63.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.62.2...v1.63.0) (2024-04-25)
 
 

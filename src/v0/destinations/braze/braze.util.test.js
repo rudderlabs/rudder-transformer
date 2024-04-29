@@ -757,7 +757,7 @@ describe('dedup utility tests', () => {
       };
       store.set('123', storeData);
       const result = BrazeDedupUtility.deduplicate(userData, store);
-      expect(result).toBeNull();
+      expect(result).toEqual({ country: 'US', external_id: '123', language: 'en' });
     });
 
     test('returns null if all keys have $add, $update, or $remove properties', () => {

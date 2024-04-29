@@ -24,7 +24,7 @@ const NON_DETERMINABLE = 'Non-determinable';
 
 export class DeliveryController {
   public static async deliverToDestination(ctx: Context) {
-    logger.info('Native(Delivery):: Request to transformer::', ctx.request.body);
+    logger.debug('Native(Delivery):: Request to transformer::', ctx.request.body);
     let deliveryResponse: DeliveryV0Response;
     const requestMetadata = MiscService.getRequestMetadata(ctx);
     const deliveryRequest = ctx.request.body as ProxyV0Request;

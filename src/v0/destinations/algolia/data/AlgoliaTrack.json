@@ -34,5 +34,15 @@
     "destKey": "positions",
     "sourceKeys": "properties.positions",
     "required": false
+  },
+  {
+    "destKey": "value",
+    "sourceKeys": "properties.value",
+    "required": false
+  },
+  {
+    "destKey": "currency",
+    "sourceKeys": "properties.currency",
+    "required": false
   }
 ]

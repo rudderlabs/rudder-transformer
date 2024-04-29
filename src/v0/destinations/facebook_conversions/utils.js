@@ -134,7 +134,7 @@ const populateCustomDataBasedOnCategory = (customData, message, category, catego
       const { contentIds, contents } = populateContentsAndContentIDs([message.properties]);
       eventTypeCustomData = {
         ...eventTypeCustomData,
-        content_ids: contentIds,
+        content_ids: contentIds.length === 1 ? contentIds[0] : contentIds,
         contents,
         content_type: contentType,
         content_category: getContentCategory(contentCategory),

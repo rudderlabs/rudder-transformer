@@ -1,4 +1,8 @@
-const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const {
+  InstrumentationError,
+  isDefined,
+  removeUndefinedAndNullValues,
+} = require('@rudderstack/integrations-lib');
 const logger = require('../../../logger');
 const { EVENT_TYPES } = require('./config');
 
@@ -66,6 +70,8 @@ const genericpayloadValidator = (payload) => {
 const createObjectArray = (objects, eventType) => {
   const objectList = [];
   const positionList = [];
+  // eslint-disable-next-line sonarjs/no-unused-collection
+  const objectData = [];
   if (objects.length > 0) {
     objects.forEach((object, index) => {
       if (object.objectId) {
@@ -80,13 +86,22 @@ const createObjectArray = (objects, eventType) => {
           }
         } else {
           objectList.push(object.objectId);
+          if (eventType === 'conversion') {
+            const singleObjData = {
+              queryID: isDefined(object.queryID) ? `${object.queryID}` : null,
+              price: isDefined(object.price) ? `${object.price}` : null,
+              quantity: object.quantity,
+              discount: isDefined(object.discount) ? `${object.discount}` : null,
+            };
+            objectData.push(removeUndefinedAndNullValues(singleObjData));
+          }
         }
       } else {
         logger.error(`object at index ${index} dropped. objectId is required.`);
       }
     });
   }
-  return { objectList, positionList };
+  return { objectList, positionList, objectData };
 };
 
 const clickPayloadValidator = (payload) => {

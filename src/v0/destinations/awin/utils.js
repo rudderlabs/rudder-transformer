@@ -81,11 +81,15 @@ const trackProduct = (properties, advertiserId, commissionParts) => {
 // ref: https://wiki.awin.com/index.php/Advertiser_Tracking_Guide/Product_Level_Tracking#PLT_Via_Conversion_Pixel
 const populateCustomTransactionProperties = (properties, customFieldMap) => {
   const customObject = {};
+  const customPropertyPattern = '^\\s*p\\d+\\s*$';
+  const regex = new RegExp(customPropertyPattern, 'i');
   const propertyMap = getHashFromArray(customFieldMap, 'from', 'to', false);
   Object.entries(propertyMap).forEach(([rudderProperty, awinProperty]) => {
-    const fieldValue = properties[rudderProperty];
-    if (fieldValue) {
-      customObject[awinProperty] = fieldValue;
+    if (regex.test(awinProperty)) {
+      const fieldValue = properties[rudderProperty];
+      if (fieldValue) {
+        customObject[awinProperty] = fieldValue;
+      }
     }
   });
   return customObject;

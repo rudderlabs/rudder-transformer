@@ -175,14 +175,16 @@ describe('populateCustomTransactionProperties', () => {
       rudderProperty1: 'value1',
       rudderProperty2: 123,
       rudderProperty3: 'value3',
+      rudderProperty4: 234,
     };
     const customFieldMap = [
-      { from: 'rudderProperty1', to: 'awinProperty1' },
-      { from: 'rudderProperty2', to: 'awinProperty2' },
+      { from: 'rudderProperty1', to: 'p1' },
+      { from: 'rudderProperty2', to: 'p2' },
+      { from: 'rudderProperty4', to: 'anotherp2' },
     ];
     const expectedOutput = {
-      awinProperty1: 'value1',
-      awinProperty2: 123,
+      p1: 'value1',
+      p2: 123,
     };
 
     const result = populateCustomTransactionProperties(properties, customFieldMap);

@@ -143,9 +143,28 @@ const clickPayloadValidator = (payload) => {
   return updatedPayload;
 };
 
+// ref : https://www.algolia.com/doc/rest-api/insights/#method-param-objectdata-2:~:text=currency-,%23,currency%20as%20ISO%2D4217%20currency%20code%2C%20such%20as%20USD%20or%20EUR.,-ObjectData
+function validatePayload(payload) {
+  if (payload.objectData && Array.isArray(payload.objectData)) {
+    const hasRelevantFields = payload.objectData.some(
+      (obj) =>
+        obj.hasOwnProperty('price') ||
+        obj.hasOwnProperty('quantity') ||
+        obj.hasOwnProperty('discount'),
+    );
+
+    if (hasRelevantFields && !payload.currency) {
+      throw new InstrumentationError(
+        'Currency missing when objectData fields has price informations.',
+      );
+    }
+  }
+}
+
 module.exports = {
   genericpayloadValidator,
   createObjectArray,
   eventTypeMapping,
   clickPayloadValidator,
+  validatePayload,
 };

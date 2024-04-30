@@ -1,4 +1,8 @@
-const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const {
+  InstrumentationError,
+  isDefined,
+  removeUndefinedAndNullValues,
+} = require('@rudderstack/integrations-lib');
 const logger = require('../../../logger');
 const { EVENT_TYPES } = require('./config');
 
@@ -66,6 +70,8 @@ const genericpayloadValidator = (payload) => {
 const createObjectArray = (objects, eventType) => {
   const objectList = [];
   const positionList = [];
+  // eslint-disable-next-line sonarjs/no-unused-collection
+  const objectData = [];
   if (objects.length > 0) {
     objects.forEach((object, index) => {
       if (object.objectId) {
@@ -80,13 +86,22 @@ const createObjectArray = (objects, eventType) => {
           }
         } else {
           objectList.push(object.objectId);
+          if (eventType === 'conversion') {
+            const singleObjData = {
+              queryID: isDefined(object.queryID) ? `${object.queryID}` : null,
+              price: isDefined(object.price) ? `${object.price}` : null,
+              quantity: object.quantity,
+              discount: isDefined(object.discount) ? `${object.discount}` : null,
+            };
+            objectData.push(removeUndefinedAndNullValues(singleObjData));
+          }
         }
       } else {
         logger.error(`object at index ${index} dropped. objectId is required.`);
       }
     });
   }
-  return { objectList, positionList };
+  return { objectList, positionList, objectData };
 };
 
 const clickPayloadValidator = (payload) => {
@@ -128,9 +143,28 @@ const clickPayloadValidator = (payload) => {
   return updatedPayload;
 };
 
+// ref : https://www.algolia.com/doc/rest-api/insights/#method-param-objectdata-2:~:text=currency-,%23,currency%20as%20ISO%2D4217%20currency%20code%2C%20such%20as%20USD%20or%20EUR.,-ObjectData
+function validatePayload(payload) {
+  if (payload.objectData && Array.isArray(payload.objectData)) {
+    const hasRelevantFields = payload.objectData.some(
+      (obj) =>
+        obj.hasOwnProperty('price') ||
+        obj.hasOwnProperty('quantity') ||
+        obj.hasOwnProperty('discount'),
+    );
+
+    if (hasRelevantFields && !payload.currency) {
+      throw new InstrumentationError(
+        'Currency missing when objectData fields has price informations.',
+      );
+    }
+  }
+}
+
 module.exports = {
   genericpayloadValidator,
   createObjectArray,
   eventTypeMapping,
   clickPayloadValidator,
+  validatePayload,
 };

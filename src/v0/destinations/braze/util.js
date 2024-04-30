@@ -26,7 +26,7 @@ const {
 const { JSON_MIME_TYPE, HTTP_STATUS_CODES } = require('../../util/constant');
 const { isObject } = require('../../util');
 const { removeUndefinedValues, getIntegrationsObj } = require('../../util');
-const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const { InstrumentationError, isDefined } = require('@rudderstack/integrations-lib');
 
 const getEndpointFromConfig = (destination) => {
   // Init -- mostly for test cases
@@ -294,7 +294,7 @@ const BrazeDedupUtility = {
 
     // add non billable attributes back to the deduplicated user object
     BRAZE_NON_BILLABLE_ATTRIBUTES.forEach((key) => {
-      if (isDefinedAndNotNull(userData[key])) {
+      if (isDefined(userData[key])) {
         deduplicatedUserData[key] = userData[key];
       }
     });

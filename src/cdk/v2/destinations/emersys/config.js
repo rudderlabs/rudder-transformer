@@ -5,4 +5,5 @@ module.exports = {
   EMAIL_FIELD_ID: 3,
   OPT_IN_FILED_ID: 31,
   ALLOWED_OPT_IN_VALUES,
+  MAX_BATCH_SIZE_BYTES: 8000000, // 8 MB
 };

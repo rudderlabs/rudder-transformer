@@ -1,14 +1,14 @@
+const lodash = require('lodash');
 const { EVENT_TYPE } = require('rudder-transformer-cdk/build/constants');
 const {
   buildIdentifyPayload,
   buildGroupPayload,
-  deduceEndPoint,
-  batchResponseBuilder,
   base64Sha,
   getWsseHeader,
   findRudderPropertyByEmersysProperty,
-  formatIdentifyPayloadsWithEndpoint,
+  createGroupBatches,
 } = require('./utils');
+const utils = require('./utils');
 const crypto = require('crypto');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 
@@ -286,5 +286,126 @@ describe('buildGroupPayload', () => {
     expect(() => {
       buildGroupPayload(message, destination);
     }).toThrow(InstrumentationError);
+  });
+});
+
+describe('createGroupBatches', () => {
+  // Should group events by key_id and contactListId
+  it('should group events by key_id and contactListId when events are provided', () => {
+    // Arrange
+    const events = [
+      {
+        message: {
+          body: {
+            JSON: {
+              destinationPayload: {
+                payload: {
+                  key_id: 'key1',
+                  external_ids: ['id1', 'id2'],
+                },
+                contactListId: 'list1',
+              },
+            },
+          },
+        },
+        metadata: { jobId: 1, userId: 'u1' },
+      },
+      {
+        message: {
+          body: {
+            JSON: {
+              destinationPayload: {
+                payload: {
+                  key_id: 'key2',
+                  external_ids: ['id3', 'id4'],
+                },
+                contactListId: 'list2',
+              },
+            },
+          },
+        },
+        metadata: { jobId: 2, userId: 'u2' },
+      },
+      {
+        message: {
+          body: {
+            JSON: {
+              destinationPayload: {
+                payload: {
+                  key_id: 'key1',
+                  external_ids: ['id5', 'id6'],
+                },
+                contactListId: 'list1',
+              },
+            },
+          },
+        },
+        metadata: { jobId: 3, userId: 'u3' },
+      },
+    ];
+
+    // Act
+    const result = createGroupBatches(events);
+
+    // Assert
+    expect(result).toEqual([
+      {
+        endpoint: 'https://api.emarsys.net/api/v2/contactlist/list1/add',
+        payload: {
+          key_id: 'key1',
+          external_ids: ['id1', 'id2', 'id5', 'id6'],
+        },
+        metadata: [
+          { jobId: 1, userId: 'u1' },
+          { jobId: 3, userId: 'u3' },
+        ],
+      },
+      {
+        endpoint: 'https://api.emarsys.net/api/v2/contactlist/list2/add',
+        payload: {
+          key_id: 'key2',
+          external_ids: ['id3', 'id4'],
+        },
+        metadata: [{ jobId: 2, userId: 'u2' }],
+      },
+    ]);
+  });
+
+  // Should return an empty array if no events are provided
+  it('should return an empty array when no events are provided', () => {
+    // Arrange
+    const events = [];
+
+    // Act
+    const result = createGroupBatches(events);
+
+    // Assert
+    expect(result).toEqual([]);
+  });
+});
+
+describe('findRudderPropertyByEmersysProperty', () => {
+  // Returns the correct rudderProperty when given a valid emersysProperty and fieldMapping
+  it('should return the correct rudderProperty when given a valid emersysProperty and fieldMapping', () => {
+    const emersysProperty = 'email';
+    const fieldMapping = [
+      { emersysProperty: 'email', rudderProperty: 'email' },
+      { emersysProperty: 'firstName', rudderProperty: 'firstName' },
+      { emersysProperty: 'lastName', rudderProperty: 'lastName' },
+    ];
+
+    const result = findRudderPropertyByEmersysProperty(emersysProperty, fieldMapping);
+
+    expect(result).toBe('email');
+  });
+
+  // Returns null when given an empty fieldMapping
+  it('should return null when given an empty fieldMapping', () => {
+    const emersysProperty = 'email';
+    const fieldMapping = [];
+
+    const result = findRudderPropertyByEmersysProperty(emersysProperty, fieldMapping);
+
+    expect(result).toBeNull();
   });
 });

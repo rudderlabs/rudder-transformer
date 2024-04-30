@@ -17,20 +17,21 @@ const {
   MAX_BATCH_SIZE,
   OPT_IN_FILED_ID,
   ALLOWED_OPT_IN_VALUES,
+  MAX_BATCH_SIZE_BYTES,
 } = require('./config');
 
-function base64Sha(str) {
+const base64Sha = (str) => {
   const hexDigest = crypto.createHash('sha1').update(str).digest('hex');
   return Buffer.from(hexDigest).toString('base64');
-}
+};
 
-function getWsseHeader(user, secret) {
+const getWsseHeader = (user, secret) => {
   const nonce = crypto.randomBytes(16).toString('hex');
   const timestamp = new Date().toISOString();
 
   const digest = base64Sha(nonce + timestamp + secret);
   return `UsernameToken Username="${user}", PasswordDigest="${digest}", Nonce="${nonce}", Created="${timestamp}"`;
-}
+};
 
 const buildHeader = (destConfig) => {
   const { emersysUsername, emersysUserSecret } = destConfig;
@@ -96,12 +97,12 @@ const buildIdentifyPayload = (message, destination) => {
   return { eventType: message.type, destinationPayload };
 };
 
-function findRudderPropertyByEmersysProperty(emersysProperty, fieldMapping) {
+const findRudderPropertyByEmersysProperty = (emersysProperty, fieldMapping) => {
   // Use lodash to find the object where the emersysProperty matches the input
   const item = lodash.find(fieldMapping, { emersysProperty });
   // Return the rudderProperty if the object is found, otherwise return null
   return item ? item.rudderProperty : null;
-}
+};
 
 const buildGroupPayload = (message, destination) => {
   const { emersysCustomIdentifier, defaultContactList, fieldMapping } = destination.Config;
@@ -149,16 +150,15 @@ const deduceEndPoint = (message, destConfig, batchGroupId = undefined) => {
   return endPoint;
 };
 
-function estimateJsonSize(obj) {
-  return new Blob([JSON.stringify(obj)]).size;
-}
+const estimateJsonSize = (obj) => new Blob([JSON.stringify(obj)]).size;
 
-function createPayload(keyId, contacts, contactListId) {
-  return { key_id: keyId, contacts, contact_list_id: contactListId };
-}
+const createSingleIdentifyPayload = (keyId, contacts, contactListId) => ({
+  key_id: keyId,
+  contacts,
+  contact_list_id: contactListId,
+});
 
-function ensureSizeConstraints(contacts) {
-  const MAX_SIZE_BYTES = 8000000; // 8 MB
+const ensureSizeConstraints = (contacts) => {
   const chunks = [];
   let currentBatch = [];
 
@@ -166,7 +166,7 @@ function ensureSizeConstraints(contacts) {
     // Start a new batch if adding the next contact exceeds size limits
     if (
       currentBatch.length === 0 ||
-      estimateJsonSize([...currentBatch, contact]) < MAX_SIZE_BYTES
+      estimateJsonSize([...currentBatch, contact]) < MAX_BATCH_SIZE_BYTES
     ) {
       currentBatch.push(contact);
     } else {
@@ -181,9 +181,9 @@ function ensureSizeConstraints(contacts) {
   }
 
   return chunks;
-}
+};
 
-function createIdentifyBatches(events) {
+const createIdentifyBatches = (events) => {
   const groupedIdentifyPayload = lodash.groupBy(
     events,
     (item) =>
@@ -204,13 +204,13 @@ function createIdentifyBatches(events) {
 
     // Include metadata for each chunk
     return finalChunks.map((contacts) => ({
-      payload: createPayload(key_id, contacts, contact_list_id),
-      metadata: group.map((g) => g.metadata), // assuming metadata is needed per original event grouping
+      payload: createSingleIdentifyPayload(key_id, contacts, contact_list_id),
+      metadata: group.map((g) => g.metadata),
     }));
   });
-}
+};
 
-function createGroupBatches(events) {
+const createGroupBatches = (events) => {
   const grouped = lodash.groupBy(
     events,
     (item) =>
@@ -237,16 +237,15 @@ function createGroupBatches(events) {
       metadata: group.map((g) => g.metadata), // assuming metadata is needed per original event grouping
     }));
   });
-}
-function formatIdentifyPayloadsWithEndpoint(combinedPayloads, endpointUrl = '') {
-  return combinedPayloads.map((payload) => ({
+};
+const formatIdentifyPayloadsWithEndpoint = (combinedPayloads, endpointUrl = '') =>
+  combinedPayloads.map((payload) => ({
     endpoint: endpointUrl,
     payload,
   }));
-}
 
-function buildBatchedRequest(batches, method, constants) {
-  return batches.map((batch) => ({
+const buildBatchedRequest = (batches, method, constants) =>
+  batches.map((batch) => ({
     batchedRequest: {
       body: {
         JSON: batch.payload,
@@ -267,9 +266,8 @@ function buildBatchedRequest(batches, method, constants) {
     statusCode: 200,
     destination: constants.destination,
   }));
-}
 
-function batchResponseBuilder(successfulEvents) {
+const batchResponseBuilder = (successfulEvents) => {
   const finaloutput = [];
   const groupedSuccessfulPayload = {
     identify: {
@@ -334,7 +332,7 @@ function batchResponseBuilder(successfulEvents) {
   }
 
   return finaloutput;
-}
+};
 module.exports = {
   buildIdentifyPayload,
   buildGroupPayload,
@@ -345,4 +343,8 @@ module.exports = {
   getWsseHeader,
   findRudderPropertyByEmersysProperty,
   formatIdentifyPayloadsWithEndpoint,
+  createSingleIdentifyPayload,
+  createIdentifyBatches,
+  ensureSizeConstraints,
+  createGroupBatches,
 };

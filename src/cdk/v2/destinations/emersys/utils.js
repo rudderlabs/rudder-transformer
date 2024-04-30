@@ -5,13 +5,18 @@ const crypto = require('crypto');
 
 const {
   InstrumentationError,
+  ConfigurationError,
   isDefinedAndNotNullAndNotEmpty,
   removeUndefinedAndNullAndEmptyValues,
   removeUndefinedAndNullValues,
   isDefinedAndNotNull,
+  getHashFromArray,
 } = require('@rudderstack/integrations-lib');
-const { getValueFromMessage } = require('rudder-transformer-cdk/build/utils');
-const { getIntegrationsObj } = require('../../../../v0/util');
+const {
+  getValueFromMessage,
+  getFieldValueFromMessage,
+} = require('rudder-transformer-cdk/build/utils');
+const { getIntegrationsObj, validateEventName } = require('../../../../v0/util');
 const {
   EMAIL_FIELD_ID,
   MAX_BATCH_SIZE,
@@ -104,16 +109,21 @@ const findRudderPropertyByEmersysProperty = (emersysProperty, fieldMapping) => {
   return item ? item.rudderProperty : null;
 };
 
-const buildGroupPayload = (message, destination) => {
-  const { emersysCustomIdentifier, defaultContactList, fieldMapping } = destination.Config;
-  const integrationObject = getIntegrationsObj(message, 'emersys');
-  const emersysIdentifier =
-    integrationObject?.customIdentifierId || emersysCustomIdentifier || EMAIL_FIELD_ID;
+const deduceExternalIdValue = (message, emersysIdentifier, fieldMapping) => {
   const configuredPayloadProperty = findRudderPropertyByEmersysProperty(
     emersysIdentifier,
     fieldMapping,
   );
   const externalIdValue = getValueFromMessage(message.context.traits, configuredPayloadProperty);
+  return externalIdValue;
+};
+
+const buildGroupPayload = (message, destination) => {
+  const { emersysCustomIdentifier, defaultContactList, fieldMapping } = destination.Config;
+  const integrationObject = getIntegrationsObj(message, 'emersys');
+  const emersysIdentifier =
+    integrationObject?.customIdentifierId || emersysCustomIdentifier || EMAIL_FIELD_ID;
+  const externalIdValue = deduceExternalIdValue(message, emersysIdentifier, fieldMapping);
   if (!isDefinedAndNotNull(externalIdValue)) {
     throw new InstrumentationError(
       `No value found in payload for contact custom identifier of id ${emersysIdentifier}`,
@@ -132,17 +142,67 @@ const buildGroupPayload = (message, destination) => {
   };
 };
 
-const deduceEndPoint = (message, destConfig, batchGroupId = undefined) => {
+const deduceEventId = (message, destConfig) => {
+  let eventId;
+  const { eventsMapping } = destConfig;
+  const { event } = message;
+  validateEventName(event);
+  if (eventsMapping.length > 0) {
+    const keyMap = getHashFromArray(eventsMapping, 'from', 'to', false);
+    eventId = keyMap[event];
+  }
+  if (!eventId) {
+    throw new ConfigurationError(`${event} is not mapped to any Emersys external event. Aborting`);
+  }
+};
+
+const buildTrackPayload = (message, destination) => {
+  let eventId;
+  const { emersysCustomIdentifier, eventsMapping } = destination.Config;
+  const { event, properties } = message;
+
+  if (eventsMapping.length > 0) {
+    const keyMap = getHashFromArray(eventsMapping, 'from', 'to', false);
+    eventId = keyMap[event];
+  }
+  const integrationObject = getIntegrationsObj(message, 'emersys');
+  const emersysIdentifier =
+    integrationObject?.customIdentifierId || emersysCustomIdentifier || EMAIL_FIELD_ID;
+  const payload = {
+    key_id: emersysIdentifier,
+    external_id: 'test@example.com',
+    trigger_id: integrationObject.trigger_id,
+    data: properties.data,
+    attachment: Array.isArray(properties.attatchment)
+      ? properties.attatchment
+      : [properties.attatchment],
+    event_time: getFieldValueFromMessage(message, 'timestamp'),
+  };
+  return {
+    eventType: message.type,
+    destinationPayload: {
+      payload: removeUndefinedAndNullValues(payload),
+      event: eventId,
+    },
+  };
+};
+
+const deduceEndPoint = (finalPayload) => {
   let endPoint;
+  let eventId;
   let contactListId;
-  const { type, groupId } = message;
-  switch (type) {
+  const { eventType, destinationPayload } = finalPayload;
+  switch (eventType) {
     case EVENT_TYPE.IDENTIFY:
       endPoint = 'https://api.emarsys.net/api/v2/contact/?create_if_not_exists=1';
       break;
     case EVENT_TYPE.GROUP:
-      contactListId = batchGroupId || groupId || destConfig.defaultContactList;
+      contactListId = destinationPayload.contactListId;
       endPoint = `https://api.emarsys.net/api/v2/contactlist/${contactListId}/add`;
+      break;
+    case EVENT_TYPE.TRACK:
+      eventId = destinationPayload.eventId;
+      endPoint = `https://api.emarsys.net/api/v2/event/${eventId}/trigger`;
       break;
     default:
       break;
@@ -347,4 +407,7 @@ module.exports = {
   createIdentifyBatches,
   ensureSizeConstraints,
   createGroupBatches,
+  buildTrackPayload,
+  deduceExternalIdValue,
+  deduceEventId,
 };

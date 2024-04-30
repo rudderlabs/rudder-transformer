@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 * adding custom properties support to bluecore ([#3282](https://github.com/rudderlabs/rudder-transformer/issues/3282)) ([8592e66](https://github.com/rudderlabs/rudder-transformer/commit/8592e664eb568e70a00261e275ab2faed8f6f618))
 * onboard Yandex Metrica Offline Events Destination ([#3232](https://github.com/rudderlabs/rudder-transformer/issues/3232)) ([8f79f53](https://github.com/rudderlabs/rudder-transformer/commit/8f79f53d30326e07fc92dd624e799015ff9f87c2))
+* transactional custom property support for awin ([#3325](https://github.com/rudderlabs/rudder-transformer/issues/3325)) ([fdecaf3](https://github.com/rudderlabs/rudder-transformer/commit/fdecaf36d91db7540d6f68a013e4f7fb2a36ebaa))
 
 
 ### Bug Fixes

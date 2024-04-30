@@ -143,9 +143,27 @@ const clickPayloadValidator = (payload) => {
   return updatedPayload;
 };
 
+function validatePayload(payload) {
+  if (payload.objectData && Array.isArray(payload.objectData)) {
+    const hasRelevantFields = payload.objectData.some(
+      (obj) =>
+        obj.hasOwnProperty('price') ||
+        obj.hasOwnProperty('quantity') ||
+        obj.hasOwnProperty('discount'),
+    );
+
+    if (hasRelevantFields && !payload.currency) {
+      throw new InstrumentationError(
+        'Currency missing when objectData fields has price informations.',
+      );
+    }
+  }
+}
+
 module.exports = {
   genericpayloadValidator,
   createObjectArray,
   eventTypeMapping,
   clickPayloadValidator,
+  validatePayload,
 };

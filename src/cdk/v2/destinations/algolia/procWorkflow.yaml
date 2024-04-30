@@ -76,6 +76,7 @@ steps:
             const objectIDs = ~r products.objectId;
             $.context.payload.objectIDs = Array.isArray(objectIDs) ? objectIDs[:20]:$.context.payload.objectIDs;
             $.context.payload.objectData = $.outputs.prepareObjectDataBlock
+            $.validatePayload($.context.payload)
 
   - name: validateDestPayload
     template: |

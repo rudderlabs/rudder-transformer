@@ -2297,7 +2297,7 @@ export const data = [
   },
   {
     name: 'algolia',
-    description: 'filters or objectIds must be non empty',
+    description: 'When price information is present in objectData, currency is mandatory',
     feature: 'processor',
     module: 'destination',
     version: 'v0',

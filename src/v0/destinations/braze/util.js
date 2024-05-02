@@ -520,8 +520,18 @@ function setExternalId(payload, message) {
   return payload;
 }
 
-function setAliasObjectWithAnonId(payload, message) {
-  if (message.anonymousId) {
+function setAliasObject(payload, message) {
+  const integrationsObj = getIntegrationsObj(message, 'BRAZE');
+  if (
+    isDefinedAndNotNull(integrationsObj?.alias?.alias_name) &&
+    isDefinedAndNotNull(integrationsObj?.alias?.alias_label)
+  ) {
+    const { alias_name, alias_label } = integrationsObj.alias;
+    payload.user_alias = {
+      alias_name,
+      alias_label,
+    };
+  } else if (message.anonymousId) {
     payload.user_alias = {
       alias_name: message.anonymousId,
       alias_label: 'rudder_id',
@@ -538,7 +548,7 @@ function setExternalIdOrAliasObject(payload, message) {
 
   // eslint-disable-next-line no-underscore-dangle
   payload._update_existing_only = false;
-  return setAliasObjectWithAnonId(payload, message);
+  return setAliasObject(payload, message);
 }
 
 function addMandatoryPurchaseProperties(productId, price, currencyCode, quantity, timestamp) {
@@ -667,6 +677,6 @@ module.exports = {
   getPurchaseObjs,
   setExternalIdOrAliasObject,
   setExternalId,
-  setAliasObjectWithAnonId,
+  setAliasObject,
   addMandatoryPurchaseProperties,
 };

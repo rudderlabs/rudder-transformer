@@ -1,4 +1,3 @@
-const lodash = require('lodash');
 const { EVENT_TYPE } = require('rudder-transformer-cdk/build/constants');
 const {
   buildIdentifyPayload,
@@ -8,7 +7,9 @@ const {
   findRudderPropertyByEmersysProperty,
   createGroupBatches,
 } = require('./utils');
-const utils = require('./utils');
+const {
+  checkIfEventIsAbortableAndExtractErrorMessage,
+} = require('../../../../v1/destinations/emarsys/networkHandler');
 const crypto = require('crypto');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 
@@ -407,5 +408,81 @@ describe('findRudderPropertyByEmersysProperty', () => {
     const result = findRudderPropertyByEmersysProperty(emersysProperty, fieldMapping);
 
     expect(result).toBeNull();
+  });
+});
+
+describe('checkIfEventIsAbortableAndExtractErrorMessage', () => {
+  // Returns {isAbortable: false, errorMsg: ''} if event is neither a string nor an object with keyId.
+  it('should return {isAbortable: false, errorMsg: ""} when event is neither a string nor an object with keyId', () => {
+    const event = 123;
+    const destinationResponse = {
+      data: {
+        errors: {
+          errorKey: {
+            errorCode: 'errorMessage',
+          },
+        },
+      },
+    };
+    const keyId = 'keyId';
+
+    const result = checkIfEventIsAbortableAndExtractErrorMessage(event, destinationResponse, keyId);
+
+    expect(result).toEqual({ isAbortable: false, errorMsg: '' });
+  });
+
+  // Returns {isAbortable: false, errorMsg: ''} if errors object is empty.
+  it('should return {isAbortable: false, errorMsg: ""} when errors object is empty', () => {
+    const event = 'event';
+    const destinationResponse = {
+      data: {
+        errors: {},
+      },
+    };
+    const keyId = 'keyId';
+
+    const result = checkIfEventIsAbortableAndExtractErrorMessage(event, destinationResponse, keyId);
+
+    expect(result).toEqual({ isAbortable: false, errorMsg: '' });
+  });
+
+  // Returns {isAbortable: true, errorMsg} if event is a string and has a corresponding error in the errors object.
+  it('should return {isAbortable: true, errorMsg} when event is a string and has a corresponding error in the errors object', () => {
+    const event = 'event';
+    const destinationResponse = {
+      data: {
+        errors: {
+          event: {
+            errorCode: 'errorMessage',
+          },
+        },
+      },
+    };
+    const keyId = 'keyId';
+
+    const result = checkIfEventIsAbortableAndExtractErrorMessage(event, destinationResponse, keyId);
+
+    expect(result).toEqual({ isAbortable: true, errorMsg: '{"errorCode":"errorMessage"}' });
+  });
+
+  // Returns {isAbortable: true, errorMsg} if event is an object with keyId and has a corresponding error in the errors object.
+  it('should return {isAbortable: true, errorMsg} when event is an object with keyId and has a corresponding error in the errors object', () => {
+    const event = {
+      keyId: 'event',
+    };
+    const destinationResponse = {
+      data: {
+        errors: {
+          event: {
+            errorCode: 'errorMessage',
+          },
+        },
+      },
+    };
+    const keyId = 'keyId';
+
+    const result = checkIfEventIsAbortableAndExtractErrorMessage(event, destinationResponse, keyId);
+
+    expect(result).toEqual({ isAbortable: true, errorMsg: '{"errorCode":"errorMessage"}' });
   });
 });

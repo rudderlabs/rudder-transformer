@@ -294,17 +294,23 @@ const createGroupBatches = (events) => {
         key_id: keyId,
         external_ids: chunk,
       },
-      metadata: group.map((g) => g.metadata), // assuming metadata is needed per original event grouping
+      metadata: group.map((g) => g.metadata),
     }));
   });
 };
+
+const createTrackBatches = (events) => ({
+  endpoint: events[0].message.endPoint,
+  payload: events[0].message.body.JSON.destinationPayload,
+  metadata: events[0].metadata,
+});
 const formatIdentifyPayloadsWithEndpoint = (combinedPayloads, endpointUrl = '') =>
   combinedPayloads.map((payload) => ({
     endpoint: endpointUrl,
     payload,
   }));
 
-const buildBatchedRequest = (batches, method, constants) =>
+const buildBatchedRequest = (batches, method, constants, batchedStatus = true) =>
   batches.map((batch) => ({
     batchedRequest: {
       body: {
@@ -322,7 +328,7 @@ const buildBatchedRequest = (batches, method, constants) =>
       files: {},
     },
     metadata: batch.metadata,
-    batched: true,
+    batched: batchedStatus,
     statusCode: 200,
     destination: constants.destination,
   }));
@@ -335,6 +341,10 @@ const batchResponseBuilder = (successfulEvents) => {
       batches: [],
     },
     group: {
+      method: 'POST',
+      batches: [],
+    },
+    track: {
       method: 'POST',
       batches: [],
     },
@@ -366,6 +376,9 @@ const batchResponseBuilder = (successfulEvents) => {
       case EVENT_TYPE.GROUP:
         groupedSuccessfulPayload.group.batches = createGroupBatches(eachEventGroup);
         break;
+      case EVENT_TYPE.TRACK:
+        groupedSuccessfulPayload.track.batches = createTrackBatches(eachEventGroup);
+        break;
       default:
         break;
     }
@@ -389,6 +402,16 @@ const batchResponseBuilder = (successfulEvents) => {
       constants,
     );
     finaloutput.push(...groupBatches);
+  }
+
+  if (groupedSuccessfulPayload.track) {
+    const trackBatches = buildBatchedRequest(
+      groupedSuccessfulPayload.track.batches,
+      groupedSuccessfulPayload.track.method,
+      constants,
+      false,
+    );
+    finaloutput.push(...trackBatches);
   }
 
   return finaloutput;

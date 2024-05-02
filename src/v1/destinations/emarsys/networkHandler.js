@@ -9,45 +9,28 @@ const {
 } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../../v0/util/tags');
 
-function checkIfEventIsAbortableAndExtractErrorMessage(event, destinationResponse) {
-  // Extract the errors from the destination response
+function checkIfEventIsAbortableAndExtractErrorMessage(event, destinationResponse, keyId) {
   const { errors } = destinationResponse.data;
-  const { key_id } = event; // Assuming the 'key_id' is constant as before
 
-  // Find the first abortable case
-  const result = event.find((item) => {
-    if (typeof item === 'string') {
-      return errors[item]; // Check if the string is a key in errors
-    }
-    if (typeof item === 'object' && item[key_id]) {
-      return errors[item[key_id]]; // Check if the object's value under key_id is a key in errors
-    }
-    return false; // Continue if no condition is met
-  });
-
-  if (result) {
-    if (typeof result === 'string') {
-      // Handle case where result is a string key found in errors
-      return {
-        isAbortable: true,
-        errorMsg: errors[result][Object.keys(errors[result])[0]],
-      };
-    }
-    if (typeof result === 'object') {
-      // Handle case where result is an object found in errors
-      const keyValue = result[key_id];
-      return {
-        isAbortable: true,
-        errorMsg: errors[keyValue][Object.keys(errors[keyValue])[0]],
-      };
-    }
+  // Determine if event is a string or an object, then fetch the corresponding key or value
+  let errorKey;
+  if (typeof event === 'string') {
+    errorKey = event;
+  } else if (typeof event === 'object' && event[keyId]) {
+    errorKey = event[keyId];
+  } else {
+    return { isAbortable: false, errorMsg: '' }; // Early return if neither condition is met or if keyId is missing in the object
   }
 
-  // If no match or abortable condition is found
-  return {
-    isAbortable: false,
-    errorMsg: '',
-  };
+  // Check if this key has a corresponding error in the errors object
+  if (errors[errorKey]) {
+    // const errorCode = Object.keys(errors[errorKey])[0]; // Assume there is at least one error code
+    const errorMsg = JSON.stringify(errors[errorKey]);
+    return { isAbortable: true, errorMsg };
+  }
+
+  // Return false and an empty error message if no error is found
+  return { isAbortable: false, errorMsg: '' };
 }
 
 const responseHandler = (responseParams) => {
@@ -64,30 +47,6 @@ const responseHandler = (responseParams) => {
       metadata,
       error: errorMessage,
     }));
-    // if the status is 422, we need to parse the error message and construct the response array
-    // if (status === 422) {
-    //   const destPartialStatus = constructPartialStatus(response?.message);
-    //   // if the error message is not in the expected format, we will abort all of the events
-    //   if (!destPartialStatus || lodash.isEmpty(destPartialStatus)) {
-    //     throw new TransformerProxyError(
-    //       `EMARSYS: Error transformer proxy v1 during EMARSYS response transformation. Error parsing error message`,
-    //       status,
-    //       {
-    //         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
-    //       },
-    //       destinationResponse,
-    //       getAuthErrCategoryFromStCode(status),
-    //       responseWithIndividualEvents,
-    //     );
-    //   }
-    //   responseWithIndividualEvents = [...createResponseArray(rudderJobMetadata, destPartialStatus)];
-    //   return {
-    //     status,
-    //     message,
-    //     destinationResponse,
-    //     response: responseWithIndividualEvents,
-    //   };
-    // }
     throw new TransformerProxyError(
       `EMARSYS: Error transformer proxy v1 during EMARSYS response transformation. ${errorMessage}`,
       status,
@@ -103,7 +62,7 @@ const responseHandler = (responseParams) => {
   if (isHttpStatusSuccess(status)) {
     // check for Partial Event failures and Successes
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    const { contacts, external_ids } = destinationRequest.body.JSON;
+    const { contacts, external_ids, key_id } = destinationRequest.body.JSON;
     const finalData = contacts || external_ids;
     finalData.forEach((event, idx) => {
       const proxyOutput = {
@@ -115,6 +74,7 @@ const responseHandler = (responseParams) => {
       const { isAbortable, errorMsg } = checkIfEventIsAbortableAndExtractErrorMessage(
         event,
         destinationResponse,
+        key_id,
       );
       if (isAbortable) {
         proxyOutput.statusCode = 400;
@@ -152,4 +112,4 @@ function networkHandler() {
   this.responseHandler = responseHandler;
 }
 
-module.exports = { networkHandler };
+module.exports = { networkHandler, checkIfEventIsAbortableAndExtractErrorMessage };

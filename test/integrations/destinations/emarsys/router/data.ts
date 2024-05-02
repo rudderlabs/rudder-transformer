@@ -28,8 +28,8 @@ const commonDestination = {
   Name: 'sample-destination',
   DestinationDefinition: {
     ID: '123',
-    Name: 'emersys',
-    DisplayName: 'Emersys',
+    Name: 'emarsys',
+    DisplayName: 'Emarsys',
     Config: {
       cdkV2Enabled: true,
     },
@@ -42,8 +42,8 @@ const commonDestination = {
 
 export const data = [
   {
-    id: 'emersys-track-test-1',
-    name: 'emersys',
+    id: 'emarsys-track-test-1',
+    name: 'emarsys',
     description: 'Track call : custom event calls with simple user properties and traits',
     scenario: 'Business',
     successCriteria:
@@ -202,7 +202,7 @@ export const data = [
               destination: commonDestination,
             },
           ],
-          destType: 'emersys',
+          destType: 'emarsys',
         },
         method: 'POST',
       },
@@ -229,8 +229,8 @@ export const data = [
                 Name: 'sample-destination',
                 DestinationDefinition: {
                   ID: '123',
-                  Name: 'emersys',
-                  DisplayName: 'emersys',
+                  Name: 'emarsys',
+                  DisplayName: 'emarsys',
                   Config: {
                     cdkV2Enabled: true,
                   },
@@ -243,9 +243,9 @@ export const data = [
               batched: false,
               statusCode: 400,
               error:
-                '[emersys Conversion API] no matching user id found. Please provide at least one of the following: email, emersysFirstPartyAdsTrackingUUID, acxiomId, oracleMoatId',
+                '[emarsys Conversion API] no matching user id found. Please provide at least one of the following: email, emersysFirstPartyAdsTrackingUUID, acxiomId, oracleMoatId',
               statTags: {
-                destType: 'emersys',
+                destType: 'emarsys',
                 errorCategory: 'dataValidation',
                 errorType: 'instrumentation',
                 feature: 'router',
@@ -355,12 +355,12 @@ export const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                endpoint: 'https://api.emersys.com/rest/conversionEvents',
+                endpoint: 'https://api.emarsys.com/rest/conversionEvents',
                 headers: {
                   'Content-Type': 'application/json',
                   'X-RestLi-Method': 'BATCH_CREATE',
                   'X-Restli-Protocol-Version': '2.0.0',
-                  'emersys-Version': '202402',
+                  'emarsys-Version': '202402',
                   Authorization: 'Bearer dummyToken',
                 },
                 params: {},

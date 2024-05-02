@@ -1,8 +1,5 @@
-import { EVENT_TYPE } from 'rudder-transformer-cdk/build/constants';
-
 const lodash = require('lodash');
 const crypto = require('crypto');
-
 const {
   InstrumentationError,
   ConfigurationError,
@@ -13,10 +10,11 @@ const {
   getHashFromArray,
 } = require('@rudderstack/integrations-lib');
 const {
+  getIntegrationsObj,
+  validateEventName,
   getValueFromMessage,
   getFieldValueFromMessage,
-} = require('rudder-transformer-cdk/build/utils');
-const { getIntegrationsObj, validateEventName } = require('../../../../v0/util');
+} = require('../../../../v0/util');
 const {
   EMAIL_FIELD_ID,
   MAX_BATCH_SIZE,
@@ -25,6 +23,8 @@ const {
   MAX_BATCH_SIZE_BYTES,
   groupedSuccessfulPayload,
 } = require('./config');
+const { SUPPORTED_EVENT_TYPE } = require('../the_trade_desk_real_time_conversions/config');
+const { EventType } = require('../../../../constants');
 
 const base64Sha = (str) => {
   const hexDigest = crypto.createHash('sha1').update(str).digest('hex');
@@ -194,14 +194,14 @@ const deduceEndPoint = (finalPayload) => {
   let contactListId;
   const { eventType, destinationPayload } = finalPayload;
   switch (eventType) {
-    case EVENT_TYPE.IDENTIFY:
+    case EventType.IDENTIFY:
       endPoint = 'https://api.emarsys.net/api/v2/contact/?create_if_not_exists=1';
       break;
-    case EVENT_TYPE.GROUP:
+    case SUPPORTED_EVENT_TYPE.GROUP:
       contactListId = destinationPayload.contactListId;
       endPoint = `https://api.emarsys.net/api/v2/contactlist/${contactListId}/add`;
       break;
-    case EVENT_TYPE.TRACK:
+    case EventType.TRACK:
       eventId = destinationPayload.eventId;
       endPoint = `https://api.emarsys.net/api/v2/event/${eventId}/trigger`;
       break;
@@ -353,17 +353,17 @@ const batchResponseBuilder = (successfulEvents) => {
   );
   Object.keys(typedEventGroups).forEach((eachEventGroup) => {
     switch (eachEventGroup) {
-      case EVENT_TYPE.IDENTIFY:
+      case EventType.IDENTIFY:
         batchesOfIdentifyEvents = createIdentifyBatches(eachEventGroup);
         groupedSuccessfulPayload.identify.batches = formatIdentifyPayloadsWithEndpoint(
           batchesOfIdentifyEvents,
           'https://api.emarsys.net/api/v2/contact/?create_if_not_exists=1',
         );
         break;
-      case EVENT_TYPE.GROUP:
+      case EventType.GROUP:
         groupedSuccessfulPayload.group.batches = createGroupBatches(eachEventGroup);
         break;
-      case EVENT_TYPE.TRACK:
+      case EventType.TRACK:
         groupedSuccessfulPayload.track.batches = createTrackBatches(eachEventGroup);
         break;
       default:
@@ -403,6 +403,7 @@ const batchResponseBuilder = (successfulEvents) => {
 
   return finaloutput;
 };
+
 module.exports = {
   buildIdentifyPayload,
   buildGroupPayload,

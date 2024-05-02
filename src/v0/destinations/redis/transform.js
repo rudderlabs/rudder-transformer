@@ -69,10 +69,13 @@ const process = (event) => {
     }
     // JSON.SET <key> . <value>
     return {
-      key: `${workspaceId}:${destinationId}:${message.context.sources.profiles_entity}:${message.context.sources.profiles_id_type}:${message.userId}`,
-      value: {
-        [message.context.sources.profiles_model]: message.traits,
+      message: {
+        key: `${workspaceId}:${destinationId}:${message.context.sources.profiles_entity}:${message.context.sources.profiles_id_type}:${message.userId}`,
+        value: {
+          [message.context.sources.profiles_model]: message.traits,
+        },
       },
+      userId: message.userId,
     };
   }
 
@@ -81,8 +84,11 @@ const process = (event) => {
     // If redis should store information as JSON type
     // JSON.SET <key> . <value>
     return {
-      key: `${keyPrefix}user:${lodash.toString(message.userId)}`,
-      value: message.traits || message.context.traits,
+      message: {
+        key: `${keyPrefix}user:${lodash.toString(message.userId)}`,
+        value: message.traits || message.context.traits,
+      },
+      userId: message.userId,
     };
   }
 

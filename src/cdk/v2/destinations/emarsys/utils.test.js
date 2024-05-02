@@ -66,15 +66,13 @@ describe('buildIdentifyPayload', () => {
       },
     };
     const destination = {
-      Config: {
-        fieldMapping: [
-          { rudderProperty: 'firstName', emersysProperty: '1' },
-          { rudderProperty: 'lastName', emersysProperty: '2' },
-          { rudderProperty: 'email', emersysProperty: '3' },
-          { rudderProperty: 'optin', emersysProperty: '31' },
-        ],
-        defaultContactList: 'dummyContactList',
-      },
+      fieldMapping: [
+        { rudderProperty: 'firstName', emersysProperty: '1' },
+        { rudderProperty: 'lastName', emersysProperty: '2' },
+        { rudderProperty: 'email', emersysProperty: '3' },
+        { rudderProperty: 'optin', emersysProperty: '31' },
+      ],
+      defaultContactList: 'dummyContactList',
     };
     const expectedPayload = {
       contact_list_id: 'dummyContactList',
@@ -106,15 +104,13 @@ describe('buildIdentifyPayload', () => {
       },
     };
     const destination = {
-      Config: {
-        fieldMapping: [
-          { rudderProperty: 'firstName', emersysProperty: '1' },
-          { rudderProperty: 'lastName', emersysProperty: '2' },
-          { rudderProperty: 'email', emersysProperty: '3' },
-          { rudderProperty: 'optin', emersysProperty: '31' },
-        ],
-        defaultContactList: 'dummyList',
-      },
+      fieldMapping: [
+        { rudderProperty: 'firstName', emersysProperty: '1' },
+        { rudderProperty: 'lastName', emersysProperty: '2' },
+        { rudderProperty: 'email', emersysProperty: '3' },
+        { rudderProperty: 'optin', emersysProperty: '31' },
+      ],
+      defaultContactList: 'dummyList',
     };
     expect(() => {
       buildIdentifyPayload(message, destination);
@@ -132,14 +128,12 @@ describe('buildIdentifyPayload', () => {
       },
     };
     const destination = {
-      Config: {
-        fieldMapping: [
-          { rudderProperty: 'firstName', emersysProperty: '1' },
-          { rudderProperty: 'lastName', emersysProperty: '2' },
-          { rudderProperty: 'email', emersysProperty: '3' },
-          { rudderProperty: 'optin', emersysProperty: '31' },
-        ],
-      },
+      fieldMapping: [
+        { rudderProperty: 'firstName', emersysProperty: '1' },
+        { rudderProperty: 'lastName', emersysProperty: '2' },
+        { rudderProperty: 'email', emersysProperty: '3' },
+        { rudderProperty: 'optin', emersysProperty: '31' },
+      ],
     };
     expect(() => {
       buildIdentifyPayload(message, destination);
@@ -158,22 +152,20 @@ describe('buildIdentifyPayload', () => {
         optin: 1,
       },
       integrations: {
-        EMERSYS: {
+        EMARSYS: {
           customIdentifierId: 1,
           contactListId: 'objectListId',
         },
       },
     };
     const destination = {
-      Config: {
-        fieldMapping: [
-          { rudderProperty: 'firstName', emersysProperty: '1' },
-          { rudderProperty: 'lastName', emersysProperty: '2' },
-          { rudderProperty: 'email', emersysProperty: '3' },
-          { rudderProperty: 'optin', emersysProperty: '31' },
-        ],
-        defaultContactList: 'dummyContactList',
-      },
+      fieldMapping: [
+        { rudderProperty: 'firstName', emersysProperty: '1' },
+        { rudderProperty: 'lastName', emersysProperty: '2' },
+        { rudderProperty: 'email', emersysProperty: '3' },
+        { rudderProperty: 'optin', emersysProperty: '31' },
+      ],
+      defaultContactList: 'dummyContactList',
     };
     const expectedPayload = {
       contact_list_id: 'objectListId',

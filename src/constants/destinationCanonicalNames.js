@@ -166,7 +166,7 @@ const DestCanonicalNames = {
   ],
   koala: ['Koala', 'koala', 'KOALA'],
   bloomreach: ['Bloomreach', 'bloomreach', 'BLOOMREACH'],
-  emersys: ['EMARSYS', 'Emarsys', 'emarsys'],
+  emarsys: ['EMARSYS', 'Emarsys', 'emarsys'],
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

@@ -55,7 +55,7 @@ steps:
       ref: https://dev.emarsys.com/docs/core-api-reference/fl0xx6rwfbwqb-trigger-an-external-event
     condition: $.outputs.messageType === {{$.EventType.TRACK}}
     template: |
-      const integrationObject = $.getIntegrationsObj(message, 'emersys');
+      const integrationObject = $.getIntegrationsObj(^.message, 'emersys');
       const emersysIdentifierId = integrationObject?.customIdentifierId || ^.destination.Config.emersysCustomIdentifier || $.EMAIL_FIELD_ID;
       const payload = {
           key_id: emersysIdentifierId ,

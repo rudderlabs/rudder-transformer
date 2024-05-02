@@ -48,13 +48,13 @@ const buildHeader = (destConfig) => {
   };
 };
 
-const buildIdentifyPayload = (message, destination) => {
+const buildIdentifyPayload = (message, destConfig) => {
   let destinationPayload;
   const { fieldMapping, emersysCustomIdentifier, discardEmptyProperties, defaultContactList } =
-    destination.Config;
+    destConfig;
   const payload = {};
 
-  const integrationObject = getIntegrationsObj(message, 'emersys');
+  const integrationObject = getIntegrationsObj(message, 'emarsys');
   const finalContactList = integrationObject?.contactListId || defaultContactList;
 
   if (!isDefinedAndNotNullAndNotEmpty(finalContactList)) {
@@ -65,9 +65,10 @@ const buildIdentifyPayload = (message, destination) => {
   if (fieldMapping) {
     fieldMapping.forEach((trait) => {
       const { rudderProperty, emersysProperty } = trait;
-      const value =
-        getValueFromMessage(message.traits, rudderProperty) ||
-        getValueFromMessage(message.context.traits, rudderProperty);
+      const value = getValueFromMessage(message, [
+        `traits.${rudderProperty}`,
+        `context.traits.${rudderProperty}`,
+      ]);
       if (value) {
         payload[emersysProperty] = value;
       }
@@ -99,7 +100,6 @@ const buildIdentifyPayload = (message, destination) => {
       'Either configured custom contact identifier value or default identifier email value is missing',
     );
   }
-
   return { eventType: message.type, destinationPayload };
 };
 
@@ -248,17 +248,16 @@ const createIdentifyBatches = (events) => {
   const groupedIdentifyPayload = lodash.groupBy(
     events,
     (item) =>
-      `${item.message.body.JSON.destinationPayload.key_id}-${item.message.body.JSON.destinationPayload.contact_list_id}`,
+      `${item.message[0].body.JSON.destinationPayload.key_id}-${item.message[0].body.JSON.destinationPayload.contact_list_id}`,
   );
-
   return lodash.flatMap(groupedIdentifyPayload, (group) => {
-    const firstItem = group[0].message.body.JSON.destinationPayload;
+    const firstItem = group[0].message[0].body.JSON.destinationPayload;
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { key_id, contact_list_id } = firstItem;
 
     const allContacts = lodash.flatMap(
       group,
-      (item) => item.message.body.JSON.destinationPayload.contacts,
+      (item) => item.message[0].body.JSON.destinationPayload.contacts,
     );
     const initialChunks = lodash.chunk(allContacts, MAX_BATCH_SIZE);
     const finalChunks = lodash.flatMap(initialChunks, ensureSizeConstraints);
@@ -306,9 +305,10 @@ const createTrackBatches = (events) => ({
   metadata: events[0].metadata,
 });
 const formatIdentifyPayloadsWithEndpoint = (combinedPayloads, endpointUrl = '') =>
-  combinedPayloads.map((payload) => ({
+  combinedPayloads.map((singleCombinedPayload) => ({
     endpoint: endpointUrl,
-    payload,
+    payload: singleCombinedPayload.payload,
+    metadata: singleCombinedPayload.metadata,
   }));
 
 const buildBatchedRequest = (batches, method, constants, batchedStatus = true) =>
@@ -349,12 +349,12 @@ const batchResponseBuilder = (successfulEvents) => {
 
   const typedEventGroups = lodash.groupBy(
     successfulEvents,
-    (event) => event.message.body.JSON.eventType,
+    (event) => event.message[0].body.JSON.eventType,
   );
   Object.keys(typedEventGroups).forEach((eachEventGroup) => {
     switch (eachEventGroup) {
       case EventType.IDENTIFY:
-        batchesOfIdentifyEvents = createIdentifyBatches(eachEventGroup);
+        batchesOfIdentifyEvents = createIdentifyBatches(typedEventGroups[eachEventGroup]);
         groupedSuccessfulPayload.identify.batches = formatIdentifyPayloadsWithEndpoint(
           batchesOfIdentifyEvents,
           'https://api.emarsys.net/api/v2/contact/?create_if_not_exists=1',
@@ -371,6 +371,7 @@ const batchResponseBuilder = (successfulEvents) => {
     }
     return groupedSuccessfulPayload;
   });
+  console.log('groupedSuccessfulPayload', JSON.stringify(groupedSuccessfulPayload));
   // Process each identify batch
   if (groupedSuccessfulPayload.identify) {
     const identifyBatches = buildBatchedRequest(
@@ -400,7 +401,7 @@ const batchResponseBuilder = (successfulEvents) => {
     );
     finaloutput.push(...trackBatches);
   }
-
+  console.log('FINAL', JSON.stringify(finaloutput));
   return finaloutput;
 };
 

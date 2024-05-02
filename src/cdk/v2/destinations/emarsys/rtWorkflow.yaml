@@ -30,10 +30,10 @@ steps:
 
   - name: batchSuccessfulEvents
     description: Batches the successfulEvents
-    debug: true
     template: |
-      $.batchResponseBuilder($.outputs.successfulEvents);
+      $.context.batchedPayload = $.batchResponseBuilder($.outputs.successfulEvents);
+      console.log("batchedPayload",JSON.stringify($.context.batchedPayload));
 
   - name: finalPayload
     template: |
-      [...$.outputs.failedEvents, ...$.outputs.batchSuccessfulEvents]
+      [...$.outputs.failedEvents, ...$.context.batchedPayload]

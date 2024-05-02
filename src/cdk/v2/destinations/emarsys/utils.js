@@ -23,6 +23,7 @@ const {
   OPT_IN_FILED_ID,
   ALLOWED_OPT_IN_VALUES,
   MAX_BATCH_SIZE_BYTES,
+  groupedSuccessfulPayload,
 } = require('./config');
 
 const base64Sha = (str) => {
@@ -335,20 +336,6 @@ const buildBatchedRequest = (batches, method, constants, batchedStatus = true) =
 
 const batchResponseBuilder = (successfulEvents) => {
   const finaloutput = [];
-  const groupedSuccessfulPayload = {
-    identify: {
-      method: 'PUT',
-      batches: [],
-    },
-    group: {
-      method: 'POST',
-      batches: [],
-    },
-    track: {
-      method: 'POST',
-      batches: [],
-    },
-  };
   let batchesOfIdentifyEvents;
   if (successfulEvents.length === 0) {
     return [];

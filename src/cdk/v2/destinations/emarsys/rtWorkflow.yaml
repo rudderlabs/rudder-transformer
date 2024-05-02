@@ -1,6 +1,5 @@
 bindings:
   - path: ./utils
-  - path: ./config
   - name: handleRtTfSingleEventError
     path: ../../../../v0/util/index
 
@@ -31,6 +30,7 @@ steps:
 
   - name: batchSuccessfulEvents
     description: Batches the successfulEvents
+    debug: true
     template: |
       $.batchResponseBuilder($.outputs.successfulEvents);
 

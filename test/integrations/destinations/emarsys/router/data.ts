@@ -243,7 +243,7 @@ export const data = [
               batched: false,
               statusCode: 400,
               error:
-                '[emarsys Conversion API] no matching user id found. Please provide at least one of the following: email, emersysFirstPartyAdsTrackingUUID, acxiomId, oracleMoatId',
+                '[emarsys] no matching user id found. Please provide at least one of the following: email, emersysFirstPartyAdsTrackingUUID, acxiomId, oracleMoatId',
               statTags: {
                 destType: 'emarsys',
                 errorCategory: 'dataValidation',

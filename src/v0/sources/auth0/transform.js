@@ -5,6 +5,7 @@ const { getGroupId } = require('./util');
 // import mapping json using JSON.parse to preserve object key order
 const mapping = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mapping.json'), 'utf-8'));
 const Message = require('../message');
+const { generateUUID } = require('../../util');
 
 // Ref: https://auth0.com/docs/logs/references/log-event-type-codes
 const eventNameMap = JSON.parse(
@@ -61,6 +62,7 @@ function processEvents(eventList) {
 
       // eslint-disable-next-line camelcase
       response.properties.log_id = log_id;
+      response.anonymousId = generateUUID();
       responses.push(removeUndefinedAndNullValues(response));
     }
   });

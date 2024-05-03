@@ -34,11 +34,13 @@ function isEventAbortableAndExtractErrMsg(element, proxyOutputObj) {
   return isAbortable;
 }
 
-const responseHandler = (responseParams) => {
+const responseHandler = (responseParams, logger) => {
   const { destinationResponse, rudderJobMetadata } = responseParams;
   const message = `[CAMPAIGN_MANAGER Response V1 Handler] - Request Processed Successfully`;
   const responseWithIndividualEvents = [];
   const { response, status } = destinationResponse;
+  logger.infow(`cm360 destination response with batch size ${rudderJobMetadata.length}`);
+  logger.infow(JSON.stringify(destinationResponse));
 
   if (isHttpStatusSuccess(status)) {
     // check for Partial Event failures and Successes
@@ -56,7 +58,7 @@ const responseHandler = (responseParams) => {
       }
       responseWithIndividualEvents.push(proxyOutputObj);
     }
-
+    logger.infow(`cm360 proxy response: ${JSON.stringify(responseWithIndividualEvents)}`);
     return {
       status,
       message,
@@ -74,6 +76,10 @@ const responseHandler = (responseParams) => {
       error: errorMessage,
     });
   }
+
+  logger.infow(
+    `cm360 proxy response for status ${status}: ${JSON.stringify(responseWithIndividualEvents)}`,
+  );
 
   throw new TransformerProxyError(
     `Campaign Manager: Error transformer proxy v1 during CAMPAIGN_MANAGER response transformation`,

@@ -52,6 +52,7 @@ export interface DestinationService {
     destinationType: string,
     requestMetadata: NonNullable<unknown>,
     version: string,
+    logger?: NonNullable<unknown>,
   ): Promise<DeliveryV0Response | DeliveryV1Response>;
 
   processUserDeletion(

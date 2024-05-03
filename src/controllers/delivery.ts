@@ -12,6 +12,7 @@ import { MiscService } from '../services/misc';
 import {
   DeliveryV0Response,
   DeliveryV1Response,
+  ErrorDetailer,
   ProcessorTransformationOutput,
   ProxyV0Request,
   ProxyV1Request,
@@ -36,6 +37,7 @@ export class DeliveryController {
         destination,
         requestMetadata,
         'v0',
+        logger,
       )) as DeliveryV0Response;
     } catch (error: any) {
       const { metadata } = deliveryRequest;
@@ -65,12 +67,16 @@ export class DeliveryController {
     const deliveryRequest = ctx.request.body as ProxyV1Request;
     const { destination }: { destination: string } = ctx.params;
     const integrationService = ServiceSelector.getNativeDestinationService();
+    const loggerWithCtx = logger.child({
+      ...MiscService.getLoggableData(deliveryRequest?.metadata[0] as unknown as ErrorDetailer),
+    });
     try {
       deliveryResponse = (await integrationService.deliver(
         deliveryRequest,
         destination,
         requestMetadata,
         'v1',
+        loggerWithCtx,
       )) as DeliveryV1Response;
     } catch (error: any) {
       const { metadata } = deliveryRequest;

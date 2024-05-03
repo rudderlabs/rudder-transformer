@@ -219,49 +219,49 @@ export const testScenariosForV0API = [
             destinationResponse: {
               response: {
                 hasFailures: true,
+                kind: 'dfareporting#conversionsBatchInsertResponse',
                 status: [
                   {
                     conversion: {
-                      timestampMicros: '1668624722000000',
-                      floodlightConfigurationId: '213123123',
-                      ordinal: '1',
+                      childDirectedTreatment: true,
                       floodlightActivityId: '456543345245',
-                      value: 7,
+                      floodlightConfigurationId: '213123123',
                       gclid: '123',
                       limitAdTracking: true,
-                      childDirectedTreatment: true,
+                      ordinal: '1',
+                      timestampMicros: '1668624722000000',
+                      value: 7,
                     },
                     errors: [
                       {
                         code: 'INVALID_ARGUMENT',
-                        message: 'Gclid is not valid.',
                         kind: 'dfareporting#conversionError',
+                        message: 'Gclid is not valid.',
                       },
                     ],
                     kind: 'dfareporting#conversionStatus',
                   },
                   {
                     conversion: {
-                      timestampMicros: '1668624722000000',
-                      floodlightConfigurationId: '213123123',
-                      ordinal: '1',
+                      childDirectedTreatment: true,
                       floodlightActivityId: '456543345245',
-                      value: 8,
+                      floodlightConfigurationId: '213123123',
                       gclid: '321',
                       limitAdTracking: true,
-                      childDirectedTreatment: true,
+                      ordinal: '1',
+                      timestampMicros: '1668624722000000',
+                      value: 8,
                     },
                     errors: [
                       {
                         code: 'NOT_FOUND',
-                        message: 'Floodlight config id: 213123123 was not found.',
                         kind: 'dfareporting#conversionError',
+                        message: 'Floodlight config id: 213123123 was not found.',
                       },
                     ],
                     kind: 'dfareporting#conversionStatus',
                   },
                 ],
-                kind: 'dfareporting#conversionsBatchInsertResponse',
               },
               status: 200,
             },
@@ -312,41 +312,6 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           output: {
             status: 200,
             message: '[CAMPAIGN_MANAGER Response V1 Handler] - Request Processed Successfully',
-            destinationResponse: {
-              response: {
-                hasFailures: false,
-                status: [
-                  {
-                    conversion: {
-                      timestampMicros: '1668624722000000',
-                      floodlightConfigurationId: '213123123',
-                      ordinal: '1',
-                      floodlightActivityId: '456543345245',
-                      value: 7,
-                      gclid: '123',
-                      limitAdTracking: true,
-                      childDirectedTreatment: true,
-                    },
-                    kind: 'dfareporting#conversionStatus',
-                  },
-                  {
-                    conversion: {
-                      timestampMicros: '1668624722000000',
-                      floodlightConfigurationId: '213123123',
-                      ordinal: '1',
-                      floodlightActivityId: '456543345245',
-                      value: 8,
-                      gclid: '321',
-                      limitAdTracking: true,
-                      childDirectedTreatment: true,
-                    },
-                    kind: 'dfareporting#conversionStatus',
-                  },
-                ],
-                kind: 'dfareporting#conversionsBatchInsertResponse',
-              },
-              status: 200,
-            },
             response: [
               {
                 statusCode: 200,
@@ -412,48 +377,6 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           output: {
             status: 200,
             message: '[CAMPAIGN_MANAGER Response V1 Handler] - Request Processed Successfully',
-            destinationResponse: {
-              response: {
-                hasFailures: true,
-                status: [
-                  {
-                    conversion: {
-                      timestampMicros: '1668624722000000',
-                      floodlightConfigurationId: '213123123',
-                      ordinal: '1',
-                      floodlightActivityId: '456543345245',
-                      value: 7,
-                      gclid: '123',
-                      limitAdTracking: true,
-                      childDirectedTreatment: true,
-                    },
-                    kind: 'dfareporting#conversionStatus',
-                  },
-                  {
-                    conversion: {
-                      timestampMicros: '1668624722000000',
-                      floodlightConfigurationId: '213123123',
-                      ordinal: '1',
-                      floodlightActivityId: '456543345245',
-                      value: 8,
-                      gclid: '321',
-                      limitAdTracking: true,
-                      childDirectedTreatment: true,
-                    },
-                    errors: [
-                      {
-                        code: 'NOT_FOUND',
-                        message: 'Floodlight config id: 213123123 was not found.',
-                        kind: 'dfareporting#conversionError',
-                      },
-                    ],
-                    kind: 'dfareporting#conversionStatus',
-                  },
-                ],
-                kind: 'dfareporting#conversionsBatchInsertResponse',
-              },
-              status: 200,
-            },
             response: [
               {
                 statusCode: 200,
@@ -519,55 +442,6 @@ export const testScenariosForV1API: ProxyV1TestData[] = [
           output: {
             status: 200,
             message: '[CAMPAIGN_MANAGER Response V1 Handler] - Request Processed Successfully',
-            destinationResponse: {
-              response: {
-                hasFailures: true,
-                status: [
-                  {
-                    conversion: {
-                      timestampMicros: '1668624722000000',
-                      floodlightConfigurationId: '213123123',
-                      ordinal: '1',
-                      floodlightActivityId: '456543345245',
-                      value: 7,
-                      gclid: '123',
-                      limitAdTracking: true,
-                      childDirectedTreatment: true,
-                    },
-                    errors: [
-                      {
-                        code: 'INVALID_ARGUMENT',
-                        message: 'Gclid is not valid.',
-                        kind: 'dfareporting#conversionError',
-                      },
-                    ],
-                    kind: 'dfareporting#conversionStatus',
-                  },
-                  {
-                    conversion: {
-                      timestampMicros: '1668624722000000',
-                      floodlightConfigurationId: '213123123',
-                      ordinal: '1',
-                      floodlightActivityId: '456543345245',
-                      value: 8,
-                      gclid: '321',
-                      limitAdTracking: true,
-                      childDirectedTreatment: true,
-                    },
-                    errors: [
-                      {
-                        code: 'NOT_FOUND',
-                        message: 'Floodlight config id: 213123123 was not found.',
-                        kind: 'dfareporting#conversionError',
-                      },
-                    ],
-                    kind: 'dfareporting#conversionStatus',
-                  },
-                ],
-                kind: 'dfareporting#conversionsBatchInsertResponse',
-              },
-              status: 200,
-            },
             response: [
               {
                 statusCode: 400,

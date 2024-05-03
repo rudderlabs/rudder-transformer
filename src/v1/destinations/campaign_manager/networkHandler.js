@@ -62,7 +62,6 @@ const responseHandler = (responseParams, logger) => {
     return {
       status,
       message,
-      destinationResponse,
       response: responseWithIndividualEvents,
     };
   }

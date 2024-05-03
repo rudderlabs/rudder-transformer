@@ -236,8 +236,9 @@ export class NativeIntegrationDestinationService implements DestinationService {
         destinationResponse: processedProxyResponse,
         rudderJobMetadata,
         destType: destinationType,
+        logger: loggerWithCtx,
       };
-      let responseProxy = networkHandler.responseHandler(responseParams, loggerWithCtx);
+      let responseProxy = networkHandler.responseHandler(responseParams);
       // Adaption Logic for V0 to V1
       if (handlerVersion.toLowerCase() === 'v0' && version.toLowerCase() === 'v1') {
         const v0Response = responseProxy as DeliveryV0Response;

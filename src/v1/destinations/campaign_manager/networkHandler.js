@@ -34,13 +34,14 @@ function isEventAbortableAndExtractErrMsg(element, proxyOutputObj) {
   return isAbortable;
 }
 
-const responseHandler = (responseParams, logger) => {
+const responseHandler = (responseParams) => {
   const { destinationResponse, rudderJobMetadata } = responseParams;
+  const {logger} = responseParams;
   const message = `[CAMPAIGN_MANAGER Response V1 Handler] - Request Processed Successfully`;
   const responseWithIndividualEvents = [];
   const { response, status } = destinationResponse;
-  logger.infow(`cm360 destination response with batch size ${rudderJobMetadata.length}`);
-  logger.infow(JSON.stringify(destinationResponse));
+  logger.info(`cm360 destination response with batch size ${rudderJobMetadata.length}`);
+  logger.info(JSON.stringify(destinationResponse));
 
   if (isHttpStatusSuccess(status)) {
     // check for Partial Event failures and Successes
@@ -58,7 +59,7 @@ const responseHandler = (responseParams, logger) => {
       }
       responseWithIndividualEvents.push(proxyOutputObj);
     }
-    logger.infow(`cm360 proxy response: ${JSON.stringify(responseWithIndividualEvents)}`);
+    logger.info(`cm360 proxy response: ${JSON.stringify(responseWithIndividualEvents)}`);
     return {
       status,
       message,

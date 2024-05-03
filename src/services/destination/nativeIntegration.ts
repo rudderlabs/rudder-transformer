@@ -219,11 +219,11 @@ export class NativeIntegrationDestinationService implements DestinationService {
         destinationType,
         Array.isArray(rudderJobMetadata)
           ? rudderJobMetadata[0].destinationId
-          : rudderJobMetadata.destinationId,
+          : rudderJobMetadata?.destinationId,
         Array.isArray(rudderJobMetadata)
           ? rudderJobMetadata[0].workspaceId
-          : rudderJobMetadata.workspaceId,
-        tags.FEATURES.ROUTER,
+          : rudderJobMetadata?.workspaceId,
+        tags.FEATURES.DATA_DELIVERY,
       );
       const loggerWithCtx = logger.child({
         ...MiscService.getLoggableData(metaTO.errorDetails),

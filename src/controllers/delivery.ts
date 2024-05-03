@@ -12,7 +12,6 @@ import { MiscService } from '../services/misc';
 import {
   DeliveryV0Response,
   DeliveryV1Response,
-  ErrorDetailer,
   ProcessorTransformationOutput,
   ProxyV0Request,
   ProxyV1Request,
@@ -67,8 +66,15 @@ export class DeliveryController {
     const deliveryRequest = ctx.request.body as ProxyV1Request;
     const { destination }: { destination: string } = ctx.params;
     const integrationService = ServiceSelector.getNativeDestinationService();
+    const { metadata } = deliveryRequest;
+    const metaTO = integrationService.getTags(
+      destination,
+      metadata[0].destinationId || NON_DETERMINABLE,
+      metadata[0].workspaceId || NON_DETERMINABLE,
+      tags.FEATURES.DATA_DELIVERY,
+    );
     const loggerWithCtx = logger.child({
-      ...MiscService.getLoggableData(deliveryRequest?.metadata[0] as unknown as ErrorDetailer),
+      ...MiscService.getLoggableData(metaTO.errorDetails),
     });
     try {
       deliveryResponse = (await integrationService.deliver(
@@ -79,13 +85,6 @@ export class DeliveryController {
         loggerWithCtx,
       )) as DeliveryV1Response;
     } catch (error: any) {
-      const { metadata } = deliveryRequest;
-      const metaTO = integrationService.getTags(
-        destination,
-        metadata[0].destinationId || NON_DETERMINABLE,
-        metadata[0].workspaceId || NON_DETERMINABLE,
-        tags.FEATURES.DATA_DELIVERY,
-      );
       metaTO.metadatas = metadata;
       deliveryResponse = DestinationPostTransformationService.handlevV1DeliveriesFailureEvents(
         error,

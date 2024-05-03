@@ -81,7 +81,6 @@ const process = (event) => {
     const { workspaceId } = metadata;
     if (shouldSendDataAsJSON) {
       // If redis should store information as JSON type
-      // JSON.SET <key> . <value>
       return getTransformedPayloadForJSON({
         key: `${workspaceId}:${destinationId}:${message.context.sources.profiles_entity}:${message.context.sources.profiles_id_type}:${message.userId}`,
         value: {
@@ -95,7 +94,6 @@ const process = (event) => {
 
   if (shouldSendDataAsJSON) {
     // If redis should store information as JSON type
-    // JSON.SET <key> . <value>
     return getTransformedPayloadForJSON({
       key: `${keyPrefix}user:${lodash.toString(message.userId)}`,
       value: jsonValue,

@@ -35,8 +35,7 @@ function isEventAbortableAndExtractErrMsg(element, proxyOutputObj) {
 }
 
 const responseHandler = (responseParams) => {
-  const { destinationResponse, rudderJobMetadata } = responseParams;
-  const {logger} = responseParams;
+  const { destinationResponse, rudderJobMetadata, logger } = responseParams;
   const message = `[CAMPAIGN_MANAGER Response V1 Handler] - Request Processed Successfully`;
   const responseWithIndividualEvents = [];
   const { response, status } = destinationResponse;

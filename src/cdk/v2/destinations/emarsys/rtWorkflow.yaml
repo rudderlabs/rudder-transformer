@@ -32,7 +32,6 @@ steps:
     description: Batches the successfulEvents
     template: |
       $.context.batchedPayload = $.batchResponseBuilder($.outputs.successfulEvents);
-      console.log("batchedPayload",JSON.stringify($.context.batchedPayload));
 
   - name: finalPayload
     template: |

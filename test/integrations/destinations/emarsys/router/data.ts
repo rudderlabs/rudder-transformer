@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 const config = {
   discardEmptyProperties: true,
   emersysUsername: 'dummy',
@@ -52,14 +53,23 @@ const commonDestination = {
   Enabled: true,
 };
 
+export const mockFns = (_) => {
+  // @ts-ignore
+  jest.useFakeTimers().setSystemTime(new Date('2019-10-14'));
+  jest.mock('crypto', () => ({
+    ...jest.requireActual('crypto'),
+    randomBytes: jest.fn().mockReturnValue(Buffer.from('5398e214ae99c2e50afb709a3bc423f9', 'hex')),
+  }));
+};
+
 export const data = [
   {
     id: 'emarsys-track-test-1',
     name: 'emarsys',
-    description: 'Track call : custom event calls with simple user properties and traits',
+    description: 'combined batch',
     scenario: 'Business',
     successCriteria:
-      'event not respecting the internal mapping and as well as UI mapping should be considered as a custom event and should be sent as it is',
+      'Identify, group events should be batched based on audience list and key_id criteria and track should not be batched ',
     feature: 'router',
     module: 'destination',
     version: 'v0',
@@ -418,7 +428,7 @@ export const data = [
                   'Content-Type': 'application/json',
                   Accept: 'application/json',
                   'X-WSSE':
-                    'UsernameToken Username="dummy", PasswordDigest="MGI5ZTdkYzgzMTA2Y2E0NzNlOTc1ZDEyY2I0NThhOGMxOTdjZGJlOQ==", Nonce="5398e214ae99c2e50afb709a3bc423f9", Created="2024-05-03T10:53:59.547Z"',
+                    'UsernameToken Username="dummy", PasswordDigest="NDc5MjNlODIyMGE4ODhiMTQyNTA0OGMzZTFjZTM1MmMzMmU0NmNiNw==", Nonce="5398e214ae99c2e50afb709a3bc423f9", Created="2019-10-14T00:00:00.000Z"',
                 },
                 params: {},
                 files: {},
@@ -467,7 +477,7 @@ export const data = [
                   'Content-Type': 'application/json',
                   Accept: 'application/json',
                   'X-WSSE':
-                    'UsernameToken Username="dummy", PasswordDigest="MGI5ZTdkYzgzMTA2Y2E0NzNlOTc1ZDEyY2I0NThhOGMxOTdjZGJlOQ==", Nonce="5398e214ae99c2e50afb709a3bc423f9", Created="2024-05-03T10:53:59.547Z"',
+                    'UsernameToken Username="dummy", PasswordDigest="NDc5MjNlODIyMGE4ODhiMTQyNTA0OGMzZTFjZTM1MmMzMmU0NmNiNw==", Nonce="5398e214ae99c2e50afb709a3bc423f9", Created="2019-10-14T00:00:00.000Z"',
                 },
                 params: {},
                 files: {},
@@ -510,7 +520,7 @@ export const data = [
                   'Content-Type': 'application/json',
                   Accept: 'application/json',
                   'X-WSSE':
-                    'UsernameToken Username="dummy", PasswordDigest="MGI5ZTdkYzgzMTA2Y2E0NzNlOTc1ZDEyY2I0NThhOGMxOTdjZGJlOQ==", Nonce="5398e214ae99c2e50afb709a3bc423f9", Created="2024-05-03T10:53:59.547Z"',
+                    'UsernameToken Username="dummy", PasswordDigest="NDc5MjNlODIyMGE4ODhiMTQyNTA0OGMzZTFjZTM1MmMzMmU0NmNiNw==", Nonce="5398e214ae99c2e50afb709a3bc423f9", Created="2019-10-14T00:00:00.000Z"',
                 },
                 params: {},
                 files: {},
@@ -546,7 +556,7 @@ export const data = [
                   'Content-Type': 'application/json',
                   Accept: 'application/json',
                   'X-WSSE':
-                    'UsernameToken Username="dummy", PasswordDigest="MGI5ZTdkYzgzMTA2Y2E0NzNlOTc1ZDEyY2I0NThhOGMxOTdjZGJlOQ==", Nonce="5398e214ae99c2e50afb709a3bc423f9", Created="2024-05-03T10:53:59.547Z"',
+                    'UsernameToken Username="dummy", PasswordDigest="NDc5MjNlODIyMGE4ODhiMTQyNTA0OGMzZTFjZTM1MmMzMmU0NmNiNw==", Nonce="5398e214ae99c2e50afb709a3bc423f9", Created="2019-10-14T00:00:00.000Z"',
                 },
                 params: {},
                 files: {},
@@ -611,7 +621,7 @@ export const data = [
                   'Content-Type': 'application/json',
                   Accept: 'application/json',
                   'X-WSSE':
-                    'UsernameToken Username="dummy", PasswordDigest="MGI5ZTdkYzgzMTA2Y2E0NzNlOTc1ZDEyY2I0NThhOGMxOTdjZGJlOQ==", Nonce="5398e214ae99c2e50afb709a3bc423f9", Created="2024-05-03T10:53:59.547Z"',
+                    'UsernameToken Username="dummy", PasswordDigest="NDc5MjNlODIyMGE4ODhiMTQyNTA0OGMzZTFjZTM1MmMzMmU0NmNiNw==", Nonce="5398e214ae99c2e50afb709a3bc423f9", Created="2019-10-14T00:00:00.000Z"',
                 },
                 params: {},
                 files: {},
@@ -633,4 +643,4 @@ export const data = [
       },
     },
   },
-];
+].map((d) => ({ ...d, mockFns }));

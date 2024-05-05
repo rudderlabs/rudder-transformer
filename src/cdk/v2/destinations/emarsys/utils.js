@@ -57,9 +57,10 @@ const buildIdentifyPayload = (message, destConfig) => {
   const payload = {};
 
   const integrationObject = getIntegrationsObj(message, 'emarsys');
+  console.log('integrationObject', integrationObject);
   const finalContactList = integrationObject?.contactListId || defaultContactList;
-
-  if (!isDefinedAndNotNullAndNotEmpty(finalContactList)) {
+  console.log('finalContactList', finalContactList);
+  if (!isDefinedAndNotNullAndNotEmpty(String(finalContactList))) {
     throw new InstrumentationError(
       'Cannot a find a specific contact list either through configuration or via integrations object',
     );
@@ -105,10 +106,10 @@ const buildIdentifyPayload = (message, destConfig) => {
 };
 
 const findRudderPropertyByEmersysProperty = (emersysProperty, fieldMapping) => {
-  // Use lodash to find the object where the emersysProperty matches the input
-  const item = lodash.find(fieldMapping, { emersysProperty });
+  // find the object where the emersysProperty matches the input
+  const item = lodash.find(fieldMapping, { emersysProperty: String(emersysProperty) });
   // Return the rudderProperty if the object is found, otherwise return null
-  return item ? item.rudderProperty : null;
+  return item ? item.rudderProperty : 'email';
 };
 
 const deduceExternalIdValue = (message, emersysIdentifier, fieldMapping) => {

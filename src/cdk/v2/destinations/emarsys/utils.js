@@ -47,6 +47,9 @@ const buildHeader = (destConfig) => {
   };
 };
 
+const deduceCustomIdentifier = (integrationObject, emersysCustomIdentifier) =>
+  integrationObject?.customIdentifierId || emersysCustomIdentifier || EMAIL_FIELD_ID;
+
 const buildIdentifyPayload = (message, destConfig) => {
   let destinationPayload;
   const { fieldMapping, emersysCustomIdentifier, discardEmptyProperties, defaultContactList } =
@@ -73,8 +76,7 @@ const buildIdentifyPayload = (message, destConfig) => {
       }
     });
   }
-  const emersysIdentifier =
-    integrationObject?.customIdentifierId || emersysCustomIdentifier || EMAIL_FIELD_ID;
+  const emersysIdentifier = deduceCustomIdentifier(integrationObject, emersysCustomIdentifier);
   const finalPayload =
     discardEmptyProperties === true
       ? removeUndefinedAndNullAndEmptyValues(payload) // empty property value has a significance in emersys
@@ -131,8 +133,7 @@ const deduceExternalIdValue = (message, emersysIdentifier, fieldMapping) => {
 const buildGroupPayload = (message, destConfig) => {
   const { emersysCustomIdentifier, defaultContactList, fieldMapping } = destConfig;
   const integrationObject = getIntegrationsObj(message, 'emarsys');
-  const emersysIdentifier =
-    integrationObject?.customIdentifierId || emersysCustomIdentifier || EMAIL_FIELD_ID;
+  const emersysIdentifier = deduceCustomIdentifier(integrationObject, emersysCustomIdentifier);
   const externalIdValue = deduceExternalIdValue(message, emersysIdentifier, fieldMapping);
   if (!isDefinedAndNotNull(externalIdValue)) {
     throw new InstrumentationError(
@@ -434,4 +435,5 @@ module.exports = {
   buildTrackPayload,
   deduceExternalIdValue,
   deduceEventId,
+  deduceCustomIdentifier,
 };

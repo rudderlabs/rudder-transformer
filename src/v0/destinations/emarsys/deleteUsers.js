@@ -1,4 +1,4 @@
-const { NetworkError, ConfigurationError } = require('@rudderstack/integrations-lib');
+const { NetworkError } = require('@rudderstack/integrations-lib');
 const { httpPOST } = require('../../../adapters/network');
 const {
   processAxiosResponse,
@@ -7,8 +7,12 @@ const {
 const { isHttpStatusSuccess } = require('../../util');
 const { executeCommonValidations } = require('../../util/regulation-api');
 const tags = require('../../util/tags');
-const { getUserIdBatches } = require('../../util/deleteUserUtils');
-const { JSON_MIME_TYPE } = require('../../util/constant');
+const { getCustomIdBatches } = require('../../util/deleteUserUtils');
+const {
+  buildHeader,
+  deduceCustomIdentifier,
+  findRudderPropertyByEmersysProperty,
+} = require('../../../cdk/v2/destinations/emarsys/utils');
 
 /**
  * This function will help to delete the users one by one from the userAttributes array.
@@ -17,39 +21,39 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
  * @returns
  */
 const userDeletionHandler = async (userAttributes, config) => {
-  const { apiKey } = config;
-
-  if (!apiKey) {
-    throw new ConfigurationError('Api Key is required for user deletion');
-  }
-
-  const endpoint = 'https://api.sprig.com/v2/purge/visitors';
-  const headers = {
-    Accept: JSON_MIME_TYPE,
-    'Content-Type': JSON_MIME_TYPE,
-    Authorization: `API-Key ${apiKey}`,
-  };
+  const endpoint = 'https://api.emarsys.net/api/v2/contact/delete';
+  const headers = buildHeader(config);
+  const customIdentifier = deduceCustomIdentifier({}, config.emersysCustomIdentifier);
+  const configuredPayloadProperty = findRudderPropertyByEmersysProperty(
+    customIdentifier,
+    config.fieldMapping,
+  );
   /**
-   * userIdBatches = [[u1,u2,u3,...batchSize],[u1,u2,u3,...batchSize]...]
-   * Ref doc : https://docs.sprig.com/reference/post-v2-purge-visitors-1
+   * identifierBatches = [[u1,u2,u3,...batchSize],[u1,u2,u3,...batchSize]...]
+   * Ref doc : https://dev.emarsys.com/docs/core-api-reference/szmq945esac90-delete-contacts
    */
-  const userIdBatches = getUserIdBatches(userAttributes, 100);
+  const identifierBatches = getCustomIdBatches(userAttributes, configuredPayloadProperty, 1000);
   // Note: we will only get 400 status code when no user deletion is present for given userIds so we will not throw error in that case
   // eslint-disable-next-line no-restricted-syntax
-  for (const curBatch of userIdBatches) {
+  for (const curBatch of identifierBatches) {
+    const deleteContactPayload = {
+      key_id: customIdentifier,
+      contact_list_id: config.defaultContactList,
+    };
+    deleteContactPayload[`${customIdentifier}`] = curBatch;
     // eslint-disable-next-line no-await-in-loop
     const deletionResponse = await httpPOST(
       endpoint,
       {
-        userIds: curBatch,
+        ...deleteContactPayload,
       },
       {
         headers,
       },
       {
-        destType: 'sprig',
+        destType: 'emarsys',
         feature: 'deleteUsers',
-        endpointPath: '/purge/visitors',
+        endpointPath: '/contact/delete',
         requestMethod: 'POST',
         module: 'deletion',
       },

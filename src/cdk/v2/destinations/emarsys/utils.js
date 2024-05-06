@@ -40,6 +40,12 @@ const getWsseHeader = (user, secret) => {
 
 const buildHeader = (destConfig) => {
   const { emersysUsername, emersysUserSecret } = destConfig;
+  if (
+    !isDefinedAndNotNullAndNotEmpty(emersysUsername) ||
+    !isDefinedAndNotNullAndNotEmpty(emersysUserSecret)
+  ) {
+    throw new ConfigurationError('Either Emarsys user name or user secret is missing. Aborting');
+  }
   return {
     'Content-Type': 'application/json',
     Accept: 'application/json',
@@ -57,9 +63,7 @@ const buildIdentifyPayload = (message, destConfig) => {
   const payload = {};
 
   const integrationObject = getIntegrationsObj(message, 'emarsys');
-  console.log('integrationObject', integrationObject);
   const finalContactList = integrationObject?.contactListId || defaultContactList;
-  console.log('finalContactList', finalContactList);
   if (!isDefinedAndNotNullAndNotEmpty(String(finalContactList))) {
     throw new InstrumentationError(
       'Cannot a find a specific contact list either through configuration or via integrations object',

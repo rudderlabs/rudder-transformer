@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.65.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.64.0...v1.65.0) (2024-05-06)
+
+
+### Features
+
+* generate anonymousId and move to component testcases ([447f85f](https://github.com/rudderlabs/rudder-transformer/commit/447f85faf6ccca2179ab33b7fe43e281fc4f5897))
+
+
+### Bug Fixes
+
+* auth0 error handling ([2e22075](https://github.com/rudderlabs/rudder-transformer/commit/2e22075ddf792c573642fd09c5f9d31d8132525b))
+* auth0 error handling for missing userId ([#3334](https://github.com/rudderlabs/rudder-transformer/issues/3334)) ([d2cce77](https://github.com/rudderlabs/rudder-transformer/commit/d2cce772d6f0485ff8ee51af261006eb2066c3a2))
+* braze dedup for non-billable attributes ([#3320](https://github.com/rudderlabs/rudder-transformer/issues/3320)) ([ac59fdc](https://github.com/rudderlabs/rudder-transformer/commit/ac59fdc37d6fe08847d79d249d166de7cc358fd6))
+* multiple event mappings in ortto ([#3341](https://github.com/rudderlabs/rudder-transformer/issues/3341)) ([0a9a2e9](https://github.com/rudderlabs/rudder-transformer/commit/0a9a2e9e2a3029ad7b4834820ba2132d3f57ce98))
+
 ## [1.64.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.63.0...v1.64.0) (2024-04-29)
 
 

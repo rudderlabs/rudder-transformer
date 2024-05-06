@@ -37,7 +37,7 @@ const {
 } = require("../../src/util/customTransformer");
 const { parserForImport } = require("../../src/util/parser");
 const { RetryRequestError, RespStatusError } = require("../../src/util/utils");
-const { buildOpenfaasFn } = require("../../src/util/openfaas/index");
+const { buildOpenfaasFn, setFunctionInCache, invalidateFnCache } = require("../../src/util/openfaas/index");
 
 const OPENFAAS_GATEWAY_URL = "http://localhost:8080";
 const defaultBasicAuth = {
@@ -1406,6 +1406,7 @@ describe("Geolocation function", () => {
 // Running tests for python transformations with openfaas mocks
 describe("Python transformations", () => {
   beforeEach(() => {
+    invalidateFnCache();
     jest.resetAllMocks();
   });
   afterAll(() => {});
@@ -1441,6 +1442,7 @@ describe("Python transformations", () => {
 
     const expectedData = { success: true, publishedVersion: funcName };
 
+    setFunctionInCache(funcName);
     const output = await setupUserTransformHandler([], trRevCode);
     expect(output).toEqual(expectedData);
     expect(axios.post).toHaveBeenCalledTimes(0);
@@ -1624,13 +1626,47 @@ describe("Python transformations", () => {
     expect(axios.delete).toHaveBeenCalledTimes(1);
   });
 
-  it("Simple transformation run - invokes faas function", async () => {
+  it("Simple transformation run with function in cache - invokes faas function", async () => {
     const inputData = require(`./data/${integration}_input.json`);
     const outputData = require(`./data/${integration}_output.json`);
 
     const versionId = randomID();
     const respBody = pyTrRevCode(versionId);
     const funcName = pyfaasFuncName(respBody.workspaceId, versionId);
+
+    setFunctionInCache(funcName);
+
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+    when(fetch)
+      .calledWith(transformerUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+
+    axios.post.mockResolvedValue({ data: { transformedEvents: outputData } });
+
+    const output = await userTransformHandler(inputData, versionId, []);
+    expect(output).toEqual(outputData);
+
+
+    expect(axios.post).toHaveBeenCalledWith(
+      `${OPENFAAS_GATEWAY_URL}/function/${funcName}`,
+      inputData,
+      { auth: defaultBasicAuth },
+    );
+  });
+
+
+  it("Simple transformation run with clean cache - reconciles fn with 200OK and then invokes faas function", async () => {
+
+    const inputData = require(`./data/${integration}_input.json`);
+    const outputData = require(`./data/${integration}_output.json`);
+
+    const versionId = randomID();
+    const respBody = pyTrRevCode(versionId);
+    const funcName = pyfaasFuncName(respBody.workspaceId, versionId);
+
 
     const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
     when(fetch)
@@ -1641,12 +1677,19 @@ describe("Python transformations", () => {
       });
 
     axios.put.mockResolvedValue({});
+    axios.get.mockResolvedValue({}); // awaitFunctionReadiness()
     axios.post.mockResolvedValue({ data: { transformedEvents: outputData } });
 
     const output = await userTransformHandler(inputData, versionId, []);
     expect(output).toEqual(outputData);
 
 
+    expect(axios.get).toHaveBeenCalledTimes(1);
+    expect(axios.get).toHaveBeenCalledWith(
+      `${OPENFAAS_GATEWAY_URL}/function/${funcName}`,
+      {"headers": {"X-REQUEST-TYPE": "HEALTH-CHECK"}},
+      { auth: defaultBasicAuth },
+    );
     expect(axios.put).toHaveBeenCalledTimes(1);
     expect(axios.put).toHaveBeenCalledWith(
       `${OPENFAAS_GATEWAY_URL}/system/functions`,
@@ -1660,61 +1703,111 @@ describe("Python transformations", () => {
     );
   });
 
-  it("Simple transformation run - function not found", async () => {
-    const inputData = require(`./data/${integration}_input.json`);
+  describe("Simple transformation run with clean cache - function not found", () => {
 
-    const versionId = randomID();
-    const respBody = pyTrRevCode(versionId);
-    const funcName = pyfaasFuncName(respBody.workspaceId, respBody.versionId);
+    it('eventually sets up the function on 404 from update and then invokes it', async () => {
+      const inputData = require(`./data/${integration}_input.json`);
 
-    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
-    when(fetch)
-      .calledWith(transformerUrl)
-      .mockResolvedValue({
-        status: 200,
-        json: jest.fn().mockResolvedValue(respBody)
+      const versionId = randomID();
+      const respBody = pyTrRevCode(versionId);
+      const funcName = pyfaasFuncName(respBody.workspaceId, respBody.versionId);
+
+      const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+      when(fetch)
+        .calledWith(transformerUrl)
+        .mockResolvedValue({
+          status: 200,
+          json: jest.fn().mockResolvedValue(respBody)
+        });
+
+
+      axios.put.mockRejectedValueOnce({
+        response: { status: 404, data: `deployment not found`}
       });
 
+      axios.post
+        .mockRejectedValueOnce({
+          response: { status: 404, data: `error finding function ${funcName}` } // invoke function not found
+        })
+        .mockResolvedValueOnce({}); // create function
+      axios.get.mockResolvedValue({}); // awaitFunctionReadiness()
 
-    axios.put.mockRejectedValueOnce({
-      response: { status: 404, data: `deployment not found`}
+      await expect(async () => {
+        await userTransformHandler(inputData, versionId, []);
+      }).rejects.toThrow(RetryRequestError);
+
+      expect(axios.put).toHaveBeenCalledTimes(1);
+      expect(axios.put).toHaveBeenCalledWith(
+        `${OPENFAAS_GATEWAY_URL}/system/functions`,
+        buildOpenfaasFn(funcName, null, versionId, [], false, {}),
+        { auth: defaultBasicAuth },
+      );
+      expect(axios.post).toHaveBeenCalledTimes(2);
+      expect(axios.post).toHaveBeenCalledWith(
+        `${OPENFAAS_GATEWAY_URL}/function/${funcName}`,
+        inputData,
+        { auth: defaultBasicAuth },
+      );
+      expect(axios.post).toHaveBeenCalledWith(
+        `${OPENFAAS_GATEWAY_URL}/system/functions`,
+        expect.objectContaining({ name: funcName, service: funcName }),
+        { auth: defaultBasicAuth },
+      );
+
+      expect(axios.get).toHaveBeenCalledTimes(1);
+      expect(axios.get).toHaveBeenCalledWith(
+        `${OPENFAAS_GATEWAY_URL}/function/${funcName}`,
+        {"headers": {"X-REQUEST-TYPE": "HEALTH-CHECK"}},
+        { auth: defaultBasicAuth },
+      );
     });
 
-    axios.post
-      .mockRejectedValueOnce({
-        response: { status: 404, data: `error finding function ${funcName}` } // invoke function not found
-      })
-      .mockResolvedValueOnce({}); // create function
-    axios.get.mockResolvedValue({}); // awaitFunctionReadiness()
+    it('sets up the function on 202 from update and then invokes it', async() => {
+      const inputData = require(`./data/${integration}_input.json`);
+      const outputData = require(`./data/${integration}_output.json`);
 
-    await expect(async () => {
-      await userTransformHandler(inputData, versionId, []);
-    }).rejects.toThrow(RetryRequestError);
+      const versionId = randomID();
+      const respBody = pyTrRevCode(versionId);
+      const funcName = pyfaasFuncName(respBody.workspaceId, respBody.versionId);
 
-    expect(axios.put).toHaveBeenCalledTimes(1);
-    expect(axios.put).toHaveBeenCalledWith(
-      `${OPENFAAS_GATEWAY_URL}/system/functions`,
-      buildOpenfaasFn(funcName, null, versionId, [], false, {}),
-      { auth: defaultBasicAuth },
-    );
-    expect(axios.post).toHaveBeenCalledTimes(2);
-    expect(axios.post).toHaveBeenCalledWith(
-      `${OPENFAAS_GATEWAY_URL}/function/${funcName}`,
-      inputData,
-      { auth: defaultBasicAuth },
-    );
-    expect(axios.post).toHaveBeenCalledWith(
-      `${OPENFAAS_GATEWAY_URL}/system/functions`,
-      expect.objectContaining({ name: funcName, service: funcName }),
-      { auth: defaultBasicAuth },
-    );
+      const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+      when(fetch)
+        .calledWith(transformerUrl)
+        .mockResolvedValue({
+          status: 200,
+          json: jest.fn().mockResolvedValue(respBody)
+        });
 
-    expect(axios.get).toHaveBeenCalledTimes(1);
-    expect(axios.get).toHaveBeenCalledWith(
-      `${OPENFAAS_GATEWAY_URL}/function/${funcName}`,
-      {"headers": {"X-REQUEST-TYPE": "HEALTH-CHECK"}},
-      { auth: defaultBasicAuth },
-    );
+
+      axios.put.mockResolvedValueOnce({
+        response: { status: 202, data: `deployment created`}
+      });
+      axios.get.mockResolvedValue({}); // awaitFunctionReadiness()
+      axios.post.mockResolvedValue({ data: { transformedEvents: outputData } });
+
+      const output = await userTransformHandler(inputData, versionId, []);
+      expect(output).toEqual(outputData);
+
+      expect(axios.put).toHaveBeenCalledTimes(1);
+      expect(axios.put).toHaveBeenCalledWith(
+        `${OPENFAAS_GATEWAY_URL}/system/functions`,
+        buildOpenfaasFn(funcName, null, versionId, [], false, {}),
+        { auth: defaultBasicAuth },
+      );
+      expect(axios.post).toHaveBeenCalledTimes(1);
+      expect(axios.post).toHaveBeenCalledWith(
+        `${OPENFAAS_GATEWAY_URL}/function/${funcName}`,
+        inputData,
+        { auth: defaultBasicAuth },
+      );
+      expect(axios.get).toHaveBeenCalledTimes(1);
+      expect(axios.get).toHaveBeenCalledWith(
+        `${OPENFAAS_GATEWAY_URL}/function/${funcName}`,
+        {"headers": {"X-REQUEST-TYPE": "HEALTH-CHECK"}},
+        { auth: defaultBasicAuth },
+      );
+    });
+
   });
 
   it("Simple transformation run - error requests", async () => {
@@ -1731,6 +1824,8 @@ describe("Python transformations", () => {
         status: 200,
         json: jest.fn().mockResolvedValue(respBody)
       });
+
+    setFunctionInCache(funcName);
 
     axios.post
       .mockRejectedValueOnce({

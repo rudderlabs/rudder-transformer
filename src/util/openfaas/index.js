@@ -124,6 +124,39 @@ const invalidateFnCache = () => {
   functionListCache.set(FUNC_LIST_KEY, []);
 };
 
+const updateFaasFunction = async (
+  functionName,
+  code,
+  versionId,
+  libraryVersionIDs,
+  testMode,
+  trMetadata = {},
+) => {
+  try {
+    logger.debug(`Updating faas fn: ${functionName}`);
+
+    const payload = buildOpenfaasFn(
+      functionName,
+      code,
+      versionId,
+      libraryVersionIDs,
+      testMode,
+      trMetadata,
+    );
+    await updateFunction(functionName, payload);
+    // wait for function to be ready and then set it in cache
+    await awaitFunctionReadiness(functionName);
+    setFunctionInCache(functionName);
+  } catch (error) {
+    // 404 is statuscode returned from openfaas community edition
+    // when the function don't exist, so we can safely ignore this error
+    // and let the function be created in the next step.
+    if (error.statusCode !== 404) {
+      throw error;
+    }
+  }
+};
+
 const deployFaasFunction = async (
   functionName,
   code,
@@ -203,23 +236,12 @@ const reconcileFn = async (name, versionId, libraryVersionIDs, trMetadata) => {
     if (isFunctionDeployed(name)) {
       return;
     }
-
-    await updateFunction(
-      name,
-      buildOpenfaasFn(name, null, versionId, libraryVersionIDs, false, trMetadata),
-    );
-    // if the function is successfully updated, then
-    // simply set the function in cache.
-    setFunctionInCache(name);
+    await updateFaasFunction(name, null, versionId, libraryVersionIDs, false, trMetadata);
   } catch (error) {
-    if (error.statusCode !== 404) {
-      logger.error(
-        `unexpected error occurred when reconciling the function ${name}: ${error.message}`,
-      );
-      // FIXME: We need to limit use of retryable errors which
-      // convert to 809's and choke the pipeline.
-      throw new RespStatusError(error.message, 500);
-    }
+    logger.error(
+      `unexpected error occurred when reconciling the function ${name}: ${error.message}`,
+    );
+    throw error;
   }
 };
 
@@ -365,4 +387,5 @@ module.exports = {
   buildOpenfaasFn,
   FAAS_AST_VID,
   FAAS_AST_FN_NAME,
+  setFunctionInCache,
 };

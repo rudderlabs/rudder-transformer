@@ -41,7 +41,7 @@ const responseHandler = (responseParams) => {
 
   // even if a single event is unsuccessful, the entire batch will fail, we will filter that event out and retry others
   if (!isHttpStatusSuccess(status)) {
-    const errorMessage = response.message || 'unknown error format';
+    const errorMessage = response.replyText || 'unknown error format';
     responseWithIndividualEvents = rudderJobMetadata.map((metadata) => ({
       statusCode: status,
       metadata,

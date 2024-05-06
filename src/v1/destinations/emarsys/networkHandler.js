@@ -10,7 +10,7 @@ const {
 const tags = require('../../../v0/util/tags');
 
 function checkIfEventIsAbortableAndExtractErrorMessage(event, destinationResponse, keyId) {
-  const { errors } = destinationResponse.data;
+  const { errors } = destinationResponse.response.data;
 
   // Determine if event is a string or an object, then fetch the corresponding key or value
   let errorKey;

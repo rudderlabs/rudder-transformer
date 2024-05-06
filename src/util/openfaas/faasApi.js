@@ -14,7 +14,7 @@ const basicAuth = {
 
 const parseAxiosError = (error) => {
   if (error.response) {
-    const status = error.response.status || 400;
+    const status = error.response.status || 500;
     const errorData = error.response?.data;
     const message =
       (errorData && (errorData.message || errorData.error || errorData)) || error.message;
@@ -95,7 +95,7 @@ const deployFunction = async (payload) => {
 };
 
 const updateFunction = async (fnName, payload) => {
-  logger.warn(`Updating function: ${fnName}`);
+  logger.debug(`Updating function: ${fnName}`);
 
   return new Promise((resolve, reject) => {
     const url = `${OPENFAAS_GATEWAY_URL}/system/functions`;

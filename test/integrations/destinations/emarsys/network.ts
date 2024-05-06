@@ -31,6 +31,27 @@ export const correctContactCreateUpdateData = [
   },
 ];
 
+export const correctContactWithWrongKeyIdCreateUpdateData = [
+  {
+    '2': 'Person0',
+    '3': 'person0@example.com',
+    '10569': 'efghi',
+    '10519': 'efghi',
+    '31': 1,
+    '39': 'abc',
+    '100': 'abc',
+  },
+  {
+    '2': true,
+    '3': 'abcde',
+    '10569': 'efgh',
+    '10519': 1234,
+    '31': 2,
+    '39': 'abc',
+    '100': 'abc',
+  },
+];
+
 export const wrongContactCreateUpdateData = [
   {
     '2': 'Person0',
@@ -42,9 +63,9 @@ export const wrongContactCreateUpdateData = [
   },
   {
     '2': true,
-    '3': 1234,
-    '10569': 'efgh',
-    '10519': 1234,
+    '3': 'person0@example.com',
+    '10569': 1234,
+    '10519': 'efgh',
     '31': 2,
     '39': 'abc',
   },
@@ -63,11 +84,11 @@ export const correctGroupCallPayload = {
 
 export const groupPayloadWithWrongKeyId = {
   key_id: 'wrong_id',
-  external_ids: ['efghi', 'jklmn', 'unknown', 'person4@example.com'],
+  external_ids: ['efghi', 'jklmn'],
 };
 
 export const groupPayloadWithWrongExternalId = {
-  key_id: 'wrong_id',
+  key_id: 'right_id',
   external_ids: ['efghi', 'jklmn', 'unknown', 'person4@example.com'],
 };
 
@@ -81,7 +102,15 @@ const businessMockData = [
       headers: headerBlockWithCorrectAccessToken,
       data: contactPayload,
     },
-    httpRes: { replyCode: 0, replyText: 'OK', data: { ids: ['138621551', 968984932] } },
+    httpRes: {
+      data: {
+        replyCode: 0,
+        replyText: 'OK',
+        data: { ids: ['138621551', 968984932] },
+      },
+      status: 200,
+      statusText: 'OK',
+    },
   },
   {
     description:
@@ -94,10 +123,14 @@ const businessMockData = [
     },
     httpRes: {
       data: {
-        ids: ['138621551'],
-        errors: { '1234': { '2010': 'Contacts with the external id already exist: 3' } },
+        data: {
+          ids: ['138621551'],
+          errors: { '1234': { '2010': 'Contacts with the external id already exist: 3' } },
+        },
+        status: 200,
       },
       status: 200,
+      statusText: 'OK',
     },
   },
   {
@@ -106,17 +139,25 @@ const businessMockData = [
       method: 'PUT',
       url: 'https://api.emarsys.net/api/v2/contact/?create_if_not_exists=1',
       headers: headerBlockWithCorrectAccessToken,
-      data: { ...contactPayload, key_id: 100 },
+      data: {
+        ...contactPayload,
+        contacts: correctContactWithWrongKeyIdCreateUpdateData,
+        key_id: 100,
+      },
     },
     httpRes: {
-      data: { ids: [], errors: { '<NO_KEY_ID>': { '2004': 'Invalid key field id: 100' } } },
+      data: {
+        data: { ids: [], errors: { '<NO_KEY_ID>': { '2004': 'Invalid key field id: 100' } } },
+        status: 200,
+      },
       status: 200,
+      statusText: 'OK',
     },
   },
   {
     description: 'Mock response from destination for correct group call ',
     httpReq: {
-      method: 'put',
+      method: 'POST',
       url: 'https://api.emarsys.net/api/v2/contactlist/900337462/add',
       headers: headerBlockWithCorrectAccessToken,
       data: correctGroupCallPayload,
@@ -135,12 +176,12 @@ const businessMockData = [
       data: groupPayloadWithWrongKeyId,
     },
     httpRes: {
-      data: { replyCode: 2004, replyText: 'Invalid key field id: 100', data: '' },
+      data: { replyCode: 2004, replyText: 'Invalid key field id: wrong_id', data: '' },
       status: 400,
     },
   },
   {
-    description: 'Mock response from destination for group call with wrong key_id ',
+    description: 'Mock response from destination for group call with wrong data ',
     httpReq: {
       method: 'POST',
       url: 'https://api.emarsys.net/api/v2/contactlist/900337462/add',
@@ -152,9 +193,8 @@ const businessMockData = [
         replyCode: 0,
         replyText: 'OK',
         data: {
-          inserted_contacts: 0,
+          inserted_contacts: 2,
           errors: {
-            efghi: { '2008': 'No contact found with the external id: 3' },
             jklmn: { '2008': 'No contact found with the external id: 3' },
             unknown: { '2008': 'No contact found with the external id: 3' },
           },

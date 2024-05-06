@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
+const { isObject } = require('@rudderstack/integrations-lib');
 const { TransformerProxyError } = require('../../../v0/util/errorTypes');
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../../v0/util/index');
@@ -23,9 +24,15 @@ function checkIfEventIsAbortableAndExtractErrorMessage(event, destinationRespons
   }
 
   // Check if this key has a corresponding error in the errors object
-  if (errors[errorKey]) {
+  if (errors && isObject(errors) && errors[errorKey]) {
     // const errorCode = Object.keys(errors[errorKey])[0]; // Assume there is at least one error code
     const errorMsg = JSON.stringify(errors[errorKey]);
+    return { isAbortable: true, errorMsg };
+  }
+
+  // if '<NO_KEY_ID>' is present in the error object, that means, it is a root level error, and none of the events are supposed to be successful
+  if (errors && isObject(errors) && errors['<NO_KEY_ID>']) {
+    const errorMsg = JSON.stringify(errors['<NO_KEY_ID>']);
     return { isAbortable: true, errorMsg };
   }
 

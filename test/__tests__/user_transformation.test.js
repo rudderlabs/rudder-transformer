@@ -1808,6 +1808,36 @@ describe("Python transformations", () => {
       );
     });
 
+    it('throws from the userTransform handler when reconciles errors with anything other than 404', async() => {
+      const inputData = require(`./data/${integration}_input.json`);
+      const outputData = require(`./data/${integration}_output.json`);
+
+      const versionId = randomID();
+      const respBody = pyTrRevCode(versionId);
+      const funcName = pyfaasFuncName(respBody.workspaceId, respBody.versionId);
+
+      const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+      when(fetch)
+        .calledWith(transformerUrl)
+        .mockResolvedValue({
+          status: 200,
+          json: jest.fn().mockResolvedValue(respBody)
+        });
+
+
+      axios.put.mockRejectedValueOnce({response: {status: 400, data: 'bad request'}});
+      await expect(async () => {
+        await userTransformHandler(inputData, versionId, []);
+      }).rejects.toThrow(RespStatusError);
+
+      expect(axios.put).toHaveBeenCalledTimes(1);
+      expect(axios.put).toHaveBeenCalledWith(
+        `${OPENFAAS_GATEWAY_URL}/system/functions`,
+        buildOpenfaasFn(funcName, null, versionId, [], false, {}),
+        { auth: defaultBasicAuth },
+      );
+    });
+
   });
 
   it("Simple transformation run - error requests", async () => {

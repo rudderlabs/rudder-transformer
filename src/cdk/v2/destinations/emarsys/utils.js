@@ -64,7 +64,7 @@ const buildIdentifyPayload = (message, destConfig) => {
 
   const integrationObject = getIntegrationsObj(message, 'emarsys');
   const finalContactList = integrationObject?.contactListId || defaultContactList;
-  if (!isDefinedAndNotNullAndNotEmpty(String(finalContactList))) {
+  if (!finalContactList || !isDefinedAndNotNullAndNotEmpty(String(finalContactList))) {
     throw new InstrumentationError(
       'Cannot a find a specific contact list either through configuration or via integrations object',
     );

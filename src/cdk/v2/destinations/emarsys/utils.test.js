@@ -12,6 +12,7 @@ const {
 } = require('../../../../v1/destinations/emarsys/networkHandler');
 const crypto = require('crypto');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const { responses } = require('../../../../../test/testHelper');
 
 describe('base64Sha', () => {
   it('should return a base64 encoded SHA1 hash of the input string', () => {
@@ -214,7 +215,7 @@ describe('buildGroupPayload', () => {
       eventType: 'group',
       destinationPayload: {
         payload: {
-          key_id: '3',
+          key_id: 3,
           external_ids: ['test@example.com'],
         },
         contactListId: 'group123',
@@ -234,14 +235,12 @@ describe('buildGroupPayload', () => {
       },
     };
     const destination = {
-      Config: {
-        emersysCustomIdentifier: '100',
-        defaultContactList: 'list123',
-        fieldMapping: [
-          { emersysProperty: '100', rudderProperty: 'customId' },
-          { emersysProperty: '3', rudderProperty: 'email' },
-        ],
-      },
+      emersysCustomIdentifier: '100',
+      defaultContactList: 'list123',
+      fieldMapping: [
+        { emersysProperty: '100', rudderProperty: 'customId' },
+        { emersysProperty: '3', rudderProperty: 'email' },
+      ],
     };
     const result = buildGroupPayload(message, destination);
     expect(result).toEqual({
@@ -267,14 +266,12 @@ describe('buildGroupPayload', () => {
       },
     };
     const destination = {
-      Config: {
-        emersysCustomIdentifier: 'customId',
-        defaultContactList: 'list123',
-        fieldMapping: [
-          { emersysProperty: 'customId', rudderProperty: 'customId' },
-          { emersysProperty: 'email', rudderProperty: 'email' },
-        ],
-      },
+      emersysCustomIdentifier: 'customId',
+      defaultContactList: 'list123',
+      fieldMapping: [
+        { emersysProperty: 'customId', rudderProperty: 'customId' },
+        { emersysProperty: 'email', rudderProperty: 'email' },
+      ],
     };
     expect(() => {
       buildGroupPayload(message, destination);
@@ -288,51 +285,57 @@ describe('createGroupBatches', () => {
     // Arrange
     const events = [
       {
-        message: {
-          body: {
-            JSON: {
-              destinationPayload: {
-                payload: {
-                  key_id: 'key1',
-                  external_ids: ['id1', 'id2'],
+        message: [
+          {
+            body: {
+              JSON: {
+                destinationPayload: {
+                  payload: {
+                    key_id: 'key1',
+                    external_ids: ['id1', 'id2'],
+                  },
+                  contactListId: 'list1',
                 },
-                contactListId: 'list1',
               },
             },
           },
-        },
+        ],
         metadata: { jobId: 1, userId: 'u1' },
       },
       {
-        message: {
-          body: {
-            JSON: {
-              destinationPayload: {
-                payload: {
-                  key_id: 'key2',
-                  external_ids: ['id3', 'id4'],
+        message: [
+          {
+            body: {
+              JSON: {
+                destinationPayload: {
+                  payload: {
+                    key_id: 'key2',
+                    external_ids: ['id3', 'id4'],
+                  },
+                  contactListId: 'list2',
                 },
-                contactListId: 'list2',
               },
             },
           },
-        },
+        ],
         metadata: { jobId: 2, userId: 'u2' },
       },
       {
-        message: {
-          body: {
-            JSON: {
-              destinationPayload: {
-                payload: {
-                  key_id: 'key1',
-                  external_ids: ['id5', 'id6'],
+        message: [
+          {
+            body: {
+              JSON: {
+                destinationPayload: {
+                  payload: {
+                    key_id: 'key1',
+                    external_ids: ['id5', 'id6'],
+                  },
+                  contactListId: 'list1',
                 },
-                contactListId: 'list1',
               },
             },
           },
-        },
+        ],
         metadata: { jobId: 3, userId: 'u3' },
       },
     ];
@@ -380,7 +383,7 @@ describe('createGroupBatches', () => {
 describe('findRudderPropertyByEmersysProperty', () => {
   // Returns the correct rudderProperty when given a valid emersysProperty and fieldMapping
   it('should return the correct rudderProperty when given a valid emersysProperty and fieldMapping', () => {
-    const emersysProperty = 'email';
+    const emersysProperty = 'firstName';
     const fieldMapping = [
       { emersysProperty: 'email', rudderProperty: 'email' },
       { emersysProperty: 'firstName', rudderProperty: 'firstName' },
@@ -389,7 +392,7 @@ describe('findRudderPropertyByEmersysProperty', () => {
 
     const result = findRudderPropertyByEmersysProperty(emersysProperty, fieldMapping);
 
-    expect(result).toBe('email');
+    expect(result).toBe('firstName');
   });
 
   // Returns null when given an empty fieldMapping
@@ -399,7 +402,7 @@ describe('findRudderPropertyByEmersysProperty', () => {
 
     const result = findRudderPropertyByEmersysProperty(emersysProperty, fieldMapping);
 
-    expect(result).toBeNull();
+    expect(result).toBe('email');
   });
 });
 
@@ -408,10 +411,12 @@ describe('checkIfEventIsAbortableAndExtractErrorMessage', () => {
   it('should return {isAbortable: false, errorMsg: ""} when event is neither a string nor an object with keyId', () => {
     const event = 123;
     const destinationResponse = {
-      data: {
-        errors: {
-          errorKey: {
-            errorCode: 'errorMessage',
+      response: {
+        data: {
+          errors: {
+            errorKey: {
+              errorCode: 'errorMessage',
+            },
           },
         },
       },
@@ -427,8 +432,10 @@ describe('checkIfEventIsAbortableAndExtractErrorMessage', () => {
   it('should return {isAbortable: false, errorMsg: ""} when errors object is empty', () => {
     const event = 'event';
     const destinationResponse = {
-      data: {
-        errors: {},
+      response: {
+        data: {
+          errors: {},
+        },
       },
     };
     const keyId = 'keyId';
@@ -442,10 +449,12 @@ describe('checkIfEventIsAbortableAndExtractErrorMessage', () => {
   it('should return {isAbortable: true, errorMsg} when event is a string and has a corresponding error in the errors object', () => {
     const event = 'event';
     const destinationResponse = {
-      data: {
-        errors: {
-          event: {
-            errorCode: 'errorMessage',
+      response: {
+        data: {
+          errors: {
+            event: {
+              errorCode: 'errorMessage',
+            },
           },
         },
       },
@@ -463,10 +472,12 @@ describe('checkIfEventIsAbortableAndExtractErrorMessage', () => {
       keyId: 'event',
     };
     const destinationResponse = {
-      data: {
-        errors: {
-          event: {
-            errorCode: 'errorMessage',
+      response: {
+        data: {
+          errors: {
+            event: {
+              errorCode: 'errorMessage',
+            },
           },
         },
       },

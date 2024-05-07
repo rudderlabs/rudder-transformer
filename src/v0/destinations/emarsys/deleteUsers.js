@@ -1,4 +1,8 @@
-const { NetworkError } = require('@rudderstack/integrations-lib');
+const {
+  NetworkError,
+  isDefinedAndNotNull,
+  ConfigurationAuthError,
+} = require('@rudderstack/integrations-lib');
 const { httpPOST } = require('../../../adapters/network');
 const {
   processAxiosResponse,
@@ -28,6 +32,9 @@ const userDeletionHandler = async (userAttributes, config) => {
     customIdentifier,
     config.fieldMapping,
   );
+  if (!isDefinedAndNotNull(config.defaultContactList)) {
+    throw new ConfigurationAuthError('No audience list is configured. Aborting');
+  }
   /**
    * identifierBatches = [[u1,u2,u3,...batchSize],[u1,u2,u3,...batchSize]...]
    * Ref doc : https://dev.emarsys.com/docs/core-api-reference/szmq945esac90-delete-contacts

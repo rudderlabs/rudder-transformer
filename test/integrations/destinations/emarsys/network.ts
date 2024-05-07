@@ -92,6 +92,14 @@ export const groupPayloadWithWrongExternalId = {
   external_ids: ['efghi', 'jklmn', 'unknown', 'person4@example.com'],
 };
 
+export const comonHeader = {
+  Accept: 'application/json',
+  'Content-Type': 'application/json',
+
+  'X-WSSE':
+    'UsernameToken Username="dummy", PasswordDigest="MjEzMDY5ZmI3NjMwNzE1N2M1ZTI5MWMzMzI3ODQxNDU2YWM4NTI3YQ==", Nonce="5398e214ae99c2e50afb709a3bc423f9", Created="2023-10-14T00:00:00.000Z"',
+};
+
 // MOCK DATA
 const businessMockData = [
   {
@@ -218,4 +226,73 @@ const businessMockData = [
   },
 ];
 
-export const networkCallsData = [...businessMockData];
+const deleteNwData = [
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.emarsys.net/api/v2/contact/delete',
+      data: {
+        key_id: 3,
+        contact_list_id: 'dummy',
+        3: ['abc@gmail.com'],
+      },
+      headers: comonHeader,
+    },
+    httpRes: {
+      data: {
+        replyCode: 2008,
+        replyText: 'No contact found with the external id: 3 - abc@gmail.com',
+        data: '',
+      },
+      status: 200,
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.emarsys.net/api/v2/contact/delete',
+      data: {
+        userIds: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'],
+      },
+      headers: comonHeader,
+    },
+    httpRes: {
+      data: 'Your application has made too many requests in too short a time.',
+      status: 429,
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.emarsys.net/api/v2/contact/delete',
+      data: {
+        userIds: ['9'],
+      },
+      headers: comonHeader,
+    },
+    httpRes: {
+      data: {
+        error: 'User deletion request failed',
+      },
+      status: 400,
+    },
+  },
+  {
+    httpReq: {
+      method: 'post',
+      url: 'https://api.emarsys.net/api/v2/contact/delete',
+      data: {
+        userIds: ['1', '2', '3'],
+      },
+      headers: comonHeader,
+    },
+    httpRes: {
+      data: {
+        requestId: 'request_1',
+      },
+      status: 200,
+    },
+  },
+];
+
+export const networkCallsData = [...businessMockData, ...deleteNwData];

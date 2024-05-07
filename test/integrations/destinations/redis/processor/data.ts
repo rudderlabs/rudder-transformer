@@ -119,7 +119,8 @@ const jsonTestCases: RedisTc[] = [
     userId: 'user-1',
     expectedResponse: {
       message: {
-        'user:user-1': {
+        key: 'user:user-1',
+        value: {
           prop1: 'k',
           prop2: 2,
           prop3: {
@@ -149,7 +150,8 @@ const jsonTestCases: RedisTc[] = [
     userId: 'user-1',
     expectedResponse: {
       message: {
-        'user:user-1': {
+        key: 'user:user-1',
+        value: {
           prop1: 'k',
           prop2: 2,
           prop3: {
@@ -185,11 +187,11 @@ const jsonTestCases: RedisTc[] = [
     userId: 'user-2',
     expectedResponse: {
       message: {
-        'w1:d1:e1:id-1:user-2': {
-          model1: {
-            field: 'k',
-            model_name: 'analytics_app',
-          },
+        key: 'w1:d1:e1:id-1:user-2',
+        path: 'model1',
+        value: {
+          field: 'k',
+          model_name: 'analytics_app',
         },
       },
       userId: 'user-2',

@@ -54,8 +54,8 @@ const getJSONValue = (message) => {
   return {};
 };
 
-const getTransformedPayloadForJSON = ({ key, value, userId }) => ({
-  message: { [key]: value },
+const getTransformedPayloadForJSON = ({ key, path, value, userId }) => ({
+  message: { key, path, value },
   userId,
 });
 
@@ -83,9 +83,8 @@ const process = (event) => {
       // If redis should store information as JSON type
       return getTransformedPayloadForJSON({
         key: `${workspaceId}:${destinationId}:${message.context.sources.profiles_entity}:${message.context.sources.profiles_id_type}:${message.userId}`,
-        value: {
-          [message.context.sources.profiles_model]: jsonValue,
-        },
+        path: message.context.sources.profiles_model,
+        value: jsonValue,
         userId: message.userId,
       });
     }

@@ -22,13 +22,10 @@ import {
 const generateAlphanumericId = (size = 36) =>
   [...Array(size)].map(() => ((Math.random() * size) | 0).toString(size)).join('');
 export const getTestDataFilePaths = (dirPath: string, opts: OptionValues): string[] => {
-  console.log('dirPath', dirPath);
   const globPattern = join(dirPath, '**', 'data.ts');
   let testFilePaths = globSync(globPattern);
-  // console.log('testFilePaths', JSON.stringify(testFilePaths));
   if (opts.destination) {
     testFilePaths = testFilePaths.filter((testFile) => testFile.includes(opts.destination));
-    console.log('testFilePaths', JSON.stringify(testFilePaths));
   }
   if (opts.feature) {
     testFilePaths = testFilePaths.filter((testFile) => testFile.includes(opts.feature));

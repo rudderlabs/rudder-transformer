@@ -71,7 +71,7 @@ const process = (event) => {
     throw new InstrumentationError('Blank userId passed in identify event');
   }
 
-  const { prefix, shouldSendDataAsJSON } = destination.Config;
+  const { prefix, useJSONModule } = destination.Config;
   const destinationId = destination.ID;
   const keyPrefix = isEmpty(prefix) ? '' : `${prefix.trim()}:`;
 
@@ -79,7 +79,7 @@ const process = (event) => {
 
   if (isSubEventTypeProfiles(message)) {
     const { workspaceId } = metadata;
-    if (shouldSendDataAsJSON) {
+    if (useJSONModule) {
       // If redis should store information as JSON type
       return getTransformedPayloadForJSON({
         key: `${workspaceId}:${destinationId}:${message.context.sources.profiles_entity}:${message.context.sources.profiles_id_type}:${message.userId}`,
@@ -91,7 +91,7 @@ const process = (event) => {
     return transformSubEventTypeProfiles(message, workspaceId, destinationId);
   }
 
-  if (shouldSendDataAsJSON) {
+  if (useJSONModule) {
     // If redis should store information as JSON type
     return getTransformedPayloadForJSON({
       key: `${keyPrefix}user:${lodash.toString(message.userId)}`,

@@ -2,7 +2,7 @@ export type RedisConfig = Partial<{
   address: string;
   database: string;
   prefix: string;
-  shouldSendDataAsJSON: boolean;
+  useJSONModule: boolean;
 }>;
 
 type RedisJSONOutput = {

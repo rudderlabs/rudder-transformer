@@ -103,9 +103,9 @@ const getRedisTestCase = (tc: RedisTc) => {
 const jsonTestCases: RedisTc[] = [
   {
     description:
-      'Test 6: [Event-stream] when shouldSendDataAsJSON is enabled with traits in context.traits, should transform successfully',
+      'Test 6: [Event-stream] when useJSONModule is enabled with traits in context.traits, should transform successfully',
     destinationConfig: {
-      shouldSendDataAsJSON: true,
+      useJSONModule: true,
     },
     traitsLocation: TraitsLocation.ContextTraits,
     traits: {
@@ -134,9 +134,9 @@ const jsonTestCases: RedisTc[] = [
   },
   {
     description:
-      'Test 7: [Event-stream] when shouldSendDataAsJSON is enabled with traits in traits, should transform successfully',
+      'Test 7: [Event-stream] when useJSONModule is enabled with traits in traits, should transform successfully',
     destinationConfig: {
-      shouldSendDataAsJSON: true,
+      useJSONModule: true,
     },
     traitsLocation: TraitsLocation.Traits,
     traits: {
@@ -165,9 +165,9 @@ const jsonTestCases: RedisTc[] = [
   },
   {
     description:
-      'Test 8: [Profiles] when shouldSendDataAsJSON is enabled with traits in traits, should transform successfully',
+      'Test 8: [Profiles] when useJSONModule is enabled with traits in traits, should transform successfully',
     destinationConfig: {
-      shouldSendDataAsJSON: true,
+      useJSONModule: true,
     },
     destId: 'd1',
     workspaceId: 'w1',

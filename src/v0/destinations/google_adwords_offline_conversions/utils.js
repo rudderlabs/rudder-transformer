@@ -56,9 +56,8 @@ const processAxiosResponse = (clientResponse, logger) => {
     if (response) {
       const { data, status, headers } = response;
       logger.info('Processing Axios Response', { data, status, headers });
-      const error = data?.error || '';
       return {
-        response: { error, headers } || '',
+        response: data || '',
         status: status || 500,
       };
     }
@@ -70,8 +69,9 @@ const processAxiosResponse = (clientResponse, logger) => {
   }
   // success(2xx) axios response
   const { data, status, headers } = clientResponse.response;
+  data.headers = headers;
   return {
-    response: { data, headers } || '',
+    response: data || '',
     status: status || 500,
   };
 };

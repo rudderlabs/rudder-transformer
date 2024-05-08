@@ -324,6 +324,7 @@ export const testScenariosForV0API = [
               '[Google Ads Offline Conversions Response Handler] - Request processed successfully',
             destinationResponse: {
               response: {
+                headers: {},
                 name: 'customers/111-222-3333/operations/abcd=',
               },
               status: 200,
@@ -516,7 +517,7 @@ export const testScenariosForV1API = [
               '[Google Ads Offline Conversions Response Handler] - Request processed successfully',
             response: [
               {
-                error: '{"name":"customers/111-222-3333/operations/abcd="}',
+                error: '{"name":"customers/111-222-3333/operations/abcd=","headers":{}}',
                 metadata: generateMetadata(1),
                 statusCode: 200,
               },

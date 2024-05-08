@@ -745,7 +745,8 @@ export const data = [
   },
   {
     name: 'yandex_metrica_offline_events',
-    description: 'Failed identify event with null or empty timestamp',
+    description:
+      'Successful identify event with microsecond format timestamp converted to millisecond format',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -809,23 +810,33 @@ export const data = [
         status: 200,
         body: [
           {
-            statusCode: 400,
-            error:
-              'Microsecond timestamp format is not supported. Only millisecond timestamps are allowed.: Workflow: procWorkflow, Step: prepareData, ChildStep: undefined, OriginalError: Microsecond timestamp format is not supported. Only millisecond timestamps are allowed.',
-            statTags: {
-              destType: 'YANDEX_METRICA_OFFLINE_EVENTS',
-              destinationId: 'destId',
-              errorCategory: 'dataValidation',
-              errorType: 'instrumentation',
-              feature: 'processor',
-              implementation: 'cdkV2',
-              module: 'destination',
-              workspaceId: 'wspId',
-            },
             metadata: {
               destinationId: 'destId',
               workspaceId: 'wspId',
             },
+            output: {
+              body: {
+                FORM: {},
+                JSON: {
+                  ClientId: '133591247640966458',
+                  Currency: 'RUB',
+                  DateTime: '1481718166',
+                  Price: 100,
+                  Target: 'GOAL1',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+              },
+              endpoint: '',
+              files: {},
+              headers: {},
+              method: 'POST',
+              params: {},
+              type: 'REST',
+              userId: '',
+              version: '1',
+            },
+            statusCode: 200,
           },
         ],
       },

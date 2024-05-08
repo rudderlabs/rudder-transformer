@@ -19,14 +19,19 @@ const setIdentifier = (data, identifierType, identifierValue) => {
 };
 
 function isUnixTimestamp(datetime) {
-  if (moment.unix(datetime).isValid()) {
-    return datetime;
-  }
+  let res;
   const unixTimestamp = moment(datetime).unix();
-  if (moment.unix(unixTimestamp).isValid()) {
-    return unixTimestamp;
+  if (moment.unix(datetime).isValid()) {
+    res = datetime;
+  } else if (moment.unix(unixTimestamp).isValid()) {
+    res = unixTimestamp;
+  } else {
+    throw new InstrumentationError('Invalid timestamp. Aborting!');
   }
-  throw new InstrumentationError('Invalid timestamp. Aborting!');
+  if (String(res).length > 10) {
+    res = String(res).substring(0, 10);
+  }
+  return Number(res);
 }
 
 const validateData = (data) => {

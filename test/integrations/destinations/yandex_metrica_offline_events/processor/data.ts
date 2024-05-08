@@ -743,4 +743,103 @@ export const data = [
       },
     },
   },
+  {
+    name: 'yandex_metrica_offline_events',
+    description:
+      'Successful identify event with microsecond format timestamp converted to millisecond format',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'identify',
+              traits: {
+                Price: 100,
+                Target: 'GOAL1',
+                Currency: 'RUB',
+                DateTime: '1481718166000',
+              },
+              userId: '',
+              channel: 'sources',
+              context: {
+                sources: {
+                  job_id: '2du7rQyxlbIJl4LKgZAaaErEjcE',
+                  version: '1849/merge',
+                  job_run_id: 'cnsn3tt5fleigsfclr6g',
+                  task_run_id: 'cnsn3tt5fleigsfclr70',
+                },
+                externalId: [
+                  {
+                    id: '133591247640966458',
+                    type: 'YANDEX_METRICA_OFFLINE_EVENTS-conversions',
+                    identifierType: 'ClientId',
+                  },
+                ],
+                mappedToDestination: 'true',
+              },
+              recordId: '1',
+              rudderId: '14a58046-23a5-46bd-afbf-87c8acaa9d2e',
+              messageId: '91ef85d9-b170-440c-bae2-6284d4070338',
+            },
+            destination: {
+              DestinationDefinition: {
+                Config: {
+                  cdkV2Enabled: true,
+                },
+              },
+              Config: {
+                counterId: '574342423',
+                goalId: '23432565',
+                rudderAccountId: '2du7fLeK82nk9L2Xd1X507uiD1B',
+                authStatus: 'active',
+              },
+            },
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            metadata: {
+              destinationId: 'destId',
+              workspaceId: 'wspId',
+            },
+            output: {
+              body: {
+                FORM: {},
+                JSON: {
+                  ClientId: '133591247640966458',
+                  Currency: 'RUB',
+                  DateTime: '1481718166',
+                  Price: 100,
+                  Target: 'GOAL1',
+                },
+                JSON_ARRAY: {},
+                XML: {},
+              },
+              endpoint: '',
+              files: {},
+              headers: {},
+              method: 'POST',
+              params: {},
+              type: 'REST',
+              userId: '',
+              version: '1',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];

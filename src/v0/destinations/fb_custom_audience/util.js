@@ -206,4 +206,10 @@ const prepareDataField = (
   return data;
 };
 
-module.exports = { prepareDataField, getSchemaForEventMappedToDest, batchingWithPayloadSize };
+module.exports = {
+  prepareDataField,
+  getSchemaForEventMappedToDest,
+  batchingWithPayloadSize,
+  ensureApplicableFormat,
+  getUpdatedDataElement,
+};

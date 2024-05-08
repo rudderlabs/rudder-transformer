@@ -1,14 +1,7 @@
 const lodash = require('lodash');
 const get = require('get-value');
+const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
-  InstrumentationError,
-  TransformationError,
-  ConfigurationError,
-} = require('@rudderstack/integrations-lib');
-const {
-  defaultRequestConfig,
-  defaultPostRequestConfig,
-  defaultDeleteRequestConfig,
   checkSubsetOfArray,
   isDefinedAndNotNullAndNotEmpty,
   returnArrayOfSubarrays,
@@ -21,36 +14,10 @@ const {
   getSchemaForEventMappedToDest,
   batchingWithPayloadSize,
 } = require('./util');
-const {
-  getEndPoint,
-  schemaFields,
-  USER_ADD,
-  USER_DELETE,
-  typeFields,
-  subTypeFields,
-} = require('./config');
+const { schemaFields, USER_ADD, USER_DELETE, typeFields, subTypeFields } = require('./config');
 
 const { MappedToDestinationKey } = require('../../../constants');
-
-const responseBuilderSimple = (payload, audienceId) => {
-  if (payload) {
-    const responseParams = payload.responseField;
-    const response = defaultRequestConfig();
-    response.endpoint = getEndPoint(audienceId);
-
-    if (payload.operationCategory === 'add') {
-      response.method = defaultPostRequestConfig.requestMethod;
-    }
-    if (payload.operationCategory === 'remove') {
-      response.method = defaultDeleteRequestConfig.requestMethod;
-    }
-
-    response.params = responseParams;
-    return response;
-  }
-  // fail-safety for developer error
-  throw new TransformationError(`Payload could not be constructed`);
-};
+const { processRecordInputs, responseBuilderSimple } = require('./transformV2');
 
 // Function responsible prepare the payload field of every event parameter
 
@@ -243,6 +210,7 @@ const processEvent = (message, destination) => {
       ),
     );
   }
+
   toSendEvents.forEach((sendEvent) => {
     respList.push(responseBuilderSimple(sendEvent, operationAudienceId));
   });
@@ -258,7 +226,24 @@ const processEvent = (message, destination) => {
 const process = (event) => processEvent(event.message, event.destination);
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
+  const respList = [];
+  const groupedInputs = lodash.groupBy(inputs, (input) => input.message.type?.toLowerCase());
+  let transformedRecordEvent = [];
+  let transformedAudienceEvent = [];
+
+  if (groupedInputs.record) {
+    transformedRecordEvent = await processRecordInputs(groupedInputs.record, reqMetadata);
+  }
+
+  if (groupedInputs.audiencelist) {
+    transformedAudienceEvent = await simpleProcessRouterDest(
+      groupedInputs.audiencelist,
+      process,
+      reqMetadata,
+    );
+  }
+
+  respList.push(...transformedRecordEvent, ...transformedAudienceEvent);
   return flattenMap(respList);
 };
 

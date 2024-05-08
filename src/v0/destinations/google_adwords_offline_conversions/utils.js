@@ -19,6 +19,7 @@ const {
   getAuthErrCategoryFromStCode,
   getAccessToken,
   getIntegrationsObj,
+  getErrorStatusCode,
 } = require('../../util');
 const {
   SEARCH_STREAM,
@@ -31,13 +32,49 @@ const {
   trackCallConversionsMapping,
   consentConfigMap,
 } = require('./config');
-const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const Cache = require('../../util/cache');
 const helper = require('./helper');
 const { finaliseConsent } = require('../../util/googleUtils');
+const { HTTP_STATUS_CODES } = require('../../util/constant');
+const { nodeSysErrorToStatus } = require('../../../adapters/utils/networkUtils');
 
 const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
 
+const processAxiosResponse = (clientResponse, logger) => {
+  if (!clientResponse.success) {
+    const { response, code } = clientResponse.response;
+    // node internal http client failure cases
+    if (!response && code) {
+      logger.info('Processing Axios Response', { code });
+      const nodeClientError = nodeSysErrorToStatus(code);
+      return {
+        response: nodeClientError.message,
+        status: nodeClientError.status,
+      };
+    }
+    // non 2xx status handling for axios response
+    if (response) {
+      const { data, status, headers } = response;
+      logger.info('Processing Axios Response', { data, status, headers });
+      const error = data?.error || '';
+      return {
+        response: { error, headers } || '',
+        status: status || 500,
+      };
+    }
+    // (edge case) response and code is not present
+    return {
+      response: clientResponse?.response?.data || '',
+      status: getErrorStatusCode(clientResponse, HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR),
+    };
+  }
+  // success(2xx) axios response
+  const { data, status, headers } = clientResponse.response;
+  return {
+    response: { data, headers } || '',
+    status: status || 500,
+  };
+};
 /**
  * validate destination config and check for existence of data
  * @param {*} param0
@@ -55,7 +92,7 @@ const validateDestinationConfig = ({ Config }) => {
  * @param {*} headers
  * @returns
  */
-const getConversionActionId = async (headers, params) => {
+const getConversionActionId = async (headers, params, logger) => {
   const conversionActionIdKey = sha256(params.event + params.customerId).toString();
   return conversionActionIdCache.get(conversionActionIdKey, async () => {
     const queryString = SqlString.format(
@@ -76,7 +113,7 @@ const getConversionActionId = async (headers, params) => {
       requestMethod: 'POST',
       module: 'dataDelivery',
     });
-    searchStreamResponse = processAxiosResponse(searchStreamResponse);
+    searchStreamResponse = processAxiosResponse(searchStreamResponse, logger);
     if (!isHttpStatusSuccess(searchStreamResponse.status)) {
       throw new AbortedError(
         `[Google Ads Offline Conversions]:: ${JSON.stringify(
@@ -413,4 +450,5 @@ module.exports = {
   getExisitingUserIdentifier,
   getConsentsDataFromIntegrationObj,
   getCallConversionPayload,
+  processAxiosResponse,
 };

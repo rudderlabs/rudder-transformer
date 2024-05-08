@@ -201,19 +201,33 @@ export class NativeIntegrationDestinationService implements DestinationService {
     destinationType: string,
     _requestMetadata: NonNullable<unknown>,
     version: string,
+    logger: any,
   ): Promise<DeliveryV0Response | DeliveryV1Response> {
     try {
       const { networkHandler, handlerVersion } = networkHandlerFactory.getNetworkHandler(
         destinationType,
         version,
       );
-      const rawProxyResponse = await networkHandler.proxy(deliveryRequest, destinationType);
-      const processedProxyResponse = networkHandler.processAxiosResponse(rawProxyResponse);
+      const rawProxyResponse = await networkHandler.proxy(deliveryRequest, destinationType, logger);
+      const processedProxyResponse = networkHandler.processAxiosResponse(rawProxyResponse, logger);
       let rudderJobMetadata =
         version.toLowerCase() === 'v1'
           ? (deliveryRequest as ProxyV1Request).metadata
           : (deliveryRequest as ProxyV0Request).metadata;
 
+      const metaTO = this.getTags(
+        destinationType,
+        Array.isArray(rudderJobMetadata)
+          ? rudderJobMetadata[0].destinationId
+          : rudderJobMetadata?.destinationId,
+        Array.isArray(rudderJobMetadata)
+          ? rudderJobMetadata[0].workspaceId
+          : rudderJobMetadata?.workspaceId,
+        tags.FEATURES.DATA_DELIVERY,
+      );
+      const loggerWithCtx = logger.child({
+        ...MiscService.getLoggableData(metaTO.errorDetails),
+      });
       if (version.toLowerCase() === 'v1' && handlerVersion.toLowerCase() === 'v0') {
         rudderJobMetadata = rudderJobMetadata[0];
       }
@@ -221,6 +235,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
         destinationResponse: processedProxyResponse,
         rudderJobMetadata,
         destType: destinationType,
+        logger: loggerWithCtx,
       };
       let responseProxy = networkHandler.responseHandler(responseParams);
       // Adaption Logic for V0 to V1

@@ -379,6 +379,7 @@ export class ComparatorService implements DestinationService {
       destinationType,
       requestMetadata,
       version,
+      logger,
     );
     logger.error('[LIVE_COMPARE_TEST] not implemented for delivery routine');
     return primaryResplist;

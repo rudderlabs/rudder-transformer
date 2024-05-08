@@ -20,6 +20,11 @@ const setIdentifier = (data, identifierType, identifierValue) => {
 
 function isUnixTimestamp(datetime) {
   if (moment.unix(datetime).isValid()) {
+    if (String(datetime).length > 10) {
+      throw new InstrumentationError(
+        'Microsecond timestamp format is not supported. Only millisecond timestamps are allowed.',
+      );
+    }
     return datetime;
   }
   const unixTimestamp = moment(datetime).unix();

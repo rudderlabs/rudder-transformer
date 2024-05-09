@@ -14,7 +14,7 @@ const { EventType } = require('../../../constants');
  */
 function processNormalEvent(slackPayload) {
   const message = new Message(`SLACK`);
-  if (!slackPayload || !slackPayload.event) {
+  if (!slackPayload?.event) {
     throw new TransformationError('Missing the required event data');
   }
   switch (slackPayload.event.type) {

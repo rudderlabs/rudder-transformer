@@ -49,10 +49,14 @@ function tsToISODate(slackTs) {
  * console.log(normalizedEventName); // Output: "Member Joined Channel"
  */
 function normalizeEventName(evtName) {
-  return evtName
-    .split('_')
-    .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
-    .join(' ');
+  try {
+    return evtName
+      .split('_')
+      .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+      .join(' ');
+  } catch (e) {
+    return 'undefined';
+  }
 }
 
 module.exports = { mapping, tsToISODate, normalizeEventName };

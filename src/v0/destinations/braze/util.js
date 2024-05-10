@@ -26,7 +26,7 @@ const {
 const { JSON_MIME_TYPE, HTTP_STATUS_CODES } = require('../../util/constant');
 const { isObject } = require('../../util');
 const { removeUndefinedValues, getIntegrationsObj } = require('../../util');
-const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const { InstrumentationError, isDefined } = require('@rudderstack/integrations-lib');
 
 const getEndpointFromConfig = (destination) => {
   // Init -- mostly for test cases
@@ -284,12 +284,17 @@ const BrazeDedupUtility = {
         return true;
       });
 
-    if (keys.length === 0) {
-      return null;
+    if (keys.length > 0) {
+      keys.forEach((key) => {
+        if (!_.isEqual(userData[key], storedUserData[key])) {
+          deduplicatedUserData[key] = userData[key];
+        }
+      });
     }
 
-    keys.forEach((key) => {
-      if (!_.isEqual(userData[key], storedUserData[key])) {
+    // add non billable attributes back to the deduplicated user object
+    BRAZE_NON_BILLABLE_ATTRIBUTES.forEach((key) => {
+      if (isDefined(userData[key])) {
         deduplicatedUserData[key] = userData[key];
       }
     });
@@ -304,13 +309,6 @@ const BrazeDedupUtility = {
     };
     const identifier = external_id || user_alias?.alias_name;
     store.set(identifier, { ...storedUserData, ...deduplicatedUserData });
-
-    // add non billable attributes back to the deduplicated user object
-    BRAZE_NON_BILLABLE_ATTRIBUTES.forEach((key) => {
-      if (isDefinedAndNotNull(userData[key])) {
-        deduplicatedUserData[key] = userData[key];
-      }
-    });
 
     return removeUndefinedValues(deduplicatedUserData);
   },

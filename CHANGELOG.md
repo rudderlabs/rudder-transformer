@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.65.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.65.0...v1.65.1) (2024-05-10)
+
+
+### Bug Fixes
+
+* update regex which was discarding firstname and lastname ([#3360](https://github.com/rudderlabs/rudder-transformer/issues/3360)) ([cb10aa7](https://github.com/rudderlabs/rudder-transformer/commit/cb10aa7707518b52edcf7fb1081c6969bcb5f8f8))
+
 ## [1.65.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.64.0...v1.65.0) (2024-05-06)
 
 

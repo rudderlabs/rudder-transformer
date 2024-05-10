@@ -10,6 +10,7 @@ const {
 } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../../v0/util/tags');
 
+// ref : https://dev.emarsys.com/docs/emarsys-core-api-guides/c47a64a8ea7dc-http-200-errors
 function checkIfEventIsAbortableAndExtractErrorMessage(event, destinationResponse, keyId) {
   const { errors } = destinationResponse.response.data;
 
@@ -46,6 +47,7 @@ const responseHandler = (responseParams) => {
   let responseWithIndividualEvents = [];
   const { response, status } = destinationResponse;
 
+  // ref : https://dev.emarsys.com/docs/emarsys-core-api-guides/5e68295991665-http-400-errors
   if (!isHttpStatusSuccess(status)) {
     const errorMessage = response.replyText || 'unknown error format';
     responseWithIndividualEvents = rudderJobMetadata.map((metadata) => ({

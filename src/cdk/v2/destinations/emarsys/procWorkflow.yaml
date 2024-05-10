@@ -44,7 +44,7 @@ steps:
   - name: preparePayloadForIdentify
     description: |
       Builds identify payload.
-      ref:
+      ref: https://dev.emarsys.com/docs/core-api-reference/f8ljhut3ac2i1-update-contacts
     condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
     template: |
       $.context.payload = $.buildIdentifyPayload(.message, .destination.Config,);

@@ -1,20 +1,26 @@
 const { getMappingConfig } = require('../../../../v0/util');
 
-const ConfigCategories = {
+const CONFIG_CATEGORIES = {
   IMPRESSIONS: {
     type: 'track',
-    name: 'impressionsMapping',
+    name: 'ImpressionsConfig',
   },
   CLICKS: {
     type: 'track',
-    name: 'clicksMapping',
+    name: 'ClicksConfig',
   },
   CONVERSIONS: {
     type: 'track',
-    name: 'conversionsMapping',
+    name: 'ConversionsConfig',
   },
 };
 
-const mappingConfig = getMappingConfig(ConfigCategories, __dirname);
+const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
-module.exports = { ConfigCategories, mappingConfig };
+module.exports = {
+  CONFIG_CATEGORIES,
+  MAPPING_CONFIG,
+  IMPRESSIONS_CONFIG: MAPPING_CONFIG[CONFIG_CATEGORIES.IMPRESSIONS.name],
+  CLICKS_CONFIG: MAPPING_CONFIG[CONFIG_CATEGORIES.CLICKS.name],
+  CONVERSIONS_CONFIG: MAPPING_CONFIG[CONFIG_CATEGORIES.CONVERSIONS.name],
+};

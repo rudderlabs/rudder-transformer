@@ -1,4 +1,4 @@
-const config = require('./config');
+const { IMPRESSIONS_CONFIG, CLICKS_CONFIG, CONVERSIONS_CONFIG } = require('./config');
 const { constructPayload, defaultRequestConfig } = require('../../../../v0/util');
 
 /**
@@ -11,17 +11,11 @@ const constructFullPayload = (message, Config) => {
   let payload;
   switch (message.event) {
     case 'Impressions':
-      payload = constructPayload(
-        message,
-        config.mappingConfig[config.ConfigCategories.IMPRESSIONS.name],
-      );
+      payload = constructPayload(message, IMPRESSIONS_CONFIG);
       payload.clientName = Config.clientName;
       break;
     case 'Clicks':
-      payload = constructPayload(
-        message,
-        config.mappingConfig[config.ConfigCategories.CLICKS.name],
-      );
+      payload = constructPayload(message, CLICKS_CONFIG);
       payload.clientName = Config.clientName;
       if (Config.testVersionOverride === false) {
         payload.properties.test_version_override = null;
@@ -31,10 +25,7 @@ const constructFullPayload = (message, Config) => {
       }
       break;
     case 'Conversions':
-      payload = constructPayload(
-        message,
-        config.mappingConfig[config.ConfigCategories.CONVERSIONS.name],
-      );
+      payload = constructPayload(message, CONVERSIONS_CONFIG);
       payload.client_name = Config.clientName;
       break;
     default:

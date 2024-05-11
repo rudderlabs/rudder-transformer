@@ -92,11 +92,11 @@ const ensureApplicableFormat = (userProperty, userInformation) => {
       case 'FN':
       case 'FI':
         if (userProperty !== 'FI') {
-          updatedProperty = stringifiedUserInformation.toLowerCase().replace(/[!#$%&@A-Za-z]/g, '');
+          updatedProperty = stringifiedUserInformation.toLowerCase().replace(/[^#$%&'*+/a-z]/g, '');
         } else {
           updatedProperty = stringifiedUserInformation
             .toLowerCase()
-            .replace(/[^!#$%&,.?@A-Za-z]/g, '');
+            .replace(/[^!"#$%&'()*+,-./a-z]/g, '');
         }
         break;
       case 'MADID':

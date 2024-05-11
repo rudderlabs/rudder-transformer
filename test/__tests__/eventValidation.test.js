@@ -73,6 +73,97 @@ const trackingPlan = {
   create_time: "2021-12-14T19:19:13.666Z",
   update_time: "2021-12-15T13:29:59.272Z"
 };
+
+const newTrackingPlan = {
+  name: "Demo Tracking Plan",
+  version: 1,
+  events: [
+    {
+      id: "ev_22HzyIUtuhfoI80iDfAgf47GHpw",
+      name: "Product clicked new",
+      eventType: "track",
+      description: "Fired when an product is clicked.",
+      rules: {
+        type: "object",
+        $schema: "http://json-schema.org/draft-07/schema#",
+        required: ["properties"],
+        properties: {
+          properties: {
+            $schema: "http://json-schema.org/draft-07/schema#",
+            additionalProperties: false,
+            properties: {
+              email: {
+                type: ["string"]
+              },
+              name: {
+                type: ["string"]
+              },
+              prop_float: {
+                type: ["number"]
+              },
+              prop_integer: {
+                type: ["number"]
+              },
+              revenue: {
+                type: ["number"]
+              }
+            },
+            type: "object",
+            required: [
+              "email",
+              "name",
+              "prop_float",
+              "prop_integer",
+              "revenue"
+            ],
+            allOf: [
+              {
+                properties: {
+                  prop_integer: {
+                    const: 2
+                  },
+                  prop_float: {
+                    const: 2.3
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      id: "ev_22HzyIUtuhfoI80iDfAgf47GHpx",
+      name: "",
+      eventType: "group",
+      rules: {
+        type: "object",
+        $schema: "http://json-schema.org/draft-07/schema#",
+        required: ["traits"],
+        properties: {
+          traits: {
+            additionalProperties: false,
+            properties: {
+              company: {
+                type: ["string"]
+              },
+              org: {
+                type: ["string"]
+              },
+            },
+            type: "object",
+            required: [
+              "company",
+            ]
+          }
+        }
+      }
+    }
+  ],
+  workspaceId: "dummy_workspace_id",
+  createdAt: "2021-12-14T19:19:13.666Z",
+  updatedAt: "2021-12-15T13:29:59.272Z"
+};
 const sourceTpConfig = {
   track: {
     allowUnplannedEvents: "true",
@@ -1364,6 +1455,134 @@ const eventValidationTestCases = [
   }
 ];
 
+const eventValidationWithNewPlanTestCases = [
+  {
+    testCase: "Group is part of new Tracking Plan + additional property violation",
+    event: {
+      metadata: {
+        trackingPlanId: "dummy_tracking_plan_id_new",
+        trackingPlanVersion: "dummy_version_new",
+        workspaceId: "dummy_workspace_id",
+        mergedTpConfig,
+        sourceTpConfig
+      },
+      message: {
+        type: "group",
+        userId: "user12345",
+        groupId: "group1",
+        traits: {
+          company: "Company",
+          employees: 123
+        },
+        context: {
+          traits: {
+            trait1: "new-val"
+          },
+          ip: "14.5.67.21",
+          library: {
+            name: "http"
+          }
+        },
+        timestamp: "2020-01-21T00:21:34.208Z"
+      }
+    },
+    trackingPlan: newTrackingPlan,
+    output: {
+      dropEvent: true,
+      violationType: violationTypes.AdditionalProperties
+    }
+  },
+  {
+    testCase:
+      "Compatibility for Spread sheet plugin + Track is not part of new Tracking Plan and allowUnplannedEvents is set to text TRUE",
+    event: {
+      metadata: {
+        trackingPlanId: "dummy_tracking_plan_id_new",
+        trackingPlanVersion: "dummy_version_new",
+        workspaceId: "dummy_workspace_id",
+        mergedTpConfig: {
+          allowUnplannedEvents: "TRUE",
+          ajvOptions: {}
+        },
+        sourceTpConfig: {
+          track: {
+            allowUnplannedEvents: "TRUE",
+            ajvOptions: {}
+          },
+          global: {
+            allowUnplannedEvents: "FALSE",
+            ajvOptions: {}
+          }
+        }
+      },
+      message: {
+        type: "track",
+        userId: "user-demo",
+        event: "New Product clicked",
+        properties: {
+          name: "Rubik's Cube",
+          revenue: 4.99,
+          prop_integer: 2,
+          prop_float: 2.3,
+          email: "demo@rudderstack.com"
+        },
+        context: {
+          ip: "14.5.67.21"
+        },
+        timestamp: "2020-02-02T00:23:09.544Z"
+      }
+    },
+    trackingPlan: newTrackingPlan,
+    output: {
+      dropEvent: false,
+      violationType: "None"
+    }
+  },
+  {
+    testCase:
+      "Track is part of new Tracking Plan + no track config and unplannedProperties is set to drop",
+    event: {
+      metadata: {
+        trackingPlanId: "dummy_tracking_plan_id_new",
+        trackingPlanVersion: "dummy_version_new",
+        workspaceId: "dummy_workspace_id",
+        mergedTpConfig: {
+          unplannedProperties: "drop",
+          ajvOptions: {}
+        },
+        sourceTpConfig: {
+          global: {
+            unplannedProperties: "drop",
+            ajvOptions: {}
+          }
+        }
+      },
+      message: {
+        type: "track",
+        userId: "user-demo",
+        event: "Product clicked new",
+        properties: {
+          name: "Rubik's Cube",
+          revenue: 4.99,
+          prop_integer: 2,
+          prop_float: 2.3,
+          email: "demo@rudderstack.com",
+          mobile: "999888777666"
+        },
+        context: {
+          ip: "14.5.67.21"
+        },
+        timestamp: "2020-02-02T00:23:09.544Z"
+      }
+    },
+    trackingPlan: newTrackingPlan,
+    output: {
+      dropEvent: true,
+      violationType: violationTypes.AdditionalProperties
+    }
+  },
+];
+
 describe("Supported Event types testing", () => {
   eventTypesTestCases.forEach(testCase => {
     it(`should return isSupportedOrNot ${testCase.output} for this input eventType ${testCase.eventType} everytime`, () => {
@@ -1375,6 +1594,22 @@ describe("Supported Event types testing", () => {
 
 describe("Handle validation", () => {
   eventValidationTestCases.forEach(testCase => {
+    it(`should return dropEvent: ${testCase.output.dropEvent}, violationType: ${testCase.output.violationType}`, async () => {
+      fetch.mockResolvedValue({
+        json: jest.fn().mockResolvedValue(testCase.trackingPlan),
+        status: 200
+      });
+      const { dropEvent, violationType } = await handleValidation(
+        testCase.event
+      );
+      expect(dropEvent).toEqual(testCase.output.dropEvent);
+      expect(violationType).toEqual(testCase.output.violationType);
+    });
+  });
+});
+
+describe("Handle validation with new tracking plan payload", () => {
+  eventValidationWithNewPlanTestCases.forEach(testCase => {
     it(`should return dropEvent: ${testCase.output.dropEvent}, violationType: ${testCase.output.violationType}`, async () => {
       fetch.mockResolvedValue({
         json: jest.fn().mockResolvedValue(testCase.trackingPlan),

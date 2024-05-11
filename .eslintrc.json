@@ -26,6 +26,7 @@
       "off",
       { "cases": { "camelCase": true, "pascalCase": true, "kebabCase": true } }
     ],
+    "import/no-import-module-exports": "off",
     "unicorn/no-instanceof-array": "error",
     "unicorn/no-static-only-class": "error",
     "unicorn/consistent-destructuring": "error",

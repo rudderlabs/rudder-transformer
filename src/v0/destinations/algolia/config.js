@@ -5,6 +5,7 @@ const CONFIG_CATEGORIES = {
   TRACK: { type: 'track', name: 'AlgoliaTrack' },
 };
 const EVENT_TYPES = ['click', 'view', 'conversion'];
+const ALLOWED_EVENT_SUBTYPES = ['addToCart', 'purchase'];
 const MAX_BATCH_SIZE = 1000;
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 module.exports = {
@@ -12,4 +13,5 @@ module.exports = {
   MAX_BATCH_SIZE,
   EVENT_TYPES,
   trackMapping: MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK.name],
+  ALLOWED_EVENT_SUBTYPES,
 };

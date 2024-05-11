@@ -944,4 +944,93 @@ export const data = [
       },
     },
   },
+  {
+    name: 'delighted',
+    description: 'Too many request test',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                apiKey: 'dummyApiKeyforfailure',
+                channel: 'email',
+                delay: 0,
+                eventNamesSettings: [
+                  {
+                    event: 'Product Reviewed',
+                  },
+                ],
+              },
+            },
+            message: {
+              channel: 'web',
+              context: {
+                app: {
+                  build: '1.0.0',
+                  name: 'RudderLabs JavaScript SDK',
+                  namespace: 'com.rudderlabs.javascript',
+                  version: '1.0.0',
+                },
+                library: {
+                  name: 'RudderLabs JavaScript SDK',
+                  version: '1.0.0',
+                },
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                locale: 'en-US',
+                ip: '0.0.0.0',
+                os: {
+                  name: '',
+                  version: '',
+                },
+                screen: {
+                  density: 2,
+                },
+              },
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
+              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+              originalTimestamp: '2019-10-14T09:03:17.562Z',
+              type: 'track',
+              userId: 'test@rudderlabs.com',
+              event: 'Product Reviewed',
+              properties: {
+                review_id: '12345',
+                product_id: '123',
+                rating: 3,
+                review_body: 'Average product, expected much more.',
+              },
+              integrations: {
+                All: true,
+              },
+              sentAt: '2019-10-14T09:03:22.563Z',
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            error:
+              '{"message":"Error occurred while checking user: {}","destinationResponse":{"response":{},"status":429}}',
+            statTags: {
+              destType: 'DELIGHTED',
+              errorCategory: 'network',
+              errorType: 'throttled',
+              feature: 'processor',
+              implementation: 'native',
+              module: 'destination',
+            },
+            statusCode: 429,
+          },
+        ],
+      },
+    },
+  },
 ];

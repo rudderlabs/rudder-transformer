@@ -2,30 +2,34 @@ bindings:
   - name: EventType
     path: ../../../../constants
   - path: ../../bindings/jsontemplate
-  - name: defaultRequestConfig
-    path: ../../../../v0/util
   - name: removeUndefinedAndNullValues
     path: ../../../../v0/util
   - path: ./utils
+  - path: ./config
 
 steps:
   - name: messageType
     template: |
       .message.type.toLowerCase();
+  - name: eventName
+    template: |
+      .message.integrations.koddi.eventName.toLowerCase();
   - name: validateInput
     template: |
       let messageType = $.outputs.messageType;
+      let eventName = $.outputs.eventName;
       $.assert(messageType, "message Type is not present. Aborting message.");
       $.assert(messageType in {{$.EventType.([.TRACK])}}, "message type " + messageType + " is not supported");
+      $.assert(eventName in {{$.EVENT_NAMES.([.IMPRESSIONS, .CLICKS, .CONVERSIONS])}}, "event name " + eventName + " is not supported");
       $.assert(.message.event, "Event name is not present. Aborting");
       $.assert(typeof .message.event === "string", "event name should be a string");
       $.assertConfig(.destination.Config.apiBaseUrl, "API Base URL is not present. Aborting");
       $.assertConfig(.destination.Config.clientName, "Client Name is not present. Aborting");
   - name: preparePayload
     template: |
-      const payload = $.constructFullPayload(.message, .destination.Config);
+      const payload = $.constructFullPayload($.outputs.eventName, .message, .destination.Config);
       $.context.payload = $.removeUndefinedAndNullValues(payload);
   - name: buildResponse
     template: |
-      const response = $.constructResponse(.context.payload, .destination.Config, .message);
+      const response = $.constructResponse($.outputs.eventName, .destination.Config, $.context.payload);
       response

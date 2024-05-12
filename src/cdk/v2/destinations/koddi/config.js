@@ -1,5 +1,11 @@
 const { getMappingConfig } = require('../../../../v0/util');
 
+const EVENT_NAMES = {
+  IMPRESSIONS: 'impressions',
+  CLICKS: 'clicks',
+  CONVERSIONS: 'conversions',
+};
+
 const CONFIG_CATEGORIES = {
   IMPRESSIONS: {
     type: 'track',
@@ -18,6 +24,7 @@ const CONFIG_CATEGORIES = {
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
 module.exports = {
+  EVENT_NAMES,
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   IMPRESSIONS_CONFIG: MAPPING_CONFIG[CONFIG_CATEGORIES.IMPRESSIONS.name],

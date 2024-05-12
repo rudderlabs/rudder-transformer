@@ -1,32 +1,58 @@
-const { IMPRESSIONS_CONFIG, CLICKS_CONFIG, CONVERSIONS_CONFIG } = require('./config');
-const { constructPayload, defaultRequestConfig } = require('../../../../v0/util');
+const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const { EVENT_NAMES, IMPRESSIONS_CONFIG, CLICKS_CONFIG, CONVERSIONS_CONFIG } = require('./config');
+const { constructPayload, defaultRequestConfig, toUnixTimestamp } = require('../../../../v0/util');
+
+const validateBidders = (bidders) => {
+  if (!Array.isArray(bidders)) {
+    throw new InstrumentationError('properties.bidders should be an array of objects. Aborting.');
+  }
+  if (bidders.length === 0) {
+    throw new InstrumentationError(
+      'properties.bidders should contains at least one bidder. Aborting.',
+    );
+  }
+  bidders.forEach((bidder) => {
+    if (!(bidder.bidder || bidder.alternate_bidder)) {
+      throw new InstrumentationError('bidder or alternate_bidder is not present. Aborting.');
+    }
+    if (!bidder.count) {
+      throw new InstrumentationError('count is not present. Aborting.');
+    }
+    if (!bidder.base_price) {
+      throw new InstrumentationError('base_price is not present. Aborting.');
+    }
+  });
+};
 
 /**
- *
- * @param message
- * @param Config
- * @returns {{}}
+ * This function constructs payloads based upon mappingConfig for all calls.
+ * @param {*} eventName
+ * @param {*} message
+ * @param {*} Config
+ * @returns
  */
-const constructFullPayload = (message, Config) => {
+const constructFullPayload = (eventName, message, Config) => {
   let payload;
-  switch (message.event) {
-    case 'Impressions':
+  switch (eventName) {
+    case EVENT_NAMES.IMPRESSIONS:
       payload = constructPayload(message, IMPRESSIONS_CONFIG);
       payload.clientName = Config.clientName;
       break;
-    case 'Clicks':
+    case EVENT_NAMES.CLICKS:
       payload = constructPayload(message, CLICKS_CONFIG);
       payload.clientName = Config.clientName;
-      if (Config.testVersionOverride === false) {
-        payload.properties.test_version_override = null;
+      if (!Config.testVersionOverride) {
+        payload.testVersionOverride = null;
       }
-      if (Config.overrides === false) {
-        payload.properties.overrides = null;
+      if (!Config.overrides) {
+        payload.overrides = null;
       }
       break;
-    case 'Conversions':
+    case EVENT_NAMES.CONVERSIONS:
       payload = constructPayload(message, CONVERSIONS_CONFIG);
       payload.client_name = Config.clientName;
+      payload.unixtime = toUnixTimestamp(payload.unixtime);
+      validateBidders(payload.bidders);
       break;
     default:
       break;
@@ -34,16 +60,16 @@ const constructFullPayload = (message, Config) => {
   return payload;
 };
 
-const getEndpoint = (Config, message) => {
+const getEndpoint = (eventName, Config) => {
   let endpoint = Config.apiBaseUrl;
-  switch (message.event) {
-    case 'Impressions':
+  switch (eventName) {
+    case EVENT_NAMES.IMPRESSIONS:
       endpoint += '?action=impression';
       break;
-    case 'Clicks':
+    case EVENT_NAMES.CLICKS:
       endpoint += '?action=click';
       break;
-    case 'Conversions':
+    case EVENT_NAMES.CONVERSIONS:
       endpoint += '/conversion';
       break;
     default:
@@ -52,13 +78,20 @@ const getEndpoint = (Config, message) => {
   return endpoint;
 };
 
-const constructResponse = (payload, Config, message) => {
+/**
+ * This function constructs response based upon event.
+ * @param {*} eventName
+ * @param {*} Config
+ * @param {*} payload
+ * @returns
+ */
+const constructResponse = (eventName, Config, payload) => {
   const response = defaultRequestConfig();
-  response.endpoint = getEndpoint(Config, message);
+  response.endpoint = getEndpoint(eventName, Config);
   response.headers = {
     accept: 'application/json',
   };
-  if (message.event === 'Conversions') {
+  if (eventName === EVENT_NAMES.CONVERSIONS) {
     response.body.JSON = payload;
     response.method = 'POST';
     response.headers = {
@@ -72,4 +105,4 @@ const constructResponse = (payload, Config, message) => {
   return response;
 };
 
-module.exports = { constructFullPayload, getEndpoint, constructResponse };
+module.exports = { constructFullPayload, constructResponse };

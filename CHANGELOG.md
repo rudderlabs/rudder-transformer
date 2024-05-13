@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file. See [standa
 * add slack source ([9558e3b](https://github.com/rudderlabs/rudder-transformer/commit/9558e3bf848213bc75a58297d234d823b72a274a))
 * add slack source ([#3148](https://github.com/rudderlabs/rudder-transformer/issues/3148)) ([3cbb011](https://github.com/rudderlabs/rudder-transformer/commit/3cbb011811b6f7b52ab29b4ef2794af9c2a5d5f0))
 * onboard monday to proxy ([#3347](https://github.com/rudderlabs/rudder-transformer/issues/3347)) ([a347ab1](https://github.com/rudderlabs/rudder-transformer/commit/a347ab1f7fef9bdf7d797e258867b855acc00876))
+* onboard emarsys destination ([#3369](https://github.com/rudderlabs/rudder-transformer/issues/3369)) ([ff29f85](https://github.com/rudderlabs/rudder-transformer/commit/ff29f8578d2369fcd9f0d86e1b7dffe3146e6a3a))
 
 
 ### Bug Fixes

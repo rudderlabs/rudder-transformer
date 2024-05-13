@@ -1,11 +1,11 @@
 const path = require('path');
 const fs = require('fs');
-const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { removeUndefinedAndNullValues } = require('../../util');
 const { getGroupId } = require('./util');
 // import mapping json using JSON.parse to preserve object key order
 const mapping = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mapping.json'), 'utf-8'));
 const Message = require('../message');
+const { generateUUID } = require('../../util');
 
 // Ref: https://auth0.com/docs/logs/references/log-event-type-codes
 const eventNameMap = JSON.parse(
@@ -59,11 +59,11 @@ function processEvents(eventList) {
       } else {
         response = prepareTrackPayload(data);
       }
-      if (response?.userId) {
-        // eslint-disable-next-line camelcase
-        response.properties.log_id = log_id;
-        responses.push(removeUndefinedAndNullValues(response));
-      }
+
+      // eslint-disable-next-line camelcase
+      response.properties.log_id = log_id;
+      response.anonymousId = generateUUID();
+      responses.push(removeUndefinedAndNullValues(response));
     }
   });
   return responses;
@@ -74,11 +74,7 @@ function process(events) {
   if (!Array.isArray(events)) {
     eventList = events.logs || [events];
   }
-  const responses = processEvents(eventList);
-  if (responses.length === 0) {
-    throw new InstrumentationError('UserId is not present');
-  }
-  return responses;
+  return processEvents(eventList);
 }
 
 exports.process = process;

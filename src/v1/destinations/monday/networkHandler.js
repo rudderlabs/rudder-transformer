@@ -7,16 +7,34 @@ const {
 const { isHttpStatusSuccess } = require('../../../v0/util/index');
 const tags = require('../../../v0/util/tags');
 
-// {"error_message":"User unauthorized to perform action","error_code":"UserUnauthorizedException","error_data":{},"status_code":403,"account_id":22879222}
-// {"errors":[{"message":"Argument 'group_id' on Field 'create_item' has an invalid value (67565). Expected type 'String'.","locations":[{"line":1,"column":12}],"path":["mutation","create_item","group_id"],"extensions":{"code":"argumentLiteralsIncompatible","typeName":"Field","argumentName":"group_id"}}],"account_id":22879222}
-// {"error_message":"Group not found","error_code":"ResourceNotFoundException","error_data":{"resource_type":"group","group_id":"67565","board_id":1860823405,"error_reason":"store.monday.automation.error.missing_group"},"status_code":404,"account_id":22879222}
-const checkIfEventIsAbortableAndExtractErrorMessage = (element) => {
-  if (element.success) {
-    return { isAbortable: false, errorMsg: '' };
+const checkIfUpdationOfStatusRequired = (response) => {
+  let errorMsg = '';
+  const responseBodyStatusCode = response.status_code;
+  if (
+    response.hasOwnProperty('error_message') ||
+    response.hasOwnProperty('error_code') ||
+    response.hasOwnProperty('errors')
+  ) {
+    errorMsg = response.error_message || response.errors?.map((error) => error.message).join(', ');
+    return { hasError: true, errorMsg, responseBodyStatusCode };
   }
-  const errorMsg = element.errors.join(', ');
-  return { isAbortable: true, errorMsg };
+  return { hasError: false, errorMsg, responseBodyStatusCode };
 };
+
+// {
+//   response: {
+//     errors: [
+//       {
+//         message: "Field 'region' doesn't exist on type 'User'",
+//         locations: [{ line: 322, column: 5 }],
+//         fields: ['query', 'me', 'region'],
+//       },
+//     ],
+//     account_id: 123456789,
+//   },
+//   status: 200,
+// }
+// Ref: https://developer.monday.com/api-reference/docs/errors
 
 const responseHandler = (responseParams) => {
   const { destinationResponse, rudderJobMetadata } = responseParams;
@@ -25,32 +43,53 @@ const responseHandler = (responseParams) => {
   const responseWithIndividualEvents = [];
   const { response, status } = destinationResponse;
 
+  // batching not supported
   if (isHttpStatusSuccess(status)) {
-    // check for Partial Event failures and Successes
-    const { results } = response;
-    results.forEach((event, idx) => {
-      const proxyOutput = {
-        statusCode: 200,
-        metadata: rudderJobMetadata[idx],
-        error: 'success',
-      };
-      // update status of partial event if abortable
-      const { isAbortable, errorMsg } = checkIfEventIsAbortableAndExtractErrorMessage(event);
-      if (isAbortable) {
-        proxyOutput.statusCode = 400;
-        proxyOutput.error = errorMsg;
-      }
-      responseWithIndividualEvents.push(proxyOutput);
-    });
+    const proxyOutput = {
+      statusCode: 200,
+      metadata: rudderJobMetadata[0],
+      error: 'success',
+    };
+    // update status of event if abortable or retryable
+    const { hasError, errorMsg, responseBodyStatusCode } =
+      checkIfUpdationOfStatusRequired(response);
+    if (hasError) {
+      proxyOutput.statusCode = responseBodyStatusCode || 400;
+      proxyOutput.error = errorMsg;
+    }
+    responseWithIndividualEvents.push(proxyOutput);
+
+    if (responseBodyStatusCode === 500 || responseBodyStatusCode === 429) {
+      throw new TransformerProxyError(
+        `MONDAY: Error encountered in transformer proxy V1 with error: ${errorMsg}`,
+        responseBodyStatusCode,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(responseBodyStatusCode),
+        },
+        destinationResponse,
+        '',
+        responseWithIndividualEvents,
+      );
+    }
+
     return {
       status,
       message,
-      destinationResponse,
       response: responseWithIndividualEvents,
     };
   }
+
+  const errorMsg =
+    response.error_message || response.errors?.map((error) => error.message).join(', ');
+
+  responseWithIndividualEvents.push({
+    statusCode: status,
+    metadata: rudderJobMetadata,
+    error: errorMsg,
+  });
+
   throw new TransformerProxyError(
-    `MONDAY: Error encountered in transformer proxy V1`,
+    `MONDAY: Error encountered in transformer proxy V1 with error: ${errorMsg}`,
     status,
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),

@@ -176,6 +176,7 @@ export const identify = [
                       location: {},
                     },
                     type: 'identify',
+                    userId: '',
                     channel: 'server',
                     messageId: 'dummy_msg_id',
                     traits: traits,

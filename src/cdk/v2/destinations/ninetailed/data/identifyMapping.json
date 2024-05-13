@@ -10,9 +10,6 @@
   {
     "sourceKeys": "userIdOnly",
     "sourceFromGenericMap": true,
-    "metadata": {
-      "defaultValue": ""
-    },
     "destKey": "userId"
   }
 ]

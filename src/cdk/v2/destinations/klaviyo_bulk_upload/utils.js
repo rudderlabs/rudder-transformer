@@ -37,7 +37,7 @@ function combinePayloads(inputs) {
     transformedInputs.push(transformedMessage);
   });
   const finalPayload = wrapCombinePayloads(transformedInputs);
-  return { finalPayload, successMetadata };
+  return { ...finalPayload, successMetadata };
 }
 
 export { transformSingleMessage, combinePayloads };

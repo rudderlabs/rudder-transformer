@@ -12,7 +12,6 @@ const {
   getIntegrationsObj,
   validateEventName,
   getValueFromMessage,
-  getFieldValueFromMessage,
   getHashFromArray,
 } = require('../../../../v0/util');
 const {
@@ -171,37 +170,6 @@ const deduceEventId = (message, destConfig) => {
     throw new ConfigurationError(`${event} is not mapped to any Emersys external event. Aborting`);
   }
   return eventId;
-};
-
-const buildTrackPayload = (message, destination) => {
-  let eventId;
-  const { emersysCustomIdentifier, eventsMapping } = destination.Config;
-  const { event, properties } = message;
-
-  if (eventsMapping.length > 0) {
-    const keyMap = getHashFromArray(eventsMapping, 'from', 'to', false);
-    eventId = keyMap[event];
-  }
-  const integrationObject = getIntegrationsObj(message, 'emersys');
-  const emersysIdentifier =
-    integrationObject?.customIdentifierId || emersysCustomIdentifier || EMAIL_FIELD_ID;
-  const payload = {
-    key_id: emersysIdentifier,
-    external_id: 'test@example.com',
-    trigger_id: integrationObject.trigger_id,
-    data: properties.data,
-    attachment: Array.isArray(properties.attatchment)
-      ? properties.attatchment
-      : [properties.attatchment],
-    event_time: getFieldValueFromMessage(message, 'timestamp'),
-  };
-  return {
-    eventType: message.type,
-    destinationPayload: {
-      payload: removeUndefinedAndNullValues(payload),
-      event: eventId,
-    },
-  };
 };
 
 const deduceEndPoint = (finalPayload) => {
@@ -437,7 +405,6 @@ module.exports = {
   createIdentifyBatches,
   ensureSizeConstraints,
   createGroupBatches,
-  buildTrackPayload,
   deduceExternalIdValue,
   deduceEventId,
   deduceCustomIdentifier,

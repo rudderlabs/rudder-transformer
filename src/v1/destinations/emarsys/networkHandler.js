@@ -98,19 +98,18 @@ const responseHandler = (responseParams) => {
     };
   }
 
-  // otherwise all events are successful
-  responseWithIndividualEvents = rudderJobMetadata.map((metadata) => ({
-    statusCode: 200,
-    metadata,
-    error: 'success',
-  }));
+  // ref : https://dev.emarsys.com/docs/emarsys-core-api-guides/45c776d275862-http-500-errors
 
-  return {
+  throw new TransformerProxyError(
+    `EMARSYS: Error transformer proxy v1 during EMARSYS response transformation`,
     status,
-    message,
+    {
+      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+    },
     destinationResponse,
-    response: responseWithIndividualEvents,
-  };
+    '',
+    responseWithIndividualEvents,
+  );
 };
 
 function networkHandler() {

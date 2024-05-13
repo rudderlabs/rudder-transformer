@@ -1,6 +1,11 @@
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const { EVENT_NAMES, IMPRESSIONS_CONFIG, CLICKS_CONFIG, CONVERSIONS_CONFIG } = require('./config');
-const { constructPayload, defaultRequestConfig, toUnixTimestamp } = require('../../../../v0/util');
+const {
+  constructPayload,
+  defaultRequestConfig,
+  toUnixTimestamp,
+  stripTrailingSlash,
+} = require('../../../../v0/util');
 
 const validateBidders = (bidders) => {
   if (!Array.isArray(bidders)) {
@@ -55,13 +60,13 @@ const constructFullPayload = (eventName, message, Config) => {
       validateBidders(payload.bidders);
       break;
     default:
-      break;
+      throw new InstrumentationError(`event name ${eventName} is not supported.`);
   }
   return payload;
 };
 
 const getEndpoint = (eventName, Config) => {
-  let endpoint = Config.apiBaseUrl;
+  let endpoint = stripTrailingSlash(Config.apiBaseUrl);
   switch (eventName) {
     case EVENT_NAMES.IMPRESSIONS:
       endpoint += '?action=impression';
@@ -73,7 +78,7 @@ const getEndpoint = (eventName, Config) => {
       endpoint += '/conversion';
       break;
     default:
-      break;
+      throw new InstrumentationError(`event name ${eventName} is not supported.`);
   }
   return endpoint;
 };
@@ -86,6 +91,9 @@ const getEndpoint = (eventName, Config) => {
  * @returns
  */
 const constructResponse = (eventName, Config, payload) => {
+  if (!Object.values(EVENT_NAMES).includes(eventName)) {
+    throw new InstrumentationError(`event name ${eventName} is not supported.`);
+  }
   const response = defaultRequestConfig();
   response.endpoint = getEndpoint(eventName, Config);
   response.headers = {
@@ -105,4 +113,4 @@ const constructResponse = (eventName, Config, payload) => {
   return response;
 };
 
-module.exports = { constructFullPayload, constructResponse };
+module.exports = { getEndpoint, validateBidders, constructFullPayload, constructResponse };

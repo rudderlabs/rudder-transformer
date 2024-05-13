@@ -151,6 +151,8 @@ const updateFaasFunction = async (
     // 404 is statuscode returned from openfaas community edition
     // when the function don't exist, so we can safely ignore this error
     // and let the function be created in the next step.
+    // FIXME: Maybe we don't need to absorb 404's as those will also be captured
+    // in error block and setupFn will be called on them. Need to verify ?!
     if (error.statusCode !== 404) {
       throw error;
     }
@@ -230,7 +232,7 @@ async function setupFaasFunction(
 // trying to update the functions which are not in cache to the
 // latest label and envVars
 const reconcileFn = async (name, versionId, libraryVersionIDs, trMetadata) => {
-  logger.warn(`Reconciling faas function: ${name}`);
+  logger.debug(`Reconciling faas function: ${name}`);
 
   try {
     if (isFunctionDeployed(name)) {

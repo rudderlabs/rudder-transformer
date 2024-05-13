@@ -43,8 +43,8 @@ describe('getEndpoint', () => {
       apiBaseUrl: 'https://www.test-client.com',
       clientName: 'test-client',
     };
-    expect(() => getEndpoint(eventName, Config).toThrow(InstrumentationError));
-    expect(() => getEndpoint(eventName, Config).toThrow('event name test is not supported.'));
+    expect(() => getEndpoint(eventName, Config)).toThrow(InstrumentationError);
+    expect(() => getEndpoint(eventName, Config)).toThrow('event name test is not supported.');
   });
 });
 
@@ -91,7 +91,7 @@ describe('validateBidders', () => {
     expect(() => validateBidders(bidders)).toThrow('base_price is not present. Aborting.');
   });
 
-  it('should not throw error if all fields are present for all bidders', () => {
+  it('should not throw error if all required fields are present for all bidders', () => {
     const bidders = [
       { bidder: 'bidder1', alternate_bidder: 'alternate1', count: 1, base_price: 100 },
       { bidder: 'bidder2', alternate_bidder: 'alternate2', count: 2, base_price: 200 },
@@ -315,9 +315,9 @@ describe('constructFullPayload', () => {
     const eventName = 'test';
     const message = {};
     const Config = {};
-    expect(() => constructFullPayload(eventName, message, Config).toThrow(InstrumentationError));
-    expect(() =>
-      constructFullPayload(eventName, message, Config).toThrow('event name test is not supported.'),
+    expect(() => constructFullPayload(eventName, message, Config)).toThrow(InstrumentationError);
+    expect(() => constructFullPayload(eventName, message, Config)).toThrow(
+      'event name test is not supported.',
     );
   });
 });
@@ -415,9 +415,9 @@ describe('constructResponse', () => {
     const eventName = 'test';
     const Config = {};
     const payload = {};
-    expect(() => constructResponse(eventName, Config, payload).toThrow(InstrumentationError));
-    expect(() =>
-      constructResponse(eventName, Config, payload).toThrow('event name test is not supported.'),
+    expect(() => constructResponse(eventName, Config, payload)).toThrow(InstrumentationError);
+    expect(() => constructResponse(eventName, Config, payload)).toThrow(
+      'event name test is not supported.',
     );
   });
 });

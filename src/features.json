@@ -85,7 +85,8 @@
     "ENGAGE",
     "CUSTIFY",
     "SENDGRID",
-    "SPRIG"
+    "SPRIG",
+    "EMARSYS"
   ],
   "supportSourceTransformV1": true,
   "supportTransformerProxyV1": true

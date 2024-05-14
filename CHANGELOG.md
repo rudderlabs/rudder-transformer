@@ -7,21 +7,14 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Features
 
-* add identify event and the latest slack event schema ([d0c5942](https://github.com/rudderlabs/rudder-transformer/commit/d0c5942e6255dab97b493fff311a4af71a142fd8))
-* add slack source ([9558e3b](https://github.com/rudderlabs/rudder-transformer/commit/9558e3bf848213bc75a58297d234d823b72a274a))
-* add slack source ([#3148](https://github.com/rudderlabs/rudder-transformer/issues/3148)) ([3cbb011](https://github.com/rudderlabs/rudder-transformer/commit/3cbb011811b6f7b52ab29b4ef2794af9c2a5d5f0))
-* onboard monday to proxy ([#3347](https://github.com/rudderlabs/rudder-transformer/issues/3347)) ([a347ab1](https://github.com/rudderlabs/rudder-transformer/commit/a347ab1f7fef9bdf7d797e258867b855acc00876))
-* onboard emarsys destination ([#3369](https://github.com/rudderlabs/rudder-transformer/issues/3369)) ([ff29f85](https://github.com/rudderlabs/rudder-transformer/commit/ff29f8578d2369fcd9f0d86e1b7dffe3146e6a3a))
+* add slack source ([#3148](https://github.com/rudderlabs/rudder-transformer/issues/3148))
+* onboard monday to proxy ([#3347](https://github.com/rudderlabs/rudder-transformer/issues/3347))
+* onboard emarsys destination ([#3369](https://github.com/rudderlabs/rudder-transformer/issues/3369))
 
 
 ### Bug Fixes
 
-* add originalTimestamp from slack ts property ([b19eb8c](https://github.com/rudderlabs/rudder-transformer/commit/b19eb8c699b60e90e02b39e3a448e6aac721e37f))
-* default event name normalization to undefined if it cannot be parsed ([db11c3e](https://github.com/rudderlabs/rudder-transformer/commit/db11c3e3d70d13a67d21c5b0043e74ce801bcb4a))
-* filtering url verification event via evvent type ([42d6010](https://github.com/rudderlabs/rudder-transformer/commit/42d6010d93b79ccb996c9548f4c0eeba0e3dacc2))
-* handle error-first ([0771e87](https://github.com/rudderlabs/rudder-transformer/commit/0771e87ff73181c412636f9bde40b8947a3e3080))
-* ninetailed: modify parameter requirements and add default values ([#3364](https://github.com/rudderlabs/rudder-transformer/issues/3364)) ([265a71d](https://github.com/rudderlabs/rudder-transformer/commit/265a71d20b484205245c20dd3e47d108dc2fd16f))
-* use optional chain parameter ([13be5cf](https://github.com/rudderlabs/rudder-transformer/commit/13be5cfb85363cf5c0527247787979467d63caaa))
+* ninetailed: modify parameter requirements and add default values ([#3364](https://github.com/rudderlabs/rudder-transformer/issues/3364))
 
 ### [1.65.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.65.0...v1.65.1) (2024-05-10)
 

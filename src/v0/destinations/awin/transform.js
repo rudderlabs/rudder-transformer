@@ -2,10 +2,10 @@ const { InstrumentationError, ConfigurationError } = require('@rudderstack/integ
 const { BASE_URL, ConfigCategory, mappingConfig } = require('./config');
 const { defaultRequestConfig, constructPayload, simpleProcessRouterDest } = require('../../util');
 
-const { getParams, trackProduct } = require('./utils');
+const { getParams, trackProduct, populateCustomTransactionProperties } = require('./utils');
 
 const responseBuilder = (message, { Config }) => {
-  const { advertiserId, eventsToTrack } = Config;
+  const { advertiserId, eventsToTrack, customFieldMap } = Config;
   const { event, properties } = message;
   let finalParams = {};
 
@@ -22,10 +22,15 @@ const responseBuilder = (message, { Config }) => {
     if (eventsList.includes(event)) {
       params = getParams(payload.params, advertiserId);
       const productTrackObject = trackProduct(properties, advertiserId, params.parts);
+      const customTransactionProperties = populateCustomTransactionProperties(
+        properties,
+        customFieldMap,
+      );
 
       finalParams = {
         ...params,
         ...productTrackObject,
+        ...customTransactionProperties,
       };
     } else {
       throw new InstrumentationError(

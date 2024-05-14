@@ -1057,6 +1057,7 @@ export const data = [
                 groupValueTrait: 'age',
                 trackProductsOnce: false,
                 trackRevenuePerProduct: false,
+                afCurrencyAtRoot: true,
               },
             },
           },

@@ -17,23 +17,37 @@ steps:
     template: |
       $.assert(Array.isArray(^) && ^.length > 0, "Invalid event array")
 
-  - name: transform
-    externalWorkflow:
-      path: ./procWorkflow.yaml
-    loopOverInput: true
+  - name: finalJsonPayload
+    template: |
+      const finalJsonPayload = $.combinePayloads(^.{.message.type === $.EventType.IDENTIFY}[], ^[0].destination)
+      finalJsonPayload
 
-  - name: successfulEvents
+  - name: constructRouterPayload
     template: |
-      $.outputs.transform#idx.output.({
-        "batchedRequest": .,
-        "destination": ^[idx].destination,
-        "metadata": ^[idx].metadata
-      })[]
-  - name: failedEvents
-    template: |
-      $.outputs.transform#idx.error.(
-        $.handleRtTfSingleEventError(^[idx], .originalError ?? ., {})
-      )[]
+      const routerPayload = {
+        "batchedRequest": {
+          version: '1',
+          type: 'REST',
+          method: 'POST',
+          endpoint: '',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          params: {},
+          body: {
+            JSON: [$.outputs.finalJsonPayload.payload],
+            JSON_ARRAY: {},
+            XML: {},
+            FORM: {},
+          },
+          "files": {},
+        },
+        "batched": true,
+        "destination": $.outputs.finalJsonPayload.destination,
+        "metadata": $.outputs.finalJsonPayload.successMetadata,
+        "statusCode": 200
+      }
+      routerPayload
   - name: finalPayload
     template: |
-      [...$.outputs.failedEvents, ...$.outputs.successfulEvents]
+      [$.outputs.constructRouterPayload]

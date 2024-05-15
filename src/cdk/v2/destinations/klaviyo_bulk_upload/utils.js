@@ -10,34 +10,29 @@ function transformSingleMessage(data) {
   return transformedSingleProfile;
 }
 
-function wrapCombinePayloads(transformedInputs) {
+function wrapCombinePayloads(transformedInputs, destinationObj) {
   return {
-    data: {
-      type: 'profile-bulk-import-job',
-      attributes: {
-        profiles: transformedInputs,
+    payload: {
+      data: {
+        type: 'profile-bulk-import-job',
+        attributes: {
+          profiles: transformedInputs,
+        },
       },
     },
+    destination: destinationObj,
   };
 }
 
 function combinePayloads(inputs) {
-  const transformedInputs = [];
-  const successMetadata = [];
-
-  if (!inputs || inputs.length === 0) {
-    return [];
-  }
-
-  inputs.forEach((input) => {
-    const { message, metadata } = input;
-    const transformedMessage = transformSingleMessage(message);
-
-    successMetadata.push(metadata);
-    transformedInputs.push(transformedMessage);
+  const transformedInputs = inputs.map((input) => {
+    const { message } = input;
+    return transformSingleMessage(message);
   });
-  const finalPayload = wrapCombinePayloads(transformedInputs);
-  return { ...finalPayload, successMetadata };
+  const successMetadata = inputs.map((input) => input.metadata);
+  const destinationObj = inputs[inputs.length - 1].destination;
+  const { payload, destination } = wrapCombinePayloads(transformedInputs, destinationObj);
+  return { payload, successMetadata, destination };
 }
 
 export { transformSingleMessage, combinePayloads };

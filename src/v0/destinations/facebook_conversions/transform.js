@@ -1,6 +1,5 @@
 /* eslint-disable no-param-reassign */
 const get = require('get-value');
-const moment = require('moment');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
 const {
   CONFIG_CATEGORIES,
@@ -33,6 +32,7 @@ const {
   fetchUserData,
   formingFinalResponse,
 } = require('../../util/facebookUtils');
+const { verifyEventDuration } = require('../facebook_pixel/utils');
 
 const responseBuilderSimple = (message, category, destination) => {
   const { Config, ID } = destination;
@@ -121,19 +121,7 @@ const processEvent = (message, destination) => {
   }
 
   const timeStamp = getFieldValueFromMessage(message, 'timestamp');
-  if (timeStamp) {
-    const start = moment.unix(moment(timeStamp).format('X'));
-    const current = moment.unix(moment().format('X'));
-    // calculates past event in days
-    const deltaDay = Math.ceil(moment.duration(current.diff(start)).asDays());
-    // calculates future event in minutes
-    const deltaMin = Math.ceil(moment.duration(start.diff(current)).asMinutes());
-    if (deltaDay > 7 || deltaMin > 1) {
-      throw new InstrumentationError(
-        'Events must be sent within seven days of their occurrence or up to one minute in the future.',
-      );
-    }
-  }
+  verifyEventDuration(message, destination, timeStamp);
 
   const { datasetId, accessToken } = destination.Config;
   if (!datasetId) {

@@ -1,5 +1,6 @@
 const lodash = require('lodash');
 const sha256 = require('sha256');
+const crypto = require('crypto');
 const get = require('get-value');
 const jsonSize = require('json-size');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
@@ -206,4 +207,23 @@ const prepareDataField = (
   return data;
 };
 
-module.exports = { prepareDataField, getSchemaForEventMappedToDest, batchingWithPayloadSize };
+// ref: https://developers.facebook.com/docs/facebook-login/security/#generate-the-proof
+
+const generateAppSecretProof = (accessToken, appSecret, dateNow) => {
+  const currentTime = Math.floor(dateNow / 1000); // Get current Unix time in seconds
+  const data = `${accessToken}|${currentTime}`;
+
+  // Creating a HMAC SHA-256 hash with the app_secret as the key
+  const hmac = crypto.createHmac('sha256', appSecret);
+  hmac.update(data);
+  const appsecretProof = hmac.digest('hex');
+
+  return appsecretProof;
+};
+
+module.exports = {
+  prepareDataField,
+  getSchemaForEventMappedToDest,
+  batchingWithPayloadSize,
+  generateAppSecretProof,
+};

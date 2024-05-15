@@ -107,8 +107,9 @@ const prepareResponse = (
   prepareParams.access_token = accessToken;
 
   if (isDefinedAndNotNullAndNotEmpty(appSecret)) {
-    prepareParams.appsecret_time = Math.floor(Date.now() / 1000); // Get current Unix time in seconds
-    prepareParams.appsecret_proof = generateAppSecretProof(accessToken, appSecret);
+    const dateNow = Date.now();
+    prepareParams.appsecret_time = Math.floor(dateNow / 1000); // Get current Unix time in seconds
+    prepareParams.appsecret_proof = generateAppSecretProof(accessToken, appSecret, dateNow);
   }
 
   // creating the payload field for parameters

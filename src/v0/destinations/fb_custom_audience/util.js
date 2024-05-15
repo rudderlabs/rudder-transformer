@@ -209,8 +209,8 @@ const prepareDataField = (
 
 // ref: https://developers.facebook.com/docs/facebook-login/security/#generate-the-proof
 
-const generateAppSecretProof = (accessToken, appSecret) => {
-  const currentTime = Math.floor(Date.now() / 1000); // Get current Unix time in seconds
+const generateAppSecretProof = (accessToken, appSecret, dateNow) => {
+  const currentTime = Math.floor(dateNow / 1000); // Get current Unix time in seconds
   const data = `${accessToken}|${currentTime}`;
 
   // Creating a HMAC SHA-256 hash with the app_secret as the key

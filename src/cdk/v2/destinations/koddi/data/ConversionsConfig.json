@@ -25,7 +25,7 @@
     "sourceKeys": "userId",
     "sourceFromGenericMap": true,
     "required": true,
-    "destKey": "userGuid"
+    "destKey": "user_guid"
   },
   {
     "sourceKeys": "context.device.type",

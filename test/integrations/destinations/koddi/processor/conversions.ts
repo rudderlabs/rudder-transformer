@@ -70,7 +70,7 @@ export const conversions: ProcessorTestData[] = [
                 currency: 'USD',
                 transaction_id: 'ABC123',
                 unixtime: 1709566376,
-                userGuid: 'userId123',
+                user_guid: 'userId123',
                 user_ip: '127.0.0.1',
                 bidders: bidders,
               },

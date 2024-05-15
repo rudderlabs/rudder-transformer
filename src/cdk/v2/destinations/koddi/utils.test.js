@@ -265,7 +265,7 @@ describe('constructFullPayload', () => {
       currency: 'USD',
       transaction_id: '123',
       unixtime: 1709405952,
-      userGuid: '1234',
+      user_guid: '1234',
       user_ip: '127.0.0.1',
       bidders: [
         {

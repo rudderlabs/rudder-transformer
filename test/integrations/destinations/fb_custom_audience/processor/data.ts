@@ -54426,7 +54426,8 @@ export const data = [
   },
   {
     name: 'fb_custom_audience',
-    description: 'Type NA ',
+    description:
+      'If App secret is configured in the UI, appsecret_proof and appsecret_time will be added to destination request.',
     feature: 'processor',
     module: 'destination',
     version: 'v0',

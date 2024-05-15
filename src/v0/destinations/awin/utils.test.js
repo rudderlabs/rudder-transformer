@@ -1,4 +1,8 @@
-const { buildProductPayloadString, trackProduct } = require('./utils');
+const {
+  buildProductPayloadString,
+  trackProduct,
+  populateCustomTransactionProperties,
+} = require('./utils');
 
 describe('buildProductPayloadString', () => {
   // Should correctly build the payload string with all fields provided
@@ -161,5 +165,30 @@ describe('trackProduct', () => {
       'bd[0]': 'AW:P|advertiser123|order123|123|Product%201|10|1||COMMISSION|Category%201',
       'bd[1]': 'AW:P|advertiser123|order123|456|Product%202|20|2|SKU456|COMMISSION|',
     });
+  });
+});
+
+describe('populateCustomTransactionProperties', () => {
+  // The function should correctly map properties from the input object to the output object based on the customFieldMap.
+  it('should correctly map properties from the input object to the output object based on the customFieldMap', () => {
+    const properties = {
+      rudderProperty1: 'value1',
+      rudderProperty2: 123,
+      rudderProperty3: 'value3',
+      rudderProperty4: 234,
+    };
+    const customFieldMap = [
+      { from: 'rudderProperty1', to: 'p1' },
+      { from: 'rudderProperty2', to: 'p2' },
+      { from: 'rudderProperty4', to: 'anotherp2' },
+    ];
+    const expectedOutput = {
+      p1: 'value1',
+      p2: 123,
+    };
+
+    const result = populateCustomTransactionProperties(properties, customFieldMap);
+
+    expect(result).toEqual(expectedOutput);
   });
 });

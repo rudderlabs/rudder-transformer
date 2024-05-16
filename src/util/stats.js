@@ -38,6 +38,15 @@ const timing = (name, start, tags = {}) => {
   statsClient.timing(name, start, tags);
 };
 
+// timingSummary is used to record observations for a summary metric
+const timingSummary = (name, start, tags = {}) => {
+  if (!enableStats || !statsClient) {
+    return;
+  }
+
+  statsClient.timingSummary(name, start, tags);
+};
+
 const increment = (name, tags = {}) => {
   if (!enableStats || !statsClient) {
     return;
@@ -88,4 +97,13 @@ async function metricsController(ctx) {
 
 init();
 
-module.exports = { init, timing, increment, counter, gauge, histogram, metricsController };
+module.exports = {
+  init,
+  timing,
+  timingSummary,
+  increment,
+  counter,
+  gauge,
+  histogram,
+  metricsController,
+};

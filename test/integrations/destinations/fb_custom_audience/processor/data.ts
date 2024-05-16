@@ -1,5 +1,10 @@
 import { getEndPoint } from '../../../../../src/v0/destinations/fb_custom_audience/config';
 
+export const mockFns = (_) => {
+  // @ts-ignore
+  jest.useFakeTimers().setSystemTime(new Date('2023-10-15'));
+};
+
 export const data = [
   {
     name: 'fb_custom_audience',
@@ -54463,4 +54468,149 @@ export const data = [
       },
     },
   },
-];
+  {
+    name: 'fb_custom_audience',
+    description:
+      'If App secret is configured in the UI, appsecret_proof and appsecret_time will be added to destination request.',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              userId: 'user 1',
+              anonymousId: 'anon-id-new',
+              event: 'event1',
+              type: 'audiencelist',
+              properties: {
+                listData: {
+                  add: [
+                    {
+                      EMAIL: 'shrouti2@abc.com',
+                      DOBM: '2',
+                      DOBD: '13',
+                      DOBY: '2013',
+                      PHONE: '@09432457768',
+                      GEN: 'f',
+                      FI: 'Ms.',
+                      MADID: 'ABC',
+                      ZIP: 'ZIP ',
+                      ST: '123abc ',
+                      COUNTRY: 'IN',
+                    },
+                  ],
+                },
+              },
+              context: {
+                ip: '14.5.67.21',
+                library: {
+                  name: 'http',
+                },
+              },
+              timestamp: '2020-02-02T00:23:09.544Z',
+            },
+            destination: {
+              Config: {
+                accessToken: 'ABC',
+                appSecret: 'dummySecret',
+                userSchema: [
+                  'EMAIL',
+                  'DOBM',
+                  'DOBD',
+                  'DOBY',
+                  'PHONE',
+                  'GEN',
+                  'FI',
+                  'MADID',
+                  'ZIP',
+                  'ST',
+                  'COUNTRY',
+                ],
+                isHashRequired: false,
+                disableFormat: false,
+                audienceId: 'aud1',
+                isRaw: true,
+                type: 'NA',
+                subType: 'ANYTHING',
+                maxUserCount: '50',
+              },
+              Enabled: true,
+              Transformations: [],
+              IsProcessorEnabled: true,
+            },
+            libraries: [],
+            request: {
+              query: {},
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: getEndPoint('aud1'),
+              headers: {},
+              params: {
+                access_token: 'ABC',
+                appsecret_proof: 'd103874f3b5f01f57c4f84edfb96ac94055da8f83c2b45e6f26dafca9188ff4d',
+                appsecret_time: 1697328000,
+                payload: {
+                  is_raw: true,
+                  data_source: {
+                    sub_type: 'ANYTHING',
+                  },
+                  schema: [
+                    'EMAIL',
+                    'DOBM',
+                    'DOBD',
+                    'DOBY',
+                    'PHONE',
+                    'GEN',
+                    'FI',
+                    'MADID',
+                    'ZIP',
+                    'ST',
+                    'COUNTRY',
+                  ],
+                  data: [
+                    [
+                      'shrouti2@abc.com',
+                      '2',
+                      '13',
+                      '2013',
+                      '@09432457768',
+                      'f',
+                      'Ms.',
+                      'ABC',
+                      'ZIP ',
+                      '123abc ',
+                      'IN',
+                    ],
+                  ],
+                },
+              },
+              userId: '',
+              body: {
+                JSON: {},
+                XML: {},
+                JSON_ARRAY: {},
+                FORM: {},
+              },
+              files: {},
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+].map((d) => ({ ...d, mockFns }));

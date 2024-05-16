@@ -51,7 +51,8 @@
     "release": "npx standard-version",
     "release:github": "DEBUG=conventional-github-releaser npx conventional-github-releaser -p angular --config github-release.config.js",
     "clean:node": "modclean",
-    "check:lint": "eslint . -f json -o reports/eslint.json || exit 0"
+    "check:lint": "eslint . -f json -o reports/eslint.json || exit 0",
+    "grpc:generate": "grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./generated --grpc_out=grpc_js:./generated --plugin=protoc-gen-grpc=$(npm bin)/grpc_tools_node_protoc_plugin ./src/proto/transform.proto"
   },
   "dependencies": {
     "@amplitude/ua-parser-js": "0.7.24",
@@ -61,6 +62,8 @@
     "@aws-sdk/lib-storage": "^3.474.0",
     "@bugsnag/js": "^7.20.2",
     "@datadog/pprof": "^3.1.0",
+    "@grpc/grpc-js": "^1.10.8",
+    "@grpc/proto-loader": "^0.7.13",
     "@koa/router": "^12.0.0",
     "@ndhoule/extend": "^2.0.0",
     "@pyroscope/nodejs": "^0.2.9",
@@ -78,6 +81,8 @@
     "flat": "^5.0.2",
     "form-data": "^4.0.0",
     "get-value": "^3.0.1",
+    "grpc_tools_node_protoc_ts": "^5.3.3",
+    "grpc-tools": "^1.12.4",
     "handlebars": "^4.7.7",
     "http-graceful-shutdown": "^3.1.13",
     "https-proxy-agent": "^5.0.1",

@@ -29,7 +29,7 @@ function durationMiddleware() {
       route: ctx.request.url,
       destType: getDestTypeFromContext(ctx),
     };
-    stats.timing('http_request_duration_summary', startTime, labels);
+    stats.timing('http_request_duration', startTime, labels);
   };
 }
 

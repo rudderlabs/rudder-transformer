@@ -14,10 +14,20 @@ const {
   getSchemaForEventMappedToDest,
   batchingWithPayloadSize,
 } = require('./util');
-const { schemaFields, USER_ADD, USER_DELETE, typeFields, subTypeFields } = require('./config');
+const { schemaFields, USER_ADD, USER_DELETE } = require('./config');
 
 const { MappedToDestinationKey } = require('../../../constants');
-const { processRecordInputs, responseBuilderSimple } = require('./transformV2');
+const { processRecordInputs, responseBuilderSimple, getDataSource } = require('./transformV2');
+
+function extraKeysPresent(dictionary, keyList) {
+  // eslint-disable-next-line no-restricted-syntax
+  for (const key in dictionary) {
+    if (!keyList.includes(key)) {
+      return true;
+    }
+  }
+  return false;
+}
 
 // Function responsible prepare the payload field of every event parameter
 
@@ -68,7 +78,6 @@ const prepareResponse = (
   const prepareParams = {};
   // creating the parameters field
   const paramsPayload = {};
-  const dataSource = {};
 
   prepareParams.access_token = accessToken;
 
@@ -78,13 +87,7 @@ const prepareResponse = (
   }
   // creating the data_source block
 
-  if (type && type !== 'NA' && typeFields.includes(type)) {
-    dataSource.type = type;
-  }
-
-  if (subType && subType !== 'NA' && subTypeFields.includes(subType)) {
-    dataSource.sub_type = subType;
-  }
+  const dataSource = getDataSource(type, subType);
   if (Object.keys(dataSource).length > 0) {
     paramsPayload.data_source = dataSource;
   }
@@ -230,6 +233,11 @@ const processRouterDest = async (inputs, reqMetadata) => {
   const groupedInputs = lodash.groupBy(inputs, (input) => input.message.type?.toLowerCase());
   let transformedRecordEvent = [];
   let transformedAudienceEvent = [];
+
+  const eventTypes = ['record', 'audiencelist'];
+  if (extraKeysPresent(groupedInputs, eventTypes)) {
+    throw new ConfigurationError('unsupported events present in the event');
+  }
 
   if (groupedInputs.record) {
     transformedRecordEvent = await processRecordInputs(groupedInputs.record, reqMetadata);

@@ -5,6 +5,7 @@ const {
   InstrumentationError,
   ConfigurationError,
   TransformationError,
+  getErrorRespEvents,
 } = require('@rudderstack/integrations-lib');
 const { schemaFields, typeFields, subTypeFields, getEndPoint } = require('./config');
 const { MappedToDestinationKey } = require('../../../constants');
@@ -15,8 +16,10 @@ const {
   checkSubsetOfArray,
   defaultRequestConfig,
   returnArrayOfSubarrays,
+  getSuccessRespEvents,
   defaultPostRequestConfig,
   defaultDeleteRequestConfig,
+  generateErrorObject,
 } = require('../../util');
 const {
   ensureApplicableFormat,
@@ -24,6 +27,30 @@ const {
   getSchemaForEventMappedToDest,
   batchingWithPayloadSize,
 } = require('./util');
+
+function getErrorMetaData(inputs, acceptedOperations) {
+  const metadata = [];
+  // eslint-disable-next-line no-restricted-syntax
+  for (const key in inputs) {
+    if (!acceptedOperations.includes(key)) {
+      inputs[key].forEach((input) => {
+        metadata.push(input.metadata);
+      });
+    }
+  }
+  return metadata;
+}
+
+const getDataSource = (type, subType) => {
+  const dataSource = {};
+  if (type && type !== 'NA' && typeFields.includes(type)) {
+    dataSource.type = type;
+  }
+  if (subType && subType !== 'NA' && subTypeFields.includes(subType)) {
+    dataSource.sub_type = subType;
+  }
+  return dataSource;
+};
 
 const responseBuilderSimple = (payload, audienceId) => {
   if (payload) {
@@ -54,8 +81,10 @@ const processRecordEventArray = (
   prepareParams,
   destination,
   operation,
+  operationAudienceId,
 ) => {
   const toSendEvents = [];
+  const metadata = [];
   recordChunksArray.forEach((recordArray) => {
     const data = [];
     recordArray.forEach((input) => {
@@ -89,8 +118,8 @@ const processRecordEventArray = (
           nullFields: userSchema,
         });
       }
-
       data.push(dataElement);
+      metadata.push(input.metadata);
     });
 
     const prepareFinalPayload = lodash.cloneDeep(paramsPayload);
@@ -103,22 +132,36 @@ const processRecordEventArray = (
         ...prepareParams,
         payload: payloadBatch,
       };
+
       const wrappedResponse = {
         responseField: response,
         operationCategory: operation,
       };
-      toSendEvents.push(wrappedResponse);
+
+      const builtResponse = responseBuilderSimple(wrappedResponse, operationAudienceId);
+
+      toSendEvents.push(builtResponse);
     });
   });
 
-  return toSendEvents;
+  const response = getSuccessRespEvents(toSendEvents, metadata, destination, true);
+
+  return response;
 };
 
 async function processRecordInputs(groupedRecordInputs) {
   const { destination } = groupedRecordInputs[0];
   const { message } = groupedRecordInputs[0];
-  const { isHashRequired, accessToken, disableFormat, type, subType, isRaw, maxUserCount } =
-    destination.Config;
+  const {
+    isHashRequired,
+    accessToken,
+    disableFormat,
+    type,
+    subType,
+    isRaw,
+    maxUserCount,
+    audienceId,
+  } = destination.Config;
   const prepareParams = {
     access_token: accessToken,
   };
@@ -130,7 +173,6 @@ async function processRecordInputs(groupedRecordInputs) {
   }
 
   // audience id validation
-  const { audienceId } = destination.Config;
   let operationAudienceId = audienceId;
   const mappedToDestination = get(message, MappedToDestinationKey);
   if (!operationAudienceId && mappedToDestination) {
@@ -154,16 +196,12 @@ async function processRecordInputs(groupedRecordInputs) {
   }
 
   const paramsPayload = {};
-  const dataSource = {};
+
   if (isRaw) {
     paramsPayload.is_raw = isRaw;
   }
-  if (type && type !== 'NA' && typeFields.includes(type)) {
-    dataSource.type = type;
-  }
-  if (subType && subType !== 'NA' && subTypeFields.includes(subType)) {
-    dataSource.sub_type = subType;
-  }
+
+  const dataSource = getDataSource(type, subType);
   if (Object.keys(dataSource).length > 0) {
     paramsPayload.data_source = dataSource;
   }
@@ -172,24 +210,27 @@ async function processRecordInputs(groupedRecordInputs) {
     record.message.action?.toLowerCase(),
   );
 
-  const toSendEvents = [];
+  const finalResponse = [];
+
+  let insertResponse;
+  let deleteResponse;
+  let updateResponse;
 
   if (groupedRecordsByAction.delete) {
     const deleteRecordChunksArray = returnArrayOfSubarrays(
       groupedRecordsByAction.delete,
       maxUserCountNumber,
     );
-    toSendEvents.push(
-      ...processRecordEventArray(
-        deleteRecordChunksArray,
-        userSchema,
-        isHashRequired,
-        disableFormat,
-        paramsPayload,
-        prepareParams,
-        destination,
-        'remove',
-      ),
+    deleteResponse = processRecordEventArray(
+      deleteRecordChunksArray,
+      userSchema,
+      isHashRequired,
+      disableFormat,
+      paramsPayload,
+      prepareParams,
+      destination,
+      'remove',
+      operationAudienceId,
     );
   }
 
@@ -198,17 +239,17 @@ async function processRecordInputs(groupedRecordInputs) {
       groupedRecordsByAction.insert,
       maxUserCountNumber,
     );
-    toSendEvents.push(
-      ...processRecordEventArray(
-        insertRecordChunksArray,
-        userSchema,
-        isHashRequired,
-        disableFormat,
-        paramsPayload,
-        prepareParams,
-        destination,
-        'add',
-      ),
+
+    insertResponse = processRecordEventArray(
+      insertRecordChunksArray,
+      userSchema,
+      isHashRequired,
+      disableFormat,
+      paramsPayload,
+      prepareParams,
+      destination,
+      'add',
+      operationAudienceId,
     );
   }
 
@@ -217,33 +258,51 @@ async function processRecordInputs(groupedRecordInputs) {
       groupedRecordsByAction.update,
       maxUserCountNumber,
     );
-    toSendEvents.push(
-      ...processRecordEventArray(
-        updateRecordChunksArray,
-        userSchema,
-        isHashRequired,
-        disableFormat,
-        paramsPayload,
-        prepareParams,
-        destination,
-        'add',
-      ),
+    updateResponse = processRecordEventArray(
+      updateRecordChunksArray,
+      userSchema,
+      isHashRequired,
+      disableFormat,
+      paramsPayload,
+      prepareParams,
+      destination,
+      'add',
+      operationAudienceId,
     );
   }
 
-  const respList = [];
-  toSendEvents.forEach((sendEvent) => {
-    respList.push(responseBuilderSimple(sendEvent, operationAudienceId));
-  });
-  if (respList.length === 0) {
+  const eventTypes = ['update', 'insert', 'delete'];
+  const errorMetaData = getErrorMetaData(groupedRecordsByAction, eventTypes);
+
+  const error = new InstrumentationError('Invalid action type in record event');
+  const errorObj = generateErrorObject(error);
+  const errorResponseList = errorMetaData.map((metadata) =>
+    getErrorRespEvents(metadata, errorObj.status, errorObj.message, errorObj.statTags),
+  );
+
+  if (deleteResponse && deleteResponse.batchedRequest.length > 0) {
+    finalResponse.push(deleteResponse);
+  }
+  if (insertResponse && insertResponse.batchedRequest.length > 0) {
+    finalResponse.push(insertResponse);
+  }
+  if (updateResponse && updateResponse.batchedRequest.length > 0) {
+    finalResponse.push(updateResponse);
+  }
+  if (errorResponseList.length > 0) {
+    finalResponse.push(...errorResponseList);
+  }
+
+  if (finalResponse.length === 0) {
     throw new InstrumentationError(
       'Missing valid parameters, unable to generate transformed payload',
     );
   }
-  return respList;
+  return finalResponse;
 }
 
 module.exports = {
   processRecordInputs,
   responseBuilderSimple,
+  getDataSource,
 };

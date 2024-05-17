@@ -52,7 +52,7 @@
     "release:github": "DEBUG=conventional-github-releaser npx conventional-github-releaser -p angular --config github-release.config.js",
     "clean:node": "modclean",
     "check:lint": "eslint . -f json -o reports/eslint.json || exit 0",
-    "grpc:generate": "grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./generated --grpc_out=grpc_js:./generated --plugin=protoc-gen-grpc=$(npm bin)/grpc_tools_node_protoc_plugin ./src/proto/transform.proto"
+    "grpc:generate": "grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./ --grpc_out=./ src/proto/transform.proto"
   },
   "dependencies": {
     "@amplitude/ua-parser-js": "0.7.24",
@@ -81,6 +81,7 @@
     "flat": "^5.0.2",
     "form-data": "^4.0.0",
     "get-value": "^3.0.1",
+    "grpc": "^1.24.11",
     "grpc_tools_node_protoc_ts": "^5.3.3",
     "grpc-tools": "^1.12.4",
     "handlebars": "^4.7.7",

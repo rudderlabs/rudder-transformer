@@ -9,6 +9,7 @@ import { metricsRouter } from './routes/metricsRouter';
 import cluster from './util/cluster';
 import { RedisDB } from './util/redis/redisConnector';
 import { logProcessInfo } from './util/utils';
+import {startGRPCServer} from "./grpc/server";
 
 dotenv.config();
 const clusterEnabled = process.env.CLUSTER_ENABLED !== 'false';
@@ -34,6 +35,8 @@ addSwaggerRoutes(app);
 
 logger.info('Using new routes');
 applicationRoutes(app);
+
+startGRPCServer();
 
 function finalFunction() {
   RedisDB.disconnect();

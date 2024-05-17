@@ -52,7 +52,7 @@
     "release:github": "DEBUG=conventional-github-releaser npx conventional-github-releaser -p angular --config github-release.config.js",
     "clean:node": "modclean",
     "check:lint": "eslint . -f json -o reports/eslint.json || exit 0",
-    "grpc:generate": "grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./ --grpc_out=./ src/proto/transform.proto"
+    "grpc:generate": "grpc_tools_node_protoc --js_out=import_style=commonjs,binary:./ --grpc_out=./ src/proto/transform.proto src/proto/health.proto"
   },
   "dependencies": {
     "@amplitude/ua-parser-js": "0.7.24",

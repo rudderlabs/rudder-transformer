@@ -13,13 +13,21 @@
 
 var jspb = require('google-protobuf');
 var goog = jspb;
-var global = (function() {
-  if (this) { return this; }
-  if (typeof window !== 'undefined') { return window; }
-  if (typeof global !== 'undefined') { return global; }
-  if (typeof self !== 'undefined') { return self; }
+var global = function () {
+  if (this) {
+    return this;
+  }
+  if (typeof window !== 'undefined') {
+    return window;
+  }
+  if (typeof global !== 'undefined') {
+    return global;
+  }
+  if (typeof self !== 'undefined') {
+    return self;
+  }
   return Function('return this')();
-}.call(null));
+}.call(null);
 
 goog.exportSymbol('proto.grpc.health.v1.HealthCheckRequest', null, global);
 goog.exportSymbol('proto.grpc.health.v1.HealthCheckResponse', null, global);
@@ -34,7 +42,7 @@ goog.exportSymbol('proto.grpc.health.v1.HealthCheckResponse.ServingStatus', null
  * @extends {jspb.Message}
  * @constructor
  */
-proto.grpc.health.v1.HealthCheckRequest = function(opt_data) {
+proto.grpc.health.v1.HealthCheckRequest = function (opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
 goog.inherits(proto.grpc.health.v1.HealthCheckRequest, jspb.Message);
@@ -55,7 +63,7 @@ if (goog.DEBUG && !COMPILED) {
  * @extends {jspb.Message}
  * @constructor
  */
-proto.grpc.health.v1.HealthCheckResponse = function(opt_data) {
+proto.grpc.health.v1.HealthCheckResponse = function (opt_data) {
   jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
 goog.inherits(proto.grpc.health.v1.HealthCheckResponse, jspb.Message);
@@ -67,59 +75,55 @@ if (goog.DEBUG && !COMPILED) {
   proto.grpc.health.v1.HealthCheckResponse.displayName = 'proto.grpc.health.v1.HealthCheckResponse';
 }
 
-
-
 if (jspb.Message.GENERATE_TO_OBJECT) {
-/**
- * Creates an object representation of this proto.
- * Field names that are reserved in JavaScript and will be renamed to pb_name.
- * Optional fields that are not set will be set to undefined.
- * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
- * For the list of reserved names please see:
- *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
- * @param {boolean=} opt_includeInstance Deprecated. whether to include the
- *     JSPB instance for transitional soy proto support:
- *     http://goto/soy-param-migration
- * @return {!Object}
- */
-proto.grpc.health.v1.HealthCheckRequest.prototype.toObject = function(opt_includeInstance) {
-  return proto.grpc.health.v1.HealthCheckRequest.toObject(opt_includeInstance, this);
-};
-
-
-/**
- * Static version of the {@see toObject} method.
- * @param {boolean|undefined} includeInstance Deprecated. Whether to include
- *     the JSPB instance for transitional soy proto support:
- *     http://goto/soy-param-migration
- * @param {!proto.grpc.health.v1.HealthCheckRequest} msg The msg instance to transform.
- * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
- */
-proto.grpc.health.v1.HealthCheckRequest.toObject = function(includeInstance, msg) {
-  var f, obj = {
-    service: jspb.Message.getFieldWithDefault(msg, 1, "")
+  /**
+   * Creates an object representation of this proto.
+   * Field names that are reserved in JavaScript and will be renamed to pb_name.
+   * Optional fields that are not set will be set to undefined.
+   * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+   * For the list of reserved names please see:
+   *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+   * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+   *     JSPB instance for transitional soy proto support:
+   *     http://goto/soy-param-migration
+   * @return {!Object}
+   */
+  proto.grpc.health.v1.HealthCheckRequest.prototype.toObject = function (opt_includeInstance) {
+    return proto.grpc.health.v1.HealthCheckRequest.toObject(opt_includeInstance, this);
   };
 
-  if (includeInstance) {
-    obj.$jspbMessageInstance = msg;
-  }
-  return obj;
-};
-}
+  /**
+   * Static version of the {@see toObject} method.
+   * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+   *     the JSPB instance for transitional soy proto support:
+   *     http://goto/soy-param-migration
+   * @param {!proto.grpc.health.v1.HealthCheckRequest} msg The msg instance to transform.
+   * @return {!Object}
+   * @suppress {unusedLocalVariables} f is only used for nested messages
+   */
+  proto.grpc.health.v1.HealthCheckRequest.toObject = function (includeInstance, msg) {
+    var f,
+      obj = {
+        service: jspb.Message.getFieldWithDefault(msg, 1, ''),
+      };
 
+    if (includeInstance) {
+      obj.$jspbMessageInstance = msg;
+    }
+    return obj;
+  };
+}
 
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
  * @return {!proto.grpc.health.v1.HealthCheckRequest}
  */
-proto.grpc.health.v1.HealthCheckRequest.deserializeBinary = function(bytes) {
+proto.grpc.health.v1.HealthCheckRequest.deserializeBinary = function (bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.grpc.health.v1.HealthCheckRequest;
+  var msg = new proto.grpc.health.v1.HealthCheckRequest();
   return proto.grpc.health.v1.HealthCheckRequest.deserializeBinaryFromReader(msg, reader);
 };
-
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
@@ -128,36 +132,34 @@ proto.grpc.health.v1.HealthCheckRequest.deserializeBinary = function(bytes) {
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
  * @return {!proto.grpc.health.v1.HealthCheckRequest}
  */
-proto.grpc.health.v1.HealthCheckRequest.deserializeBinaryFromReader = function(msg, reader) {
+proto.grpc.health.v1.HealthCheckRequest.deserializeBinaryFromReader = function (msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
     }
     var field = reader.getFieldNumber();
     switch (field) {
-    case 1:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setService(value);
-      break;
-    default:
-      reader.skipField();
-      break;
+      case 1:
+        var value = /** @type {string} */ (reader.readString());
+        msg.setService(value);
+        break;
+      default:
+        reader.skipField();
+        break;
     }
   }
   return msg;
 };
 
-
 /**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.grpc.health.v1.HealthCheckRequest.prototype.serializeBinary = function() {
+proto.grpc.health.v1.HealthCheckRequest.prototype.serializeBinary = function () {
   var writer = new jspb.BinaryWriter();
   proto.grpc.health.v1.HealthCheckRequest.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
-
 
 /**
  * Serializes the given message to binary data (in protobuf wire
@@ -166,90 +168,79 @@ proto.grpc.health.v1.HealthCheckRequest.prototype.serializeBinary = function() {
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.grpc.health.v1.HealthCheckRequest.serializeBinaryToWriter = function(message, writer) {
+proto.grpc.health.v1.HealthCheckRequest.serializeBinaryToWriter = function (message, writer) {
   var f = undefined;
   f = message.getService();
   if (f.length > 0) {
-    writer.writeString(
-      1,
-      f
-    );
+    writer.writeString(1, f);
   }
 };
-
 
 /**
  * optional string service = 1;
  * @return {string}
  */
-proto.grpc.health.v1.HealthCheckRequest.prototype.getService = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+proto.grpc.health.v1.HealthCheckRequest.prototype.getService = function () {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ''));
 };
-
 
 /**
  * @param {string} value
  * @return {!proto.grpc.health.v1.HealthCheckRequest} returns this
  */
-proto.grpc.health.v1.HealthCheckRequest.prototype.setService = function(value) {
+proto.grpc.health.v1.HealthCheckRequest.prototype.setService = function (value) {
   return jspb.Message.setProto3StringField(this, 1, value);
 };
 
-
-
-
-
 if (jspb.Message.GENERATE_TO_OBJECT) {
-/**
- * Creates an object representation of this proto.
- * Field names that are reserved in JavaScript and will be renamed to pb_name.
- * Optional fields that are not set will be set to undefined.
- * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
- * For the list of reserved names please see:
- *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
- * @param {boolean=} opt_includeInstance Deprecated. whether to include the
- *     JSPB instance for transitional soy proto support:
- *     http://goto/soy-param-migration
- * @return {!Object}
- */
-proto.grpc.health.v1.HealthCheckResponse.prototype.toObject = function(opt_includeInstance) {
-  return proto.grpc.health.v1.HealthCheckResponse.toObject(opt_includeInstance, this);
-};
-
-
-/**
- * Static version of the {@see toObject} method.
- * @param {boolean|undefined} includeInstance Deprecated. Whether to include
- *     the JSPB instance for transitional soy proto support:
- *     http://goto/soy-param-migration
- * @param {!proto.grpc.health.v1.HealthCheckResponse} msg The msg instance to transform.
- * @return {!Object}
- * @suppress {unusedLocalVariables} f is only used for nested messages
- */
-proto.grpc.health.v1.HealthCheckResponse.toObject = function(includeInstance, msg) {
-  var f, obj = {
-    status: jspb.Message.getFieldWithDefault(msg, 1, 0)
+  /**
+   * Creates an object representation of this proto.
+   * Field names that are reserved in JavaScript and will be renamed to pb_name.
+   * Optional fields that are not set will be set to undefined.
+   * To access a reserved field use, foo.pb_<name>, eg, foo.pb_default.
+   * For the list of reserved names please see:
+   *     net/proto2/compiler/js/internal/generator.cc#kKeyword.
+   * @param {boolean=} opt_includeInstance Deprecated. whether to include the
+   *     JSPB instance for transitional soy proto support:
+   *     http://goto/soy-param-migration
+   * @return {!Object}
+   */
+  proto.grpc.health.v1.HealthCheckResponse.prototype.toObject = function (opt_includeInstance) {
+    return proto.grpc.health.v1.HealthCheckResponse.toObject(opt_includeInstance, this);
   };
 
-  if (includeInstance) {
-    obj.$jspbMessageInstance = msg;
-  }
-  return obj;
-};
-}
+  /**
+   * Static version of the {@see toObject} method.
+   * @param {boolean|undefined} includeInstance Deprecated. Whether to include
+   *     the JSPB instance for transitional soy proto support:
+   *     http://goto/soy-param-migration
+   * @param {!proto.grpc.health.v1.HealthCheckResponse} msg The msg instance to transform.
+   * @return {!Object}
+   * @suppress {unusedLocalVariables} f is only used for nested messages
+   */
+  proto.grpc.health.v1.HealthCheckResponse.toObject = function (includeInstance, msg) {
+    var f,
+      obj = {
+        status: jspb.Message.getFieldWithDefault(msg, 1, 0),
+      };
 
+    if (includeInstance) {
+      obj.$jspbMessageInstance = msg;
+    }
+    return obj;
+  };
+}
 
 /**
  * Deserializes binary data (in protobuf wire format).
  * @param {jspb.ByteSource} bytes The bytes to deserialize.
  * @return {!proto.grpc.health.v1.HealthCheckResponse}
  */
-proto.grpc.health.v1.HealthCheckResponse.deserializeBinary = function(bytes) {
+proto.grpc.health.v1.HealthCheckResponse.deserializeBinary = function (bytes) {
   var reader = new jspb.BinaryReader(bytes);
-  var msg = new proto.grpc.health.v1.HealthCheckResponse;
+  var msg = new proto.grpc.health.v1.HealthCheckResponse();
   return proto.grpc.health.v1.HealthCheckResponse.deserializeBinaryFromReader(msg, reader);
 };
-
 
 /**
  * Deserializes binary data (in protobuf wire format) from the
@@ -258,36 +249,36 @@ proto.grpc.health.v1.HealthCheckResponse.deserializeBinary = function(bytes) {
  * @param {!jspb.BinaryReader} reader The BinaryReader to use.
  * @return {!proto.grpc.health.v1.HealthCheckResponse}
  */
-proto.grpc.health.v1.HealthCheckResponse.deserializeBinaryFromReader = function(msg, reader) {
+proto.grpc.health.v1.HealthCheckResponse.deserializeBinaryFromReader = function (msg, reader) {
   while (reader.nextField()) {
     if (reader.isEndGroup()) {
       break;
     }
     var field = reader.getFieldNumber();
     switch (field) {
-    case 1:
-      var value = /** @type {!proto.grpc.health.v1.HealthCheckResponse.ServingStatus} */ (reader.readEnum());
-      msg.setStatus(value);
-      break;
-    default:
-      reader.skipField();
-      break;
+      case 1:
+        var value = /** @type {!proto.grpc.health.v1.HealthCheckResponse.ServingStatus} */ (
+          reader.readEnum()
+        );
+        msg.setStatus(value);
+        break;
+      default:
+        reader.skipField();
+        break;
     }
   }
   return msg;
 };
 
-
 /**
  * Serializes the message to binary data (in protobuf wire format).
  * @return {!Uint8Array}
  */
-proto.grpc.health.v1.HealthCheckResponse.prototype.serializeBinary = function() {
+proto.grpc.health.v1.HealthCheckResponse.prototype.serializeBinary = function () {
   var writer = new jspb.BinaryWriter();
   proto.grpc.health.v1.HealthCheckResponse.serializeBinaryToWriter(this, writer);
   return writer.getResultBuffer();
 };
-
 
 /**
  * Serializes the given message to binary data (in protobuf wire
@@ -296,17 +287,13 @@ proto.grpc.health.v1.HealthCheckResponse.prototype.serializeBinary = function() 
  * @param {!jspb.BinaryWriter} writer
  * @suppress {unusedLocalVariables} f is only used for nested messages
  */
-proto.grpc.health.v1.HealthCheckResponse.serializeBinaryToWriter = function(message, writer) {
+proto.grpc.health.v1.HealthCheckResponse.serializeBinaryToWriter = function (message, writer) {
   var f = undefined;
   f = message.getStatus();
   if (f !== 0.0) {
-    writer.writeEnum(
-      1,
-      f
-    );
+    writer.writeEnum(1, f);
   }
 };
-
 
 /**
  * @enum {number}
@@ -314,25 +301,25 @@ proto.grpc.health.v1.HealthCheckResponse.serializeBinaryToWriter = function(mess
 proto.grpc.health.v1.HealthCheckResponse.ServingStatus = {
   UNKNOWN: 0,
   SERVING: 1,
-  NOT_SERVING: 2
+  NOT_SERVING: 2,
 };
 
 /**
  * optional ServingStatus status = 1;
  * @return {!proto.grpc.health.v1.HealthCheckResponse.ServingStatus}
  */
-proto.grpc.health.v1.HealthCheckResponse.prototype.getStatus = function() {
-  return /** @type {!proto.grpc.health.v1.HealthCheckResponse.ServingStatus} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+proto.grpc.health.v1.HealthCheckResponse.prototype.getStatus = function () {
+  return /** @type {!proto.grpc.health.v1.HealthCheckResponse.ServingStatus} */ (
+    jspb.Message.getFieldWithDefault(this, 1, 0)
+  );
 };
-
 
 /**
  * @param {!proto.grpc.health.v1.HealthCheckResponse.ServingStatus} value
  * @return {!proto.grpc.health.v1.HealthCheckResponse} returns this
  */
-proto.grpc.health.v1.HealthCheckResponse.prototype.setStatus = function(value) {
+proto.grpc.health.v1.HealthCheckResponse.prototype.setStatus = function (value) {
   return jspb.Message.setProto3EnumField(this, 1, value);
 };
-
 
 goog.object.extend(exports, proto.grpc.health.v1);

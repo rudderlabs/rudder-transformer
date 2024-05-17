@@ -67,5 +67,6 @@
     "no-prototype-builtins": "off",
     "@typescript-eslint/dot-notation": "error",
     "@typescript-eslint/no-unused-vars": "error"
-  }
+  },
+  "ignorePatterns": ["src/proto/*"]
 }

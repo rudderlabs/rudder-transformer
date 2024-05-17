@@ -12,6 +12,7 @@ function processEvent(event) {
 
 function process(inputEvent) {
   const { event } = inputEvent;
+  console.log(JSON.stringify(event));
   const response = processEvent(event);
   return removeUndefinedAndNullValues(response);
 }

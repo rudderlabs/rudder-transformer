@@ -1287,4 +1287,5 @@ module.exports = {
   getJobStatus,
   handleV0Destination,
   getDestHandler,
+  handleValidation
 };

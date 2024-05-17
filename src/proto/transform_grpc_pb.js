@@ -1,8 +1,9 @@
 // GENERATED CODE -- DO NOT EDIT!
 
-const grpc = require('grpc');
-const google_protobuf_struct_pb = require('google-protobuf/google/protobuf/struct_pb.js');
-const src_proto_transform_pb = require('./transform_pb.js');
+'use strict';
+var grpc = require('grpc');
+var src_proto_transform_pb = require('../../src/proto/transform_pb.js');
+var google_protobuf_struct_pb = require('google-protobuf/google/protobuf/struct_pb.js');
 
 function serialize_proto_TransformRequest(arg) {
   if (!(arg instanceof src_proto_transform_pb.TransformRequest)) {
@@ -26,7 +27,8 @@ function deserialize_proto_TransformResponse(buffer_arg) {
   return src_proto_transform_pb.TransformResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
-const TransformerServiceService = (exports.TransformerServiceService = {
+
+var TransformerServiceService = exports.TransformerServiceService = {
   transform: {
     path: '/proto.TransformerService/Transform',
     requestStream: false,
@@ -38,6 +40,6 @@ const TransformerServiceService = (exports.TransformerServiceService = {
     responseSerialize: serialize_proto_TransformResponse,
     responseDeserialize: deserialize_proto_TransformResponse,
   },
-});
+};
 
 exports.TransformerServiceClient = grpc.makeGenericClientConstructor(TransformerServiceService);

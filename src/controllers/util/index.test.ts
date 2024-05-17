@@ -206,7 +206,7 @@ const destination: Destination = {
   Config: {},
   Enabled: true,
   WorkspaceID: 'wspId',
-  Transformations: [],
+  transformationList: [],
 };
 
 const message = {

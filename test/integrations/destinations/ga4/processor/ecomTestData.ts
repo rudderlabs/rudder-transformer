@@ -38,7 +38,7 @@ const destination: Destination = {
   },
   Enabled: true,
   WorkspaceID: '123',
-  Transformations: [],
+  transformationList: [],
 };
 
 const deviceInfo = {

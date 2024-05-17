@@ -18,7 +18,7 @@ const commonDestination: Destination = {
     Config: {},
   },
   WorkspaceID: '123',
-  Transformations: [],
+  transformationList: [],
   Config: {
     limitedDataUSage: true,
     blacklistPiiProperties: [

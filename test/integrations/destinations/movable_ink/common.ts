@@ -19,7 +19,7 @@ const destination: Destination = {
   Enabled: true,
   ID: '123',
   Name: destTypeInUpperCase,
-  Transformations: [],
+  transformationList: [],
   WorkspaceID: 'test-workspace-id',
 };
 

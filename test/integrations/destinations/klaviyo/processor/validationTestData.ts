@@ -17,7 +17,7 @@ const destination: Destination = {
   },
   Enabled: true,
   WorkspaceID: '123',
-  Transformations: [],
+  transformationList: [],
 };
 
 export const validationTestData: ProcessorTestData[] = [

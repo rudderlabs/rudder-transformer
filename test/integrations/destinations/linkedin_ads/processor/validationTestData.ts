@@ -14,7 +14,7 @@ const commonDestination: Destination = {
     },
   },
   WorkspaceID: '123',
-  Transformations: [],
+  transformationList: [],
   Config: {
     hashData: true,
     conversionMapping: [

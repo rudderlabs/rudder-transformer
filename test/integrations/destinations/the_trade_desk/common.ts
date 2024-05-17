@@ -25,7 +25,7 @@ const sampleDestination: Destination = {
   Name: 'Test',
   Enabled: true,
   WorkspaceID: '',
-  Transformations: [],
+  transformationList: [],
 };
 
 const sampleSource = {

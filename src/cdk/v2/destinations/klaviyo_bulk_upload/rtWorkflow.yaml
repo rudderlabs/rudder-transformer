@@ -35,14 +35,14 @@ steps:
           },
           params: {},
           body: {
-            JSON: [$.outputs.finalJsonPayload.payload],
+            JSON: $.outputs.finalJsonPayload.payload,
             JSON_ARRAY: {},
             XML: {},
             FORM: {},
           },
           "files": {},
         },
-        "batched": true,
+        "batched": false,
         "destination": $.outputs.finalJsonPayload.destination,
         "metadata": $.outputs.finalJsonPayload.successMetadata,
         "statusCode": 200

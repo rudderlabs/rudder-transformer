@@ -70,8 +70,7 @@
     "KOALA": true,
     "LINKEDIN_ADS": true,
     "BLOOMREACH": true,
-    "MOVABLE_INK": true,
-    "KLAVIYO_BULK_UPLOAD": true
+    "MOVABLE_INK": true
   },
   "regulations": [
     "BRAZE",

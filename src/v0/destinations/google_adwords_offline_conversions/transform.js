@@ -170,9 +170,8 @@ const batchEvents = (storeSalesEvents) => {
       storeSalesEvent.message?.body?.JSON?.addConversionPayload?.operations,
     );
     batchEventResponse.metadatas.push(storeSalesEvent.metadata);
-    batchEventResponse.destination = storeSalesEvent.destination;
   });
-
+  batchEventResponse.destination = storeSalesEvents[0].destination;
   return [
     getSuccessRespEvents(
       batchEventResponse.batchedRequest,

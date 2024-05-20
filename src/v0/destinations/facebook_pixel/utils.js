@@ -1,7 +1,6 @@
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const get = require('get-value');
 const moment = require('moment');
-const stats = require('../../../util/stats');
 const { isObject } = require('../../util');
 const {
   ACTION_SOURCES_VALUES,
@@ -359,10 +358,6 @@ const verifyEventDuration = (message, destination, timeStamp) => {
     defaultSupportedDelta = 62;
   }
   if (deltaDay > defaultSupportedDelta || deltaMin > 1) {
-    // TODO: Remove after testing in mirror transformer
-    stats.increment('fb_pixel_timestamp_error', {
-      destinationId: destination.ID,
-    });
     throw new InstrumentationError(
       `Events must be sent within ${defaultSupportedDelta} days of their occurrence or up to one minute in the future.`,
     );

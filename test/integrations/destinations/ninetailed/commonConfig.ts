@@ -96,11 +96,10 @@ export const contextWithNoLocation = {
   userAgent:
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
 };
-export const commonInputWithNoLocation = {
+export const commonInputWithNoLocationAndChannel = {
   anonymousId: 'anon_123',
   messageId: 'dummy_msg_id',
   context: contextWithNoLocation,
-  channel: 'web',
   integrations: {
     All: true,
   },

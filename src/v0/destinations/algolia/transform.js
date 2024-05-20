@@ -16,7 +16,7 @@ const {
   handleRtTfSingleEventError,
 } = require('../../util/index');
 
-const { ENDPOINT, MAX_BATCH_SIZE, trackMapping } = require('./config');
+const { ENDPOINT, MAX_BATCH_SIZE, trackMapping, ALLOWED_EVENT_SUBTYPES } = require('./config');
 
 const {
   genericpayloadValidator,
@@ -38,6 +38,12 @@ const trackResponseBuilder = (message, { Config }) => {
   const eventMapping = eventTypeMapping(Config);
   payload.eventName = event;
   payload.eventType = getValueFromMessage(message, 'properties.eventType') || eventMapping[event];
+  if (
+    payload.eventType === 'conversion' &&
+    ALLOWED_EVENT_SUBTYPES.includes(getValueFromMessage(message, 'properties.eventSubtype'))
+  ) {
+    payload.eventSubtype = getValueFromMessage(message, 'properties.eventSubtype');
+  }
 
   if (!payload.eventType) {
     throw new InstrumentationError('eventType is mandatory for track call');
@@ -47,9 +53,13 @@ const trackResponseBuilder = (message, { Config }) => {
   if (event === 'product list viewed' || event === 'order completed') {
     const products = getValueFromMessage(message, 'properties.products');
     if (products) {
-      const { objectList, positionList } = createObjectArray(products, payload.eventType);
+      const { objectList, positionList, objectData } = createObjectArray(
+        products,
+        payload.eventType,
+      );
       const objLen = objectList.length;
       const posLen = positionList.length;
+      const objDataLen = objectData.length;
       if (objLen > 0) {
         payload.objectIDs = objectList;
         payload.objectIDs.splice(20);
@@ -58,9 +68,19 @@ const trackResponseBuilder = (message, { Config }) => {
         payload.positions = positionList;
         payload.positions.splice(20);
       }
+
+      if (objDataLen > 0) {
+        payload.objectData = objectData;
+      }
       // making size of object list and position list equal
       if (posLen > 0 && objLen > 0 && posLen !== objLen) {
         throw new InstrumentationError('length of objectId and position should be equal');
+      }
+
+      if (objDataLen > 0 && objLen > 0 && objDataLen !== objLen) {
+        throw new InstrumentationError(
+          'length of objectId and properties.products array should be equal',
+        );
       }
     }
   }

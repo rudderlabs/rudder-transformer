@@ -71,6 +71,7 @@
     "LINKEDIN_ADS": true,
     "BLOOMREACH": true,
     "MOVABLE_INK": true,
+    "EMARSYS": true,
     "KODDI": true
   },
   "regulations": [
@@ -85,7 +86,8 @@
     "ENGAGE",
     "CUSTIFY",
     "SENDGRID",
-    "SPRIG"
+    "SPRIG",
+    "EMARSYS"
   ],
   "supportSourceTransformV1": true,
   "supportTransformerProxyV1": true

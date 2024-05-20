@@ -273,7 +273,10 @@ async function processRecordInputs(groupedRecordInputs) {
 
   const eventTypes = ['update', 'insert', 'delete'];
   const errorMetaData = [];
-  errorMetaData.push(getErrorMetaData(groupedRecordsByAction, eventTypes));
+  const errorMetaDataObject = getErrorMetaData(groupedRecordsByAction, eventTypes);
+  if (errorMetaDataObject.length > 0) {
+    errorMetaData.push(errorMetaDataObject);
+  }
 
   const error = new InstrumentationError('Invalid action type in record event');
   const errorObj = generateErrorObject(error);

@@ -53606,4 +53606,329 @@ export const data = [
       },
     },
   },
+  {
+    name: 'fb_custom_audience',
+    description: 'rETL record batching tests',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              destination: {
+                Config: {
+                  accessToken: 'ABC',
+                  disableFormat: false,
+                  isHashRequired: true,
+                  isRaw: false,
+                  maxUserCount: '2',
+                  oneTrustCookieCategories: [],
+                  skipVerify: false,
+                  subType: 'NA',
+                  type: 'NA',
+                  userSchema: ['EMAIL'],
+                },
+                secretConfig: {},
+                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                name: 'FB_CUSTOM_AUDIENCE',
+                enabled: true,
+                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
+                deleted: false,
+                createdAt: '2020-12-30T08:39:32.005Z',
+                updatedAt: '2021-02-03T16:22:31.374Z',
+                destinationDefinition: {
+                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
+                  name: 'FB_CUSTOM_AUDIENCE',
+                  displayName: 'FB_CUSTOM_AUDIENCE',
+                  createdAt: '2020-04-09T09:24:31.794Z',
+                  updatedAt: '2021-01-11T11:03:28.103Z',
+                },
+                transformations: [],
+                isConnectionEnabled: true,
+                isProcessorEnabled: true,
+              },
+              message: {
+                action: 'insert',
+                context: {
+                  destinationFields: 'EMAIL, FI',
+                  externalId: [
+                    {
+                      type: 'FB_CUSTOM_AUDIENCE-23848494844100489',
+                      identifierType: 'EMAIL',
+                    },
+                  ],
+                  mappedToDestination: 'true',
+                  sources: {
+                    job_run_id: 'cgiiurt8um7k7n5dq480',
+                    task_run_id: 'cgiiurt8um7k7n5dq48g',
+                    job_id: '2MUWghI7u85n91dd1qzGyswpZan',
+                    version: '895/merge',
+                  },
+                },
+                recordId: '2',
+                rudderId: '2',
+                fields: {
+                  EMAIL: 'subscribed@eewrfrd.com',
+                  FI: 'ghui',
+                },
+                type: 'record',
+              },
+              metadata: {
+                jobId: 2,
+                userId: 'u1',
+              },
+            },
+            {
+              destination: {
+                Config: {
+                  accessToken: 'ABC',
+                  disableFormat: false,
+                  isHashRequired: true,
+                  isRaw: false,
+                  maxUserCount: '2',
+                  oneTrustCookieCategories: [],
+                  skipVerify: false,
+                  subType: 'NA',
+                  type: 'NA',
+                  userSchema: ['EMAIL'],
+                },
+                secretConfig: {},
+                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                name: 'FB_CUSTOM_AUDIENCE',
+                enabled: true,
+                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
+                deleted: false,
+                createdAt: '2020-12-30T08:39:32.005Z',
+                updatedAt: '2021-02-03T16:22:31.374Z',
+                destinationDefinition: {
+                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
+                  name: 'FB_CUSTOM_AUDIENCE',
+                  displayName: 'FB_CUSTOM_AUDIENCE',
+                  createdAt: '2020-04-09T09:24:31.794Z',
+                  updatedAt: '2021-01-11T11:03:28.103Z',
+                },
+                transformations: [],
+                isConnectionEnabled: true,
+                isProcessorEnabled: true,
+              },
+              message: {
+                action: 'insert',
+                context: {
+                  destinationFields: 'EMAIL, FI',
+                  externalId: [
+                    {
+                      type: 'FB_CUSTOM_AUDIENCE-23848494844100489',
+                      identifierType: 'EMAIL',
+                    },
+                  ],
+                  mappedToDestination: 'true',
+                  sources: {
+                    job_run_id: 'cgiiurt8um7k7n5dq480',
+                    task_run_id: 'cgiiurt8um7k7n5dq48g',
+                    job_id: '2MUWghI7u85n91dd1qzGyswpZan',
+                    version: '895/merge',
+                  },
+                },
+                recordId: '2',
+                rudderId: '2',
+                fields: {
+                  EMAIL: 'subscribed@eewrfrd.com',
+                  FI: 'ghui',
+                },
+                type: 'record',
+              },
+              metadata: {
+                jobId: 3,
+                userId: 'u2',
+              },
+            },
+            {
+              destination: {
+                Config: {
+                  accessToken: 'ABC',
+                  disableFormat: false,
+                  isHashRequired: true,
+                  isRaw: false,
+                  maxUserCount: '2',
+                  oneTrustCookieCategories: [],
+                  skipVerify: false,
+                  subType: 'NA',
+                  type: 'NA',
+                  userSchema: ['EMAIL'],
+                },
+                secretConfig: {},
+                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                name: 'FB_CUSTOM_AUDIENCE',
+                enabled: true,
+                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
+                deleted: false,
+                createdAt: '2020-12-30T08:39:32.005Z',
+                updatedAt: '2021-02-03T16:22:31.374Z',
+                destinationDefinition: {
+                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
+                  name: 'FB_CUSTOM_AUDIENCE',
+                  displayName: 'FB_CUSTOM_AUDIENCE',
+                  createdAt: '2020-04-09T09:24:31.794Z',
+                  updatedAt: '2021-01-11T11:03:28.103Z',
+                },
+                transformations: [],
+                isConnectionEnabled: true,
+                isProcessorEnabled: true,
+              },
+              message: {
+                action: 'insert',
+                context: {
+                  destinationFields: 'EMAIL, FI',
+                  externalId: [
+                    {
+                      type: 'FB_CUSTOM_AUDIENCE-23848494844100489',
+                      identifierType: 'EMAIL',
+                    },
+                  ],
+                  mappedToDestination: 'true',
+                  sources: {
+                    job_run_id: 'cgiiurt8um7k7n5dq480',
+                    task_run_id: 'cgiiurt8um7k7n5dq48g',
+                    job_id: '2MUWghI7u85n91dd1qzGyswpZan',
+                    version: '895/merge',
+                  },
+                },
+                recordId: '2',
+                rudderId: '2',
+                fields: {
+                  EMAIL: 'subscribed@eewrfrd.com',
+                  FI: 'ghui',
+                },
+                type: 'record',
+              },
+              metadata: {
+                jobId: 4,
+                userId: 'u3',
+              },
+            },
+          ],
+          destType: 'fb_custom_audience',
+        },
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              batchedRequest: [
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://graph.facebook.com/v18.0/23848494844100489/users',
+                  headers: {},
+                  params: {
+                    access_token: 'ABC',
+                    payload: {
+                      schema: ['EMAIL', 'FI'],
+                      data: [
+                        [
+                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                        ],
+                        [
+                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                        ],
+                      ],
+                    },
+                  },
+                  body: {
+                    JSON: {},
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+                {
+                  version: '1',
+                  type: 'REST',
+                  method: 'POST',
+                  endpoint: 'https://graph.facebook.com/v18.0/23848494844100489/users',
+                  headers: {},
+                  params: {
+                    access_token: 'ABC',
+                    payload: {
+                      schema: ['EMAIL', 'FI'],
+                      data: [
+                        [
+                          'b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36',
+                          '1e14a2f476f7611a8b22bc85d14237fdc88aac828737e739416c32c5bce3bd16',
+                        ],
+                      ],
+                    },
+                  },
+                  body: {
+                    JSON: {},
+                    JSON_ARRAY: {},
+                    XML: {},
+                    FORM: {},
+                  },
+                  files: {},
+                },
+              ],
+              metadata: [
+                {
+                  jobId: 2,
+                  userId: 'u1',
+                },
+                {
+                  jobId: 3,
+                  userId: 'u2',
+                },
+                {
+                  jobId: 4,
+                  userId: 'u3',
+                },
+              ],
+              batched: true,
+              statusCode: 200,
+              destination: {
+                Config: {
+                  accessToken: 'ABC',
+                  disableFormat: false,
+                  isHashRequired: true,
+                  isRaw: false,
+                  maxUserCount: '2',
+                  oneTrustCookieCategories: [],
+                  skipVerify: false,
+                  subType: 'NA',
+                  type: 'NA',
+                  userSchema: ['EMAIL'],
+                },
+                secretConfig: {},
+                ID: '1mMy5cqbtfuaKZv1IhVQKnBdVwe',
+                name: 'FB_CUSTOM_AUDIENCE',
+                enabled: true,
+                workspaceId: '1TSN08muJTZwH8iCDmnnRt1pmLd',
+                deleted: false,
+                createdAt: '2020-12-30T08:39:32.005Z',
+                updatedAt: '2021-02-03T16:22:31.374Z',
+                destinationDefinition: {
+                  id: '1aIXqM806xAVm92nx07YwKbRrO9',
+                  name: 'FB_CUSTOM_AUDIENCE',
+                  displayName: 'FB_CUSTOM_AUDIENCE',
+                  createdAt: '2020-04-09T09:24:31.794Z',
+                  updatedAt: '2021-01-11T11:03:28.103Z',
+                },
+                transformations: [],
+                isConnectionEnabled: true,
+                isProcessorEnabled: true,
+              },
+            },
+          ],
+        },
+      },
+    },
+  },
 ];

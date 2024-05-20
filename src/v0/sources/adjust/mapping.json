@@ -35,7 +35,7 @@
     "sourceKeys": "tracker_name",
     "destKeys": "properties.tracker_name"
   },
-  { "sourceKeys": "tracker_token", "destKeys": "properties.  tracker_token" },
+  { "sourceKeys": "tracker_token", "destKeys": "properties.tracker_token" },
 
   {
     "sourceKeys": "app_name",

@@ -61,6 +61,7 @@ export const data = [
                     gps_adid: '38400000-8cf0-11bd-b23e-10b96e40000d',
                     tracker_token: 'abc',
                     custom: 'custom',
+                    tracker_name: 'dummy',
                   },
                   anonymousId: '97fcd7b2-cc24-47d7-b776-057b7b199513',
                 },

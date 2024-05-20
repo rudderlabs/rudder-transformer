@@ -1,15 +1,11 @@
 const lodash = require('lodash');
 const path = require('path');
 const fs = require('fs');
-const {
-  TransformationError,
-  structuredLogger: logger,
-  generateUUID,
-} = require('@rudderstack/integrations-lib');
+const { TransformationError, structuredLogger: logger } = require('@rudderstack/integrations-lib');
 const Message = require('../message');
 const { CommonUtils } = require('../../../util/common');
 const { excludedFieldList } = require('./config');
-const { extractCustomFields } = require('../../util');
+const { extractCustomFields, generateUUID } = require('../../util');
 
 // ref : https://help.adjust.com/en/article/global-callbacks#general-recommended-placeholders
 // import mapping json using JSON.parse to preserve object key order

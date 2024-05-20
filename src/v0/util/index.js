@@ -57,6 +57,17 @@ const isNull = (x) => lodash.isNull(x);
 // GENERIC UTLITY
 // ========================================================================
 
+const removeUndefinedAndNullRecurse = (obj) => {
+  // eslint-disable-next-line no-restricted-syntax
+  for (const key in obj) {
+    if (obj[key] === null || obj[key] === undefined) {
+      delete obj[key];
+    } else if (typeof obj[key] === 'object') {
+      removeUndefinedAndNullRecurse(obj[key]);
+    }
+  }
+};
+
 const getEventTime = (message) => {
   try {
     return new Date(message.timestamp).toISOString();
@@ -2318,6 +2329,7 @@ module.exports = {
   removeUndefinedNullEmptyExclBoolInt,
   removeUndefinedNullValuesAndEmptyObjectArray,
   removeUndefinedValues,
+  removeUndefinedAndNullRecurse,
   returnArrayOfSubarrays,
   stripTrailingSlash,
   toTitleCase,

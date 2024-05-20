@@ -1,8 +1,6 @@
 /* eslint-disable no-param-reassign */
 const get = require('get-value');
-const moment = require('moment');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
-const stats = require('../../../util/stats');
 const {
   VERSION,
   CONFIG_CATEGORIES,
@@ -31,6 +29,7 @@ const {
   handleOrder,
   populateCustomDataBasedOnCategory,
   getCategoryFromEvent,
+  verifyEventDuration,
 } = require('./utils');
 
 const {
@@ -170,23 +169,7 @@ const processEvent = (message, destination) => {
   }
 
   const timeStamp = message.timestamp || message.originalTimestamp;
-  if (timeStamp) {
-    const start = moment.unix(moment(timeStamp).format('X'));
-    const current = moment.unix(moment().format('X'));
-    // calculates past event in days
-    const deltaDay = Math.ceil(moment.duration(current.diff(start)).asDays());
-    // calculates future event in minutes
-    const deltaMin = Math.ceil(moment.duration(start.diff(current)).asMinutes());
-    if (deltaDay > 7 || deltaMin > 1) {
-      // TODO: Remove after testing in mirror transformer
-      stats.increment('fb_pixel_timestamp_error', {
-        destinationId: destination.ID,
-      });
-      throw new InstrumentationError(
-        'Events must be sent within seven days of their occurrence or up to one minute in the future.',
-      );
-    }
-  }
+  verifyEventDuration(message, destination, timeStamp);
 
   let eventsToEvents;
   if (Array.isArray(destination.Config.eventsToEvents)) {

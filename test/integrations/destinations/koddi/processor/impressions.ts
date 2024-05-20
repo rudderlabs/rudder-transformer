@@ -32,7 +32,7 @@ export const impressions: ProcessorTestData[] = [
               integrations: {
                 All: true,
                 koddi: {
-                  eventName: 'Impressions',
+                  eventType: 'Impressions',
                 },
               },
               originalTimestamp: '2024-03-04T15:32:56.409Z',

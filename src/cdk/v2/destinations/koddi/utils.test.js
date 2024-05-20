@@ -8,43 +8,43 @@ const { InstrumentationError } = require('@rudderstack/integrations-lib');
 
 describe('getEndpoint', () => {
   it('returns the correct endpoint for IMPRESSIONS event', () => {
-    const eventName = 'impressions';
+    const eventType = 'impressions';
     const Config = {
       apiBaseUrl: 'https://www.test-client.com/',
       clientName: 'test-client',
     };
-    const result = getEndpoint(eventName, Config);
+    const result = getEndpoint(eventType, Config);
     expect(result).toEqual('https://www.test-client.com?action=impression');
   });
 
   it('returns the correct endpoint for CLICKS event', () => {
-    const eventName = 'clicks';
+    const eventType = 'clicks';
     const Config = {
       apiBaseUrl: 'https://www.test-client.com',
       clientName: 'test-client',
     };
-    const result = getEndpoint(eventName, Config);
+    const result = getEndpoint(eventType, Config);
     expect(result).toEqual('https://www.test-client.com?action=click');
   });
 
   it('returns the correct endpoint for IMPRESSIONS event', () => {
-    const eventName = 'conversions';
+    const eventType = 'conversions';
     const Config = {
       apiBaseUrl: 'https://www.test-client.com',
       clientName: 'test-client',
     };
-    const result = getEndpoint(eventName, Config);
+    const result = getEndpoint(eventType, Config);
     expect(result).toEqual('https://www.test-client.com/conversion');
   });
 
   it('should throw error for unsupported event', () => {
-    const eventName = 'test';
+    const eventType = 'test';
     const Config = {
       apiBaseUrl: 'https://www.test-client.com',
       clientName: 'test-client',
     };
-    expect(() => getEndpoint(eventName, Config)).toThrow(InstrumentationError);
-    expect(() => getEndpoint(eventName, Config)).toThrow('event name test is not supported.');
+    expect(() => getEndpoint(eventType, Config)).toThrow(InstrumentationError);
+    expect(() => getEndpoint(eventType, Config)).toThrow('event type test is not supported.');
   });
 });
 
@@ -84,9 +84,7 @@ describe('validateBidders', () => {
   });
 
   it('should throw error if base_price is not present', () => {
-    const bidders = [
-      { bidder: 'bidder1', alternate_bidder: 'alternate1', count: 1 }, // Missing base_price
-    ];
+    const bidders = [{ bidder: 'bidder1', alternate_bidder: 'alternate1', count: 1 }];
     expect(() => validateBidders(bidders)).toThrow(InstrumentationError);
     expect(() => validateBidders(bidders)).toThrow('base_price is not present. Aborting.');
   });
@@ -102,7 +100,7 @@ describe('validateBidders', () => {
 
 describe('constructFullPayload', () => {
   it('should construct payload for IMPRESSIONS event', () => {
-    const eventName = 'impressions';
+    const eventType = 'impressions';
     const message = {
       type: 'track',
       event: 'Impressions Event',
@@ -124,11 +122,11 @@ describe('constructFullPayload', () => {
       trackingData: 'dummy-tracking-data',
       ts: '2024-03-03T00:29:12.117+05:30',
     };
-    const payload = constructFullPayload(eventName, message, Config);
+    const payload = constructFullPayload(eventType, message, Config);
     expect(payload).toEqual(expectedPayload);
   });
   it('should throw error if required value is missing for IMPRESSIONS event', () => {
-    const eventName = 'impressions';
+    const eventType = 'impressions';
     const message = {
       type: 'track',
       event: 'Impressions Event',
@@ -144,14 +142,14 @@ describe('constructFullPayload', () => {
       clientName: 'test-client',
     };
     try {
-      const payload = constructFullPayload(eventName, message, Config);
+      const payload = constructFullPayload(eventType, message, Config);
     } catch (error) {
       expect(error.message).toEqual('Missing required value from "properties.tracking_data"');
     }
   });
 
   it('should construct payload for CLICKS event', () => {
-    const eventName = 'clicks';
+    const eventType = 'clicks';
     const message = {
       type: 'track',
       event: 'Clicks Event',
@@ -175,11 +173,11 @@ describe('constructFullPayload', () => {
       overrides: null,
       testVersionOverride: null,
     };
-    const payload = constructFullPayload(eventName, message, Config);
+    const payload = constructFullPayload(eventType, message, Config);
     expect(payload).toEqual(expectedPayload);
   });
   it('should construct payload with non-null value if overrides and testVersionOverride are enable and values for these are provided for CLICKS event ', () => {
-    const eventName = 'clicks';
+    const eventType = 'clicks';
     const message = {
       type: 'track',
       event: 'Clicks Event',
@@ -207,11 +205,11 @@ describe('constructFullPayload', () => {
       overrides: 'overridden-value',
       testVersionOverride: null,
     };
-    const payload = constructFullPayload(eventName, message, Config);
+    const payload = constructFullPayload(eventType, message, Config);
     expect(payload).toEqual(expectedPayload);
   });
   it('should throw error if required value is missing for CLICKS event', () => {
-    const eventName = 'clicks';
+    const eventType = 'clicks';
     const message = {
       type: 'track',
       event: 'Clicks Event',
@@ -226,14 +224,14 @@ describe('constructFullPayload', () => {
       clientName: 'test-client',
     };
     try {
-      const payload = constructFullPayload(eventName, message, Config);
+      const payload = constructFullPayload(eventType, message, Config);
     } catch (error) {
       expect(error.message).toEqual('Missing required value from "userId"');
     }
   });
 
   it('should construct payload for CONVERSIONS event', () => {
-    const eventName = 'conversions';
+    const eventType = 'conversions';
     const message = {
       type: 'track',
       event: 'Conversions Event',
@@ -275,11 +273,11 @@ describe('constructFullPayload', () => {
         },
       ],
     };
-    const payload = constructFullPayload(eventName, message, Config);
+    const payload = constructFullPayload(eventType, message, Config);
     expect(payload).toEqual(expectedPayload);
   });
   it('should throw error if required value is missing for CONVERSIONS event', () => {
-    const eventName = 'conversions';
+    const eventType = 'conversions';
     const message = {
       type: 'track',
       event: 'Conversions Event',
@@ -305,26 +303,26 @@ describe('constructFullPayload', () => {
       clientName: 'test-client',
     };
     try {
-      const payload = constructFullPayload(eventName, message, Config);
+      const payload = constructFullPayload(eventType, message, Config);
     } catch (error) {
       expect(error.message).toEqual('Missing required value from "context.locale"');
     }
   });
 
   it('should throw error for unsupported event', () => {
-    const eventName = 'test';
+    const eventType = 'test';
     const message = {};
     const Config = {};
-    expect(() => constructFullPayload(eventName, message, Config)).toThrow(InstrumentationError);
-    expect(() => constructFullPayload(eventName, message, Config)).toThrow(
-      'event name test is not supported.',
+    expect(() => constructFullPayload(eventType, message, Config)).toThrow(InstrumentationError);
+    expect(() => constructFullPayload(eventType, message, Config)).toThrow(
+      'event type test is not supported.',
     );
   });
 });
 
 describe('constructResponse', () => {
   it('should construct response for IMPRESSIONS event', () => {
-    const eventName = 'impressions';
+    const eventType = 'impressions';
     const Config = {
       apiBaseUrl: 'https://www.test-client.com',
       clientName: 'test-client',
@@ -344,12 +342,12 @@ describe('constructResponse', () => {
       method: 'GET',
       params: payload,
     };
-    const response = constructResponse(eventName, Config, payload);
+    const response = constructResponse(eventType, Config, payload);
     expect(response).toMatchObject(expectedResponse);
   });
 
   it('should construct response for CLICKS event', () => {
-    const eventName = 'clicks';
+    const eventType = 'clicks';
     const Config = {
       apiBaseUrl: 'https://www.test-client.com',
       clientName: 'test-client',
@@ -369,12 +367,12 @@ describe('constructResponse', () => {
       method: 'GET',
       params: payload,
     };
-    const response = constructResponse(eventName, Config, payload);
+    const response = constructResponse(eventType, Config, payload);
     expect(response).toMatchObject(expectedResponse);
   });
 
   it('should construct response for CONVERSIONS event', () => {
-    const eventName = 'conversions';
+    const eventType = 'conversions';
     const Config = {
       apiBaseUrl: 'https://www.test-client.com',
       clientName: 'test-client',
@@ -407,17 +405,17 @@ describe('constructResponse', () => {
         JSON: payload,
       },
     };
-    const response = constructResponse(eventName, Config, payload);
+    const response = constructResponse(eventType, Config, payload);
     expect(response).toMatchObject(expectedResponse);
   });
 
   it('should throw error for unsupported event', () => {
-    const eventName = 'test';
+    const eventType = 'test';
     const Config = {};
     const payload = {};
-    expect(() => constructResponse(eventName, Config, payload)).toThrow(InstrumentationError);
-    expect(() => constructResponse(eventName, Config, payload)).toThrow(
-      'event name test is not supported.',
+    expect(() => constructResponse(eventType, Config, payload)).toThrow(InstrumentationError);
+    expect(() => constructResponse(eventType, Config, payload)).toThrow(
+      'event type test is not supported.',
     );
   });
 });

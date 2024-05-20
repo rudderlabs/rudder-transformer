@@ -28,7 +28,7 @@ const routerRequest: RouterTransformationRequest = {
         integrations: {
           All: true,
           koddi: {
-            eventName: 'Impressions',
+            eventType: 'Impressions',
           },
         },
         originalTimestamp: '2024-03-04T15:32:56.409Z',
@@ -51,7 +51,7 @@ const routerRequest: RouterTransformationRequest = {
         integrations: {
           All: true,
           koddi: {
-            eventName: 'Clicks',
+            eventType: 'Clicks',
           },
         },
         originalTimestamp: '2024-03-04T15:32:56.409Z',
@@ -78,7 +78,7 @@ const routerRequest: RouterTransformationRequest = {
         integrations: {
           All: true,
           koddi: {
-            eventName: 'Conversions',
+            eventType: 'Conversions',
           },
         },
         originalTimestamp: '2024-03-04T15:32:56.409Z',
@@ -100,12 +100,34 @@ const routerRequest: RouterTransformationRequest = {
         integrations: {
           All: true,
           koddi: {
-            eventName: 'Impressions',
+            eventType: 'Impressions',
           },
         },
         originalTimestamp: '2024-03-04T15:32:56.409Z',
       },
       metadata: generateMetadata(4),
+    },
+    {
+      destination,
+      message: {
+        type: 'track',
+        channel,
+        anonymousId: 'anonId123',
+        userId: 'userId123',
+        properties: {
+          tracking_data: 'dummy-tracking-data',
+          rank: 1,
+          beacon_issued: '2024-03-04T15:32:56.409Z',
+        },
+        integrations: {
+          All: true,
+          koddi: {
+            eventType: 'Unknown',
+          },
+        },
+        originalTimestamp: '2024-03-04T15:32:56.409Z',
+      },
+      metadata: generateMetadata(5),
     },
   ],
   destType,
@@ -221,6 +243,14 @@ export const data = [
               error: 'Missing required value from "properties.tracking_data"',
               destination,
               metadata: [generateMetadata(4)],
+              statTags: RouterInstrumentationErrorStatTags,
+              statusCode: 400,
+            },
+            {
+              batched: false,
+              error: 'event type unknown is not supported',
+              destination,
+              metadata: [generateMetadata(5)],
               statTags: RouterInstrumentationErrorStatTags,
               statusCode: 400,
             },

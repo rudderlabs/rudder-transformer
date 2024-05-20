@@ -1,5 +1,5 @@
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
-const { EVENT_NAMES, IMPRESSIONS_CONFIG, CLICKS_CONFIG, CONVERSIONS_CONFIG } = require('./config');
+const { EVENT_TYPES, IMPRESSIONS_CONFIG, CLICKS_CONFIG, CONVERSIONS_CONFIG } = require('./config');
 const {
   constructPayload,
   defaultRequestConfig,
@@ -31,19 +31,19 @@ const validateBidders = (bidders) => {
 
 /**
  * This function constructs payloads based upon mappingConfig for all calls.
- * @param {*} eventName
+ * @param {*} eventType
  * @param {*} message
  * @param {*} Config
  * @returns
  */
-const constructFullPayload = (eventName, message, Config) => {
+const constructFullPayload = (eventType, message, Config) => {
   let payload;
-  switch (eventName) {
-    case EVENT_NAMES.IMPRESSIONS:
+  switch (eventType) {
+    case EVENT_TYPES.IMPRESSIONS:
       payload = constructPayload(message, IMPRESSIONS_CONFIG);
       payload.clientName = Config.clientName;
       break;
-    case EVENT_NAMES.CLICKS:
+    case EVENT_TYPES.CLICKS:
       payload = constructPayload(message, CLICKS_CONFIG);
       payload.clientName = Config.clientName;
       if (!Config.testVersionOverride) {
@@ -53,53 +53,53 @@ const constructFullPayload = (eventName, message, Config) => {
         payload.overrides = null;
       }
       break;
-    case EVENT_NAMES.CONVERSIONS:
+    case EVENT_TYPES.CONVERSIONS:
       payload = constructPayload(message, CONVERSIONS_CONFIG);
       payload.client_name = Config.clientName;
       payload.unixtime = toUnixTimestamp(payload.unixtime);
       validateBidders(payload.bidders);
       break;
     default:
-      throw new InstrumentationError(`event name ${eventName} is not supported.`);
+      throw new InstrumentationError(`event type ${eventType} is not supported.`);
   }
   return payload;
 };
 
-const getEndpoint = (eventName, Config) => {
+const getEndpoint = (eventType, Config) => {
   let endpoint = stripTrailingSlash(Config.apiBaseUrl);
-  switch (eventName) {
-    case EVENT_NAMES.IMPRESSIONS:
+  switch (eventType) {
+    case EVENT_TYPES.IMPRESSIONS:
       endpoint += '?action=impression';
       break;
-    case EVENT_NAMES.CLICKS:
+    case EVENT_TYPES.CLICKS:
       endpoint += '?action=click';
       break;
-    case EVENT_NAMES.CONVERSIONS:
+    case EVENT_TYPES.CONVERSIONS:
       endpoint += '/conversion';
       break;
     default:
-      throw new InstrumentationError(`event name ${eventName} is not supported.`);
+      throw new InstrumentationError(`event type ${eventType} is not supported.`);
   }
   return endpoint;
 };
 
 /**
  * This function constructs response based upon event.
- * @param {*} eventName
+ * @param {*} eventType
  * @param {*} Config
  * @param {*} payload
  * @returns
  */
-const constructResponse = (eventName, Config, payload) => {
-  if (!Object.values(EVENT_NAMES).includes(eventName)) {
-    throw new InstrumentationError(`event name ${eventName} is not supported.`);
+const constructResponse = (eventType, Config, payload) => {
+  if (!Object.values(EVENT_TYPES).includes(eventType)) {
+    throw new InstrumentationError(`event type ${eventType} is not supported.`);
   }
   const response = defaultRequestConfig();
-  response.endpoint = getEndpoint(eventName, Config);
+  response.endpoint = getEndpoint(eventType, Config);
   response.headers = {
     accept: 'application/json',
   };
-  if (eventName === EVENT_NAMES.CONVERSIONS) {
+  if (eventType === EVENT_TYPES.CONVERSIONS) {
     response.body.JSON = payload;
     response.method = 'POST';
     response.headers = {

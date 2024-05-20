@@ -1,6 +1,12 @@
 const { getMappingConfig } = require('../../../../v0/util');
 
-const EVENT_NAMES = {
+/**
+ * ref :- https://developers.koddi.com/reference/winning-ads
+ * impressions - https://developers.koddi.com/reference/impressions-1
+ * clicks - https://developers.koddi.com/reference/clicks-1
+ * conversions - https://developers.koddi.com/reference/conversions-1
+ */
+const EVENT_TYPES = {
   IMPRESSIONS: 'impressions',
   CLICKS: 'clicks',
   CONVERSIONS: 'conversions',
@@ -24,7 +30,7 @@ const CONFIG_CATEGORIES = {
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
 module.exports = {
-  EVENT_NAMES,
+  EVENT_TYPES,
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   IMPRESSIONS_CONFIG: MAPPING_CONFIG[CONFIG_CATEGORIES.IMPRESSIONS.name],

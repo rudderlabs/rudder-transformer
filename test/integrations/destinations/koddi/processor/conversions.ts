@@ -44,7 +44,7 @@ export const conversions: ProcessorTestData[] = [
               integrations: {
                 All: true,
                 koddi: {
-                  eventName: 'Conversions',
+                  eventType: 'Conversions',
                 },
               },
               originalTimestamp: '2024-03-04T15:32:56.409Z',
@@ -114,7 +114,7 @@ export const conversions: ProcessorTestData[] = [
               integrations: {
                 All: true,
                 koddi: {
-                  eventName: 'Conversions',
+                  eventType: 'Conversions',
                 },
               },
               originalTimestamp: '2024-03-04T15:32:56.409Z',

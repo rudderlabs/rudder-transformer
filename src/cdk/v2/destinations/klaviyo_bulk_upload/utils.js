@@ -1,11 +1,54 @@
-function transformSingleMessage(data) {
+const locationAttributes = [
+  'address1',
+  'address2',
+  'city',
+  'country',
+  'latitude',
+  'longitude',
+  'region',
+  'zip',
+  'ip',
+];
+
+function removeLocationAttributes(traits) {
+  const finalObject = {};
+  return Object.keys(traits).reduce((result, key) => {
+    if (!locationAttributes.includes(key)) {
+      finalObject[key] = traits[key];
+    }
+    return finalObject;
+  }, {});
+}
+
+function generateLocationObject({
+  traits: { address1, address2, city, country, latitude, longitude, region, zip, ip },
+}) {
   return {
+    address1,
+    address2,
+    city,
+    country,
+    latitude,
+    longitude,
+    region,
+    zip,
+    ip,
+  };
+}
+
+function transformSingleMessage(data) {
+  const { context, traits } = data;
+  const location = generateLocationObject(data);
+  const traitsWithoutLocation = removeLocationAttributes(traits);
+  const transformedSinglePayload = {
     type: 'profile',
     attributes: {
-      ...data.traits,
-      anonymous_id: data.userId,
+      ...traitsWithoutLocation,
+      location,
+      anonymous_id: context.externalId[0].id || traits.id,
     },
   };
+  return transformedSinglePayload;
 }
 
 function wrapCombinePayloads(transformedInputs, destinationObj) {
@@ -56,8 +99,8 @@ function combinePayloads(inputs) {
   });
   const destinationObj = inputs[inputs.length - 1].destination;
 
-  const { payload, destination } = wrapCombinePayloads(transformedInputs, destinationObj);
-  return { ...payload, destination };
+  const { payload } = wrapCombinePayloads(transformedInputs, destinationObj);
+  return { ...payload };
 }
 
 export { transformSingleMessage, combinePayloads };

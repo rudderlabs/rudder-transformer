@@ -267,7 +267,7 @@ export const validationTestData = [
           {
             statusCode: 400,
             error:
-              'Events must be sent within seven days of their occurrence or up to one minute in the future.',
+              'Events must be sent within 7 days of their occurrence or up to one minute in the future.',
             statTags: commonStatTags,
           },
         ],

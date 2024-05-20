@@ -364,7 +364,7 @@ const verifyEventDuration = (message, destination, timeStamp) => {
       destinationId: destination.ID,
     });
     throw new InstrumentationError(
-      'Events must be sent within seven days of their occurrence or up to one minute in the future.',
+      `Events must be sent within ${defaultSupportedDelta} days of their occurrence or up to one minute in the future.`,
     );
   }
 };

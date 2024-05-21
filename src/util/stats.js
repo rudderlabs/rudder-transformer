@@ -4,6 +4,8 @@ const logger = require('../logger');
 
 const enableStats = process.env.ENABLE_STATS !== 'false';
 const statsClientType = process.env.STATS_CLIENT || 'statsd';
+// summary metrics are enabled by default. To disable set ENABLE_SUMMARY_METRICS='false'.
+const enableSummaryMetrics = process.env.ENABLE_SUMMARY_METRICS !== 'false';
 
 let statsClient;
 function init() {
@@ -19,7 +21,7 @@ function init() {
 
     case 'prometheus':
       logger.info('setting up prometheus client');
-      statsClient = new prometheus.Prometheus();
+      statsClient = new prometheus.Prometheus(enableSummaryMetrics);
       break;
 
     default:
@@ -40,7 +42,7 @@ const timing = (name, start, tags = {}) => {
 
 // timingSummary is used to record observations for a summary metric
 const timingSummary = (name, start, tags = {}) => {
-  if (!enableStats || !statsClient) {
+  if (!enableStats || !statsClient || !enableSummaryMetrics) {
     return;
   }
 

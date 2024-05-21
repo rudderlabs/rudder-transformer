@@ -267,7 +267,7 @@ export const validationTestData = [
           {
             statusCode: 400,
             error:
-              'Events must be sent within seven days of their occurrence or up to one minute in the future.',
+              'Events must be sent within 7 days of their occurrence or up to one minute in the future.',
             statTags: commonStatTags,
           },
         ],
@@ -365,6 +365,94 @@ export const validationTestData = [
               workspaceId: 'default-workspaceId',
             },
             statusCode: 400,
+          },
+        ],
+      },
+    },
+  },
+  {
+    id: 'fbPixel-validation-test-5',
+    name: 'facebook_pixel',
+    description: '[Error]: validate event date and time',
+    scenario: 'Framework + business',
+    successCriteria:
+      'Response should contain error message and status code should be 400, as we are sending an event which is older than 7 days and the error message should be Events must be sent within seven days of their occurrence or up to one minute in the future.',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: generateSimplifiedTrackPayload({
+              // Sun Oct 15 2023
+              type: 'track',
+              event: 'TestEven001',
+              sentAt: '2023-08-25T16:12:02.048Z',
+              userId: 'sajal12',
+              context: {
+                traits: {
+                  action_source: 'physical_store',
+                  email: 'test@rudderstack.com',
+                  phone: '9112340375',
+                  event_id: 'x9lk3gfte768o1oy08cyaylx5t2j9q2wwfl2',
+                  plan_details: {
+                    plan_type: 'gold',
+                    duration: '3 months',
+                  },
+                },
+              },
+              properties: {
+                revenue: 400,
+                additional_bet_index: 0,
+              },
+              anonymousId: '9c6bd77ea9da3e68',
+              originalTimestamp: '2023-08-25T15:32:56.409Z',
+            }),
+            destination: overrideDestination(commonDestination, {
+              accessToken: '09876',
+              pixelId: 'dummyPixelId',
+            }),
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            statusCode: 200,
+            output: {
+              body: {
+                FORM: {
+                  data: [
+                    JSON.stringify({
+                      user_data: {
+                        em: '1c5e54849f5c711ce38fa60716fbbe44bff478f9ca250897b39cdfc2438cd1bd',
+                        ph: '820c46baccd33a1664f583b4505a7e39e033197e06e0bd7c87109e33c57c5497',
+                      },
+                      event_name: 'TestEven001',
+                      event_time: 1692977576,
+                      event_id: 'x9lk3gfte768o1oy08cyaylx5t2j9q2wwfl2',
+                      action_source: 'physical_store',
+                      custom_data: { additional_bet_index: 0, value: 400 },
+                    }),
+                  ],
+                },
+                JSON: {},
+                JSON_ARRAY: {},
+                XML: {},
+              },
+              endpoint: 'https://graph.facebook.com/v18.0/dummyPixelId/events?access_token=09876',
+              files: {},
+              headers: {},
+              method: 'POST',
+              params: {},
+              type: 'REST',
+              userId: '',
+              version: '1',
+            },
           },
         ],
       },

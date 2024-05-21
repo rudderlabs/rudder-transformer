@@ -1,4 +1,6 @@
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
+const get = require('get-value');
+const moment = require('moment');
 const { isObject } = require('../../util');
 const {
   ACTION_SOURCES_VALUES,
@@ -339,6 +341,29 @@ const getCategoryFromEvent = (eventName) => {
   return category;
 };
 
+const verifyEventDuration = (message, destination, timeStamp) => {
+  const actionSource =
+    get(message, 'traits.action_source') ||
+    get(message, 'context.traits.action_source') ||
+    get(message, 'properties.action_source');
+
+  const start = moment.unix(moment(timeStamp).format('X'));
+  const current = moment.unix(moment().format('X'));
+  // calculates past event in days
+  const deltaDay = Math.ceil(moment.duration(current.diff(start)).asDays());
+  // calculates future event in minutes
+  const deltaMin = Math.ceil(moment.duration(start.diff(current)).asMinutes());
+  let defaultSupportedDelta = 7;
+  if (actionSource === 'physical_store') {
+    defaultSupportedDelta = 62;
+  }
+  if (deltaDay > defaultSupportedDelta || deltaMin > 1) {
+    throw new InstrumentationError(
+      `Events must be sent within ${defaultSupportedDelta} days of their occurrence or up to one minute in the future.`,
+    );
+  }
+};
+
 module.exports = {
   formatRevenue,
   getActionSource,
@@ -348,4 +373,5 @@ module.exports = {
   handleOrder,
   populateCustomDataBasedOnCategory,
   getCategoryFromEvent,
+  verifyEventDuration,
 };

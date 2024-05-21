@@ -471,10 +471,13 @@ function processAlias(message, destination) {
   );
 }
 
-async function process(event, processParams = { userStore: new Map() }, reqMetadata = {}) {
+async function process(event, reqMetadata = {}, processParams = { userStore: new Map() }) {
   let response;
   const { message, destination } = event;
   const messageType = message.type.toLowerCase();
+  if (!processParams?.userStore) {
+    processParams.userStore = new Map();
+  }
 
   let category = ConfigCategory.DEFAULT;
   switch (messageType) {

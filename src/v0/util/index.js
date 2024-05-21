@@ -61,6 +61,7 @@ const removeUndefinedAndNullRecurse = (obj) => {
   // eslint-disable-next-line no-restricted-syntax
   for (const key in obj) {
     if (obj[key] === null || obj[key] === undefined) {
+      // eslint-disable-next-line no-param-reassign
       delete obj[key];
     } else if (typeof obj[key] === 'object') {
       removeUndefinedAndNullRecurse(obj[key]);

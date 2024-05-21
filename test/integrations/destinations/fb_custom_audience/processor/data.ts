@@ -1,5 +1,10 @@
 import { getEndPoint } from '../../../../../src/v0/destinations/fb_custom_audience/config';
 
+export const mockFns = (_) => {
+  // @ts-ignore
+  jest.useFakeTimers().setSystemTime(new Date('2023-10-15'));
+};
+
 export const data = [
   {
     name: 'fb_custom_audience',
@@ -1261,6 +1266,23 @@ export const data = [
                       DOBY: '2013',
                       PHONE: '@09432457768',
                       GEN: 'f',
+                      FN: 'test',
+                      LN: 'user',
+                      FI: 'Ms.',
+                      MADID: 'ABC',
+                      ZIP: 'ZIP ',
+                      ST: '123abc ',
+                      COUNTRY: 'IN',
+                    },
+                    {
+                      EMAIL: 'testuser2@abc.com',
+                      DOBM: '2',
+                      DOBD: '13',
+                      DOBY: '2013',
+                      PHONE: '@09432457768',
+                      GEN: 'f',
+                      FN: '1234',
+                      LN: true,
                       FI: 'Ms.',
                       MADID: 'ABC',
                       ZIP: 'ZIP ',
@@ -1276,6 +1298,8 @@ export const data = [
                       DOBY: '2013',
                       PHONE: '@09432457768',
                       GEN: 'f',
+                      FN: 'test',
+                      LN: 'user',
                       FI: 'Ms.',
                       MADID: 'ABC',
                       ZIP: 'ZIP ',
@@ -1303,6 +1327,8 @@ export const data = [
                   'DOBY',
                   'PHONE',
                   'GEN',
+                  'FN',
+                  'LN',
                   'FI',
                   'MADID',
                   'ZIP',
@@ -1355,6 +1381,8 @@ export const data = [
                     'DOBY',
                     'PHONE',
                     'GEN',
+                    'FN',
+                    'LN',
                     'FI',
                     'MADID',
                     'ZIP',
@@ -1369,6 +1397,8 @@ export const data = [
                       '7931aa2a1bed855457d1ddf6bc06ab4406a9fba0579045a4d6ff78f9c07c440f',
                       '0dcd4be87427e008a16adbdc2b2c15a14accf485dd451314dcecfb902c51c686',
                       '252f10c83610ebca1a059c0bae8255eba2f95be4d1d7bcfa89d7248a82d9f111',
+                      '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
+                      '04f8996da763b7a969b1028ee3007569eaf3a635486ddab211d512c85b9df8fb',
                       'db0683221aebc02cc034b65ebcf7d1bddd1eb199e33fd23a31931947d13a11bc',
                       'abc',
                       '4a70fe9aa6436e02c2dea340fbd1e352e4ef2d8ce6ca52ad25d4b95471fc8bf2',
@@ -1409,6 +1439,8 @@ export const data = [
                     'DOBY',
                     'PHONE',
                     'GEN',
+                    'FN',
+                    'LN',
                     'FI',
                     'MADID',
                     'ZIP',
@@ -1423,6 +1455,23 @@ export const data = [
                       '7931aa2a1bed855457d1ddf6bc06ab4406a9fba0579045a4d6ff78f9c07c440f',
                       '0dcd4be87427e008a16adbdc2b2c15a14accf485dd451314dcecfb902c51c686',
                       '252f10c83610ebca1a059c0bae8255eba2f95be4d1d7bcfa89d7248a82d9f111',
+                      '9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08',
+                      '04f8996da763b7a969b1028ee3007569eaf3a635486ddab211d512c85b9df8fb',
+                      'db0683221aebc02cc034b65ebcf7d1bddd1eb199e33fd23a31931947d13a11bc',
+                      'abc',
+                      '4a70fe9aa6436e02c2dea340fbd1e352e4ef2d8ce6ca52ad25d4b95471fc8bf2',
+                      'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad',
+                      '582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf',
+                    ],
+                    [
+                      '0059c0c78dac479648069fc1ed4298cd53bd857857aac57ac597537bedc6e043',
+                      'a953f09a1b6b6725b81956e9ad0b1eb49e3ad40004c04307ef8af6246a054116',
+                      '3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278',
+                      '7931aa2a1bed855457d1ddf6bc06ab4406a9fba0579045a4d6ff78f9c07c440f',
+                      '0dcd4be87427e008a16adbdc2b2c15a14accf485dd451314dcecfb902c51c686',
+                      '252f10c83610ebca1a059c0bae8255eba2f95be4d1d7bcfa89d7248a82d9f111',
+                      '',
+                      'b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b',
                       'db0683221aebc02cc034b65ebcf7d1bddd1eb199e33fd23a31931947d13a11bc',
                       'abc',
                       '4a70fe9aa6436e02c2dea340fbd1e352e4ef2d8ce6ca52ad25d4b95471fc8bf2',
@@ -54419,4 +54468,149 @@ export const data = [
       },
     },
   },
-];
+  {
+    name: 'fb_custom_audience',
+    description:
+      'If App secret is configured in the UI, appsecret_proof and appsecret_time will be added to destination request.',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              userId: 'user 1',
+              anonymousId: 'anon-id-new',
+              event: 'event1',
+              type: 'audiencelist',
+              properties: {
+                listData: {
+                  add: [
+                    {
+                      EMAIL: 'shrouti2@abc.com',
+                      DOBM: '2',
+                      DOBD: '13',
+                      DOBY: '2013',
+                      PHONE: '@09432457768',
+                      GEN: 'f',
+                      FI: 'Ms.',
+                      MADID: 'ABC',
+                      ZIP: 'ZIP ',
+                      ST: '123abc ',
+                      COUNTRY: 'IN',
+                    },
+                  ],
+                },
+              },
+              context: {
+                ip: '14.5.67.21',
+                library: {
+                  name: 'http',
+                },
+              },
+              timestamp: '2020-02-02T00:23:09.544Z',
+            },
+            destination: {
+              Config: {
+                accessToken: 'ABC',
+                appSecret: 'dummySecret',
+                userSchema: [
+                  'EMAIL',
+                  'DOBM',
+                  'DOBD',
+                  'DOBY',
+                  'PHONE',
+                  'GEN',
+                  'FI',
+                  'MADID',
+                  'ZIP',
+                  'ST',
+                  'COUNTRY',
+                ],
+                isHashRequired: false,
+                disableFormat: false,
+                audienceId: 'aud1',
+                isRaw: true,
+                type: 'NA',
+                subType: 'ANYTHING',
+                maxUserCount: '50',
+              },
+              Enabled: true,
+              Transformations: [],
+              IsProcessorEnabled: true,
+            },
+            libraries: [],
+            request: {
+              query: {},
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: getEndPoint('aud1'),
+              headers: {},
+              params: {
+                access_token: 'ABC',
+                appsecret_proof: 'd103874f3b5f01f57c4f84edfb96ac94055da8f83c2b45e6f26dafca9188ff4d',
+                appsecret_time: 1697328000,
+                payload: {
+                  is_raw: true,
+                  data_source: {
+                    sub_type: 'ANYTHING',
+                  },
+                  schema: [
+                    'EMAIL',
+                    'DOBM',
+                    'DOBD',
+                    'DOBY',
+                    'PHONE',
+                    'GEN',
+                    'FI',
+                    'MADID',
+                    'ZIP',
+                    'ST',
+                    'COUNTRY',
+                  ],
+                  data: [
+                    [
+                      'shrouti2@abc.com',
+                      '2',
+                      '13',
+                      '2013',
+                      '@09432457768',
+                      'f',
+                      'Ms.',
+                      'ABC',
+                      'ZIP ',
+                      '123abc ',
+                      'IN',
+                    ],
+                  ],
+                },
+              },
+              userId: '',
+              body: {
+                JSON: {},
+                XML: {},
+                JSON_ARRAY: {},
+                FORM: {},
+              },
+              files: {},
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+].map((d) => ({ ...d, mockFns }));

@@ -18,4 +18,16 @@ const getUserIdBatches = (userAttributes, MAX_BATCH_SIZE) => {
   return userIdBatches;
 };
 
-module.exports = { getUserIdBatches };
+const getCustomIdBatches = (userAttributes, customIdentifier, MAX_BATCH_SIZE) => {
+  const identifierArray = [];
+  userAttributes.forEach((userAttribute) => {
+    // Dropping the user if customIdentifier is not present
+    if (userAttribute[customIdentifier]) {
+      identifierArray.push(userAttribute[customIdentifier]);
+    }
+  });
+  const identifierBatches = lodash.chunk(identifierArray, MAX_BATCH_SIZE);
+  return identifierBatches;
+};
+
+module.exports = { getUserIdBatches, getCustomIdBatches };

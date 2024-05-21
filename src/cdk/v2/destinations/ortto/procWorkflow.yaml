@@ -48,9 +48,9 @@ steps:
           "str::ei": {{{{$.getGenericPaths("userId")}}}},
           "str::language": .context.traits.language || .context.locale,
           "phn::phone": phone ? {"n": phone},
-          "bol::gdpr": .context.traits.gdpr ?? true,
-          "bol::p": .context.traits.emailConsent || false,
-          "bol::sp": .context.traits.smsConsent || false,
+          "bol::gdpr": .context.traits.gdpr,
+          "bol::p": .context.traits.emailConsent,
+          "bol::sp": .context.traits.smsConsent,
           },
         "location": {"source_ip": .context.ip}
       });
@@ -80,11 +80,8 @@ steps:
     steps:
       - name: getTrimmedEvent
         template: |
-          let customEvent = "";
           const event = .message.event;
-          .destination.Config.orttoEventsMapping@order.(
-            customEvent = event === .rsEventName ? .orttoEventName : null;
-          )
+          const customEvent = .destination.Config.orttoEventsMapping.{.rsEventName === event}.orttoEventName;
           $.assert(customEvent, "Event names is not mapped");
           "act:cm:"+customEvent.trim().toLowerCase().replace(new RegExp('\\s+', 'g'),'-');
 

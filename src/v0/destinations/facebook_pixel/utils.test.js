@@ -1,7 +1,13 @@
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
-const { getActionSource, formatRevenue, getCategoryFromEvent } = require('./utils');
+const {
+  getActionSource,
+  formatRevenue,
+  getCategoryFromEvent,
+  verifyEventDuration,
+} = require('./utils');
 const { CONFIG_CATEGORIES, OTHER_STANDARD_EVENTS } = require('./config');
 
+Date.now = jest.fn(() => new Date('2022-01-20T00:00:00Z'));
 describe('Test Facebook Pixel Utils', () => {
   describe('getActionSource', () => {
     // Returns 'other' if payload.action_source is not defined and channel is neither 'web' nor 'mobile'
@@ -149,6 +155,77 @@ describe('Test Facebook Pixel Utils', () => {
       const eventName = 'unrecognizedEvent';
       const result = getCategoryFromEvent(eventName);
       expect(result).toEqual(CONFIG_CATEGORIES.SIMPLE_TRACK);
+    });
+  });
+
+  describe('verifyEventDuration', () => {
+    it('should not throw an InstrumentationError when event duration is less than 8 days after the event occurred', () => {
+      const message = {
+        traits: {
+          action_source: 'some_action_source',
+        },
+        context: {
+          traits: {
+            action_source: 'some_action_source',
+          },
+        },
+        properties: {
+          action_source: 'some_action_source',
+        },
+      };
+      const destination = {
+        ID: 'some_destination_id',
+      };
+      const timeStamp = '2022-01-20T00:00:00Z';
+      expect(() => {
+        verifyEventDuration(message, destination, timeStamp);
+      }).not.toThrow(InstrumentationError);
+    });
+    it('should throw an InstrumentationError when event duration is exactly 8 days after the event occurred', () => {
+      const message = {
+        traits: {
+          action_source: 'some_action_source',
+        },
+        context: {
+          traits: {
+            action_source: 'some_action_source',
+          },
+        },
+        properties: {
+          action_source: 'some_action_source',
+        },
+      };
+      const destination = {
+        ID: 'some_destination_id',
+      };
+      const timeStamp = '2022-01-12T00:00:00Z';
+
+      expect(() => {
+        verifyEventDuration(message, destination, timeStamp);
+      }).toThrow(InstrumentationError);
+    });
+    it('should not throw an InstrumentationError when event duration is greater than 8 days after the event occurred and action_source is physical_store', () => {
+      const message = {
+        traits: {
+          action_source: 'physical_store',
+        },
+        context: {
+          traits: {
+            action_source: 'some_action_source',
+          },
+        },
+        properties: {
+          action_source: 'some_action_source',
+        },
+      };
+      const destination = {
+        ID: 'some_destination_id',
+      };
+      const timeStamp = '2022-01-12T00:00:00Z';
+
+      expect(() => {
+        verifyEventDuration(message, destination, timeStamp);
+      }).not.toThrow(InstrumentationError);
     });
   });
 });

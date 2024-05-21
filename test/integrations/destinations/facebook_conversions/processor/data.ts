@@ -94,7 +94,7 @@ export const data = [
         body: [
           {
             error:
-              'Events must be sent within seven days of their occurrence or up to one minute in the future.',
+              'Events must be sent within 7 days of their occurrence or up to one minute in the future.',
             statusCode: 400,
             statTags: {
               destType: 'FACEBOOK_CONVERSIONS',

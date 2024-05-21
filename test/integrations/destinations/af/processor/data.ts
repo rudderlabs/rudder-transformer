@@ -1057,6 +1057,7 @@ export const data = [
                 groupValueTrait: 'age',
                 trackProductsOnce: false,
                 trackRevenuePerProduct: false,
+                afCurrencyAtRoot: true,
               },
             },
           },
@@ -1079,7 +1080,7 @@ export const data = [
               body: {
                 JSON: {
                   eventValue:
-                    '{"properties":{"tax":2,"total":27.5,"coupon":"hasbros","revenue":48,"price":25,"quantity":2,"currency":"ZAR","discount":2.5,"order_id":"50314b8e9bcf000000000000","products":[{"sku":"45790-32","url":"https://www.example.com/product/path","name":"Monopoly: 3rd Edition","price":19,"category":"Games","quantity":1,"image_url":"https:///www.example.com/product/path.jpg","product_id":"507f1f77bcf86cd799439011"},{"sku":"46493-32","name":"Uno Card Game","price":3,"category":"Games","quantity":2,"product_id":"505bd76785ebb509fc183733"}],"shipping":3,"subtotal":22.5,"affiliation":"Google Store","checkout_id":"fksdjfsdjfisjf9sdfjsd9f"},"af_revenue":48,"af_quantity":2,"af_price":25}',
+                    '{"properties":{"tax":2,"total":27.5,"coupon":"hasbros","revenue":48,"price":25,"quantity":2,"currency":"ZAR","discount":2.5,"order_id":"50314b8e9bcf000000000000","products":[{"sku":"45790-32","url":"https://www.example.com/product/path","name":"Monopoly: 3rd Edition","price":19,"category":"Games","quantity":1,"image_url":"https:///www.example.com/product/path.jpg","product_id":"507f1f77bcf86cd799439011"},{"sku":"46493-32","name":"Uno Card Game","price":3,"category":"Games","quantity":2,"product_id":"505bd76785ebb509fc183733"}],"shipping":3,"subtotal":22.5,"affiliation":"Google Store","checkout_id":"fksdjfsdjfisjf9sdfjsd9f"},"af_revenue":48,"af_quantity":2,"af_price":25,"af_currency":"ZAR"}',
                   eventName: 'normal track event',
                   eventTime: '2020-08-14T05:30:30.118Z',
                   eventCurrency: 'ZAR',

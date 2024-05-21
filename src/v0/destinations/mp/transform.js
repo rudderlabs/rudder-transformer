@@ -69,6 +69,17 @@ const responseBuilderSimple = (payload, message, eventType, destConfig) => {
   response.body.JSON_ARRAY = { batch: JSON.stringify([removeUndefinedValues(payload)]) };
   const { dataResidency } = destConfig;
   const duration = getTimeDifference(message.timestamp);
+
+  const setCredentials = () => {
+    const credentials = setImportCredentials(destConfig);
+    response.endpoint = credentials.endpoint;
+    response.headers = credentials.headers;
+    response.params = {
+      project_id: credentials.params?.projectId,
+      strict: credentials.params.strict,
+    };
+  };
+
   switch (eventType) {
     case EventType.ALIAS:
     case EventType.TRACK:
@@ -77,23 +88,11 @@ const responseBuilderSimple = (payload, message, eventType, destConfig) => {
       if (duration.years > 5) {
         throw new InstrumentationError('Event timestamp should be within last 5 years');
       }
-      const credentials = setImportCredentials(destConfig);
-      response.endpoint = credentials.endpoint;
-      response.headers = credentials.headers;
-      response.params = {
-        project_id: credentials.params?.projectId,
-        strict: credentials.params.strict,
-      };
+      setCredentials();
       break;
     }
     case 'merge': {
-      const credentials = setImportCredentials(destConfig);
-      response.endpoint = credentials.endpoint;
-      response.headers = credentials.headers;
-      response.params = {
-        project_id: credentials.params?.projectId,
-        strict: credentials.params.strict,
-      };
+      setCredentials();
       break;
     }
     default:

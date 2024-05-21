@@ -1,4 +1,4 @@
-export const pageProperties = {
+export const generalProperties = {
   additional_bet_index: 0,
   battle_id: 'N/A',
   bet_amount: 9,
@@ -37,7 +37,7 @@ export const pageProperties = {
   win_amount: 0,
 };
 
-export const inputUserProperties = {
+export const userProperties = {
   coin_balance: 9466052,
   current_module_name: 'CasinoGameModule',
   fb_profile: '0',
@@ -56,64 +56,4 @@ export const inputUserProperties = {
   total_payments: 0,
   userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
   versionSessionCount: 2,
-};
-
-export const outputUserProperties = {
-  total_payments: 0,
-  internetReachability: 'ReachableViaLocalAreaNetwork',
-  level: 6,
-  userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-  coin_balance: 9466052,
-  player_total_shields: 0,
-  isLowEndDevice: false,
-  game_fps: 30,
-  idfa: '2bf99787-33d2-4ae2-a76a-c49672f97252',
-  graphicsQuality: 'HD',
-  current_module_name: 'CasinoGameModule',
-  player_total_battles: 0,
-  lifetime_gem_balance: 0,
-  gem_balance: 0,
-  fb_profile: '0',
-  start_date: '2019-08-01',
-  versionSessionCount: 2,
-  game_name: 'FireEagleSlots',
-};
-
-export const trackProperties = {
-  userId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
-  jackpot_win_type: 'Silver',
-  coin_balance: 9466052,
-  bet_level: 1,
-  ishighroller: 'False',
-  tournament_id: 'T1561970819',
-  battle_id: 'N/A',
-  bet_amount: 9,
-  fb_profile: '0',
-  player_total_shields: 0,
-  is_turbo: 'False',
-  player_total_battles: 0,
-  bet_multiplier: 1,
-  start_date: '2019-08-01',
-  versionSessionCount: 2,
-  graphicsQuality: 'HD',
-  is_auto_spin: 'False',
-  days_in_game: 0,
-  additional_bet_index: 0,
-  isLowEndDevice: 'False',
-  game_fps: 30,
-  extra_param: 'N/A',
-  idfa: '2bf99787-33d2-4ae2-a76a-c49672f97252',
-  current_module_name: 'CasinoGameModule',
-  game_id: 'fireEagleBase',
-  featureGameType: 'N/A',
-  gem_balance: 0,
-  internetReachability: 'ReachableViaLocalAreaNetwork',
-  total_payments: 0,
-  level: 6,
-  win_amount: 0,
-  no_of_spin: 1,
-  game_name: 'FireEagleSlots',
-  jackpot_win_amount: 90,
-  lifetime_gem_balance: 0,
-  isf: 'False',
 };

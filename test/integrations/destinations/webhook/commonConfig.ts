@@ -23,3 +23,10 @@ export const destination = {
   },
   DestinationDefinition: { Config: { cdkV2Enabled: true } },
 };
+
+export const destinationWithoutHeaders = {
+  Config: {
+    webhookUrl: 'http://6b0e6a60.ngrok.io',
+  },
+  DestinationDefinition: { Config: { cdkV2Enabled: true } },
+};

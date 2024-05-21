@@ -39,8 +39,8 @@ const responseHandler = (responseParams) => {
   const message = `[CAMPAIGN_MANAGER Response V1 Handler] - Request Processed Successfully`;
   const responseWithIndividualEvents = [];
   const { response, status } = destinationResponse;
-  logger.info(`cm360 destination response with batch size ${rudderJobMetadata.length}`);
-  logger.info(JSON.stringify(destinationResponse));
+  logger.debug(`cm360 destination response with batch size ${rudderJobMetadata.length}`);
+  logger.debug(JSON.stringify(destinationResponse));
 
   if (isHttpStatusSuccess(status)) {
     // check for Partial Event failures and Successes
@@ -58,7 +58,7 @@ const responseHandler = (responseParams) => {
       }
       responseWithIndividualEvents.push(proxyOutputObj);
     }
-    logger.info(`cm360 proxy response: ${JSON.stringify(responseWithIndividualEvents)}`);
+    logger.debug(`cm360 proxy response: ${JSON.stringify(responseWithIndividualEvents)}`);
     return {
       status,
       message,
@@ -76,7 +76,7 @@ const responseHandler = (responseParams) => {
     });
   }
 
-  logger.infow(
+  logger.debug(
     `cm360 proxy response for status ${status}: ${JSON.stringify(responseWithIndividualEvents)}`,
   );
 

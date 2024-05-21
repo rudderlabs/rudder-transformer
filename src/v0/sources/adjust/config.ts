@@ -12,4 +12,5 @@ export const excludedFieldList = [
   'ip_address',
   'tracking_enabled',
   'tracker_token',
+  'created_at',
 ];

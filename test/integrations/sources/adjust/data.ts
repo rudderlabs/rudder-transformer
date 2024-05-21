@@ -21,6 +21,7 @@ export const data = [
               tracker_token: ['abc'],
               custom: ['custom'],
               tracker_name: ['dummy'],
+              created_at: ['1404214665'],
             },
             updated_at: '2023-02-10T12:16:07.251Z',
             created_at: '2023-02-10T12:05:04.402Z',
@@ -57,6 +58,8 @@ export const data = [
                     Adjust: false,
                   },
                   type: 'track',
+                  originalTimestamp: '2014-07-01T11:37:45.000Z',
+                  timestamp: '2014-07-01T11:37:45.000Z',
                   properties: {
                     gps_adid: '38400000-8cf0-11bd-b23e-10b96e40000d',
                     tracker_token: 'abc',
@@ -69,6 +72,45 @@ export const data = [
             },
           },
         ],
+      },
+    },
+    mockFns: () => {
+      defaultMockFns();
+    },
+  },
+  {
+    name: 'adjust',
+    description: 'Simple track call with no query parameters',
+    module: 'source',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            id: 'adjust',
+            updated_at: '2023-02-10T12:16:07.251Z',
+            created_at: '2023-02-10T12:05:04.402Z',
+          },
+        ],
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        error: 'Query_parameters is missing',
+        statTags: {
+          destinationId: 'Non determinable',
+          errorCategory: 'transformation',
+          implementation: 'native',
+          module: 'source',
+          workspaceId: 'Non determinable',
+        },
+        statusCode: 400,
       },
     },
     mockFns: () => {

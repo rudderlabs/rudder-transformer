@@ -43,7 +43,7 @@
   },
   {
     "sourceKeys": "ip_address",
-    "destKeys": "context.ip"
+    "destKeys": ["context.ip", "request_ip"]
   },
   {
     "sourceKeys": "tracking_enabled",

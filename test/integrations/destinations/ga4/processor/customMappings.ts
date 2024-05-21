@@ -6,6 +6,7 @@ const traits = {
   city: 'London',
   state: 'UK',
   streetAddress: '71 Cherry Court SOUTHAMPTON SO53 5PD UK',
+  group: 'test group',
 };
 
 const device = {
@@ -102,11 +103,11 @@ const eventsMapping = [
         from: '$.properties.list_id',
       },
       {
-        to: '$.userProperties.firstName',
+        to: '$.userProperties.firstName.value',
         from: '$.context.traits.firstName',
       },
       {
-        to: '$.userProperties.lastName',
+        to: '$.userProperties.lastName.value',
         from: '$.context.traits.lastName',
       },
     ],
@@ -140,11 +141,11 @@ const eventsMapping = [
         from: '$.properties.list_id',
       },
       {
-        to: '$.userProperties.firstName',
+        to: '$.userProperties.firstName.value',
         from: '$.context.traits.firstName',
       },
       {
-        to: '$.userProperties.lastName',
+        to: '$.userProperties.lastName.value',
         from: '$.context.traits.lastName',
       },
     ],
@@ -178,11 +179,33 @@ const eventsMapping = [
         from: '$.properties.list_id',
       },
       {
-        to: '$.userProperties.firstName',
+        to: '$.userProperties.firstName.value',
         from: '$.context.traits.firstName',
       },
       {
-        to: '$.userProperties.lastName',
+        to: '$.userProperties.lastName.value',
+        from: '$.context.traits.lastName',
+      },
+    ],
+  },
+  {
+    rsEventName: '$group',
+    ga4EventName: 'join_group',
+    eventProperties: [
+      {
+        to: '$.client_id',
+        from: '$.context.traits.anonymousId',
+      },
+      {
+        to: '$.events[0].params.group_id',
+        from: '$.context.traits.group_id',
+      },
+      {
+        to: '$.userProperties.firstName.value',
+        from: '$.context.traits.firstName',
+      },
+      {
+        to: '$.userProperties.lastName.value',
         from: '$.context.traits.lastName',
       },
     ],
@@ -276,8 +299,12 @@ export const customMappingTestCases = [
                     },
                   ],
                   userProperties: {
-                    firstName: 'John',
-                    lastName: 'Gomes',
+                    firstName: {
+                      value: 'John',
+                    },
+                    lastName: {
+                      value: 'Gomes',
+                    },
                   },
                   consent: {
                     ad_user_data: 'DENIED',
@@ -372,8 +399,12 @@ export const customMappingTestCases = [
                     },
                   ],
                   userProperties: {
-                    firstName: 'John',
-                    lastName: 'Gomes',
+                    firstName: {
+                      value: 'John',
+                    },
+                    lastName: {
+                      value: 'Gomes',
+                    },
                   },
                   consent: {
                     ad_user_data: 'DENIED',
@@ -430,8 +461,12 @@ export const customMappingTestCases = [
                     },
                   ],
                   userProperties: {
-                    firstName: 'John',
-                    lastName: 'Gomes',
+                    firstName: {
+                      value: 'John',
+                    },
+                    lastName: {
+                      value: 'Gomes',
+                    },
                   },
                   consent: {
                     ad_user_data: 'DENIED',
@@ -503,6 +538,9 @@ export const customMappingTestCases = [
                 state: {
                   value: 'UK',
                 },
+                group: {
+                  value: 'test group',
+                },
               },
               events: [
                 {
@@ -545,6 +583,86 @@ export const customMappingTestCases = [
                 ad_user_data: 'DENIED',
                 ad_personalization: 'GRANTED',
               },
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+    mockFns: defaultMockFns,
+  },
+  {
+    name: 'ga4',
+    id: 'ga4_custom_mapping_test_3',
+    description: 'Custom Mapping Test For Group Event Type',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              type: 'group',
+              userId: 'root_user',
+              anonymousId: 'root_anonId',
+              context: {
+                device,
+                traits,
+              },
+              properties,
+              originalTimestamp: '2022-04-28T00:23:09.544Z',
+              integrations,
+            },
+            destination,
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://www.google-analytics.com/mp/collect',
+              headers: {
+                HOST: 'www.google-analytics.com',
+                'Content-Type': 'application/json',
+              },
+              params: {
+                api_secret: 'dummyApiSecret',
+                measurement_id: 'G-T40PE6KET4',
+              },
+              body: {
+                JSON: {
+                  user_id: 'root_user',
+                  timestamp_micros: 1651105389000000,
+                  non_personalized_ads: false,
+                  client_id: 'root_anonId',
+                  events: [{}],
+                  userProperties: {
+                    firstName: {
+                      value: 'John',
+                    },
+                    lastName: {
+                      value: 'Gomes',
+                    },
+                  },
+                  consent: {
+                    ad_user_data: 'DENIED',
+                    ad_personalization: 'GRANTED',
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
               userId: '',
             },
             statusCode: 200,

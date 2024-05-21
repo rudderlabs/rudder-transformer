@@ -1,5 +1,4 @@
 const get = require('get-value');
-const jsonpath = require('rs-jsonpath');
 const {
   validateEventName,
   basicValidation,
@@ -13,6 +12,7 @@ const {
   buildDeliverablePayload,
   GA4_PARAMETERS_EXCLUSION,
   prepareUserProperties,
+  mapWithJsonPath,
 } = require('./utils');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
@@ -28,6 +28,7 @@ const { trackCommonConfig, ConfigCategory, mappingConfig } = require('./config')
 
 const findGA4Events = (eventsMapping, event) => {
   // Find the event using destructuring and early return
+
   const validMappings = eventsMapping.filter(
     (mapping) =>
       mapping.rsEventName?.trim().toLowerCase() === event.trim().toLowerCase() &&
@@ -40,8 +41,15 @@ const findGA4Events = (eventsMapping, event) => {
 const handleCustomMappings = (message, Config) => {
   const { eventsMapping } = Config;
 
-  let rsEvent = get(message, 'event');
-  basicValidation(rsEvent);
+  let rsEvent = '';
+  if (message.type.toString().toLowerCase() === 'track') {
+    rsEvent = get(message, 'event');
+    basicValidation(rsEvent);
+  } else {
+    // for events other than track we will search with $eventType
+    // example $track / $page
+    rsEvent = `$${get(message, 'type')}`;
+  }
 
   const validMappings = findGA4Events(eventsMapping, rsEvent);
 
@@ -142,56 +150,6 @@ const boilerplateOperations = (ga4Payload, message, Config) => {
     ga4Payload.consent = consents;
   }
 };
-
-function mapWithJsonPath(message, targetObject, sourcePath, targetPath) {
-  const values = jsonpath.query(message, sourcePath);
-  const matchTargetPath = targetPath.split('$.events[0].')[1];
-  const regexMatch = /\[([^\]\n]+)\]/;
-  if (regexMatch.test(sourcePath) && regexMatch.test(matchTargetPath)) {
-    // both paths are arrays
-    for (let i = 0; i < values.length; i++) {
-      const targetPathWithIndex = targetPath.replace(/\[\*\]/g, `[${i}]`);
-      const tragetValue = values[i] ? values[i] : null;
-      jsonpath.value(targetObject, targetPathWithIndex, tragetValue);
-    }
-  } else if (!regexMatch.test(sourcePath) && regexMatch.test(matchTargetPath)) {
-    // source path is not array and target path is
-    const targetPathArr = targetPath.split('.');
-    const holdingArr = [];
-    for (let i = 0; i < targetPathArr.length; i++) {
-      if (/\[\*\]/.test(targetPathArr[i])) {
-        holdingArr.push(targetPathArr[i]);
-        break;
-      } else {
-        holdingArr.push(targetPathArr[i]);
-      }
-    }
-    const parentTargetPath = holdingArr.join('.');
-    const exisitngTargetValues = jsonpath.query(targetObject, parentTargetPath);
-    if (exisitngTargetValues.length > 0) {
-      for (let i = 0; i < exisitngTargetValues.length; i++) {
-        const targetPathWithIndex = targetPath.replace(/\[\*\]/g, `[${i}]`);
-        jsonpath.value(targetObject, targetPathWithIndex, values[0]);
-      }
-    } else {
-      const targetPathWithIndex = targetPath.replace(/\[\*\]/g, '[0]');
-      jsonpath.value(targetObject, targetPathWithIndex, values[0]);
-    }
-  } else if (regexMatch.test(sourcePath)) {
-    // source path is an array but target path is not
-
-    // filter out null values
-    const filteredValues = values.filter((value) => value !== null);
-    if (filteredValues.length > 1) {
-      jsonpath.value(targetObject, targetPath, filteredValues);
-    } else {
-      jsonpath.value(targetObject, targetPath, filteredValues[0]);
-    }
-  } else {
-    // both paths are not arrays
-    jsonpath.value(targetObject, targetPath, values[0]);
-  }
-}
 
 module.exports = {
   handleCustomMappings,

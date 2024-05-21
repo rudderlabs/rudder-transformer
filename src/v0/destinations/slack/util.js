@@ -83,7 +83,7 @@ const buildDefaultTraitTemplate = (traitsList, traits, template) => {
     generatedStringFromTemplate += `${trait}: {{"${trait}"}} `;
   });
   // else with all traits
-  if (traitsList.length === 0) {
+  if (traitsList.length === 0 && !!traits) {
     Object.keys(traits).forEach((traitKey) => {
       generatedStringFromTemplate += `${traitKey}: {{"${traitKey}"}} `;
     });

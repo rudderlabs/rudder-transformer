@@ -70,7 +70,8 @@
     "KOALA": true,
     "LINKEDIN_ADS": true,
     "BLOOMREACH": true,
-    "MOVABLE_INK": true
+    "MOVABLE_INK": true,
+    "EMARSYS": true
   },
   "regulations": [
     "BRAZE",
@@ -84,7 +85,8 @@
     "ENGAGE",
     "CUSTIFY",
     "SENDGRID",
-    "SPRIG"
+    "SPRIG",
+    "EMARSYS"
   ],
   "supportSourceTransformV1": true,
   "supportTransformerProxyV1": true

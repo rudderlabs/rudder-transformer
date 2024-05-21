@@ -1,4 +1,4 @@
 import { customMappingTestCases } from './customMappings';
-import { exisitngTests } from './exisitngTests';
+import { existingTests } from './exisitngTests';
 
-export const data = [...exisitngTests, ...customMappingTestCases];
+export const data = [...existingTests, ...customMappingTestCases];

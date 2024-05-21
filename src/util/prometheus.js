@@ -11,7 +11,7 @@ function appendPrefix(name) {
 }
 
 class Prometheus {
-  constructor() {
+  constructor(enableSummaryMetrics = true) {
     this.prometheusRegistry = new prometheusClient.Registry();
     this.prometheusRegistry.setDefaultLabels(defaultLabels);
     prometheusClient.collectDefaultMetrics({
@@ -21,7 +21,7 @@ class Prometheus {
     prometheusClient.AggregatorRegistry.setRegistries(this.prometheusRegistry);
     this.aggregatorRegistry = new prometheusClient.AggregatorRegistry();
 
-    this.createMetrics();
+    this.createMetrics(enableSummaryMetrics);
   }
 
   async metricsController(ctx) {
@@ -192,7 +192,7 @@ class Prometheus {
     }
   }
 
-  createMetrics() {
+  createMetrics(enableSummaryMetrics) {
     const metrics = [
       // Counters
       {
@@ -1121,14 +1121,16 @@ class Prometheus {
             metric.buckets,
           );
         } else if (metric.type === 'summary') {
-          this.newSummaryStat(
-            appendPrefix(metric.name),
-            metric.help,
-            metric.labelNames,
-            metric.percentiles,
-            metric.maxAge,
-            metric.ageBuckets,
-          );
+          if (enableSummaryMetrics) {
+            this.newSummaryStat(
+              appendPrefix(metric.name),
+              metric.help,
+              metric.labelNames,
+              metric.percentiles,
+              metric.maxAge,
+              metric.ageBuckets,
+            );
+          }
         } else {
           logger.error(
             `Prometheus: Metric creation failed. Name: ${metric.name}. Invalid type: ${metric.type}`,

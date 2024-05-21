@@ -11,6 +11,8 @@ const {
   GA4_RESERVED_PARAMETER_EXCLUSION,
   getGA4CustomParameters,
   buildDeliverablePayload,
+  GA4_PARAMETERS_EXCLUSION,
+  prepareUserProperties,
 } = require('./utils');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
@@ -22,7 +24,7 @@ const {
   isHybridModeEnabled,
   getIntegrationsObj,
 } = require('../../util');
-const { trackCommonConfig, ConfigCategory } = require('./config');
+const { trackCommonConfig, ConfigCategory, mappingConfig } = require('./config');
 
 const findGA4Events = (eventsMapping, event) => {
   // Find the event using destructuring and early return
@@ -50,7 +52,7 @@ const handleCustomMappings = (message, Config) => {
 
     const ga4EventPayload = {};
 
-    ga4EventPayload.name = event;
+    ga4EventPayload.name = rsEvent;
 
     // take optional params parameters for custom events
     ga4EventPayload.params = {
@@ -76,6 +78,7 @@ const handleCustomMappings = (message, Config) => {
     rawPayload = { ...rawPayload, events: [ga4EventPayload] };
 
     boilerplateOperations(rawPayload, message, Config);
+    return rawPayload;
   }
 
   const processedPayloads = validMappings.map((mapping) => {

@@ -94,7 +94,7 @@ export const data = [
         body: [
           {
             error:
-              'Events must be sent within seven days of their occurrence or up to one minute in the future.',
+              'Events must be sent within 7 days of their occurrence or up to one minute in the future.',
             statusCode: 400,
             statTags: {
               destType: 'FACEBOOK_CONVERSIONS',
@@ -1521,6 +1521,127 @@ export const data = [
                 FORM: {
                   data: [
                     '{"user_data":{"em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08","zp":"03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"},"event_name":"Purchase","event_time":1699784211,"action_source":"website","custom_data":{"content_type":"product_group","revenue":400,"additional_bet_index":0,"products":[{"product_id":1234,"quantity":5,"price":55}],"content_ids":[1234],"contents":[{"id":1234,"quantity":5,"item_price":55}],"currency":"USD","value":400,"num_items":1}}',
+                  ],
+                },
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+    mockFns: defaultMockFns,
+  },
+  {
+    name: 'facebook_conversions',
+    description: 'Track event with standard event product added with content_ids',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+              channel: 'web',
+              context: {
+                device: {
+                  id: 'df16bffa-5c3d-4fbb-9bce-3bab098129a7R',
+                  manufacturer: 'Xiaomi',
+                  model: 'Redmi 6',
+                  name: 'xiaomi',
+                },
+                network: {
+                  carrier: 'Banglalink',
+                },
+                os: {
+                  name: 'android',
+                  version: '8.1.0',
+                },
+                screen: {
+                  height: '100',
+                  density: 50,
+                },
+                traits: {
+                  email: '    aBc@gmail.com   ',
+                  address: {
+                    zip: 1234,
+                  },
+                  anonymousId: 'c82cbdff-e5be-4009-ac78-cdeea09ab4b1',
+                },
+              },
+              event: 'product added',
+              integrations: {
+                All: true,
+              },
+              message_id: 'a80f82be-9bdc-4a9f-b2a5-15621ee41df8',
+              properties: {
+                revenue: 400,
+                additional_bet_index: 0,
+                id: '452345234',
+                quantity: 5,
+              },
+              timestamp: '2023-11-12T15:46:51.693229+05:30',
+              type: 'track',
+            },
+            destination: {
+              Config: {
+                limitedDataUsage: true,
+                blacklistPiiProperties: [
+                  {
+                    blacklistPiiProperties: '',
+                    blacklistPiiHash: false,
+                  },
+                ],
+                accessToken: '09876',
+                datasetId: 'dummyID',
+                eventsToEvents: [
+                  {
+                    from: '',
+                    to: '',
+                  },
+                ],
+                eventCustomProperties: [
+                  {
+                    eventCustomProperties: '',
+                  },
+                ],
+                removeExternalId: true,
+                whitelistPiiProperties: [
+                  {
+                    whitelistPiiProperties: '',
+                  },
+                ],
+                actionSource: 'website',
+              },
+              Enabled: true,
+            },
+          },
+        ],
+      },
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://graph.facebook.com/v18.0/dummyID/events?access_token=09876',
+              headers: {},
+              params: {},
+              body: {
+                JSON: {},
+                XML: {},
+                JSON_ARRAY: {},
+                FORM: {
+                  data: [
+                    '{"user_data":{"em":"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08","zp":"03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"},"event_name":"AddToCart","event_time":1699784211,"action_source":"website","custom_data":{"revenue":400,"additional_bet_index":0,"id":"452345234","quantity":5,"content_ids":"452345234","contents":[{"id":"452345234","quantity":5}],"content_type":"product","currency":"USD","value":400}}',
                   ],
                 },
               },

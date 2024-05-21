@@ -1735,7 +1735,7 @@ const simpleProcessRouterDest = async (inputs, singleTfFunc, reqMetadata, proces
         let resp = input.message;
         // transform if not already done
         if (!input.message.statusCode) {
-          resp = await singleTfFunc(input, processParams);
+          resp = await singleTfFunc(input, reqMetadata, processParams);
         }
 
         return getSuccessRespEvents(resp, [input.metadata], input.destination);

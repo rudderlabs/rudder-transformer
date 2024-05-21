@@ -230,7 +230,7 @@ async function setupFaasFunction(
 // trying to update the functions which are not in cache to the
 // latest label and envVars
 const reconcileFn = async (name, versionId, libraryVersionIDs, trMetadata) => {
-  logger.warn(`Reconciling faas function: ${name}`);
+  logger.debug(`Reconciling faas function: ${name}`);
 
   try {
     if (isFunctionDeployed(name)) {

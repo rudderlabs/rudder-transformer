@@ -25,6 +25,7 @@ import {
 } from '../../types/index';
 import stats from '../../util/stats';
 import tags from '../../v0/util/tags';
+import { getLoggableData } from '../../v0/util';
 import { MiscService } from '../misc';
 import { DestinationPostTransformationService } from './postTransformation';
 
@@ -72,7 +73,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
           tags.FEATURES.PROCESSOR,
         );
         metaTO.metadata = event.metadata;
-        const loggerWithCtx = logger.child({ ...MiscService.getLoggableData(metaTO.errorDetails) });
+        const loggerWithCtx = logger.child({ ...getLoggableData(metaTO.errorDetails) });
         try {
           const transformedPayloads:
             | ProcessorTransformationOutput
@@ -121,7 +122,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
           tags.FEATURES.ROUTER,
         );
         const loggerWithCtx = logger.child({
-          ...MiscService.getLoggableData(metaTO.errorDetails),
+          ...getLoggableData(metaTO.errorDetails),
         });
         try {
           const doRouterTransformationResponse: RouterTransformationResponse[] =
@@ -176,7 +177,7 @@ export class NativeIntegrationDestinationService implements DestinationService {
       );
       metaTO.metadatas = events.map((event) => event.metadata);
       const loggerWithCtx = logger.child({
-        ...MiscService.getLoggableData(metaTO.errorDetails),
+        ...getLoggableData(metaTO.errorDetails),
       });
       try {
         const destBatchedRequests: RouterTransformationResponse[] = destHandler.batch(

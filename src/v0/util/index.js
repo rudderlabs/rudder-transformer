@@ -2234,6 +2234,18 @@ const validateEventAndLowerCaseConversion = (event, isMandatory, convertToLowerC
   return convertToLowerCase ? event.toString().toLowerCase() : event.toString();
 };
 
+function getLoggableData(errorDetailer) {
+  return {
+    ...(errorDetailer?.destinationId && { destinationId: errorDetailer.destinationId }),
+    ...(errorDetailer?.sourceId && { sourceId: errorDetailer.sourceId }),
+    ...(errorDetailer?.workspaceId && { workspaceId: errorDetailer.workspaceId }),
+    ...(errorDetailer?.destType && { destType: errorDetailer.destType }),
+    ...(errorDetailer?.module && { module: errorDetailer.module }),
+    ...(errorDetailer?.implementation && { implementation: errorDetailer.implementation }),
+    ...(errorDetailer?.feature && { feature: errorDetailer.feature }),
+  };
+}
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -2352,4 +2364,5 @@ module.exports = {
   removeDuplicateMetadata,
   combineBatchRequestsWithSameJobIds,
   validateEventAndLowerCaseConversion,
+  getLoggableData,
 };

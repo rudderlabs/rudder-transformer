@@ -14,7 +14,7 @@ import {
 import { DynamicConfigParser } from '../util/dynamicConfigParser';
 import stats from '../util/stats';
 import { getIntegrationVersion } from '../util/utils';
-import { checkInvalidRtTfEvents } from '../v0/util';
+import { checkInvalidRtTfEvents, getLoggableData } from '../v0/util';
 import tags from '../v0/util/tags';
 import { ControllerUtility } from './util';
 
@@ -34,7 +34,7 @@ export class DestinationController {
     });
     const integrationService = ServiceSelector.getDestinationService(events);
     const loggerWithCtx = logger.child({
-      ...MiscService.getLoggableData(events[0]?.metadata as unknown as ErrorDetailer),
+      ...getLoggableData(events[0]?.metadata as unknown as ErrorDetailer),
     });
     try {
       integrationService.init();
@@ -114,7 +114,7 @@ export class DestinationController {
     }
     const metaTags = MiscService.getMetaTags(events[0].metadata);
     const loggerWithCtx = logger.child({
-      ...MiscService.getLoggableData(events[0]?.metadata as unknown as ErrorDetailer),
+      ...getLoggableData(events[0]?.metadata as unknown as ErrorDetailer),
     });
     stats.histogram('dest_transform_input_events', events.length, {
       destination,
@@ -173,7 +173,7 @@ export class DestinationController {
     const destination = routerRequest.destType;
     let events = routerRequest.input;
     const loggerWithCtx = logger.child({
-      ...MiscService.getLoggableData(events[0]?.metadata as unknown as ErrorDetailer),
+      ...getLoggableData(events[0]?.metadata as unknown as ErrorDetailer),
     });
     const integrationService = ServiceSelector.getDestinationService(events);
     try {

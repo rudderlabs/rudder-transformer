@@ -9,7 +9,7 @@ import {
 import stats from '../../util/stats';
 import { FixMe } from '../../util/types';
 import tags from '../../v0/util/tags';
-import { MiscService } from '../misc';
+import { getLoggableData } from '../../v0/util';
 import { SourcePostTransformationService } from './postTransformation';
 
 export class NativeIntegrationSourceService implements SourceService {
@@ -36,7 +36,7 @@ export class NativeIntegrationSourceService implements SourceService {
   ): Promise<SourceTransformationResponse[]> {
     const sourceHandler = FetchHandler.getSourceHandler(sourceType, version);
     const metaTO = this.getTags();
-    const loggerWithCtx = logger.child({ ...MiscService.getLoggableData(metaTO.errorDetails) });
+    const loggerWithCtx = logger.child({ ...getLoggableData(metaTO.errorDetails) });
     const respList: SourceTransformationResponse[] = await Promise.all<FixMe>(
       sourceEvents.map(async (sourceEvent) => {
         try {

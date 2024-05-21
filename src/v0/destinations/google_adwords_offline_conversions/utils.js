@@ -5,6 +5,7 @@ const {
   AbortedError,
   ConfigurationError,
   InstrumentationError,
+  structuredLogger: logger,
 } = require('@rudderstack/integrations-lib');
 const { httpPOST } = require('../../../adapters/network');
 const {
@@ -19,6 +20,7 @@ const {
   getAuthErrCategoryFromStCode,
   getAccessToken,
   getIntegrationsObj,
+  getLoggableData,
 } = require('../../util');
 const {
   SEARCH_STREAM,
@@ -30,6 +32,7 @@ const {
   CLICK_CONVERSION,
   trackCallConversionsMapping,
   consentConfigMap,
+  destType,
 } = require('./config');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const Cache = require('../../util/cache');
@@ -55,7 +58,7 @@ const validateDestinationConfig = ({ Config }) => {
  * @param {*} headers
  * @returns
  */
-const getConversionActionId = async (headers, params) => {
+const getConversionActionId = async ({ headers, params, metadata }) => {
   const conversionActionIdKey = sha256(params.event + params.customerId).toString();
   return conversionActionIdCache.get(conversionActionIdKey, async () => {
     const queryString = SqlString.format(
@@ -77,13 +80,18 @@ const getConversionActionId = async (headers, params) => {
       module: 'dataDelivery',
     });
     searchStreamResponse = processAxiosResponse(searchStreamResponse);
-    if (!isHttpStatusSuccess(searchStreamResponse.status)) {
+    const { response, status, headers: responseHeaders } = searchStreamResponse;
+    logger.debug(`[${destType.toUpperCase()}] get conversion custom variable`, {
+      ...getLoggableData(metadata),
+      ...(responseHeaders ? { responseHeaders } : {}),
+    });
+    if (!isHttpStatusSuccess(status)) {
       throw new AbortedError(
         `[Google Ads Offline Conversions]:: ${JSON.stringify(
-          searchStreamResponse.response,
+          response,
         )} during google_ads_offline_conversions response transformation`,
-        searchStreamResponse.status,
-        searchStreamResponse.response,
+        status,
+        response,
         getAuthErrCategoryFromStCode(get(searchStreamResponse, 'status')),
       );
     }

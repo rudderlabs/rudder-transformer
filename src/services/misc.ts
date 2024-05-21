@@ -6,6 +6,7 @@ import path from 'path';
 import { DestHandlerMap } from '../constants/destinationCanonicalNames';
 import { getCPUProfile, getHeapProfile } from '../middleware';
 import { ErrorDetailer, Metadata } from '../types';
+import { getLoggableData } from '../v0/util';
 
 export class MiscService {
   public static getDestHandler(dest: string, version: string) {
@@ -76,20 +77,8 @@ export class MiscService {
     return getHeapProfile();
   }
 
-  public static getLoggableData(errorDetailer: ErrorDetailer): Partial<LoggableExtraData> {
-    return {
-      ...(errorDetailer?.destinationId && { destinationId: errorDetailer.destinationId }),
-      ...(errorDetailer?.sourceId && { sourceId: errorDetailer.sourceId }),
-      ...(errorDetailer?.workspaceId && { workspaceId: errorDetailer.workspaceId }),
-      ...(errorDetailer?.destType && { destType: errorDetailer.destType }),
-      ...(errorDetailer?.module && { module: errorDetailer.module }),
-      ...(errorDetailer?.implementation && { implementation: errorDetailer.implementation }),
-      ...(errorDetailer?.feature && { feature: errorDetailer.feature }),
-    };
-  }
-
   public static logError(message: string, errorDetailer: ErrorDetailer) {
-    const loggableExtraData: Partial<LoggableExtraData> = this.getLoggableData(errorDetailer);
+    const loggableExtraData: Partial<LoggableExtraData> = getLoggableData(errorDetailer);
     logger.errorw(message || '', loggableExtraData);
   }
 }

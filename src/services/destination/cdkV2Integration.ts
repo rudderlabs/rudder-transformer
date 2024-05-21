@@ -22,6 +22,7 @@ import stats from '../../util/stats';
 import { CatchErr, FixMe } from '../../util/types';
 import tags from '../../v0/util/tags';
 import { MiscService } from '../misc';
+import { getLoggableData } from '../../v0/util';
 import { DestinationPostTransformationService } from './postTransformation';
 
 export class CDKV2DestinationService implements DestinationService {
@@ -68,7 +69,7 @@ export class CDKV2DestinationService implements DestinationService {
           tags.FEATURES.PROCESSOR,
         );
         metaTo.metadata = event.metadata;
-        const loggerWithCtx = logger.child({ ...MiscService.getLoggableData(metaTo.errorDetails) });
+        const loggerWithCtx = logger.child({ ...getLoggableData(metaTo.errorDetails) });
         try {
           const transformedPayloads:
             | ProcessorTransformationOutput
@@ -132,7 +133,7 @@ export class CDKV2DestinationService implements DestinationService {
           );
           metaTo.metadata = destInputArray[0].metadata;
           const loggerWithCtx = logger.child({
-            ...MiscService.getLoggableData(metaTo.errorDetails),
+            ...getLoggableData(metaTo.errorDetails),
           });
           try {
             const doRouterTransformationResponse: RouterTransformationResponse[] =

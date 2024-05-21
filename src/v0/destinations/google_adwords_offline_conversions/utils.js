@@ -140,17 +140,17 @@ const buildAndGetAddress = (message, hashUserIdentifier) => {
   const address = constructPayload(message, trackAddStoreAddressConversionsMapping);
   if (address.hashed_last_name) {
     address.hashed_last_name = hashUserIdentifier
-      ? sha256(address.hashed_last_name).toString()
+      ? sha256(address.hashed_last_name.trim()).toString()
       : address.hashed_last_name;
   }
   if (address.hashed_first_name) {
     address.hashed_first_name = hashUserIdentifier
-      ? sha256(address.hashed_first_name).toString()
+      ? sha256(address.hashed_first_name.trim()).toString()
       : address.hashed_first_name;
   }
   if (address.hashed_street_address) {
     address.hashed_street_address = hashUserIdentifier
-      ? sha256(address.hashed_street_address).toString()
+      ? sha256(address.hashed_street_address.trim()).toString()
       : address.hashed_street_address;
   }
   return Object.keys(address).length > 0 ? address : null;
@@ -269,8 +269,10 @@ const getAddConversionPayload = (message, Config) => {
   const phone = getFieldValueFromMessage(message, 'phone');
 
   const userIdentifierInfo = {
-    email: hashUserIdentifier && isDefinedAndNotNull(email) ? sha256(email).toString() : email,
-    phone: hashUserIdentifier && isDefinedAndNotNull(phone) ? sha256(phone).toString() : phone,
+    email:
+      hashUserIdentifier && isDefinedAndNotNull(email) ? sha256(email.trim()).toString() : email,
+    phone:
+      hashUserIdentifier && isDefinedAndNotNull(phone) ? sha256(phone.trim()).toString() : phone,
     address: buildAndGetAddress(message, hashUserIdentifier),
   };
 
@@ -363,8 +365,10 @@ const getClickConversionPayloadAndEndpoint = (
   // Ref - https://developers.google.com/google-ads/api/rest/reference/rest/v11/customers/uploadClickConversions#ClickConversion
 
   const userIdentifierInfo = {
-    email: hashUserIdentifier && isDefinedAndNotNull(email) ? sha256(email).toString() : email,
-    phone: hashUserIdentifier && isDefinedAndNotNull(phone) ? sha256(phone).toString() : phone,
+    email:
+      hashUserIdentifier && isDefinedAndNotNull(email) ? sha256(email.trim()).toString() : email,
+    phone:
+      hashUserIdentifier && isDefinedAndNotNull(phone) ? sha256(phone.trim()).toString() : phone,
   };
 
   const keyName = getExisitingUserIdentifier(userIdentifierInfo, defaultUserIdentifier);

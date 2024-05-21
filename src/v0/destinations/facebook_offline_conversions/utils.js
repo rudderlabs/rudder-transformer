@@ -396,7 +396,7 @@ const preparePayload = (facebookOfflineConversionsPayload, destination) => {
   const keys = Object.keys(facebookOfflineConversionsPayload);
   keys.forEach((key) => {
     if (isHashRequired && HASHING_REQUIRED_KEYS.includes(key)) {
-      payload[key] = sha256(facebookOfflineConversionsPayload[key]);
+      payload[key] = sha256(facebookOfflineConversionsPayload[key].trim());
     } else {
       payload[key] = facebookOfflineConversionsPayload[key];
     }
@@ -407,8 +407,8 @@ const preparePayload = (facebookOfflineConversionsPayload, destination) => {
       ? facebookOfflineConversionsPayload.name.split(' ')
       : null;
     if (split !== null && Array.isArray(split) && split.length === 2) {
-      payload.fn = isHashRequired ? sha256(split[0]) : split[0];
-      payload.ln = isHashRequired ? sha256(split[1]) : split[1];
+      payload.fn = isHashRequired ? sha256(split[0].trim()) : split[0];
+      payload.ln = isHashRequired ? sha256(split[1].trim()) : split[1];
     }
     delete payload.name;
   }

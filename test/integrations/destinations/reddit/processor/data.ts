@@ -12,13 +12,13 @@ export const data = [
             message: {
               context: {
                 traits: {
-                  email: 'testone@gmail.com',
+                  email: 'testone@gmail.com ',
                 },
                 userAgent:
                   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
-                ip: '54.100.200.255',
+                ip: ' 54.100.200.255',
                 device: {
-                  advertisingId: 'asfds7fdsihf734b34j43f',
+                  advertisingId: ' asfds7fdsihf734b34j43f',
                 },
                 os: {
                   name: 'android',
@@ -29,7 +29,7 @@ export const data = [
               originalTimestamp: '2019-10-14T09:03:17.562Z',
               anonymousId: '123456',
               event: 'Order Completed',
-              userId: 'testuserId1',
+              userId: ' testuserId1',
               properties: {
                 checkout_id: '12345',
                 order_id: '1234',

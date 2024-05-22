@@ -59,7 +59,7 @@ const buildPageLoadPayload = (message, campaignId, impactAppId, enableEmailHashi
   let payload = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.PAGELOAD.name]);
   if (isDefinedAndNotNull(payload.CustomerEmail)) {
     payload.CustomerEmail = enableEmailHashing
-      ? sha1(payload?.CustomerEmail)
+      ? sha1(payload?.CustomerEmail.trim())
       : payload?.CustomerEmail;
   }
   payload.CampaignId = campaignId;
@@ -155,7 +155,7 @@ const processTrackEvent = (message, Config) => {
     payload.ImpactAppId = impactAppId;
     if (isDefinedAndNotNull(payload.CustomerEmail)) {
       payload.CustomerEmail = enableEmailHashing
-        ? sha1(payload?.CustomerEmail)
+        ? sha1(payload?.CustomerEmail.trim())
         : payload?.CustomerEmail;
     }
 

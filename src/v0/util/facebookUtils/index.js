@@ -293,7 +293,7 @@ const formingFinalResponse = (
 };
 
 const isHtmlFormat = (string) => {
-  const pattern = /<([a-z]+)([^<]+)*(?:>(.*)<\/\1>|\s+\/>)/i;
+  const pattern = /<([a-z]+)\b[^>]*>(.*?)<\/\1>/i;
   return pattern.test(string);
 };
 

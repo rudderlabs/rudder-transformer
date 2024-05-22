@@ -2,9 +2,8 @@ import {
   destination,
   traits,
   commonInput,
-  commonInputWithNoLocation,
+  commonInputWithNoLocationAndChannel,
   metadata,
-  processInstrumentationErrorStatTags,
 } from '../commonConfig';
 import { transformResultBuilder } from '../../../testUtils';
 export const identify = [
@@ -110,12 +109,12 @@ export const identify = [
     },
   },
   {
-    id: 'ninetailed-test-identify-failure-1',
+    id: 'ninetailed-test-identify-success-2',
     name: 'ninetailed',
     description: 'identify call with no userId available',
     scenario: 'Framework',
     successCriteria:
-      'Error should be thrown for required field userId not present and status code should be 200',
+      'No Error should be thrown for field userId not present but default empty string should be provided to userId and status code should be 200',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -125,9 +124,8 @@ export const identify = [
           {
             destination,
             message: {
-              ...commonInput,
+              ...commonInputWithNoLocationAndChannel,
               type: 'identify',
-              channel: 'mobile',
               messageId: 'dummy_msg_id',
               traits: traits,
             },
@@ -141,13 +139,55 @@ export const identify = [
         status: 200,
         body: [
           {
-            error:
-              'Missing required value from "userIdOnly": Workflow: procWorkflow, Step: preparePayload, ChildStep: undefined, OriginalError: Missing required value from "userIdOnly"',
             metadata: {
               destinationId: 'dummyDestId',
             },
-            statTags: processInstrumentationErrorStatTags,
-            statusCode: 400,
+            output: transformResultBuilder({
+              method: 'POST',
+              endpoint:
+                'https://experience.ninetailed.co/v2/organizations/dummyOrganisationId/environments/main/events',
+              JSON: {
+                events: [
+                  {
+                    context: {
+                      app: {
+                        name: 'RudderLabs JavaScript SDK',
+                        version: '1.0.0',
+                      },
+                      campaign: {
+                        name: 'campign_123',
+                        source: 'social marketing',
+                        medium: 'facebook',
+                        term: '1 year',
+                      },
+                      library: {
+                        name: 'RudderstackSDK',
+                        version: 'Ruddderstack SDK version',
+                      },
+                      locale: 'en-US',
+                      page: {
+                        path: '/signup',
+                        referrer: 'https://rudderstack.medium.com/',
+                        search: '?type=freetrial',
+                        url: 'https://app.rudderstack.com/signup?type=freetrial',
+                      },
+                      userAgent:
+                        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                      location: {},
+                    },
+                    type: 'identify',
+                    userId: '',
+                    channel: 'server',
+                    messageId: 'dummy_msg_id',
+                    traits: traits,
+                    anonymousId: 'anon_123',
+                    originalTimestamp: '2021-01-25T15:32:56.409Z',
+                  },
+                ],
+              },
+              userId: '',
+            }),
+            statusCode: 200,
           },
         ],
       },
@@ -169,7 +209,7 @@ export const identify = [
             destination,
             message: {
               type: 'identify',
-              ...commonInputWithNoLocation,
+              ...commonInputWithNoLocationAndChannel,
               userId: 'sajal12',
               traits: traits,
               integrations: {
@@ -224,7 +264,7 @@ export const identify = [
                       location: {},
                     },
                     type: 'identify',
-                    channel: 'web',
+                    channel: 'server',
                     userId: 'sajal12',
                     messageId: 'dummy_msg_id',
                     traits: traits,

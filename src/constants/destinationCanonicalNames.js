@@ -173,6 +173,7 @@ const DestCanonicalNames = {
     'Klaviyo Bulk Upload',
     'klaviyobulkupload',
   ],
+  emarsys: ['EMARSYS', 'Emarsys', 'emarsys'],
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

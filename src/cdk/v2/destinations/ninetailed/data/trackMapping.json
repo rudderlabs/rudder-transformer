@@ -1,7 +1,9 @@
 [
   {
     "sourceKeys": "properties",
-    "required": true,
+    "metadata": {
+      "defaultValue": {}
+    },
     "destKey": "properties"
   },
   {

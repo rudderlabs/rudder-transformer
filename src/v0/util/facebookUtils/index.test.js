@@ -3,6 +3,7 @@ const {
   fetchUserData,
   deduceFbcParam,
   getContentType,
+  isHtmlFormat,
 } = require('./index');
 const sha256 = require('sha256');
 const { MAPPING_CONFIG, CONFIG_CATEGORIES } = require('../../destinations/facebook_pixel/config');
@@ -637,5 +638,27 @@ describe('getContentType', () => {
     const result = getContentType(message, defaultValue, categoryToContent, destinationName);
 
     expect(result).toBe(defaultValue);
+  });
+});
+
+describe('isHtmlFormat', () => {
+  it('should recognize simple valid HTML tags', () => {
+    expect(isHtmlFormat('<div></div>')).toBe(true);
+  });
+
+  it('should detect self-closing tags', () => {
+    expect(isHtmlFormat("<img src='image.jpg' />")).toBe(true);
+  });
+
+  it('should handle nested HTML correctly', () => {
+    expect(isHtmlFormat('<div><span></span></div>')).toBe(true);
+  });
+
+  it('should return false for Json', () => {
+    expect(isHtmlFormat('{"a": 1, "b":2}')).toBe(false);
+  });
+
+  it('should return false for empty Json', () => {
+    expect(isHtmlFormat('{}')).toBe(false);
   });
 });

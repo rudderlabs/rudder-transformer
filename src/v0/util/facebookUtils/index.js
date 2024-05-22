@@ -292,7 +292,13 @@ const formingFinalResponse = (
   throw new TransformationError('Payload could not be constructed');
 };
 
+const isHtmlFormat = (string) => {
+  const pattern = /<([a-z]+)([^<]+)*(?:>(.*)<\/\1>|\s+\/>)/i;
+  return pattern.test(string);
+};
+
 module.exports = {
+  isHtmlFormat,
   getContentType,
   getContentCategory,
   transformedPayloadData,

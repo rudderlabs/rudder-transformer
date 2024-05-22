@@ -35,7 +35,7 @@ const responseBuilder = (message, { Config }) => {
       };
     } else {
       throw new FilteredEventsError(
-        "Event is not present in 'Events to Track' list. Dropping message.",
+        "Event is not present in 'Events to Track' list. Dropping the event.",
         298,
       );
     }

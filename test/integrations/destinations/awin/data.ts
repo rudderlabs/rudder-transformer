@@ -828,7 +828,7 @@ export const data = [
         status: 200,
         body: [
           {
-            error: "Event is not present in 'Events to Track' list. Dropping message.",
+            error: "Event is not present in 'Events to Track' list. Dropping the event.",
             statTags: {
               destType: 'AWIN',
               feature: 'processor',

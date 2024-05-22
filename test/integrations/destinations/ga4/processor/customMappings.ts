@@ -544,7 +544,7 @@ export const customMappingTestCases = [
               },
               events: [
                 {
-                  name: 'Product Viewed',
+                  name: 'Product_Viewed',
                   params: {
                     engagement_time_msec: 1,
                     list_id: 'random_list_id',

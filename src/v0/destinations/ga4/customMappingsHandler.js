@@ -46,14 +46,27 @@ const handleCustomMappings = (message, Config) => {
     rsEvent = get(message, 'event');
     basicValidation(rsEvent);
   } else {
+    const messageType = get(message, 'type');
+    if (typeof messageType !== 'string') {
+      throw new InstrumentationError(`[GA4]:: Message type ${messageType} is not supported`);
+    }
     // for events other than track we will search with $eventType
     // example $track / $page
-    rsEvent = `$${get(message, 'type')}`;
+    rsEvent = `$${messageType}`;
   }
 
   const validMappings = findGA4Events(eventsMapping, rsEvent);
 
   if (validMappings.length === 0) {
+    // trim and replace spaces with "_"
+    rsEvent = rsEvent.trim().replace(/\s+/g, '_');
+    // reserved event names are not allowed
+    if (isReservedEventName(rsEvent)) {
+      throw new InstrumentationError(`[GA4]:: Reserved event name: ${rsEvent} are not allowed`);
+    }
+    // validation for ga4 event name
+    validateEventName(rsEvent);
+
     // Default mapping
 
     let rawPayload = constructPayload(message, trackCommonConfig);

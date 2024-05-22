@@ -12,7 +12,6 @@ const {
   buildDeliverablePayload,
   GA4_PARAMETERS_EXCLUSION,
   prepareUserProperties,
-  mapWithJsonPath,
 } = require('./utils');
 const { InstrumentationError } = require('@rudderstack/integrations-lib');
 const {
@@ -25,6 +24,7 @@ const {
   getIntegrationsObj,
 } = require('../../util');
 const { trackCommonConfig, ConfigCategory, mappingConfig } = require('./config');
+const { mapWithJsonPath } = require('../../util/mapWithJSONPath');
 
 const findGA4Events = (eventsMapping, event) => {
   // Find the event using destructuring and early return

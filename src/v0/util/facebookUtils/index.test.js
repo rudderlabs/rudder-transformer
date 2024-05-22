@@ -661,4 +661,16 @@ describe('isHtmlFormat', () => {
   it('should return false for empty Json', () => {
     expect(isHtmlFormat('{}')).toBe(false);
   });
+
+  it('should return false for undefined', () => {
+    expect(isHtmlFormat(undefined)).toBe(false);
+  });
+
+  it('should return false for null', () => {
+    expect(isHtmlFormat(null)).toBe(false);
+  });
+
+  it('should return false for empty string', () => {
+    expect(isHtmlFormat('')).toBe(false);
+  });
 });

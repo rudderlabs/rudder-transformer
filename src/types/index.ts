@@ -110,7 +110,7 @@ type MessageIdMetadataMap = {
 };
 
 type UserTransformationInput = {
-  versionid: string;
+  VersionID: string;
   ID: string;
   Config: object;
 };
@@ -129,12 +129,12 @@ type Destination = {
   Config: FixMe;
   Enabled: boolean;
   WorkspaceID: string;
-  transformationList: UserTransformationInput[];
+  Transformations: UserTransformationInput[];
   RevisionID?: string;
 };
 
 type UserTransformationLibrary = {
-  versionId: string;
+  VersionID: string;
 };
 
 type ProcessorTransformationRequest = {
@@ -142,7 +142,7 @@ type ProcessorTransformationRequest = {
   message: object;
   metadata: Metadata;
   destination: Destination;
-  librariesList?: UserTransformationLibrary[];
+  libraries?: UserTransformationLibrary[];
 };
 
 type RouterTransformationRequestData = {

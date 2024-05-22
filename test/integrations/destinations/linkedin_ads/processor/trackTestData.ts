@@ -14,7 +14,7 @@ const commonDestination: Destination = {
     },
   },
   WorkspaceID: '123',
-  transformationList: [],
+  Transformations: [],
   Config: {
     hashData: true,
     deduplicationKey: 'properties.eventId',

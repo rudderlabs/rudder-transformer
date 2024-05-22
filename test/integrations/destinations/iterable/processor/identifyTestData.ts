@@ -16,7 +16,7 @@ const destination: Destination = {
     Config: {},
   },
   WorkspaceID: '123',
-  transformationList: [],
+  Transformations: [],
   Config: {
     apiKey: 'testApiKey',
     preferUserId: false,

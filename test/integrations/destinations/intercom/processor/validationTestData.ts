@@ -35,7 +35,7 @@ const destination: Destination = {
   },
   Enabled: true,
   WorkspaceID: '123',
-  transformationList: [],
+  Transformations: [],
 };
 
 const v1Destination = { ...destination, Config: v1Config };

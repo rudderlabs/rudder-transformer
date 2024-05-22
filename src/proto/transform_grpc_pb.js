@@ -27,8 +27,7 @@ function deserialize_proto_TransformResponse(buffer_arg) {
   return src_proto_transform_pb.TransformResponse.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
-
-var TransformerServiceService = exports.TransformerServiceService = {
+var TransformerServiceService = (exports.TransformerServiceService = {
   transform: {
     path: '/proto.TransformerService/Transform',
     requestStream: false,
@@ -40,6 +39,6 @@ var TransformerServiceService = exports.TransformerServiceService = {
     responseSerialize: serialize_proto_TransformResponse,
     responseDeserialize: deserialize_proto_TransformResponse,
   },
-};
+});
 
 exports.TransformerServiceClient = grpc.makeGenericClientConstructor(TransformerServiceService);

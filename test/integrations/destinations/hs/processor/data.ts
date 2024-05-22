@@ -37,7 +37,7 @@ const destination: Destination = {
     Config: {},
   },
   WorkspaceID: '123',
-  transformationList: [],
+  Transformations: [],
 };
 
 export const data = [

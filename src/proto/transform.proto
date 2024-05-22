@@ -73,9 +73,9 @@ message DestinationDefinition {
 }
 
 message Transformation {
-  string VersionID = 1;
-  string ID = 2;
-  google.protobuf.Struct Config = 3;
+  string version_id = 1;
+  string id = 2;
+  google.protobuf.Struct config = 3;
 }
 
 message Library{
@@ -91,7 +91,7 @@ message Response{
   Metadata metadata = 2;
   int32 status_code = 3;
   string error = 4;
-  repeated ValidationError validation_error = 5 [json_name = "validationErrors"];
+  repeated ValidationError validation_error = 5;
 }
 
 message ValidationError {

@@ -82,3 +82,5 @@ if (clusterEnabled) {
 }
 
 startGRPCServer();
+
+export default app;

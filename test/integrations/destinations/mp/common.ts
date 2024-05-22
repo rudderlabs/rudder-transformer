@@ -20,7 +20,7 @@ const sampleDestination: Destination = {
   Enabled: true,
   ID: '1WhcOCGgj9asZu850HvugU2C3Aq',
   Name: 'MP',
-  transformationList: [],
+  Transformations: [],
   WorkspaceID: '',
 };
 

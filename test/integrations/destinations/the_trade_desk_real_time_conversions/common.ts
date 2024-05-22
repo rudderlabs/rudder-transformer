@@ -13,7 +13,7 @@ const sampleDestination: Destination = {
   ID: '123',
   Name: 'TRADE_DESK_REAL_TIME_CONVERSIONS',
   WorkspaceID: 'test-workspace-id',
-  transformationList: [],
+  Transformations: [],
   DestinationDefinition: {
     ID: '123',
     DisplayName: 'Trade Desk',

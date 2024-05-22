@@ -41,16 +41,16 @@ export class UserTransformService {
 
     const transformedEvents: FixMe[] = [];
     let librariesVersionIDs: FixMe[] = [];
-    if (events[0].librariesList) {
-      librariesVersionIDs = events[0].librariesList.map(
-        (library: UserTransformationLibrary) => library.versionId,
+    if (events[0].libraries) {
+      librariesVersionIDs = events[0].libraries.map(
+        (library: UserTransformationLibrary) => library.VersionID,
       );
     }
     const responses = await Promise.all<FixMe>(
       Object.entries(groupedEvents).map(async ([, destEvents]) => {
         const eventsToProcess = destEvents as ProcessorTransformationRequest[];
         const transformationVersionId =
-          eventsToProcess[0]?.destination?.transformationList[0]?.versionid;
+          eventsToProcess[0]?.destination?.Transformations[0]?.VersionID;
         const messageIds: string[] = [];
         const messageIdsSet = new Set<string>();
         const messageIdMetadataMap: MessageIdMetadataMap = {};

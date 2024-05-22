@@ -1,10 +1,11 @@
+const { structuredLogger: logger } = require('@rudderstack/integrations-lib');
 const { TransformerProxyError } = require('../../../v0/util/errorTypes');
 const { proxyRequest, prepareProxyRequest } = require('../../../adapters/network');
 const {
   processAxiosResponse,
   getDynamicErrorType,
 } = require('../../../adapters/utils/networkUtils');
-const { isHttpStatusSuccess } = require('../../../v0/util/index');
+const { isHttpStatusSuccess, getLoggableData } = require('../../../v0/util/index');
 const tags = require('../../../v0/util/tags');
 
 const checkIfUpdationOfStatusRequired = (response) => {
@@ -41,8 +42,14 @@ const responseHandler = (responseParams) => {
 
   const message = '[MONDAY Response V1 Handler] - Request Processed Successfully';
   const responseWithIndividualEvents = [];
-  const { response, status } = destinationResponse;
+  const { response, status, headers } = destinationResponse;
 
+  logger.debug('[campaign_manager] response handling', {
+    ...getLoggableData(rudderJobMetadata),
+    ...(headers ? { headers } : {}),
+    response,
+    status,
+  });
   // batching not supported
   if (isHttpStatusSuccess(status)) {
     const proxyOutput = {

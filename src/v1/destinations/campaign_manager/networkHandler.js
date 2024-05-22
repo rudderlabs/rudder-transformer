@@ -1,8 +1,13 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-restricted-syntax */
+const { structuredLogger: logger } = require('@rudderstack/integrations-lib');
 const { TransformerProxyError } = require('../../../v0/util/errorTypes');
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
-const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../../v0/util/index');
+const {
+  isHttpStatusSuccess,
+  getAuthErrCategoryFromStCode,
+  getLoggableData,
+} = require('../../../v0/util/index');
 
 const {
   processAxiosResponse,
@@ -38,7 +43,14 @@ const responseHandler = (responseParams) => {
   const { destinationResponse, rudderJobMetadata } = responseParams;
   const message = `[CAMPAIGN_MANAGER Response V1 Handler] - Request Processed Successfully`;
   const responseWithIndividualEvents = [];
-  const { response, status } = destinationResponse;
+  const { response, status, headers } = destinationResponse;
+
+  logger.debug('[campaign_manager] response handling', {
+    ...getLoggableData(rudderJobMetadata),
+    ...(headers ? { headers } : {}),
+    response,
+    status,
+  });
 
   if (isHttpStatusSuccess(status)) {
     // check for Partial Event failures and Successes

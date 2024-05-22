@@ -30,3 +30,14 @@ export const destinationWithoutHeaders = {
   },
   DestinationDefinition: { Config: { cdkV2Enabled: true } },
 };
+
+export const destinationWithWrongUrl = {
+  Config: {
+    webhookUrl: 'https://6b0e6a60.',
+  },
+  DestinationDefinition: {
+    Config: {
+      cdkV2Enabled: true,
+    },
+  },
+};

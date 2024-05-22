@@ -49,6 +49,7 @@ const commonBody = {
 export const otherData = [
   {
     name: 'hs',
+    id: 'hs_datadelivery_other_00',
     description: 'failed due to gateway timeout from hubspot',
     feature: 'dataDelivery',
     module: 'destination',
@@ -88,6 +89,7 @@ export const otherData = [
   },
   {
     name: 'hs',
+    id: 'hs_datadelivery_other_01',
     description: 'failed due to internal server error from hubspot',
     feature: 'dataDelivery',
     module: 'destination',
@@ -127,6 +129,7 @@ export const otherData = [
   },
   {
     name: 'hs',
+    id: 'hs_datadelivery_other_02',
     description: 'failed due to service unavailable error from hubspot',
     feature: 'dataDelivery',
     module: 'destination',
@@ -168,6 +171,7 @@ export const otherData = [
   },
   {
     name: 'hs',
+    id: 'hs_datadelivery_other_03',
     description: 'getting success response but not in the expected format',
     feature: 'dataDelivery',
     module: 'destination',
@@ -216,15 +220,20 @@ export const otherData = [
         status: 200,
         body: {
           output: {
-            message: '[HUBSPOT Response V1 Handler] - Request Processed Successfully',
-            response: [],
-            status: 200,
             destinationResponse: {
-              status: 200,
               response: {
                 message: 'unknown response',
               },
+              status: 200,
             },
+            message: '[HUBSPOT Response V1 Handler] - Request Processed Successfully',
+            response: {
+              response: {
+                message: 'unknown response',
+              },
+              status: 200,
+            },
+            status: 200,
           },
         },
       },

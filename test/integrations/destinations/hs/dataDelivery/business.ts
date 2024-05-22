@@ -112,6 +112,7 @@ export const businessData = [
   {
     name: 'hs',
     description: 'failed due to duplicate object in a batch',
+    id: 'hs_datadelivery_01',
     feature: 'dataDelivery',
     module: 'destination',
     version: 'v1',
@@ -148,6 +149,18 @@ export const businessData = [
         status: 200,
         body: {
           output: {
+            destinationResponse: {
+              response: {
+                category: 'VALIDATION_ERROR',
+                context: {
+                  ids: ['12877907025'],
+                },
+                correlationId: 'd24ec5cd-8998-4674-a928-59603ae6b0eb',
+                message: 'Duplicate IDs found in batch input: [12877907025]. IDs must be unique',
+                status: 'error',
+              },
+              status: 400,
+            },
             message: 'HUBSPOT: Error transformer proxy v1 during HUBSPOT response transformation',
             response: [
               {
@@ -157,7 +170,7 @@ export const businessData = [
                   ...generateMetadata(1),
                   dontBatch: true,
                 },
-                statusCode: 500,
+                statusCode: 400,
               },
               {
                 error:
@@ -166,10 +179,9 @@ export const businessData = [
                   ...generateMetadata(2),
                   dontBatch: true,
                 },
-                statusCode: 500,
+                statusCode: 400,
               },
             ],
-            statTags: commonStatTags,
             status: 500,
           },
         },
@@ -221,6 +233,15 @@ export const businessData = [
         status: 200,
         body: {
           output: {
+            destinationResponse: {
+              response: {
+                correlationId: '99df04b9-da11-4504-bd97-2c15f58d0943',
+                message:
+                  'Invalid input JSON on line 3, column 9: Cannot deserialize value of type `com.hubspot.inbounddb.publicobject.core.v2.SimplePublicObjectBatchInput$Json` from Array value (token `JsonToken.START_ARRAY`)',
+                status: 'error',
+              },
+              status: 400,
+            },
             message: 'HUBSPOT: Error transformer proxy v1 during HUBSPOT response transformation',
             response: [
               {
@@ -230,7 +251,7 @@ export const businessData = [
                   ...generateMetadata(1),
                   dontBatch: true,
                 },
-                statusCode: 500,
+                statusCode: 400,
               },
               {
                 error:
@@ -239,7 +260,7 @@ export const businessData = [
                   ...generateMetadata(2),
                   dontBatch: true,
                 },
-                statusCode: 500,
+                statusCode: 400,
               },
               {
                 error:
@@ -248,10 +269,9 @@ export const businessData = [
                   ...generateMetadata(3),
                   dontBatch: true,
                 },
-                statusCode: 500,
+                statusCode: 400,
               },
             ],
-            statTags: commonStatTags,
             status: 500,
           },
         },

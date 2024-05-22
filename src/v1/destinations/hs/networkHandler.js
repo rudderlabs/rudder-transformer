@@ -1,6 +1,5 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-restricted-syntax */
-const { removeUndefinedAndNullValues } = require('@rudderstack/integrations-lib');
 const { TransformerProxyError } = require('../../../v0/util/errorTypes');
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess, getAuthErrCategoryFromStCode } = require('../../../v0/util/index');
@@ -11,30 +10,35 @@ const {
 } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../../v0/util/tags');
 
-const populateErrorMessage = (response) => {
-  const errorResponse = {
-    message: response?.message || null,
-    category: response?.category || null,
-    correlationId: response?.correlationId || null,
-  };
-  removeUndefinedAndNullValues(errorResponse);
-  if (Object.keys(errorResponse).length === 0) {
-    return 'unknown error format';
-  }
-  return JSON.stringify(errorResponse);
-};
+const verify = (results, rudderJobMetadata) =>
+  Array.isArray(results) && results.length === rudderJobMetadata.length;
 
+const populateResponseWithDontBatch = (rudderJobMetadata, status, response) => {
+  const errorMessage = JSON.stringify(response);
+  const responseWithIndividualEvents = [];
+  for (const metadata of rudderJobMetadata) {
+    metadata.dontBatch = true;
+    responseWithIndividualEvents.push({
+      statusCode: status,
+      metadata,
+      error: errorMessage,
+    });
+  }
+  return responseWithIndividualEvents;
+};
 const responseHandler = (responseParams) => {
   const { destinationResponse, rudderJobMetadata } = responseParams;
-  const message = `[HUBSPOT Response V1 Handler] - Request Processed Successfully`;
+  const successMessage = `[HUBSPOT Response V1 Handler] - Request Processed Successfully`;
+  const failureMessage =
+    'HUBSPOT: Error transformer proxy v1 during HUBSPOT response transformation';
   const responseWithIndividualEvents = [];
   const { response, status } = destinationResponse;
 
   if (isHttpStatusSuccess(status)) {
     // populate different response for each event
     const results = response?.results;
-    if (Array.isArray(results)) {
-      for (const [idx] of results.entries()) {
+    if (verify(results, rudderJobMetadata)) {
+      for (const [idx] of rudderJobMetadata.entries()) {
         const proxyOutputObj = {
           statusCode: 200,
           metadata: rudderJobMetadata[idx],
@@ -42,45 +46,34 @@ const responseHandler = (responseParams) => {
         };
         responseWithIndividualEvents.push(proxyOutputObj);
       }
+      return {
+        status,
+        message: successMessage,
+        destinationResponse,
+        response: responseWithIndividualEvents,
+      };
     }
-
+    // return the destiantionResponse as it is when the response is not in expected format
     return {
       status,
-      message,
+      message: successMessage,
       destinationResponse,
-      response: responseWithIndividualEvents,
+      response: destinationResponse,
     };
   }
 
-  // in case of failure status, populate response to maintain len(metadata)=len(response)
-  const errorMessage = populateErrorMessage(response);
-
   // At least one event in the batch is invalid.
   if (status === 400 && rudderJobMetadata.length > 1) {
-    if (rudderJobMetadata.length > 1) {
-      for (const metadata of rudderJobMetadata) {
-        metadata.dontBatch = true;
-        responseWithIndividualEvents.push({
-          statusCode: status,
-          metadata,
-          error: errorMessage,
-        });
-      }
-    }
     // sending back 500 for retry only when events came in a batch
-    throw new TransformerProxyError(
-      `HUBSPOT: Error transformer proxy v1 during HUBSPOT response transformation`,
-      500,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(500),
-      },
+    return {
+      status: 500,
+      message: failureMessage,
       destinationResponse,
-      '',
-      responseWithIndividualEvents,
-    );
+      response: populateResponseWithDontBatch(rudderJobMetadata, status, response),
+    };
   }
   throw new TransformerProxyError(
-    `HUBSPOT: Error transformer proxy v1 during HUBSPOT response transformation`,
+    failureMessage,
     status,
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),

@@ -217,21 +217,17 @@ const isValidCustomVariables = (customVariables) => {
  */
 const ProxyRequest = async (request) => {
   const { method, endpoint, headers, params, body, metadata } = request;
-  let reqMeta = metadata;
-  if (Array.isArray(metadata)) {
-    [reqMeta] = metadata;
-  }
 
   if (body.JSON?.isStoreConversion) {
     const firstResponse = await createJob({
       endpoint,
       headers,
       payload: body.JSON.createJobPayload,
-      metadata: reqMeta,
+      metadata,
     });
     const addPayload = body.JSON.addConversionPayload;
     // Mapping Conversion Action
-    const conversionId = await getConversionActionId({ headers, params, metadata: reqMeta });
+    const conversionId = await getConversionActionId({ headers, params, metadata });
     if (Array.isArray(addPayload.operations)) {
       addPayload.operations.forEach((operation) => {
         set(operation, 'create.transaction_attribute.conversion_action', conversionId);
@@ -242,21 +238,21 @@ const ProxyRequest = async (request) => {
       headers,
       jobId: firstResponse,
       payload: addPayload,
-      metadata: reqMeta,
+      metadata,
     });
     const thirdResponse = await runTheJob({
       endpoint,
       headers,
       payload: body.JSON.executeJobPayload,
       jobId: firstResponse,
-      metadata: reqMeta,
+      metadata,
     });
     return thirdResponse;
   }
   // fetch conversionAction
   // httpPOST -> myAxios.post()
   if (params?.event) {
-    const conversionActionId = await getConversionActionId({ headers, params, metadata: reqMeta });
+    const conversionActionId = await getConversionActionId({ headers, params, metadata });
     set(body.JSON, 'conversions.0.conversionAction', conversionActionId);
   }
   // customVariables would be undefined in case of Store Conversions
@@ -265,7 +261,7 @@ const ProxyRequest = async (request) => {
     let conversionCustomVariable = await getConversionCustomVariable({
       headers,
       params,
-      metadata: reqMeta,
+      metadata,
     });
 
     // convert it into hashMap

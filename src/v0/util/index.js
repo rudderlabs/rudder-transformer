@@ -2234,15 +2234,19 @@ const validateEventAndLowerCaseConversion = (event, isMandatory, convertToLowerC
   return convertToLowerCase ? event.toString().toLowerCase() : event.toString();
 };
 
-function getLoggableData(errorDetailer) {
+function getLoggableData(metadata) {
+  let reqMeta = metadata;
+  if (Array.isArray(metadata)) {
+    [reqMeta] = metadata;
+  }
   return {
-    ...(errorDetailer?.destinationId && { destinationId: errorDetailer.destinationId }),
-    ...(errorDetailer?.sourceId && { sourceId: errorDetailer.sourceId }),
-    ...(errorDetailer?.workspaceId && { workspaceId: errorDetailer.workspaceId }),
-    ...(errorDetailer?.destType && { destType: errorDetailer.destType }),
-    ...(errorDetailer?.module && { module: errorDetailer.module }),
-    ...(errorDetailer?.implementation && { implementation: errorDetailer.implementation }),
-    ...(errorDetailer?.feature && { feature: errorDetailer.feature }),
+    ...(reqMeta?.destinationId && { destinationId: reqMeta.destinationId }),
+    ...(reqMeta?.sourceId && { sourceId: reqMeta.sourceId }),
+    ...(reqMeta?.workspaceId && { workspaceId: reqMeta.workspaceId }),
+    ...(reqMeta?.destType && { destType: reqMeta.destType }),
+    ...(reqMeta?.module && { module: reqMeta.module }),
+    ...(reqMeta?.implementation && { implementation: reqMeta.implementation }),
+    ...(reqMeta?.feature && { feature: reqMeta.feature }),
   };
 }
 

@@ -670,7 +670,7 @@ describe('isHtmlFormat', () => {
     expect(isHtmlFormat('')).toBe(false);
   });
 
-  it('should return false for html doctype', () => {
+  it('should return true for html doctype', () => {
     expect(
       isHtmlFormat(
         '<!DOCTYPE html><html lang="en"><body><div style="text-align: center; margin-top: 50px;"><h1>Sorry, something went wrong.</h1><p>We\'re working on it and we\'ll get it fixed as soon as we can.</p><p><a href="javascript:history.back()">Go Back</a></p><footer><p>Facebook &copy; 2024 &middot; <a href="https://www.facebook.com/help/">Help Center</a></p></footer></div></body></html>',

@@ -40,14 +40,26 @@ function transformSingleMessage(data) {
   const { context, traits } = data;
   const location = generateLocationObject(data);
   const traitsWithoutLocation = removeLocationAttributes(traits);
-  const transformedSinglePayload = {
-    type: 'profile',
-    attributes: {
-      ...traitsWithoutLocation,
-      location,
-      anonymous_id: context.externalId[0].id || traits.id,
-    },
-  };
+  let transformedSinglePayload = {};
+  if (context.externalId[0].identifierType === 'id') {
+    transformedSinglePayload = {
+      type: 'profile',
+      id: context.externalId[0].id || traits.id,
+      attributes: {
+        ...traitsWithoutLocation,
+        location,
+      },
+    };
+  } else {
+    transformedSinglePayload = {
+      type: 'profile',
+      attributes: {
+        ...traitsWithoutLocation,
+        location,
+        anonymous_id: context.externalId[0].id,
+      },
+    };
+  }
   return transformedSinglePayload;
 }
 

@@ -30,7 +30,7 @@ async function loadModule(isolateInternal, contextInternal, moduleName, moduleCo
   return module;
 }
 
-async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) {
+async function createIvm(code, libraryVersionIds, versionId, credentials, secrets, testMode) {
   const createIvmStartTime = new Date();
   const logs = [];
   const libraries = await Promise.all(
@@ -243,6 +243,11 @@ async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) 
     }),
   );
 
+  await jail.set('_credentials', function (...args) {
+    if (args.length == 0 || !credentials || !credentials[args[0]]) return 'ERROR';
+    return credentials[args[0]];
+  });
+
   await jail.set('_rsSecrets', function (...args) {
     if (args.length == 0 || !secrets || !secrets[args[0]]) return 'ERROR';
     return secrets[args[0]];
@@ -317,6 +322,14 @@ async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) 
       delete _rsSecrets;
       global.rsSecrets = function(...args) {
         return rsSecrets([
+          ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
+        ]);
+      };
+
+      let credentials = _credentials;
+      delete _credentials;
+      global.credentials = function(...args) {
+        return credentials([
           ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
         ]);
       };
@@ -411,10 +424,10 @@ async function compileUserLibrary(code) {
   return evaluateModule(isolate, context, code);
 }
 
-async function getFactory(code, libraryVersionIds, versionId, secrets, testMode) {
+async function getFactory(code, libraryVersionIds, versionId, credentials, secrets, testMode) {
   const factory = {
     create: async () => {
-      return createIvm(code, libraryVersionIds, versionId, secrets, testMode);
+      return createIvm(code, libraryVersionIds, versionId, credentials, secrets, testMode);
     },
     destroy: async (client) => {
       client.fnRef.release();

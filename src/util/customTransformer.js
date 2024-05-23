@@ -285,12 +285,14 @@ async function userTransformHandler(
       events.forEach((ev) => {
         eventsMetadata[ev.message.messageId] = ev.metadata;
       });
+      const credentials = events[0].credentials;
 
       let userTransformedEvents = [];
       let result;
       if (res.codeVersion && res.codeVersion === '1') {
         result = await UserTransformHandlerFactory(res).runUserTransfrom(
           events,
+          credentials,
           testMode,
           libraryVersionIDs,
         );

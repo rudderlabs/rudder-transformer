@@ -51,6 +51,7 @@ function calculateMsFromIvmTime(value) {
 async function userTransformHandlerV1(
   events,
   userTransformation,
+  credentials,
   libraryVersionIds,
   testMode = false,
 ) {
@@ -62,6 +63,7 @@ async function userTransformHandlerV1(
     userTransformation.code,
     libraryVersionIds,
     userTransformation.versionId,
+    credentials,
     userTransformation.secrets || {},
     testMode,
   );

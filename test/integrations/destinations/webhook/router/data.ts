@@ -1,4 +1,4 @@
-import { generalProperties, userProperties } from './basicProperties';
+import { generalProperties, userProperties } from '../basicProperties';
 import { context, destination, destinationWithoutHeaders } from '../commonConfig';
 
 export const data = [

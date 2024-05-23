@@ -4,13 +4,13 @@ import {
   destinationWithWrongUrl,
   destinationWithoutHeaders,
 } from '../commonConfig';
-import { generalProperties, userProperties } from '../router/basicProperties';
+import { generalProperties, userProperties } from '../basicProperties';
 
 export const data = [
   {
     name: 'webhook',
     id: 'Test 0 - processor',
-    description: 'Basic track calls',
+    description: 'Basic track call',
     scenario: 'Framework',
     successCriteria: 'All events should be transformed successfully and status code should be 200',
     feature: 'processor',
@@ -91,7 +91,7 @@ export const data = [
   {
     name: 'webhook',
     id: 'Test 1 - processor',
-    description: 'Basic track calls',
+    description: 'Track call -> with no headers provided',
     scenario: 'Framework',
     successCriteria: 'All events should be transformed successfully and status code should be 200',
     feature: 'processor',
@@ -171,7 +171,7 @@ export const data = [
   {
     name: 'webhook',
     id: 'Test 2 - processor',
-    description: 'Basic track calls',
+    description: 'Track call -> with destination having wrong url',
     scenario: 'Framework',
     successCriteria: 'All events should be transformed successfully and status code should be 200',
     feature: 'processor',
@@ -251,7 +251,7 @@ export const data = [
   {
     name: 'webhook',
     id: 'Test 3 - processor',
-    description: 'Basic track calls',
+    description: 'Track call, having distinct properties, webhookMethod -> GET, output -> params',
     scenario: 'Framework',
     successCriteria: 'All events should be transformed successfully and status code should be 200',
     feature: 'processor',
@@ -346,7 +346,7 @@ export const data = [
   {
     name: 'webhook',
     id: 'Test 4 - processor',
-    description: 'Basic track calls',
+    description: 'Track call, having distinct properties, webhookMethod -> GET, output -> params',
     scenario: 'Framework',
     successCriteria: 'All events should be transformed successfully and status code should be 200',
     feature: 'processor',
@@ -433,7 +433,7 @@ export const data = [
   {
     name: 'webhook',
     id: 'Test 5 - processor',
-    description: 'Basic track calls',
+    description: 'Track call, having request_ip, method -> POST',
     scenario: 'Framework',
     successCriteria: 'All events should be transformed successfully and status code should be 200',
     feature: 'processor',
@@ -554,7 +554,7 @@ export const data = [
   {
     name: 'webhook',
     id: 'Test 6 - processor',
-    description: 'Basic track calls',
+    description: 'Track call, method -> POST',
     scenario: 'Framework',
     successCriteria: 'All events should be transformed successfully and status code should be 200',
     feature: 'processor',
@@ -676,7 +676,7 @@ export const data = [
   {
     name: 'webhook',
     id: 'Test 7 - processor',
-    description: 'Basic track calls',
+    description: 'Track call, method -> POST',
     scenario: 'Framework',
     successCriteria: 'All events should be transformed successfully and status code should be 200',
     feature: 'processor',
@@ -772,7 +772,7 @@ export const data = [
   {
     name: 'webhook',
     id: 'Test 8 - processor',
-    description: 'Basic track calls',
+    description: 'Track call -> with appendPath and distinct headers, method -> POST',
     scenario: 'Framework',
     successCriteria: 'All events should be transformed successfully and status code should be 200',
     feature: 'processor',
@@ -870,7 +870,7 @@ export const data = [
   {
     name: 'webhook',
     id: 'Test 9 - processor',
-    description: 'Basic track calls',
+    description: 'Track calls -> with fullPath, method -> POST',
     scenario: 'Framework',
     successCriteria: 'All events should be transformed successfully and status code should be 200',
     feature: 'processor',

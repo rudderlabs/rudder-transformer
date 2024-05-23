@@ -31,7 +31,6 @@ const processEvent = (inputEvent) => {
   // event type is always track
   const eventType = 'track';
   message.setEventType(eventType);
-  // message.setEventName(event.event_name);
   message.setPropertiesV2(formattedPayload, mapping);
   let customProperties = {};
   customProperties = extractCustomFields(

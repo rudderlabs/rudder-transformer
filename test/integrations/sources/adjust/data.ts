@@ -22,6 +22,7 @@ export const data = [
               custom: ['custom'],
               tracker_name: ['dummy'],
               created_at: ['1404214665'],
+              event_name: ['Click'],
             },
             updated_at: '2023-02-10T12:16:07.251Z',
             created_at: '2023-02-10T12:05:04.402Z',
@@ -58,6 +59,7 @@ export const data = [
                     Adjust: false,
                   },
                   type: 'track',
+                  event: 'Click',
                   originalTimestamp: '2014-07-01T11:37:45.000Z',
                   timestamp: '2014-07-01T11:37:45.000Z',
                   properties: {

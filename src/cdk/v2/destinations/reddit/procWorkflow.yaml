@@ -36,13 +36,13 @@ steps:
           const os = (.message.context.os.name)?  .message.context.os.name.toLowerCase(): null;
           const hashData = .destination.Config.hashData;
           let user = .message.().({
-            "email": hashData ? $.SHA256({{{{$.getGenericPaths("email")}}}}) : ({{{{$.getGenericPaths("email")}}}}),  
-            "external_id": hashData ? $.SHA256({{{{$.getGenericPaths("userId")}}}}) : ({{{{$.getGenericPaths("userId")}}}}),  
-            "ip_address": hashData? $.SHA256(.context.ip || .request_ip) : (.context.ip || .request_ip),
+            "email": hashData ? $.SHA256({{{{$.getGenericPaths("email")}}}}.trim()) : ({{{{$.getGenericPaths("email")}}}}),  
+            "external_id": hashData ? $.SHA256({{{{$.getGenericPaths("userId")}}}}.trim()) : ({{{{$.getGenericPaths("userId")}}}}),  
+            "ip_address": hashData? $.SHA256(.context.ip.trim() || .request_ip.trim()) : (.context.ip || .request_ip),
             "uuid": .properties.uuid,
             "user_agent": .context.userAgent,
-            "idfa": $.isAppleFamily(os)? (hashData? $.SHA256(.context.device.advertisingId): .context.device.advertisingId): null,
-            "aaid": os === "android" && .context.device ? (hashData? $.SHA256(.context.device.advertisingId): .context.device.advertisingId): null,
+            "idfa": $.isAppleFamily(os)? (hashData? $.SHA256(.context.device.advertisingId.trim()): .context.device.advertisingId): null,
+            "aaid": os === "android" && .context.device ? (hashData? $.SHA256(.context.device.advertisingId.trim()): .context.device.advertisingId): null,
             "opt_out": .properties.optOut,
             "screen_dimensions": {"width": .context.screen.width, "height":  .context.screen.height},
           });

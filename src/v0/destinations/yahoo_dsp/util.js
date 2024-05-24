@@ -51,7 +51,7 @@ const populateIdentifiers = (audienceList, Config) => {
       }
       // here, hashing the data if is not hashed and pushing in the seedList array.
       if (hashRequired) {
-        seedList.push(sha256(userTraits[audienceAttribute]));
+        seedList.push(sha256(userTraits[audienceAttribute].trim()));
       } else {
         seedList.push(userTraits[audienceAttribute]);
       }

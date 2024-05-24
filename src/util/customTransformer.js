@@ -285,8 +285,10 @@ async function userTransformHandler(
       events.forEach((ev) => {
         eventsMetadata[ev.message.messageId] = ev.metadata;
       });
-      const credentials = events[0].credentials;
-
+      const credentials = {};
+      events[0]?.credentials?.forEach((cred) => {
+        credentials[cred.key] = cred.value;
+      });
       let userTransformedEvents = [];
       let result;
       if (res.codeVersion && res.codeVersion === '1') {

@@ -32,7 +32,7 @@ const findGA4Events = (eventsMapping, event) => {
   const validMappings = eventsMapping.filter(
     (mapping) =>
       mapping.rsEventName?.trim().toLowerCase() === event.trim().toLowerCase() &&
-      mapping.ga4EventName,
+      mapping.destEventName,
   );
   // Return an empty object if event not found
   return validMappings;
@@ -103,7 +103,7 @@ const handleCustomMappings = (message, Config) => {
   }
 
   const processedPayloads = validMappings.map((mapping) => {
-    const eventName = mapping.ga4EventName;
+    const eventName = mapping.destEventName;
     // reserved event names are not allowed
     if (isReservedEventName(eventName)) {
       throw new InstrumentationError(`[GA4]:: Reserved event name: ${eventName} are not allowed`);

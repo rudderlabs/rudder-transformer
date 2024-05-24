@@ -76,7 +76,7 @@ const integrations = {
 const eventsMapping = [
   {
     rsEventName: 'Product List Viewed',
-    ga4EventName: 'view_item_list',
+    destEventName: 'view_item_list',
     eventProperties: [
       {
         to: '$.client_id',
@@ -114,7 +114,7 @@ const eventsMapping = [
   },
   {
     rsEventName: 'Product Added',
-    ga4EventName: 'add_to_cart',
+    destEventName: 'add_to_cart',
     eventProperties: [
       {
         to: '$.client_id',
@@ -152,7 +152,7 @@ const eventsMapping = [
   },
   {
     rsEventName: 'Product Added',
-    ga4EventName: 'checkout_started',
+    destEventName: 'checkout_started',
     eventProperties: [
       {
         to: '$.client_id',
@@ -190,7 +190,7 @@ const eventsMapping = [
   },
   {
     rsEventName: '$group',
-    ga4EventName: 'join_group',
+    destEventName: 'join_group',
     eventProperties: [
       {
         to: '$.client_id',

@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-plusplus */
 const get = require('get-value');
 const { InstrumentationError, ConfigurationError } = require('@rudderstack/integrations-lib');
@@ -553,6 +554,22 @@ const buildDeliverablePayload = (payload, Config) => {
   return response;
 };
 
+const sanitizeUserProperties = (userProperties) => {
+  Object.keys(userProperties).forEach((key) => {
+    const propetyValue = userProperties[key];
+    if (
+      typeof propetyValue === 'string' ||
+      typeof propetyValue === 'number' ||
+      typeof propetyValue === 'boolean'
+    ) {
+      delete userProperties[key];
+      userProperties[key] = {
+        value: propetyValue,
+      };
+    }
+  });
+};
+
 module.exports = {
   addClientDetails,
   basicValidation,
@@ -567,6 +584,7 @@ module.exports = {
   getGA4ExclusionList,
   prepareUserProperties,
   getGA4CustomParameters,
+  sanitizeUserProperties,
   GA4_PARAMETERS_EXCLUSION,
   isReservedWebCustomEventName,
   isReservedWebCustomPrefixName,
